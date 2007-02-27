@@ -322,7 +322,7 @@ echo ("<tr><td align=\"right\"><b>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptservers\" value=\"" . $conf->get_scriptServers(false) . "\"></td>\n");
 $tabindex++;
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">";
+echo "<a href=\"../help.php?HelpNumber=218\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 echo "</a>\n";
 echo "</td></tr>\n";
@@ -376,7 +376,7 @@ echo "<td align=\"center\">\n";
 	echo "</tr></table>";
 	$tabindex++;
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">";
+echo "<a href=\"../help.php?HelpNumber=219\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 echo "</a>\n";
 echo "</td></tr>\n";

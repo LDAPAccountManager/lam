@@ -95,15 +95,7 @@ $helpArray = array (
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Default language"),
 					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Script path"),
-					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
-							"<br><br><b>".
-							_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
-							"</b>"),
-				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Script server"),
-					"Text" => _("This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection to this server with user name and password provided at login.").
-						"<br><br><b>".
-						_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
-						"</b>"),
+					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.")),
 				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Cache timeout"),
@@ -113,6 +105,11 @@ $helpArray = array (
 				"217" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Account types and modules"),
 					"Text" => _("Here you can select which plugins you want to use for account management.") . "<br><br>"
 						. _("Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited.")),
+				"218" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Script servers"),
+					"Text" => _("This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Mananger will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon.") . "<br><br>"
+						. _("Example") . ": <b>127.0.0.1:LOCAL;192.168.0.2:Servername;</b>"),
+				"219" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Rights for the home directory"),
+					"Text" => _("This defines the rights for the home directory which was created by the lamdaemon.")),
 				"230" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Rename profile"),
