@@ -605,7 +605,8 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 					case 'fieldset':
 						echo "<fieldset>\n";
 						if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
+						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
+						$ret = array_merge($ret, $retTemp);
 						echo "</fieldset>\n";
 						break;
 					// selection
