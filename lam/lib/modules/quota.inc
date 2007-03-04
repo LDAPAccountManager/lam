@@ -76,6 +76,8 @@ class quota extends baseModule {
 			// module dependencies
 			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		}
+		// managed attributes
+		$return['attributes'] = array('uid');
 		// available PDF fields
 		$return['PDF_fields'] =  array(
 			'quotas'
@@ -126,50 +128,39 @@ class quota extends baseModule {
 		return $return;
 	}
 
-	// Constructor
-	function init($base) {
-		// call parent init
-		parent::init($base);
-		// Get basic quotas for new account
-		$output_array = lamdaemon(array("+ quota get " . $_SESSION[$this->base]->type));
-		// Error somewhere in lamdaemon
-		if (isset($output_array) && is_array($output_array)) {
-			foreach ($output_array as $singleresult) {
-				$singleresult = explode(",", $singleresult);
-				if (is_array($singleresult)) {
-					if ($singleresult[0] == 'ERROR') {
-						StatusMessage($singleresult[0], $singleresult[1], $singleresult[2]);
-					}
-				}
-			}
-		}
-		// process quotas
-		if (is_array($output_array)) {
-			$all_quota = explode(':', $output_array[0]);
-			for ($j=0; $j<sizeof($all_quota)-1; $j++) {
-				$single_quota = explode(',', $all_quota[$j]);
-				// unset not existing quotas from account-object
-				// collect all existing mountpoints in array
-				$real_quotas[] = $single_quota[0];
-				for ($k=0; $k<sizeof($single_quota); $k++)
-					$this->quota[$j][$k] = $single_quota[$k];
-				if ($this->quota[$j][4]<time()) $this->quota[$j][4] = '';
-					else $this->quota[$j][4] = strval(intval(($this->quota[$j][4]-time())/3600)) .' '. _('hours');
-				if ($this->quota[$j][8]<time()) $this->quota[$j][8] = '';
-					else $this->quota[$j][8] = strval(intval(($this->quota[$j][8]-time())/3600)) .' '. _('hours');
-				}
-			$j=0;
-			while (isset($this->quota[$j][0]))
-				// remove invalid quotas
-				if (!in_array($this->quota[$j][0], $real_quotas)) unset($this->quota[$j]);
-					else $j++;
-			// Beautify array, repair index
-			if (is_array($this->quota)) $this->quota = array_values($this->quota);
-			}
-		}
-
-	// Variables
+	/** Saves the quota settings */
 	var $quota;
+	
+	/**
+	 * Initializes the quota values.
+	 *
+	 */
+	function initQuotas() {
+		if (isset($this->quota)) return;
+		$userName = '+';
+		if (isset($_SESSION[$this->base]) && !$_SESSION[$this->base]->isNewAccount) {
+			if (!isset($this->attributes['uid'][0])) return;
+			$userName = $this->attributes['uid'][0];
+		}
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			$server = $temp[0];
+			// get quotas
+			$quotas = lamdaemon(array($userName . " quota get " . $this->get_scope()), $server);
+			$allQuotas = explode(":", $quotas[0]);
+			array_pop($allQuotas); // remove empty element at the end
+			for ($i = 0; $i < sizeof($allQuotas); $i++) {
+				$singleQuota = explode(",", $allQuotas[$i]);
+				$this->quota[$server][$i] = $singleQuota;
+				if ($this->quota[$server][$i][4] < time()) $this->quota[$server][$i][4] = '';
+				else $this->quota[$server][$i][4] = strval(intval(($this->quota[$server][$i][4] - time())/3600)) .' '. _('hours');
+				if ($this->quota[$server][$i][8] < time()) $this->quota[$server][$i][8] = '';
+				else $this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time())/3600)) .' '. _('hours');
+			}
+		}
+	}
 
 	function module_ready() {
 		if ($_SESSION[$this->base]->type=='user' && $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]=='') return false;
@@ -185,87 +176,71 @@ class quota extends baseModule {
 		return true;
 	}
 
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		// Load name
-		if ($_SESSION[$this->base]->type=='user') $id = $attr['uid'][0];
-		if ($_SESSION[$this->base]->type=='group') $id = $attr['cn'][0];
-		// Get quotas
-		$output_array = lamdaemon(array("$id quota get " . $_SESSION[$this->base]->type));
-		// process quotas
-		if (is_array($output_array)) {
-			$all_quota = explode(':', $output_array[0]);
-			for ($j=0; $j<sizeof($all_quota)-1; $j++) {
-				$single_quota = explode(',', $all_quota[$j]);
-				// unset not existing quotas from account-object
-				// collect all existing mountpoints in array
-				$real_quotas[] = $single_quota[0];
-				for ($k=0; $k<sizeof($single_quota); $k++)
-					$this->quota[$j][$k] = $single_quota[$k];
-				if ($this->quota[$j][4]<time()) $this->quota[$j][4] = '';
-					else $this->quota[$j][4] = strval(intval(($this->quota[$j][4]-time())/3600)) .' '. _('hours');
-				if ($this->quota[$j][8]<time()) $this->quota[$j][8] = '';
-					else $this->quota[$j][8] = strval(intval(($this->quota[$j][8]-time())/3600)) .' '. _('hours');
+	/**
+	 * Allows the module to run commands after the LDAP entry is changed or created.
+	 *
+	 * @param boolean $newAccount new account
+	 */
+	function postModifyActions($newAccount) {
+		// determine if this is a user or group account
+		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
+		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+		// get list of lamdaemon servers
+		$serverDescriptions = array();
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			if (isset($temp[1])) {
+				$serverDescriptions[$temp[0]] = $temp[1];
+			}
+		}
+		$servers = array_keys($this->quota);
+		for ($q = 0; $q < sizeof($servers); $q++) {
+			$server = $servers[$q];
+			$i=0;
+			$quotastring = "";
+			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
+				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
+					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
+			}
+			$ret = lamdaemon(array($id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n"), $server);
+		}
+		return $return;
+	}
+
+	/**
+	 * Allows the module to run commands before the LDAP entry is deleted.
+	 * An error message should be printed if the function returns false.
+	 * 
+	 * @return true, if no problems occured
+	 */
+	function preDeleteActions() {
+		$this->initQuotas();
+		// determine if this is a user or group account
+		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
+		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+		// get list of lamdaemon servers
+		$serverDescriptions = array();
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			if (isset($temp[1])) {
+				$serverDescriptions[$temp[0]] = $temp[1];
+			}
+		}
+		$servers = array_keys($this->quota);
+		for ($q = 0; $q < sizeof($servers); $q++) {
+			$server = $servers[$q];
+			$i=0;
+			$quotastring = "";
+			while ($this->quota[$server][$i][0]) {
+				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
+				$i++;
 				}
-			$j=0;
-			while (isset($this->quota[$j][0]))
-				// remove invalid quotas
-				if (!in_array($this->quota[$j][0], $real_quotas)) unset($this->quota[$j]);
-					else $j++;
-			// Beautify array, repair index
-			if (is_array($this->quota)) $this->quota = array_values($this->quota);
-			}
-		return 0;
+			$ret = lamdaemon(array($id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n"), $server);
 		}
-
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* modify are attributes which have to been modified in ldap entry
-	*/
-	function save_attributes() {
-		/* Check wich quotas have changed
-		* Because we can not send an array to lamdaemon.pl we have to put all
-		* values in a string. ':' sepraeates the first array, ',' the second
-		*
-		* $values->quota[][] First array is an index for every chare with active quotas
-		* second array Contains values for every share:
-		* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-		* soft inode limit, hard inode limit, grace inode period
-		*/
-
-		$i=0;
-		$quotastring = "";
-		while ($this->quota[$i][0]) {
-			$quotastring = $quotastring . $this->quota[$i][0] . ',' . $this->quota[$i][2] . ',' . $this->quota[$i][3]
-				. ',' . $this->quota[$i][6] . ',' . $this->quota[$i][7] . ':';
-			$i++;
-			}
-
-		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
-		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
-		$return[$_SESSION[$this->base]->dn]['lamdaemon']['command'][] = $id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n";
-
-		return $return;
-		}
-
-	function delete_attributes() {
-		$i=0;
-		$quotastring = "";
-		while ($this->quota[$i][0]) {
-			$quotastring = $quotastring . $this->quota[$i][0] . ',0,0,0,0:';
-			$i++;
-			}
-		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
-		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
-		$return[$_SESSION[$this->base]->dn_orig]['lamdaemon']['command'][] = $id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n";
-		return $return;
-		}
+		return true;
+	}
 
 	/**
 	* Processes user input of the primary module page.
@@ -275,29 +250,42 @@ class quota extends baseModule {
 	*/
 	function process_attributes() {
 		$errors = array();
-		// Write all general values into $account_new
-		$i=0;
-		// loop for every mointpoint with quotas
-		while ($this->quota[$i][0]) {
-			$this->quota[$i][2] = $_POST[$i . '_2'];
-			$this->quota[$i][3] = $_POST[$i . '_3'];
-			$this->quota[$i][6] = $_POST[$i . '_6'];
-			$this->quota[$i][7] = $_POST[$i . '_7'];
-			// Check if values are OK and set automatic values. if not error-variable will be set
-			if (!get_preg($this->quota[$i][2], 'digit'))
-				$errors[] = $this->messages['softblock'][0];
-			if (!get_preg($this->quota[$i][3], 'digit'))
-				$errors[] = $this->messages['hardblock'][0];
-			if (!get_preg($this->quota[$i][6], 'digit'))
-				$errors[] = $this->messages['softinode'][0];
-			if (!get_preg($this->quota[$i][7], 'digit'))
-				$errors[] = $this->messages['hardinode'][0];
-			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
-				$errors[] = $this->messages['block_cmp'][0];
-			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
-				$errors[] = $this->messages['inode_cmp'][0];
-			$i++;
+		// get list of lamdaemon servers
+		$serverDescriptions = array();
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			if (isset($temp[1])) {
+				$serverDescriptions[$temp[0]] = $temp[1];
 			}
+		}
+		$servers = array_keys($this->quota);
+		for ($q = 0; $q < sizeof($servers); $q++) {
+			$server = $servers[$q];
+			$id = $this->replaceSpecialChars($server);
+			$i=0;
+			// loop for every mointpoint with quotas
+			while ($this->quota[$server][$i][0]) {
+				$this->quota[$server][$i][2] = $_POST[$i . '_2_' . $id];
+				$this->quota[$server][$i][3] = $_POST[$i . '_3_' . $id];
+				$this->quota[$server][$i][6] = $_POST[$i . '_6_' . $id];
+				$this->quota[$server][$i][7] = $_POST[$i . '_7_' . $id];
+				// Check if values are OK and set automatic values. if not error-variable will be set
+				if (!get_preg($this->quota[$server][$i][2], 'digit'))
+					$errors[] = $this->messages['softblock'][0];
+				if (!get_preg($this->quota[$server][$i][3], 'digit'))
+					$errors[] = $this->messages['hardblock'][0];
+				if (!get_preg($this->quota[$server][$i][6], 'digit'))
+					$errors[] = $this->messages['softinode'][0];
+				if (!get_preg($this->quota[$server][$i][7], 'digit'))
+					$errors[] = $this->messages['hardinode'][0];
+				if (intval($this->quota[$server][$i][2]) > intval($this->quota[$server][$i][3]))
+					$errors[] = $this->messages['block_cmp'][0];
+				if (intval($this->quota[$server][$i][6]) > intval($this->quota[$server][$i][7]))
+					$errors[] = $this->messages['inode_cmp'][0];
+				$i++;
+			}
+		}
 		return $errors;
 	}
 
@@ -306,43 +294,82 @@ class quota extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes() {
-
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mountpoint') ),
-				1 => array ( 'kind' => 'text', 'text' => _('Used blocks') ),
-				2 => array ( 'kind' => 'text', 'text' => _('Soft block limit') ),
-				3 => array ( 'kind' => 'text', 'text' => _('Hard block limit') ),
-				4 => array ( 'kind' => 'text', 'text' => _('Grace block period') ),
-				5 => array ( 'kind' => 'text', 'text' => _('Used inodes') ),
-				6 => array ( 'kind' => 'text', 'text' => _('Soft inode limit') ),
-				7 => array ( 'kind' => 'text', 'text' => _('Hard inode limit') ),
-				8 => array ( 'kind' => 'text', 'text' => _('Grace inode period') ));
-
-		$return[] = array ( 0 => array ( 'kind' => 'help', 'value' => 'Mountpoint' ),
-				1 => array ( 'kind' => 'help', 'value' => 'UsedBlocks' ),
-				2 => array ( 'kind' => 'help', 'value' => 'SoftBlockLimit' ),
-				3 => array ( 'kind' => 'help', 'value' => 'HardBlockLimit' ),
-				4 => array ( 'kind' => 'help', 'value' => 'GraceBlockPeriod' ),
-				5 => array ( 'kind' => 'help', 'value' => 'UsedInodes' ),
-				6 => array ( 'kind' => 'help', 'value' => 'SoftInodeLimit' ),
-				7 => array ( 'kind' => 'help', 'value' => 'HardInodeLimit' ),
-				8 => array ( 'kind' => 'help', 'value' => 'GraceInodePeriod' ));
-
-		$i=0;
-		// loop for every mointpoint with enabled quotas
-		while ($this->quota[$i][0]) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $this->quota[$i][0] ),
-				1 => array ( 'kind' => 'text', 'text' => $this->quota[$i][1] ),
-				2 => array ( 'kind' => 'input', 'name' => $i . '_2', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][2]),
-				3 => array ( 'kind' => 'input', 'name' => $i . '_3', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][3]),
-				4 => array ( 'kind' => 'text', 'text' => $this->quota[$i][4] ),
-				5 => array ( 'kind' => 'text', 'text' => $this->quota[$i][5] ),
-				6 => array ( 'kind' => 'input', 'name' => $i . '_6', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][6]),
-				7 => array ( 'kind' => 'input', 'name' => $i . '_7', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][7]),
-				8 => array ( 'kind' => 'text', 'text' => $this->quota[$i][8] ));
-			$i++;
+		$return = array();
+		$this->initQuotas();
+		if (!is_array($this->quota)) return $return;
+		// get list of lamdaemon servers
+		$serverDescriptions = array();
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			if (isset($temp[1])) {
+				$serverDescriptions[$temp[0]] = $temp[1];
 			}
-		return $return;
 		}
+		$servers = array_keys($this->quota);
+		for ($q = 0; $q < sizeof($servers); $q++) {
+			$server = $servers[$q];
+			$id = $this->replaceSpecialChars($server);
+			$fieldContent = array();
+			$fieldContent[] = array(
+					array('kind' => 'text', 'text' => _('Mountpoint')),
+					array('kind' => 'text', 'text' => _('Used blocks')),
+					array('kind' => 'text', 'text' => _('Soft block limit')),
+					array('kind' => 'text', 'text' => _('Hard block limit')),
+					array('kind' => 'text', 'text' => _('Grace block period')),
+					array('kind' => 'text', 'text' => _('Used inodes')),
+					array('kind' => 'text', 'text' => _('Soft inode limit')),
+					array('kind' => 'text', 'text' => _('Hard inode limit')),
+					array('kind' => 'text', 'text' => _('Grace inode period')));
+	
+			$fieldContent[] = array(
+					array('kind' => 'help', 'value' => 'Mountpoint'),
+					array('kind' => 'help', 'value' => 'UsedBlocks'),
+					array('kind' => 'help', 'value' => 'SoftBlockLimit'),
+					array('kind' => 'help', 'value' => 'HardBlockLimit'),
+					array('kind' => 'help', 'value' => 'GraceBlockPeriod'),
+					array('kind' => 'help', 'value' => 'UsedInodes'),
+					array('kind' => 'help', 'value' => 'SoftInodeLimit'),
+					array('kind' => 'help', 'value' => 'HardInodeLimit'),
+					array('kind' => 'help', 'value' => 'GraceInodePeriod')
+				);
+	
+			$i=0;
+			// loop for every mointpoint with enabled quotas
+			while ($this->quota[$server][$i][0]) {
+				$fieldContent[] = array(
+					array('kind' => 'text', 'text' => $this->quota[$server][$i][0]),
+					array('kind' => 'text', 'text' => $this->quota[$server][$i][1]),
+					array('kind' => 'input', 'name' => $i . '_2_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][2]),
+					array('kind' => 'input', 'name' => $i . '_3_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][3]),
+					array('kind' => 'text', 'text' => $this->quota[$server][$i][4]),
+					array('kind' => 'text', 'text' => $this->quota[$server][$i][5]),
+					array('kind' => 'input', 'name' => $i . '_6_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][6]),
+					array('kind' => 'input', 'name' => $i . '_7_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][7]),
+					array('kind' => 'text', 'text' => $this->quota[$server][$i][8]));
+				$i++;
+			}
+			$legend = $server;
+			if (isset($serverDescriptions[$server])) {
+				$legend = $serverDescriptions[$server] . " (" . $server . ")";
+			}
+			$return[] = array(
+				array('kind' => 'fieldset', 'legend' => $legend, 'value' => $fieldContent)
+			);
+		}
+		return $return;
+	}
+	
+	/**
+	 * Replaces special characters in HTML name values.
+	 *
+	 * @param string $input input string
+	 * @return string output string
+	 */
+	function replaceSpecialChars($input) {
+		$ret = str_replace(".", "_", $input);
+		return $ret;
+	}
 
 	/**
 	* Returns a list of elements for the account profiles.
@@ -350,37 +377,51 @@ class quota extends baseModule {
 	* @return profile elements
 	*/
 	function get_profileOptions() {
-		// Get quotas
-		$quotas = lamdaemon(array("+ quota get " . $this->get_scope()));
-		$dirs = split(":", $quotas[0]);
-		array_pop($dirs); // remove empty element at the end
-		for ($i = 0; $i < sizeof($dirs); $i++) {
-			$dirs[$i] = split(",", $dirs[$i]);
-			$dirs[$i] = $dirs[$i][0];
-		}
 		$return = array();
-		if (sizeof($dirs) < 1) return $return; // stop if no quota directories were found
-		$return[] = array (
-			0 => array('kind' => 'text', 'text' => '<b>' . _('Mountpoint') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-			1 => array('kind' => 'text', 'text' => '<b>' . _('Soft block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-			2 => array('kind' => 'text', 'text' => '<b>' . _('Hard block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-			3 => array('kind' => 'text', 'text' => '<b>' . _('Soft inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-			4 => array('kind' => 'text', 'text' => '<b>' . _('Hard inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-		);
-		$return[] = array (
-			0 => array('kind' => 'help', 'value' => 'Mountpoint', 'align' => 'center'),
-			1 => array('kind' => 'help', 'value' => 'SoftBlockLimit', 'align' => 'center'),
-			2 => array('kind' => 'help', 'value' => 'HardBlockLimit', 'align' => 'center'),
-			3 => array('kind' => 'help', 'value' => 'SoftInodeLimit', 'align' => 'center'),
-			4 => array('kind' => 'help', 'value' => 'HardInodeLimit', 'align' => 'center'),
-		);
-		for ($i = 0; $i < sizeof($dirs); $i++) {
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			$server = $temp[0];
+			$id = $this->replaceSpecialChars($server);
+			$description = $temp[0];
+			if (isset($temp[1])) $description = $temp[1];
+
+			// Get quotas
+			$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
+			$dirs = split(":", $quotas[0]);
+			array_pop($dirs); // remove empty element at the end
+			for ($i = 0; $i < sizeof($dirs); $i++) {
+				$dirs[$i] = split(",", $dirs[$i]);
+				$dirs[$i] = $dirs[$i][0];
+			}
+			if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
+			$fieldContent = array();
+			$fieldContent[] = array (
+				array('kind' => 'text', 'text' => '<b>' . _('Mountpoint') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+				array('kind' => 'text', 'text' => '<b>' . _('Soft block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+				array('kind' => 'text', 'text' => '<b>' . _('Hard block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+				array('kind' => 'text', 'text' => '<b>' . _('Soft inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+				array('kind' => 'text', 'text' => '<b>' . _('Hard inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+			);
+			$fieldContent[] = array (
+				array('kind' => 'help', 'value' => 'Mountpoint', 'align' => 'center'),
+				array('kind' => 'help', 'value' => 'SoftBlockLimit', 'align' => 'center'),
+				array('kind' => 'help', 'value' => 'HardBlockLimit', 'align' => 'center'),
+				array('kind' => 'help', 'value' => 'SoftInodeLimit', 'align' => 'center'),
+				array('kind' => 'help', 'value' => 'HardInodeLimit', 'align' => 'center'),
+			);
+			for ($i = 0; $i < sizeof($dirs); $i++) {
+				$fieldContent[] = array(
+					array('kind' => 'text', 'text' => $dirs[$i], 'align' => 'left'),
+					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_" . $id . "_" . $dirs[$i]),
+					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardblock_" . $id . "_" . $dirs[$i]),
+					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softinode_" . $id . "_" . $dirs[$i]),
+					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardinode_" . $id . "_" . $dirs[$i]),
+				);
+			}
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => $dirs[$i], 'align' => 'left'),
-				1 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_" . $dirs[$i]),
-				2 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardblock_" . $dirs[$i]),
-				3 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softinode_" . $dirs[$i]),
-				4 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardinode_" . $dirs[$i]),
+				array('kind' => 'fieldset', 'legend' => $description . " (" . $server . ")", 'value' => $fieldContent)
 			);
 		}
 		return $return;
@@ -394,22 +435,29 @@ class quota extends baseModule {
 	*/
 	function check_profileOptions($options) {
 		$return = array();
-		// Get quotas
-		$quotas = lamdaemon(array("+ quota get " . $this->get_scope()));
-		$dirs = split(":", $quotas[0]);
-		array_pop($dirs); // remove empty element at the end
-		for ($i = 0; $i < sizeof($dirs); $i++) {
-			$dirs[$i] = split(",", $dirs[$i]);
-			$dirs[$i] = $dirs[$i][0];
-		}
-		for ($i = 0; $i < sizeof($dirs); $i++) {
-			if (!get_preg($options["quota_softblock_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softblock'][0];
-			if (!get_preg($options["quota_hardblock_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
-			if (!get_preg($options["quota_softinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softinode'][0];
-			if (!get_preg($options["quota_hardinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardinode'][0];
-			if (intval($options["quota_softblock_" . $dirs[$i]][0]) > intval($options["quota_hardblock_" . $dirs[$i]][0])) $return[] = $this->messages['block_cmp'][0];
-			if (intval($options["quota_softinode_" . $dirs[$i]][0]) > intval($options["quota_hardinode_" . $dirs[$i]][0])) $return[] = $this->messages['inode_cmp'][0];
-			$i++;
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+			$temp = explode(":", $lamdaemonServers[$s]);
+			$server = $temp[0];
+			$id = $this->replaceSpecialChars($server);
+			// Get quotas
+			$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
+			$dirs = split(":", $quotas[0]);
+			array_pop($dirs); // remove empty element at the end
+			for ($i = 0; $i < sizeof($dirs); $i++) {
+				$dirs[$i] = split(",", $dirs[$i]);
+				$dirs[$i] = $dirs[$i][0];
+			}
+			for ($i = 0; $i < sizeof($dirs); $i++) {
+				if (!get_preg($options["quota_softblock_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softblock'][0];
+				if (!get_preg($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
+				if (!get_preg($options["quota_softinode_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softinode'][0];
+				if (!get_preg($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardinode'][0];
+				if (intval($options["quota_softblock_" . $id . "_" . $dirs[$i]][0]) > intval($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0])) $return[] = $this->messages['block_cmp'][0];
+				if (intval($options["quota_softinode_" . $id . "_" . $dirs[$i]][0]) > intval($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0])) $return[] = $this->messages['inode_cmp'][0];
+				$i++;
+			}
 		}
 		return $return;
 	}
@@ -420,12 +468,18 @@ class quota extends baseModule {
 	* @param array $profile hash array with profile values (identifier => value)
 	*/
 	function load_profile($profile) {
-		for ($i = 0; $i < sizeof($this->quota); $i++) {
-			$dir = $this->quota[$i][0];
-			if (isset($profile["quota_softblock_" . $dir])) $this->quota[$i][2] = $profile["quota_softblock_" . $dir][0];
-			if (isset($profile["quota_hardblock_" . $dir])) $this->quota[$i][3] = $profile["quota_hardblock_" . $dir][0];
-			if (isset($profile["quota_softinode_" . $dir])) $this->quota[$i][6] = $profile["quota_softinode_" . $dir][0];
-			if (isset($profile["quota_hardinode_" . $dir])) $this->quota[$i][7] = $profile["quota_hardinode_" . $dir][0];
+		$this->initQuotas();
+		$servers = array_keys($this->quota);
+		for ($s = 0; $s < sizeof($servers); $s++) {
+			$server = $servers[$s];
+			$id = $this->replaceSpecialChars($server);
+			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
+				$dir = $this->quota[$server][$i][0];
+				if (isset($profile["quota_softblock_" . $id . "_" . $dir])) $this->quota[$server][$i][2] = $profile["quota_softblock_" . $id . "_" . $dir][0];
+				if (isset($profile["quota_hardblock_" . $id . "_" . $dir])) $this->quota[$server][$i][3] = $profile["quota_hardblock_" . $id . "_" . $dir][0];
+				if (isset($profile["quota_softinode_" . $id . "_" . $dir])) $this->quota[$server][$i][6] = $profile["quota_softinode_" . $id . "_" . $dir][0];
+				if (isset($profile["quota_hardinode_" . $id . "_" . $dir])) $this->quota[$server][$i][7] = $profile["quota_hardinode_" . $id . "_" . $dir][0];
+			}
 		}
 	}
 
@@ -435,24 +489,38 @@ class quota extends baseModule {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
+		$this->initQuotas();
 		if (sizeof($this->quota) > 0) {
 			$quotas = array();
-			$quotas[] = '<block><tr>' .
-					'<td width="20%"><b>' . _('Mountpoint') . '</b></td>' .
-					'<td width="20%"><b>' . _('Soft block') . '</b></td>' .
-					'<td width="20%"><b>' . _('Hard block') . '</b></td>' .
-					'<td width="20%"><b>' . _('Soft inode') . '</b></td>' .
-					'<td width="20%"><b>' . _('Hard inode') . '</b></td></tr></block>';
-			for ($i = 0; $i < sizeof($this->quota); $i++) {
+			// get list of lamdaemon servers
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+				$temp = explode(":", $lamdaemonServers[$s]);
+				$server = $temp[0];
+				$description = $server;
+				if (isset($temp[1])) $description = $temp[1] . " (" . $server . ")";
+				if (!isset($this->quota[$server]) || (sizeof($this->quota[$server]) < 1)) continue;
+				
 				$quotas[] = '<block><tr>' .
-					'<td width="20%" align=\"L\">' . $this->quota[$i][0] . '</td>' .
-					'<td width="20%" align=\"L\">' . $this->quota[$i][2] . '</td>' .
-					'<td width="20%" align=\"L\">' . $this->quota[$i][3] . '</td>' .
-					'<td width="20%" align=\"L\">' . $this->quota[$i][6] . '</td>' .
-					'<td width="20%" align=\"L\">' . $this->quota[$i][7] . '</td></tr></block>';
+						'<td width="80%"><b>' . $description . '</b></td>' .
+						'</tr></block>';
+				$quotas[] = '<block><tr>' .
+						'<td width="20%"><b>' . _('Mountpoint') . '</b></td>' .
+						'<td width="20%"><b>' . _('Soft block') . '</b></td>' .
+						'<td width="20%"><b>' . _('Hard block') . '</b></td>' .
+						'<td width="20%"><b>' . _('Soft inode') . '</b></td>' .
+						'<td width="20%"><b>' . _('Hard inode') . '</b></td></tr></block>';
+				for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
+					$quotas[] = '<block><tr>' .
+						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][0] . '</td>' .
+						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][2] . '</td>' .
+						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][3] . '</td>' .
+						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][6] . '</td>' .
+						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][7] . '</td></tr></block>';
+				}
+				$quotas[] = '<block><tr><td width="80%"> </td></tr></block>';
 			}
-			return array(
-				'quota_quotas' => $quotas);
+			return array('quota_quotas' => $quotas);
 		}
 		else {
 			return array();
@@ -474,21 +542,30 @@ class quota extends baseModule {
 	* @return array column list
 	*/
 	function get_uploadColumns() {
+		$this->initQuotas();
 		$return = array();
-		// Get quotas
-		$quotas = lamdaemon(array("+ quota get " . $this->get_scope()));
-		$dirs = split(":", $quotas[0]);
-		array_pop($dirs); // remove empty element at the end
-		for ($i = 0; $i < sizeof($dirs); $i++) {
-			$dirs[$i] = split(",", $dirs[$i]);
-			$dirs[$i] = $dirs[$i][0];
-		}
-		for ($i = 0; $i < sizeof($dirs); $i++) {
-			$return[] = array(
-				'name' => 'quota_' . $dirs[$i],
-				'description' => _('Quota for:') . ' ' . $dirs[$i],
-				'help' => 'upload',
-				'example' => '2000,2500,3000,3500');
+		if (sizeof($this->quota) > 0) {
+			// get list of lamdaemon servers
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+				$temp = explode(":", $lamdaemonServers[$s]);
+				$server = $temp[0];
+				// Get quotas
+				$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
+				$dirs = split(":", $quotas[0]);
+				array_pop($dirs); // remove empty element at the end
+				for ($i = 0; $i < sizeof($dirs); $i++) {
+					$dirs[$i] = split(",", $dirs[$i]);
+					$dirs[$i] = $dirs[$i][0];
+				}
+				for ($i = 0; $i < sizeof($dirs); $i++) {
+					$return[] = array(
+						'name' => 'quota_' . $server . ':' . $dirs[$i],
+						'description' => sprintf(_('Quota for %s on %s'), $dirs[$i], $server),
+						'help' => 'upload',
+						'example' => '2000,2500,3000,3500');
+				}
+			}
 		}
 		return $return;
 	}
@@ -588,15 +665,21 @@ class quota extends baseModule {
 			$name = $names[$temp['counter']];
 			$mountPoints = array_keys($temp['accounts'][$name]);
 			// set quota
-			$quotaString = $name . " quota set " . $this->scope . " ";
 			for ($m = 0; $m < sizeof($mountPoints); $m++) {
-				$partString = $mountPoints[$m] . ',' . implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . ':';
-				$quotaString .= $partString;
-			}
-			$quotaString .= "\n";
-			$result = lamdaemon(array($quotaString));
-			if (is_array($result)) {
-				$errors[] = array('ERROR', implode('<br>', $result), '');
+				$mpParts = split(":", $mountPoints[$m]);
+				$server = $mpParts[0];
+				$dir = $mpParts[1];
+				$quotaString = $name . " quota set " . $this->scope . " " . $dir . ',' .
+					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n";
+				$result = lamdaemon(array($quotaString), $server);
+				if (is_array($result)) {
+					for ($i = 0; $i < sizeof($result); $i++) {
+						$parts = explode(",", $result);
+						if ($parts[0] == 'ERROR') {
+							$errors[] = array('ERROR', $parts[1], $parts[2]);
+						}
+					}
+				}
 			}
 			// set counters to next account/mount point
 			$temp['counter']++;
