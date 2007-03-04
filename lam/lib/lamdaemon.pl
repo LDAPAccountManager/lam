@@ -204,12 +204,12 @@ if ($< == 0 ) { # we are root
 					$vals[2] eq 'set' && do {
 						$i=0;
 						($<, $>) = ($>, $<); # Get root privileges
-						while ($quota_usr[$i][0]) {
+						while ($quota[$i][0]) {
 							$dev = Quota::getqcarg($quota[$i][0]);
 							$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
 							if ($return == -1) {
 									$return = "ERROR,Lamdaemon ($hostname),Unable to set quota!";
-								}
+							}
 							$i++;
 							}
 						($<, $>) = ($>, $<); # Give up root previleges
