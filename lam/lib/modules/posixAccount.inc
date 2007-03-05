@@ -937,7 +937,7 @@ class posixAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Home directory').'*'),
 				1 => array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				2 => array('kind' => 'help', 'value' => 'homeDirectory'));
-			if ($_SESSION[$this->base]->isNewAccount && isset($_SESSION['config']->scriptPath)) {
+			if ($_SESSION[$this->base]->isNewAccount && isset($_SESSION['config']->scriptPath) && ($_SESSION['config']->scriptPath != '')) {
 				// get list of lamdaemon servers
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
