@@ -513,7 +513,7 @@ function saveSettings() {
 	if ($_POST['chmod_ote'] == 'on') $chmodOther += 1;
 	$chmod = $chmodOwner . $chmodGroup . $chmodOther;
 	if (!$conf->set_scriptrights($chmod)) {
-		$errors[] = array("ERROR", _("Script chmod is invalid!"));
+		$errors[] = array("ERROR", _("Script rights are invalid!"));
 	}
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {

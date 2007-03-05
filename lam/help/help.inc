@@ -109,7 +109,7 @@ $helpArray = array (
 					"Text" => _("This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Mananger will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon.") . "<br><br>"
 						. _("Example") . ": <b>127.0.0.1:LOCAL;192.168.0.2:Servername;</b>"),
 				"219" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Rights for the home directory"),
-					"Text" => _("This defines the rights for the home directory which was created by the lamdaemon.")),
+					"Text" => _("This defines the rights for the home directories which are created by lamdaemon.")),
 				"230" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Rename profile"),
