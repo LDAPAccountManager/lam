@@ -171,10 +171,11 @@ class lamList {
 			if (isset($_POST["filter" . strtolower($this->attrArray[$i])])) {
 				$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 			}
-			if (isset($foundFilter) && eregi('^([0-9a-z _\\*\\$-])+$', $foundFilter)) {
+			if (isset($foundFilter) && eregi('^([0-9a-z _\\*\\$\\.-])+$', $foundFilter)) {
 				$filter[$this->attrArray[$i]]['original'] = $foundFilter;
 				$filter[$this->attrArray[$i]]['regex'] = $foundFilter;
 				// replace special characters
+				$filter[$this->attrArray[$i]]['regex'] = str_replace('.', '\\.', $filter[$this->attrArray[$i]]['regex']);
 				$filter[$this->attrArray[$i]]['regex'] = str_replace("*", "(.)*", $filter[$this->attrArray[$i]]['regex']);
 				$filter[$this->attrArray[$i]]['regex'] = str_replace('$', '[$]', $filter[$this->attrArray[$i]]['regex']);
 				// add string begin and end
