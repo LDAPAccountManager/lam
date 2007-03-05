@@ -182,6 +182,7 @@ class quota extends baseModule {
 	 * @param boolean $newAccount new account
 	 */
 	function postModifyActions($newAccount) {
+		if (!isset($this->quota) || !is_array($this->quota)) return;
 		// determine if this is a user or group account
 		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
@@ -205,7 +206,6 @@ class quota extends baseModule {
 			}
 			$ret = lamdaemon(array($id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n"), $server);
 		}
-		return $return;
 	}
 
 	/**
@@ -216,6 +216,7 @@ class quota extends baseModule {
 	 */
 	function preDeleteActions() {
 		$this->initQuotas();
+		if (!isset($this->quota) || !is_array($this->quota)) return true;
 		// determine if this is a user or group account
 		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
@@ -249,6 +250,7 @@ class quota extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		$errors = array();
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
@@ -469,6 +471,7 @@ class quota extends baseModule {
 	*/
 	function load_profile($profile) {
 		$this->initQuotas();
+		if (!isset($this->quota) || !is_array($this->quota)) return;
 		$servers = array_keys($this->quota);
 		for ($s = 0; $s < sizeof($servers); $s++) {
 			$server = $servers[$s];
@@ -490,6 +493,7 @@ class quota extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$this->initQuotas();
+		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		if (sizeof($this->quota) > 0) {
 			$quotas = array();
 			// get list of lamdaemon servers
@@ -543,6 +547,7 @@ class quota extends baseModule {
 	*/
 	function get_uploadColumns() {
 		$this->initQuotas();
+		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		$return = array();
 		if (sizeof($this->quota) > 0) {
 			// get list of lamdaemon servers
