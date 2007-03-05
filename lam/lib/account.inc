@@ -544,7 +544,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
 					break;
 		case 'nis_alias':
-					$pregexpr = '/^([[:alnum:]])+$/u';
+					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
 					break;
 		case 'nis_recipient':
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
