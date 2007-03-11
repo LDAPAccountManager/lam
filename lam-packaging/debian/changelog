@@ -1,8 +1,10 @@
 ldap-account-manager (1.3.0.RC1-1) unstable; urgency=low
 
   * New upstream release
+  * [INTL:pt] Portuguese translation for debconf messages (Closes:
+    #414374)
 
- -- Roland Gruber <post@rolandgruber.de>  Mon,  5 Mar 2007 18:19:35 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 11 Mar 2007 20:30:52 +0100
 
 ldap-account-manager (1.2.0-1) unstable; urgency=low
 
