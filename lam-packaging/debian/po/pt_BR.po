@@ -2,30 +2,28 @@
 # Copyright (C) 2006 THE ldap-account-manager'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the ldap-account-manager
 # package.
-# Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs.org>, 2006.
+#
+# Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs.org>, 2006-2007.
 # 
 # 
 msgid ""
-msgstr ""
+msgstr "pt_BR utf8\n"
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2006-05-22 14:39+0200\n"
-"PO-Revision-Date: 2006-04-09 18:49-0300\n"
-"Last-Translator: Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs."
-"org>\n"
+"PO-Revision-Date: 2007-03-11 18:27-0300\n"
+"Last-Translator: Felipe Augusto van de Wiel (faw) <faw@debian.org>\n"
 "Language-Team: l10n-portuguese <debian-l10n-portuguese@lists.debian.org\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: \n"
-"pt_BR\n"
-"org>\n"
-"pt_BR utf8\n"
+
 
 #. Type: multiselect
 #. Description
 #: ../templates:5
 msgid "Web server configuration:"
-msgstr ""
+msgstr "Configuração do servidor web:"
 
 #. Type: multiselect
 #. Description
@@ -44,31 +42,28 @@ msgstr ""
 #. Description
 #: ../templates:13
 msgid "Alias name:"
-msgstr ""
+msgstr "Nome do apelido (\"alias\"):"
 
 #. Type: string
 #. Description
 #: ../templates:13
-#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"LAM vai adicionar um apelido (alias) ao seu httpd.conf que permitirá que "
-"você acesse o LAM em http(s)://localhost/lam. Se você deseja um outro "
-"apelido que não seja \"lam\" por favor, especifique-o aqui."
+"LAM vai adicionar um apelido (\"alias\") ao seu httpd.conf que permitirá que "
+"você acesse o LAM em http(s)://localhost/lam. Você pode selecionar um outro "
+"apelido (\"alias\") que não seja \"lam\"."
 
 #. Type: string
 #. Description
 #: ../templates:21
-#, fuzzy
 msgid "Master configuration password (clear text):"
-msgstr "Digite a senha mestra de configuração (texto plano):"
+msgstr "Senha mestra de configuração (texto plano):"
 
 #. Type: string
 #. Description
 #: ../templates:21
-#, fuzzy
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
@@ -76,8 +71,7 @@ msgid ""
 msgstr ""
 "Os perfis de configuração são protegidos por uma senha mestra. Você "
 "precisará dela para criar e remover perfis. Como padrão ela está definida "
-"como \"lam\" e você pode mudá-la diretamente no LAM. Mas você também pode "
-"mudar isso agora."
+"como \"lam\" e pode ser mudada diretamente no LAM."
 
 #. Type: boolean
 #. Description
