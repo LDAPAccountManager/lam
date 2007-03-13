@@ -1,8 +1,8 @@
-<Files ~ .*>
+<Files *>
   Order allow,deny
   Deny from all
 </Files>
-<Files ~ fpdf.php>
+<Files fpdf.php>
   Order allow,deny
   Allow from all
 </Files>
