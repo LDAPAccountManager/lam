@@ -43,3 +43,24 @@
    If you are experienced in configuring Apache then you can also copy the security settings
    from the .htaccess files to your main Apache configuration.
 
+   If possible, you should not rely on .htaccess files but also move the config and sess
+   directory to a place outside of your WWW root. You can put a symbolic link in the LAM
+   directory so that LAM finds the configuration/session files.
+
+
+   Security sensitive directories:
+
+   config: Contains your LAM configuration and account profiles
+           - LAM configuration clear text passwords
+           - default values for new accounts
+           - directory must be accessibly by Apache but needs not to be accessible by the browser
+
+   sess: PHP session files
+         - LAM admin password in clear text or MCrypt encrypted
+         - cached LDAP entries in clear text or MCrypt encrypted
+         - directory must be accessibly by Apache but needs not to be accessible by the browser
+
+   tmp: temporary files
+        - PDF documents which may also include passwords
+        - images of your users
+        - directory contents must be accessible by browser but directory itself must not be browseable
