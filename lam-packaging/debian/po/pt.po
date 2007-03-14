@@ -79,8 +79,8 @@ msgstr "Reiniciar o(s) seu(s) servidor(es) web agora?"
 #. Description
 #: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "O(s) seu(s) servidor(es) web necessitam de ser reiniciados para aplicar "
-"as alterações."
+msgstr "O(s) seu(s) servidor(es) web necessitam de ser reiniciados para "
+"aplicar as alterações."
 
 #. Type: note
 #. Description
@@ -96,7 +96,7 @@ msgid ""
 "account profiles. You will have to update your configuration and create new "
 "account profiles."
 msgstr ""
-"Por favor tenha em linha de conta que esta versão usa novos formatos para os"
+"Por favor tenha em linha de conta que esta versão usa novos formatos para os "
 "ficheiros de configuração e perfis de contas. Irá necessitar de actualizar "
 "a sua configuração e criar novos perfis."
 
@@ -113,6 +113,6 @@ msgid ""
 "Please note that this version uses new file formats for the configuration "
 "profiles. Please edit your configuration files and save the new settings."
 msgstr ""
-"Por favor tenha em linha de conta que esta versão usa novos formatos para os"
+"Por favor tenha em linha de conta que esta versão usa novos formatos para os "
 "perfis de configuração. Por favor edite os seus ficheiros de configuração e "
 "grave as suas novas definições."
