@@ -563,8 +563,12 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						$output = "<input";
 						if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
 						if ($type != '') $output .= ' type="' . $type . '"';
-						if (isset($input[$i][$j]['size']) && ($input[$i][$j]['size'] != '')) $output .= ' size="' . $input[$i][$j]['size'] . '"';
-						if (isset($input[$i][$j]['maxlength']) && ($input[$i][$j]['maxlength'] != '')) $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
+						if (isset($input[$i][$j]['size']) && ($input[$i][$j]['size'] != '')) {
+							$output .= ' size="' . $input[$i][$j]['size'] . '"';
+						}
+						if (isset($input[$i][$j]['maxlength']) && ($input[$i][$j]['maxlength'] != '')) {
+							$output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
+						}
 						// checkbox
 						if ($type == "checkbox") {
 							if (isset($values[$input[$i][$j]['name']])) {
@@ -575,9 +579,11 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						// other input element
 						else {
 							if (isset($values[$input[$i][$j]['name']])) {
-								$output .= ' value="' . $values[$input[$i][$j]['name']][0] . '"';
+								$output .= ' value="' . htmlspecialchars($values[$input[$i][$j]['name']][0], ENT_QUOTES, "UTF-8") . '"';
 							}
-							elseif (isset($input[$i][$j]['value']) && $input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
+							elseif (isset($input[$i][$j]['value']) && $input[$i][$j]['value']!='') {
+								$output .= ' value="' . htmlspecialchars($input[$i][$j]['value'], ENT_QUOTES, "UTF-8") . '"';
+							}
 						}
 						if (isset($input[$i][$j]['disabled']) && ($input[$i][$j]['disabled'] == true)) $output .= ' disabled';
 						// Show taborder
@@ -597,8 +603,12 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						echo ' cols="' . $input[$i][$j]['cols'] . '"';
 						echo ' rows="' . $input[$i][$j]['rows'] . '"';
 						echo ">";
-						if (isset($values[$input[$i][$j]['name']])) echo $values[$input[$i][$j]['name']];
-						else echo $input[$i][$j]['value'];
+						if (isset($values[$input[$i][$j]['name']])) {
+							echo htmlspecialchars($values[$input[$i][$j]['name']], ENT_QUOTES, "UTF-8");
+						}
+						else {
+							echo htmlspecialchars($input[$i][$j]['value'], ENT_QUOTES, "UTF-8");
+						}
 						echo "</textarea>";
 						break;
 					// inner fieldset
@@ -650,12 +660,20 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						}
 						foreach ($options as $option) {
 							if (isset($input[$i][$j]['descriptiveOptions']) && ($input[$i][$j]['descriptiveOptions'] === true)) {
-								if (in_array($option[0], $input[$i][$j]['options_selected'])) echo "<option value=\"" . $option[0] . "\" selected>" . $option[1] . "</option>\n";
-								else echo "<option value=\"" . $option[0] . "\">" . $option[1] . "</option>\n";
+								if (in_array($option[0], $input[$i][$j]['options_selected'])) {
+									echo "<option value=\"" . htmlspecialchars($option[0], ENT_QUOTES, "UTF-8") . "\" selected>" . htmlspecialchars($option[1], ENT_QUOTES, "UTF-8") . "</option>\n";
+								}
+								else {
+									echo "<option value=\"" . htmlspecialchars($option[0], ENT_QUOTES, "UTF-8") . "\">" . htmlspecialchars($option[1], ENT_QUOTES, "UTF-8") . "</option>\n";
+								}
 							}
 							elseif ($option!='') {
-								if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
-								else echo "<option>" . $option . "</option>\n";
+								if (in_array($option, $input[$i][$j]['options_selected'])) {
+									echo "<option selected>" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</option>\n";
+								}
+								else {
+									echo "<option>" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</option>\n";
+								}
 							}
 						}
 						echo "</select>\n";
