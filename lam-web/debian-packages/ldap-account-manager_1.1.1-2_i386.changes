@@ -1,0 +1,33 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.7
+Date: Wed, 21 Mar 2007 14:11:42 +0100
+Source: ldap-account-manager
+Binary: ldap-account-manager
+Architecture: source all
+Version: 1.1.1-2
+Distribution: testing
+Urgency: high
+Maintainer: Roland Gruber <post@rolandgruber.de>
+Changed-By: Roland Gruber <post@rolandgruber.de>
+Description: 
+ ldap-account-manager - webfrontend for managing accounts in an LDAP directory
+Closes: 415379
+Changes: 
+ ldap-account-manager (1.1.1-2) testing; urgency=high
+ .
+   * security fix
+   * quoting of user description field broken (Closes: #415379)
+Files: 
+ bffffab57df8900553cb0699996b6477 631 web extra ldap-account-manager_1.1.1-2.dsc
+ a9f400f5d1961ba16f1d3d7c66b8230e 16605 web extra ldap-account-manager_1.1.1-2.diff.gz
+ c62d70513a4dc47a5780cb01277085e0 1638052 web extra ldap-account-manager_1.1.1-2_all.deb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFGATVdq/ywNCsrGZ4RAuAmAJ9UR0W1je8YIad77BrDVdSJHmd19gCfbep5
+VUhTKCMgMidKl8B+9OWkbJo=
+=Il4P
+-----END PGP SIGNATURE-----
