@@ -418,9 +418,11 @@ class lamList {
 			if (is_array($entry[$attribute])) {
 				// sort array
 				sort($entry[$attribute]);
-				echo implode("; ", $entry[$attribute]);
+				echo htmlspecialchars(implode("; ", $entry[$attribute]), ENT_QUOTES, "UTF-8");
 			}
-			else echo $entry[$attribute];
+			else {
+				echo htmlspecialchars($entry[$attribute], ENT_QUOTES, "UTF-8");
+			}
 		}		
 	}
 
