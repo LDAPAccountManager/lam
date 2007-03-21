@@ -43,6 +43,30 @@ $Id$
  * @author Roland Gruber
  */
  
+/*
+ * Strip slashes from GET and POST variables if this
+ * PHP install is configured to automatically addslashes()
+ */
+if (get_magic_quotes_gpc() && (! isset($slashes_stripped) || ! $slashes_stripped)) {
+	array_stripslashes($_GET);
+	array_stripslashes($_POST);
+	$slashes_stripped = true;
+}
+
+/**
+ * Strips all slashes from the specified array in place (pass by ref).
+ * @param Array $array The array to strip slashes from, typically one of
+ *             $_GET, $_POST, or $_COOKIE.
+ */
+function array_stripslashes(&$array) {
+	if (is_array($array))
+		while (list($key) = each($array))
+			if (is_array($array[$key]) && $key != $array)
+				array_stripslashes($array[$key]);
+			else
+				$array[$key] = stripslashes($array[$key]);
+}
+
 /**
  * Prints the HTML of the tree view.
  */
