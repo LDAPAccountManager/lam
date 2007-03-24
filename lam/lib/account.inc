@@ -591,5 +591,35 @@ function get_preg($argument, $regexp) {
 	return false;
 }
 
+/**
+ * This function checks if the given IP address ist valid.
+ *
+ * @param string IP to check
+ * @return boolean true or false
+ **/
+function check_ip($ip) {
+	$part = split("[.]", $ip);
+	// Wenn... Keine 4 Segmente gefunden wurde
+	if (count($part) != 4) {
+		return false;
+	}
+	else {
+		// check each segment
+		for ($i = 0; $i < count($part); $i++) {
+			// only numbers are allowed
+			if (!is_numeric($part[$i])) {
+				return false;
+			}
+			else {
+				// segment must be smaller than 256
+				if($part[$i] > 255) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
 
 ?>
