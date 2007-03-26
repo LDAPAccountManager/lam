@@ -9,6 +9,7 @@
    -> Debian package did not include lamdaemonOld.pl (1660493)
    -> NIS mail aliases: allow more characters in alias name (1674198)
    -> fixed syntax errors in some .htaccess files
+   -> security fix: HTML special characters in LDAP data were not escaped
 
   Developers:
     API changes:
