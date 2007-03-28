@@ -384,7 +384,9 @@ class lamList {
 				echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
 					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
 			}
-			echo (" <td align='center'><a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $info[$i]['dn'] . "'\"><img src=\"../../graphics/edit.gif\" alt=\"" . _("Edit") . "\"></a></td>\n");
+			echo " <td align='center'><a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $info[$i]['dn'] . "'\">";
+				echo "<img src=\"../../graphics/edit.gif\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
+				echo "</a></td>\n";
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
 				$attrName = strtolower($this->attrArray[$k]);
