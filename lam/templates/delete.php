@@ -61,7 +61,7 @@ setlanguage();
 if (!isset($_SESSION['cache'])) {
 	$_SESSION['cache'] = new cache();
 }
-if ($_GET['type']) {
+if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	// Create account list
 	foreach ($_SESSION['delete_dn'] as $dn) {
 		$start = strpos ($dn, "=")+1;

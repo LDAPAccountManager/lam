@@ -66,7 +66,7 @@ $types = $_SESSION['config']->get_ActiveTypes();
 		<td align="center">
 			<a href="http://lam.sourceforge.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
-	<td width="200" align="right" height=20><a href="./logout.php" target="_top"><img alt="logout" src="../graphics/go.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
+	<td width="200" align="right" height=20><a href="./logout.php" target="_top"><img alt="logout" src="../graphics/exit.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 </table>
 	<p align="center">

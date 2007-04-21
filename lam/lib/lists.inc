@@ -384,9 +384,9 @@ class lamList {
 				echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
 					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
 			}
-			echo " <td align='center'><a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $info[$i]['dn'] . "'\">";
-				echo "<img src=\"../../graphics/edit.gif\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
-				echo "</a></td>\n";
+			echo " <td align='center'>";
+				$this->listPrintToolLinks($info[$i]);
+			echo "</td>\n";
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
 				$attrName = strtolower($this->attrArray[$k]);
@@ -404,6 +404,22 @@ class lamList {
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
+	}
+	
+	/**
+	 * Prints the tool image links (e.g. edit and delete) for each account.
+	 * 
+	 * $account array LDAP attributes
+	 */
+	function listPrintToolLinks($account) {
+		// edit image
+		echo "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+		echo "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
+		echo "</a>";
+		// delete image
+		echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+		echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
+		echo "</a>";
 	}
 	
 	/**
