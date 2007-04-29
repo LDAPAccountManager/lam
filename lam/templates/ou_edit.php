@@ -170,7 +170,9 @@ function display_main() {
 		}
 		echo ("</select><td>\n");
 		echo ("<td><input type=text name=newname_" . $types[$i] . "></td>\n");
-		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo "<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">";
+			echo "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
+		echo "</a></td>\n";
 		echo ("</tr>\n");
 		// delete OU
 		echo ("<tr>\n");
@@ -183,7 +185,9 @@ function display_main() {
 		}
 		echo ("</select><td>\n");
 		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo "<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">";
+			echo  "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
+		echo "</a></td>\n";
 		echo ("</tr>\n");
 		echo ("</table>\n");
 		echo ("</fieldset>\n");
