@@ -2,42 +2,45 @@
 
 set -e
 
-. /usr/share/debconf/confmodule
-db_version 2.0 || [ $? -lt 30 ]
+if [ -f /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	db_version 2.0 || [ $? -lt 30 ]
 
-   db_get "ldap-account-manager/config-webserver"
-   webservers="$RET"
-   restart=""
-   for server in $webservers; do
-       server=${server%,}
-       case "$server" in
-           apache|apache-perl|apache-ssl|apache2)
-               rm -f /etc/$server/conf.d/ldap-account-manager
-               test -x /usr/sbin/$server || continue
-               restart="$restart $server"
-               ;;
-       esac
-   done
-   db_get "ldap-account-manager/restart-webserver"
-   if [ "$RET" = "true" ]; then
-       for server in $restart; do
-           server=${server%,}
-           if [ -x /usr/sbin/invoke-rc.d ]; then
-               invoke-rc.d $server restart
-           else
-               /etc/init.d/$server restart
-           fi
-       done
-   fi
-if [ "$1" = "purge" ]; then
-  rm -r -f /usr/share/ldap-account-manager; rm -r -f /var/lib/ldap-account-manager; fi
-
-if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
-    db_purge
+	db_get "ldap-account-manager/config-webserver"
+	webservers="$RET"
+	restart=""
+	for server in $webservers; do
+			 server=${server%,}
+			 case "$server" in
+					 apache|apache-perl|apache-ssl|apache2)
+							 rm -f /etc/$server/conf.d/ldap-account-manager
+							 test -x /usr/sbin/$server || continue
+							 restart="$restart $server"
+							 ;;
+			 esac
+	done
+	db_get "ldap-account-manager/restart-webserver"
+	if [ "$RET" = "true" ]; then
+			for server in $restart; do
+					server=${server%,}
+					if [ -x /usr/sbin/invoke-rc.d ]; then
+							invoke-rc.d $server restart
+					else
+							/etc/init.d/$server restart
+					fi
+			done
+	fi
+	if [ "$1" = "purge" ]; then
+		rm -r -f /usr/share/ldap-account-manager; rm -r -f /var/lib/ldap-account-manager; fi
+	
+	if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
+			db_purge
+	fi
+	
+	#DEBHELPER#
+	
+	db_stop
+	
 fi
-
-#DEBHELPER#
-
-db_stop
 
 exit 0
