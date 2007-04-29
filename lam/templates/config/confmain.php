@@ -247,7 +247,7 @@ echo ("<table border=0>\n");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
-	_("Maximum list entries") . " : </b></td>".
+	_("Maximum list entries") . ": </b></td>".
 	"<td><select tabindex=\"$tabindex\" name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
 if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>\n");
 if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>\n");
