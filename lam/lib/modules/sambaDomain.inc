@@ -100,7 +100,7 @@ class sambaDomain extends baseModule {
 			),
 			'forceLogoff' => array(
 				"Headline" => _("Disconnect users outside logon hours"),
-				"Text" => _("Disconnects users if they are loggen in outside logon hours.")
+				"Text" => _("Disconnects users if they are logged in outside logon hours.")
 			),
 			'refuseMachinePwdChange' => array(
 				"Headline" => _("Allow machine password changes"),
