@@ -73,8 +73,8 @@ class inetOrgPerson extends baseModule {
 		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
-		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
+		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
+		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
 	}
 
@@ -347,7 +347,7 @@ class inetOrgPerson extends baseModule {
 				),
 				'uid' => array(
 					"Headline" => _("User name"),
-					"Text" => _("User name of the user who should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
+					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
 				),
 				'workstations' => array (
 					"Headline" => _("Unix workstations"),

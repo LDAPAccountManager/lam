@@ -364,7 +364,7 @@ class posixGroup extends baseModule {
 		$return['help'] = array(
 			'cn' =>	array(
 				"Headline" => _("Group name"),
-				"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because groupadd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If group name is already used group name will be expanded with a number. The next free number will be used.")
+				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . LAM does not allow a number as first character because groupadd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If group name is already used group name will be expanded with a number. The next free number will be used.")
 			),
 			'gidNumber'	=> array(
 				"Headline" => _("GID number"),
@@ -450,7 +450,7 @@ class posixGroup extends baseModule {
 	*/
 	function load_Messages() {
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
+		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
