@@ -1383,46 +1383,13 @@ class accountContainer {
 		if (strtolower($this->dn) != strtolower($this->dn_orig)) {
 			// move existing DN
 			if ($this->dn_orig!='') {
-				// merge attributes together
-				$attr = array();
-				if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
-				if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
-				// add unchanged attributes if not already set
-				if (is_array($attributes[$this->dn]['notchanged'])) {
-					$notChangedKeys = array_keys($attributes[$this->dn]['notchanged']);
-					for ($i = 0; $i < sizeof($notChangedKeys); $i++) {
-						if (!isset($attr[$notChangedKeys[$i]])) {
-							$attr[$notChangedKeys[$i]] = $attributes[$this->dn]['notchanged'][$notChangedKeys[$i]];
-						}
-					}
-				}
-				// add attributes which are not controlled by modules from original account
-				$attrNames = array_keys($this->attributes_orig);
-				for ($i = 0; $i < sizeof($attrNames); $i++) {
-					if (!isset($attr[$attrNames[$i]])) $attr[$attrNames[$i]] = $this->attributes_orig[$attrNames[$i]];
-				}
-				// add missing object classes
-				for ($i = 0; $i < sizeof($this->attributes_orig['objectClass']); $i++) {
-					if (!in_array($this->attributes_orig['objectClass'][$i], $attr['objectClass'])) {
-						$attr['objectClass'][] = $this->attributes_orig['objectClass'][$i];
-					}
-				}
-				$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
+				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->dn), $this->getParentDN($this->dn), false);
 				if ($success) {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $this->dn);
-					$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
-					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete DN: ' . $this->dn_orig . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
-						$stopprocessing = true;
-					}
-					else {
-						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Deleted DN: ' . $this->dn_orig);
-					}
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->dn);
 				}
-				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $this->dn . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
+				else {
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to rename DN: ' . $this->dn_orig . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
 					$stopprocessing = true;
 				}
 			}
@@ -1441,8 +1408,8 @@ class accountContainer {
 				else {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $this->dn);
 				}
+				unset($attributes[$this->dn]);
 			}
-			unset($attributes[$this->dn]);
 		}
 		$DNs = array_keys($attributes);
 		for ($i=0; $i<count($DNs); $i++) {
@@ -1570,6 +1537,30 @@ class accountContainer {
 		}
 		array_unshift($order, 'main');
 		$this->order = $order;
+	}
+	
+	/**
+	 * Returns the RDN part of a given DN.
+	 *
+	 * @param String $dn DN
+	 * @return String RDN
+	 */
+	function getRDN($dn) {
+		if (($dn == "") || ($dn == null)) return "";
+		$rdn = substr($dn, 0, strpos($dn, ","));
+		return $rdn;
+	}
+	
+	/**
+	 * Returns the parent DN of a given DN.
+	 *
+	 * @param String $dn DN
+	 * @return String DN
+	 */
+	function getParentDN($dn) {
+		if (($dn == "") || ($dn == null)) return "";
+		$parent = substr($dn, strpos($dn, ",") + 1);
+		return $parent;		
 	}
 
 	/**
