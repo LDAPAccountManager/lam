@@ -4,6 +4,7 @@
   - fixed bugs:
    -> OU editor: help images (1702132)
    -> Config editor: extra space (1702269)
+   -> fixed some inconsistent help entries (1694863)
 
 
 28.03.2007 1.3.0
