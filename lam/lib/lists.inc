@@ -517,7 +517,7 @@ class lamList {
 	function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
 			echo ("<b>" . _("Suffix") . ": </b>");
-			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\">\n");
+			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged()\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				if ($this->suffix == $this->possibleSuffixes[$i]) {
 					echo ("<option selected>" . $this->possibleSuffixes[$i] . "</option>\n");
@@ -586,6 +586,7 @@ class lamList {
 	function listPrintJavaScript() {
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
+
 		// mouseOver function
 		echo "function list_over(list, box, scope) {\n";
 			echo "cbox = document.getElementsByName(box)[0];\n";
@@ -610,6 +611,13 @@ class lamList {
 				echo "list.setAttribute('class', scope + 'list-checked', 0);\n";
 			echo "}\n";
 		echo "}\n";
+		
+		// OU selection changed
+		echo "function listOUchanged() {\n";
+			echo "selectOU = document.getElementsByName('suffix')[0];\n";
+			echo "location.href='list.php?type=" . $this->type . "&suffix=' + selectOU.options[selectOU.selectedIndex].value;\n";
+		echo "}\n";
+		
 		echo "//-->\n";
 		echo "</script>\n";
 	}
@@ -672,6 +680,7 @@ class lamList {
 		else $this->sortColumn = strtolower($this->attrArray[0]);
 		// check search suffix
 		if (isset($_POST['suffix'])) $this->suffix = $_POST['suffix'];  // new suffix selected via combobox
+		elseif (isset($_GET['suffix'])) $this->suffix = $_GET['suffix'];  // new suffix selected via combobox
 		elseif (!$this->suffix) $this->suffix = $_SESSION["config"]->get_Suffix($this->type);  // default suffix
 		// check if LDAP data should be refreshed
 		$this->refresh = true;
