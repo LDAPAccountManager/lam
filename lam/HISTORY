@@ -1,6 +1,7 @@
 ??? 2.0.0
   - added Czech translation
   - usability improvements
+  - LDAP accounts including child entries can now be moved
   - fixed bugs:
    -> OU editor: help images (1702132)
    -> Config editor: extra space (1702269)
