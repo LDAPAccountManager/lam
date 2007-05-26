@@ -459,13 +459,16 @@ class lamList {
 			elseif (isset($_POST['del'])){
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
-				// skip trans_primary box
+				// skip option boxes
+				$change = false;
 				for ($i = 0; $i < sizeof($accounts); $i++) {
-					if ($accounts[$i] === 'trans_primary') {
+					if (!is_numeric($accounts[$i])) {
 						unset($accounts[$i]);
-						$accounts = array_values($accounts);
-						break;
+						$change = true;
 					}
+				}
+				if ($change) {
+					$accounts = array_values($accounts);
 				}
 				// build DN list
 				$_SESSION['delete_dn'] = array();
