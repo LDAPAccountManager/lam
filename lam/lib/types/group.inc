@@ -26,6 +26,7 @@ $Id$
 *
 * @package types
 * @author Roland Gruber
+* @author Ludek Finstrle
 */
 
 /**
@@ -98,6 +99,16 @@ class group extends baseType {
  */
 class lamGroupList extends lamList {
 
+	/** Controls if include primary group members into group memebers */
+	var $include_primary = "";
+	/** Primary group members hash */
+	var $primary_hash = array();
+	/** Controls if primary group members needs refresh */
+	var $refresh_primary = false;
+	/** Controls if primary group members are using */
+	// This is here for future use with primary group members listing
+	var $use_primary = false;
+
 	/**
 	 * Constructor
 	 *
@@ -116,6 +127,49 @@ class lamGroupList extends lamList {
 	}
 	
 	/**
+	* Manages all POST actions (e.g. button pressed) for the account lists.
+	*/
+	function listDoPost() {
+		parent::listDoPost();
+		// check if list primary group members
+		if (isset($_POST['apply_group_addopts'])) {
+			$use_primary = $this->use_primary;
+ 			$this->include_primary = $_POST['addopts_include_primary'];
+			$this->groupSetUsePrimary();
+			if (!$use_primary && $this->use_primary)
+				$this->refresh_primary = true;
+		}
+	}
+
+	/**
+	 * Sets some internal parameters.
+	 */
+	function listGetParams() {
+		parent::listGetParams();
+		// generate list primary group memebers
+		// after parent::listGetParams is $this->refresh set to correct value
+		if ($this->use_primary && !$this->refresh && ($this->refresh_primary || (sizeof($this->primary_hash) == 0)))
+			$this->groupRefreshPrimary();
+	}
+
+	/**
+	 * Prints additional option field for primary member display.
+	 */
+	function listPrintAdditionalOptions() {
+		parent::listPrintAdditionalOptions();
+		// show primary group members option
+		if (in_array("memberuid", $this->attrArray)) {
+			echo "<b>" . _("Show primary group members as normal group members") . ": </b>";
+			echo "<input class=\"" . $this->type . "\" type=\"checkbox\" name=\"addopts_include_primary\"";
+			if ($this->include_primary == "on") 
+				echo " checked";
+			echo ">";
+			echo ("&nbsp;&nbsp;<input class=\"" . $this->type . "\" type=\"submit\" name=\"apply_group_addopts\" value=\"" . _("Apply") . "\">");
+			echo "</p>\n";
+		}
+	}
+  	
+	/**
 	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
 	 *
 	 * @param array $entry LDAP attributes
@@ -123,15 +177,59 @@ class lamGroupList extends lamList {
 	 */
 	function listPrintTableCellContent(&$entry, &$attribute) {
 		if ($attribute == "memberuid") {
-			if (!is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
-			if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
-			// sort array
-			sort($entry[$attribute]);
+			// $gid is used for linking primary group memebers
+			$gid = -1;
+			$use_primary = false;
+			if ($this->include_primary == "on") {
+				// Get the gid number
+				if (isset($entry['gidnumber']) && is_array($entry['gidnumber'])) {
+					$gid = $entry['gidnumber'][0];
+				}
+				$use_primary = (($gid >= 0) && (sizeof($this->primary_hash) > 0) &&
+					isset($this->primary_hash[$gid]) && is_array($this->primary_hash[$gid]) &&
+					(sizeof($this->primary_hash[$gid]) > 0));
+			}
+			if ($use_primary) {
+				if (isset($entry[$attribute]) && isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
+			} else {
+				if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
+				if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
+				// sort array
+				sort($entry[$attribute]);
+			}
 			// make a link for each member of the group
 			$linklist = array();
-			for ($d = 0; $d < sizeof($entry[$attribute]); $d++) {
-				$user = $entry[$attribute][$d]; // user name
-				$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+			if ($use_primary) {
+				$primary_hash = $this->primary_hash[$gid];
+				// merge primary members into secondary ones
+				$primaryvals = array_flip(array_values($primary_hash));
+				// test if group has some secondary members
+				if (isset($entry[$attribute])) {
+					$attr = array_merge($primary_hash,$entry[$attribute]);
+				}
+				else {
+					$attr = $primary_hash;
+				}
+				// sort array
+				sort($attr);
+
+				// make a link for each member of the group
+				for ($d = 0; $d < sizeof($attr); $d++) {
+					$user = $attr[$d]; // user name
+					if (isset($primaryvals[$user])) {
+						$linklist[$d] = "<b><a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a></b>";
+					}
+					else {
+						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+					}
+				}
+			}
+			else {
+				// make a link for each member of the group
+				for ($d = 0; $d < sizeof($entry[$attribute]); $d++) {
+					$user = $entry[$attribute][$d]; // user name
+					$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+				}
 			}
 			echo implode("; ", $linklist);
 		}
@@ -141,6 +239,58 @@ class lamGroupList extends lamList {
 		}
 	}
 
+	/**
+	 * Rereads the entries from LDAP.
+	 */
+	function listRefreshData() {
+		parent::listRefreshData();
+		if ($this->use_primary) {
+			$this->groupRefreshPrimary();
+		}
+	}
+
+	/**
+	 * Refreshes the primary group members list.
+	 */
+	function groupRefreshPrimary() {
+		$this->refresh_primary = false;
+		// return unless some entries
+		if (sizeof($this->entries) <= 0) return;
+
+		$scope = "user";
+		// get search suffix
+		$module_suffix = $_SESSION["config"]->get_Suffix($scope);
+		// configure search filter
+		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
+		$attrs = array( "uid" );
+		for ($i = 0; $i < sizeof($this->entries); $i++) {
+			$this->primary_hash[$i]['memberuid_primary'] = array();
+			$gid = $this->entries[$i]['gidnumber'][0];
+			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
+			$sr = @ldap_search($_SESSION["ldap"]->server(), $module_suffix, $filter, $attrs);
+			if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
+				StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
+				$this->refresh_primary = true;
+			}
+			if ($sr) {
+				$members = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+				ldap_free_result($sr);
+				// delete first array entry which is "count"
+				unset($members['count']);
+				for ($j = 0; $j < sizeof($members); $j++) {
+					$this->primary_hash[$gid][$j] = $members[$j]['uid'][0];
+				}
+			}
+		}
+	}
+
+	/**
+	 * Checks if primary group members should be included.
+	 */
+	function groupSetUsePrimary() {
+		$this->use_primary = ($this->include_primary == "on");
+	}
+ 
 }
 
 
