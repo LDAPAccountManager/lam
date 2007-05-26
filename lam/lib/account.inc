@@ -97,67 +97,6 @@ function in_array_ignore_case( $needle, $haystack )
 }
 
 /**
-* This function will return a password with max. 8 characters.
-*
-* @return string password
-*/
-function genpasswd() {
-	// Allowed Characters to generate passwords
-	// I'Ve removed characters like l and 1 because they are too similar
-	$LCase = 'abcdefghjkmnpqrstuvwxyz';
-	$UCase = 'ABCDEFGHJKMNPQRSTUVWXYZ';
-	$Integer = '23456789';
-	// DEFINE CONSTANTS FOR ALGORTTHM
-	define("LEN", '1');
-	$a = RndInt('letter');
-	$b = RndInt('letter');
-	$c = RndInt('letter');
-	$d = RndInt('letter');
-	$e = RndInt('number');
-	$f = RndInt('number');
-	$g = RndInt('letter');
-	$h = RndInt('letter');
-	// EXTRACT 8 CHARACTERS RANDOMLY FROM TH // E DEFINITION STRINGS
-	$L1 = substr($LCase, $a, LEN);
-	$L2 = substr($LCase, $b, LEN);
-	$L3 = substr($LCase, $h, LEN);
-	$U1 = substr($UCase, $c, LEN);
-	$U2 = substr($UCase, $d, LEN);
-	$U3 = substr($UCase, $g, LEN);
-	$I1 = substr($Integer, $e, LEN);
-	$I2 = substr($Integer, $f, LEN);
-	// COMBINE THE CHARACTERS AND DISPLAY TH // E NEW PASSWORD
-	$PW = $L1 . $U2 . $I1 . $L2 . $I2 . $U1 . $U3 . $L3;
-	return $PW;
-}
-
-
-/**
-* THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO
-* RANDOMLY SELECT CHARACTERS.
-*
-* @param string $Format "letter" or "number"
-* @return integer random number
-*/
-function RndInt($Format){
-	switch ($Format){
-		case 'letter':
-			$Rnd = rand(0,23);
-			if ($Rnd > 23){
-				$Rnd = $Rnd - 1;
-			}
-			break;
-		case 'number':
-			$Rnd = rand(2,9);
-			if ($Rnd > 8){
-				$Rnd = $Rnd - 1;
-			}
-			break;
-	}
-	return $Rnd;
-}
-
-/**
 * This function will return the days from 1.1.1970 until now.
 *
 * @return number of days
@@ -592,29 +531,30 @@ function get_preg($argument, $regexp) {
 }
 
 /**
- * This function checks if the given IP address ist valid.
+ * This function checks if the given IP ist valid.
  *
- * @param string IP to check
+ * @param IP
+ * @param check_subnet true for subnets, else false
+ *
  * @return boolean true or false
  **/
-function check_ip($ip) {
-	$part = split("[.]", $ip);
-	// Wenn... Keine 4 Segmente gefunden wurde
+function check_ip($ip, $subnet=false) {
+    $part = split("[.]", $ip);
+	// IP must have 4 segments
 	if (count($part) != 4) {
 		return false;
 	}
-	else {
-		// check each segment
-		for ($i = 0; $i < count($part); $i++) {
-			// only numbers are allowed
-			if (!is_numeric($part[$i])) {
+	// non-subnets must not end with 0
+	if (!$subnet && ($part[3] < 1)) return false;
+	// subnets must end with 0
+	if ($subnet && ($part[3] != 0)) return false;
+	for ($i = 0; $i < 3; $i++) {
+		if (!is_numeric($part[$i])) {
+			return false;
+        }
+		else {
+			if (($part[$i] > 255) || ($part[$i] < 0)) {
 				return false;
-			}
-			else {
-				// segment must be smaller than 256
-				if($part[$i] > 255) {
-					return false;
-				}
 			}
 		}
 	}
