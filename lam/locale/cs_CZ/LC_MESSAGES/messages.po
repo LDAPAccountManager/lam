@@ -1319,7 +1319,7 @@ msgstr ""
 
 #: ../templates/login.php:373
 msgid "Empty password submitted. Please try again."
-msgstr "Zdali jste prázdné heslo. Prosím zadejte znovu jiné."
+msgstr "Zadali jste prázdné heslo. Prosím zadejte znovu jiné."
 
 #: ../templates/tree/download_binary_attr.php:71
 msgid "Encountered an error while performing search."
