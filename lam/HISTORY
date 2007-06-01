@@ -5,8 +5,9 @@
   - group list can show primary members (RFE 1517679 and patch 1722460)
   - fixed bugs:
    -> OU editor: help images (1702132)
-   -> Config editor: extra space (1702269)
+   -> config editor: extra space (1702269)
    -> fixed some inconsistent help entries (1694863)
+   -> user list: refreshing GID translation did not work (1719168)
 
 
 28.03.2007 1.3.0
