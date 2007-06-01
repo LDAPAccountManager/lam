@@ -137,21 +137,45 @@ class lamUserList extends lamList {
 		if (isset($_POST['apply_trans_primary'])) {
 			$this->trans_primary = $_POST['trans_primary'];
 		}
+	}
+	
+	/**
+	 * Sets some internal parameters.
+	 */
+	function listGetParams() {
+		parent::listGetParams();
 		// generate hash table for group translation
-		if ($this->trans_primary == "on" && ($this->refresh || (sizeof($this->trans_primary_hash) == 0))) {
-			$this->trans_primary_hash = array();
-			$grp_suffix = $_SESSION['config']->get_Suffix('group');
-			$filter = "objectClass=posixGroup";
-			$attrs = array("cn", "gidNumber");
-			$sr = @ldap_search($_SESSION["ldap"]->server(), $grp_suffix, $filter, $attrs);
-			if ($sr) {
-				$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
-				unset($info['count']); // delete count entry
-				for ($i = 0; $i < sizeof($info); $i++) {
-					$this->trans_primary_hash[$info[$i]['gidnumber'][0]] = $info[$i]['cn'][0];
-				}
-			}
+		if ($this->trans_primary == "on" && !$this->refresh && (sizeof($this->trans_primary_hash) == 0)) {
+			$this->refreshPrimaryGroupTranslation();
+		}		
+	}
+	
+	/**
+	 * Rereads the entries from LDAP.
+	 */
+	function listRefreshData() {
+		parent::listRefreshData();
+		if ($this->trans_primary == "on") {
+			$this->refreshPrimaryGroupTranslation();
 		}
+	}
+	
+	/**
+	 * Refreshes the GID to group name cache.
+	 */
+	function refreshPrimaryGroupTranslation() {
+		$this->trans_primary_hash = array();
+		$grp_suffix = $_SESSION['config']->get_Suffix('group');
+		$filter = "objectClass=posixGroup";
+		$attrs = array("cn", "gidNumber");
+		$sr = @ldap_search($_SESSION["ldap"]->server(), $grp_suffix, $filter, $attrs);
+		if ($sr) {
+			$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
+			unset($info['count']); // delete count entry
+			for ($i = 0; $i < sizeof($info); $i++) {
+				$this->trans_primary_hash[$info[$i]['gidnumber'][0]] = $info[$i]['cn'][0];
+			}
+		}		
 	}
 
 	/**
