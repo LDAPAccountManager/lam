@@ -7,9 +7,9 @@ Build-Depends: debhelper (>= 4.1.16), po-debconf
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php4 | php4-cgi | libapache2-mod-php4 | php5 | php5-cgi | libapache2-mod-php5, php4-ldap | php5-ldap, apache | apache-ssl | apache-perl | apache2 | httpd, php-fpdf, debconf (>= 0.2.26) | debconf-2.0
-Recommends: php4-mhash | php5-mhash
-Suggests: ldap-server, sudo, perl, php4-mcrypt | php5-mcrypt
+Depends: php5 | php5-cgi | libapache2-mod-php5, php5-ldap, apache | apache-ssl | apache-perl | apache2 | httpd, php-fpdf, debconf (>= 0.2.26) | debconf-2.0
+Recommends: php5-mhash
+Suggests: ldap-server, sudo, perl, php5-mcrypt
 Description: webfrontend for managing accounts in an LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver. LAM
  supports LDAP connections via SSL and TLS. It manages user, group
