@@ -176,7 +176,7 @@ class inetOrgPerson extends baseModule {
 		'name' => 'inetOrgPerson_manager',
 		'description' => _('Manager'),
 		'help' => 'manager',
-		'example' => 'uid=smiller,ou=People,dc=company,dc=com'
+		'example' => _('uid=smiller,ou=People,dc=company,dc=com')
 		),
 		array(
 		'name' => 'inetOrgPerson_street',
@@ -188,7 +188,7 @@ class inetOrgPerson extends baseModule {
 		'name' => 'inetOrgPerson_postalCode',
 		'description' => _('Postal code'),
 		'help' => 'postalCode',
-		'example' => '12345'
+		'example' => _('GB-12345')
 		),
 		array(
 		'name' => 'inetOrgPerson_address',
@@ -200,25 +200,25 @@ class inetOrgPerson extends baseModule {
 		'name' => 'inetOrgPerson_postOfficeBox',
 		'description' => _('Post office box'),
 		'help' => 'postOfficeBox',
-		'example' => '12345'
+		'example' => _('12345')
 		),
 		array(
 		'name' => 'inetOrgPerson_telephone',
 		'description' => _('Telephone number'),
 		'help' => 'telephoneNumber',
-		'example' => '123-123-1234'
+		'example' => _('123-123-1234')
 		),
 		array(
 		'name' => 'inetOrgPerson_mobile',
 		'description' => _('Mobile number'),
 		'help' => 'mobileTelephoneNumber',
-		'example' => '123-123-1234'
+		'example' => _('123-123-1235')
 		),
 		array(
 		'name' => 'inetOrgPerson_fax',
 		'description' => _('Fax number'),
 		'help' => 'facsimileTelephoneNumber',
-		'example' => '123-123-1234'
+		'example' => _('123-123-1236')
 		),
 		array(
 		'name' => 'inetOrgPerson_email',

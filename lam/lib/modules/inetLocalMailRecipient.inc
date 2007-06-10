@@ -91,19 +91,19 @@ class inetLocalMailRecipient extends baseModule {
 				'name' => 'inetLocalMailRecipient_routingAdr',
 				'description' => _('Routing address'),
 				'help' => 'routingAdr',
-				'example' => 'smiller@otherdomain.org'
+				'example' => _('smiller@otherdomain.org')
 			),
 			array(
 				'name' => 'inetLocalMailRecipient_localAdr',
 				'description' => _('Local address list'),
 				'help' => 'localAdrList',
-				'example' => 'smiller@yourdomain.org'
+				'example' => _('smiller@yourdomain.org')
 			),
 			array(
 				'name' => 'inetLocalMailRecipient_server',
 				'description' => _('Mail server'),
 				'help' => 'host',
-				'example' => 'mail.yourdomain.org'
+				'example' => _('mail.yourdomain.org')
 			)
 		);
 		// available PDF fields

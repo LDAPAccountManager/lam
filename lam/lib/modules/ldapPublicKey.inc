@@ -69,7 +69,7 @@ class ldapPublicKey extends baseModule {
 				'name' => 'ldapPublicKey_sshPublicKey',
 				'description' => _('SSH public key'),
 				'help' => 'keyList',
-				'example' => 'ssh-dss 234234 user@host'
+				'example' => _('ssh-dss 234234 user@host')
 			)
 		);
 		// available PDF fields

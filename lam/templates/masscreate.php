@@ -156,7 +156,7 @@ function showMainPage($scope) {
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
-					echo "<li><b>" . _("Example value") . ":</b> " . "ou=accounts,dc=yourdomain,dc=org</li>\n";
+					echo "<li><b>" . _("Example value") . ":</b> " . _("ou=accounts,dc=yourdomain,dc=org") . "</li>\n";
 					echo "<li><b>" . _("Default value") . ":</b> " . $_SESSION['config']->get_Suffix($scope) . "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
