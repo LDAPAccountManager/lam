@@ -50,6 +50,8 @@ class inetOrgPerson extends baseModule {
 		$this->messages['lastname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Last name contains invalid characters or is empty!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_telephone', _('Please enter a valid telephone number!'));
+		$this->messages['homePhone'][0] = array('ERROR', _('Home telephone number'), _('Please enter a valid telephone number!'));
+		$this->messages['homePhone'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_homePhone', _('Please enter a valid telephone number!'));
 		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 		$this->messages['mobileTelephone'][1] = array('ERROR', _('Account %s:') . " inetOrgPerson_mobile", _('Please enter a valid mobile number!'));
 		$this->messages['facsimileNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
@@ -76,6 +78,8 @@ class inetOrgPerson extends baseModule {
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
+		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
+		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
 	}
 
 	/**
@@ -106,24 +110,25 @@ class inetOrgPerson extends baseModule {
 		// managed attributes
 		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'host', 'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
-			'sn', 'userPassword', 'description');
+			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory');
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array('firstName' => _('First name'), 'lastName' => _('Last name'),
 			'mail' => _('eMail address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
 			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'),
-			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'));
+			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
+			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'));
 		// profile elements
 		$return['profile_options'] = array(
 			array(
-				0 => array('kind' => 'text', 'text' => _('Job title') . ":"),
-				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'title')),
+				array('kind' => 'text', 'text' => _('Job title') . ":"),
+				array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'title')),
 			array(
-				0 => array('kind' => 'text', 'text' => _('Employee type') . ":"),
-				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'employeeType'))
+				array('kind' => 'text', 'text' => _('Employee type') . ":"),
+				array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'employeeType'))
 		);
 		// profile checks
 		$return['profile_checks']['inetOrgPerson_title'] = array(
@@ -179,6 +184,12 @@ class inetOrgPerson extends baseModule {
 		'example' => _('uid=smiller,ou=People,dc=company,dc=com')
 		),
 		array(
+		'name' => 'inetOrgPerson_businessCategory',
+		'description' => _('Business category'),
+		'help' => 'businessCategory',
+		'example' => _('Administration')
+		),
+		array(
 		'name' => 'inetOrgPerson_street',
 		'description' => _('Street'),
 		'help' => 'street',
@@ -209,6 +220,12 @@ class inetOrgPerson extends baseModule {
 		'example' => _('123-123-1234')
 		),
 		array(
+		'name' => 'inetOrgPerson_homePhone',
+		'description' => _('Home telephone number'),
+		'help' => 'homePhone',
+		'example' => _('123-124-1234')
+		),
+		array(
 		'name' => 'inetOrgPerson_mobile',
 		'description' => _('Mobile number'),
 		'help' => 'mobileTelephoneNumber',
@@ -225,6 +242,12 @@ class inetOrgPerson extends baseModule {
 		'description' => _('eMail address'),
 		'help' => 'mail',
 		'example' => _('user@company.com')
+		),
+		array(
+		'name' => 'inetOrgPerson_roomNumber',
+		'description' => _('Room number'),
+		'help' => 'roomNumber',
+		'example' => 'A 2.24'
 		)
 		);
 		// cn and uid for upload (only if posixAccount is not loaded)
@@ -273,7 +296,10 @@ class inetOrgPerson extends baseModule {
 			'telephoneNumber',
 			'mobileTelephoneNumber',
 			'facimilieTelephoneNumber',
-			'mail'
+			'mail',
+			'homePhone',
+			'roomNumber',
+			'businessCategory'
 		);
 		if ($_SESSION['loggedIn']) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
@@ -360,6 +386,18 @@ class inetOrgPerson extends baseModule {
 				'photoUpload' => array(
 					"Headline" => _("Add photo"),
 					"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
+				),
+				'homePhone' => array(
+					"Headline" => _("Home telephone number"),
+					"Text" => _("Private telephone number")
+				),
+				'roomNumber' => array(
+					"Headline" => _("Room number"),
+					"Text" => _("The room number of the employee's office.")
+				),
+				'businessCategory' => array(
+					"Headline" => _("Business category"),
+					"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
 				)
 			)
 		);
@@ -462,6 +500,9 @@ class inetOrgPerson extends baseModule {
 		$this->attributes['postalCode'][0] = $_POST['postalCode'];
 		$this->attributes['postalAddress'][0] = $_POST['postalAddress'];
 		$this->attributes['employeeType'][0] = $_POST['employeeType'];
+		$this->attributes['homePhone'][0] = $_POST['homePhone'];
+		$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
+		$this->attributes['businessCategory'][0] = $_POST['businessCategory'];
 		if ($_POST['manager'] != '-') {
 			$this->attributes['manager'][0] = $_POST['manager'];
 		}
@@ -513,6 +554,7 @@ class inetOrgPerson extends baseModule {
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
 		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
 		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
+		if ( !get_preg($this->attributes['homePhone'][0], 'telephone')) $errors[] = $this->messages['homePhone'][0];
 		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
 		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
 		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors[] = $this->messages['email'][0];
@@ -521,6 +563,7 @@ class inetOrgPerson extends baseModule {
 		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
 		if ( !get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
 		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
+		if ( !get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
 		if ($_POST['userPassword']) {
 			if ($_POST['userPassword'] != $_POST['userPassword2']) {
 				$errors[] = $this->messages['userPassword'][0];
@@ -549,36 +592,40 @@ class inetOrgPerson extends baseModule {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User name') . '*' ),
-				1 => array ( 'kind' => 'input', 'name' => 'userName', 'type' => 'text', 'size' => '30',
+				array('kind' => 'input', 'name' => 'userName', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $uid),
-				2 => array ('kind' => 'help', 'value' => 'uid'));
+				array('kind' => 'help', 'value' => 'uid'));
 		}
 		$firstName = '';
 		if (isset($this->attributes['givenName'][0])) $firstName = $this->attributes['givenName'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name') ),
-			1 => array ( 'kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('First name')),
+			array('kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $firstName),
-			2 => array ('kind' => 'help', 'value' => 'givenName'));
+			array('kind' => 'help', 'value' => 'givenName'));
 		$lastName = '';
 		if (isset($this->attributes['sn'][0])) $lastName = $this->attributes['sn'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Last name').'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'sn', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Last name').'*'),
+			array('kind' => 'input', 'name' => 'sn', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $lastName),
-			2 => array ('kind' => 'help', 'value' => 'sn'));
+			array ('kind' => 'help', 'value' => 'sn'));
 		if (!in_array('posixAccount', $modules)) {
 			$cn = '';
 			if (isset($this->attributes['cn'][0])) $cn = $this->attributes['cn'][0];
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Common name') . '*' ),
-				1 => array ( 'kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30',
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Common name') . '*'),
+				array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $cn),
-				2 => array ('kind' => 'help', 'value' => 'cn'));
+				array('kind' => 'help', 'value' => 'cn'));
 		}
 		$description = '';
 		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
-			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
+		$return[] = array (
+			array('kind' => 'text', 'text' => _('Description')),
+			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $description),
-			2 => array ('kind' => 'help', 'value' => 'description'));
+			array('kind' => 'help', 'value' => 'description'));
 
 		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
 
@@ -587,96 +634,128 @@ class inetOrgPerson extends baseModule {
 			// new account, show input fields
 			if ($_SESSION[$this->base]->isNewAccount) {
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Password') ),
-					1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
-					2 => array('kind' => 'help', 'value' => 'userPassword'));
+					array('kind' => 'text', 'text' => _('Password') ),
+					array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
+					array('kind' => 'help', 'value' => 'userPassword'));
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Repeat password')),
-					1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
-					2 => array('kind' => 'text', 'text' => ''));
+					array('kind' => 'text', 'text' => _('Repeat password')),
+					array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
+					array('kind' => 'text', 'text' => ''));
 			}
 			// old account, show button for password page
 			else {
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Password') ),
-					1 => array('kind' => 'input', 'name' => 'form_subpage_inetOrgPerson_password_open', 'type' => 'submit', 'value' => _('Change password')));
+					array('kind' => 'text', 'text' => _('Password') ),
+					array('kind' => 'input', 'name' => 'form_subpage_inetOrgPerson_password_open', 'type' => 'submit', 'value' => _('Change password')));
 			}
 
-			$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 		}
 
 		$street = '';
 		if (isset($this->attributes['street'][0])) $street = $this->attributes['street'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Street') ),
-			1 => array ( 'kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Street')),
+			array('kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $street),
-			2 => array ('kind' => 'help', 'value' => 'street'));
+			array('kind' => 'help', 'value' => 'street'));
 		$postOffice = '';
 		if (isset($this->attributes['postOfficeBox'][0])) $postOffice = $this->attributes['postOfficeBox'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Post office box') ),
-			1 => array ( 'kind' => 'input', 'name' => 'postOfficeBox', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Post office box')),
+			array('kind' => 'input', 'name' => 'postOfficeBox', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $postOffice),
-			2 => array ('kind' => 'help', 'value' => 'postOfficeBox'));
+			array('kind' => 'help', 'value' => 'postOfficeBox'));
 		$postalCode = '';
 		if (isset($this->attributes['postalCode'][0])) $postalCode = $this->attributes['postalCode'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal code') ),
-			1 => array ( 'kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Postal code')),
+			array('kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $postalCode),
-			2 => array ('kind' => 'help', 'value' => 'postalCode'));
+			array('kind' => 'help', 'value' => 'postalCode'));
 		$postalAddress = '';
 		if (isset($this->attributes['postalAddress'][0])) $postalAddress = $this->attributes['postalAddress'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal address') ),
-			1 => array ( 'kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Postal address')),
+			array('kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $postalAddress),
-			2 => array ('kind' => 'help', 'value' => 'postalAddress'));
+			array('kind' => 'help', 'value' => 'postalAddress'));
+		$roomNumber = '';
+		if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Room number')),
+			array('kind' => 'input', 'name' => 'roomNumber', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $roomNumber),
+			array('kind' => 'help', 'value' => 'roomNumber'));
 		$telephone = '';
 		if (isset($this->attributes['telephoneNumber'][0])) $telephone = $this->attributes['telephoneNumber'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Telephone number') ),
-			1 => array ( 'kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Telephone number')),
+			array('kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $telephone),
-			2 => array ('kind' => 'help', 'value' => 'telephoneNumber'));
+			array('kind' => 'help', 'value' => 'telephoneNumber'));
+		$homePhone = '';
+		if (isset($this->attributes['homePhone'][0])) $homePhone = $this->attributes['homePhone'][0];
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Home telephone number')),
+			array('kind' => 'input', 'name' => 'homePhone', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $homePhone),
+			array('kind' => 'help', 'value' => 'homePhone'));
 		$mobile = '';
 		if (isset($this->attributes['mobile'][0])) $mobile = $this->attributes['mobile'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mobile number') ),
-			1 => array ( 'kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Mobile number')),
+			array('kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $mobile),
-			2 => array ('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
+			array('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
 		$fax = '';
 		if (isset($this->attributes['facsimileTelephoneNumber'][0])) $fax = $this->attributes['facsimileTelephoneNumber'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Fax number') ),
-			1 => array ( 'kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Fax number')),
+			array('kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $fax),
-			2 => array ('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
+			array('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
 		$email = '';
 		if (isset($this->attributes['mail'][0])) $email = $this->attributes['mail'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('eMail address') ),
-			1 => array ( 'kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('eMail address')),
+			array('kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $email),
-			2 => array ('kind' => 'help', 'value' => 'mail'));
+			array('kind' => 'help', 'value' => 'mail'));
 
-		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
 		$title = '';
 		if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Job title') ),
-			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Job title')),
+			array('kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
 				'value' => $title),
-			2 => array ('kind' => 'help', 'value' => 'title'));
+			array('kind' => 'help', 'value' => 'title'));
 		$employeeType = '';
 		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Employee type') ),
-			1 => array ( 'kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Employee type')),
+			array('kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $employeeType),
-			2 => array ('kind' => 'help', 'value' => 'employeeType'));
+			array('kind' => 'help', 'value' => 'employeeType'));
+		$businessCategory = '';
+		if (isset($this->attributes['businessCategory'][0])) $businessCategory = $this->attributes['businessCategory'][0];
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Business category')),
+			array('kind' => 'input', 'name' => 'businessCategory', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $businessCategory),
+			array('kind' => 'help', 'value' => 'businessCategory'));
 		if ($_SESSION['ldap']->supports_unix_hosts) {
 			$hostvalue = "";
 			if (is_array($this->attributes['host'])) {
 				$hostvalue .= implode(",", $this->attributes['host']);
 			}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Unix workstations') ),
-				1 => array ( 'kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '30',
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Unix workstations')),
+				array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $hostvalue ),
-				2 => array ('kind' => 'help', 'value' => 'workstations'));
+				array('kind' => 'help', 'value' => 'workstations'));
 		}
 		// get list of existing users for manager attribute
 		$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
@@ -692,10 +771,10 @@ class inetOrgPerson extends baseModule {
 			$optionsSelected[] = '-';
 		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Manager')),
-			1 => array('kind' => 'select', 'name' => 'manager', 'size' => '1',
+			array('kind' => 'text', 'text' => _('Manager')),
+			array('kind' => 'select', 'name' => 'manager', 'size' => '1',
 				'options' => $dnUsers, 'options_selected' => $optionsSelected),
-			2 => array('kind' => 'help', 'value' => 'manager'));
+			array('kind' => 'help', 'value' => 'manager'));
 		// photo
 		$photoFile = '../../graphics/userDefault.png';
 		$noPhoto = true;
@@ -708,7 +787,7 @@ class inetOrgPerson extends baseModule {
 			$noPhoto = false;
 		}
 		$photo = array(array(
-			0 => array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile, 'td' => array('align' => 'center'))));
+			array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile, 'td' => array('align' => 'center'))));
 		if ($noPhoto) {
 			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_inetOrgPerson_photo_open', 'value' => _('Add photo')));
 		}
@@ -716,8 +795,8 @@ class inetOrgPerson extends baseModule {
 			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'delPhoto', 'value' => _('Delete photo')));
 		}
 		$return = array(array(
-			0 => array('kind' => 'table', 'value' => $return),
-			1 => array('kind' => 'table', 'value' => $photo, 'td' => array('valign' => 'top', 'align' => 'right','width' => '100%'))
+			array('kind' => 'table', 'value' => $return),
+			array('kind' => 'table', 'value' => $photo, 'td' => array('valign' => 'top', 'align' => 'right','width' => '100%'))
 			));
 		return $return;
 		}
@@ -820,10 +899,13 @@ class inetOrgPerson extends baseModule {
 			'inetOrgPerson_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
 			'inetOrgPerson_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
 			'inetOrgPerson_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
+			'inetOrgPerson_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $this->attributes['homePhone'][0] . '</value></block>'),
 			'inetOrgPerson_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobile'][0] . '</value></block>'),
 			'inetOrgPerson_facimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
 			'inetOrgPerson_mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
 			'inetOrgPerson_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+			'inetOrgPerson_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $this->attributes['roomNumber'][0] . '</value></block>'),
+			'inetOrgPerson_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $this->attributes['businessCategory'][0] . '</value></block>'),
 			'inetOrgPerson_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'));
 	}
 
@@ -893,6 +975,17 @@ class inetOrgPerson extends baseModule {
 					$errors[] = $errMsg;
 				}
 			}
+			// business category
+			if ($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']], 'businessCategory')) {
+					$partialAccounts[$i]['businessCategory'] = $rawAccounts[$i][$ids['inetOrgPerson_businessCategory']];
+				}
+				else {
+					$errMsg = $this->messages['businessCategory'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
 			// manager
 			if ($rawAccounts[$i][$ids['inetOrgPerson_manager']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_manager']], 'dn')) {
@@ -918,6 +1011,10 @@ class inetOrgPerson extends baseModule {
 			// post office box
 			if ($rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']] != "") {
 				$partialAccounts[$i]['postOfficeBox'] = $rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']];
+			}
+			// room number
+			if ($rawAccounts[$i][$ids['inetOrgPerson_roomNumber']] != "") {
+				$partialAccounts[$i]['roomNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_roomNumber']];
 			}
 			// postal code
 			if ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") {
@@ -948,6 +1045,17 @@ class inetOrgPerson extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['telephoneNumber'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// home telephone
+			if ($rawAccounts[$i][$ids['inetOrgPerson_homePhone']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_homePhone']], 'telephone')) {
+					$partialAccounts[$i]['homePhone'] = $rawAccounts[$i][$ids['inetOrgPerson_homePhone']];
+				}
+				else {
+					$errMsg = $this->messages['homePhone'][1];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
@@ -1085,6 +1193,14 @@ class inetOrgPerson extends baseModule {
 				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_telephoneNumber', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $telephoneNumber));
 		}
+		if (in_array('homePhone', $fields)) {
+			$homePhone = '';
+			if (isset($attributes['homePhone'][0])) $homePhone = $attributes['homePhone'][0];
+			$return['homePhone'] = array(
+				0 => array('kind' => 'text', 'text' => _('Home telephone number')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_homePhone', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $homePhone));
+		}
 		if (in_array('mobile', $fields)) {
 			$mobile = '';
 			if (isset($attributes['mobile'][0])) $mobile = $attributes['mobile'][0];
@@ -1132,6 +1248,14 @@ class inetOrgPerson extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Post office box')),
 				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_postOfficeBox', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $postOfficeBox));
+		}
+		if (in_array('roomNumber', $fields)) {
+			$roomNumber = '';
+			if (isset($attributes['roomNumber'][0])) $roomNumber = $attributes['roomNumber'][0];
+			$return['roomNumber'] = array(
+				0 => array('kind' => 'text', 'text' => _('Room number')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_roomNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $roomNumber));
 		}
 		if (in_array('jpegPhoto', $fields)) {
 			if (isset($attributes['jpegPhoto'][0])) {
@@ -1219,6 +1343,15 @@ class inetOrgPerson extends baseModule {
 			}
 			elseif (isset($attributes['telephoneNumber'])) unset($attributesNew['telephoneNumber']);
 		}
+		// home telephone number
+		if (in_array('homePhone', $fields)) {
+			$attributeNames[] = 'homePhone';
+			if (isset($_POST['inetOrgPerson_homePhone']) && ($_POST['inetOrgPerson_homePhone'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_homePhone'], 'telephone')) $return['messages'][] = $this->messages['homePhone'][0];
+				else $attributesNew['homePhone'][0] = $_POST['inetOrgPerson_homePhone'];
+			}
+			elseif (isset($attributes['homePhone'])) unset($attributesNew['homePhone']);
+		}
 		// fax number
 		if (in_array('faxNumber', $fields)) {
 			$attributeNames[] = 'facsimileTelephoneNumber';
@@ -1271,6 +1404,14 @@ class inetOrgPerson extends baseModule {
 				$attributesNew['postOfficeBox'][0] = $_POST['inetOrgPerson_postOfficeBox'];
 			}
 			elseif (isset($attributes['postOfficeBox'])) unset($attributesNew['postOfficeBox']);
+		}
+		// room number
+		if (in_array('roomNumber', $fields)) {
+			$attributeNames[] = 'roomNumber';
+			if (isset($_POST['inetOrgPerson_roomNumber']) && ($_POST['inetOrgPerson_roomNumber'] != '')) {
+				$attributesNew['roomNumber'][0] = $_POST['inetOrgPerson_roomNumber'];
+			}
+			elseif (isset($attributes['roomNumber'])) unset($attributesNew['roomNumber']);
 		}
 		// photo
 		if (in_array('jpegPhoto', $fields)) {
