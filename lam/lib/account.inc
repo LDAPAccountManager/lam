@@ -441,6 +441,7 @@ function get_preg($argument, $regexp) {
 		case "street":
 		case "title":
 		case "employeeType":
+		case "businessCategory":
 					$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
 					break;
 		case "homeDirectory":		// Homapath, /path/......
