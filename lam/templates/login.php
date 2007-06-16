@@ -397,7 +397,8 @@ if(!empty($_POST['checklogin']))
 			// logging
 			logNewMessage(LOG_NOTICE, 'User ' . $_POST['username'] . ' successfully logged in.');
 			// Load main frame
-			include("./main.php");
+			metaRefresh("./main.php");
+			die();
 		}
 		else
 		{

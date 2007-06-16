@@ -30,6 +30,13 @@ $Id$
 
 /** LDAP attibute cache */
 include_once('../lib/cache.inc');
+/** config object */
+include_once('../lib/config.inc');
+
+// start session
+startSecureSession();
+
+setlanguage();
 
 // create cache object
 if (!isset($_SESSION['cache'])) {
