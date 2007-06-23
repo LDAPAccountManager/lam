@@ -49,7 +49,7 @@ $new_suffs = array();
 // get list of active types
 $types = $_SESSION['config']->get_ActiveTypes();
 for ($i = 0; $i < sizeof($types); $i++) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_Suffix($types[$i]), "(objectClass=*)", array());
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_Suffix($types[$i]), "(objectClass=*)", array('objectClass'));
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
 	if (!$res && !in_array($conf->get_Suffix($types[$i]), $new_suffs)) $new_suffs[] = $conf->get_Suffix($types[$i]);
 }
