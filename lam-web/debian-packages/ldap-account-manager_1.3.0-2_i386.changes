@@ -1,0 +1,34 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.7
+Date: Sun, 24 Jun 2007 11:58:00 +0200
+Source: ldap-account-manager
+Binary: ldap-account-manager
+Architecture: source all
+Version: 1.3.0-2
+Distribution: unstable
+Urgency: low
+Maintainer: Roland Gruber <post@rolandgruber.de>
+Changed-By: Roland Gruber <post@rolandgruber.de>
+Description: 
+ ldap-account-manager - webfrontend for managing accounts in an LDAP directory
+Closes: 416886 421409 422914
+Changes: 
+ ldap-account-manager (1.3.0-2) unstable; urgency=low
+ .
+   * depends on non-essential package debconf in postrm (Closes: #416886)
+   * [INTL:nl] Dutch po-debconf translation (Closes: #421409)
+   * [INTL:it] Italian debconf templates translation (Closes: #422914)
+Files: 
+ 9fc3c37a7eb327920cfd7f3b2dcbd710 631 web extra ldap-account-manager_1.3.0-2.dsc
+ 41b8d870baf263bd7ae38a5cc83b19f4 17310 web extra ldap-account-manager_1.3.0-2.diff.gz
+ 87f54bc3acee3eb59539f4b46ad8cbe4 1672358 web extra ldap-account-manager_1.3.0-2_all.deb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFGfkIKq/ywNCsrGZ4RAoBcAJ9DkJZfKyg/8DIRic4/FCGwa7j+JQCfYbfS
+gknPlpK1CWwTaMlb2UdJ8lQ=
+=nnDe
+-----END PGP SIGNATURE-----
