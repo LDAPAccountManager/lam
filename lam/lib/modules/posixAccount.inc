@@ -125,8 +125,6 @@ class posixAccount extends baseModule {
 		// managed attributes
 		$return['attributes'] = array('cn', 'uid', 'uidNumber', 'gidNumber', 'homeDirectory',
 			'userPassword', 'loginShell', 'gecos', 'description');
-		// PHP extensions
-		$return['extensions'] = array('mhash');
 		if ($this->get_scope() == "user") {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');

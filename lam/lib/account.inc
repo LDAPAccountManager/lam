@@ -191,58 +191,21 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 				$hash = "{SMD5}" . base64_encode(hex2bin(md5($password . $salt)) . $salt);
 			break;
 		case 'SHA':
-			// PHP 4.3+ can use sha1() function
-			if (function_exists('sha1')) {
-				$hash = "{SHA}" . base64_encode(hex2bin(sha1($password)));
-			}
-			// otherwise use MHash
-			elseif (function_exists('mHash')) {
-				$hash = "{SHA}" . base64_encode(mHash(MHASH_SHA1, $password));
-			}
-			// if SHA1 is not possible use crypt()
-			else {
-				$hash = "{CRYPT}" . crypt($password);
-			}
+			$hash = "{SHA}" . base64_encode(hex2bin(sha1($password)));
 			break;
 		case 'SSHA':
-			// PHP 4.3+ can use sha1() function
-			if (function_exists('sha1')) {
-				$salt0 = substr(pack("h*", md5($rand)), 0, 8);
-				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
-			}
-			// otherwise use MHash
-			elseif (function_exists('mHash')) {
-				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($rand)), 0, 8), 4);
-				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
-				$hash = "{SSHA}" . $hash;
-			}
-			// if SSHA is not possible use crypt()
-			else {
-				$hash = "{CRYPT}" . crypt($password);
-			}
+			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
+			$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
+			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
 			break;
 		case 'PLAIN':
 			$hash = $password;
 			break;
 		// use SSHA if the setting is invalid
 		default:
-			// PHP 4.3+ can use sha1() function
-			if (function_exists('sha1')) {
-				$salt0 = substr(pack("h*", md5($rand)), 0, 8);
-				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
-			}
-			// otherwise use MHash
-			elseif (function_exists('mHash')) {
-				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($rand)), 0, 8), 4);
-				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
-				$hash = "{SSHA}" . $hash;
-			}
-			// if SSHA is not possible use crypt()
-			else {
-				$hash = "{CRYPT}" . crypt($password);
-			}
+			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
+			$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
+			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
 		break;
 	}
 	// enable/disable password
