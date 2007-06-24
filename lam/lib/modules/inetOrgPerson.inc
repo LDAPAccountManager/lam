@@ -31,8 +31,7 @@ $Id$
 */
 
 /**
-* This class contains all account LDAP attributes
-* and funtioncs required to deal with inetOrgPerson.
+* This module manages LDAP attributes of the object class inetOrgPerson (e.g. name and address).
 *
 * @package modules
 */
@@ -582,10 +581,11 @@ class inetOrgPerson extends baseModule {
 		return $errors;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	function display_html_attributes() {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
@@ -646,7 +646,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Password') ),
-					array('kind' => 'input', 'name' => 'form_subpage_inetOrgPerson_password_open', 'type' => 'submit', 'value' => _('Change password')));
+					array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_password_open', 'type' => 'submit', 'value' => _('Change password')));
 			}
 
 			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
@@ -789,7 +789,7 @@ class inetOrgPerson extends baseModule {
 		$photo = array(array(
 			array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile, 'td' => array('align' => 'center'))));
 		if ($noPhoto) {
-			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_inetOrgPerson_photo_open', 'value' => _('Add photo')));
+			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_' . get_class($this) . '_photo_open', 'value' => _('Add photo')));
 		}
 		else {
 			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'delPhoto', 'value' => _('Delete photo')));
@@ -805,7 +805,7 @@ class inetOrgPerson extends baseModule {
 	* Sets a new password.
 	*/
 	function process_password() {
-		if ($_POST['form_subpage_inetOrgPerson_attributes_back']) return array();
+		if ($_POST['form_subpage_' . get_class($this) . '_attributes_back']) return array();
 		$messages = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
 			$messages[] = $this->messages['userPassword'][0];
@@ -837,8 +837,8 @@ class inetOrgPerson extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_inetOrgPerson_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_inetOrgPerson_attributes_back'),
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;
 	}
@@ -847,7 +847,7 @@ class inetOrgPerson extends baseModule {
 	* Sets a new photo.
 	*/
 	function process_photo() {
-		if ($_POST['form_subpage_inetOrgPerson_attributes_back']) return array();
+		if ($_POST['form_subpage_' . get_class($this) . '_attributes_back']) return array();
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
@@ -874,8 +874,8 @@ class inetOrgPerson extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Add photo'), 'name' => 'form_subpage_inetOrgPerson_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_inetOrgPerson_attributes_back'),
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Add photo'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;
 	}
