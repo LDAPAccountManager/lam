@@ -887,26 +887,26 @@ class inetOrgPerson extends baseModule {
 	*/
 	function get_pdfEntries() {
 		return array(
-			'inetOrgPerson_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
-			'inetOrgPerson_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
-			'inetOrgPerson_title' => array('<block><key>' . _('Job title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
-			'inetOrgPerson_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
-			'inetOrgPerson_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
-			'inetOrgPerson_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $this->attributes['employeeType'][0] . '</value></block>'),
-			'inetOrgPerson_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $this->attributes['manager'][0] . '</value></block>'),
-			'inetOrgPerson_street' => array('<block><key>' . _('Street') . '</key><value>' . $this->attributes['street'][0] . '</value></block>'),
-			'inetOrgPerson_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $this->attributes['postOfficeBox'][0] . '</value></block>'),
-			'inetOrgPerson_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
-			'inetOrgPerson_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
-			'inetOrgPerson_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
-			'inetOrgPerson_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $this->attributes['homePhone'][0] . '</value></block>'),
-			'inetOrgPerson_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobile'][0] . '</value></block>'),
-			'inetOrgPerson_facimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
-			'inetOrgPerson_mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
-			'inetOrgPerson_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
-			'inetOrgPerson_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $this->attributes['roomNumber'][0] . '</value></block>'),
-			'inetOrgPerson_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $this->attributes['businessCategory'][0] . '</value></block>'),
-			'inetOrgPerson_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'));
+			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
+			get_class($this) . '_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
+			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
+			get_class($this) . '_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
+			get_class($this) . '_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
+			get_class($this) . '_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $this->attributes['employeeType'][0] . '</value></block>'),
+			get_class($this) . '_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $this->attributes['manager'][0] . '</value></block>'),
+			get_class($this) . '_street' => array('<block><key>' . _('Street') . '</key><value>' . $this->attributes['street'][0] . '</value></block>'),
+			get_class($this) . '_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $this->attributes['postOfficeBox'][0] . '</value></block>'),
+			get_class($this) . '_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
+			get_class($this) . '_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
+			get_class($this) . '_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
+			get_class($this) . '_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $this->attributes['homePhone'][0] . '</value></block>'),
+			get_class($this) . '_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobile'][0] . '</value></block>'),
+			get_class($this) . '_facimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
+			get_class($this) . '_mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
+			get_class($this) . '_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+			get_class($this) . '_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $this->attributes['roomNumber'][0] . '</value></block>'),
+			get_class($this) . '_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $this->attributes['businessCategory'][0] . '</value></block>'),
+			get_class($this) . '_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'));
 	}
 
 	/**
