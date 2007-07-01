@@ -347,7 +347,7 @@ class PlaLdapExporter extends PlaAbstractExporter{
 	
 	//iterate over the attributes
 	while( $attr ){
-	  if( is_attr_binary( $this,$attr ) ){
+	  if( is_attr_binary($attr ) ){
 	    $this->entry_array[$attr] = @ldap_get_values_len( $this->ds,$this->entry_id,$attr );
 	  }
 	  else{
@@ -419,7 +419,7 @@ class PlaLdifExporter extends PlaExporter{
       // display the attributes
       foreach( $entry as $key => $attr ){
 	foreach( $attr as $value ){
-	  if(  !$this->is_safe_ascii($value) || is_attr_binary($pla_ldap_info,$key ) ){
+	  if(  !$this->is_safe_ascii($value) || is_attr_binary($key ) ){
 	    $this->multi_lines_display( $key.":: " . base64_encode( $value ) );
 	  }
 	  else{
@@ -540,7 +540,7 @@ class PlaDsmlExporter extends PlaExporter{
 	  echo $attr_indent."<attr name=\"$key\">".$this->br;
 	  
 	  // if the attribute is binary, set the flag $binary_mode to true
-	  $binary_mode = is_attr_binary($pla_ldap_info,$key)?1:0;
+	  $binary_mode = is_attr_binary($key)?1:0;
 	  
 	  foreach($attr as $value){
 	    echo $attr_value_indent."<value>".($binary_mode?base64_encode( $value):  htmlspecialchars( $value ) )."</value>".$this->br;
@@ -751,7 +751,7 @@ class PlaCSVExporter extends PlaExporter{
 
 	echo $this->qualifier;
 	if (key_exists($attr_name, $entry)) {
-	  $binary_attribute = is_attr_binary( $ldap_info, $attr_name )?1:0;
+	  $binary_attribute = is_attr_binary($attr_name )?1:0;
 	  
 	  $attr_values = $entry[$attr_name];
 	  
