@@ -1381,9 +1381,6 @@ class posixAccount extends baseModule {
 					if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
 						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
 					}
-					else {
-						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
-					}
 				}
 				// cn
 				if ($rawAccounts[$i][$ids['posixAccount_cn']] != "") {
