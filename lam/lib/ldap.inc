@@ -350,6 +350,8 @@ class Ldap{
 	function encrypt($data) {
 		// use MCrypt if available
 		if (function_exists('mcrypt_create_iv')) {
+			// MCrypt may have been enabled in a running session
+			if (!isset($_COOKIE["IV"]) || ($_COOKIE["IV"] == '')) return $data;
 			// read key and iv from cookie
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
@@ -371,6 +373,8 @@ class Ldap{
 	function decrypt($data) {
 		// use MCrypt if available
 		if (function_exists('mcrypt_create_iv')) {
+			// MCrypt may have been enabled in a running session
+			if (!isset($_COOKIE["IV"]) || ($_COOKIE["IV"] == '')) return $data;
 			// read key and iv from cookie
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
