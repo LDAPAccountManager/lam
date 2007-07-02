@@ -440,6 +440,9 @@ function get_preg($argument, $regexp) {
 		case 'date':
 					$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)\\-((0?[1-9])|(1[0-2]))\\-[1-3][0-9][0-9][0-9]$/';
 					break;
+		case 'date2':
+					$pregexpr = '/^((0[1-9])|([1-2][0-9])|30|31)\\.((0[1-9])|(1[0-2]))\\.[1-3][0-9][0-9][0-9]$/';
+					break;
 		case 'sambaLogonHours':
 					$pregexpr = '/^[0-9a-fA-F]{42}$/';
 					break;
