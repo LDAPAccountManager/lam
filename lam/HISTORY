@@ -4,6 +4,7 @@
   - LDAP accounts including child entries can now be moved
   - group list can show primary members (RFE 1517679 and patch 1722460)
   - more translated example texts (RFE 1702140)
+  - inetOrgPerson: now manages homePhone, roomNumber, businessCategory
   - fixed bugs:
    -> OU editor: help images (1702132)
    -> config editor: extra space (1702269)
