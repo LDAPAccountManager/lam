@@ -95,7 +95,7 @@ class inetOrgPerson extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute
-		$return["RDN"] = array("cn" => "low");
+		$return["RDN"] = array("cn" => "normal", 'uid' => 'low');
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=inetOrgPerson)");
 		// module dependencies

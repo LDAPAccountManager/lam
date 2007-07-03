@@ -117,7 +117,7 @@ class posixAccount extends baseModule {
 		// alias name
 		$return["alias"] = _("Unix");
 		// RDN attributes
-		$return["RDN"] = array("uid" => "normal", "cn" => "low");
+		$return["RDN"] = array("uid" => "high", "cn" => "low");
 		// managed object classes
 		$return['objectClasses'] = array('posixAccount');
 		// LDAP aliases

@@ -10,6 +10,7 @@
    -> config editor: extra space (1702269)
    -> fixed some inconsistent help entries (1694863)
    -> user list: refreshing GID translation did not work (1719168)
+   -> allow uid as RDN attribute for inetOrgPerson (1740499)
 
 
 28.03.2007 1.3.0
