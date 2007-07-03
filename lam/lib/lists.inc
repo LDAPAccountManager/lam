@@ -135,6 +135,10 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($filteredEntries));
 			echo ("<br>\n");
+			echo ("<hr style=\"background-color: #999999;\">\n");
+			// buttons
+			$this->listPrintButtons(false);
+			echo ("<br>\n");
 			// other options
 			$this->listPrintAdditionalOptions();
 			// PDF bar
