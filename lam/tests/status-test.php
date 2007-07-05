@@ -38,9 +38,10 @@ include_once("../lib/status.inc");
 </head>
 <body>
 <?php
-$Typ = "WARN";
 $Headline = "Test";
-$Text = "{color=00FF00}Farbe{endcolor} {bold}fett{endbold}";
+$Text = "{color=00FF00}Farbe{endcolor} {bold}fett{endbold} normal";
 $Variables = array();
-StatusMessage($Typ,$Headline,$Text,$Variables);
+StatusMessage('INFO',$Headline,$Text,$Variables);
+StatusMessage('WARN',$Headline,$Text,$Variables);
+StatusMessage('ERROR',$Headline,$Text,$Variables);
 ?>
