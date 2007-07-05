@@ -101,87 +101,62 @@ tr.account {
 
 /* Background olor for the different Status Messages */
 div.statusInfo {
-  background-color:#5C7EC6;
+  background-color:#a8c3ff;
+  border: 1px solid blue;
 }
 
 div.statusWarn {
-  background-color:#CE8037;
+  background-color:#fff2a3;
+  border: 1px solid #ffd800;
 }
 
 div.statusError {
-  background-color:#C65146;
-}
-
-/* H1 (MessageTyp) font size, family, color, and some more settings for the different Status Messages */
-h1.statusInfo {
-  font-size:16pt;
-  font-family:Arial,sans-serif;
-  color:#FFFFFF;
-  margin-left:20px;
-}
-
-h1.statusWarn {
-  font-size:16pt;
-  font-family:Arial,sans-serif;
-  color:#FFFFFF;
-  margin-left:20px;
-}
-
-h1.statusError {
-  font-size:16pt;
-  font-family:Arial,sans-serif;
-  color:#FFFFFF;
-  margin-left:20px;
+  background-color:#ffc4ba;
+  border: 1px solid red;
 }
 
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
 h2.statusInfo {
   font-size:13pt;
   font-family:Arial,sans-serif;
-  color:#FFFFFF;
-  margin-left:25px;
-  margin-right:25px;
+  margin-left:15px;
+  margin-right:15px;
 }
 
 h2.statusWarn {
   font-size:13pt;
   font-family:Arial,sans-serif;
-  color:#FFFFFF;
-  margin-left:25px;
-  margin-right:25px;
+  margin-left:15px;
+  margin-right:15px;
 }
 
 h2.statusError {
   font-size:13pt;
   font-family:Arial,sans-serif;
-  color:#FFFFFF;
-  margin-left:25px;
-  margin-right:25px;
+  margin-left:15px;
+  margin-right:15px;
 }
 
 /* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
 p.statusInfo {
   font-size:11pt;
   font-family:Times,serif;
-  color:#FFFFFF;
-  margin-left:35px;
-  margin-right:35px;
+  margin-left:25px;
+  margin-right:25px;
 }
 
 p.statusWarn {
   font-size:11pt;
   font-family:Times,serif;
-  color:#FFFFFF;
-  margin-left:35px;
-  margin-right:35px;
+  margin-left:25px;
+  margin-right:25px;
 }
 
 p.statusError {
   font-size:11pt;
   font-family:Times,serif;
-  color:#FFFFFF;
-  margin-left:35px;
-  margin-right:35px;
+  margin-left:25px;
+  margin-right:25px;
 }
 
 
