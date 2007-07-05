@@ -135,6 +135,7 @@ if ($< == 0 ) { # we are root
 								system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 								system 'chmod', '-R', $vals[3], $user[7];     # Edit chmod rights
 							}
+							system 'chmod', $vals[3], $user[7];     # Edit chmod rights
 							$return = "INFO,Lamdaemon ($hostname),Home directory created (" . $user[7] . ").";
 						}
 						else {
