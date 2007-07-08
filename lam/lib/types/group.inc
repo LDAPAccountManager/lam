@@ -273,7 +273,7 @@ class lamGroupList extends lamList {
 				$this->refresh_primary = true;
 			}
 			if ($sr) {
-				$members = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+				$members = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 				ldap_free_result($sr);
 				// delete first array entry which is "count"
 				unset($members['count']);

@@ -222,12 +222,12 @@ function build_initial_tree_icons()
  */
 function dn_exists( $dn )
 {
-	$search_result = @ldap_read( $_SESSION['ldap']->server, $dn, 'objectClass=*', array('dn') );
+	$search_result = @ldap_read( $_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn') );
 
 	if( ! $search_result )
 		return false;
 
-	$num_entries = ldap_count_entries( $_SESSION['ldap']->server, $search_result );
+	$num_entries = ldap_count_entries( $_SESSION['ldap']->server(), $search_result );
 
 	if( $num_entries > 0 )
 		return true;
@@ -268,10 +268,10 @@ function dn_exists( $dn )
  */
 function get_container_contents( $dn, $size_limit=0, $filter='(objectClass=*)' )
 {
-	$search = @ldap_list( $_SESSION['ldap']->server, $dn, $filter, array( 'dn' ), 1, $size_limit, 0);
+	$search = @ldap_list( $_SESSION['ldap']->server(), $dn, $filter, array( 'dn' ), 1, $size_limit, 0);
 	if( ! $search )
 		return array();
-	$search = ldap_get_entries( $_SESSION['ldap']->server, $search );
+	$search = ldap_get_entries( $_SESSION['ldap']->server(), $search );
 
 	$return = array();
 	for( $i=0; $i<$search['count']; $i++ ) {
@@ -449,22 +449,22 @@ function get_icon( $dn )
  */
 function get_object_attr( $dn, $attr )
 {
-	$search = @ldap_read( $_SESSION['ldap']->server, $dn, '(objectClass=*)', array( $attr ), 0, 0, 0 );
+	$search = @ldap_read( $_SESSION['ldap']->server(), $dn, '(objectClass=*)', array( $attr ), 0, 0, 0 );
 
 	if( ! $search )
 		return false;
 
-	$entry = ldap_first_entry( $_SESSION['ldap']->server, $search );
+	$entry = ldap_first_entry( $_SESSION['ldap']->server(), $search );
 
 	if( ! $entry )
 		return false;
 	
-	$attrs = ldap_get_attributes( $_SESSION['ldap']->server, $entry );
+	$attrs = ldap_get_attributes( $_SESSION['ldap']->server(), $entry );
 
 	if( ! $attrs || $attrs['count'] == 0 )
 		return false;
 
-	$vals = ldap_get_values( $_SESSION['ldap']->server, $entry, $attr );
+	$vals = ldap_get_values( $_SESSION['ldap']->server(), $entry, $attr );
 	unset( $vals['count'] );
 	return $vals;
 }
@@ -745,7 +745,7 @@ function draw_formatted_dn( $dn )
 function get_object_attrs( $dn, $lower_case_attr_names=false, $deref=LDAP_DEREF_NEVER )
 {
 
-	$conn = $_SESSION['ldap']->server;
+	$conn = $_SESSION['ldap']->server();
 	$search = @ldap_read( $conn, $dn, '(objectClass=*)', array( ), 0, 0, 0, $deref );
 
 	if( ! $search )
@@ -906,7 +906,7 @@ function real_attr_name( $attr_name )
  */
 function get_entry_system_attrs( $dn, $deref=LDAP_DEREF_NEVER )
 {
-	$conn = $_SESSION['ldap']->server;
+	$conn = $_SESSION['ldap']->server();
 	$attrs = array( 'creatorsname', 'createtimestamp', 'modifiersname', 
 			'structuralObjectClass', 'entryUUID',  'modifytimestamp', 
 			'subschemaSubentry', 'hasSubordinates', '+' );
@@ -1148,7 +1148,7 @@ function draw_jpeg_photos( $dn, $attr_name='jpegPhoto', $draw_delete_buttons=fal
 {
 	$jpeg_temp_dir = $_SESSION['lampath'] . 'tmp';
 
-	$conn = $_SESSION['ldap']->server;
+	$conn = $_SESSION['ldap']->server();
 	$search_result = ldap_read( $conn, $dn, 'objectClass=*', array( $attr_name ) );
 	$entry = ldap_first_entry( $conn, $search_result );
 
@@ -1249,7 +1249,7 @@ function draw_jpeg_photos( $dn, $attr_name='jpegPhoto', $draw_delete_buttons=fal
  */
 function pla_ldap_search( $filter, $base_dn=null, $attrs=array(), $scope='sub', $sort_results=true, $deref=LDAP_DEREF_ALWAYS )
 {
-	$ds = $_SESSION['ldap']->server;
+	$ds = $_SESSION['ldap']->server();
 	switch( $scope ) {
 		case 'base':
 			$search = @ldap_read( $ds, $base_dn, $filter, $attrs, 0, 0, 0, $deref );
