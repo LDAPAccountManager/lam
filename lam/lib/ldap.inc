@@ -52,27 +52,27 @@ function hex2bin($value) {
 class Ldap{
 
 	/** Object of Config to access preferences */
-	var $conf;
+	private $conf;
 
 	/** Server handle */
-	var $server;
+	private $server;
 
 	/** LDAP username used for bind */
-	var $username;
+	private $username;
 	/** LDAP password used for bind */
-	var $password;
+	private $password;
 
 	/** Array with all objectClass strings from the LDAP server */
-	var $objectClasses;
+	private $objectClasses;
 	/** Array with all attribute strings from the LDAP server */
-	var $attributes;
+	private $attributes;
 
 	// Capabilities of the LDAP server
 	/** Host attribute in inetOrgPerson */
-	var $supports_unix_hosts = false;
+	public $supports_unix_hosts = false;
 
 	/** Random number (changes on every page request) */
-	var $rand;
+	private $rand;
 
 	/**
 	* @param object $config an object of class Config
@@ -316,13 +316,15 @@ class Ldap{
 			$relpath = $_SESSION['lampath'] . 'tmp/';
 			$time = time();
 			$dir = @opendir($relpath);
-			while ($file = @readdir($dir)) {
-					if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg')) {
+			$file = @readdir($dir);
+			while ($file) {
+				if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg')) {
 					$path = $relpath . $file;
 					if ($time - filemtime($path) > 600) {
 						@unlink($path);
 					}
 				}
+				$file = @readdir($dir);
 			}
 			@closedir($dir);
 		}
