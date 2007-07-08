@@ -687,29 +687,12 @@ class posixGroup extends baseModule {
 		// Change gids of users and hosts?
 		if ($this->changegids) {
 			// get gidNumber
-			$line=-1;
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
-			}
-			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', array('user', 'host'));
-				if (is_array($result)) {
-					$DNs = array_keys($result);
-					for ($i=0; $i<count($DNs); $i++)
-					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]) $return[$DNs[$i]]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
-				}
-			}
-			// change primaryGroupID
-			$line=-1;
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
-			}
-			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('primaryGroupID', 'sambaAccount', array('user', 'host'));
-				if (is_array($result)) {
-					$DNs = array_keys($result);
-					for ($i=0; $i<count($DNs); $i++) {
-						if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]*2+1001 ) $return[$DNs[$i]]['modify']['PrimaryGroupID'][0] = $this->attributes['gidNumber'][0]*2+1001;
+			$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', array('user', 'host'));
+			if (is_array($result)) {
+				$DNs = array_keys($result);
+				for ($i=0; $i<count($DNs); $i++) {
+					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]) {
+						$return[$DNs[$i]]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
 					}
 				}
 			}
