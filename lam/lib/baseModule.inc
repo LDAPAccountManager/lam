@@ -33,35 +33,35 @@ $Id$
 */
 
 /**
-* Parent class of all account modules
+* Parent class of all account modules.
 *
 * @package modules
 */
-class baseModule {
+abstract class baseModule {
 
 	/** includes all meta data provided by the sub class */
-	var $meta;
+	protected $meta;
 
 	/** the account type of this module (user, group, host) */
-	var $scope;
+	protected $scope;
 
 	/** configuration settings of all modules */
-	var $moduleSettings;
+	protected $moduleSettings;
 
 	/** self service settings of all modules */
-	var $selfServiceSettings;
+	protected $selfServiceSettings;
 
 	/** name of parent accountContainer ($_SESSION[$base]) */
-	var $base;
+	protected $base;
 
 	/** contains all ldap attributes which should be written */
-	var $attributes;
+	protected $attributes;
 
 	/** contains all ldap attributes which are loaded from ldap */
-	var $orig;
+	protected $orig;
 
 	/** contains all error messages of a module */
-	var $messages;
+	protected $messages;
 
 	/**
 	* Creates a new base module class
