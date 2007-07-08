@@ -86,7 +86,7 @@ foreach( $update_array as $attr => $val )
 		}
 	}
 			
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 $res = @ldap_modify( $ds, $dn, $update_array );
 if( $res )
 {

@@ -293,7 +293,7 @@ function search_domains() {
 		"sambaNextUserRid", "sambaAlgorithmicRidBase");
 	$sr = @ldap_search($_SESSION['ldap']->server(), $suffix, "objectClass=sambaDomain", $attr);
 	if ($sr) {
-		$units = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		$units = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		// delete count entry
 		unset($units['count']);
 		// extract attributes

@@ -66,7 +66,7 @@ echo "<body>";
 $dn = $_POST['dn'];
 $encoded_dn = rawurlencode( $dn );
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 
 $del_result = @ldap_delete( $ds, $dn );
 

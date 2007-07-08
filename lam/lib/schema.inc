@@ -1267,7 +1267,7 @@ class MatchingRuleUse extends SchemaItem
 function _get_schema_dn($dn, $debug=false )
 {
 	if( $debug ) echo "<pre>";
-	$ds = $_SESSION['ldap']->server;
+	$ds = $_SESSION['ldap']->server();
 
 	$search = @ldap_read( $ds, $dn, 'objectClass=*', array( 'subschemaSubentry' ) );
 	if( $debug ) { echo "Search result (ldap_read): "; var_dump( $search ); echo "\n"; }
@@ -1337,7 +1337,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 	// Swith to true to enable verbose output of schema fetching progress
 	$debug = false;
 
-	$ds = $_SESSION['ldap']->server;
+	$ds = $_SESSION['ldap']->server();
 
 	// error checking
 	$schema_to_fetch = strtolower( $schema_to_fetch );

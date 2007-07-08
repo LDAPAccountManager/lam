@@ -248,9 +248,9 @@ if ($_POST['delete']) {
 */
 function getChildCount($dn) {
 	$return = 0;
-	$sr = @ldap_search($_SESSION['ldap']->server, $dn, 'objectClass=*', array('dn'), 0);
+	$sr = @ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0);
 	if ($sr) {
-		$entries = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		$return = $entries['count'] - 1;
 	}
 	return $return;
@@ -264,9 +264,9 @@ function getChildCount($dn) {
 */
 function deleteDN($dn) {
 	$errors = array();
-	$sr = @ldap_list($_SESSION['ldap']->server, $dn, 'objectClass=*', array('dn'), 0);
+	$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0);
 	if ($sr) {
-		$entries = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		for ($i = 0; $i < $entries['count']; $i++) {
 			// delete recursively
 			$subErrors = deleteDN($entries[$i]['dn']);

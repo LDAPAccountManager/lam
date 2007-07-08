@@ -80,12 +80,12 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		$attrs = $accounts[$_SESSION['mass_counter']];
 		$dn = $attrs['dn'];
 		unset($attrs['dn']);
-		$success = @ldap_add($_SESSION['ldap']->server, $dn, $attrs);
+		$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 		if (!$success) {
 			$errorMessage = array(
 				"ERROR",
 				_("LAM was unable to create account %s! An LDAP error occured."),
-				ldap_errno($_SESSION[ldap]->server) . ": " . ldap_error($_SESSION[ldap]->server),
+				ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
 				array($_SESSION['mass_counter']));
 			$_SESSION['mass_errors'][] = $errorMessage;
 			$_SESSION['mass_failed'][] = $_SESSION['mass_counter'];

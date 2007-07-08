@@ -1502,13 +1502,13 @@ class posixAccount extends baseModule {
 		// add users to groups
 		elseif ($temp['counter'] < sizeof($temp['groups'])) {
 			if (isset($temp['dn'][$temp['groups'][$temp['counter']]])) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server, $temp['dn'][$temp['groups'][$temp['counter']]], array('memberUID' => $temp['members'][$temp['groups'][$temp['counter']]]));
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $temp['dn'][$temp['groups'][$temp['counter']]], array('memberUID' => $temp['members'][$temp['groups'][$temp['counter']]]));
 				$errors = array();
 				if (!$success) {
 					$errors[] = array(
 						"ERROR",
 						_("LAM was unable to modify group memberships for group: %s"),
-						ldap_errno($_SESSION[ldap]->server) . ": " . ldap_error($_SESSION[ldap]->server),
+						ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
 						array($temp['groups'][$temp['counter']])
 					);
 				}

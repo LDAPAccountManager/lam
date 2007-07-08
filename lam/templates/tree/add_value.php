@@ -68,7 +68,7 @@ $encoded_attr = rawurlencode( $attr );
 $new_value = $_POST['new_value'];
 $is_binary_val = isset( $_POST['binary'] ) ? true : false;
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 
 // special case for binary attributes: 
 // we must go read the data from the file.

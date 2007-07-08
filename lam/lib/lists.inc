@@ -708,7 +708,7 @@ class lamList {
 			StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 		}
 		if ($sr) {
-			$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+			$info = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 			ldap_free_result($sr);
 			// delete first array entry which is "count"
 			unset($info['count']);

@@ -77,7 +77,7 @@ if( is_array( $new_attrs ) && count( $new_attrs ) > 0 )
 		$new_entry[ $attr ] = $val;
 	}
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 $add_res = @ldap_mod_add( $ds, $dn, $new_entry );
 
 if( ! $add_res )

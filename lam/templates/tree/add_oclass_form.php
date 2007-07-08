@@ -148,7 +148,7 @@ if( count( $needed_attrs ) > 0 )
 }
 else
 {
-	$ds = $_SESSION['ldap']->server;
+	$ds = $_SESSION['ldap']->server();
 	$add_res = @ldap_mod_add( $ds, $dn, array( 'objectClass' => $new_oclass ) );
 	if( ! $add_res ) {
 		echo $_SESSION['header'];

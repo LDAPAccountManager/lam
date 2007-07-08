@@ -60,7 +60,7 @@ $attr = $_GET['attr'];
 // if there are multiple values in this attribute, which one do you want to see?
 $value_num = isset( $_GET['value_num'] ) ? $_GET['value_num'] : 0;
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 
 $search = @ldap_read( $ds, $dn, "(objectClass=*)", array($attr));
 if( ! $search ) {

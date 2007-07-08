@@ -62,7 +62,7 @@ $attr = $_POST['attr'];
 
 $update_array = array();
 $update_array[$attr] = array();
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 $res = @ldap_modify( $ds, $dn, $update_array );
 if( $res ) {
 	$redirect_url = "edit.php?dn=$encoded_dn";

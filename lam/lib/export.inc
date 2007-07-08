@@ -277,7 +277,7 @@ class PlaLdapExporter extends PlaAbstractExporter{
 
     $this->attributes = $attributes;
 
-    $this->ds = $_SESSION['ldap']->server;
+    $this->ds = $_SESSION['ldap']->server();
 
     // get the data to be exported
     if( $this->scope == 'base' )

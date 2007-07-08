@@ -115,7 +115,7 @@ elseif (0 == strcasecmp( $attr , 'sambantpassword' )) {
 	$val = ntPassword($val);
 }
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 $new_entry = array( $attr => $val );
 $result = @ldap_mod_add( $ds, $dn, $new_entry );
 

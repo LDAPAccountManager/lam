@@ -65,7 +65,7 @@ $dn = $_POST['dn'];
 $encoded_dn = rawurlencode( $dn );
 $rdn = get_rdn( $dn );
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 
 echo "<body>\n";
 echo "<h3 class=\"tree_title\">" . sprintf( _('Deleting %s'), htmlspecialchars($rdn) ) . "</h3>\n";
@@ -127,7 +127,7 @@ function pla_rdelete( $dn )
 {
 	$children = get_container_contents( $dn );
 	global $ds;
-	$ds = $_SESSION['ldap']->server;
+	$ds = $_SESSION['ldap']->server();
 
 	if( ! is_array( $children ) || count( $children ) == 0 ) {
 		echo "<nobr>" . sprintf( _('Deleting %s'), htmlspecialchars( $dn ) ) . "...";

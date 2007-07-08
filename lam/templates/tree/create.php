@@ -126,7 +126,7 @@ foreach( $new_entry as $attr => $vals ) {
 
 //echo "<pre>"; var_dump( $new_dn );print_r( $new_entry ); echo "</pre>";
 
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 
 // Check the user-defined custom call back first
 $add_result = @ldap_add( $ds, $new_dn, $new_entry );

@@ -71,7 +71,7 @@ if( $template == 'custom' ) {
 
 $template_id = $template;
 $template = isset( $templates[$template] ) ? $templates[$template_id] : null;
-$ds = $_SESSION['ldap']->server;
+$ds = $_SESSION['ldap']->server();
 
 echo $_SESSION['header'];
 
