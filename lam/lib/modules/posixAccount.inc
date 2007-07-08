@@ -1644,6 +1644,9 @@ class posixAccount extends baseModule {
 					}
 					else {
 						$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings['posixAccount_pwdHash'][0]);
+						if (isset($attributes['shadowLastChange'])) {
+							$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
+						}
 						$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 					}
 				}
