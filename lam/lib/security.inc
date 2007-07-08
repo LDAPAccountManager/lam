@@ -41,8 +41,6 @@ checkClientIP();
  * The script is stopped if one of the checks fail.
  */
 function startSecureSession() {
-	// check if client IP is on the list of valid IPs
-	checkClientIP();
 	// start session
 	if (isset($_SESSION)) unset($_SESSION);
 	$sessionDir = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/sess";
@@ -75,7 +73,8 @@ function startSecureSession() {
  *
  */
 function checkClientIP() {
-	$cfg = new LAMCfgMain();
+	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
+	else $cfg = new LAMCfgMain();
 	$allowedHosts = $cfg->allowedHosts;
 	// skip test if no hosts are defined
 	if ($allowedHosts == "") return;
