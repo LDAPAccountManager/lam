@@ -182,7 +182,7 @@ class posixAccount extends baseModule {
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
 		// user specific upload options
-		if ($this->scope == 'user') {
+		if (($this->scope == 'user') && $_SESSION['loggedIn']) {
 			$return['upload_columns'] = array(
 			array(
 				'name' => 'posixAccount_userName',
@@ -223,6 +223,13 @@ class posixAccount extends baseModule {
 				'help' => 'homeDirectory_upload',
 				'example' => _('/home/smiller'),
 				'default' => '/home/<i>&lt;posixAccount_userName&gt;</i>'
+			),
+			array(
+				'name' => 'posixAccount_createHomeDir',
+				'description' => _('Create home directory'),
+				'help' => 'createhomedir',
+				'example' => 'localhost',
+				'values' => $_SESSION['config']->get_scriptServers()
 			),
 			array(
 				'name' => 'posixAccount_shell',
@@ -343,6 +350,10 @@ class posixAccount extends baseModule {
 			'deletehomedir' => array(
 				"Headline" => _("Home directory"),
 				"Text" => _("Activating this checkbox will remove the user's home directory.")
+			),
+			'createhomedir' => array(
+				"Headline" => _("Home directory"),
+				"Text" => _("This will create the user's home directory on the specified server.")
 			),
 			'user' => array(
 				'uid' => array(
@@ -587,10 +598,7 @@ class posixAccount extends baseModule {
 					foreach ($result as $singleresult) {
 						$singleresult = explode(",", $singleresult);
 						if (is_array($singleresult)) {
-							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN')) {
-								call_user_func_array('StatusMessage', $singleresult);
-							}
-							elseif ($singleresult[0] == 'INFO'){
+							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
 								call_user_func_array('StatusMessage', $singleresult);
 							}
 						}
@@ -1467,8 +1475,10 @@ class posixAccount extends baseModule {
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
 			$temp['groups'] = array();
+			$temp['createHomes'] = array();
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
+			$col_home = $ids['posixAccount_createHomeDir'];
 			for ($i = 0; $i < sizeof($data); $i++) {
 				if (in_array($i, $failed)) continue; // ignore failed accounts
 				if ($data[$i][$col] != "") {
@@ -1477,6 +1487,9 @@ class posixAccount extends baseModule {
 						if (!in_array($groups[$g], $temp['groups'])) $temp['groups'][] = $groups[$g];
 						$temp['members'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
 					}
+				}
+				if ($data[$i][$col_home] != "") {
+					$temp['createHomes'][] = $i;
 				}
 			}
 			return array(
@@ -1515,7 +1528,7 @@ class posixAccount extends baseModule {
 				$temp['counter']++;
 				return array (
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / sizeof($temp['groups']),
+					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes'])),
 					'errors' => $errors
 				);
 			}
@@ -1523,10 +1536,29 @@ class posixAccount extends baseModule {
 				$temp['counter']++;
 				return array (
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / sizeof($temp['groups']),
+					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']))),
 					'errors' => array(array('ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]))
 				);
 			}
+		}
+		// create home directories
+		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
+			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
+			$result = lamdaemon(array($data[$pos][$ids['posixAccount_userName']] . " home add 0".$_SESSION['config']->scriptRights),
+				$data[$pos][$ids['posixAccount_createHomeDir']]);
+			$errors = array();
+			if (($result != false) && (sizeof($result) == 1)) {
+				$parts = explode(",", $result[0]);
+				if (in_array($parts[0], array('ERROR', 'WARN'))) { 
+					$errors[] = $parts;
+				}
+			}
+			$temp['counter']++;
+			return array (
+				'status' => 'inProgress',
+				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes'])),
+				'errors' => $errors
+			);
 		}
 		// all groups are modified
 		else {
