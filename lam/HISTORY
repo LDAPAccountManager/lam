@@ -1,5 +1,5 @@
-??? 2.0.0
-  - added Czech translation
+08.08.2007 2.0.0
+  - new translations: Czech and Chinese (Simplified)
   - usability improvements
   - LDAP accounts including child entries can now be moved
   - group list can show primary members (RFE 1517679 and patch 1722460)
@@ -13,6 +13,8 @@
    -> fixed some inconsistent help entries (1694863)
    -> user list: refreshing GID translation did not work (1719168)
    -> allow uid as RDN attribute for inetOrgPerson (1740499)
+   -> PHP Warning: mcrypt_decrypt(): The IV parameter must be ... (1742543)
+   -> uid attribute no longer required for InetOrgPerson (1757215)
 
 
 28.03.2007 1.3.0
