@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2007-07-18 20:30+0200\n"
+"PO-Revision-Date: 2007-07-21 09:58+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -105,12 +105,12 @@ msgstr ""
 "Benutzer können erlauben, dass andere in ihrem Namen handeln. Diese Option "
 "wird geprüft wenn über Kolab emails versendet werden."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:59
-#: ../lib/modules/neofonieInetOrgPerson.inc:102
-#: ../lib/modules/neofonieInetOrgPerson.inc:156
-#: ../lib/modules/neofonieInetOrgPerson.inc:181
-#: ../lib/modules/neofonieInetOrgPerson.inc:542
-#: ../lib/modules/neofonieInetOrgPerson.inc:661
+#: ../lib/modules/neofonieInetOrgPerson.inc:76
+#: ../lib/modules/neofonieInetOrgPerson.inc:124
+#: ../lib/modules/neofonieInetOrgPerson.inc:178
+#: ../lib/modules/neofonieInetOrgPerson.inc:227
+#: ../lib/modules/neofonieInetOrgPerson.inc:600
+#: ../lib/modules/neofonieInetOrgPerson.inc:724
 msgid "AIM account"
 msgstr "AIM-ID"
 
@@ -279,7 +279,7 @@ msgstr "Aktive Accounttypen"
 #: ../templates/tree/add_attr_form.php:162
 #: ../templates/config/conftypes.php:178 ../templates/pdfedit/pdfpage.php:725
 #: ../lib/modules/ieee802device.inc:106
-#: ../lib/modules/neofonieInetOrgPerson.inc:374
+#: ../lib/modules/neofonieInetOrgPerson.inc:432
 #: ../lib/modules/kolabUser.inc:345 ../lib/modules/kolabUser.inc:362
 #: ../lib/modules/kolabUser.inc:388 ../lib/modules/ldapPublicKey.inc:99
 #: ../lib/modules/inetLocalMailRecipient.inc:161
@@ -287,6 +287,10 @@ msgstr "Aktive Accounttypen"
 #: ../lib/modules/nisMailAlias.inc:148
 msgid "Add"
 msgstr "Hinzufügen"
+
+#: ../lib/modules/neofonieInetOrgPerson.inc:344
+msgid "Add Neofonie attributes"
+msgstr "Neofonie-Attribute hinzufügen"
 
 #: ../lib/modules/groupOfNames.inc:336
 msgid "Add entries of this type:"
@@ -555,11 +559,11 @@ msgstr "Beijing, Perth, Singapur"
 msgid "Binary value"
 msgstr "Binärwert"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:89
-#: ../lib/modules/neofonieInetOrgPerson.inc:152
-#: ../lib/modules/neofonieInetOrgPerson.inc:283
-#: ../lib/modules/neofonieInetOrgPerson.inc:452
-#: ../lib/modules/neofonieInetOrgPerson.inc:540
+#: ../lib/modules/neofonieInetOrgPerson.inc:106
+#: ../lib/modules/neofonieInetOrgPerson.inc:174
+#: ../lib/modules/neofonieInetOrgPerson.inc:329
+#: ../lib/modules/neofonieInetOrgPerson.inc:510
+#: ../lib/modules/neofonieInetOrgPerson.inc:598
 msgid "Birth date"
 msgstr "Geburtsdatum"
 
@@ -647,7 +651,7 @@ msgstr "Kann leer bleiben."
 #: ../templates/profedit/profiledelete.php:83
 #: ../templates/profedit/profilepage.php:253
 #: ../templates/profedit/profilemain.php:166 ../templates/initsuff.php:189
-#: ../lib/modules/neofonieInetOrgPerson.inc:482
+#: ../lib/modules/neofonieInetOrgPerson.inc:540
 #: ../lib/modules/sambaSamAccount.inc:1107
 #: ../lib/modules/sambaSamAccount.inc:1156
 #: ../lib/modules/posixAccount.inc:1068 ../lib/modules/kolabUser.inc:564
@@ -681,14 +685,14 @@ msgstr "Central Time (USA & Kanada), Mexiko Stadt"
 
 #: ../templates/selfService/adminMain.php:406
 #: ../templates/pdfedit/pdfpage.php:499 ../templates/pdfedit/pdfpage.php:505
-#: ../lib/modules/neofonieInetOrgPerson.inc:202
-#: ../lib/modules/neofonieInetOrgPerson.inc:214
-#: ../lib/modules/neofonieInetOrgPerson.inc:242
-#: ../lib/modules/neofonieInetOrgPerson.inc:254
-#: ../lib/modules/neofonieInetOrgPerson.inc:266
-#: ../lib/modules/neofonieInetOrgPerson.inc:276
-#: ../lib/modules/neofonieInetOrgPerson.inc:286
-#: ../lib/modules/neofonieInetOrgPerson.inc:478
+#: ../lib/modules/neofonieInetOrgPerson.inc:248
+#: ../lib/modules/neofonieInetOrgPerson.inc:260
+#: ../lib/modules/neofonieInetOrgPerson.inc:288
+#: ../lib/modules/neofonieInetOrgPerson.inc:300
+#: ../lib/modules/neofonieInetOrgPerson.inc:312
+#: ../lib/modules/neofonieInetOrgPerson.inc:322
+#: ../lib/modules/neofonieInetOrgPerson.inc:332
+#: ../lib/modules/neofonieInetOrgPerson.inc:536
 #: ../lib/modules/sambaSamAccount.inc:912
 #: ../lib/modules/sambaSamAccount.inc:924
 #: ../lib/modules/sambaSamAccount.inc:936
@@ -759,13 +763,13 @@ msgstr "Gemeinsam"
 msgid "Columns:"
 msgstr "Spalten:"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:65
-#: ../lib/modules/neofonieInetOrgPerson.inc:112
-#: ../lib/modules/neofonieInetOrgPerson.inc:157
-#: ../lib/modules/neofonieInetOrgPerson.inc:199
-#: ../lib/modules/neofonieInetOrgPerson.inc:328
-#: ../lib/modules/neofonieInetOrgPerson.inc:565
-#: ../lib/modules/neofonieInetOrgPerson.inc:677
+#: ../lib/modules/neofonieInetOrgPerson.inc:82
+#: ../lib/modules/neofonieInetOrgPerson.inc:134
+#: ../lib/modules/neofonieInetOrgPerson.inc:179
+#: ../lib/modules/neofonieInetOrgPerson.inc:245
+#: ../lib/modules/neofonieInetOrgPerson.inc:386
+#: ../lib/modules/neofonieInetOrgPerson.inc:623
+#: ../lib/modules/neofonieInetOrgPerson.inc:740
 msgid "ComBots IDs"
 msgstr "ComBots-IDs"
 
@@ -942,11 +946,11 @@ msgstr "Erstellt Accounts durch das Hochladen einer CSV formatierten Datei."
 msgid "Current list of values for attribute:"
 msgstr "Aktuelle Werte für Attribut:"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:77
-#: ../lib/modules/neofonieInetOrgPerson.inc:132
-#: ../lib/modules/neofonieInetOrgPerson.inc:239
-#: ../lib/modules/neofonieInetOrgPerson.inc:340
-#: ../lib/modules/neofonieInetOrgPerson.inc:547
+#: ../lib/modules/neofonieInetOrgPerson.inc:94
+#: ../lib/modules/neofonieInetOrgPerson.inc:154
+#: ../lib/modules/neofonieInetOrgPerson.inc:285
+#: ../lib/modules/neofonieInetOrgPerson.inc:398
+#: ../lib/modules/neofonieInetOrgPerson.inc:605
 msgid "Current projects"
 msgstr "Aktuelle Projekte"
 
@@ -988,7 +992,7 @@ msgstr "Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-J
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr "Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:87
+#: ../lib/modules/neofonieInetOrgPerson.inc:104
 msgid "Date when the employee was initially employed."
 msgstr "Das Datum, an dem der Angestellte eingestellt wurde."
 
@@ -1121,11 +1125,11 @@ msgstr "Lösche %s"
 msgid "Deleting. Please stand by ..."
 msgstr "Lösche. Bitte haben Sie ein wenig Geduld..."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:71
-#: ../lib/modules/neofonieInetOrgPerson.inc:93
-#: ../lib/modules/neofonieInetOrgPerson.inc:122
-#: ../lib/modules/neofonieInetOrgPerson.inc:221
-#: ../lib/modules/neofonieInetOrgPerson.inc:550
+#: ../lib/modules/neofonieInetOrgPerson.inc:88
+#: ../lib/modules/neofonieInetOrgPerson.inc:110
+#: ../lib/modules/neofonieInetOrgPerson.inc:144
+#: ../lib/modules/neofonieInetOrgPerson.inc:267
+#: ../lib/modules/neofonieInetOrgPerson.inc:608
 msgid "Department"
 msgstr "Geschäftsbereich"
 
@@ -1405,11 +1409,11 @@ msgstr "Serverprofile ändern"
 msgid "Edit workstations"
 msgstr "Arbeitsstationen ändern"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:83
-#: ../lib/modules/neofonieInetOrgPerson.inc:142
-#: ../lib/modules/neofonieInetOrgPerson.inc:263
-#: ../lib/modules/neofonieInetOrgPerson.inc:352
-#: ../lib/modules/neofonieInetOrgPerson.inc:557
+#: ../lib/modules/neofonieInetOrgPerson.inc:100
+#: ../lib/modules/neofonieInetOrgPerson.inc:164
+#: ../lib/modules/neofonieInetOrgPerson.inc:309
+#: ../lib/modules/neofonieInetOrgPerson.inc:410
+#: ../lib/modules/neofonieInetOrgPerson.inc:615
 msgid "Employee skills"
 msgstr "Fähigkeiten"
 
@@ -1423,11 +1427,11 @@ msgstr "Angestelltentyp"
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
 msgstr "Angestelltentyp: Angestellter, Extern, Aushilfskraft, ..."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:86
-#: ../lib/modules/neofonieInetOrgPerson.inc:147
-#: ../lib/modules/neofonieInetOrgPerson.inc:273
-#: ../lib/modules/neofonieInetOrgPerson.inc:447
-#: ../lib/modules/neofonieInetOrgPerson.inc:562
+#: ../lib/modules/neofonieInetOrgPerson.inc:103
+#: ../lib/modules/neofonieInetOrgPerson.inc:169
+#: ../lib/modules/neofonieInetOrgPerson.inc:319
+#: ../lib/modules/neofonieInetOrgPerson.inc:505
+#: ../lib/modules/neofonieInetOrgPerson.inc:620
 msgid "Employment date"
 msgstr "Anstellungsdatum"
 
@@ -1679,7 +1683,7 @@ msgstr "Inode-Frist"
 msgid "Group"
 msgstr "Gruppe"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:139
+#: ../lib/modules/neofonieInetOrgPerson.inc:161
 msgid "Group 1, Group 2"
 msgstr "Gruppe 1, Gruppe 2"
 
@@ -1737,9 +1741,9 @@ msgid ""
 "because it can cause several problems. If group name is already used group "
 "name will be expanded with a number. The next free number will be used."
 msgstr ""
-"Gruppenname der zu erstellenden Gruppe. Gültige Zeichen sind: a-z, A-Z, 0-9 und .-"
-"_. LAM erlaubt keine Zahlen als erstes Zeichen weil es groupadd auch nicht "
-"erlaubt. Großbuchstaben am Anfang können Probleme verursachen und sind "
+"Gruppenname der zu erstellenden Gruppe. Gültige Zeichen sind: a-z, A-Z, 0-9 "
+"und .-_. LAM erlaubt keine Zahlen als erstes Zeichen weil es groupadd auch "
+"nicht erlaubt. Großbuchstaben am Anfang können Probleme verursachen und sind "
 "ebenfalls nicht erlaubt. Sollte der Gruppenname schon in Verwendung sein "
 "wird eine Zahl angehängt."
 
@@ -2062,9 +2066,9 @@ msgid ""
 "character is not $ it will be added. If host name is already used host name "
 "will be expanded with a number. The next free number will be used."
 msgstr ""
-"Hostname des zu erstellenden Hosts. Gültige Zeichen sind: a-z, A-Z, 0-9 und .-_$. "
-"LAM erlaubt keine Zahlen als erstes Zeichen weil es useradd auch nicht "
-"erlaubt. Großbuchstaben am Anfang können Probleme verursachen und sind "
+"Hostname des zu erstellenden Hosts. Gültige Zeichen sind: a-z, A-Z, 0-9 "
+"und .-_$. LAM erlaubt keine Zahlen als erstes Zeichen weil es useradd auch "
+"nicht erlaubt. Großbuchstaben am Anfang können Probleme verursachen und sind "
 "ebenfalls nicht erlaubt. Sollte der Hostname schon in Verwendung sein wird "
 "eine Zahl angehängt."
 
@@ -2087,7 +2091,7 @@ msgstr "ID wird bereits verwendet"
 msgid "ID-Number"
 msgstr "ID-Nummer"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:124
+#: ../lib/modules/neofonieInetOrgPerson.inc:146
 msgid "IT"
 msgstr "IT"
 
@@ -2297,24 +2301,24 @@ msgstr ""
 "können. Zur Vermeidung dieser Warnung können Sie die maximale UID-Nummer in "
 "den Optionen erhöhen."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:68
-#: ../lib/modules/neofonieInetOrgPerson.inc:117
-#: ../lib/modules/neofonieInetOrgPerson.inc:157
-#: ../lib/modules/neofonieInetOrgPerson.inc:211
-#: ../lib/modules/neofonieInetOrgPerson.inc:334
-#: ../lib/modules/neofonieInetOrgPerson.inc:569
-#: ../lib/modules/neofonieInetOrgPerson.inc:685
+#: ../lib/modules/neofonieInetOrgPerson.inc:85
+#: ../lib/modules/neofonieInetOrgPerson.inc:139
+#: ../lib/modules/neofonieInetOrgPerson.inc:179
+#: ../lib/modules/neofonieInetOrgPerson.inc:257
+#: ../lib/modules/neofonieInetOrgPerson.inc:392
+#: ../lib/modules/neofonieInetOrgPerson.inc:627
+#: ../lib/modules/neofonieInetOrgPerson.inc:748
 msgid "Jabber IDs"
 msgstr "Jabber-IDs"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:74
-#: ../lib/modules/neofonieInetOrgPerson.inc:127
-#: ../lib/modules/neofonieInetOrgPerson.inc:229
-#: ../lib/modules/neofonieInetOrgPerson.inc:560
+#: ../lib/modules/neofonieInetOrgPerson.inc:91
+#: ../lib/modules/neofonieInetOrgPerson.inc:149
+#: ../lib/modules/neofonieInetOrgPerson.inc:275
+#: ../lib/modules/neofonieInetOrgPerson.inc:618
 msgid "Job position"
 msgstr "Position"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:75
+#: ../lib/modules/neofonieInetOrgPerson.inc:92
 msgid "Job position of this user (e.g. developer, temp, ...)."
 msgstr "Position des Benutzers (z.B. Entwickler, Aushilfskraft, ...)."
 
@@ -2558,11 +2562,11 @@ msgstr "Attribute der Listen"
 msgid "List attributes are invalid!"
 msgstr "Attribute der Liste sind ungültig!"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:66
+#: ../lib/modules/neofonieInetOrgPerson.inc:83
 msgid "List of ComBots IDs."
 msgstr "List der ComBots-IDs."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:69
+#: ../lib/modules/neofonieInetOrgPerson.inc:86
 msgid "List of Jabber IDs."
 msgstr "List der Jabber-IDs."
 
@@ -2582,15 +2586,15 @@ msgstr "Liste der berechtigten Benutzer ist ungültig!"
 msgid "List of entries to be deleted:"
 msgstr "Liste der zu löschenden Einträge:"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:81
+#: ../lib/modules/neofonieInetOrgPerson.inc:98
 msgid "List of project groups of this user."
 msgstr "Liste der Projektgruppen dieses Benutzers."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:78
+#: ../lib/modules/neofonieInetOrgPerson.inc:95
 msgid "List of projects the user is working on."
 msgstr "Liste der Projekte, an denen der Benutzer gerade arbeitet."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:84
+#: ../lib/modules/neofonieInetOrgPerson.inc:101
 msgid "List of special skills that the user has."
 msgstr "Liste der Fähigkeiten des Benutzers."
 
@@ -3368,7 +3372,7 @@ msgstr "Aus"
 #: ../templates/pdfedit/pdfmain.php:152
 #: ../templates/profedit/profiledelete.php:82
 #: ../templates/profedit/profilemain.php:165 ../lib/modules/posixGroup.inc:260
-#: ../lib/modules/neofonieInetOrgPerson.inc:390
+#: ../lib/modules/neofonieInetOrgPerson.inc:448
 #: ../lib/modules/sambaSamAccount.inc:1106
 #: ../lib/modules/posixAccount.inc:1067 ../lib/modules/inetOrgPerson.inc:840
 #: ../lib/modules/groupOfNames.inc:224 ../lib/modules/groupOfNames.inc:251
@@ -3958,24 +3962,24 @@ msgstr "Profilpfad ist ungültig!"
 msgid "Profile was saved."
 msgstr "Profil wurde gespeichert."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:134
+#: ../lib/modules/neofonieInetOrgPerson.inc:156
 msgid "Project 1, Project 2"
 msgstr "Projekt 1, Projekt 2"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:80
-#: ../lib/modules/neofonieInetOrgPerson.inc:137
-#: ../lib/modules/neofonieInetOrgPerson.inc:251
-#: ../lib/modules/neofonieInetOrgPerson.inc:346
-#: ../lib/modules/neofonieInetOrgPerson.inc:553
+#: ../lib/modules/neofonieInetOrgPerson.inc:97
+#: ../lib/modules/neofonieInetOrgPerson.inc:159
+#: ../lib/modules/neofonieInetOrgPerson.inc:297
+#: ../lib/modules/neofonieInetOrgPerson.inc:404
+#: ../lib/modules/neofonieInetOrgPerson.inc:611
 msgid "Project groups"
 msgstr "Projektgruppen"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:62
-#: ../lib/modules/neofonieInetOrgPerson.inc:107
-#: ../lib/modules/neofonieInetOrgPerson.inc:156
-#: ../lib/modules/neofonieInetOrgPerson.inc:189
-#: ../lib/modules/neofonieInetOrgPerson.inc:544
-#: ../lib/modules/neofonieInetOrgPerson.inc:669
+#: ../lib/modules/neofonieInetOrgPerson.inc:79
+#: ../lib/modules/neofonieInetOrgPerson.inc:129
+#: ../lib/modules/neofonieInetOrgPerson.inc:178
+#: ../lib/modules/neofonieInetOrgPerson.inc:235
+#: ../lib/modules/neofonieInetOrgPerson.inc:602
+#: ../lib/modules/neofonieInetOrgPerson.inc:732
 msgid "Quake ID"
 msgstr "Quake-ID"
 
@@ -4063,8 +4067,8 @@ msgid "Relative distinguished name"
 msgstr "Relativer eindeutiger Name"
 
 #: ../templates/pdfedit/pdfpage.php:475 ../lib/modules/ieee802device.inc:99
-#: ../lib/modules/neofonieInetOrgPerson.inc:381
-#: ../lib/modules/neofonieInetOrgPerson.inc:480
+#: ../lib/modules/neofonieInetOrgPerson.inc:439
+#: ../lib/modules/neofonieInetOrgPerson.inc:538
 #: ../lib/modules/sambaSamAccount.inc:1154 ../lib/modules/kolabUser.inc:337
 #: ../lib/modules/kolabUser.inc:356 ../lib/modules/kolabUser.inc:382
 #: ../lib/modules/shadowAccount.inc:346 ../lib/modules/ldapPublicKey.inc:92
@@ -4571,7 +4575,7 @@ msgstr "Ziel der Einladungsregel ist ungültig."
 msgid "Telephone number"
 msgstr "Telefonnummer"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:129
+#: ../lib/modules/neofonieInetOrgPerson.inc:151
 #: ../lib/modules/inetOrgPerson.inc:177
 msgid "Temp"
 msgstr "Aushilfskraft"
@@ -4627,7 +4631,7 @@ msgstr "Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es er
 msgid "The country name of the user."
 msgstr "Der Ländername des Benutzers."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:72
+#: ../lib/modules/neofonieInetOrgPerson.inc:89
 msgid "The department where the employee is employed."
 msgstr "Die Abteilung zu der der Mitarbeiter gehört."
 
@@ -4717,7 +4721,7 @@ msgstr "Die Raumnummer des Mitarbeiterbüros."
 msgid "The static text must contain at least one character."
 msgstr "Der statische Text muss mindestens ein Zeichen enthalten."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:90
+#: ../lib/modules/neofonieInetOrgPerson.inc:107
 msgid "The user's birth date."
 msgstr "Der Geburtstag des Mitarbeiters."
 
@@ -4883,7 +4887,9 @@ msgid ""
 msgstr ""
 "Das ist eine Liste von Servern auf denen das lamdaemon-Script liegt. LDAP "
 "Account Manager wird eine SSH-Verbindung zu diesen Servern aufbauen, dabei "
-"werden Benutzername und Passwort vom Login verwendet. Mehrere Server werden durch Strichpunkt getrennt. Sie können eine Beschreibung nach einem Doppelpunkt angeben."
+"werden Benutzername und Passwort vom Login verwendet. Mehrere Server werden "
+"durch Strichpunkt getrennt. Sie können eine Beschreibung nach einem "
+"Doppelpunkt angeben."
 
 #: ../help/help.inc:89
 msgid ""
@@ -5140,15 +5146,15 @@ msgstr ""
 "Hier können Sie die Zeitzone Ihres Samba-Servers einstellen. LAM benötigt "
 "die Information zur korrekten Darstellung der Anmeldezeiten."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:60
+#: ../lib/modules/neofonieInetOrgPerson.inc:77
 msgid "This is the user's AIM account name"
 msgstr "Dies ist die AIM-ID des Benutzers"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:63
+#: ../lib/modules/neofonieInetOrgPerson.inc:80
 msgid "This is the user's Quake ID."
 msgstr "Dies ist die Quake-ID des Benutzers."
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:57
+#: ../lib/modules/neofonieInetOrgPerson.inc:74
 msgid "This is the user's login name for the wiki."
 msgstr "Dies ist der Wikiname des Benutzers."
 
@@ -5643,13 +5649,13 @@ msgid ""
 "systems have problems with user names longer than 8 characters. You can not "
 "log in to Windows if user name is longer than 16 characters."
 msgstr ""
-"Benutzername des zu erstellenden Benutzers. Gültige Zeichen sind: a-z, A-Z, 0-9 "
-"und .-_. LAM erlaubt keine Zahlen als erstes Zeichen weil es useradd auch "
-"nicht erlaubt. Großbuchstaben am Anfang können Probleme verursachen und sind "
-"ebenfalls nicht erlaubt. Sollte der Benutzername schon in Verwendung sein "
-"wird eine Zahl angehängt. Achtung! Ältere Systeme haben Probleme mit mehr "
-"als 8 Zeichen. Sie können sich bei Windows nicht anmelden wenn Sie mehr als "
-"16 Zeichen verwenden."
+"Benutzername des zu erstellenden Benutzers. Gültige Zeichen sind: a-z, A-Z, "
+"0-9 und .-_. LAM erlaubt keine Zahlen als erstes Zeichen weil es useradd "
+"auch nicht erlaubt. Großbuchstaben am Anfang können Probleme verursachen und "
+"sind ebenfalls nicht erlaubt. Sollte der Benutzername schon in Verwendung "
+"sein wird eine Zahl angehängt. Achtung! Ältere Systeme haben Probleme mit "
+"mehr als 8 Zeichen. Sie können sich bei Windows nicht anmelden wenn Sie mehr "
+"als 16 Zeichen verwenden."
 
 #: ../lib/types/user.inc:44 ../lib/modules/posixAccount.inc:56
 #: ../lib/modules/posixAccount.inc:57 ../lib/modules/posixAccount.inc:60
@@ -5748,9 +5754,10 @@ msgstr ""
 "Wenn Sie ldaps:// verwenden stellen Sie sicher, dass Sie genau die selbe IP/"
 "Domäne wie in ihrem Zertifikat verwenden!"
 
-#: ../lib/modules/neofonieInetOrgPerson.inc:56
-#: ../lib/modules/neofonieInetOrgPerson.inc:174
-#: ../lib/modules/neofonieInetOrgPerson.inc:538
+#: ../lib/modules/neofonieInetOrgPerson.inc:73
+#: ../lib/modules/neofonieInetOrgPerson.inc:119
+#: ../lib/modules/neofonieInetOrgPerson.inc:219
+#: ../lib/modules/neofonieInetOrgPerson.inc:596
 msgid "Wiki name"
 msgstr "Wikiname"
 
