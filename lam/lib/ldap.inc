@@ -56,6 +56,8 @@ class Ldap{
 
 	/** Server handle */
 	private $server;
+	
+	private $is_connected = false;
 
 	/** LDAP username used for bind */
 	private $username;
@@ -293,6 +295,11 @@ class Ldap{
 	* @return object connection handle
 	*/
 	function server() {
+		if (!$this->is_connected) {
+			$data = $this->decrypt_login();
+			$this->connect($data[0], $data[1]);
+			$this->is_connected = true;
+		}
 		return $this->server;
 	}
 
@@ -306,8 +313,7 @@ class Ldap{
 
 	/** Reconnects to LDAP server when deserialized */
 	function __wakeup() {
-		$data = $this->decrypt_login();
-		$this->connect($data[0], $data[1]);
+		$this->is_connected = false;
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
 		$this->rand = mt_rand();
