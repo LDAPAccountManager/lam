@@ -512,11 +512,13 @@ class inetOrgPerson extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			// uid
-			if (!get_preg($_POST['userName'], 'username')) {
-				$errors[] = $this->messages['uid'][0];
-			}
-			else {
-				$this->attributes['uid'][0] = $_POST['userName'];
+			if (isset($_POST['userName']) && ($_POST['userName'] != '')) {
+				if (!get_preg($_POST['userName'], 'username')) {
+					$errors[] = $this->messages['uid'][0];
+				}
+				else {
+					$this->attributes['uid'][0] = $_POST['userName'];
+				}
 			}
 			// cn
 			if ($_POST['cn'] == '') {
@@ -591,7 +593,7 @@ class inetOrgPerson extends baseModule {
 		if (!in_array('posixAccount', $modules)) {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User name') . '*' ),
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User name')),
 				array('kind' => 'input', 'name' => 'userName', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $uid),
 				array('kind' => 'help', 'value' => 'uid'));
