@@ -12,9 +12,14 @@ echo "Generating Catalan translation template"
 tar -czf messages.po_ca.tar.gz messages.po
 echo " "
 
-echo "Generating Chinese translation template"
+echo "Generating Chinese (Traditional) translation template"
 ./make_po_zh
-tar -czf messages.po_zh.tar.gz messages.po
+tar -czf messages.po_zh_TW.tar.gz messages.po
+echo " "
+
+echo "Generating Chinese (Simplified) translation template"
+./make_po_zh_CN
+tar -czf messages.po_zh_CN.tar.gz messages.po
 echo " "
 
 echo "Generating Czech translation template"
