@@ -13,7 +13,7 @@ tar -czf messages.po_ca.tar.gz messages.po
 echo " "
 
 echo "Generating Chinese (Traditional) translation template"
-./make_po_zh
+./make_po_zh_TW
 tar -czf messages.po_zh_TW.tar.gz messages.po
 echo " "
 
