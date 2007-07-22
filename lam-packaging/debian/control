@@ -21,7 +21,8 @@ Description: webfrontend for managing accounts in an LDAP directory
  Account information can be exported as PDF file. There is also
  a script included which manages quota and homedirectories, you
  have to setup sudo if you want to use it. LAM is translated to
- Catalan, Chinese (Traditional), Dutch, English, French, German,
- Hungarian, Italian, Japanese, Russian and Spanish.
+ Catalan, Chinese (Traditional + Simplified), Czech, Dutch,
+ English, French, German, Hungarian, Italian, Japanese, Russian
+ and Spanish.
  .
  Homepage: http://lam.sourceforge.net/
