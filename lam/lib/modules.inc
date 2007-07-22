@@ -1338,7 +1338,6 @@ class accountContainer {
 			if (!is_array($temp)) $temp = array();
 			// merge changes
 			$DNs = array_keys($temp);
-			// *** fixme don't include references
 			if (is_array($temp)) $attributes = array_merge_recursive($temp, $attributes);
 			for ($i=0; $i<count($DNs); $i++) {
 				$ops = array_keys($temp[$DNs[$i]]);
