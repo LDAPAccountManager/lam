@@ -57,6 +57,11 @@ echo "Generating Japanese translation template"
 tar -czf messages.po_jp.tar.gz messages.po
 echo " "
 
+echo "Generating Portuguese translation template"
+./make_po_pt
+tar -czf messages.po_pt.tar.gz messages.po
+echo " "
+
 echo "Generating Russian translation template"
 ./make_po_ru
 tar -czf messages.po_ru.tar.gz messages.po
