@@ -32,6 +32,9 @@ it_IT.utf8:UTF-8:Italiano (Italia)
 # Hungarian
 hu_HU.utf8:UTF-8:Magyar (Magyarország)
 
+# Portuguese
+pt_BR.utf8:UTF-8:Português (Brasil)
+
 # Russian
 ru_RU.utf8:UTF-8:Русский (Россия)
 
