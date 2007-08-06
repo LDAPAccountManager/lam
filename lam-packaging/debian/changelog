@@ -1,11 +1,11 @@
-ldap-account-manager (2.0.0.RC1-1) unstable; urgency=low
+ldap-account-manager (2.0.0-1) unstable; urgency=low
 
   * New upstream release
   * LAM no longer supports PHP4
   * ldap-account-manager has wrong dependencies on php5 (Closes:
     #427551)
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 22 Jul 2007 15:21:24 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 6 Aug 2007 15:21:24 +0200
 
 ldap-account-manager (1.3.0-2) unstable; urgency=low
 
