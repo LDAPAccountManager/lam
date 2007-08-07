@@ -13,16 +13,8 @@ Installation Instructions for LAM
    - OpenLDAP (>2.0)
    - A web browser :-)
 
-   MHash is only needed if you use PHP < 4.3 and if you want to use SHA or SSHA
-   for password hashes.
+   MHash is only needed for Samba password hashes.
    MCrypt will be used to store your LDAP password encrypted in the session file.
-
-   Getting mcrypt and mhash for Suse/RedHat:
-
-   Either you compile PHP4 yourself or you use some unofficial packages:
-
-   - Suse: ftp://ftp.suse.com/pub/people/poeml/mod_php4
-   - RedHat: http://ftp.horde.org/pub/RPMS
 
 
    See docs/README.schema.txt for information about used LDAP schema files.
@@ -60,7 +52,7 @@ Installation Instructions for LAM
 
 3. Setting up PHP
 
-   LAM runs with PHP4 or PHP5.
+   LAM runs with PHP5.
 
    Needed changes in your php.ini:
 
