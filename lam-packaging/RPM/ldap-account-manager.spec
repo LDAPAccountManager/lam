@@ -27,8 +27,9 @@ for account creation and use multiple configuration profiles.
 Account information can be exported as PDF file. There is also
 a script included which manages quota and homedirectories, you
 have to setup sudo if you want to use it. LAM is translated to
-Catalan, Chinese (Traditional), English, French, German,
-Hungarian, Italian, Japanese, Russian and Spanish.
+Catalan, Chinese (Simplified + Traditional), Czech, Dutch,
+English, French, German, Hungarian, Italian, Japanese,
+Portuguese, Russian and Spanish.
 
 %prep
 %setup -n ldap-account-manager-%{version}
