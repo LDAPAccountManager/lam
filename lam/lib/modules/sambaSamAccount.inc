@@ -967,9 +967,9 @@ class sambaSamAccount extends baseModule {
 				if ($this->attributes['sambaPrimaryGroupSID'][0]==$SID."-".$this->rids[$names[$i]]) {
 					$selected[] = $names[$i];
 					$wrid=true;
-					}
-				else $options[] = $names[$i];
 				}
+				else $options[] = $names[$i];
+			}
 			if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 				else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
