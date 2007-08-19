@@ -613,7 +613,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// inner fieldset
 					case 'fieldset':
-						echo "<fieldset>\n";
+						echo "<fieldset class=\"" . $scope . "edit\">\n";
 						if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
 						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
 						$ret = array_merge($ret, $retTemp);
@@ -945,56 +945,64 @@ class accountContainer {
 			}
 		}
 		// Create left module-menu
-		echo "<table border=0 width=\"100%\">\n<tr valign=\"top\"><td width=\"15%\">";
+		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"padding:0px;\" colspan=2>";
 
-		echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
-			echo _('Please select page:');
-			echo "</b></legend><center>\n";
 		// calculate button width
-		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Reset changes"))));
-		for ($b = 0; $b < sizeof($this->order); $b++) {
-			$tempWidth = round(0.8 * strlen(utf8_decode($this->order[$b])));
+		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Main"))));
+		for ($b = 1; $b < sizeof($this->order); $b++) {
+			$tempWidth = round(0.8 * strlen(utf8_decode($this->module[$this->order[$b]]->get_alias())));
 			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
 		}
 		$x=0;
+		echo "<table width=\"100%\" border=1 style=\"border-collapse: collapse;\">";
 		// print "main" button
-		echo "<input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_main\" type=\"submit\" value=\"";
+		$class = $this->type . "list-head";
+		if ($this->order[$this->current_page] == "main") $class = $this->type . "list-edit";
+		echo "<tr><td width=\"$buttonWidth\" style=\"padding:0px;\" colspan=2>";
+		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">\n";
+		echo "<tr class=\"" . $class . "\"><td align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
+		echo "<input style=\"width:" . $buttonWidth ."em;margin:2px; border:1px solid;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
 		if ($this->subpage == 'finish') echo " disabled";
 		echo ">\n<br>";
+		echo "</td></tr></table>\n";
+		echo "</td>\n";
 		$x++;
 		// Loop for module
 		// $x is used to count up tabindex
 		for ($i=1; $i<count($this->order); $i++ ) {
+			$class = $this->type . "list-head";
+			if ($this->order[$this->current_page] == $this->order[$i]) $class = $this->type . "list-edit";
+			echo "<td width=\"$buttonWidth\" style=\"padding:0px;\">\n";
+			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
+			echo "<tr class=\"" . $class . "\"><td align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
 			// skip hidden buttons
 			if ($buttonStatus == 'hidden') continue;
 			// print normal button
-			echo "<input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
+			echo "<input style=\"width:" . $buttonWidth ."em;margin:2px; border:1px solid;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
 			if (($buttonStatus == 'disabled') || $this->subpage == 'finish') echo " disabled";
 			echo ">\n<br>";
+			echo "</td></tr></table>\n";
+			echo '</td>';
 			$x++;
 		}
+		echo "<td width=\"100%\">&nbsp;</td></tr></table></td></tr>\n";
+		echo "<tr class=\"" . $this->type . "list\"><td style=\"padding:0px;\" width=\"15%\" valign=\"top\">\n";
 		if ($this->dn_orig!='') {
-			echo "<br><input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
+			echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
+			echo "<tr><td style=\"padding-top:15px;\">\n";
+			echo "<input style=\"margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
 			if ($this->subpage == 'finish') echo " disabled";
 			echo "><br>\n";
+			echo '</td></tr>';
+			echo "</table>";
 		}
-		echo "</center></fieldset>\n";
-		echo "</td>\n<td>";
-		if ($this->current_page==0) {
-			echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
-			echo _('Main');
-			echo "</b></legend>\n";
-			}
-		else {
-			echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
-				echo $this->module[$this->order[$this->current_page]]->get_alias();
-				echo "</b></legend>\n";
-			}
+		echo "<td style=\"padding:15px;\">";
 		// display html-code from mdule
 		$return = array();
 		if ($this->current_page == 0) {
@@ -1074,7 +1082,6 @@ class accountContainer {
 		$z = 10000;
 		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
 		// Display rest of html-page
-		echo "</fieldset>\n";
 		if ($this->current_page != "main") echo "<br>*" . _('required');
 		echo "</td></tr></table>\n";
 		echo "</form>\n";
