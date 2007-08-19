@@ -59,7 +59,7 @@ table.grouplist {
 }
 
 /* input elements */
-table.grouplist input {
+table.grouplist input,select {
   background-color:#a8c3ff;
 }
 
@@ -95,16 +95,6 @@ fieldset.groupedit {
 
 fieldset.groupedit legend {
   color:blue;
-}
-
-fieldset.groupedit fieldset {
-  background-color:#d6e3ff;
-  border:1px solid #7167bf;
-}
-
-fieldset.groupedit fieldset fieldset {
-  background-color:#d6e3ff;
-  border:1px solid #7167bf;
 }
 
 fieldset.groupedit select {

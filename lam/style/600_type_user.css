@@ -37,7 +37,7 @@ table.userlist {
 }
 
 /* input elements */
-table.userlist input {
+table.userlist input,select {
   background-color:#fff2a3;
 }
 
@@ -109,18 +109,6 @@ fieldset.useredit {
 /* legend of main fieldset */
 fieldset.useredit legend {
   color:blue;
-}
-
-/* subfieldset */
-fieldset.useredit fieldset {
-  background-color:#fffde2;
-  border:1px solid #9b8523;
-}
-
-/* subsubfieldset */
-fieldset.useredit fieldset fieldset {
-  background-color:#fffde2;
-  border:1px solid #9b8523;
 }
 
 /* select boxes */

@@ -59,7 +59,7 @@ table.hostlist {
 }
 
 /* input elements */
-table.hostlist input {
+table.hostlist input,select {
   background-color:#ffc4ba;
 }
 
@@ -95,16 +95,6 @@ fieldset.hostedit {
 
 fieldset.hostedit legend {
   color:blue;
-}
-
-fieldset.hostedit fieldset {
-  background-color:#ffe2dd;
-  border:1px solid #911a1a;
-}
-
-fieldset.hostedit fieldset fieldset {
-  background-color:#ffe2dd;
-  border:1px solid #911a1a;
 }
 
 fieldset.hostedit select {

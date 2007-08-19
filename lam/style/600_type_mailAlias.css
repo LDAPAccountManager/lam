@@ -59,7 +59,7 @@ table.mailAliaslist {
 }
 
 /* input elements */
-table.mailAliaslist input {
+table.mailAliaslist input,select {
   background-color:#ffe27f;
 }
 
@@ -95,16 +95,6 @@ fieldset.mailAliasedit {
 
 fieldset.mailAliasedit legend {
   color:blue;
-}
-
-fieldset.mailAliasedit fieldset {
-  background-color:#fff3c8;
-  border:1px solid #af8800;
-}
-
-fieldset.mailAliasedit fieldset fieldset {
-  background-color:#fff3c8;
-  border:1px solid #af8800;
 }
 
 fieldset.mailAliasedit select {
