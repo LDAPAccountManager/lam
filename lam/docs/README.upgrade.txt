@@ -1,6 +1,23 @@
 Upgrade instructions:
 =====================
 
+2.0.0 -> 2.1.0
+
+Developers:
+
+Style changes:
+  - "fieldset.<type>edit fieldset" and "fieldset.<type>edit fieldset fieldset" were removed.
+  - "table.<type>list input" changed to "table.<type>list input,select"
+
+
+
+1.3.0 -> 2.0.0
+
+Developers:
+
+LAM is now PHP5 only. Several variables are now private and need to be accessed via functions.
+
+
 
 1.2.0 -> 1.3.0:
 ===============
