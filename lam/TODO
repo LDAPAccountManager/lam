@@ -5,5 +5,6 @@ Long-term topics:
 
 LAM 2.1.x
 
- - tabular design for account pages
- - show DN on account pages
+ - tabular design for account pages (done)
+ - show DN on account pages (done)
+ - Samba 3: manage sambaMungedDial
