@@ -944,7 +944,7 @@ class accountContainer {
 				}
 			}
 		}
-		// Create left module-menu
+		// create module menu
 		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"padding:0px;\" colspan=2>";
 
@@ -1003,7 +1003,11 @@ class accountContainer {
 			echo "</table>";
 		}
 		echo "<td style=\"padding:15px;\">";
-		// display html-code from mdule
+		// display DN
+		if (isset($this->dn_orig) && ($this->dn_orig != '')) {
+			echo _("DN") . ": " . htmlspecialchars($this->dn_orig) . '<hr noshade style="width: 100%; height: 2px;"><br>';
+		}
+		// display html-code from modules
 		$return = array();
 		if ($this->current_page == 0) {
 			if ($this->subpage == 'finish') {
