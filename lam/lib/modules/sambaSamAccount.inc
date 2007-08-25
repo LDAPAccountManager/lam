@@ -475,6 +475,14 @@ class sambaSamAccount extends baseModule {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
 		}
+		// do not automatically add Samba 3 object class
+		for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
+			if ($this->attributes['objectClass'][$i] == 'sambaSamAccount') {
+				unset($this->attributes['objectClass'][$i]);
+				$this->attributes['objectClass'] = array_values($this->attributes['objectClass']);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -487,17 +495,6 @@ class sambaSamAccount extends baseModule {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]=='') return false;
-		return true;
-	}
-
-	/**
-	* This functions is used to check if all settings for this module have been made.
-	*
-	* @return boolean true, if settings are complete
-	*/
-	function module_complete() {
-		if (!$this->module_ready()) return false;
-		if ($this->attributes['sambaSID'][0] == '') return false;
 		return true;
 	}
 
@@ -514,6 +511,16 @@ class sambaSamAccount extends baseModule {
 			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
 			else $this->noexpire = false;
 		}
+		if (!isset($this->orig['objectClass']) || !in_array('sambaSamAccount', $this->orig['objectClass'])) {
+		// do not automatically add Samba 3 object class
+			for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
+				if ($this->attributes['objectClass'][$i] == 'sambaSamAccount') {
+					unset($this->attributes['objectClass'][$i]);
+					$this->attributes['objectClass'] = array_values($this->attributes['objectClass']);
+					break;
+				}
+			}		
+		}
 	}
 
 	/* This function returns an array with 3 entries:
@@ -525,6 +532,9 @@ class sambaSamAccount extends baseModule {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
+		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
 		/* Create sambaSID. Can't create it while loading attributes because
 		* it's psssible uidNumber has changed
 		*/
@@ -553,6 +563,9 @@ class sambaSamAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
@@ -831,185 +844,197 @@ class sambaSamAccount extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes() {
-		// Get Domain SID from user SID
-		$sambaDomains = search_domains();
-		if (sizeof($sambaDomains) == 0) {
-			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-			return array();
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'sambaSamAccount';
 		}
-		if ($this->attributes['sambaSID'][0]!='') {
-			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+		$return = array();
+		if (in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+			// Get Domain SID from user SID
+			$sambaDomains = search_domains();
+			if (sizeof($sambaDomains) == 0) {
+				StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
+				return array();
+			}
+			if ($this->attributes['sambaSID'][0]!='') {
+				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+			}
+			for ($i=0; $i<count($sambaDomains); $i++ ) {
+				$sambaDomainNames[] = $sambaDomains[$i]->name;
+				if (isset($domainSID)) {
+					if ($domainSID == $sambaDomains[$i]->SID) {
+						$SID = $domainSID;
+						$sel_domain = $sambaDomains[$i]->name;
+					}
+				}
+				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
+					if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
+						$SID = $sambaDomains[$i]->SID;
+						$sel_domain = $sambaDomains[$i]->name;
+					}
+				}
+			}
+	
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Display name')),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'displayName', 'size' => '20', 'value' => $this->attributes['displayName'][0]),
+				2 => array('kind' => 'help', 'value' => 'displayName'));
+			if ($_SESSION[$this->base]->type=='user') {
+				$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_h', 'type' => 'hidden', 'value' => $canchangedate['hours']),
+						1 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_m', 'type' => 'hidden', 'value' => $canchangedate['minutes']),
+						2 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_s', 'type' => 'hidden', 'value' => $canchangedate['seconds']),
+						3 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_h', 'type' => 'hidden', 'value' => $mustchangedate['hours']),
+						4 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
+						5 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
+						6 => array ( 'kind' => 'input', 'name' => 'sambaExpire_h', 'type' => 'hidden', 'value' => $expiredate['hours']),
+						7 => array ( 'kind' => 'input', 'name' => 'sambaExpire_m', 'type' => 'hidden', 'value' => $expiredate['minutes']),
+						8 => array ( 'kind' => 'input', 'name' => 'sambaExpire_s', 'type' => 'hidden', 'value' => $expiredate['seconds']),
+						9 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Samba password')),
+					1 => array('kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
+					2 => array('kind' => 'help', 'value' => 'password'));
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Repeat password')),
+					1 => array('kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
+				if (isset($_SESSION[$this->base]->module['posixAccount']->clearTextPassword)) {
+					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
+						1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
+						2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
+				}
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd),
+					2 => array ('kind' => 'help', 'value' => 'noPassword'));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire),
+					2 => array ('kind' => 'help', 'value' => 'noExpire'));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated),
+					2 => array ('kind' => 'help', 'value' => 'deactivated'));
+				$locked = false;
+				if (isset($this->attributes['sambaAcctFlags'][0]) && (strpos($this->attributes['sambaAcctFlags'][0], "L") !== false)) {
+					$locked = true;
+				}
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is locked') ),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsL', 'type' => 'checkbox', 'checked' => $locked),
+					2 => array ('kind' => 'help', 'value' => 'locked'));
+	
+				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				if (isset($this->attributes['sambaPwdCanChange'][0])) {
+					$date = getdate($this->attributes['sambaPwdCanChange'][0]);
+					$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				}
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('User can change password')),
+					array('kind' => 'table', 'value' => array(array(
+						array('kind' => 'text', 'text' => $dateValue),
+						array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdCanChange', 'type' => 'submit', 'value' => _('Change'))
+					))),
+					array('kind' => 'help', 'value' => 'pwdCanChange' ));
+				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				if (isset($this->attributes['sambaPwdMustChange'][0])) {
+					$date = getdate($this->attributes['sambaPwdMustChange'][0]);
+					$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				}
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('User must change password')),
+					array('kind' => 'table', 'value' => array(array(
+						array('kind' => 'text', 'text' => $dateValue),
+						array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdMustChange', 'type' => 'submit', 'value' => _('Change'))
+					))),
+					array('kind' => 'help', 'value' => 'pwdMustChange' ));
+				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				if (isset($this->attributes['sambaKickoffTime'][0])) {
+					$date = getdate($this->attributes['sambaKickoffTime'][0]);
+					$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				}
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Account expiration date')),
+					array('kind' => 'table', 'value' => array(array(
+						array('kind' => 'text', 'text' => $dateValue),
+						array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaKickoffTime', 'type' => 'submit', 'value' => _('Change'))
+					))),
+					array('kind' => 'help', 'value' => 'expireDate' ));
+	
+				$drives = array('-');
+				for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+				if ($this->attributes['sambaHomeDrive'][0]) {
+					$selected = array ($this->attributes['sambaHomeDrive'][0]);
+				}
+				else $selected = array('-');
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home drive') ),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'homeDrive' ));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
+					1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaHomePath'][0]),
+					2 => array ( 'kind' => 'help', 'value' => 'homePath' ));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
+					1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaProfilePath'][0]),
+					2 => array ( 'kind' => 'help', 'value' => 'profilePath' ));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon script') ),
+					1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaLogonScript'][0]),
+					2 => array ( 'kind' => 'help', 'value' => 'scriptPath' ));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_sambaUserWorkstations_open', 'value' => _('Edit workstations')),
+					2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
+	
+				$names = array_keys($this->rids);
+				$wrid=false;
+				$options = array();
+				$selected = array();
+				for ($i=0; $i<count($names); $i++) {
+					if ($this->attributes['sambaPrimaryGroupSID'][0]==$SID."-".$this->rids[$names[$i]]) {
+						$selected[] = $names[$i];
+						$wrid=true;
+					}
+					else $options[] = $names[$i];
+				}
+				if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+					else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'group' ));
+				// display if group SID should be mapped to a well known SID
+				$options = array_keys($this->rids);
+				$options[] = '-';
+				$selected = array();
+				if ($this->attributes['sambaSID'][0]) {
+					$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
+					$specialRids = array_flip($this->rids);
+					if (in_array($rid, $this->rids)) {
+						$selected = array($specialRids[$rid]);
+					}
+					else {
+						$selected = array('-');
+					}
+				}
+				else $selected[] = "-";
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'specialUser' ));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') . "*" ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
+				2 => array ( 'kind' => 'help', 'value' => 'domain' ));
+			// logon hours
+			if ($_SESSION[$this->base]->type=='user') {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon hours') ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit logon hours')),
+					2 => array ( 'kind' => 'help', 'value' => 'logonHours' ));
+			}
+			// reset host password
+			if ($_SESSION[$this->base]->type=='host') {
+				$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Reset')),
+					2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
+				}
 		}
-		for ($i=0; $i<count($sambaDomains); $i++ ) {
-			$sambaDomainNames[] = $sambaDomains[$i]->name;
-			if (isset($domainSID)) {
-				if ($domainSID == $sambaDomains[$i]->SID) {
-					$SID = $domainSID;
-					$sel_domain = $sambaDomains[$i]->name;
-				}
-			}
-			elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
-				if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
-					$SID = $sambaDomains[$i]->SID;
-					$sel_domain = $sambaDomains[$i]->name;
-				}
-			}
+		else {
+			$return[] = array(
+				array('kind' => 'text', 'text' => '&nbsp;'),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_attributes_addObjectClass', 'value' => _('Add Samba 3 account'))
+			);
 		}
-
-		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Display name')),
-			1 => array('kind' => 'input', 'type' => 'text', 'name' => 'displayName', 'size' => '20', 'value' => $this->attributes['displayName'][0]),
-			2 => array('kind' => 'help', 'value' => 'displayName'));
-		if ($_SESSION[$this->base]->type=='user') {
-			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_h', 'type' => 'hidden', 'value' => $canchangedate['hours']),
-					1 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_m', 'type' => 'hidden', 'value' => $canchangedate['minutes']),
-					2 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_s', 'type' => 'hidden', 'value' => $canchangedate['seconds']),
-					3 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_h', 'type' => 'hidden', 'value' => $mustchangedate['hours']),
-					4 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
-					5 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
-					6 => array ( 'kind' => 'input', 'name' => 'sambaExpire_h', 'type' => 'hidden', 'value' => $expiredate['hours']),
-					7 => array ( 'kind' => 'input', 'name' => 'sambaExpire_m', 'type' => 'hidden', 'value' => $expiredate['minutes']),
-					8 => array ( 'kind' => 'input', 'name' => 'sambaExpire_s', 'type' => 'hidden', 'value' => $expiredate['seconds']),
-					9 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Samba password')),
-				1 => array('kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'password'));
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Repeat password')),
-				1 => array('kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
-			if (isset($_SESSION[$this->base]->module['posixAccount']->clearTextPassword)) {
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
-					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
-					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
-			}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd),
-				2 => array ('kind' => 'help', 'value' => 'noPassword'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire),
-				2 => array ('kind' => 'help', 'value' => 'noExpire'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated),
-				2 => array ('kind' => 'help', 'value' => 'deactivated'));
-			$locked = false;
-			if (isset($this->attributes['sambaAcctFlags'][0]) && (strpos($this->attributes['sambaAcctFlags'][0], "L") !== false)) {
-				$locked = true;
-			}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is locked') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsL', 'type' => 'checkbox', 'checked' => $locked),
-				2 => array ('kind' => 'help', 'value' => 'locked'));
-
-			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-			if (isset($this->attributes['sambaPwdCanChange'][0])) {
-				$date = getdate($this->attributes['sambaPwdCanChange'][0]);
-				$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
-			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('User can change password')),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => $dateValue),
-					array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdCanChange', 'type' => 'submit', 'value' => _('Change'))
-				))),
-				array('kind' => 'help', 'value' => 'pwdCanChange' ));
-			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-			if (isset($this->attributes['sambaPwdMustChange'][0])) {
-				$date = getdate($this->attributes['sambaPwdMustChange'][0]);
-				$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
-			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('User must change password')),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => $dateValue),
-					array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdMustChange', 'type' => 'submit', 'value' => _('Change'))
-				))),
-				array('kind' => 'help', 'value' => 'pwdMustChange' ));
-			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-			if (isset($this->attributes['sambaKickoffTime'][0])) {
-				$date = getdate($this->attributes['sambaKickoffTime'][0]);
-				$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
-			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Account expiration date')),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => $dateValue),
-					array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaKickoffTime', 'type' => 'submit', 'value' => _('Change'))
-				))),
-				array('kind' => 'help', 'value' => 'expireDate' ));
-
-			$drives = array('-');
-			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
-			if ($this->attributes['sambaHomeDrive'][0]) {
-				$selected = array ($this->attributes['sambaHomeDrive'][0]);
-			}
-			else $selected = array('-');
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home drive') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'homeDrive' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
-				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaHomePath'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'homePath' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
-				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaProfilePath'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'profilePath' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon script') ),
-				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaLogonScript'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'scriptPath' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_sambaUserWorkstations_open', 'value' => _('Edit workstations')),
-				2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
-
-			$names = array_keys($this->rids);
-			$wrid=false;
-			$options = array();
-			$selected = array();
-			for ($i=0; $i<count($names); $i++) {
-				if ($this->attributes['sambaPrimaryGroupSID'][0]==$SID."-".$this->rids[$names[$i]]) {
-					$selected[] = $names[$i];
-					$wrid=true;
-				}
-				else $options[] = $names[$i];
-			}
-			if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
-				else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'group' ));
-			// display if group SID should be mapped to a well known SID
-			$options = array_keys($this->rids);
-			$options[] = '-';
-			$selected = array();
-			if ($this->attributes['sambaSID'][0]) {
-				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
-				$specialRids = array_flip($this->rids);
-				if (in_array($rid, $this->rids)) {
-					$selected = array($specialRids[$rid]);
-				}
-				else {
-					$selected = array('-');
-				}
-			}
-			else $selected[] = "-";
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'specialUser' ));
-			}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') . "*" ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
-			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
-		// logon hours
-		if ($_SESSION[$this->base]->type=='user') {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon hours') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit logon hours')),
-				2 => array ( 'kind' => 'help', 'value' => 'logonHours' ));
-		}
-		// reset host password
-		if ($_SESSION[$this->base]->type=='host') {
-			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Reset')),
-				2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
-			}
 		return $return;
 	}
 
