@@ -920,8 +920,13 @@ class sambaSamAccount extends baseModule {
 	
 				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if (isset($this->attributes['sambaPwdCanChange'][0])) {
-					$date = getdate($this->attributes['sambaPwdCanChange'][0]);
-					$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					if ($this->attributes['sambaPwdCanChange'][0] > 2147483648) {
+						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					}
+					else {
+						$date = getdate($this->attributes['sambaPwdCanChange'][0]);
+						$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					}
 				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('User can change password')),
@@ -932,8 +937,13 @@ class sambaSamAccount extends baseModule {
 					array('kind' => 'help', 'value' => 'pwdCanChange' ));
 				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if (isset($this->attributes['sambaPwdMustChange'][0])) {
-					$date = getdate($this->attributes['sambaPwdMustChange'][0]);
-					$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					if ($this->attributes['sambaPwdMustChange'][0] > 2147483648) {
+						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					}
+					else {
+						$date = getdate($this->attributes['sambaPwdMustChange'][0]);
+						$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					}
 				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('User must change password')),
@@ -944,8 +954,13 @@ class sambaSamAccount extends baseModule {
 					array('kind' => 'help', 'value' => 'pwdMustChange' ));
 				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if (isset($this->attributes['sambaKickoffTime'][0])) {
-					$date = getdate($this->attributes['sambaKickoffTime'][0]);
-					$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					if ($this->attributes['sambaKickoffTime'][0] > 2147483648) {
+						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					}
+					else {
+						$date = getdate($this->attributes['sambaKickoffTime'][0]);
+						$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					}
 				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Account expiration date')),
