@@ -791,7 +791,20 @@ class accountContainer {
 	/** True if this is a newly created account */
 	var $isNewAccount;
 
-
+	/**
+	 * Returns the account module with the given class name
+	 *
+	 * @param string $name class name (e.g. posixAccount)
+	 */
+	function getAccountModule($name) {
+		if (isset($this->module[$name])) {
+			return $this->module[$name];
+		}
+		else {
+			return null;
+		}
+	}	
+	
 	/**
 	* Returns the accout type of this object (e.g. user, group, host).
 	*
