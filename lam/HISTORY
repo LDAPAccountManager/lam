@@ -2,6 +2,8 @@
   - tabular design for account pages
   - show DN on account pages
   - Samba 3: made Samba account optional
+  - fixed bugs:
+   -> LAM Pro: UTF-8 characters are invalid displayed on configuration page (1788752)
 
 
 08.08.2007 2.0.0

@@ -5,7 +5,7 @@ Installation Instructions for LAM
 
 1. Requirements
 
-   - Apache webserver (SSL optional) with PHP module (PHP with
+   - Apache webserver (SSL optional) with PHP module (PHP 5 (>= 5.2) with
      ldap, gettext, xml and optional mcrypt)
    - some LAM plugins may require additional PHP extensions (you will get a
      note on the login page if something is missing)
@@ -52,7 +52,7 @@ Installation Instructions for LAM
 
 3. Setting up PHP
 
-   LAM runs with PHP5.
+   LAM runs with PHP5 (>= 5.2).
 
    Needed changes in your php.ini:
 
