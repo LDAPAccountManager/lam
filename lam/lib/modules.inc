@@ -726,6 +726,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 * @package modules
 */
 class accountContainer {
+	
 	/**
 	* Constructor
 	*
@@ -780,7 +781,7 @@ class accountContainer {
 	var $order;
 
 	/** Name of accountContainer variable in session */
-	var $base;
+	private $base;
 
 	/** This variable stores the name of the currently displayed page */
 	var $current_page;
@@ -974,7 +975,7 @@ class accountContainer {
 		if ($this->order[$this->current_page] == "main") $class = $this->type . "list-edit";
 		echo "<tr><td width=\"$buttonWidth\" style=\"padding:0px;\" colspan=2>";
 		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $class . "\"><td align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
+		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
 		echo "<input style=\"width:" . $buttonWidth ."em;margin:2px; border:1px solid;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
@@ -986,14 +987,15 @@ class accountContainer {
 		// Loop for module
 		// $x is used to count up tabindex
 		for ($i=1; $i<count($this->order); $i++ ) {
+			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
+			// skip hidden buttons
+			if ($buttonStatus == 'hidden') continue;
 			$class = $this->type . "list-head";
 			if ($this->order[$this->current_page] == $this->order[$i]) $class = $this->type . "list-edit";
 			echo "<td width=\"$buttonWidth\" style=\"padding:0px;\">\n";
 			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
-			echo "<tr class=\"" . $class . "\"><td align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
-			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
-			// skip hidden buttons
-			if ($buttonStatus == 'hidden') continue;
+			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
+				echo " align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
 			// print normal button
 			echo "<input style=\"width:" . $buttonWidth ."em;margin:2px; border:1px solid;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
