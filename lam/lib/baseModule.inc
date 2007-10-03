@@ -580,7 +580,7 @@ abstract class baseModule {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
-		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
 
 	/**
