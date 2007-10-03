@@ -480,7 +480,7 @@ class posixAccount extends baseModule {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Remove primary group from additional groups
 		for ($i=0; $i<count($this->groups); $i++) {
 			if ($this->groups[$i]==$_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
@@ -676,12 +676,12 @@ class posixAccount extends baseModule {
 			if (($this->scope == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
-			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson'])) {
-				if ($_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0]) {
-					$this->attributes['cn'][0] = $_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0] . " " . $_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0];
+			elseif (isset($this->getAccountContainer()->module['inetOrgPerson'])) {
+				if ($this->getAccountContainer()->module['inetOrgPerson']->attributes['givenName'][0]) {
+					$this->attributes['cn'][0] = $this->getAccountContainer()->module['inetOrgPerson']->attributes['givenName'][0] . " " . $this->getAccountContainer()->module['inetOrgPerson']->attributes['sn'][0];
 				}
-				elseif ($_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0]) {
-					$this->attributes['cn'][0] = $_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0];
+				elseif ($this->getAccountContainer()->module['inetOrgPerson']->attributes['sn'][0]) {
+					$this->attributes['cn'][0] = $this->getAccountContainer()->module['inetOrgPerson']->attributes['sn'][0];
 				}
 				else {
 					$this->attributes['cn'][0] = $_POST['uid'];
@@ -698,11 +698,11 @@ class posixAccount extends baseModule {
 		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($_POST['gidNumber']);
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
-		if ($_SESSION[$this->base]->type=='user') {
+		if ($this->getAccountContainer()->type=='user') {
 			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
 		}
-		if ($_SESSION[$this->base]->type=='host') {
+		if ($this->getAccountContainer()->type=='host') {
 			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 		}
@@ -742,13 +742,13 @@ class posixAccount extends baseModule {
 				}
 			}
 		}
-		if ($_SESSION[$this->base]->type=='user') {
+		if ($this->getAccountContainer()->type=='user') {
 			if (($this->attributes['uid'][0] != $_POST['uid']) &&  !get_preg($_POST['uid'], '!upper'))
 			$errors[] = $this->messages['uid'][1];
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
 			$errors[] = $this->messages['homeDirectory'][0];
 		}
-		if ($_SESSION[$this->base]->type=='user') {
+		if ($this->getAccountContainer()->type=='user') {
 			$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
 			if ($this->attributes['uid'][0] != '')
 			$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
@@ -757,7 +757,7 @@ class posixAccount extends baseModule {
 			if ( !get_preg($this->attributes['uid'][0], 'username'))
 			$errors[] = $this->messages['uid'][2];
 		}
-		if ($_SESSION[$this->base]->type=='host') {
+		if ($this->getAccountContainer()->type=='host') {
 			// add "$" to uid if needed
 			if (substr($this->attributes['uid'][0], -1, 1) != '$') {
 				$this->attributes['uid'][0] .= '$';
@@ -781,13 +781,13 @@ class posixAccount extends baseModule {
 		// Change uid to a new uid until a free uid is found
 		else
 		while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', array('user', 'host'))) {
-			if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
+			if ($this->getAccountContainer()->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
 			// get last character of username
 			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
 			// Last character is no number
 			if ( !ereg('^([0-9])+$', $lastchar)) {
 				// Last character is no number. Therefore we only have to add "2" to it.
-				if ($_SESSION[$this->base]->type=='host') {
+				if ($this->getAccountContainer()->type=='host') {
 					$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
 				}
 				else {
@@ -811,14 +811,14 @@ class posixAccount extends baseModule {
 				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
 				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
 				// Put username together
-				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
+				if ($this->getAccountContainer()->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
 				else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
 			}
 		}
 		// Show warning if lam has changed username
 		if ($this->attributes['uid'][0] != $_POST['uid']) {
-			if ($_SESSION[$this->base]->type=='user') $errors[] = $this->messages['uid'][5];
-			if ($_SESSION[$this->base]->type=='host') $errors[] = $this->messages['uid'][6];
+			if ($this->getAccountContainer()->type=='user') $errors[] = $this->messages['uid'][5];
+			if ($this->getAccountContainer()->type=='host') $errors[] = $this->messages['uid'][6];
 		}
 		$attributeList = array('gecos', 'homeDirectory');
 		for ($i = 0; $i < sizeof($attributeList); $i++) {
@@ -934,7 +934,7 @@ class posixAccount extends baseModule {
 			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
 			2 => array('kind' => 'help', 'value' => 'gidNumber'));
 
-		if ($_SESSION[$this->base]->type=='user') {
+		if ($this->getAccountContainer()->type=='user') {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Additional groups')),
 				1 => array('kind' => 'input', 'name' => 'form_subpage_posixAccount_group_open', 'type' => 'submit', 'value' => _('Edit groups')),
@@ -943,7 +943,7 @@ class posixAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Home directory').'*'),
 				1 => array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				2 => array('kind' => 'help', 'value' => 'homeDirectory'));
-			if ($_SESSION[$this->base]->isNewAccount && isset($_SESSION['config']->scriptPath) && ($_SESSION['config']->scriptPath != '')) {
+			if ($this->getAccountContainer()->isNewAccount && isset($_SESSION['config']->scriptPath) && ($_SESSION['config']->scriptPath != '')) {
 				// get list of lamdaemon servers
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {

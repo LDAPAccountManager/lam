@@ -410,9 +410,9 @@ class inetOrgPerson extends baseModule {
 	* @return boolean true, if all is ok
 	*/
 	function module_complete() {
-		if (!$_SESSION[$this->base]->isNewAccount) {
+		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
-			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];
 			if (is_array($objectClasses) && !in_array('inetOrgPerson', $objectClasses)) {
 				return true;
 			}
@@ -427,9 +427,9 @@ class inetOrgPerson extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	function getButtonStatus() {
-		if (!$_SESSION[$this->base]->isNewAccount) {
+		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
-			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];
 			if (is_array($objectClasses) && !in_array('inetOrgPerson', $objectClasses)) {
 				return "disabled";
 			}
@@ -447,32 +447,32 @@ class inetOrgPerson extends baseModule {
 	*/
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
-		if (!$_SESSION[$this->base]->isNewAccount && !in_array('inetOrgPerson', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+		if (!$this->getAccountContainer()->isNewAccount && !in_array('inetOrgPerson', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return array();
 		}
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// do not set password if posixAccount is active
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (in_array('posixAccount', $modules)) {
-			if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword'])) {
-				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
+			if (isset($return[$this->getAccountContainer()->dn]['modify']['userPassword'])) {
+				unset($return[$this->getAccountContainer()->dn]['modify']['userPassword']);
 			}
-			if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword'])) {
-				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
+			if (isset($return[$this->getAccountContainer()->dn]['add']['userPassword'])) {
+				unset($return[$this->getAccountContainer()->dn]['add']['userPassword']);
 			}
 		}
 		// postalAddress, facsimileTelephoneNumber and jpegPhoto need special removing
-		if (isset($return[$_SESSION[$this->base]->dn]['remove']['postalAddress'])) {
-			$return[$_SESSION[$this->base]->dn]['modify']['postalAddress'] = array();
-			unset($return[$_SESSION[$this->base]->dn]['remove']['postalAddress']);
+		if (isset($return[$this->getAccountContainer()->dn]['remove']['postalAddress'])) {
+			$return[$this->getAccountContainer()->dn]['modify']['postalAddress'] = array();
+			unset($return[$this->getAccountContainer()->dn]['remove']['postalAddress']);
 		}
-		if (isset($return[$_SESSION[$this->base]->dn]['remove']['facsimileTelephoneNumber'])) {
-			$return[$_SESSION[$this->base]->dn]['modify']['facsimileTelephoneNumber'] = array();
-			unset($return[$_SESSION[$this->base]->dn]['remove']['facsimileTelephoneNumber']);
+		if (isset($return[$this->getAccountContainer()->dn]['remove']['facsimileTelephoneNumber'])) {
+			$return[$this->getAccountContainer()->dn]['modify']['facsimileTelephoneNumber'] = array();
+			unset($return[$this->getAccountContainer()->dn]['remove']['facsimileTelephoneNumber']);
 		}
-		if (isset($return[$_SESSION[$this->base]->dn]['remove']['jpegPhoto'])) {
-			$return[$_SESSION[$this->base]->dn]['modify']['jpegPhoto'] = array();
-			unset($return[$_SESSION[$this->base]->dn]['remove']['jpegPhoto']);
+		if (isset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto'])) {
+			$return[$this->getAccountContainer()->dn]['modify']['jpegPhoto'] = array();
+			unset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto']);
 		}
 		return $return;
 	}
@@ -634,7 +634,7 @@ class inetOrgPerson extends baseModule {
 		// password
 		if (!in_array('posixAccount', $modules)) {
 			// new account, show input fields
-			if ($_SESSION[$this->base]->isNewAccount) {
+			if ($this->getAccountContainer()->isNewAccount) {
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Password') ),
 					array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),

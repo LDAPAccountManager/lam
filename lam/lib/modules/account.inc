@@ -151,9 +151,9 @@ class account extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	function getButtonStatus() {
-		if (!$_SESSION[$this->base]->isNewAccount) {
+		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
-			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];
 			if (is_array($objectClasses) && !in_array('account', $objectClasses)) {
 				return "disabled";
 			}
@@ -171,11 +171,11 @@ class account extends baseModule {
 	*/
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
-		if (!$_SESSION[$this->base]->isNewAccount && !in_array('account', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+		if (!$this->getAccountContainer()->isNewAccount && !in_array('account', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return array();
 		}
 		// Get easy attributes
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Return attributes
 		return $return;
 	}

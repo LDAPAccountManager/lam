@@ -219,13 +219,13 @@ class shadowAccount extends baseModule {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Set shadowLastchange manual.
-		if (isset($_SESSION[$this->base]->module['posixAccount']->clearTextPassword)) {
-			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
+		if (isset($this->getAccountContainer()->module['posixAccount']->clearTextPassword)) {
+			$return[$this->getAccountContainer()->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
 		}
-		elseif ($_SESSION[$this->base]->isNewAccount) {
-			$return[$_SESSION[$this->base]->dn]['add']['shadowLastChange'] = array(intval(time()/3600/24));
+		elseif ($this->getAccountContainer()->isNewAccount) {
+			$return[$this->getAccountContainer()->dn]['add']['shadowLastChange'] = array(intval(time()/3600/24));
 		}
 		return $return;
 	}

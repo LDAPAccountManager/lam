@@ -206,7 +206,7 @@ class sambaDomain extends baseModule {
 	function display_html_attributes() {
 		$return = array();
 		// domain name
-		if ($_SESSION[$this->base]->isNewAccount) {
+		if ($this->getAccountContainer()->isNewAccount) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Domain name').'*'),
 				1 => array('kind' => 'input', 'name' => 'domainName', 'type' => 'text', 'value' => $this->attributes['sambaDomainName'][0]),
@@ -219,7 +219,7 @@ class sambaDomain extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'domainName'));
 		}
 		// domain SID
-		if ($_SESSION[$this->base]->isNewAccount) {
+		if ($this->getAccountContainer()->isNewAccount) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Domain SID').'*'),
 				1 => array('kind' => 'input', 'name' => 'domainSID', 'type' => 'text', 'value' => $this->attributes['sambaSID'][0]),
@@ -326,7 +326,7 @@ class sambaDomain extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'nextGroupRID'));
 		// RID base
 		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) $this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
-		if ($_SESSION[$this->base]->isNewAccount) {
+		if ($this->getAccountContainer()->isNewAccount) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('RID base').'*'),
 				1 => array('kind' => 'input', 'name' => 'RIDbase', 'type' => 'text', 'value' => $this->attributes['sambaAlgorithmicRidBase'][0]),
@@ -349,7 +349,7 @@ class sambaDomain extends baseModule {
 	*/
 	function process_attributes() {
 		$errors = array();
-		if ($_SESSION[$this->base]->isNewAccount) {
+		if ($this->getAccountContainer()->isNewAccount) {
 			// domain SID
 			if (!get_preg($_POST['domainSID'], 'domainSID')) {
 				$errors[] = $this->messages['domainSID'][0];

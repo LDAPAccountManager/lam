@@ -9,6 +9,10 @@ Style changes:
   - "fieldset.<type>edit fieldset" and "fieldset.<type>edit fieldset fieldset" were removed.
   - "table.<type>list input" changed to "table.<type>list input,select"
 
+baseModule:
+  - The class variable $base is no longer visible in child classes. Please use
+    $this->getAccountContainer() to access the accountContainer object.
+
 
 
 1.3.0 -> 2.0.0

@@ -200,8 +200,8 @@ class sambaGroupMapping extends baseModule {
 			}
 			else $options[] = $names[$i];
 		}
-		if ($wrid) $options[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
-			else $selected[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+		if ($wrid) $options[] = $this->getAccountContainer()->module['posixGroup']->attributes['cn'][0];
+			else $selected[] = $this->getAccountContainer()->module['posixGroup']->attributes['cn'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
@@ -390,7 +390,7 @@ class sambaGroupMapping extends baseModule {
 
 
 	function module_ready() {
-		if ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]=='') return false;
+		if ($this->getAccountContainer()->module['posixGroup']->attributes['gidNumber'][0]=='') return false;
 		return true;
 	}
 
@@ -429,7 +429,7 @@ class sambaGroupMapping extends baseModule {
 				// Get Domain SID
 				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
 				// Do a check if special group is unique
-				if ($_SESSION[$this->base]->isNewAccount) {
+				if ($this->getAccountContainer()->isNewAccount) {
 					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
 						$message = $this->messages['sambaSID'][0];
 						$message[] = $rids[$i];
@@ -438,7 +438,7 @@ class sambaGroupMapping extends baseModule {
 				}
 			}
 		}
-		if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
+		if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($this->getAccountContainer()->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
 		// Return error-messages
 		return $errors;
 	}
@@ -470,8 +470,8 @@ class sambaGroupMapping extends baseModule {
 				$wrid=true;
 			}
 		}
-		if (!$wrid) $this->attributes['sambaSID'][0] == $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+1+$RIDbase);
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		if (!$wrid) $this->attributes['sambaSID'][0] == $SID."-".($this->getAccountContainer()->module['posixGroup']->attributes['gidNumber'][0]*2+1+$RIDbase);
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 
 		return $return;
 		}

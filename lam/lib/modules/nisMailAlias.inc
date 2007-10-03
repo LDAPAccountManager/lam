@@ -117,7 +117,7 @@ class nisMailAlias extends baseModule {
 	*/
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
-		if (!$_SESSION[$this->base]->isNewAccount && !in_array('nisMailAlias', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+		if (!$this->getAccountContainer()->isNewAccount && !in_array('nisMailAlias', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return array();
 		}
 		return parent::save_attributes();
@@ -207,9 +207,9 @@ class nisMailAlias extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	function getButtonStatus() {
-		if (!$_SESSION[$this->base]->isNewAccount) {
+		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
-			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];
 			if (is_array($objectClasses) && !in_array('nisMailAlias', $objectClasses)) {
 				return "disabled";
 			}

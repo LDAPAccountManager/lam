@@ -52,7 +52,7 @@ abstract class baseModule {
 	protected $selfServiceSettings;
 
 	/** name of parent accountContainer ($_SESSION[$base]) */
-	protected $base;
+	private $base;
 
 	/** contains all ldap attributes which should be written */
 	protected $attributes;
@@ -747,6 +747,21 @@ abstract class baseModule {
 	function checkSelfServiceSettings($options) {
 		// needs to be implemented by the subclasses, if needed
 		return array();
+	}
+	
+	/**
+	 * Returns the accountContainer object.
+	 * 
+	 * @return accountContainer accountContainer object
+	 *
+	 */
+	protected function getAccountContainer() {
+		if (isset($this->base) && isset($_SESSION[$this->base])) {
+			return $_SESSION[$this->base];
+		}
+		else {
+			return null;
+		}
 	}
 
 }
