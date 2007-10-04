@@ -20,7 +20,7 @@ LAM - Readme
                               Tilo Lutz <tilolutz@gmx.de>
 
   Requirements:
-    PHP5 (>= 5.2)
+    PHP5 (>= 5.1)
     Openldap (2.0 or greater)
     A web-browser that supports CSS
 

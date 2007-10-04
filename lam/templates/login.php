@@ -53,8 +53,8 @@ if (! function_exists('gettext') || !function_exists('_')) {
 if (! function_exists('utf8_decode')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
 }
-// check if PHP >= 5.2
-if (version_compare(phpversion(), '5.2.0') < 0) {
+// check if PHP >= 5.1
+if (version_compare(phpversion(), '5.1.0') < 0) {
 	$criticalErrors[] = array("ERROR", "LAM needs PHP 5 greater or equal as 5.2.0!", "Please upgrade your PHP installation.");
 }
 // check file permissions
