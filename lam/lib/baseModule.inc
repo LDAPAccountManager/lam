@@ -43,7 +43,7 @@ abstract class baseModule {
 	protected $meta;
 
 	/** the account type of this module (user, group, host) */
-	protected $scope;
+	private $scope;
 
 	/** configuration settings of all modules */
 	protected $moduleSettings;
@@ -80,7 +80,7 @@ abstract class baseModule {
 	/**
 	* This function fills the $messages variable with output messages from this module.
 	*/
-	function load_Messages() {
+	protected function load_Messages() {
 	}
 
 	/**

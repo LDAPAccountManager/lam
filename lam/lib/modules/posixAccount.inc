@@ -182,7 +182,7 @@ class posixAccount extends baseModule {
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
 		// user specific upload options
-		if (($this->scope == 'user') && $_SESSION['loggedIn']) {
+		if (($this->get_scope() == 'user') && $_SESSION['loggedIn']) {
 			$return['upload_columns'] = array(
 			array(
 				'name' => 'posixAccount_userName',
@@ -262,7 +262,7 @@ class posixAccount extends baseModule {
 			);
 		}
 		// host specific upload options
-		elseif ($this->scope == 'host') {
+		elseif ($this->get_scope() == 'host') {
 			$return['upload_columns'] = array(
 			array(
 				'name' => 'posixAccount_hostName',
@@ -673,15 +673,15 @@ class posixAccount extends baseModule {
 		$this->attributes['uid'][0] = $_POST['uid'];
 		$this->attributes['cn'][0] = $_POST['cn'];
 		if ($this->attributes['cn'][0] == '') {
-			if (($this->scope == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
+			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
-			elseif (isset($this->getAccountContainer()->module['inetOrgPerson'])) {
-				if ($this->getAccountContainer()->module['inetOrgPerson']->attributes['givenName'][0]) {
-					$this->attributes['cn'][0] = $this->getAccountContainer()->module['inetOrgPerson']->attributes['givenName'][0] . " " . $this->getAccountContainer()->module['inetOrgPerson']->attributes['sn'][0];
+			elseif (isset($this->getAccountContainer()->getAccountModule('inetOrgPerson'))) {
+				if ($this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['givenName'][0]) {
+					$this->attributes['cn'][0] = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['givenName'][0] . " " . $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0];
 				}
-				elseif ($this->getAccountContainer()->module['inetOrgPerson']->attributes['sn'][0]) {
-					$this->attributes['cn'][0] = $this->getAccountContainer()->module['inetOrgPerson']->attributes['sn'][0];
+				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0]) {
+					$this->attributes['cn'][0] = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0];
 				}
 				else {
 					$this->attributes['cn'][0] = $_POST['uid'];
@@ -698,11 +698,11 @@ class posixAccount extends baseModule {
 		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($_POST['gidNumber']);
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
 		}
-		if ($this->getAccountContainer()->type=='host') {
+		if ($this->get_scope()=='host') {
 			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 		}
@@ -742,13 +742,13 @@ class posixAccount extends baseModule {
 				}
 			}
 		}
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			if (($this->attributes['uid'][0] != $_POST['uid']) &&  !get_preg($_POST['uid'], '!upper'))
 			$errors[] = $this->messages['uid'][1];
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
 			$errors[] = $this->messages['homeDirectory'][0];
 		}
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
 			if ($this->attributes['uid'][0] != '')
 			$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
@@ -757,7 +757,7 @@ class posixAccount extends baseModule {
 			if ( !get_preg($this->attributes['uid'][0], 'username'))
 			$errors[] = $this->messages['uid'][2];
 		}
-		if ($this->getAccountContainer()->type=='host') {
+		if ($this->get_scope()=='host') {
 			// add "$" to uid if needed
 			if (substr($this->attributes['uid'][0], -1, 1) != '$') {
 				$this->attributes['uid'][0] .= '$';
@@ -781,13 +781,13 @@ class posixAccount extends baseModule {
 		// Change uid to a new uid until a free uid is found
 		else
 		while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', array('user', 'host'))) {
-			if ($this->getAccountContainer()->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
+			if ($this->get_scope()=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
 			// get last character of username
 			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
 			// Last character is no number
 			if ( !ereg('^([0-9])+$', $lastchar)) {
 				// Last character is no number. Therefore we only have to add "2" to it.
-				if ($this->getAccountContainer()->type=='host') {
+				if ($this->get_scope()=='host') {
 					$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
 				}
 				else {
@@ -811,14 +811,14 @@ class posixAccount extends baseModule {
 				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
 				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
 				// Put username together
-				if ($this->getAccountContainer()->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
+				if ($this->get_scope()=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
 				else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
 			}
 		}
 		// Show warning if lam has changed username
 		if ($this->attributes['uid'][0] != $_POST['uid']) {
-			if ($this->getAccountContainer()->type=='user') $errors[] = $this->messages['uid'][5];
-			if ($this->getAccountContainer()->type=='host') $errors[] = $this->messages['uid'][6];
+			if ($this->get_scope()=='user') $errors[] = $this->messages['uid'][5];
+			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
 		}
 		$attributeList = array('gecos', 'homeDirectory');
 		for ($i = 0; $i < sizeof($attributeList); $i++) {
@@ -934,7 +934,7 @@ class posixAccount extends baseModule {
 			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
 			2 => array('kind' => 'help', 'value' => 'gidNumber'));
 
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Additional groups')),
 				1 => array('kind' => 'input', 'name' => 'form_subpage_posixAccount_group_open', 'type' => 'submit', 'value' => _('Edit groups')),
@@ -994,7 +994,7 @@ class posixAccount extends baseModule {
 	}
 
 	function display_html_delete() {
-		if ($this->scope == 'user' && isset($_SESSION['config']->scriptPath)) {
+		if ($this->get_scope() == 'user' && isset($_SESSION['config']->scriptPath)) {
 			$return[] = array (
 				0 => array('kind' => 'text', 'text' => _('Delete home directory')),
 				1 => array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
@@ -1077,7 +1077,7 @@ class posixAccount extends baseModule {
 	*/
 	function get_profileOptions() {
 		$return = array();
-		if ($this->scope == 'user') {
+		if ($this->get_scope() == 'user') {
 			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
@@ -1098,7 +1098,7 @@ class posixAccount extends baseModule {
 			1 => array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
 			2 => array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
 		}
-		elseif ($this->scope == 'host') {
+		elseif ($this->get_scope() == 'host') {
 			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			// primary Unix group
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
@@ -1312,7 +1312,7 @@ class posixAccount extends baseModule {
 				if ($gecos != "") $partialAccounts[$i]['gecos'] = $gecos;
 			}
 			// user specific attributes
-			if ($this->scope == 'user') {
+			if ($this->get_scope() == 'user') {
 				// additional groups
 				if ($rawAccounts[$i][$ids['posixAccount_additionalGroups']] != "") {
 					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_additionalGroups']]);
@@ -1414,7 +1414,7 @@ class posixAccount extends baseModule {
 				}
 			}
 			// host specific attributes
-			elseif ($this->scope == 'host') {
+			elseif ($this->get_scope() == 'host') {
 				// host name
 				if (in_array($rawAccounts[$i][$ids['posixAccount_hostName']], $existingUsers)) {
 					$errMsg = $this->messages['uid'][10];
@@ -1579,7 +1579,7 @@ class posixAccount extends baseModule {
 	*/
 	function getNextUIDs($count, &$errors) {
 		$ret = array();
-		if ($this->scope == "user") {
+		if ($this->get_scope() == "user") {
 			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
 		}

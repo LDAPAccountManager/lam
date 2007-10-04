@@ -261,19 +261,19 @@ class kolabUser extends baseModule {
 	*/
 	function display_html_attributes() {
 		if ($this->getAccountContainer()->isNewAccount) {
-			if (isset($this->getAccountContainer()->module['posixAccount'])) {
-				if (!$this->getAccountContainer()->module['posixAccount']->attributes['userPassword'][0]) {
-					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->module['posixAccount']->get_alias()));
+			if (isset($this->getAccountContainer()->getAccountModule('posixAccount'))) {
+				if (!$this->getAccountContainer()->getAccountModule('posixAccount')->attributes['userPassword'][0]) {
+					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('posixAccount')->get_alias()));
 				}
 			}
-			elseif (isset($this->getAccountContainer()->module['inetOrgPerson'])) {
-				if (!$this->getAccountContainer()->module['inetOrgPerson']->attributes['userPassword'][0]) {
-					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->module['inetOrgPerson']->get_alias()));
+			elseif (isset($this->getAccountContainer()->getAccountModule('inetOrgPerson'))) {
+				if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['userPassword'][0]) {
+					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
 				}
 			}
 		}
-		if (!$this->getAccountContainer()->module['inetOrgPerson']->attributes['mail'][0]) {
-			StatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->module['inetOrgPerson']->get_alias()));
+		if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['mail'][0]) {
+			StatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
 		}
 		$return = array();
 		// check if account is marked for deletion
@@ -581,13 +581,13 @@ class kolabUser extends baseModule {
 	* @return true, if account can be saved
 	*/
 	function module_complete() {
-		if (!$this->getAccountContainer()->module['inetOrgPerson']->attributes['mail'][0]) return false;
+		if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['mail'][0]) return false;
 		if ($this->getAccountContainer()->isNewAccount) {
-			if (isset($this->getAccountContainer()->module['posixAccount'])) {
-				if (!$this->getAccountContainer()->module['posixAccount']->attributes['userPassword'][0]) return false;
+			if (isset($this->getAccountContainer()->getAccountModule('posixAccount'))) {
+				if (!$this->getAccountContainer()->getAccountModule('posixAccount')->attributes['userPassword'][0]) return false;
 			}
-			elseif (isset($this->getAccountContainer()->module['inetOrgPerson'])) {
-				if (!$this->getAccountContainer()->module['inetOrgPerson']->attributes['userPassword'][0]) return false;
+			elseif (isset($this->getAccountContainer()->getAccountModule('inetOrgPerson'))) {
+				if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['userPassword'][0]) return false;
 			}
 		}
 		return true;

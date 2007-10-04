@@ -436,8 +436,8 @@ class sambaAccount extends baseModule {
 	var $rids;
 
 	function module_ready() {
-		if ($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
-		if ($this->getAccountContainer()->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
+		if ($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]=='') return false;
+		if ($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uidNumber'][0]=='') return false;
 		return true;
 	}
 
@@ -481,7 +481,7 @@ class sambaAccount extends baseModule {
 		*/
 		$special = false;
 		if ($this->attributes['rid'][0] < 1000) $special = true;
-		if (!$special) $this->attributes['rid'][0] == $this->getAccountContainer()->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
+		if (!$special) $this->attributes['rid'][0] == $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uidNumber'][0]*2+1000;
 		$rids = array_values($this->rids);
 		$wrid = false;
 		for ($i=0; $i<count($rids); $i++) {
@@ -490,7 +490,7 @@ class sambaAccount extends baseModule {
 				break;
 			}
 		}
-		if (!$wrid) $this->attributes['primaryGroupID'][0] = ($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
+		if (!$wrid) $this->attributes['primaryGroupID'][0] = ($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]*2)+1001;
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		return $return;
 		}
@@ -544,10 +544,10 @@ class sambaAccount extends baseModule {
 		}
 
 		// host attributes
-		if ($this->getAccountContainer()->type=='host') {
+		if ($this->get_scope()=='host') {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain computers')];
 			if ($_POST['ResetSambaPassword'] || (!$this->attributes['lmPassword'][0])) {
-				$hostname = $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0];
+				$hostname = $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
 				$this->attributes['lmPassword'][0] = lmPassword($hostname);
 				$this->attributes['ntPassword'][0] = ntPassword($hostname);
@@ -555,7 +555,7 @@ class sambaAccount extends baseModule {
 				}
 			}
 		// check values for user account
-		if ($this->scope == 'user') {
+		if ($this->get_scope() == 'user') {
 			$this->attributes['pwdCanChange'][0] = mktime(intval($_POST['pwdCanChange_h']), intval($_POST['pwdCanChange_m']),
 				intval($_POST['pwdCanChange_s']), intval($_POST['pwdCanChange_mon']), intval($_POST['pwdCanChange_day']),
 				intval($_POST['pwdCanChange_yea']));
@@ -575,13 +575,13 @@ class sambaAccount extends baseModule {
 					break;
 				}
 			}
-			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
+			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]*2)+1001;
 			if ($_POST['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
 			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
-				$this->attributes['lmPassword'][0] = lmPassword($this->getAccountContainer()->module['posixAccount']->clearTextPassword);
-				$this->attributes['ntPassword'][0] = ntPassword($this->getAccountContainer()->module['posixAccount']->clearTextPassword);
+				$this->attributes['lmPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword);
+				$this->attributes['ntPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword);
 				$this->attributes['pwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
@@ -605,16 +605,16 @@ class sambaAccount extends baseModule {
 				$this->attributes['rid'][0] = $this->rids[$_POST['rid']];
 			}
 			else {
-				$this->attributes['rid'][0] = $this->getAccountContainer()->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
+				$this->attributes['rid'][0] = $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uidNumber'][0]*2+1000;
 			}
-			$this->attributes['smbHome'][0] = str_replace('$user', $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0], $this->attributes['smbHome'][0]);
-			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['smbHome'][0]);
+			$this->attributes['smbHome'][0] = str_replace('$user', $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0], $this->attributes['smbHome'][0]);
+			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]), $this->attributes['smbHome'][0]);
 			if ($this->attributes['smbHome'][0] != $_POST['smbHome']) $errors[] = $this->messages['homePath'][1];
-			$this->attributes['scriptPath'][0] = str_replace('$user', $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
-			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['scriptPath'][0]);
+			$this->attributes['scriptPath'][0] = str_replace('$user', $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0], $this->attributes['scriptPath'][0]);
+			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]), $this->attributes['scriptPath'][0]);
 			if ($this->attributes['scriptPath'][0] != $_POST['scriptPath']) $errors[] = $this->messages['logonScript'][1];
-			$this->attributes['profilePath'][0] = str_replace('$user', $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0], $this->attributes['profilePath'][0]);
-			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['profilePath'][0]);
+			$this->attributes['profilePath'][0] = str_replace('$user', $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0], $this->attributes['profilePath'][0]);
+			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]), $this->attributes['profilePath'][0]);
 			if ($this->attributes['profiletPath'][0] != $_POST['profilePath']) $errors[] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
 					$errors[] = $this->messages['homePath'][0];
@@ -626,10 +626,10 @@ class sambaAccount extends baseModule {
 		// check values for host account
 		else {
 			if (!$this->attributes['rid'][0]) {
-				$this->attributes['rid'][0] = ($this->getAccountContainer()->module['posixAccount']->attributes['uidNumber'][0] * 2) + 1000;
+				$this->attributes['rid'][0] = ($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uidNumber'][0] * 2) + 1000;
 			}
 			if (!$this->attributes['primaryGroupID'][0]) {
-				$this->attributes['primaryGroupID'][0] = ($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0] * 2) + 1001;
+				$this->attributes['primaryGroupID'][0] = ($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0] * 2) + 1001;
 			}
 		}
 
@@ -647,7 +647,7 @@ class sambaAccount extends baseModule {
 	*/
 	function process_userWorkstations() {
 		// Load attributes
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			if (isset($_POST['availableUserWorkstations']) && isset($_POST['userWorkstations_add'])) { // Add workstations to list
 				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
 				$workstations = explode (',', $temp);
@@ -699,7 +699,7 @@ class sambaAccount extends baseModule {
 			1 => array('kind' => 'input', 'type' => 'text', 'name' => 'displayName', 'size' => '20', 'value' => $this->attributes['displayName'][0]),
 			2 => array('kind' => 'help', 'value' => 'displayName'));
 		// user attributes
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			if (isset($this->attributes['pwdCanChange'][0])) $canchangedate = getdate(intval($this->attributes['pwdCanChange'][0]));
 			else $canchangedate = getdate(0);
 			if (isset($this->attributes['pwdMustChange'][0])) $mustchangedate = getdate(intval($this->attributes['pwdMustChange'][0]));
@@ -718,7 +718,7 @@ class sambaAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Repeat password') ),
 				1 => array('kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'password'));
-			if (isset($this->getAccountContainer()->module['posixAccount']->clearTextPassword)) {
+			if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword)) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
 					2 => array ('kind' => 'help', 'value' => 'pwdUnix'));
@@ -779,8 +779,8 @@ class sambaAccount extends baseModule {
 				}
 				else $options[] = $names[$i];
 			}
-			if ($wrid) $options[] = $_SESSION['cache']->getgrnam($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]);
-				else $selected[] = $_SESSION['cache']->getgrnam($this->getAccountContainer()->module['posixAccount']->attributes['gidNumber'][0]);
+			if ($wrid) $options[] = $_SESSION['cache']->getgrnam($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]);
+				else $selected[] = $_SESSION['cache']->getgrnam($this->getAccountContainer()->getAccountModule('posixAccount')->attributes['gidNumber'][0]);
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 				1 => array ( 'kind' => 'select', 'name' => 'primaryGroupID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'group' ));
@@ -803,7 +803,7 @@ class sambaAccount extends baseModule {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 			1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
 			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
-		if ($this->getAccountContainer()->type=='host') {
+		if ($this->get_scope()=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'acctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
 				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Reset')),
@@ -817,7 +817,7 @@ class sambaAccount extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_userWorkstations() {
-		if ($this->getAccountContainer()->type=='user') {
+		if ($this->get_scope()=='user') {
 			// Get list of all hosts.
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaAccount', 'host');
 			if (is_array($result)) {

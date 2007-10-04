@@ -163,8 +163,8 @@ class quota extends baseModule {
 	}
 
 	function module_ready() {
-		if ($this->getAccountContainer()->type=='user' && $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0]=='') return false;
-		if ($this->getAccountContainer()->type=='group' && $this->getAccountContainer()->module['posixGroup']->attributes['cn'][0]=='') return false;
+		if ($this->get_scope()=='user' && $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0]=='') return false;
+		if ($this->get_scope()=='group' && $this->getAccountContainer()->getAccountModule('posixGroup')->attributes['cn'][0]=='') return false;
 		return true;
 	}
 
@@ -184,8 +184,8 @@ class quota extends baseModule {
 	function postModifyActions($newAccount) {
 		if (!isset($this->quota) || !is_array($this->quota)) return;
 		// determine if this is a user or group account
-		if ($this->getAccountContainer()->type=='user') $id = $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0];
-		if ($this->getAccountContainer()->type=='group') $id = $this->getAccountContainer()->module['posixGroup']->attributes['cn'][0];
+		if ($this->get_scope()=='user') $id = $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0];
+		if ($this->get_scope()=='group') $id = $this->getAccountContainer()->getAccountModule('posixGroup')->attributes['cn'][0];
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -204,7 +204,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
 					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
 			}
-			$ret = lamdaemon(array($id . " quota set " . $this->getAccountContainer()->type . " $quotastring\n"), $server);
+			$ret = lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
 		}
 	}
 
@@ -218,8 +218,8 @@ class quota extends baseModule {
 		$this->initQuotas();
 		if (!isset($this->quota) || !is_array($this->quota)) return true;
 		// determine if this is a user or group account
-		if ($this->getAccountContainer()->type=='user') $id = $this->getAccountContainer()->module['posixAccount']->attributes['uid'][0];
-		if ($this->getAccountContainer()->type=='group') $id = $this->getAccountContainer()->module['posixGroup']->attributes['cn'][0];
+		if ($this->get_scope()=='user') $id = $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0];
+		if ($this->get_scope()=='group') $id = $this->getAccountContainer()->getAccountModule('posixGroup')->attributes['cn'][0];
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -238,7 +238,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 				}
-			$ret = lamdaemon(array($id . " quota set " . $this->getAccountContainer()->type . " $quotastring\n"), $server);
+			$ret = lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
 		}
 		return true;
 	}
@@ -674,7 +674,7 @@ class quota extends baseModule {
 				$mpParts = split(":", $mountPoints[$m]);
 				$server = $mpParts[0];
 				$dir = $mpParts[1];
-				$quotaString = $name . " quota set " . $this->scope . " " . $dir . ',' .
+				$quotaString = $name . " quota set " . $this->get_scope() . " " . $dir . ',' .
 					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n";
 				$result = lamdaemon(array($quotaString), $server);
 				if (is_array($result)) {

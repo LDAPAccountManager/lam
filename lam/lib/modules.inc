@@ -760,10 +760,10 @@ class accountContainer {
 	* This variale stores the account type.
 	* Currently "user", "group" and "host" are supported.
 	*/
-	var $type;
+	private $type;
 
 	/** This is an array with all module objects */
-	var $module;
+	private $module;
 
 	/** DN suffix of the account */
 	var $dn;
@@ -778,16 +778,16 @@ class accountContainer {
 	var $attributes_orig;
 
 	/** Module order */
-	var $order;
+	private $order;
 
 	/** Name of accountContainer variable in session */
 	private $base;
 
 	/** This variable stores the name of the currently displayed page */
-	var $current_page;
+	private $current_page;
 
 	/** This variable is set to the pagename of a subpage if it should be displayed */
-	var $subpage;
+	private $subpage;
 
 	/** True if this is a newly created account */
 	var $isNewAccount;
