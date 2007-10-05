@@ -186,7 +186,7 @@ class lamUserList extends lamList {
 	 */
 	function listPrintTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
-		if (!is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
+		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
 		if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
 		// translate GID to group name
 		if (($attribute == "gidnumber") && ($this->trans_primary == "on")) {

@@ -265,12 +265,11 @@ class lamList {
 	function cmp_array(&$a, &$b) {
 		// sort specifies the sort column
 		$sort = $this->sortColumn;
-		$attr_array = $this->attrArray;
 		// sort by first column if no attribute is given
-		if (!$sort) $sort = strtolower($attr_array[0]);
+		if (!$sort) $sort = strtolower($this->attrArray[0]);
 		if ($sort != "dn") {
 			// sort by first attribute with name $sort
-			return strnatcasecmp($a[$sort][0], $b[$sort][0]);
+			return @strnatcasecmp($a[$sort][0], $b[$sort][0]);
 		}
 		else {
 			return strnatcasecmp($a[$sort], $b[$sort]);

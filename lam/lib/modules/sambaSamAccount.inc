@@ -503,7 +503,7 @@ class sambaSamAccount extends baseModule {
 	*/
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
-		if (is_string($this->attributes['sambaAcctFlags'][0])) {
+		if (isset($this->attributes['sambaAcctFlags'][0])) {
 			if (strpos($this->attributes['sambaAcctFlags'][0], "D")) $this->deactivated = true;
 			else $this->deactivated = false;
 			if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $this->nopwd = true;
@@ -601,11 +601,11 @@ class sambaSamAccount extends baseModule {
 		else {
 			$this->nopwd = false;
 		}
-		if ($_POST['sambaAcctFlagsS']) $flag .= "S";
-		if ($_POST['sambaAcctFlagsH']) $flag .= "H";
-		if ($_POST['sambaAcctFlagsW']) $flag .= "W";
-		if ($_POST['sambaAcctFlagsU']) $flag .= "U";
-		if ($_POST['sambaAcctFlagsL']) $flag .= "L";
+		if (isset($_POST['sambaAcctFlagsS'])) $flag .= "S";
+		if (isset($_POST['sambaAcctFlagsH'])) $flag .= "H";
+		if (isset($_POST['sambaAcctFlagsW'])) $flag .= "W";
+		if (isset($_POST['sambaAcctFlagsU'])) $flag .= "U";
+		if (isset($_POST['sambaAcctFlagsL'])) $flag .= "L";
 		// Expand string to fixed length
 		$flag = str_pad($flag, 12);
 		// End character

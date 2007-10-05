@@ -502,15 +502,15 @@ function saveSettings() {
 	$chmodOwner = 0;
 	$chmodGroup = 0;
 	$chmodOther = 0;
-	if ($_POST['chmod_owr'] == 'on') $chmodOwner += 4;
-	if ($_POST['chmod_oww'] == 'on') $chmodOwner += 2;
-	if ($_POST['chmod_owe'] == 'on') $chmodOwner += 1;
-	if ($_POST['chmod_grr'] == 'on') $chmodGroup += 4;
-	if ($_POST['chmod_grw'] == 'on') $chmodGroup += 2;
-	if ($_POST['chmod_gre'] == 'on') $chmodGroup += 1;
-	if ($_POST['chmod_otr'] == 'on') $chmodOther += 4;
-	if ($_POST['chmod_otw'] == 'on') $chmodOther += 2;
-	if ($_POST['chmod_ote'] == 'on') $chmodOther += 1;
+	if (isset($_POST['chmod_owr']) && ($_POST['chmod_owr'] == 'on')) $chmodOwner += 4;
+	if (isset($_POST['chmod_oww']) && ($_POST['chmod_oww'] == 'on')) $chmodOwner += 2;
+	if (isset($_POST['chmod_owe']) && ($_POST['chmod_owe'] == 'on')) $chmodOwner += 1;
+	if (isset($_POST['chmod_grr']) && ($_POST['chmod_grr'] == 'on')) $chmodGroup += 4;
+	if (isset($_POST['chmod_grw']) && ($_POST['chmod_grw'] == 'on')) $chmodGroup += 2;
+	if (isset($_POST['chmod_gre']) && ($_POST['chmod_gre'] == 'on')) $chmodGroup += 1;
+	if (isset($_POST['chmod_otr']) && ($_POST['chmod_otr'] == 'on')) $chmodOther += 4;
+	if (isset($_POST['chmod_otw']) && ($_POST['chmod_otw'] == 'on')) $chmodOther += 2;
+	if (isset($_POST['chmod_ote']) && ($_POST['chmod_ote'] == 'on')) $chmodOther += 1;
 	$chmod = $chmodOwner . $chmodGroup . $chmodOther;
 	if (!$conf->set_scriptrights($chmod)) {
 		$errors[] = array("ERROR", _("Script rights are invalid!"));

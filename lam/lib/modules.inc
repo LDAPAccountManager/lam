@@ -322,7 +322,9 @@ function checkConfigOptions($scopes, $options) {
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = new $modules[$i]('none');
 		$errors = $m->check_configOptions($scopes[$modules[$i]], $options);
-		$return = array_merge($return, $errors);
+		if (isset($errors) && is_array($errors)) {
+			$return = array_merge($return, $errors);
+		}
 	}
 	return $return;
 }

@@ -440,11 +440,11 @@ class posixAccount extends baseModule {
 	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
-		if ($this->attributes['uid'][0] == '') return false;
-		if ($this->attributes['uidNumber'][0] == '') return false;
-		if ($this->attributes['gidNumber'][0] == '') return false;
-		if ($this->attributes['homeDirectory'][0] == '') return false;
-		if ($this->attributes['loginShell'][0] == '') return false;
+		if (!isset($this->attributes['uid'][0]) || ($this->attributes['uid'][0] == '')) return false;
+		if (!isset($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] == '')) return false;
+		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) return false;
+		if (!isset($this->attributes['homeDirectory'][0]) || ($this->attributes['homeDirectory'][0] == '')) return false;
+		if (!isset($this->attributes['loginShell'][0]) || ($this->attributes['loginShell'][0] == '')) return false;
 		return true;
 	}
 
@@ -456,6 +456,7 @@ class posixAccount extends baseModule {
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// get additional group memberships
+		if (!isset($attr['uid'][0])) return;
 		$dn_groups = $_SESSION['cache']->get_cache(array('memberUid', 'cn'), 'posixGroup', 'group');
 		if (is_array($dn_groups)) {
 			$DNs = array_keys($dn_groups);

@@ -360,7 +360,7 @@ abstract class baseModule {
 				$identifiers = array_keys($this->meta['config_checks'][$scopes[$s]]);
 				for ($i = 0; $i < sizeof($identifiers); $i++) {
 					// check if option is required
-					if ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['required'] && ($options[$identifiers[$i]][0] == '')) {
+					if (isset($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['required']) && ($options[$identifiers[$i]][0] == '')) {
 						$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['required_message'];
 					}
 					switch ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type']) {
