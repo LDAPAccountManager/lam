@@ -261,12 +261,12 @@ class kolabUser extends baseModule {
 	*/
 	function display_html_attributes() {
 		if ($this->getAccountContainer()->isNewAccount) {
-			if (isset($this->getAccountContainer()->getAccountModule('posixAccount'))) {
+			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 				if (!$this->getAccountContainer()->getAccountModule('posixAccount')->attributes['userPassword'][0]) {
 					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('posixAccount')->get_alias()));
 				}
 			}
-			elseif (isset($this->getAccountContainer()->getAccountModule('inetOrgPerson'))) {
+			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 				if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['userPassword'][0]) {
 					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
 				}
@@ -583,10 +583,10 @@ class kolabUser extends baseModule {
 	function module_complete() {
 		if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['mail'][0]) return false;
 		if ($this->getAccountContainer()->isNewAccount) {
-			if (isset($this->getAccountContainer()->getAccountModule('posixAccount'))) {
+			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 				if (!$this->getAccountContainer()->getAccountModule('posixAccount')->attributes['userPassword'][0]) return false;
 			}
-			elseif (isset($this->getAccountContainer()->getAccountModule('inetOrgPerson'))) {
+			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 				if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['userPassword'][0]) return false;
 			}
 		}

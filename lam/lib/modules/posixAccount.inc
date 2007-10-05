@@ -676,7 +676,7 @@ class posixAccount extends baseModule {
 			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
-			elseif (isset($this->getAccountContainer()->getAccountModule('inetOrgPerson'))) {
+			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 				if ($this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['givenName'][0]) {
 					$this->attributes['cn'][0] = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['givenName'][0] . " " . $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0];
 				}
