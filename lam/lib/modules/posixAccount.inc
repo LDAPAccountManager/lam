@@ -678,11 +678,12 @@ class posixAccount extends baseModule {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
 			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-				if ($this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['givenName'][0]) {
-					$this->attributes['cn'][0] = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['givenName'][0] . " " . $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0];
+				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+				if ($attrs['givenName'][0]) {
+					$this->attributes['cn'][0] = $attrs['givenName'][0] . " " . $attrs['sn'][0];
 				}
-				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0]) {
-					$this->attributes['cn'][0] = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['sn'][0];
+				elseif ($attrs['sn'][0]) {
+					$this->attributes['cn'][0] = $attrs['sn'][0];
 				}
 				else {
 					$this->attributes['cn'][0] = $_POST['uid'];
@@ -914,25 +915,38 @@ class posixAccount extends baseModule {
 		}
 		$shelllist = getshells(); // list of all valid shells
 
+		$userName = '';
+		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
 		$return[] = array (
 			0 => array('kind' => 'text', 'text' => _("User name").'*'),
-			1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
+			1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $userName),
 			2 => array('kind' => 'help', 'value' => 'uid'));
+		$commonName = '';
+		if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
 		$return[] = array (
 			0 => array('kind' => 'text', 'text' => _("Common name").'*'),
-			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['cn'][0]),
+			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'value' => $commonName),
 			2 => array('kind' => 'help', 'value' => 'cn'));
+		$uidNumber = '';
+		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('UID number').'*'),
-			1 => array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
+			1 => array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $uidNumber),
 			2 => array('kind' => 'help', 'value' => 'uidNumber'));
+		$gecos = '';
+		if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Gecos')),
-			1 => array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
+			1 => array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $gecos),
 			2 => array('kind' => 'help', 'value' => 'gecos'));
+		$groupSelected = array();
+		if (isset($this->attributes['gidNumber'][0])) {
+			$gid = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
+			$groupSelected = array($gid);
+		}
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Primary group').'*' ),
-			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
+			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => $groupSelected),
 			2 => array('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($this->get_scope()=='user') {

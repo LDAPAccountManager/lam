@@ -163,8 +163,14 @@ class quota extends baseModule {
 	}
 
 	function module_ready() {
-		if ($this->get_scope()=='user' && $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0]=='') return false;
-		if ($this->get_scope()=='group' && $this->getAccountContainer()->getAccountModule('posixGroup')->attributes['cn'][0]=='') return false;
+		if ($this->get_scope()=='user') {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+			if ($attrs['uid'][0]=='') return false;
+		}
+		if ($this->get_scope()=='group') {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
+			if ($attrs['cn'][0]=='') return false;
+		}
 		return true;
 	}
 
@@ -184,8 +190,14 @@ class quota extends baseModule {
 	function postModifyActions($newAccount) {
 		if (!isset($this->quota) || !is_array($this->quota)) return;
 		// determine if this is a user or group account
-		if ($this->get_scope()=='user') $id = $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0];
-		if ($this->get_scope()=='group') $id = $this->getAccountContainer()->getAccountModule('posixGroup')->attributes['cn'][0];
+		if ($this->get_scope()=='user') {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+			$id = $attrs['uid'][0];
+		}
+		if ($this->get_scope()=='group') {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
+			$id = $attrs['cn'][0];
+		}
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -218,8 +230,14 @@ class quota extends baseModule {
 		$this->initQuotas();
 		if (!isset($this->quota) || !is_array($this->quota)) return true;
 		// determine if this is a user or group account
-		if ($this->get_scope()=='user') $id = $this->getAccountContainer()->getAccountModule('posixAccount')->attributes['uid'][0];
-		if ($this->get_scope()=='group') $id = $this->getAccountContainer()->getAccountModule('posixGroup')->attributes['cn'][0];
+		if ($this->get_scope()=='user') {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+			$id = $attrs['uid'][0];
+		}
+		if ($this->get_scope()=='group') {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
+			$id = $attrs['cn'][0];
+		}
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());

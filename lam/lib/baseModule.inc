@@ -763,6 +763,24 @@ abstract class baseModule {
 			return null;
 		}
 	}
+	
+	/**
+	 * Returns the LDAP attributes which are managed in this module.
+	 *
+	 * @return array attributes
+	 */
+	public function getAttributes() {
+		return $this->attributes;
+	}
+	
+	/**
+	 * Returns the LDAP attributes which are managed in this module (with unchanged values).
+	 *
+	 * @return array attributes
+	 */
+	public function getOriginalAttributes() {
+		return $this->orig;
+	}
 
 }
 

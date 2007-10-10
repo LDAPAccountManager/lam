@@ -260,19 +260,21 @@ class kolabUser extends baseModule {
 	* This function will create the meta HTML code to show a page with all attributes.
 	*/
 	function display_html_attributes() {
+		$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 		if ($this->getAccountContainer()->isNewAccount) {
 			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-				if (!$this->getAccountContainer()->getAccountModule('posixAccount')->attributes['userPassword'][0]) {
+				$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+				if (!$attrsP['userPassword'][0]) {
 					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('posixAccount')->get_alias()));
 				}
 			}
 			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-				if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['userPassword'][0]) {
+				if (!$attrsI['userPassword'][0]) {
 					StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
 				}
 			}
 		}
-		if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['mail'][0]) {
+		if (!$attrsI['mail'][0]) {
 			StatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
 		}
 		$return = array();
@@ -581,13 +583,15 @@ class kolabUser extends baseModule {
 	* @return true, if account can be saved
 	*/
 	function module_complete() {
-		if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['mail'][0]) return false;
+		$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+		$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+		if (!$attrsI['mail'][0]) return false;
 		if ($this->getAccountContainer()->isNewAccount) {
 			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-				if (!$this->getAccountContainer()->getAccountModule('posixAccount')->attributes['userPassword'][0]) return false;
+				if (!$attrsP['userPassword'][0]) return false;
 			}
 			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-				if (!$this->getAccountContainer()->getAccountModule('inetOrgPerson')->attributes['userPassword'][0]) return false;
+				if (!$attrsI['userPassword'][0]) return false;
 			}
 		}
 		return true;
