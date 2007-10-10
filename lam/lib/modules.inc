@@ -798,6 +798,7 @@ class accountContainer {
 	 * Returns the account module with the given class name
 	 *
 	 * @param string $name class name (e.g. posixAccount)
+	 * @return baseModule account module
 	 */
 	function getAccountModule($name) {
 		if (isset($this->module[$name])) {
@@ -1054,15 +1055,16 @@ class accountContainer {
 					)));
 			}
 			else {
+				$options_selected = array();
 				// loop through all suffixes
 				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-					if ($this->dn == $suffix) $options_selected = $suffix;
+					if ($this->dn == $suffix) $options_selected = array($suffix);
 					$suffixes[] = $suffix;
 				}
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Suffix')),
-					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected), 'noSorting' => true),
+					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => $options_selected, 'noSorting' => true),
 					2 => array ('kind' => 'help', 'value' => '361'));
 				// RDN selection
 				$rdnlist = getRDNAttributes($this->type);
