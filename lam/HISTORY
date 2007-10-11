@@ -4,6 +4,8 @@
   - Samba 3: made Samba account optional
   - fixed bugs:
    -> LAM Pro: UTF-8 characters are invalid displayed on configuration page (1788752)
+   -> LAM works again on PHP 5.1.x (1792447)
+   -> Quota: managing group quotas does not work (1811728)
 
 
 08.08.2007 2.0.0
