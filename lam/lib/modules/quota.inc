@@ -77,7 +77,7 @@ class quota extends baseModule {
 			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		}
 		// managed attributes
-		$return['attributes'] = array('uid');
+		$return['attributes'] = array('uid', 'cn');
 		// available PDF fields
 		$return['PDF_fields'] =  array(
 			'quotas'
@@ -94,7 +94,9 @@ class quota extends baseModule {
 			),
 			"SoftBlockLimit" => array(
 				"Headline" => _("Soft block limit"),
-				"Text" => _("Soft block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.'Quota How-To</a>'
+				"Text" => _("Soft block limit."), "SeeAlso" => array(
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4"',
+					'text' => 'Quota How-To')
 			),
 			"HardBlockLimit" => array(
 				"Headline" => _("Hard block limit"),
@@ -139,8 +141,14 @@ class quota extends baseModule {
 		if (isset($this->quota)) return;
 		$userName = '+';
 		if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
-			if (!isset($this->attributes['uid'][0])) return;
-			$userName = $this->attributes['uid'][0];
+			if ($this->get_scope() == 'user') {
+				if (!isset($this->attributes['uid'][0])) return;
+				$userName = $this->attributes['uid'][0];
+			}
+			else if ($this->get_scope() == 'group') {
+				if (!isset($this->attributes['cn'][0])) return;
+				$userName = $this->attributes['cn'][0];
+			}
 		}
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
