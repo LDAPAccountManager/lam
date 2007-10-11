@@ -184,8 +184,8 @@ $helpArray = array (
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.
 
-	"[HelpNumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),
-	"999" => array ("ext" => "FALSE", "Headline" => _("This is a sample entry"), "Text" => _("Sample text"), "SeeAlso" => "http://lam.sf.net"),
+	"[HelpNumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => array('link' => "[SeeAlso link]", 'text' => '[link text]')),
+	"999" => array ("ext" => "FALSE", "Headline" => _("This is a sample entry"), "Text" => _("Sample text"), "SeeAlso" => array('link' => "http://lam.sf.net", 'text' => 'Project page')),
 
 
 	If help text is located in an extra file then the file must be stored in help directory.
