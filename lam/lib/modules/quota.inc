@@ -100,11 +100,15 @@ class quota extends baseModule {
 			),
 			"HardBlockLimit" => array(
 				"Headline" => _("Hard block limit"),
-				"Text" => _("Hard block limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.'Quota How-To</a>'
+				"Text" => _("Hard block limit"), "SeeAlso" => array(
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
+					'text' => 'Quota How-To')
 			),
 			"GraceBlockPeriod" => array(
 				"Headline" => _("Grace block period"),
-				"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.'Quota How-To</a>'
+				"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => array(
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
+					'text' => 'Quota How-To')
 			),
 			"UsedInodes" => array(
 				"Headline" => _("Used inodes"),
@@ -112,15 +116,21 @@ class quota extends baseModule {
 			),
 			"SoftInodeLimit" => array(
 				"Headline" => _("Soft inode limit"),
-				"Text" => _("Soft inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.'Quota How-To</a>'
+				"Text" => _("Soft inode (files) limit."), "SeeAlso" => array(
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
+					'text' => 'Quota How-To')
 			),
 			"HardInodeLimit" => array(
 				"Headline" => _("Hard inode limit"),
-				"Text" => _("Hard inode (files) limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.'Quota How-To</a>'
+				"Text" => _("Hard inode (files) limit"), "SeeAlso" => array(
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
+					'text' => 'Quota How-To')
 			),
 			"GraceInodePeriod" => array(
 				"Headline" => _("Grace inode period"),
-				"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.'Quota How-To</a>'
+				"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => array(
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
+					'text' => 'Quota How-To')
 			),
 			"upload" => array(
 				"Headline" => _("Quota"),
