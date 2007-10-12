@@ -303,7 +303,7 @@ class quota extends baseModule {
 			$id = $this->replaceSpecialChars($server);
 			$i=0;
 			// loop for every mointpoint with quotas
-			while ($this->quota[$server][$i][0]) {
+			while (isset($this->quota[$server][$i][0])) {
 				$this->quota[$server][$i][2] = $_POST[$i . '_2_' . $id];
 				$this->quota[$server][$i][3] = $_POST[$i . '_3_' . $id];
 				$this->quota[$server][$i][6] = $_POST[$i . '_6_' . $id];
@@ -374,7 +374,7 @@ class quota extends baseModule {
 	
 			$i=0;
 			// loop for every mointpoint with enabled quotas
-			while ($this->quota[$server][$i][0]) {
+			while (isset($this->quota[$server][$i][0])) {
 				$fieldContent[] = array(
 					array('kind' => 'text', 'text' => $this->quota[$server][$i][0]),
 					array('kind' => 'text', 'text' => $this->quota[$server][$i][1]),
