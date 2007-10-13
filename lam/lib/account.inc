@@ -335,25 +335,25 @@ function cmp_domain($a, $b) {
 class samba3domain {
 
 	/** DN */
-	var $dn;
+	public $dn;
 
 	/** Domain name */
-	var $name;
+	public $name;
 
 	/** Domain SID */
-	var $SID;
+	public $SID;
 
 	/** Next RID */
-	var $nextRID;
+	public $nextRID;
 
 	/** Next user RID */
-	var $nextUserRID;
+	public $nextUserRID;
 
 	/** Next group RID */
-	var $nextGroupRID;
+	public $nextGroupRID;
 
 	/** RID base to calculate RIDs, default 1000 */
-	var $RIDbase = 1000;
+	public $RIDbase = 1000;
 }
 
 /**

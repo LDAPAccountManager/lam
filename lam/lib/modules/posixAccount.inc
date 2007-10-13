@@ -42,11 +42,11 @@ class posixAccount extends baseModule {
 	// Variables
 
 	/* These two variables keep an array of groups the user is also member of. */
-	var $groups;
-	var $groups_orig;
-	var $createhomedir;
-	var $lamdaemonServer;
-	var $clearTextPassword;
+	private $groups;
+	private $groups_orig;
+	private $createhomedir;
+	private $lamdaemonServer;
+	private $clearTextPassword;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -1707,6 +1707,15 @@ class posixAccount extends baseModule {
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	 * Returns the clear text password.
+	 *
+	 * @return string password
+	 */
+	public function getClearTextPassword() {
+		return $this->clearTextPassword;
 	}
 
 }

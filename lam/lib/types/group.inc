@@ -100,14 +100,14 @@ class group extends baseType {
 class lamGroupList extends lamList {
 
 	/** Controls if include primary group members into group memebers */
-	var $include_primary = "";
+	private $include_primary = "";
 	/** Primary group members hash */
-	var $primary_hash = array();
+	private $primary_hash = array();
 	/** Controls if primary group members needs refresh */
-	var $refresh_primary = false;
+	private $refresh_primary = false;
 	/** Controls if primary group members are using */
 	// This is here for future use with primary group members listing
-	var $use_primary = false;
+	private $use_primary = false;
 
 	/**
 	 * Constructor

@@ -160,7 +160,7 @@ class shadowAccount extends baseModule {
 			),
 			'shadowMin' => array (
 				"Headline" => _("Minimum password age"),
-				"Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
+				"Text" => _("Number of days a user has to wait until he is allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
 			),
 			'shadowMax' => array (
 				"Headline" => _("Maximum password age"),

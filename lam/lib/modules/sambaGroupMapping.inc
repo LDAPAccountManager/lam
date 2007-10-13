@@ -40,9 +40,9 @@ class sambaGroupMapping extends baseModule {
 
 	// Variables
 	/** Array of well known RIDs */
-	var $rids;
+	private $rids;
 	/** Array of sambaGroupTypes */
-	var $sambaGroupTypes;
+	private $sambaGroupTypes;
 
 	/**
 	* Creates a new module for Samba 3 groups.

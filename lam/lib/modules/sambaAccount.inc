@@ -424,16 +424,16 @@ class sambaAccount extends baseModule {
 
 	// Variables
 	/** use Unix password as samba password? */
-	var $useunixpwd;
+	private $useunixpwd;
 	/** use no password? */
-	var $nopwd;
+	private $nopwd;
 	/** password does not expire? */
-	var $noexpire;
+	private $noexpire;
 	/** account deactivated? */
-	var $deactivated;
+	private $deactivated;
 
 	/** Array of well known rids */
-	var $rids;
+	private $rids;
 
 	function module_ready() {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -591,8 +591,8 @@ class sambaAccount extends baseModule {
 				else $this->useunixpwd = false;
 			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
-				$this->attributes['lmPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword);
-				$this->attributes['ntPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword);
+				$this->attributes['lmPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
+				$this->attributes['ntPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
 				$this->attributes['pwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
@@ -732,7 +732,7 @@ class sambaAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Repeat password') ),
 				1 => array('kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'password'));
-			if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword)) {
+			if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword())) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
 					2 => array ('kind' => 'help', 'value' => 'pwdUnix'));

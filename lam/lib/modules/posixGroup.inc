@@ -39,7 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 class posixGroup extends baseModule {
 
 	/** change GIDs of users and hosts? */
-	var $changegids;
+	private $changegids;
 
 
 	/**

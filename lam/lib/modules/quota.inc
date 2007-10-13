@@ -141,7 +141,7 @@ class quota extends baseModule {
 	}
 
 	/** Saves the quota settings */
-	var $quota;
+	private $quota;
 	
 	/**
 	 * Initializes the quota values.

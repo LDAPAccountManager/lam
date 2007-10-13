@@ -40,17 +40,17 @@ class sambaSamAccount extends baseModule {
 
 	// Variables
 	/** use Unix password as samba password? */
-	var $useunixpwd;
+	private $useunixpwd;
 	/** use no password? */
-	var $nopwd;
+	private $nopwd;
 	/** password does not expire? */
-	var $noexpire;
+	private $noexpire;
 	/** account deactivated? */
-	var $deactivated;
+	private $deactivated;
 	/** array of well known rids */
-	var $rids;
+	private $rids;
 	/** HEX to binary conversion table */
-	var $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
+	private $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
 		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
 		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
 
@@ -669,8 +669,8 @@ class sambaSamAccount extends baseModule {
 
 			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
-				$this->attributes['sambaLMPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword);
-				$this->attributes['sambaNTPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword);
+				$this->attributes['sambaLMPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
+				$this->attributes['sambaNTPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
@@ -897,7 +897,7 @@ class sambaSamAccount extends baseModule {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Repeat password')),
 					1 => array('kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
-				if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword)) {
+				if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword())) {
 					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
 						1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
 						2 => array ('kind' => 'help', 'value' => 'useunixpwd'));

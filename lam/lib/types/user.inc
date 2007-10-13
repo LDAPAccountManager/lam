@@ -106,10 +106,10 @@ class user extends baseType {
 class lamUserList extends lamList {
 	
 	/** Controls if GID number is translated to group name */
-	var $trans_primary = false;
+	private $trans_primary = false;
 
 	/** translates GID to group name */
-	var $trans_primary_hash = array();
+	private $trans_primary_hash = array();
 	
 	/**
 	 * Constructor

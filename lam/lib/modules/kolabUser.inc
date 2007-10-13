@@ -35,7 +35,7 @@ $Id$
 class kolabUser extends baseModule {
 
 	/** list of invitation policies */
-	var $invitationPolicies;
+	private $invitationPolicies;
 
 	/**
 	* Creates a new kolabUser object.
