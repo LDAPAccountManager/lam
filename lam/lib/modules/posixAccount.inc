@@ -133,13 +133,13 @@ class posixAccount extends baseModule {
 			// self service configuration settings
 			$return['selfServiceSettings'] = array(
 			array(
-				0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-				1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+				array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+				array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
 					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-				2 => array('kind' => 'text', 'value' => '&nbsp;'),
-				3 => array('kind' => 'text', 'value' => '&nbsp;'),
-				4 => array('kind' => 'text', 'value' => '&nbsp;'),
-				5 => array('kind' => 'help', 'value' => 'pwdHash'))
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'help', 'value' => 'pwdHash'))
 			);
 		}
 		// profile checks
@@ -153,31 +153,31 @@ class posixAccount extends baseModule {
 		// configuration options
 		$return['config_options']['user'] = array(
 		array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
-			1 => array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			2 => array('kind' => 'text', 'value' => '&nbsp;'),
-			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
-			4 => array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			5 => array('kind' => 'help', 'value' => 'minMaxUser'))
+			array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
+			array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
+			array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			array('kind' => 'help', 'value' => 'minMaxUser'))
 		);
 		$return['config_options']['host'] = array(
 		array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
-			1 => array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			2 => array('kind' => 'text', 'value' => '&nbsp;'),
-			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
-			4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			5 => array('kind' => 'help', 'value' => 'minMaxHost'))
+			array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
+			array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
+			array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			array('kind' => 'help', 'value' => 'minMaxHost'))
 		);
 		$return['config_options']['all'] = array(
 		array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-			1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+			array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+			array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
 				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-			2 => array('kind' => 'text', 'value' => '&nbsp;'),
-			3 => array('kind' => 'text', 'value' => '&nbsp;'),
-			4 => array('kind' => 'text', 'value' => '&nbsp;'),
-			5 => array('kind' => 'help', 'value' => 'pwdHash'))
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'help', 'value' => 'pwdHash'))
 		);
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
@@ -492,14 +492,17 @@ class posixAccount extends baseModule {
 			// remove old memberships
 			$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
 			$DNs = array_keys($dn_groups);
-			foreach ($DNs as $DN)
-			if (in_array($this->orig['uid'][0], $dn_groups[$DN]))
-			$return[$DN]['remove']['memberUid'][0] = $this->orig['uid'][0];
+			foreach ($DNs as $DN) {
+				if (in_array($this->orig['uid'][0], $dn_groups[$DN])) {
+					$return[$DN]['remove']['memberUid'][0] = $this->orig['uid'][0];
+				}
+			}
 			// Add new memberships
-			if (is_array($this->groups))
-			foreach ($this->groups as $group) {
-				$dn = $_SESSION['cache']->in_cache($group, 'cn', 'group');
-				$return[$dn]['add']['memberUid'][0] = $this->attributes['uid'][0];
+			if (is_array($this->groups)) {
+				foreach ($this->groups as $group) {
+					$dn = $_SESSION['cache']->in_cache($group, 'cn', 'group');
+					$return[$dn]['add']['memberUid'][0] = $this->attributes['uid'][0];
+				}
 			}
 		}
 		else {
@@ -918,46 +921,46 @@ class posixAccount extends baseModule {
 		$userName = '';
 		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
 		$return[] = array (
-			0 => array('kind' => 'text', 'text' => _("User name").'*'),
-			1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $userName),
-			2 => array('kind' => 'help', 'value' => 'uid'));
+			array('kind' => 'text', 'text' => _("User name").'*'),
+			array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $userName),
+			array('kind' => 'help', 'value' => 'uid'));
 		$commonName = '';
 		if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
 		$return[] = array (
-			0 => array('kind' => 'text', 'text' => _("Common name").'*'),
-			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'value' => $commonName),
-			2 => array('kind' => 'help', 'value' => 'cn'));
+			array('kind' => 'text', 'text' => _("Common name").'*'),
+			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'value' => $commonName),
+			array('kind' => 'help', 'value' => 'cn'));
 		$uidNumber = '';
 		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('UID number').'*'),
-			1 => array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $uidNumber),
-			2 => array('kind' => 'help', 'value' => 'uidNumber'));
+			array('kind' => 'text', 'text' => _('UID number').'*'),
+			array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $uidNumber),
+			array('kind' => 'help', 'value' => 'uidNumber'));
 		$gecos = '';
 		if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Gecos')),
-			1 => array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $gecos),
-			2 => array('kind' => 'help', 'value' => 'gecos'));
+			array('kind' => 'text', 'text' => _('Gecos')),
+			array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $gecos),
+			array('kind' => 'help', 'value' => 'gecos'));
 		$groupSelected = array();
 		if (isset($this->attributes['gidNumber'][0])) {
 			$gid = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
 			$groupSelected = array($gid);
 		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Primary group').'*' ),
-			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => $groupSelected),
-			2 => array('kind' => 'help', 'value' => 'gidNumber'));
+			array('kind' => 'text', 'text' => _('Primary group').'*' ),
+			array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => $groupSelected),
+			array('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($this->get_scope()=='user') {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Additional groups')),
-				1 => array('kind' => 'input', 'name' => 'form_subpage_posixAccount_group_open', 'type' => 'submit', 'value' => _('Edit groups')),
-				2 => array('kind' => 'help', 'value' => 'addgroup'));
+				array('kind' => 'text', 'text' => _('Additional groups')),
+				array('kind' => 'input', 'name' => 'form_subpage_posixAccount_group_open', 'type' => 'submit', 'value' => _('Edit groups')),
+				array('kind' => 'help', 'value' => 'addgroup'));
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Home directory').'*'),
-				1 => array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
-				2 => array('kind' => 'help', 'value' => 'homeDirectory'));
+				array('kind' => 'text', 'text' => _('Home directory').'*'),
+				array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
+				array('kind' => 'help', 'value' => 'homeDirectory'));
 			if ($this->getAccountContainer()->isNewAccount && isset($_SESSION['config']->scriptPath) && ($_SESSION['config']->scriptPath != '')) {
 				// get list of lamdaemon servers
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -976,8 +979,8 @@ class posixAccount extends baseModule {
 			}
 			if (!isset($this->attributes['userPassword'][0])) {
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Password') ),
-					1 => array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Set password')));
+					array('kind' => 'text', 'text' => _('Password') ),
+					array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Set password')));
 			}
 			else {
 				if (pwd_is_enabled($this->attributes['userPassword'][0])) {
@@ -1000,9 +1003,9 @@ class posixAccount extends baseModule {
 			}
 			if (count($shelllist)!=0) {
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Login shell').'*'),
-					1 => array('kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' => array ($this->attributes['loginShell'][0])),
-					2 => array('kind' => 'help', 'value' => 'loginShell'));
+					array('kind' => 'text', 'text' => _('Login shell').'*'),
+					array('kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' => array ($this->attributes['loginShell'][0])),
+					array('kind' => 'help', 'value' => 'loginShell'));
 			}
 		}
 	return $return;
@@ -1011,9 +1014,9 @@ class posixAccount extends baseModule {
 	function display_html_delete() {
 		if ($this->get_scope() == 'user' && isset($_SESSION['config']->scriptPath)) {
 			$return[] = array (
-				0 => array('kind' => 'text', 'text' => _('Delete home directory')),
-				1 => array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
-				2 => array('kind' => 'help', 'value' => 'deletehomedir'));
+				array('kind' => 'text', 'text' => _('Delete home directory')),
+				array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
+				array('kind' => 'help', 'value' => 'deletehomedir'));
 		}
 		return $return;
 	}
@@ -1039,27 +1042,27 @@ class posixAccount extends baseModule {
 		$groups = array_flip($groups);
 
 		$return[] = array(
-			0 => array('kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' => array(
-				0 => array(
-					0 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Selected groups"), 'value' => array(
-						0 => array (
-							0 => array('kind' => 'select', 'name' => 'removegroups', 'size' => '15', 'multiple' => true, 'options' => $this->groups)))),
-						1 => array('kind' => 'table', 'value' => array(
-							0 => array(
-								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button', 'value' => '<=', 'td' => array('align' => 'center'))),
-							1 => array(
-								0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-							2 => array(
-								0 => array ( 'kind' => 'help', 'value' => 'addgroup', 'td' => array('align' => 'center'))))),
-						2 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available groups"), 'value' => array(
-							0 => array(
-								0 => array('kind' => 'select', 'name' => 'addgroups', 'size' => '15', 'multiple' => true, 'options' => $groups))))
+			array('kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' => array(
+				array(
+					array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Selected groups"), 'value' => array(
+						array (
+							array('kind' => 'select', 'name' => 'removegroups', 'size' => '15', 'multiple' => true, 'options' => $this->groups)))),
+						array('kind' => 'table', 'value' => array(
+							array(
+								array('kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button', 'value' => '<=', 'td' => array('align' => 'center'))),
+							array(
+								array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
+							array(
+								array ( 'kind' => 'help', 'value' => 'addgroup', 'td' => array('align' => 'center'))))),
+						array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available groups"), 'value' => array(
+							array(
+								array('kind' => 'select', 'name' => 'addgroups', 'size' => '15', 'multiple' => true, 'options' => $groups))))
 		))));
 
 		$return[] = array(
-			0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
-			1 => array('kind' => 'text'),
-			2 => array('kind' => 'text'));
+			array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
+			array('kind' => 'text'),
+			array('kind' => 'text'));
 		return $return;
 	}
 
@@ -1070,18 +1073,18 @@ class posixAccount extends baseModule {
 	*/
 	function display_html_password() {
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Password') ),
-			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
-			2 => array('kind' => 'help', 'value' => 'userPassword'));
+			array('kind' => 'text', 'text' => _('Password') ),
+			array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
+			array('kind' => 'help', 'value' => 'userPassword'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Repeat password')),
-			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
+			array('kind' => 'text', 'text' => _('Repeat password')),
+			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
 		$return[] = array(
-			0 => array('kind' => 'table', 'value' => array(
-				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_posixAccount_attributes_back'),
-					2 => array('kind' => 'text')))));
+			array('kind' => 'table', 'value' => array(
+				array(
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_posixAccount_attributes_back'),
+					array('kind' => 'text')))));
 		return $return;
 	}
 
@@ -1096,27 +1099,31 @@ class posixAccount extends baseModule {
 			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
-			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
-			1 => array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
-			2 => array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'user'));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Primary group') . ": "),
+				array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
+				array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'user'));
 			// additional group memberships
-			$return[] = array(0 => array('kind' => 'text', 'text' => _('Additional groups') . ": "),
-			1 => array('kind' => 'select', 'name' => 'posixAccount_additionalGroup', 'options' => $groups,
-			'options_selected' => array(), 'size' => 10, 'multiple' => true),
-			2 => array('kind' => 'help', 'value' => 'addgroup', 'scope' => 'user'));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Additional groups') . ": "),
+				array('kind' => 'select', 'name' => 'posixAccount_additionalGroup', 'options' => $groups,
+					'options_selected' => array(), 'size' => 10, 'multiple' => true),
+				array('kind' => 'help', 'value' => 'addgroup', 'scope' => 'user'));
 			// home directory
-			$return[] = array(0 => array('kind' => 'text', 'text' => _('Home directory') . ": "),
-			1 => array('kind' => 'input', 'name' => 'posixAccount_homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => '/home/$user'),
-			2 => array('kind' => 'help', 'value' => 'homeDirectory', 'scope' => 'user'));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Home directory') . ": "),
+				array('kind' => 'input', 'name' => 'posixAccount_homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => '/home/$user'),
+				array('kind' => 'help', 'value' => 'homeDirectory', 'scope' => 'user'));
 			// login shell
-			$return[] = array(0 => array('kind' => 'text', 'text' => _('Login shell') . ": "),
-			1 => array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
-			2 => array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Login shell') . ": "),
+				array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
+				array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
 		}
 		elseif ($this->get_scope() == 'host') {
 			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			// primary Unix group
-			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
+			$return[] = array(array('kind' => 'text', 'text' => _('Primary group') . ": "),
 			1 => array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
 			2 => array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'host'));
 		}
@@ -1662,10 +1669,10 @@ class posixAccount extends baseModule {
 		$return = array();
 		if (in_array('password', $fields)) {
 			$return['password'] = array(
-				0 => array('kind' => 'text', 'text' => _('New password')),
-				1 => array('kind' => 'input', 'name' => 'posixAccount_password', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'text', 'text' => _('Reenter password')),
-				3 => array('kind' => 'input', 'name' => 'posixAccount_password2', 'type' => 'password', 'size' => '30', 'maxlength' => '255')
+				array('kind' => 'text', 'text' => _('New password')),
+				array('kind' => 'input', 'name' => 'posixAccount_password', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'text', 'text' => _('Reenter password')),
+				array('kind' => 'input', 'name' => 'posixAccount_password2', 'type' => 'password', 'size' => '30', 'maxlength' => '255')
 				);
 		}
 		return $return;
