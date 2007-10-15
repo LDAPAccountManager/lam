@@ -255,37 +255,37 @@ function checkSelfServiceSettings($scope, $options) {
 class selfServiceProfile {
 
 	/** server address */
-	var $serverURL;
+	public $serverURL;
 
 	/** LDAP suffix */
-	var $LDAPSuffix;
+	public $LDAPSuffix;
 
 	/** LDAP user DN*/
-	var $LDAPUser;
+	public $LDAPUser;
 
 	/** LDAP password */
-	var $LDAPPassword;
+	public $LDAPPassword;
 
 	/** LDAP search attribute */
-	var $searchAttribute;
+	public $searchAttribute;
 
 	/** describing text for user login */
-	var $loginCaption;
+	public $loginCaption;
 
 	/** describing text for search attribute */
-	var $loginAttributeText;
+	public $loginAttributeText;
 
 	/** describing text for self service main page */
-	var $mainPageText;
+	public $mainPageText;
 
 	/** input fields
 	 * Format: array(<module> => array(array('name' => <group name>, 'fields' => array(<field1>, <field2>))))
 	 *
 	 */
-	var $inputFields;
+	public $inputFields;
 	
 	/** configuration settings of modules */
-	var $moduleSettings;
+	public $moduleSettings;
 
 	/**
 	 * Constructor

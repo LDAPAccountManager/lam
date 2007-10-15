@@ -42,11 +42,11 @@ include_once('ldap.inc');
 class cache {
 	
 	/** This variable contains the cache */
-	var $ldapcache;
+	private $ldapcache;
 	/** This variable contains a list and their scope of attributes which should be cached */
-	var $attributes;
+	private $attributes;
 	/** This is the last timestamp on which the LDAP cache has been refreshed */
-	var $time;
+	private $time;
 
 	/**
 	 * Constructor.
