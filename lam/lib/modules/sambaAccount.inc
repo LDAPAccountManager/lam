@@ -732,7 +732,7 @@ class sambaAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Repeat password') ),
 				1 => array('kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'password'));
-			if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword())) {
+			if ($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword() != null) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
 					2 => array ('kind' => 'help', 'value' => 'pwdUnix'));
