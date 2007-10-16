@@ -979,7 +979,7 @@ class accountContainer {
 		echo "<tr><td width=\"$buttonWidth\" style=\"padding:0px;\" colspan=2>";
 		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">\n";
 		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
-		echo "<input style=\"width:" . $buttonWidth ."em;margin:2px; border:1px solid;\" name=\"form_main_main\" type=\"submit\" value=\"";
+		echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;margin:2px; border:0px solid;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
 		if ($this->subpage == 'finish') echo " disabled";
@@ -1000,7 +1000,7 @@ class accountContainer {
 			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
 				echo " align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
 			// print normal button
-			echo "<input style=\"width:" . $buttonWidth ."em;margin:2px; border:1px solid;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
+			echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;margin:2px; border:0px solid;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
 			if (($buttonStatus == 'disabled') || $this->subpage == 'finish') echo " disabled";
