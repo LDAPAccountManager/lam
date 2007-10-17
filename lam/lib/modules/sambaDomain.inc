@@ -108,7 +108,7 @@ class sambaDomain extends baseModule {
 			),
 			'lockoutThreshold' => array(
 				"Headline" => _("Lockout users after bad logon attempts"),
-				"Text" => _("Here you can define to deactivate accounts after bad logon attempts.")
+				"Text" => _("This is the number of bad logon attempts (0 - 999) before the accounts is deactivated. 0 means unlimited attempts.")
 			),
 			'minPwdAge' => array(
 				"Headline" => _("Minimum password age"),
@@ -198,6 +198,7 @@ class sambaDomain extends baseModule {
 		$this->messages['pwdAgeMax'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be are natural number.'));
 		$this->messages['lockoutDuration'][0] = array('ERROR', _('Lockout duration'), _('Lockout duration must be are natural number.'));
 		$this->messages['lockoutObservationWindow'][0] = array('ERROR', _('Reset time after lockout'), _('Reset time after lockout must be are natural number.'));
+		$this->messages['lockoutThreshold'][0] = array('ERROR', _('Lockout users after bad logon attempts'), _('Lockout users after bad logon attempts must be between 0 and 999.'));
 	}
 
 	/**
@@ -208,135 +209,173 @@ class sambaDomain extends baseModule {
 		// domain name
 		if ($this->getAccountContainer()->isNewAccount) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Domain name').'*'),
-				1 => array('kind' => 'input', 'name' => 'domainName', 'type' => 'text', 'value' => $this->attributes['sambaDomainName'][0]),
-				2 => array('kind' => 'help', 'value' => 'domainName'));
+				array('kind' => 'text', 'text' => _('Domain name').'*'),
+				array('kind' => 'input', 'name' => 'domainName', 'type' => 'text', 'value' => $this->attributes['sambaDomainName'][0]),
+				array('kind' => 'help', 'value' => 'domainName'));
 		}
 		else {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Domain name')),
-				1 => array('kind' => 'text', 'text' => $this->attributes['sambaDomainName'][0]),
-				2 => array('kind' => 'help', 'value' => 'domainName'));
+				array('kind' => 'text', 'text' => _('Domain name')),
+				array('kind' => 'text', 'text' => $this->attributes['sambaDomainName'][0]),
+				array('kind' => 'help', 'value' => 'domainName'));
 		}
 		// domain SID
 		if ($this->getAccountContainer()->isNewAccount) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Domain SID').'*'),
-				1 => array('kind' => 'input', 'name' => 'domainSID', 'type' => 'text', 'value' => $this->attributes['sambaSID'][0]),
-				2 => array('kind' => 'help', 'value' => 'domainSID'));
+				array('kind' => 'text', 'text' => _('Domain SID').'*'),
+				array('kind' => 'input', 'name' => 'domainSID', 'type' => 'text', 'value' => $this->attributes['sambaSID'][0]),
+				array('kind' => 'help', 'value' => 'domainSID'));
 		}
 		else {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Domain SID')),
-				1 => array('kind' => 'text', 'text' => $this->attributes['sambaSID'][0]),
-				2 => array('kind' => 'help', 'value' => 'domainSID'));
+				array('kind' => 'text', 'text' => _('Domain SID')),
+				array('kind' => 'text', 'text' => $this->attributes['sambaSID'][0]),
+				array('kind' => 'help', 'value' => 'domainSID'));
 		}
 
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => ""),
-			1 => array('kind' => 'text', 'text' => "&nbsp;"),
-			2 => array('kind' => 'text', 'text' => ""));
+			array('kind' => 'text', 'text' => ""),
+			array('kind' => 'text', 'text' => "&nbsp;"),
+			array('kind' => 'text', 'text' => ""));
 
 		/* group policies */
 
 		// minimum password length
+		$sambaMinPwdLength = '-';
+		if (isset($this->attributes['sambaMinPwdLength'][0])) {
+			$sambaMinPwdLength = $this->attributes['sambaMinPwdLength'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Minimal password length')),
-			1 => array('kind' => 'select', 'name' => 'minPwdLength',
+			array('kind' => 'text', 'text' => _('Minimal password length')),
+			array('kind' => 'select', 'name' => 'minPwdLength',
 				'options' => array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-				'options_selected' => $this->attributes['sambaMinPwdLength'][0]),
-			2 => array('kind' => 'help', 'value' => 'minPwdLength'));
+				'options_selected' => $sambaMinPwdLength),
+			array('kind' => 'help', 'value' => 'minPwdLength'));
 		// password history length
+		$sambaPwdHistoryLength = '-';
+		if (isset($this->attributes['sambaPwdHistoryLength'][0])) {
+			$sambaPwdHistoryLength = $this->attributes['sambaPwdHistoryLength'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Password history length')),
-			1 => array('kind' => 'select', 'name' => 'pwdHistLength',
+			array('kind' => 'text', 'text' => _('Password history length')),
+			array('kind' => 'select', 'name' => 'pwdHistLength',
 				'options' => array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-				'options_selected' => $this->attributes['sambaPwdHistoryLength'][0]),
-			2 => array('kind' => 'help', 'value' => 'pwdHistLength'));
-		// password history length
+				'options_selected' => $sambaPwdHistoryLength),
+			array('kind' => 'help', 'value' => 'pwdHistLength'));
+		// logon to change password
+		$sambaLogonToChgPwd = '-';
+		if (isset($this->attributes['sambaLogonToChgPwd'][0])) {
+			$sambaLogonToChgPwd = $this->attributes['sambaLogonToChgPwd'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Logon for password change')),
-			1 => array('kind' => 'select', 'name' => 'logonToChgPwd',
+			array('kind' => 'text', 'text' => _('Logon for password change')),
+			array('kind' => 'select', 'name' => 'logonToChgPwd',
 				'options' => array(array('-', '-'), array(0, _('Off')), array(2, _('On'))), 'descriptiveOptions' => true,
-				'options_selected' => $this->attributes['sambaLogonToChgPwd'][0]),
-			2 => array('kind' => 'help', 'value' => 'logonToChgPwd'));
+				'options_selected' => $sambaLogonToChgPwd),
+			array('kind' => 'help', 'value' => 'logonToChgPwd'));
 		// force logoff
+		$sambaForceLogoff = '-';
+		if (isset($this->attributes['sambaForceLogoff'][0])) {
+			$sambaForceLogoff = $this->attributes['sambaForceLogoff'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Disconnect users outside logon hours')),
-			1 => array('kind' => 'select', 'name' => 'forceLogoff',
+			array('kind' => 'text', 'text' => _('Disconnect users outside logon hours')),
+			array('kind' => 'select', 'name' => 'forceLogoff',
 				'options' => array(array('-', '-'), array('-1', _('Off')), array(0, _('On'))), 'descriptiveOptions' => true,
-				'options_selected' => $this->attributes['sambaForceLogoff'][0]),
-			2 => array('kind' => 'help', 'value' => 'forceLogoff'));
+				'options_selected' => $sambaForceLogoff),
+			array('kind' => 'help', 'value' => 'forceLogoff'));
 		// do not allow machine password change
+		$sambaRefuseMachinePwdChange = '-';
+		if (isset($this->attributes['sambaRefuseMachinePwdChange'][0])) {
+			$sambaRefuseMachinePwdChange = $this->attributes['sambaRefuseMachinePwdChange'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Allow machine password changes')),
-			1 => array('kind' => 'select', 'name' => 'refuseMachinePwdChange',
+			array('kind' => 'text', 'text' => _('Allow machine password changes')),
+			array('kind' => 'select', 'name' => 'refuseMachinePwdChange',
 				'options' => array(array('-', '-'), array('0', _('Off')), array(1, _('On'))), 'descriptiveOptions' => true,
-				'options_selected' => $this->attributes['sambaRefuseMachinePwdChange'][0]),
-			2 => array('kind' => 'help', 'value' => 'refuseMachinePwdChange'));
+				'options_selected' => $sambaRefuseMachinePwdChange),
+			array('kind' => 'help', 'value' => 'refuseMachinePwdChange'));
 		// Lockout users after bad logon attempts
+		$sambaLockoutThreshold = '';
+		if (isset($this->attributes['sambaLockoutThreshold'][0])) {
+			$sambaLockoutThreshold = $this->attributes['sambaLockoutThreshold'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Lockout users after bad logon attempts')),
-			1 => array('kind' => 'select', 'name' => 'lockoutThreshold',
-				'options' => array(array('-', '-'), array('0', _('Off')), array(1, _('On'))), 'descriptiveOptions' => true,
-				'options_selected' => $this->attributes['sambaLockoutThreshold'][0]),
-			2 => array('kind' => 'help', 'value' => 'lockoutThreshold'));
+			array('kind' => 'text', 'text' => _('Lockout users after bad logon attempts')),
+			array('kind' => 'input', 'name' => 'lockoutThreshold', 'type' => 'text', 'value' => $sambaLockoutThreshold),
+			array('kind' => 'help', 'value' => 'lockoutThreshold'));
 		// Minimum password age
+		$sambaMinPwdAge = '';
+		if (isset($this->attributes['sambaMinPwdAge'][0])) {
+			$sambaMinPwdAge = $this->attributes['sambaMinPwdAge'][0];
+		}		
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Minimum password age')),
-			1 => array('kind' => 'input', 'name' => 'minPwdAge', 'type' => 'text', 'value' => $this->attributes['sambaMinPwdAge'][0]),
-			2 => array('kind' => 'help', 'value' => 'minPwdAge'));
+			array('kind' => 'text', 'text' => _('Minimum password age')),
+			array('kind' => 'input', 'name' => 'minPwdAge', 'type' => 'text', 'value' => $sambaMinPwdAge),
+			array('kind' => 'help', 'value' => 'minPwdAge'));
 		// Maximum password age
+		$sambaMaxPwdAge = '';
+		if (isset($this->attributes['sambaMaxPwdAge'][0])) {
+			$sambaMaxPwdAge = $this->attributes['sambaMaxPwdAge'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Maximum password age')),
-			1 => array('kind' => 'input', 'name' => 'maxPwdAge', 'type' => 'text', 'value' => $this->attributes['sambaMaxPwdAge'][0]),
-			2 => array('kind' => 'help', 'value' => 'maxPwdAge'));
+			array('kind' => 'text', 'text' => _('Maximum password age')),
+			array('kind' => 'input', 'name' => 'maxPwdAge', 'type' => 'text', 'value' => $sambaMaxPwdAge),
+			array('kind' => 'help', 'value' => 'maxPwdAge'));
 		// Lockout duration
+		$sambaLockoutDuration = '';
+		if (isset($this->attributes['sambaLockoutDuration'][0])) {
+			$sambaLockoutDuration = $this->attributes['sambaLockoutDuration'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Lockout duration')),
-			1 => array('kind' => 'input', 'name' => 'lockoutDuration', 'type' => 'text', 'value' => $this->attributes['sambaLockoutDuration'][0]),
-			2 => array('kind' => 'help', 'value' => 'lockoutDuration'));
+			array('kind' => 'text', 'text' => _('Lockout duration')),
+			array('kind' => 'input', 'name' => 'lockoutDuration', 'type' => 'text', 'value' => $sambaLockoutDuration),
+			array('kind' => 'help', 'value' => 'lockoutDuration'));
 		// Reset time after lockout
+		$sambaLockoutObservationWindow = '';
+		if (isset($this->attributes['sambaLockoutObservationWindow'][0])) {
+			$sambaLockoutObservationWindow = $this->attributes['sambaLockoutObservationWindow'][0];
+		}
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Reset time after lockout')),
-			1 => array('kind' => 'input', 'name' => 'lockoutObservationWindow', 'type' => 'text', 'value' => $this->attributes['sambaLockoutObservationWindow'][0]),
-			2 => array('kind' => 'help', 'value' => 'lockoutObservationWindow'));
+			array('kind' => 'text', 'text' => _('Reset time after lockout')),
+			array('kind' => 'input', 'name' => 'lockoutObservationWindow', 'type' => 'text', 'value' => $sambaLockoutObservationWindow),
+			array('kind' => 'help', 'value' => 'lockoutObservationWindow'));
 
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => ""),
-			1 => array('kind' => 'text', 'text' => "&nbsp;"),
-			2 => array('kind' => 'text', 'text' => ""));
+			array('kind' => 'text', 'text' => ""),
+			array('kind' => 'text', 'text' => "&nbsp;"),
+			array('kind' => 'text', 'text' => ""));
 
 		/* RID settings */
 
 		// next RID
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Next RID')),
-			1 => array('kind' => 'input', 'name' => 'nextRID', 'type' => 'text', 'value' => $this->attributes['sambaNextRid'][0]),
-			2 => array('kind' => 'help', 'value' => 'nextRID'));
+			array('kind' => 'text', 'text' => _('Next RID')),
+			array('kind' => 'input', 'name' => 'nextRID', 'type' => 'text', 'value' => $this->attributes['sambaNextRid'][0]),
+			array('kind' => 'help', 'value' => 'nextRID'));
 		// next user RID
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Next user RID')),
-			1 => array('kind' => 'input', 'name' => 'nextUserRID', 'type' => 'text', 'value' => $this->attributes['sambaNextUserRid'][0]),
-			2 => array('kind' => 'help', 'value' => 'nextUserRID'));
+			array('kind' => 'text', 'text' => _('Next user RID')),
+			array('kind' => 'input', 'name' => 'nextUserRID', 'type' => 'text', 'value' => $this->attributes['sambaNextUserRid'][0]),
+			array('kind' => 'help', 'value' => 'nextUserRID'));
 		// next group RID
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Next group RID')),
-			1 => array('kind' => 'input', 'name' => 'nextGroupRID', 'type' => 'text', 'value' => $this->attributes['sambaNextGroupRid'][0]),
-			2 => array('kind' => 'help', 'value' => 'nextGroupRID'));
+			array('kind' => 'text', 'text' => _('Next group RID')),
+			array('kind' => 'input', 'name' => 'nextGroupRID', 'type' => 'text', 'value' => $this->attributes['sambaNextGroupRid'][0]),
+			array('kind' => 'help', 'value' => 'nextGroupRID'));
 		// RID base
 		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) $this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
 		if ($this->getAccountContainer()->isNewAccount) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('RID base').'*'),
-				1 => array('kind' => 'input', 'name' => 'RIDbase', 'type' => 'text', 'value' => $this->attributes['sambaAlgorithmicRidBase'][0]),
-				2 => array('kind' => 'help', 'value' => 'RIDbase'));
+				array('kind' => 'text', 'text' => _('RID base').'*'),
+				array('kind' => 'input', 'name' => 'RIDbase', 'type' => 'text', 'value' => $this->attributes['sambaAlgorithmicRidBase'][0]),
+				array('kind' => 'help', 'value' => 'RIDbase'));
 		}
 		else {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('RID base')),
-				1 => array('kind' => 'text', 'text' => $this->attributes['sambaAlgorithmicRidBase'][0]),
-				2 => array('kind' => 'help', 'value' => 'RIDbase'));
+				array('kind' => 'text', 'text' => _('RID base')),
+				array('kind' => 'text', 'text' => $this->attributes['sambaAlgorithmicRidBase'][0]),
+				array('kind' => 'help', 'value' => 'RIDbase'));
 		}
 		return $return;
 	}
@@ -429,11 +468,16 @@ class sambaDomain extends baseModule {
 			$this->attributes['sambaRefuseMachinePwdChange'][0] = $_POST['refuseMachinePwdChange'];
 		}
 		// Lockout users after bad logon attempts
-		if ($_POST['lockoutThreshold'] === '-') {
+		if (! isset($_POST['lockoutThreshold']) || ($_POST['lockoutThreshold'] == '')) {
 			if (isset($this->attributes['sambaLockoutThreshold'])) unset($this->attributes['sambaLockoutThreshold'][0]);
 		}
 		else {
-			$this->attributes['sambaLockoutThreshold'][0] = $_POST['lockoutThreshold'];
+			if (is_numeric($_POST['lockoutThreshold']) && ($_POST['lockoutThreshold'] >= 0) && ($_POST['lockoutThreshold'] < 1000)) {
+				$this->attributes['sambaLockoutThreshold'][0] = $_POST['lockoutThreshold'];
+			}
+			else {
+				$errors[] = $this->messages['lockoutThreshold'][0];
+			}
 		}
 		// Minimum password age
 		if (! isset($_POST['minPwdAge']) || ($_POST['minPwdAge'] == '')) {
@@ -619,9 +663,7 @@ class sambaDomain extends baseModule {
 			$return['sambaDomain_refuseMachinePwdChange'][0] = '<block><key>' . _('Allow machine password changes') . '</key><value>' . $refuseMachinePwdChange . '</value></block>';
 		}
 		if (isset($this->attributes['sambaLockoutThreshold'])) {
-			$lockoutThreshold = _('Off');
-			if ($this->attributes['sambaLockoutThreshold'][0] == 1) $lockoutThreshold = _('On');
-			$return['sambaDomain_lockoutThreshold'][0] = '<block><key>' . _('Lockout users after bad logon attempts') . '</key><value>' . $lockoutThreshold . '</value></block>';
+			$return['sambaDomain_lockoutThreshold'][0] = '<block><key>' . _('Lockout users after bad logon attempts') . '</key><value>' . $this->attributes['sambaLockoutThreshold'] . '</value></block>';
 		}
 		if (isset($this->attributes['sambaMinPwdAge'])) {
 			$return['sambaDomain_minPwdAge'][0] = '<block><key>' . _('Minimum password age') . '</key><value>' . implode(', ', $this->attributes['sambaMinPwdAge']) . '</value></block>';
