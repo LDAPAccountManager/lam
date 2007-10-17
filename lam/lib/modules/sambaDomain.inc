@@ -662,8 +662,8 @@ class sambaDomain extends baseModule {
 			if ($this->attributes['sambaRefuseMachinePwdChange'][0] == 0) $refuseMachinePwdChange = _('On');
 			$return['sambaDomain_refuseMachinePwdChange'][0] = '<block><key>' . _('Allow machine password changes') . '</key><value>' . $refuseMachinePwdChange . '</value></block>';
 		}
-		if (isset($this->attributes['sambaLockoutThreshold'])) {
-			$return['sambaDomain_lockoutThreshold'][0] = '<block><key>' . _('Lockout users after bad logon attempts') . '</key><value>' . $this->attributes['sambaLockoutThreshold'] . '</value></block>';
+		if (isset($this->attributes['sambaLockoutThreshold'][0])) {
+			$return['sambaDomain_lockoutThreshold'][0] = '<block><key>' . _('Lockout users after bad logon attempts') . '</key><value>' . $this->attributes['sambaLockoutThreshold'][0] . '</value></block>';
 		}
 		if (isset($this->attributes['sambaMinPwdAge'])) {
 			$return['sambaDomain_minPwdAge'][0] = '<block><key>' . _('Minimum password age') . '</key><value>' . implode(', ', $this->attributes['sambaMinPwdAge']) . '</value></block>';
