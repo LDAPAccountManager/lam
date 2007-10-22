@@ -862,8 +862,28 @@ class sambaSamAccount extends baseModule {
 	*/
 	function process_terminalServer() {
 		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) return array();
-		$return = array();
-		return $return;
+		$mDial = new sambaMungedDial();
+		if (isset($this->attributes['sambaMungedDial'][0])) {
+			$mDial->load($this->attributes['sambaMungedDial'][0]);
+		}
+		$mDial->setTsLogin(isset($_POST['tsAllowLogin']));	
+		$mDial->ctx['CtxWFHomeDir'] = $_POST['tsHomeDir'];
+		$mDial->ctx['CtxWFHomeDirDrive'] = $_POST['tsHomeDrive'];
+		$mDial->ctx['CtxWFProfilePath'] = $_POST['tsProfilePath'];
+		$mDial->setInheritMode(isset($_POST['tsInherit']));
+		$mDial->ctx['CtxInitialProgram'] = $_POST['tsInitialProgram'];
+		$mDial->ctx['CtxWorkDirectory'] = $_POST['tsWorkDirectory'];
+		$mDial->ctx['CtxMaxConnectionTime'] = $_POST['tsConnectionLimit'];
+		$mDial->ctx['CtxMaxDisconnectionTime'] = $_POST['tsDisconnectionLimit'];
+		$mDial->ctx['CtxMaxIdleTime'] = $_POST['tsIdleLimit'];
+		$mDial->setConnectClientDrives(isset($_POST['tsConnectDrives']));
+		$mDial->setConnectClientPrinters(isset($_POST['tsConnectPrinters']));
+		$mDial->setDefaultPrinter(isset($_POST['tsClientPrinterDefault']));
+		$mDial->setShadow(true, $_POST['tsShadowing']);
+		$mDial->setBrokenConn($_POST['tsBrokenConn']);
+		$mDial->setReConn($_POST['tsReconnect']);
+		$this->attributes['sambaMungedDial'][0] = $mDial->getMunged();
+		return array();
 	}
 
 	/* This function will create the html-page
@@ -1352,7 +1372,7 @@ class sambaSamAccount extends baseModule {
 		$selbrokenConn = array($mDial->getBrokenConn());
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('On broken or timed out connection')),
-			array('kind' => 'select', 'size' => 1, 'name' => 'tsShadowing', 'descriptiveOptions' => true, 'options' => $brokenConnOptions, 'options_selected' => $selbrokenConn),
+			array('kind' => 'select', 'size' => 1, 'name' => 'tsBrokenConn', 'descriptiveOptions' => true, 'options' => $brokenConnOptions, 'options_selected' => $selbrokenConn),
 			array('kind' => 'help', 'value' => 'tsBrokenConn'));
 		// reconnect
 		$reconnectOptions = array(
@@ -1361,7 +1381,7 @@ class sambaSamAccount extends baseModule {
 		$selReconnect = array($mDial->getReConn());
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Reconnect if disconnected')),
-			array('kind' => 'select', 'size' => 1, 'name' => 'tsShadowing', 'descriptiveOptions' => true, 'options' => $reconnectOptions, 'options_selected' => $selReconnect),
+			array('kind' => 'select', 'size' => 1, 'name' => 'tsReconnect', 'descriptiveOptions' => true, 'options' => $reconnectOptions, 'options_selected' => $selReconnect),
 			array('kind' => 'help', 'value' => 'tsReconnect'));
 		// buttons
 		$return[] = array(array('kind' => 'text', 'text' => '&nbsp;'));
