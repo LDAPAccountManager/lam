@@ -31,6 +31,9 @@ $Id$
 * @author Michael Duergner
 */
 
+/** terminals server options */
+include_once('sambaSamAccount/sambaMungedDial.inc');
+
 /**
 * Manages the object class "sambaSamAccount" for users and hosts.
 *
@@ -131,7 +134,7 @@ class sambaSamAccount extends baseModule {
 		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaAcctFlags',
 			'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
-			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours');
+			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial');
 		// PHP extensions
 		$return['extensions'] = array('mhash', 'iconv');
 		// profile checks
@@ -270,7 +273,10 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")),
 			'timeZone' => array (
 				"Headline" => _("Time zone"),
-				"Text" => _("This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly."))
+				"Text" => _("This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly.")),
+			'terminalServer' => array (
+				"Headline" => _("Terminal server options"),
+				"Text" => _("Here you can change the settings for the terminal server access."))
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -584,21 +590,21 @@ class sambaSamAccount extends baseModule {
 				$RIDbase = $sambaDomains[$i]->RIDbase;
 				}
 		$flag = "[";
-		if ($_POST['sambaAcctFlagsD']) {
+		if (isset($_POST['sambaAcctFlagsD'])) {
 			$flag .= "D";
 			$this->deactivated = true;
 		}
 		else {
 			$this->deactivated = false;
 		}
-		if ($_POST['sambaAcctFlagsX']) {
+		if (isset($_POST['sambaAcctFlagsX'])) {
 			$flag .= "X";
 			$this->noexpire = true;
 		}
 		else {
 			$this->noexpire = false;
 		}
-		if ($_POST['sambaAcctFlagsN']) {
+		if (isset($_POST['sambaAcctFlagsN'])) {
 			$flag .= "N";
 			$this->nopwd = true;
 		}
@@ -667,7 +673,7 @@ class sambaSamAccount extends baseModule {
 				}
 			}
 
-			if ($_POST['useunixpwd']) {
+			if (isset($_POST['useunixpwd'])) {
 				$this->useunixpwd = true;
 				$this->attributes['sambaLMPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
 				$this->attributes['sambaNTPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
@@ -787,7 +793,7 @@ class sambaSamAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_logonHours() {
-		if ($_POST['form_subpage_sambaSamAccount_attributes_abort']) return array();
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) return array();
 		// set new logon hours
 		$logonHours = '';
 		for ($i = 0; $i < 24*7; $i++) {
@@ -845,6 +851,18 @@ class sambaSamAccount extends baseModule {
 			// remove attribute value
 			unset($this->attributes[$attr]);
 		}
+		return $return;
+	}
+
+	/**
+	* Processes user input of the terminal server page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_terminalServer() {
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) return array();
+		$return = array();
 		return $return;
 	}
 
@@ -980,7 +998,7 @@ class sambaSamAccount extends baseModule {
 	
 				$drives = array('-');
 				for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
-				if ($this->attributes['sambaHomeDrive'][0]) {
+				if (isset($this->attributes['sambaHomeDrive'][0])) {
 					$selected = array ($this->attributes['sambaHomeDrive'][0]);
 				}
 				else $selected = array('-');
@@ -988,17 +1006,29 @@ class sambaSamAccount extends baseModule {
 					array('kind' => 'text', 'text' => _('Home drive') ),
 					array('kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => $selected),
 					array('kind' => 'help', 'value' => 'homeDrive' ));
+				$sambaHomePath = '';
+				if (isset($this->attributes['sambaHomePath'][0])) {
+					$sambaHomePath = $this->attributes['sambaHomePath'][0];
+				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Home path') ),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaHomePath'][0]),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $sambaHomePath),
 					array('kind' => 'help', 'value' => 'homePath' ));
+				$sambaProfilePath = '';
+				if (isset($this->attributes['sambaProfilePath'][0])) {
+					$sambaProfilePath = $this->attributes['sambaProfilePath'][0];
+				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Profile path') ),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaProfilePath'][0]),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $sambaProfilePath),
 					array('kind' => 'help', 'value' => 'profilePath' ));
+				$sambaLogonScript = '';
+				if (isset($this->attributes['sambaLogonScript'][0])) {
+					$sambaLogonScript = $this->attributes['sambaLogonScript'][0];
+				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Logon script') ),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaLogonScript'][0]),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $sambaLogonScript),
 					array('kind' => 'help', 'value' => 'scriptPath' ));
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Samba workstations') ),
@@ -1046,12 +1076,16 @@ class sambaSamAccount extends baseModule {
 				array('kind' => 'text', 'text' => _('Domain') . "*" ),
 				array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
 				array('kind' => 'help', 'value' => 'domain' ));
-			// logon hours
+			// logon hours and terminal server options
 			if ($this->get_scope()=='user') {
 				$return[] = array(
-					array('kind' => 'text', 'text' => _('Logon hours') ),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit logon hours')),
-					array('kind' => 'help', 'value' => 'logonHours' ));
+					array('kind' => 'text', 'text' => _('Logon hours')),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit')),
+					array('kind' => 'help', 'value' => 'logonHours'));
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Terminal server options') ),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_terminalServer_open', 'value' => _('Edit')),
+					array('kind' => 'help', 'value' => 'terminalServer'));
 			}
 			// reset host password
 			if ($this->get_scope()=='host') {
@@ -1198,14 +1232,13 @@ class sambaSamAccount extends baseModule {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text),
-			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'expire_day',
-					'options' => $mday, 'options_selected' => $date['mday']),
-				1 => array ( 'kind' => 'select', 'name' => 'expire_mon',
-					'options' => $mon, 'options_selected' => $date['mon']),
-				2 => array ( 'kind' => 'select', 'name' => 'expire_yea',
-					'options' => $year, 'options_selected' => $date['year'])))),
-			2 => array ( 'kind' => 'help', 'value' => $help));
+		$return[] = array(
+			array('kind' => 'text', 'text' => $text),
+			array('kind' => 'table', 'value' => array(array(
+				array('kind' => 'select', 'name' => 'expire_day', 'options' => $mday, 'options_selected' => $date['mday']),
+				array('kind' => 'select', 'name' => 'expire_mon', 'options' => $mon, 'options_selected' => $date['mon']),
+				array('kind' => 'select', 'name' => 'expire_yea', 'options' => $year, 'options_selected' => $date['year'])))),
+			array('kind' => 'help', 'value' => $help));
 		$buttons = array();
 		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_change' . $attr, 'type' => 'submit', 'value' => _('Change'));
 		if (isset($this->attributes[$attr][0])) {
@@ -1218,6 +1251,127 @@ class sambaSamAccount extends baseModule {
 		return $return;	
 	}
 
+	/**
+	* This function will create the HTML page to edit the terminal server options.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_terminalServer() {
+		$return = array();
+		$mDial = new sambaMungedDial();
+		if (isset($this->attributes['sambaMungedDial'][0])) {
+			$mDial->load($this->attributes['sambaMungedDial'][0]);
+		}
+		// terminal server login
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Allow terminal server login')),
+			array('kind' => 'input', 'name' => 'tsAllowLogin', 'type' => 'checkbox', 'checked' => $mDial->getTsLogin()),
+			array('kind' => 'help', 'value' => 'tsAllowLogin'));
+		// home directory
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Home directory')),
+			array('kind' => 'input', 'name' => 'tsHomeDir', 'type' => 'text', 'value' => $mDial->ctx['CtxWFHomeDir']),
+			array('kind' => 'help', 'value' => 'tsHomeDir'));
+		// home drive
+		$drives = array();
+		for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+		$selTsDrive = array();
+		if (isset($mDial->ctx['CtxWFHomeDirDrive'])) {
+			$selTsDrive = array($mDial->ctx['CtxWFHomeDirDrive']);
+		}
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Home drive')),
+			array('kind' => 'select', 'size' => 1, 'name' => 'tsHomeDrive', 'options' => $drives, 'options_selected' => $selTsDrive),
+			array('kind' => 'help', 'value' => 'tsHomeDrive'));
+		// profile path
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Profile path')),
+			array('kind' => 'input', 'name' => 'tsProfilePath', 'type' => 'text', 'value' => $mDial->ctx['CtxWFProfilePath']),
+			array('kind' => 'help', 'value' => 'tsProfilePath'));
+		// use startup program and working dir from client
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Inherit client startup configuration')),
+			array('kind' => 'input', 'name' => 'tsInherit', 'type' => 'checkbox', 'checked' => $mDial->getInheritMode()),
+			array('kind' => 'help', 'value' => 'tsInherit'));
+		// startup program
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Initial program')),
+			array('kind' => 'input', 'name' => 'tsInitialProgram', 'type' => 'text', 'value' => $mDial->ctx['CtxInitialProgram']),
+			array('kind' => 'help', 'value' => 'tsInitialProgram'));
+		// working dir
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Working directory')),
+			array('kind' => 'input', 'name' => 'tsWorkDirectory', 'type' => 'text', 'value' => $mDial->ctx['CtxWorkDirectory']),
+			array('kind' => 'help', 'value' => 'tsWorkDirectory'));
+		// connection time limit
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Connection time limit')),
+			array('kind' => 'input', 'name' => 'tsConnectionLimit', 'type' => 'text', 'value' => $mDial->ctx['CtxMaxConnectionTime']),
+			array('kind' => 'help', 'value' => 'tsTimeLimit'));
+		// disconnection time limit
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Disconnection time limit')),
+			array('kind' => 'input', 'name' => 'tsDisconnectionLimit', 'type' => 'text', 'value' => $mDial->ctx['CtxMaxDisconnectionTime']),
+			array('kind' => 'help', 'value' => 'tsTimeLimit'));
+		// idle time limit
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Idle time limit')),
+			array('kind' => 'input', 'name' => 'tsIdleLimit', 'type' => 'text', 'value' => $mDial->ctx['CtxMaxIdleTime']),
+			array('kind' => 'help', 'value' => 'tsTimeLimit'));
+		// connect client drives
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Connect client drives')),
+			array('kind' => 'input', 'name' => 'tsConnectDrives', 'type' => 'checkbox', 'checked' => $mDial->getConnectClientDrives()),
+			array('kind' => 'help', 'value' => 'tsConnectDrives'));
+		// connect client printers
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Connect client printers')),
+			array('kind' => 'input', 'name' => 'tsConnectPrinters', 'type' => 'checkbox', 'checked' => $mDial->getConnectClientPrinters()),
+			array('kind' => 'help', 'value' => 'tsConnectPrinters'));
+		// client printer is default
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Client printer is default')),
+			array('kind' => 'input', 'name' => 'tsClientPrinterDefault', 'type' => 'checkbox', 'checked' => $mDial->getDefaultPrinter()),
+			array('kind' => 'help', 'value' => 'tsClientPrinterDefault'));
+		// shadowing
+		$shadowOptions = array(
+			array("0", _("disabled")),
+			array("1", _("input on, notify on")),
+			array("2", _("input on, notify off")),
+			array("3", _("input off, notify on")),
+			array("4", _("input off, nofify off")));
+		$selShadow = array($mDial->getShadow());
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Shadowing')),
+			array('kind' => 'select', 'size' => 1, 'name' => 'tsShadowing', 'descriptiveOptions' => true, 'options' => $shadowOptions, 'options_selected' => $selShadow),
+			array('kind' => 'help', 'value' => 'tsShadowing'));
+		// broken connection
+		$brokenConnOptions = array(
+			array("0", _("disconnect")),
+			array("1", _("reset")));
+		$selbrokenConn = array($mDial->getBrokenConn());
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('On broken or timed out connection')),
+			array('kind' => 'select', 'size' => 1, 'name' => 'tsShadowing', 'descriptiveOptions' => true, 'options' => $brokenConnOptions, 'options_selected' => $selbrokenConn),
+			array('kind' => 'help', 'value' => 'tsBrokenConn'));
+		// reconnect
+		$reconnectOptions = array(
+			array("0", _("from any client")),
+			array("1", _("from previous client only")));
+		$selReconnect = array($mDial->getReConn());
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Reconnect if disconnected')),
+			array('kind' => 'select', 'size' => 1, 'name' => 'tsShadowing', 'descriptiveOptions' => true, 'options' => $reconnectOptions, 'options_selected' => $selReconnect),
+			array('kind' => 'help', 'value' => 'tsReconnect'));
+		// buttons
+		$return[] = array(array('kind' => 'text', 'text' => '&nbsp;'));
+		$return[] = array(
+			array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Ok'), 'td' => array('align' => 'right')),
+			array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Cancel'), 'td' => array('align' => 'left'))
+		);
+		return $return;	
+	}
+	
 	/**
 	* Returns a list of elements for the account profiles.
 	*
