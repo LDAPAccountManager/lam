@@ -169,14 +169,14 @@ class sambaSamAccount extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'displayName',
-			'sambaHomePath',
-			'sambaHomeDrive',
-			'sambaLogonScript',
-			'sambaProfilePath',
-			'sambaUserWorkstations',
-			'sambaDomainName',
-			'sambaPrimaryGroupSID'
+			'displayName', 'sambaHomePath', 'sambaHomeDrive',
+			'sambaLogonScript', 'sambaProfilePath', 'sambaUserWorkstations',
+			'sambaDomainName', 'sambaPrimaryGroupSID', 'tsAllowLogin',
+			'tsHomeDir', 'tsHomeDrive', 'tsProfilePath',
+			'tsInherit', 'tsInitialProgram', 'tsWorkDirectory',
+			'tsConnectionLimit', 'tsDisconnectionLimit', 'tsIdleLimit',
+			'tsConnectDrives', 'tsConnectPrinters', 'tsClientPrinterDefault',
+			'tsShadowing', 'tsBrokenConn', 'tsReconnect'
 		);
 		$return['selfServiceFieldSettings'] = array(
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
@@ -866,7 +866,7 @@ class sambaSamAccount extends baseModule {
 		if (isset($this->attributes['sambaMungedDial'][0])) {
 			$mDial->load($this->attributes['sambaMungedDial'][0]);
 		}
-		$mDial->setTsLogin(isset($_POST['tsAllowLogin']));	
+		$mDial->setTsLogin(!isset($_POST['tsAllowLogin']));	
 		$mDial->ctx['CtxWFHomeDir'] = $_POST['tsHomeDir'];
 		$mDial->ctx['CtxWFHomeDirDrive'] = $_POST['tsHomeDrive'];
 		$mDial->ctx['CtxWFProfilePath'] = $_POST['tsProfilePath'];
@@ -1639,6 +1639,71 @@ class sambaSamAccount extends baseModule {
 		}
 		if (isset($this->attributes['sambaPrimaryGroupSID'][0])) {
 			$return['sambaSamAccount_sambaPrimaryGroupSID'] = array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaPrimaryGroupSID'][0] . '</value></block>');
+		}
+		// terminal server options
+		if (isset($this->attributes['sambaMungedDial'][0])) {
+			$mDial = new sambaMungedDial();
+			$mDial->load($this->attributes['sambaMungedDial'][0]);
+			$tsAllowLogin = _('yes');
+			if (!$mDial->getTsLogin()) {
+				$tsAllowLogin = _('no');
+			}
+			$return['sambaSamAccount_tsAllowLogin'] = array('<block><key>' . _('Allow terminal server login') . '</key><value>' . $tsAllowLogin . '</value></block>');
+			$return['sambaSamAccount_tsHomeDir'] = array('<block><key>' . _('Home directory') . '</key><value>' . $mDial->ctx['CtxWFHomeDir'] . '</value></block>');
+			$return['sambaSamAccount_tsHomeDrive'] = array('<block><key>' . _('Home drive') . '</key><value>' . $mDial->ctx['CtxWFHomeDirDrive'] . '</value></block>');
+			$return['sambaSamAccount_tsProfilePath'] = array('<block><key>' . _('Profile path') . '</key><value>' . $mDial->ctx['CtxWFProfilePath'] . '</value></block>');
+			$tsInherit = _('yes');
+			if (!$mDial->getInheritMode()) {
+				$tsInherit = _('no');
+			}
+			$return['sambaSamAccount_tsInherit'] = array('<block><key>' . _('Inherit client startup configuration') . '</key><value>' . $tsInherit . '</value></block>');
+			$return['sambaSamAccount_tsInitialProgram'] = array('<block><key>' . _('Initial program') . '</key><value>' . $mDial->ctx['CtxInitialProgram'] . '</value></block>');
+			$return['sambaSamAccount_tsWorkDirectory'] = array('<block><key>' . _('Working directory') . '</key><value>' . $mDial->ctx['CtxWorkDirectory'] . '</value></block>');
+			$return['sambaSamAccount_tsConnectionLimit'] = array('<block><key>' . _('Connection time limit') . '</key><value>' . $mDial->ctx['CtxMaxConnectionTime'] . '</value></block>');
+			$return['sambaSamAccount_tsDisconnectionLimit'] = array('<block><key>' . _('Disconnection time limit') . '</key><value>' . $mDial->ctx['CtxMaxDisconnectionTime'] . '</value></block>');
+			$return['sambaSamAccount_tsIdleLimit'] = array('<block><key>' . _('Idle time limit') . '</key><value>' . $mDial->ctx['CtxMaxIdleTime'] . '</value></block>');
+			$tsConnectDrives = _('yes');
+			if (!$mDial->getConnectClientDrives()) {
+				$tsConnectDrives = _('no');
+			}
+			$return['sambaSamAccount_tsConnectDrives'] = array('<block><key>' . _('Connect client drives') . '</key><value>' . $tsConnectDrives . '</value></block>');
+			$tsConnectPrinters = _('yes');
+			if (!$mDial->getConnectClientPrinters()) {
+				$tsConnectPrinters = _('no');
+			}
+			$return['sambaSamAccount_tsConnectPrinters'] = array('<block><key>' . _('Connect client printers') . '</key><value>' . $tsConnectPrinters . '</value></block>');
+			$tsClientPrinterDefault = _('yes');
+			if (!$mDial->getDefaultPrinter()) {
+				$tsClientPrinterDefault = _('no');
+			}
+			$return['sambaSamAccount_tsClientPrinterDefault'] = array('<block><key>' . _('Client printer is default') . '</key><value>' . $tsClientPrinterDefault . '</value></block>');
+			$shadowOptions = array(
+				'0' => _("disabled"),
+				'1' => _("input on, notify on"),
+				'2' => _("input on, notify off"),
+				'3' => _("input off, notify on"),
+				'4' => _("input off, nofify off"));
+			$tsShadowing = '';
+			if (($mDial->getShadow() != null) && is_numeric($mDial->getShadow())) {
+				$tsShadowing = $shadowOptions[$mDial->getShadow()];
+			}
+			$return['sambaSamAccount_tsShadowing'] = array('<block><key>' . _('Shadowing') . '</key><value>' . $tsShadowing . '</value></block>');
+			$brokenConnOptions = array(
+				'0' => _("disconnect"),
+				'1' => _("reset"));
+			$tsBrokenConn = '';
+			if (($mDial->getBrokenConn() != null) && is_numeric($mDial->getBrokenConn())) {
+				$tsBrokenConn = $brokenConnOptions[$mDial->getBrokenConn()];
+			}
+			$return['sambaSamAccount_tsBrokenConn'] = array('<block><key>' . _('On broken or timed out connection') . '</key><value>' . $tsBrokenConn . '</value></block>');
+			$reconnectOptions = array(
+				'0' => _("from any client"),
+				'1' => _("from previous client only"));
+			$tsReconnect = '';
+			if (($mDial->getReConn() != null) && is_numeric($mDial->getReConn())) {
+				$tsReconnect = $reconnectOptions[$mDial->getReConn()];
+			}
+			$return['sambaSamAccount_tsReconnect'] = array('<block><key>' . _('Reconnect if disconnected') . '</key><value>' . $tsReconnect . '</value></block>');
 		}
 		return $return;
 	}
