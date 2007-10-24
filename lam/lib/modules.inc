@@ -963,7 +963,7 @@ class accountContainer {
 		}
 		// create module menu
 		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"padding:0px;\" colspan=2>";
+		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
 
 		// calculate button width
 		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Main"))));
@@ -972,13 +972,13 @@ class accountContainer {
 			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
 		}
 		$x=0;
-		echo "<table width=\"100%\" border=1 style=\"border-collapse: collapse;\">";
+		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
 		// print "main" button
 		$class = $this->type . "list-head";
 		if ($this->order[$this->current_page] == "main") $class = $this->type . "list-edit";
-		echo "<tr><td width=\"$buttonWidth\" style=\"padding:0px;\" colspan=2>";
+		echo "<tr><td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\" colspan=2>";
 		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
+		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:10px;\">\n";
 		echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;margin:2px; border:0px solid;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
@@ -995,10 +995,10 @@ class accountContainer {
 			if ($buttonStatus == 'hidden') continue;
 			$class = $this->type . "list-head";
 			if ($this->order[$this->current_page] == $this->order[$i]) $class = $this->type . "list-edit";
-			echo "<td width=\"$buttonWidth\" style=\"padding:0px;\">\n";
+			echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
 			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
-				echo " align=\"center\" style=\"padding-top:10px; padding-bottom:10px; padding-right:30px; padding-left:30px;\">\n";
+				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:10px;\">\n";
 			// print normal button
 			echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;margin:2px; border:0px solid;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
