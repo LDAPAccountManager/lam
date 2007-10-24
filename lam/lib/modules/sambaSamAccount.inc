@@ -227,7 +227,7 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("Date after the user must change his password. Format: DD-MM-YYYY")),
 			"homeDrive" => array(
 				"ext" => "FALSE", "Headline" => _("Home drive"),
-				"Text" => _("Drive letter assigned on windows workstations as homedirectory.")),
+				"Text" => _("The home directory will be connected under this drive letter.")),
 			"homePath" => array(
 				"ext" => "FALSE", "Headline" => _("Home path"),
 				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
@@ -274,6 +274,45 @@ class sambaSamAccount extends baseModule {
 			'timeZone' => array (
 				"Headline" => _("Time zone"),
 				"Text" => _("This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly.")),
+			'tsAllowLogin' => array (
+				"Headline" => _("Allow terminal server login"),
+				"Text" => _("Activate this checkbox to allow this user to use the terminal service.")),
+			'tsHomeDir' => array (
+				"Headline" => _("Home directory"),
+				"Text" => _("This is the path to the user's home directory.")),
+			'tsProfilePath' => array (
+				"Headline" => _("Profile path"),
+				"Text" => _("Path of the user profile.")),
+			'tsInherit' => array (
+				"Headline" => _("Inherit client startup configuration"),
+				"Text" => _("Activate this checkbox to inherit the initial program and working directory from the client machine.")),
+			'tsInitialProgram' => array (
+				"Headline" => _("Initial program"),
+				"Text" => _("This program is run after the login.")),
+			'tsWorkDirectory' => array (
+				"Headline" => _("Working directory"),
+				"Text" => _("Working directory of initial program.")),
+			'tsTimeLimit' => array (
+				"Headline" => _("Time limit"),
+				"Text" => _("Please enter the time limit in minutes. 0 means unlimited.")),
+			'tsConnectDrives' => array (
+				"Headline" => _("Connect client drives"),
+				"Text" => _("Activate this checkbox to connect drives from the client machine.")),
+			'tsConnectPrinters' => array (
+				"Headline" => _("Connect client printers"),
+				"Text" => _("Activate this checkbox to connect printers from the client machine.")),
+			'tsClientPrinterDefault' => array (
+				"Headline" => _("Client printer is default"),
+				"Text" => _("Activate this checkbox to set the client's printer as default printer.")),
+			'tsShadowing' => array (
+				"Headline" => _("Shadowing"),
+				"Text" => _("Here you can specify the shadowing mode.")),
+			'tsBrokenConn' => array (
+				"Headline" => _("On broken or timed out connection"),
+				"Text" => _("This specifies what to do when the client connection is broken.")),
+			'tsReconnect' => array (
+				"Headline" => _("Reconnect if disconnected"),
+				"Text" => _("This specifies the reconnect policy.")),
 			'terminalServer' => array (
 				"Headline" => _("Terminal server options"),
 				"Text" => _("Here you can change the settings for the terminal server access."))
@@ -1302,7 +1341,7 @@ class sambaSamAccount extends baseModule {
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Home drive')),
 			array('kind' => 'select', 'size' => 1, 'name' => 'tsHomeDrive', 'options' => $drives, 'options_selected' => $selTsDrive),
-			array('kind' => 'help', 'value' => 'tsHomeDrive'));
+			array('kind' => 'help', 'value' => 'homeDrive'));
 		// profile path
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Profile path')),
