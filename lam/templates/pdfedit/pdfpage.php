@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Michael Dürgner
+  Copyright (C) 2003 - 2006  Michael Dï¿½rgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ $Id$
 /**
 * Displays the main page of the PDF editor where the user can select the displayed entries.
 *
-* @author Michael Dürgner
+* @author Michael Duergner
 * @author Roland Gruber
 * @package PDF
 */
@@ -353,7 +353,7 @@ elseif(isset($_GET['down'])) {
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
-	if($_GET['edit']) {
+	if(isset($_GET['edit'])) {
 		$load = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
@@ -457,21 +457,21 @@ $sections = '<option value="0">' . _('Beginning') . "</option>\n";
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// Create the up/down/remove links
 	$links = "<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key .
-			(($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
-			(($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
-			(($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
+			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
+			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
+			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/up.gif\" alt=\"" . _("Up") . "\" border=\"0\"></a>\n</td>\n" .
 		"<td width=\"10\">\n</td>\n" .
 		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key .
-			(($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
-			(($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
-			(($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
+			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
+			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
+			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/down.gif\" alt=\"" . _("Down") . "\" border=\"0\"></a>\n</td>\n" .
 		"<td width=\"10\">\n</td>\n" .
 		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key .
-			(($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
-			(($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
-			(($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
+			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
+			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
+			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n</td>\n";
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
@@ -737,14 +737,14 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 							</legend>
 							<table border="0" align="left">
 							<?php
-							if(!isset($_GET['pdfname'])) {
+							if(!isset($_GET['pdfname']) || ($_GET['pdfname'] == '')) {
 							?>
 								<tr>
 									<td>
 										<b><?php echo _("Structure name"); ?>:</b>
 									</td>
 									<td>
-										<input type="text" name="pdfname" value="<?php echo $_GET['edit'];?>">
+										<input type="text" name="pdfname" value="<?php if (isset($_GET['edit'])) echo $_GET['edit'];?>">
 									</td>
 									<td>
 										<a href="../help.php?HelpNumber=360" target="lamhelp"><?php echo _("Help");?></a>
@@ -752,7 +752,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 								</tr>
 								<tr>
 									<td colspan="3">
-										&nbsp
+										&nbsp;
 									</td>
 								</tr>
 							<?php
@@ -763,7 +763,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 									<?php
 									if(isset($_GET['pdfname'])) {
 									?>
-										<input type="hidden" name="pdfname" value="<?php echo $_GET['pdfname']; ?>">
+										<input type="hidden" name="pdfname" value="<?php if (isset($_GET['pdfname'])) echo $_GET['pdfname']; ?>">
 									<?php
 									}
 									?>
@@ -773,7 +773,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 										<input type="submit" name="abort" value="<?php echo _("Cancel");?>">
 									</td>
 									<td>
-										&nbsp
+										&nbsp;
 									</td>
 								</tr>
 							</table>
