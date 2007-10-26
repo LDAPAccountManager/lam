@@ -807,7 +807,16 @@ class accountContainer {
 		else {
 			return null;
 		}
-	}	
+	}
+	
+	/**
+	 * Returns the included account modules.
+	 *
+	 * @return array modules
+	 */
+	function getAccountModules() {
+		return $this->module;
+	}
 	
 	/**
 	* Returns the accout type of this object (e.g. user, group, host).

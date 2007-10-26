@@ -140,13 +140,14 @@ if ($_POST['delete']) {
 		// First load DN.
 		$_SESSION['account']->load_account($_SESSION['delete_dn'][$m]);
 		// get commands and changes of each attribute
-		$module = array_keys($_SESSION['account']->module);
+		$moduleNames = array_keys($_SESSION['account']->getAccountModules());
+		$modules = $_SESSION['account']->getAccountModules();
 		$attributes = array();
 		$errors = array();
 		// predelete actions
 		if (!$stopprocessing) {
-			foreach ($module as $singlemodule) {
-				$success = $_SESSION['account']->module[$singlemodule]->preDeleteActions();
+			foreach ($moduleNames as $singlemodule) {
+				$success = $modules[$singlemodule]->preDeleteActions();
 				if (!$success) {
 					$stopprocessing = true;
 					break;
@@ -155,9 +156,9 @@ if ($_POST['delete']) {
 		}		
 		if (!$stopprocessing) {
 			// load attributes
-			foreach ($module as $singlemodule) {
+			foreach ($moduleNames as $singlemodule) {
 				// load changes
-				$temp = $_SESSION['account']->module[$singlemodule]->delete_attributes();
+				$temp = $modules[$singlemodule]->delete_attributes();
 				if (is_array($temp)) {
 					// merge changes
 					$DNs = array_keys($temp);
@@ -215,8 +216,8 @@ if ($_POST['delete']) {
 		}
 		// post delete actions
 		if (!$stopprocessing) {
-			foreach ($module as $singlemodule) {
-				$_SESSION['account']->module[$singlemodule]->postDeleteActions();
+			foreach ($moduleNames as $singlemodule) {
+				$modules[$singlemodule]->postDeleteActions();
 			}
 		}		
 		if (!$stopprocessing) {
