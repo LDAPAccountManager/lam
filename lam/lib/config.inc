@@ -218,7 +218,7 @@ class LAMConfig {
 	var $file;
 
 	/** List of all settings in config file */
-	var $settings = array("ServerURL", "Passwd", "Admins", "treesuffix", "maxlistentries",
+	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix", "maxlistentries",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types");
 
@@ -243,8 +243,8 @@ class LAMConfig {
 	*
 	* @return boolean true if file was readable
 	*/
-	function reload() {
-		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
+	private function reload() {
+		$conffile = $this->getPath();
 		if (is_file($conffile) == True) {
 			$file = @fopen($conffile, "r");
 			if (!$file) return false; // abort if file is not readable
@@ -301,8 +301,8 @@ class LAMConfig {
 	}
 
 	/** Saves preferences to config file */
-	function save() {
-		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
+	public function save() {
+		$conffile = $this->getPath();
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
 			$file_array = array();
@@ -391,6 +391,24 @@ class LAMConfig {
 			}
 		}
 	}
+	
+	/**
+	 * Returns if the file can be written on the filesystem.
+	 *
+	 * @return boolean true if file is writable
+	 */
+	public function isWritable() {
+		return is_writeable($this->getPath());
+	}
+	
+	/**
+	 * Returns the path to the config file.
+	 *
+	 * @return string path on filesystem
+	 */
+	private function getPath() {
+		return substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
+	}
 
 	// functions to read/write preferences
 
@@ -399,7 +417,7 @@ class LAMConfig {
 	*
 	* @return string server address
 	*/
-	function get_ServerURL() {
+	public function get_ServerURL() {
 		return $this->ServerURL;
 	}
 
@@ -409,7 +427,7 @@ class LAMConfig {
 	* @param string $value new server address
 	* @return boolean true if $value has correct format
 	*/
-	function set_ServerURL($value) {
+	public function set_ServerURL($value) {
 		if (is_string($value)) $this->ServerURL = $value;
 		else return false;
 		return true;
@@ -420,7 +438,7 @@ class LAMConfig {
 	*
 	* @return array the admin names
 	*/
-	function get_Admins() {
+	public function get_Admins() {
 		return explode(";", $this->Admins);
 	}
 
@@ -429,7 +447,7 @@ class LAMConfig {
 	*
 	* @return string the admin string
 	*/
-	function get_Adminstring() {
+	public function get_Adminstring() {
 		return $this->Admins;
 	}
 
@@ -439,7 +457,7 @@ class LAMConfig {
 	* @param string $value new admin string that contains all admin users seperated by semicolons
 	* @return boolean true if $value has correct format
 	*/
-	function set_Adminstring($value) {
+	public function set_Adminstring($value) {
 		if (is_string($value) &&
 		eregi("^[^;]+(;[^;]+)*$", $value)) {
 			$this->Admins = $value;
@@ -453,7 +471,7 @@ class LAMConfig {
 	*
 	* @return string the password
 	*/
-	function get_Passwd() {
+	public function get_Passwd() {
 		return $this->Passwd;
 	}
 
@@ -463,7 +481,7 @@ class LAMConfig {
 	* @param string $value new password
 	* @return boolean true if $value has correct format
 	*/
-	function set_Passwd($value) {
+	public function set_Passwd($value) {
 		if (is_string($value)) $this->Passwd = $value;
 		else return false;
 		return true;
@@ -475,7 +493,7 @@ class LAMConfig {
 	* @param string $scope account type
 	* @return string the LDAP suffix
 	*/
-	function get_Suffix($scope) {
+	public function get_Suffix($scope) {
 		if ($scope == "tree") {
 			return $this->treesuffix;
 		}
@@ -491,7 +509,7 @@ class LAMConfig {
 	* @param string $value new LDAP suffix
 	* @return boolean true if $value has correct format
 	*/
-	function set_Suffix($scope, $value) {
+	public function set_Suffix($scope, $value) {
 		if (!$value) $value = "";
 		elseif (!is_string($value)) {
 			return false;
@@ -511,7 +529,7 @@ class LAMConfig {
 	* @param string $scope account type
 	* @return string the attribute list
 	*/
-	function get_listAttributes($scope) {
+	public function get_listAttributes($scope) {
 		return $this->typeSettings['attr_' . $scope];
 	}
 
@@ -522,7 +540,7 @@ class LAMConfig {
 	* @param string $scope account type
 	* @return boolean true if $value has correct format
 	*/
-	function set_listAttributes($value, $scope) {
+	public function set_listAttributes($value, $scope) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->typeSettings['attr_' . $scope] = $value;
 			return true;
@@ -537,7 +555,7 @@ class LAMConfig {
 	*
 	* @return integer maximum number
 	*/
-	function get_MaxListEntries() {
+	public function get_MaxListEntries() {
 		return $this->maxlistentries;
 	}
 
@@ -547,7 +565,7 @@ class LAMConfig {
 	* @param integer $value new maximum value
 	* @return boolean true if $value has correct format
 	*/
-	function set_MaxListEntries ($value) {
+	public function set_MaxListEntries ($value) {
 		if (is_numeric($value)) $this->maxlistentries = $value;
 		else return false;
 		return true;
@@ -558,7 +576,7 @@ class LAMConfig {
 	*
 	* @return string default language
 	*/
-	function get_defaultLanguage() {
+	public function get_defaultLanguage() {
 		return $this->defaultLanguage;
 	}
 
@@ -568,7 +586,7 @@ class LAMConfig {
 	* @param string $value new default language
 	* @return boolean true if $value has correct format
 	*/
-	function set_defaultLanguage($value) {
+	public function set_defaultLanguage($value) {
 		if (is_string($value)) $this->defaultLanguage = $value;
 		else return false;
 		return true;
@@ -579,7 +597,7 @@ class LAMConfig {
 	*
 	* @return string script path
 	*/
-	function get_scriptPath() {
+	public function get_scriptPath() {
 		return $this->scriptPath;
 	}
 
@@ -589,7 +607,7 @@ class LAMConfig {
 	* @param string $value new script path
 	* @return boolean true if $value has correct format
 	*/
-	function set_scriptPath($value) {
+	public function set_scriptPath($value) {
 		if (!$value) $this->scriptPath = ""; // optional parameter
 		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\.\\-])+)+$", $value)) $this->scriptPath = $value;
 		else return false;
@@ -601,7 +619,7 @@ class LAMConfig {
 	*
 	* @return string script servers
 	*/
-	function get_scriptServers() {
+	public function get_scriptServers() {
 	    return $this->scriptServer;
 	}
 	
@@ -611,7 +629,7 @@ class LAMConfig {
 	* @param string $value new script servers
 	* @return boolean true if $value has correct format
 	*/
-	function set_scriptServers($value) {
+	public function set_scriptServers($value) {
 		if (!$value) {
 			$this->scriptServer = ""; // optional parameter
 			return true;
@@ -662,7 +680,7 @@ class LAMConfig {
 	 * 
 	 * @return string rights
 	 */
-	function get_scriptRights() {
+	public function get_scriptRights() {
 		if (!isset($this->scriptRights)) return '755';
 		return $this->scriptRights;
 	}
@@ -673,7 +691,7 @@ class LAMConfig {
 	* @param string $chmod the rights
 	* @return boolean true if values has correct format
 	*/
-	function set_scriptRights($chmod) {
+	public function set_scriptRights($chmod) {
 		// check if the chmod is correct:
 		if ($chmod > 0 && $chmod <=777) {
 		    $this->scriptRights=$chmod;
@@ -689,7 +707,7 @@ class LAMConfig {
 	*
 	* @return integer cache time
 	*/
-	function get_cacheTimeout() {
+	public function get_cacheTimeout() {
 		if (isset($this->cachetimeout)) return $this->cachetimeout;
 		else return 5;
 	}
@@ -699,7 +717,7 @@ class LAMConfig {
 	*
 	* @return integer cache time
 	*/
-	function get_cacheTimeoutSec() {
+	public function get_cacheTimeoutSec() {
 		return $this->cachetimeout * 60;
 	}
 
@@ -709,7 +727,7 @@ class LAMConfig {
 	* @param integer $value new cache timeout
 	* @return boolean true if $value has correct format
 	*/
-	function set_cacheTimeout($value) {
+	public function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
 		}
@@ -723,7 +741,7 @@ class LAMConfig {
 	* @param string $scope account type
 	* @return array user modules
 	*/
-	function get_AccountModules($scope) {
+	public function get_AccountModules($scope) {
 		if (isset($this->typeSettings["modules_" . $scope])) {
 			return explode(",", $this->typeSettings["modules_" . $scope]);
 		}
@@ -739,7 +757,7 @@ class LAMConfig {
 	* @param string $scope account type
 	* @return boolean true if $modules has correct format
 	*/
-	function set_AccountModules($modules, $scope) {
+	public function set_AccountModules($modules, $scope) {
 		if (! is_array($modules)) return false;
 		// check module names
 		$available = getAvailableModules($scope);
@@ -759,7 +777,7 @@ class LAMConfig {
 	* @param array $settings list of module setting array(name => value)
 	* @return boolean true if $settings has correct format
 	*/
-	function set_moduleSettings($settings) {
+	public function set_moduleSettings($settings) {
 		if (!is_array($settings)) return false;
 		$this->moduleSettings = $settings;
 		return true;
@@ -770,7 +788,7 @@ class LAMConfig {
 	*
 	* @return array list of settings: array(name => value)
 	*/
-	function get_moduleSettings() {
+	public function get_moduleSettings() {
 		return $this->moduleSettings;
 	}
 
@@ -779,7 +797,7 @@ class LAMConfig {
 	*
 	* @return array list of types
 	*/
-	function get_ActiveTypes() {
+	public function get_ActiveTypes() {
 		if (($this->activeTypes == '') || !isset($this->activeTypes)) return array();
 		else return explode(",", $this->activeTypes);
 	}
@@ -789,7 +807,7 @@ class LAMConfig {
 	*
 	* @param array list of types
 	*/
-	function set_ActiveTypes($types) {
+	public function set_ActiveTypes($types) {
 		$this->activeTypes = implode(",", $types);
 	}
 
@@ -799,7 +817,7 @@ class LAMConfig {
 	* @param array $settings list of type setting array(name => value)
 	* @return boolean true if $settings has correct format
 	*/
-	function set_typeSettings($settings) {
+	public function set_typeSettings($settings) {
 		if (!is_array($settings)) return false;
 		$this->typeSettings = $settings;
 		return true;
@@ -810,7 +828,7 @@ class LAMConfig {
 	*
 	* @return array list of settings: array(name => value)
 	*/
-	function get_typeSettings() {
+	public function get_typeSettings() {
 		return $this->typeSettings;
 	}
 
@@ -825,25 +843,25 @@ class LAMConfig {
 class LAMCfgMain {
 
 	/** Default profile */
-	var $default;
+	public $default;
 
 	/** Password to change config.cfg */
-	var $password;
+	public $password;
 
 	/** Time of inactivity before session times out (minutes) */
-	var $sessionTimeout;
+	public $sessionTimeout;
 
 	/** log level */
-	var $logLevel;
+	public $logLevel;
 
 	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none) */
-	var $logDestination;
+	public $logDestination;
 
 	/** list of hosts which may access LAM */
-	var $allowedHosts;
+	public $allowedHosts;
 
 	/** list of data fields to save in config file */
-	var $settings = array("password", "default", "sessionTimeout",
+	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts");
 
 	/**
@@ -863,7 +881,7 @@ class LAMCfgMain {
 	*
 	* @return boolean true if file was readable
 	*/
-	function reload() {
+	private function reload() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {
 			$file = @fopen($conffile, "r");
@@ -890,11 +908,9 @@ class LAMCfgMain {
 	/**
 	* Saves preferences to config file config.cfg
 	*/
-	function save() {
+	public function save() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {
-			// booleans to check if value was already saved
-			$save_password = $save_default = False;
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			// read config file

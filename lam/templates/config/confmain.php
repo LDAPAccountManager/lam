@@ -125,6 +125,11 @@ echo ("<body>\n");
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p></p>\n");
 
+if (!$conf->isWritable()) {
+	StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
+	echo "<br>";
+}
+
 // display error messages
 if (isset($_SESSION['conf_errors'])) {
 	for ($i = 0; $i < sizeof($_SESSION['conf_errors']); $i++) {
