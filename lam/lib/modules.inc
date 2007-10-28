@@ -1146,29 +1146,33 @@ class accountContainer {
 		// find changed attributes
 		foreach ($attr_names as $i => $name) {
 			// find deleted attributes
-			for ($j = 0; $j < count($orig[$name]); $j++) {
-				if (is_array($attributes[$name])) {
-					if (!in_array($orig[$name][$j], $attributes[$name])) {
-						if (($orig[$name][$j] != '') && ($name != 'objectClass')) $torem[$name][] = $orig[$name][$j];
+			if (isset($orig[$name]) && is_array($orig[$name])) {
+				foreach ($orig[$name] as $j => $value) {
+					if (is_array($attributes[$name])) {
+						if (!in_array($value, $attributes[$name])) {
+							if (($value != '') && ($name != 'objectClass')) $torem[$name][] = $value;
+						}
 					}
+					else if (($value != '') && ($name != 'objectClass')) $torem[$name][] = $value;
 				}
-				else if (($orig[$name][$j] != '') && ($name != 'objectClass')) $torem[$name][] = $orig[$name][$j];
 			}
 			// find new attributes
-			for ($j = 0; $j < count($attributes[$name]); $j++) {
-				if (is_array($orig[$name])) {
-					if (!in_array($attributes[$name][$j], $orig[$name]))
-						if ($attributes[$name][$j]!='') {
-							$toadd[$name][] = $attributes[$name][$j];
-						}
+			if (isset($attributes[$name]) && is_array($attributes[$name])) {
+				foreach ($attributes[$name] as $j => $value) {
+					if (is_array($orig[$name])) {
+						if (!in_array($value, $orig[$name]))
+							if ($value != '') {
+								$toadd[$name][] = $value;
+							}
+					}
+					else if ($value != '') $toadd[$name][] = $value;
 				}
-				else if ($attributes[$name][$j]!='') $toadd[$name][] = $attributes[$name][$j];
 			}
 			// find unchanged attributes
 			if (is_array($orig[$name]) && is_array($attributes[$name])) {
-				for ($j=0; $j<count($attributes[$name]); $j++) {
-					if (($attributes[$name][$j] != '') && in_array($attributes[$name][$j], $orig[$name])) {
-						$notchanged[$name][] = $attributes[$name][$j];
+				foreach ($attributes[$name] as $j => $value) {
+					if (($value != '') && in_array($value, $orig[$name])) {
+						$notchanged[$name][] = $value;
 					}
 				}
 			}
