@@ -1138,37 +1138,37 @@ class accountContainer {
 		$attr_names = array_keys($attributes);
 		$orig_names = array_keys($orig);
 		// find deleted attributes (in $orig but no longer in $attributes)
-		for ($i = 0; $i < sizeof($orig_names); $i++) {
-			if (!isset($attributes[$orig_names[$i]])) {
-				$torem[$orig_names[$i]] = $orig[$orig_names[$i]];
+		foreach ($orig_names as $i => $value) {
+			if (!isset($attributes[$value])) {
+				$torem[$value] = $orig[$value];
 			}
 		}
 		// find changed attributes
-		for ($i=0; $i<count($attr_names); $i++) {
+		foreach ($attr_names as $i => $name) {
 			// find deleted attributes
-			for ($j=0; $j<count($orig[$attr_names[$i]]); $j++) {
-				if (is_array($attributes[$attr_names[$i]])) {
-					if (!in_array($orig[$attr_names[$i]][$j], $attributes[$attr_names[$i]])) {
-						if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
+			for ($j = 0; $j < count($orig[$name]); $j++) {
+				if (is_array($attributes[$name])) {
+					if (!in_array($orig[$name][$j], $attributes[$name])) {
+						if (($orig[$name][$j] != '') && ($name != 'objectClass')) $torem[$name][] = $orig[$name][$j];
 					}
 				}
-				else if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
+				else if (($orig[$name][$j] != '') && ($name != 'objectClass')) $torem[$name][] = $orig[$name][$j];
 			}
 			// find new attributes
-			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
-				if (is_array($orig[$attr_names[$i]])) {
-					if (!in_array($attributes[$attr_names[$i]][$j], $orig[$attr_names[$i]]))
-						if ($attributes[$attr_names[$i]][$j]!='') {
-							$toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+			for ($j = 0; $j < count($attributes[$name]); $j++) {
+				if (is_array($orig[$name])) {
+					if (!in_array($attributes[$name][$j], $orig[$name]))
+						if ($attributes[$name][$j]!='') {
+							$toadd[$name][] = $attributes[$name][$j];
 						}
 				}
-				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+				else if ($attributes[$name][$j]!='') $toadd[$name][] = $attributes[$name][$j];
 			}
 			// find unchanged attributes
-			if (is_array($orig[$attr_names[$i]]) && is_array($attributes[$attr_names[$i]])) {
-				for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
-					if (($attributes[$attr_names[$i]][$j] != '') && in_array($attributes[$attr_names[$i]][$j], $orig[$attr_names[$i]])) {
-						$notchanged[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+			if (is_array($orig[$name]) && is_array($attributes[$name])) {
+				for ($j=0; $j<count($attributes[$name]); $j++) {
+					if (($attributes[$name][$j] != '') && in_array($attributes[$name][$j], $orig[$name])) {
+						$notchanged[$name][] = $attributes[$name][$j];
 					}
 				}
 			}
