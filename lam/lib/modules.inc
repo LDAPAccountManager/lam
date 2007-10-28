@@ -1071,6 +1071,10 @@ class accountContainer {
 					if ($this->dn == $suffix) $options_selected = array($suffix);
 					$suffixes[] = $suffix;
 				}
+				if (!in_array($this->dn, $suffixes)) {
+					$suffixes[] = $this->dn;
+					$options_selected = array($this->dn);
+				}
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Suffix')),
 					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => $options_selected, 'noSorting' => true),
