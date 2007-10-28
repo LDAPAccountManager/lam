@@ -94,18 +94,18 @@ class ieee802Device extends baseModule {
 		// list current MACs
 		for ($i = 0; $i < sizeof($this->attributes['macAddress']); $i++) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('MAC address')),
-				1 => array('kind' => 'input', 'name' => 'macAddress' . $i, 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => $this->attributes['macAddress'][$i]),
-				2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'delMAC' . $i, 'value' => _("Remove")),
-				3 => array('kind' => 'help', 'value' => 'mac'));
+				array('kind' => 'text', 'text' => _('MAC address')),
+				array('kind' => 'input', 'name' => 'macAddress' . $i, 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => $this->attributes['macAddress'][$i]),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'delMAC' . $i, 'value' => _("Remove")),
+				array('kind' => 'help', 'value' => 'mac'));
 		}
 		// input box for new MAC
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('New MAC address')),
-			1 => array('kind' => 'input', 'name' => 'macAddress', 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => ''),
-			2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addMAC', 'value' => _("Add")),
-			3 => array('kind' => 'help', 'value' => 'mac'),
-			4 => array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['macAddress']), 'name' => 'mac_number'));
+			array('kind' => 'text', 'text' => _('New MAC address')),
+			array('kind' => 'input', 'name' => 'macAddress', 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => ''),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addMAC', 'value' => _("Add")),
+			array('kind' => 'help', 'value' => 'mac'),
+			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['macAddress']), 'name' => 'mac_number'));
 		return $return;
 	}
 

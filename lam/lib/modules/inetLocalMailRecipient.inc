@@ -134,33 +134,33 @@ class inetLocalMailRecipient extends baseModule {
 		$routingAddress = '';
 		if (isset($this->attributes['mailRoutingAddress'][0])) $routingAddress = $this->attributes['mailRoutingAddress'][0];
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Routing address')),
-			1 => array('kind' => 'input', 'name' => 'routingAdr', 'type' => 'text', 'size' => '20', 'value' => $routingAddress),
-			2 => array('kind' => 'help', 'value' => 'routingAdr'));
+			array('kind' => 'text', 'text' => _('Routing address')),
+			array('kind' => 'input', 'name' => 'routingAdr', 'type' => 'text', 'size' => '20', 'value' => $routingAddress),
+			array('kind' => 'help', 'value' => 'routingAdr'));
 		// mail server
 		$mailServer = '';
 		if (isset($this->attributes['mailHost'][0])) $mailServer = $this->attributes['mailHost'][0];
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Mail server')),
-			1 => array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20', 'value' => $mailServer),
-			2 => array('kind' => 'help', 'value' => 'host'));
+			array('kind' => 'text', 'text' => _('Mail server')),
+			array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20', 'value' => $mailServer),
+			array('kind' => 'help', 'value' => 'host'));
 		// list current local addresses
 		$localAdresses = array();
 		if (isset($this->attributes['mailLocalAddress'])) $localAdresses = $this->attributes['mailLocalAddress'];
 		for ($i = 0; $i < sizeof($localAdresses); $i++) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Local address')),
-				1 => array('kind' => 'input', 'name' => 'localAdr' . $i, 'type' => 'text', 'size' => '20', 'value' => $localAdresses[$i]),
-				2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'delAdr' . $i, 'value' => _("Remove")),
-				3 => array('kind' => 'help', 'value' => 'localAdr'));
+				array('kind' => 'text', 'text' => _('Local address')),
+				array('kind' => 'input', 'name' => 'localAdr' . $i, 'type' => 'text', 'size' => '20', 'value' => $localAdresses[$i]),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'delAdr' . $i, 'value' => _("Remove")),
+				array('kind' => 'help', 'value' => 'localAdr'));
 		}
 		// input box for new local addresses
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('New local address')),
-			1 => array('kind' => 'input', 'name' => 'localAdr', 'type' => 'text', 'size' => '20', 'value' => ''),
-			2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addAdr', 'value' => _("Add")),
-			3 => array('kind' => 'help', 'value' => 'localAdr'),
-			4 => array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($localAdresses), 'name' => 'adr_number'));
+			array('kind' => 'text', 'text' => _('New local address')),
+			array('kind' => 'input', 'name' => 'localAdr', 'type' => 'text', 'size' => '20', 'value' => ''),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addAdr', 'value' => _("Add")),
+			array('kind' => 'help', 'value' => 'localAdr'),
+			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($localAdresses), 'name' => 'adr_number'));
 		return $return;
 	}
 
