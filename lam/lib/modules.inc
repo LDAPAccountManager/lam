@@ -689,7 +689,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 					case 'help':
 						$helpPath = "../";
 						if (is_file("./help.php")) $helpPath = "";
-						echo "<a href=" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $scope . " target=\"help\" tabindex=$tabindexLink>";
+						echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $scope . "\" target=\"help\" tabindex=$tabindexLink>";
 						echo "<img src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 						echo "</a>\n";
 						$tabindexLink++;
