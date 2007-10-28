@@ -2,7 +2,6 @@
 <html><head><title>Module HowTo - Account pages</title>
   
   <link rel="stylesheet" type="text/css" href="style/layout.css"></head>
-
 <body>
 <div style="text-align: center;">
 <h1>Module HowTo - Account pages<br>
@@ -108,33 +107,28 @@ sizeof($this-&gt;attributes['macAddress']); $i++) {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return[] =
 array(<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; 0 =&gt; array('kind' =&gt; 'text', 'text' =&gt;
+&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'text' =&gt;
 _('MAC address')),<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; 1 =&gt; array('kind' =&gt; 'input', 'name' =&gt;
+&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'name' =&gt;
 'macAddress' . $i, 'type' =&gt; 'text', 'size' =&gt; '17', 'maxlength'
 =&gt; '17', 'value' =&gt; $this-&gt;attributes['macAddress'][$i]),<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; 2 =&gt; array('kind' =&gt; 'input', 'type' =&gt;
+&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'type' =&gt;
 'submit', 'name' =&gt; 'delMAC' . $i, 'value' =&gt; _("Remove")),<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; 3 =&gt; array('kind' =&gt; 'help', 'value' =&gt;
+&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'help', 'value' =&gt;
 'mac'));<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // input box for new MAC<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return[] = array(<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 0 =&gt;
-array('kind' =&gt; 'text', 'text' =&gt; _('New MAC address')),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 1 =&gt;
-array('kind' =&gt; 'input', 'name' =&gt; 'macAddress', 'type' =&gt;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'text' =&gt; _('New MAC address')),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'name' =&gt; 'macAddress', 'type' =&gt;
 'text', 'size' =&gt; '17', 'maxlength' =&gt; '17', 'value' =&gt; ''),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 2 =&gt;
-array('kind' =&gt; 'input', 'type' =&gt; 'submit', 'name' =&gt;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'type' =&gt; 'submit', 'name' =&gt;
 'addMAC', 'value' =&gt; _("Add")),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 3 =&gt;
-array('kind' =&gt; 'help', 'value' =&gt; 'mac'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 4 =&gt;
-array('kind' =&gt; 'input', 'type' =&gt; 'hidden', 'value' =&gt;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; array('kind' =&gt; 'help', 'value' =&gt; 'mac'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'type' =&gt; 'hidden', 'value' =&gt;
 sizeof($this-&gt;attributes['macAddress']), 'name' =&gt; 'mac_number'));<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
