@@ -1,11 +1,13 @@
-??? 2.1.0
+07.11.2007 2.1.0
   - tabular design for account pages
   - show DN on account pages
   - Samba 3: made Samba account optional
+  - Samba 3: manages now terminal server settings
   - fixed bugs:
    -> LAM Pro: UTF-8 characters are invalid displayed on configuration page (1788752)
    -> LAM works again on PHP 5.1.x (1792447)
    -> Quota: managing group quotas does not work (1811728)
+   -> Samba 3 domains: lockout users after bad logon attempts must allow 0 - 999 (1814578)
 
 
 08.08.2007 2.0.0
