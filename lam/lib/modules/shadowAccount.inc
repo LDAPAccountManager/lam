@@ -152,7 +152,7 @@ class shadowAccount extends baseModule {
 		$return['help'] = array (
 			'shadowWarning' => array (
 				"Headline" => _("Password warning"),
-				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")
+				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be >0."). ' '. _("Can be left empty.")
 			),
 			'shadowInactive' => array (
 				"Headline" => _("Password expiration"),
@@ -160,11 +160,11 @@ class shadowAccount extends baseModule {
 			),
 			'shadowMin' => array (
 				"Headline" => _("Minimum password age"),
-				"Text" => _("Number of days a user has to wait until he is allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
+				"Text" => _("Number of days a user has to wait until he is allowed to change his password again. If set value must be >0."). ' '. _("Can be left empty.")
 			),
 			'shadowMax' => array (
 				"Headline" => _("Maximum password age"),
-				"Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
+				"Text" => _("Number of days after a user has to change his password again. If set value must be >0."). ' '. _("Can be left empty.")
 			),
 			'shadowExpire' => array (
 				"Headline" => _("Account expiration date"),
