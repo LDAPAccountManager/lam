@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2007-07-23 18:39+0200\n"
+"PO-Revision-Date: 2007-10-30 13:47+0200\n"
 "Last-Translator: Luděk Finstrle <ludek.finstrle@pzkagis.cz>\n"
 "Language-Team: Czech <lam-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -110,7 +110,7 @@ msgstr ""
 msgid "AIM account"
 msgstr "AIM účet"
 
-#: ../lib/modules/sambaSamAccount.inc:444
+#: ../lib/modules/sambaSamAccount.inc:489
 msgid "Abu Dhabi, Muscat, Baku"
 msgstr "Abú Dhabí, Maskat, Baku"
 
@@ -134,19 +134,20 @@ msgstr "Účet"
 #: ../lib/modules/sambaAccount.inc:82 ../lib/modules/sambaAccount.inc:83
 #: ../lib/modules/sambaAccount.inc:84 ../lib/modules/sambaAccount.inc:85
 #: ../lib/modules/sambaAccount.inc:86 ../lib/modules/sambaAccount.inc:87
-#: ../lib/modules/sambaSamAccount.inc:79 ../lib/modules/sambaSamAccount.inc:82
-#: ../lib/modules/sambaSamAccount.inc:85 ../lib/modules/sambaSamAccount.inc:87
-#: ../lib/modules/sambaSamAccount.inc:90 ../lib/modules/sambaSamAccount.inc:91
-#: ../lib/modules/sambaSamAccount.inc:92 ../lib/modules/sambaSamAccount.inc:93
+#: ../lib/modules/sambaSamAccount.inc:82 ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaSamAccount.inc:88 ../lib/modules/sambaSamAccount.inc:90
+#: ../lib/modules/sambaSamAccount.inc:93 ../lib/modules/sambaSamAccount.inc:94
 #: ../lib/modules/sambaSamAccount.inc:95 ../lib/modules/sambaSamAccount.inc:96
-#: ../lib/modules/sambaSamAccount.inc:97 ../lib/modules/sambaSamAccount.inc:98
-#: ../lib/modules/sambaSamAccount.inc:99
+#: ../lib/modules/sambaSamAccount.inc:98 ../lib/modules/sambaSamAccount.inc:99
 #: ../lib/modules/sambaSamAccount.inc:100
 #: ../lib/modules/sambaSamAccount.inc:101
 #: ../lib/modules/sambaSamAccount.inc:102
 #: ../lib/modules/sambaSamAccount.inc:103
+#: ../lib/modules/sambaSamAccount.inc:104
 #: ../lib/modules/sambaSamAccount.inc:105
-#: ../lib/modules/sambaSamAccount.inc:106 ../lib/modules/posixAccount.inc:65
+#: ../lib/modules/sambaSamAccount.inc:106
+#: ../lib/modules/sambaSamAccount.inc:108
+#: ../lib/modules/sambaSamAccount.inc:109 ../lib/modules/posixAccount.inc:65
 #: ../lib/modules/posixAccount.inc:70 ../lib/modules/posixAccount.inc:74
 #: ../lib/modules/posixAccount.inc:82 ../lib/modules/posixAccount.inc:83
 #: ../lib/modules/posixAccount.inc:84 ../lib/modules/posixAccount.inc:85
@@ -156,8 +157,8 @@ msgstr "Účet"
 #: ../lib/modules/kolabUser.inc:225 ../lib/modules/kolabUser.inc:227
 #: ../lib/modules/kolabUser.inc:229 ../lib/modules/kolabUser.inc:231
 #: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabUser.inc:235
-#: ../lib/modules/kolabUser.inc:237 ../lib/modules/sambaGroupMapping.inc:376
-#: ../lib/modules/sambaGroupMapping.inc:377
+#: ../lib/modules/kolabUser.inc:237 ../lib/modules/sambaGroupMapping.inc:381
+#: ../lib/modules/sambaGroupMapping.inc:382
 #: ../lib/modules/shadowAccount.inc:47 ../lib/modules/shadowAccount.inc:49
 #: ../lib/modules/shadowAccount.inc:51 ../lib/modules/shadowAccount.inc:53
 #: ../lib/modules/shadowAccount.inc:55 ../lib/modules/shadowAccount.inc:56
@@ -190,11 +191,11 @@ msgstr "Vytvoření účtu(ů) nahráním souboru"
 msgid "Account deactivated"
 msgstr "Deaktivovaný účet"
 
-#: ../lib/modules/sambaSamAccount.inc:269
-#: ../lib/modules/sambaSamAccount.inc:347
-#: ../lib/modules/sambaSamAccount.inc:933
-#: ../lib/modules/sambaSamAccount.inc:1132
-#: ../lib/modules/sambaSamAccount.inc:1202
+#: ../lib/modules/sambaSamAccount.inc:272
+#: ../lib/modules/sambaSamAccount.inc:392
+#: ../lib/modules/sambaSamAccount.inc:1051
+#: ../lib/modules/sambaSamAccount.inc:1283
+#: ../lib/modules/sambaSamAccount.inc:1473
 #: ../lib/modules/shadowAccount.inc:105 ../lib/modules/shadowAccount.inc:170
 #: ../lib/modules/shadowAccount.inc:202 ../lib/modules/shadowAccount.inc:290
 #: ../lib/modules/shadowAccount.inc:335
@@ -207,16 +208,16 @@ msgstr "Neaktivní účet"
 
 #: ../lib/modules/sambaAccount.inc:138 ../lib/modules/sambaAccount.inc:255
 #: ../lib/modules/sambaAccount.inc:367 ../lib/modules/sambaAccount.inc:370
-#: ../lib/modules/sambaAccount.inc:732 ../lib/modules/sambaSamAccount.inc:212
-#: ../lib/modules/sambaSamAccount.inc:218
-#: ../lib/modules/sambaSamAccount.inc:325
-#: ../lib/modules/sambaSamAccount.inc:892
-#: ../lib/modules/sambaSamAccount.inc:1190
+#: ../lib/modules/sambaAccount.inc:746 ../lib/modules/sambaSamAccount.inc:215
+#: ../lib/modules/sambaSamAccount.inc:221
+#: ../lib/modules/sambaSamAccount.inc:370
+#: ../lib/modules/sambaSamAccount.inc:994
+#: ../lib/modules/sambaSamAccount.inc:1461
 msgid "Account is deactivated"
 msgstr "Účet je deaktivován"
 
-#: ../lib/modules/sambaSamAccount.inc:215
-#: ../lib/modules/sambaSamAccount.inc:899
+#: ../lib/modules/sambaSamAccount.inc:218
+#: ../lib/modules/sambaSamAccount.inc:1002
 msgid "Account is locked"
 msgstr "Účet je zablokován"
 
@@ -236,7 +237,7 @@ msgstr "Typ účtu"
 msgid "Account type selection"
 msgstr "Výběr typu účtu"
 
-#: ../templates/config/confmain.php:193 ../help/help.inc:105
+#: ../templates/config/confmain.php:198 ../help/help.inc:105
 msgid "Account types and modules"
 msgstr "Typy a moduly účtu"
 
@@ -250,13 +251,40 @@ msgstr ""
 "budete spravovat. Moduly účtu definují, které vlastnosti (např. Unix a "
 "Samba) můžete editovat."
 
-#: ../lib/modules.inc:1004
+#: ../lib/modules.inc:1043
 msgid "Account was created successfully."
 msgstr "Účet byl úspěšně vytvořen."
 
-#: ../lib/modules.inc:1007
+#: ../lib/modules.inc:1046
 msgid "Account was modified successfully."
 msgstr "Účet byl úspěšně změněn."
+
+#: ../lib/modules/sambaSamAccount.inc:279
+msgid "Activate this checkbox to allow this user to use the terminal service."
+msgstr ""
+"Jestliže zatrhnete toto pole, povolí se uživateli používání terminálové "
+"služby."
+
+#: ../lib/modules/sambaSamAccount.inc:300
+msgid "Activate this checkbox to connect drives from the client machine."
+msgstr "Jestliže zatrhnete toto pole, připojí se disky z klientského stroje"
+
+#: ../lib/modules/sambaSamAccount.inc:303
+msgid "Activate this checkbox to connect printers from the client machine."
+msgstr "Jestliže zatrhnete toto pole, připojí se tiskárny z klientského stroje."
+
+#: ../lib/modules/sambaSamAccount.inc:288
+msgid ""
+"Activate this checkbox to inherit the initial program and working directory "
+"from the client machine."
+msgstr ""
+"Jestliže zatrhnete toto pole, zdědí se výchozí program a pracovní adresář "
+"z klientského stroje"
+
+#: ../lib/modules/sambaSamAccount.inc:306
+msgid "Activate this checkbox to set the client's printer as default printer."
+msgstr ""
+"Jestliže zatrhnete toto pole, nastaví se klientská tiskárna jako výchozí."
 
 #: ../lib/modules/posixAccount.inc:352
 msgid "Activating this checkbox will remove the user's home directory."
@@ -274,8 +302,8 @@ msgstr "Aktivní typy účtu"
 #: ../templates/config/conftypes.php:178 ../templates/pdfedit/pdfpage.php:725
 #: ../lib/modules/ieee802device.inc:106
 #: ../lib/modules/neofonieInetOrgPerson.inc:432
-#: ../lib/modules/kolabUser.inc:345 ../lib/modules/kolabUser.inc:362
-#: ../lib/modules/kolabUser.inc:388 ../lib/modules/ldapPublicKey.inc:99
+#: ../lib/modules/kolabUser.inc:347 ../lib/modules/kolabUser.inc:364
+#: ../lib/modules/kolabUser.inc:390 ../lib/modules/ldapPublicKey.inc:99
 #: ../lib/modules/inetLocalMailRecipient.inc:161
 #: ../lib/modules/groupOfNames.inc:162 ../lib/modules/groupOfNames.inc:304
 #: ../lib/modules/nisMailAlias.inc:148
@@ -285,6 +313,10 @@ msgstr "Přidat"
 #: ../lib/modules/neofonieInetOrgPerson.inc:344
 msgid "Add Neofonie attributes"
 msgstr "Přidat atributy Neofonie"
+
+#: ../lib/modules/sambaSamAccount.inc:1161
+msgid "Add Samba 3 account"
+msgstr "Přidat Samba 3 účet"
 
 #: ../lib/modules/groupOfNames.inc:336
 msgid "Add entries of this type:"
@@ -328,9 +360,9 @@ msgid "Adding attribute failed!"
 msgstr "Selhalo přidání atributu!"
 
 #: ../lib/modules/posixAccount.inc:216 ../lib/modules/posixAccount.inc:343
-#: ../lib/modules/posixAccount.inc:388 ../lib/modules/posixAccount.inc:939
-#: ../lib/modules/posixAccount.inc:1027 ../lib/modules/posixAccount.inc:1088
-#: ../lib/modules/posixAccount.inc:1146
+#: ../lib/modules/posixAccount.inc:388 ../lib/modules/posixAccount.inc:957
+#: ../lib/modules/posixAccount.inc:1045 ../lib/modules/posixAccount.inc:1108
+#: ../lib/modules/posixAccount.inc:1168
 msgid "Additional groups"
 msgstr "Doplňkové skupiny"
 
@@ -358,7 +390,7 @@ msgstr "Administrativa"
 msgid "Administrators group"
 msgstr "Skupina správců"
 
-#: ../lib/modules/sambaSamAccount.inc:431
+#: ../lib/modules/sambaSamAccount.inc:476
 msgid "Alaska"
 msgstr "Aljaška"
 
@@ -381,23 +413,29 @@ msgstr "Aliasy"
 msgid "All changes were successful."
 msgstr "Všechny změny proběhly úspěšně."
 
-#: ../lib/modules/sambaDomain.inc:106 ../lib/modules/sambaDomain.inc:272
-#: ../lib/modules/sambaDomain.inc:619
+#: ../lib/modules/sambaDomain.inc:106 ../lib/modules/sambaDomain.inc:293
+#: ../lib/modules/sambaDomain.inc:663
 msgid "Allow machine password changes"
 msgstr "Povolit změny hesel strojů"
+
+#: ../lib/modules/sambaSamAccount.inc:278
+#: ../lib/modules/sambaSamAccount.inc:1326
+#: ../lib/modules/sambaSamAccount.inc:1690
+msgid "Allow terminal server login"
+msgstr "Povolit přihlášení k terminálovému serveru"
 
 #: ../templates/config/mainmanage.php:180 ../lib/types/user.inc:86
 #: ../help/help.inc:135
 msgid "Allowed hosts"
 msgstr "Povolené stroje"
 
-#: ../lib/modules/sambaAccount.inc:830 ../lib/modules/sambaAccount.inc:831
-#: ../lib/modules/sambaSamAccount.inc:1032
-#: ../lib/modules/sambaSamAccount.inc:1033
+#: ../lib/modules/sambaAccount.inc:850 ../lib/modules/sambaAccount.inc:851
+#: ../lib/modules/sambaSamAccount.inc:1183
+#: ../lib/modules/sambaSamAccount.inc:1184
 msgid "Allowed workstations"
 msgstr "Povolené stanice"
 
-#: ../lib/modules/sambaSamAccount.inc:446
+#: ../lib/modules/sambaSamAccount.inc:491
 msgid "Almaty, Dhaka, Colombo"
 msgstr "Alma-ata, Dháka, Kolombo"
 
@@ -414,7 +452,7 @@ msgstr "Odmítnout vždy"
 msgid "An attribute (%s) was modified and is highlighted below."
 msgstr "Atribut (%s) byl změněn a je zvýrazněn níže."
 
-#: ../lib/modules/kolabUser.inc:327 ../lib/modules/kolabUser.inc:770
+#: ../lib/modules/kolabUser.inc:329 ../lib/modules/kolabUser.inc:774
 msgid "Anyone"
 msgstr "Kdokoli"
 
@@ -426,7 +464,7 @@ msgstr "Použít"
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "Jste si jisti, že chcete smazat tento objekt natrvalo?"
 
-#: ../lib/modules/sambaSamAccount.inc:436
+#: ../lib/modules/sambaSamAccount.inc:481
 msgid "Atlantic time (Canada), Caracas"
 msgstr "Atlantický čas (Kanada), Karakas"
 
@@ -438,7 +476,7 @@ msgstr "Atribut"
 msgid "Attribute types"
 msgstr "Typ atributu"
 
-#: ../lib/modules/sambaSamAccount.inc:452
+#: ../lib/modules/sambaSamAccount.inc:497
 msgid "Auckland, Fiji, Kamchatka"
 msgstr "Auckland, Fidži, Kamčatka"
 
@@ -450,7 +488,7 @@ msgstr "Dostupná PDF pole"
 msgid "Available account types"
 msgstr "Dostupné typy účtů"
 
-#: ../lib/modules/posixAccount.inc:1039
+#: ../lib/modules/posixAccount.inc:1057
 msgid "Available groups"
 msgstr "Dostupné skupiny"
 
@@ -462,23 +500,23 @@ msgstr "Dostupné moduly"
 msgid "Available users"
 msgstr "Dostupní uživatelé"
 
-#: ../lib/modules/sambaAccount.inc:836 ../lib/modules/sambaSamAccount.inc:1038
+#: ../lib/modules/sambaAccount.inc:856 ../lib/modules/sambaSamAccount.inc:1189
 msgid "Available workstations"
 msgstr "Dostupné stanice"
 
-#: ../lib/modules/sambaSamAccount.inc:439
+#: ../lib/modules/sambaSamAccount.inc:484
 msgid "Azores, Cape Verde Islands"
 msgstr "Azory, Kapverdské ostrovy"
 
 #: ../templates/tree/update_confirm.php:252 ../lib/modules/posixGroup.inc:238
-#: ../lib/modules/posixGroup.inc:261 ../lib/modules/sambaAccount.inc:841
-#: ../lib/modules/sambaSamAccount.inc:1042
-#: ../lib/modules/posixAccount.inc:1045 ../lib/modules/inetOrgPerson.inc:880
+#: ../lib/modules/posixGroup.inc:261 ../lib/modules/sambaAccount.inc:861
+#: ../lib/modules/sambaSamAccount.inc:1193
+#: ../lib/modules/posixAccount.inc:1063 ../lib/modules/inetOrgPerson.inc:880
 #: ../lib/modules/groupOfNames.inc:346
 msgid "Back"
 msgstr "Zpět"
 
-#: ../templates/config/index.php:113 ../templates/config/confmain.php:578
+#: ../templates/config/index.php:113 ../templates/config/confmain.php:583
 #: ../templates/config/conflogin.php:152 ../templates/config/mainlogin.php:137
 #: ../templates/selfService/adminLogin.php:149
 #: ../templates/selfService/adminMain.php:113 ../templates/logout.php:78
@@ -493,7 +531,7 @@ msgstr "Zpět do editoru OU"
 msgid "Back to PDF Editor"
 msgstr "Zpět do editoru PDF"
 
-#: ../lib/modules.inc:1016
+#: ../lib/modules.inc:1055
 msgid "Back to account list"
 msgstr "Zpět k seznamu účtů"
 
@@ -501,7 +539,7 @@ msgstr "Zpět k seznamu účtů"
 msgid "Back to group list"
 msgstr "Zpět k seznamu skupin"
 
-#: ../templates/delete.php:235
+#: ../templates/delete.php:236
 msgid "Back to list"
 msgstr "Zpět k seznamu"
 
@@ -521,11 +559,11 @@ msgstr "Zpět do editoru profilu"
 msgid "Back to profile login"
 msgstr "Zpět k přihlášení do profilu"
 
-#: ../lib/modules/sambaSamAccount.inc:443
+#: ../lib/modules/sambaSamAccount.inc:488
 msgid "Baghdad, Riyadh, Moscow"
 msgstr "Bagdád, Rijád, Moskva"
 
-#: ../lib/modules/sambaSamAccount.inc:447
+#: ../lib/modules/sambaSamAccount.inc:492
 msgid "Bangkok, Hanoi, Jakarta"
 msgstr "Bangkok, Hanoj, Jakarta"
 
@@ -545,7 +583,7 @@ msgstr "Základní modul"
 msgid "Beginning"
 msgstr "Začátek"
 
-#: ../lib/modules/sambaSamAccount.inc:448
+#: ../lib/modules/sambaSamAccount.inc:493
 msgid "Beijing, Perth, Singapore"
 msgstr "Peking, Pert, Singapur"
 
@@ -593,7 +631,7 @@ msgstr ""
 msgid "Block soft quota must be smaller than block hard quota."
 msgstr "Měkká kvóta bloků musí být menší než pevná."
 
-#: ../lib/modules/sambaSamAccount.inc:437
+#: ../lib/modules/sambaSamAccount.inc:482
 msgid "Brazil, Buenos Aires"
 msgstr "Brazílie, Buenos Aires"
 
@@ -615,21 +653,21 @@ msgstr "Obchodní kategorie (např. Administrativa, IT služby, management, ...)
 msgid "CSV file:"
 msgstr "CSV soubor:"
 
-#: ../templates/config/confmain.php:172 ../help/help.inc:101
+#: ../templates/config/confmain.php:177 ../help/help.inc:101
 msgid "Cache timeout"
 msgstr "Časový limit pro cache"
 
-#: ../templates/config/confmain.php:475
+#: ../templates/config/confmain.php:480
 msgid "Cache timeout is invalid!"
 msgstr "Neplatný časový limit pro cache!"
 
 #: ../lib/modules/sambaAccount.inc:382 ../lib/modules/sambaAccount.inc:385
 #: ../lib/modules/sambaAccount.inc:388 ../lib/modules/sambaAccount.inc:394
-#: ../lib/modules/sambaAccount.inc:406 ../lib/modules/sambaSamAccount.inc:230
-#: ../lib/modules/sambaSamAccount.inc:233
+#: ../lib/modules/sambaAccount.inc:406 ../lib/modules/sambaSamAccount.inc:233
 #: ../lib/modules/sambaSamAccount.inc:236
-#: ../lib/modules/sambaSamAccount.inc:242 ../lib/modules/posixAccount.inc:389
-#: ../lib/modules/sambaGroupMapping.inc:305
+#: ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaSamAccount.inc:245 ../lib/modules/posixAccount.inc:389
+#: ../lib/modules/sambaGroupMapping.inc:310
 #: ../lib/modules/shadowAccount.inc:155 ../lib/modules/shadowAccount.inc:159
 #: ../lib/modules/shadowAccount.inc:163 ../lib/modules/shadowAccount.inc:167
 msgid "Can be left empty."
@@ -638,7 +676,7 @@ msgstr "Můžete ponechat prázdné."
 #: ../templates/tree/update_confirm.php:238
 #: ../templates/tree/delete_form.php:119 ../templates/tree/delete_form.php:168
 #: ../templates/ou_edit.php:107 ../templates/config/confmodules.php:115
-#: ../templates/config/confmain.php:434 ../templates/config/conftypes.php:236
+#: ../templates/config/confmain.php:439 ../templates/config/conftypes.php:236
 #: ../templates/selfService/adminMain.php:544
 #: ../templates/pdfedit/pdfdelete.php:92 ../templates/pdfedit/pdfpage.php:773
 #: ../templates/pdfedit/pdfmain.php:153 ../templates/delete.php:112
@@ -646,22 +684,23 @@ msgstr "Můžete ponechat prázdné."
 #: ../templates/profedit/profilepage.php:253
 #: ../templates/profedit/profilemain.php:166 ../templates/initsuff.php:189
 #: ../lib/modules/neofonieInetOrgPerson.inc:540
-#: ../lib/modules/sambaSamAccount.inc:1107
-#: ../lib/modules/sambaSamAccount.inc:1156
-#: ../lib/modules/posixAccount.inc:1068 ../lib/modules/kolabUser.inc:564
+#: ../lib/modules/sambaSamAccount.inc:1258
+#: ../lib/modules/sambaSamAccount.inc:1306
+#: ../lib/modules/sambaSamAccount.inc:1429
+#: ../lib/modules/posixAccount.inc:1086 ../lib/modules/kolabUser.inc:566
 #: ../lib/modules/shadowAccount.inc:348 ../lib/modules/inetOrgPerson.inc:843
 #: ../lib/modules/groupOfNames.inc:225 ../lib/modules/groupOfNames.inc:252
 #: ../lib/modules/groupOfNames.inc:305
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../templates/login.php:412 ../templates/login.php:417
+#: ../templates/login.php:416 ../templates/login.php:421
 #: ../templates/selfService/selfServiceLogin.php:105
 #: ../templates/selfService/selfServiceLogin.php:109
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "Nelze se připojit k zadanému LDAP serveru. Prosím, zkuste to znovu."
 
-#: ../lib/config.inc:389 ../lib/config.inc:935
+#: ../lib/config.inc:389 ../lib/config.inc:951
 msgid "Cannot open config file!"
 msgstr "Nelze otevřít konfigurační soubor!"
 
@@ -669,11 +708,11 @@ msgstr "Nelze otevřít konfigurační soubor!"
 msgid "Captions and labels"
 msgstr "Nadpisy a popisky"
 
-#: ../lib/modules/sambaSamAccount.inc:441
+#: ../lib/modules/sambaSamAccount.inc:486
 msgid "Central Europe Time, Paris, Berlin"
 msgstr "Středoevropský čas, Paříž, Berlín, Praha"
 
-#: ../lib/modules/sambaSamAccount.inc:434
+#: ../lib/modules/sambaSamAccount.inc:479
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Centrální čas (USA a Kanada), México"
 
@@ -687,10 +726,10 @@ msgstr "Centrální čas (USA a Kanada), México"
 #: ../lib/modules/neofonieInetOrgPerson.inc:322
 #: ../lib/modules/neofonieInetOrgPerson.inc:332
 #: ../lib/modules/neofonieInetOrgPerson.inc:536
-#: ../lib/modules/sambaSamAccount.inc:912
-#: ../lib/modules/sambaSamAccount.inc:924
-#: ../lib/modules/sambaSamAccount.inc:936
-#: ../lib/modules/sambaSamAccount.inc:1152
+#: ../lib/modules/sambaSamAccount.inc:1020
+#: ../lib/modules/sambaSamAccount.inc:1037
+#: ../lib/modules/sambaSamAccount.inc:1054
+#: ../lib/modules/sambaSamAccount.inc:1302
 #: ../lib/modules/shadowAccount.inc:293 ../lib/modules/shadowAccount.inc:344
 #: ../lib/modules/groupOfNames.inc:151 ../lib/modules/groupOfNames.inc:168
 msgid "Change"
@@ -708,20 +747,20 @@ msgstr "Změnit výchozí profil"
 msgid "Change master password"
 msgstr "Změnit hlavní heslo"
 
-#: ../lib/modules/posixGroup.inc:180 ../lib/modules/posixAccount.inc:978
+#: ../lib/modules/posixGroup.inc:180 ../lib/modules/posixAccount.inc:996
 #: ../lib/modules/inetOrgPerson.inc:651 ../help/help.inc:99
 msgid "Change password"
 msgstr "Změnit heslo"
 
-#: ../templates/login.php:337
+#: ../templates/login.php:341
 msgid "Change profile"
 msgstr "Změnit profil"
 
-#: ../lib/lists.inc:535
+#: ../lib/lists.inc:534
 msgid "Change suffix"
 msgstr "Změnit sufix"
 
-#: ../lib/modules/posixAccount.inc:830
+#: ../lib/modules/posixAccount.inc:835
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "Změnte hodnotu, protože jsou povoleny pouze ASCII znaky."
 
@@ -749,6 +788,12 @@ msgstr "Vybrat šablonu"
 msgid "Click here if you are not directed to the next page."
 msgstr "Klikněte sem, pokud jste nebyli přesměrováni na další stránku."
 
+#: ../lib/modules/sambaSamAccount.inc:305
+#: ../lib/modules/sambaSamAccount.inc:1392
+#: ../lib/modules/sambaSamAccount.inc:1718
+msgid "Client printer is default"
+msgstr "Klientská tiskárna je výchozí"
+
 #: ../templates/schema/schema.php:204
 msgid "Collective"
 msgstr "Společný"
@@ -767,7 +812,7 @@ msgstr "Sloupce:"
 msgid "ComBots IDs"
 msgstr "ComBots IDy"
 
-#: ../lib/modules/sambaAccount.inc:394 ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaAccount.inc:394 ../lib/modules/sambaSamAccount.inc:245
 msgid ""
 "Comma separated list of Samba workstations the user is allowed to login. "
 "Empty means every workstation."
@@ -781,7 +826,7 @@ msgstr "Potvrdit"
 
 #: ../lib/modules/posixAccount.inc:92 ../lib/modules/posixAccount.inc:197
 #: ../lib/modules/posixAccount.inc:392 ../lib/modules/posixAccount.inc:414
-#: ../lib/modules/posixAccount.inc:921 ../lib/modules/posixAccount.inc:1141
+#: ../lib/modules/posixAccount.inc:930 ../lib/modules/posixAccount.inc:1163
 #: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:258
 #: ../lib/modules/inetOrgPerson.inc:370 ../lib/modules/inetOrgPerson.inc:619
 #: ../lib/modules/inetOrgPerson.inc:908
@@ -804,6 +849,23 @@ msgstr "Průvodce nastavením"
 #: ../templates/config/confmodules.php:250
 msgid "Conflicting module:"
 msgstr "Kolidující moduly:"
+
+#: ../lib/modules/sambaSamAccount.inc:299
+#: ../lib/modules/sambaSamAccount.inc:1382
+#: ../lib/modules/sambaSamAccount.inc:1708
+msgid "Connect client drives"
+msgstr "Připojit klientské disky"
+
+#: ../lib/modules/sambaSamAccount.inc:302
+#: ../lib/modules/sambaSamAccount.inc:1387
+#: ../lib/modules/sambaSamAccount.inc:1713
+msgid "Connect client printers"
+msgstr "Připojit klientské tiskárny"
+
+#: ../lib/modules/sambaSamAccount.inc:1367
+#: ../lib/modules/sambaSamAccount.inc:1701
+msgid "Connection time limit"
+msgstr "Časový limit spojení"
 
 #: ../templates/tree/templates/creation/custom.php:66
 #: ../templates/tree/templates/creation/new_ou_template.php:105
@@ -828,8 +890,8 @@ msgid "Could not save PDF profile, access denied."
 msgstr "Nelze uložit PDF profil, přístup odmítnut."
 
 #: ../lib/modules/kolabUser.inc:85 ../lib/modules/kolabUser.inc:148
-#: ../lib/modules/kolabUser.inc:177 ../lib/modules/kolabUser.inc:287
-#: ../lib/modules/kolabUser.inc:746
+#: ../lib/modules/kolabUser.inc:177 ../lib/modules/kolabUser.inc:289
+#: ../lib/modules/kolabUser.inc:750
 msgid "Country"
 msgstr "Země"
 
@@ -848,7 +910,7 @@ msgstr "Vytvořit"
 msgid "Create Object"
 msgstr "Vytvořit objekt"
 
-#: ../lib/modules.inc:1023 ../help/help.inc:154
+#: ../lib/modules.inc:1062 ../help/help.inc:154
 msgid "Create PDF file"
 msgstr "Vytvořit PDF soubor"
 
@@ -908,15 +970,15 @@ msgstr "Vytvořit novou PDF strukturu pro:"
 msgid "Create a new profile"
 msgstr "Vytvořit nový profil"
 
-#: ../lib/modules.inc:1066
+#: ../lib/modules.inc:1110
 msgid "Create account"
 msgstr "Vytvořit účet"
 
-#: ../lib/modules.inc:1015
+#: ../lib/modules.inc:1054
 msgid "Create another account"
 msgstr "Vytvořit další účet"
 
-#: ../lib/modules/posixAccount.inc:229 ../lib/modules/posixAccount.inc:955
+#: ../lib/modules/posixAccount.inc:229 ../lib/modules/posixAccount.inc:973
 msgid "Create home directory"
 msgstr "Vytvořit domovský adresář"
 
@@ -957,7 +1019,7 @@ msgstr "Uživatelský"
 #: ../templates/tree/update_confirm.php:76
 #: ../templates/tree/add_attr_form.php:73 ../templates/tree/delete_form.php:77
 #: ../templates/tree/delete_form.php:151 ../templates/delete.php:90
-#: ../lib/modules.inc:1476
+#: ../lib/modules.inc:1035 ../lib/modules.inc:1523
 msgid "DN"
 msgstr "DN"
 
@@ -978,11 +1040,11 @@ msgstr "DSML export pro: %s"
 msgid "Data field for RDN is empty!"
 msgstr "Datové pole RDN je prázdné!"
 
-#: ../lib/modules/sambaAccount.inc:374 ../lib/modules/sambaSamAccount.inc:222
+#: ../lib/modules/sambaAccount.inc:374 ../lib/modules/sambaSamAccount.inc:225
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
 msgstr "Datum, po kterém si uživatel může změnit si heslo. Formát: DD-MM-YYYY"
 
-#: ../lib/modules/sambaAccount.inc:376 ../lib/modules/sambaSamAccount.inc:224
+#: ../lib/modules/sambaAccount.inc:376 ../lib/modules/sambaSamAccount.inc:227
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr "Datum, po kterém si uživatel musí změnit heslo. Formát: DD-MM-YYYY"
 
@@ -993,12 +1055,12 @@ msgstr "Datum vzniku zaměstnaneckého poměru."
 #: ../lib/modules/shadowAccount.inc:155
 msgid ""
 "Days before password is to expire that user is warned of pending password "
-"expiration. If set value must be 0<."
+"expiration. If set value must be >0."
 msgstr ""
 "Počet dní před vypršením hesla, během kterých bude uživatel upozorňován. "
 "Pokud hodnotu vyplníte, musí být větší než 0."
 
-#: ../templates/config/confmain.php:275 ../help/help.inc:95
+#: ../templates/config/confmain.php:280 ../help/help.inc:95
 msgid "Default language"
 msgstr "Výchozí jazyk"
 
@@ -1011,8 +1073,8 @@ msgid "Defines if workstations may change their passwords."
 msgstr "Zadejte, zda si stanice mohou měnit svá hesla."
 
 #: ../lib/modules/kolabUser.inc:132 ../lib/modules/kolabUser.inc:136
-#: ../lib/modules/kolabUser.inc:196 ../lib/modules/kolabUser.inc:391
-#: ../lib/modules/kolabUser.inc:784
+#: ../lib/modules/kolabUser.inc:196 ../lib/modules/kolabUser.inc:393
+#: ../lib/modules/kolabUser.inc:788
 msgid "Delegates"
 msgstr "Zástupci"
 
@@ -1022,7 +1084,7 @@ msgstr "Zástupcí nemají přípustný formát!"
 
 #: ../templates/tree/edit.php:114 ../templates/tree/delete_form.php:159
 #: ../templates/ou_edit.php:106 ../templates/pdfedit/pdfdelete.php:91
-#: ../templates/delete.php:111 ../lib/tree.inc:1173 ../lib/lists.inc:425
+#: ../templates/delete.php:111 ../lib/tree.inc:1173 ../lib/lists.inc:424
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1031,7 +1093,7 @@ msgstr "Smazat"
 msgid "Delete %s"
 msgstr "Smazat %s"
 
-#: ../lib/modules/kolabUser.inc:400
+#: ../lib/modules/kolabUser.inc:402
 msgid "Delete Kolab account"
 msgstr "Smazat účet Kolabu"
 
@@ -1056,7 +1118,7 @@ msgstr "Smazat doménu(y)"
 msgid "Delete group(s)"
 msgstr "Smazat skupinu(y)"
 
-#: ../lib/modules/posixAccount.inc:999
+#: ../lib/modules/posixAccount.inc:1017
 msgid "Delete home directory"
 msgstr "Smazat domovský adresář"
 
@@ -1092,7 +1154,7 @@ msgstr "Smazat profil"
 msgid "Delete user(s)"
 msgstr "Smazat uživatele"
 
-#: ../templates/delete.php:223
+#: ../templates/delete.php:224
 #, php-format
 msgid "Deleted DN: %s"
 msgstr "Smazané DN: %s"
@@ -1133,9 +1195,9 @@ msgstr "Oddělení"
 #: ../lib/modules/account.inc:94 ../lib/modules/account.inc:118
 #: ../lib/modules/account.inc:218 ../lib/modules/account.inc:232
 #: ../lib/modules/posixGroup.inc:156 ../lib/modules/posixGroup.inc:374
-#: ../lib/modules/posixGroup.inc:436 ../lib/modules/sambaAccount.inc:861
+#: ../lib/modules/posixGroup.inc:436 ../lib/modules/sambaAccount.inc:881
 #: ../lib/modules/posixAccount.inc:302 ../lib/modules/posixAccount.inc:410
-#: ../lib/modules/sambaGroupMapping.inc:327
+#: ../lib/modules/sambaGroupMapping.inc:332
 #: ../lib/modules/inetOrgPerson.inc:163 ../lib/modules/inetOrgPerson.inc:314
 #: ../lib/modules/inetOrgPerson.inc:627 ../lib/modules/inetOrgPerson.inc:892
 #: ../lib/modules/groupOfNames.inc:60 ../lib/modules/groupOfNames.inc:87
@@ -1143,29 +1205,34 @@ msgstr "Oddělení"
 msgid "Description"
 msgstr "Popis"
 
-#: ../lib/modules/sambaDomain.inc:102 ../lib/modules/sambaDomain.inc:265
-#: ../lib/modules/sambaDomain.inc:614
+#: ../lib/modules/sambaDomain.inc:102 ../lib/modules/sambaDomain.inc:282
+#: ../lib/modules/sambaDomain.inc:658
 msgid "Disconnect users outside logon hours"
 msgstr "Odpojit uživatele mimo přihlašovací hodiny"
+
+#: ../lib/modules/sambaSamAccount.inc:1372
+#: ../lib/modules/sambaSamAccount.inc:1702
+msgid "Disconnection time limit"
+msgstr "Časový limit odpojení"
 
 #: ../lib/modules/sambaDomain.inc:103
 msgid "Disconnects users if they are logged in outside logon hours."
 msgstr "Odpojit uživatele, pokud jsou přihlášeni mimo přihlašovací hodiny."
 
 #: ../lib/modules/sambaAccount.inc:78 ../lib/modules/sambaAccount.inc:219
-#: ../lib/modules/sambaAccount.inc:340 ../lib/modules/sambaAccount.inc:698
-#: ../lib/modules/sambaAccount.inc:854 ../lib/modules/sambaSamAccount.inc:94
-#: ../lib/modules/sambaSamAccount.inc:185
-#: ../lib/modules/sambaSamAccount.inc:289
-#: ../lib/modules/sambaSamAccount.inc:860
-#: ../lib/modules/sambaSamAccount.inc:1388
+#: ../lib/modules/sambaAccount.inc:340 ../lib/modules/sambaAccount.inc:712
+#: ../lib/modules/sambaAccount.inc:874 ../lib/modules/sambaSamAccount.inc:97
+#: ../lib/modules/sambaSamAccount.inc:188
+#: ../lib/modules/sambaSamAccount.inc:334
+#: ../lib/modules/sambaSamAccount.inc:966
+#: ../lib/modules/sambaSamAccount.inc:1659
 #: ../lib/modules/sambaGroupMapping.inc:190
-#: ../lib/modules/sambaGroupMapping.inc:292
-#: ../lib/modules/sambaGroupMapping.inc:325
+#: ../lib/modules/sambaGroupMapping.inc:297
+#: ../lib/modules/sambaGroupMapping.inc:330
 msgid "Display name"
 msgstr "Zobrazované jméno"
 
-#: ../lib/modules.inc:447
+#: ../lib/modules.inc:449
 msgid ""
 "Displayed account numbers start at \"0\". Add 2 to get the row in your "
 "spreadsheet."
@@ -1185,7 +1252,7 @@ msgstr "Opravdu chcete smazat tuto PDF strukturu?"
 msgid "Do you really want to delete this profile?"
 msgstr "Opravdu chcete smazat tento profil?"
 
-#: ../lib/modules/kolabUser.inc:559
+#: ../lib/modules/kolabUser.inc:561
 msgid "Do you really want to mark this account for deletion?"
 msgstr "Opravdu chcete označit tento účet ke smazání?"
 
@@ -1199,74 +1266,74 @@ msgstr "Chcete provést tyto změny?"
 
 #: ../lib/modules/sambaAccount.inc:177 ../lib/modules/sambaAccount.inc:321
 #: ../lib/modules/sambaAccount.inc:331 ../lib/modules/sambaAccount.inc:405
-#: ../lib/modules/sambaAccount.inc:803 ../lib/modules/sambaAccount.inc:860
-#: ../lib/modules/sambaSamAccount.inc:260
-#: ../lib/modules/sambaSamAccount.inc:282
-#: ../lib/modules/sambaSamAccount.inc:408
-#: ../lib/modules/sambaSamAccount.inc:997
-#: ../lib/modules/sambaSamAccount.inc:1250
-#: ../lib/modules/sambaSamAccount.inc:1280
-#: ../lib/modules/sambaSamAccount.inc:1406
+#: ../lib/modules/sambaAccount.inc:823 ../lib/modules/sambaAccount.inc:880
+#: ../lib/modules/sambaSamAccount.inc:263
+#: ../lib/modules/sambaSamAccount.inc:327
+#: ../lib/modules/sambaSamAccount.inc:453
+#: ../lib/modules/sambaSamAccount.inc:1135
+#: ../lib/modules/sambaSamAccount.inc:1521
+#: ../lib/modules/sambaSamAccount.inc:1551
+#: ../lib/modules/sambaSamAccount.inc:1677
 #: ../lib/modules/sambaGroupMapping.inc:68
-#: ../lib/modules/sambaGroupMapping.inc:220
-#: ../lib/modules/sambaGroupMapping.inc:304
-#: ../lib/modules/sambaGroupMapping.inc:347
+#: ../lib/modules/sambaGroupMapping.inc:225
+#: ../lib/modules/sambaGroupMapping.inc:309
+#: ../lib/modules/sambaGroupMapping.inc:352
 msgid "Domain"
 msgstr "Doména"
 
 #: ../lib/types/smbDomain.inc:82 ../lib/modules/sambaDomain.inc:70
-#: ../lib/modules/sambaDomain.inc:140 ../lib/modules/sambaDomain.inc:224
-#: ../lib/modules/sambaDomain.inc:230 ../lib/modules/sambaDomain.inc:586
+#: ../lib/modules/sambaDomain.inc:140 ../lib/modules/sambaDomain.inc:225
+#: ../lib/modules/sambaDomain.inc:231 ../lib/modules/sambaDomain.inc:630
 msgid "Domain SID"
 msgstr "SID domény"
 
-#: ../lib/modules/sambaGroupMapping.inc:271
+#: ../lib/modules/sambaGroupMapping.inc:276
 msgid "Domain administrators"
 msgstr "Doménoví administrátoři"
 
 #: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaAccount.inc:316
-#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaSamAccount.inc:69
 #: ../lib/modules/sambaGroupMapping.inc:55
-#: ../lib/modules/sambaGroupMapping.inc:277
+#: ../lib/modules/sambaGroupMapping.inc:282
 msgid "Domain admins"
 msgstr "Doménoví administrátoři"
 
-#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:70
 #: ../lib/modules/sambaGroupMapping.inc:60
 msgid "Domain certificate admins"
 msgstr "Doménoví administrátoři certifikátů"
 
-#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:548
-#: ../lib/modules/sambaSamAccount.inc:67
-#: ../lib/modules/sambaSamAccount.inc:610
+#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:555
+#: ../lib/modules/sambaSamAccount.inc:70
+#: ../lib/modules/sambaSamAccount.inc:672
 #: ../lib/modules/sambaGroupMapping.inc:58
 msgid "Domain computers"
 msgstr "Doménové počítače"
 
-#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:70
 #: ../lib/modules/sambaGroupMapping.inc:59
 msgid "Domain controllers"
 msgstr "Doménové řadiče"
 
-#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:68
+#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:71
 #: ../lib/modules/sambaGroupMapping.inc:62
 msgid "Domain enterprise admins"
 msgstr "Doménoví podnikoví administrátoři"
 
 #: ../lib/modules/sambaGroupMapping.inc:67
-#: ../lib/modules/sambaGroupMapping.inc:210
+#: ../lib/modules/sambaGroupMapping.inc:215
 msgid "Domain group"
 msgstr "Doménová skupina"
 
-#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaSamAccount.inc:69
 #: ../lib/modules/sambaGroupMapping.inc:57
 msgid "Domain guests"
 msgstr "Doménoví hosté"
 
 #: ../lib/types/smbDomain.inc:83 ../lib/modules/sambaAccount.inc:72
 #: ../lib/modules/sambaDomain.inc:66 ../lib/modules/sambaDomain.inc:133
-#: ../lib/modules/sambaDomain.inc:211 ../lib/modules/sambaDomain.inc:217
-#: ../lib/modules/sambaDomain.inc:583
+#: ../lib/modules/sambaDomain.inc:212 ../lib/modules/sambaDomain.inc:218
+#: ../lib/modules/sambaDomain.inc:627
 msgid "Domain name"
 msgstr "Název domény"
 
@@ -1282,18 +1349,18 @@ msgstr ""
 msgid "Domain name is invalid!"
 msgstr "Neplatný název domény!"
 
-#: ../lib/modules/sambaAccount.inc:52 ../lib/modules/sambaSamAccount.inc:68
+#: ../lib/modules/sambaAccount.inc:52 ../lib/modules/sambaSamAccount.inc:71
 #: ../lib/modules/sambaGroupMapping.inc:63
 msgid "Domain policy admins"
 msgstr "Doménoví administrátoři politik"
 
-#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:68
+#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:71
 #: ../lib/modules/sambaGroupMapping.inc:61
 msgid "Domain schema admins"
 msgstr "Doménoví administrátoči schémat"
 
-#: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:1667
+#: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaSamAccount.inc:69
+#: ../lib/modules/sambaSamAccount.inc:2003
 #: ../lib/modules/sambaGroupMapping.inc:56
 msgid "Domain users"
 msgstr "Doménoví uživatelé"
@@ -1310,7 +1377,7 @@ msgstr "Dolů"
 msgid "Download sample CSV file"
 msgstr "Stáhnout ukázkový CSV soubor"
 
-#: ../lib/modules/sambaAccount.inc:379 ../lib/modules/sambaSamAccount.inc:227
+#: ../lib/modules/sambaAccount.inc:379
 msgid "Drive letter assigned on windows workstations as homedirectory."
 msgstr "Písmeno disku mapované ve Windows jako domovský adresář."
 
@@ -1338,24 +1405,25 @@ msgstr "Seznam e-mailových aliasů"
 msgid "EMail alias list has invalid format!"
 msgstr "Seznam e-mailových aliasů nemá správný formát!"
 
-#: ../lib/modules/kolabUser.inc:190 ../lib/modules/kolabUser.inc:365
-#: ../lib/modules/kolabUser.inc:780
+#: ../lib/modules/kolabUser.inc:190 ../lib/modules/kolabUser.inc:367
+#: ../lib/modules/kolabUser.inc:784
 msgid "EMail aliases"
 msgstr "E-mailové aliasy"
 
-#: ../lib/modules/sambaSamAccount.inc:450
+#: ../lib/modules/sambaSamAccount.inc:495
 msgid "East Australian Standard, Guam"
 msgstr "Východoaustralský standardní čas, Guam"
 
-#: ../lib/modules/sambaSamAccount.inc:442
+#: ../lib/modules/sambaSamAccount.inc:487
 msgid "Eastern Europe Time, South Africa"
 msgstr "Východoevropský čas, Jižní Afrika"
 
-#: ../lib/modules/sambaSamAccount.inc:435
+#: ../lib/modules/sambaSamAccount.inc:480
 msgid "Eastern Time (US & Canada), Bogota"
 msgstr "Východní čas (USA a Kanada), Bogota"
 
-#: ../lib/lists.inc:421
+#: ../lib/modules/sambaSamAccount.inc:1142
+#: ../lib/modules/sambaSamAccount.inc:1146 ../lib/lists.inc:420
 msgid "Edit"
 msgstr "Editovat"
 
@@ -1363,7 +1431,7 @@ msgstr "Editovat"
 msgid "Edit PDF structure"
 msgstr "Editovat PDF strukturu"
 
-#: ../templates/config/confmain.php:203
+#: ../templates/config/confmain.php:208
 msgid "Edit account types"
 msgstr "Editovat typy účtů"
 
@@ -1371,19 +1439,15 @@ msgstr "Editovat typy účtů"
 msgid "Edit general settings"
 msgstr "Editovat obecné nastavení"
 
-#: ../lib/modules/posixAccount.inc:940
+#: ../lib/modules/posixAccount.inc:958
 msgid "Edit groups"
 msgstr "Editovat skupiny"
-
-#: ../lib/modules/sambaSamAccount.inc:1003
-msgid "Edit logon hours"
-msgstr "Editovat hodiny přihlášení"
 
 #: ../lib/modules/posixGroup.inc:161
 msgid "Edit members"
 msgstr "Editovat členy"
 
-#: ../templates/config/confmain.php:205
+#: ../templates/config/confmain.php:210
 msgid "Edit modules"
 msgstr "Editovat moduly"
 
@@ -1399,7 +1463,7 @@ msgstr "Editovat samoobslužnou část"
 msgid "Edit server profiles"
 msgstr "Editovat profily serverů"
 
-#: ../lib/modules/sambaAccount.inc:768 ../lib/modules/sambaSamAccount.inc:959
+#: ../lib/modules/sambaAccount.inc:782 ../lib/modules/sambaSamAccount.inc:1094
 msgid "Edit workstations"
 msgstr "Editovat stanice"
 
@@ -1431,7 +1495,7 @@ msgstr ""
 msgid "Employment date"
 msgstr "Datum zaměstnání"
 
-#: ../templates/login.php:379
+#: ../templates/login.php:383
 msgid "Empty password submitted. Please try again."
 msgstr "Zadali jste prázdné heslo. Prosím zadejte znovu jiné."
 
@@ -1439,7 +1503,7 @@ msgstr "Zadali jste prázdné heslo. Prosím zadejte znovu jiné."
 msgid "Encountered an error while performing search."
 msgstr "Došlo k chybě během hledani."
 
-#: ../lib/modules/sambaSamAccount.inc:428
+#: ../lib/modules/sambaSamAccount.inc:473
 msgid "Eniwetok, Kwajalein"
 msgstr "Eniwetok, Kwajalein"
 
@@ -1475,7 +1539,7 @@ msgstr "Shoda"
 msgid "Error"
 msgstr "Chyba"
 
-#: ../templates/delete.php:228
+#: ../templates/delete.php:229
 #, php-format
 msgid "Error while deleting DN: %s"
 msgstr "Došlo k chybě běhwm mazání DN: %s"
@@ -1501,7 +1565,7 @@ msgstr "Ukázková hodnota"
 msgid "Examples"
 msgstr "Příklady"
 
-#: ../templates/config/confmain.php:363
+#: ../templates/config/confmain.php:368
 msgid "Execute"
 msgstr "Spuštění"
 
@@ -1543,7 +1607,7 @@ msgstr "Číslo faxu"
 msgid "File"
 msgstr "Soubor"
 
-#: ../lib/modules/sambaSamAccount.inc:236
+#: ../lib/modules/sambaSamAccount.inc:239
 msgid ""
 "File name and path relative to netlogon-share which should be executed on "
 "logon. $user and $group are replaced with user and group name."
@@ -1569,7 +1633,7 @@ msgstr "Nahrání souboru"
 msgid "File upload failed!"
 msgstr "Selhalo nahrání souboru!"
 
-#: ../lib/lists.inc:349
+#: ../lib/lists.inc:348
 msgid "Filter"
 msgstr "Filtr"
 
@@ -1593,8 +1657,8 @@ msgid "For automatic invitation handling."
 msgstr "Pro obsluhu automatických pozvánek"
 
 #: ../lib/modules/kolabUser.inc:89 ../lib/modules/kolabUser.inc:156
-#: ../lib/modules/kolabUser.inc:202 ../lib/modules/kolabUser.inc:310
-#: ../lib/modules/kolabUser.inc:758
+#: ../lib/modules/kolabUser.inc:202 ../lib/modules/kolabUser.inc:312
+#: ../lib/modules/kolabUser.inc:762
 msgid "Free/Busy interval"
 msgstr "Interval volno/obsazeno"
 
@@ -1602,7 +1666,7 @@ msgstr "Interval volno/obsazeno"
 msgid "Free/Busy interval must be a number!"
 msgstr "Interval volno/obsazeno musí být číslo!"
 
-#: ../lib/modules/sambaSamAccount.inc:1060
+#: ../lib/modules/sambaSamAccount.inc:1211
 msgid "Friday"
 msgstr "Pátek"
 
@@ -1614,8 +1678,8 @@ msgstr "123 45"
 #: ../lib/modules/posixGroup.inc:152 ../lib/modules/posixGroup.inc:340
 #: ../lib/modules/posixGroup.inc:370 ../lib/modules/posixGroup.inc:390
 #: ../lib/modules/posixGroup.inc:434 ../lib/modules/posixGroup.inc:454
-#: ../lib/modules/posixAccount.inc:88 ../lib/modules/posixAccount.inc:1143
-#: ../lib/modules/sambaGroupMapping.inc:323
+#: ../lib/modules/posixAccount.inc:88 ../lib/modules/posixAccount.inc:1165
+#: ../lib/modules/sambaGroupMapping.inc:328
 msgid "GID number"
 msgstr "GID"
 
@@ -1641,7 +1705,7 @@ msgstr "GID musí být číslo!"
 
 #: ../lib/modules/posixAccount.inc:258 ../lib/modules/posixAccount.inc:290
 #: ../lib/modules/posixAccount.inc:364 ../lib/modules/posixAccount.inc:402
-#: ../lib/modules/posixAccount.inc:929 ../lib/modules/posixAccount.inc:1144
+#: ../lib/modules/posixAccount.inc:942 ../lib/modules/posixAccount.inc:1166
 msgid "Gecos"
 msgstr "Gecos"
 
@@ -1654,18 +1718,18 @@ msgstr "Německo"
 msgid "Go"
 msgstr "Spustit"
 
-#: ../lib/modules/quota.inc:104 ../lib/modules/quota.inc:321
+#: ../lib/modules/quota.inc:108 ../lib/modules/quota.inc:357
 msgid "Grace block period"
 msgstr "Odklad pro uvolnění bloků"
 
-#: ../lib/modules/quota.inc:105
+#: ../lib/modules/quota.inc:109
 msgid ""
 "Grace block period. Most filesystems use a fixed maximum value of 7 days."
 msgstr ""
 "Odklad pro uvolnění bloků. Většina souborových systému má odklad natvrdo "
 "nastaven na maximální hodnotu 7 dní."
 
-#: ../lib/modules/quota.inc:121
+#: ../lib/modules/quota.inc:131
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
@@ -1673,11 +1737,11 @@ msgstr ""
 "Odklad pro uvolnění inodů (souborů). Většina souborových systému má odklad "
 "natvrdo nastaven na maximální hodnotu 7 dní."
 
-#: ../lib/modules/quota.inc:120 ../lib/modules/quota.inc:325
+#: ../lib/modules/quota.inc:130 ../lib/modules/quota.inc:361
 msgid "Grace inode period"
 msgstr "Odklad pro uvolnění inodů"
 
-#: ../templates/config/confmain.php:368
+#: ../templates/config/confmain.php:373
 #: ../templates/selfService/adminMain.php:495
 msgid "Group"
 msgstr "Skupina"
@@ -1738,8 +1802,8 @@ msgid ""
 "groupadd also does not allow it. If group name is already used group name "
 "will be expanded with a number. The next free number will be used."
 msgstr ""
-"Název vytvářené skupiny. Přípustné znaky jsou: a-z,A-Z,0-9,.-_ a mezeru. "
-"LAM nepovoluje použití číslice jako prvního znaku, neboť groupadd to také "
+"Název vytvářené skupiny. Přípustné znaky jsou: a-z,A-Z,0-9,.-_ a mezeru. LAM "
+"nepovoluje použití číslice jako prvního znaku, neboť groupadd to také "
 "nepovoluje. Pokud je již název skupiny použitý, přidá se k němu následující "
 "volné číslo, aby se získal dosud nepoužitý název skupiny."
 
@@ -1755,7 +1819,7 @@ msgstr "Skupina jedinečných názvů"
 msgid "Group password"
 msgstr "Heslo skupiny"
 
-#: ../lib/modules/sambaGroupMapping.inc:215
+#: ../lib/modules/sambaGroupMapping.inc:220
 msgid "Group type"
 msgstr "Typ skupiny"
 
@@ -1763,29 +1827,29 @@ msgstr "Typ skupiny"
 msgid "Groups"
 msgstr "Skupiny"
 
-#: ../lib/modules/quota.inc:514
+#: ../lib/modules/quota.inc:550
 msgid "Hard block"
 msgstr "Pevné bloky"
 
-#: ../lib/modules/quota.inc:100 ../lib/modules/quota.inc:101
-#: ../lib/modules/quota.inc:320 ../lib/modules/quota.inc:405
+#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:103
+#: ../lib/modules/quota.inc:356 ../lib/modules/quota.inc:441
 msgid "Hard block limit"
 msgstr "Limit pevných bloků"
 
-#: ../lib/modules/quota.inc:516
+#: ../lib/modules/quota.inc:552
 msgid "Hard inode"
 msgstr "Pevné inody"
 
-#: ../lib/modules/quota.inc:117
+#: ../lib/modules/quota.inc:125
 msgid "Hard inode (files) limit"
 msgstr "Limit pevných inodů (souborů)"
 
-#: ../lib/modules/quota.inc:116 ../lib/modules/quota.inc:324
-#: ../lib/modules/quota.inc:407
+#: ../lib/modules/quota.inc:124 ../lib/modules/quota.inc:360
+#: ../lib/modules/quota.inc:443
 msgid "Hard inode limit"
 msgstr "Limit pevných inodů"
 
-#: ../lib/modules/sambaSamAccount.inc:430
+#: ../lib/modules/sambaSamAccount.inc:475
 msgid "Hawaii"
 msgstr "Havaj"
 
@@ -1807,12 +1871,12 @@ msgstr "Titulek"
 #: ../templates/config/mainmanage.php:240
 #: ../templates/config/mainmanage.php:304
 #: ../templates/config/confmodules.php:122
-#: ../templates/config/confmain.php:148 ../templates/config/confmain.php:162
-#: ../templates/config/confmain.php:184 ../templates/config/confmain.php:207
-#: ../templates/config/confmain.php:262 ../templates/config/confmain.php:307
-#: ../templates/config/confmain.php:326 ../templates/config/confmain.php:335
-#: ../templates/config/confmain.php:380 ../templates/config/confmain.php:399
-#: ../templates/config/confmain.php:413 ../templates/config/conftypes.php:201
+#: ../templates/config/confmain.php:153 ../templates/config/confmain.php:167
+#: ../templates/config/confmain.php:189 ../templates/config/confmain.php:212
+#: ../templates/config/confmain.php:267 ../templates/config/confmain.php:312
+#: ../templates/config/confmain.php:331 ../templates/config/confmain.php:340
+#: ../templates/config/confmain.php:385 ../templates/config/confmain.php:404
+#: ../templates/config/confmain.php:418 ../templates/config/conftypes.php:201
 #: ../templates/config/conftypes.php:217 ../templates/config/conflogin.php:128
 #: ../templates/config/mainlogin.php:119
 #: ../templates/selfService/profManage.php:159
@@ -1833,8 +1897,8 @@ msgstr "Titulek"
 #: ../templates/pdfedit/pdfpage.php:750
 #: ../templates/profedit/profilepage.php:195
 #: ../templates/profedit/profilepage.php:215
-#: ../templates/profedit/profilepage.php:246 ../lib/lists.inc:345
-#: ../lib/modules.inc:691
+#: ../templates/profedit/profilepage.php:246 ../lib/lists.inc:344
+#: ../lib/modules.inc:693
 msgid "Help"
 msgstr "Nápověda"
 
@@ -1850,14 +1914,13 @@ msgstr ""
 msgid "Here you can browse LDAP object classes and attributes."
 msgstr "Zde můžete procházet třídy LDAP objektů a atributů."
 
+#: ../lib/modules/sambaSamAccount.inc:318
+msgid "Here you can change the settings for the terminal server access."
+msgstr "Zde můžete změnit nastavní pro přístup k terminálovému serveru."
+
 #: ../templates/masscreate.php:88
 msgid "Here you can create multiple accounts by providing a CSV file."
 msgstr "Zde můžete vytvořít více účtů pomocí CSV souboru."
-
-#: ../lib/modules/sambaDomain.inc:111
-msgid "Here you can define to deactivate accounts after bad logon attempts."
-msgstr ""
-"Zde můžete zadat deaktivování účtů po neuspěšných pokusech o  přihlášení."
 
 #: ../lib/modules/groupOfNames.inc:61
 msgid "Here you can enter a description for this group."
@@ -1916,6 +1979,10 @@ msgid ""
 "Here you can specify the minimum number of characters for a user password."
 msgstr "Zde můžete zadat minimální počet znaků v uživatelském hesle."
 
+#: ../lib/modules/sambaSamAccount.inc:309
+msgid "Here you can specify the shadowing mode."
+msgstr "Zde můžete zadat mód stínování."
+
 #: ../templates/tools.php:91
 msgid "Here you can test if certain LAM features work on your installation."
 msgstr "Zde můžete otestovat některé vlastnosti LAMu ve vaší instalaci."
@@ -1942,13 +2009,15 @@ msgstr ""
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr "Držte klávasu CTRL pro označení/odznační více skupin."
 
-#: ../lib/types/user.inc:89 ../lib/modules/posixAccount.inc:63
+#: ../lib/types/user.inc:89 ../lib/modules/sambaSamAccount.inc:281
+#: ../lib/modules/sambaSamAccount.inc:1331
+#: ../lib/modules/sambaSamAccount.inc:1691 ../lib/modules/posixAccount.inc:63
 #: ../lib/modules/posixAccount.inc:64 ../lib/modules/posixAccount.inc:66
 #: ../lib/modules/posixAccount.inc:94 ../lib/modules/posixAccount.inc:222
 #: ../lib/modules/posixAccount.inc:347 ../lib/modules/posixAccount.inc:351
 #: ../lib/modules/posixAccount.inc:355 ../lib/modules/posixAccount.inc:372
-#: ../lib/modules/posixAccount.inc:755 ../lib/modules/posixAccount.inc:943
-#: ../lib/modules/posixAccount.inc:1093 ../lib/modules/posixAccount.inc:1147
+#: ../lib/modules/posixAccount.inc:760 ../lib/modules/posixAccount.inc:961
+#: ../lib/modules/posixAccount.inc:1114 ../lib/modules/posixAccount.inc:1169
 msgid "Home directory"
 msgstr "Domovský adresář"
 
@@ -1962,30 +2031,32 @@ msgstr ""
 "příkaz jako root: ' mv %s %s'"
 
 #: ../lib/modules/sambaAccount.inc:146 ../lib/modules/sambaAccount.inc:277
-#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaAccount.inc:755
-#: ../lib/modules/sambaAccount.inc:856 ../lib/modules/sambaSamAccount.inc:226
-#: ../lib/modules/sambaSamAccount.inc:354
-#: ../lib/modules/sambaSamAccount.inc:946
-#: ../lib/modules/sambaSamAccount.inc:1215
-#: ../lib/modules/sambaSamAccount.inc:1394
+#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaAccount.inc:769
+#: ../lib/modules/sambaAccount.inc:876 ../lib/modules/sambaSamAccount.inc:229
+#: ../lib/modules/sambaSamAccount.inc:399
+#: ../lib/modules/sambaSamAccount.inc:1065
+#: ../lib/modules/sambaSamAccount.inc:1342
+#: ../lib/modules/sambaSamAccount.inc:1486
+#: ../lib/modules/sambaSamAccount.inc:1665
+#: ../lib/modules/sambaSamAccount.inc:1692
 msgid "Home drive"
 msgstr "Domovský disk"
 
 #: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaAccount.inc:62
 #: ../lib/modules/sambaAccount.inc:152 ../lib/modules/sambaAccount.inc:283
-#: ../lib/modules/sambaAccount.inc:381 ../lib/modules/sambaAccount.inc:758
-#: ../lib/modules/sambaAccount.inc:855 ../lib/modules/sambaSamAccount.inc:77
-#: ../lib/modules/sambaSamAccount.inc:78
-#: ../lib/modules/sambaSamAccount.inc:229
-#: ../lib/modules/sambaSamAccount.inc:360
-#: ../lib/modules/sambaSamAccount.inc:949
-#: ../lib/modules/sambaSamAccount.inc:1221
-#: ../lib/modules/sambaSamAccount.inc:1391
+#: ../lib/modules/sambaAccount.inc:381 ../lib/modules/sambaAccount.inc:772
+#: ../lib/modules/sambaAccount.inc:875 ../lib/modules/sambaSamAccount.inc:80
+#: ../lib/modules/sambaSamAccount.inc:81
+#: ../lib/modules/sambaSamAccount.inc:232
+#: ../lib/modules/sambaSamAccount.inc:405
+#: ../lib/modules/sambaSamAccount.inc:1073
+#: ../lib/modules/sambaSamAccount.inc:1492
+#: ../lib/modules/sambaSamAccount.inc:1662
 msgid "Home path"
 msgstr "Domovská cesta"
 
-#: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaSamAccount.inc:77
-#: ../lib/modules/sambaSamAccount.inc:79
+#: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaSamAccount.inc:80
+#: ../lib/modules/sambaSamAccount.inc:82
 msgid "Home path is invalid."
 msgstr "Neplatná domovská cesta."
 
@@ -2070,7 +2141,7 @@ msgid "Hosts"
 msgstr "Stroje"
 
 #: ../lib/modules/posixGroup.inc:457 ../lib/modules/posixGroup.inc:565
-#: ../lib/modules/posixAccount.inc:69 ../lib/modules/posixAccount.inc:737
+#: ../lib/modules/posixAccount.inc:69 ../lib/modules/posixAccount.inc:742
 msgid "ID is already in use"
 msgstr "ID je již používáno"
 
@@ -2078,7 +2149,7 @@ msgstr "ID je již používáno"
 #: ../lib/modules/posixGroup.inc:457 ../lib/modules/posixGroup.inc:557
 #: ../lib/modules/posixGroup.inc:565 ../lib/modules/posixAccount.inc:67
 #: ../lib/modules/posixAccount.inc:68 ../lib/modules/posixAccount.inc:69
-#: ../lib/modules/posixAccount.inc:733 ../lib/modules/posixAccount.inc:737
+#: ../lib/modules/posixAccount.inc:738 ../lib/modules/posixAccount.inc:742
 msgid "ID-Number"
 msgstr "Číslo ID"
 
@@ -2091,7 +2162,12 @@ msgstr "IT"
 msgid "Identifier"
 msgstr "Identifikátor"
 
-#: ../lib/modules/sambaAccount.inc:350 ../lib/modules/sambaSamAccount.inc:195
+#: ../lib/modules/sambaSamAccount.inc:1377
+#: ../lib/modules/sambaSamAccount.inc:1703
+msgid "Idle time limit"
+msgstr "Limit doby nečinnosti"
+
+#: ../lib/modules/sambaAccount.inc:350 ../lib/modules/sambaSamAccount.inc:198
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "Jestliže je zaškrtnuto, pak se Unixové heslo použije i pro Sambu."
 
@@ -2100,28 +2176,28 @@ msgid ""
 "If checked account will be deactivated by putting a \"!\" before the "
 "encrypted password."
 msgstr ""
-"Jestliže je zaškrtnuto, pak se účet zakáže vložením \"!\" před zašifrované "
-"heslo."
+"Jestliže je zaškrtnuto, pak se účet deaktivuje vložením \"!\" před "
+"zašifrované heslo."
 
 #: ../lib/modules/sambaAccount.inc:368
 msgid "If checked account will be deactivated. (Setting D-Flag)"
-msgstr "Jestliže je zaškrtnuto, pak se účet zakáže použitím příznaku D."
+msgstr "Jestliže je zaškrtnuto, pak se účet deaktivuje použitím příznaku D."
 
-#: ../lib/modules/sambaAccount.inc:356 ../lib/modules/sambaSamAccount.inc:201
+#: ../lib/modules/sambaAccount.inc:356 ../lib/modules/sambaSamAccount.inc:204
 msgid "If checked no password will be used."
 msgstr "Jestliže je zaškrtnuto, pak se nepoužije heslo."
 
-#: ../lib/modules/sambaAccount.inc:362 ../lib/modules/sambaSamAccount.inc:207
+#: ../lib/modules/sambaAccount.inc:362 ../lib/modules/sambaSamAccount.inc:210
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr ""
 "Jestliže je zaškrtnuto, pak heslu nikdy nevyprší platnost použitím příznaku "
 "X."
 
-#: ../lib/modules/sambaSamAccount.inc:213
+#: ../lib/modules/sambaSamAccount.inc:216
 msgid "If checked then the account will be deactivated. (Setting D-Flag)"
 msgstr "Jestliže je zaškrtnuto, pak se účet deaktivuje použitím příznaku D."
 
-#: ../lib/modules/sambaSamAccount.inc:216
+#: ../lib/modules/sambaSamAccount.inc:219
 msgid ""
 "If checked then the account will be locked (setting L-Flag). You usually "
 "want to use this setting to unlock user accounts which were locked because "
@@ -2148,27 +2224,27 @@ msgid "If set then users need to login to change their password."
 msgstr ""
 "Jestliže je nastaveno, pak si uživatel musí změnit heslo při  přihlášení."
 
-#: ../lib/modules/sambaAccount.inc:353 ../lib/modules/sambaSamAccount.inc:198
+#: ../lib/modules/sambaAccount.inc:353 ../lib/modules/sambaSamAccount.inc:201
 msgid "If set to \"true\" Unix password will also be used as Samba password."
 msgstr ""
 "Jestliže je nastaveno na \"true\", pak se Unixové heslo použije i pro Sambu."
 
-#: ../lib/modules/sambaAccount.inc:371 ../lib/modules/sambaSamAccount.inc:219
+#: ../lib/modules/sambaAccount.inc:371 ../lib/modules/sambaSamAccount.inc:222
 msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
 msgstr ""
-"Jestliže je nastaveno na \"true\", pak se účet zakáže použitím příznaku D."
+"Jestliže je nastaveno na \"true\", pak se účet deaktivuje použitím příznaku D."
 
-#: ../lib/modules/sambaAccount.inc:359 ../lib/modules/sambaSamAccount.inc:204
+#: ../lib/modules/sambaAccount.inc:359 ../lib/modules/sambaSamAccount.inc:207
 msgid "If set to \"true\" no password will be used."
 msgstr "Jestliže je nastaveno na \"true\", pak se nepoužije heslo."
 
-#: ../lib/modules/sambaAccount.inc:365 ../lib/modules/sambaSamAccount.inc:210
+#: ../lib/modules/sambaAccount.inc:365 ../lib/modules/sambaSamAccount.inc:213
 msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
 msgstr ""
 "Jestliže je nastaveno na \"true\", pak heslu nikdy nevyprší platnost "
 "použitím příznaku X."
 
-#: ../lib/modules/sambaSamAccount.inc:255
+#: ../lib/modules/sambaSamAccount.inc:258
 msgid ""
 "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr ""
@@ -2196,7 +2272,7 @@ msgstr ""
 "uživatele, pak použijte tuto volbu."
 
 #: ../lib/modules/sambaAccount.inc:397
-#: ../lib/modules/sambaGroupMapping.inc:297
+#: ../lib/modules/sambaGroupMapping.inc:302
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr ""
 "Jestliže chcete použít dobře známé RIT, pak můžete vybrat skupinu z dobře "
@@ -2206,6 +2282,12 @@ msgstr ""
 msgid "Include system attributes"
 msgstr "Vložte systémové atributy"
 
+#: ../lib/modules/sambaSamAccount.inc:287
+#: ../lib/modules/sambaSamAccount.inc:1352
+#: ../lib/modules/sambaSamAccount.inc:1698
+msgid "Inherit client startup configuration"
+msgstr "Zdědit nastavení spouštění z klienta"
+
 #: ../templates/schema/schema.php:401 ../templates/schema/schema.php:422
 msgid "Inherited from"
 msgstr "Zděděno od"
@@ -2213,6 +2295,12 @@ msgstr "Zděděno od"
 #: ../templates/schema/schema.php:162 ../templates/schema/schema.php:358
 msgid "Inherits from"
 msgstr "Zdědit po"
+
+#: ../lib/modules/sambaSamAccount.inc:290
+#: ../lib/modules/sambaSamAccount.inc:1357
+#: ../lib/modules/sambaSamAccount.inc:1699
+msgid "Initial program"
+msgstr "Výchozí program"
 
 #: ../lib/modules/quota.inc:51
 msgid "Inode hard quota"
@@ -2251,17 +2339,17 @@ msgid "Input fields"
 msgstr "Vstupní pole"
 
 #: ../lib/modules/sambaAccount.inc:62 ../lib/modules/sambaAccount.inc:63
-#: ../lib/modules/sambaSamAccount.inc:78
+#: ../lib/modules/sambaSamAccount.inc:81
 msgid "Inserted user or group name in home path."
 msgstr "Název uživatele či skupiny byl vložen do domovské cesty."
 
-#: ../lib/modules/sambaAccount.inc:68 ../lib/modules/sambaSamAccount.inc:84
+#: ../lib/modules/sambaAccount.inc:68 ../lib/modules/sambaSamAccount.inc:87
 msgid "Inserted user or group name in logon script."
 msgstr ""
 "Do přihlašovacího skriptu bylo vloženo uživatelské jméno či název skupiny."
 
 #: ../lib/modules/sambaAccount.inc:65 ../lib/modules/sambaAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:81
+#: ../lib/modules/sambaSamAccount.inc:84
 msgid "Inserted user or group name in profile path."
 msgstr "Do cesty k profilu bylo vloženo uživatelské jméno či název skupiny."
 
@@ -2274,7 +2362,7 @@ msgid "Invalid account"
 msgstr "Neplatný účet"
 
 #: ../lib/modules/kolabUser.inc:124 ../lib/modules/kolabUser.inc:171
-#: ../lib/modules/kolabUser.inc:348 ../lib/modules/kolabUser.inc:770
+#: ../lib/modules/kolabUser.inc:350 ../lib/modules/kolabUser.inc:774
 msgid "Invitation policy"
 msgstr "Politika pozvánek"
 
@@ -2282,7 +2370,7 @@ msgstr "Politika pozvánek"
 msgid "Invitation policy list"
 msgstr "Seznam politik pozvánek"
 
-#: ../lib/modules/sambaSamAccount.inc:445
+#: ../lib/modules/sambaSamAccount.inc:490
 msgid "Islamabad, Karachi"
 msgstr "Islamábád, Karáčí"
 
@@ -2354,7 +2442,7 @@ msgstr ""
 "LAM může rekurzivně smazat tuto položku a všechny položky pod ní. Níže je "
 "uveden seznam všech položek, které budou smazány. Chcete je opravdu smazat?"
 
-#: ../templates/login.php:193 ../templates/config/index.php:60
+#: ../templates/login.php:197 ../templates/config/index.php:60
 msgid "LAM configuration"
 msgstr "Nastavení LAMu"
 
@@ -2382,11 +2470,11 @@ msgstr "Testy LAMu"
 msgid "LAM was unable to create account %s! An LDAP error occured."
 msgstr "LAM nemůže vytvořit účet %s!. Nastala chyba LDAPu."
 
-#: ../lib/modules/sambaGroupMapping.inc:376
+#: ../lib/modules/sambaGroupMapping.inc:381
 msgid "LAM was unable to find a Samba 3 domain with this name!"
 msgstr "LAM nemůže najít doménu Samby 3 s tímto názvem!"
 
-#: ../lib/modules/sambaSamAccount.inc:103
+#: ../lib/modules/sambaSamAccount.inc:106
 msgid "LAM was unable to find a domain with this name!"
 msgstr "LAM nemůže najít doménu s tímto názvem!"
 
@@ -2394,7 +2482,7 @@ msgstr "LAM nemůže najít doménu s tímto názvem!"
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM nemůže najít skupinu s tímto názvem!"
 
-#: ../lib/modules/posixAccount.inc:1523
+#: ../lib/modules/posixAccount.inc:1545
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM nemůže změnit členství ve skupině: %s"
@@ -2418,12 +2506,12 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: ../templates/config/confmodules.php:76 ../templates/config/confmain.php:121
-#: ../templates/config/confmain.php:571 ../templates/config/conftypes.php:154
+#: ../templates/config/confmain.php:576 ../templates/config/conftypes.php:154
 #: ../templates/selfService/adminMain.php:107
 msgid "LDAP Account Manager Configuration"
 msgstr "Nastavení LDAP Account Manageru"
 
-#: ../lib/lists.inc:725
+#: ../lib/lists.inc:724
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "Selhalo hledání v LDAPu! Prosím zkontrolujte předvolby."
 
@@ -2431,11 +2519,11 @@ msgstr "Selhalo hledání v LDAPu! Prosím zkontrolujte předvolby."
 msgid "LDAP Suffix is invalid!"
 msgstr "Neplatný sufix LDAPu!"
 
-#: ../templates/login.php:427
+#: ../templates/login.php:431
 msgid "LDAP error, server says:"
 msgstr "Chyba LDAPu, server oznámil:"
 
-#: ../lib/modules.inc:1010
+#: ../lib/modules.inc:1049
 msgid "LDAP operation successful."
 msgstr "Operace LDAPu proběhla úspěšně."
 
@@ -2447,11 +2535,11 @@ msgstr "Heslo LDAPu"
 msgid "LDAP search attribute"
 msgstr "Hledaný atribut LDAPu"
 
-#: ../templates/login.php:311
+#: ../templates/login.php:315
 msgid "LDAP server"
 msgstr "LDAP server"
 
-#: ../lib/types/group.inc:272 ../lib/lists.inc:708
+#: ../lib/types/group.inc:272 ../lib/lists.inc:707
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr ""
 "Bylo dosaženo limitu velikosti odpovědi LDAPu, nebudou zobrazeny všechny "
@@ -2509,15 +2597,15 @@ msgstr "Lamdaemon: Quota modul je nainstalován"
 msgid "Lamdaemon: read quotas"
 msgstr "Lamdaemon: čte kvóty"
 
-#: ../templates/login.php:260
+#: ../templates/login.php:264
 msgid "Language"
 msgstr "Jazyk"
 
-#: ../templates/config/confmain.php:494
+#: ../templates/config/confmain.php:499
 msgid "Language is not defined!"
 msgstr "Jazyk není definován!"
 
-#: ../templates/config/confmain.php:270
+#: ../templates/config/confmain.php:275
 msgid "Language settings"
 msgstr "Nastavení jazyku"
 
@@ -2564,7 +2652,7 @@ msgstr "Seznam ComBots ID"
 msgid "List of Jabber IDs."
 msgstr "Seznam Jabber ID"
 
-#: ../lib/modules/sambaAccount.inc:391 ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaAccount.inc:391 ../lib/modules/sambaSamAccount.inc:242
 msgid ""
 "List of Samba workstations the user is allowed to login. Empty means every "
 "workstation."
@@ -2572,7 +2660,7 @@ msgstr ""
 "Seznam stanic Samby, ke kterým se uživatel může přihlásit. Prázdný seznam "
 "znamená každou stanici."
 
-#: ../templates/config/confmain.php:485
+#: ../templates/config/confmain.php:490
 msgid "List of admin users is empty or invalid!"
 msgstr "Seznam administrátorů je prázdný nebo neplatný!"
 
@@ -2592,15 +2680,15 @@ msgstr "Seznam projektů, na kterých uživatel pracuje."
 msgid "List of special skills that the user has."
 msgstr "Seznam speciálních schopností uživatele."
 
-#: ../templates/config/confmain.php:395
+#: ../templates/config/confmain.php:400
 msgid "List of valid users"
 msgstr "Seznam platných uživatelů"
 
-#: ../templates/config/confmain.php:245
+#: ../templates/config/confmain.php:250
 msgid "List settings"
 msgstr "Nastavení seznamů"
 
-#: ../lib/modules.inc:1056 ../lib/modules.inc:1059 ../help/help.inc:150
+#: ../lib/modules.inc:1100 ../lib/modules.inc:1103 ../help/help.inc:150
 msgid "Load profile"
 msgstr "Načíst profil"
 
@@ -2620,12 +2708,12 @@ msgid "Local group"
 msgstr "Lokální skupina"
 
 #: ../lib/modules/posixGroup.inc:170 ../lib/modules/posixAccount.inc:250
-#: ../lib/modules/posixAccount.inc:969
+#: ../lib/modules/posixAccount.inc:987
 msgid "Lock password"
 msgstr "Uzamknout heslo"
 
 #: ../lib/modules/sambaDomain.inc:122 ../lib/modules/sambaDomain.inc:199
-#: ../lib/modules/sambaDomain.inc:296 ../lib/modules/sambaDomain.inc:633
+#: ../lib/modules/sambaDomain.inc:331 ../lib/modules/sambaDomain.inc:675
 msgid "Lockout duration"
 msgstr "Doba uzamčení"
 
@@ -2633,10 +2721,14 @@ msgstr "Doba uzamčení"
 msgid "Lockout duration must be are natural number."
 msgstr "Doba k odblokování účtu musí být přirozené číslo."
 
-#: ../lib/modules/sambaDomain.inc:110 ../lib/modules/sambaDomain.inc:279
-#: ../lib/modules/sambaDomain.inc:624
+#: ../lib/modules/sambaDomain.inc:110 ../lib/modules/sambaDomain.inc:201
+#: ../lib/modules/sambaDomain.inc:304 ../lib/modules/sambaDomain.inc:666
 msgid "Lockout users after bad logon attempts"
 msgstr "Odblokování uživatelů po neúspěšných pokusech o přihlášení"
+
+#: ../lib/modules/sambaDomain.inc:201
+msgid "Lockout users after bad logon attempts must be between 0 and 999."
+msgstr "Odblokování uživatelů po neúspěšných pokusech o přihlášení musí být mezi 0 a 999."
 
 #: ../templates/config/mainmanage.php:233 ../help/help.inc:133
 msgid "Log destination"
@@ -2650,7 +2742,7 @@ msgstr "Úroveň žurnálu"
 msgid "Logging"
 msgstr "Přihlašování"
 
-#: ../templates/login.php:286 ../templates/config/conflogin.php:59
+#: ../templates/login.php:290 ../templates/config/conflogin.php:59
 #: ../templates/config/mainlogin.php:67
 #: ../templates/selfService/selfServiceLogin.php:130
 #: ../templates/selfService/adminLogin.php:61
@@ -2667,8 +2759,8 @@ msgid "Login caption"
 msgstr "Přihlašovací nadpis"
 
 #: ../lib/types/user.inc:90 ../lib/modules/posixAccount.inc:236
-#: ../lib/modules/posixAccount.inc:384 ../lib/modules/posixAccount.inc:988
-#: ../lib/modules/posixAccount.inc:1097 ../lib/modules/posixAccount.inc:1148
+#: ../lib/modules/posixAccount.inc:384 ../lib/modules/posixAccount.inc:1006
+#: ../lib/modules/posixAccount.inc:1119 ../lib/modules/posixAccount.inc:1170
 msgid "Login shell"
 msgstr "Přihlašovací shell"
 
@@ -2676,35 +2768,35 @@ msgstr "Přihlašovací shell"
 msgid "Logo"
 msgstr "Logo"
 
-#: ../lib/modules/sambaDomain.inc:98 ../lib/modules/sambaDomain.inc:258
-#: ../lib/modules/sambaDomain.inc:609
+#: ../lib/modules/sambaDomain.inc:98 ../lib/modules/sambaDomain.inc:271
+#: ../lib/modules/sambaDomain.inc:653
 msgid "Logon for password change"
 msgstr "Přihlášení pro změnu hesla"
 
-#: ../lib/modules/sambaSamAccount.inc:104
-#: ../lib/modules/sambaSamAccount.inc:263
+#: ../lib/modules/sambaSamAccount.inc:107
 #: ../lib/modules/sambaSamAccount.inc:266
-#: ../lib/modules/sambaSamAccount.inc:398
-#: ../lib/modules/sambaSamAccount.inc:1002
-#: ../lib/modules/sambaSamAccount.inc:1267
+#: ../lib/modules/sambaSamAccount.inc:269
+#: ../lib/modules/sambaSamAccount.inc:443
+#: ../lib/modules/sambaSamAccount.inc:1141
+#: ../lib/modules/sambaSamAccount.inc:1538
 msgid "Logon hours"
 msgstr "Přihlašovací hodiny"
 
 #: ../lib/modules/sambaAccount.inc:67 ../lib/modules/sambaAccount.inc:68
 #: ../lib/modules/sambaAccount.inc:164 ../lib/modules/sambaAccount.inc:295
-#: ../lib/modules/sambaAccount.inc:387 ../lib/modules/sambaAccount.inc:764
-#: ../lib/modules/sambaAccount.inc:857 ../lib/modules/sambaSamAccount.inc:83
-#: ../lib/modules/sambaSamAccount.inc:84
-#: ../lib/modules/sambaSamAccount.inc:235
-#: ../lib/modules/sambaSamAccount.inc:372
-#: ../lib/modules/sambaSamAccount.inc:955
-#: ../lib/modules/sambaSamAccount.inc:1233
-#: ../lib/modules/sambaSamAccount.inc:1397
+#: ../lib/modules/sambaAccount.inc:387 ../lib/modules/sambaAccount.inc:778
+#: ../lib/modules/sambaAccount.inc:877 ../lib/modules/sambaSamAccount.inc:86
+#: ../lib/modules/sambaSamAccount.inc:87
+#: ../lib/modules/sambaSamAccount.inc:238
+#: ../lib/modules/sambaSamAccount.inc:417
+#: ../lib/modules/sambaSamAccount.inc:1089
+#: ../lib/modules/sambaSamAccount.inc:1504
+#: ../lib/modules/sambaSamAccount.inc:1668
 msgid "Logon script"
 msgstr "Přihlašovací skript"
 
 #: ../lib/modules/sambaAccount.inc:67 ../lib/modules/sambaAccount.inc:69
-#: ../lib/modules/sambaSamAccount.inc:83 ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaSamAccount.inc:86 ../lib/modules/sambaSamAccount.inc:88
 msgid "Logon script is invalid!"
 msgstr "Neplatný přihlašovací skript!"
 
@@ -2726,7 +2818,7 @@ msgstr "Seznam MAC adres"
 msgid "MAC address(es)"
 msgstr "MAC adresa(y)"
 
-#: ../lib/modules/sambaSamAccount.inc:451
+#: ../lib/modules/sambaSamAccount.inc:496
 msgid "Magadan, Solomon Islands"
 msgstr "Magadan, Šalamounovy ostrovy"
 
@@ -2735,8 +2827,8 @@ msgid "Mail aliases"
 msgstr "E-mailové aliasy"
 
 #: ../lib/modules/kolabUser.inc:93 ../lib/modules/kolabUser.inc:160
-#: ../lib/modules/kolabUser.inc:208 ../lib/modules/kolabUser.inc:305
-#: ../lib/modules/kolabUser.inc:754
+#: ../lib/modules/kolabUser.inc:208 ../lib/modules/kolabUser.inc:307
+#: ../lib/modules/kolabUser.inc:758
 msgid "Mail quota"
 msgstr "Kvóta e-mailů"
 
@@ -2758,8 +2850,8 @@ msgid "Mail server"
 msgstr "Poštovní server"
 
 #: ../lib/modules/kolabUser.inc:152 ../lib/modules/kolabUser.inc:183
-#: ../lib/modules/kolabUser.inc:293 ../lib/modules/kolabUser.inc:299
-#: ../lib/modules/kolabUser.inc:750
+#: ../lib/modules/kolabUser.inc:295 ../lib/modules/kolabUser.inc:301
+#: ../lib/modules/kolabUser.inc:754
 msgid "Mailbox home server"
 msgstr "Domovský server poštovní schránky"
 
@@ -2779,8 +2871,8 @@ msgstr "E-mailové aliasy (např. NIS)"
 msgid "Mails to this name are forwarded to the recipients."
 msgstr "E-maily pro toto jméno jsou přeposílány příjemcům."
 
-#: ../templates/pdfedit/pdfpage.php:617 ../lib/modules.inc:962
-#: ../lib/modules.inc:990
+#: ../templates/pdfedit/pdfpage.php:617 ../lib/modules.inc:978
+#: ../lib/modules.inc:992
 msgid "Main"
 msgstr "Základní"
 
@@ -2813,7 +2905,7 @@ msgstr "Ručně"
 msgid "Manual if conflicts"
 msgstr "Při konfliktu ručně"
 
-#: ../lib/modules/kolabUser.inc:397 ../lib/modules/kolabUser.inc:563
+#: ../lib/modules/kolabUser.inc:399 ../lib/modules/kolabUser.inc:565
 msgid "Mark account for deletion"
 msgstr "Označit účty ke smazání"
 
@@ -2843,7 +2935,7 @@ msgstr "Shodná pravidla OID"
 msgid "Matching rules"
 msgstr "Shodná pravidla"
 
-#: ../templates/config/confmain.php:491
+#: ../templates/config/confmain.php:496
 msgid "Max list entries is invalid!"
 msgstr "Neplatný největší počet položek seznamu!"
 
@@ -2883,7 +2975,7 @@ msgstr "Největší velikost souboru: %s"
 msgid "Maximum length"
 msgstr "Největší délka"
 
-#: ../templates/config/confmain.php:250 ../help/help.inc:93
+#: ../templates/config/confmain.php:255 ../help/help.inc:93
 msgid "Maximum list entries"
 msgstr "Největší počet položek seznamu"
 
@@ -2891,8 +2983,8 @@ msgstr "Největší počet položek seznamu"
 #: ../lib/modules/shadowAccount.inc:100 ../lib/modules/shadowAccount.inc:166
 #: ../lib/modules/shadowAccount.inc:196 ../lib/modules/shadowAccount.inc:279
 #: ../lib/modules/sambaDomain.inc:118 ../lib/modules/sambaDomain.inc:196
-#: ../lib/modules/sambaDomain.inc:198 ../lib/modules/sambaDomain.inc:291
-#: ../lib/modules/sambaDomain.inc:630
+#: ../lib/modules/sambaDomain.inc:198 ../lib/modules/sambaDomain.inc:322
+#: ../lib/modules/sambaDomain.inc:672
 msgid "Maximum password age"
 msgstr "Nejdelší doba platnosti hesla"
 
@@ -2902,11 +2994,11 @@ msgstr "Nejdelší doba platnosti hesla"
 msgid "Members"
 msgstr "Členové"
 
-#: ../lib/modules/sambaSamAccount.inc:438
+#: ../lib/modules/sambaSamAccount.inc:483
 msgid "Mid-Atlantic"
 msgstr "Středoatlantský čas"
 
-#: ../lib/modules/sambaSamAccount.inc:429
+#: ../lib/modules/sambaSamAccount.inc:474
 msgid "Midway Island, Samoa"
 msgstr "ostrov Midway, Samoa"
 
@@ -2914,8 +3006,8 @@ msgstr "ostrov Midway, Samoa"
 msgid "Miller"
 msgstr "Novák"
 
-#: ../lib/modules/sambaDomain.inc:90 ../lib/modules/sambaDomain.inc:244
-#: ../lib/modules/sambaDomain.inc:601
+#: ../lib/modules/sambaDomain.inc:90 ../lib/modules/sambaDomain.inc:249
+#: ../lib/modules/sambaDomain.inc:645
 msgid "Minimal password length"
 msgstr "Nejkratší délka hesla"
 
@@ -2939,8 +3031,8 @@ msgstr "Neplatný nejmenší UID!"
 #: ../lib/modules/shadowAccount.inc:46 ../lib/modules/shadowAccount.inc:95
 #: ../lib/modules/shadowAccount.inc:162 ../lib/modules/shadowAccount.inc:190
 #: ../lib/modules/shadowAccount.inc:274 ../lib/modules/sambaDomain.inc:114
-#: ../lib/modules/sambaDomain.inc:197 ../lib/modules/sambaDomain.inc:286
-#: ../lib/modules/sambaDomain.inc:627
+#: ../lib/modules/sambaDomain.inc:197 ../lib/modules/sambaDomain.inc:313
+#: ../lib/modules/sambaDomain.inc:669
 msgid "Minimum password age"
 msgstr "Nejkratší doba platnosti hesla"
 
@@ -2955,7 +3047,7 @@ msgstr "Číslo mobilu"
 msgid "Mobile telephone number"
 msgstr "Číslo mobilního telefonu"
 
-#: ../lib/modules.inc:1065
+#: ../lib/modules.inc:1109
 msgid "Modify account"
 msgstr "Změnit účet"
 
@@ -2963,16 +3055,16 @@ msgstr "Změnit účet"
 msgid "Module selection"
 msgstr "Výběr modulů"
 
-#: ../lib/modules/sambaSamAccount.inc:1059
+#: ../lib/modules/sambaSamAccount.inc:1210
 msgid "Monday"
 msgstr "Pondělí"
 
-#: ../lib/modules/sambaSamAccount.inc:433
+#: ../lib/modules/sambaSamAccount.inc:478
 msgid "Mountain Time (US & Canada)"
 msgstr "Horský čas (USA a Kanada)"
 
-#: ../lib/modules/quota.inc:88 ../lib/modules/quota.inc:317
-#: ../lib/modules/quota.inc:403 ../lib/modules/quota.inc:512
+#: ../lib/modules/quota.inc:88 ../lib/modules/quota.inc:353
+#: ../lib/modules/quota.inc:439 ../lib/modules/quota.inc:548
 msgid "Mountpoint"
 msgstr "Místo přípojení"
 
@@ -3060,7 +3152,7 @@ msgstr "Nová organizační jednotka (OU)"
 msgid "New owner"
 msgstr "Nový vlastník"
 
-#: ../templates/config/confmain.php:408 ../lib/modules/posixAccount.inc:1650
+#: ../templates/config/confmain.php:413 ../lib/modules/posixAccount.inc:1672
 msgid "New password"
 msgstr "Nové heslo"
 
@@ -3091,7 +3183,7 @@ msgid "Next"
 msgstr "Další"
 
 #: ../lib/modules/sambaDomain.inc:74 ../lib/modules/sambaDomain.inc:154
-#: ../lib/modules/sambaDomain.inc:314 ../lib/modules/sambaDomain.inc:589
+#: ../lib/modules/sambaDomain.inc:353 ../lib/modules/sambaDomain.inc:633
 msgid "Next RID"
 msgstr "Následující RID"
 
@@ -3117,7 +3209,7 @@ msgstr ""
 "pouze Winbindem)."
 
 #: ../lib/modules/sambaDomain.inc:82 ../lib/modules/sambaDomain.inc:166
-#: ../lib/modules/sambaDomain.inc:324 ../lib/modules/sambaDomain.inc:595
+#: ../lib/modules/sambaDomain.inc:363 ../lib/modules/sambaDomain.inc:639
 msgid "Next group RID"
 msgstr "Následující RID skupiny"
 
@@ -3126,7 +3218,7 @@ msgid "Next group RID is not a number!"
 msgstr "Následující RID skupiny není číslo!"
 
 #: ../lib/modules/sambaDomain.inc:78 ../lib/modules/sambaDomain.inc:160
-#: ../lib/modules/sambaDomain.inc:319 ../lib/modules/sambaDomain.inc:592
+#: ../lib/modules/sambaDomain.inc:358 ../lib/modules/sambaDomain.inc:636
 msgid "Next user RID"
 msgstr "Následující RID uživatele"
 
@@ -3139,17 +3231,17 @@ msgstr "Následující RID uživatele není číslo!"
 msgid "No"
 msgstr "Ne"
 
-#: ../lib/modules/sambaSamAccount.inc:475
-#: ../lib/modules/sambaSamAccount.inc:559
-#: ../lib/modules/sambaSamAccount.inc:837
+#: ../lib/modules/sambaSamAccount.inc:520
+#: ../lib/modules/sambaSamAccount.inc:621
+#: ../lib/modules/sambaSamAccount.inc:941
 #: ../lib/modules/sambaGroupMapping.inc:88
 #: ../lib/modules/sambaGroupMapping.inc:173
-#: ../lib/modules/sambaGroupMapping.inc:408
+#: ../lib/modules/sambaGroupMapping.inc:414
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "Nenalezena doména Samby 3 v LDAPu! Prosím nejdříve nějakou vytvořte."
 
-#: ../lib/modules/posixAccount.inc:432 ../lib/modules/posixAccount.inc:622
-#: ../lib/modules/posixAccount.inc:911
+#: ../lib/modules/posixAccount.inc:432 ../lib/modules/posixAccount.inc:626
+#: ../lib/modules/posixAccount.inc:916
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "Nenalezena Unixová skupina v LDAPu! Prosím nejdříve nějakou vytvořte."
 
@@ -3272,8 +3364,8 @@ msgstr ""
 
 #: ../lib/modules/shadowAccount.inc:163
 msgid ""
-"Number of days a user has to wait until he\\'s allowed to change his "
-"password again. If set value must be 0<."
+"Number of days a user has to wait until he is allowed to change his password "
+"again. If set value must be >0."
 msgstr ""
 "Počet dní, během kterých si uživatel nesmí znovu změnit heslo. Pokud je "
 "nastaveno, musí být větší než 0."
@@ -3281,7 +3373,7 @@ msgstr ""
 #: ../lib/modules/shadowAccount.inc:167
 msgid ""
 "Number of days after a user has to change his password again. If set value "
-"must be 0<."
+"must be >0."
 msgstr ""
 "Počet dní, po kterých si uživatel musí změnit heslo. Pokud je nastaveno, "
 "musí být větší než 0."
@@ -3338,10 +3430,9 @@ msgstr "Třídy objektu"
 msgid "Obsolete"
 msgstr "Zastaralé"
 
-#: ../lib/modules/sambaDomain.inc:260 ../lib/modules/sambaDomain.inc:267
-#: ../lib/modules/sambaDomain.inc:274 ../lib/modules/sambaDomain.inc:281
-#: ../lib/modules/sambaDomain.inc:607 ../lib/modules/sambaDomain.inc:612
-#: ../lib/modules/sambaDomain.inc:617 ../lib/modules/sambaDomain.inc:622
+#: ../lib/modules/sambaDomain.inc:273 ../lib/modules/sambaDomain.inc:284
+#: ../lib/modules/sambaDomain.inc:295 ../lib/modules/sambaDomain.inc:651
+#: ../lib/modules/sambaDomain.inc:656 ../lib/modules/sambaDomain.inc:661
 msgid "Off"
 msgstr "Vypnout"
 
@@ -3355,7 +3446,7 @@ msgstr "Vypnout"
 #: ../templates/config/mainmanage.php:325
 #: ../templates/config/confmodules.php:109
 #: ../templates/config/confmodules.php:112
-#: ../templates/config/confmain.php:431 ../templates/config/conftypes.php:235
+#: ../templates/config/confmain.php:436 ../templates/config/conftypes.php:235
 #: ../templates/config/conflogin.php:124 ../templates/config/conflogin.php:125
 #: ../templates/config/mainlogin.php:117
 #: ../templates/selfService/selfServiceLogin.php:204
@@ -3369,8 +3460,9 @@ msgstr "Vypnout"
 #: ../templates/profedit/profiledelete.php:82
 #: ../templates/profedit/profilemain.php:165 ../lib/modules/posixGroup.inc:260
 #: ../lib/modules/neofonieInetOrgPerson.inc:448
-#: ../lib/modules/sambaSamAccount.inc:1106
-#: ../lib/modules/posixAccount.inc:1067 ../lib/modules/inetOrgPerson.inc:842
+#: ../lib/modules/sambaSamAccount.inc:1257
+#: ../lib/modules/sambaSamAccount.inc:1428
+#: ../lib/modules/posixAccount.inc:1085 ../lib/modules/inetOrgPerson.inc:842
 #: ../lib/modules/groupOfNames.inc:224 ../lib/modules/groupOfNames.inc:251
 #: ../lib/modules/groupOfNames.inc:338
 msgid "Ok"
@@ -3380,12 +3472,17 @@ msgstr "Ok"
 msgid "Old value"
 msgstr "Stará hodnota"
 
-#: ../lib/modules/sambaDomain.inc:260 ../lib/modules/sambaDomain.inc:267
-#: ../lib/modules/sambaDomain.inc:274 ../lib/modules/sambaDomain.inc:281
-#: ../lib/modules/sambaDomain.inc:608 ../lib/modules/sambaDomain.inc:613
-#: ../lib/modules/sambaDomain.inc:618 ../lib/modules/sambaDomain.inc:623
+#: ../lib/modules/sambaDomain.inc:273 ../lib/modules/sambaDomain.inc:284
+#: ../lib/modules/sambaDomain.inc:295 ../lib/modules/sambaDomain.inc:652
+#: ../lib/modules/sambaDomain.inc:657 ../lib/modules/sambaDomain.inc:662
 msgid "On"
 msgstr "Zapnout"
+
+#: ../lib/modules/sambaSamAccount.inc:311
+#: ../lib/modules/sambaSamAccount.inc:1413
+#: ../lib/modules/sambaSamAccount.inc:1737
+msgid "On broken or timed out connection"
+msgstr "Při přerušení či vypršení spojení"
 
 #: ../templates/tree/export_form.php:75
 msgid "One (one level beneath base)"
@@ -3408,11 +3505,11 @@ msgstr "Třídění"
 msgid "Organizational unit"
 msgstr "Organizační jednotka (OU)"
 
-#: ../templates/config/confmain.php:372
+#: ../templates/config/confmain.php:377
 msgid "Other"
 msgstr "Ostatní"
 
-#: ../templates/config/confmain.php:364 ../lib/modules/groupOfNames.inc:64
+#: ../templates/config/confmain.php:369 ../lib/modules/groupOfNames.inc:64
 #: ../lib/modules/groupOfNames.inc:93 ../lib/modules/groupOfNames.inc:143
 #: ../lib/modules/groupOfNames.inc:161 ../lib/modules/groupOfNames.inc:441
 msgid "Owner"
@@ -3422,7 +3519,7 @@ msgstr "Vlastník"
 msgid "PDF editor"
 msgstr "PDF editor"
 
-#: ../templates/pdfedit/pdfpage.php:451 ../lib/lists.inc:566
+#: ../templates/pdfedit/pdfpage.php:451 ../lib/lists.inc:565
 msgid "PDF structure"
 msgstr "PDF struktura"
 
@@ -3438,7 +3535,7 @@ msgstr "PDF struktury"
 msgid "PDF-structure name not valid"
 msgstr "Neplatný název PDF struktury"
 
-#: ../lib/modules/sambaSamAccount.inc:432
+#: ../lib/modules/sambaSamAccount.inc:477
 msgid "Pacific Time (US & Canada)"
 msgstr "Pacifický čas (USA a Kanada)"
 
@@ -3450,18 +3547,18 @@ msgstr "Strana nastavení"
 msgid "Parent to"
 msgstr "Nadřazený k"
 
-#: ../templates/login.php:250
+#: ../templates/login.php:254
 #: ../templates/selfService/selfServiceLogin.php:190
 #: ../lib/modules/posixGroup.inc:165 ../lib/modules/posixGroup.inc:177
 #: ../lib/modules/posixGroup.inc:251 ../lib/modules/posixGroup.inc:452
 #: ../lib/modules/posixGroup.inc:453 ../lib/modules/sambaAccount.inc:74
 #: ../lib/modules/sambaAccount.inc:75 ../lib/modules/sambaAccount.inc:225
-#: ../lib/modules/sambaSamAccount.inc:88 ../lib/modules/sambaSamAccount.inc:89
-#: ../lib/modules/sambaSamAccount.inc:295 ../lib/modules/posixAccount.inc:72
+#: ../lib/modules/sambaSamAccount.inc:91 ../lib/modules/sambaSamAccount.inc:92
+#: ../lib/modules/sambaSamAccount.inc:340 ../lib/modules/posixAccount.inc:72
 #: ../lib/modules/posixAccount.inc:73 ../lib/modules/posixAccount.inc:132
 #: ../lib/modules/posixAccount.inc:244 ../lib/modules/posixAccount.inc:376
-#: ../lib/modules/posixAccount.inc:964 ../lib/modules/posixAccount.inc:975
-#: ../lib/modules/posixAccount.inc:1058 ../lib/modules/posixAccount.inc:1151
+#: ../lib/modules/posixAccount.inc:982 ../lib/modules/posixAccount.inc:993
+#: ../lib/modules/posixAccount.inc:1076 ../lib/modules/posixAccount.inc:1173
 #: ../lib/modules/inetOrgPerson.inc:76 ../lib/modules/inetOrgPerson.inc:77
 #: ../lib/modules/inetOrgPerson.inc:382 ../lib/modules/inetOrgPerson.inc:639
 #: ../lib/modules/inetOrgPerson.inc:650 ../lib/modules/inetOrgPerson.inc:833
@@ -3469,8 +3566,8 @@ msgid "Password"
 msgstr "Heslo"
 
 #: ../lib/modules/posixGroup.inc:453 ../lib/modules/sambaAccount.inc:75
-#: ../lib/modules/sambaAccount.inc:76 ../lib/modules/sambaSamAccount.inc:89
-#: ../lib/modules/sambaSamAccount.inc:90 ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/sambaAccount.inc:76 ../lib/modules/sambaSamAccount.inc:92
+#: ../lib/modules/sambaSamAccount.inc:93 ../lib/modules/posixAccount.inc:73
 #: ../lib/modules/posixAccount.inc:74 ../lib/modules/inetOrgPerson.inc:77
 #: ../lib/modules/inetOrgPerson.inc:78
 msgid ""
@@ -3482,11 +3579,11 @@ msgstr ""
 
 #: ../lib/modules/sambaAccount.inc:132 ../lib/modules/sambaAccount.inc:247
 #: ../lib/modules/sambaAccount.inc:361 ../lib/modules/sambaAccount.inc:364
-#: ../lib/modules/sambaAccount.inc:729 ../lib/modules/sambaSamAccount.inc:206
-#: ../lib/modules/sambaSamAccount.inc:209
-#: ../lib/modules/sambaSamAccount.inc:317
-#: ../lib/modules/sambaSamAccount.inc:889
-#: ../lib/modules/sambaSamAccount.inc:1196
+#: ../lib/modules/sambaAccount.inc:743 ../lib/modules/sambaSamAccount.inc:209
+#: ../lib/modules/sambaSamAccount.inc:212
+#: ../lib/modules/sambaSamAccount.inc:362
+#: ../lib/modules/sambaSamAccount.inc:990
+#: ../lib/modules/sambaSamAccount.inc:1467
 msgid "Password does not expire"
 msgstr "Heslu nevyprší platnost"
 
@@ -3506,8 +3603,8 @@ msgstr "Doba platnosti hesla musí být přirozené číslo nebo -1."
 msgid "Password hash type"
 msgstr "Typ heše hesla"
 
-#: ../lib/modules/sambaDomain.inc:94 ../lib/modules/sambaDomain.inc:251
-#: ../lib/modules/sambaDomain.inc:604
+#: ../lib/modules/sambaDomain.inc:94 ../lib/modules/sambaDomain.inc:260
+#: ../lib/modules/sambaDomain.inc:648
 msgid "Password history length"
 msgstr "Délka historie hesel"
 
@@ -3537,11 +3634,15 @@ msgstr "Varování před koncem platnosti hesla"
 msgid "Password warning must be are natural number."
 msgstr "Varování před koncem platnosti hesla musí být přirozené číslo."
 
-#: ../templates/config/confmain.php:521
+#: ../templates/config/confmain.php:526
 msgid "Passwords are different!"
 msgstr "Hesla se liší!"
 
-#: ../lib/modules/sambaAccount.inc:385 ../lib/modules/sambaSamAccount.inc:233
+#: ../lib/modules/sambaSamAccount.inc:285
+msgid "Path of the user profile."
+msgstr "Cesta k uživatelskému profilu."
+
+#: ../lib/modules/sambaAccount.inc:385 ../lib/modules/sambaSamAccount.inc:236
 msgid ""
 "Path of the user profile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user and group name."
@@ -3550,7 +3651,7 @@ msgstr ""
 "\\server\\sdílení). $user a $group budou nahrazeny za uživatelské jméno nebo "
 "název skupiny."
 
-#: ../templates/config/confmain.php:330
+#: ../templates/config/confmain.php:335
 msgid "Path to external script"
 msgstr "Cesta k externímu skriptu"
 
@@ -3581,7 +3682,7 @@ msgstr "Prosím zadejte čárkou oddělený seznam vašich veřejných SSH klí�
 msgid "Please confirm:"
 msgstr "Prosím potvrďte:"
 
-#: ../lib/modules/sambaSamAccount.inc:91
+#: ../lib/modules/sambaSamAccount.inc:94
 msgid "Please enter a RID number or the name of a special account!"
 msgstr "Prosím zadejte RID nebo název speciálního účtu!"
 
@@ -3596,7 +3697,7 @@ msgstr ""
 "\" znamená jakýkoli stroj a prázdné pole znamená žádný stroj."
 
 #: ../lib/modules/sambaAccount.inc:70 ../lib/modules/sambaAccount.inc:71
-#: ../lib/modules/sambaSamAccount.inc:86 ../lib/modules/sambaSamAccount.inc:87
+#: ../lib/modules/sambaSamAccount.inc:89 ../lib/modules/sambaSamAccount.inc:90
 msgid "Please enter a comma separated list of host names!"
 msgstr "Prosím zadejte čárkou oddělený seznam názvů strojů!"
 
@@ -3604,7 +3705,7 @@ msgstr "Prosím zadejte čárkou oddělený seznam názvů strojů!"
 msgid "Please enter a group name!"
 msgstr "Prosím zadejte název skupiny!"
 
-#: ../lib/modules/kolabUser.inc:266 ../lib/modules/kolabUser.inc:271
+#: ../lib/modules/kolabUser.inc:268 ../lib/modules/kolabUser.inc:273
 #, php-format
 msgid "Please enter a user password on this page: %s"
 msgstr "Prosím zadejte na této straně uživatelské heslo: %s"
@@ -3624,18 +3725,18 @@ msgid "Please enter a valid date (format DD.MM.YYYY)!"
 msgstr "Prosím zadejte platné datum (formát DD.MM.YYYY)!"
 
 #: ../lib/modules/sambaAccount.inc:83 ../lib/modules/sambaAccount.inc:84
-#: ../lib/modules/sambaSamAccount.inc:99
-#: ../lib/modules/sambaSamAccount.inc:100
-#: ../lib/modules/sambaSamAccount.inc:101
+#: ../lib/modules/sambaSamAccount.inc:102
+#: ../lib/modules/sambaSamAccount.inc:103
+#: ../lib/modules/sambaSamAccount.inc:104
 msgid "Please enter a valid date in format DD-MM-YYYY."
 msgstr "Prosím zadejte platné datum ve formátu DD-MM-YYYY."
 
 #: ../lib/modules/sambaAccount.inc:77 ../lib/modules/sambaAccount.inc:78
-#: ../lib/modules/sambaSamAccount.inc:93 ../lib/modules/sambaSamAccount.inc:94
+#: ../lib/modules/sambaSamAccount.inc:96 ../lib/modules/sambaSamAccount.inc:97
 msgid "Please enter a valid display name!"
 msgstr "Prosím zadejte platné zobrazované jmeno!"
 
-#: ../lib/modules/sambaAccount.inc:85 ../lib/modules/sambaSamAccount.inc:102
+#: ../lib/modules/sambaAccount.inc:85 ../lib/modules/sambaSamAccount.inc:105
 msgid "Please enter a valid drive letter."
 msgstr "Prosím zadejte platné písmeno disku."
 
@@ -3655,7 +3756,7 @@ msgstr "Prosím zadejte platné číslo faxu!"
 msgid "Please enter a valid group RID."
 msgstr "Prosím zadejte platné RID skupiny."
 
-#: ../lib/modules/sambaSamAccount.inc:106
+#: ../lib/modules/sambaSamAccount.inc:109
 msgid "Please enter a valid group name!"
 msgstr "Prosím zadejte platný název skupiny!"
 
@@ -3688,17 +3789,17 @@ msgstr "Prosím zadejte platnou ulici!"
 msgid "Please enter a valid telephone number!"
 msgstr "Prosím zadejte platné telefonní číslo!"
 
-#: ../lib/modules/posixGroup.inc:557 ../lib/modules/posixAccount.inc:733
+#: ../lib/modules/posixGroup.inc:557 ../lib/modules/posixAccount.inc:738
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "Prosím zadejte hodnotu mezi %s a %s!"
 
-#: ../lib/modules/kolabUser.inc:276
+#: ../lib/modules/kolabUser.inc:278
 #, php-format
 msgid "Please enter an email address on this page: %s"
 msgstr "Prosím zadejte na této straně e-mailovou adresu: %s"
 
-#: ../lib/modules.inc:905
+#: ../lib/modules.inc:931
 msgid "Please enter the account information on the other pages first."
 msgstr "Prosím nejdříve zadejte informace o účtu na ostatní stránky."
 
@@ -3750,7 +3851,7 @@ msgstr "Prosím zadejte heslo, které chcete nastavit pro tento účet."
 msgid "Please enter the path to the user's home directory."
 msgstr "Prosím zadejte cestu k domovskému adresáři uživatele."
 
-#: ../lib/modules/quota.inc:125
+#: ../lib/modules/quota.inc:137
 msgid ""
 "Please enter the quota settings for this mount point. The syntax is: {soft "
 "block limit},{hard block limit},{soft inode limit},{hard inode limit}"
@@ -3763,9 +3864,13 @@ msgid "Please enter the same password in both password fields."
 msgstr "Prosím zadejte stejná hesla v obou polích."
 
 #: ../lib/modules/posixGroup.inc:452 ../lib/modules/sambaAccount.inc:74
-#: ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:91
 msgid "Please enter the same password in both password-fields."
 msgstr "Prosím zadejte stejná hesla v obou polích."
+
+#: ../lib/modules/sambaSamAccount.inc:297
+msgid "Please enter the time limit in minutes. 0 means unlimited."
+msgstr "Prosím zadejte časový limit v minutách. 0 znamená bez omezení."
 
 #: ../templates/selfService/adminLogin.php:96
 msgid ""
@@ -3804,10 +3909,6 @@ msgstr ""
 "Prosím vyberte soubor obrázku k načtení. Musí být ve formátu JPG (.jpg/."
 "jpeg)."
 
-#: ../lib/modules.inc:951
-msgid "Please select page:"
-msgstr "Prosím vyberte stranu:"
-
 #: ../templates/masscreate.php:94
 msgid "Please select your account type:"
 msgstr "Prosím vyberte typ vašeho účtu:"
@@ -3820,11 +3921,11 @@ msgstr ""
 "Prosím vyberte vámi preferovanou úrověň žurnálu. Zpravy s nižší úrovní "
 "nebudou posílány do žurnálu."
 
-#: ../templates/login.php:223
+#: ../templates/login.php:227
 msgid "Please select your user name and enter your password to log in."
 msgstr "Prosím vyberte vaše uživatelské jméno a zadejte heslo pro přihlášení"
 
-#: ../lib/modules.inc:943
+#: ../lib/modules.inc:969
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "Prosím zadejte všechny požadované atributy na straně: %s"
@@ -3845,7 +3946,7 @@ msgid "Position"
 msgstr "Pozice"
 
 #: ../templates/masscreate.php:172 ../templates/masscreate.php:310
-#: ../lib/modules/sambaGroupMapping.inc:377
+#: ../lib/modules/sambaGroupMapping.inc:382
 msgid "Possible values"
 msgstr "Přípustné hodnoty"
 
@@ -3885,8 +3986,8 @@ msgstr "Ředitel"
 #: ../lib/modules/posixGroup.inc:467 ../lib/modules/posixAccount.inc:209
 #: ../lib/modules/posixAccount.inc:283 ../lib/modules/posixAccount.inc:339
 #: ../lib/modules/posixAccount.inc:368 ../lib/modules/posixAccount.inc:406
-#: ../lib/modules/posixAccount.inc:933 ../lib/modules/posixAccount.inc:1084
-#: ../lib/modules/posixAccount.inc:1104 ../lib/modules/posixAccount.inc:1145
+#: ../lib/modules/posixAccount.inc:951 ../lib/modules/posixAccount.inc:1103
+#: ../lib/modules/posixAccount.inc:1126 ../lib/modules/posixAccount.inc:1167
 msgid "Primary group"
 msgstr "Primární skupina"
 
@@ -3939,19 +4040,22 @@ msgstr "Hesla k profilu jsou různá nebo prázdná!"
 
 #: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaAccount.inc:65
 #: ../lib/modules/sambaAccount.inc:158 ../lib/modules/sambaAccount.inc:289
-#: ../lib/modules/sambaAccount.inc:384 ../lib/modules/sambaAccount.inc:761
-#: ../lib/modules/sambaAccount.inc:858 ../lib/modules/sambaSamAccount.inc:80
-#: ../lib/modules/sambaSamAccount.inc:81
-#: ../lib/modules/sambaSamAccount.inc:232
-#: ../lib/modules/sambaSamAccount.inc:366
-#: ../lib/modules/sambaSamAccount.inc:952
-#: ../lib/modules/sambaSamAccount.inc:1227
-#: ../lib/modules/sambaSamAccount.inc:1400
+#: ../lib/modules/sambaAccount.inc:384 ../lib/modules/sambaAccount.inc:775
+#: ../lib/modules/sambaAccount.inc:878 ../lib/modules/sambaSamAccount.inc:83
+#: ../lib/modules/sambaSamAccount.inc:84
+#: ../lib/modules/sambaSamAccount.inc:235
+#: ../lib/modules/sambaSamAccount.inc:284
+#: ../lib/modules/sambaSamAccount.inc:411
+#: ../lib/modules/sambaSamAccount.inc:1081
+#: ../lib/modules/sambaSamAccount.inc:1347
+#: ../lib/modules/sambaSamAccount.inc:1498
+#: ../lib/modules/sambaSamAccount.inc:1671
+#: ../lib/modules/sambaSamAccount.inc:1693
 msgid "Profile path"
 msgstr "Cesta k profilu"
 
-#: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaSamAccount.inc:80
-#: ../lib/modules/sambaSamAccount.inc:82
+#: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaSamAccount.inc:83
+#: ../lib/modules/sambaSamAccount.inc:85
 msgid "Profile path is invalid!"
 msgstr "Neplatná cesta k profilu!"
 
@@ -3980,11 +4084,11 @@ msgstr "Skupiny projektů"
 msgid "Quake ID"
 msgstr "Quake ID"
 
-#: ../lib/modules/quota.inc:70 ../lib/modules/quota.inc:124
+#: ../lib/modules/quota.inc:70 ../lib/modules/quota.inc:136
 msgid "Quota"
 msgstr "Kvóta"
 
-#: ../lib/modules/quota.inc:569
+#: ../lib/modules/quota.inc:605
 #, php-format
 msgid "Quota for %s on %s"
 msgstr "Kvóta pro %s na %s"
@@ -3998,7 +4102,7 @@ msgid "RDN"
 msgstr "RDN"
 
 #: ../templates/masscreate.php:164 ../templates/profedit/profilepage.php:200
-#: ../lib/modules.inc:1048 ../help/help.inc:142
+#: ../lib/modules.inc:1092 ../help/help.inc:142
 msgid "RDN identifier"
 msgstr "Identifikátor RDN"
 
@@ -4007,12 +4111,12 @@ msgid "RID (Windows UID)"
 msgstr "RID (Windows UID)"
 
 #: ../lib/modules/sambaDomain.inc:86 ../lib/modules/sambaDomain.inc:147
-#: ../lib/modules/sambaDomain.inc:331 ../lib/modules/sambaDomain.inc:337
-#: ../lib/modules/sambaDomain.inc:598
+#: ../lib/modules/sambaDomain.inc:370 ../lib/modules/sambaDomain.inc:376
+#: ../lib/modules/sambaDomain.inc:642
 msgid "RID base"
 msgstr "Základ RID"
 
-#: ../templates/config/confmain.php:361
+#: ../templates/config/confmain.php:366
 msgid "Read"
 msgstr "Čtení"
 
@@ -4033,6 +4137,12 @@ msgstr "Příjemce"
 msgid "Recipient list"
 msgstr "Seznam příjemců"
 
+#: ../lib/modules/sambaSamAccount.inc:314
+#: ../lib/modules/sambaSamAccount.inc:1422
+#: ../lib/modules/sambaSamAccount.inc:1745
+msgid "Reconnect if disconnected"
+msgstr "Při odpojení znovu připojit"
+
 #: ../templates/tree/rdelete.php:72
 msgid "Recursive delete progress"
 msgstr "Průběh rekurzivního mazání"
@@ -4041,7 +4151,7 @@ msgstr "Průběh rekurzivního mazání"
 msgid "Reenter new master password"
 msgstr "Potvrzení nového hlavního hesla"
 
-#: ../templates/config/confmain.php:418 ../lib/modules/posixAccount.inc:1652
+#: ../templates/config/confmain.php:423 ../lib/modules/posixAccount.inc:1674
 msgid "Reenter password"
 msgstr "Potvrzení hesla"
 
@@ -4051,7 +4161,7 @@ msgid "Reenter profile password"
 msgstr "Potvrzení hesla k profilu"
 
 #: ../templates/tree/edit.php:101 ../lib/tree.inc:88 ../lib/tree.inc:89
-#: ../lib/lists.inc:289
+#: ../lib/lists.inc:288
 msgid "Refresh"
 msgstr "Obnovit"
 
@@ -4066,15 +4176,15 @@ msgstr "Relativní významný název"
 #: ../templates/pdfedit/pdfpage.php:475 ../lib/modules/ieee802device.inc:99
 #: ../lib/modules/neofonieInetOrgPerson.inc:439
 #: ../lib/modules/neofonieInetOrgPerson.inc:538
-#: ../lib/modules/sambaSamAccount.inc:1154 ../lib/modules/kolabUser.inc:337
-#: ../lib/modules/kolabUser.inc:356 ../lib/modules/kolabUser.inc:382
+#: ../lib/modules/sambaSamAccount.inc:1304 ../lib/modules/kolabUser.inc:339
+#: ../lib/modules/kolabUser.inc:358 ../lib/modules/kolabUser.inc:384
 #: ../lib/modules/shadowAccount.inc:346 ../lib/modules/ldapPublicKey.inc:92
 #: ../lib/modules/inetLocalMailRecipient.inc:154
 #: ../lib/modules/groupOfNames.inc:152 ../lib/modules/nisMailAlias.inc:141
 msgid "Remove"
 msgstr "Odstranit"
 
-#: ../lib/modules/posixGroup.inc:184 ../lib/modules/posixAccount.inc:982
+#: ../lib/modules/posixGroup.inc:184 ../lib/modules/posixAccount.inc:1000
 msgid "Remove password"
 msgstr "Odstranit heslo"
 
@@ -4100,13 +4210,13 @@ msgstr "Přejmenovat profil"
 msgid "Renamed profile."
 msgstr "Profil byl přejmenován."
 
-#: ../lib/modules/posixGroup.inc:255 ../lib/modules/sambaAccount.inc:718
-#: ../lib/modules/sambaSamAccount.inc:879 ../lib/modules/posixAccount.inc:1062
+#: ../lib/modules/posixGroup.inc:255 ../lib/modules/sambaAccount.inc:732
+#: ../lib/modules/sambaSamAccount.inc:977 ../lib/modules/posixAccount.inc:1080
 #: ../lib/modules/inetOrgPerson.inc:643 ../lib/modules/inetOrgPerson.inc:837
 msgid "Repeat password"
 msgstr "Potvrzení hesla"
 
-#: ../lib/modules/posixAccount.inc:64 ../lib/modules/posixAccount.inc:755
+#: ../lib/modules/posixAccount.inc:64 ../lib/modules/posixAccount.inc:760
 msgid "Replaced $user or $group in homedir."
 msgstr "$user nebo $group byl nahrazen v domovském adresáři."
 
@@ -4121,22 +4231,22 @@ msgid "Required attributes"
 msgstr "Povinné atributy"
 
 #: ../templates/profedit/profilepage.php:251
-#: ../lib/modules/sambaAccount.inc:809 ../lib/modules/sambaSamAccount.inc:1010
+#: ../lib/modules/sambaAccount.inc:829 ../lib/modules/sambaSamAccount.inc:1154
 msgid "Reset"
 msgstr "Reset"
 
-#: ../lib/modules.inc:954 ../lib/modules.inc:982
+#: ../lib/modules.inc:1026
 msgid "Reset changes"
 msgstr "Vrátit změny"
 
-#: ../lib/modules/sambaAccount.inc:346 ../lib/modules/sambaAccount.inc:808
-#: ../lib/modules/sambaSamAccount.inc:191
-#: ../lib/modules/sambaSamAccount.inc:1009
+#: ../lib/modules/sambaAccount.inc:346 ../lib/modules/sambaAccount.inc:828
+#: ../lib/modules/sambaSamAccount.inc:194
+#: ../lib/modules/sambaSamAccount.inc:1153
 msgid "Reset password"
 msgstr "Reset hesla"
 
 #: ../lib/modules/sambaDomain.inc:126 ../lib/modules/sambaDomain.inc:200
-#: ../lib/modules/sambaDomain.inc:301 ../lib/modules/sambaDomain.inc:636
+#: ../lib/modules/sambaDomain.inc:340 ../lib/modules/sambaDomain.inc:678
 msgid "Reset time after lockout"
 msgstr "Doba pro reset po zablokování"
 
@@ -4144,7 +4254,7 @@ msgstr "Doba pro reset po zablokování"
 msgid "Reset time after lockout must be are natural number."
 msgstr "Doba pro reset po zablokování musí být přirozené číslo."
 
-#: ../templates/config/confmain.php:338 ../help/help.inc:111
+#: ../templates/config/confmain.php:343 ../help/help.inc:111
 msgid "Rights for the home directory"
 msgstr "Přístupová práva domovského adresáře"
 
@@ -4191,8 +4301,8 @@ msgstr "SSH2 modul je nainstalován"
 msgid "Samba 2"
 msgstr "Samba 2"
 
-#: ../lib/modules/sambaSamAccount.inc:123
-#: ../lib/modules/sambaGroupMapping.inc:237
+#: ../lib/modules/sambaSamAccount.inc:126
+#: ../lib/modules/sambaGroupMapping.inc:242
 msgid "Samba 3"
 msgstr "Samba 3"
 
@@ -4204,19 +4314,19 @@ msgstr "Neplatný SID domény Samby 3!"
 msgid "Samba 3 domain entries"
 msgstr "Domény Samby 3"
 
-#: ../lib/modules/sambaSamAccount.inc:253
-#: ../lib/modules/sambaSamAccount.inc:257
-#: ../lib/modules/sambaSamAccount.inc:391
-#: ../lib/modules/sambaSamAccount.inc:415
+#: ../lib/modules/sambaSamAccount.inc:256
+#: ../lib/modules/sambaSamAccount.inc:260
+#: ../lib/modules/sambaSamAccount.inc:436
+#: ../lib/modules/sambaSamAccount.inc:460
 msgid "Samba RID"
 msgstr "RID Samby"
 
-#: ../lib/modules/sambaGroupMapping.inc:275
-#: ../lib/modules/sambaGroupMapping.inc:300
+#: ../lib/modules/sambaGroupMapping.inc:280
+#: ../lib/modules/sambaGroupMapping.inc:305
 msgid "Samba RID number"
 msgstr "RID Samby"
 
-#: ../lib/modules/sambaGroupMapping.inc:269
+#: ../lib/modules/sambaGroupMapping.inc:274
 msgid "Samba display name"
 msgstr "Zobrazovací jméno Samby"
 
@@ -4224,7 +4334,7 @@ msgstr "Zobrazovací jméno Samby"
 msgid "Samba domain"
 msgstr "Doména Samby"
 
-#: ../lib/modules/sambaGroupMapping.inc:261
+#: ../lib/modules/sambaGroupMapping.inc:266
 msgid "Samba domain name"
 msgstr "Název domény Samby"
 
@@ -4232,32 +4342,32 @@ msgstr "Název domény Samby"
 msgid "Samba domains"
 msgstr "Domény Samby"
 
-#: ../lib/modules/sambaGroupMapping.inc:281
-#: ../lib/modules/sambaGroupMapping.inc:308
-#: ../lib/modules/sambaGroupMapping.inc:326
+#: ../lib/modules/sambaGroupMapping.inc:286
+#: ../lib/modules/sambaGroupMapping.inc:313
+#: ../lib/modules/sambaGroupMapping.inc:331
 msgid "Samba group type"
 msgstr "Typ skupiny Samby"
 
-#: ../lib/modules/sambaAccount.inc:343 ../lib/modules/sambaAccount.inc:715
-#: ../lib/modules/sambaSamAccount.inc:188
-#: ../lib/modules/sambaSamAccount.inc:875
+#: ../lib/modules/sambaAccount.inc:343 ../lib/modules/sambaAccount.inc:729
+#: ../lib/modules/sambaSamAccount.inc:191
+#: ../lib/modules/sambaSamAccount.inc:973
 msgid "Samba password"
 msgstr "Heslo Samby"
 
 #: ../lib/modules/sambaAccount.inc:70 ../lib/modules/sambaAccount.inc:170
 #: ../lib/modules/sambaAccount.inc:301 ../lib/modules/sambaAccount.inc:390
-#: ../lib/modules/sambaAccount.inc:393 ../lib/modules/sambaAccount.inc:767
-#: ../lib/modules/sambaAccount.inc:859 ../lib/modules/sambaSamAccount.inc:86
-#: ../lib/modules/sambaSamAccount.inc:238
+#: ../lib/modules/sambaAccount.inc:393 ../lib/modules/sambaAccount.inc:781
+#: ../lib/modules/sambaAccount.inc:879 ../lib/modules/sambaSamAccount.inc:89
 #: ../lib/modules/sambaSamAccount.inc:241
-#: ../lib/modules/sambaSamAccount.inc:378
-#: ../lib/modules/sambaSamAccount.inc:958
-#: ../lib/modules/sambaSamAccount.inc:1239
-#: ../lib/modules/sambaSamAccount.inc:1403
+#: ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:423
+#: ../lib/modules/sambaSamAccount.inc:1093
+#: ../lib/modules/sambaSamAccount.inc:1510
+#: ../lib/modules/sambaSamAccount.inc:1674
 msgid "Samba workstations"
 msgstr "Stanice Samby"
 
-#: ../lib/modules/sambaSamAccount.inc:1060
+#: ../lib/modules/sambaSamAccount.inc:1211
 msgid "Saturday"
 msgstr "Sobota"
 
@@ -4288,15 +4398,15 @@ msgstr "Rozsah"
 msgid "Script path"
 msgstr "Cesta ke skriptu"
 
-#: ../templates/config/confmain.php:497
+#: ../templates/config/confmain.php:502
 msgid "Script path is invalid!"
 msgstr "Neplatná cesta ke skriptu!"
 
-#: ../templates/config/confmain.php:516
+#: ../templates/config/confmain.php:521
 msgid "Script rights are invalid!"
 msgstr "Neplatná přístupová práva skriptu!"
 
-#: ../templates/config/confmain.php:500
+#: ../templates/config/confmain.php:505
 msgid "Script server is invalid!"
 msgstr "Neplatný server skriptu!"
 
@@ -4304,7 +4414,7 @@ msgstr "Neplatný server skriptu!"
 msgid "Script servers"
 msgstr "Servery skriptu"
 
-#: ../templates/config/confmain.php:317
+#: ../templates/config/confmain.php:322
 msgid "Script settings"
 msgstr "Nastavení skriptu"
 
@@ -4322,15 +4432,15 @@ msgstr "Rozsah hledání"
 msgid "Section"
 msgstr "Sekce"
 
-#: ../templates/config/mainmanage.php:145 ../templates/config/confmain.php:390
+#: ../templates/config/mainmanage.php:145 ../templates/config/confmain.php:395
 msgid "Security settings"
 msgstr "Nastavení bezpečnosti"
 
-#: ../lib/types/group.inc:272 ../lib/lists.inc:708
+#: ../lib/types/group.inc:272 ../lib/lists.inc:707
 msgid "See README.openldap.txt to solve this problem."
 msgstr "Řešení tohoto problému naleznete v README.openldap.txt."
 
-#: ../templates/help.php:109
+#: ../templates/help.php:107
 msgid "See also"
 msgstr "Další informace"
 
@@ -4338,11 +4448,11 @@ msgstr "Další informace"
 msgid "Select a template for the creation process"
 msgstr "Vyber šablonu pro vytvoření"
 
-#: ../lib/lists.inc:408
+#: ../lib/lists.inc:407
 msgid "Select all"
 msgstr "Vybrat vše"
 
-#: ../lib/modules/posixAccount.inc:1029
+#: ../lib/modules/posixAccount.inc:1047
 msgid "Selected groups"
 msgstr "Vybrané skupiny"
 
@@ -4362,25 +4472,25 @@ msgstr "Nastavení samoobslužné části"
 msgid "Self service configuration editor"
 msgstr "Editor samoobslužné části"
 
-#: ../templates/config/confmain.php:142
+#: ../templates/config/confmain.php:147
 #: ../templates/selfService/adminMain.php:264 ../help/help.inc:59
 msgid "Server address"
 msgstr "Adresa serveru"
 
-#: ../templates/config/confmain.php:472
+#: ../templates/config/confmain.php:477
 #: ../templates/selfService/adminMain.php:60
 msgid "Server address is invalid!"
 msgstr "Neplatná adresa serveru!"
 
-#: ../templates/config/confmain.php:321
+#: ../templates/config/confmain.php:326
 msgid "Server list"
 msgstr "Seznam serverů"
 
-#: ../templates/login.php:319
+#: ../templates/login.php:323
 msgid "Server profile"
 msgstr "Profil serveru"
 
-#: ../templates/config/confmain.php:139
+#: ../templates/config/confmain.php:144
 #: ../templates/selfService/adminMain.php:261
 msgid "Server settings"
 msgstr "Nastavení serveru"
@@ -4389,7 +4499,7 @@ msgstr "Nastavení serveru"
 msgid "Session timeout"
 msgstr "Časový limit pro sezení"
 
-#: ../lib/modules/posixGroup.inc:166 ../lib/modules/posixAccount.inc:965
+#: ../lib/modules/posixGroup.inc:166 ../lib/modules/posixAccount.inc:983
 msgid "Set password"
 msgstr "Nastavit heslo"
 
@@ -4404,6 +4514,12 @@ msgstr "Nastavit heslo skupiny."
 #: ../lib/modules/shadowAccount.inc:69
 msgid "Shadow"
 msgstr "Stínová hesla"
+
+#: ../lib/modules/sambaSamAccount.inc:308
+#: ../lib/modules/sambaSamAccount.inc:1404
+#: ../lib/modules/sambaSamAccount.inc:1729
+msgid "Shadowing"
+msgstr "Stínováni"
 
 #: ../templates/massBuildAccounts.php:199
 msgid "Show LDIF file"
@@ -4421,12 +4537,12 @@ msgstr "Zobrazit primární členy skupiny mezi normálními členy"
 msgid "Single valued"
 msgstr "Jednoduchá hodnota"
 
-#: ../lib/modules/quota.inc:513
+#: ../lib/modules/quota.inc:549
 msgid "Soft block"
 msgstr "Měkký blok"
 
-#: ../lib/modules/quota.inc:96 ../lib/modules/quota.inc:319
-#: ../lib/modules/quota.inc:404
+#: ../lib/modules/quota.inc:96 ../lib/modules/quota.inc:355
+#: ../lib/modules/quota.inc:440
 msgid "Soft block limit"
 msgstr "Měkký limit bloků"
 
@@ -4434,16 +4550,16 @@ msgstr "Měkký limit bloků"
 msgid "Soft block limit."
 msgstr "Měkký limit bloků."
 
-#: ../lib/modules/quota.inc:515
+#: ../lib/modules/quota.inc:551
 msgid "Soft inode"
 msgstr "Měkký inode"
 
-#: ../lib/modules/quota.inc:113
+#: ../lib/modules/quota.inc:119
 msgid "Soft inode (files) limit."
 msgstr "Měkký limit inodů (souborů)."
 
-#: ../lib/modules/quota.inc:112 ../lib/modules/quota.inc:323
-#: ../lib/modules/quota.inc:406
+#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:359
+#: ../lib/modules/quota.inc:442
 msgid "Soft inode limit"
 msgstr "Měkký limit inodů."
 
@@ -4452,11 +4568,11 @@ msgstr "Měkký limit inodů."
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "Některé atributy (%s) byly změněny a jsou zvýrazněny níže."
 
-#: ../lib/modules.inc:942
+#: ../lib/modules.inc:968
 msgid "Some required information is missing"
 msgstr "Chybí některé povinné informace."
 
-#: ../templates/help.php:142
+#: ../templates/help.php:138
 #, php-format
 msgid ""
 "Sorry this help id ({bold}%s{endbold}) is not available for this module "
@@ -4465,14 +4581,14 @@ msgstr ""
 "Bohužel nápověda pod id ({bold}%s{endbold}) není dostupná pro tento modul "
 "({bold}%s{endbold})."
 
-#: ../templates/help.php:156
+#: ../templates/help.php:152
 #, php-format
 msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "Bohužel nápověda číslo ({bold}%d{endbold}) není dostupná."
 
 #: ../lib/modules/sambaAccount.inc:314 ../lib/modules/sambaAccount.inc:402
-#: ../lib/modules/sambaAccount.inc:799 ../lib/modules/sambaSamAccount.inc:250
-#: ../lib/modules/sambaSamAccount.inc:993
+#: ../lib/modules/sambaAccount.inc:819 ../lib/modules/sambaSamAccount.inc:253
+#: ../lib/modules/sambaSamAccount.inc:1130
 msgid "Special user"
 msgstr "Speciální uživatel"
 
@@ -4493,7 +4609,7 @@ msgstr "Krok 2 ze 2: Uveďte atributy a hodnoty"
 msgid "Steve"
 msgstr "Jan"
 
-#: ../lib/modules/sambaAccount.inc:221 ../lib/modules/sambaSamAccount.inc:291
+#: ../lib/modules/sambaAccount.inc:221 ../lib/modules/sambaSamAccount.inc:336
 #: ../lib/modules/posixAccount.inc:199 ../lib/modules/inetOrgPerson.inc:260
 msgid "Steve Miller"
 msgstr "Jan  Novák"
@@ -4529,19 +4645,19 @@ msgstr "Úspešně"
 msgid "Sudo is not setup correctly!"
 msgstr "Sudo není korektně nastaveno!"
 
-#: ../lib/lists.inc:526 ../lib/modules.inc:1035
+#: ../lib/lists.inc:525 ../lib/modules.inc:1079
 msgid "Suffix"
 msgstr "Sufix"
 
-#: ../lib/modules/sambaSamAccount.inc:1060
+#: ../lib/modules/sambaSamAccount.inc:1211
 msgid "Sunday"
 msgstr "Neděle"
 
-#: ../lib/modules/sambaSamAccount.inc:180
+#: ../lib/modules/sambaSamAccount.inc:183
 msgid "Sync Samba LM password with Unix password"
 msgstr "Synchronizovat LM heslo Samby s Unixovým heslem"
 
-#: ../lib/modules/sambaSamAccount.inc:179
+#: ../lib/modules/sambaSamAccount.inc:182
 msgid "Sync Samba NT password with Unix password"
 msgstr "Synchronizovat NT heslo Samby s Unixovým heslem"
 
@@ -4584,6 +4700,11 @@ msgstr "Dočasný, dohoda do prosince"
 #: ../templates/tree/create_form.php:83
 msgid "Template"
 msgstr "Šablona"
+
+#: ../lib/modules/sambaSamAccount.inc:317
+#: ../lib/modules/sambaSamAccount.inc:1145
+msgid "Terminal server options"
+msgstr "Možnosti terminálového serveru"
 
 #: ../templates/tools.php:90
 msgid "Tests"
@@ -4640,14 +4761,18 @@ msgid ""
 "The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "Nasledující sufix(y) chybí v LDAPu. LAM je může vytvořit."
 
-#: ../lib/modules/sambaSamAccount.inc:104
-#: ../lib/modules/sambaSamAccount.inc:105
+#: ../lib/modules/sambaSamAccount.inc:107
+#: ../lib/modules/sambaSamAccount.inc:108
 msgid "The format of the logon hours field is invalid!"
 msgstr "Neplatný formát hodin přihlášení!"
 
 #: ../templates/pdfedit/pdfpage.php:122
 msgid "The headline for a new section must contain at least one character."
 msgstr "Titulek nové sekce musí obsahovat alespoň jeden znak."
+
+#: ../lib/modules/sambaSamAccount.inc:230
+msgid "The home directory will be connected under this drive letter."
+msgstr "Domovský adresář bude připojen pod tímto písmenem."
 
 #: ../templates/config/mainmanage.php:122
 msgid ""
@@ -4657,7 +4782,7 @@ msgstr ""
 "Název soubor žurnálu je prázdný nebo obsahuje neplatné znaky! Přípustné "
 "znaky jsou: a-z, A-Z, 0-9, /, \\, ., :, _ a -."
 
-#: ../lib/modules.inc:904
+#: ../lib/modules.inc:930
 #, php-format
 msgid "The module %s is not yet ready."
 msgstr "Mòdul %s ještě není připraven."
@@ -4727,7 +4852,7 @@ msgstr "Přibyl povinný atribut, který musí být nastaven."
 msgid "There are still users who have this group as their primary group."
 msgstr "Stále existují uživatelé, kteří mají tuto skupinu jako svojí primární."
 
-#: ../lib/modules/sambaGroupMapping.inc:375
+#: ../lib/modules/sambaGroupMapping.inc:380
 msgid "There can be only one group of this type."
 msgstr "Může být pouze jedna skupina tohoto typu."
 
@@ -4771,11 +4896,11 @@ msgid ""
 "This GID number is invalid! Please provide either a number or a group name."
 msgstr "Neplatné GID!. Prosím použijte číslo nebo název skupiny."
 
-#: ../lib/modules/kolabUser.inc:282
+#: ../lib/modules/kolabUser.inc:284
 msgid "This account is marked for deletion."
 msgstr "Tento účet je označen ke smazání."
 
-#: ../lib/modules/sambaSamAccount.inc:251
+#: ../lib/modules/sambaSamAccount.inc:254
 msgid ""
 "This allows you to define this account as a special user like administrator "
 "or guest."
@@ -4914,11 +5039,11 @@ msgstr ""
 msgid "This is not a valid DN!"
 msgstr "Neplatné DN!"
 
-#: ../lib/modules/sambaSamAccount.inc:92
+#: ../lib/modules/sambaSamAccount.inc:95
 msgid "This is not a valid RID number!"
 msgstr "Neplatný RID!"
 
-#: ../lib/modules/sambaGroupMapping.inc:377
+#: ../lib/modules/sambaGroupMapping.inc:382
 msgid "This is not a valid Samba 3 group type!"
 msgstr "Neplatný typ skupiny Samby 3!"
 
@@ -4948,7 +5073,7 @@ msgstr "MAC adresa síťové karty zařízení (např.: 00:01:02:DE:EF:18)"
 msgid "This is the RID of the user's primary Windows group."
 msgstr "RID uživatelovy primární skupiny ve Windows."
 
-#: ../lib/modules/sambaSamAccount.inc:248
+#: ../lib/modules/sambaSamAccount.inc:251
 msgid "This is the SID of the user's primary Windows group."
 msgstr "SID uživatelovy primární skupiny ve Windows."
 
@@ -4960,19 +5085,19 @@ msgstr ""
 "Absolutní cesta k externímu skriptu pro nastavování kvót a vytváření "
 "domovských adresářů."
 
-#: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:189
+#: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:192
 msgid "This is the account's Windows password."
 msgstr "Heslo do Windows tohoto účtu."
 
-#: ../lib/modules/sambaAccount.inc:341 ../lib/modules/sambaSamAccount.inc:186
+#: ../lib/modules/sambaAccount.inc:341 ../lib/modules/sambaSamAccount.inc:189
 msgid "This is the account's full name on Windows systems."
 msgstr "Plné jméno účtu používané ve Windows."
 
-#: ../lib/modules/sambaSamAccount.inc:270 ../lib/modules/shadowAccount.inc:171
+#: ../lib/modules/sambaSamAccount.inc:273 ../lib/modules/shadowAccount.inc:171
 msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
 msgstr "Datum vypršení platnosti účtu. Formát: DD-MM-YYYY"
 
-#: ../lib/modules/sambaGroupMapping.inc:293
+#: ../lib/modules/sambaGroupMapping.inc:298
 msgid "This is the group name which will be shown in Windows."
 msgstr "Název skupiny zobrazovaný ve Windows."
 
@@ -5026,6 +5151,14 @@ msgstr ""
 "Přirozené jméno uživatele. Pokud je ponecháno prázdné, použije se křestní "
 "jméno a příjmení nebo uživatelské jméno."
 
+#: ../lib/modules/sambaDomain.inc:111
+msgid ""
+"This is the number of bad logon attempts (0 - 999) before the accounts is "
+"deactivated. 0 means unlimited attempts."
+msgstr ""
+"Toto je počet špatných pokusů o přihlášení (0 - 999) před deaktivováním "
+"účtu. 0 znamená neomezený počet pokusů."
+
 #: ../lib/modules/sambaDomain.inc:95
 msgid ""
 "This is the number of passwords which are saved to prevent that users reuse "
@@ -5042,7 +5175,11 @@ msgstr ""
 "Počet řádků zobrazujících se v seznamu uživatelů/skupin/strojů. Jestliže "
 "počet položek přesáhne počet řádků, je seznam rozdělen na jednotlivé stránky."
 
-#: ../lib/modules/sambaGroupMapping.inc:301
+#: ../lib/modules/sambaSamAccount.inc:282
+msgid "This is the path to the user's home directory."
+msgstr "Toto je cesta k domovskému adresáři uživatele."
+
+#: ../lib/modules/sambaGroupMapping.inc:306
 msgid ""
 "This is the relative ID (similar to UID on Unix) for Windows accounts. If "
 "you leave this empty LAM will calculate the RID from the UID. This can be "
@@ -5052,7 +5189,7 @@ msgstr ""
 "UID, pokud toto pole necháte prázdné. Můžete sem zadat buď číslo nebo název "
 "speciální skupiny:"
 
-#: ../lib/modules/sambaSamAccount.inc:254
+#: ../lib/modules/sambaSamAccount.inc:257
 msgid ""
 "This is the relative ID number for your Windows account. You can either "
 "enter a number or one of these special accounts: "
@@ -5060,7 +5197,7 @@ msgstr ""
 "Relativní ID pro Windows účty. Můžete sem zadat buď číslo nebo název jednoho "
 "z těchto speciálních účtů: "
 
-#: ../lib/modules/sambaSamAccount.inc:258
+#: ../lib/modules/sambaSamAccount.inc:261
 msgid ""
 "This is the relative ID number for your host account. If you leave this "
 "empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
@@ -5128,7 +5265,7 @@ msgstr ""
 "Časový limit (ve dnech) pro uživatele, kteří chtějí kontrolovat budoucí "
 "setkání. Dosadí se výchozí hodnota (60 dni), pokud necháte pole prázdné."
 
-#: ../lib/modules/sambaSamAccount.inc:273
+#: ../lib/modules/sambaSamAccount.inc:276
 msgid ""
 "This is the time zone of your Samba server. LAM needs this information to "
 "display the logon hours correctly."
@@ -5148,7 +5285,7 @@ msgstr "Quake ID uživatele."
 msgid "This is the user's login name for the wiki."
 msgstr "Přihlašovací jméno uživatele do wiki."
 
-#: ../lib/modules/sambaSamAccount.inc:245
+#: ../lib/modules/sambaSamAccount.inc:248
 msgid "This is the user's primary Windows group."
 msgstr "Primární uživatelova skupina ve Windows."
 
@@ -5164,11 +5301,11 @@ msgstr "Tato e-mailová adresa je již používána"
 msgid "This object class is obsolete."
 msgstr "Zastaralá třída objektu."
 
-#: ../lib/modules/sambaSamAccount.inc:264
+#: ../lib/modules/sambaSamAccount.inc:267
 msgid "This option defines the allowed logon hours for this account."
 msgstr "Nastavení povolených hodin k přihlášení do Windows pro tento účet."
 
-#: ../lib/modules/sambaSamAccount.inc:267
+#: ../lib/modules/sambaSamAccount.inc:270
 msgid ""
 "This option defines the allowed logon hours for this account. The format is "
 "the same as for the LDAP attribute. The 24*7 hours are represented as 168 "
@@ -5180,9 +5317,21 @@ msgstr ""
 "jako 168 bitů, které jsou uloženy jako 21 oktálových (21*8) hodnot. První "
 "bit uvádí čas Neděle 0:00 - 0:59 (v GMT)."
 
+#: ../lib/modules/sambaSamAccount.inc:291
+msgid "This program is run after the login."
+msgstr "Tento program se spustí po přihlášení."
+
 #: ../help/help.inc:153
 msgid "This saves your account to the LDAP database."
 msgstr "Tímto uložíte váš účet do LDAPu."
+
+#: ../lib/modules/sambaSamAccount.inc:315
+msgid "This specifies the reconnect policy."
+msgstr "Toto určuje politiku znovu připojení."
+
+#: ../lib/modules/sambaSamAccount.inc:312
+msgid "This specifies what to do when the client connection is broken."
+msgstr "Toto určuje, co se stane, když se přeruší spojení s klientem."
 
 #: ../help/help.inc:168
 msgid ""
@@ -5222,8 +5371,9 @@ msgstr "Uživatel nebyl nalezen!"
 
 #: ../lib/modules/sambaAccount.inc:79 ../lib/modules/sambaAccount.inc:80
 #: ../lib/modules/sambaAccount.inc:81 ../lib/modules/sambaAccount.inc:82
-#: ../lib/modules/sambaSamAccount.inc:95 ../lib/modules/sambaSamAccount.inc:96
-#: ../lib/modules/sambaSamAccount.inc:97 ../lib/modules/sambaSamAccount.inc:98
+#: ../lib/modules/sambaSamAccount.inc:98 ../lib/modules/sambaSamAccount.inc:99
+#: ../lib/modules/sambaSamAccount.inc:100
+#: ../lib/modules/sambaSamAccount.inc:101
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"!"
 msgstr "Hodnota může být buď \\\"true\\\" nebo \\\"false\\\"!"
 
@@ -5252,7 +5402,7 @@ msgstr "Smaže vybranou organizační jednotku (OU), která musí být prázdná
 msgid "This will delete the selected profile."
 msgstr "Smaže vybraný profil."
 
-#: ../lib/modules/sambaAccount.inc:347 ../lib/modules/sambaSamAccount.inc:192
+#: ../lib/modules/sambaAccount.inc:347 ../lib/modules/sambaSamAccount.inc:195
 msgid "This will reset the host's password to a default value."
 msgstr "Nastaví heslo stroje na výchozí hodnotu."
 
@@ -5265,20 +5415,24 @@ msgstr ""
 "Toto je používané k čistému mazání Kolab účtů (např. včetně smazání "
 "poštovních schránek)."
 
-#: ../lib/modules/sambaSamAccount.inc:1059
+#: ../lib/modules/sambaSamAccount.inc:1210
 msgid "Thursday"
 msgstr "Čtvrtek"
 
-#: ../lib/modules/sambaSamAccount.inc:1100
+#: ../lib/modules/sambaSamAccount.inc:1251
 msgid "Time"
 msgstr "Čas"
 
-#: ../lib/modules/sambaSamAccount.inc:272
-#: ../lib/modules/sambaSamAccount.inc:425
+#: ../lib/modules/sambaSamAccount.inc:296
+msgid "Time limit"
+msgstr "Časový limit"
+
+#: ../lib/modules/sambaSamAccount.inc:275
+#: ../lib/modules/sambaSamAccount.inc:470
 msgid "Time zone"
 msgstr "Časová zóna"
 
-#: ../templates/tests/lamdaemonTest.php:78 ../lib/lamdaemon.inc:136
+#: ../templates/tests/lamdaemonTest.php:78 ../lib/lamdaemon.inc:121
 msgid "Timeout while executing lamdaemon commands!"
 msgstr "Došlo k překročení časového limitu při provádění lamdaemonu!"
 
@@ -5290,7 +5444,7 @@ msgstr ""
 "Použijte /bin/false pro znemožnění příhlášení. Seznam shellů se bere z "
 "config/shells¨."
 
-#: ../lib/modules/sambaSamAccount.inc:449
+#: ../lib/modules/sambaSamAccount.inc:494
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "Tokio, Soul, Osaka, Jakutsk"
 
@@ -5306,7 +5460,7 @@ msgstr "Celkový počet položek"
 msgid "Translate GID number to group name"
 msgstr "Přeložit GID na názvy skupin"
 
-#: ../templates/config/confmain.php:158 ../help/help.inc:77
+#: ../templates/config/confmain.php:163 ../help/help.inc:77
 msgid "Tree suffix"
 msgstr "Sufix stromu"
 
@@ -5314,11 +5468,11 @@ msgstr "Sufix stromu"
 msgid "Tree view"
 msgstr "Prohlížení stromu"
 
-#: ../templates/config/confmain.php:488
+#: ../templates/config/confmain.php:493
 msgid "TreeSuffix is invalid!"
 msgstr "Neplatný TreeSuffix!"
 
-#: ../lib/modules/sambaSamAccount.inc:1059
+#: ../lib/modules/sambaSamAccount.inc:1210
 msgid "Tuesday"
 msgstr "Úterý"
 
@@ -5345,7 +5499,7 @@ msgstr "UID musí být číslo z rozsahu specifikového ve vašem profilu."
 #: ../lib/modules/posixAccount.inc:71 ../lib/modules/posixAccount.inc:203
 #: ../lib/modules/posixAccount.inc:277 ../lib/modules/posixAccount.inc:323
 #: ../lib/modules/posixAccount.inc:327 ../lib/modules/posixAccount.inc:335
-#: ../lib/modules/posixAccount.inc:925 ../lib/modules/posixAccount.inc:1142
+#: ../lib/modules/posixAccount.inc:936 ../lib/modules/posixAccount.inc:1164
 msgid "UID number"
 msgstr "UID"
 
@@ -5362,7 +5516,7 @@ msgstr ""
 msgid "UID ranges for Unix accounts"
 msgstr "Rozsah UID pro Unixové účty."
 
-#: ../lib/modules/sambaAccount.inc:382 ../lib/modules/sambaSamAccount.inc:230
+#: ../lib/modules/sambaAccount.inc:382 ../lib/modules/sambaSamAccount.inc:233
 msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
 "with user and group name."
@@ -5376,8 +5530,8 @@ msgid ""
 "the settings."
 msgstr "Nelze změnit váš účet. Možná k tomu nemáte dostatečná oprávnění."
 
-#: ../templates/tests/lamdaemonTest.php:215 ../lib/lamdaemon.inc:149
-#: ../lib/lamdaemon.inc:154
+#: ../templates/tests/lamdaemonTest.php:215 ../lib/lamdaemon.inc:134
+#: ../lib/lamdaemon.inc:139
 msgid "Unable to connect to remote server!"
 msgstr "Nelze se připojit k vzdálenému serveru!"
 
@@ -5404,15 +5558,15 @@ msgstr "Nelze smazat PDF struktura!"
 msgid "Unable to delete profile!"
 msgstr "Nelze smazat profil!"
 
-#: ../lib/modules/posixAccount.inc:1321 ../lib/modules/posixAccount.inc:1540
+#: ../lib/modules/posixAccount.inc:1343 ../lib/modules/posixAccount.inc:1562
 msgid "Unable to find group in LDAP."
 msgstr "Nelze najít skupinu v LDAPu."
 
-#: ../lib/modules.inc:1173 ../lib/modules.inc:1177
+#: ../lib/modules.inc:1220 ../lib/modules.inc:1224
 msgid "Unable to load LDAP entry:"
 msgstr "Nelze načít položku LDAPu:"
 
-#: ../templates/config/confmain.php:302
+#: ../templates/config/confmain.php:307
 msgid ""
 "Unable to load available languages. Setting English as default language. For "
 "further instructions please contact the Admin of this site."
@@ -5457,7 +5611,7 @@ msgstr "Neplatná Unixová stanice!"
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: ../lib/modules/posixGroup.inc:173 ../lib/modules/posixAccount.inc:972
+#: ../lib/modules/posixGroup.inc:173 ../lib/modules/posixAccount.inc:990
 msgid "Unlock password"
 msgstr "Odemknout heslo"
 
@@ -5477,7 +5631,7 @@ msgstr "Načíst účty do LDAPu"
 msgid "Upload file and create accounts"
 msgstr "Načíst soubor a vytvořit účty"
 
-#: ../lib/modules.inc:448
+#: ../lib/modules.inc:450
 #, php-format
 msgid "Upload was stopped after errors in %s module!"
 msgstr "Načítání bylo zastaveno po chybách v modulu %s!"
@@ -5488,11 +5642,11 @@ msgstr "Použití"
 
 #: ../lib/modules/sambaAccount.inc:120 ../lib/modules/sambaAccount.inc:231
 #: ../lib/modules/sambaAccount.inc:349 ../lib/modules/sambaAccount.inc:352
-#: ../lib/modules/sambaAccount.inc:722 ../lib/modules/sambaSamAccount.inc:194
-#: ../lib/modules/sambaSamAccount.inc:197
-#: ../lib/modules/sambaSamAccount.inc:301
-#: ../lib/modules/sambaSamAccount.inc:882
-#: ../lib/modules/sambaSamAccount.inc:1178
+#: ../lib/modules/sambaAccount.inc:736 ../lib/modules/sambaSamAccount.inc:197
+#: ../lib/modules/sambaSamAccount.inc:200
+#: ../lib/modules/sambaSamAccount.inc:346
+#: ../lib/modules/sambaSamAccount.inc:981
+#: ../lib/modules/sambaSamAccount.inc:1449
 msgid "Use Unix password"
 msgstr "Použít Unixové heslo"
 
@@ -5502,15 +5656,15 @@ msgstr "Použít výchozí"
 
 #: ../lib/modules/sambaAccount.inc:126 ../lib/modules/sambaAccount.inc:239
 #: ../lib/modules/sambaAccount.inc:355 ../lib/modules/sambaAccount.inc:358
-#: ../lib/modules/sambaAccount.inc:726 ../lib/modules/sambaSamAccount.inc:200
-#: ../lib/modules/sambaSamAccount.inc:203
-#: ../lib/modules/sambaSamAccount.inc:309
-#: ../lib/modules/sambaSamAccount.inc:886
-#: ../lib/modules/sambaSamAccount.inc:1184
+#: ../lib/modules/sambaAccount.inc:740 ../lib/modules/sambaSamAccount.inc:203
+#: ../lib/modules/sambaSamAccount.inc:206
+#: ../lib/modules/sambaSamAccount.inc:354
+#: ../lib/modules/sambaSamAccount.inc:986
+#: ../lib/modules/sambaSamAccount.inc:1455
 msgid "Use no password"
 msgstr "Použít prázdné heslo"
 
-#: ../lib/modules/quota.inc:92 ../lib/modules/quota.inc:318
+#: ../lib/modules/quota.inc:92 ../lib/modules/quota.inc:354
 msgid "Used blocks"
 msgstr "Použité bloky"
 
@@ -5530,11 +5684,11 @@ msgstr "Využito třídami objektů"
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr "Používáno pro výpočet RIDů z UID/GID. Neměňte, pokud si nejste jistí."
 
-#: ../lib/modules/quota.inc:108 ../lib/modules/quota.inc:322
+#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:358
 msgid "Used inodes"
 msgstr "Použité inody"
 
-#: ../lib/modules/quota.inc:109
+#: ../lib/modules/quota.inc:115
 msgid "Used inodes (files)"
 msgstr "Použité inody (soubory)"
 
@@ -5551,10 +5705,10 @@ msgid "User accounts (e.g. Unix, Samba and Kolab)"
 msgstr "Uživatelské účty (např. Unix, Samba a Kolab)"
 
 #: ../lib/modules/sambaAccount.inc:263 ../lib/modules/sambaAccount.inc:373
-#: ../lib/modules/sambaAccount.inc:738 ../lib/modules/sambaSamAccount.inc:221
-#: ../lib/modules/sambaSamAccount.inc:333
-#: ../lib/modules/sambaSamAccount.inc:909
-#: ../lib/modules/sambaSamAccount.inc:1122
+#: ../lib/modules/sambaAccount.inc:752 ../lib/modules/sambaSamAccount.inc:224
+#: ../lib/modules/sambaSamAccount.inc:378
+#: ../lib/modules/sambaSamAccount.inc:1017
+#: ../lib/modules/sambaSamAccount.inc:1273
 msgid "User can change password"
 msgstr "Uživatel může změnit heslo"
 
@@ -5581,21 +5735,21 @@ msgid "User modification"
 msgstr "Změny uživatele"
 
 #: ../lib/modules/sambaAccount.inc:270 ../lib/modules/sambaAccount.inc:375
-#: ../lib/modules/sambaAccount.inc:746 ../lib/modules/sambaSamAccount.inc:223
-#: ../lib/modules/sambaSamAccount.inc:340
-#: ../lib/modules/sambaSamAccount.inc:921
-#: ../lib/modules/sambaSamAccount.inc:1127
+#: ../lib/modules/sambaAccount.inc:760 ../lib/modules/sambaSamAccount.inc:226
+#: ../lib/modules/sambaSamAccount.inc:385
+#: ../lib/modules/sambaSamAccount.inc:1034
+#: ../lib/modules/sambaSamAccount.inc:1278
 msgid "User must change password"
 msgstr "Uživatel si musí změnit heslo"
 
-#: ../templates/login.php:229 ../lib/types/user.inc:85
+#: ../templates/login.php:233 ../lib/types/user.inc:85
 #: ../lib/modules/account.inc:90 ../lib/modules/account.inc:111
 #: ../lib/modules/account.inc:131 ../lib/modules/account.inc:133
 #: ../lib/modules/account.inc:134 ../lib/modules/account.inc:212
 #: ../lib/modules/account.inc:233 ../lib/modules/posixAccount.inc:76
 #: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:80
 #: ../lib/modules/posixAccount.inc:189 ../lib/modules/posixAccount.inc:360
-#: ../lib/modules/posixAccount.inc:917 ../lib/modules/posixAccount.inc:1140
+#: ../lib/modules/posixAccount.inc:924 ../lib/modules/posixAccount.inc:1162
 #: ../lib/modules/inetOrgPerson.inc:72 ../lib/modules/inetOrgPerson.inc:265
 #: ../lib/modules/inetOrgPerson.inc:374 ../lib/modules/inetOrgPerson.inc:596
 #: ../lib/modules/inetOrgPerson.inc:911
@@ -5678,7 +5832,7 @@ msgstr "Použitá šablona:"
 msgid "Valid users"
 msgstr "Oprávnění uživatelé"
 
-#: ../templates/login.php:188
+#: ../templates/login.php:192
 msgid "Want more features? Get LAM Pro!"
 msgstr "Chcete více funkcí? Zvolte LAM Pro!"
 
@@ -5686,44 +5840,44 @@ msgstr "Chcete více funkcí? Zvolte LAM Pro!"
 msgid "Warning"
 msgstr "Varování"
 
-#: ../templates/delete.php:197 ../lib/modules.inc:1433
+#: ../templates/delete.php:198 ../lib/modules.inc:1480
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "Nešlo přidat atribut do DN: %s."
 
-#: ../lib/modules.inc:1404
+#: ../lib/modules.inc:1451
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "Nešlo vytvořit DN: %s."
 
-#: ../templates/tree/delete.php:110 ../templates/delete.php:277
-#: ../templates/delete.php:285
+#: ../templates/tree/delete.php:110 ../templates/delete.php:278
+#: ../templates/delete.php:286
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "Nešlo smazat DN: %s."
 
 #: ../templates/tree/update.php:106 ../templates/tree/add_oclass.php:90
-#: ../templates/tree/add_oclass_form.php:159 ../templates/delete.php:189
-#: ../lib/modules.inc:1421
+#: ../templates/tree/add_oclass_form.php:159 ../templates/delete.php:190
+#: ../lib/modules.inc:1468
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "Nešlo změnit atributy DN: %s."
 
-#: ../templates/delete.php:205 ../lib/modules.inc:1445
+#: ../templates/delete.php:206 ../lib/modules.inc:1492
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "Nešlo odebrat atributy DN: %s."
 
-#: ../lib/modules.inc:1391
+#: ../lib/modules.inc:1438
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "Nešlo přejmenovat DN: %s."
 
-#: ../lib/modules/sambaSamAccount.inc:1059
+#: ../lib/modules/sambaSamAccount.inc:1210
 msgid "Wednesday"
 msgstr "Středa"
 
-#: ../lib/modules/sambaSamAccount.inc:440
+#: ../lib/modules/sambaSamAccount.inc:485
 msgid "Western Europe Time, London, Lisbon"
 msgstr "Západoevropský čas, Londýn, Lisabon"
 
@@ -5742,17 +5896,17 @@ msgstr ""
 msgid "Wiki name"
 msgstr "Název wiki"
 
-#: ../lib/modules/sambaAccount.inc:406 ../lib/modules/sambaSamAccount.inc:261
+#: ../lib/modules/sambaAccount.inc:406 ../lib/modules/sambaSamAccount.inc:264
 msgid "Windows domain name of account."
 msgstr "Jméno Windows domény účtu."
 
-#: ../lib/modules/sambaAccount.inc:307 ../lib/modules/sambaAccount.inc:784
-#: ../lib/modules/sambaSamAccount.inc:384
-#: ../lib/modules/sambaSamAccount.inc:975
-#: ../lib/modules/sambaSamAccount.inc:1261
-#: ../lib/modules/sambaSamAccount.inc:1409
-#: ../lib/modules/sambaGroupMapping.inc:205
-#: ../lib/modules/sambaGroupMapping.inc:324
+#: ../lib/modules/sambaAccount.inc:307 ../lib/modules/sambaAccount.inc:804
+#: ../lib/modules/sambaSamAccount.inc:429
+#: ../lib/modules/sambaSamAccount.inc:1111
+#: ../lib/modules/sambaSamAccount.inc:1532
+#: ../lib/modules/sambaSamAccount.inc:1680
+#: ../lib/modules/sambaGroupMapping.inc:210
+#: ../lib/modules/sambaGroupMapping.inc:329
 msgid "Windows group"
 msgstr "Skupina ve Windows"
 
@@ -5761,23 +5915,23 @@ msgid "Windows group RID"
 msgstr "RID skupiny ve Windows"
 
 #: ../lib/modules/sambaAccount.inc:396
-#: ../lib/modules/sambaGroupMapping.inc:296
+#: ../lib/modules/sambaGroupMapping.inc:301
 msgid "Windows group name"
 msgstr "Název skupiny ve Windows"
 
-#: ../lib/modules/sambaGroupMapping.inc:309
+#: ../lib/modules/sambaGroupMapping.inc:314
 msgid "Windows group type."
 msgstr "Typ skupiny ve Windows."
 
-#: ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:247
 msgid "Windows primary group"
 msgstr "Primární skupina ve Windows"
 
-#: ../lib/modules/sambaSamAccount.inc:247
+#: ../lib/modules/sambaSamAccount.inc:250
 msgid "Windows primary group SID"
 msgstr "SID primární skupiny ve Windows"
 
-#: ../lib/modules/sambaGroupMapping.inc:305
+#: ../lib/modules/sambaGroupMapping.inc:310
 msgid "Windows-Domain name of group."
 msgstr "Název doménové skupiny ve Windows"
 
@@ -5785,11 +5939,21 @@ msgstr "Název doménové skupiny ve Windows"
 msgid "Workgroup"
 msgstr "Pracovní skupina"
 
-#: ../templates/config/confmain.php:362
+#: ../lib/modules/sambaSamAccount.inc:293
+#: ../lib/modules/sambaSamAccount.inc:1362
+#: ../lib/modules/sambaSamAccount.inc:1700
+msgid "Working directory"
+msgstr "Pracovní adresář"
+
+#: ../lib/modules/sambaSamAccount.inc:294
+msgid "Working directory of initial program."
+msgstr "Pracovní adresář výchozího programu."
+
+#: ../templates/config/confmain.php:367
 msgid "Write"
 msgstr "Zápis"
 
-#: ../templates/login.php:422 ../templates/selfService/selfServiceLogin.php:89
+#: ../templates/login.php:426 ../templates/selfService/selfServiceLogin.php:89
 #: ../templates/selfService/selfServiceLogin.php:101
 msgid "Wrong password/user name combination. Please try again."
 msgstr "Chybně zadané uživatelské jméno či heslo. Zkuste to prosím znovu."
@@ -5849,14 +6013,14 @@ msgstr "Musíte přidat alespon jednoho člena do skupiny."
 msgid ""
 "Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"
 msgstr ""
-"Váš LAM administraátor (%s) musí mít platný Unixový účet, aby mohl pracovat "
+"Váš LAM administrátor (%s) musí mít platný Unixový účet, aby mohl pracovat "
 "s lamdaemonem!"
 
-#: ../lib/lamdaemon.inc:120 ../lib/lamdaemon.inc:126
+#: ../lib/lamdaemon.inc:105 ../lib/lamdaemon.inc:111
 msgid ""
 "Your LAM admin user must be a valid Unix account to work with lamdaemon!"
 msgstr ""
-"Váš LAM administraátor musí mít platný Unixový účet, aby mohl pracovat s "
+"Váš LAM administrátor musí mít platný Unixový účet, aby mohl pracovat s "
 "lamdaemonem!"
 
 #: ../templates/tree/add_attr_form.php:165
@@ -5870,7 +6034,7 @@ msgstr ""
 msgid "Your session expired, click here to go back to the login page."
 msgstr "Vaše sezení vypršelo, klikněte sem pro návrat na přihlašovací stránku."
 
-#: ../templates/login.php:209
+#: ../templates/login.php:213
 msgid "Your session expired, please log in again."
 msgstr "Vaše sezení vypršelo, prosím přihlaste se znovu."
 
@@ -5884,11 +6048,11 @@ msgstr "Vaše nastavení bylo úspěšně uloženo."
 msgid "[attribute deleted]"
 msgstr "[atribut smazán]"
 
-#: ../lib/modules/sambaAccount.inc:285 ../lib/modules/sambaSamAccount.inc:362
+#: ../lib/modules/sambaAccount.inc:285 ../lib/modules/sambaSamAccount.inc:407
 msgid "\\\\server\\homes\\smiller"
 msgstr "\\\\server\\homes\\jnovak"
 
-#: ../lib/modules/sambaAccount.inc:291 ../lib/modules/sambaSamAccount.inc:368
+#: ../lib/modules/sambaAccount.inc:291 ../lib/modules/sambaSamAccount.inc:413
 msgid "\\\\server\\profiles\\smiller"
 msgstr "\\\\server\\profily\\jnovak"
 
@@ -5916,6 +6080,16 @@ msgstr "dc=spolecnost,dc=cz"
 msgid "delete attribute"
 msgstr "smazat atribut"
 
+#: ../lib/modules/sambaSamAccount.inc:1397
+#: ../lib/modules/sambaSamAccount.inc:1720
+msgid "disabled"
+msgstr "zakázané"
+
+#: ../lib/modules/sambaSamAccount.inc:1409
+#: ../lib/modules/sambaSamAccount.inc:1731
+msgid "disconnect"
+msgstr "odpojit"
+
 #: ../templates/tree/edit.php:175 ../templates/tree/edit.php:177
 #: ../templates/tree/edit.php:304 ../templates/tree/edit.php:306
 #: ../templates/tree/add_value_form.php:107
@@ -5934,13 +6108,43 @@ msgstr "E-mailová adresa"
 msgid "false"
 msgstr "false"
 
+#: ../lib/modules/sambaSamAccount.inc:1418
+#: ../lib/modules/sambaSamAccount.inc:1739
+msgid "from any client"
+msgstr "z libovolného klienta"
+
+#: ../lib/modules/sambaSamAccount.inc:1419
+#: ../lib/modules/sambaSamAccount.inc:1740
+msgid "from previous client only"
+msgstr "pouze z předchozího klienta"
+
 #: ../lib/modules/posixAccount.inc:218
 msgid "group01,group02"
 msgstr "skupina01,skupina02"
 
-#: ../lib/modules/quota.inc:158 ../lib/modules/quota.inc:160
+#: ../lib/modules/quota.inc:176 ../lib/modules/quota.inc:178
 msgid "hours"
 msgstr "hodiny"
+
+#: ../lib/modules/sambaSamAccount.inc:1401
+#: ../lib/modules/sambaSamAccount.inc:1724
+msgid "input off, notify off"
+msgstr "vstup vypnut, oznámení vypnuto"
+
+#: ../lib/modules/sambaSamAccount.inc:1400
+#: ../lib/modules/sambaSamAccount.inc:1723
+msgid "input off, notify on"
+msgstr "vstup vypnut, oznámení zapnuto"
+
+#: ../lib/modules/sambaSamAccount.inc:1399
+#: ../lib/modules/sambaSamAccount.inc:1722
+msgid "input on, notify off"
+msgstr "vstup zapnut, oznámení vypnuto"
+
+#: ../lib/modules/sambaSamAccount.inc:1398
+#: ../lib/modules/sambaSamAccount.inc:1721
+msgid "input on, notify on"
+msgstr "vstup zapnut, oznámení zapnuto"
 
 #: ../lib/tree.inc:1172
 msgid "jpegPhoto contains errors"
@@ -5968,14 +6172,22 @@ msgid "mail.yourdomain.org"
 msgstr "mail.tvojedomena.org"
 
 #: ../lib/modules/sambaAccount.inc:323 ../lib/modules/sambaAccount.inc:333
-#: ../lib/modules/sambaSamAccount.inc:285
-#: ../lib/modules/sambaSamAccount.inc:411
+#: ../lib/modules/sambaSamAccount.inc:330
+#: ../lib/modules/sambaSamAccount.inc:456
 msgid "mydomain"
 msgstr "mojedomena"
 
-#: ../lib/modules/sambaSamAccount.inc:386
+#: ../lib/modules/sambaSamAccount.inc:431
 msgid "mygroup"
 msgstr "mojeskupina"
+
+#: ../lib/modules/sambaSamAccount.inc:1688
+#: ../lib/modules/sambaSamAccount.inc:1696
+#: ../lib/modules/sambaSamAccount.inc:1706
+#: ../lib/modules/sambaSamAccount.inc:1711
+#: ../lib/modules/sambaSamAccount.inc:1716
+msgid "no"
+msgstr "ne"
 
 #: ../templates/tree/templates/creation/custom.php:189
 #: ../templates/tree/templates/creation/custom.php:212
@@ -6023,17 +6235,22 @@ msgstr "pc01, místnost 2.34"
 msgid "pc01,pc02"
 msgstr "pc01,pc02"
 
-#: ../templates/tree/edit.php:242 ../templates/config/confmain.php:443
-#: ../templates/selfService/adminMain.php:553 ../lib/modules.inc:1078
+#: ../templates/tree/edit.php:242 ../templates/config/confmain.php:448
+#: ../templates/selfService/adminMain.php:553 ../lib/modules.inc:1121
 msgid "required"
 msgstr "povinné"
 
-#: ../templates/config/confmain.php:444
+#: ../templates/config/confmain.php:449
 msgid "required for Samba 3 accounts"
 msgstr "povinné pro účty Samby 3"
 
+#: ../lib/modules/sambaSamAccount.inc:1410
+#: ../lib/modules/sambaSamAccount.inc:1732
+msgid "reset"
+msgstr "reset"
+
 #: ../lib/modules/posixGroup.inc:360 ../lib/modules/sambaAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:297 ../lib/modules/posixAccount.inc:246
+#: ../lib/modules/sambaSamAccount.inc:342 ../lib/modules/posixAccount.inc:246
 msgid "secret"
 msgstr "tajné"
 
@@ -6077,6 +6294,24 @@ msgstr "uzivatel@spolecnost.cz"
 #: ../lib/modules/posixAccount.inc:211
 msgid "users"
 msgstr "uživatelé"
+
+#: ../lib/modules/sambaSamAccount.inc:1686
+#: ../lib/modules/sambaSamAccount.inc:1694
+#: ../lib/modules/sambaSamAccount.inc:1704
+#: ../lib/modules/sambaSamAccount.inc:1709
+#: ../lib/modules/sambaSamAccount.inc:1714
+msgid "yes"
+msgstr "ano"
+
+#~ msgid "Edit logon hours"
+#~ msgstr "Editovat hodiny přihlášení"
+
+#~ msgid "Here you can define to deactivate accounts after bad logon attempts."
+#~ msgstr ""
+#~ "Zde můžete zadat deaktivování účtů po neuspěšných pokusech o  přihlášení."
+
+#~ msgid "Please select page:"
+#~ msgstr "Prosím vyberte stranu:"
 
 #~ msgid "Abort"
 #~ msgstr "Přerušit"
@@ -6257,9 +6492,6 @@ msgstr "uživatelé"
 
 #~ msgid "Submit"
 #~ msgstr "Potvrdit"
-
-#~ msgid "The domain entry will be saved under this suffix."
-#~ msgstr "Položka domény bude uložena pod tímto sufixem."
 
 #~ msgid "The following settings were saved to profile:"
 #~ msgstr "Následující nastavení bylo uloženo do profilu:"
