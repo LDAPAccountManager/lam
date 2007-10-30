@@ -1398,7 +1398,7 @@ class sambaSamAccount extends baseModule {
 			array("1", _("input on, notify on")),
 			array("2", _("input on, notify off")),
 			array("3", _("input off, notify on")),
-			array("4", _("input off, nofify off")));
+			array("4", _("input off, notify off")));
 		$selShadow = array($mDial->getShadow());
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Shadowing')),
@@ -1721,7 +1721,7 @@ class sambaSamAccount extends baseModule {
 				'1' => _("input on, notify on"),
 				'2' => _("input on, notify off"),
 				'3' => _("input off, notify on"),
-				'4' => _("input off, nofify off"));
+				'4' => _("input off, notify off"));
 			$tsShadowing = '';
 			if (($mDial->getShadow() != null) && is_numeric($mDial->getShadow())) {
 				$tsShadowing = $shadowOptions[$mDial->getShadow()];
