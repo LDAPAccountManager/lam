@@ -233,7 +233,7 @@ class nisMailAlias extends baseModule {
 			// add alias name
 			// check format
 			if (get_preg($rawAccounts[$i][$ids['nisMailAlias_alias']], 'nis_alias')) {
-				$partialAccounts[$i]['cn'][] = $rawAccounts[$i][$ids['nisMailAlias_alias']];
+				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['nisMailAlias_alias']];
 			}
 			else {
 				$errMsg = $this->messages['alias'][1];
