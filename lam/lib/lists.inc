@@ -287,19 +287,15 @@ class lamList {
 		echo("<tr>\n");
 		echo("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
 		if ($this->page != 1) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 1) . "&amp;sort=" . $this->sortColumn . $this->filterText . "\">&lt;=</a>\n");
+			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 1) .
+				"&amp;sort=" . $this->sortColumn . $this->filterText . "\"><img style=\"vertical-align: middle;\" src=\"../../graphics/back.gif\" alt=\"back\"></a>\n");
 		}
-		else {
-			echo("&lt;=");
-		}
-		echo("&nbsp;");
 
 		if ($this->page < ($count / $this->maxPageEntries)) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 1) . "&amp;sort=" . $this->sortColumn . $this->filterText . "\">=&gt;</a>\n");
+			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 1) .
+				"&amp;sort=" . $this->sortColumn . $this->filterText . "\"><img style=\"vertical-align: middle;\" src=\"../../graphics/forward.gif\" alt=\"forward\"></a>\n");
 		}
-		else {
-			echo("=&gt;</td>");
-		}
+		echo("</td>");
 
 		echo("<td class=\"" . $this->type . "nav-text\">");
 		echo"&nbsp;";
