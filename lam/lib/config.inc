@@ -55,7 +55,7 @@ function setlanguage() {
 }
 
 /**
- * Checks wheather a specific flag in the rights string is set.
+ * Checks whether a specific flag in the rights string is set.
  *
  * @param $right read,write or execute
  * @param $target owner,group or other
