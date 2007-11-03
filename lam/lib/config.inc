@@ -55,11 +55,11 @@ function setlanguage() {
 }
 
 /**
- * Return $return, if the the chmod rights where set
+ * Checks wheather a specific flag in the rights string is set.
  *
- * @param: $right:   read,write or execute
- * @param: $target:  owner,group or other
- * @param: $chmod:  the chmod rights
+ * @param $right read,write or execute
+ * @param $target owner,group or other
+ * @param $chmod the chmod rights
  *
  * @return true, if the chmod $right for $target were set
  */
