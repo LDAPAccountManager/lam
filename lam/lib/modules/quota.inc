@@ -180,6 +180,12 @@ class quota extends baseModule {
 		}
 	}
 
+	/**
+	* This function is used to check if this module page can be displayed.
+	* It returns false if a module depends on data from other modules which was not yet entered.
+	*
+	* @return boolean true, if page can be displayed
+	*/
 	function module_ready() {
 		if ($this->get_scope()=='user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -189,14 +195,6 @@ class quota extends baseModule {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
 			if ($attrs['cn'][0]=='') return false;
 		}
-		return true;
-	}
-
-	/* This functions return true
-	* if all needed settings are done
-	*/
-	function module_complete() {
-		if (!$this->module_ready()) return false;
 		return true;
 	}
 
@@ -327,10 +325,11 @@ class quota extends baseModule {
 		return $errors;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	function display_html_attributes() {
 		$return = array();
 		$this->initQuotas();

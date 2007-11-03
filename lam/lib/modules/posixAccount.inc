@@ -420,7 +420,11 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
-	// Constructor
+	/**
+	* Initializes the module after it became part of an accountContainer
+	*
+	* @param string $base the name of the accountContainer object ($_SESSION[$base])
+	*/
 	function init($base) {
 		// call parent init
 		parent::init($base);
@@ -906,10 +910,11 @@ class posixAccount extends baseModule {
 		return $errors;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	function display_html_attributes() {
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) {
@@ -1011,6 +1016,11 @@ class posixAccount extends baseModule {
 	return $return;
 	}
 
+	/**
+	* Displays the delete homedir option for the delete page.
+	*
+	* @return meta HTML code
+	*/
 	function display_html_delete() {
 		if ($this->get_scope() == 'user' && isset($_SESSION['config']->scriptPath)) {
 			$return[] = array (

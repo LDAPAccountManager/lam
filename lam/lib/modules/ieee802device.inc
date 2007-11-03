@@ -86,9 +86,10 @@ class ieee802Device extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	*/
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	function display_html_attributes() {
 		$return = array();
 		// list current MACs

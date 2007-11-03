@@ -252,6 +252,12 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 		return $this->permute($rl, $this->perm6, 64);
 	}
 
+	/**
+	 * str_to_key
+	 *
+	 * @param string $str
+	 * @return string key
+	 */
 	function str_to_key($str) {
 		$key[0] = $this->unsigned_shift_r($str[0], 1);
 		$key[1] = (($str[0]&0x01)<<6) | $this->unsigned_shift_r($str[1], 2);
@@ -267,6 +273,14 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 		return $key;
 	}
 
+	/**
+	 * smb_hash
+	 *
+	 * @param unknown_type $in
+	 * @param unknown_type $key
+	 * @param unknown_type $forw
+	 * @return unknown
+	 */
 	function smb_hash($in, $key, $forw){
 		$key2 = $this->str_to_key($key);
 	
@@ -287,6 +301,12 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 		return $out;
 	}
 
+	/**
+	 * E_P16
+	 *
+	 * @param unknown_type $in
+	 * @return unknown
+	 */
 	function E_P16($in) {
 		$p14 = array_values(unpack("C*",$in));
 		$sp8 = array(0x4b, 0x47, 0x53, 0x21, 0x40, 0x23, 0x24, 0x25);

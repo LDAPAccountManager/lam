@@ -163,10 +163,11 @@ class sambaGroupMapping extends baseModule {
 		return $errors;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	function display_html_attributes() {
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
@@ -383,8 +384,10 @@ class sambaGroupMapping extends baseModule {
 	}
 
 
-	/* This functions return true
-	* if all needed settings are done
+	/**
+	* This functions is used to check if all settings for this module have been made.
+	*
+	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
 		if (!$this->module_ready()) return false;
@@ -394,6 +397,12 @@ class sambaGroupMapping extends baseModule {
 	}
 
 
+	/**
+	* This function is used to check if this module page can be displayed.
+	* It returns false if a module depends on data from other modules which was not yet entered.
+	*
+	* @return boolean true, if page can be displayed
+	*/
 	function module_ready() {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
 		if ($attrs['gidNumber'][0]=='') return false;
@@ -453,13 +462,16 @@ class sambaGroupMapping extends baseModule {
 	}
 
 
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* modify are attributes which have to been modified in ldap entry
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
 		// Get Domain SID from name

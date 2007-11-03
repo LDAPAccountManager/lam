@@ -435,6 +435,12 @@ class sambaAccount extends baseModule {
 	/** Array of well known rids */
 	private $rids;
 
+	/**
+	* This function is used to check if this module page can be displayed.
+	* It returns false if a module depends on data from other modules which was not yet entered.
+	*
+	* @return boolean true, if page can be displayed
+	*/
 	function module_ready() {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		if ($attrs['gidNumber'][0]=='') return false;
@@ -453,8 +459,10 @@ class sambaAccount extends baseModule {
 		return true;
 	}
 
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
+	/**
+	* This function loads the LDAP attributes for this module.
+	*
+	* @param array $attributes attribute list
 	*/
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
@@ -468,13 +476,16 @@ class sambaAccount extends baseModule {
 		}
 	}
 
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* modify are attributes which have to been modified in ldap entry
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
 		/* Create sambaSID. Can't create it while loading attributes because
@@ -703,10 +714,11 @@ class sambaAccount extends baseModule {
 		return array();
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	function display_html_attributes() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Display name')),
@@ -832,9 +844,10 @@ class sambaAccount extends baseModule {
 		return $return;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
+	/**
+	* This function will create the HTML page to edit the allowed workstations.
+	*
+	* @return array meta HTML code
 	*/
 	function display_html_userWorkstations() {
 		if ($this->get_scope()=='user') {
