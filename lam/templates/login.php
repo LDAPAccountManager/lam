@@ -55,7 +55,7 @@ if (! function_exists('utf8_decode')) {
 }
 // check if PHP >= 5.1
 if (version_compare(phpversion(), '5.1.0') < 0) {
-	$criticalErrors[] = array("ERROR", "LAM needs PHP 5 greater or equal as 5.2.0!", "Please upgrade your PHP installation.");
+	$criticalErrors[] = array("ERROR", "LAM needs PHP 5 greater or equal as 5.1.0!", "Please upgrade your PHP installation.");
 }
 // check file permissions
 $writableDirs = array('sess', 'tmp');
