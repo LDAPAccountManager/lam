@@ -161,13 +161,16 @@ class account extends baseModule {
 		return "enabled";
 	}
 
-	/* This function returns an array with 4 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
@@ -200,9 +203,8 @@ class account extends baseModule {
 		return $errors;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
+	/**
+	* This function will create the meta HTML code to show a page with all attributes.
 	*/
 	function display_html_attributes() {
 		// user name if no posixAccount
