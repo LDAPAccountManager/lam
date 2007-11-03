@@ -10,10 +10,11 @@ Style changes:
   - "table.<type>list input" changed to "table.<type>list input,select"
 
 baseModule:
-  - The class variable $base is no longer visible in child classes. Please use
-    $this->getAccountContainer() to access the accountContainer object.
-  - Several other class variables in accountContainer etc. are now private.
-    Use the new access methods.
+  The class variable $base is no longer visible in child classes. Please use
+  $this->getAccountContainer() to access the accountContainer object.
+
+Several other class variables in accountContainer etc. are now private.
+Use the new access methods.
 
 
 
