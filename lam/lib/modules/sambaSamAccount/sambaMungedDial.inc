@@ -26,7 +26,9 @@
 * @author Cajus Pollmeier
 */
 
-/* File header is treated as constant. It cannot be defined inside the class if $PHP_VERSION < 5 */
+/**
+ * File header
+ */
 define ("SAMBA_MUNGEDDIAL_FILEHEADER",
         "20002000200020002000200020002000".
         "20002000200020002000200020002000".
@@ -35,7 +37,9 @@ define ("SAMBA_MUNGEDDIAL_FILEHEADER",
         "20002000200020002000200020002000".
         "20002000200020002000200020002000".
       	"5000");
-/* This is the old header, it is needed to automatically convert old mungedDials to new ones */
+/**
+ * File header for old format.
+ */
 define ("SAMBA_MUNGEDDIAL_FILEHEADER_OLD",   
         "6d000800200020002000200020002000".
         "20002000200020002000200020002000".
@@ -48,6 +52,7 @@ define ("SAMBA_MUNGEDDIAL_FILEHEADER_OLD",
 * Manages terminal server settings for Samba 3.
 *
 * @author Cajus Pollmeier
+* @package modules
 */
 class sambaMungedDial
 {
