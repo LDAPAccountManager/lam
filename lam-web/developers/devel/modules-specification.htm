@@ -571,6 +571,83 @@ $fields:</span> list of self service field names<br>
 <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; 'del' =&gt; array(),</span><br style="font-weight: bold;">
 <span style="font-weight: bold;">);</span><br style="font-weight: bold;">
 <span style="font-weight: bold;"><br>
+
+</span>
+<h3>2.1.25. getSelfServiceSettings</h3>
+
+
+<br>
+
+
+<table border="0" cellpadding="2" cellspacing="2">
+
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getSelfServiceSettings()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+Returns a list of self service configuration settings.<br>
+<br>
+
+
+The return value is an array
+that contains <span style="font-weight: bold;">meta HTML code</span>.<br>
+
+<br>
+
+The type "fieldset" is not allowed here.<br>
+
+The <span style="font-style: italic;">name</span> attributes are used
+as keywords to load and save settings. We recommend to use the module
+name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
+naming confilcts.<br>
+
+<span style="font-weight: bold;"></span><br>
+
+
+<h3>2.1.26. checkSelfServiceSettings</h3>
+
+
+<br>
+
+
+<table border="0" cellpadding="2" cellspacing="2">
+
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function checkSelfServiceSettings($options)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+Checks if the self service settings are valid.<br>
+
+<br>
+
+<span style="font-weight: bold;">$options:</span> is an hash array
+(option name =&gt; value) that contains the input. The option values
+are all arrays containing one or more elements.<br>
+<br>
+If the input data is invalid the return value is an array that contains
+arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
+head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
+
+If no errors occured the function returns an empty array.<br>
+
+<span style="font-weight: bold;"></span><br>
+
+
+<span style="font-weight: bold;"><br>
 <br>
 </span>
 <h3>2.2. Functions which are called inside of an account container<br>
