@@ -12,9 +12,11 @@
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
   <tr>
     <td class="header_menu">
-  		  [ <a href="../classtrees_configuration.html" class="menu">class tree: configuration</a> ]
+        
+                                    
+                                                                                                                                                                                                                                                                              		  [ <a href="../classtrees_configuration.html" class="menu">class tree: configuration</a> ]
 		  [ <a href="../elementindex_configuration.html" class="menu">index: configuration</a> ]
-		  [ <a href="../elementindex.html" class="menu">all elements</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
     </td>
   </tr>
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
@@ -24,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_README.html">README</a></p>
 					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -44,25 +46,26 @@
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
-			<a href="../configuration/_lib_config_inc.html">		config.inc
+			<a href="../configuration/_lib---config.inc.html">		config.inc
 		</a><br>
-			<a href="../configuration/_templates_config_conflogin_php.html">		conflogin.php
+			<a href="../configuration/_templates---config---conflogin.php.html">		conflogin.php
 		</a><br>
-			<a href="../configuration/_templates_config_confmain_php.html">		confmain.php
+			<a href="../configuration/_templates---config---confmain.php.html">		confmain.php
 		</a><br>
-			<a href="../configuration/_templates_config_confmodules_php.html">		confmodules.php
+			<a href="../configuration/_templates---config---confmodules.php.html">		confmodules.php
 		</a><br>
-			<a href="../configuration/_templates_config_conftypes_php.html">		conftypes.php
+			<a href="../configuration/_templates---config---conftypes.php.html">		conftypes.php
 		</a><br>
-			<a href="../configuration/_templates_config_index_php.html">		index.php
+			<a href="../configuration/_templates---config---index.php.html">		index.php
 		</a><br>
-			<a href="../configuration/_templates_config_mainlogin_php.html">		mainlogin.php
+			<a href="../configuration/_templates---config---mainlogin.php.html">		mainlogin.php
 		</a><br>
-			<a href="../configuration/_templates_config_mainmanage_php.html">		mainmanage.php
+			<a href="../configuration/_templates---config---mainmanage.php.html">		mainmanage.php
 		</a><br>
-			<a href="../configuration/_templates_config_profmanage_php.html">		profmanage.php
+			<a href="../configuration/_templates---config---profmanage.php.html">		profmanage.php
 		</a><br>
 	  </div><br />
+
       
       
             <b>Classes:</b><br />
@@ -70,13 +73,13 @@
 		    		<a href="../configuration/LAMCfgMain.html">LAMCfgMain</a><br />
 	    		<a href="../configuration/LAMConfig.html">LAMConfig</a><br />
 	  </div>
+
                 </td>
     <td>
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
 
 <h1>Class: LAMConfig</h1>
 Source Location: /lib/config.inc<br /><br />
-
 
 
 <table width="100%" border="0">
@@ -106,9 +109,9 @@ Source Location: /lib/config.inc<br /><br />
     <li><a href="../configuration/LAMConfig.html#var$moduleSettings">$moduleSettings</a></li>
     <li><a href="../configuration/LAMConfig.html#var$Passwd">$Passwd</a></li>
     <li><a href="../configuration/LAMConfig.html#var$scriptPath">$scriptPath</a></li>
+    <li><a href="../configuration/LAMConfig.html#var$scriptRights">$scriptRights</a></li>
     <li><a href="../configuration/LAMConfig.html#var$scriptServer">$scriptServer</a></li>
     <li><a href="../configuration/LAMConfig.html#var$ServerURL">$ServerURL</a></li>
-    <li><a href="../configuration/LAMConfig.html#var$settings">$settings</a></li>
     <li><a href="../configuration/LAMConfig.html#var$treesuffix">$treesuffix</a></li>
     <li><a href="../configuration/LAMConfig.html#var$typeSettings">$typeSettings</a></li>
   </ul>
@@ -131,11 +134,12 @@ Source Location: /lib/config.inc<br /><br />
     <li><a href="../configuration/LAMConfig.html#methodget_moduleSettings">get_moduleSettings</a></li>
     <li><a href="../configuration/LAMConfig.html#methodget_Passwd">get_Passwd</a></li>
     <li><a href="../configuration/LAMConfig.html#methodget_scriptPath">get_scriptPath</a></li>
-    <li><a href="../configuration/LAMConfig.html#methodget_scriptServer">get_scriptServer</a></li>
+    <li><a href="../configuration/LAMConfig.html#methodget_scriptRights">get_scriptRights</a></li>
+    <li><a href="../configuration/LAMConfig.html#methodget_scriptServers">get_scriptServers</a></li>
     <li><a href="../configuration/LAMConfig.html#methodget_ServerURL">get_ServerURL</a></li>
     <li><a href="../configuration/LAMConfig.html#methodget_Suffix">get_Suffix</a></li>
     <li><a href="../configuration/LAMConfig.html#methodget_typeSettings">get_typeSettings</a></li>
-    <li><a href="../configuration/LAMConfig.html#methodreload">reload</a></li>
+    <li><a href="../configuration/LAMConfig.html#methodisWritable">isWritable</a></li>
     <li><a href="../configuration/LAMConfig.html#methodsave">save</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_AccountModules">set_AccountModules</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_ActiveTypes">set_ActiveTypes</a></li>
@@ -147,7 +151,8 @@ Source Location: /lib/config.inc<br /><br />
     <li><a href="../configuration/LAMConfig.html#methodset_moduleSettings">set_moduleSettings</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_Passwd">set_Passwd</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_scriptPath">set_scriptPath</a></li>
-    <li><a href="../configuration/LAMConfig.html#methodset_scriptServer">set_scriptServer</a></li>
+    <li><a href="../configuration/LAMConfig.html#methodset_scriptRights">set_scriptRights</a></li>
+    <li><a href="../configuration/LAMConfig.html#methodset_scriptServers">set_scriptServers</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_ServerURL">set_ServerURL</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_Suffix">set_Suffix</a></li>
     <li><a href="../configuration/LAMConfig.html#methodset_typeSettings">set_typeSettings</a></li>
@@ -164,14 +169,13 @@ Source Location: /lib/config.inc<br /><br />
 
 
 
-
 </tr></table>
 <hr />
 
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 123]<br />
+[line 164]<br />
 This class manages .conf files.<br /><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -182,7 +186,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$activeTypes"></a>
 	<p></p>
 	<h4>$activeTypes = <span class="value">&nbsp;&quot;user,group,host,smbDomain&quot;</span></h4>
-	<p>[line 169]</p>
+	<p>[line 215]</p>
   Active account types<br /><br />
   <br />
 	<div class="tags">
@@ -197,7 +201,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$Admins"></a>
 	<p></p>
 	<h4>$Admins = <span class="value"></span></h4>
-	<p>[line 129]</p>
+	<p>[line 170]</p>
   Array of string: users with admin rights<br /><br />
   <br />
 	<div class="tags">
@@ -212,7 +216,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$cachetimeout"></a>
 	<p></p>
 	<h4>$cachetimeout = <span class="value"></span></h4>
-	<p>[line 166]</p>
+	<p>[line 212]</p>
   LDAP cache timeout<br /><br />
   <br />
 	<div class="tags">
@@ -227,7 +231,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$defaultLanguage"></a>
 	<p></p>
 	<h4>$defaultLanguage = <span class="value"></span></h4>
-	<p>[line 141]</p>
+	<p>[line 182]</p>
   Default language<br /><br />
   <br />
 	<div class="tags">
@@ -242,7 +246,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$file"></a>
 	<p></p>
 	<h4>$file = <span class="value"></span></h4>
-	<p>[line 172]</p>
+	<p>[line 218]</p>
   Name of configuration file<br /><br />
   <br />
 	<div class="tags">
@@ -257,7 +261,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$maxlistentries"></a>
 	<p></p>
 	<h4>$maxlistentries = <span class="value"></span></h4>
-	<p>[line 138]</p>
+	<p>[line 179]</p>
   Maximum number of rows shown in user/group/host lists<br /><br />
   <br />
 	<div class="tags">
@@ -272,7 +276,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$moduleSettings"></a>
 	<p></p>
 	<h4>$moduleSettings = <span class="value">array()</span></h4>
-	<p>[line 144]</p>
+	<p>[line 185]</p>
   module settings<br /><br />
   <br />
 	<div class="tags">
@@ -287,7 +291,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$Passwd"></a>
 	<p></p>
 	<h4>$Passwd = <span class="value"></span></h4>
-	<p>[line 132]</p>
+	<p>[line 173]</p>
   Password to edit preferences<br /><br />
   <br />
 	<div class="tags">
@@ -302,8 +306,23 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$scriptPath"></a>
 	<p></p>
 	<h4>$scriptPath = <span class="value"></span></h4>
-	<p>[line 155]</p>
+	<p>[line 196]</p>
   Path to external lamdaemon script on server where it is executed<br /><br /><p>This is used for managing quota and home directories.  optional setting, may not be defined</p><br />
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$scriptRights"></a>
+	<p></p>
+	<h4>$scriptRights = <span class="value"></span></h4>
+	<p>[line 201]</p>
+  The rights for the home directory<br /><br />
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -317,8 +336,8 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$scriptServer"></a>
 	<p></p>
 	<h4>$scriptServer = <span class="value"></span></h4>
-	<p>[line 163]</p>
-  Server where lamdaemon script is executed<br /><br /><p>This is used for managing quota and home directories.  optional setting, may not be defined</p><br />
+	<p>[line 209]</p>
+  Servers where lamdaemon script is executed<br /><br /><p>This is used for managing quota and home directories.  optional setting, may not be defined</p><br />
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -332,25 +351,8 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$ServerURL"></a>
 	<p></p>
 	<h4>$ServerURL = <span class="value"></span></h4>
-	<p>[line 126]</p>
+	<p>[line 167]</p>
   Server address (e.g. ldap://127.0.0.1:389)<br /><br />
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$settings"></a>
-	<p></p>
-	<h4>$settings = <span class="value">array(&quot;ServerURL&quot;,&nbsp;&quot;Passwd&quot;,&nbsp;&quot;Admins&quot;,&nbsp;&quot;treesuffix&quot;,&nbsp;&quot;maxlistentries&quot;,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;defaultLanguage&quot;,&nbsp;&quot;scriptPath&quot;,&nbsp;&quot;scriptServer&quot;,&nbsp;&quot;cachetimeout&quot;,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;modules&quot;,&nbsp;&quot;activeTypes&quot;,&nbsp;&quot;types&quot;)</span></h4>
-	<p>[line 175]</p>
-  List of all settings in config file<br /><br />
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -364,7 +366,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$treesuffix"></a>
 	<p></p>
 	<h4>$treesuffix = <span class="value"></span></h4>
-	<p>[line 135]</p>
+	<p>[line 176]</p>
   LDAP suffix for tree view<br /><br />
   <br />
 	<div class="tags">
@@ -379,7 +381,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 	<a name="var$typeSettings"></a>
 	<p></p>
 	<h4>$typeSettings = <span class="value">array()</span></h4>
-	<p>[line 147]</p>
+	<p>[line 188]</p>
   type settings<br /><br />
   <br />
 	<div class="tags">
@@ -400,7 +402,7 @@ This class manages .conf files.<br /><br /></div><br /><br />
 
   <hr />
 	<a name="methodLAMConfig"></a>
-	<h3>constructor LAMConfig <span class="smalllinenumber">[line 185]</span></h3>
+	<h3>constructor LAMConfig <span class="smalllinenumber">[line 231]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -413,8 +415,6 @@ $file = 0])</code>
 		Loads preferences from config file<br /><br /><br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -429,7 +429,7 @@ $file = 0])</code>
   </div>
   <hr />
 	<a name="methodget_AccountModules"></a>
-	<h3>method get_AccountModules <span class="smalllinenumber">[line 615]</span></h3>
+	<h3>method get_AccountModules <span class="smalllinenumber">[line 744]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -446,13 +446,14 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>user modules</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -467,7 +468,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_ActiveTypes"></a>
-	<h3>method get_ActiveTypes <span class="smalllinenumber">[line 671]</span></h3>
+	<h3>method get_ActiveTypes <span class="smalllinenumber">[line 800]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -483,18 +484,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>list of types</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_Admins"></a>
-	<h3>method get_Admins <span class="smalllinenumber">[line 376]</span></h3>
+	<h3>method get_Admins <span class="smalllinenumber">[line 441]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -510,18 +512,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>the admin names</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_Adminstring"></a>
-	<h3>method get_Adminstring <span class="smalllinenumber">[line 385]</span></h3>
+	<h3>method get_Adminstring <span class="smalllinenumber">[line 450]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -537,18 +540,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>the admin string</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_cacheTimeout"></a>
-	<h3>method get_cacheTimeout <span class="smalllinenumber">[line 581]</span></h3>
+	<h3>method get_cacheTimeout <span class="smalllinenumber">[line 710]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -564,18 +568,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>cache time</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_cacheTimeoutSec"></a>
-	<h3>method get_cacheTimeoutSec <span class="smalllinenumber">[line 591]</span></h3>
+	<h3>method get_cacheTimeoutSec <span class="smalllinenumber">[line 720]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -591,18 +596,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>cache time</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_defaultLanguage"></a>
-	<h3>method get_defaultLanguage <span class="smalllinenumber">[line 514]</span></h3>
+	<h3>method get_defaultLanguage <span class="smalllinenumber">[line 579]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -618,18 +624,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>default language</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_listAttributes"></a>
-	<h3>method get_listAttributes <span class="smalllinenumber">[line 467]</span></h3>
+	<h3>method get_listAttributes <span class="smalllinenumber">[line 532]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -646,13 +653,14 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>the attribute list</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -667,7 +675,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_MaxListEntries"></a>
-	<h3>method get_MaxListEntries <span class="smalllinenumber">[line 493]</span></h3>
+	<h3>method get_MaxListEntries <span class="smalllinenumber">[line 558]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -683,18 +691,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>maximum number</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_moduleSettings"></a>
-	<h3>method get_moduleSettings <span class="smalllinenumber">[line 662]</span></h3>
+	<h3>method get_moduleSettings <span class="smalllinenumber">[line 791]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -710,18 +719,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>list of settings: array(name =&gt; value)</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_Passwd"></a>
-	<h3>method get_Passwd <span class="smalllinenumber">[line 409]</span></h3>
+	<h3>method get_Passwd <span class="smalllinenumber">[line 474]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -737,18 +747,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>the password</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_scriptPath"></a>
-	<h3>method get_scriptPath <span class="smalllinenumber">[line 535]</span></h3>
+	<h3>method get_scriptPath <span class="smalllinenumber">[line 600]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -764,45 +775,75 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>script path</td>
   </tr>
-</table>
-</div>
-<br /><br />
-
-	
-
-
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodget_scriptServer"></a>
-	<h3>method get_scriptServer <span class="smalllinenumber">[line 557]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>string get_scriptServer(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Returns the server of the external script<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>script server</td>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
 </table>
 </div>
 <br /><br />
 
 	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodget_scriptRights"></a>
+	<h3>method get_scriptRights <span class="smalllinenumber">[line 683]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string get_scriptRights(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Returns the chmod value for new home directories.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>rights</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodget_scriptServers"></a>
+	<h3>method get_scriptServers <span class="smalllinenumber">[line 622]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string get_scriptServers(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Returns the servers of the external script as a Array<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>script servers</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
+	
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_ServerURL"></a>
-	<h3>method get_ServerURL <span class="smalllinenumber">[line 355]</span></h3>
+	<h3>method get_ServerURL <span class="smalllinenumber">[line 420]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -818,18 +859,19 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>server address</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodget_Suffix"></a>
-	<h3>method get_Suffix <span class="smalllinenumber">[line 431]</span></h3>
+	<h3>method get_Suffix <span class="smalllinenumber">[line 496]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -846,13 +888,14 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>the LDAP suffix</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -867,7 +910,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_typeSettings"></a>
-	<h3>method get_typeSettings <span class="smalllinenumber">[line 702]</span></h3>
+	<h3>method get_typeSettings <span class="smalllinenumber">[line 831]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -883,45 +926,47 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>list of settings: array(name =&gt; value)</td>
   </tr>
-</table>
-</div>
-<br /><br />
-
-	
-
-
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodreload"></a>
-	<h3>method reload <span class="smalllinenumber">[line 200]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean reload(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Reloads preferences from config file<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if file was readable</td>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
 </table>
 </div>
 <br /><br />
 
 	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodisWritable"></a>
+	<h3>method isWritable <span class="smalllinenumber">[line 400]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean isWritable(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Returns if the file can be written on the filesystem.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if file is writable</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
-
+	
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 258]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 304]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -931,15 +976,22 @@ $scope)</code>
     </td></tr></table><br />
 	
 		Saves preferences to config file<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodset_AccountModules"></a>
-	<h3>method set_AccountModules <span class="smalllinenumber">[line 631]</span></h3>
+	<h3>method set_AccountModules <span class="smalllinenumber">[line 760]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -957,13 +1009,14 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $modules has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -983,7 +1036,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodset_ActiveTypes"></a>
-	<h3>method set_ActiveTypes <span class="smalllinenumber">[line 681]</span></h3>
+	<h3>method set_ActiveTypes <span class="smalllinenumber">[line 810]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -994,10 +1047,17 @@ $types)</code>
     </td></tr></table><br />
 	
 		Sets the list of active types.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1012,7 +1072,7 @@ $types)</code>
   </div>
   <hr />
 	<a name="methodset_Adminstring"></a>
-	<h3>method set_Adminstring <span class="smalllinenumber">[line 395]</span></h3>
+	<h3>method set_Adminstring <span class="smalllinenumber">[line 460]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1029,13 +1089,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1050,7 +1111,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_cacheTimeout"></a>
-	<h3>method set_cacheTimeout <span class="smalllinenumber">[line 601]</span></h3>
+	<h3>method set_cacheTimeout <span class="smalllinenumber">[line 730]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1067,13 +1128,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1088,7 +1150,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_defaultLanguage"></a>
-	<h3>method set_defaultLanguage <span class="smalllinenumber">[line 524]</span></h3>
+	<h3>method set_defaultLanguage <span class="smalllinenumber">[line 589]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1105,13 +1167,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1126,7 +1189,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_listAttributes"></a>
-	<h3>method set_listAttributes <span class="smalllinenumber">[line 478]</span></h3>
+	<h3>method set_listAttributes <span class="smalllinenumber">[line 543]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1144,13 +1207,14 @@ $scope)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1170,7 +1234,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodset_MaxListEntries"></a>
-	<h3>method set_MaxListEntries <span class="smalllinenumber">[line 503]</span></h3>
+	<h3>method set_MaxListEntries <span class="smalllinenumber">[line 568]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1187,13 +1251,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1208,7 +1273,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_moduleSettings"></a>
-	<h3>method set_moduleSettings <span class="smalllinenumber">[line 651]</span></h3>
+	<h3>method set_moduleSettings <span class="smalllinenumber">[line 780]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1225,13 +1290,14 @@ $settings)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $settings has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1246,7 +1312,7 @@ $settings)</code>
   </div>
   <hr />
 	<a name="methodset_Passwd"></a>
-	<h3>method set_Passwd <span class="smalllinenumber">[line 419]</span></h3>
+	<h3>method set_Passwd <span class="smalllinenumber">[line 484]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1263,13 +1329,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1284,7 +1351,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_scriptPath"></a>
-	<h3>method set_scriptPath <span class="smalllinenumber">[line 545]</span></h3>
+	<h3>method set_scriptPath <span class="smalllinenumber">[line 610]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1301,13 +1368,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1321,38 +1389,78 @@ $value)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodset_scriptServer"></a>
-	<h3>method set_scriptServer <span class="smalllinenumber">[line 567]</span></h3>
+	<a name="methodset_scriptRights"></a>
+	<h3>method set_scriptRights <span class="smalllinenumber">[line 694]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean set_scriptServer(
+		<code>boolean set_scriptRights(
 string
-$value)</code>
+$chmod)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Sets the server of the external script<br /><br /><br /><br />
+		Sets the rights for the home directory.<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if values has correct format</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
 </table>
 </div>
 <br /><br />
 
 	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$chmod</b>&nbsp;&nbsp;</td>
+        <td>the rights</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodset_scriptServers"></a>
+	<h3>method set_scriptServers <span class="smalllinenumber">[line 632]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean set_scriptServers(
+string
+$value)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Sets the servers of the external script<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
-
+	
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
         <td class="type">string&nbsp;&nbsp;</td>
         <td><b>$value</b>&nbsp;&nbsp;</td>
-        <td>new script server</td>
+        <td>new script servers</td>
       </tr>
         </table>
     </div><br />
@@ -1360,7 +1468,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_ServerURL"></a>
-	<h3>method set_ServerURL <span class="smalllinenumber">[line 365]</span></h3>
+	<h3>method set_ServerURL <span class="smalllinenumber">[line 430]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1377,13 +1485,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1398,7 +1507,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_Suffix"></a>
-	<h3>method set_Suffix <span class="smalllinenumber">[line 447]</span></h3>
+	<h3>method set_Suffix <span class="smalllinenumber">[line 512]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1416,13 +1525,14 @@ $value)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $value has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1442,7 +1552,7 @@ $value)</code>
   </div>
   <hr />
 	<a name="methodset_typeSettings"></a>
-	<h3>method set_typeSettings <span class="smalllinenumber">[line 691]</span></h3>
+	<h3>method set_typeSettings <span class="smalllinenumber">[line 820]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1459,13 +1569,14 @@ $settings)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>true if $settings has correct format</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -1483,7 +1594,7 @@ $settings)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 15 Nov 2006 18:00:39 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+		    Documentation generated on Sun, 04 Nov 2007 12:10:41 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

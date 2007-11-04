@@ -12,9 +12,11 @@
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
   <tr>
     <td class="header_menu">
-  		  [ <a href="../classtrees_configuration.html" class="menu">class tree: configuration</a> ]
+        
+                                    
+                                                                                                                                                                                                                                                                              		  [ <a href="../classtrees_configuration.html" class="menu">class tree: configuration</a> ]
 		  [ <a href="../elementindex_configuration.html" class="menu">index: configuration</a> ]
-		  [ <a href="../elementindex.html" class="menu">all elements</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
     </td>
   </tr>
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
@@ -24,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_README.html">README</a></p>
 					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -44,25 +46,26 @@
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
-			<a href="../configuration/_lib_config_inc.html">		config.inc
+			<a href="../configuration/_lib---config.inc.html">		config.inc
 		</a><br>
-			<a href="../configuration/_templates_config_conflogin_php.html">		conflogin.php
+			<a href="../configuration/_templates---config---conflogin.php.html">		conflogin.php
 		</a><br>
-			<a href="../configuration/_templates_config_confmain_php.html">		confmain.php
+			<a href="../configuration/_templates---config---confmain.php.html">		confmain.php
 		</a><br>
-			<a href="../configuration/_templates_config_confmodules_php.html">		confmodules.php
+			<a href="../configuration/_templates---config---confmodules.php.html">		confmodules.php
 		</a><br>
-			<a href="../configuration/_templates_config_conftypes_php.html">		conftypes.php
+			<a href="../configuration/_templates---config---conftypes.php.html">		conftypes.php
 		</a><br>
-			<a href="../configuration/_templates_config_index_php.html">		index.php
+			<a href="../configuration/_templates---config---index.php.html">		index.php
 		</a><br>
-			<a href="../configuration/_templates_config_mainlogin_php.html">		mainlogin.php
+			<a href="../configuration/_templates---config---mainlogin.php.html">		mainlogin.php
 		</a><br>
-			<a href="../configuration/_templates_config_mainmanage_php.html">		mainmanage.php
+			<a href="../configuration/_templates---config---mainmanage.php.html">		mainmanage.php
 		</a><br>
-			<a href="../configuration/_templates_config_profmanage_php.html">		profmanage.php
+			<a href="../configuration/_templates---config---profmanage.php.html">		profmanage.php
 		</a><br>
 	  </div><br />
+
       
       
             <b>Classes:</b><br />
@@ -70,13 +73,13 @@
 		    		<a href="../configuration/LAMCfgMain.html">LAMCfgMain</a><br />
 	    		<a href="../configuration/LAMConfig.html">LAMConfig</a><br />
 	  </div>
+
                 </td>
     <td>
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
 
 <h1>Class: LAMCfgMain</h1>
 Source Location: /lib/config.inc<br /><br />
-
 
 
 <table width="100%" border="0">
@@ -103,7 +106,6 @@ Source Location: /lib/config.inc<br /><br />
     <li><a href="../configuration/LAMCfgMain.html#var$logLevel">$logLevel</a></li>
     <li><a href="../configuration/LAMCfgMain.html#var$password">$password</a></li>
     <li><a href="../configuration/LAMCfgMain.html#var$sessionTimeout">$sessionTimeout</a></li>
-    <li><a href="../configuration/LAMCfgMain.html#var$settings">$settings</a></li>
   </ul>
 </td>
 
@@ -112,7 +114,6 @@ Source Location: /lib/config.inc<br /><br />
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
     <li><a href="../configuration/LAMCfgMain.html#methodLAMCfgMain">LAMCfgMain</a></li>
-    <li><a href="../configuration/LAMCfgMain.html#methodreload">reload</a></li>
     <li><a href="../configuration/LAMCfgMain.html#methodsave">save</a></li>
   </ul>
 </td>
@@ -127,14 +128,13 @@ Source Location: /lib/config.inc<br /><br />
 
 
 
-
 </tr></table>
 <hr />
 
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 714]<br />
+[line 843]<br />
 This class manages config.cfg.<br /><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -145,8 +145,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$allowedHosts"></a>
 	<p></p>
 	<h4>$allowedHosts = <span class="value"></span></h4>
-	<p>[line 732]</p>
-  list of hosts which may access LAM<br /><br />
+	<p>[line 861]</p>
+  list of hosts which may access LAM<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -160,8 +169,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$default"></a>
 	<p></p>
 	<h4>$default = <span class="value"></span></h4>
-	<p>[line 717]</p>
-  Default profile<br /><br />
+	<p>[line 846]</p>
+  Default profile<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -175,8 +193,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$logDestination"></a>
 	<p></p>
 	<h4>$logDestination = <span class="value"></span></h4>
-	<p>[line 729]</p>
-  log destination (&quot;SYSLOG&quot;:syslog, &quot;/...&quot;:file, &quot;NONE&quot;:none)<br /><br />
+	<p>[line 858]</p>
+  log destination (&quot;SYSLOG&quot;:syslog, &quot;/...&quot;:file, &quot;NONE&quot;:none)<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -190,8 +217,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$logLevel"></a>
 	<p></p>
 	<h4>$logLevel = <span class="value"></span></h4>
-	<p>[line 726]</p>
-  log level<br /><br />
+	<p>[line 855]</p>
+  log level<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -205,8 +241,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$password"></a>
 	<p></p>
 	<h4>$password = <span class="value"></span></h4>
-	<p>[line 720]</p>
-  Password to change config.cfg<br /><br />
+	<p>[line 849]</p>
+  Password to change config.cfg<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -220,24 +265,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$sessionTimeout"></a>
 	<p></p>
 	<h4>$sessionTimeout = <span class="value"></span></h4>
-	<p>[line 723]</p>
-  Time of inactivity before session times out (minutes)<br /><br />
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$settings"></a>
-	<p></p>
-	<h4>$settings = <span class="value">array(&quot;password&quot;,&nbsp;&quot;default&quot;,&nbsp;&quot;sessionTimeout&quot;,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;logLevel&quot;,&nbsp;&quot;logDestination&quot;,&nbsp;&quot;allowedHosts&quot;)</span></h4>
-	<p>[line 735]</p>
-  list of data fields to save in config file<br /><br />
+	<p>[line 852]</p>
+  Time of inactivity before session times out (minutes)<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
   <br />
 	<div class="tags">
   <table border="0" cellspacing="0" cellpadding="0">
@@ -257,7 +295,7 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 
   <hr />
 	<a name="methodLAMCfgMain"></a>
-	<h3>constructor LAMCfgMain <span class="smalllinenumber">[line 741]</span></h3>
+	<h3>constructor LAMCfgMain <span class="smalllinenumber">[line 870]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -269,40 +307,11 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 		Loads preferences from config file<br /><br /><br /><br />
 
 	
-
-
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodreload"></a>
-	<h3>method reload <span class="smalllinenumber">[line 755]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean reload(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Reloads preferences from config file config.cfg<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if file was readable</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 782]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 911]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -312,10 +321,17 @@ This class manages config.cfg.<br /><br /></div><br /><br />
     </td></tr></table><br />
 	
 		Saves preferences to config file config.cfg<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	
-
-
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
 </div><br />
@@ -323,7 +339,7 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 15 Nov 2006 18:00:39 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+		    Documentation generated on Sun, 04 Nov 2007 12:10:41 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

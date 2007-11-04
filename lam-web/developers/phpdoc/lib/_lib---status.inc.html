@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>Docs for page status.inc</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">lib</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                
+                                                                                                                                                                                                                  		  [ <a href="../classtrees_lib.html" class="menu">class tree: lib</a> ]
+		  [ <a href="../elementindex_lib.html" class="menu">index: lib</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../lib/_lib---account.inc.html">		account.inc
+		</a><br>
+			<a href="../lib/_lib---cache.inc.html">		cache.inc
+		</a><br>
+			<a href="../lib/_lib---schema.inc.html">		schema.inc
+		</a><br>
+			<a href="../lib/_lib---security.inc.html">		security.inc
+		</a><br>
+			<a href="../lib/_lib---status.inc.html">		status.inc
+		</a><br>
+	  </div><br />
+
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../lib/AttributeType.html">AttributeType</a><br />
+	    		<a href="../lib/cache.html">cache</a><br />
+	    		<a href="../lib/MatchingRule.html">MatchingRule</a><br />
+	    		<a href="../lib/MatchingRuleUse.html">MatchingRuleUse</a><br />
+	    		<a href="../lib/ObjectClass.html">ObjectClass</a><br />
+	    		<a href="../lib/ObjectClassAttribute.html">ObjectClassAttribute</a><br />
+	    		<a href="../lib/SchemaItem.html">SchemaItem</a><br />
+	    		<a href="../lib/Syntax.html">Syntax</a><br />
+	  </div>
+
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: status.inc</h1>
+Source Location: /lib/status.inc<br /><br />
+
+<br>
+<br>
+
+
+<h2>Page Details:</h2>
+LDAP Account Manager status messages.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Michael Duergner</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functionStatusMessage"></a>
+	<h3>StatusMessage <span class="smalllinenumber">[line 50]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void StatusMessage(
+string $MessageTyp, string $MessageHeadline, [string $MessageText = &#039;&#039;], [array $MessageVariables = array()])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		This function prints a short status message. It can be used to print INFO,  WARN and ERROR messages at the moment.<br /><br /><p>The headline and text may be formated with special tags:  <br />  <br /><strong>{bold}, {endbold}:</strong> All text between these tags is printed bold.  <br /><strong>{color=#123456}, {endcolor}:</strong> All text between these tags is printed in the given color.  <br /><strong>{link=http://nodomain.org}, {endlink}:</strong> A link with the given target is created. The link text is the text between the tags.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$MessageTyp</b>&nbsp;&nbsp;</td>
+        <td>The type of the message to be printed. It must be one of  the following types: 'INFO', 'WARN' or 'ERROR'.  <br /> Every other type will lead to an error message indicating an invalid message type.</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$MessageHeadline</b>&nbsp;&nbsp;</td>
+        <td>The headline of the status message.  <br /> It may be formatted with special color/link/bold tags.</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$MessageText</b>&nbsp;&nbsp;</td>
+        <td>The text of the status message.  <br /> It may be formatted with special color/link/bold tags. This parameter is optional.</td>
+      </tr>
+		      <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$MessageVariables</b>&nbsp;&nbsp;</td>
+        <td>The variables that are used to replace the spacers (%s) in the  submitted text. This parameter is optional.</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Sun, 04 Nov 2007 12:11:11 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

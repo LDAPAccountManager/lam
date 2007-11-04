@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>Docs for page security.inc</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">lib</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                
+                                                                                                                                                                                                                  		  [ <a href="../classtrees_lib.html" class="menu">class tree: lib</a> ]
+		  [ <a href="../elementindex_lib.html" class="menu">index: lib</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../lib/_lib---account.inc.html">		account.inc
+		</a><br>
+			<a href="../lib/_lib---cache.inc.html">		cache.inc
+		</a><br>
+			<a href="../lib/_lib---schema.inc.html">		schema.inc
+		</a><br>
+			<a href="../lib/_lib---security.inc.html">		security.inc
+		</a><br>
+			<a href="../lib/_lib---status.inc.html">		status.inc
+		</a><br>
+	  </div><br />
+
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../lib/AttributeType.html">AttributeType</a><br />
+	    		<a href="../lib/cache.html">cache</a><br />
+	    		<a href="../lib/MatchingRule.html">MatchingRule</a><br />
+	    		<a href="../lib/MatchingRuleUse.html">MatchingRuleUse</a><br />
+	    		<a href="../lib/ObjectClass.html">ObjectClass</a><br />
+	    		<a href="../lib/ObjectClassAttribute.html">ObjectClassAttribute</a><br />
+	    		<a href="../lib/SchemaItem.html">SchemaItem</a><br />
+	    		<a href="../lib/Syntax.html">Syntax</a><br />
+	  </div>
+
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: security.inc</h1>
+Source Location: /lib/security.inc<br /><br />
+
+<br>
+<br>
+
+
+<h2>Page Details:</h2>
+This file includes functions to perform several security checks on each page load.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Roland Gruber</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<h4>Includes:</h4>
+<div class="tags">
+include_once(<a href="../LDAP/_lib---ldap.inc.html">'ldap.inc'</a>) [line 34]<br />
+ldap connection<br /><br />include_once(<a href="../configuration/_lib---config.inc.html">'config.inc'</a>) [line 32]<br />
+configuration options<br /><br /></div>
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functioncheckClientIP"></a>
+	<h3>checkClientIP <span class="smalllinenumber">[line 75]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void checkClientIP(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Checks if the client's IP address is on the list of allowed IPs.<br /><br /><p>The script is stopped if the host is not valid.</p><br />    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionlogNewMessage"></a>
+	<h3>logNewMessage <span class="smalllinenumber">[line 150]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void logNewMessage(
+string $level, string $message)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Puts a new message in the log file.<br /><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$level</b>&nbsp;&nbsp;</td>
+        <td>log level (LOG_NOTICE, LOG_WARNING, LOG_ERR)</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$message</b>&nbsp;&nbsp;</td>
+        <td>log message</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionlogoffAndBackToLoginPage"></a>
+	<h3>logoffAndBackToLoginPage <span class="smalllinenumber">[line 103]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void logoffAndBackToLoginPage(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Logs off the user and displays the login page.<br /><br />    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionstartSecureSession"></a>
+	<h3>startSecureSession <span class="smalllinenumber">[line 43]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void startSecureSession(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Starts a session and checks the environment.<br /><br /><p>The script is stopped if one of the checks fail.</p><br />    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Sun, 04 Nov 2007 12:11:09 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

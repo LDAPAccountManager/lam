@@ -12,9 +12,11 @@
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
   <tr>
     <td class="header_menu">
-  		  [ <a href="../classtrees_tools.html" class="menu">class tree: tools</a> ]
+        
+                                                                                                                                                                                                                                                                
+                                                  		  [ <a href="../classtrees_tools.html" class="menu">class tree: tools</a> ]
 		  [ <a href="../elementindex_tools.html" class="menu">index: tools</a> ]
-		  [ <a href="../elementindex.html" class="menu">all elements</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
     </td>
   </tr>
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
@@ -24,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_README.html">README</a></p>
 					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -44,25 +46,26 @@
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
-			<a href="../tools/_lib_export_inc.html">		export.inc
+			<a href="../tools/_lib---export.inc.html">		export.inc
 		</a><br>
-			<a href="../tools/_templates_tests_index_php.html">		index.php
+			<a href="../tools/_templates---tests---index.php.html">		index.php
 		</a><br>
-			<a href="../tools/_templates_tests_lamdaemonTest_php.html">		lamdaemonTest.php
+			<a href="../tools/_templates---tests---lamdaemonTest.php.html">		lamdaemonTest.php
 		</a><br>
-			<a href="../tools/_templates_massBuildAccounts_php.html">		massBuildAccounts.php
+			<a href="../tools/_templates---massBuildAccounts.php.html">		massBuildAccounts.php
 		</a><br>
-			<a href="../tools/_templates_masscreate_php.html">		masscreate.php
+			<a href="../tools/_templates---masscreate.php.html">		masscreate.php
 		</a><br>
-			<a href="../tools/_templates_massDoUpload_php.html">		massDoUpload.php
+			<a href="../tools/_templates---massDoUpload.php.html">		massDoUpload.php
 		</a><br>
-			<a href="../tools/_templates_ou_edit_php.html">		ou_edit.php
+			<a href="../tools/_templates---ou_edit.php.html">		ou_edit.php
 		</a><br>
-			<a href="../tools/_templates_schema_schema_php.html">		schema.php
+			<a href="../tools/_templates---schema---schema.php.html">		schema.php
 		</a><br>
-			<a href="../tools/_templates_tools_php.html">		tools.php
+			<a href="../tools/_templates---tools.php.html">		tools.php
 		</a><br>
 	  </div><br />
+
       
       
             <b>Classes:</b><br />
@@ -77,13 +80,13 @@
 	    		<a href="../tools/PlaLdifExporter.html">PlaLdifExporter</a><br />
 	    		<a href="../tools/PlaVcardExporter.html">PlaVcardExporter</a><br />
 	  </div>
+
                 </td>
     <td>
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
 
 <h1>Class: PlaLdapExporter</h1>
 Source Location: /lib/export.inc<br /><br />
-
 
 
 <table width="100%" border="0">
@@ -143,7 +146,6 @@ Source Location: /lib/export.inc<br /><br />
 
 
 
-
 <td valign="top">
 <h3>Inherited Methods</h3>
 <div class="tags">
@@ -151,35 +153,30 @@ Source Location: /lib/export.inc<br /><br />
 <dl>
     <dt>
     <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_array">PlaAbstractExporter::pla_fetch_entry_array()</a>
-
   </dt>
   <dd>
     Return the entry as an array
   </dd>
     <dt>
     <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_object">PlaAbstractExporter::pla_fetch_entry_object()</a>
-
   </dt>
   <dd>
     Return the entry as an Entry object
   </dd>
     <dt>
     <a href="../tools/PlaAbstractExporter.html#methodpla_get_ldap_info">PlaAbstractExporter::pla_get_ldap_info()</a>
-
   </dt>
   <dd>
     Return a PlaLdapInfo Object
   </dd>
     <dt>
     <a href="../tools/PlaAbstractExporter.html#methodpla_has_entry">PlaAbstractExporter::pla_has_entry()</a>
-
   </dt>
   <dd>
     Return true if there is some more entries to be processed
   </dd>
     <dt>
     <a href="../tools/PlaAbstractExporter.html#methodpla_num_entries">PlaAbstractExporter::pla_num_entries()</a>
-
   </dt>
   <dd>
     Return the number of entries
@@ -363,7 +360,7 @@ Export data from a ldap server<br /><br /><br /><br />
 String
 $queryFilter, String
 $base_dn, String
-$scope, mixed
+$scope, 
 $attributes)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -371,8 +368,6 @@ $attributes)</code>
 		Create a PlaLdapExporter object.<br /><br /><br /><br />
 
 	
-
-
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -390,6 +385,11 @@ $attributes)</code>
         <td class="type">String&nbsp;&nbsp;</td>
         <td><b>$scope</b>&nbsp;&nbsp;</td>
         <td>the scope for export</td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$attributes</b>&nbsp;&nbsp;</td>
+        <td></td>
       </tr>
         </table>
     </div><br />
@@ -417,9 +417,7 @@ $attributes)</code>
 </div>
 <br /><br />
 
-	
-Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_array">PlaAbstractExporter::pla_fetch_entry_array()</a> (Return the entry as an array)<br /><br />
-
+	Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_array">PlaAbstractExporter::pla_fetch_entry_array()</a> (Return the entry as an array)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
@@ -444,9 +442,7 @@ Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_array
 </div>
 <br /><br />
 
-	
-Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_object">PlaAbstractExporter::pla_fetch_entry_object()</a> (Return the entry as an Entry object)<br /><br />
-
+	Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_object">PlaAbstractExporter::pla_fetch_entry_object()</a> (Return the entry as an Entry object)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
@@ -471,9 +467,7 @@ Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_fetch_entry_objec
 </div>
 <br /><br />
 
-	
-Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_get_ldap_info">PlaAbstractExporter::pla_get_ldap_info()</a> (Return a PlaLdapInfo Object)<br /><br />
-
+	Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_get_ldap_info">PlaAbstractExporter::pla_get_ldap_info()</a> (Return a PlaLdapInfo Object)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
@@ -498,9 +492,7 @@ Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_get_ldap_info">Pl
 </div>
 <br /><br />
 
-	
-Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_has_entry">PlaAbstractExporter::pla_has_entry()</a> (Return true if there is some more entries to be processed)<br /><br />
-
+	Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_has_entry">PlaAbstractExporter::pla_has_entry()</a> (Return true if there is some more entries to be processed)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
@@ -525,9 +517,7 @@ Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_has_entry">PlaAbs
 </div>
 <br /><br />
 
-	
-Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_num_entries">PlaAbstractExporter::pla_num_entries()</a> (Return the number of entries)<br /><br />
-
+	Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_num_entries">PlaAbstractExporter::pla_num_entries()</a> (Return the number of entries)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
 </div><br />
@@ -535,7 +525,7 @@ Overrides <a href="../tools/PlaAbstractExporter.html#methodpla_num_entries">PlaA
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 15 Nov 2006 18:00:44 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+		    Documentation generated on Sun, 04 Nov 2007 12:10:46 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

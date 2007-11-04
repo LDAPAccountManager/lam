@@ -1,0 +1,595 @@
+<html>
+<head>
+<title>Docs for page schema.inc</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">lib</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                
+                                                                                                                                                                                                                  		  [ <a href="../classtrees_lib.html" class="menu">class tree: lib</a> ]
+		  [ <a href="../elementindex_lib.html" class="menu">index: lib</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../lib/_lib---account.inc.html">		account.inc
+		</a><br>
+			<a href="../lib/_lib---cache.inc.html">		cache.inc
+		</a><br>
+			<a href="../lib/_lib---schema.inc.html">		schema.inc
+		</a><br>
+			<a href="../lib/_lib---security.inc.html">		security.inc
+		</a><br>
+			<a href="../lib/_lib---status.inc.html">		status.inc
+		</a><br>
+	  </div><br />
+
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../lib/AttributeType.html">AttributeType</a><br />
+	    		<a href="../lib/cache.html">cache</a><br />
+	    		<a href="../lib/MatchingRule.html">MatchingRule</a><br />
+	    		<a href="../lib/MatchingRuleUse.html">MatchingRuleUse</a><br />
+	    		<a href="../lib/ObjectClass.html">ObjectClass</a><br />
+	    		<a href="../lib/ObjectClassAttribute.html">ObjectClassAttribute</a><br />
+	    		<a href="../lib/SchemaItem.html">SchemaItem</a><br />
+	    		<a href="../lib/Syntax.html">Syntax</a><br />
+	  </div>
+
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: schema.inc</h1>
+Source Location: /lib/schema.inc<br /><br />
+
+<br>
+<br>
+
+<div class="contents">
+<h2>Classes:</h2>
+<dt><a href="../lib/SchemaItem.html">SchemaItem</a></dt>
+	<dd>Generic parent class for all schema items. A schema item is  an ObjectClass, an AttributeBype, a MatchingRule, or a Syntax.</dd>
+<dt><a href="../lib/ObjectClass.html">ObjectClass</a></dt>
+	<dd>Represents an LDAP objectClass</dd>
+<dt><a href="../lib/ObjectClassAttribute.html">ObjectClassAttribute</a></dt>
+	<dd>A simple class for representing AttributeTypes used only by the ObjectClass class.</dd>
+<dt><a href="../lib/AttributeType.html">AttributeType</a></dt>
+	<dd>Represents an LDAP AttributeType</dd>
+<dt><a href="../lib/Syntax.html">Syntax</a></dt>
+	<dd>Represents an LDAP Syntax</dd>
+<dt><a href="../lib/MatchingRule.html">MatchingRule</a></dt>
+	<dd>Represents an LDAP MatchingRule</dd>
+<dt><a href="../lib/MatchingRuleUse.html">MatchingRuleUse</a></dt>
+	<dd>Represents an LDAP schema matchingRuleUse entry</dd>
+</div><br /><br />
+
+<h2>Page Details:</h2>
+Classes and functions for fetching and parsing schema from an LDAP server.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>The phpLDAPadmin development team</td>
+  </tr>
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Roland Gruber</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<br /><br />
+<br /><br />
+  <hr />
+	<a name="defineSCHEMA_SESSION_CACHE_ENABLED"></a>
+	<h3>SCHEMA_SESSION_CACHE_ENABLED <span class="smalllinenumber">[line 34]</span></h3>
+	<div class="tags">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>SCHEMA_SESSION_CACHE_ENABLED = 1</code>
+    </td></tr></table>
+    </td></tr></table>
+
+    To enable/disable session-based schema caching (1: enabled, 0: disabled).<br /><br />    <br />
+		</div>
+	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+<br />
+  <hr />
+	<a name="functionadd_aliases_to_attrs"></a>
+	<h3>add_aliases_to_attrs <span class="smalllinenumber">[line 1702]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void add_aliases_to_attrs(
+ &$attrs)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		For each attribute that has multiple names, this function adds unique entries to  the attrs array for those names. Ie, attributeType has name 'gn' and 'givenName'.<br /><br /><p>This function will create a unique entry for 'gn' and 'givenName'.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>&$attrs</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionadd_sup_to_attrs"></a>
+	<h3>add_sup_to_attrs <span class="smalllinenumber">[line 1727]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void add_sup_to_attrs(
+ &$attrs,  &$attrs_oid)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Adds inherited values to each attributeType specified by the SUP directive.<br /><br /><p>Supports infinite levels of inheritance.  Bug 856832: require a second paramter that has all attributes indexed by OID</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>&$attrs</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>&$attrs_oid</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functioncached_schema_available"></a>
+	<h3>cached_schema_available <span class="smalllinenumber">[line 1936]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void cached_schema_available(
+ $schema_type)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns true if the schema for $schema_type has been cached and<br /><br /><p>is availble. $schema_type may be one of (lowercase) the following:       objectclasses       attributetypes       ldapsyntaxes       matchingrules       matchingruleuse  Note that _get_raw_schema() takes a similar parameter.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$schema_type</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_cached_schema"></a>
+	<h3>get_cached_schema <span class="smalllinenumber">[line 1973]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void get_cached_schema(
+ $schema_type)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns the cached array of schemaitem objects for the specified<br /><br /><p>$schema_type. For list of valid $schema_type values, see above  schema_cache_available(). Note that internally, this function  utilizes a two-layer cache, one in memory using a static variable  for multiple calls within the same page load, and one in a session  for multiple calls within the same user session (spanning multiple  page loads).</p><p>Returns an array of SchemaItem objects on success or false on failure.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$schema_type</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_schema_attribute"></a>
+	<h3>get_schema_attribute <span class="smalllinenumber">[line 1589]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../lib/AttributeType.html">AttributeType</a> get_schema_attribute(
+ $attr_name, [string $dn = null], [ $use_cache = true], string $oclass_name)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Gets a single AttributeType object specified by name.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The specified AttributeType object or false on error.</td>
+  </tr>
+  <tr>
+    <td><b>see:</b>&nbsp;&nbsp;</td><td><a href="../lib/_lib---schema.inc.html#functionget_schema_attributes">get_schema_attributes()</a></td>
+  </tr>
+  <tr>
+    <td><b>see:</b>&nbsp;&nbsp;</td><td><a href="../lib/AttributeType.html">AttributeType</a></td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$oclass_name</b>&nbsp;&nbsp;</td>
+        <td>The name of the AttributeType to fetch.</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td>(optional) It is easier to fetch schema if a DN is provided              which defines the subschemaSubEntry attribute (all entries should).</td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$attr_name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$use_cache</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_schema_attributes"></a>
+	<h3>get_schema_attributes <span class="smalllinenumber">[line 1610]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array get_schema_attributes(
+[string $dn = null], [ $use_cache = true])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Gets an associative array of AttributeType objects for the specified  server. Each array entry's key is the name of the attributeType  in lower-case and the value is an AttributeType object.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of AttributeType objects.</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td>(optional) It is easier to fetch schema if a DN is provided              which defines the subschemaSubEntry attribute (all entries should).</td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$use_cache</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_schema_matching_rules"></a>
+	<h3>get_schema_matching_rules <span class="smalllinenumber">[line 1841]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void get_schema_matching_rules(
+[ $dn = null], [ $use_cache = true])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns an array of MatchingRule objects for the specified server.<br /><br /><p>The key of each entry is the OID of the matching rule.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$use_cache</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_schema_objectclass"></a>
+	<h3>get_schema_objectclass <span class="smalllinenumber">[line 1565]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../lib/ObjectClass.html">ObjectClass</a> get_schema_objectclass(
+string $oclass_name, [string $dn = null], [ $use_cache = true])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Gets a single ObjectClass object specified by name.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The specified ObjectClass object or false on error.</td>
+  </tr>
+  <tr>
+    <td><b>see:</b>&nbsp;&nbsp;</td><td><a href="../lib/_lib---schema.inc.html#functionget_schema_objectclasses">get_schema_objectclasses()</a></td>
+  </tr>
+  <tr>
+    <td><b>see:</b>&nbsp;&nbsp;</td><td><a href="../lib/ObjectClass.html">ObjectClass</a></td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$oclass_name</b>&nbsp;&nbsp;</td>
+        <td>The name of the objectClass to fetch.</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td>(optional) It is easier to fetch schema if a DN is provided              which defines the subschemaSubEntry attribute (all entries should).</td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$use_cache</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_schema_objectclasses"></a>
+	<h3>get_schema_objectclasses <span class="smalllinenumber">[line 1525]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array get_schema_objectclasses(
+[string $dn = null], [ $use_cache = true])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Gets an associative array of ObjectClass objects for the specified  server. Each array entry's key is the name of the objectClass  in lower-case and the value is an ObjectClass object.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>An array of ObjectClass objects.</td>
+  </tr>
+  <tr>
+    <td><b>see:</b>&nbsp;&nbsp;</td><td><a href="../lib/_lib---schema.inc.html#functionget_schema_objectclass">get_schema_objectclass()</a></td>
+  </tr>
+  <tr>
+    <td><b>see:</b>&nbsp;&nbsp;</td><td><a href="../lib/ObjectClass.html">ObjectClass</a></td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td>(optional) It is easier to fetch schema if a DN is provided              which defines the subschemaSubEntry attribute (all entries should).</td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$use_cache</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionget_schema_syntaxes"></a>
+	<h3>get_schema_syntaxes <span class="smalllinenumber">[line 1895]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void get_schema_syntaxes(
+[ $dn = null], [ $use_cache = true])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns an array of Syntax objects that this LDAP server uses mapped to  their descriptions. The key of each entry is the OID of the Syntax.<br /><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$use_cache</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionset_cached_schema"></a>
+	<h3>set_cached_schema <span class="smalllinenumber">[line 2004]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_cached_schema(
+ $schema_type,  $schema_items)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Caches the specified $schema_type.<br /><br /><p>$schema_items should be an array of SchemaItem instances (ie,  an array of ObjectClass, AttributeType, LDAPSyntax, MatchingRuleUse,  or MatchingRule objects.</p><p>Returns true on success of false on failure.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$schema_type</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+		      <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$schema_items</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionset_schema_cache_unavailable"></a>
+	<h3>set_schema_cache_unavailable <span class="smalllinenumber">[line 2033]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void set_schema_cache_unavailable(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Sets the schema entry for the server_id to be &quot;unavailable&quot; so that we realize  that we tried to get the schema but could not, so quit trying next time to  fetch it from the server.<br /><br />    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="function_get_raw_schema"></a>
+	<h3>_get_raw_schema <span class="smalllinenumber">[line 1334]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>an _get_raw_schema(
+$schema_to_fetch $schema_to_fetch, [$dn $dn = &#039;&#039;])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Fetches the raw schema array for the subschemaSubentry of the server. Note,  this function has grown many hairs to accomodate more LDAP servers. It is  needfully complicated as it now supports many popular LDAP servers that  don't necessarily expose their schema &quot;the right way&quot;.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>array of strings of this form:     Array (       [0] =&gt; &quot;( 1.3.6.1.4.1.7165.1.2.2.4 NAME 'gidPool' DESC 'Pool ...       [1] =&gt; &quot;( 1.3.6.1.4.1.7165.2.2.3 NAME 'sambaAccount' DESC 'Sa ...       etc.</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">$schema_to_fetch&nbsp;&nbsp;</td>
+        <td><b>$schema_to_fetch</b>&nbsp;&nbsp;</td>
+        <td>- A string indicating which type of schema to         fetch. Five valid values: 'objectclasses', 'attributetypes',         'ldapsyntaxes', 'matchingruleuse', or 'matchingrules'.         Case insensitive.</td>
+      </tr>
+		      <tr>
+        <td class="type">$dn&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td>(optional) This paremeter is the DN of the entry whose schema you          would like to fetch. Entries have the option of specifying          their own subschemaSubentry that points to the DN of the system          schema entry which applies to this attribute. If unspecified,         this will try to retrieve the schema from the RootDSE subschemaSubentry.         Failing that, we use some commonly known schema DNs. Default         value is the Root DSE DN (zero-length string)</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="function_get_schema_dn"></a>
+	<h3>_get_schema_dn <span class="smalllinenumber">[line 1267]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string _get_schema_dn(
+string $dn, [bool $debug = false])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Helper for _get_raw_schema() which fetches the DN of the schema object<br /><br /><p>in an LDAP server based on a DN. Entries should set the subSchemaSubEntry  attribute pointing to the DN of the server schema. You can specify  the  DN whose subSchemaSubEntry you wish to retrieve of specify an empty string  to fetch the subScehamSubEntry from the Root DSE.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>The DN of the entry which houses this LDAP server's schema.</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$dn</b>&nbsp;&nbsp;</td>
+        <td>The DN (may be null) which houses the subschemaSubEntry attribute which                   this function can use to determine the schema entry's DN.</td>
+      </tr>
+		      <tr>
+        <td class="type">bool&nbsp;&nbsp;</td>
+        <td><b>$debug</b>&nbsp;&nbsp;</td>
+        <td>Switch to true to see some nice and copious output. :)</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Sun, 04 Nov 2007 12:11:07 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -12,9 +12,11 @@
   <tr><td class="header_line"><img src="media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
   <tr>
     <td class="header_menu">
-  		  [ <a href="classtrees_lib.html" class="menu">class tree: lib</a> ]
+        
+                                                                            
+                                                                                                                                                                                                                                      		  [ <a href="classtrees_lib.html" class="menu">class tree: lib</a> ]
 		  [ <a href="elementindex_lib.html" class="menu">index: lib</a> ]
-		  [ <a href="elementindex.html" class="menu">all elements</a> ]
+		  	    [ <a href="elementindex.html" class="menu">all elements</a> ]
     </td>
   </tr>
   <tr><td class="header_line"><img src="media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
@@ -24,37 +26,38 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="ric_README.html">README</a></p>
 					<p><a href="ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
+              <a href="li_Help.html">Help</a><br />
               <a href="li_PDF.html">PDF</a><br />
-              <a href="li_lists.html">lists</a><br />
-              <a href="li_profiles.html">profiles</a><br />
-              <a href="li_LDAP.html">LDAP</a><br />
-              <a href="li_types.html">types</a><br />
               <a href="li_lib.html">lib</a><br />
               <a href="li_modules.html">modules</a><br />
-              <a href="li_selfService.html">selfService</a><br />
+              <a href="li_types.html">types</a><br />
               <a href="li_configuration.html">configuration</a><br />
               <a href="li_tools.html">tools</a><br />
-              <a href="li_Help.html">Help</a><br />
-              <a href="li_tests.html">tests</a><br />
+              <a href="li_LDAP.html">LDAP</a><br />
+              <a href="li_lists.html">lists</a><br />
+              <a href="li_profiles.html">profiles</a><br />
+              <a href="li_selfService.html">selfService</a><br />
               <a href="li_main.html">main</a><br />
+              <a href="li_tests.html">tests</a><br />
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
-			<a href="lib/_lib_account_inc.html">		account.inc
+			<a href="lib/_lib---account.inc.html">		account.inc
 		</a><br>
-			<a href="lib/_lib_cache_inc.html">		cache.inc
+			<a href="lib/_lib---cache.inc.html">		cache.inc
 		</a><br>
-			<a href="lib/_lib_schema_inc.html">		schema.inc
+			<a href="lib/_lib---schema.inc.html">		schema.inc
 		</a><br>
-			<a href="lib/_lib_security_inc.html">		security.inc
+			<a href="lib/_lib---security.inc.html">		security.inc
 		</a><br>
-			<a href="lib/_lib_status_inc.html">		status.inc
+			<a href="lib/_lib---status.inc.html">		status.inc
 		</a><br>
 	  </div><br />
+
       
       
             <b>Classes:</b><br />
@@ -68,6 +71,7 @@
 	    		<a href="lib/SchemaItem.html">SchemaItem</a><br />
 	    		<a href="lib/Syntax.html">Syntax</a><br />
 	  </div>
+
                 </td>
     <td>
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
@@ -98,9 +102,9 @@
 		<h2>_</h2>
 		<dl>
 							<dt><b>_get_raw_schema</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#function_get_raw_schema">_get_raw_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Fetches the raw schema array for the subschemaSubentry of the server. Note,  this function has grown many hairs to accomodate more LDAP servers. It is  needfully complicated as it now supports many popular LDAP servers that  don't necessarily expose their schema &quot;the right way&quot;.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#function_get_raw_schema">_get_raw_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Fetches the raw schema array for the subschemaSubentry of the server. Note,  this function has grown many hairs to accomodate more LDAP servers. It is  needfully complicated as it now supports many popular LDAP servers that  don't necessarily expose their schema &quot;the right way&quot;.</dd>
 							<dt><b>_get_schema_dn</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#function_get_schema_dn">_get_schema_dn()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper for _get_raw_schema() which fetches the DN of the schema object</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#function_get_schema_dn">_get_schema_dn()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper for _get_raw_schema() which fetches the DN of the schema object</dd>
 							<dt><b>__sleep</b></dt>
 				<dd>in file cache.inc, method <a href="lib/cache.html#method__sleep">cache::__sleep()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Encrypts LDAP cache before saving to session file.</dd>
 							<dt><b>__wakeup</b></dt>
@@ -115,8 +119,6 @@
 		<dl>
 							<dt><b>$aliases</b></dt>
 				<dd>in file schema.inc, variable <a href="lib/AttributeType.html#var$aliases">AttributeType::$aliases</a><br>&nbsp;&nbsp;&nbsp;&nbsp;An array of alias attribute names, strings</dd>
-							<dt><b>$attributes</b></dt>
-				<dd>in file cache.inc, variable <a href="lib/cache.html#var$attributes">cache::$attributes</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This variable contains a list and their scope of attributes which should be cached</dd>
 							<dt><b>addAlias</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodaddAlias">AttributeType::addAlias()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Adds an attribute name to the alias array.</dd>
 							<dt><b>addChildObjectClass</b></dt>
@@ -132,19 +134,19 @@
 							<dt><b>addUsedInObjectClass</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodaddUsedInObjectClass">AttributeType::addUsedInObjectClass()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Adds an objectClass name to this attribute's list of &quot;used in&quot; objectClasses,  that is the list of objectClasses which provide this attribute.</dd>
 							<dt><b>add_aliases_to_attrs</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionadd_aliases_to_attrs">add_aliases_to_attrs()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;For each attribute that has multiple names, this function adds unique entries to  the attrs array for those names. Ie, attributeType has name 'gn' and 'givenName'.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionadd_aliases_to_attrs">add_aliases_to_attrs()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;For each attribute that has multiple names, this function adds unique entries to  the attrs array for those names. Ie, attributeType has name 'gn' and 'givenName'.</dd>
 							<dt><b>add_cache</b></dt>
 				<dd>in file cache.inc, method <a href="lib/cache.html#methodadd_cache">cache::add_cache()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function adds attributes to the cache.</dd>
 							<dt><b>add_sup_to_attrs</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionadd_sup_to_attrs">add_sup_to_attrs()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Adds inherited values to each attributeType specified by the SUP directive.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionadd_sup_to_attrs">add_sup_to_attrs()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Adds inherited values to each attributeType specified by the SUP directive.</dd>
 							<dt><b>array_delete</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionarray_delete">array_delete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will return all values from $array without values of $values.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionarray_delete">array_delete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will return all values from $array without values of $values.</dd>
 							<dt><b>AttributeType</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodAttributeType">AttributeType::AttributeType()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new AttributeType objcet from a raw LDAP AttributeType string.</dd>
 							<dt><b>AttributeType</b></dt>
 				<dd>in file schema.inc, class <a href="lib/AttributeType.html">AttributeType</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Represents an LDAP AttributeType</dd>
 							<dt><b>account.inc</b></dt>
-				<dd>procedural page <a href="lib/_lib_account_inc.html">account.inc</a></dd>
+				<dd>procedural page <a href="lib/_lib---account.inc.html">account.inc</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -156,17 +158,19 @@
 							<dt><b>$children_objectclasses</b></dt>
 				<dd>in file schema.inc, variable <a href="lib/ObjectClass.html#var$children_objectclasses">ObjectClass::$children_objectclasses</a><br>&nbsp;&nbsp;&nbsp;&nbsp;array of objectClasses which inherit from this one (must be set at runtime explicitly by the caller)</dd>
 							<dt><b>cache</b></dt>
-				<dd>in file cache.inc, class <a href="lib/cache.html">cache</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This class contains all functions which are needed to manage the LDAP cache.</dd>
-							<dt><b>cache</b></dt>
 				<dd>in file cache.inc, method <a href="lib/cache.html#methodcache">cache::cache()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Constructor.</dd>
+							<dt><b>cache</b></dt>
+				<dd>in file cache.inc, class <a href="lib/cache.html">cache</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This class contains all functions which are needed to manage the LDAP cache.</dd>
 							<dt><b>cached_schema_available</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functioncached_schema_available">cached_schema_available()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the schema for $schema_type has been cached and</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functioncached_schema_available">cached_schema_available()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the schema for $schema_type has been cached and</dd>
 							<dt><b>checkClientIP</b></dt>
-				<dd>in file security.inc, function <a href="lib/_lib_security_inc.html#functioncheckClientIP">checkClientIP()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if the client's IP address is on the list of allowed IPs.</dd>
+				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functioncheckClientIP">checkClientIP()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if the client's IP address is on the list of allowed IPs.</dd>
+							<dt><b>check_ip</b></dt>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functioncheck_ip">check_ip()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function checks if the given IP ist valid.</dd>
 							<dt><b>cmp_domain</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functioncmp_domain">cmp_domain()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper function to sort the domains</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functioncmp_domain">cmp_domain()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper function to sort the domains</dd>
 							<dt><b>cache.inc</b></dt>
-				<dd>procedural page <a href="lib/_lib_cache_inc.html">cache.inc</a></dd>
+				<dd>procedural page <a href="lib/_lib---cache.inc.html">cache.inc</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -205,14 +209,12 @@
 	<div>
 		<h2>g</h2>
 		<dl>
-							<dt><b>genpasswd</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functiongenpasswd">genpasswd()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will return a password with max. 8 characters.</dd>
 							<dt><b>getAliases</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodgetAliases">AttributeType::getAliases()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets the names of attributes that are an alias for this attribute (if any).</dd>
 							<dt><b>getChildObjectClasses</b></dt>
 				<dd>in file schema.inc, method <a href="lib/ObjectClass.html#methodgetChildObjectClasses">ObjectClass::getChildObjectClasses()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the array of objectClass names which inherit from this objectClass.</dd>
 							<dt><b>getdays</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functiongetdays">getdays()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will return the days from 1.1.1970 until now.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functiongetdays">getdays()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will return the days from 1.1.1970 until now.</dd>
 							<dt><b>getDescription</b></dt>
 				<dd>in file schema.inc, method <a href="lib/SchemaItem.html#methodgetDescription">SchemaItem::getDescription()</a></dd>
 							<dt><b>getEquality</b></dt>
@@ -260,7 +262,7 @@
 							<dt><b>getRequiredByObjectClasses</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodgetRequiredByObjectClasses">AttributeType::getRequiredByObjectClasses()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets the list of &quot;required by&quot; objectClasses, that is the list of objectClasses  which provide must have attribute.</dd>
 							<dt><b>getshells</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functiongetshells">getshells()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of shells listed in config/shells.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functiongetshells">getshells()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of shells listed in config/shells.</dd>
 							<dt><b>getSource</b></dt>
 				<dd>in file schema.inc, method <a href="lib/ObjectClassAttribute.html#methodgetSource">ObjectClassAttribute::getSource()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets the name of the ObjectClass which originally specified this attribute.</dd>
 							<dt><b>getSubstr</b></dt>
@@ -288,21 +290,21 @@
 							<dt><b>get_cache</b></dt>
 				<dd>in file cache.inc, method <a href="lib/cache.html#methodget_cache">cache::get_cache()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Queries the cache for a list of LDAP entries and their attributes.</dd>
 							<dt><b>get_cached_schema</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_cached_schema">get_cached_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the cached array of schemaitem objects for the specified</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_cached_schema">get_cached_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the cached array of schemaitem objects for the specified</dd>
 							<dt><b>get_preg</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionget_preg">get_preg()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a given value matches the selected regular expression.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionget_preg">get_preg()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a given value matches the selected regular expression.</dd>
 							<dt><b>get_schema_attribute</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_schema_attribute">get_schema_attribute()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets a single AttributeType object specified by name.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_schema_attribute">get_schema_attribute()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets a single AttributeType object specified by name.</dd>
 							<dt><b>get_schema_attributes</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_schema_attributes">get_schema_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets an associative array of AttributeType objects for the specified  server. Each array entry's key is the name of the attributeType  in lower-case and the value is an AttributeType object.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_schema_attributes">get_schema_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets an associative array of AttributeType objects for the specified  server. Each array entry's key is the name of the attributeType  in lower-case and the value is an AttributeType object.</dd>
 							<dt><b>get_schema_matching_rules</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_schema_matching_rules">get_schema_matching_rules()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array of MatchingRule objects for the specified server.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_schema_matching_rules">get_schema_matching_rules()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array of MatchingRule objects for the specified server.</dd>
 							<dt><b>get_schema_objectclass</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_schema_objectclass">get_schema_objectclass()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets a single ObjectClass object specified by name.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_schema_objectclass">get_schema_objectclass()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets a single ObjectClass object specified by name.</dd>
 							<dt><b>get_schema_objectclasses</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_schema_objectclasses">get_schema_objectclasses()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets an associative array of ObjectClass objects for the specified  server. Each array entry's key is the name of the objectClass  in lower-case and the value is an ObjectClass object.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_schema_objectclasses">get_schema_objectclasses()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets an associative array of ObjectClass objects for the specified  server. Each array entry's key is the name of the objectClass  in lower-case and the value is an ObjectClass object.</dd>
 							<dt><b>get_schema_syntaxes</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionget_schema_syntaxes">get_schema_syntaxes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array of Syntax objects that this LDAP server uses mapped to  their descriptions. The key of each entry is the OID of the Syntax.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionget_schema_syntaxes">get_schema_syntaxes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array of Syntax objects that this LDAP server uses mapped to  their descriptions. The key of each entry is the OID of the Syntax.</dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -336,7 +338,7 @@
 							<dt><b>initVars</b></dt>
 				<dd>in file schema.inc, method <a href="lib/MatchingRule.html#methodinitVars">MatchingRule::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initialize the class' member variables</dd>
 							<dt><b>in_array_ignore_case</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionin_array_ignore_case">in_array_ignore_case()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a string exists in an array, ignoring case.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionin_array_ignore_case">in_array_ignore_case()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a string exists in an array, ignoring case.</dd>
 							<dt><b>in_cache</b></dt>
 				<dd>in file cache.inc, method <a href="lib/cache.html#methodin_cache">cache::in_cache()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function returns the DN if an LDAP entry with $attribute=$value is found.</dd>
 							<dt><b>isAliasFor</b></dt>
@@ -349,14 +351,12 @@
 	<div>
 		<h2>l</h2>
 		<dl>
-							<dt><b>$ldapcache</b></dt>
-				<dd>in file cache.inc, variable <a href="lib/cache.html#var$ldapcache">cache::$ldapcache</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This variable contains the cache</dd>
 							<dt><b>lmPassword</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionlmPassword">lmPassword()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generates the LM hash of a password.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionlmPassword">lmPassword()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generates the LM hash of a password.</dd>
 							<dt><b>logNewMessage</b></dt>
-				<dd>in file security.inc, function <a href="lib/_lib_security_inc.html#functionlogNewMessage">logNewMessage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Puts a new message in the log file.</dd>
+				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functionlogNewMessage">logNewMessage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Puts a new message in the log file.</dd>
 							<dt><b>logoffAndBackToLoginPage</b></dt>
-				<dd>in file security.inc, function <a href="lib/_lib_security_inc.html#functionlogoffAndBackToLoginPage">logoffAndBackToLoginPage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Logs off the user and displays the login page.</dd>
+				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functionlogoffAndBackToLoginPage">logoffAndBackToLoginPage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Logs off the user and displays the login page.</dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -398,7 +398,7 @@
 							<dt><b>$name</b></dt>
 				<dd>in file schema.inc, variable <a href="lib/AttributeType.html#var$name">AttributeType::$name</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The name of this attributeType</dd>
 							<dt><b>ntPassword</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionntPassword">ntPassword()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generates the NT hash of a password.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionntPassword">ntPassword()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generates the NT hash of a password.</dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -428,13 +428,13 @@
 		<h2>p</h2>
 		<dl>
 							<dt><b>pwd_disable</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionpwd_disable">pwd_disable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Marks an password hash as disabled and returns the new hash string</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionpwd_disable">pwd_disable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Marks an password hash as disabled and returns the new hash string</dd>
 							<dt><b>pwd_enable</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionpwd_enable">pwd_enable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Marks an password hash as enabled and returns the new hash string</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionpwd_enable">pwd_enable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Marks an password hash as enabled and returns the new hash string</dd>
 							<dt><b>pwd_hash</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionpwd_hash">pwd_hash()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the hash value of a plain text password  the hash algorithm depends on the configuration file</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionpwd_hash">pwd_hash()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the hash value of a plain text password  the hash algorithm depends on the configuration file</dd>
 							<dt><b>pwd_is_enabled</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionpwd_is_enabled">pwd_is_enabled()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a password hash is enabled/disabled</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionpwd_is_enabled">pwd_is_enabled()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a password hash is enabled/disabled</dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -449,8 +449,6 @@
 				<dd>in file cache.inc, method <a href="lib/cache.html#methodrefresh_cache">cache::refresh_cache()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function refreshes the cache.</dd>
 							<dt><b>removeAlias</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodremoveAlias">AttributeType::removeAlias()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Removes an attribute name from this attribute's alias array.</dd>
-							<dt><b>RndInt</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionRndInt">RndInt()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO  RANDOMLY SELECT CHARACTERS.</dd>
 					</dl>
 	</div>
 	<a href="elementindex_lib.html#top">top</a><br>
@@ -472,19 +470,19 @@
 							<dt><b>$syntax</b></dt>
 				<dd>in file schema.inc, variable <a href="lib/AttributeType.html#var$syntax">AttributeType::$syntax</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The full syntax string, ie 1.2.3.4{16}</dd>
 							<dt><b>schema.inc</b></dt>
-				<dd>procedural page <a href="lib/_lib_schema_inc.html">schema.inc</a></dd>
+				<dd>procedural page <a href="lib/_lib---schema.inc.html">schema.inc</a></dd>
 							<dt><b>security.inc</b></dt>
-				<dd>procedural page <a href="lib/_lib_security_inc.html">security.inc</a></dd>
+				<dd>procedural page <a href="lib/_lib---security.inc.html">security.inc</a></dd>
 							<dt><b>status.inc</b></dt>
-				<dd>procedural page <a href="lib/_lib_status_inc.html">status.inc</a></dd>
+				<dd>procedural page <a href="lib/_lib---status.inc.html">status.inc</a></dd>
 							<dt><b>SchemaItem</b></dt>
 				<dd>in file schema.inc, class <a href="lib/SchemaItem.html">SchemaItem</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generic parent class for all schema items. A schema item is  an ObjectClass, an AttributeBype, a MatchingRule, or a Syntax.</dd>
 							<dt><b>SchemaItem</b></dt>
 				<dd>in file schema.inc, method <a href="lib/SchemaItem.html#methodSchemaItem">SchemaItem::SchemaItem()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Default constructor.</dd>
 							<dt><b>SCHEMA_SESSION_CACHE_ENABLED</b></dt>
-				<dd>in file schema.inc, constant <a href="lib/_lib_schema_inc.html#defineSCHEMA_SESSION_CACHE_ENABLED">SCHEMA_SESSION_CACHE_ENABLED</a><br>&nbsp;&nbsp;&nbsp;&nbsp;To enable/disable session-based schema caching (1: enabled, 0: disabled).</dd>
+				<dd>in file schema.inc, constant <a href="lib/_lib---schema.inc.html#defineSCHEMA_SESSION_CACHE_ENABLED">SCHEMA_SESSION_CACHE_ENABLED</a><br>&nbsp;&nbsp;&nbsp;&nbsp;To enable/disable session-based schema caching (1: enabled, 0: disabled).</dd>
 							<dt><b>search_domains</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionsearch_domains">search_domains()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array with all Samba 3 domain entries under the given suffix</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionsearch_domains">search_domains()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array with all Samba 3 domain entries under the given suffix</dd>
 							<dt><b>setAliases</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodsetAliases">AttributeType::setAliases()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets this attribute's list of aliases.</dd>
 							<dt><b>setDescription</b></dt>
@@ -502,15 +500,15 @@
 							<dt><b>setUsedByAttrs</b></dt>
 				<dd>in file schema.inc, method <a href="lib/MatchingRule.html#methodsetUsedByAttrs">MatchingRule::setUsedByAttrs()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the list of used_by_attrs to the array specified by $attrs;</dd>
 							<dt><b>set_cached_schema</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionset_cached_schema">set_cached_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Caches the specified $schema_type.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionset_cached_schema">set_cached_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Caches the specified $schema_type.</dd>
 							<dt><b>set_schema_cache_unavailable</b></dt>
-				<dd>in file schema.inc, function <a href="lib/_lib_schema_inc.html#functionset_schema_cache_unavailable">set_schema_cache_unavailable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the schema entry for the server_id to be &quot;unavailable&quot; so that we realize  that we tried to get the schema but could not, so quit trying next time to  fetch it from the server.</dd>
+				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functionset_schema_cache_unavailable">set_schema_cache_unavailable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the schema entry for the server_id to be &quot;unavailable&quot; so that we realize  that we tried to get the schema but could not, so quit trying next time to  fetch it from the server.</dd>
 							<dt><b>smbflag</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib_account_inc.html#functionsmbflag">smbflag()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Takes a list of Samba flags and creates the corresponding flag string.</dd>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionsmbflag">smbflag()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Takes a list of Samba flags and creates the corresponding flag string.</dd>
 							<dt><b>startSecureSession</b></dt>
-				<dd>in file security.inc, function <a href="lib/_lib_security_inc.html#functionstartSecureSession">startSecureSession()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Starts a session and checks the environment.</dd>
+				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functionstartSecureSession">startSecureSession()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Starts a session and checks the environment.</dd>
 							<dt><b>StatusMessage</b></dt>
-				<dd>in file status.inc, function <a href="lib/_lib_status_inc.html#functionStatusMessage">StatusMessage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function prints a short status message. It can be used to print INFO,  WARN and ERROR messages at the moment.</dd>
+				<dd>in file status.inc, function <a href="lib/_lib---status.inc.html#functionStatusMessage">StatusMessage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function prints a short status message. It can be used to print INFO,  WARN and ERROR messages at the moment.</dd>
 							<dt><b>Syntax</b></dt>
 				<dd>in file schema.inc, method <a href="lib/Syntax.html#methodSyntax">Syntax::Syntax()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new Syntax object from a raw LDAP syntax string.</dd>
 							<dt><b>Syntax</b></dt>
@@ -523,8 +521,6 @@
 	<div>
 		<h2>t</h2>
 		<dl>
-							<dt><b>$time</b></dt>
-				<dd>in file cache.inc, variable <a href="lib/cache.html#var$time">cache::$time</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This is the last timestamp on which the LDAP cache has been refreshed</dd>
 							<dt><b>$type</b></dt>
 				<dd>in file schema.inc, variable <a href="lib/ObjectClass.html#var$type">ObjectClass::$type</a><br>&nbsp;&nbsp;&nbsp;&nbsp;one of STRUCTURAL, ABSTRACT, or AUXILIARY</dd>
 							<dt><b>$type</b></dt>
@@ -550,7 +546,7 @@
 	<a href="elementindex_lib.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 15 Nov 2006 18:00:33 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+		    Documentation generated on Sun, 04 Nov 2007 12:10:35 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

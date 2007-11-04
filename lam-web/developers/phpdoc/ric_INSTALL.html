@@ -12,9 +12,8 @@
   <tr><td class="header_line"><img src="media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
   <tr>
     <td class="header_menu">
-  		  [ <a href="classtrees_default.html" class="menu">class tree: default</a> ]
-		  [ <a href="elementindex_default.html" class="menu">index: default</a> ]
-		  [ <a href="elementindex.html" class="menu">all elements</a> ]
+        
+                                                                                                                                                                                                                                                                                      	    [ <a href="elementindex.html" class="menu">all elements</a> ]
     </td>
   </tr>
   <tr><td class="header_line"><img src="media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
@@ -24,8 +23,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="ric_README.html">README</a></p>
 					<p><a href="ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="li_configuration.html">configuration</a><br />
@@ -57,7 +56,7 @@ Installation Instructions for LAM
 
 1. Requirements
 
-   - Apache webserver (SSL optional) with PHP module (PHP with
+   - Apache webserver (SSL optional) with PHP module (PHP 5 (&gt;= 5.1) with
      ldap, gettext, xml and optional mcrypt)
    - some LAM plugins may require additional PHP extensions (you will get a
      note on the login page if something is missing)
@@ -65,16 +64,8 @@ Installation Instructions for LAM
    - OpenLDAP (&gt;2.0)
    - A web browser :-)
 
-   MHash is only needed if you use PHP &lt; 4.3 and if you want to use SHA or SSHA
-   for password hashes.
+   MHash is only needed for Samba password hashes.
    MCrypt will be used to store your LDAP password encrypted in the session file.
-
-   Getting mcrypt and mhash for Suse/RedHat:
-
-   Either you compile PHP4 yourself or you use some unofficial packages:
-
-   - Suse: ftp://ftp.suse.com/pub/people/poeml/mod_php4
-   - RedHat: http://ftp.horde.org/pub/RPMS
 
 
    See docs/README.schema.txt for information about used LDAP schema files.
@@ -112,7 +103,7 @@ Installation Instructions for LAM
 
 3. Setting up PHP
 
-   LAM runs with PHP4 or PHP5.
+   LAM runs with PHP5 (&gt;= 5.1).
 
    Needed changes in your php.ini:
 
@@ -122,7 +113,7 @@ Installation Instructions for LAM
 </pre>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 15 Nov 2006 18:00:34 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+		    Documentation generated on Sun, 04 Nov 2007 12:10:36 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>
