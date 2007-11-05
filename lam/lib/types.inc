@@ -32,6 +32,8 @@ $Id$
 include_once("baseType.inc");
 /** parent class of list views */
 include_once("lists.inc");
+/** Used to check if this is a LAM Pro release. */
+include_once("selfService.inc");
 
 
 /**
