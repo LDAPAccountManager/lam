@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2007  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,7 +62,10 @@ class lamList {
 	var $maxPageEntries = 10;
 
 	/** sort column name */
-	var $sortColumn;
+	protected $sortColumn;
+	
+	/** sort direction: 1 for ascending, -1 for descending */
+	protected $sortDirection = 1;
 
 	/** LDAP suffix */
 	var $suffix;
@@ -269,10 +272,10 @@ class lamList {
 		if (!$sort) $sort = strtolower($this->attrArray[0]);
 		if ($sort != "dn") {
 			// sort by first attribute with name $sort
-			return @strnatcasecmp($a[$sort][0], $b[$sort][0]);
+			return @strnatcasecmp($a[$sort][0], $b[$sort][0]) * $this->sortDirection;
 		}
 		else {
-			return strnatcasecmp($a[$sort], $b[$sort]);
+			return strnatcasecmp($a[$sort], $b[$sort]) * $this->sortDirection;
 		}
 	}
 
@@ -288,12 +291,14 @@ class lamList {
 		echo("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
 		if ($this->page != 1) {
 			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 1) .
-				"&amp;sort=" . $this->sortColumn . $this->filterText . "\"><img style=\"vertical-align: middle;\" src=\"../../graphics/back.gif\" alt=\"back\"></a>\n");
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+				"<img style=\"vertical-align: middle;\" src=\"../../graphics/back.gif\" alt=\"back\"></a>\n");
 		}
 
 		if ($this->page < ($count / $this->maxPageEntries)) {
 			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 1) .
-				"&amp;sort=" . $this->sortColumn . $this->filterText . "\"><img style=\"vertical-align: middle;\" src=\"../../graphics/forward.gif\" alt=\"forward\"></a>\n");
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+				"<img style=\"vertical-align: middle;\" src=\"../../graphics/forward.gif\" alt=\"forward\"></a>\n");
 		}
 		echo("</td>");
 
@@ -308,7 +313,8 @@ class lamList {
 				echo("&nbsp;" . ($i + 1));
 			}
 			else {
-				echo("&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) . "&amp;sort=" . $this->sortColumn . "\">" . ($i + 1) . "</a>\n");
+				echo("&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n");
 			}
 		}
 		echo("</td></tr></table>\n");
@@ -324,8 +330,13 @@ class lamList {
 		// table header
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {
 			if (strtolower($this->attrArray[$k]) == $this->sortColumn) {
+				$sortImage = "sort_asc.png";
+				if ($this->sortDirection < 0) {
+					$sortImage = "sort_desc.png";
+				}
 				echo "<th class=\"" . $this->type . "list-sort\"><a href=\"list.php?type=" . $this->type . "&amp;".
-					"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
+					"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
+					"&nbsp;<img style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
 			}
 			else echo "<th><a href=\"list.php?type=" . $this->type . "&amp;".
 				"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
@@ -410,7 +421,7 @@ class lamList {
 	 * 
 	 * $account array LDAP attributes
 	 */
-	function listPrintToolLinks($account) {
+	private function listPrintToolLinks($account) {
 		// edit image
 		echo "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
 		echo "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
@@ -419,6 +430,13 @@ class lamList {
 		echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
 		echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
 		echo "</a>";
+		// additional tools
+		$tools = $this->getAdditionalTools();
+		for ($i = 0; $i < sizeof($tools); $i++) {
+			echo "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+			echo "<img src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
+			echo "</a>";
+		}
 	}
 	
 	/**
@@ -678,8 +696,23 @@ class lamList {
 		else
 			$this->maxPageEntries = $_SESSION["config"]->get_MaxListEntries();
 		// get sorting column
-		if (isset($_GET["sort"])) $this->sortColumn = $_GET["sort"];
-		else $this->sortColumn = strtolower($this->attrArray[0]);
+		if (isset($_GET["sort"])) {
+			if ($_GET["sort"] == $this->sortColumn) {
+				$this->sortDirection = -$this->sortDirection;
+			}
+			else {
+				$this->sortColumn = $_GET["sort"];
+				$this->sortDirection = 1;
+			}
+		}
+		else {
+			$this->sortColumn = strtolower($this->attrArray[0]);
+			$this->sortDirection = 1;
+		}
+		// get sort order
+		if (isset($_GET['sortdirection'])) {
+			$this->sortDirection = $_GET['sortdirection'];
+		}
 		// check search suffix
 		if (isset($_POST['suffix'])) $this->suffix = $_POST['suffix'];  // new suffix selected via combobox
 		elseif (isset($_GET['suffix'])) $this->suffix = $_GET['suffix'];  // new suffix selected via combobox
@@ -728,6 +761,73 @@ class lamList {
 	 */
 	function listPrintAdditionalOptions() {
 		// may be used by subclasses
+	}
+	
+	/**
+	 * Returns a list of lamListTool objects to display next to the edit/delete buttons.
+	 *
+	 * @return lamListTool[] tools
+	 */
+	protected function getAdditionalTools() {
+		return array();
+	}
+
+}
+
+/**
+ * Represents a tool which can be included in the account lists.
+ *
+ * @package lists
+ * @author Roland Gruber
+ */
+class lamListTool {
+	
+	private $name;
+	private $image;
+	private $target;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param String $name tool name
+	 * @param String $image image file
+	 * @param String $target target page
+	 * @return lamListTool tool object
+	 */
+	function lamListTool($name, $image, $target) {
+		$this->name = $name;
+		$this->image = $image;
+		$this->target = $target;
+	}
+
+	/**
+	 * Returns the name of the tool image.
+	 * The image is returned without path (e.g. mytool.png). All images must reside in the graphics folder.
+	 *
+	 * @return String image name
+	 */
+	function getImage() {
+		return $this->image;
+	}
+
+	/**
+	 * Returns the tool name.
+	 * This is used for the tool tip.
+	 *
+	 * @return String name
+	 */
+	function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * Returns the PHP file (relative to 'templates/lists') which will be the target for this tool.
+	 * The target page will be opened with two GET parameters: DN and type (e.g. user)
+	 * 
+	 * @return String page file (e.g. 'mytool.php')
+	 */
+	function getLinkTarget() {
+		return $this->target;
 	}
 
 }
