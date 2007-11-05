@@ -282,6 +282,21 @@ function pwd_is_enabled($hash) {
 }
 
 /**
+ * Generates a random password with 12 digits.
+ *
+ * @return String password
+ */
+function generateRandomPassword() {
+	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
+	$password = '';
+	for ($i = 0; $i < 12; $i++) {
+		$rand = $_SESSION['ldap']->new_rand() % 65;
+		$password .= $list[$rand];
+	}
+	return $password;
+}
+
+/**
 * Returns an array with all Samba 3 domain entries under the given suffix
 *
 * @return array list of samba3domain objects
