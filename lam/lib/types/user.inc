@@ -240,6 +240,21 @@ class lamUserList extends lamList {
 			echo "</p>\n";
 		}
 	}
+	
+	/**
+	 * Returns a list of lamListTool objects to display next to the edit/delete buttons.
+	 *
+	 * @return lamListTool[] tools
+	 */
+	protected function getAdditionalTools() {
+		if (!isLAMProVersion()) {
+			return array();
+		}
+		else {
+			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
+			return array($passwordTool);
+		}
+	}
 
 }
 
