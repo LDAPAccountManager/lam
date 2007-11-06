@@ -150,7 +150,10 @@ class lamList {
 		else {
 			// buttons
 			$this->listPrintButtons(true);
-			echo ("<hr>\n");
+			echo ("<hr style=\"background-color: #999999;\">\n");
+			// navigation bar
+			$this->listDrawNavigationBar(sizeof($filteredEntries));
+			echo ("<br>\n");
 			// account table head
 			$this->listPrintTableHeader();
 			echo "</table><br>\n";
@@ -469,7 +472,7 @@ class lamList {
 		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['pdf']) || isset($_POST['pdf_all'])){
 			// add new account
 			if (isset($_POST['new'])){
-				metaRefresh("../account/edit.php?type=" . $this->type);
+				metaRefresh("../account/edit.php?type=" . $this->type . "&amp;suffix=" . $this->suffix);
 				exit;
 			}
 			// delete account(s)

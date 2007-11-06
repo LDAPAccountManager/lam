@@ -841,7 +841,7 @@ class accountContainer {
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
 					// change dn
-					if (isset($_POST['suffix']) && ($_POST['suffix'] != '')) $this->dn = $_POST['suffix'];
+					if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) $this->dn = $_REQUEST['suffix'];
 					// change RDN
 					if (isset($_POST['rdn'])) $this->rdn = $_POST['rdn'];
 
