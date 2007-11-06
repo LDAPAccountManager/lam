@@ -144,7 +144,7 @@ $helpArray = array (
 				"360" => array ("ext" => "FALSE", "Headline" => _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				"361" => array ("ext" => "FALSE", "Headline" => _("DN suffix"),
-					"Text" => _("The new account will be saved under this LDAP suffix.")),
+					"Text" => _("The account will be saved under this LDAP suffix. The default suffix for new accounts is the last selected suffix in the user list.")),
 				// 400 - 499
 				// account pages
 				"401" => array ("ext" => "FALSE", "Headline" => _("Load profile"),
