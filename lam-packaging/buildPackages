@@ -14,8 +14,7 @@ export CVS_TAG=$1
 
 cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam
 cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam-packaging
-cvs -d/daten/projekte/CVSROOT export -r $CVS_TAG selfService
-cvs -d/daten/projekte/CVSROOT export -r $CVS_TAG lamProModules
+cvs -d/daten/projekte/CVSROOT export -r $CVS_TAG lamPro
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
@@ -23,17 +22,15 @@ export VERSION=`./getVersion`
 # remove files which are not in the final release
 rm -r lam/po
 rm -r lam/tests
-rm lam/.cvsignore
-rm lam/config/.cvsignore
+find . -name .cvsignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
 # create LAM Pro build directory
 cp -a ldap-account-manager-$VERSION ldap-account-manager-pro-$VERSION
 mkdir LAMPro
 mv ldap-account-manager-pro-$VERSION LAMPro/ldap-account-manager-$VERSION
-mv selfService LAMPro/ldap-account-manager-$VERSION/templates/
-mv lamProModules/*.inc LAMPro/ldap-account-manager-$VERSION/lib/modules
-rm -r lamProModules
+cp -a lamPro/* LAMPro/ldap-account-manager-$VERSION
+rm -r lamPro
 
 # tar.gz
 cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
