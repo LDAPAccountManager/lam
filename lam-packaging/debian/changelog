@@ -1,8 +1,10 @@
 ldap-account-manager (2.1.0-1) unstable; urgency=low
 
   * new upstream release
+  * debian/watch fails to report upstream version (Closes:
+    #450281)
 
- -- Roland Gruber <post@rolandgruber.de>  Mon, 05 Nov 2007 17:18:02 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 07 Nov 2007 18:48:59 +0100
 
 ldap-account-manager (2.0.0-1) unstable; urgency=low
 
