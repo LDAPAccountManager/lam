@@ -44,7 +44,7 @@ setlanguage();
 $cfg = new LAMCfgMain();
 
 // check if user is logged in
-if (!isset($_SESSION["mainconf_password"]) || ($_SESSION["mainconf_password"] != $cfg->password)) {
+if (!isset($_SESSION["mainconf_password"]) || (!$cfg->checkPassword($_SESSION["mainconf_password"]))) {
 	require('mainlogin.php');
 	exit();
 }
@@ -81,7 +81,7 @@ if ($_POST['submit']) {
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
-			$cfg->password = $_POST['masterpassword'];
+			$cfg->setPassword($_POST['masterpassword']);
 			$msg = _("New master password set successfully.");
 			unset($_SESSION["mainconf_password"]);
 		}

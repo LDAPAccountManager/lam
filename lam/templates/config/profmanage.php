@@ -64,7 +64,7 @@ $cfg = new LAMCfgMain();
 // check if submit button was pressed
 if ($_POST['submit']) {
 	// check master password
-	if ($cfg->password != $_POST['passwd']) {
+	if (!$cfg->checkPassword($_POST['passwd'])) {
 		$error = _("Master password is wrong!");
 	}
 	// add new profile
@@ -134,7 +134,7 @@ if ($_POST['submit']) {
 
 
 // check if config.cfg is valid
-if (!isset($cfg->default) && !isset($cfg->password)) {
+if (!isset($cfg->default)) {
 	StatusMessage("ERROR", _("Please set up your master configuration file (config/config.cfg) first!"), "");
 	echo "</body>\n</html>\n";
 	die();

@@ -170,7 +170,7 @@ class LAMConfig {
 	var $Admins;
 
 	/** Password to edit preferences */
-	var $Passwd;
+	private $Passwd;
 
 	/** LDAP suffix for tree view */
 	var $treesuffix;
@@ -846,7 +846,7 @@ class LAMCfgMain {
 	public $default;
 
 	/** Password to change config.cfg */
-	public $password;
+	private $password;
 
 	/** Time of inactivity before session times out (minutes) */
 	public $sessionTimeout;
@@ -951,6 +951,50 @@ class LAMCfgMain {
 			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
 			exit;
 		}
+	}
+	
+	/**
+	 * Sets a new config password.
+	 *
+	 * @param String $password new password
+	 */
+	public function setPassword($password) {
+		mt_srand((microtime() * 1000000));
+		$rand = mt_rand();
+		$salt0 = substr(pack("h*", md5($rand)), 0, 8);
+		$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
+		$this->password = $this->hashPassword($password, $salt);	
+	}
+	
+	/**
+	 * Checks if the given password matches.
+	 *
+	 * @param String $password password
+	 * @return boolean true, if password matches
+	 */
+	public function checkPassword($password) {
+		if (substr($this->password, 0, 6) == "{SSHA}") {
+			// check hashed password
+			$value = substr($this->password, 6);
+			$parts = explode(" ", $value);
+			$salt = base64_decode($parts[1]);
+			return ($this->hashPassword($password, $salt) === $this->password);
+		}
+		else {
+			// old nonhashed password
+			return ($password === $this->password);
+		}
+	}
+	
+	/**
+	 * Returns the hashed password.
+	 *
+	 * @param String $password password
+	 * @param String $salt salt
+	 * @return String hash value
+	 */
+	private function hashPassword($password, $salt) {
+		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
 
 }

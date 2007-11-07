@@ -47,7 +47,7 @@ if (isset($_SESSION["mainconf_password"])) unset($_SESSION["mainconf_password"])
 // check if user entered a password
 if (isset($_POST['passwd'])) {
 	$cfgMain = new LAMCfgMain();
-	if (isset($_POST['passwd']) && ($_POST['passwd'] == $cfgMain->password)) {
+	if (isset($_POST['passwd']) && ($cfgMain->checkPassword($_POST['passwd']))) {
 		$_SESSION["mainconf_password"] = $_POST['passwd'];
 		metaRefresh("mainmanage.php");
 		exit();

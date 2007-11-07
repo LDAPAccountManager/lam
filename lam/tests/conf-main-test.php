@@ -35,36 +35,34 @@ include ("../lib/config.inc");
 $conf = new LAMCfgMain();
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Values</b><br><br>");
-echo "<b>Password: </b>" . $conf->password . "<br>\n";
 echo "<b>Default: </b>" . $conf->default . "<br>\n";
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
 // now all prferences are loaded
 echo ("Loading preferences...");
-$password = $conf->password;
+$password = 'lam';
 $default = $conf->default;
 echo ("done<br>");
 // next we modify them and save config.cfg
 echo ("Changing preferences...");
-$conf->password = "123456";
+$conf->setPassword("123456");
 $conf->default = "lam";
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from config.cfg and compared
 echo ("Loading and comparing...");
 $conf = new LAMCfgMain();
-if ($conf->password != "123456") echo ("<br><font color=\"#FF0000\">Saving password failed!</font><br>");
+if (!$conf->checkPassword("123456")) echo ("<br><font color=\"#FF0000\">Saving password failed!</font><br>");
 if ($conf->default != "lam") echo ("<br><font color=\"#FF0000\">Saving Default failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
-$conf->password = $password;
+$conf->setPassword($password);
 $conf->default = $default;
 $conf->save();
 echo ("done<br>");
 // finished
 echo ("<br><b><font color=\"#00C000\">Test is complete.</font></b>");
 echo ("<br><br><b> Current Config</b><br><br>");
-echo "<b>Password: </b>" . $conf->password . "<br>\n";
 echo "<b>Default: </b>" . $conf->default . "<br>\n";
 
 ?>
