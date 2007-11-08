@@ -8,5 +8,5 @@ LAM 2.2.x
  - Unix/Samba: set random passwords
  - LAM Pro: separate password changing dialog, send password via mail
  - Unix: allow primary group to be also in secondary groups (config option)
- - account lists: allow to switch sorting direction
+ - account lists: allow to switch sorting direction (done)
  - account pages: display save and profile controls on all pages
