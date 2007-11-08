@@ -1,3 +1,9 @@
+??? 2.2.0
+  - allow to switch sorting in the account lists
+  - use suffix from account list as default for new accounts (patch 1823583)
+  - Security: passwords in configuration files are now saved as hash values
+
+
 07.11.2007 2.1.0
   - tabular design for account pages
   - show DN on account pages

@@ -79,7 +79,7 @@ if ($_POST['submit']) {
 				if ($file) {
 					// load as config and write new password
 					$conf = new LAMConfig($_POST['addprofile']);
-					$conf->Passwd = $_POST['addpassword'];
+					$conf->set_Passwd($_POST['addpassword']);
 					$conf->save();
 					$msg = _("Created new profile.");
 				}

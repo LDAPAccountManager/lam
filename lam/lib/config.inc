@@ -467,12 +467,23 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the password to access the preferences wizard
-	*
-	* @return string the password
-	*/
-	public function get_Passwd() {
-		return $this->Passwd;
+	 * Checks if the given password matches.
+	 *
+	 * @param String $password
+	 * @return boolean true, if matches
+	 */
+	public function check_Passwd($password) {
+		if (substr($this->Passwd, 0, 6) == "{SSHA}") {
+			// check hashed password
+			$value = substr($this->Passwd, 6);
+			$parts = explode(" ", $value);
+			$salt = base64_decode($parts[1]);
+			return ($this->hashPassword($password, $salt) === $this->Passwd);
+		}
+		else {
+			// old nonhashed password
+			return ($password === $this->Passwd);
+		}
 	}
 
 	/**
@@ -482,9 +493,28 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_Passwd($value) {
-		if (is_string($value)) $this->Passwd = $value;
-		else return false;
-		return true;
+		if (is_string($value)) {
+			mt_srand((microtime() * 1000000));
+			$rand = mt_rand();
+			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
+			$salt = substr(pack("H*", sha1($salt0 . $value)), 0, 4);
+			$this->Passwd = $this->hashPassword($value, $salt);
+			return true;
+		}
+		else {
+			return false;		
+		}
+	}
+
+	/**
+	 * Returns the hashed password.
+	 *
+	 * @param String $password password
+	 * @param String $salt salt
+	 * @return String hash value
+	 */
+	private function hashPassword($password, $salt) {
+		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
 
 	/**

@@ -8,8 +8,8 @@ serverURL: ldap://localhost:389
 # e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
 admins: cn=Manager,dc=my-domain,dc=com
 
-# password to change these preferences via webfrontend
-passwd: lam
+# password to change these preferences via webfrontend (default: lam)
+passwd: {SSHA}RjBruJcTxZEdcBjPQdRBkDaSQeY= iueleA==
 
 # suffix of tree view
 # e.g. dc=yourdomain,dc=org

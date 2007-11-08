@@ -45,11 +45,10 @@ setlanguage();
 
 // get password
 if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
-if (isset($_GET["modulesback"]) || isset($_GET["typesback"])) $passwd = $_SESSION['conf_config']->get_Passwd();
 
 // check if password was entered
 // if not: load login page
-if (! $passwd) {
+if (!$passwd && !isset($_SESSION['conf_isAuthenticated'])) {
 	$_SESSION['conf_message'] = _("No password was entered!");
 	/** go back to login if password is empty */
 	require('conflogin.php');
@@ -63,7 +62,7 @@ $conf = &$_SESSION['conf_config'];
 
 // check if password is valid
 // if not: load login page
-if (!(($conf->get_Passwd()) == $passwd)) {
+if (!$conf->check_Passwd($passwd) && !($_SESSION['conf_isAuthenticated'] === $conf->file)) {
 	$sessionKeys = array_keys($_SESSION);
 	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
@@ -73,6 +72,7 @@ if (!(($conf->get_Passwd()) == $passwd)) {
 	require('conflogin.php');
 	exit;
 }
+$_SESSION['conf_isAuthenticated'] = $conf->file;
 
 // check if button was pressed and if we have to save the setting or go back to login
 if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
