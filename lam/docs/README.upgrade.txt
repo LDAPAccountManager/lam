@@ -1,116 +1,16 @@
 Upgrade instructions:
 =====================
 
-2.0.0 -> 2.1.0
-
-Developers:
-
-Style changes:
-  - "fieldset.<type>edit fieldset" and "fieldset.<type>edit fieldset fieldset" were removed.
-  - "table.<type>list input" changed to "table.<type>list input,select"
-
-baseModule:
-  The class variable $base is no longer visible in child classes. Please use
-  $this->getAccountContainer() to access the accountContainer object.
-
-Several other class variables in accountContainer etc. are now private.
-Use the new access methods.
-
-
-
-1.3.0 -> 2.0.0
-
-Developers:
-
-LAM is now PHP5 only. Several variables are now private and need to be accessed via functions.
-
-
-
-1.2.0 -> 1.3.0:
-===============
-
-Users:
+1.1.0 -> 2.1.0
 
 No changes.
-
-
-Developers:
-
-New lamList function:
-
- - listPrintTableCellContent(): This function allows you to control how the LDAP
-   attributes are displayed in the table. This can be used to display links
-   or binary data.
-
- - listPrintAdditionalOptions(): If you want to display additional conrols for a list
-   please use this function. The controls will be placed under the account table.
-
-No more lamdaemon commands via delete_attributes() and save_attributes() in account modules.
-Please use these new functions to call lamdaemon directly:
-
- - preModifyActions()
- - postModifyActions()
- - preDeleteActions()
- - postDeleteActions()
-
-
-
-1.1.x -> 1.2.0:
-===============
-
-
-Users:
-
-No changes.
-
-
-Developers:
-
-API changes:
- - removed get_configDescription() from module interface
-
 
 
 1.0.4 -> 1.1.0:
 ===============
 
-Users:
-
 If you use the lamdaemon.pl script to manage quotas and home directories please
 read docs/README.lamdaemon.txt.
-
-
-Developers:
-
-API changes:
- - removed $post parameters from module functions (delete_attributes(),
-   process_...(), display_html_...()). Use $_POST instead.
- - process_...() functions: returned messages are no longer grouped
-   (e.g. return: array(array('INFO', 'headline', 'text'), array('INFO', 'headline2', 'text2')))
-
-
-
-1.0.0 -> 1.0.2:
-===============
-
-Users:
-
-No changes.
-
-
-Developers:
-
-New module functions:
-  - getRequiredExtensions: Allows to define required PHP extensions
-  - getManagedObjectClasses: Definition of managed object classes for this module
-  - getLDAPAliases: list of LDAP alias names which are replaced by LAM
-  - getManagedAttributes: list of LDAP attributes which are managed by this module
-
-The LDAP attributes are no longer loaded by reading the LDAP schema. If your
-module does not implement the load_attributes() function then you have to use
-getManagedAttributes() or the meta data to specify them.
-
-The class variable "triggered_messages" in baseModule was removed.
 
 
 
