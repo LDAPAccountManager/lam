@@ -2,6 +2,7 @@
   - allow to switch sorting in the account lists
   - use suffix from account list as default for new accounts (patch 1823583)
   - Security: passwords in configuration files are now saved as hash values
+  - Unix: allow to set host passwords (RFE 1754069)
 
 
 07.11.2007 2.1.0

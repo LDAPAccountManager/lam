@@ -982,36 +982,36 @@ class posixAccount extends baseModule {
 					))),
 					array('kind' => 'help', 'value' => 'createhomedir'));
 			}
-			if (!isset($this->attributes['userPassword'][0])) {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Password') ),
-					array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Set password')));
-			}
-			else {
-				if (pwd_is_enabled($this->attributes['userPassword'][0])) {
-					$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
-				}
-				else {
-					$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
-				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Password') ),
-					array('kind' => 'table', 'value' => array(
-						array(
-							array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Change password'))
-						),
-						array($lockOption),
-						array(
-							array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
-						)
-					)));
-			}
 			if (count($shelllist)!=0) {
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Login shell').'*'),
 					array('kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' => array ($this->attributes['loginShell'][0])),
 					array('kind' => 'help', 'value' => 'loginShell'));
 			}
+		}
+		if (!isset($this->attributes['userPassword'][0])) {
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Password') ),
+				array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Set password')));
+		}
+		else {
+			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
+			}
+			else {
+				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Password') ),
+				array('kind' => 'table', 'value' => array(
+					array(
+						array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Change password'))
+					),
+					array($lockOption),
+					array(
+						array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
+					)
+				)));
 		}
 	return $return;
 	}
