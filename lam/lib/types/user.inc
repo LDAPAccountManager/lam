@@ -111,13 +111,16 @@ class lamUserList extends lamList {
 	/** translates GID to group name */
 	private $trans_primary_hash = array();
 	
+	/** ID for config option */
+	const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
+
 	/**
 	 * Constructor
 	 *
 	 * @param string $type account type
 	 * @return lamList list object
 	 */
-	function lamUserList($type) {
+	public function lamUserList($type) {
 		parent::lamList($type);
 		$this->labels = array(
 			'nav' => _("%s user(s) found"),
@@ -129,20 +132,9 @@ class lamUserList extends lamList {
 	}
 	
 	/**
-	* Manages all POST actions (e.g. button pressed) for the account lists.
-	*/
-	function listDoPost() {
-		parent::listDoPost();
-		// check if primary group should be translated
-		if (isset($_POST['apply_trans_primary'])) {
-			$this->trans_primary = $_POST['trans_primary'];
-		}
-	}
-	
-	/**
 	 * Sets some internal parameters.
 	 */
-	function listGetParams() {
+	protected function listGetParams() {
 		parent::listGetParams();
 		// generate hash table for group translation
 		if ($this->trans_primary == "on" && !$this->refresh && (sizeof($this->trans_primary_hash) == 0)) {
@@ -153,7 +145,7 @@ class lamUserList extends lamList {
 	/**
 	 * Rereads the entries from LDAP.
 	 */
-	function listRefreshData() {
+	protected function listRefreshData() {
 		parent::listRefreshData();
 		if ($this->trans_primary == "on") {
 			$this->refreshPrimaryGroupTranslation();
@@ -163,7 +155,7 @@ class lamUserList extends lamList {
 	/**
 	 * Refreshes the GID to group name cache.
 	 */
-	function refreshPrimaryGroupTranslation() {
+	protected function refreshPrimaryGroupTranslation() {
 		$this->trans_primary_hash = array();
 		$grp_suffix = $_SESSION['config']->get_Suffix('group');
 		$filter = "objectClass=posixGroup";
@@ -184,7 +176,7 @@ class lamUserList extends lamList {
 	 * @param array $entry LDAP attributes
 	 * @param string $attribute attribute name
 	 */
-	function listPrintTableCellContent(&$entry, &$attribute) {
+	protected function listPrintTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
 		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
 		if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
@@ -225,23 +217,6 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Prints additional option fields for specific object types.
-	 */
-	function listPrintAdditionalOptions() {
-		// show translate GID to group name box if there is a column with gidnumber
-		if (in_array("gidnumber", $this->attrArray)) {
-			echo "<p align=\"left\">\n";
-			echo "<b>" . _("Translate GID number to group name") . ": </b>";
-			if ($this->trans_primary == "on") {
-				echo "<input class=\"" . $this->type . "\" type=\"checkbox\" name=\"trans_primary\" checked>";
-			}
-			else echo "<input class=\"" . $this->type . "\" type=\"checkbox\" name=\"trans_primary\">";
-			echo ("&nbsp;&nbsp;<input class=\"" . $this->type . "\" type=\"submit\" name=\"apply_trans_primary\" value=\"" . _("Apply") . "\">");
-			echo "</p>\n";
-		}
-	}
-	
-	/**
 	 * Returns a list of lamListTool objects to display next to the edit/delete buttons.
 	 *
 	 * @return lamListTool[] tools
@@ -254,6 +229,23 @@ class lamUserList extends lamList {
 			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
 			return array($passwordTool);
 		}
+	}
+
+	/**
+	 * Returns a list of possible configuration options.
+	 *
+	 * @return array list of lamListOption objects
+	 */
+	protected function listGetAllConfigOptions() {
+		return array(new lamBooleanListOption(_('Translate GID number to group name'), self::TRANS_PRIMARY_OPTION_NAME));
+	}
+
+	/**
+	 * Called when the configuration options changed.
+	 */
+	protected function listConfigurationChanged() {
+		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
+		$this->trans_primary = $tpOption->isSelected();
 	}
 
 }

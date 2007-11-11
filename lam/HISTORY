@@ -1,5 +1,6 @@
 ??? 2.2.0
-  - allow to switch sorting in the account lists
+  - account lists: allow to switch sorting
+  - account lists: added separate configuration page and store settings in cookies
   - use suffix from account list as default for new accounts (patch 1823583)
   - Security: passwords in configuration files are now saved as hash values
   - Unix: allow to set host passwords (RFE 1754069)

@@ -47,19 +47,19 @@ include_once("pdf.inc");
 class lamList {
 
 	/** Account type */
-	var $type;
+	protected $type;
 
 	/** current page number */
-	var $page = 1;
+	protected $page = 1;
 
 	/** list of LDAP attributes */
-	var $attrArray = array();
+	protected $attrArray = array();
 
 	/** list of attribute descriptions */
-	var $descArray = array();
+	protected $descArray = array();
 
 	/** maximum count of entries per page */
-	var $maxPageEntries = 10;
+	protected $maxPageEntries = 10;
 
 	/** sort column name */
 	protected $sortColumn;
@@ -68,22 +68,25 @@ class lamList {
 	protected $sortDirection = 1;
 
 	/** LDAP suffix */
-	var $suffix;
+	protected $suffix;
 
 	/** refresh page switch */
-	var $refresh = true;
+	protected $refresh = true;
 
 	/** LDAP entries */
-	var $entries;
+	protected $entries;
 
 	/** filter string to include in URL */
-	var $filterText;
+	protected $filterText;
 
 	/** list of possible LDAP suffixes(organizational units) */
-	var $possibleSuffixes;
+	protected $possibleSuffixes;
 
 	/** list of account specific labels */
-	var $labels;
+	protected $labels;
+	
+	/** configuration options */
+	private $configOptions;
 
 	/**
 	 * Constructor
@@ -91,7 +94,7 @@ class lamList {
 	 * @param string $type account type
 	 * @return lamList list object
 	 */
-	function lamList($type) {
+	public function lamList($type) {
 		$this->type = $type;
 		$this->labels = array(
 			'nav' => _("%s object(s) found"),
@@ -100,12 +103,44 @@ class lamList {
 			'deleteEntry' => _("Delete object"),
 			'createPDF' => _("Create PDF for selected object(s)"),
 			'createPDFAll' => _("Create PDF for all objects"));
+		$this->configOptions = $this->listGetAllConfigOptions();
+		$this->listReadOptionsFromCookie();
+	}
+	
+	/**
+	 * Reads the list options from the cookie value.
+	 */
+	private function listReadOptionsFromCookie() {
+		if (sizeof($this->configOptions) > 0) {
+			if (isset($_COOKIE["ListOptions_" . $this->type])) {
+				$cookieValue = $_COOKIE["ListOptions_" . $this->type];
+				$valueParts = explode(";", $cookieValue);
+				$values = array();
+				for ($i = 0; $i < sizeof($valueParts); $i++) {
+					$key_value = explode('=', $valueParts[$i]);
+					if (sizeof($key_value) == 2) {
+						$values[$key_value[0]] = $key_value[1];
+					}
+				}
+				for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+					if (isset($values[$this->configOptions[$i]->getID()])) {
+						$this->configOptions[$i]->setValue($values[$this->configOptions[$i]->getID()]);
+					}
+				}
+				// notify subclasses
+				$this->listConfigurationChanged();
+			}
+		}
 	}
 
 	/**
 	 * Prints the HTML code to display the list view.
 	 */
-	function showPage() {
+	public function showPage() {
+		if (isset($_GET['openConfig'])) {
+			$this->listPrintConfigurationPage();
+			return;
+		}
 		// do POST actions
 		$this->listDoPost();
 		// get some parameters
@@ -142,8 +177,6 @@ class lamList {
 			// buttons
 			$this->listPrintButtons(false);
 			echo ("<br>\n");
-			// other options
-			$this->listPrintAdditionalOptions();
 			// PDF bar
 			$this->listPrintPDFButtons();
 		}
@@ -157,11 +190,8 @@ class lamList {
 			// account table head
 			$this->listPrintTableHeader();
 			echo "</table><br>\n";
-			// other options
-			$this->listPrintAdditionalOptions();
 		}
-		echo ("</form>\n");
-		echo "</body></html>\n";
+		$this->listPrintFooter();
 	}
 
 	/**
@@ -170,7 +200,7 @@ class lamList {
 	* @return array filter data array($attribute => array('regex' => $reg, 'original' => $orig))
 	* $reg is the regular expression to use, $orig the user's unmodified input string
 	*/
-	function listBuildFilter() {
+	protected function listBuildFilter() {
 		$filter = array();
 		// build filter array
 		for ($i = 0; $i < sizeof($this->attrArray); $i++) {
@@ -214,7 +244,7 @@ class lamList {
 	*
 	* @return array filtered list of accounts
 	*/
-	function listFilterAccounts() {
+	protected function listFilterAccounts() {
 		$entries = array();
 		$filter = $this->listBuildFilter();
 		$attributes = array_keys($filter);
@@ -249,7 +279,7 @@ class lamList {
 	* @param array $info the account list
 	* @return array sorted account list
 	*/
-	function listSort(&$info) {
+	protected function listSort(&$info) {
 		if (!is_array($this->attrArray)) return $info;
 		if (!is_string($this->sortColumn)) return $info;
 		// sort and return account list
@@ -268,7 +298,7 @@ class lamList {
 	* @param array $b second row which is compared
 	* @return integer 0 if both are equal, 1 if $a is greater, -1 if $b is greater
 	*/
-	function cmp_array(&$a, &$b) {
+	protected function cmp_array(&$a, &$b) {
 		// sort specifies the sort column
 		$sort = $this->sortColumn;
 		// sort by first column if no attribute is given
@@ -287,7 +317,7 @@ class lamList {
 	*
 	* @param integer $count number of account entries
 	*/
-	function listDrawNavigationBar($count) {
+	protected function listDrawNavigationBar($count) {
 
 		echo("<table class=\"" . $this->type . "nav\" width=\"100%\" border=\"0\">\n");
 		echo("<tr>\n");
@@ -326,7 +356,7 @@ class lamList {
 	/**
 	* Prints the attribute and filter row at the account table head
 	*/
-	function listPrintTableHeader() {
+	protected function listPrintTableHeader() {
 		// print table header
 		echo "<table rules=\"all\" class=\"" . $this->type . "list\" width=\"100%\">\n";
 		echo "<tr class=\"" . $this->type . "list-head\">\n<th width=22 height=34></th>\n<th></th>\n";
@@ -378,7 +408,7 @@ class lamList {
 	*
 	* @param array $info entries
 	*/
-	function listPrintTableBody(&$info) {
+	protected function listPrintTableBody(&$info) {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
 		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
@@ -448,7 +478,7 @@ class lamList {
 	 * @param array $entry LDAP attributes
 	 * @param string $attribute attribute name
 	 */
-	function listPrintTableCellContent(&$entry, &$attribute) {
+	protected function listPrintTableCellContent(&$entry, &$attribute) {
 		// print all attribute entries seperated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			// delete "count" entry
@@ -467,7 +497,7 @@ class lamList {
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*/
-	function listDoPost() {
+	private function listDoPost() {
 		// check if button was pressed and if we have to add/delete an account
 		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['pdf']) || isset($_POST['pdf_all'])){
 			// add new account
@@ -532,12 +562,26 @@ class lamList {
 				}
 			}
 		}
+		// check if back from configuration page
+		if (sizeof($this->configOptions) > 0) {
+			if (isset($_POST['saveConfigOptions'])) {
+				$cookieValue = '';
+				for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+					$this->configOptions[$i]->fillFromPostData();
+					$cookieValue .= $this->configOptions[$i]->getID() . "=" . $this->configOptions[$i]->getValue() . ';';
+				}
+				// save options as cookie for one year
+				setcookie("ListOptions_" . $this->type, $cookieValue, time()+60*60*24*365, "/");
+				// notify subclasses
+				$this->listConfigurationChanged();
+			}
+		}
 	}
 
 	/**
 	* Prints a combobox with possible sub-DNs.
 	*/
-	function listShowOUSelection() {
+	protected function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
 			echo ("<b>" . _("Suffix") . ": </b>");
 			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged()\">\n");
@@ -557,7 +601,7 @@ class lamList {
 	 *
 	 * @param boolean $createOnly true if only the create button should be displayed
 	 */
-	function listPrintButtons($createOnly) {
+	protected function listPrintButtons($createOnly) {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td align=\"left\">\n";
@@ -566,9 +610,14 @@ class lamList {
 		if (!$createOnly) {
 			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
 		}
+		echo "&nbsp;&nbsp;&nbsp;";
+		$this->listShowOUSelection();
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
-			$this->listShowOUSelection();
+		echo '<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
+			echo '<img src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
+			echo '&nbsp;' . _('Change settings');
+		echo '</a>';
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -577,7 +626,7 @@ class lamList {
 	/**
 	 * Prints the PDF button bar.
 	 */
-	function listPrintPDFButtons() {
+	protected function listPrintPDFButtons() {
 		echo "<fieldset class=\"" . $this->type . "edit\"><legend><b>PDF</b></legend>\n";
 		echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
 		$pdf_structures = getPDFStructureDefinitions($this->type);
@@ -592,9 +641,9 @@ class lamList {
 	}
 
 	/**
-	 * Prints the HTML head.
+	 * Prints the HTML header.
 	 */
-	function listPrintHeader() {
+	protected function listPrintHeader() {
 		echo $_SESSION['header'];
 		echo "<title>Account list</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
@@ -602,11 +651,19 @@ class lamList {
 		echo "</head><body>\n";
 		$this->listPrintJavaScript();
 	}
+	
+	/**
+	 * Prints the HTML footer.
+	 */
+	protected function listPrintFooter() {	
+		echo ("</form>\n");
+		echo "</body></html>\n";		
+	}
 
 	/**
 	* Prints JavaScript code needed for mouse-over effects.
 	*/
-	function listPrintJavaScript() {
+	protected function listPrintJavaScript() {
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
 
@@ -651,7 +708,7 @@ class lamList {
 	*
 	* @return array attribute list
 	*/
-	function listGetAttributeDescriptionList() {
+	private function listGetAttributeDescriptionList() {
 		$ret = array();
 		$attr_string = $_SESSION["config"]->get_listAttributes($this->type);
 		$temp_array = explode(";", $attr_string);
@@ -685,7 +742,7 @@ class lamList {
 	/**
 	 * Sets some internal parameters.
 	 */
-	function listGetParams() {
+	protected function listGetParams() {
 		// get current page
 		if (isset($_GET["page"])) $this->page = $_GET["page"];
 		else $this->page = 1;
@@ -729,7 +786,7 @@ class lamList {
 	/**
 	 * Rereads the entries from LDAP.
 	 */
-	function listRefreshData() {
+	protected function listRefreshData() {
 		// configure search filter
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
 		$filter = "(&" . $module_filter  . ")";
@@ -760,19 +817,69 @@ class lamList {
 	}
 	
 	/**
-	 * Prints additional option fields for specific object types.
-	 */
-	function listPrintAdditionalOptions() {
-		// may be used by subclasses
-	}
-	
-	/**
 	 * Returns a list of lamListTool objects to display next to the edit/delete buttons.
 	 *
 	 * @return lamListTool[] tools
 	 */
 	protected function getAdditionalTools() {
 		return array();
+	}
+	
+	/**
+	 * Returns a list of possible configuration options.
+	 *
+	 * @return array list of lamListOption objects
+	 */
+	protected function listGetAllConfigOptions() {
+		return array();
+	}
+
+	/**
+	 * Prints the list configuration page.
+	 */
+	protected function listPrintConfigurationPage() {
+		$this->listPrintHeader();
+		
+		echo '<h1 align="center">' . _('Change list settings') . "</h1>\n";
+		
+		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		echo "<table class=\"" . $this->type . "list\" width=\"100%\">\n";
+		echo "<tr class=\"" . $this->type . "list\"><td>\n";
+
+		$tabindex = 0;
+		$tabindexLink = 0;
+		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+			parseHtml('none', $this->configOptions[$i]->getMetaHTML(), array(), true, $tabindex, $tabindexLink, $this->type);
+		}
+
+		echo "<br>";
+		echo "<input type=\"submit\" name=\"saveConfigOptions\" value=\"" . _('Ok') . "\">\n";
+		echo "<input type=\"submit\" name=\"cancelConfigOptions\" value=\"" . _('Cancel') . "\">\n";
+		echo "</td></tr></table>\n";
+		echo "</form>\n";
+		
+		$this->listPrintFooter();		
+	}
+	
+	/**
+	 * Returns the configuration option with the given ID.
+	 *
+	 * @param String $ID ID
+	 */
+	protected function listGetConfigOptionByID($ID) {
+		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+			if ($this->configOptions[$i]->getID() === $ID) {
+				return $this->configOptions[$i];
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Called when the configuration options changed.
+	 */
+	protected function listConfigurationChanged() {
+		return;
 	}
 
 }
@@ -797,7 +904,7 @@ class lamListTool {
 	 * @param String $target target page
 	 * @return lamListTool tool object
 	 */
-	function lamListTool($name, $image, $target) {
+	public function lamListTool($name, $image, $target) {
 		$this->name = $name;
 		$this->image = $image;
 		$this->target = $target;
@@ -809,7 +916,7 @@ class lamListTool {
 	 *
 	 * @return String image name
 	 */
-	function getImage() {
+	public function getImage() {
 		return $this->image;
 	}
 
@@ -819,7 +926,7 @@ class lamListTool {
 	 *
 	 * @return String name
 	 */
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -829,8 +936,136 @@ class lamListTool {
 	 * 
 	 * @return String page file (e.g. 'mytool.php')
 	 */
-	function getLinkTarget() {
+	public function getLinkTarget() {
 		return $this->target;
+	}
+
+}
+
+/**
+ * Represents a list configuration option.
+ *
+ * @package lists
+ * @author Roland Gruber
+ */
+abstract class lamListOption {
+	
+	private $ID;
+	
+	private $value;
+	
+	/**
+	 * Creates a new config option.
+	 *
+	 * @param String $ID
+	 * @return lamConfigOption config option
+	 */
+	public function lamConfigOption($ID) {
+		$this->ID = $ID;
+	}
+	
+	/**
+	 * Returns the option ID.
+	 *
+	 * @return String ID
+	 */
+	public function getID() {
+		return $this->ID;
+	}
+	
+	/**
+	 * Fills the config option from POST data.
+	 * 
+	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
+	 */
+	public abstract function fillFromPostData();
+	
+	/**
+	 * Returns the option value. The value must not contain "=" and ";".
+	 *
+	 * @return String value
+	 */
+	public function getValue() {
+		return $this->value;
+	}
+	
+	/**
+	 * Sets the config option value. The value must not contain "=" and ";".
+	 *
+	 * @param String $value
+	 */
+	public function setValue($value) {
+		if ((strpos($value, '=') > -1) || (strpos($value, ';') > -1)) {
+			user_error("Invalid value for list option: " . $value, E_ERROR);
+		}
+		$this->value = $value;
+	}
+	
+	/**
+	 * Returns the meta HTML data to display this option.
+	 * 
+	 * @return array meta HTML
+	 */
+	public abstract function getMetaHTML();
+	
+}
+
+/**
+ * Boolean option for list configuration.
+ *
+ * @package lists
+ * @author Roland Gruber
+ */
+class lamBooleanListOption extends lamListOption {
+	
+	private $name;
+	
+	/**
+	 * Creates a new boolean option.
+	 *
+	 * @param String $name name to show on config page
+	 * @return lamBooleanListOption config option
+	 */
+	public function lamBooleanListOption($name, $ID) {
+		parent::lamConfigOption($ID);
+		$this->name = $name;
+	}
+	
+	/**
+	 * Returns if this option is selected.
+	 *
+	 * @return boolean true, if selected
+	 */
+	public function isSelected() {
+		return ($this->getValue() === "1");
+	}
+	
+	/**
+	 * Fills the config option from POST data.
+	 * 
+	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
+	 */
+	public function fillFromPostData() {
+		if (isset($_POST[$this->getID()])) {
+			$this->setValue("1");
+		}
+		else {
+			$this->setValue("0");
+		}
+	}
+
+	/**
+	 * Returns the meta HTML data to display this option.
+	 * 
+	 * @return array meta HTML
+	 */
+	public function getMetaHTML() {
+		$return = array();
+		$return[] = array(
+			array('kind' => 'input', 'name' => $this->getID(), 'type' => 'checkbox', 'checked' => $this->isSelected()),
+			array('kind' => 'text', 'text' => $this->name)
+		);
+		return $return;
 	}
 
 }
