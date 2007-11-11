@@ -33,6 +33,8 @@ h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
   font-family:Arial,Tahoma,Verdana,sans-serif;
 }
 
+h1,h2,h3 { color:#253aa3; }
+
 body {
   background-color:#F5F5F5;
 }
