@@ -34,6 +34,11 @@ table.userlist {
   border-width:1px;
   border-style:solid;
   border-color:#9b8523;
+  border-collapse:collapse;
+}
+
+table.userlist td,th {
+  border-color:#9b8523;
 }
 
 /* input elements */

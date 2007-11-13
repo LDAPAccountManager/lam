@@ -56,6 +56,11 @@ table.smbDomainlist {
   border-width:1px;
   border-style:solid;
   border-color:#1d993e;
+  border-collapse:collapse;
+}
+
+table.smbDomainlist td,th {
+  border-color:#1d993e;
 }
 
 /* input elements */

@@ -670,13 +670,19 @@ class lamList {
 		// mouseOver function
 		echo "function list_over(list, box, scope) {\n";
 			echo "cbox = document.getElementsByName(box)[0];\n";
-			echo "if (cbox.checked == false) list.setAttribute('class', scope + 'list-over', 0);\n";
+			echo "if (cbox.checked == false) {\n";
+				echo "list.setAttribute('className', scope + 'list-over', 0);\n";
+				echo "list.setAttribute('class', scope + 'list-over', 0);";
+			echo "}\n";
 		echo "}";
 
 		// mouseOut function
 		echo "function list_out(list, box, scope) {\n";
 			echo "cbox = document.getElementsByName(box)[0];\n";
-			echo "if (cbox.checked == false) list.setAttribute('class', scope + 'list', 0);\n";
+			echo "if (cbox.checked == false) {\n";
+				echo "list.setAttribute('className', scope + 'list', 0);\n";
+				echo "list.setAttribute('class', scope + 'list', 0);\n";
+			echo "}\n";
 		echo "}\n";
 
 		// onClick function
@@ -684,10 +690,12 @@ class lamList {
 			echo "cbox = document.getElementsByName(box)[0];\n";
 			echo "if (cbox.checked == true) {\n";
 				echo "cbox.checked = false;\n";
+				echo "list.setAttribute('className', scope + 'list-over', 0);\n";
 				echo "list.setAttribute('class', scope + 'list-over', 0);\n";
 			echo "}\n";
 			echo "else {\n";
 				echo "cbox.checked = true;\n";
+				echo "list.setAttribute('className', scope + 'list-checked', 0);\n";
 				echo "list.setAttribute('class', scope + 'list-checked', 0);\n";
 			echo "}\n";
 		echo "}\n";

@@ -56,6 +56,11 @@ table.mailAliaslist {
   border-width:1px;
   border-style:solid;
   border-color:#af8800;
+  border-collapse:collapse;
+}
+
+table.mailAliaslist td,th {
+  border-color:#af8800;
 }
 
 /* input elements */

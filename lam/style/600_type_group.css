@@ -56,6 +56,11 @@ table.grouplist {
   border-width:1px;
   border-style:solid;
   border-color:#7167bf;
+  border-collapse:collapse;
+}
+
+table.grouplist td,th {
+  border-color:#7167bf;
 }
 
 /* input elements */

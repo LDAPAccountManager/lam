@@ -56,6 +56,11 @@ table.hostlist {
   border-width:1px;
   border-style:solid;
   border-color:#911a1a;
+  border-collapse:collapse;
+}
+
+table.hostlist td,th {
+  border-color:#911a1a;
 }
 
 /* input elements */
