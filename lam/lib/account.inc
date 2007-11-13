@@ -512,36 +512,5 @@ function get_preg($argument, $regexp) {
 	return false;
 }
 
-/**
- * This function checks if the given IP ist valid.
- *
- * @param IP
- * @param check_subnet true for subnets, else false
- *
- * @return boolean true or false
- **/
-function check_ip($ip, $subnet=false) {
-    $part = split("[.]", $ip);
-	// IP must have 4 segments
-	if (count($part) != 4) {
-		return false;
-	}
-	// non-subnets must not end with 0
-	if (!$subnet && ($part[3] < 1)) return false;
-	// subnets must end with 0
-	if ($subnet && ($part[3] != 0)) return false;
-	for ($i = 0; $i < 3; $i++) {
-		if (!is_numeric($part[$i])) {
-			return false;
-        }
-		else {
-			if (($part[$i] > 255) || ($part[$i] < 0)) {
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
 
 ?>
