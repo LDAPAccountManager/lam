@@ -36,6 +36,33 @@ $Id$
 * @package modules
 */
 class inetOrgPerson extends baseModule {
+	
+	private static $unix_hosts_supported = 'unknown';
+	
+	/**
+	 * Returns if the host attribute is supported by the schema.
+	 *
+	 * @return boolean true if supported
+	 */
+	private function supportUnixHosts() {
+		if (inetOrgPerson::$unix_hosts_supported === 'unknown') {
+			inetOrgPerson::$unix_hosts_supported = 'no';
+			get_schema_objectclasses();
+			$classes = get_cached_schema('objectclasses');
+			if (isset($classes['inetorgperson'])) {
+				$mayAttrs = $classes['inetorgperson']->getMayAttrs();
+				if (is_array($mayAttrs)) {
+					for ($i = 0; $i < sizeof($mayAttrs); $i++) {
+						if ($mayAttrs[$i]->getName() === 'host') {
+							inetOrgPerson::$unix_hosts_supported = 'yes';
+							break;
+						}
+					}
+				}
+			}
+		}
+		return (inetOrgPerson::$unix_hosts_supported === 'yes');
+	}
 
 	/**
 	* This function fills the message array.
@@ -271,13 +298,15 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		// Unix workstations for upload
-		if ($_SESSION['loggedIn'] && $_SESSION['ldap']->supports_unix_hosts) {
-			$return['upload_columns'][] = array(
-				'name' => 'inetOrgPerson_hosts',
-				'description' => _('Unix workstations'),
-				'help' => 'workstations',
-				'example' => _('pc01,pc02')
-				);
+		if ($_SESSION['loggedIn']) {
+			if ($this->supportUnixHosts()) {
+				$return['upload_columns'][] = array(
+					'name' => 'inetOrgPerson_hosts',
+					'description' => _('Unix workstations'),
+					'help' => 'workstations',
+					'example' => _('pc01,pc02')
+					);
+			}
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -550,7 +579,7 @@ class inetOrgPerson extends baseModule {
 		}
 
 		// handle host-attribute in on epice because it's not set by default
-		if ($_SESSION['ldap']->supports_unix_hosts) {
+		if ($this->supportUnixHosts()) {
 			$host = $_POST['host'];
 			if (!get_preg($host,'unixhost')) {
 				$errors[] = $this->messages['host'][0];
@@ -760,7 +789,7 @@ class inetOrgPerson extends baseModule {
 			array('kind' => 'input', 'name' => 'businessCategory', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $businessCategory),
 			array('kind' => 'help', 'value' => 'businessCategory'));
-		if ($_SESSION['ldap']->supports_unix_hosts) {
+		if ($this->supportUnixHosts()) {
 			$hostvalue = "";
 			if (is_array($this->attributes['host'])) {
 				$hostvalue .= implode(",", $this->attributes['host']);

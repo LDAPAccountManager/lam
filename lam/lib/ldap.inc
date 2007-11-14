@@ -64,15 +64,6 @@ class Ldap{
 	/** LDAP password used for bind */
 	private $password;
 
-	/** Array with all objectClass strings from the LDAP server */
-	private $objectClasses;
-	/** Array with all attribute strings from the LDAP server */
-	private $attributes;
-
-	// Capabilities of the LDAP server
-	/** Host attribute in inetOrgPerson */
-	public $supports_unix_hosts = false;
-
 	/** Random number (changes on every page request) */
 	private $rand;
 
@@ -121,16 +112,6 @@ class Ldap{
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 				$return = ldap_errno($this->server);
-				// read objectClasses from server and update capabilities if needed
-				if (! $this->objectClasses) {
-					$this->updateClasses();
-					$this->updateCapabilities();
-					// update schema
-					get_schema_objectclasses();
-					get_schema_attributes();
-					get_schema_matching_rules();
-					get_schema_syntaxes();
-				}
 				// return success number
 				return $return;
 			}
@@ -177,118 +158,6 @@ class Ldap{
 		return $ret;
 	}
 
-	/** Reads the array of objectClasses from the LDAP server */
-	function updateClasses() {
-		// read from default cn
-		$sr = @ldap_read($this->server, 'cn=subschema', '(objectClass=*)', array('objectclasses'));
-		// if default was not correct check different cn
-		if (!$sr) $sr = @ldap_read($this->server, 'cn=schema', '(objectClass=*)', array('objectclasses'));
-		if ($sr) {
-			// get search result and save it
-			$info = @ldap_get_entries($this->server,$sr);
-			if ($info) {
-				$this->objectClasses = $info[0]['objectclasses'];
-				if (is_array($this->objectClasses)) {
-					array_shift($this->objectClasses);
-				}
-				else {
-					$this->objectClasses = array();
-				}
-			}
-		}
-		// if search failed save empty result
-		else $this->objectClasses = array();
-
-		// read from default cn
-		$sr = @ldap_read($this->server, 'cn=subschema', '(objectClass=*)', array('attributetypes'));
-		// if default was not correct check different cn
-		if (!$sr) $sr = @ldap_read($this->server, 'cn=schema', '(objectClass=*)', array('attributetypes'));
-		if ($sr) {
-			// get search result and save it
-			$info = @ldap_get_entries($this->server,$sr);
-			if ($info) {
-				$attributes = $info[0]['attributetypes'];
-				if (is_array($attributes)) {
-					array_shift($attributes);
-				}
-				else {
-					$attributes = array();
-				}
-			}
-		}
-		else {
-			$attributes = array();
-		}
-		// build Attribute list
-		for ($i=0; $i<count($attributes); $i++) {
-			// TODO: is it save to use while in lower code?
-			// find oid of attribute
-			$start = 0;
-			while (!get_preg($attributes[$i][$start], 'digit')) $start++;
-			$end = $start;
-			while ($attributes[$i][$end+1] != ' ') $end++; // find limiter
-			$values['oid'] = substr($attributes[$i], $start, $end-$start);
-			// find DESC of attribute			
-			$start = strpos($attributes[$i], 'DESC');
-			if ($start) {
-				$start = $start + 6;
-				$end = $start;
-				while ($attributes[$i][$end]!='\'') $end++; // find limiter
-				$values['DESC'] = substr($attributes[$i], $start, $end-$start);
-			}
-			// find SYNTAX of attribute			
-			$start = strpos($attributes[$i], 'SYNTAX');
-			if ($start) {
-				$start = $start + 7;
-				$end = $start;
-				while ($attributes[$i][$end]!='{' && $attributes[$i][$end]!=' ') $end++; // find limiter
-				$values['SYNTAX'] = substr($attributes[$i], $start, $end-$start);
-			}
-			// find length of attribute			
-			$start = strpos($attributes[$i], 'SYNTAX');
-			if ($start) {
-				$start = $start + 8;
-				while ($attributes[$i][$start]!='{' && $attributes[$i][$start]!=' ') $start++; // find limiter
-				if ($attributes[$i][$start]=='{') {
-					$end = $start;
-					while ($attributes[$i][$end]!='}') $end++; // find limiter
-					$values['LENGTH'] = substr($attributes[$i], $start, $end-$start);
-				}
-			}
-			$start = strpos($attributes[$i], "NAME") + 6;
-			if ($attributes[$i][$start-1]=='(') {
-				// found multiple possible names
-				$start = $start +2;
-				$count = 1;
-				// repeat until all names are found
-				while ($attributes[$i][$start-1]!=')') {
-					// search for end
-					$end = $start;
-					while ($attributes[$i][$end]!='\'') $end++; // find limiter
-					$count++;
-					$name = substr($attributes[$i], $start, $end-$start);
-					$this->attributes[$name] = $values;
-					$start = $end + 3;
-				}
-			}
-			else {
-				$end = $start;
-				while ($attributes[$i][$end]!='\'') $end++;
-				$name = substr($attributes[$i], $start, $end-$start);
-				$this->attributes[$name] = $values;
-			}
-		}
-	}
-
-	/** Updates the capabilities values (var $supports_*) */
-	function updateCapabilities() {
-		for ($i = 0; $i < sizeof($this->objectClasses); $i++) {
-			$line = $this->objectClasses[$i];
-			// search keywords
-			if (strpos($line, "NAME 'inetOrgPerson'") && strpos($line, " host ")) $this->supports_unix_hosts = true;
-		}
-	}
-
 	/**
 	* Returns the LDAP connection handle
 	*
@@ -307,8 +176,7 @@ class Ldap{
 	function __sleep() {
 		$this->close();
 		// define which attributes to save
-		return array("conf", "username", "password", "objectClasses", "attributes",
-			"supports_unix_hosts", "rand");
+		return array("conf", "username", "password", "rand");
 	}
 
 	/** Reconnects to LDAP server when deserialized */
