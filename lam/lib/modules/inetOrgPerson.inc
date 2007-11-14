@@ -488,6 +488,15 @@ class inetOrgPerson extends baseModule {
 	*/
 	function process_attributes() {
 		$errors = array();
+		// add parent object classes
+		if ($this->getAccountContainer()->isNewAccount) {
+			if (!in_array('organizationalPerson', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'organizationalPerson';
+			}
+			if (!in_array('person', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'person';
+			}
+		}
 		// Load attributes
 		$this->attributes['description'][0] = $_POST['description'];
 		$this->attributes['sn'][0] = $_POST['sn'];
