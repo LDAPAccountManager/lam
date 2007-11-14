@@ -838,7 +838,7 @@ class inetOrgPerson extends baseModule {
 			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'delPhoto', 'value' => _('Delete photo')));
 		}
 		$return = array(array(
-			array('kind' => 'table', 'value' => $return),
+			array('kind' => 'table', 'value' => $return, 'td' => array('width' => '100%')),
 			array('kind' => 'table', 'value' => $photo, 'td' => array('valign' => 'top', 'align' => 'right','width' => '100%'))
 			));
 		return $return;
