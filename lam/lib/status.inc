@@ -70,10 +70,10 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 	$MessageText = parseMessageString($MessageText);
 
 	if (is_file("../graphics/error.png")) {
-		$MessageTyp = "<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
+		$MessageTyp = "&nbsp;&nbsp;<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"32\" height=\"32\">";
 	}
 	else {
-		$MessageTyp = "<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
+		$MessageTyp = "&nbsp;&nbsp;<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"32\" height=\"32\">";
 	}
 
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
