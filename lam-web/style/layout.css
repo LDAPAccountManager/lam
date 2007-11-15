@@ -60,10 +60,10 @@ h2.news { margin-bottom:0px; }
 p.news { margin-top:5px; text-align:justify; }
 
 /* nav.htm */
-table.nav { border-color:#253aa3; border-style:solid; border-width:1px; }
-th.nav { background-color:#253aa3; text-align:left; font-size:12pt; font-weight:bold; color:#FFFFFF; border-color:#253aa3; border-style:hidden; height:21px; }
-td.nav {  padding-left: 15px;background-color:#FFFFFF;border-color:#253aa3; border-style:hidden; font-size:10pt; }
-td.nav-over {  padding-left: 15px;background-color:#a8c3ff;border-color:#201b03; border-style:hidden; font-size:10pt; }
+table.nav { border-color:#253aa3; border-width:1px; }
+th.nav { background-color:#253aa3; text-align:left; font-size:12pt; font-weight:bold; color:#FFFFFF; height:21px; }
+td.nav {  padding-left: 15px;background-color:#FFFFFF; font-size:10pt; }
+td.nav-over {  padding-left: 15px;background-color:#a8c3ff; font-size:10pt; }
 
 a.download { color:#253aa3; text-decoration:none; font-weight:bold; }
 a.download:hover { color:red;text-decoration:none; }
