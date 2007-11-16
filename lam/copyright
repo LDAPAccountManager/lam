@@ -1,9 +1,16 @@
 This software is copyright (c) 2003 - 2007 by Tilo Lutz, Roland Gruber
 and Michael Duergner.
 
-If you purchased a copy of LDAP Account Manager Pro then all files in
-templates/selfService are licensed under the conditions which you accepted
-at purchase time.
+If you purchased a copy of LDAP Account Manager Pro then the following
+files are licensed under the conditions which you accepted at purchase
+time.
+
+* templates/lists/changePassword.php
+* templates/selfService/*
+* lib/modules/groupOfNames.inc
+* lib/modules/groupOfUniqueNames.inc
+
+
 All other files are licensed under the conditions below.
 
 
