@@ -155,7 +155,7 @@ $helpArray = array (
 					"Text" => _("Here you can select a PDF structure and export the account to a PDF file.")),
 				// 500 - 599
 				// Roland Gruber
-				// self service
+				// LAM Pro
 				"501" => array ("ext" => "FALSE", "Headline" => _("LDAP suffix"),
 					"Text" => _("LAM will search for accounts in this part of the LDAP tree.")),				
 				"502" => array ("ext" => "FALSE", "Headline" => _("LDAP user and password"),
@@ -172,6 +172,14 @@ $helpArray = array (
 					"Text" => _("Adds a new group element to the list of self service options. Use this to structure the input fields.")),
 				"508" => array ("ext" => "FALSE", "Headline" => _("Add input field"),
 					"Text" => _("Adds a new self service option to the selected group element.")),
+				"520" => array ("ext" => "FALSE", "Headline" => _("Generate random password"),
+					"Text" => _("This will set a random password and display it on the screen or send it the user via mail.") .
+						'<br><br>' . _('If you decide to send the password via mail then the mail template "config/passwordMailTemplate.txt" will be used.') .
+						'<br><br><b>' . _('Format') . ': </b><ul>' .
+						'<li>' . _('The first line is the subject.') . '</li>' .
+						'<li>' . _('All following lines form the mail body.') . '</li>' .
+						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
+						'<li>' . _('The wildcard for the new password is @@newPasssword@@.') . '</li>'),
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page
