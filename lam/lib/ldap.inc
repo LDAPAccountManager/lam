@@ -228,6 +228,9 @@ class Ldap{
 		if (function_exists('mcrypt_create_iv')) {
 			// MCrypt may have been enabled in a running session
 			if (!isset($_COOKIE["IV"]) || ($_COOKIE["IV"] == '')) return $data;
+			if ($_COOKIE["IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
+				return $data;
+			}
 			// read key and iv from cookie
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
@@ -251,6 +254,9 @@ class Ldap{
 		if (function_exists('mcrypt_create_iv')) {
 			// MCrypt may have been enabled in a running session
 			if (!isset($_COOKIE["IV"]) || ($_COOKIE["IV"] == '')) return $data;
+			if ($_COOKIE["IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
+				return $data;
+			}
 			// read key and iv from cookie
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
