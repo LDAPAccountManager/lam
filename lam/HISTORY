@@ -5,6 +5,7 @@
   - Security: passwords in configuration files are now saved as hash values
   - style fixes for Internet Explorer users
   - Unix: allow to set host passwords (RFE 1754069)
+  - Unix: allow to generate random passwords for users
   - Samba 3 groups: Samba part is now optional
   - Personal: add object classes person and organizationalPerson for new accounts (RFE 1830033)
 

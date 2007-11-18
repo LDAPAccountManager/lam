@@ -894,6 +894,12 @@ class posixAccount extends baseModule {
 	*/
 	function process_password() {
 		if ($_POST['form_subpage_posixAccount_attributes_back']) return array();
+		else if ($_POST['form_subpage_posixAccount_attributes_randomPassword']) {
+			$pwd = generateRandomPassword();
+			$this->clearTextPassword = $pwd;
+			$this->attributes['userPassword'][0] = pwd_hash($pwd, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			return array(array('INFO', 'The password was set to:' . ' ' . $pwd));
+		}
 		$errors = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
 			$errors[] = $this->messages['userPassword'][0];
@@ -1090,11 +1096,20 @@ class posixAccount extends baseModule {
 			array('kind' => 'text', 'text' => _('Repeat password')),
 			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
 		$return[] = array(
+			array('kind' => 'text', 'text' => ' ')
+		);
+		$return[] = array(
+			array('kind' => 'text', 'text' => ' ')
+		);
+		$return[] = array(
 			array('kind' => 'table', 'value' => array(
 				array(
 					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
 					array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_posixAccount_attributes_back'),
-					array('kind' => 'text')))));
+					array('kind' => 'text')))),
+			array('kind' => 'input', 'type' => 'submit', 'value' => _('Set random password'),
+				'name' => 'form_subpage_posixAccount_attributes_randomPassword', 'td' => array('align' => 'right', 'colspan' => 2))
+			);
 		return $return;
 	}
 
