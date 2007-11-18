@@ -73,6 +73,7 @@ class sambaGroupMapping extends baseModule {
 			);
 		// call parent constructor
 		parent::baseModule($scope);
+		$this->autoAddObjectClasses = false;
 	}
 
 	/**
@@ -169,64 +170,75 @@ class sambaGroupMapping extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		$sambaDomains = search_domains();
-		if (sizeof($sambaDomains) == 0) {
-			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-			return array();
+		if (isset($_POST['form_subpage_sambaGroupMapping_attributes_addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'sambaGroupMapping';
 		}
-		// Get Domain-SID from group SID
-		if (isset($this->attributes['sambaSID'][0])) {
-			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
-		}
-		for ($i=0; $i<count($sambaDomains); $i++ ) {
-			// List with all valid domains
-			$sambaDomainNames[] = $sambaDomains[$i]->name;
-			if (isset($domainSID) && ($domainSID==$sambaDomains[$i]->SID)) {
-				$SID = $sambaDomains[$i]->SID;
-				$sel_domain = $sambaDomains[$i]->name;
+		$return = array();
+		if (in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
+			$sambaDomains = search_domains();
+			if (sizeof($sambaDomains) == 0) {
+				StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
+				return array();
 			}
-		}
-		$displayName = '';
-		if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Display name') ),
-			1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $displayName),
-			2 => array ( 'kind' => 'help', 'value' => 'displayName' ));
-
-		$names = array_keys($this->rids);
-		$wrid=false;
-		for ($i=0; $i<count($names); $i++) {
-			if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]])) {
-				$selected[] = $names[$i];
-				$wrid=true;
+			// Get Domain-SID from group SID
+			if (isset($this->attributes['sambaSID'][0])) {
+				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 			}
-			else $options[] = $names[$i];
-		}
-		$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-		if ($wrid) {
-			$options[] = $attrs['cn'][0];
+			for ($i=0; $i<count($sambaDomains); $i++ ) {
+				// List with all valid domains
+				$sambaDomainNames[] = $sambaDomains[$i]->name;
+				if (isset($domainSID) && ($domainSID==$sambaDomains[$i]->SID)) {
+					$SID = $sambaDomains[$i]->SID;
+					$sel_domain = $sambaDomains[$i]->name;
+				}
+			}
+			$displayName = '';
+			if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Display name') ),
+				1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $displayName),
+				2 => array ( 'kind' => 'help', 'value' => 'displayName' ));
+	
+			$names = array_keys($this->rids);
+			$wrid=false;
+			for ($i=0; $i<count($names); $i++) {
+				if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]])) {
+					$selected[] = $names[$i];
+					$wrid=true;
+				}
+				else $options[] = $names[$i];
+			}
+			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
+			if ($wrid) {
+				$options[] = $attrs['cn'][0];
+			}
+			else {
+				$selected[] = $attrs['cn'][0];
+			}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
+	
+			$names = array_keys($this->sambaGroupTypes);
+			$selected = array( _('Domain group') );
+			for ($i=0; $i<count($names); $i++) {
+				if (!isset($this->attributes['sambaGroupType'][0])) break;
+				if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
+			}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Group type') ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
+				2 => array ( 'kind' => 'help', 'value' => 'type' ));
+			$selectedDomain = array();
+			if (isset($sel_domain)) $selectedDomain = array($sel_domain);
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 		}
 		else {
-			$selected[] = $attrs['cn'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => '&nbsp;'),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaGroupMapping_attributes_addObjectClass', 'value' => _('Add Samba 3 account'))
+			);
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
-			2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
-
-		$names = array_keys($this->sambaGroupTypes);
-		$selected = array( _('Domain group') );
-		for ($i=0; $i<count($names); $i++) {
-			if (!isset($this->attributes['sambaGroupType'][0])) break;
-			if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
-		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Group type') ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
-			2 => array ( 'kind' => 'help', 'value' => 'type' ));
-		$selectedDomain = array();
-		if (isset($sel_domain)) $selectedDomain = array($sel_domain);
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
-			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
-
 		return $return;
 		}
 
@@ -385,19 +397,6 @@ class sambaGroupMapping extends baseModule {
 
 
 	/**
-	* This functions is used to check if all settings for this module have been made.
-	*
-	* @return boolean true, if settings are complete
-	*/
-	function module_complete() {
-		if (!$this->module_ready()) return false;
-		if ($this->attributes['sambaSID'][0] == '') return false;
-		if ($this->attributes['sambaGroupType'][0] == '') return false;
-		return true;
-	}
-
-
-	/**
 	* This function is used to check if this module page can be displayed.
 	* It returns false if a module depends on data from other modules which was not yet entered.
 	*
@@ -417,6 +416,9 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
@@ -474,31 +476,11 @@ class sambaGroupMapping extends baseModule {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
-		// Get Domain SID from name
-		$sambaDomains = search_domains();
-		// Get Domain-SID from group SID
-		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
-		for ($i=0; $i<count($sambaDomains); $i++ ) {
-			if ($domainSID==$sambaDomains[$i]->SID) {
-				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomains[$i]->RIDbase;
-			}
+		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
+			return array();
 		}
-		$names = array_keys($this->rids);
-		$wrid=false;
-		for ($i=0; $i<count($names); $i++) {
-			if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
-				$wrid=true;
-			}
-		}
-		if (!$wrid) {
-			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-			$this->attributes['sambaSID'][0] = $SID."-".($attrs['gidNumber'][0]*2+1+$RIDbase);
-		}
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-
-		return $return;
-		}
+		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+	}
 
 }
 

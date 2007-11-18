@@ -3,8 +3,10 @@
   - account lists: added separate configuration page and store settings in cookies
   - use suffix from account list as default for new accounts (patch 1823583)
   - Security: passwords in configuration files are now saved as hash values
-  - Unix: allow to set host passwords (RFE 1754069)
   - style fixes for Internet Explorer users
+  - Unix: allow to set host passwords (RFE 1754069)
+  - Samba 3 groups: Samba part is now optional
+  - Personal: add object classes person and organizationalPerson for new accounts (RFE 1830033)
 
 
 07.11.2007 2.1.0
