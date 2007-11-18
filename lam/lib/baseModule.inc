@@ -62,6 +62,9 @@ abstract class baseModule {
 
 	/** contains all error messages of a module */
 	protected $messages;
+	
+	/** if true, managed object classes are added when an account is created or loaded (default: true) */
+	protected $autoAddObjectClasses;
 
 	/**
 	* Creates a new base module class
@@ -72,6 +75,7 @@ abstract class baseModule {
 		$this->scope = $scope;
 		$this->load_Messages();
 		$this->meta = $this->get_metaData();
+		$this->autoAddObjectClasses = true;
 		// load configuration
 		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
 		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile']->moduleSettings;
@@ -95,9 +99,13 @@ abstract class baseModule {
 		// add object classes if needed
 		$this->attributes['objectClass'] = array();
 		$this->orig['objectClass'] = array();
-		$objectClasses = $this->getManagedObjectClasses();
-		for ($i = 0; $i < sizeof($objectClasses); $i++) {
-			if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) $this->attributes['objectClass'][] = $objectClasses[$i];
+		if ($this->autoAddObjectClasses === true) {
+			$objectClasses = $this->getManagedObjectClasses();
+			for ($i = 0; $i < sizeof($objectClasses); $i++) {
+				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
+					$this->attributes['objectClass'][] = $objectClasses[$i];
+				}
+			}
 		}
 	}
 
@@ -120,9 +128,13 @@ abstract class baseModule {
 			$this->orig['objectClass'] = array();
 		}
 		// add object classes if needed
-		$objectClasses = $this->getManagedObjectClasses();
-		for ($i = 0; $i < sizeof($objectClasses); $i++) {
-			if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) $this->attributes['objectClass'][] = $objectClasses[$i];
+		if ($this->autoAddObjectClasses === true) {
+			$objectClasses = $this->getManagedObjectClasses();
+			for ($i = 0; $i < sizeof($objectClasses); $i++) {
+				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
+					$this->attributes['objectClass'][] = $objectClasses[$i];
+				}
+			}
 		}
 		// load attributes
 		$attributeNames = $this->getManagedAttributes();
