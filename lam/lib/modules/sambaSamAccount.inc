@@ -71,6 +71,7 @@ class sambaSamAccount extends baseModule {
 		_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520);
 	// call parent constructor
 	parent::baseModule($scope);
+	$this->autoAddObjectClasses = false;
 	}
 
 	/** this functin fills the error message array with messages
@@ -520,14 +521,6 @@ class sambaSamAccount extends baseModule {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
 		}
-		// do not automatically add Samba 3 object class
-		for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
-			if ($this->attributes['objectClass'][$i] == 'sambaSamAccount') {
-				unset($this->attributes['objectClass'][$i]);
-				$this->attributes['objectClass'] = array_values($this->attributes['objectClass']);
-				break;
-			}
-		}
 	}
 
 	/**
@@ -558,16 +551,6 @@ class sambaSamAccount extends baseModule {
 			else $this->nopwd = false;
 			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
 			else $this->noexpire = false;
-		}
-		if (!isset($this->orig['objectClass']) || !in_array('sambaSamAccount', $this->orig['objectClass'])) {
-		// do not automatically add Samba 3 object class
-			for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
-				if ($this->attributes['objectClass'][$i] == 'sambaSamAccount') {
-					unset($this->attributes['objectClass'][$i]);
-					$this->attributes['objectClass'] = array_values($this->attributes['objectClass']);
-					break;
-				}
-			}		
 		}
 	}
 
