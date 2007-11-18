@@ -75,6 +75,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo $_SESSION['header'];
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $_GET['type'] . ".css\">\n";
 	echo "</head><body>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
@@ -126,6 +127,7 @@ if ($_POST['delete']) {
 	echo $_SESSION['header'];
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $_POST['type'] . ".css\">\n";
 	echo "</head><body>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
