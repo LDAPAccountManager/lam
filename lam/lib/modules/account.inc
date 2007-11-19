@@ -48,6 +48,8 @@ class account extends baseModule {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		}
 		$return = array();
+		// icon
+		$return['icon'] = 'uid.png';
 		// manages host accounts
 		$return["account_types"] = array("host", "user");
 		// alias name

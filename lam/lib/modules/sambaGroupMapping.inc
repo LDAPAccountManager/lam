@@ -249,6 +249,8 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'samba.png';
 		// manages group accounts
 		$return["account_types"] = array("group");
 		// alias name

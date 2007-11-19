@@ -276,6 +276,8 @@ class posixGroup extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'tux.png';
 		// manages group accounts
 		$return["account_types"] = array("group");
 		if ($this->get_scope() == "group") {

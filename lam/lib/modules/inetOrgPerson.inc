@@ -115,6 +115,8 @@ class inetOrgPerson extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'uid.png';
 		// manages user accounts
 		$return["account_types"] = array("user");
 		// alias name
@@ -1492,7 +1494,6 @@ class inetOrgPerson extends baseModule {
 		}
 		return $return;
 	}
-
 
 }
 

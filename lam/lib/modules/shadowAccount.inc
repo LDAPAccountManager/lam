@@ -63,6 +63,8 @@ class shadowAccount extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'key.png';
 		// manages user accounts
 		$return["account_types"] = array("user");
 		// alias name

@@ -117,6 +117,8 @@ class sambaSamAccount extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'samba.png';
 		// manages user and host accounts
 		$return["account_types"] = array("user", "host");
 		if ($this->get_scope() == "host") {

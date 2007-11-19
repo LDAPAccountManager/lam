@@ -793,6 +793,19 @@ abstract class baseModule {
 	public function getOriginalAttributes() {
 		return $this->orig;
 	}
+	
+	/**
+	 * Returns the path to the module icon.
+	 * The path must be releative to graphics (e.g. key.png).
+	 *
+	 * @return unknown
+	 */
+	public function getIcon() {
+		if (isset($this->meta['icon'])) {
+			return $this->meta['icon'];
+		}
+		return null;
+	}
 
 }
 

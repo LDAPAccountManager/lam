@@ -41,6 +41,8 @@ class inetLocalMailRecipient extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'mailAlias.png';
 		// manages host accounts
 		$return["account_types"] = array("user");
 		// alias name

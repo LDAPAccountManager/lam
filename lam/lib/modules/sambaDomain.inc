@@ -41,6 +41,8 @@ class sambaDomain extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'samba.png';
 		// manages host accounts
 		$return["account_types"] = array("smbDomain");
 		// alias name

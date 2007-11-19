@@ -1009,8 +1009,16 @@ class accountContainer {
 			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
 				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:10px;\">\n";
 			// print normal button
-			echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;border:0px solid;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-			echo $this->module[$this->order[$i]]->get_alias();
+			$buttonImage = $this->module[$this->order[$i]]->getIcon();
+			$buttonImageStyle = '';
+			$buttonSpace = '';
+			if ($buttonImage != null) {
+				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;';
+				$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+			}
+			$buttonStyle = $buttonImageStyle . 'background-color:transparent;width:' . $buttonWidth . 'em;border:0px solid;';
+			echo "<input style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
+			echo $buttonSpace . $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
 			if (($buttonStatus == 'disabled') || $this->subpage == 'finish') echo " disabled";
 			echo ">\n";

@@ -101,6 +101,8 @@ class posixAccount extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// icon
+		$return['icon'] = 'tux.png';
 		// manages user and host accounts
 		$return["account_types"] = array("user", "host");
 		// user specific data
