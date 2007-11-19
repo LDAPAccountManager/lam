@@ -65,8 +65,8 @@ if (isset($_POST['abort'])) {
 
 // print header
 echo $_SESSION['header'];
-echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
+echo "<title>Profile editor</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
 echo "</head><body><br>\n";
 
 // save button was presed
@@ -234,7 +234,7 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	$module = new $modules[$m]($type);
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
-		$icon = '<img src="../../graphics/' . $iconImage . '"> ';
+		$icon = '<img src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon<b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
 	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $tabindexLink, $type);
