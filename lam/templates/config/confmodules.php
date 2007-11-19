@@ -171,7 +171,8 @@ function config_showAccountModules($scope, $title) {
 	}
 	
 	// show account modules
-	echo "<fieldset class=\"" . $scope . "edit\"><legend><b>" . $title . "</b></legend>\n";
+	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp';
+	echo "<fieldset class=\"" . $scope . "edit\"><legend>$icon<b>" . $title . "</b></legend>\n";
 	echo "<table border=0 width=\"100%\">\n";
 		// select boxes
 		echo "<tr>\n";

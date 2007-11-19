@@ -174,7 +174,7 @@ function showMainPage($scope) {
 			echo "</td>\n";
 		echo "</tr>\n";
 	echo "</table>\n";
-	echo "</fieldset>\n";
+	echo "</fieldset><br>\n";
 	
 	// get input fields from modules
 	$columns = getUploadColumns($scope);
@@ -183,7 +183,13 @@ function showMainPage($scope) {
 	$modules = array_keys($columns);
 	for ($m = 0; $m < sizeof($modules); $m++) {
 		if (sizeof($columns[$modules[$m]]) < 1) continue;
-		echo "<fieldset class=\"" . $scope . "edit\">\n<legend><b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
+		$icon = '';
+		$module = new $modules[$m]($scope);
+		$iconImage = $module->getIcon();
+		if ($iconImage != null) {
+			$icon = '<img src="../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+		}
+		echo "<fieldset class=\"" . $scope . "edit\">\n<legend>$icon<b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
 		echo "<table width=\"100%\">\n";
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			echo "<tr valign=\"top\">\n";
@@ -207,7 +213,7 @@ function showMainPage($scope) {
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
-		echo "</fieldset>";
+		echo "</fieldset><br>";
 	}
 
 	echo "<p>&nbsp;</p>\n";

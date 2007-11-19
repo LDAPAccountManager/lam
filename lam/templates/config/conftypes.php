@@ -172,8 +172,9 @@ if (sizeof($availableTypes) > 0) {
 	echo "<fieldset><legend><b>" . _("Available account types") . "</b></legend>\n";
 	echo "<table>\n";
 	for ($i = 0; $i < sizeof($availableTypes); $i++) {
+		$icon = '<img alt="' . $availableTypes[$i] . '" src="../../graphics/' . $availableTypes[$i] . '.png">&nbsp';
 		echo "<tr>\n";
-			echo "<td><b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
+			echo "<td>$icon<b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
 			echo "<td>" . getTypeDescription($availableTypes[$i]) . "</td>\n";
 			echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" value=\"" . _("Add") . "\"></td>\n";
 		echo "</tr>\n";
@@ -189,7 +190,8 @@ if (sizeof($activeTypes) > 0) {
 	echo "<fieldset><legend><b>" . _("Active account types") . "</b></legend><br>\n";
 	for ($i = 0; $i < sizeof($activeTypes); $i++) {
 		echo "<fieldset class=\"" . $activeTypes[$i] . "edit\">\n";
-		echo "<legend>" . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . "</legend>";
+		$icon = '<img alt="' . $activeTypes[$i] . '" src="../../graphics/' . $activeTypes[$i] . '.png">&nbsp';
+		echo "<legend>" . $icon . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . "</legend>";
 		echo "<br>\n";
 		echo "<table>\n";
 		// LDAP suffix

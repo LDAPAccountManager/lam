@@ -239,7 +239,13 @@ $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
 	echo "<fieldset>\n";
-	echo "<legend><b>" . getModuleAlias($modules[$i], "none") . "</b></legend>\n";
+	$icon = '';
+	$module = new $modules[$i]('none');
+	$iconImage = $module->getIcon();
+	if ($iconImage != null) {
+		$icon = '<img src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+	}
+	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend>\n";
 	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, $tabindexLink, 'config');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
