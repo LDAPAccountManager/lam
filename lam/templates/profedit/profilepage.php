@@ -230,7 +230,13 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	// ignore modules without options
 	if (sizeof($options[$modules[$m]]) < 1) continue;
 	echo "<fieldset class=\"" . $type . "edit\">\n";
-		echo "<legend><b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
+	$icon = '';
+	$module = new $modules[$m]($type);
+	$iconImage = $module->getIcon();
+	if ($iconImage != null) {
+		$icon = '<img src="../../graphics/' . $iconImage . '"> ';
+	}
+	echo "<legend>$icon<b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
 	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $tabindexLink, $type);
 	$_SESSION['profile_types'] = array_merge($profileTypes, $_SESSION['profile_types']);
 	echo "</fieldset>\n";
