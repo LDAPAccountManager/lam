@@ -25,6 +25,12 @@ rm -r lam/tests
 find . -name .cvsignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
+# create LAM Pro documentation
+cd lamPro/docs/LAMProHowTo-sources
+./make.sh
+cd ../../..
+rm -r lamPro/docs/LAMProHowTo-sources
+
 # create LAM Pro build directory
 cp -a ldap-account-manager-$VERSION ldap-account-manager-pro-$VERSION
 mkdir LAMPro
