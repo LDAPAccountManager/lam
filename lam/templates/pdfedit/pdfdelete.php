@@ -3,7 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2004 - 2006  Michael Dürgner
+  Copyright (C) 2004 - 2006  Michael Duergner
+  Copyright (C) 2007         Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,7 +26,7 @@ $Id$
 * Manages deletion of pdf structures.
 *
 * @package PDF
-* @author Michael Dürgner
+* @author Michael Duergner
 */
 
 /** security functions */
@@ -48,6 +49,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 echo $_SESSION['header'];
 echo ("<title>" . _("Delete PDF structure") . "</title>\n");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_POST['type'] . ".css\">\n";
 echo ("</head>\n<body>\n<p><br></p>\n");
 
 // check if admin has submited delete operation

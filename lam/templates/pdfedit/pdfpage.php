@@ -3,7 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Michael D�rgner
+  Copyright (C) 2003 - 2006  Michael Duergner
+  Copyright (C) 2007         Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,7 +98,8 @@ if(isset($_POST['defaults'])) {
 if(isset($_GET['submit'])) {
 	echo $_SESSION['header'];
 	echo "<title>LDAP Account Manager</title>";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
 	echo "</head>";
 	echo "<body>";
 	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_]+/',$_GET['pdfname'])) {
@@ -112,6 +114,7 @@ if(isset($_GET['submit'])) {
 			StatusMessage('ERROR', _("Could not save PDF profile, access denied."), $_GET['pdfname']);
 		}
 	}
+	echo ("<br><a href=\"pdfmain.php\">" . _("Back to PDF Editor") . "</a>");
 	echo "</body></html>";
 	exit;
 }
@@ -398,6 +401,7 @@ echo $_SESSION['header'];
 ?>
 		<title>LDAP Account Manager</title>
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
+		<link rel="stylesheet" type="text/css" href="../../style/type_<?php echo $_GET['type']; ?>.css">
 	</head>
 	<body>
 		<br>
@@ -405,7 +409,7 @@ echo $_SESSION['header'];
 			<table>
 				<tr>
 					<td width="100%" colspan="3" align="left">
-						<fieldset>
+						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
 								<b><?php echo _('Page settings'); ?></b>
 							</legend>
@@ -446,7 +450,7 @@ echo $_SESSION['header'];
 				<tr>
 					<!-- print current structure -->
 					<td align="left" valign="top">
-						<fieldset>
+						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
 								<b><?php echo _("PDF structure"); ?></b>
 							</legend>
@@ -461,13 +465,11 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
 			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/up.gif\" alt=\"" . _("Up") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td width=\"10\">\n</td>\n" .
 		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key .
 			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
 			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/down.gif\" alt=\"" . _("Down") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td width=\"10\">\n</td>\n" .
 		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key .
 			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
@@ -598,7 +600,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 					
 					<!-- print available fields sorted by modul -->
 					<td align="left" valign="top">
-						<fieldset>
+						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
 								<b><?php echo _("Available PDF fields"); ?></b>
 							</legend>
@@ -649,14 +651,14 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 				</tr>
 				<tr>
 					<td colspan="3">
-							<fieldset>
+							<fieldset class="<?php echo $_GET['type']; ?>edit">
 								<legend>
 									<b><?php echo _('Add section or static text');?></b>
 								</legend>
 								<table>
 									<tr>
 										<td>
-											<fieldset>
+											<fieldset class="<?php echo $_GET['type']; ?>edit">
 												<legend>
 													<b><?php echo _("Section"); ?></b>
 												</legend>
@@ -690,7 +692,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 									</tr>
 									<tr>
 										<td>
-											<fieldset>
+											<fieldset class="<?php echo $_GET['type']; ?>edit">
 												<legend>
 													<b><?php echo _("Static text"); ?></b>
 												</legend>
@@ -731,7 +733,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 				</tr>
 				<tr>
 					<td colspan="3">
-						<fieldset>
+						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
 								<b><?php echo _("Save"); ?></b>
 							</legend>
