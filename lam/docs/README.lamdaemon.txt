@@ -96,11 +96,14 @@ to point to lamdaemonOld.pl.
 Now everything should work fine.
 
 
-6. Debugging lamdaemon
+6. Troubleshooting
 ======================
 
    - There is a test page for lamdaemon:
      Login to LAM and open Tools -> Tests -> Lamdaemon test
+
+   - If you get garbage characters at the test page then PHP and your php5-ssh2 library may not
+     fit together. Try recompiling the library and libssh2.
 
    - Check /var/log/auth.log or the equivalent on your system
      This file contains messages about all logins. If the ssh login
