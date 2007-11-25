@@ -177,8 +177,6 @@ class lamList {
 			// buttons
 			$this->listPrintButtons(false);
 			echo ("<br>\n");
-			// PDF bar
-			$this->listPrintPDFButtons();
 		}
 		else {
 			// buttons
@@ -428,7 +426,7 @@ class lamList {
 					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
 			}
 			echo " <td align='center'>";
-				$this->listPrintToolLinks($info[$i]);
+				$this->listPrintToolLinks($info[$i], $info[$i]['LAM_ID']);
 			echo "</td>\n";
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
@@ -452,23 +450,26 @@ class lamList {
 	/**
 	 * Prints the tool image links (e.g. edit and delete) for each account.
 	 * 
-	 * $account array LDAP attributes
+	 * @param array $account LDAP attributes
+	 * @param String $id account ID
 	 */
-	private function listPrintToolLinks($account) {
+	private function listPrintToolLinks($account, $id) {
 		// edit image
 		echo "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
 		echo "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
-		echo "</a>";
+		echo "</a>\n ";
 		// delete image
 		echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
 		echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
-		echo "</a>";
+		echo "</a>\n ";
+		// pdf image
+		echo "<input type=\"image\" style=\"background:transparent;\" name=\"createPDF_" . $id . "\" src=\"../../graphics/pdf.png\" title=\"" . _('Create PDF') . "\">\n ";
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			echo "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
 			echo "<img src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
-			echo "</a>";
+			echo "</a>\n ";
 		}
 	}
 	
@@ -499,7 +500,7 @@ class lamList {
 	*/
 	private function listDoPost() {
 		// check if button was pressed and if we have to add/delete an account
-		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['pdf']) || isset($_POST['pdf_all'])){
+		if (isset($_POST['new']) || isset($_POST['del'])){
 			// add new account
 			if (isset($_POST['new'])){
 				metaRefresh("../account/edit.php?type=" . $this->type . "&amp;suffix=" . $this->suffix);
@@ -530,9 +531,31 @@ class lamList {
 					exit;
 				}
 			}
-			// PDF for selected accounts
-			elseif (isset($_POST['pdf'])){
-				$pdf_structure = $_POST['pdf_structure'];
+		}
+		// PDF button
+		foreach ($_POST as $key => $value) {
+			if (strpos($key, 'createPDF_') > -1) {
+				$parts = explode("_", $key);
+				if (sizeof($parts) == 3) {
+					$this->showPDFPage($parts[1]);
+					exit;
+				}
+			}
+		}
+		// PDF creation Ok
+		if (isset($_POST['createPDFok'])) {
+			$pdfStruct = $_POST['pdf_structure'];
+			$option = $_POST['createFor'];
+			// create for clicked account
+			if ($option == 'DN') {
+				$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
+				$_SESSION["accountPDF"]->load_account($this->entries[$_POST['clickedAccount']]['dn']);
+				createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
+				unset($_SESSION["accountPDF"]);
+				exit;
+			}
+			// create for all selected accounts
+			elseif ($option == 'SELECTED') {
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
 				$list = array();
@@ -544,12 +567,15 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					createModulePDF($list,$pdf_structure);
+					createModulePDF($list,$pdfStruct);
+					for ($i = 0; $i < sizeof($accounts); $i++) {
+						unset($_SESSION["accountPDF-$i"]);
+					}
 					exit;
 				}
 			}
-			// PDF for all accounts
-			elseif (isset($_POST['pdf_all'])){
+			// create for all accounts
+			elseif ($option == 'ALL') {
 				$list = array();
 				for ($i = 0; $i < sizeof($this->entries); $i++) {
 					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
@@ -557,7 +583,11 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					createModulePDF($list,$_POST['pdf_structure']);
+					createModulePDF($list,$pdfStruct);
+					for ($i = 0; $i < sizeof($this->entries); $i++) {
+						// clean session
+						unset($_SESSION["accountPDF-$i"]);
+					}
 					exit;
 				}
 			}
@@ -577,6 +607,68 @@ class lamList {
 			}
 		}
 	}
+	
+	/**
+	 * Shows the page where the user may select the PDF options.
+	 *
+	 * @param String $id account ID
+	 */
+	private function showPDFPage($id) {
+		// search for checkboxes
+		$selAccounts = array_keys($_POST, "on");
+
+		$this->listPrintHeader();
+
+		echo '<h1 align="center">' . _('Create PDF') . "</h1>\n";
+		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+
+		echo '<fieldset class="' . $this->type . 'edit">';
+		echo '<table class="' . $this->type . 'edit">';
+			echo '<tr>';
+				echo '<td>';
+					echo _('PDF structure') . " ";
+				echo '</td>';
+				echo '<td>';
+					echo "<select name=\"pdf_structure\">\n";
+					$pdf_structures = getPDFStructureDefinitions($this->type);
+					foreach($pdf_structures as $pdf_structure) {
+						echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
+					}
+					echo "</select>\n";
+				echo '</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo '<td>';
+					echo _('Create for') . " ";
+				echo '</td>';
+				echo '<td>';
+					echo '<select name="createFor">';
+					echo '<option value="DN">' . $this->entries[$id]['dn'] . '</option>';
+					echo '<option value="SELECTED">' . sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) . '</option>';
+					echo '<option value="ALL">' . _('All accounts') . '</option>';
+					echo '</select>';
+				echo '</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo '<td colspan=2>&nbsp;</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo '<td colspan=2>';
+					echo '<input type="submit" name="createPDFok" value="' . _('Ok') . '"> ';
+					echo '<input type="submit" name="createPDFcancel" value="' . _('Cancel') . '">';
+				echo '</td>';
+			echo '</tr>';
+		echo '</table>';
+		echo '</fieldset>';
+		
+		// hiden inputs for selected accounts
+		for ($i = 0; $i < sizeof($selAccounts); $i++) {
+			echo '<input type="hidden" name="' . $selAccounts[$i] . '" value="on">';
+		}
+		echo '<input type="hidden" name="clickedAccount" value="' . $id . '">';
+		
+		$this->listPrintFooter();
+	}
 
 	/**
 	* Prints a combobox with possible sub-DNs.
@@ -584,7 +676,7 @@ class lamList {
 	protected function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
 			echo ("<b>" . _("Suffix") . ": </b>");
-			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged()\">\n");
+			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "')\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				if ($this->suffix == $this->possibleSuffixes[$i]) {
 					echo ("<option selected>" . $this->possibleSuffixes[$i] . "</option>\n");
@@ -597,7 +689,7 @@ class lamList {
 	}
 
 	/**
-	 * Prints the create, delete and PDF buttons.
+	 * Prints the create and delete buttons.
 	 *
 	 * @param boolean $createOnly true if only the create button should be displayed
 	 */
@@ -605,7 +697,7 @@ class lamList {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td align=\"left\">\n";
-		// add/delete/PDF buttons
+		// add/delete buttons
 		echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
 		if (!$createOnly) {
 			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
@@ -623,23 +715,6 @@ class lamList {
 		echo "</table>\n";
 	}
 	
-	/**
-	 * Prints the PDF button bar.
-	 */
-	protected function listPrintPDFButtons() {
-		echo "<fieldset class=\"" . $this->type . "edit\"><legend><b>PDF</b></legend>\n";
-		echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
-		$pdf_structures = getPDFStructureDefinitions($this->type);
-		foreach($pdf_structures as $pdf_structure) {
-			echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
-		}
-		echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
-		echo ("<input type=\"submit\" name=\"pdf\" value=\"" . $this->labels['createPDF'] . "\">\n");
-		echo "&nbsp;";
-		echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . $this->labels['createPDFAll'] . "\">\n");
-		echo "</fieldset>";
-	}
-
 	/**
 	 * Prints the HTML header.
 	 */
@@ -701,9 +776,9 @@ class lamList {
 		echo "}\n";
 		
 		// OU selection changed
-		echo "function listOUchanged() {\n";
+		echo "function listOUchanged(type) {\n";
 			echo "selectOU = document.getElementsByName('suffix')[0];\n";
-			echo "location.href='list.php?type=" . $this->type . "&suffix=' + selectOU.options[selectOU.selectedIndex].value;\n";
+			echo "location.href='list.php?type=' + type + '&suffix=' + selectOU.options[selectOU.selectedIndex].value;\n";
 		echo "}\n";
 		
 		echo "//-->\n";
@@ -851,7 +926,8 @@ class lamList {
 		echo '<h1 align="center">' . _('Change list settings') . "</h1>\n";
 		
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
-		echo "<table class=\"" . $this->type . "list\" width=\"100%\">\n";
+		echo '<fieldset class="' . $this->type . 'edit">';
+		echo "<table class=\"" . $this->type . "edit\" width=\"100%\">\n";
 		echo "<tr class=\"" . $this->type . "list\"><td>\n";
 
 		$tabindex = 0;
@@ -864,7 +940,7 @@ class lamList {
 		echo "<input type=\"submit\" name=\"saveConfigOptions\" value=\"" . _('Ok') . "\">\n";
 		echo "<input type=\"submit\" name=\"cancelConfigOptions\" value=\"" . _('Cancel') . "\">\n";
 		echo "</td></tr></table>\n";
-		echo "</form>\n";
+		echo "</fieldset>\n";
 		
 		$this->listPrintFooter();		
 	}
