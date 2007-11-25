@@ -724,7 +724,7 @@ class lamList {
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
 		echo "</head><body>\n";
-		$this->listPrintJavaScript();
+		echo "<script type=\"text/javascript\" src=\"list.js\"></script>\n";
 	}
 	
 	/**
@@ -733,56 +733,6 @@ class lamList {
 	protected function listPrintFooter() {	
 		echo ("</form>\n");
 		echo "</body></html>\n";		
-	}
-
-	/**
-	* Prints JavaScript code needed for mouse-over effects.
-	*/
-	protected function listPrintJavaScript() {
-		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-		echo "<!--\n";
-
-		// mouseOver function
-		echo "function list_over(list, box, scope) {\n";
-			echo "cbox = document.getElementsByName(box)[0];\n";
-			echo "if (cbox.checked == false) {\n";
-				echo "list.setAttribute('className', scope + 'list-over', 0);\n";
-				echo "list.setAttribute('class', scope + 'list-over', 0);";
-			echo "}\n";
-		echo "}";
-
-		// mouseOut function
-		echo "function list_out(list, box, scope) {\n";
-			echo "cbox = document.getElementsByName(box)[0];\n";
-			echo "if (cbox.checked == false) {\n";
-				echo "list.setAttribute('className', scope + 'list', 0);\n";
-				echo "list.setAttribute('class', scope + 'list', 0);\n";
-			echo "}\n";
-		echo "}\n";
-
-		// onClick function
-		echo "function list_click(list, box, scope) {\n";
-			echo "cbox = document.getElementsByName(box)[0];\n";
-			echo "if (cbox.checked == true) {\n";
-				echo "cbox.checked = false;\n";
-				echo "list.setAttribute('className', scope + 'list-over', 0);\n";
-				echo "list.setAttribute('class', scope + 'list-over', 0);\n";
-			echo "}\n";
-			echo "else {\n";
-				echo "cbox.checked = true;\n";
-				echo "list.setAttribute('className', scope + 'list-checked', 0);\n";
-				echo "list.setAttribute('class', scope + 'list-checked', 0);\n";
-			echo "}\n";
-		echo "}\n";
-		
-		// OU selection changed
-		echo "function listOUchanged(type) {\n";
-			echo "selectOU = document.getElementsByName('suffix')[0];\n";
-			echo "location.href='list.php?type=' + type + '&suffix=' + selectOU.options[selectOU.selectedIndex].value;\n";
-		echo "}\n";
-		
-		echo "//-->\n";
-		echo "</script>\n";
 	}
 
 	/**
