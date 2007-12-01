@@ -42,7 +42,7 @@ class nisMailAlias extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'mailAlias.png';
+		$return['icon'] = 'mailBig.png';
 		// manages host accounts
 		$return["account_types"] = array("mailAlias");
 		// base module

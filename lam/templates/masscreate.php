@@ -187,7 +187,7 @@ function showMainPage($scope) {
 		$module = new $modules[$m]($scope);
 		$iconImage = $module->getIcon();
 		if ($iconImage != null) {
-			$icon = '<img src="../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+			$icon = '<img align="middle" src="../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 		}
 		echo "<fieldset class=\"" . $scope . "edit\">\n<legend>$icon<b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
 		echo "<table width=\"100%\">\n";

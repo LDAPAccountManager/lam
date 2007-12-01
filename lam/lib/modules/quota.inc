@@ -65,7 +65,7 @@ class quota extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'hard-drive.png';
+		$return['icon'] = 'hard-driveBig.png';
 		// manages user and group accounts
 		$return["account_types"] = array("user", "group");
 		// alias name

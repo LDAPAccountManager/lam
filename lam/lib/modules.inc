@@ -975,9 +975,9 @@ class accountContainer {
 		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
 
 		// calculate button width
-		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Main"))));
+		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Main")))) + 2;
 		for ($b = 1; $b < sizeof($this->order); $b++) {
-			$tempWidth = round(0.8 * strlen(utf8_decode($this->module[$this->order[$b]]->get_alias())));
+			$tempWidth = round(0.8 * strlen(utf8_decode($this->module[$this->order[$b]]->get_alias()))) + 2;
 			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
 		}
 		$x=0;
@@ -987,8 +987,8 @@ class accountContainer {
 		if ($this->order[$this->current_page] == "main") $class = $this->type . "list-edit";
 		echo "<tr><td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\" colspan=2>";
 		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:10px;\">\n";
-		echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;border:0px solid;\" name=\"form_main_main\" type=\"submit\" value=\"";
+		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:5px;\">\n";
+		echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;border:0px solid;height:32px;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
 		if ($this->subpage == 'finish') echo " disabled";
@@ -1007,14 +1007,14 @@ class accountContainer {
 			echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
 			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
-				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:10px;\">\n";
+				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:5px;\">\n";
 			// print normal button
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$buttonImageStyle = '';
 			$buttonSpace = '';
 			if ($buttonImage != null) {
-				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;';
-				$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;height:32px;';
+				$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			}
 			$buttonStyle = $buttonImageStyle . 'background-color:transparent;width:' . $buttonWidth . 'em;border:0px solid;';
 			echo "<input style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";

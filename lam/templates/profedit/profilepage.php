@@ -234,7 +234,7 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	$module = new $modules[$m]($type);
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
-		$icon = '<img src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon<b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
 	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $tabindexLink, $type);

@@ -42,7 +42,7 @@ class ieee802Device extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'device.png';
+		$return['icon'] = 'network-wired.png';
 		// manages host accounts
 		$return["account_types"] = array("host");
 		// alias name

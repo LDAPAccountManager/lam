@@ -243,7 +243,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	$module = new $modules[$i]('none');
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
-		$icon = '<img src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend>\n";
 	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, $tabindexLink, 'config');
