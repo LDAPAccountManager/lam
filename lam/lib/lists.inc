@@ -616,6 +616,9 @@ class lamList {
 	private function showPDFPage($id) {
 		// search for checkboxes
 		$selAccounts = array_keys($_POST, "on");
+		if (!in_array($id, $selAccounts)) {
+			$selAccounts[] = $id;
+		}
 
 		$this->listPrintHeader();
 
@@ -645,7 +648,7 @@ class lamList {
 					echo '<select name="createFor">';
 					echo '<option value="DN">' . $this->entries[$id]['dn'] . '</option>';
 					echo '<option value="SELECTED">' . sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) . '</option>';
-					echo '<option value="ALL">' . _('All accounts') . '</option>';
+					echo '<option value="ALL">' . sprintf(_('All accounts (%s)'), sizeof($this->entries)) . '</option>';
 					echo '</select>';
 				echo '</td>';
 			echo '</tr>';
