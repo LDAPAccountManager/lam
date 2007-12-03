@@ -838,10 +838,10 @@ class accountContainer {
 			$result = $this->load_account($this->dn_orig);
 		}
 		else {
+			// change dn suffix
+			if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) $this->dn = $_REQUEST['suffix'];
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
-					// change dn
-					if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) $this->dn = $_REQUEST['suffix'];
 					// change RDN
 					if (isset($_POST['rdn'])) $this->rdn = $_POST['rdn'];
 
@@ -1038,10 +1038,7 @@ class accountContainer {
 			echo "</table>";
 		}
 		echo "<td style=\"padding:15px;\">";
-		// display DN
-		if (isset($this->dn_orig) && ($this->dn_orig != '')) {
-			echo _("DN") . ": " . htmlspecialchars($this->dn_orig) . '<hr noshade style="width: 100%; height: 2px;"><br>';
-		}
+		$this->printContentHeader();
 		// display html-code from modules
 		$return = array();
 		if ($this->current_page == 0) {
@@ -1072,21 +1069,6 @@ class accountContainer {
 					)));
 			}
 			else {
-				$options_selected = array();
-				// loop through all suffixes
-				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
-				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-					if ($this->dn == $suffix) $options_selected = array($suffix);
-					$suffixes[] = $suffix;
-				}
-				if (!in_array($this->dn, $suffixes)) {
-					$suffixes[] = $this->dn;
-					$options_selected = array($this->dn);
-				}
-				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Suffix')),
-					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => $options_selected, 'noSorting' => true),
-					2 => array ('kind' => 'help', 'value' => '361'));
 				// RDN selection
 				$rdnlist = getRDNAttributes($this->type);
 				$rdnSelected = array();
@@ -1132,6 +1114,40 @@ class accountContainer {
 		echo "</body>\n";
 		echo "</html>\n";
 		return 0;
+	}
+	
+	/**
+	 * Prints the head part of the content area.
+	 */
+	private function printContentHeader() {
+		echo "<table width=\"100%\" border=0><tr>\n";
+		echo "<td align=\"left\">\n";
+			// display DN
+			if (isset($this->dn_orig) && ($this->dn_orig != '')) {
+				echo _("DN") . ": " . htmlspecialchars($this->dn_orig);
+			}
+		echo "</td>\n";
+		echo "<td align=\"right\">\n";
+			echo _('Suffix') . ": ";
+			echo "<select name=\"suffix\" size=1>\n";
+				// loop through all suffixes
+				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
+				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+					echo "<option ";
+					if ($this->dn == $suffix) {
+						echo 'selected';
+					}
+					echo ">" . $suffix . "</option>\n";
+				}
+				if (!in_array($this->dn, $_SESSION['ldap']->search_units($rootsuffix))) {
+					echo "<option selected>" . $this->dn . "</option>\n";;
+				}
+			echo "</select>\n";
+		echo "</td>\n";
+		echo "</tr></table>\n";
+		// separator line
+		echo '<hr noshade style="width: 100%; height: 2px;">';
+		echo '<br>';
 	}
 
 	/**
