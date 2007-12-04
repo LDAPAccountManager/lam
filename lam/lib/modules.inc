@@ -839,7 +839,9 @@ class accountContainer {
 		}
 		else {
 			// change dn suffix
-			if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) $this->dn = $_REQUEST['suffix'];
+			if (isset($_REQUEST['accountContainerSuffix']) && ($_REQUEST['accountContainerSuffix'] != '')) {
+				$this->dn = $_REQUEST['accountContainerSuffix'];
+			}
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
 					// change RDN
@@ -1027,17 +1029,19 @@ class accountContainer {
 			$x++;
 		}
 		echo "<td width=\"100%\">&nbsp;</td></tr></table></td></tr>\n";
-		echo "<tr class=\"" . $this->type . "list\"><td style=\"padding:0px;\" width=\"15%\" valign=\"top\">\n";
+		echo "<tr class=\"" . $this->type . "list\">\n";
+		// left controls
+		echo "<td style=\"padding:15px;\" valign=\"top\">\n";
+		// reset button
 		if ($this->dn_orig!='') {
-			echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
-			echo "<tr><td style=\"padding-top:15px;\">\n";
 			echo "<input style=\"margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
 			if ($this->subpage == 'finish') echo " disabled";
-			echo "><br>\n";
-			echo '</td></tr>';
-			echo "</table>";
+			echo ">\n";
+			echo "<br>\n";
 		}
-		echo "<td style=\"padding:15px;\">";
+		// profile selection
+		// content area
+		echo "<td width=\"100%\" style=\"padding:15px;\">";
 		$this->printContentHeader();
 		// display html-code from modules
 		$return = array();
@@ -1129,7 +1133,7 @@ class accountContainer {
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
 			echo _('Suffix') . ": ";
-			echo "<select name=\"suffix\" size=1>\n";
+			echo "<select name=\"accountContainerSuffix\" size=1>\n";
 				// loop through all suffixes
 				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
