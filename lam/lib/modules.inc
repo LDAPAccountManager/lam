@@ -793,6 +793,8 @@ class accountContainer {
 
 	/** True if this is a newly created account */
 	var $isNewAccount;
+	
+	private $lastLoadedProfile = '';
 
 	/**
 	 * Returns the account module with the given class name
@@ -847,21 +849,6 @@ class accountContainer {
 					// change RDN
 					if (isset($_POST['rdn'])) $this->rdn = $_POST['rdn'];
 
-					// load profile
-					if (isset($_POST['selectLoadProfile']) && isset($_POST['loadProfile'])) {
-						$profile = loadAccountProfile($_POST['selectLoadProfile'], $this->type);
-						// pass profile to each module
-						$modules = array_keys($this->module);
-						foreach ($modules as $module) $this->module[$module]->load_profile($profile);
-						if (isset($profile['ldap_rdn'][0])) {
-							if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
-								$this->rdn = $profile['ldap_rdn'][0];
-							}
-						}
-						if (isset($profile['ldap_suffix'][0])) {
-							$this->dn = $profile['ldap_suffix'][0];
-						}
-					}
 					// save account
 					if (isset($_POST['create'])) {
 						$errors = $this->save_account();
@@ -893,6 +880,22 @@ class accountContainer {
 				}
 			}
 			else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
+			// load profile
+			if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
+				$profile = loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type);
+				$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
+				// pass profile to each module
+				$modules = array_keys($this->module);
+				foreach ($modules as $module) $this->module[$module]->load_profile($profile);
+				if (isset($profile['ldap_rdn'][0])) {
+					if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
+						$this->rdn = $profile['ldap_rdn'][0];
+					}
+				}
+				if (isset($profile['ldap_suffix'][0])) {
+					$this->dn = $profile['ldap_suffix'][0];
+				}
+			}
 		}
 		// change to next page
 		$errorsOccured = false;
@@ -1037,9 +1040,28 @@ class accountContainer {
 			echo "<input style=\"margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
 			if ($this->subpage == 'finish') echo " disabled";
 			echo ">\n";
-			echo "<br>\n";
+			echo "<br><br>\n";
 		}
 		// profile selection
+		$profilelist = getAccountProfiles($this->type);
+		if (sizeof($profilelist) > 0) {
+			sort($profilelist);
+			echo "<p><nobr>\n";
+			echo "<select name=\"accountContainerSelectLoadProfile\" size=1>\n";
+				for ($i = 0; $i < sizeof($profilelist); $i++) {
+					$selected = '';
+					if ($profilelist[$i] === $this->lastLoadedProfile) {
+						$selected = 'selected';
+					}
+					echo "<option $selected>" . $profilelist[$i] . "</option>\n";
+				}
+			echo "</select> \n";
+			echo "<input type=\"submit\" name=\"accountContainerLoadProfile\" value=\"" . _('Load profile') . "\"> &nbsp;\n";
+			echo "<a href=\"../help.php?HelpNumber=401\" target=\"help\" tabindex=10001>";
+				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";
+			echo "</nobr></p>\n";
+		}
 		// content area
 		echo "<td width=\"100%\" style=\"padding:15px;\">";
 		$this->printContentHeader();
@@ -1087,18 +1109,6 @@ class accountContainer {
 					1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected, 'noSorting' => true),
 					2 => array ('kind' => 'help', 'value' => '301'));
 
-				// Get list of profiles
-				$profilelist = getAccountProfiles($this->type);
-				if (count($profilelist)!=0) {
-					$return[] = array(
-						0 => array('kind' => 'text', 'text' => _("Load profile")),
-						1 => array('kind' => 'table', 'value' => array(0 => array(
-							0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
-							1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
-							))),
-						2 => array('kind' => 'help', 'value' => '401')
-					);
-				}
 				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
 				if ($this->dn_orig!='') $text = _('Modify account');
 					else $text = _('Create account');
@@ -1373,6 +1383,7 @@ class accountContainer {
 	*/
 	function new_account() {
 		$this->isNewAccount = true;
+		$this->lastLoadedProfile = 'default';
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		foreach ($modules as $module) {
 			$this->module[$module] = new $module($this->type);
