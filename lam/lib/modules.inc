@@ -844,10 +844,10 @@ class accountContainer {
 			if (isset($_REQUEST['accountContainerSuffix']) && ($_REQUEST['accountContainerSuffix'] != '')) {
 				$this->dn = $_REQUEST['accountContainerSuffix'];
 			}
+			// change RDN
+			if (isset($_POST['accountContainerRDN'])) $this->rdn = $_POST['accountContainerRDN'];
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
-					// change RDN
-					if (isset($_POST['rdn'])) $this->rdn = $_POST['rdn'];
 
 					// save account
 					if (isset($_POST['create'])) {
@@ -1032,6 +1032,12 @@ class accountContainer {
 			$x++;
 		}
 		echo "<td width=\"100%\">&nbsp;</td></tr></table></td></tr>\n";
+		// content header
+		echo "<tr class=\"" . $this->type . "list\">\n";
+			echo "<td style=\"padding:10px;\" colspan=2>\n";
+				$this->printContentHeader();
+			echo "</td>\n";
+		echo "</tr>\n";
 		echo "<tr class=\"" . $this->type . "list\">\n";
 		// left controls
 		echo "<td style=\"padding:15px;\" valign=\"top\">\n";
@@ -1064,7 +1070,6 @@ class accountContainer {
 		}
 		// content area
 		echo "<td width=\"100%\" style=\"padding:15px;\">";
-		$this->printContentHeader();
 		// display html-code from modules
 		$return = array();
 		if ($this->current_page == 0) {
@@ -1095,20 +1100,6 @@ class accountContainer {
 					)));
 			}
 			else {
-				// RDN selection
-				$rdnlist = getRDNAttributes($this->type);
-				$rdnSelected = array();
-				if ($this->rdn != '') {
-					$rdnSelected[] = $this->rdn;
-				}
-				else {
-					$rdnSelected[] = $rdnlist[0];
-				}
-				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('RDN identifier')),
-					1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected, 'noSorting' => true),
-					2 => array ('kind' => 'help', 'value' => '301'));
-
 				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
 				if ($this->dn_orig!='') $text = _('Modify account');
 					else $text = _('Create account');
@@ -1138,7 +1129,7 @@ class accountContainer {
 		echo "<td align=\"left\">\n";
 			// display DN
 			if (isset($this->dn_orig) && ($this->dn_orig != '')) {
-				echo _("DN") . ": " . htmlspecialchars($this->dn_orig);
+				echo _("DN") . ": <b>" . htmlspecialchars($this->dn_orig) . "</b>";
 			}
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
@@ -1157,6 +1148,22 @@ class accountContainer {
 					echo "<option selected>" . $this->dn . "</option>\n";;
 				}
 			echo "</select>\n";
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;';
+			// RDN selection
+			$rdnlist = getRDNAttributes($this->type);
+			echo _('RDN identifier') . ": ";
+			echo "<select name=\"accountContainerRDN\" size=1>\n";
+				for ($i = 0; $i < sizeof($rdnlist); $i++) {
+					echo "<option ";
+					if ($this->rdn === $rdnlist[$i]) {
+						echo 'selected';
+					}
+					echo ">" . $rdnlist[$i] . "</option>\n";
+				}
+			echo "</select>\n";
+			echo "<a href=\"../help.php?HelpNumber=301\" target=\"help\" tabindex=10001>";
+				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";	
 		echo "</td>\n";
 		echo "</tr></table>\n";
 		// separator line
