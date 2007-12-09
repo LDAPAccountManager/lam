@@ -175,9 +175,6 @@ class LAMConfig {
 	/** LDAP suffix for tree view */
 	var $treesuffix;
 
-	/** Maximum number of rows shown in user/group/host lists */
-	var $maxlistentries;
-
 	/** Default language */
 	var $defaultLanguage;
 
@@ -218,7 +215,7 @@ class LAMConfig {
 	var $file;
 
 	/** List of all settings in config file */
-	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix", "maxlistentries",
+	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types");
 
@@ -357,7 +354,6 @@ class LAMConfig {
 								"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins . "\n");
 			if (!in_array("treesuffix", $saved)) array_push($file_array, "\n\n# suffix of tree view\n" .
 								"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
-			if (!in_array("maxlistentries", $saved)) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries . "\n");
 			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
@@ -578,27 +574,6 @@ class LAMConfig {
 		else {
 			return false;
 		}
-	}
-
-	/**
-	* Returns the maximum number of rows in user/group/host lists
-	*
-	* @return integer maximum number
-	*/
-	public function get_MaxListEntries() {
-		return $this->maxlistentries;
-	}
-
-	/**
-	* Sets the maximum number of rows in user/group/host lists
-	*
-	* @param integer $value new maximum value
-	* @return boolean true if $value has correct format
-	*/
-	public function set_MaxListEntries ($value) {
-		if (is_numeric($value)) $this->maxlistentries = $value;
-		else return false;
-		return true;
 	}
 
 	/**

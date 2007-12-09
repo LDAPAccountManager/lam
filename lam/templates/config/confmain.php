@@ -253,31 +253,6 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 }
 
 
-echo ("<fieldset><legend><b>" . _("List settings") . "</b></legend>\n");
-echo ("<table border=0>\n");
-
-// maximum list entries
-echo ("<tr><td align=\"right\"><b>".
-	_("Maximum list entries") . ": </b></td>".
-	"<td><select tabindex=\"$tabindex\" name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
-if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>\n");
-if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>\n");
-if ($conf->get_MaxListEntries() != 30) echo("<option>30</option>\n");
-if ($conf->get_MaxListEntries() != 50) echo("<option>50</option>\n");
-if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>\n");
-if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>\n");
-echo ("</select></td>\n");
-$tabindex++;
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-
-echo ("</table>\n");
-echo ("</fieldset>\n");
-echo ("<p></p>\n");
-
 echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 
@@ -497,9 +472,6 @@ function saveSettings() {
 	}
 	if (!$conf->set_Suffix("tree", $_POST['sufftree'])) {
 		$errors[] = array("ERROR", _("TreeSuffix is invalid!"));
-	}
-	if (!$conf->set_MaxListEntries($_POST['maxlistentries'])) {
-		$errors[] = array("ERROR", _("Max list entries is invalid!"));
 	}
 	if (!$conf->set_defaultLanguage($_POST['lang'])) {
 		$errors[] = array("ERROR", _("Language is not defined!"));

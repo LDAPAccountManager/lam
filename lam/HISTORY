@@ -1,7 +1,9 @@
 ??? 2.2.0
-  - account lists: allow to switch sorting
-  - account lists: added separate configuration page and store settings in cookies
-  - account lists: new PDF buttons
+  - account lists:
+   -> allow to switch sorting
+   -> added separate configuration page and store settings in cookies
+   -> list size can now be set individually for each account type on the list configuration page
+   -> new PDF buttons
   - use suffix from account list as default for new accounts (patch 1823583)
   - Security: passwords in configuration files are now saved as hash values
   - improved design

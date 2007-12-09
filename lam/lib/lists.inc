@@ -59,7 +59,7 @@ class lamList {
 	protected $descArray = array();
 
 	/** maximum count of entries per page */
-	protected $maxPageEntries = 10;
+	protected $maxPageEntries = 30;
 
 	/** sort column name */
 	protected $sortColumn;
@@ -88,6 +88,9 @@ class lamList {
 	/** configuration options */
 	private $configOptions;
 
+	/** ID for list size config option */
+	const LIST_SIZE_OPTION_NAME = "L_SIZE";
+	
 	/**
 	 * Constructor
 	 *
@@ -786,11 +789,6 @@ class lamList {
 		$temp_array = $this->listGetAttributeDescriptionList();
 		$this->attrArray = array_keys($temp_array);	// list of LDAP attributes to show
 		$this->descArray = array_values($temp_array);	// list of descriptions for the attributes
-		// get maximum count of entries shown on one page
-		if ($_SESSION["config"]->get_MaxListEntries() <= 0)
-			$this->maxPageEntries = 10;	// default setting, if not yet set
-		else
-			$this->maxPageEntries = $_SESSION["config"]->get_MaxListEntries();
 		// get sorting column
 		if (isset($_GET["sort"])) {
 			if ($_GET["sort"] == $this->sortColumn) {
@@ -867,7 +865,8 @@ class lamList {
 	 * @return array list of lamListOption objects
 	 */
 	protected function listGetAllConfigOptions() {
-		return array();
+		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), array(10, 20, 30, 50, 75, 100), self::LIST_SIZE_OPTION_NAME);
+		return array($listSizeOption);
 	}
 
 	/**
@@ -886,7 +885,7 @@ class lamList {
 		$tabindex = 0;
 		$tabindexLink = 0;
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-			parseHtml('none', $this->configOptions[$i]->getMetaHTML(), array(), true, $tabindex, $tabindexLink, $this->type);
+			parseHtml('main', $this->configOptions[$i]->getMetaHTML(), array(), true, $tabindex, $tabindexLink, $this->type);
 		}
 
 		echo "<br>";
@@ -916,6 +915,10 @@ class lamList {
 	 * Called when the configuration options changed.
 	 */
 	protected function listConfigurationChanged() {
+		$sizeOption = $this->listGetConfigOptionByID(self::LIST_SIZE_OPTION_NAME);
+		if ($sizeOption->getValue() != null) {
+			$this->maxPageEntries = $sizeOption->getValue();
+		}
 		return;
 	}
 
@@ -994,7 +997,7 @@ abstract class lamListOption {
 	/**
 	 * Creates a new config option.
 	 *
-	 * @param String $ID
+	 * @param String $ID unique ID
 	 * @return lamConfigOption config option
 	 */
 	public function lamConfigOption($ID) {
@@ -1061,6 +1064,7 @@ class lamBooleanListOption extends lamListOption {
 	 * Creates a new boolean option.
 	 *
 	 * @param String $name name to show on config page
+	 * @param String $ID unique ID
 	 * @return lamBooleanListOption config option
 	 */
 	public function lamBooleanListOption($name, $ID) {
@@ -1101,6 +1105,72 @@ class lamBooleanListOption extends lamListOption {
 		$return[] = array(
 			array('kind' => 'input', 'name' => $this->getID(), 'type' => 'checkbox', 'checked' => $this->isSelected()),
 			array('kind' => 'text', 'text' => $this->name)
+		);
+		return $return;
+	}
+
+}
+
+/**
+ * Boolean option for list configuration.
+ *
+ * @package lists
+ * @author Roland Gruber
+ */
+class lamSelectListOption extends lamListOption {
+	
+	private $name;
+	private $options;
+	private $helpID;
+	
+	/**
+	 * Creates a new selection list option.
+	 *
+	 * @param String $name name to show on config page
+	 * @param array $options list of possible values
+	 * @param String $ID unique ID
+	 * @return lamBooleanListOption config option
+	 */
+	public function lamSelectListOption($name, $options, $ID) {
+		parent::lamConfigOption($ID);
+		$this->name = $name;
+		$this->options = $options;
+	}
+	
+	/**
+	 * Sets the help ID.
+	 *
+	 * @param Strign $id help ID
+	 */
+	public function setHelpID($id) {
+		$this->helpID = $id;
+	}
+	
+	/**
+	 * Fills the config option from POST data.
+	 * 
+	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
+	 */
+	public function fillFromPostData() {
+		if (isset($_POST[$this->getID()])) {
+			$this->setValue($_POST[$this->getID()]);
+		}
+		else {
+			$this->setValue(null);
+		}
+	}
+
+	/**
+	 * Returns the meta HTML data to display this option.
+	 * 
+	 * @return array meta HTML
+	 */
+	public function getMetaHTML() {
+		$return = array();
+		$return[] = array(
+			array('kind' => 'text', 'text' => $this->name),
+			array('kind' => 'select', 'name' => $this->getID(), 'options' => $this->options, 'options_selected' => array($this->getValue())),
+			array('kind' => 'help', 'value' => '208')
 		);
 		return $return;
 	}

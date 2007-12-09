@@ -15,9 +15,6 @@ passwd: {SSHA}RjBruJcTxZEdcBjPQdRBkDaSQeY= iueleA==
 # e.g. dc=yourdomain,dc=org
 treesuffix: dc=yourdomain,dc=org
 
-# maximum number of rows to show in user/group/host lists
-maxlistentries: 30
-
 # default language (a line from config/language)
 defaultLanguage: en_GB.utf8:UTF-8:English (Great Britain)
 
@@ -26,6 +23,9 @@ scriptPath:
 
 # Server of external Script
 scriptServer: 
+
+# Access rights for home directories
+scriptRights: 750
 
 # Number of minutes LAM caches LDAP searches.
 cachetimeout: 5

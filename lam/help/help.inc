@@ -90,8 +90,8 @@ $helpArray = array (
 						"<br><br><b>" .
 						_("Example") .
 						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
-				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Maximum list entries"),
-					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages.")),
+				"208" => array ("ext" => "FALSE", "Headline" => _("Maximum list entries"),
+					"Text" => _("This is the number of rows to show in the account list. If more entries are found the list will be split into several pages.")),
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Default language"),
 					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Script path"),

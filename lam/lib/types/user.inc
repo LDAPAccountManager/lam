@@ -237,13 +237,16 @@ class lamUserList extends lamList {
 	 * @return array list of lamListOption objects
 	 */
 	protected function listGetAllConfigOptions() {
-		return array(new lamBooleanListOption(_('Translate GID number to group name'), self::TRANS_PRIMARY_OPTION_NAME));
+		$options = parent::listGetAllConfigOptions();
+		$options[] = new lamBooleanListOption(_('Translate GID number to group name'), self::TRANS_PRIMARY_OPTION_NAME);
+		return $options;
 	}
 
 	/**
 	 * Called when the configuration options changed.
 	 */
 	protected function listConfigurationChanged() {
+		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();
 	}

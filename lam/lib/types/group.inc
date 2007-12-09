@@ -257,13 +257,16 @@ class lamGroupList extends lamList {
 	 * @return array list of lamListOption objects
 	 */
 	protected function listGetAllConfigOptions() {
-		return array(new lamBooleanListOption(_('Show primary group members as normal group members'), self::TRANS_PRIMARY_OPTION_NAME));
+		$options = parent::listGetAllConfigOptions();
+		$options[] = new lamBooleanListOption(_('Show primary group members as normal group members'), self::TRANS_PRIMARY_OPTION_NAME);
+		return $options;
 	}
 
 	/**
 	 * Called when the configuration options changed.
 	 */
 	protected function listConfigurationChanged() {
+		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$use_primary = $this->include_primary;
  		$this->include_primary = $tpOption->isSelected();
