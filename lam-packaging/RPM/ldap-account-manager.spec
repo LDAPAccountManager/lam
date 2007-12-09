@@ -26,10 +26,7 @@ allow access to the raw LDAP attributes. You can use templates
 for account creation and use multiple configuration profiles.
 Account information can be exported as PDF file. There is also
 a script included which manages quota and homedirectories, you
-have to setup sudo if you want to use it. LAM is translated to
-Catalan, Chinese (Simplified + Traditional), Czech, Dutch,
-English, French, German, Hungarian, Italian, Japanese,
-Portuguese, Russian and Spanish.
+have to setup sudo if you want to use it.
 
 %prep
 %setup -n ldap-account-manager-%{version}
