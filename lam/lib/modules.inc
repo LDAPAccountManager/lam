@@ -975,6 +975,37 @@ class accountContainer {
 				}
 			}
 		}
+		echo "<table class=\"".$this->type."list\" style=\"border-width:0px;\" width=\"100%\"><tr>";
+		echo "<td align=\"left\">";
+		// reset button
+		if ($this->dn_orig!='') {
+			echo "<input style=\"margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
+			if ($this->subpage == 'finish') echo " disabled";
+			echo ">\n";
+		}
+		echo "</td>";
+		echo "<td align=\"right\">";
+		// profile selection
+		$profilelist = getAccountProfiles($this->type);
+		if (sizeof($profilelist) > 0) {
+			sort($profilelist);
+			echo "<select name=\"accountContainerSelectLoadProfile\" size=1>\n";
+				for ($i = 0; $i < sizeof($profilelist); $i++) {
+					$selected = '';
+					if ($profilelist[$i] === $this->lastLoadedProfile) {
+						$selected = 'selected';
+					}
+					echo "<option $selected>" . $profilelist[$i] . "</option>\n";
+				}
+			echo "</select> \n";
+			echo "<input type=\"submit\" name=\"accountContainerLoadProfile\" value=\"" . _('Load profile') . "\"> &nbsp;\n";
+			echo "<a href=\"../help.php?HelpNumber=401\" target=\"help\" tabindex=10001>";
+				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";
+		}
+		echo "</td>";
+		echo "</tr></table>";
+		echo "<br>\n";
 		// create module menu
 		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
@@ -1034,42 +1065,13 @@ class accountContainer {
 		echo "<td width=\"100%\">&nbsp;</td></tr></table></td></tr>\n";
 		// content header
 		echo "<tr class=\"" . $this->type . "list\">\n";
-			echo "<td style=\"padding:10px;\" colspan=2>\n";
+			echo "<td style=\"padding:10px;\">\n";
 				$this->printContentHeader();
 			echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr class=\"" . $this->type . "list\">\n";
-		// left controls
-		echo "<td style=\"padding:15px;\" valign=\"top\">\n";
-		// reset button
-		if ($this->dn_orig!='') {
-			echo "<input style=\"margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
-			if ($this->subpage == 'finish') echo " disabled";
-			echo ">\n";
-			echo "<br><br>\n";
-		}
-		// profile selection
-		$profilelist = getAccountProfiles($this->type);
-		if (sizeof($profilelist) > 0) {
-			sort($profilelist);
-			echo "<p><nobr>\n";
-			echo "<select name=\"accountContainerSelectLoadProfile\" size=1>\n";
-				for ($i = 0; $i < sizeof($profilelist); $i++) {
-					$selected = '';
-					if ($profilelist[$i] === $this->lastLoadedProfile) {
-						$selected = 'selected';
-					}
-					echo "<option $selected>" . $profilelist[$i] . "</option>\n";
-				}
-			echo "</select> \n";
-			echo "<input type=\"submit\" name=\"accountContainerLoadProfile\" value=\"" . _('Load profile') . "\"> &nbsp;\n";
-			echo "<a href=\"../help.php?HelpNumber=401\" target=\"help\" tabindex=10001>";
-				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
-			echo "</nobr></p>\n";
-		}
 		// content area
-		echo "<td width=\"100%\" style=\"padding:15px;\">";
+		echo "<td width=\"100%\" style=\"padding:10px;\">";
 		// display html-code from modules
 		$return = array();
 		if ($this->current_page == 0) {
@@ -1168,7 +1170,6 @@ class accountContainer {
 		echo "</tr></table>\n";
 		// separator line
 		echo '<hr noshade style="width: 100%; height: 2px;">';
-		echo '<br>';
 	}
 
 	/**
@@ -1419,6 +1420,7 @@ class accountContainer {
 	* @return array list of status messages if any errors occured
 	*/
 	function save_account() {
+		$finalDN = $this->dn;
 		$errors = array();
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
@@ -1446,38 +1448,38 @@ class accountContainer {
 		$added = false;
 		foreach ($attributes as $DN) {
 			if (isset($DN['modify'][$search][0]) && !$added) {
-				$attributes[$search.'='.$DN['modify'][$search][0].','.$this->dn] = $attributes[$this->dn];
-				unset ($attributes[$this->dn]);
-				$this->dn = $search.'='.$DN['modify'][$search][0].','.$this->dn;
+				$attributes[$search.'='.$DN['modify'][$search][0].','.$finalDN] = $attributes[$finalDN];
+				unset ($attributes[$finalDN]);
+				$finalDN = $search.'='.$DN['modify'][$search][0].','.$finalDN;
 				$added = true;
 				}
 			if (isset($DN['add'][$search][0]) && !$added) {
-				$attributes[$search.'='.$DN['add'][$search][0].','.$this->dn] = $attributes[$this->dn];
-				unset ($attributes[$this->dn]);
-				$this->dn = $search.'='.$DN['add'][$search][0].','.$this->dn;
+				$attributes[$search.'='.$DN['add'][$search][0].','.$finalDN] = $attributes[$finalDN];
+				unset ($attributes[$finalDN]);
+				$finalDN = $search.'='.$DN['add'][$search][0].','.$finalDN;
 				$added = true;
 				}
 			if (isset($DN['notchanged'][$search][0]) && !$added) {
-				$attributes[$search.'='.$DN['notchanged'][$search][0].','.$this->dn] = $attributes[$this->dn];
-				unset ($attributes[$this->dn]);
-				$this->dn = $search.'='.$DN['notchanged'][$search][0].','.$this->dn;
+				$attributes[$search.'='.$DN['notchanged'][$search][0].','.$finalDN] = $attributes[$finalDN];
+				unset ($attributes[$finalDN]);
+				$finalDN = $search.'='.$DN['notchanged'][$search][0].','.$finalDN;
 				$added = true;
 				}
 			}
 		// Add old dn if dn hasn't changed
 		if (!$added) {
-			$attributes[$this->dn_orig] = $attributes[$this->dn];
-			unset ($attributes[$this->dn]);
-			$this->dn = $this->dn_orig;
+			$attributes[$this->dn_orig] = $attributes[$finalDN];
+			unset ($attributes[$finalDN]);
+			$finalDN = $this->dn_orig;
 			}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
-		if (strtolower($this->dn) != strtolower($this->dn_orig)) {
+		if (strtolower($finalDN) != strtolower($this->dn_orig)) {
 			// move existing DN
 			if ($this->dn_orig!='') {
-				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->dn), $this->getParentDN($this->dn), false);
+				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($finalDN), $this->getParentDN($finalDN), false);
 				if ($success) {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->dn);
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $finalDN);
 				}
 				else {
 					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to rename DN: ' . $this->dn_orig . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
@@ -1488,19 +1490,19 @@ class accountContainer {
 			// create complete new dn
 			else {
 				$attr = array();
-				if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
-				if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
-				if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
-				$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
+				if (is_array($attributes[$finalDN]['add'])) $attr = array_merge_recursive($attr, $attributes[$finalDN]['add']);
+				if (is_array($attributes[$finalDN]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$finalDN]['notchanged']);
+				if (is_array($attributes[$finalDN]['modify'])) $attr = array_merge_recursive($attr, $attributes[$finalDN]['modify']);
+				$success = ldap_add($_SESSION['ldap']->server(), $finalDN, $attr);
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $this->dn . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $finalDN), ldap_error($_SESSION['ldap']->server()));
 					$stopprocessing = true;
 				}
 				else {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $this->dn);
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $finalDN);
 				}
-				unset($attributes[$this->dn]);
+				unset($attributes[$finalDN]);
 			}
 		}
 		$DNs = array_keys($attributes);
