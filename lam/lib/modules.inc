@@ -835,70 +835,86 @@ class accountContainer {
 	*/
 	function continue_main() {
 		$result = array();
+		$stopProcessing = false; // when set to true, no module options are displayed
+		$errorsOccured = false;
+		$this->loadProfileIfRequested();
 		if ($this->subpage=='') $this->subpage='attributes';
-		if (isset($_POST['form_main_reset'])) {
+		if (isset($_POST['accountContainerReset'])) {
 			$result = $this->load_account($this->dn_orig);
 		}
 		else {
 			// change dn suffix
+			if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) {
+				$this->dn = $_REQUEST['suffix'];
+			}
 			if (isset($_REQUEST['accountContainerSuffix']) && ($_REQUEST['accountContainerSuffix'] != '')) {
 				$this->dn = $_REQUEST['accountContainerSuffix'];
 			}
 			// change RDN
-			if (isset($_POST['accountContainerRDN'])) $this->rdn = $_POST['accountContainerRDN'];
-			if ($this->current_page==0) {
-				if ($this->subpage=='attributes') {
-
-					// save account
-					if (isset($_POST['create'])) {
-						$errors = $this->save_account();
-						if (sizeof($errors) > 0) {
-							$result = $errors;
-							$stopProcessing = true;
+			if (isset($_POST['accountContainerRDN'])) {
+				$this->rdn = $_POST['accountContainerRDN'];
+			}
+			// create another account
+			if (isset($_POST['accountContainerCreateAgain'])) {
+				// open fresh account page
+				unset($_SESSION[$this->base]);
+				metaRefresh("edit.php?type=" . $this->type);
+				exit();
+			}
+			// back to account list
+			if (isset($_POST['accountContainerBackToList'])) {
+				// Return to account list
+				unset($_SESSION[$this->base]);
+				metaRefresh("../lists/list.php?type=" . $this->type);
+				exit;
+			}
+			// create PDF file
+			if (isset($_POST['accountContainerCreatePDF'])) {
+				// display PDf-file
+				createModulePDF(array($_SESSION[$this->base]), $_POST['pdfStructure']);
+				exit;
+			}
+			// module actions
+			if (sizeof($_POST) > 0) {
+				$result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
+				if (is_array($result)) {  // messages were returned, check for errors
+					for ($i = 0; $i < sizeof($result); $i++) {
+						if ($result[$i][0] == 'ERROR') {
+							$errorsOccured = true;
+							break;
 						}
-						else $this->subpage = 'finish';
-					}
-				}
-				if ($this->subpage=='finish') {
-					if (isset($_POST['createagain'])) {
-						// open fresh account page
-						unset($_SESSION[$this->base]);
-						metaRefresh("edit.php?type=" . $this->type);
-						exit();
-					}
-					if (isset($_POST['backmain'])) {
-						// Return to account list
-						unset($_SESSION[$this->base]);
-						metaRefresh("../lists/list.php?type=" . $this->type);
-						exit;
-					}
-					if (isset($_POST['outputpdf'])) {
-						// Create / display PDf-file
-						createModulePDF(array($_SESSION[$this->base]), $_POST['pdfStructure']);
-						exit;
 					}
 				}
 			}
-			else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
-			// load profile
-			if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
-				$profile = loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type);
-				$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
-				// pass profile to each module
+			// save account
+			if (!$errorsOccured && isset($_POST['accountContainerSaveAccount'])) {
+				// check if all modules are complete
 				$modules = array_keys($this->module);
-				foreach ($modules as $module) $this->module[$module]->load_profile($profile);
-				if (isset($profile['ldap_rdn'][0])) {
-					if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
-						$this->rdn = $profile['ldap_rdn'][0];
+				$incompleteModules = array();
+				foreach ($modules as $module) {
+					if (!$this->module[$module]->module_complete()) {
+						$incompleteModules[] = $this->module[$module]->get_alias();
 					}
 				}
-				if (isset($profile['ldap_suffix'][0])) {
-					$this->dn = $profile['ldap_suffix'][0];
+				if (sizeof($incompleteModules) > 0) {
+					StatusMessage('INFO', _('Some required information is missing'),
+						sprintf(_('Please set up all required attributes on page: %s'), implode(", ", $incompleteModules)));
+				}
+				else {
+					// save account
+					$errors = $this->save_account();
+					if (sizeof($errors) > 0) {
+						$result = $errors;
+						$stopProcessing = true;
+					}
+					else {
+						$this->printSuccessPage();
+						return;
+					}
 				}
 			}
 		}
 		// change to next page
-		$errorsOccured = false;
 		if (is_array($result)) {  // messages were returned, check for errors
 			for ($i = 0; $i < sizeof($result); $i++) {
 				if ($result[$i][0] == 'ERROR') {
@@ -919,69 +935,39 @@ class accountContainer {
 					}
 				}
 			}
-			// change module page if requested
-			if (isset($_POST['form_main_main'])) {
-				$this->current_page = 0;
-				$this->subpage='attributes';
-			}
-			else {
-				for ($i=1; $i<count($this->order); $i++ ) {
-					if (isset($_POST['form_main_'.$this->order[$i]])) {
-						if ($this->module[$this->order[$i]]->module_ready()) {
-							$this->current_page = $i;
-							$this->subpage='attributes';
-						}
-						else {
-							StatusMessage('ERROR', _('The module %s is not yet ready.'),
-								_('Please enter the account information on the other pages first.'),
-								array($this->module[$this->order[$i]]->get_alias()));
-						}
+			for ($i=0; $i<count($this->order); $i++ ) {
+				if (isset($_POST['form_main_'.$this->order[$i]])) {
+					if ($this->module[$this->order[$i]]->module_ready()) {
+						$this->current_page = $i;
+						$this->subpage='attributes';
+					}
+					else {
+						StatusMessage('ERROR', _('The module %s is not yet ready.'),
+							_('Please enter the account information on the other pages first.'),
+							array($this->module[$this->order[$i]]->get_alias()));
 					}
 				}
 			}
 		}
-		// Write HTML-Code
-		echo $_SESSION['header'];
-		echo "<title>LDAP Account Manager</title>\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
-		echo "</head><body>\n";
-		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";
+		$this->printPageHeader();
 		// Display error-messages
 		if (is_array($result)) {
 			for ($i=0; $i<sizeof($result); $i++) {
 				call_user_func_array("StatusMessage", $result[$i]);
 			}
-			if (isset($stopProcessing) && ($stopProcessing == true)) {
+			if ($stopProcessing) {
 				echo "</body>\n";
 				echo "</html>\n";
-				return 0;
-			}
-		}
-		if ($this->current_page==0) {
-			if ($this->subpage=='attributes')  {
-				$modules = array_keys($this->module);
-				$disabled = false;
-				$incompleteModules = array();
-				foreach ($modules as $module) {
-					if (!$this->module[$module]->module_complete()) {
-						$disabled = true;
-						$incompleteModules[] = $this->module[$module]->get_alias();
-					}
-				}
-				if (sizeof($incompleteModules) > 0) {
-					StatusMessage('INFO', _('Some required information is missing'),
-						sprintf(_('Please set up all required attributes on page: %s'), implode(", ", $incompleteModules)));
-				}
+				return;
 			}
 		}
 		echo "<table class=\"".$this->type."list\" style=\"border-width:0px;\" width=\"100%\"><tr>";
 		echo "<td align=\"left\">";
+		// save button
+		echo "<input style=\"margin:2px;\" name=\"accountContainerSaveAccount\" type=\"submit\" value=\"" . _('Save') . "\"> \n";
 		// reset button
 		if ($this->dn_orig!='') {
-			echo "<input style=\"margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
-			if ($this->subpage == 'finish') echo " disabled";
-			echo ">\n";
+			echo "<input style=\"margin:2px;\" name=\"accountContainerReset\" type=\"submit\" value=\"" . _('Reset changes') . "\">\n";
 		}
 		echo "</td>";
 		echo "<td align=\"right\">";
@@ -1009,32 +995,121 @@ class accountContainer {
 		// create module menu
 		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
-
+		// tab menu
+		$this->printModuleTabs();
+		echo "</td></tr>\n";
+		// content header
+		echo "<tr class=\"" . $this->type . "list\">\n";
+			echo "<td style=\"padding:10px;\">\n";
+				$this->printContentHeader();
+			echo "</td>\n";
+		echo "</tr>\n";
+		echo "<tr class=\"" . $this->type . "list\">\n";
+		// content area
+		echo "<td width=\"100%\" style=\"padding:10px;\">";
+		// display html-code from modules
+		$return = array();
+		
+		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
+				
+		$y = 5000;
+		$z = 10000;
+		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
+		// Display rest of html-page
+		echo "<br>*" . _('required');
+		echo "</td></tr></table>\n";
+		$this->printPageFooter();
+	}
+	
+	/**
+	 * Prints the header of the account pages.
+	 */
+	private function printPageHeader() {
+		echo $_SESSION['header'];
+		echo "<title>LDAP Account Manager</title>\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
+		echo "</head><body>\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";		
+	}
+	
+	/**
+	 * Prints the footer of the account pages.
+	 */
+	private function printPageFooter() {
+		echo "</form>\n";
+		echo "</body>\n";
+		echo "</html>\n";		
+	}
+	
+	/**
+	 * Prints the HTML code to notify the user about the successful saving.
+	 *
+	 */
+	private function printSuccessPage() {
+		$pdfStructures = getPDFStructureDefinitions($this->type);
+		$this->printPageHeader();
+		// Show success message
+		if ($this->dn_orig == '') {
+			$text = _("Account was created successfully.");
+		}
+		else {
+			$text = _("Account was modified successfully.");
+		}
+		StatusMessage('INFO', _('LDAP operation successful.'), $text);
+		
+		echo "<br>\n";
+		
+		echo "<input name=\"accountContainerCreateAgain\" type=\"submit\" value=\"" . _('Create another account') . "\"> \n";
+		echo "<input name=\"BackToList\" type=\"submit\" value=\"" . _('Back to account list') . "\"> \n";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+		echo "<select name=\"pdfStructure\" size=1>\n";
+		for ($i = 0; $i < sizeof($pdfStructures); $i++) {
+			echo "<option>" . $pdfStructures[$i] . "</option>\n";
+		}
+		echo "</select>\n";
+		echo "<input name=\"accountContainerCreatePDF\" type=\"submit\" value=\"" . _('Create PDF file') . "\">\n";
+		echo "<a href=\"../help.php?HelpNumber=403\" target=\"help\"><img src=\"../../graphics/help.png\" alt=\"" . _("Help") . "\" title=\"" . _("Help") . "\"></a>\n";
+		$this->printPageFooter();
+	}
+	
+	/**
+	 * Checks if the user requested to load a profile.
+	 */
+	private function loadProfileIfRequested() {
+		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
+			$profile = loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type);
+			$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
+			// pass profile to each module
+			$modules = array_keys($this->module);
+			foreach ($modules as $module) $this->module[$module]->load_profile($profile);
+			if (isset($profile['ldap_rdn'][0])) {
+				if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
+					$this->rdn = $profile['ldap_rdn'][0];
+				}
+			}
+			if (isset($profile['ldap_suffix'][0])) {
+				$this->dn = $profile['ldap_suffix'][0];
+			}
+		}
+	}
+	
+	/**
+	 * Prints the HTML code of the module tabs.
+	 */
+	private function printModuleTabs() {
 		// calculate button width
-		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Main")))) + 2;
-		for ($b = 1; $b < sizeof($this->order); $b++) {
+		$buttonWidth = 0;
+		for ($b = 0; $b < sizeof($this->order); $b++) {
 			$tempWidth = round(0.8 * strlen(utf8_decode($this->module[$this->order[$b]]->get_alias()))) + 2;
 			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
 		}
+		// $x is used to count up tabindex
 		$x=0;
 		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
-		// print "main" button
-		$class = $this->type . "list-head";
-		if ($this->order[$this->current_page] == "main") $class = $this->type . "list-edit";
-		echo "<tr><td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\" colspan=2>";
-		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_main')[0].click();\" align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:5px;\">\n";
-		echo "<input style=\"background: transparent; width:" . $buttonWidth ."em;border:0px solid;height:32px;\" name=\"form_main_main\" type=\"submit\" value=\"";
-		echo _('Main');
-		echo "\" tabindex=$x";
-		if ($this->subpage == 'finish') echo " disabled";
-		echo ">\n";
-		echo "</td></tr></table>\n";
-		echo "</td>\n";
-		$x++;
+		echo "<tr>\n";
 		// Loop for module
-		// $x is used to count up tabindex
-		for ($i=1; $i<count($this->order); $i++ ) {
+		for ($i=0; $i<count($this->order); $i++ ) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
 			// skip hidden buttons
 			if ($buttonStatus == 'hidden') continue;
@@ -1056,71 +1131,13 @@ class accountContainer {
 			echo "<input style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $buttonSpace . $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
-			if (($buttonStatus == 'disabled') || $this->subpage == 'finish') echo " disabled";
+			if ($buttonStatus == 'disabled') echo " disabled";
 			echo ">\n";
 			echo "</td></tr></table>\n";
 			echo '</td>';
 			$x++;
 		}
-		echo "<td width=\"100%\">&nbsp;</td></tr></table></td></tr>\n";
-		// content header
-		echo "<tr class=\"" . $this->type . "list\">\n";
-			echo "<td style=\"padding:10px;\">\n";
-				$this->printContentHeader();
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr class=\"" . $this->type . "list\">\n";
-		// content area
-		echo "<td width=\"100%\" style=\"padding:10px;\">";
-		// display html-code from modules
-		$return = array();
-		if ($this->current_page == 0) {
-			if ($this->subpage == 'finish') {
-				// Show success message
-				if ($this->dn_orig == '') {
-					$text = _("Account was created successfully.");
-				}
-				else {
-					$text = _("Account was modified successfully.");
-				}
-				$return[] = array(
-					0 => array('kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'), 'text' => $text,
-						'td' => array('colspan' => 3)));
-				$return[] = array(
-					0 => array('kind' => 'text', 'text' => '', 'td' => array('colspan' => 3)));
-				$return[] = array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'createagain', 'value' => _('Create another account')),
-					1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'backmain', 'value' => _('Back to account list')));
-				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
-				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
-				$pdfStructures = getPDFStructureDefinitions($this->type);
-				$return[] = array(
-					0 => array('kind' => 'fieldset', 'legend' => '<b>PDF</b>', 'td' => array('colspan' => 2), 'value' => array(array(
-						0 => array('kind' => 'select', 'name' => 'pdfStructure', 'options' => $pdfStructures),
-						1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf', 'value' => _('Create PDF file')),
-						2 => array('kind' => 'help', 'value' => '403'))
-					)));
-			}
-			else {
-				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
-				if ($this->dn_orig!='') $text = _('Modify account');
-					else $text = _('Create account');
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
-					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text, 'disabled' => $disabled),
-					2 => array ('kind' => 'help', 'value' => '402'));
-			}
-		}
-		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
-		$y = 5000;
-		$z = 10000;
-		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
-		// Display rest of html-page
-		if ($this->current_page != "main") echo "<br>*" . _('required');
-		echo "</td></tr></table>\n";
-		echo "</form>\n";
-		echo "</body>\n";
-		echo "</html>\n";
-		return 0;
+		echo "<td width=\"100%\">&nbsp;</td></tr></table>\n";		
 	}
 	
 	/**
@@ -1629,7 +1646,6 @@ class accountContainer {
 		if (sizeof($depModules) > 0) {
 			for ($i = 0; $i < sizeof($depModules); $i++) $order[] = $depModules[$i];
 		}
-		array_unshift($order, 'main');
 		$this->order = $order;
 	}
 	
