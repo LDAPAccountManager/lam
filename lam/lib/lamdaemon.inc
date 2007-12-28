@@ -139,7 +139,6 @@ function lamdaemonSSH($commands, $server) {
 		$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $server);
 		return $return;
 	}
-	return array();
 }
 
 ?>
