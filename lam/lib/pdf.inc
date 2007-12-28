@@ -95,7 +95,7 @@ function createModulePDF($accounts,$pdf_structure="default") {
 			// We have a new section to start
 			if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 				$name = $entry['attributes']['NAME'];
-				if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
+				if(preg_match("/^_[a-zA-Z_]+/",$name)) {
 					$section_headline = getSectionHeadline($entries[substr($name,1)][0]);
 				}
 				else {

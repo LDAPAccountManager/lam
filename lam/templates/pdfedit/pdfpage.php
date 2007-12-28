@@ -486,7 +486,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 									<td colspan="2">
 		<?php
 		// Section headline is a value entry
-		if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
+		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
 			?>
 										<select name="section_<?php echo $key;?>">
 											<!-- <?php echo $section_items;?> -->
@@ -517,7 +517,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	}
 	// We have a section to end
 	elseif($entry['tag'] == "SECTION" && $entry['type'] == "close") {
-		if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
+		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
 			$section_headline = substr($name,1);
 		}
 		else {
