@@ -117,7 +117,7 @@ function parseMessageString($MessageString) {
  * the appropriate HTML tages <b> and </b> 
  */
 function boldText($text) {
-	$pattern = "/\{bold\}([^{]*)\{endbold\}/"; // Regular expression matching {bold}[Text]{endbold}
+	$pattern = "/\\{bold\\}([^{]*)\\{endbold\\}/"; // Regular expression matching {bold}[Text]{endbold}
 	$replace = "<b class=\"status\">\\1</b>"; // Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }
@@ -132,7 +132,7 @@ function boldText($text) {
  * @return string Input string with HTML-formatted color tags
  */
 function colorText($text) {
-	$pattern = "/\{color=#?([0-9,a-f,A-F]{6})\}([^{]*)\{endcolor\}/"; // Regular expression matching {color=#[HEX-Value]}[Text]{endcolor} or {color=[HEX-Value]}[Text]{endcolor}
+	$pattern = "/\\{color=#?([0-9,a-f,A-F]{6})\\}([^{]*)\\{endcolor\\}/"; // Regular expression matching {color=#[HEX-Value]}[Text]{endcolor} or {color=[HEX-Value]}[Text]{endcolor}
 	$replace = "<font color=\"#\\1\">\\2</font>"; // Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }
@@ -147,7 +147,7 @@ function colorText($text) {
  * @return string Input string with HTML-formatted link tags
  */
 function linkText($text) {
-	$pattern = "/\{link=([^}]*)\}([^{]*)\{endlink\}/"; // Regular expression matching {link=[Link-Target]}[Text]{endlink}
+	$pattern = "/\\{link=([^}]*)\\}([^{]*)\\{endlink\\}/"; // Regular expression matching {link=[Link-Target]}[Text]{endlink}
 	$replace = "<a href=\"\\1\" target=\"_blank\">\\2</a>"; //Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }

@@ -57,8 +57,8 @@ setlanguage();
 
 //load account
 if (isset($_GET['DN'])) {
-	$DN = str_replace("\'", '', $_GET['DN']);
-	$type = str_replace("\'", '', $_GET['type']);
+	$DN = str_replace("\\'", '', $_GET['DN']);
+	$type = str_replace("\\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
 	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$_SESSION['account'] = new accountContainer($type, 'account');

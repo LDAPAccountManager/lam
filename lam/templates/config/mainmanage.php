@@ -116,7 +116,7 @@ if ($_POST['submit']) {
 	if ($_POST['logDestination'] == "none") $cfg->logDestination = "NONE";
 	elseif ($_POST['logDestination'] == "syslog") $cfg->logDestination = "SYSLOG";
 	else {
-		if (isset($_POST['logFile']) && ($_POST['logFile'] != "") && eregi("^[a-z0-9/\\\:\\._-]+$", $_POST['logFile'])) {
+		if (isset($_POST['logFile']) && ($_POST['logFile'] != "") && eregi("^[a-z0-9/\\\\:\\._-]+$", $_POST['logFile'])) {
 			$cfg->logDestination = $_POST['logFile'];
 		}
 		else $errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -.");
