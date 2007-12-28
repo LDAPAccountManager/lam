@@ -858,7 +858,7 @@ class accountContainer {
 			if (isset($_POST['accountContainerCreateAgain'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type);
+				metaRefresh("edit.php?type=" . $this->type . "&amp;suffix=" . $this->dn);
 				exit();
 			}
 			// back to account list
@@ -1059,9 +1059,10 @@ class accountContainer {
 		StatusMessage('INFO', _('LDAP operation successful.'), $text);
 		
 		echo "<br>\n";
+		echo "<table class=\"".$this->type."list\" width=\"100%\" style=\"border-width:0px;\"><tr><td>\n";
 		
 		echo "<input name=\"accountContainerCreateAgain\" type=\"submit\" value=\"" . _('Create another account') . "\"> \n";
-		echo "<input name=\"BackToList\" type=\"submit\" value=\"" . _('Back to account list') . "\"> \n";
+		echo "<input name=\"accountContainerBackToList\" type=\"submit\" value=\"" . _('Back to account list') . "\"> \n";
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "<select name=\"pdfStructure\" size=1>\n";
 		for ($i = 0; $i < sizeof($pdfStructures); $i++) {
@@ -1070,6 +1071,7 @@ class accountContainer {
 		echo "</select>\n";
 		echo "<input name=\"accountContainerCreatePDF\" type=\"submit\" value=\"" . _('Create PDF file') . "\">\n";
 		echo "<a href=\"../help.php?HelpNumber=403\" target=\"help\"><img src=\"../../graphics/help.png\" alt=\"" . _("Help") . "\" title=\"" . _("Help") . "\"></a>\n";
+		echo "</td></tr></table>\n";
 		$this->printPageFooter();
 	}
 	
@@ -1163,7 +1165,7 @@ class accountContainer {
 					}
 					echo ">" . $suffix . "</option>\n";
 				}
-				if (!in_array($this->dn, $_SESSION['ldap']->search_units($rootsuffix))) {
+				if (!($this->dn == '') && !in_array($this->dn, $_SESSION['ldap']->search_units($rootsuffix))) {
 					echo "<option selected>" . $this->dn . "</option>\n";;
 				}
 			echo "</select>\n";
