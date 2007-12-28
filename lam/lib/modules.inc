@@ -735,7 +735,7 @@ class accountContainer {
 	* @param string $type account type
 	* @param string $base key in $_SESSION where this object is saved
 	*/
-	function accountContainer($type, $base) {
+	function __construct($type, $base) {
 		/* Set the type of account. Valid
 		* types are: user, group, host
 		*/

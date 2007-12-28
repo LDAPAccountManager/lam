@@ -53,7 +53,7 @@ class cache {
 	 *
 	 * @return cache cache object
 	 */
-	function cache() {
+	function __construct() {
 		$this->time = 0;
 		$this->attributes = array();
 	}

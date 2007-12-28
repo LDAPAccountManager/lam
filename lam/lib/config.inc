@@ -195,7 +195,7 @@ class LAMConfig {
 	/**
 	 * The rights for the home directory
 	 */
-	var $scriptRights;
+	var $scriptRights = '750';
 
 	/**
 	* Servers where lamdaemon script is executed
@@ -225,7 +225,7 @@ class LAMConfig {
 	*
 	* @param integer $file Index number in config file array
 	*/
-	function LAMConfig($file = 0) {
+	function __construct($file = 0) {
 		// load first profile if none is given
 		if (!is_string($file)) {
 			$profiles = getConfigProfiles();
@@ -872,7 +872,7 @@ class LAMCfgMain {
 	/**
 	* Loads preferences from config file
 	*/
-	function LAMCfgMain() {
+	function __construct() {
 		// set default values
 		$this->sessionTimeout = 30;
 		$this->logLevel = LOG_NOTICE;

@@ -292,7 +292,7 @@ class selfServiceProfile {
 	 *
 	 * @return selfServiceProfile
 	 */
-	function selfServiceProfile() {
+	function __construct() {
 		// set default values
 		$this->serverURL = "localhost";
 		$this->LDAPSuffix = "dc=my-domain,dc=com";

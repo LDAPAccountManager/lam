@@ -120,8 +120,8 @@ class lamUserList extends lamList {
 	 * @param string $type account type
 	 * @return lamList list object
 	 */
-	public function lamUserList($type) {
-		parent::lamList($type);
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->labels = array(
 			'nav' => _("%s user(s) found"),
 			'error_noneFound' => _("No users found!"),

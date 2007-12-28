@@ -97,7 +97,7 @@ class lamList {
 	 * @param string $type account type
 	 * @return lamList list object
 	 */
-	public function lamList($type) {
+	public function __construct($type) {
 		$this->type = $type;
 		$this->labels = array(
 			'nav' => _("%s object(s) found"),
@@ -944,7 +944,7 @@ class lamListTool {
 	 * @param String $target target page
 	 * @return lamListTool tool object
 	 */
-	public function lamListTool($name, $image, $target) {
+	public function __construct($name, $image, $target) {
 		$this->name = $name;
 		$this->image = $image;
 		$this->target = $target;
@@ -1000,7 +1000,7 @@ abstract class lamListOption {
 	 * @param String $ID unique ID
 	 * @return lamConfigOption config option
 	 */
-	public function lamConfigOption($ID) {
+	public function __construct($ID) {
 		$this->ID = $ID;
 	}
 	
@@ -1067,8 +1067,8 @@ class lamBooleanListOption extends lamListOption {
 	 * @param String $ID unique ID
 	 * @return lamBooleanListOption config option
 	 */
-	public function lamBooleanListOption($name, $ID) {
-		parent::lamConfigOption($ID);
+	public function __construct($name, $ID) {
+		parent::__construct($ID);
 		$this->name = $name;
 	}
 	
@@ -1131,8 +1131,8 @@ class lamSelectListOption extends lamListOption {
 	 * @param String $ID unique ID
 	 * @return lamBooleanListOption config option
 	 */
-	public function lamSelectListOption($name, $options, $ID) {
-		parent::lamConfigOption($ID);
+	public function __construct($name, $options, $ID) {
+		parent::__construct($ID);
 		$this->name = $name;
 		$this->options = $options;
 	}

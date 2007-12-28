@@ -49,7 +49,7 @@ class sambaGroupMapping extends baseModule {
 	*
 	* @param string $scope account type
 	*/
-	function sambaGroupMapping($scope) {
+	function __construct($scope) {
 		// load error messages
 		$this->rids = array(
 			_('Domain admins') => 512,
@@ -72,7 +72,7 @@ class sambaGroupMapping extends baseModule {
 			_('Invalid account') => 7
 			);
 		// call parent constructor
-		parent::baseModule($scope);
+		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
 	}
 

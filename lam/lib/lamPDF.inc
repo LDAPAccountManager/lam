@@ -61,7 +61,7 @@ class lamPDF extends UFPDF {
 	 * @param string $account_type
 	 * @param array $page_definitions
 	 */
-	function lamPDF($account_type = "user",$page_definitions = array(),$fontName) {
+	function __construct($account_type = "user",$page_definitions = array(),$fontName) {
 		$this->fontName = $fontName;
 		define('FPDF_FONTPATH', $_SESSION['lampath'] . "lib/" . 'font/');
 		// Call constructor of superclass

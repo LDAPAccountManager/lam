@@ -106,8 +106,8 @@ class lamHostList extends lamList {
 	 * @param string $type account type
 	 * @return lamList list object
 	 */
-	function lamHostList($type) {
-		parent::lamList($type);
+	function __construct($type) {
+		parent::__construct($type);
 		$this->labels = array(
 			'nav' => _("%s host(s) found"),
 			'error_noneFound' => _("No hosts found!"),

@@ -42,7 +42,7 @@ class kolabUser extends baseModule {
 	*
 	* @param string $scope account type (user, group, host)
 	*/
-	function kolabUser($scope) {
+	function __construct($scope) {
 		// list of invitation policies
 		$this->invitationPolicies = array(
 			'ACT_ALWAYS_ACCEPT' => _('Always accept'),
@@ -52,7 +52,7 @@ class kolabUser extends baseModule {
 			'ACT_MANUAL_IF_CONFLICTS' => _('Manual if conflicts')
 		);
 		// call parent constructor
-		parent::baseModule($scope);
+		parent::__construct($scope);
 	}
 
 	/**

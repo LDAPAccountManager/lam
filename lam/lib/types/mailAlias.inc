@@ -102,8 +102,8 @@ class lamMailAliasList extends lamList {
 	 * @param string $type account type
 	 * @return lamList list object
 	 */
-	function lamMailAliasList($type) {
-		parent::lamList($type);
+	function __construct($type) {
+		parent::__construct($type);
 		$this->labels = array(
 			'nav' => _("%s alias(es) found"),
 			'error_noneFound' => _("No aliases found!"),

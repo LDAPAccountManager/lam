@@ -71,7 +71,7 @@ abstract class baseModule {
 	*
 	* @param string $scope the account type (user, group, host)
 	*/
-	function baseModule($scope) {
+	public function __construct($scope) {
 		$this->scope = $scope;
 		$this->load_Messages();
 		$this->meta = $this->get_metaData();

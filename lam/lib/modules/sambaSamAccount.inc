@@ -63,15 +63,15 @@ class sambaSamAccount extends baseModule {
 	*
 	* @param string $scope account type (user, group, host)
 	*/
-	function sambaSamAccount($scope) {
-	// List of well known rids
-	$this->rids = array(
-		_('Domain admins') => 512, _('Domain users') => 513, _('Domain guests') => 514,
-		_('Domain computers') => 515, _('Domain controllers') => 516, _('Domain certificate admins') => 517,
-		_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520);
-	// call parent constructor
-	parent::baseModule($scope);
-	$this->autoAddObjectClasses = false;
+	function __construct($scope) {
+		// List of well known rids
+		$this->rids = array(
+			_('Domain admins') => 512, _('Domain users') => 513, _('Domain guests') => 514,
+			_('Domain computers') => 515, _('Domain controllers') => 516, _('Domain certificate admins') => 517,
+			_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520);
+		// call parent constructor
+		parent::__construct($scope);
+		$this->autoAddObjectClasses = false;
 	}
 
 	/** this functin fills the error message array with messages

@@ -70,7 +70,7 @@ class Ldap{
 	/**
 	* @param object $config an object of class Config
 	*/
-	function Ldap($config) {
+	function __construct($config) {
 		setlanguage();
 		if (is_object($config)) $this->conf = $config;
 		else return false;

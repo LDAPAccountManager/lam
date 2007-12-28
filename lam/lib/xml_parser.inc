@@ -41,9 +41,9 @@ class xmlParser {
 	private $xmlParser;
 	
 	/**
-	 * 
+	 * Constructor
 	 */
-	function xmlParser() {
+	function __construct() {
 		$this->xmlParser = xml_parser_create();
 		xml_set_object($this->xmlParser,$this);
 		xml_parser_set_option($this->xmlParser, XML_OPTION_CASE_FOLDING, 1);
