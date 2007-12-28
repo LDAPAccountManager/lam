@@ -157,7 +157,7 @@ function logNewMessage($level, $message) {
 	// check if log level is high enough
 	elseif ($cfg->logLevel < $level) return;
 	// ok to log, build log message
-	$prefix = "LDAP Account Manager - " . $possibleLevels[$level] . ": ";
+	$prefix = "LDAP Account Manager (" . session_id() . ") - " . $possibleLevels[$level] . ": ";
 	$message = $prefix . $message;
 	// Syslog logging
 	if ($cfg->logDestination == 'SYSLOG') {
