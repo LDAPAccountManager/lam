@@ -137,8 +137,11 @@ class inetOrgPerson extends baseModule {
 			'mobileTelephoneNumber' => 'mobile');
 		// managed attributes
 		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
-			'host', 'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
+			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory');
+		if (($_SESSION['loggedIn']) && $this->supportUnixHosts()) {
+			$return['attributes'][] = 'host';
+		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
 		// self service field settings
