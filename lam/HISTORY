@@ -12,6 +12,7 @@
   - Unix: allow to generate random passwords for users
   - Samba 3 groups: Samba part is now optional
   - Personal: add object classes person and organizationalPerson for new accounts (RFE 1830033)
+  - new LDAP schema check on tests page
   - LAM Pro: added possibility for deskside support to reset passwords at account list page
 
 
