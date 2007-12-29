@@ -164,25 +164,25 @@ function metaRefresh($page) {
 class LAMConfig {
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
-	var $ServerURL;
+	private $ServerURL;
 
 	/** Array of string: users with admin rights */
-	var $Admins;
+	private $Admins;
 
 	/** Password to edit preferences */
 	private $Passwd;
 
 	/** LDAP suffix for tree view */
-	var $treesuffix;
+	private $treesuffix;
 
 	/** Default language */
-	var $defaultLanguage;
+	private $defaultLanguage;
 
 	/** module settings */
-	var $moduleSettings = array();
+	private $moduleSettings = array();
 
 	/** type settings */
-	var $typeSettings = array();
+	private $typeSettings = array();
 
 	/**
 	* Path to external lamdaemon script on server where it is executed
@@ -190,12 +190,12 @@ class LAMConfig {
 	* This is used for managing quota and home directories.
 	* optional setting, may not be defined
 	*/
-	var $scriptPath;
+	private $scriptPath;
 
 	/**
 	 * The rights for the home directory
 	 */
-	var $scriptRights = '750';
+	private $scriptRights = '750';
 
 	/**
 	* Servers where lamdaemon script is executed
@@ -203,16 +203,16 @@ class LAMConfig {
 	* This is used for managing quota and home directories.
 	* optional setting, may not be defined
 	*/
-	var $scriptServer;
+	private $scriptServer;
 
 	/** LDAP cache timeout */
-	var $cachetimeout;
+	private $cachetimeout;
 
 	/** Active account types */
-	var $activeTypes = "user,group,host,smbDomain";
+	private $activeTypes = "user,group,host,smbDomain";
 
 	/** Name of configuration file */
-	var $file;
+	private $file;
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix",
@@ -386,6 +386,15 @@ class LAMConfig {
 				exit;
 			}
 		}
+	}
+	
+	/**
+	 * Returns the name of the config file
+	 *
+	 * @return String name
+	 */
+	public function getName() {
+		return $this->file;
 	}
 	
 	/**

@@ -553,7 +553,7 @@ class posixAccount extends baseModule {
 					break;
 				}
 			}
-			$result = lamdaemon(array($this->attributes['uid'][0] . " home add 0".$_SESSION['config']->scriptRights), $server);
+			$result = lamdaemon(array($this->attributes['uid'][0] . " home add 0".$_SESSION['config']->get_scriptRights()), $server);
 			// lamdaemon results
 			if (is_array($result)) {
 				foreach ($result as $singleresult) {
@@ -974,7 +974,7 @@ class posixAccount extends baseModule {
 				array('kind' => 'text', 'text' => _('Home directory').'*'),
 				array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				array('kind' => 'help', 'value' => 'homeDirectory'));
-			if ($this->getAccountContainer()->isNewAccount && isset($_SESSION['config']->scriptPath) && ($_SESSION['config']->scriptPath != '')) {
+			if ($this->getAccountContainer()->isNewAccount && ($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
 				// get list of lamdaemon servers
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -1030,7 +1030,7 @@ class posixAccount extends baseModule {
 	* @return meta HTML code
 	*/
 	function display_html_delete() {
-		if ($this->get_scope() == 'user' && isset($_SESSION['config']->scriptPath)) {
+		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
 			$return[] = array (
 				array('kind' => 'text', 'text' => _('Delete home directory')),
 				array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
@@ -1593,7 +1593,7 @@ class posixAccount extends baseModule {
 		// create home directories
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
-			$result = lamdaemon(array($data[$pos][$ids['posixAccount_userName']] . " home add 0".$_SESSION['config']->scriptRights),
+			$result = lamdaemon(array($data[$pos][$ids['posixAccount_userName']] . " home add 0".$_SESSION['config']->get_scriptRights()),
 				$data[$pos][$ids['posixAccount_createHomeDir']]);
 			$errors = array();
 			if (($result != false) && (sizeof($result) == 1)) {

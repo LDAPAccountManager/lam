@@ -62,7 +62,7 @@ $conf = &$_SESSION['conf_config'];
 
 // check if password is valid
 // if not: load login page
-if (!$conf->check_Passwd($passwd) && !($_SESSION['conf_isAuthenticated'] === $conf->file)) {
+if (!$conf->check_Passwd($passwd) && !($_SESSION['conf_isAuthenticated'] === $conf->getName())) {
 	$sessionKeys = array_keys($_SESSION);
 	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
@@ -72,7 +72,7 @@ if (!$conf->check_Passwd($passwd) && !($_SESSION['conf_isAuthenticated'] === $co
 	require('conflogin.php');
 	exit;
 }
-$_SESSION['conf_isAuthenticated'] = $conf->file;
+$_SESSION['conf_isAuthenticated'] = $conf->getName();
 
 // check if button was pressed and if we have to save the setting or go back to login
 if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){

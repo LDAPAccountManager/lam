@@ -50,7 +50,7 @@ function lamdaemon($commands, $server) {
 
 	$userstring = implode ("\n", $commands);
 	$output_array = array();
-	$towrite = escapeshellarg($server)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
+	$towrite = escapeshellarg($server)." ".escapeshellarg($_SESSION['config']->get_scriptPath())." - -";
 	$descriptorspec = array(
 		0 => array("pipe", "r"), // stdin
 		1 => array("pipe", "w"), // stout
@@ -112,7 +112,7 @@ function lamdaemonSSH($commands, $server) {
 			return $return;
 		}
 		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
-			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
+			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
 			fwrite($shell, $commands);
 			$return = array();
 			$time = time() + (sizeof($commands) * 30);

@@ -323,7 +323,7 @@ function display_LoginPage($config_object) {
 								<?php
 								echo _("Server profile") . ": ";
 								if(empty($_POST['profileChange'])) {
-									$_POST['profile'] = $_SESSION['config']->file;
+									$_POST['profile'] = $_SESSION['config']->getName();
 								}
 								?></b>
 								<?php echo $_POST['profile']; ?>

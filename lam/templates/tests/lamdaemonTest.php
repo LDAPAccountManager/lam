@@ -67,7 +67,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		flush();
 		$lamdaemonOk = false;
 		$errorMessage = "";
-		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
+		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
 		$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
 		fwrite($shell, $command);
 		$return = array();
@@ -138,7 +138,7 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 		echo "<td>" . _("Error") . "</td>\n";
 		echo "<td bgcolor=\"red\">" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
 	}
-	elseif (!isset($_SESSION['config']->scriptPath) || (strlen($_SESSION['config']->scriptPath) < 10)) {
+	elseif (($_SESSION['config']->get_scriptPath() == null) || (strlen($_SESSION['config']->get_scriptPath()) < 10)) {
 		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
 		echo "<td bgcolor=\"red\">" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
 		$stopTest = true;
