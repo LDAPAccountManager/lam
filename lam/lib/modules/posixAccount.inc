@@ -1521,6 +1521,9 @@ class posixAccount extends baseModule {
 	* <br> )
 	*/
 	function doUploadPostActions($data, $ids, $failed, &$temp) {
+		if (!checkIfWriteAccessIsAllowed()) {
+			die();
+		}
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
 			$temp['groups'] = array();

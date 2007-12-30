@@ -225,7 +225,7 @@ class lamUserList extends lamList {
 		if (!isLAMProVersion()) {
 			return array();
 		}
-		else {
+		elseif (checkIfPasswordChangeIsAllowed()) {
 			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
 			return array($passwordTool);
 		}

@@ -961,6 +961,43 @@ class accountContainer {
 				return;
 			}
 		}
+		if (checkIfWriteAccessIsAllowed()) {
+			$this->printCommonControls();
+		}
+		echo "<br>\n";
+		// create module menu
+		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
+		// tab menu
+		$this->printModuleTabs();
+		echo "</td></tr>\n";
+		// content header
+		echo "<tr class=\"" . $this->type . "list\">\n";
+			echo "<td style=\"padding:10px;\">\n";
+				$this->printContentHeader();
+			echo "</td>\n";
+		echo "</tr>\n";
+		echo "<tr class=\"" . $this->type . "list\">\n";
+		// content area
+		echo "<td width=\"100%\" style=\"padding:10px;\">";
+		// display html-code from modules
+		$return = array();
+		
+		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
+				
+		$y = 5000;
+		$z = 10000;
+		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
+		// Display rest of html-page
+		echo "<br>*" . _('required');
+		echo "</td></tr></table>\n";
+		$this->printPageFooter();
+	}
+	
+	/**
+	 * Prints common controls like the save button and the ou selection.
+	 */
+	private function printCommonControls() {
 		echo "<table class=\"".$this->type."list\" style=\"border-width:0px;\" width=\"100%\"><tr>";
 		echo "<td align=\"left\">";
 		// save button
@@ -990,35 +1027,7 @@ class accountContainer {
 			echo "</a>\n";
 		}
 		echo "</td>";
-		echo "</tr></table>";
-		echo "<br>\n";
-		// create module menu
-		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
-		// tab menu
-		$this->printModuleTabs();
-		echo "</td></tr>\n";
-		// content header
-		echo "<tr class=\"" . $this->type . "list\">\n";
-			echo "<td style=\"padding:10px;\">\n";
-				$this->printContentHeader();
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr class=\"" . $this->type . "list\">\n";
-		// content area
-		echo "<td width=\"100%\" style=\"padding:10px;\">";
-		// display html-code from modules
-		$return = array();
-		
-		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
-				
-		$y = 5000;
-		$z = 10000;
-		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
-		// Display rest of html-page
-		echo "<br>*" . _('required');
-		echo "</td></tr></table>\n";
-		$this->printPageFooter();
+		echo "</tr></table>";		
 	}
 	
 	/**
@@ -1439,6 +1448,9 @@ class accountContainer {
 	* @return array list of status messages if any errors occured
 	*/
 	function save_account() {
+		if (!checkIfWriteAccessIsAllowed()) {
+			die();
+		}
 		$finalDN = $this->dn;
 		$errors = array();
 		$ldapUser = $_SESSION['ldap']->decrypt_login();

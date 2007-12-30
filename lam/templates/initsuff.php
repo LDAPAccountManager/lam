@@ -40,6 +40,10 @@ include_once("../lib/status.inc");
 // start session
 startSecureSession();
 
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
+
 setlanguage();
 
 // check if user already pressed button

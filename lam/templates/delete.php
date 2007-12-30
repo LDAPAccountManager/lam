@@ -49,6 +49,10 @@ include_once('../lib/modules.inc');
 // Start session
 startSecureSession();
 
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
+
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {
 	metaRefresh("login.php");

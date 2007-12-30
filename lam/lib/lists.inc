@@ -462,9 +462,11 @@ class lamList {
 		echo "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
 		echo "</a>\n ";
 		// delete image
-		echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
-		echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
-		echo "</a>\n ";
+		if (checkIfWriteAccessIsAllowed()) {
+			echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+			echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
+			echo "</a>\n ";
+		}
 		// pdf image
 		echo "<input type=\"image\" style=\"background:transparent;\" name=\"createPDF_" . $id . "\" src=\"../../graphics/pdf.png\" title=\"" . _('Create PDF') . "\">\n ";
 		// additional tools
@@ -504,6 +506,9 @@ class lamList {
 	private function listDoPost() {
 		// check if button was pressed and if we have to add/delete an account
 		if (isset($_POST['new']) || isset($_POST['del'])){
+			if (!checkIfWriteAccessIsAllowed()) {
+				die();
+			}
 			// add new account
 			if (isset($_POST['new'])){
 				metaRefresh("../account/edit.php?type=" . $this->type . "&amp;suffix=" . $this->suffix);
@@ -703,12 +708,14 @@ class lamList {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td align=\"left\">\n";
-		// add/delete buttons
-		echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
-		if (!$createOnly) {
-			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
+		if (checkIfWriteAccessIsAllowed()) {
+			// add/delete buttons
+			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
+			if (!$createOnly) {
+				echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
+			}
+			echo "&nbsp;&nbsp;&nbsp;";
 		}
-		echo "&nbsp;&nbsp;&nbsp;";
 		$this->listShowOUSelection();
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
