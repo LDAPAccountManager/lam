@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Michael Dürgner
+  Copyright (C) 2003 - 2006  Michael Dï¿½rgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ $Id$
 /**
 * This is the main window of the pdf structure editor.
 *
-* @author Michael Dürgner
+* @author Michael Dï¿½rgner
 * @package PDF
 */
 
@@ -41,6 +41,9 @@ include_once("../../lib/modules.inc");
 
 // start session
 startSecureSession();
+
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
 
 setlanguage();
 

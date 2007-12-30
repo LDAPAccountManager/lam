@@ -40,6 +40,9 @@ include_once("../../lib/config.inc");
 // start session
 startSecureSession();
 
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
+
 setlanguage();
 
 // check if user is logged in, if not go to login

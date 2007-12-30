@@ -45,6 +45,9 @@ include_once('../lib/cache.inc');
 // Start session
 startSecureSession();
 
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
+
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {
 	metaRefresh("login.php");

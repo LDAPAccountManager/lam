@@ -36,6 +36,9 @@ include_once("../../lib/config.inc");
 // start session
 startSecureSession();
 
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
+
 setlanguage();
 
 echo $_SESSION['header'];
