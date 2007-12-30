@@ -179,4 +179,34 @@ function logNewMessage($level, $message) {
 	}
 }
 
+/**
+ * Checks if write access to LDAP is allowed.
+ *
+ * @return boolean true, if allowed
+ */
+function checkIfWriteAccessIsAllowed() {
+	if (!isset($_SESSION['config'])) {
+		return false;
+	}
+	if ($_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_ALL) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Checks if passwords may be changed.
+ *
+ * @return boolean true, if allowed
+ */
+function checkIfPasswordChangeIsAllowed() {
+	if (!isset($_SESSION['config'])) {
+		return false;
+	}
+	if ($_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_PASSWORD_CHANGE) {
+		return true;
+	}
+	return false;
+}
+
 ?>

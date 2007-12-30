@@ -162,6 +162,10 @@ function metaRefresh($page) {
 * @package configuration
 */
 class LAMConfig {
+	
+	const ACCESS_ALL = 100;
+	const ACCESS_PASSWORD_CHANGE = 20;
+	const ACCESS_READ_ONLY = 0;
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
@@ -213,11 +217,13 @@ class LAMConfig {
 
 	/** Name of configuration file */
 	private $file;
+	
+	private $accessLevel = 100;
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
-		"modules", "activeTypes", "types");
+		"modules", "activeTypes", "types", "accessLevel");
 
 
 	/**
@@ -360,6 +366,7 @@ class LAMConfig {
 			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
+			if (!in_array("accessLevel", $saved)) array_push($file_array, "\n\n# Access level for this profile.\n" . "accessLevel: " . $this->accessLevel . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -846,6 +853,24 @@ class LAMConfig {
 		return $this->typeSettings;
 	}
 
+	/**
+	 * Returns the access level for this profile.
+	 *
+	 * @return int level
+	 */
+	public function getAccessLevel() {
+		return $this->accessLevel;
+	}
+	
+	/**
+	 * Sets the access level for this profile.
+	 *
+	 * @param int $level level
+	 */
+	public function setAccessLevel($level) {
+		$this->accessLevel = $level;
+	}
+
 }
 
 
@@ -1010,7 +1035,7 @@ class LAMCfgMain {
 	private function hashPassword($password, $salt) {
 		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
-
+	
 }
 
 ?>

@@ -190,6 +190,42 @@ echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" .
 echo "</a>\n";
 echo "</td></tr>\n";
 
+// access level is only visible in Pro version
+if (isLAMProVersion()) {
+	// new line
+	echo ("<tr><td colspan=3>&nbsp</td></tr>");
+	
+	// access level
+	echo ("<tr><td align=\"right\"><b>".
+		_("Access level") . ": </b></td>".
+		"<td><select tabindex=\"$tabindex\" name=\"accessLevel\">\n");
+	if ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL) {
+		echo("<option selected value=" . LAMConfig::ACCESS_ALL . ">" . _('Write access') . "</option>\n");
+	}
+	else {
+		echo("<option value=" . LAMConfig::ACCESS_ALL . ">" . _('Write access') . "</option>\n");
+	}
+	if ($conf->getAccessLevel() == LAMConfig::ACCESS_PASSWORD_CHANGE) {
+		echo("<option selected value=" . LAMConfig::ACCESS_PASSWORD_CHANGE . ">" . _('Change passwords') . "</option>\n");
+	}
+	else {
+		echo("<option value=" . LAMConfig::ACCESS_PASSWORD_CHANGE . ">" . _('Change passwords') . "</option>\n");
+	}
+	if ($conf->getAccessLevel() == LAMConfig::ACCESS_READ_ONLY) {
+		echo("<option selected value=" . LAMConfig::ACCESS_READ_ONLY . ">" . _('Read only') . "</option>\n");
+	}
+	else {
+		echo("<option value=" . LAMConfig::ACCESS_READ_ONLY . ">" . _('Read only') . "</option>\n");
+	}
+	echo ("</select></td>\n");
+	$tabindex++;
+	echo "<td>";
+	echo "<a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">";
+	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+	echo "</a>\n";
+	echo "</td></tr>\n";
+}
+
 echo ("</table>");
 echo ("</fieldset>");
 
@@ -459,6 +495,9 @@ function saveSettings() {
 	}
 	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
+	}
+	if (isLAMProVersion()) {
+		$conf->setAccessLevel($_POST['accessLevel']);
 	}
 	$adminText = $_POST['admins'];
 	$adminText = explode("\n", $adminText);

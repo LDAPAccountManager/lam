@@ -3,6 +3,7 @@
 
 
 
+
   
 
 
@@ -41,7 +42,22 @@ Account modules can now have icons. See <span style="font-weight: bold;">baseMod
 
 <br>
 <h3>Constructors</h3>
-LAM now uses the PHP5 syntax for constructors: <span style="font-weight: bold;">__construct()</span><br>
+LAM now uses the PHP5 syntax for constructors: <span style="font-weight: bold;">__construct()<br>
+<br>
+</span>
+<h3>Extended security model</h3>
+Each server profile now defines an access level.<br>
+<br>
+Currently these are:<br>
+<ul>
+  <li>write access</li>
+  <li>password changes</li>
+  <li>read access<br>
+  </li>
+</ul>
+<span style="font-weight: bold;"></span> Please check your code and prohibit any actions which do not fit the current access level.<br>
+There are two new functions in <span style="font-style: italic;">security.inc</span>: <span style="font-weight: bold;">checkIfWriteAccessIsAllowed()</span> and <span style="font-weight: bold;">checkIfPasswordChangeIsAllowed()</span><br>
+Only LAM Pro allows to change the access level from <span style="font-style: italic;">write access</span> to a smaller level.<br>
 <br>
 <br>
 
