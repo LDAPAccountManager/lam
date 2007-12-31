@@ -64,9 +64,11 @@ echo "<h1 align=\"center\">" . _("Lamdaemon test") . "</h1>\n";
  * @return boolean true, if errors occured
  */
 function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
+	$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
+	$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
 	// run lamdaemon and get user quotas
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td>" . $testText . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$lamdaemonOk = false;
 		$errorMessage = "";
@@ -99,12 +101,12 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 			$lamdaemonOk = true;
 		}
 		if ($lamdaemonOk) {
-			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
-			echo "<td bgcolor=\"green\">" . _("Lamdaemon successfully run.") . "</td>";
+			echo "<td>" . $okImage . "</td>";
+			echo "<td>" . _("Lamdaemon successfully run.") . "</td>";
 		}
 		else {
-			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-			echo "<td bgcolor=\"red\">\n";
+			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td>\n";
 			for ($i = 0; $i < sizeof($return); $i++) {
 				call_user_func_array('StatusMessage', split(",", $return[$i]));
 			}
@@ -116,6 +118,9 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 	flush();
 	return $stopTest;
 }
+
+$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
+$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
 
 $servers = explode(";", $_SESSION['config']->get_scriptServers());
 for ($i = 0; $i < sizeof($servers); $i++) {
@@ -136,19 +141,19 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 	echo "<tr class=\"userlist\">\n<td colspan=\"3\" align=\"center\"><b>$title</b>\n</td>\n</tr>";
 
 	// check script server and path
-	echo "<tr class=\"userlist\">\n<td>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
+	echo "<tr class=\"userlist\">\n<td nowrap>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
 	if (!isset($serverName) || (strlen($serverName) < 3)) {
-		echo "<td>" . _("Error") . "</td>\n";
-		echo "<td bgcolor=\"red\">" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
+		echo "<td>" . $failImage . "</td>\n";
+		echo "<td>" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
 	}
 	elseif (($_SESSION['config']->get_scriptPath() == null) || (strlen($_SESSION['config']->get_scriptPath()) < 10)) {
-		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"red\">" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
+		echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+		echo "<td>" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
 		$stopTest = true;
 	}
 	else {
-		echo "<td bgcolor=\"green\">" . _("Ok") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"green\">" . sprintf(_("Using %s as lamdaemon remote server."), $serverName) . "</td>";
+		echo "<td>" . $okImage . "&nbsp;&nbsp;</td>\n";
+		echo "<td>" . sprintf(_("Using %s as lamdaemon remote server."), $serverName) . "</td>";
 	}
 	echo "</tr>\n";
 
@@ -156,7 +161,7 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 
 	// check Unix account of LAM admin
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist\">\n<td nowrap>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
 		$credentials = $_SESSION['ldap']->decrypt_login();
 		$unixOk = false;
 		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
@@ -168,12 +173,12 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 			}
 		}
 		if ($unixOk) {
-			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>\n";
-			echo "<td bgcolor=\"green\">" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
+			echo "<td>" . $okImage . "</td>\n";
+			echo "<td>" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
 		}
 		else {
-			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-			echo "<td bgcolor=\"red\">" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
+			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td>" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
 			$stopTest = true;
 		}
 		echo "</tr>\n";
@@ -183,14 +188,14 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 
 	// check SSH2 function
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td>" . _("SSH2 module") . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH2 module") . "&nbsp;&nbsp;</td>\n";
 		if (function_exists("ssh2_connect")) {
-			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
-			echo "<td bgcolor=\"green\">" . _("SSH2 module is installed.") . "</td>";
+			echo "<td>" . $okImage . "</td>";
+			echo "<td>" . _("SSH2 module is installed.") . "</td>";
 		}
 		else {
-			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-			echo "<td bgcolor=\"red\">" . _("Please install the SSH2 module for PHP and activate it in your php.ini!") . "</td>";
+			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td>" . _("Please install the SSH2 module for PHP and activate it in your php.ini!") . "</td>";
 			$stopTest = true;
 		}
 		echo "</tr>\n";
@@ -200,7 +205,7 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 
 	// check SSH login
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$sshOk = false;
 		$handle = @ssh2_connect($serverName);
@@ -210,12 +215,12 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 			}
 		}
 		if ($sshOk) {
-			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
-			echo "<td bgcolor=\"green\">" . _("SSH connection could be established.") . "</td>";
+			echo "<td>" . $okImage . "</td>";
+			echo "<td>" . _("SSH connection could be established.") . "</td>";
 		}
 		else {
-			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-			echo "<td bgcolor=\"red\">" . _("Unable to connect to remote server!") . "</td>";
+			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td>" . _("Unable to connect to remote server!") . "</td>";
 			$stopTest = true;
 		}
 		echo "</tr>\n";
@@ -227,9 +232,7 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 	$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
 	$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
 
-	echo "<br />";
-	
-	echo "</table>\n";
+	echo "</table><br>\n";
 }
 
 echo "<h2>" . _("Lamdaemon test finished.") . "</h2>\n";
