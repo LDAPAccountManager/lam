@@ -147,7 +147,7 @@ function showMainPage($scope) {
 	echo "<p><big><b>" . _("Columns:") . "</b></big></p>\n";
 
 	// DN options
-	echo "<fieldset class=\"" . $scope . "edit\">\n<legend><b>" . _("DN settings") . "</b></legend>\n";
+	echo "<fieldset class=\"" . $scope . "edit\">\n<legend><b>" . _("DN settings") . "</b></legend><br>\n";
 	echo "<table width=\"100%\">\n";
 		echo "<tr valign=\"top\">\n";
 			echo "<td width=\"50%\">\n";
@@ -192,7 +192,7 @@ function showMainPage($scope) {
 		if ($iconImage != null) {
 			$icon = '<img align="middle" src="../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 		}
-		echo "<fieldset class=\"" . $scope . "edit\">\n<legend>$icon<b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
+		echo "<fieldset class=\"" . $scope . "edit\">\n<legend>$icon<b>" . getModuleAlias($modules[$m], $scope) . "</b></legend><br>\n";
 		echo "<table width=\"100%\">\n";
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			echo "<tr valign=\"top\">\n";

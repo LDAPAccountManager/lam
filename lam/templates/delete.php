@@ -84,7 +84,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
 	echo _('Please confirm:');
-	echo "</b></legend>\n";
+	echo "</b></legend><br>\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
@@ -137,7 +137,7 @@ if ($_POST['delete']) {
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
 	echo "<fieldset class=\"".$_POST['type']."edit\"><legend><b>";
 	echo _('Deleting. Please stand by ...');
-	echo "</b></legend>\n";
+	echo "</b></legend><br>\n";
 
 	// Delete dns
 	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {

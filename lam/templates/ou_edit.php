@@ -160,7 +160,7 @@ function display_main() {
 	for ($i = 0; $i < sizeof($types); $i++) {
 		// generate lists of possible suffixes
 		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($types[$i]));
-		echo ("<fieldset class=\"" . $types[$i] . "edit\"><legend><b>" . getTypeAlias($types[$i]) . "</b></legend>\n");
+		echo ("<fieldset class=\"" . $types[$i] . "edit\"><legend><b>" . getTypeAlias($types[$i]) . "</b></legend><br>\n");
 		echo ("<table border=0>\n");
 		// new OU
 		echo ("<tr>\n");

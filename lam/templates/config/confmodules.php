@@ -172,14 +172,14 @@ function config_showAccountModules($scope, $title) {
 	
 	// show account modules
 	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp';
-	echo "<fieldset class=\"" . $scope . "edit\"><legend>$icon<b>" . $title . "</b></legend>\n";
+	echo "<fieldset class=\"" . $scope . "edit\"><legend>$icon<b>" . $title . "</b></legend><br>\n";
 	echo "<table border=0 width=\"100%\">\n";
 		// select boxes
 		echo "<tr>\n";
 			echo "<td width=\"5%\"></td>\n";
 			echo "<td width=\"40%\">\n";
 				echo "<fieldset class=\"" . $scope . "edit\">\n";
-					echo "<legend>" . _("Selected modules") . "</legend>\n";
+					echo "<legend>" . _("Selected modules") . "</legend><br>\n";
 					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_selected[]\" size=5 multiple>\n";
 						for ($i = 0; $i < sizeof($selected); $i++) {
 							if (in_array($selected[$i], $available)) {  // selected modules must be available
@@ -207,7 +207,7 @@ function config_showAccountModules($scope, $title) {
 			echo "</td>\n";
 			echo "<td width=\"40%\">\n";
 				echo "<fieldset class=\"" . $scope . "edit\">\n";
-					echo "<legend>" . _("Available modules") . "</legend>\n";
+					echo "<legend>" . _("Available modules") . "</legend><br>\n";
 					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_available[]\" size=5 multiple>\n";
 						for ($i = 0; $i < sizeof($available); $i++) {
 							if (! in_array($available[$i], $selected)) {  // display non-selected modules

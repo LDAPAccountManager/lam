@@ -67,6 +67,7 @@ a img {
 fieldset {
 background-color:#EEEEEE;
 border:1px solid green;
+padding:0px 15px 15px 15px;
 }
 
 legend {

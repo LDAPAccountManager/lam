@@ -141,7 +141,7 @@ if (isset($_SESSION['conf_errors'])) {
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
-echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
+echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend><br>\n");
 echo ("<table border=0>");
 // serverURL
 echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
@@ -231,7 +231,7 @@ echo ("</fieldset>");
 
 echo ("<p></p>");
 
-echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend>");
+echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend><br>\n");
 
 // Account modules
 $types = $conf->get_ActiveTypes();
@@ -281,7 +281,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	if ($iconImage != null) {
 		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
-	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend>\n";
+	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend><br>\n";
 	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, $tabindexLink, 'config');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
@@ -289,7 +289,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 }
 
 
-echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend>\n");
+echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 
 // language
@@ -336,7 +336,7 @@ echo ("</fieldset>\n");
 echo ("<p></p>\n");
 
 // script settings
-echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
+echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"right\"><b>".
@@ -409,7 +409,7 @@ echo ("</fieldset>\n");
 echo ("<p></p>\n");
 
 // security setings
-echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
+echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
