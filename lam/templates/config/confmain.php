@@ -123,7 +123,7 @@ echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\
 echo ("</head>\n");
 echo ("<body>\n");
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p></p>\n");
+	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p>&nbsp;</p>\n");
 
 if (!$conf->isWritable()) {
 	StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
@@ -156,7 +156,7 @@ echo "</td></tr>\n";
 $tabindex++;
 
 // new line
-echo ("<tr><td colspan=3>&nbsp</td></tr>");
+echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 
 // tree suffix
 echo ("<tr><td align=\"right\"><b>".
@@ -170,7 +170,7 @@ echo "</td></tr>\n";
 $tabindex++;
 
 // new line
-echo ("<tr><td colspan=3>&nbsp</td></tr>");
+echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 
 // LDAP cache timeout
 echo ("<tr><td align=\"right\"><b>".
@@ -193,7 +193,7 @@ echo "</td></tr>\n";
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
 	// new line
-	echo ("<tr><td colspan=3>&nbsp</td></tr>");
+	echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 	
 	// access level
 	echo ("<tr><td align=\"right\"><b>".
@@ -229,7 +229,7 @@ if (isLAMProVersion()) {
 echo ("</table>");
 echo ("</fieldset>");
 
-echo ("<p></p>");
+echo ("<br>");
 
 echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend><br>\n");
 
@@ -251,7 +251,7 @@ $tabindex++;
 
 echo ("</fieldset>");
 
-echo ("<p></p>");
+echo ("<br>");
 
 
 // module settings
@@ -333,7 +333,7 @@ echo "</td></tr>\n";
 echo ("</table>\n");
 echo ("</fieldset>\n");
 
-echo ("<p></p>\n");
+echo ("<br>\n");
 
 // script settings
 echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend><br>\n");
@@ -406,7 +406,7 @@ echo "</td></tr>\n";
 echo ("</table>\n");
 echo ("</fieldset>\n");
 
-echo ("<p></p>\n");
+echo ("<br>\n");
 
 // security setings
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend><br>\n");
@@ -415,7 +415,7 @@ echo ("<table border=0>\n");
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
-	"<td><textarea tabindex=\"$tabindex\" size=50 type=\"text\" name=\"admins\" cols=75 rows=5>" . $adminText . "</textarea></td>\n");
+	"<td><textarea tabindex=\"$tabindex\" name=\"admins\" cols=75 rows=5>" . $adminText . "</textarea></td>\n");
 echo "<td>";
 echo "<a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
@@ -442,7 +442,7 @@ echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 $tabindex++;
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<p></p>\n");
+echo ("<p>&nbsp;</p>\n");
 
 
 // buttons
@@ -460,7 +460,7 @@ echo ("></pre></td></tr>\n");
 
 echo ("</table>\n");
 
-echo ("<p></p>");
+echo ("<p>&nbsp;</p>");
 
 echo ("<p>* = ". _("required") . "</p>");
 echo ("<p>** = ". _("required for Samba 3 accounts") . "</p>");
