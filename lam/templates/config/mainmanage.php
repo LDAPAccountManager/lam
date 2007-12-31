@@ -143,7 +143,7 @@ if ($_POST['submit']) {
 		<tr><td>
 		<fieldset>
 			<legend><b> <?php echo _("Security settings"); ?> </b></legend>
-			<p>
+			<br>
 			<table cellspacing="0" border="0">
 				<!-- session timeout -->
 				<tr>
@@ -196,7 +196,7 @@ if ($_POST['submit']) {
 		<BR>
 		<fieldset>
 			<legend><b> <?php echo _("Logging"); ?> </b></legend>
-			<p>
+			<br>
 			<table cellspacing="0" border="0">
 				<!-- log level -->
 				<tr>
@@ -287,7 +287,7 @@ if ($_POST['submit']) {
 		<BR>
 		<fieldset>
 			<legend><b> <?php echo _("Change master password"); ?> </b></legend>
-			<p>
+			<br>
 			<table cellspacing="0" border="0">
 				<!-- set master password -->
 				<tr>

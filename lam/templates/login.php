@@ -225,7 +225,7 @@ function display_LoginPage($config_object) {
 						<table width="580">
 							<tr>
 								<td style="border-style:none" height="70" colspan="2" align="center">
-									<font color="darkblue"><b><big><?php echo _("Please select your user name and enter your password to log in."); ?></big></b></font>
+									<font color="#000080"><b><big><?php echo _("Please select your user name and enter your password to log in."); ?></big></b></font>
 								</td>
 							</tr>
 							<tr>

@@ -149,7 +149,7 @@ if (!isset($cfg->default)) {
 		<tr><td>
 		<fieldset>
 			<legend><b> <?php echo _("Profile management"); ?> </b></legend>
-			<p>
+			<br>
 			<table cellspacing=0 border=0>
 
 				<!-- add profile -->
@@ -195,7 +195,7 @@ if (!isset($cfg->default)) {
 				</tr>
 
 				<tr>
-					<td colspan=4>&nbsp</td>
+					<td colspan=4>&nbsp;</td>
 				</tr>
 
 				<!-- rename profile -->
@@ -229,7 +229,7 @@ if (!isset($cfg->default)) {
 				</tr>
 
 				<tr>
-					<td colspan=4>&nbsp</td>
+					<td colspan=4>&nbsp;</td>
 				</tr>
 
 				<!-- delete profile -->
@@ -259,7 +259,7 @@ if (!isset($cfg->default)) {
 				</tr>
 
 				<tr>
-					<td colspan=4>&nbsp</td>
+					<td colspan=4>&nbsp;</td>
 				</tr>
 
 				<!-- set profile password -->
@@ -302,7 +302,7 @@ if (!isset($cfg->default)) {
 				</tr>
 
 				<tr>
-					<td colspan=4>&nbsp</td>
+					<td colspan=4>&nbsp;</td>
 				</tr>
 
 				<!-- change default profile -->
@@ -341,17 +341,17 @@ if (!isset($cfg->default)) {
 			</fieldset>
 			</td></tr>
 			</table>
-			<p>&nbsp</p>
+			<p>&nbsp;</p>
 
 			<!-- password field and submit button -->
 			<b>
 				<?php echo _("Master password"); ?>:
 			</b>
-			&nbsp
+			&nbsp;
 			<input type="password" name="passwd">
-			&nbsp
+			&nbsp;
 			<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
-			&nbsp
+			&nbsp;
 			<?PHP
 				// help link
 				echo "<a href=\"../help.php?HelpNumber=236\" target=\"lamhelp\">";
