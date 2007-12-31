@@ -107,7 +107,7 @@ echo $_SESSION['header'];
 		<link rel="stylesheet" type="text/css" href="../../style/type_user.css">
 	</head>
 	<body>
-		<p></p>
+		<br>
 		<form action="pdfmain.php" method="post">
 		<!-- pdf structure options -->
 		<fieldset class="useredit">
@@ -146,7 +146,7 @@ echo $_SESSION['header'];
 				</tr>
 			</table>
 		</fieldset>
-		<p></p>
+		<br>
 		
 		<!-- forward is used to check if buttons were pressed -->
 		<p>

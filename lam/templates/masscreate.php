@@ -280,7 +280,6 @@ function showMainPage($scope) {
 	echo "<br><br>\n";
 	echo "<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
 	echo "<br><br>\n";
-	echo "<p>\n";
 
 	echo "</body>\n";
 	echo "</html>\n";

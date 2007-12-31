@@ -111,7 +111,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 echo "</head>\n";
 echo "<body>\n";
 
-echo "<p></p>\n";
+echo "<br>\n";
 
 echo "<form action=\"profilemain.php\" method=\"post\">\n";
 
@@ -159,7 +159,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	echo "</table>\n";
 	echo "</fieldset>\n";
 	
-	echo "<p></p>\n";
+	echo "<br>\n";
 	
 }
 

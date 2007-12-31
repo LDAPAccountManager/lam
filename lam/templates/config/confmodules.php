@@ -171,7 +171,7 @@ function config_showAccountModules($scope, $title) {
 	}
 	
 	// show account modules
-	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp';
+	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp;';
 	echo "<fieldset class=\"" . $scope . "edit\"><legend>$icon<b>" . $title . "</b></legend><br>\n";
 	echo "<table border=0 width=\"100%\">\n";
 		// select boxes
@@ -270,7 +270,7 @@ function config_showAccountModules($scope, $title) {
 	
 	echo "</fieldset>\n";
 	
-	echo "<p></p>\n";
+	echo "<br>\n";
 	
 	return ($no_conflicts & $no_depends & $no_missing_basemodule);
 	
