@@ -83,7 +83,8 @@ if (sizeof($criticalErrors) > 0) {
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "</head><body>\n";
 	for ($i = 0; $i < sizeof($criticalErrors); $i++) {
@@ -169,6 +170,7 @@ function display_LoginPage($config_object) {
 	?>
 		<title>LDAP Account Manager -Login-</title>
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
+		<link rel="shortcut icon" type="image/x-icon" href="../graphics/favicon.ico">
 	</head>
 	<body>
 	<?php

@@ -75,6 +75,7 @@ echo $_SESSION['header'];
 
 echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 for ($i = 0; $i < sizeof($types); $i++){
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $types[$i] . ".css\">\n";
 }

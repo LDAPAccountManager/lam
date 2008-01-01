@@ -120,6 +120,7 @@ echo $_SESSION['header'];
 
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n");
+echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 echo ("</head>\n");
 echo ("<body>\n");
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
@@ -592,6 +593,7 @@ function saveSettings() {
 		echo $_SESSION['header'];
 		echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+		echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 		echo "</head><body>\n";
 		echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 			"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");

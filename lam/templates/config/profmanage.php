@@ -51,6 +51,7 @@ echo $_SESSION['header'];
 			?>
 		</title>
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
+		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
 	<body>
 		<p align="center"><a href="http://lam.sourceforge.net" target="_blank">

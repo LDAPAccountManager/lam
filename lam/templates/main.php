@@ -67,6 +67,7 @@ echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
 echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
+echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
 echo ("</head>\n");
 echo ("<frameset rows=\"150,*\">\n");
 echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\">\n");
