@@ -109,13 +109,16 @@ echo "</head>\n";
 </tr>
 
 <tr>
+<?php if (checkIfWriteAccessIsAllowed()) { ?>
 	<td class="icon"><img src="../../graphics/delete.gif" /></td>
 	<td><a style="color: red" href="delete_form.php?dn=<?php echo $encoded_dn; ?>">
 	<?php echo _('Delete'); ?></a></td>
+<?php } ?>
 	<td class="icon"><img src="../../graphics/save.png" /></td>
 	<td><a href="export_form.php?dn=<?php echo $encoded_dn; ?>">
 	<?php echo _('Export'); ?></a></td>
 </tr>
+<?php if (checkIfWriteAccessIsAllowed()) { ?>
 <tr>
     	<td class="icon"><img src="../../graphics/light.png" /></td>
     	<td colspan="3"><span class="tree_hint"><?php echo _('Hint: To delete an attribute, empty the text field and click save.'); ?></span></td>
@@ -126,6 +129,7 @@ echo "</head>\n";
 	<td class="icon"><img src="../../graphics/add.png" /></td>
 	<td><a href="<?php echo "add_attr_form.php?dn=$encoded_dn"; ?>"><?php echo _('Add new attribute'); ?></a></td>
 </tr>
+<?php } ?>
 
 
 <?php flush(); ?>
@@ -483,7 +487,7 @@ foreach( $attrs as $attr => $vals ) {
 		/* Draw the "add value" link under the list of values for this attributes */
 
 		if(	( $schema_attr = get_schema_attribute( $attr, $dn ) ) &&
-			! $schema_attr->getIsSingleValue() )
+			! $schema_attr->getIsSingleValue() && checkIfWriteAccessIsAllowed() )
 		{ 
 			$add_href = "add_value_form.php?dn=$encoded_dn&amp;attr=" . rawurlencode( $attr ); 
 			echo "<div class=\"add_value\">(<a href=\"$add_href\">" . 
@@ -504,8 +508,10 @@ foreach( $attrs as $attr => $vals ) {
 	flush();
 
 } /* End foreach( $attrs as $attr => $vals ) */ ?>
-
-	<tr><td colspan="2"><center><input type="submit" value="<?php echo _('Save'); ?>" /></center></td></tr></form>
+	<?php if (checkIfWriteAccessIsAllowed()) { ?>
+		<tr><td colspan="2"><center><input type="submit" value="<?php echo _('Save'); ?>" /></center></td></tr>
+	<?php } ?>
+	</form>
 	
 <?php 
 ?>

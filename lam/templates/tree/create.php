@@ -59,6 +59,9 @@ include_once('../../lib/status.inc');
 // start session
 startSecureSession();
 
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
+
 setlanguage();
 
 $new_dn = isset( $_POST['new_dn'] ) ? $_POST['new_dn'] : null;

@@ -59,6 +59,9 @@ include_once('../../lib/account.inc');
 // start session
 startSecureSession();
 
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
+
 setlanguage();
 
 $attr = $_POST['attr'];

@@ -174,6 +174,9 @@ function draw_tree_html( $dn, $level = 0 )
 
 function draw_create_link( $rdn, $level, $encoded_dn )
 {
+	if (!checkIfWriteAccessIsAllowed()) {
+		return;
+	}
     // print the "Create New object" link.
     $create_html = "";
     $create_href = "create_form.php?container=$encoded_dn";

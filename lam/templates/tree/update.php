@@ -65,6 +65,9 @@ include_once('../../lib/ldap.inc');
 // start session
 startSecureSession();
 
+// die if no write access
+if (!checkIfWriteAccessIsAllowed()) die();
+
 setlanguage();
 
 $dn = $_POST['dn'];

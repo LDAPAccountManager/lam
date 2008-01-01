@@ -875,7 +875,7 @@ class accountContainer {
 				exit;
 			}
 			// module actions
-			if (sizeof($_POST) > 0) {
+			if ((sizeof($_POST) > 0) && checkIfWriteAccessIsAllowed()) {
 				$result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
 				if (is_array($result)) {  // messages were returned, check for errors
 					for ($i = 0; $i < sizeof($result); $i++) {

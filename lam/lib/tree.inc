@@ -86,9 +86,12 @@ function draw_server_tree()
 			echo '<nobr>';
 			echo '( ';
 			echo '<a title="' . _('Refresh') . '"'.
-				' href="' . $refresh_href . '">' . _('Refresh') . '</a> | ';
-			echo '<a title="' . _('Create new entry') . '"'.
-					' href="' . $create_href . '" target="right_frame">' . _('Create new entry') . '</a>';
+				' href="' . $refresh_href . '">' . _('Refresh') . '</a>';
+			if (checkIfWriteAccessIsAllowed()) {
+				echo ' | ';
+				echo '<a title="' . _('Create new entry') . '"'.
+						' href="' . $create_href . '" target="right_frame">' . _('Create new entry') . '</a>';
+			}
 			echo ' )</nobr></td></tr>';
 
 			// Fetch and display the base DN for this server
@@ -147,13 +150,15 @@ function draw_server_tree()
 			if( isset( $tree[$base_dn] ) && is_array( $tree[$base_dn] ) ) {
 				foreach( $tree[ $base_dn ] as $child_dn )
 					draw_tree_html( $child_dn, 0 );
-					echo '<tr><td class="spacer"></td>';
-					echo '<td class="icon"><a href="' . $create_href .
-						'" target="right_frame"><img src="../../graphics/star.png" alt="' . 
-						_('Create new entry') . '" /></a></td>';
-					echo '<td class="create" colspan="100"><a href="' . $create_href
-						. '" target="right_frame" title="' . _('Create new entry')
-						. ' ' . $base_dn.'">' . _('Create new entry') . '</a></td></tr>';
+					if (checkIfWriteAccessIsAllowed()) {
+						echo '<tr><td class="spacer"></td>';
+						echo '<td class="icon"><a href="' . $create_href .
+							'" target="right_frame"><img src="../../graphics/star.png" alt="' . 
+							_('Create new entry') . '" /></a></td>';
+						echo '<td class="create" colspan="100"><a href="' . $create_href
+							. '" target="right_frame" title="' . _('Create new entry')
+							. ' ' . $base_dn.'">' . _('Create new entry') . '</a></td></tr>';
+					}
 			}
 
 }
