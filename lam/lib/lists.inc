@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2007  Roland Gruber
+  Copyright (C) 2003 - 2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -468,7 +468,7 @@ class lamList {
 			echo "</a>\n ";
 		}
 		// pdf image
-		echo "<input type=\"image\" style=\"background:transparent;\" name=\"createPDF_" . $id . "\" src=\"../../graphics/pdf.png\" title=\"" . _('Create PDF') . "\">\n ";
+		echo "<input type=\"image\" style=\"background:transparent;\" name=\"createPDF_" . $id . "\" src=\"../../graphics/pdf.png\" title=\"" . _('Create PDF file') . "\">\n ";
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
@@ -630,7 +630,7 @@ class lamList {
 
 		$this->listPrintHeader();
 
-		echo '<h1 align="center">' . _('Create PDF') . "</h1>\n";
+		echo '<h1 align="center">' . _('Create PDF file') . "</h1>\n";
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 
 		echo '<fieldset class="' . $this->type . 'edit">';
