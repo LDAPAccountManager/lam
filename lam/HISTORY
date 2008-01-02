@@ -13,7 +13,9 @@
   - Samba 3 groups: Samba part is now optional
   - Personal: add object classes person and organizationalPerson for new accounts (RFE 1830033)
   - new LDAP schema check on tests page
-  - LAM Pro: added possibility for deskside support to reset passwords at account list page
+  - LAM Pro:
+   -> added possibility for deskside support to reset passwords at account list page
+   -> access levels (read only, change passwords, write access) for server profiles
 
 
 07.11.2007 2.1.0
