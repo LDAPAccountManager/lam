@@ -885,7 +885,7 @@ class lamList {
 		echo '<h1 align="center">' . _('Change list settings') . "</h1>\n";
 		
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
-		echo '<fieldset class="' . $this->type . 'edit">';
+		echo '<fieldset class="' . $this->type . 'edit"><br>';
 		echo "<table class=\"" . $this->type . "edit\" width=\"100%\">\n";
 		echo "<tr class=\"" . $this->type . "list\"><td>\n";
 
