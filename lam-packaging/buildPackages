@@ -93,7 +93,7 @@ cd ..
 perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" lam-packaging/RPM/ldap-account-manager.spec
 mkdir RPM
 cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES
-rpmbuild --clean --rmsource -ba lam-packaging/RPM/ldap-account-manager.spec
+rpmbuild --sign --clean --rmsource -ba lam-packaging/RPM/ldap-account-manager.spec
 mv /usr/src/rpm/SRPMS/ldap-account-manager-$VERSION-1.src.rpm RPM/
 mv /usr/src/rpm/RPMS/noarch/ldap-account-manager-$VERSION-1.noarch.rpm RPM/
 
@@ -101,7 +101,7 @@ mv /usr/src/rpm/RPMS/noarch/ldap-account-manager-$VERSION-1.noarch.rpm RPM/
 cd LAMPro
 mkdir RPM
 cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES/ldap-account-manager-$VERSION.tar.gz
-rpmbuild --clean --rmsource -ba ../lam-packaging/RPM/ldap-account-manager.spec
+rpmbuild --sign --clean --rmsource -ba ../lam-packaging/RPM/ldap-account-manager.spec
 mv /usr/src/rpm/SRPMS/ldap-account-manager-$VERSION-1.src.rpm RPM/
 mv /usr/src/rpm/RPMS/noarch/ldap-account-manager-$VERSION-1.noarch.rpm RPM/
 cd ..
