@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -53,6 +53,10 @@
 			<a href="../modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="../modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="../modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="../modules/account.html">account</a><br />
 	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="../modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -155,7 +161,7 @@ Source Location: /lib/modules.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../modules/accountContainer.html#methodaccountContainer">accountContainer</a></li>
+    <li><a href="../modules/accountContainer.html#method__construct">__construct</a></li>
     <li><a href="../modules/accountContainer.html#methodcontinue_main">continue_main</a></li>
     <li><a href="../modules/accountContainer.html#methodfixLDAPAttributes">fixLDAPAttributes</a></li>
     <li><a href="../modules/accountContainer.html#methodgetAccountModule">getAccountModule</a></li>
@@ -296,12 +302,12 @@ This class includes all modules and attributes of an account.<br /><br /></div><
 <div class="tags">
 
   <hr />
-	<a name="methodaccountContainer"></a>
-	<h3>constructor accountContainer <span class="smalllinenumber">[line 738]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 738]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>accountContainer accountContainer(
+		<code>accountContainer __construct(
 string
 $type, string
 $base)</code>
@@ -330,7 +336,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodcontinue_main"></a>
-	<h3>method continue_main <span class="smalllinenumber">[line 834]</span></h3>
+	<h3>method continue_main <span class="smalllinenumber">[line 836]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -346,7 +352,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodfixLDAPAttributes"></a>
-	<h3>method fixLDAPAttributes <span class="smalllinenumber">[line 1273]</span></h3>
+	<h3>method fixLDAPAttributes <span class="smalllinenumber">[line 1347]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -388,7 +394,7 @@ $modules)</code>
   </div>
   <hr />
 	<a name="methodgetAccountModule"></a>
-	<h3>method getAccountModule <span class="smalllinenumber">[line 803]</span></h3>
+	<h3>method getAccountModule <span class="smalllinenumber">[line 805]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -424,7 +430,7 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodgetAccountModules"></a>
-	<h3>method getAccountModules <span class="smalllinenumber">[line 817]</span></h3>
+	<h3>method getAccountModules <span class="smalllinenumber">[line 819]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -449,7 +455,7 @@ $name)</code>
   </div>
   <hr />
 	<a name="methodgetParentDN"></a>
-	<h3>method getParentDN <span class="smalllinenumber">[line 1606]</span></h3>
+	<h3>method getParentDN <span class="smalllinenumber">[line 1684]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -485,7 +491,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodgetRDN"></a>
-	<h3>method getRDN <span class="smalllinenumber">[line 1594]</span></h3>
+	<h3>method getRDN <span class="smalllinenumber">[line 1672]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -521,7 +527,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodget_pdfEntries"></a>
-	<h3>method get_pdfEntries <span class="smalllinenumber">[line 1517]</span></h3>
+	<h3>method get_pdfEntries <span class="smalllinenumber">[line 1596]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -546,7 +552,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodget_type"></a>
-	<h3>method get_type <span class="smalllinenumber">[line 826]</span></h3>
+	<h3>method get_type <span class="smalllinenumber">[line 828]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -571,7 +577,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodload_account"></a>
-	<h3>method load_account <span class="smalllinenumber">[line 1214]</span></h3>
+	<h3>method load_account <span class="smalllinenumber">[line 1288]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -607,7 +613,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodnew_account"></a>
-	<h3>method new_account <span class="smalllinenumber">[line 1346]</span></h3>
+	<h3>method new_account <span class="smalllinenumber">[line 1420]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -623,7 +629,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodsave_account"></a>
-	<h3>method save_account <span class="smalllinenumber">[line 1375]</span></h3>
+	<h3>method save_account <span class="smalllinenumber">[line 1450]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -648,7 +654,7 @@ $dn)</code>
   </div>
   <hr />
 	<a name="methodsave_module_attributes"></a>
-	<h3>method save_module_attributes <span class="smalllinenumber">[line 1136]</span></h3>
+	<h3>method save_module_attributes <span class="smalllinenumber">[line 1210]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -690,7 +696,7 @@ $orig)</code>
   </div>
   <hr />
 	<a name="methodsortModules"></a>
-	<h3>method sortModules <span class="smalllinenumber">[line 1530]</span></h3>
+	<h3>method sortModules <span class="smalllinenumber">[line 1609]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -706,7 +712,7 @@ $orig)</code>
   </div>
   <hr />
 	<a name="method__sleep"></a>
-	<h3>method __sleep <span class="smalllinenumber">[line 1617]</span></h3>
+	<h3>method __sleep <span class="smalllinenumber">[line 1695]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -731,7 +737,7 @@ $orig)</code>
   </div>
   <hr />
 	<a name="method__wakeup"></a>
-	<h3>method __wakeup <span class="smalllinenumber">[line 1629]</span></h3>
+	<h3>method __wakeup <span class="smalllinenumber">[line 1707]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -750,7 +756,7 @@ $orig)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:57 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:16 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

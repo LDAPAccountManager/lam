@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../../ric_README.html">README</a></p>
+					<p><a href="../../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../../li_configuration.html">configuration</a><br />
@@ -46,6 +46,8 @@
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
+			<a href="../../lists/_templates---lists---changePassword.php.html">		changePassword.php
+		</a><br>
 			<a href="../../lists/_templates---lists---deletelink.php.html">		deletelink.php
 		</a><br>
 			<a href="../../lists/_templates---lists---list.php.html">		list.php
@@ -118,10 +120,14 @@
       
             <b>Classes:</b><br />
         <div class="package">
-		    		<a href="../../lists/lamGroupList.html">lamGroupList</a><br />
+		    		<a href="../../lists/lamBooleanListOption.html">lamBooleanListOption</a><br />
+	    		<a href="../../lists/lamGroupList.html">lamGroupList</a><br />
 	    		<a href="../../lists/lamHostList.html">lamHostList</a><br />
 	    		<a href="../../lists/lamList.html">lamList</a><br />
+	    		<a href="../../lists/lamListOption.html">lamListOption</a><br />
+	    		<a href="../../lists/lamListTool.html">lamListTool</a><br />
 	    		<a href="../../lists/lamMailAliasList.html">lamMailAliasList</a><br />
+	    		<a href="../../lists/lamSelectListOption.html">lamSelectListOption</a><br />
 	    		<a href="../../lists/lamSmbDomainList.html">lamSmbDomainList</a><br />
 	    		<a href="../../lists/lamUserList.html">lamUserList</a><br />
 	  </div>
@@ -156,7 +162,7 @@ This function displays the LDAP tree for all the servers that you have<br /><br 
 <br />
   <hr />
 	<a name="functionarrayLower"></a>
-	<h3>arrayLower <span class="smalllinenumber">[line 935]</span></h3>
+	<h3>arrayLower <span class="smalllinenumber">[line 940]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -207,7 +213,7 @@ This function displays the LDAP tree for all the servers that you have<br /><br 
 	</div>
   <hr />
 	<a name="functionbuild_initial_tree_icons"></a>
-	<h3>build_initial_tree_icons <span class="smalllinenumber">[line 204]</span></h3>
+	<h3>build_initial_tree_icons <span class="smalllinenumber">[line 209]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -232,7 +238,7 @@ This function displays the LDAP tree for all the servers that you have<br /><br 
 	</div>
   <hr />
 	<a name="functiondn_exists"></a>
-	<h3>dn_exists <span class="smalllinenumber">[line 223]</span></h3>
+	<h3>dn_exists <span class="smalllinenumber">[line 228]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -255,7 +261,7 @@ string $dn)</code>
 	</div>
   <hr />
 	<a name="functiondraw_formatted_dn"></a>
-	<h3>draw_formatted_dn <span class="smalllinenumber">[line 671]</span></h3>
+	<h3>draw_formatted_dn <span class="smalllinenumber">[line 676]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -278,7 +284,7 @@ string $dn)</code>
 	</div>
   <hr />
 	<a name="functiondraw_jpeg_photos"></a>
-	<h3>draw_jpeg_photos <span class="smalllinenumber">[line 1146]</span></h3>
+	<h3>draw_jpeg_photos <span class="smalllinenumber">[line 1151]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -343,7 +349,7 @@ string $dn, [string $attr_name = &#039;jpegPhoto&#039;], [bool $draw_delete_butt
 	</div>
   <hr />
 	<a name="functionget_container"></a>
-	<h3>get_container <span class="smalllinenumber">[line 1324]</span></h3>
+	<h3>get_container <span class="smalllinenumber">[line 1329]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -378,7 +384,7 @@ string $dn)</code>
 	</div>
   <hr />
 	<a name="functionget_container_contents"></a>
-	<h3>get_container_contents <span class="smalllinenumber">[line 269]</span></h3>
+	<h3>get_container_contents <span class="smalllinenumber">[line 274]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -433,7 +439,7 @@ string $dn, [int $size_limit = 0], [string $filter = &#039;(objectClass=*)&#039;
 	</div>
   <hr />
 	<a name="functionget_enc_type"></a>
-	<h3>get_enc_type <span class="smalllinenumber">[line 1116]</span></h3>
+	<h3>get_enc_type <span class="smalllinenumber">[line 1121]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -456,7 +462,7 @@ string $dn, [int $size_limit = 0], [string $filter = &#039;(objectClass=*)&#039;
 	</div>
   <hr />
 	<a name="functionget_entry_system_attrs"></a>
-	<h3>get_entry_system_attrs <span class="smalllinenumber">[line 907]</span></h3>
+	<h3>get_entry_system_attrs <span class="smalllinenumber">[line 912]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -508,7 +514,7 @@ string $dn, [int $deref = LDAP_DEREF_NEVER])</code>
 	</div>
   <hr />
 	<a name="functionget_icon"></a>
-	<h3>get_icon <span class="smalllinenumber">[line 306]</span></h3>
+	<h3>get_icon <span class="smalllinenumber">[line 311]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -531,7 +537,7 @@ string $dn)</code>
 	</div>
   <hr />
 	<a name="functionget_object_attr"></a>
-	<h3>get_object_attr <span class="smalllinenumber">[line 450]</span></h3>
+	<h3>get_object_attr <span class="smalllinenumber">[line 455]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -587,7 +593,7 @@ string $dn, string $attr, bool $lower_case_attr_names)</code>
 	</div>
   <hr />
 	<a name="functionget_object_attrs"></a>
-	<h3>get_object_attrs <span class="smalllinenumber">[line 745]</span></h3>
+	<h3>get_object_attrs <span class="smalllinenumber">[line 750]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -653,7 +659,7 @@ string $dn, [bool $lower_case_attr_names = false], [int $deref = LDAP_DEREF_NEVE
 	</div>
   <hr />
 	<a name="functionget_rdn"></a>
-	<h3>get_rdn <span class="smalllinenumber">[line 484]</span></h3>
+	<h3>get_rdn <span class="smalllinenumber">[line 489]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -693,7 +699,7 @@ string $dn, [bool $include_attrs = 0])</code>
 	</div>
   <hr />
 	<a name="functioninitialize_session_tree"></a>
-	<h3>initialize_session_tree <span class="smalllinenumber">[line 167]</span></h3>
+	<h3>initialize_session_tree <span class="smalllinenumber">[line 172]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -708,7 +714,7 @@ string $dn, [bool $include_attrs = 0])</code>
 	</div>
   <hr />
 	<a name="functionis_attr_binary"></a>
-	<h3>is_attr_binary <span class="smalllinenumber">[line 797]</span></h3>
+	<h3>is_attr_binary <span class="smalllinenumber">[line 802]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -740,7 +746,7 @@ string $attr_name)</code>
 	</div>
   <hr />
 	<a name="functionis_attr_boolean"></a>
-	<h3>is_attr_boolean <span class="smalllinenumber">[line 983]</span></h3>
+	<h3>is_attr_boolean <span class="smalllinenumber">[line 988]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -763,7 +769,7 @@ string $attr_name)</code>
 	</div>
   <hr />
 	<a name="functionis_dn_attr"></a>
-	<h3>is_dn_attr <span class="smalllinenumber">[line 1090]</span></h3>
+	<h3>is_dn_attr <span class="smalllinenumber">[line 1095]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -786,7 +792,7 @@ string $attr_name)</code>
 	</div>
   <hr />
 	<a name="functionis_jpeg_photo"></a>
-	<h3>is_jpeg_photo <span class="smalllinenumber">[line 951]</span></h3>
+	<h3>is_jpeg_photo <span class="smalllinenumber">[line 956]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -818,7 +824,7 @@ string $attr_name)</code>
 	</div>
   <hr />
 	<a name="functionis_mail_string"></a>
-	<h3>is_mail_string <span class="smalllinenumber">[line 1003]</span></h3>
+	<h3>is_mail_string <span class="smalllinenumber">[line 1008]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -850,7 +856,7 @@ string $str)</code>
 	</div>
   <hr />
 	<a name="functionis_multi_line_attr"></a>
-	<h3>is_multi_line_attr <span class="smalllinenumber">[line 1051]</span></h3>
+	<h3>is_multi_line_attr <span class="smalllinenumber">[line 1056]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -882,7 +888,7 @@ string $attr_name, [string $val = null])</code>
 	</div>
   <hr />
 	<a name="functionis_url_string"></a>
-	<h3>is_url_string <span class="smalllinenumber">[line 1019]</span></h3>
+	<h3>is_url_string <span class="smalllinenumber">[line 1024]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -914,7 +920,7 @@ string $str)</code>
 	</div>
   <hr />
 	<a name="functionpla_compare_dns"></a>
-	<h3>pla_compare_dns <span class="smalllinenumber">[line 586]</span></h3>
+	<h3>pla_compare_dns <span class="smalllinenumber">[line 591]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -955,7 +961,7 @@ string $dn1, string $dn2)</code>
 	</div>
   <hr />
 	<a name="functionpla_explode_dn"></a>
-	<h3>pla_explode_dn <span class="smalllinenumber">[line 516]</span></h3>
+	<h3>pla_explode_dn <span class="smalllinenumber">[line 521]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1004,7 +1010,7 @@ string $dn, [ $with_attributes = 0], int $with_attriutes)</code>
 	</div>
   <hr />
 	<a name="functionpla_ldap_search"></a>
-	<h3>pla_ldap_search <span class="smalllinenumber">[line 1250]</span></h3>
+	<h3>pla_ldap_search <span class="smalllinenumber">[line 1255]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1071,7 +1077,7 @@ string $filter, [string $base_dn = null], [array $attrs = array()], [string $sco
 	</div>
   <hr />
 	<a name="functionpla_reverse_dn"></a>
-	<h3>pla_reverse_dn <span class="smalllinenumber">[line 652]</span></h3>
+	<h3>pla_reverse_dn <span class="smalllinenumber">[line 657]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1108,7 +1114,7 @@ string $dn)</code>
 	</div>
   <hr />
 	<a name="functionpretty_print_dn"></a>
-	<h3>pretty_print_dn <span class="smalllinenumber">[line 541]</span></h3>
+	<h3>pretty_print_dn <span class="smalllinenumber">[line 546]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1131,7 +1137,7 @@ string $dn)</code>
 	</div>
   <hr />
 	<a name="functionreal_attr_name"></a>
-	<h3>real_attr_name <span class="smalllinenumber">[line 870]</span></h3>
+	<h3>real_attr_name <span class="smalllinenumber">[line 875]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1154,7 +1160,7 @@ string $attr_name)</code>
 	</div>
   <hr />
 	<a name="functionsortAttrs"></a>
-	<h3>sortAttrs <span class="smalllinenumber">[line 1029]</span></h3>
+	<h3>sortAttrs <span class="smalllinenumber">[line 1034]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1183,7 +1189,7 @@ string $attr_name)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:11:12 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:32 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

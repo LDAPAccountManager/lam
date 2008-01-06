@@ -13,8 +13,8 @@
   <tr>
     <td class="header_menu">
         
-                                                                                                
-                                                                                                                                                                                                                  		  [ <a href="classtrees_modules.html" class="menu">class tree: modules</a> ]
+                                                                                                                                                            
+                                                                                                                                                      		  [ <a href="classtrees_modules.html" class="menu">class tree: modules</a> ]
 		  [ <a href="elementindex_modules.html" class="menu">index: modules</a> ]
 		  	    [ <a href="elementindex.html" class="menu">all elements</a> ]
     </td>
@@ -26,23 +26,23 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="ric_README.html">README</a></p>
+					<p><a href="ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
-              <a href="li_Help.html">Help</a><br />
               <a href="li_PDF.html">PDF</a><br />
-              <a href="li_lib.html">lib</a><br />
-              <a href="li_modules.html">modules</a><br />
-              <a href="li_types.html">types</a><br />
-              <a href="li_configuration.html">configuration</a><br />
-              <a href="li_tools.html">tools</a><br />
-              <a href="li_LDAP.html">LDAP</a><br />
               <a href="li_lists.html">lists</a><br />
               <a href="li_profiles.html">profiles</a><br />
+              <a href="li_LDAP.html">LDAP</a><br />
+              <a href="li_types.html">types</a><br />
+              <a href="li_lib.html">lib</a><br />
+              <a href="li_modules.html">modules</a><br />
               <a href="li_selfService.html">selfService</a><br />
-              <a href="li_main.html">main</a><br />
+              <a href="li_configuration.html">configuration</a><br />
+              <a href="li_tools.html">tools</a><br />
+              <a href="li_Help.html">Help</a><br />
               <a href="li_tests.html">tests</a><br />
+              <a href="li_main.html">main</a><br />
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
@@ -53,6 +53,10 @@
 			<a href="modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="modules/account.html">account</a><br />
 	    		<a href="modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="modules/baseModule.html">baseModule</a><br />
+	    		<a href="modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -150,6 +156,18 @@
 	<div>
 		<h2>_</h2>
 		<dl>
+							<dt><b>__construct</b></dt>
+				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#method__construct">sambaSamAccount::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new sambaSamAccount object.</dd>
+							<dt><b>__construct</b></dt>
+				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#method__construct">sambaAccount::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new sambaAccount object.</dd>
+							<dt><b>__construct</b></dt>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#method__construct">baseModule::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new base module class</dd>
+							<dt><b>__construct</b></dt>
+				<dd>in file modules.inc, method <a href="modules/accountContainer.html#method__construct">accountContainer::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Constructor</dd>
+							<dt><b>__construct</b></dt>
+				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#method__construct">kolabUser::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new kolabUser object.</dd>
+							<dt><b>__construct</b></dt>
+				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#method__construct">sambaGroupMapping::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new module for Samba 3 groups.</dd>
 							<dt><b>__sleep</b></dt>
 				<dd>in file modules.inc, method <a href="modules/accountContainer.html#method__sleep">accountContainer::__sleep()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Encrypts sensitive data before storing in session.</dd>
 							<dt><b>__wakeup</b></dt>
@@ -168,10 +186,14 @@
 				<dd>in file baseModule.inc, variable <a href="modules/baseModule.html#var$attributes">baseModule::$attributes</a><br>&nbsp;&nbsp;&nbsp;&nbsp;contains all ldap attributes which should be written</dd>
 							<dt><b>$attributes_orig</b></dt>
 				<dd>in file modules.inc, variable <a href="modules/accountContainer.html#var$attributes_orig">accountContainer::$attributes_orig</a><br>&nbsp;&nbsp;&nbsp;&nbsp;original LDAP attributes when account was loaded from LDAP</dd>
+							<dt><b>$ATTR_MEMBER_NAME</b></dt>
+				<dd>in file groupOfUniqueNames.inc, variable <a href="modules/groupOfUniqueNames.html#var$ATTR_MEMBER_NAME">groupOfUniqueNames::$ATTR_MEMBER_NAME</a><br>&nbsp;&nbsp;&nbsp;&nbsp;name of member attribute</dd>
+							<dt><b>$ATTR_MEMBER_NAME</b></dt>
+				<dd>in file groupOfNames.inc, variable <a href="modules/groupOfNames.html#var$ATTR_MEMBER_NAME">groupOfNames::$ATTR_MEMBER_NAME</a><br>&nbsp;&nbsp;&nbsp;&nbsp;name of member attribute</dd>
+							<dt><b>$autoAddObjectClasses</b></dt>
+				<dd>in file baseModule.inc, variable <a href="modules/baseModule.html#var$autoAddObjectClasses">baseModule::$autoAddObjectClasses</a><br>&nbsp;&nbsp;&nbsp;&nbsp;if true, managed object classes are added when an account is created or loaded (default: true)</dd>
 							<dt><b>account</b></dt>
 				<dd>in file account.inc, class <a href="modules/account.html">account</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages the object class &quot;account&quot; for users and hosts.</dd>
-							<dt><b>accountContainer</b></dt>
-				<dd>in file modules.inc, method <a href="modules/accountContainer.html#methodaccountContainer">accountContainer::accountContainer()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Constructor</dd>
 							<dt><b>accountContainer</b></dt>
 				<dd>in file modules.inc, class <a href="modules/accountContainer.html">accountContainer</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This class includes all modules and attributes of an account.</dd>
 							<dt><b>account.inc</b></dt>
@@ -185,8 +207,6 @@
 		<h2>b</h2>
 		<dl>
 							<dt><b>baseModule</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodbaseModule">baseModule::baseModule()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new base module class</dd>
-							<dt><b>baseModule</b></dt>
 				<dd>in file baseModule.inc, class <a href="modules/baseModule.html">baseModule</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Parent class of all account modules.</dd>
 							<dt><b>buildUploadAccounts</b></dt>
 				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functionbuildUploadAccounts">buildUploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function builds the LDAP accounts for the file upload.</dd>
@@ -197,29 +217,31 @@
 							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodbuild_uploadAccounts">sambaAccount::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
+				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodbuild_uploadAccounts">nisMailAlias::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
+							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodbuild_uploadAccounts">sambaGroupMapping::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodbuild_uploadAccounts">shadowAccount::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodbuild_uploadAccounts">sambaSamAccount::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
-				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodbuild_uploadAccounts">nisMailAlias::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
-							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodbuild_uploadAccounts">sambaDomain::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methodbuild_uploadAccounts">ldapPublicKey::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
-				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodbuild_uploadAccounts">ieee802Device::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodbuild_uploadAccounts">groupOfNames::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodbuild_uploadAccounts">baseModule::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
-				<dd>in file account.inc, method <a href="modules/account.html#methodbuild_uploadAccounts">account::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
+				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodbuild_uploadAccounts">ieee802Device::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodbuild_uploadAccounts">inetLocalMailRecipient::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
+				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodbuild_uploadAccounts">kolabUser::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
+							<dt><b>build_uploadAccounts</b></dt>
 				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodbuild_uploadAccounts">inetOrgPerson::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>build_uploadAccounts</b></dt>
-				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodbuild_uploadAccounts">kolabUser::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
+				<dd>in file account.inc, method <a href="modules/account.html#methodbuild_uploadAccounts">account::build_uploadAccounts()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;In this function the LDAP account is built up.</dd>
 							<dt><b>baseModule.inc</b></dt>
 				<dd>procedural page <a href="modules/_lib---baseModule.inc.html">baseModule.inc</a></dd>
 					</dl>
@@ -285,31 +307,35 @@
 							<dt><b>decode_munged</b></dt>
 				<dd>in file sambaMungedDial.inc, method <a href="modules/sambaMungedDial.html#methoddecode_munged">sambaMungedDial::decode_munged()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Takes a base64-encoded MungedDial-String and returns an array of included parameters and values</dd>
 							<dt><b>delete_attributes</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddelete_attributes">posixAccount::delete_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Additional LDAP operations on delete.</dd>
+							<dt><b>delete_attributes</b></dt>
 				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methoddelete_attributes">posixGroup::delete_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if the group which should be deleted is still used as primary group.</dd>
 							<dt><b>delete_attributes</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methoddelete_attributes">baseModule::delete_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Dummy function for modules which use no special options on account deletion.</dd>
-							<dt><b>delete_attributes</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddelete_attributes">posixAccount::delete_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Additional LDAP operations on delete.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file account.inc, method <a href="modules/account.html#methoddisplay_html_attributes">account::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methoddisplay_html_attributes">nisMailAlias::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methoddisplay_html_attributes">posixGroup::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methoddisplay_html_attributes">sambaDomain::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methoddisplay_html_attributes">shadowAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will create the meta HTML code to show a page with all attributes.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methoddisplay_html_attributes">sambaSamAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methoddisplay_html_attributes">sambaGroupMapping::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
+							<dt><b>display_html_attributes</b></dt>
+				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methoddisplay_html_attributes">sambaAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methoddisplay_html_attributes">quota::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddisplay_html_attributes">posixAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
-				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methoddisplay_html_attributes">posixGroup::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
-				<dd>in file account.inc, method <a href="modules/account.html#methoddisplay_html_attributes">account::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
-				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methoddisplay_html_attributes">ldapPublicKey::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
-				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methoddisplay_html_attributes">nisMailAlias::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
-				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methoddisplay_html_attributes">sambaDomain::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
 				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methoddisplay_html_attributes">ieee802Device::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
-				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methoddisplay_html_attributes">sambaSamAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
-				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methoddisplay_html_attributes">shadowAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will create the meta HTML code to show a page with all attributes.</dd>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methoddisplay_html_attributes">groupOfNames::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
 				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methoddisplay_html_attributes">inetLocalMailRecipient::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
@@ -317,13 +343,11 @@
 							<dt><b>display_html_attributes</b></dt>
 				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methoddisplay_html_attributes">kolabUser::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_attributes</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methoddisplay_html_attributes">sambaGroupMapping::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_attributes</b></dt>
-				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methoddisplay_html_attributes">sambaAccount::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
-							<dt><b>display_html_delete</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddisplay_html_delete">posixAccount::display_html_delete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the delete homedir option for the delete page.</dd>
+				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methoddisplay_html_attributes">ldapPublicKey::display_html_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the HTML meta data for the main account page.</dd>
 							<dt><b>display_html_delete</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methoddisplay_html_delete">baseModule::display_html_delete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Dummy function for modules which do not print extra HTML code on account deletion.</dd>
+							<dt><b>display_html_delete</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddisplay_html_delete">posixAccount::display_html_delete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the delete homedir option for the delete page.</dd>
 							<dt><b>display_html_deleteUser</b></dt>
 				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methoddisplay_html_deleteUser">kolabUser::display_html_deleteUser()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will create the meta HTML code to show a page to delete accounts.</dd>
 							<dt><b>display_html_expire</b></dt>
@@ -332,12 +356,16 @@
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddisplay_html_group">posixAccount::display_html_group()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the group selection.</dd>
 							<dt><b>display_html_logonHours</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methoddisplay_html_logonHours">sambaSamAccount::display_html_logonHours()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will create the HTML page to edit logon hours.</dd>
+							<dt><b>display_html_members</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methoddisplay_html_members">groupOfNames::display_html_members()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will create the meta HTML code to show a page to change the member attribute.</dd>
+							<dt><b>display_html_owner</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methoddisplay_html_owner">groupOfNames::display_html_owner()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will create the meta HTML code to show a page to change the owner attribute.</dd>
 							<dt><b>display_html_password</b></dt>
 				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methoddisplay_html_password">posixGroup::display_html_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the password changing dialog.</dd>
 							<dt><b>display_html_password</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddisplay_html_password">posixAccount::display_html_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the password changing dialog.</dd>
-							<dt><b>display_html_password</b></dt>
 				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methoddisplay_html_password">inetOrgPerson::display_html_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the password changing dialog.</dd>
+							<dt><b>display_html_password</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddisplay_html_password">posixAccount::display_html_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the password changing dialog.</dd>
 							<dt><b>display_html_photo</b></dt>
 				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methoddisplay_html_photo">inetOrgPerson::display_html_photo()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the photo upload page.</dd>
 							<dt><b>display_html_sambaUserWorkstations</b></dt>
@@ -353,13 +381,13 @@
 							<dt><b>doHash</b></dt>
 				<dd>in file createntlm.inc, method <a href="modules/smbHash.html#methoddoHash">smbHash::doHash()</a></dd>
 							<dt><b>doUploadPostActions</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddoUploadPostActions">posixAccount::doUploadPostActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function executes one post upload action.</dd>
+							<dt><b>doUploadPostActions</b></dt>
 				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functiondoUploadPostActions">doUploadPostActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function executes one post upload action.</dd>
 							<dt><b>doUploadPostActions</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methoddoUploadPostActions">quota::doUploadPostActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function executes one post upload action.</dd>
 							<dt><b>doUploadPostActions</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methoddoUploadPostActions">baseModule::doUploadPostActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function executes one post upload action.</dd>
-							<dt><b>doUploadPostActions</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methoddoUploadPostActions">posixAccount::doUploadPostActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function executes one post upload action.</dd>
 					</dl>
 	</div>
 	<a href="elementindex_modules.html#top">top</a><br>
@@ -413,13 +441,13 @@
 							<dt><b>getButtonStatus</b></dt>
 				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodgetButtonStatus">posixGroup::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
 							<dt><b>getButtonStatus</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodgetButtonStatus">baseModule::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
+				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodgetButtonStatus">nisMailAlias::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
 							<dt><b>getButtonStatus</b></dt>
 				<dd>in file account.inc, method <a href="modules/account.html#methodgetButtonStatus">account::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
 							<dt><b>getButtonStatus</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodgetButtonStatus">inetOrgPerson::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodgetButtonStatus">baseModule::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
 							<dt><b>getButtonStatus</b></dt>
-				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodgetButtonStatus">nisMailAlias::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodgetButtonStatus">inetOrgPerson::getButtonStatus()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Controls if the module button the account page is visible and activated.</dd>
 							<dt><b>getClearTextPassword</b></dt>
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodgetClearTextPassword">posixAccount::getClearTextPassword()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the clear text password.</dd>
 							<dt><b>getConfigOptions</b></dt>
@@ -438,6 +466,8 @@
 				<dd>in file sambaMungedDial.inc, method <a href="modules/sambaMungedDial.html#methodgetDefaultPrinter">sambaMungedDial::getDefaultPrinter()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;gets set-client-printer-to-default value: enabled/disabled</dd>
 							<dt><b>getHelp</b></dt>
 				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functiongetHelp">getHelp()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a help entry from an account module.</dd>
+							<dt><b>getIcon</b></dt>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodgetIcon">baseModule::getIcon()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the path to the module icon.</dd>
 							<dt><b>getInheritMode</b></dt>
 				<dd>in file sambaMungedDial.inc, method <a href="modules/sambaMungedDial.html#methodgetInheritMode">sambaMungedDial::getInheritMode()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;gets Inherit-config-from-client value: enabled/disabled</dd>
 							<dt><b>getLDAPAliases</b></dt>
@@ -503,87 +533,93 @@
 							<dt><b>get_help</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_help">baseModule::get_help()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function return the help entry array for a specific help id. Normally this-&gt;meta can be used.</dd>
 							<dt><b>get_ldap_filter</b></dt>
-				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functionget_ldap_filter">get_ldap_filter()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the LDAP filter used by the account lists</dd>
-							<dt><b>get_ldap_filter</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_ldap_filter">baseModule::get_ldap_filter()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;returns an LDAP filter for the account lists</dd>
+							<dt><b>get_ldap_filter</b></dt>
+				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functionget_ldap_filter">get_ldap_filter()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the LDAP filter used by the account lists</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodget_metaData">shadowAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
 				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodget_metaData">sambaGroupMapping::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
-				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodget_metaData">sambaAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
-							<dt><b>get_metaData</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodget_metaData">quota::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
-				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodget_metaData">posixGroup::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodget_metaData">posixAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodget_metaData">ieee802Device::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
 				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodget_metaData">inetLocalMailRecipient::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_metaData">baseModule::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Dummy function, meta data is provided by sub classes.</dd>
 							<dt><b>get_metaData</b></dt>
-				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodget_metaData">shadowAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
-							<dt><b>get_metaData</b></dt>
-				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodget_metaData">sambaSamAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
-							<dt><b>get_metaData</b></dt>
-				<dd>in file account.inc, method <a href="modules/account.html#methodget_metaData">account::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
-							<dt><b>get_metaData</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodget_metaData">inetOrgPerson::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
-							<dt><b>get_metaData</b></dt>
-				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodget_metaData">ieee802Device::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
-							<dt><b>get_metaData</b></dt>
 				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodget_metaData">sambaDomain::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file groupOfUniqueNames.inc, method <a href="modules/groupOfUniqueNames.html#methodget_metaData">groupOfUniqueNames::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
 				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodget_metaData">nisMailAlias::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
+				<dd>in file account.inc, method <a href="modules/account.html#methodget_metaData">account::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodget_metaData">groupOfNames::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodget_metaData">sambaAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
 				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methodget_metaData">ldapPublicKey::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodget_metaData">sambaSamAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+							<dt><b>get_metaData</b></dt>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodget_metaData">inetOrgPerson::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
 				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodget_metaData">kolabUser::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_metaData</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodget_metaData">posixAccount::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
+				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodget_metaData">posixGroup::get_metaData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns meta data that is interpreted by parent class</dd>
 							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodget_pdfEntries">inetLocalMailRecipient::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodget_pdfEntries">ieee802Device::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file account.inc, method <a href="modules/account.html#methodget_pdfEntries">account::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodget_pdfEntries">shadowAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodget_pdfEntries">sambaSamAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methodget_pdfEntries">ldapPublicKey::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of PDF entries</dd>
+				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodget_pdfEntries">sambaAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
 							<dt><b>get_pdfEntries</b></dt>
 				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodget_pdfEntries">sambaGroupMapping::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
 							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodget_pdfEntries">nisMailAlias::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodget_pdfEntries">sambaSamAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file account.inc, method <a href="modules/account.html#methodget_pdfEntries">account::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodget_pdfEntries">sambaDomain::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodget_pdfEntries">shadowAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodget_pdfEntries">posixAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file modules.inc, method <a href="modules/accountContainer.html#methodget_pdfEntries">accountContainer::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of possible PDF entries for this account.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodget_pdfEntries">ieee802Device::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodget_pdfEntries">inetLocalMailRecipient::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodget_pdfEntries">inetOrgPerson::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methodget_pdfEntries">ldapPublicKey::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of PDF entries</dd>
 							<dt><b>get_pdfEntries</b></dt>
 				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodget_pdfEntries">kolabUser::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodget_pdfEntries">groupOfNames::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of PDF entries</dd>
+							<dt><b>get_pdfEntries</b></dt>
+				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodget_pdfEntries">nisMailAlias::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
 							<dt><b>get_pdfEntries</b></dt>
 				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodget_pdfEntries">posixGroup::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
 							<dt><b>get_pdfEntries</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodget_pdfEntries">quota::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodget_pdfEntries">posixAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodget_pdfEntries">inetOrgPerson::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodget_pdfEntries">sambaAccount::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodget_pdfEntries">sambaDomain::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the PDF entries for this module.</dd>
-							<dt><b>get_pdfEntries</b></dt>
-				<dd>in file modules.inc, method <a href="modules/accountContainer.html#methodget_pdfEntries">accountContainer::get_pdfEntries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of possible PDF entries for this account.</dd>
 							<dt><b>get_pdfFields</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_pdfFields">baseModule::get_pdfFields()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array with all fields available for this account type on the PDF  output. This method may be overwritten by subclasses or it may be used  by using entries in the $this-&gt;meta['PDF_fields'] array of the specific sub-  class.</dd>
 							<dt><b>get_pdf_entries</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_pdf_entries">baseModule::get_pdf_entries()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a hastable with all entries that may be printed out in the PDF. The</dd>
 							<dt><b>get_profileOptions</b></dt>
-				<dd>in file quota.inc, method <a href="modules/quota.html#methodget_profileOptions">quota::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
-							<dt><b>get_profileOptions</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodget_profileOptions">sambaSamAccount::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
 							<dt><b>get_profileOptions</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodget_profileOptions">posixAccount::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
+				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodget_profileOptions">sambaGroupMapping::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
 							<dt><b>get_profileOptions</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_profileOptions">baseModule::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
 							<dt><b>get_profileOptions</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodget_profileOptions">sambaGroupMapping::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
+				<dd>in file quota.inc, method <a href="modules/quota.html#methodget_profileOptions">quota::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
+							<dt><b>get_profileOptions</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodget_profileOptions">posixAccount::get_profileOptions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of elements for the account profiles.</dd>
 							<dt><b>get_RDNAttributes</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_RDNAttributes">baseModule::get_RDNAttributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of possible LDAP attributes which can be used to form the RDN.</dd>
 							<dt><b>get_scope</b></dt>
@@ -596,6 +632,14 @@
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_uploadColumns">baseModule::get_uploadColumns()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all input columns for the file upload.</dd>
 							<dt><b>get_uploadPreDepends</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodget_uploadPreDepends">baseModule::get_uploadPreDepends()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of module names which must be processed in building the account befor this module.</dd>
+							<dt><b>groupOfNames</b></dt>
+				<dd>in file groupOfNames.inc, class <a href="modules/groupOfNames.html">groupOfNames</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages group members for the object class groupOfNames.</dd>
+							<dt><b>groupOfUniqueNames</b></dt>
+				<dd>in file groupOfUniqueNames.inc, class <a href="modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages group members for the object class groupOfUniqueNames.</dd>
+							<dt><b>groupOfNames.inc</b></dt>
+				<dd>procedural page <a href="modules/_lib---modules---groupOfNames.inc.html">groupOfNames.inc</a></dd>
+							<dt><b>groupOfUniqueNames.inc</b></dt>
+				<dd>procedural page <a href="modules/_lib---modules---groupOfUniqueNames.inc.html">groupOfUniqueNames.inc</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex_modules.html#top">top</a><br>
@@ -623,9 +667,9 @@
 							<dt><b>inetOrgPerson</b></dt>
 				<dd>in file inetOrgPerson.inc, class <a href="modules/inetOrgPerson.html">inetOrgPerson</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This module manages LDAP attributes of the object class inetOrgPerson (e.g. name and address).</dd>
 							<dt><b>init</b></dt>
-				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodinit">posixGroup::init()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functin will be called when the module will be loaded *</dd>
-							<dt><b>init</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodinit">sambaAccount::init()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initializes the module after it became part of an accountContainer</dd>
+							<dt><b>init</b></dt>
+				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodinit">posixGroup::init()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functin will be called when the module will be loaded *</dd>
 							<dt><b>init</b></dt>
 				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodinit">sambaGroupMapping::init()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initializes the module after it became part of an accountContainer</dd>
 							<dt><b>init</b></dt>
@@ -637,9 +681,9 @@
 							<dt><b>initQuotas</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodinitQuotas">quota::initQuotas()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initializes the quota values.</dd>
 							<dt><b>is_base_module</b></dt>
-				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functionis_base_module">is_base_module()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the module is a base module</dd>
-							<dt><b>is_base_module</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodis_base_module">baseModule::is_base_module()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns true if this module is enough to provide a sensible account.</dd>
+							<dt><b>is_base_module</b></dt>
+				<dd>in file modules.inc, function <a href="modules/_lib---modules.inc.html#functionis_base_module">is_base_module()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the module is a base module</dd>
 							<dt><b>is_samba_path</b></dt>
 				<dd>in file sambaMungedDial.inc, method <a href="modules/sambaMungedDial.html#methodis_samba_path">sambaMungedDial::is_samba_path()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if this is a valid Samba path.</dd>
 							<dt><b>ieee802device.inc</b></dt>
@@ -656,8 +700,6 @@
 	<div>
 		<h2>k</h2>
 		<dl>
-							<dt><b>kolabUser</b></dt>
-				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodkolabUser">kolabUser::kolabUser()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new kolabUser object.</dd>
 							<dt><b>kolabUser</b></dt>
 				<dd>in file kolabUser.inc, class <a href="modules/kolabUser.html">kolabUser</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages Kolab user accounts.</dd>
 							<dt><b>kolabUser.inc</b></dt>
@@ -687,57 +729,59 @@
 							<dt><b>load_account</b></dt>
 				<dd>in file modules.inc, method <a href="modules/accountContainer.html#methodload_account">accountContainer::load_account()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads an LDAP account with the given DN.</dd>
 							<dt><b>load_attributes</b></dt>
-				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodload_attributes">sambaSamAccount::load_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function loads the LDAP attributes for this module.</dd>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodload_attributes">posixAccount::load_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function loads all needed LDAP attributes.</dd>
 							<dt><b>load_attributes</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodload_attributes">sambaAccount::load_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function loads the LDAP attributes for this module.</dd>
 							<dt><b>load_attributes</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodload_attributes">posixAccount::load_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function loads all needed LDAP attributes.</dd>
-							<dt><b>load_attributes</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodload_attributes">baseModule::load_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function loads the LDAP attributes for this module.</dd>
-							<dt><b>load_Messages</b></dt>
-				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodload_Messages">kolabUser::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
+							<dt><b>load_attributes</b></dt>
+				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodload_attributes">sambaSamAccount::load_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function loads the LDAP attributes for this module.</dd>
 							<dt><b>load_Messages</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodload_Messages">quota::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;this functin fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodload_Messages">sambaAccount::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;this functin fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
-				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodload_Messages">sambaDomain::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
-							<dt><b>load_Messages</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodload_Messages">sambaGroupMapping::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;this functin fills the error message array with messages</dd>
-							<dt><b>load_Messages</b></dt>
-				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodload_Messages">posixGroup::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the $messages variable with output messages from this module.</dd>
+				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodload_Messages">shadowAccount::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function builds up the message array.</dd>
 							<dt><b>load_Messages</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodload_Messages">sambaSamAccount::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;this functin fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
-				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodload_Messages">shadowAccount::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function builds up the message array.</dd>
+				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodload_Messages">sambaGroupMapping::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;this functin fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
-				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodload_Messages">ieee802Device::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
+				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodload_Messages">sambaDomain::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
-				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodload_Messages">inetLocalMailRecipient::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
-							<dt><b>load_Messages</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodload_Messages">inetOrgPerson::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the message array.</dd>
-							<dt><b>load_Messages</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodload_Messages">baseModule::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the $messages variable with output messages from this module.</dd>
+				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodload_Messages">posixGroup::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the $messages variable with output messages from this module.</dd>
 							<dt><b>load_Messages</b></dt>
 				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodload_Messages">nisMailAlias::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
+				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodload_Messages">ieee802Device::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
+							<dt><b>load_Messages</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodload_Messages">groupOfNames::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the $messages variable with output messages from this module.</dd>
+							<dt><b>load_Messages</b></dt>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodload_Messages">baseModule::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the $messages variable with output messages from this module.</dd>
+							<dt><b>load_Messages</b></dt>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodload_Messages">inetOrgPerson::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the message array.</dd>
+							<dt><b>load_Messages</b></dt>
+				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodload_Messages">inetLocalMailRecipient::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
+							<dt><b>load_Messages</b></dt>
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodload_Messages">posixAccount::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages.</dd>
+							<dt><b>load_Messages</b></dt>
+				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodload_Messages">kolabUser::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the error message array with messages</dd>
 							<dt><b>load_Messages</b></dt>
 				<dd>in file account.inc, method <a href="modules/account.html#methodload_Messages">account::load_Messages()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function fills the message array.</dd>
 							<dt><b>load_profile</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodload_profile">sambaSamAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
 							<dt><b>load_profile</b></dt>
-				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodload_profile">shadowAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
-							<dt><b>load_profile</b></dt>
-				<dd>in file quota.inc, method <a href="modules/quota.html#methodload_profile">quota::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
-							<dt><b>load_profile</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodload_profile">posixAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
-							<dt><b>load_profile</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodload_profile">sambaGroupMapping::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
+				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodload_profile">sambaAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
 							<dt><b>load_profile</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodload_profile">baseModule::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
 							<dt><b>load_profile</b></dt>
-				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodload_profile">sambaAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
+				<dd>in file quota.inc, method <a href="modules/quota.html#methodload_profile">quota::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
+							<dt><b>load_profile</b></dt>
+				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodload_profile">sambaGroupMapping::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
+							<dt><b>load_profile</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodload_profile">posixAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
+							<dt><b>load_profile</b></dt>
+				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodload_profile">shadowAccount::load_profile()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Loads the values of an account profile into internal variables.</dd>
 							<dt><b>lshift</b></dt>
 				<dd>in file createntlm.inc, method <a href="modules/smbHash.html#methodlshift">smbHash::lshift()</a></dd>
 					</dl>
@@ -759,29 +803,29 @@
 							<dt><b>module_complete</b></dt>
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodmodule_complete">posixAccount::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
 							<dt><b>module_complete</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodmodule_complete">baseModule::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
+				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodmodule_complete">posixGroup::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
 							<dt><b>module_complete</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodmodule_complete">sambaAccount::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions returns true if all needed settings are done</dd>
 							<dt><b>module_complete</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodmodule_complete">sambaGroupMapping::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
-							<dt><b>module_complete</b></dt>
 				<dd>in file account.inc, method <a href="modules/account.html#methodmodule_complete">account::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions returns true if all needed settings are done.</dd>
-							<dt><b>module_complete</b></dt>
-				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodmodule_complete">posixGroup::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
 							<dt><b>module_complete</b></dt>
 				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodmodule_complete">kolabUser::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function returns true if all needed settings are done.</dd>
 							<dt><b>module_complete</b></dt>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodmodule_complete">baseModule::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
+							<dt><b>module_complete</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodmodule_complete">groupOfNames::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions is used to check if all settings for this module have been made.</dd>
+							<dt><b>module_complete</b></dt>
 				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodmodule_complete">inetOrgPerson::module_complete()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This functions return true if all needed settings are done.</dd>
-							<dt><b>module_ready</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodmodule_ready">sambaGroupMapping::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
 							<dt><b>module_ready</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodmodule_ready">sambaSamAccount::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
 							<dt><b>module_ready</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodmodule_ready">baseModule::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
-							<dt><b>module_ready</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodmodule_ready">sambaAccount::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
 							<dt><b>module_ready</b></dt>
+				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodmodule_ready">sambaGroupMapping::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
+							<dt><b>module_ready</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodmodule_ready">quota::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
+							<dt><b>module_ready</b></dt>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodmodule_ready">baseModule::module_ready()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function is used to check if this module page can be displayed.</dd>
 							<dt><b>munge</b></dt>
 				<dd>in file sambaMungedDial.inc, method <a href="modules/sambaMungedDial.html#methodmunge">sambaMungedDial::munge()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Setup parameter given by paramName to MungedDial-Format</dd>
 							<dt><b>mxor</b></dt>
@@ -818,6 +862,10 @@
 	<div>
 		<h2>o</h2>
 		<dl>
+							<dt><b>$OBJECT_CLASS_NAME</b></dt>
+				<dd>in file groupOfUniqueNames.inc, variable <a href="modules/groupOfUniqueNames.html#var$OBJECT_CLASS_NAME">groupOfUniqueNames::$OBJECT_CLASS_NAME</a><br>&nbsp;&nbsp;&nbsp;&nbsp;name of managed object class</dd>
+							<dt><b>$OBJECT_CLASS_NAME</b></dt>
+				<dd>in file groupOfNames.inc, variable <a href="modules/groupOfNames.html#var$OBJECT_CLASS_NAME">groupOfNames::$OBJECT_CLASS_NAME</a><br>&nbsp;&nbsp;&nbsp;&nbsp;name of managed object class</dd>
 							<dt><b>$orig</b></dt>
 				<dd>in file baseModule.inc, variable <a href="modules/baseModule.html#var$orig">baseModule::$orig</a><br>&nbsp;&nbsp;&nbsp;&nbsp;contains all ldap attributes which are loaded from ldap</dd>
 					</dl>
@@ -855,25 +903,29 @@
 							<dt><b>postDeleteActions</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodpostDeleteActions">baseModule::postDeleteActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands after the LDAP entry is deleted.</dd>
 							<dt><b>postModifyActions</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodpostModifyActions">baseModule::postModifyActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands after the LDAP entry is changed or created.</dd>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodpostModifyActions">posixAccount::postModifyActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands after the LDAP entry was changed or created.</dd>
 							<dt><b>postModifyActions</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodpostModifyActions">quota::postModifyActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands after the LDAP entry is changed or created.</dd>
 							<dt><b>postModifyActions</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodpostModifyActions">posixAccount::postModifyActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands after the LDAP entry was changed or created.</dd>
-							<dt><b>preDeleteActions</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodpreDeleteActions">posixAccount::preDeleteActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands before the LDAP entry is deleted.</dd>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodpostModifyActions">baseModule::postModifyActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands after the LDAP entry is changed or created.</dd>
 							<dt><b>preDeleteActions</b></dt>
 				<dd>in file quota.inc, method <a href="modules/quota.html#methodpreDeleteActions">quota::preDeleteActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands before the LDAP entry is deleted.</dd>
+							<dt><b>preDeleteActions</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodpreDeleteActions">posixAccount::preDeleteActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands before the LDAP entry is deleted.</dd>
 							<dt><b>preDeleteActions</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodpreDeleteActions">baseModule::preDeleteActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands before the LDAP entry is deleted.</dd>
 							<dt><b>preModifyActions</b></dt>
 				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodpreModifyActions">baseModule::preModifyActions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Allows the module to run commands before the LDAP entry is changed or created.</dd>
 							<dt><b>process_attributes</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodprocess_attributes">groupOfNames::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+							<dt><b>process_attributes</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodprocess_attributes">posixAccount::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+							<dt><b>process_attributes</b></dt>
+				<dd>in file quota.inc, method <a href="modules/quota.html#methodprocess_attributes">quota::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+							<dt><b>process_attributes</b></dt>
+				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodprocess_attributes">sambaDomain::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+							<dt><b>process_attributes</b></dt>
 				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodprocess_attributes">shadowAccount::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
-							<dt><b>process_attributes</b></dt>
-				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodprocess_attributes">posixGroup::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
-							<dt><b>process_attributes</b></dt>
-				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodprocess_attributes">inetLocalMailRecipient::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodprocess_attributes">sambaSamAccount::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
@@ -881,21 +933,19 @@
 							<dt><b>process_attributes</b></dt>
 				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodprocess_attributes">sambaAccount::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
-				<dd>in file sambaDomain.inc, method <a href="modules/sambaDomain.html#methodprocess_attributes">sambaDomain::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
-							<dt><b>process_attributes</b></dt>
-				<dd>in file quota.inc, method <a href="modules/quota.html#methodprocess_attributes">quota::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodprocess_attributes">posixGroup::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
 				<dd>in file ieee802device.inc, method <a href="modules/ieee802Device.html#methodprocess_attributes">ieee802Device::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
-				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methodprocess_attributes">ldapPublicKey::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
-							<dt><b>process_attributes</b></dt>
 				<dd>in file account.inc, method <a href="modules/account.html#methodprocess_attributes">account::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+							<dt><b>process_attributes</b></dt>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodprocess_attributes">inetOrgPerson::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+							<dt><b>process_attributes</b></dt>
+				<dd>in file ldapPublicKey.inc, method <a href="modules/ldapPublicKey.html#methodprocess_attributes">ldapPublicKey::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
 				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodprocess_attributes">kolabUser::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodprocess_attributes">posixAccount::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
-							<dt><b>process_attributes</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodprocess_attributes">inetOrgPerson::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
+				<dd>in file inetLocalMailRecipient.inc, method <a href="modules/inetLocalMailRecipient.html#methodprocess_attributes">inetLocalMailRecipient::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_attributes</b></dt>
 				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodprocess_attributes">nisMailAlias::process_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the primary module page.</dd>
 							<dt><b>process_deleteUser</b></dt>
@@ -906,12 +956,16 @@
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodprocess_group">posixAccount::process_group()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the group selection page.</dd>
 							<dt><b>process_logonHours</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodprocess_logonHours">sambaSamAccount::process_logonHours()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the logon hours page.</dd>
-							<dt><b>process_password</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodprocess_password">inetOrgPerson::process_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets a new password.</dd>
+							<dt><b>process_members</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodprocess_members">groupOfNames::process_members()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the members page.</dd>
+							<dt><b>process_owner</b></dt>
+				<dd>in file groupOfNames.inc, method <a href="modules/groupOfNames.html#methodprocess_owner">groupOfNames::process_owner()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the owner page.</dd>
 							<dt><b>process_password</b></dt>
 				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodprocess_password">posixGroup::process_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the password page.</dd>
 							<dt><b>process_password</b></dt>
 				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodprocess_password">posixAccount::process_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Processes user input of the password page.</dd>
+							<dt><b>process_password</b></dt>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodprocess_password">inetOrgPerson::process_password()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets a new password.</dd>
 							<dt><b>process_photo</b></dt>
 				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodprocess_photo">inetOrgPerson::process_photo()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets a new photo.</dd>
 							<dt><b>process_sambaUserWorkstations</b></dt>
@@ -983,21 +1037,15 @@
 							<dt><b>samba3domain</b></dt>
 				<dd>in file account.inc, class <a href="modules/samba3domain.html">samba3domain</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Represents a Samba 3 domain entry</dd>
 							<dt><b>sambaAccount</b></dt>
-				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodsambaAccount">sambaAccount::sambaAccount()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new sambaAccount object.</dd>
-							<dt><b>sambaAccount</b></dt>
 				<dd>in file sambaAccount.inc, class <a href="modules/sambaAccount.html">sambaAccount</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages the object class &quot;sambaAccount&quot; for users and hosts.</dd>
 							<dt><b>sambaDomain</b></dt>
 				<dd>in file sambaDomain.inc, class <a href="modules/sambaDomain.html">sambaDomain</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages Samba 3 domain entries.</dd>
-							<dt><b>sambaGroupMapping</b></dt>
-				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodsambaGroupMapping">sambaGroupMapping::sambaGroupMapping()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new module for Samba 3 groups.</dd>
 							<dt><b>sambaGroupMapping</b></dt>
 				<dd>in file sambaGroupMapping.inc, class <a href="modules/sambaGroupMapping.html">sambaGroupMapping</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages the object class &quot;sambaGroupMapping&quot; for groups.</dd>
 							<dt><b>sambaMungedDial</b></dt>
 				<dd>in file sambaMungedDial.inc, class <a href="modules/sambaMungedDial.html">sambaMungedDial</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages terminal server settings for Samba 3.</dd>
 							<dt><b>sambaSamAccount</b></dt>
 				<dd>in file sambaSamAccount.inc, class <a href="modules/sambaSamAccount.html">sambaSamAccount</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Manages the object class &quot;sambaSamAccount&quot; for users and hosts.</dd>
-							<dt><b>sambaSamAccount</b></dt>
-				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodsambaSamAccount">sambaSamAccount::sambaSamAccount()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Creates a new sambaSamAccount object.</dd>
 							<dt><b>SAMBA_MUNGEDDIAL_FILEHEADER</b></dt>
 				<dd>in file sambaMungedDial.inc, constant <a href="modules/_lib---modules---sambaSamAccount---sambaMungedDial.inc.html#defineSAMBA_MUNGEDDIAL_FILEHEADER">SAMBA_MUNGEDDIAL_FILEHEADER</a><br>&nbsp;&nbsp;&nbsp;&nbsp;File header</dd>
 							<dt><b>SAMBA_MUNGEDDIAL_FILEHEADER_OLD</b></dt>
@@ -1005,27 +1053,27 @@
 							<dt><b>save_account</b></dt>
 				<dd>in file modules.inc, method <a href="modules/accountContainer.html#methodsave_account">accountContainer::save_account()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function will save an account to the LDAP database.</dd>
 							<dt><b>save_attributes</b></dt>
-				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodsave_attributes">posixAccount::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
-							<dt><b>save_attributes</b></dt>
 				<dd>in file sambaGroupMapping.inc, method <a href="modules/sambaGroupMapping.html#methodsave_attributes">sambaGroupMapping::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
 							<dt><b>save_attributes</b></dt>
 				<dd>in file sambaSamAccount.inc, method <a href="modules/sambaSamAccount.html#methodsave_attributes">sambaSamAccount::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
 							<dt><b>save_attributes</b></dt>
-				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodsave_attributes">baseModule::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
+				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodsave_attributes">inetOrgPerson::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
+							<dt><b>save_attributes</b></dt>
+				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodsave_attributes">kolabUser::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
 							<dt><b>save_attributes</b></dt>
 				<dd>in file account.inc, method <a href="modules/account.html#methodsave_attributes">account::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
+							<dt><b>save_attributes</b></dt>
+				<dd>in file posixAccount.inc, method <a href="modules/posixAccount.html#methodsave_attributes">posixAccount::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
+							<dt><b>save_attributes</b></dt>
+				<dd>in file baseModule.inc, method <a href="modules/baseModule.html#methodsave_attributes">baseModule::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
+							<dt><b>save_attributes</b></dt>
+				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodsave_attributes">sambaAccount::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
+							<dt><b>save_attributes</b></dt>
+				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodsave_attributes">nisMailAlias::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
 							<dt><b>save_attributes</b></dt>
 				<dd>in file shadowAccount.inc, method <a href="modules/shadowAccount.html#methodsave_attributes">shadowAccount::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
 							<dt><b>save_attributes</b></dt>
 				<dd>in file posixGroup.inc, method <a href="modules/posixGroup.html#methodsave_attributes">posixGroup::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
-							<dt><b>save_attributes</b></dt>
-				<dd>in file inetOrgPerson.inc, method <a href="modules/inetOrgPerson.html#methodsave_attributes">inetOrgPerson::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
-							<dt><b>save_attributes</b></dt>
-				<dd>in file sambaAccount.inc, method <a href="modules/sambaAccount.html#methodsave_attributes">sambaAccount::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
-							<dt><b>save_attributes</b></dt>
-				<dd>in file kolabUser.inc, method <a href="modules/kolabUser.html#methodsave_attributes">kolabUser::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
-							<dt><b>save_attributes</b></dt>
-				<dd>in file nisMailAlias.inc, method <a href="modules/nisMailAlias.html#methodsave_attributes">nisMailAlias::save_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of modifications which have to be made to the LDAP account.</dd>
 							<dt><b>save_module_attributes</b></dt>
 				<dd>in file modules.inc, method <a href="modules/accountContainer.html#methodsave_module_attributes">accountContainer::save_module_attributes()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function checks which LDAP attributes have changed while the account was edited.</dd>
 							<dt><b>setBrokenConn</b></dt>
@@ -1097,7 +1145,7 @@
 	<a href="elementindex_modules.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:34 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:58:47 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

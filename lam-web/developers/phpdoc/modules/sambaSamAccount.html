@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -53,6 +53,10 @@
 			<a href="../modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="../modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="../modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="../modules/account.html">account</a><br />
 	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="../modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -146,7 +152,7 @@ Source Location: /lib/modules/sambaSamAccount.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../modules/sambaSamAccount.html#methodsambaSamAccount">sambaSamAccount</a></li>
+    <li><a href="../modules/sambaSamAccount.html#method__construct">__construct</a></li>
     <li><a href="../modules/sambaSamAccount.html#methodbuild_uploadAccounts">build_uploadAccounts</a></li>
     <li><a href="../modules/sambaSamAccount.html#methodcheckSelfServiceOptions">checkSelfServiceOptions</a></li>
     <li><a href="../modules/sambaSamAccount.html#methoddisplay_html_attributes">display_html_attributes</a></li>
@@ -191,6 +197,12 @@ Source Location: /lib/modules/sambaSamAccount.inc<br /><br />
    
 </dd>
 <dt>
+  <a href="../modules/baseModule.html#var$autoAddObjectClasses">baseModule::$autoAddObjectClasses</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
   <a href="../modules/baseModule.html#var$messages">baseModule::$messages</a>
   </dt>
 <dd>
@@ -230,7 +242,7 @@ Source Location: /lib/modules/sambaSamAccount.inc<br /><br />
 <h4>Class: <a href="../modules/baseModule.html">baseModule</a></h4>
 <dl>
     <dt>
-    <a href="../modules/baseModule.html#methodbaseModule">baseModule::baseModule()</a>
+    <a href="../modules/baseModule.html#method__construct">baseModule::__construct()</a>
   </dt>
   <dd>
     Creates a new base module class
@@ -306,6 +318,12 @@ Source Location: /lib/modules/sambaSamAccount.inc<br /><br />
   </dt>
   <dd>
     Controls if the module button the account page is visible and activated.
+  </dd>
+    <dt>
+    <a href="../modules/baseModule.html#methodgetIcon">baseModule::getIcon()</a>
+  </dt>
+  <dd>
+    Returns the path to the module icon.
   </dd>
     <dt>
     <a href="../modules/baseModule.html#methodgetLDAPAliases">baseModule::getLDAPAliases()</a>
@@ -532,12 +550,12 @@ Manages the object class &quot;sambaSamAccount&quot; for users and hosts.<br /><
 <div class="tags">
 
   <hr />
-	<a name="methodsambaSamAccount"></a>
-	<h3>constructor sambaSamAccount <span class="smalllinenumber">[line 66]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 66]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>sambaSamAccount sambaSamAccount(
+		<code>sambaSamAccount __construct(
 string
 $scope)</code>
     </td></tr></table>
@@ -545,7 +563,7 @@ $scope)</code>
 	
 		Creates a new sambaSamAccount object.<br /><br /><br /><br />
 
-	
+	Overrides <a href="../modules/baseModule.html#method__construct">baseModule::__construct()</a> (Creates a new base module class)<br /><br />
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -560,7 +578,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodbuild_uploadAccounts"></a>
-	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 1765]</span></h3>
+	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 1750]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -614,7 +632,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodcheckSelfServiceOptions"></a>
-	<h3>method checkSelfServiceOptions <span class="smalllinenumber">[line 2099]</span></h3>
+	<h3>method checkSelfServiceOptions <span class="smalllinenumber">[line 2084]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -656,7 +674,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_attributes"></a>
-	<h3>method display_html_attributes <span class="smalllinenumber">[line 938]</span></h3>
+	<h3>method display_html_attributes <span class="smalllinenumber">[line 923]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -681,7 +699,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_logonHours"></a>
-	<h3>method display_html_logonHours <span class="smalllinenumber">[line 1212]</span></h3>
+	<h3>method display_html_logonHours <span class="smalllinenumber">[line 1197]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -706,7 +724,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_sambaUserWorkstations"></a>
-	<h3>method display_html_sambaUserWorkstations <span class="smalllinenumber">[line 1178]</span></h3>
+	<h3>method display_html_sambaUserWorkstations <span class="smalllinenumber">[line 1163]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -731,7 +749,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_terminalServer"></a>
-	<h3>method display_html_terminalServer <span class="smalllinenumber">[line 1325]</span></h3>
+	<h3>method display_html_terminalServer <span class="smalllinenumber">[line 1310]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -756,7 +774,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_time"></a>
-	<h3>method display_html_time <span class="smalllinenumber">[line 1275]</span></h3>
+	<h3>method display_html_time <span class="smalllinenumber">[line 1260]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -781,7 +799,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_metaData"></a>
-	<h3>method get_metaData <span class="smalllinenumber">[line 117]</span></h3>
+	<h3>method get_metaData <span class="smalllinenumber">[line 118]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -806,7 +824,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_pdfEntries"></a>
-	<h3>method get_pdfEntries <span class="smalllinenumber">[line 1663]</span></h3>
+	<h3>method get_pdfEntries <span class="smalllinenumber">[line 1648]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -831,7 +849,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_profileOptions"></a>
-	<h3>method get_profileOptions <span class="smalllinenumber">[line 1446]</span></h3>
+	<h3>method get_profileOptions <span class="smalllinenumber">[line 1431]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -856,7 +874,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodinit"></a>
-	<h3>method init <span class="smalllinenumber">[line 511]</span></h3>
+	<h3>method init <span class="smalllinenumber">[line 514]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -883,7 +901,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodload_attributes"></a>
-	<h3>method load_attributes <span class="smalllinenumber">[line 552]</span></h3>
+	<h3>method load_attributes <span class="smalllinenumber">[line 547]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -916,7 +934,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodload_Messages"></a>
-	<h3>method load_Messages <span class="smalllinenumber">[line 78]</span></h3>
+	<h3>method load_Messages <span class="smalllinenumber">[line 79]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -932,7 +950,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodload_profile"></a>
-	<h3>method load_profile <span class="smalllinenumber">[line 1571]</span></h3>
+	<h3>method load_profile <span class="smalllinenumber">[line 1556]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -959,7 +977,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodmodule_ready"></a>
-	<h3>method module_ready <span class="smalllinenumber">[line 539]</span></h3>
+	<h3>method module_ready <span class="smalllinenumber">[line 534]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -984,7 +1002,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodprocess_attributes"></a>
-	<h3>method process_attributes <span class="smalllinenumber">[line 619]</span></h3>
+	<h3>method process_attributes <span class="smalllinenumber">[line 604]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1009,7 +1027,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodprocess_logonHours"></a>
-	<h3>method process_logonHours <span class="smalllinenumber">[line 839]</span></h3>
+	<h3>method process_logonHours <span class="smalllinenumber">[line 824]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1034,7 +1052,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodprocess_sambaUserWorkstations"></a>
-	<h3>method process_sambaUserWorkstations <span class="smalllinenumber">[line 789]</span></h3>
+	<h3>method process_sambaUserWorkstations <span class="smalllinenumber">[line 774]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1059,7 +1077,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodprocess_terminalServer"></a>
-	<h3>method process_terminalServer <span class="smalllinenumber">[line 907]</span></h3>
+	<h3>method process_terminalServer <span class="smalllinenumber">[line 892]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1084,7 +1102,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodprocess_time"></a>
-	<h3>method process_time <span class="smalllinenumber">[line 865]</span></h3>
+	<h3>method process_time <span class="smalllinenumber">[line 850]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1109,7 +1127,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodsave_attributes"></a>
-	<h3>method save_attributes <span class="smalllinenumber">[line 585]</span></h3>
+	<h3>method save_attributes <span class="smalllinenumber">[line 570]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1137,7 +1155,7 @@ $profile)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:11:06 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:26 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

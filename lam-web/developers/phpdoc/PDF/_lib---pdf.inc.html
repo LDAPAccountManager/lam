@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -47,6 +47,8 @@
                         <b>Files:</b><br />
       	  <div class="package">
 			<a href="../PDF/_lib---fpdf.php.html">		fpdf.php
+		</a><br>
+			<a href="../PDF/_lib---lamPDF.inc.html">		lamPDF.inc
 		</a><br>
 			<a href="../PDF/_lib---pdf.inc.html">		pdf.inc
 		</a><br>
@@ -92,11 +94,6 @@ Source Location: /lib/pdf.inc<br /><br />
 <br>
 <br>
 
-<div class="contents">
-<h2>Classes:</h2>
-<dt><a href="../PDF/lamPDF.html">lamPDF</a></dt>
-	<dd>Creates a LAM information page in PDF format.</dd>
-</div><br /><br />
 
 <h2>Page Details:</h2>
 LDAP Account Manager PDF printing library. It consists of lamPDF class,  the createModulePDF() function that may be called by other pages  and furthermore some helper functions.<br /><br /><br /><br />
@@ -111,11 +108,9 @@ LDAP Account Manager PDF printing library. It consists of lamPDF class,  the cre
 <br /><br />
 <h4>Includes:</h4>
 <div class="tags">
-include_once(<a href="../PDF/_lib---ufpdf.php.html">"ufpdf.php"</a>) [line 39]<br />
-Unicode support for FPDF<br /><br />include_once(<a href="../PDF/_lib---xml_parser.inc.html">'xml_parser.inc'</a>) [line 42]<br />
-XML functions<br /><br />include_once(<a href="../PDF/_lib---fpdf.php.html">"fpdf.php"</a>) [line 36]<br />
-PDF generator class<br /><br />include_once(<a href="../PDF/_lib---pdfstruct.inc.html">'pdfstruct.inc'</a>) [line 45]<br />
-access to PDF configuration files<br /><br /></div>
+include_once(<a href="../PDF/_lib---pdfstruct.inc.html">'pdfstruct.inc'</a>) [line 39]<br />
+access to PDF configuration files<br /><br />include_once(<a href="../PDF/_lib---xml_parser.inc.html">'xml_parser.inc'</a>) [line 36]<br />
+XML functions<br /><br /></div>
 <br /><br />
 <br /><br />
   <hr />
@@ -134,7 +129,7 @@ access to PDF configuration files<br /><br /></div>
 <br />
   <hr />
 	<a name="functioncreateModulePDF"></a>
-	<h3>createModulePDF <span class="smalllinenumber">[line 62]</span></h3>
+	<h3>createModulePDF <span class="smalllinenumber">[line 56]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -162,7 +157,7 @@ array $accounts, [string $pdf_structure = &amp;quot;default&amp;quot;])</code>
 	</div>
   <hr />
 	<a name="functiongetSectionHeadline"></a>
-	<h3>getSectionHeadline <span class="smalllinenumber">[line 169]</span></h3>
+	<h3>getSectionHeadline <span class="smalllinenumber">[line 170]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -194,7 +189,7 @@ string $line)</code>
 	</div>
   <hr />
 	<a name="functionprocessAttributes"></a>
-	<h3>processAttributes <span class="smalllinenumber">[line 297]</span></h3>
+	<h3>processAttributes <span class="smalllinenumber">[line 298]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -231,7 +226,7 @@ string $attrs, [array $return = array()])</code>
 	</div>
   <hr />
 	<a name="functionprocessFormatTags"></a>
-	<h3>processFormatTags <span class="smalllinenumber">[line 264]</span></h3>
+	<h3>processFormatTags <span class="smalllinenumber">[line 265]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -268,7 +263,7 @@ string $line, string $style)</code>
 	</div>
   <hr />
 	<a name="functionprocessLine"></a>
-	<h3>processLine <span class="smalllinenumber">[line 188]</span></h3>
+	<h3>processLine <span class="smalllinenumber">[line 189]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -311,7 +306,7 @@ string $line, [boolean $first_td = true],  $fontName)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:59 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:18 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

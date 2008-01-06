@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -99,15 +99,16 @@ This file is the interface to the different account types.<br /><br /><br /><br 
 <h4>Includes:</h4>
 <div class="tags">
 include_once(<a href="../types/_lib---baseType.inc.html">"baseType.inc"</a>) [line 32]<br />
-parent class of account types<br /><br />include_once(<a href="../lists/_lib---lists.inc.html">"lists.inc"</a>) [line 34]<br />
-parent class of list views<br /><br />include_once($typesINC_dirname.'/'.$entry) [line 45]<br />
-This includes all type definitions.<br /><br /></div>
+parent class of account types<br /><br />include_once($typesINC_dirname.'/'.$entry) [line 47]<br />
+This includes all type definitions.<br /><br />include_once(<a href="../selfService/_lib---selfService.inc.html">"selfService.inc"</a>) [line 36]<br />
+Used to check if this is a LAM Pro release.<br /><br />include_once(<a href="../lists/_lib---lists.inc.html">"lists.inc"</a>) [line 34]<br />
+parent class of list views<br /><br /></div>
 <br /><br />
 <br /><br />
 <br />
   <hr />
 	<a name="functiongetDefaultListAttributes"></a>
-	<h3>getDefaultListAttributes <span class="smalllinenumber">[line 107]</span></h3>
+	<h3>getDefaultListAttributes <span class="smalllinenumber">[line 109]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -139,7 +140,7 @@ string $type)</code>
 	</div>
   <hr />
 	<a name="functiongetListAttributeDescriptions"></a>
-	<h3>getListAttributeDescriptions <span class="smalllinenumber">[line 119]</span></h3>
+	<h3>getListAttributeDescriptions <span class="smalllinenumber">[line 121]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -171,7 +172,7 @@ string $type)</code>
 	</div>
   <hr />
 	<a name="functiongetListClassName"></a>
-	<h3>getListClassName <span class="smalllinenumber">[line 95]</span></h3>
+	<h3>getListClassName <span class="smalllinenumber">[line 97]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -203,7 +204,7 @@ string $type)</code>
 	</div>
   <hr />
 	<a name="functiongetTypeAlias"></a>
-	<h3>getTypeAlias <span class="smalllinenumber">[line 73]</span></h3>
+	<h3>getTypeAlias <span class="smalllinenumber">[line 75]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -235,7 +236,7 @@ string $type)</code>
 	</div>
   <hr />
 	<a name="functiongetTypeDescription"></a>
-	<h3>getTypeDescription <span class="smalllinenumber">[line 84]</span></h3>
+	<h3>getTypeDescription <span class="smalllinenumber">[line 86]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -267,7 +268,7 @@ string $type)</code>
 	</div>
   <hr />
 	<a name="functiongetTypes"></a>
-	<h3>getTypes <span class="smalllinenumber">[line 54]</span></h3>
+	<h3>getTypes <span class="smalllinenumber">[line 56]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -292,7 +293,7 @@ string $type)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:11:15 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:35 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

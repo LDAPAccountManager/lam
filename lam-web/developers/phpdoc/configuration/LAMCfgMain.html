@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -104,7 +104,6 @@ Source Location: /lib/config.inc<br /><br />
     <li><a href="../configuration/LAMCfgMain.html#var$default">$default</a></li>
     <li><a href="../configuration/LAMCfgMain.html#var$logDestination">$logDestination</a></li>
     <li><a href="../configuration/LAMCfgMain.html#var$logLevel">$logLevel</a></li>
-    <li><a href="../configuration/LAMCfgMain.html#var$password">$password</a></li>
     <li><a href="../configuration/LAMCfgMain.html#var$sessionTimeout">$sessionTimeout</a></li>
   </ul>
 </td>
@@ -113,8 +112,10 @@ Source Location: /lib/config.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../configuration/LAMCfgMain.html#methodLAMCfgMain">LAMCfgMain</a></li>
+    <li><a href="../configuration/LAMCfgMain.html#method__construct">__construct</a></li>
+    <li><a href="../configuration/LAMCfgMain.html#methodcheckPassword">checkPassword</a></li>
     <li><a href="../configuration/LAMCfgMain.html#methodsave">save</a></li>
+    <li><a href="../configuration/LAMCfgMain.html#methodsetPassword">setPassword</a></li>
   </ul>
 </td>
 
@@ -134,7 +135,7 @@ Source Location: /lib/config.inc<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 843]<br />
+[line 882]<br />
 This class manages config.cfg.<br /><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -145,7 +146,7 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$allowedHosts"></a>
 	<p></p>
 	<h4>$allowedHosts = <span class="value"></span></h4>
-	<p>[line 861]</p>
+	<p>[line 900]</p>
   list of hosts which may access LAM<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -169,7 +170,7 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$default"></a>
 	<p></p>
 	<h4>$default = <span class="value"></span></h4>
-	<p>[line 846]</p>
+	<p>[line 885]</p>
   Default profile<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -193,7 +194,7 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$logDestination"></a>
 	<p></p>
 	<h4>$logDestination = <span class="value"></span></h4>
-	<p>[line 858]</p>
+	<p>[line 897]</p>
   log destination (&quot;SYSLOG&quot;:syslog, &quot;/...&quot;:file, &quot;NONE&quot;:none)<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -217,32 +218,8 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$logLevel"></a>
 	<p></p>
 	<h4>$logLevel = <span class="value"></span></h4>
-	<p>[line 855]</p>
+	<p>[line 894]</p>
   log level<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$password"></a>
-	<p></p>
-	<h4>$password = <span class="value"></span></h4>
-	<p>[line 849]</p>
-  Password to change config.cfg<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -265,7 +242,7 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	<a name="var$sessionTimeout"></a>
 	<p></p>
 	<h4>$sessionTimeout = <span class="value"></span></h4>
-	<p>[line 852]</p>
+	<p>[line 891]</p>
   Time of inactivity before session times out (minutes)<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -294,12 +271,12 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 <div class="tags">
 
   <hr />
-	<a name="methodLAMCfgMain"></a>
-	<h3>constructor LAMCfgMain <span class="smalllinenumber">[line 870]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 909]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>LAMCfgMain LAMCfgMain(
+		<code>LAMCfgMain __construct(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -310,8 +287,47 @@ This class manages config.cfg.<br /><br /></div><br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodcheckPassword"></a>
+	<h3>method checkPassword <span class="smalllinenumber">[line 1014]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean checkPassword(
+String
+$password)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Checks if the given password matches.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>true, if password matches</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$password</b>&nbsp;&nbsp;</td>
+        <td>password</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodsave"></a>
-	<h3>method save <span class="smalllinenumber">[line 911]</span></h3>
+	<h3>method save <span class="smalllinenumber">[line 950]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -334,12 +350,48 @@ This class manages config.cfg.<br /><br /></div><br /><br />
 	
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
+  <hr />
+	<a name="methodsetPassword"></a>
+	<h3>method setPassword <span class="smalllinenumber">[line 1000]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void setPassword(
+String
+$password)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Sets a new config password.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">String&nbsp;&nbsp;</td>
+        <td><b>$password</b>&nbsp;&nbsp;</td>
+        <td>new password</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
 </div><br />
 
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:41 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:58:55 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -13,8 +13,8 @@
   <tr>
     <td class="header_menu">
         
-                                                                            
-                                                                                                                                                                                                                                      		  [ <a href="classtrees_lib.html" class="menu">class tree: lib</a> ]
+                                                                                                                                        
+                                                                                                                                                                          		  [ <a href="classtrees_lib.html" class="menu">class tree: lib</a> ]
 		  [ <a href="elementindex_lib.html" class="menu">index: lib</a> ]
 		  	    [ <a href="elementindex.html" class="menu">all elements</a> ]
     </td>
@@ -26,23 +26,23 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="ric_README.html">README</a></p>
+					<p><a href="ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
-              <a href="li_Help.html">Help</a><br />
               <a href="li_PDF.html">PDF</a><br />
-              <a href="li_lib.html">lib</a><br />
-              <a href="li_modules.html">modules</a><br />
-              <a href="li_types.html">types</a><br />
-              <a href="li_configuration.html">configuration</a><br />
-              <a href="li_tools.html">tools</a><br />
-              <a href="li_LDAP.html">LDAP</a><br />
               <a href="li_lists.html">lists</a><br />
               <a href="li_profiles.html">profiles</a><br />
+              <a href="li_LDAP.html">LDAP</a><br />
+              <a href="li_types.html">types</a><br />
+              <a href="li_lib.html">lib</a><br />
+              <a href="li_modules.html">modules</a><br />
               <a href="li_selfService.html">selfService</a><br />
-              <a href="li_main.html">main</a><br />
+              <a href="li_configuration.html">configuration</a><br />
+              <a href="li_tools.html">tools</a><br />
+              <a href="li_Help.html">Help</a><br />
               <a href="li_tests.html">tests</a><br />
+              <a href="li_main.html">main</a><br />
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
@@ -105,6 +105,8 @@
 				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#function_get_raw_schema">_get_raw_schema()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Fetches the raw schema array for the subschemaSubentry of the server. Note,  this function has grown many hairs to accomodate more LDAP servers. It is  needfully complicated as it now supports many popular LDAP servers that  don't necessarily expose their schema &quot;the right way&quot;.</dd>
 							<dt><b>_get_schema_dn</b></dt>
 				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#function_get_schema_dn">_get_schema_dn()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper for _get_raw_schema() which fetches the DN of the schema object</dd>
+							<dt><b>__construct</b></dt>
+				<dd>in file cache.inc, method <a href="lib/cache.html#method__construct">cache::__construct()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Constructor.</dd>
 							<dt><b>__sleep</b></dt>
 				<dd>in file cache.inc, method <a href="lib/cache.html#method__sleep">cache::__sleep()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Encrypts LDAP cache before saving to session file.</dd>
 							<dt><b>__wakeup</b></dt>
@@ -158,15 +160,15 @@
 							<dt><b>$children_objectclasses</b></dt>
 				<dd>in file schema.inc, variable <a href="lib/ObjectClass.html#var$children_objectclasses">ObjectClass::$children_objectclasses</a><br>&nbsp;&nbsp;&nbsp;&nbsp;array of objectClasses which inherit from this one (must be set at runtime explicitly by the caller)</dd>
 							<dt><b>cache</b></dt>
-				<dd>in file cache.inc, method <a href="lib/cache.html#methodcache">cache::cache()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Constructor.</dd>
-							<dt><b>cache</b></dt>
 				<dd>in file cache.inc, class <a href="lib/cache.html">cache</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This class contains all functions which are needed to manage the LDAP cache.</dd>
 							<dt><b>cached_schema_available</b></dt>
 				<dd>in file schema.inc, function <a href="lib/_lib---schema.inc.html#functioncached_schema_available">cached_schema_available()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the schema for $schema_type has been cached and</dd>
 							<dt><b>checkClientIP</b></dt>
 				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functioncheckClientIP">checkClientIP()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if the client's IP address is on the list of allowed IPs.</dd>
-							<dt><b>check_ip</b></dt>
-				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functioncheck_ip">check_ip()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This function checks if the given IP ist valid.</dd>
+							<dt><b>checkIfPasswordChangeIsAllowed</b></dt>
+				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functioncheckIfPasswordChangeIsAllowed">checkIfPasswordChangeIsAllowed()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if passwords may be changed.</dd>
+							<dt><b>checkIfWriteAccessIsAllowed</b></dt>
+				<dd>in file security.inc, function <a href="lib/_lib---security.inc.html#functioncheckIfWriteAccessIsAllowed">checkIfWriteAccessIsAllowed()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if write access to LDAP is allowed.</dd>
 							<dt><b>cmp_domain</b></dt>
 				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functioncmp_domain">cmp_domain()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper function to sort the domains</dd>
 							<dt><b>cache.inc</b></dt>
@@ -209,6 +211,8 @@
 	<div>
 		<h2>g</h2>
 		<dl>
+							<dt><b>generateRandomPassword</b></dt>
+				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functiongenerateRandomPassword">generateRandomPassword()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Generates a random password with 12 digits.</dd>
 							<dt><b>getAliases</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodgetAliases">AttributeType::getAliases()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets the names of attributes that are an alias for this attribute (if any).</dd>
 							<dt><b>getChildObjectClasses</b></dt>
@@ -330,13 +334,13 @@
 							<dt><b>initVars</b></dt>
 				<dd>in file schema.inc, method <a href="lib/SchemaItem.html#methodinitVars">SchemaItem::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initialize class members to default values.</dd>
 							<dt><b>initVars</b></dt>
-				<dd>in file schema.inc, method <a href="lib/Syntax.html#methodinitVars">Syntax::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initializes the class' member variables</dd>
-							<dt><b>initVars</b></dt>
 				<dd>in file schema.inc, method <a href="lib/AttributeType.html#methodinitVars">AttributeType::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initialize the class' member variables</dd>
 							<dt><b>initVars</b></dt>
-				<dd>in file schema.inc, method <a href="lib/MatchingRuleUse.html#methodinitVars">MatchingRuleUse::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initialize the class' member variables</dd>
+				<dd>in file schema.inc, method <a href="lib/Syntax.html#methodinitVars">Syntax::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initializes the class' member variables</dd>
 							<dt><b>initVars</b></dt>
 				<dd>in file schema.inc, method <a href="lib/MatchingRule.html#methodinitVars">MatchingRule::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initialize the class' member variables</dd>
+							<dt><b>initVars</b></dt>
+				<dd>in file schema.inc, method <a href="lib/MatchingRuleUse.html#methodinitVars">MatchingRuleUse::initVars()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Initialize the class' member variables</dd>
 							<dt><b>in_array_ignore_case</b></dt>
 				<dd>in file account.inc, function <a href="lib/_lib---account.inc.html#functionin_array_ignore_case">in_array_ignore_case()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if a string exists in an array, ignoring case.</dd>
 							<dt><b>in_cache</b></dt>
@@ -546,7 +550,7 @@
 	<a href="elementindex_lib.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:35 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:58:47 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

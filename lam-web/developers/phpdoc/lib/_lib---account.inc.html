@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -102,16 +102,12 @@ This provides several helper function for the account modules.<br /><br /><br />
 </table>
 </div>
 <br /><br />
-<h4>Includes:</h4>
-<div class="tags">
-include_once(<a href="../modules/_lib---createntlm.inc.html">"createntlm.inc"</a>) [line 34]<br />
-Needed to calculate Samba passwords<br /><br /></div>
 <br /><br />
 <br /><br />
 <br />
   <hr />
 	<a name="functionarray_delete"></a>
-	<h3>array_delete <span class="smalllinenumber">[line 71]</span></h3>
+	<h3>array_delete <span class="smalllinenumber">[line 69]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -147,45 +143,8 @@ array $values, array $array)</code>
     	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
 	</div>
   <hr />
-	<a name="functioncheck_ip"></a>
-	<h3>check_ip <span class="smalllinenumber">[line 508]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean check_ip(
-IP $ip, [check_subnet $subnet = false])</code>
-    </td></tr></table>
-    </td></tr></table><br />
-
-		This function checks if the given IP ist valid.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>true or false</td>
-  </tr>
-</table>
-</div>
-    <br /><br />
-	
-    		<h4>Parameters</h4>
-    <table border="0" cellspacing="0" cellpadding="0">
-		      <tr>
-        <td class="type">IP&nbsp;&nbsp;</td>
-        <td><b>$ip</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-		      <tr>
-        <td class="type">check_subnet&nbsp;&nbsp;</td>
-        <td><b>$subnet</b>&nbsp;&nbsp;</td>
-        <td>true for subnets, else false</td>
-      </tr>
-				</table>
-    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
-	</div>
-  <hr />
 	<a name="functioncmp_domain"></a>
-	<h3>cmp_domain <span class="smalllinenumber">[line 323]</span></h3>
+	<h3>cmp_domain <span class="smalllinenumber">[line 342]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -221,8 +180,32 @@ string $a, string $b)</code>
     	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
 	</div>
   <hr />
+	<a name="functiongenerateRandomPassword"></a>
+	<h3>generateRandomPassword <span class="smalllinenumber">[line 293]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>String generateRandomPassword(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Generates a random password with 12 digits.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>password</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
 	<a name="functiongetdays"></a>
-	<h3>getdays <span class="smalllinenumber">[line 104]</span></h3>
+	<h3>getdays <span class="smalllinenumber">[line 102]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -246,7 +229,7 @@ string $a, string $b)</code>
 	</div>
   <hr />
 	<a name="functiongetshells"></a>
-	<h3>getshells <span class="smalllinenumber">[line 42]</span></h3>
+	<h3>getshells <span class="smalllinenumber">[line 40]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -270,7 +253,7 @@ string $a, string $b)</code>
 	</div>
   <hr />
 	<a name="functionget_preg"></a>
-	<h3>get_preg <span class="smalllinenumber">[line 366]</span></h3>
+	<h3>get_preg <span class="smalllinenumber">[line 385]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -307,7 +290,7 @@ string $argument, string $regexp)</code>
 	</div>
   <hr />
 	<a name="functionin_array_ignore_case"></a>
-	<h3>in_array_ignore_case <span class="smalllinenumber">[line 87]</span></h3>
+	<h3>in_array_ignore_case <span class="smalllinenumber">[line 85]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -335,7 +318,7 @@ string $argument, string $regexp)</code>
 	</div>
   <hr />
 	<a name="functionlmPassword"></a>
-	<h3>lmPassword <span class="smalllinenumber">[line 139]</span></h3>
+	<h3>lmPassword <span class="smalllinenumber">[line 137]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -367,7 +350,7 @@ string $password)</code>
 	</div>
   <hr />
 	<a name="functionntPassword"></a>
-	<h3>ntPassword <span class="smalllinenumber">[line 150]</span></h3>
+	<h3>ntPassword <span class="smalllinenumber">[line 151]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -399,7 +382,7 @@ string $password)</code>
 	</div>
   <hr />
 	<a name="functionpwd_disable"></a>
-	<h3>pwd_disable <span class="smalllinenumber">[line 247]</span></h3>
+	<h3>pwd_disable <span class="smalllinenumber">[line 251]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -431,7 +414,7 @@ string $hash)</code>
 	</div>
   <hr />
 	<a name="functionpwd_enable"></a>
-	<h3>pwd_enable <span class="smalllinenumber">[line 222]</span></h3>
+	<h3>pwd_enable <span class="smalllinenumber">[line 226]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -463,7 +446,7 @@ string $hash)</code>
 	</div>
   <hr />
 	<a name="functionpwd_hash"></a>
-	<h3>pwd_hash <span class="smalllinenumber">[line 167]</span></h3>
+	<h3>pwd_hash <span class="smalllinenumber">[line 171]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -505,7 +488,7 @@ string $password, [boolean $enabled = true], [string $hashType = &#039;SSHA&#039
 	</div>
   <hr />
 	<a name="functionpwd_is_enabled"></a>
-	<h3>pwd_is_enabled <span class="smalllinenumber">[line 272]</span></h3>
+	<h3>pwd_is_enabled <span class="smalllinenumber">[line 276]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -537,7 +520,7 @@ string $hash)</code>
 	</div>
   <hr />
 	<a name="functionsearch_domains"></a>
-	<h3>search_domains <span class="smalllinenumber">[line 289]</span></h3>
+	<h3>search_domains <span class="smalllinenumber">[line 308]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -561,7 +544,7 @@ string $hash)</code>
 	</div>
   <hr />
 	<a name="functionsmbflag"></a>
-	<h3>smbflag <span class="smalllinenumber">[line 116]</span></h3>
+	<h3>smbflag <span class="smalllinenumber">[line 114]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -594,7 +577,7 @@ array $input)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:37 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:58:49 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

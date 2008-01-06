@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -53,6 +53,10 @@
 			<a href="../modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="../modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="../modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="../modules/account.html">account</a><br />
 	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="../modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -196,6 +202,12 @@ Source Location: /lib/modules/posixAccount.inc<br /><br />
    
 </dd>
 <dt>
+  <a href="../modules/baseModule.html#var$autoAddObjectClasses">baseModule::$autoAddObjectClasses</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
   <a href="../modules/baseModule.html#var$messages">baseModule::$messages</a>
   </dt>
 <dd>
@@ -235,7 +247,7 @@ Source Location: /lib/modules/posixAccount.inc<br /><br />
 <h4>Class: <a href="../modules/baseModule.html">baseModule</a></h4>
 <dl>
     <dt>
-    <a href="../modules/baseModule.html#methodbaseModule">baseModule::baseModule()</a>
+    <a href="../modules/baseModule.html#method__construct">baseModule::__construct()</a>
   </dt>
   <dd>
     Creates a new base module class
@@ -311,6 +323,12 @@ Source Location: /lib/modules/posixAccount.inc<br /><br />
   </dt>
   <dd>
     Controls if the module button the account page is visible and activated.
+  </dd>
+    <dt>
+    <a href="../modules/baseModule.html#methodgetIcon">baseModule::getIcon()</a>
+  </dt>
+  <dd>
+    Returns the path to the module icon.
   </dd>
     <dt>
     <a href="../modules/baseModule.html#methodgetLDAPAliases">baseModule::getLDAPAliases()</a>
@@ -538,7 +556,7 @@ Manages the object class &quot;posixAccount&quot; for users and hosts.<br /><br 
 
   <hr />
 	<a name="methodbuild_uploadAccounts"></a>
-	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 1254]</span></h3>
+	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 1271]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -592,7 +610,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodcheckASCII"></a>
-	<h3>method checkASCII <span class="smalllinenumber">[line 853]</span></h3>
+	<h3>method checkASCII <span class="smalllinenumber">[line 855]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -628,7 +646,7 @@ $attribute)</code>
   </div>
   <hr />
 	<a name="methodcheckSelfServiceOptions"></a>
-	<h3>method checkSelfServiceOptions <span class="smalllinenumber">[line 1698]</span></h3>
+	<h3>method checkSelfServiceOptions <span class="smalllinenumber">[line 1718]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -670,7 +688,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodcheck_configOptions"></a>
-	<h3>method check_configOptions <span class="smalllinenumber">[line 1195]</span></h3>
+	<h3>method check_configOptions <span class="smalllinenumber">[line 1212]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -712,7 +730,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddelete_attributes"></a>
-	<h3>method delete_attributes <span class="smalllinenumber">[line 574]</span></h3>
+	<h3>method delete_attributes <span class="smalllinenumber">[line 576]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -737,7 +755,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_attributes"></a>
-	<h3>method display_html_attributes <span class="smalllinenumber">[line 918]</span></h3>
+	<h3>method display_html_attributes <span class="smalllinenumber">[line 926]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -762,7 +780,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_delete"></a>
-	<h3>method display_html_delete <span class="smalllinenumber">[line 1024]</span></h3>
+	<h3>method display_html_delete <span class="smalllinenumber">[line 1032]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -787,7 +805,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_group"></a>
-	<h3>method display_html_group <span class="smalllinenumber">[line 1039]</span></h3>
+	<h3>method display_html_group <span class="smalllinenumber">[line 1047]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -812,7 +830,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_password"></a>
-	<h3>method display_html_password <span class="smalllinenumber">[line 1084]</span></h3>
+	<h3>method display_html_password <span class="smalllinenumber">[line 1092]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -837,7 +855,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddoUploadPostActions"></a>
-	<h3>method doUploadPostActions <span class="smalllinenumber">[line 1506]</span></h3>
+	<h3>method doUploadPostActions <span class="smalllinenumber">[line 1523]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -897,7 +915,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetClearTextPassword"></a>
-	<h3>method getClearTextPassword <span class="smalllinenumber">[line 1727]</span></h3>
+	<h3>method getClearTextPassword <span class="smalllinenumber">[line 1747]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -925,7 +943,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetNextUIDs"></a>
-	<h3>method getNextUIDs <span class="smalllinenumber">[line 1612]</span></h3>
+	<h3>method getNextUIDs <span class="smalllinenumber">[line 1632]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -973,7 +991,7 @@ $errors)</code>
   </div>
   <hr />
 	<a name="methodgetSelfServiceOptions"></a>
-	<h3>method getSelfServiceOptions <span class="smalllinenumber">[line 1678]</span></h3>
+	<h3>method getSelfServiceOptions <span class="smalllinenumber">[line 1698]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1040,7 +1058,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_pdfEntries"></a>
-	<h3>method get_pdfEntries <span class="smalllinenumber">[line 1170]</span></h3>
+	<h3>method get_pdfEntries <span class="smalllinenumber">[line 1187]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1065,7 +1083,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_profileOptions"></a>
-	<h3>method get_profileOptions <span class="smalllinenumber">[line 1106]</span></h3>
+	<h3>method get_profileOptions <span class="smalllinenumber">[line 1123]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1090,7 +1108,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodinit"></a>
-	<h3>method init <span class="smalllinenumber">[line 428]</span></h3>
+	<h3>method init <span class="smalllinenumber">[line 430]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1117,7 +1135,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodload_attributes"></a>
-	<h3>method load_attributes <span class="smalllinenumber">[line 460]</span></h3>
+	<h3>method load_attributes <span class="smalllinenumber">[line 462]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1160,7 +1178,7 @@ $attr)</code>
   </div>
   <hr />
 	<a name="methodload_profile"></a>
-	<h3>method load_profile <span class="smalllinenumber">[line 1148]</span></h3>
+	<h3>method load_profile <span class="smalllinenumber">[line 1165]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1187,7 +1205,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodmodule_complete"></a>
-	<h3>method module_complete <span class="smalllinenumber">[line 446]</span></h3>
+	<h3>method module_complete <span class="smalllinenumber">[line 448]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1212,7 +1230,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodpostModifyActions"></a>
-	<h3>method postModifyActions <span class="smalllinenumber">[line 536]</span></h3>
+	<h3>method postModifyActions <span class="smalllinenumber">[line 538]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1239,7 +1257,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodpreDeleteActions"></a>
-	<h3>method preDeleteActions <span class="smalllinenumber">[line 592]</span></h3>
+	<h3>method preDeleteActions <span class="smalllinenumber">[line 594]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1264,7 +1282,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodprocess_attributes"></a>
-	<h3>method process_attributes <span class="smalllinenumber">[line 626]</span></h3>
+	<h3>method process_attributes <span class="smalllinenumber">[line 628]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1289,7 +1307,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodprocess_group"></a>
-	<h3>method process_group <span class="smalllinenumber">[line 878]</span></h3>
+	<h3>method process_group <span class="smalllinenumber">[line 880]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1314,7 +1332,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodprocess_password"></a>
-	<h3>method process_password <span class="smalllinenumber">[line 895]</span></h3>
+	<h3>method process_password <span class="smalllinenumber">[line 897]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1339,7 +1357,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodsave_attributes"></a>
-	<h3>method save_attributes <span class="smalllinenumber">[line 487]</span></h3>
+	<h3>method save_attributes <span class="smalllinenumber">[line 489]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1367,7 +1385,7 @@ $newAccount)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:59 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:19 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

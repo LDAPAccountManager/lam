@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -46,6 +46,8 @@
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
+			<a href="../lists/_templates---lists---changePassword.php.html">		changePassword.php
+		</a><br>
 			<a href="../lists/_templates---lists---deletelink.php.html">		deletelink.php
 		</a><br>
 			<a href="../lists/_templates---lists---list.php.html">		list.php
@@ -118,10 +120,14 @@
       
             <b>Classes:</b><br />
         <div class="package">
-		    		<a href="../lists/lamGroupList.html">lamGroupList</a><br />
+		    		<a href="../lists/lamBooleanListOption.html">lamBooleanListOption</a><br />
+	    		<a href="../lists/lamGroupList.html">lamGroupList</a><br />
 	    		<a href="../lists/lamHostList.html">lamHostList</a><br />
 	    		<a href="../lists/lamList.html">lamList</a><br />
+	    		<a href="../lists/lamListOption.html">lamListOption</a><br />
+	    		<a href="../lists/lamListTool.html">lamListTool</a><br />
 	    		<a href="../lists/lamMailAliasList.html">lamMailAliasList</a><br />
+	    		<a href="../lists/lamSelectListOption.html">lamSelectListOption</a><br />
 	    		<a href="../lists/lamSmbDomainList.html">lamSmbDomainList</a><br />
 	    		<a href="../lists/lamUserList.html">lamUserList</a><br />
 	  </div>
@@ -156,14 +162,21 @@ Source Location: /lib/types/user.inc<br /><br />
 </td>
 
 
+<td valign="top">
+<h3><a href="#class_consts">Constants</a></h3>
+<ul>
+    <li><a href="../lists/lamUserList.html#constTRANS_PRIMARY_OPTION_NAME">TRANS_PRIMARY_OPTION_NAME</a></li>
+  </ul>
+</td>
 
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../lists/lamUserList.html#methodlamUserList">lamUserList</a></li>
-    <li><a href="../lists/lamUserList.html#methodlistDoPost">listDoPost</a></li>
+    <li><a href="../lists/lamUserList.html#method__construct">__construct</a></li>
+    <li><a href="../lists/lamUserList.html#methodgetAdditionalTools">getAdditionalTools</a></li>
+    <li><a href="../lists/lamUserList.html#methodlistConfigurationChanged">listConfigurationChanged</a></li>
+    <li><a href="../lists/lamUserList.html#methodlistGetAllConfigOptions">listGetAllConfigOptions</a></li>
     <li><a href="../lists/lamUserList.html#methodlistGetParams">listGetParams</a></li>
-    <li><a href="../lists/lamUserList.html#methodlistPrintAdditionalOptions">listPrintAdditionalOptions</a></li>
     <li><a href="../lists/lamUserList.html#methodlistPrintTableCellContent">listPrintTableCellContent</a></li>
     <li><a href="../lists/lamUserList.html#methodlistRefreshData">listRefreshData</a></li>
     <li><a href="../lists/lamUserList.html#methodrefreshPrimaryGroupTranslation">refreshPrimaryGroupTranslation</a></li>
@@ -177,6 +190,20 @@ Source Location: /lib/types/user.inc<br /><br />
 
 
 
+<td valign="top">
+<h3>Inherited Constants</h3>
+<div class="tags">
+<h4>Class: <a href="../lists/lamList.html">lamList</a></h4>
+<dl>
+<dt>
+  <a href="../lists/lamList.html#constLIST_SIZE_OPTION_NAME">lamList::LIST_SIZE_OPTION_NAME</a>
+</dt>
+<dd>
+   
+</dd>
+</dl>
+</div>
+</td>
 
 <td valign="top">
 <h3>Inherited Variables</h3>
@@ -244,6 +271,12 @@ Source Location: /lib/types/user.inc<br /><br />
    
 </dd>
 <dt>
+  <a href="../lists/lamList.html#var$sortDirection">lamList::$sortDirection</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
   <a href="../lists/lamList.html#var$suffix">lamList::$suffix</a>
   </dt>
 <dd>
@@ -265,7 +298,7 @@ Source Location: /lib/types/user.inc<br /><br />
 <h4>Class: <a href="../lists/lamList.html">lamList</a></h4>
 <dl>
     <dt>
-    <a href="../lists/lamList.html#methodlamList">lamList::lamList()</a>
+    <a href="../lists/lamList.html#method__construct">lamList::__construct()</a>
   </dt>
   <dd>
     Constructor
@@ -277,16 +310,22 @@ Source Location: /lib/types/user.inc<br /><br />
     Compare function used for usort-method
   </dd>
     <dt>
+    <a href="../lists/lamList.html#methodgetAdditionalTools">lamList::getAdditionalTools()</a>
+  </dt>
+  <dd>
+    Returns a list of lamListTool objects to display next to the edit/delete buttons.
+  </dd>
+    <dt>
     <a href="../lists/lamList.html#methodlistBuildFilter">lamList::listBuildFilter()</a>
   </dt>
   <dd>
     Builds the regular expressions from the filter values.
   </dd>
     <dt>
-    <a href="../lists/lamList.html#methodlistDoPost">lamList::listDoPost()</a>
+    <a href="../lists/lamList.html#methodlistConfigurationChanged">lamList::listConfigurationChanged()</a>
   </dt>
   <dd>
-    Manages all POST actions (e.g. button pressed) for the account lists.
+    Called when the configuration options changed.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistDrawNavigationBar">lamList::listDrawNavigationBar()</a>
@@ -301,10 +340,16 @@ Source Location: /lib/types/user.inc<br /><br />
     Removes all entries which do not fit to the filter.
   </dd>
     <dt>
-    <a href="../lists/lamList.html#methodlistGetAttributeDescriptionList">lamList::listGetAttributeDescriptionList()</a>
+    <a href="../lists/lamList.html#methodlistGetAllConfigOptions">lamList::listGetAllConfigOptions()</a>
   </dt>
   <dd>
-    Returns an hash array containing with all attributes to be shown and their descriptions.
+    Returns a list of possible configuration options.
+  </dd>
+    <dt>
+    <a href="../lists/lamList.html#methodlistGetConfigOptionByID">lamList::listGetConfigOptionByID()</a>
+  </dt>
+  <dd>
+    Returns the configuration option with the given ID.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistGetParams">lamList::listGetParams()</a>
@@ -313,34 +358,28 @@ Source Location: /lib/types/user.inc<br /><br />
     Sets some internal parameters.
   </dd>
     <dt>
-    <a href="../lists/lamList.html#methodlistPrintAdditionalOptions">lamList::listPrintAdditionalOptions()</a>
-  </dt>
-  <dd>
-    Prints additional option fields for specific object types.
-  </dd>
-    <dt>
     <a href="../lists/lamList.html#methodlistPrintButtons">lamList::listPrintButtons()</a>
   </dt>
   <dd>
-    Prints the create, delete and PDF buttons.
+    Prints the create and delete buttons.
+  </dd>
+    <dt>
+    <a href="../lists/lamList.html#methodlistPrintConfigurationPage">lamList::listPrintConfigurationPage()</a>
+  </dt>
+  <dd>
+    Prints the list configuration page.
+  </dd>
+    <dt>
+    <a href="../lists/lamList.html#methodlistPrintFooter">lamList::listPrintFooter()</a>
+  </dt>
+  <dd>
+    Prints the HTML footer.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistPrintHeader">lamList::listPrintHeader()</a>
   </dt>
   <dd>
-    Prints the HTML head.
-  </dd>
-    <dt>
-    <a href="../lists/lamList.html#methodlistPrintJavaScript">lamList::listPrintJavaScript()</a>
-  </dt>
-  <dd>
-    Prints JavaScript code needed for mouse-over effects.
-  </dd>
-    <dt>
-    <a href="../lists/lamList.html#methodlistPrintPDFButtons">lamList::listPrintPDFButtons()</a>
-  </dt>
-  <dd>
-    Prints the PDF button bar.
+    Prints the HTML header.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistPrintTableBody">lamList::listPrintTableBody()</a>
@@ -359,12 +398,6 @@ Source Location: /lib/types/user.inc<br /><br />
   </dt>
   <dd>
     Prints the attribute and filter row at the account table head
-  </dd>
-    <dt>
-    <a href="../lists/lamList.html#methodlistPrintToolLinks">lamList::listPrintToolLinks()</a>
-  </dt>
-  <dd>
-    Prints the tool image links (e.g. edit and delete) for each account.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistRefreshData">lamList::listRefreshData()</a>
@@ -420,12 +453,12 @@ Generates the list view.<br /><br /><br /><br />
 <div class="tags">
 
   <hr />
-	<a name="methodlamUserList"></a>
-	<h3>constructor lamUserList <span class="smalllinenumber">[line 120]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 123]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>lamList lamUserList(
+		<code><a href="../lists/lamList.html">lamList</a> __construct(
 string
 $type)</code>
     </td></tr></table>
@@ -438,11 +471,14 @@ $type)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>list object</td>
   </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
 </table>
 </div>
 <br /><br />
 
-	
+	Overrides <a href="../lists/lamList.html#method__construct">lamList::__construct()</a> (Constructor)<br /><br />
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -456,24 +492,89 @@ $type)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodlistDoPost"></a>
-	<h3>method listDoPost <span class="smalllinenumber">[line 134]</span></h3>
+	<a name="methodgetAdditionalTools"></a>
+	<h3>method getAdditionalTools <span class="smalllinenumber">[line 224]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void listDoPost(
+		<code>lamListTool[] getAdditionalTools(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Manages all POST actions (e.g. button pressed) for the account lists.<br /><br /><br /><br />
+		Returns a list of lamListTool objects to display next to the edit/delete buttons.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>tools</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
-	Overrides <a href="../lists/lamList.html#methodlistDoPost">lamList::listDoPost()</a> (Manages all POST actions (e.g. button pressed) for the account lists.)<br /><br />
+	Overrides <a href="../lists/lamList.html#methodgetAdditionalTools">lamList::getAdditionalTools()</a> (Returns a list of lamListTool objects to display next to the edit/delete buttons.)<br /><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodlistConfigurationChanged"></a>
+	<h3>method listConfigurationChanged <span class="smalllinenumber">[line 248]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void listConfigurationChanged(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Called when the configuration options changed.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	Overrides <a href="../lists/lamList.html#methodlistConfigurationChanged">lamList::listConfigurationChanged()</a> (Called when the configuration options changed.)<br /><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodlistGetAllConfigOptions"></a>
+	<h3>method listGetAllConfigOptions <span class="smalllinenumber">[line 239]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array listGetAllConfigOptions(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Returns a list of possible configuration options.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>list of lamListOption objects</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	Overrides <a href="../lists/lamList.html#methodlistGetAllConfigOptions">lamList::listGetAllConfigOptions()</a> (Returns a list of possible configuration options.)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodlistGetParams"></a>
-	<h3>method listGetParams <span class="smalllinenumber">[line 145]</span></h3>
+	<h3>method listGetParams <span class="smalllinenumber">[line 137]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -483,29 +584,22 @@ $type)</code>
     </td></tr></table><br />
 	
 		Sets some internal parameters.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	Overrides <a href="../lists/lamList.html#methodlistGetParams">lamList::listGetParams()</a> (Sets some internal parameters.)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodlistPrintAdditionalOptions"></a>
-	<h3>method listPrintAdditionalOptions <span class="smalllinenumber">[line 230]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void listPrintAdditionalOptions(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Prints additional option fields for specific object types.<br /><br /><br /><br />
-
-	Overrides <a href="../lists/lamList.html#methodlistPrintAdditionalOptions">lamList::listPrintAdditionalOptions()</a> (Prints additional option fields for specific object types.)<br /><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="methodlistPrintTableCellContent"></a>
-	<h3>method listPrintTableCellContent <span class="smalllinenumber">[line 187]</span></h3>
+	<h3>method listPrintTableCellContent <span class="smalllinenumber">[line 179]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -519,6 +613,15 @@ $attribute)</code>
     </td></tr></table><br />
 	
 		Prints the content of a cell in the account list for a given LDAP entry and attribute.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	Overrides <a href="../lists/lamList.html#methodlistPrintTableCellContent">lamList::listPrintTableCellContent()</a> (Prints the content of a cell in the account list for a given LDAP entry and attribute.)<br /><br />
         <h4>Parameters:</h4>
@@ -550,7 +653,7 @@ $attribute)</code>
   </div>
   <hr />
 	<a name="methodlistRefreshData"></a>
-	<h3>method listRefreshData <span class="smalllinenumber">[line 156]</span></h3>
+	<h3>method listRefreshData <span class="smalllinenumber">[line 148]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -560,13 +663,22 @@ $attribute)</code>
     </td></tr></table><br />
 	
 		Rereads the entries from LDAP.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	Overrides <a href="../lists/lamList.html#methodlistRefreshData">lamList::listRefreshData()</a> (Rereads the entries from LDAP.)<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodrefreshPrimaryGroupTranslation"></a>
-	<h3>method refreshPrimaryGroupTranslation <span class="smalllinenumber">[line 166]</span></h3>
+	<h3>method refreshPrimaryGroupTranslation <span class="smalllinenumber">[line 158]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -576,16 +688,37 @@ $attribute)</code>
     </td></tr></table><br />
 	
 		Refreshes the GID to group name cache.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
 	
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
 </div><br />
 
+<hr />
+<a name="class_constss"></a>
+<h3>Class Constants</h3>
+<div class="tags">
+	<a name="constTRANS_PRIMARY_OPTION_NAME"></a>
+	<p></p>
+	<h4>TRANS_PRIMARY_OPTION_NAME = <span class="value">&nbsp;&quot;LU_TP&quot;</span></h4>
+	<p>[line 115]</p>
+  ID for config option<br /><br />
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+</div><br />
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:11:15 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:36 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

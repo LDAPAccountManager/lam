@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -53,6 +53,10 @@
 			<a href="../modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="../modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="../modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="../modules/account.html">account</a><br />
 	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="../modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -177,6 +183,12 @@ Source Location: /lib/modules/nisMailAlias.inc<br /><br />
    
 </dd>
 <dt>
+  <a href="../modules/baseModule.html#var$autoAddObjectClasses">baseModule::$autoAddObjectClasses</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
   <a href="../modules/baseModule.html#var$messages">baseModule::$messages</a>
   </dt>
 <dd>
@@ -216,7 +228,7 @@ Source Location: /lib/modules/nisMailAlias.inc<br /><br />
 <h4>Class: <a href="../modules/baseModule.html">baseModule</a></h4>
 <dl>
     <dt>
-    <a href="../modules/baseModule.html#methodbaseModule">baseModule::baseModule()</a>
+    <a href="../modules/baseModule.html#method__construct">baseModule::__construct()</a>
   </dt>
   <dd>
     Creates a new base module class
@@ -292,6 +304,12 @@ Source Location: /lib/modules/nisMailAlias.inc<br /><br />
   </dt>
   <dd>
     Controls if the module button the account page is visible and activated.
+  </dd>
+    <dt>
+    <a href="../modules/baseModule.html#methodgetIcon">baseModule::getIcon()</a>
+  </dt>
+  <dd>
+    Returns the path to the module icon.
   </dd>
     <dt>
     <a href="../modules/baseModule.html#methodgetLDAPAliases">baseModule::getLDAPAliases()</a>
@@ -519,7 +537,7 @@ Provides NIS mail alias management.<br /><br /></div><br /><br />
 
   <hr />
 	<a name="methodbuild_uploadAccounts"></a>
-	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 230]</span></h3>
+	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 232]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -573,7 +591,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_attributes"></a>
-	<h3>method display_html_attributes <span class="smalllinenumber">[line 131]</span></h3>
+	<h3>method display_html_attributes <span class="smalllinenumber">[line 133]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -598,7 +616,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodgetButtonStatus"></a>
-	<h3>method getButtonStatus <span class="smalllinenumber">[line 211]</span></h3>
+	<h3>method getButtonStatus <span class="smalllinenumber">[line 213]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -648,7 +666,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodget_pdfEntries"></a>
-	<h3>method get_pdfEntries <span class="smalllinenumber">[line 269]</span></h3>
+	<h3>method get_pdfEntries <span class="smalllinenumber">[line 271]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -673,7 +691,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodload_Messages"></a>
-	<h3>method load_Messages <span class="smalllinenumber">[line 100]</span></h3>
+	<h3>method load_Messages <span class="smalllinenumber">[line 102]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -689,7 +707,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodprocess_attributes"></a>
-	<h3>method process_attributes <span class="smalllinenumber">[line 162]</span></h3>
+	<h3>method process_attributes <span class="smalllinenumber">[line 164]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -714,7 +732,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodsave_attributes"></a>
-	<h3>method save_attributes <span class="smalllinenumber">[line 118]</span></h3>
+	<h3>method save_attributes <span class="smalllinenumber">[line 120]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -742,7 +760,7 @@ $partialAccounts)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:58 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:17 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

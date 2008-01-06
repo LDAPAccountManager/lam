@@ -13,8 +13,8 @@
   <tr>
     <td class="header_menu">
         
-                                                                                                                                                            
-                                                                                                                                                      		  [ <a href="classtrees_tools.html" class="menu">class tree: tools</a> ]
+                                                                                                                                                                                                                        
+                                                                                          		  [ <a href="classtrees_tools.html" class="menu">class tree: tools</a> ]
 		  [ <a href="elementindex_tools.html" class="menu">index: tools</a> ]
 		  	    [ <a href="elementindex.html" class="menu">all elements</a> ]
     </td>
@@ -26,23 +26,23 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="ric_README.html">README</a></p>
+					<p><a href="ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
-              <a href="li_Help.html">Help</a><br />
               <a href="li_PDF.html">PDF</a><br />
-              <a href="li_lib.html">lib</a><br />
-              <a href="li_modules.html">modules</a><br />
-              <a href="li_types.html">types</a><br />
-              <a href="li_configuration.html">configuration</a><br />
-              <a href="li_tools.html">tools</a><br />
-              <a href="li_LDAP.html">LDAP</a><br />
               <a href="li_lists.html">lists</a><br />
               <a href="li_profiles.html">profiles</a><br />
+              <a href="li_LDAP.html">LDAP</a><br />
+              <a href="li_types.html">types</a><br />
+              <a href="li_lib.html">lib</a><br />
+              <a href="li_modules.html">modules</a><br />
               <a href="li_selfService.html">selfService</a><br />
-              <a href="li_main.html">main</a><br />
+              <a href="li_configuration.html">configuration</a><br />
+              <a href="li_tools.html">tools</a><br />
+              <a href="li_Help.html">Help</a><br />
               <a href="li_tests.html">tests</a><br />
+              <a href="li_main.html">main</a><br />
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
@@ -62,6 +62,8 @@
 		</a><br>
 			<a href="tools/_templates---schema---schema.php.html">		schema.php
 		</a><br>
+			<a href="tools/_templates---tests---schemaTest.php.html">		schemaTest.php
+		</a><br>
 			<a href="tools/_templates---tools.php.html">		tools.php
 		</a><br>
 	  </div><br />
@@ -70,7 +72,8 @@
       
             <b>Classes:</b><br />
         <div class="package">
-		    		<a href="tools/LdapExportInfo.html">LdapExportInfo</a><br />
+		    		<a href="tools/LAMTool.html">LAMTool</a><br />
+	    		<a href="tools/LdapExportInfo.html">LdapExportInfo</a><br />
 	    		<a href="tools/MyCustomExporter.html">MyCustomExporter</a><br />
 	    		<a href="tools/PlaAbstractExporter.html">PlaAbstractExporter</a><br />
 	    		<a href="tools/PlaCSVExporter.html">PlaCSVExporter</a><br />
@@ -134,9 +137,11 @@
 		<h2>c</h2>
 		<dl>
 							<dt><b>$counter</b></dt>
-				<dd>in file export.inc, variable <a href="tools/PlaLdifExporter.html#var$counter">PlaLdifExporter::$counter</a></dd>
-							<dt><b>$counter</b></dt>
 				<dd>in file export.inc, variable <a href="tools/PlaDsmlExporter.html#var$counter">PlaDsmlExporter::$counter</a></dd>
+							<dt><b>$counter</b></dt>
+				<dd>in file export.inc, variable <a href="tools/PlaLdifExporter.html#var$counter">PlaLdifExporter::$counter</a></dd>
+							<dt><b>checkSchemaForModule</b></dt>
+				<dd>in file schemaTest.php, function <a href="tools/_templates---tests---schemaTest.php.html#functioncheckSchemaForModule">checkSchemaForModule()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Checks if the object classes and attributes for this module are available.</dd>
 					</dl>
 	</div>
 	<a href="elementindex_tools.html#top">top</a><br>
@@ -147,6 +152,8 @@
 		<dl>
 							<dt><b>$deliveryAddress</b></dt>
 				<dd>in file export.inc, variable <a href="tools/PlaVcardExporter.html#var$deliveryAddress">PlaVcardExporter::$deliveryAddress</a></dd>
+							<dt><b>$description</b></dt>
+				<dd>in file tools.php, variable <a href="tools/LAMTool.html#var$description">LAMTool::$description</a><br>&nbsp;&nbsp;&nbsp;&nbsp;description text</dd>
 							<dt><b>displayExportInfo</b></dt>
 				<dd>in file export.inc, method <a href="tools/PlaLdifExporter.html#methoddisplayExportInfo">PlaLdifExporter::displayExportInfo()</a></dd>
 							<dt><b>display_main</b></dt>
@@ -189,6 +196,8 @@
 	<div>
 		<h2>g</h2>
 		<dl>
+							<dt><b>getRecursiveAttributesFromObjectClass</b></dt>
+				<dd>in file schemaTest.php, function <a href="tools/_templates---tests---schemaTest.php.html#functiongetRecursiveAttributesFromObjectClass">getRecursiveAttributesFromObjectClass()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Returns the names of all attributes which are managed by the given object class and its parents.</dd>
 							<dt><b>get_user_agent_string</b></dt>
 				<dd>in file export.inc, function <a href="tools/_lib---export.inc.html#functionget_user_agent_string">get_user_agent_string()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Gets the USER_AGENT string from the $_SERVER array, all in lower case in  an E_NOTICE safe manner.</dd>
 					</dl>
@@ -231,8 +240,12 @@
 		<dl>
 							<dt><b>$ldap_info</b></dt>
 				<dd>in file export.inc, variable <a href="tools/PlaLdapExporter.html#var$ldap_info">PlaLdapExporter::$ldap_info</a></dd>
+							<dt><b>$link</b></dt>
+				<dd>in file tools.php, variable <a href="tools/LAMTool.html#var$link">LAMTool::$link</a><br>&nbsp;&nbsp;&nbsp;&nbsp;link to tool page (relative to templates/)</dd>
 							<dt><b>lamTestLamdaemon</b></dt>
 				<dd>in file lamdaemonTest.php, function <a href="tools/_templates---tests---lamdaemonTest.php.html#functionlamTestLamdaemon">lamTestLamdaemon()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Runs a test case of lamdaemon.</dd>
+							<dt><b>LAMTool</b></dt>
+				<dd>in file tools.php, class <a href="tools/LAMTool.html">LAMTool</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Represents a tool.</dd>
 							<dt><b>LdapEscape</b></dt>
 				<dd>in file export.inc, method <a href="tools/PlaCSVExporter.html#methodLdapEscape">PlaCSVExporter::LdapEscape()</a></dd>
 							<dt><b>LdapExportInfo</b></dt>
@@ -273,6 +286,8 @@
 	<div>
 		<h2>n</h2>
 		<dl>
+							<dt><b>$name</b></dt>
+				<dd>in file tools.php, variable <a href="tools/LAMTool.html#var$name">LAMTool::$name</a><br>&nbsp;&nbsp;&nbsp;&nbsp;name of the tool</dd>
 							<dt><b>$num_entries</b></dt>
 				<dd>in file export.inc, variable <a href="tools/PlaLdapExporter.html#var$num_entries">PlaLdapExporter::$num_entries</a></dd>
 					</dl>
@@ -371,6 +386,10 @@
 	<div>
 		<h2>r</h2>
 		<dl>
+							<dt><b>$requiresPasswordChanges</b></dt>
+				<dd>in file tools.php, variable <a href="tools/LAMTool.html#var$requiresPasswordChanges">LAMTool::$requiresPasswordChanges</a><br>&nbsp;&nbsp;&nbsp;&nbsp;tool requires password change rights</dd>
+							<dt><b>$requiresWriteAccess</b></dt>
+				<dd>in file tools.php, variable <a href="tools/LAMTool.html#var$requiresWriteAccess">LAMTool::$requiresWriteAccess</a><br>&nbsp;&nbsp;&nbsp;&nbsp;tool requires write access to LDAP</dd>
 							<dt><b>$results</b></dt>
 				<dd>in file export.inc, variable <a href="tools/PlaLdapExporter.html#var$results">PlaLdapExporter::$results</a></dd>
 					</dl>
@@ -395,6 +414,8 @@
 				<dd>in file masscreate.php, function <a href="tools/_templates---masscreate.php.html#functionshowMainPage">showMainPage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Displays the acount type specific main page of the upload.</dd>
 							<dt><b>schema.php</b></dt>
 				<dd>procedural page <a href="tools/_templates---schema---schema.php.html">schema.php</a></dd>
+							<dt><b>schemaTest.php</b></dt>
+				<dd>procedural page <a href="tools/_templates---tests---schemaTest.php.html">schemaTest.php</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex_tools.html#top">top</a><br>
@@ -420,7 +441,7 @@
 	<a href="elementindex_tools.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:35 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:58:47 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

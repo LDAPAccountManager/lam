@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -47,6 +47,8 @@
                         <b>Files:</b><br />
       	  <div class="package">
 			<a href="../PDF/_lib---fpdf.php.html">		fpdf.php
+		</a><br>
+			<a href="../PDF/_lib---lamPDF.inc.html">		lamPDF.inc
 		</a><br>
 			<a href="../PDF/_lib---pdf.inc.html">		pdf.inc
 		</a><br>
@@ -87,7 +89,7 @@
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
 
 <h1>Class: lamPDF</h1>
-Source Location: /lib/pdf.inc<br /><br />
+Source Location: /lib/lamPDF.inc<br /><br />
 
 
 <table width="100%" border="0">
@@ -100,11 +102,15 @@ Source Location: /lib/pdf.inc<br /><br />
       |
       --lamPDF</pre><br />
 <div class="description">Creates a LAM information page in PDF format.</div><br /><br />
+<h4>Author(s):</h4>
+<ul>
+          <li>Michael Duergner</li>
+      </ul>
 
 
 
 
-
+    
 
         
 </td>
@@ -122,7 +128,7 @@ Source Location: /lib/pdf.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../PDF/lamPDF.html#methodlamPDF">lamPDF</a></li>
+    <li><a href="../PDF/lamPDF.html#method__construct">__construct</a></li>
     <li><a href="../PDF/lamPDF.html#methodfooter">footer</a></li>
     <li><a href="../PDF/lamPDF.html#methodheader">header</a></li>
   </ul>
@@ -1057,8 +1063,17 @@ Source Location: /lib/pdf.inc<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 338]<br />
-Creates a LAM information page in PDF format.<br /><br /></div><br /><br />
+[line 38]<br />
+Creates a LAM information page in PDF format.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Michael Duergner</td>
+  </tr>
+</table>
+</div>
+</div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
 <hr />
@@ -1069,7 +1084,7 @@ Creates a LAM information page in PDF format.<br /><br /></div><br /><br />
 	<p></p>
 	<h4>$fontList = <span class="value">array(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'BitstreamVeraSans-Roman'&nbsp;=&gt;&nbsp;array('vera.php',&nbsp;'verab.php',&nbsp;'verabi.php',&nbsp;'verai.php'))</span></h4>
-	<p>[line 354]</p>
+	<p>[line 54]</p>
   list of supported fonts<br /><br /><p>format: &lt;font name&gt; =&gt; array(&lt;file for default font style&gt;, &lt;file for bold&gt;, &lt;italic&gt;, &lt;bold italic&gt;)</p><br />
   <br />
 	<div class="tags">
@@ -1084,7 +1099,7 @@ Creates a LAM information page in PDF format.<br /><br /></div><br /><br />
 	<a name="var$fontName"></a>
 	<p></p>
 	<h4>$fontName = <span class="value"></span></h4>
-	<p>[line 348]</p>
+	<p>[line 48]</p>
   current active font name<br /><br />
   <br />
 	<div class="tags">
@@ -1099,7 +1114,7 @@ Creates a LAM information page in PDF format.<br /><br /></div><br /><br />
 	<a name="var$page_definitions"></a>
 	<p></p>
 	<h4>$page_definitions = <span class="value"></span></h4>
-	<p>[line 343]</p>
+	<p>[line 43]</p>
   format settings for page layout<br /><br />
   <br />
 	<div class="tags">
@@ -1119,12 +1134,12 @@ Creates a LAM information page in PDF format.<br /><br /></div><br /><br />
 <div class="tags">
 
   <hr />
-	<a name="methodlamPDF"></a>
-	<h3>constructor lamPDF <span class="smalllinenumber">[line 364]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 64]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>lamPDF lamPDF(
+		<code>lamPDF __construct(
 [string
 $account_type = &quot;user&quot;], [array
 $page_definitions = array()], 
@@ -1159,7 +1174,7 @@ $fontName)</code>
   </div>
   <hr />
 	<a name="methodfooter"></a>
-	<h3>method footer <span class="smalllinenumber">[line 420]</span></h3>
+	<h3>method footer <span class="smalllinenumber">[line 120]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1175,7 +1190,7 @@ $fontName)</code>
   </div>
   <hr />
 	<a name="methodheader"></a>
-	<h3>method header <span class="smalllinenumber">[line 388]</span></h3>
+	<h3>method header <span class="smalllinenumber">[line 88]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1194,7 +1209,7 @@ $fontName)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:59 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:12 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -53,6 +53,10 @@
 			<a href="../modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="../modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="../modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="../modules/account.html">account</a><br />
 	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="../modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -146,6 +152,7 @@ Source Location: /lib/baseModule.inc<br /><br />
 <h3><a href="#class_vars">Variables</a></h3>
 <ul>
     <li><a href="../modules/baseModule.html#var$attributes">$attributes</a></li>
+    <li><a href="../modules/baseModule.html#var$autoAddObjectClasses">$autoAddObjectClasses</a></li>
     <li><a href="../modules/baseModule.html#var$messages">$messages</a></li>
     <li><a href="../modules/baseModule.html#var$meta">$meta</a></li>
     <li><a href="../modules/baseModule.html#var$moduleSettings">$moduleSettings</a></li>
@@ -158,7 +165,7 @@ Source Location: /lib/baseModule.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../modules/baseModule.html#methodbaseModule">baseModule</a></li>
+    <li><a href="../modules/baseModule.html#method__construct">__construct</a></li>
     <li><a href="../modules/baseModule.html#methodbuild_uploadAccounts">build_uploadAccounts</a></li>
     <li><a href="../modules/baseModule.html#methodcan_manage">can_manage</a></li>
     <li><a href="../modules/baseModule.html#methodcheckSelfServiceOptions">checkSelfServiceOptions</a></li>
@@ -171,6 +178,7 @@ Source Location: /lib/baseModule.inc<br /><br />
     <li><a href="../modules/baseModule.html#methodgetAccountContainer">getAccountContainer</a></li>
     <li><a href="../modules/baseModule.html#methodgetAttributes">getAttributes</a></li>
     <li><a href="../modules/baseModule.html#methodgetButtonStatus">getButtonStatus</a></li>
+    <li><a href="../modules/baseModule.html#methodgetIcon">getIcon</a></li>
     <li><a href="../modules/baseModule.html#methodgetLDAPAliases">getLDAPAliases</a></li>
     <li><a href="../modules/baseModule.html#methodgetManagedAttributes">getManagedAttributes</a></li>
     <li><a href="../modules/baseModule.html#methodgetManagedObjectClasses">getManagedObjectClasses</a></li>
@@ -226,30 +234,6 @@ Source Location: /lib/baseModule.inc<br /><br />
 	<dd>Provides MAC addresses for hosts.</dd>
 </dl>
 <dl>
-<dt><a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a></dt>
-	<dd>Provides mail routing for users.</dd>
-</dl>
-<dl>
-<dt><a href="../modules/inetOrgPerson.html">inetOrgPerson</a></dt>
-	<dd>This module manages LDAP attributes of the object class inetOrgPerson (e.g. name and address).</dd>
-</dl>
-<dl>
-<dt><a href="../modules/kolabUser.html">kolabUser</a></dt>
-	<dd>Manages Kolab user accounts.</dd>
-</dl>
-<dl>
-<dt><a href="../modules/ldapPublicKey.html">ldapPublicKey</a></dt>
-	<dd>Manages SSH public keys.</dd>
-</dl>
-<dl>
-<dt><a href="../modules/nisMailAlias.html">nisMailAlias</a></dt>
-	<dd>Provides NIS mail alias management.</dd>
-</dl>
-<dl>
-<dt><a href="../modules/posixAccount.html">posixAccount</a></dt>
-	<dd>Manages the object class &quot;posixAccount&quot; for users and hosts.</dd>
-</dl>
-<dl>
 <dt><a href="../modules/posixGroup.html">posixGroup</a></dt>
 	<dd>Manages the object class &quot;posixGroup&quot; for groups.</dd>
 </dl>
@@ -262,20 +246,48 @@ Source Location: /lib/baseModule.inc<br /><br />
 	<dd>Manages the object class &quot;sambaAccount&quot; for users and hosts.</dd>
 </dl>
 <dl>
-<dt><a href="../modules/sambaDomain.html">sambaDomain</a></dt>
-	<dd>Manages Samba 3 domain entries.</dd>
+<dt><a href="../modules/sambaSamAccount.html">sambaSamAccount</a></dt>
+	<dd>Manages the object class &quot;sambaSamAccount&quot; for users and hosts.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/posixAccount.html">posixAccount</a></dt>
+	<dd>Manages the object class &quot;posixAccount&quot; for users and hosts.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/kolabUser.html">kolabUser</a></dt>
+	<dd>Manages Kolab user accounts.</dd>
 </dl>
 <dl>
 <dt><a href="../modules/sambaGroupMapping.html">sambaGroupMapping</a></dt>
 	<dd>Manages the object class &quot;sambaGroupMapping&quot; for groups.</dd>
 </dl>
 <dl>
-<dt><a href="../modules/sambaSamAccount.html">sambaSamAccount</a></dt>
-	<dd>Manages the object class &quot;sambaSamAccount&quot; for users and hosts.</dd>
-</dl>
-<dl>
 <dt><a href="../modules/shadowAccount.html">shadowAccount</a></dt>
 	<dd>Manages the object class &quot;shadowAccount&quot; for users.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/ldapPublicKey.html">ldapPublicKey</a></dt>
+	<dd>Manages SSH public keys.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/sambaDomain.html">sambaDomain</a></dt>
+	<dd>Manages Samba 3 domain entries.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/inetOrgPerson.html">inetOrgPerson</a></dt>
+	<dd>This module manages LDAP attributes of the object class inetOrgPerson (e.g. name and address).</dd>
+</dl>
+<dl>
+<dt><a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a></dt>
+	<dd>Provides mail routing for users.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/groupOfNames.html">groupOfNames</a></dt>
+	<dd>Manages group members for the object class groupOfNames.</dd>
+</dl>
+<dl>
+<dt><a href="../modules/nisMailAlias.html">nisMailAlias</a></dt>
+	<dd>Provides NIS mail alias management.</dd>
 </dl>
 </div>
 </td>
@@ -311,6 +323,30 @@ Parent class of all account modules.<br /><br /><br /><br />
 	<h4>$attributes = <span class="value"></span></h4>
 	<p>[line 58]</p>
   contains all ldap attributes which should be written<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$autoAddObjectClasses"></a>
+	<p></p>
+	<h4>$autoAddObjectClasses = <span class="value"></span></h4>
+	<p>[line 67]</p>
+  if true, managed object classes are added when an account is created or loaded (default: true)<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -458,19 +494,46 @@ Parent class of all account modules.<br /><br /><br /><br />
 <div class="tags">
 
   <hr />
-	<a name="methodbaseModule"></a>
-	<h3>constructor baseModule <span class="smalllinenumber">[line 71]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 74]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>baseModule baseModule(
+		<code>baseModule __construct(
 string
 $scope)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
 		Creates a new base module class<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
 
+	<p>Overridden in child classes as:<br />
+		<dl>
+	<dt><a href="../modules/sambaAccount.html#method__construct">sambaAccount::__construct()</a></dt>
+		<dd>Creates a new sambaAccount object.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaSamAccount.html#method__construct">sambaSamAccount::__construct()</a></dt>
+		<dd>Creates a new sambaSamAccount object.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/kolabUser.html#method__construct">kolabUser::__construct()</a></dt>
+		<dd>Creates a new kolabUser object.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaGroupMapping.html#method__construct">sambaGroupMapping::__construct()</a></dt>
+		<dd>Creates a new module for Samba 3 groups.</dd>
+	</dl>
+	</p>
 	
         <h4>Parameters:</h4>
     <div class="tags">
@@ -486,7 +549,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodbuild_uploadAccounts"></a>
-	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 495]</span></h3>
+	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 507]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -520,30 +583,6 @@ $partialAccounts)</code>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/inetLocalMailRecipient.html#methodbuild_uploadAccounts">inetLocalMailRecipient::build_uploadAccounts()</a></dt>
-		<dd>In this function the LDAP account is built up.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodbuild_uploadAccounts">inetOrgPerson::build_uploadAccounts()</a></dt>
-		<dd>In this function the LDAP account is built up.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/kolabUser.html#methodbuild_uploadAccounts">kolabUser::build_uploadAccounts()</a></dt>
-		<dd>In this function the LDAP account is built up.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/ldapPublicKey.html#methodbuild_uploadAccounts">ldapPublicKey::build_uploadAccounts()</a></dt>
-		<dd>In this function the LDAP account is built up.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/nisMailAlias.html#methodbuild_uploadAccounts">nisMailAlias::build_uploadAccounts()</a></dt>
-		<dd>In this function the LDAP account is built up.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/posixAccount.html#methodbuild_uploadAccounts">posixAccount::build_uploadAccounts()</a></dt>
-		<dd>In this function the LDAP account is built up.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methodbuild_uploadAccounts">posixGroup::build_uploadAccounts()</a></dt>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
@@ -552,7 +591,15 @@ $partialAccounts)</code>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaDomain.html#methodbuild_uploadAccounts">sambaDomain::build_uploadAccounts()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodbuild_uploadAccounts">sambaSamAccount::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/posixAccount.html#methodbuild_uploadAccounts">posixAccount::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/kolabUser.html#methodbuild_uploadAccounts">kolabUser::build_uploadAccounts()</a></dt>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
 		<dl>
@@ -560,11 +607,31 @@ $partialAccounts)</code>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodbuild_uploadAccounts">sambaSamAccount::build_uploadAccounts()</a></dt>
+	<dt><a href="../modules/shadowAccount.html#methodbuild_uploadAccounts">shadowAccount::build_uploadAccounts()</a></dt>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/shadowAccount.html#methodbuild_uploadAccounts">shadowAccount::build_uploadAccounts()</a></dt>
+	<dt><a href="../modules/ldapPublicKey.html#methodbuild_uploadAccounts">ldapPublicKey::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaDomain.html#methodbuild_uploadAccounts">sambaDomain::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetOrgPerson.html#methodbuild_uploadAccounts">inetOrgPerson::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetLocalMailRecipient.html#methodbuild_uploadAccounts">inetLocalMailRecipient::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/groupOfNames.html#methodbuild_uploadAccounts">groupOfNames::build_uploadAccounts()</a></dt>
+		<dd>In this function the LDAP account is built up.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/nisMailAlias.html#methodbuild_uploadAccounts">nisMailAlias::build_uploadAccounts()</a></dt>
 		<dd>In this function the LDAP account is built up.</dd>
 	</dl>
 	</p>
@@ -598,7 +665,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodcan_manage"></a>
-	<h3>method can_manage <span class="smalllinenumber">[line 160]</span></h3>
+	<h3>method can_manage <span class="smalllinenumber">[line 172]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -623,7 +690,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodcheckSelfServiceOptions"></a>
-	<h3>method checkSelfServiceOptions <span class="smalllinenumber">[line 726]</span></h3>
+	<h3>method checkSelfServiceOptions <span class="smalllinenumber">[line 738]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -647,7 +714,7 @@ $attributes)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodcheckSelfServiceOptions">inetOrgPerson::checkSelfServiceOptions()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodcheckSelfServiceOptions">sambaSamAccount::checkSelfServiceOptions()</a></dt>
 		<dd>Checks if all input values are correct and returns the LDAP commands which should be executed.</dd>
 	</dl>
 		<dl>
@@ -655,7 +722,7 @@ $attributes)</code>
 		<dd>Checks if all input values are correct and returns the LDAP commands which should be executed.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodcheckSelfServiceOptions">sambaSamAccount::checkSelfServiceOptions()</a></dt>
+	<dt><a href="../modules/inetOrgPerson.html#methodcheckSelfServiceOptions">inetOrgPerson::checkSelfServiceOptions()</a></dt>
 		<dd>Checks if all input values are correct and returns the LDAP commands which should be executed.</dd>
 	</dl>
 	</p>
@@ -679,7 +746,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodcheckSelfServiceSettings"></a>
-	<h3>method checkSelfServiceSettings <span class="smalllinenumber">[line 747]</span></h3>
+	<h3>method checkSelfServiceSettings <span class="smalllinenumber">[line 759]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -715,7 +782,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methodcheck_configOptions"></a>
-	<h3>method check_configOptions <span class="smalllinenumber">[line 355]</span></h3>
+	<h3>method check_configOptions <span class="smalllinenumber">[line 367]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -763,7 +830,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methodcheck_profileOptions"></a>
-	<h3>method check_profileOptions <span class="smalllinenumber">[line 240]</span></h3>
+	<h3>method check_profileOptions <span class="smalllinenumber">[line 252]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -805,7 +872,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddelete_attributes"></a>
-	<h3>method delete_attributes <span class="smalllinenumber">[line 628]</span></h3>
+	<h3>method delete_attributes <span class="smalllinenumber">[line 640]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -827,12 +894,12 @@ $options)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methoddelete_attributes">posixAccount::delete_attributes()</a></dt>
-		<dd>Additional LDAP operations on delete.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methoddelete_attributes">posixGroup::delete_attributes()</a></dt>
 		<dd>Checks if the group which should be deleted is still used as primary group.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/posixAccount.html#methoddelete_attributes">posixAccount::delete_attributes()</a></dt>
+		<dd>Additional LDAP operations on delete.</dd>
 	</dl>
 	</p>
 	
@@ -840,7 +907,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_delete"></a>
-	<h3>method display_html_delete <span class="smalllinenumber">[line 637]</span></h3>
+	<h3>method display_html_delete <span class="smalllinenumber">[line 649]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -871,7 +938,7 @@ $options)</code>
   </div>
   <hr />
 	<a name="methoddoUploadPostActions"></a>
-	<h3>method doUploadPostActions <span class="smalllinenumber">[line 563]</span></h3>
+	<h3>method doUploadPostActions <span class="smalllinenumber">[line 575]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -898,11 +965,11 @@ $temp)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methoddoUploadPostActions">posixAccount::doUploadPostActions()</a></dt>
+	<dt><a href="../modules/quota.html#methoddoUploadPostActions">quota::doUploadPostActions()</a></dt>
 		<dd>This function executes one post upload action.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/quota.html#methoddoUploadPostActions">quota::doUploadPostActions()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methoddoUploadPostActions">posixAccount::doUploadPostActions()</a></dt>
 		<dd>This function executes one post upload action.</dd>
 	</dl>
 	</p>
@@ -941,7 +1008,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetAccountContainer"></a>
-	<h3>method getAccountContainer <span class="smalllinenumber">[line 758]</span></h3>
+	<h3>method getAccountContainer <span class="smalllinenumber">[line 770]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -969,7 +1036,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetAttributes"></a>
-	<h3>method getAttributes <span class="smalllinenumber">[line 772]</span></h3>
+	<h3>method getAttributes <span class="smalllinenumber">[line 784]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -997,7 +1064,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetButtonStatus"></a>
-	<h3>method getButtonStatus <span class="smalllinenumber">[line 545]</span></h3>
+	<h3>method getButtonStatus <span class="smalllinenumber">[line 557]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1023,6 +1090,10 @@ $temp)</code>
 		<dd>Controls if the module button the account page is visible and activated.</dd>
 	</dl>
 		<dl>
+	<dt><a href="../modules/posixGroup.html#methodgetButtonStatus">posixGroup::getButtonStatus()</a></dt>
+		<dd>Controls if the module button the account page is visible and activated.</dd>
+	</dl>
+		<dl>
 	<dt><a href="../modules/inetOrgPerson.html#methodgetButtonStatus">inetOrgPerson::getButtonStatus()</a></dt>
 		<dd>Controls if the module button the account page is visible and activated.</dd>
 	</dl>
@@ -1030,17 +1101,38 @@ $temp)</code>
 	<dt><a href="../modules/nisMailAlias.html#methodgetButtonStatus">nisMailAlias::getButtonStatus()</a></dt>
 		<dd>Controls if the module button the account page is visible and activated.</dd>
 	</dl>
-		<dl>
-	<dt><a href="../modules/posixGroup.html#methodgetButtonStatus">posixGroup::getButtonStatus()</a></dt>
-		<dd>Controls if the module button the account page is visible and activated.</dd>
-	</dl>
 	</p>
 	
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodgetIcon"></a>
+	<h3>method getIcon <span class="smalllinenumber">[line 804]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>unknown getIcon(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Returns the path to the module icon.<br /><br /><p>The path must be releative to graphics (e.g. key.png). You can also set $this-&gt;meta['icon'].  The preferred size is 32x32px.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodgetLDAPAliases"></a>
-	<h3>method getLDAPAliases <span class="smalllinenumber">[line 658]</span></h3>
+	<h3>method getLDAPAliases <span class="smalllinenumber">[line 670]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1065,7 +1157,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetManagedAttributes"></a>
-	<h3>method getManagedAttributes <span class="smalllinenumber">[line 669]</span></h3>
+	<h3>method getManagedAttributes <span class="smalllinenumber">[line 681]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1090,7 +1182,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetManagedObjectClasses"></a>
-	<h3>method getManagedObjectClasses <span class="smalllinenumber">[line 647]</span></h3>
+	<h3>method getManagedObjectClasses <span class="smalllinenumber">[line 659]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1115,7 +1207,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetOriginalAttributes"></a>
-	<h3>method getOriginalAttributes <span class="smalllinenumber">[line 781]</span></h3>
+	<h3>method getOriginalAttributes <span class="smalllinenumber">[line 793]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1143,7 +1235,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetRequiredExtensions"></a>
-	<h3>method getRequiredExtensions <span class="smalllinenumber">[line 679]</span></h3>
+	<h3>method getRequiredExtensions <span class="smalllinenumber">[line 691]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1168,7 +1260,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetSelfServiceFields"></a>
-	<h3>method getSelfServiceFields <span class="smalllinenumber">[line 700]</span></h3>
+	<h3>method getSelfServiceFields <span class="smalllinenumber">[line 712]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1193,7 +1285,7 @@ $temp)</code>
   </div>
   <hr />
 	<a name="methodgetSelfServiceOptions"></a>
-	<h3>method getSelfServiceOptions <span class="smalllinenumber">[line 714]</span></h3>
+	<h3>method getSelfServiceOptions <span class="smalllinenumber">[line 726]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1217,11 +1309,11 @@ $attributes)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodgetSelfServiceOptions">inetOrgPerson::getSelfServiceOptions()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methodgetSelfServiceOptions">posixAccount::getSelfServiceOptions()</a></dt>
 		<dd>Returns the meta HTML code for each input field.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodgetSelfServiceOptions">posixAccount::getSelfServiceOptions()</a></dt>
+	<dt><a href="../modules/inetOrgPerson.html#methodgetSelfServiceOptions">inetOrgPerson::getSelfServiceOptions()</a></dt>
 		<dd>Returns the meta HTML code for each input field.</dd>
 	</dl>
 	</p>
@@ -1245,7 +1337,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodgetSelfServiceSearchAttributes"></a>
-	<h3>method getSelfServiceSearchAttributes <span class="smalllinenumber">[line 689]</span></h3>
+	<h3>method getSelfServiceSearchAttributes <span class="smalllinenumber">[line 701]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1270,7 +1362,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodgetSelfServiceSettings"></a>
-	<h3>method getSelfServiceSettings <span class="smalllinenumber">[line 736]</span></h3>
+	<h3>method getSelfServiceSettings <span class="smalllinenumber">[line 748]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1295,7 +1387,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_alias"></a>
-	<h3>method get_alias <span class="smalllinenumber">[line 195]</span></h3>
+	<h3>method get_alias <span class="smalllinenumber">[line 207]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1320,7 +1412,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodget_configOptions"></a>
-	<h3>method get_configOptions <span class="smalllinenumber">[line 339]</span></h3>
+	<h3>method get_configOptions <span class="smalllinenumber">[line 351]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1368,7 +1460,7 @@ $allScopes)</code>
   </div>
   <hr />
 	<a name="methodget_dependencies"></a>
-	<h3>method get_dependencies <span class="smalllinenumber">[line 219]</span></h3>
+	<h3>method get_dependencies <span class="smalllinenumber">[line 231]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1393,7 +1485,7 @@ $allScopes)</code>
   </div>
   <hr />
 	<a name="methodget_help"></a>
-	<h3>method get_help <span class="smalllinenumber">[line 509]</span></h3>
+	<h3>method get_help <span class="smalllinenumber">[line 521]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1435,7 +1527,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_ldap_filter"></a>
-	<h3>method get_ldap_filter <span class="smalllinenumber">[line 182]</span></h3>
+	<h3>method get_ldap_filter <span class="smalllinenumber">[line 194]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1460,7 +1552,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_metaData"></a>
-	<h3>method get_metaData <span class="smalllinenumber">[line 142]</span></h3>
+	<h3>method get_metaData <span class="smalllinenumber">[line 154]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1490,30 +1582,6 @@ $scope)</code>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/inetLocalMailRecipient.html#methodget_metaData">inetLocalMailRecipient::get_metaData()</a></dt>
-		<dd>Returns meta data that is interpreted by parent class</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodget_metaData">inetOrgPerson::get_metaData()</a></dt>
-		<dd>Returns meta data that is interpreted by parent class</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/kolabUser.html#methodget_metaData">kolabUser::get_metaData()</a></dt>
-		<dd>Returns meta data that is interpreted by parent class</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/ldapPublicKey.html#methodget_metaData">ldapPublicKey::get_metaData()</a></dt>
-		<dd>Returns meta data that is interpreted by parent class</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/nisMailAlias.html#methodget_metaData">nisMailAlias::get_metaData()</a></dt>
-		<dd>Returns meta data that is interpreted by parent class</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/posixAccount.html#methodget_metaData">posixAccount::get_metaData()</a></dt>
-		<dd>Returns meta data that is interpreted by parent class</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methodget_metaData">posixGroup::get_metaData()</a></dt>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
@@ -1526,7 +1594,15 @@ $scope)</code>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaDomain.html#methodget_metaData">sambaDomain::get_metaData()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodget_metaData">sambaSamAccount::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/posixAccount.html#methodget_metaData">posixAccount::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/kolabUser.html#methodget_metaData">kolabUser::get_metaData()</a></dt>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
 		<dl>
@@ -1534,11 +1610,35 @@ $scope)</code>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodget_metaData">sambaSamAccount::get_metaData()</a></dt>
+	<dt><a href="../modules/shadowAccount.html#methodget_metaData">shadowAccount::get_metaData()</a></dt>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/shadowAccount.html#methodget_metaData">shadowAccount::get_metaData()</a></dt>
+	<dt><a href="../modules/ldapPublicKey.html#methodget_metaData">ldapPublicKey::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaDomain.html#methodget_metaData">sambaDomain::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetOrgPerson.html#methodget_metaData">inetOrgPerson::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetLocalMailRecipient.html#methodget_metaData">inetLocalMailRecipient::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/groupOfNames.html#methodget_metaData">groupOfNames::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/groupOfUniqueNames.html#methodget_metaData">groupOfUniqueNames::get_metaData()</a></dt>
+		<dd>Returns meta data that is interpreted by parent class</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/nisMailAlias.html#methodget_metaData">nisMailAlias::get_metaData()</a></dt>
 		<dd>Returns meta data that is interpreted by parent class</dd>
 	</dl>
 	</p>
@@ -1547,7 +1647,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_pdfFields"></a>
-	<h3>method get_pdfFields <span class="smalllinenumber">[line 439]</span></h3>
+	<h3>method get_pdfFields <span class="smalllinenumber">[line 451]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1583,7 +1683,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodget_pdf_entries"></a>
-	<h3>method get_pdf_entries <span class="smalllinenumber">[line 454]</span></h3>
+	<h3>method get_pdf_entries <span class="smalllinenumber">[line 466]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1619,7 +1719,7 @@ $scope = 'user'])</code>
   </div>
   <hr />
 	<a name="methodget_profileOptions"></a>
-	<h3>method get_profileOptions <span class="smalllinenumber">[line 229]</span></h3>
+	<h3>method get_profileOptions <span class="smalllinenumber">[line 241]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1641,19 +1741,19 @@ $scope = 'user'])</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodget_profileOptions">posixAccount::get_profileOptions()</a></dt>
-		<dd>Returns a list of elements for the account profiles.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/quota.html#methodget_profileOptions">quota::get_profileOptions()</a></dt>
 		<dd>Returns a list of elements for the account profiles.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaGroupMapping.html#methodget_profileOptions">sambaGroupMapping::get_profileOptions()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodget_profileOptions">sambaSamAccount::get_profileOptions()</a></dt>
 		<dd>Returns a list of elements for the account profiles.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodget_profileOptions">sambaSamAccount::get_profileOptions()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methodget_profileOptions">posixAccount::get_profileOptions()</a></dt>
+		<dd>Returns a list of elements for the account profiles.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaGroupMapping.html#methodget_profileOptions">sambaGroupMapping::get_profileOptions()</a></dt>
 		<dd>Returns a list of elements for the account profiles.</dd>
 	</dl>
 	</p>
@@ -1662,7 +1762,7 @@ $scope = 'user'])</code>
   </div>
   <hr />
 	<a name="methodget_RDNAttributes"></a>
-	<h3>method get_RDNAttributes <span class="smalllinenumber">[line 209]</span></h3>
+	<h3>method get_RDNAttributes <span class="smalllinenumber">[line 221]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1687,7 +1787,7 @@ $scope = 'user'])</code>
   </div>
   <hr />
 	<a name="methodget_scope"></a>
-	<h3>method get_scope <span class="smalllinenumber">[line 151]</span></h3>
+	<h3>method get_scope <span class="smalllinenumber">[line 163]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1712,7 +1812,7 @@ $scope = 'user'])</code>
   </div>
   <hr />
 	<a name="methodget_uploadColumns"></a>
-	<h3>method get_uploadColumns <span class="smalllinenumber">[line 472]</span></h3>
+	<h3>method get_uploadColumns <span class="smalllinenumber">[line 484]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1743,7 +1843,7 @@ $scope = 'user'])</code>
   </div>
   <hr />
 	<a name="methodget_uploadPreDepends"></a>
-	<h3>method get_uploadPreDepends <span class="smalllinenumber">[line 482]</span></h3>
+	<h3>method get_uploadPreDepends <span class="smalllinenumber">[line 494]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1768,7 +1868,7 @@ $scope = 'user'])</code>
   </div>
   <hr />
 	<a name="methodinit"></a>
-	<h3>method init <span class="smalllinenumber">[line 91]</span></h3>
+	<h3>method init <span class="smalllinenumber">[line 95]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1782,10 +1882,6 @@ $base)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodinit">posixAccount::init()</a></dt>
-		<dd>Initializes the module after it became part of an accountContainer</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methodinit">posixGroup::init()</a></dt>
 		<dd>This functin will be called when the module will be loaded *</dd>
 	</dl>
@@ -1794,11 +1890,15 @@ $base)</code>
 		<dd>Initializes the module after it became part of an accountContainer</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaGroupMapping.html#methodinit">sambaGroupMapping::init()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodinit">sambaSamAccount::init()</a></dt>
 		<dd>Initializes the module after it became part of an accountContainer</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodinit">sambaSamAccount::init()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methodinit">posixAccount::init()</a></dt>
+		<dd>Initializes the module after it became part of an accountContainer</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaGroupMapping.html#methodinit">sambaGroupMapping::init()</a></dt>
 		<dd>Initializes the module after it became part of an accountContainer</dd>
 	</dl>
 	</p>
@@ -1817,7 +1917,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodis_base_module"></a>
-	<h3>method is_base_module <span class="smalllinenumber">[line 172]</span></h3>
+	<h3>method is_base_module <span class="smalllinenumber">[line 184]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1842,7 +1942,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodload_attributes"></a>
-	<h3>method load_attributes <span class="smalllinenumber">[line 110]</span></h3>
+	<h3>method load_attributes <span class="smalllinenumber">[line 118]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1856,16 +1956,16 @@ $attributes)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodload_attributes">posixAccount::load_attributes()</a></dt>
-		<dd>This function loads all needed LDAP attributes.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/sambaAccount.html#methodload_attributes">sambaAccount::load_attributes()</a></dt>
 		<dd>This function loads the LDAP attributes for this module.</dd>
 	</dl>
 		<dl>
 	<dt><a href="../modules/sambaSamAccount.html#methodload_attributes">sambaSamAccount::load_attributes()</a></dt>
 		<dd>This function loads the LDAP attributes for this module.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/posixAccount.html#methodload_attributes">posixAccount::load_attributes()</a></dt>
+		<dd>This function loads all needed LDAP attributes.</dd>
 	</dl>
 	</p>
 	
@@ -1883,7 +1983,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodload_Messages"></a>
-	<h3>method load_Messages <span class="smalllinenumber">[line 83]</span></h3>
+	<h3>method load_Messages <span class="smalllinenumber">[line 87]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1913,26 +2013,6 @@ $attributes)</code>
 		<dd>This function fills the error message array with messages</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/inetLocalMailRecipient.html#methodload_Messages">inetLocalMailRecipient::load_Messages()</a></dt>
-		<dd>This function fills the error message array with messages</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodload_Messages">inetOrgPerson::load_Messages()</a></dt>
-		<dd>This function fills the message array.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/kolabUser.html#methodload_Messages">kolabUser::load_Messages()</a></dt>
-		<dd>This function fills the error message array with messages</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/nisMailAlias.html#methodload_Messages">nisMailAlias::load_Messages()</a></dt>
-		<dd>This function fills the error message array with messages</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/posixAccount.html#methodload_Messages">posixAccount::load_Messages()</a></dt>
-		<dd>This function fills the error message array with messages.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methodload_Messages">posixGroup::load_Messages()</a></dt>
 		<dd>This function fills the $messages variable with output messages from this module.</dd>
 	</dl>
@@ -1945,7 +2025,15 @@ $attributes)</code>
 		<dd>this functin fills the error message array with messages</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaDomain.html#methodload_Messages">sambaDomain::load_Messages()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodload_Messages">sambaSamAccount::load_Messages()</a></dt>
+		<dd>this functin fills the error message array with messages</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/posixAccount.html#methodload_Messages">posixAccount::load_Messages()</a></dt>
+		<dd>This function fills the error message array with messages.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/kolabUser.html#methodload_Messages">kolabUser::load_Messages()</a></dt>
 		<dd>This function fills the error message array with messages</dd>
 	</dl>
 		<dl>
@@ -1953,12 +2041,28 @@ $attributes)</code>
 		<dd>this functin fills the error message array with messages</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodload_Messages">sambaSamAccount::load_Messages()</a></dt>
-		<dd>this functin fills the error message array with messages</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/shadowAccount.html#methodload_Messages">shadowAccount::load_Messages()</a></dt>
 		<dd>This function builds up the message array.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaDomain.html#methodload_Messages">sambaDomain::load_Messages()</a></dt>
+		<dd>This function fills the error message array with messages</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetOrgPerson.html#methodload_Messages">inetOrgPerson::load_Messages()</a></dt>
+		<dd>This function fills the message array.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetLocalMailRecipient.html#methodload_Messages">inetLocalMailRecipient::load_Messages()</a></dt>
+		<dd>This function fills the error message array with messages</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/groupOfNames.html#methodload_Messages">groupOfNames::load_Messages()</a></dt>
+		<dd>This function fills the $messages variable with output messages from this module.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/nisMailAlias.html#methodload_Messages">nisMailAlias::load_Messages()</a></dt>
+		<dd>This function fills the error message array with messages</dd>
 	</dl>
 	</p>
 	
@@ -1966,7 +2070,7 @@ $attributes)</code>
   </div>
   <hr />
 	<a name="methodload_profile"></a>
-	<h3>method load_profile <span class="smalllinenumber">[line 321]</span></h3>
+	<h3>method load_profile <span class="smalllinenumber">[line 333]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1980,10 +2084,6 @@ $profile)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodload_profile">posixAccount::load_profile()</a></dt>
-		<dd>Loads the values of an account profile into internal variables.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/quota.html#methodload_profile">quota::load_profile()</a></dt>
 		<dd>Loads the values of an account profile into internal variables.</dd>
 	</dl>
@@ -1992,11 +2092,15 @@ $profile)</code>
 		<dd>Loads the values of an account profile into internal variables.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaGroupMapping.html#methodload_profile">sambaGroupMapping::load_profile()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodload_profile">sambaSamAccount::load_profile()</a></dt>
 		<dd>Loads the values of an account profile into internal variables.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodload_profile">sambaSamAccount::load_profile()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methodload_profile">posixAccount::load_profile()</a></dt>
+		<dd>Loads the values of an account profile into internal variables.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaGroupMapping.html#methodload_profile">sambaGroupMapping::load_profile()</a></dt>
 		<dd>Loads the values of an account profile into internal variables.</dd>
 	</dl>
 		<dl>
@@ -2019,7 +2123,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodmodule_complete"></a>
-	<h3>method module_complete <span class="smalllinenumber">[line 536]</span></h3>
+	<h3>method module_complete <span class="smalllinenumber">[line 548]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2045,18 +2149,6 @@ $profile)</code>
 		<dd>This functions returns true if all needed settings are done.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodmodule_complete">inetOrgPerson::module_complete()</a></dt>
-		<dd>This functions return true if all needed settings are done.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/kolabUser.html#methodmodule_complete">kolabUser::module_complete()</a></dt>
-		<dd>This function returns true if all needed settings are done.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/posixAccount.html#methodmodule_complete">posixAccount::module_complete()</a></dt>
-		<dd>This functions is used to check if all settings for this module have been made.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methodmodule_complete">posixGroup::module_complete()</a></dt>
 		<dd>This functions is used to check if all settings for this module have been made.</dd>
 	</dl>
@@ -2065,7 +2157,19 @@ $profile)</code>
 		<dd>This functions returns true if all needed settings are done</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaGroupMapping.html#methodmodule_complete">sambaGroupMapping::module_complete()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methodmodule_complete">posixAccount::module_complete()</a></dt>
+		<dd>This functions is used to check if all settings for this module have been made.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/kolabUser.html#methodmodule_complete">kolabUser::module_complete()</a></dt>
+		<dd>This function returns true if all needed settings are done.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetOrgPerson.html#methodmodule_complete">inetOrgPerson::module_complete()</a></dt>
+		<dd>This functions return true if all needed settings are done.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/groupOfNames.html#methodmodule_complete">groupOfNames::module_complete()</a></dt>
 		<dd>This functions is used to check if all settings for this module have been made.</dd>
 	</dl>
 	</p>
@@ -2074,7 +2178,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodmodule_ready"></a>
-	<h3>method module_ready <span class="smalllinenumber">[line 527]</span></h3>
+	<h3>method module_ready <span class="smalllinenumber">[line 539]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2104,11 +2208,11 @@ $profile)</code>
 		<dd>This function is used to check if this module page can be displayed.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaGroupMapping.html#methodmodule_ready">sambaGroupMapping::module_ready()</a></dt>
+	<dt><a href="../modules/sambaSamAccount.html#methodmodule_ready">sambaSamAccount::module_ready()</a></dt>
 		<dd>This function is used to check if this module page can be displayed.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaSamAccount.html#methodmodule_ready">sambaSamAccount::module_ready()</a></dt>
+	<dt><a href="../modules/sambaGroupMapping.html#methodmodule_ready">sambaGroupMapping::module_ready()</a></dt>
 		<dd>This function is used to check if this module page can be displayed.</dd>
 	</dl>
 	</p>
@@ -2117,7 +2221,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodpostDeleteActions"></a>
-	<h3>method postDeleteActions <span class="smalllinenumber">[line 619]</span></h3>
+	<h3>method postDeleteActions <span class="smalllinenumber">[line 631]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2133,7 +2237,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodpostModifyActions"></a>
-	<h3>method postModifyActions <span class="smalllinenumber">[line 602]</span></h3>
+	<h3>method postModifyActions <span class="smalllinenumber">[line 614]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2147,12 +2251,12 @@ $newAccount)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodpostModifyActions">posixAccount::postModifyActions()</a></dt>
-		<dd>Allows the module to run commands after the LDAP entry was changed or created.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/quota.html#methodpostModifyActions">quota::postModifyActions()</a></dt>
 		<dd>Allows the module to run commands after the LDAP entry is changed or created.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/posixAccount.html#methodpostModifyActions">posixAccount::postModifyActions()</a></dt>
+		<dd>Allows the module to run commands after the LDAP entry was changed or created.</dd>
 	</dl>
 	</p>
 	
@@ -2170,7 +2274,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodpreDeleteActions"></a>
-	<h3>method preDeleteActions <span class="smalllinenumber">[line 612]</span></h3>
+	<h3>method preDeleteActions <span class="smalllinenumber">[line 624]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2192,11 +2296,11 @@ $newAccount)</code>
 
 	<p>Overridden in child classes as:<br />
 		<dl>
-	<dt><a href="../modules/posixAccount.html#methodpreDeleteActions">posixAccount::preDeleteActions()</a></dt>
+	<dt><a href="../modules/quota.html#methodpreDeleteActions">quota::preDeleteActions()</a></dt>
 		<dd>Allows the module to run commands before the LDAP entry is deleted.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/quota.html#methodpreDeleteActions">quota::preDeleteActions()</a></dt>
+	<dt><a href="../modules/posixAccount.html#methodpreDeleteActions">posixAccount::preDeleteActions()</a></dt>
 		<dd>Allows the module to run commands before the LDAP entry is deleted.</dd>
 	</dl>
 	</p>
@@ -2205,7 +2309,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodpreModifyActions"></a>
-	<h3>method preModifyActions <span class="smalllinenumber">[line 593]</span></h3>
+	<h3>method preModifyActions <span class="smalllinenumber">[line 605]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2241,7 +2345,7 @@ $newAccount)</code>
   </div>
   <hr />
 	<a name="methodsave_attributes"></a>
-	<h3>method save_attributes <span class="smalllinenumber">[line 582]</span></h3>
+	<h3>method save_attributes <span class="smalllinenumber">[line 594]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2267,22 +2371,6 @@ $newAccount)</code>
 		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/inetOrgPerson.html#methodsave_attributes">inetOrgPerson::save_attributes()</a></dt>
-		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/kolabUser.html#methodsave_attributes">kolabUser::save_attributes()</a></dt>
-		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/nisMailAlias.html#methodsave_attributes">nisMailAlias::save_attributes()</a></dt>
-		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
-	</dl>
-		<dl>
-	<dt><a href="../modules/posixAccount.html#methodsave_attributes">posixAccount::save_attributes()</a></dt>
-		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/posixGroup.html#methodsave_attributes">posixGroup::save_attributes()</a></dt>
 		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
 	</dl>
@@ -2291,15 +2379,31 @@ $newAccount)</code>
 		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
 	</dl>
 		<dl>
-	<dt><a href="../modules/sambaGroupMapping.html#methodsave_attributes">sambaGroupMapping::save_attributes()</a></dt>
-		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
-	</dl>
-		<dl>
 	<dt><a href="../modules/sambaSamAccount.html#methodsave_attributes">sambaSamAccount::save_attributes()</a></dt>
 		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
 	</dl>
 		<dl>
+	<dt><a href="../modules/posixAccount.html#methodsave_attributes">posixAccount::save_attributes()</a></dt>
+		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/kolabUser.html#methodsave_attributes">kolabUser::save_attributes()</a></dt>
+		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/sambaGroupMapping.html#methodsave_attributes">sambaGroupMapping::save_attributes()</a></dt>
+		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
+	</dl>
+		<dl>
 	<dt><a href="../modules/shadowAccount.html#methodsave_attributes">shadowAccount::save_attributes()</a></dt>
+		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/inetOrgPerson.html#methodsave_attributes">inetOrgPerson::save_attributes()</a></dt>
+		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
+	</dl>
+		<dl>
+	<dt><a href="../modules/nisMailAlias.html#methodsave_attributes">nisMailAlias::save_attributes()</a></dt>
 		<dd>Returns a list of modifications which have to be made to the LDAP account.</dd>
 	</dl>
 	</p>
@@ -2311,7 +2415,7 @@ $newAccount)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:39 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:58:52 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

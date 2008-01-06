@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -53,6 +53,10 @@
 			<a href="../modules/_lib---createntlm.inc.html">		createntlm.inc
 		</a><br>
 			<a href="../modules/_templates---account---edit.php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfNames.inc.html">		groupOfNames.inc
+		</a><br>
+			<a href="../modules/_lib---modules---groupOfUniqueNames.inc.html">		groupOfUniqueNames.inc
 		</a><br>
 			<a href="../modules/_lib---modules---ieee802device.inc.html">		ieee802device.inc
 		</a><br>
@@ -97,6 +101,8 @@
 		    		<a href="../modules/account.html">account</a><br />
 	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
 	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/groupOfNames.html">groupOfNames</a><br />
+	    		<a href="../modules/groupOfUniqueNames.html">groupOfUniqueNames</a><br />
 	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
 	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
 	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
@@ -146,7 +152,7 @@ Source Location: /lib/modules/sambaGroupMapping.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../modules/sambaGroupMapping.html#methodsambaGroupMapping">sambaGroupMapping</a></li>
+    <li><a href="../modules/sambaGroupMapping.html#method__construct">__construct</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodbuild_uploadAccounts">build_uploadAccounts</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methoddisplay_html_attributes">display_html_attributes</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodget_metaData">get_metaData</a></li>
@@ -155,7 +161,6 @@ Source Location: /lib/modules/sambaGroupMapping.inc<br /><br />
     <li><a href="../modules/sambaGroupMapping.html#methodinit">init</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodload_Messages">load_Messages</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodload_profile">load_profile</a></li>
-    <li><a href="../modules/sambaGroupMapping.html#methodmodule_complete">module_complete</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodmodule_ready">module_ready</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodprocess_attributes">process_attributes</a></li>
     <li><a href="../modules/sambaGroupMapping.html#methodsave_attributes">save_attributes</a></li>
@@ -177,6 +182,12 @@ Source Location: /lib/modules/sambaGroupMapping.inc<br /><br />
 <dl>
 <dt>
   <a href="../modules/baseModule.html#var$attributes">baseModule::$attributes</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
+  <a href="../modules/baseModule.html#var$autoAddObjectClasses">baseModule::$autoAddObjectClasses</a>
   </dt>
 <dd>
    
@@ -221,7 +232,7 @@ Source Location: /lib/modules/sambaGroupMapping.inc<br /><br />
 <h4>Class: <a href="../modules/baseModule.html">baseModule</a></h4>
 <dl>
     <dt>
-    <a href="../modules/baseModule.html#methodbaseModule">baseModule::baseModule()</a>
+    <a href="../modules/baseModule.html#method__construct">baseModule::__construct()</a>
   </dt>
   <dd>
     Creates a new base module class
@@ -297,6 +308,12 @@ Source Location: /lib/modules/sambaGroupMapping.inc<br /><br />
   </dt>
   <dd>
     Controls if the module button the account page is visible and activated.
+  </dd>
+    <dt>
+    <a href="../modules/baseModule.html#methodgetIcon">baseModule::getIcon()</a>
+  </dt>
+  <dd>
+    Returns the path to the module icon.
   </dd>
     <dt>
     <a href="../modules/baseModule.html#methodgetLDAPAliases">baseModule::getLDAPAliases()</a>
@@ -523,12 +540,12 @@ Manages the object class &quot;sambaGroupMapping&quot; for groups.<br /><br /></
 <div class="tags">
 
   <hr />
-	<a name="methodsambaGroupMapping"></a>
-	<h3>constructor sambaGroupMapping <span class="smalllinenumber">[line 52]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 52]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>sambaGroupMapping sambaGroupMapping(
+		<code>sambaGroupMapping __construct(
 string
 $scope)</code>
     </td></tr></table>
@@ -536,7 +553,7 @@ $scope)</code>
 	
 		Creates a new module for Samba 3 groups.<br /><br /><br /><br />
 
-	
+	Overrides <a href="../modules/baseModule.html#method__construct">baseModule::__construct()</a> (Creates a new base module class)<br /><br />
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -551,7 +568,7 @@ $scope)</code>
   </div>
   <hr />
 	<a name="methodbuild_uploadAccounts"></a>
-	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 101]</span></h3>
+	<h3>method build_uploadAccounts <span class="smalllinenumber">[line 102]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -605,7 +622,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methoddisplay_html_attributes"></a>
-	<h3>method display_html_attributes <span class="smalllinenumber">[line 171]</span></h3>
+	<h3>method display_html_attributes <span class="smalllinenumber">[line 172]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -630,7 +647,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodget_metaData"></a>
-	<h3>method get_metaData <span class="smalllinenumber">[line 238]</span></h3>
+	<h3>method get_metaData <span class="smalllinenumber">[line 250]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -655,7 +672,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodget_pdfEntries"></a>
-	<h3>method get_pdfEntries <span class="smalllinenumber">[line 328]</span></h3>
+	<h3>method get_pdfEntries <span class="smalllinenumber">[line 342]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -680,7 +697,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodget_profileOptions"></a>
-	<h3>method get_profileOptions <span class="smalllinenumber">[line 342]</span></h3>
+	<h3>method get_profileOptions <span class="smalllinenumber">[line 356]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -705,7 +722,7 @@ $partialAccounts)</code>
   </div>
   <hr />
 	<a name="methodinit"></a>
-	<h3>method init <span class="smalllinenumber">[line 83]</span></h3>
+	<h3>method init <span class="smalllinenumber">[line 84]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -732,7 +749,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodload_Messages"></a>
-	<h3>method load_Messages <span class="smalllinenumber">[line 380]</span></h3>
+	<h3>method load_Messages <span class="smalllinenumber">[line 394]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -748,7 +765,7 @@ $base)</code>
   </div>
   <hr />
 	<a name="methodload_profile"></a>
-	<h3>method load_profile <span class="smalllinenumber">[line 365]</span></h3>
+	<h3>method load_profile <span class="smalllinenumber">[line 379]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -774,33 +791,8 @@ $profile)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodmodule_complete"></a>
-	<h3>method module_complete <span class="smalllinenumber">[line 392]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>boolean module_complete(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		This functions is used to check if all settings for this module have been made.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>true, if settings are complete</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	Overrides <a href="../modules/baseModule.html#methodmodule_complete">baseModule::module_complete()</a> (This functions is used to check if all settings for this module have been made.)<br /><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="methodmodule_ready"></a>
-	<h3>method module_ready <span class="smalllinenumber">[line 406]</span></h3>
+	<h3>method module_ready <span class="smalllinenumber">[line 407]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -825,7 +817,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodprocess_attributes"></a>
-	<h3>method process_attributes <span class="smalllinenumber">[line 419]</span></h3>
+	<h3>method process_attributes <span class="smalllinenumber">[line 420]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -850,7 +842,7 @@ $profile)</code>
   </div>
   <hr />
 	<a name="methodsave_attributes"></a>
-	<h3>method save_attributes <span class="smalllinenumber">[line 476]</span></h3>
+	<h3>method save_attributes <span class="smalllinenumber">[line 480]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -878,7 +870,7 @@ $profile)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:11:04 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:25 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -46,6 +46,8 @@
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
+			<a href="../lists/_templates---lists---changePassword.php.html">		changePassword.php
+		</a><br>
 			<a href="../lists/_templates---lists---deletelink.php.html">		deletelink.php
 		</a><br>
 			<a href="../lists/_templates---lists---list.php.html">		list.php
@@ -118,10 +120,14 @@
       
             <b>Classes:</b><br />
         <div class="package">
-		    		<a href="../lists/lamGroupList.html">lamGroupList</a><br />
+		    		<a href="../lists/lamBooleanListOption.html">lamBooleanListOption</a><br />
+	    		<a href="../lists/lamGroupList.html">lamGroupList</a><br />
 	    		<a href="../lists/lamHostList.html">lamHostList</a><br />
 	    		<a href="../lists/lamList.html">lamList</a><br />
+	    		<a href="../lists/lamListOption.html">lamListOption</a><br />
+	    		<a href="../lists/lamListTool.html">lamListTool</a><br />
 	    		<a href="../lists/lamMailAliasList.html">lamMailAliasList</a><br />
+	    		<a href="../lists/lamSelectListOption.html">lamSelectListOption</a><br />
 	    		<a href="../lists/lamSmbDomainList.html">lamSmbDomainList</a><br />
 	    		<a href="../lists/lamUserList.html">lamUserList</a><br />
 	  </div>
@@ -160,7 +166,7 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../lists/lamMailAliasList.html#methodlamMailAliasList">lamMailAliasList</a></li>
+    <li><a href="../lists/lamMailAliasList.html#method__construct">__construct</a></li>
   </ul>
 </td>
 
@@ -171,6 +177,20 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
 
 
 
+<td valign="top">
+<h3>Inherited Constants</h3>
+<div class="tags">
+<h4>Class: <a href="../lists/lamList.html">lamList</a></h4>
+<dl>
+<dt>
+  <a href="../lists/lamList.html#constLIST_SIZE_OPTION_NAME">lamList::LIST_SIZE_OPTION_NAME</a>
+</dt>
+<dd>
+   
+</dd>
+</dl>
+</div>
+</td>
 
 <td valign="top">
 <h3>Inherited Variables</h3>
@@ -238,6 +258,12 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
    
 </dd>
 <dt>
+  <a href="../lists/lamList.html#var$sortDirection">lamList::$sortDirection</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
   <a href="../lists/lamList.html#var$suffix">lamList::$suffix</a>
   </dt>
 <dd>
@@ -259,7 +285,7 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
 <h4>Class: <a href="../lists/lamList.html">lamList</a></h4>
 <dl>
     <dt>
-    <a href="../lists/lamList.html#methodlamList">lamList::lamList()</a>
+    <a href="../lists/lamList.html#method__construct">lamList::__construct()</a>
   </dt>
   <dd>
     Constructor
@@ -271,16 +297,22 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
     Compare function used for usort-method
   </dd>
     <dt>
+    <a href="../lists/lamList.html#methodgetAdditionalTools">lamList::getAdditionalTools()</a>
+  </dt>
+  <dd>
+    Returns a list of lamListTool objects to display next to the edit/delete buttons.
+  </dd>
+    <dt>
     <a href="../lists/lamList.html#methodlistBuildFilter">lamList::listBuildFilter()</a>
   </dt>
   <dd>
     Builds the regular expressions from the filter values.
   </dd>
     <dt>
-    <a href="../lists/lamList.html#methodlistDoPost">lamList::listDoPost()</a>
+    <a href="../lists/lamList.html#methodlistConfigurationChanged">lamList::listConfigurationChanged()</a>
   </dt>
   <dd>
-    Manages all POST actions (e.g. button pressed) for the account lists.
+    Called when the configuration options changed.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistDrawNavigationBar">lamList::listDrawNavigationBar()</a>
@@ -295,10 +327,16 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
     Removes all entries which do not fit to the filter.
   </dd>
     <dt>
-    <a href="../lists/lamList.html#methodlistGetAttributeDescriptionList">lamList::listGetAttributeDescriptionList()</a>
+    <a href="../lists/lamList.html#methodlistGetAllConfigOptions">lamList::listGetAllConfigOptions()</a>
   </dt>
   <dd>
-    Returns an hash array containing with all attributes to be shown and their descriptions.
+    Returns a list of possible configuration options.
+  </dd>
+    <dt>
+    <a href="../lists/lamList.html#methodlistGetConfigOptionByID">lamList::listGetConfigOptionByID()</a>
+  </dt>
+  <dd>
+    Returns the configuration option with the given ID.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistGetParams">lamList::listGetParams()</a>
@@ -307,34 +345,28 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
     Sets some internal parameters.
   </dd>
     <dt>
-    <a href="../lists/lamList.html#methodlistPrintAdditionalOptions">lamList::listPrintAdditionalOptions()</a>
-  </dt>
-  <dd>
-    Prints additional option fields for specific object types.
-  </dd>
-    <dt>
     <a href="../lists/lamList.html#methodlistPrintButtons">lamList::listPrintButtons()</a>
   </dt>
   <dd>
-    Prints the create, delete and PDF buttons.
+    Prints the create and delete buttons.
+  </dd>
+    <dt>
+    <a href="../lists/lamList.html#methodlistPrintConfigurationPage">lamList::listPrintConfigurationPage()</a>
+  </dt>
+  <dd>
+    Prints the list configuration page.
+  </dd>
+    <dt>
+    <a href="../lists/lamList.html#methodlistPrintFooter">lamList::listPrintFooter()</a>
+  </dt>
+  <dd>
+    Prints the HTML footer.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistPrintHeader">lamList::listPrintHeader()</a>
   </dt>
   <dd>
-    Prints the HTML head.
-  </dd>
-    <dt>
-    <a href="../lists/lamList.html#methodlistPrintJavaScript">lamList::listPrintJavaScript()</a>
-  </dt>
-  <dd>
-    Prints JavaScript code needed for mouse-over effects.
-  </dd>
-    <dt>
-    <a href="../lists/lamList.html#methodlistPrintPDFButtons">lamList::listPrintPDFButtons()</a>
-  </dt>
-  <dd>
-    Prints the PDF button bar.
+    Prints the HTML header.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistPrintTableBody">lamList::listPrintTableBody()</a>
@@ -353,12 +385,6 @@ Source Location: /lib/types/mailAlias.inc<br /><br />
   </dt>
   <dd>
     Prints the attribute and filter row at the account table head
-  </dd>
-    <dt>
-    <a href="../lists/lamList.html#methodlistPrintToolLinks">lamList::listPrintToolLinks()</a>
-  </dt>
-  <dd>
-    Prints the tool image links (e.g. edit and delete) for each account.
   </dd>
     <dt>
     <a href="../lists/lamList.html#methodlistRefreshData">lamList::listRefreshData()</a>
@@ -414,12 +440,12 @@ Generates the list view.<br /><br /><br /><br />
 <div class="tags">
 
   <hr />
-	<a name="methodlamMailAliasList"></a>
-	<h3>constructor lamMailAliasList <span class="smalllinenumber">[line 105]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 105]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>lamList lamMailAliasList(
+		<code><a href="../lists/lamList.html">lamList</a> __construct(
 string
 $type)</code>
     </td></tr></table>
@@ -436,7 +462,7 @@ $type)</code>
 </div>
 <br /><br />
 
-	
+	Overrides <a href="../lists/lamList.html#method__construct">lamList::__construct()</a> (Constructor)<br /><br />
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
@@ -454,7 +480,7 @@ $type)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:56 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:15 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -3,6 +3,7 @@
 <head>
   <title>Developer FAQ</title>
   <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
 <div style="text-align: center;">
@@ -26,13 +27,13 @@ How can I make LDAP operations, where is the user name and password?</span></big
 <br>
 <span style="font-weight: bold;"><big>A:</big> </span>LAM
 automatically reconnects to the LDAP server on every page load. You can
-use <span style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server</span>
+use <span style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server()</span>
 which is the LDAP server handle.<br>
 Be sure to include ldap.inc before (automatically included for account
 modules).<br>
 <br>
 <span style="font-weight: bold;">Example:</span> ldap_search(<span
- style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server</span><span
+ style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server()</span><span
  style="color: rgb(204, 0, 0);"></span>, $suffix, $filter, $attributes)<br>
 <br>
 <br>

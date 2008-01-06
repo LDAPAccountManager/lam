@@ -26,8 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_configuration.html">configuration</a><br />
@@ -80,18 +80,12 @@ Source Location: /lib/ldap.inc<br /><br />
         
 </td>
 
-<td valign="top">
-<h3><a href="#class_vars">Variables</a></h3>
-<ul>
-    <li><a href="../LDAP/Ldap.html#var$supports_unix_hosts">$supports_unix_hosts</a></li>
-  </ul>
-</td>
 
 
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../LDAP/Ldap.html#methodLdap">Ldap</a></li>
+    <li><a href="../LDAP/Ldap.html#method__construct">__construct</a></li>
     <li><a href="../LDAP/Ldap.html#methodclose">close</a></li>
     <li><a href="../LDAP/Ldap.html#methodcmp_array">cmp_array</a></li>
     <li><a href="../LDAP/Ldap.html#methodconnect">connect</a></li>
@@ -103,8 +97,6 @@ Source Location: /lib/ldap.inc<br /><br />
     <li><a href="../LDAP/Ldap.html#methodnew_rand">new_rand</a></li>
     <li><a href="../LDAP/Ldap.html#methodsearch_units">search_units</a></li>
     <li><a href="../LDAP/Ldap.html#methodserver">server</a></li>
-    <li><a href="../LDAP/Ldap.html#methodupdateCapabilities">updateCapabilities</a></li>
-    <li><a href="../LDAP/Ldap.html#methodupdateClasses">updateClasses</a></li>
     <li><a href="../LDAP/Ldap.html#method__sleep">__sleep</a></li>
     <li><a href="../LDAP/Ldap.html#method__wakeup">__wakeup</a></li>
   </ul>
@@ -130,35 +122,6 @@ Source Location: /lib/ldap.inc<br /><br />
 Ldap manages connection to LDAP and includes several helper functions.<br /><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
-<hr />
-<a name="class_vars"></a>
-<h3>Class Variables</h3>
-<div class="tags">
-	<a name="var$supports_unix_hosts"></a>
-	<p></p>
-	<h4>$supports_unix_hosts = <span class="value">&nbsp;false</span></h4>
-	<p>[line 74]</p>
-  Host attribute in inetOrgPerson<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-</div><br />
 
 <hr />
 <a name="class_methods"></a>
@@ -166,12 +129,12 @@ Ldap manages connection to LDAP and includes several helper functions.<br /><br 
 <div class="tags">
 
   <hr />
-	<a name="methodLdap"></a>
-	<h3>constructor Ldap <span class="smalllinenumber">[line 82]</span></h3>
+	<a name="method__construct"></a>
+	<h3>constructor __construct <span class="smalllinenumber">[line 73]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>Ldap Ldap(
+		<code>Ldap __construct(
 object
 $config)</code>
     </td></tr></table>
@@ -194,7 +157,7 @@ $config)</code>
   </div>
   <hr />
 	<a name="methodclose"></a>
-	<h3>method close <span class="smalllinenumber">[line 144]</span></h3>
+	<h3>method close <span class="smalllinenumber">[line 125]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -210,7 +173,7 @@ $config)</code>
   </div>
   <hr />
 	<a name="methodcmp_array"></a>
-	<h3>method cmp_array <span class="smalllinenumber">[line 440]</span></h3>
+	<h3>method cmp_array <span class="smalllinenumber">[line 314]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -252,7 +215,7 @@ $b)</code>
   </div>
   <hr />
 	<a name="methodconnect"></a>
-	<h3>method connect <span class="smalllinenumber">[line 98]</span></h3>
+	<h3>method connect <span class="smalllinenumber">[line 89]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -294,7 +257,7 @@ $passwd)</code>
   </div>
   <hr />
 	<a name="methoddecrypt"></a>
-	<h3>method decrypt <span class="smalllinenumber">[line 381]</span></h3>
+	<h3>method decrypt <span class="smalllinenumber">[line 252]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -330,7 +293,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methoddecrypt_login"></a>
-	<h3>method decrypt_login <span class="smalllinenumber">[line 417]</span></h3>
+	<h3>method decrypt_login <span class="smalllinenumber">[line 291]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -355,7 +318,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methoddestroy"></a>
-	<h3>method destroy <span class="smalllinenumber">[line 426]</span></h3>
+	<h3>method destroy <span class="smalllinenumber">[line 300]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -371,7 +334,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodencrypt"></a>
-	<h3>method encrypt <span class="smalllinenumber">[line 358]</span></h3>
+	<h3>method encrypt <span class="smalllinenumber">[line 226]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -407,7 +370,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodencrypt_login"></a>
-	<h3>method encrypt_login <span class="smalllinenumber">[line 406]</span></h3>
+	<h3>method encrypt_login <span class="smalllinenumber">[line 280]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -440,7 +403,7 @@ $password)</code>
   </div>
   <hr />
 	<a name="methodnew_rand"></a>
-	<h3>method new_rand <span class="smalllinenumber">[line 344]</span></h3>
+	<h3>method new_rand <span class="smalllinenumber">[line 212]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -465,7 +428,7 @@ $password)</code>
   </div>
   <hr />
 	<a name="methodsearch_units"></a>
-	<h3>method search_units <span class="smalllinenumber">[line 154]</span></h3>
+	<h3>method search_units <span class="smalllinenumber">[line 135]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -501,7 +464,7 @@ $suffix)</code>
   </div>
   <hr />
 	<a name="methodserver"></a>
-	<h3>method server <span class="smalllinenumber">[line 297]</span></h3>
+	<h3>method server <span class="smalllinenumber">[line 166]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -525,40 +488,8 @@ $suffix)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodupdateCapabilities"></a>
-	<h3>method updateCapabilities <span class="smalllinenumber">[line 284]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void updateCapabilities(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Updates the capabilities values (var $supports_*)<br /><br /><br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodupdateClasses"></a>
-	<h3>method updateClasses <span class="smalllinenumber">[line 181]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void updateClasses(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Reads the array of objectClasses from the LDAP server<br /><br /><br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
 	<a name="method__sleep"></a>
-	<h3>method __sleep <span class="smalllinenumber">[line 307]</span></h3>
+	<h3>method __sleep <span class="smalllinenumber">[line 176]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -574,7 +505,7 @@ $suffix)</code>
   </div>
   <hr />
 	<a name="method__wakeup"></a>
-	<h3>method __wakeup <span class="smalllinenumber">[line 315]</span></h3>
+	<h3>method __wakeup <span class="smalllinenumber">[line 183]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -593,7 +524,7 @@ $suffix)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sun, 04 Nov 2007 12:10:54 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+		    Documentation generated on Sun, 06 Jan 2008 18:59:12 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
 	      </div>
       </td></tr></table>
     </td>
