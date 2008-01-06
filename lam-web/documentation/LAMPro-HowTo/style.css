@@ -45,6 +45,11 @@ div.navfooter hr {
 	margin-top:30px;
 }
 
+div.mediaobject img {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
 h1 { color:#253aa3; }
 h2 { color:#000080; font-size:13pt; }
 
