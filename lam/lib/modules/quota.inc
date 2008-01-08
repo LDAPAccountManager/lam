@@ -234,7 +234,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
 					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
 			}
-			$ret = lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
+			lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
 		}
 	}
 
@@ -274,7 +274,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 				}
-			$ret = lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
+			lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
 		}
 		return true;
 	}
