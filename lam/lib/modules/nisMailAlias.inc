@@ -134,7 +134,7 @@ class nisMailAlias extends baseModule {
 		$return = array();
 		// alias name
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Alias name')),
+			0 => array('kind' => 'text', 'text' => _('Alias name') . '*'),
 			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'value' => $this->attributes['cn'][0]),
 			2 => array('kind' => 'help', 'value' => 'alias'));
 		// list current recipients
