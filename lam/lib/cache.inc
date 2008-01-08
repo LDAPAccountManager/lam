@@ -230,6 +230,7 @@ class cache {
 				}
 			}
 		}
+		return null;
 	}
 
 

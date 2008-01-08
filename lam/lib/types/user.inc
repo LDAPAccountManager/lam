@@ -222,13 +222,11 @@ class lamUserList extends lamList {
 	 * @return lamListTool[] tools
 	 */
 	protected function getAdditionalTools() {
-		if (!isLAMProVersion()) {
-			return array();
-		}
-		elseif (checkIfPasswordChangeIsAllowed()) {
+		if (isLAMProVersion() && checkIfPasswordChangeIsAllowed()) {
 			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
 			return array($passwordTool);
 		}
+		return array();
 	}
 
 	/**
