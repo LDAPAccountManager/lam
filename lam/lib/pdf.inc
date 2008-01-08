@@ -64,11 +64,7 @@ function createModulePDF($accounts,$pdf_structure="default") {
 
 	global $key;
 	
-	// Get account type from account container if none was specified or
-	// if it is different to the submitted or previous stored
-	if($account_type == "" || $account_type != $accounts[0]->get_type()) {
-		$account_type = $accounts[0]->get_type();
-	}
+	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
 	$load = loadPDFStructureDefinitions($account_type,$pdf_structure);
 	$structure = $load['structure'];
