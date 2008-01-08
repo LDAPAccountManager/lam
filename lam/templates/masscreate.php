@@ -222,7 +222,6 @@ function showMainPage($scope) {
 	echo "<p>&nbsp;</p>\n";
 
 	// print table example and build sample CSV
-	$sampleCSV = "";
 	$sampleCSV_head = array();
 	$sampleCSV_row = array();
 	echo "<big><b>" . _("This is an example how it would look in your spreadsheet program before you convert to CSV:") . "</b></big><br><br>\n";

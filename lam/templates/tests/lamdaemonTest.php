@@ -71,7 +71,6 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$lamdaemonOk = false;
-		$errorMessage = "";
 		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
 		$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
 		fwrite($shell, $command);
