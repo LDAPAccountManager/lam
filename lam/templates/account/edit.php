@@ -78,7 +78,7 @@ if (isset($_GET['DN'])) {
 }
 // new account
 else if (count($_POST)==0) {
-	$type = str_replace("\'", '', $_GET['type']);
+	$type = str_replace("\\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$_SESSION['account']->new_account();
