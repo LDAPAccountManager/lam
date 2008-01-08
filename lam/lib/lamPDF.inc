@@ -40,18 +40,18 @@ class lamPDF extends UFPDF {
 	/**
 	 * format settings for page layout
 	 */
-	var $page_definitions;
+	private $page_definitions;
 	
 	/**
 	* current active font name
 	*/
-	var $fontName;
+	private $fontName;
 	
 	/**
 	* list of supported fonts
 	* format: <font name> => array(<file for default font style>, <file for bold>, <italic>, <bold italic>)
 	*/
-	var $fontList = array(
+	private $fontList = array(
 		'BitstreamVeraSans-Roman' => array('vera.php', 'verab.php', 'verabi.php', 'verai.php')
 	);
 
@@ -61,7 +61,7 @@ class lamPDF extends UFPDF {
 	 * @param string $account_type
 	 * @param array $page_definitions
 	 */
-	function __construct($account_type = "user",$page_definitions = array(),$fontName) {
+	function __construct($page_definitions = array(),$fontName) {
 		$this->fontName = $fontName;
 		define('FPDF_FONTPATH', $_SESSION['lampath'] . "lib/" . 'font/');
 		// Call constructor of superclass

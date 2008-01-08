@@ -79,7 +79,7 @@ function createModulePDF($accounts,$pdf_structure="default") {
 	$fontName = "BitstreamVeraSans-Roman"; // TODO: load font name from XML file
 	
 	// Create a new PDF file acording to the account type
-	$pdf = new LamPDF($account_type,$load['page_definitions'],$fontName);
+	$pdf = new LamPDF($load['page_definitions'],$fontName);
 	
 	// Loop over each account and add a new page in the PDF file for it 
 	foreach($accounts as $account) {
