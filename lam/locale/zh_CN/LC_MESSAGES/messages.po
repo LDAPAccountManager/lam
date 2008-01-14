@@ -5121,6 +5121,11 @@ msgstr "用户UID范围与主机帐号重叠,因为LAM用户使用最高UID+1做
 msgid "The account will be saved under this LDAP suffix."
 msgstr "帐号将会保存在此后缀下."
 
+#: ../templates/tests/schemaTest.php:133
+#, php-format
+msgid "The attribute %s is not supported for the object class(es) %s by your LDAP server."
+msgstr "在你的LDAP服务器中%s属性(属于%s对象类)不被支持。"
+
 #: ../templates/tree/templates/creation/custom.php:99
 #, php-format
 msgid "The container you specified (%s) does not exist. Please try again."
