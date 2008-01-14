@@ -503,7 +503,7 @@ class lamList {
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*/
-	private function listDoPost() {
+	protected function listDoPost() {
 		// check if button was pressed and if we have to add/delete an account
 		if (isset($_POST['new']) || isset($_POST['del'])){
 			if (!checkIfWriteAccessIsAllowed()) {
