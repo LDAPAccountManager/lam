@@ -571,27 +571,7 @@ class sambaSamAccount extends baseModule {
 		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
 			return array();
 		}
-		/* Create sambaSID. Can't create it while loading attributes because
-		* it's psssible uidNumber has changed
-		*/
-		// Get Domain SID from name
-		$sambaDomains = search_domains();
-		for ($i=0; $i<count($sambaDomains); $i++ ) {
-			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
-				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomains[$i]->RIDbase;
-			}
-		}
-		$special = false;
-		if ($this->attributes['sambaSID'][0] == $SID."-500") $special = true;
-		if ($this->attributes['sambaSID'][0] == $SID."-501") $special = true;
-		if (!$special) {
-			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-			$this->attributes['sambaSID'][0] = $SID."-".($attrs['uidNumber'][0]*2+$RIDbase);
-		}
-
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-
 		return $return;
 	}
 
@@ -613,11 +593,13 @@ class sambaSamAccount extends baseModule {
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $_POST['sambaDomainName'];
 		// Get Domain SID from name
-		for ($i=0; $i<count($sambaDomains); $i++ )
+		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
 				$RIDbase = $sambaDomains[$i]->RIDbase;
-				}
+				break;
+			}
+		}
 		$flag = "[";
 		if (isset($_POST['sambaAcctFlagsD'])) {
 			$flag .= "D";
@@ -731,8 +713,10 @@ class sambaSamAccount extends baseModule {
 			// standard RID
 			else if ($_POST['sambaSID'] == "-") {
 				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
-				// change only if not yet set or previously set to special SID
-				if (!$this->attributes['sambaSID'][0] || in_array($rid, $this->rids)) {
+				// change only if not yet set, previously set to special SID or domain changed
+				if (!isset($this->attributes['sambaSID'][0])
+					|| in_array($rid, $this->rids)
+					|| (strpos($this->attributes['sambaSID'][0], $SID) === false)) {
 					$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 				}
