@@ -837,12 +837,12 @@ class accountContainer {
 		$result = array();
 		$stopProcessing = false; // when set to true, no module options are displayed
 		$errorsOccured = false;
-		$this->loadProfileIfRequested();
+		$profileLoaded = $this->loadProfileIfRequested();
 		if ($this->subpage=='') $this->subpage='attributes';
 		if (isset($_POST['accountContainerReset'])) {
 			$result = $this->load_account($this->dn_orig);
 		}
-		else {
+		elseif (!$profileLoaded) {
 			// change dn suffix
 			if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) {
 				$this->dn = $_REQUEST['suffix'];
@@ -1086,6 +1086,8 @@ class accountContainer {
 	
 	/**
 	 * Checks if the user requested to load a profile.
+	 * 
+	 * @return boolean true, if profile was loaded
 	 */
 	private function loadProfileIfRequested() {
 		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
@@ -1102,7 +1104,9 @@ class accountContainer {
 			if (isset($profile['ldap_suffix'][0])) {
 				$this->dn = $profile['ldap_suffix'][0];
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	/**
