@@ -572,6 +572,10 @@ function saveSettings() {
 		elseif ($_SESSION['conf_types'][$element] == "multiselect") {
 			$options[$element] = $_POST[$element];  // value is already an array
 		}
+		// textarea
+		elseif ($_SESSION['conf_types'][$element] == "textarea") {
+			$options[$element] = explode("\r\n", $_POST[$element]);
+		}
 	}
 
 	// get list of scopes of modules

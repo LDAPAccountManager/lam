@@ -606,12 +606,13 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						echo ' rows="' . $input[$i][$j]['rows'] . '"';
 						echo ">";
 						if (isset($values[$input[$i][$j]['name']])) {
-							echo htmlspecialchars($values[$input[$i][$j]['name']], ENT_QUOTES, "UTF-8");
+							echo htmlspecialchars(implode("\r\n", $values[$input[$i][$j]['name']]), ENT_QUOTES, "UTF-8");
 						}
 						else {
 							echo htmlspecialchars($input[$i][$j]['value'], ENT_QUOTES, "UTF-8");
 						}
 						echo "</textarea>";
+						$ret[$input[$i][$j]['name']] = 'textarea';	// save type
 						break;
 					// inner fieldset
 					case 'fieldset':
