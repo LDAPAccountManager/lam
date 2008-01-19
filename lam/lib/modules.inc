@@ -635,6 +635,9 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 							$ret[$input[$i][$j]['name']] = 'select';	// save type
 						}
 						echo ' size="' . $input[$i][$j]['size'] . '"';
+						if (!$restricted && isset($input[$i][$j]['onchange'])) {
+							echo ' onchange="' . htmlspecialchars($input[$i][$j]['onchange']) . '"';
+						}
 						// Show taborder
 						echo " tabindex=$tabindex";
 						$tabindex++;
