@@ -5,18 +5,19 @@ Format: 1.0
 Source: ldap-account-manager
 Binary: ldap-account-manager
 Architecture: all
-Version: 2.1.0-1
+Version: 2.2.0-1
 Maintainer: Roland Gruber <post@rolandgruber.de>
-Standards-Version: 3.7.2
+Homepage: http://lam.sourceforge.net/
+Standards-Version: 3.7.3
 Build-Depends: debhelper (>= 4.1.16), po-debconf
 Files: 
- c8fab15b6e7479865374792a69439bf5 2037433 ldap-account-manager_2.1.0.orig.tar.gz
- 9a5d65c905b0db6c4f5e328d11fd922f 17411 ldap-account-manager_2.1.0-1.diff.gz
+ 98dad9a1659bbf7c1ae89df689c459a7 2068466 ldap-account-manager_2.2.0.orig.tar.gz
+ e19445227cfeafcb2fa61e815f05fe29 17320 ldap-account-manager_2.2.0-1.diff.gz
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQFHMgBZq/ywNCsrGZ4RAs5aAJ9jHxmOS0c5K4qZH6Ayau/WlpEWjQCeP26s
-ftnCspBJdmfVpbe/3JPCsdM=
-=CGXy
+iD8DBQFHlLW1q/ywNCsrGZ4RApLkAJwOr6/9v+MyIcr4/9UVTtlRueudVQCbBueh
+dYjfvAkrwN2skDXu/7mh7Ag=
+=yYfo
 -----END PGP SIGNATURE-----
