@@ -25,6 +25,9 @@ Installation Instructions for LAM
    1. Extract package with:
       tar xzf ldap-account-manager-<version>.tar.gz
 
+
+   2. Install the files
+
    2a. Copy the files into the html-file scope of the webserver. For example
        /apache/htdocs.
 
@@ -37,6 +40,7 @@ Installation Instructions for LAM
 
    2b. You can also use the included configure script to install LAM. See
        "./configure --help" for a list of install options.
+
 
    3. Configure config.cfg and create a configuration profile.
       Copy config.cfg_sample to config.cfg and set the master password and default
