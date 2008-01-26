@@ -210,6 +210,16 @@ class lamUserList extends lamList {
 			$photoFile = '../../tmp/' . $jpeg_filename;
 			echo "<img src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
 		}
+		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {
+			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
+				for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+					if ($i > 0) {
+						echo ", ";
+					}
+					echo "<a href=\"mailto:" . $entry[$attribute][$i] . "\">" . $entry[$attribute][$i] . "</a>\n";
+				}
+			}
+		}
 		// print all other attributes
 		else {
 			parent::listPrintTableCellContent($entry, $attribute);
