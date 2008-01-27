@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf phpdoc
-mkdir phpdoc
-phpdoc -ue on --output "HTML:Smarty:PHP" -d ./ -t phpdoc -ti "LDAP Account Manager - Documentation" -dc "LDAP Account Manager"
+rm -rf docs/devel/phpdoc
+mkdir docs/devel/phpdoc
+phpdoc -ue on --output "HTML:Smarty:PHP" -d ./ -t docs/devel/phpdoc -ti "LDAP Account Manager - Documentation" -dc "LDAP Account Manager"
  
