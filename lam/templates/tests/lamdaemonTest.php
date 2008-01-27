@@ -54,6 +54,71 @@ echo "<body>\n";
 
 echo "<h1 align=\"center\">" . _("Lamdaemon test") . "</h1>\n";
 
+$servers = explode(";", $_SESSION['config']->get_scriptServers());
+$serverIDs = array();
+$serverTitles = array();
+for ($i = 0; $i < sizeof($servers); $i++) {
+	$serverParts = explode(":", $servers[$i]);
+	$serverName = $serverParts[0];
+	$title = $serverName;
+	if (isset($serverParts[1])) {
+		$title = $serverParts[1] . " (" . $serverName . ")";
+	}
+	$serverIDs[] = $serverName;
+	$serverTitles[$serverName] = $title;
+}
+
+if (isset($_POST['runTest'])) {
+	lamRunLamdaemonTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']));
+}
+else if ((sizeof($servers) > 0) && isset($servers[0]) && ($servers[0] != '')) {
+	echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
+	echo "<fieldset class=\"useredit\"><legend><b>" . _("Lamdaemon test") . "</b></legend><br>\n";
+	echo "<table>\n";
+	echo "<tr>\n";
+		echo "<td>\n";
+			echo _("Server");
+		echo "</td>\n";
+		echo "<td>\n";
+			echo "<select name=\"server\">\n";
+				for ($i = 0; $i < sizeof($servers); $i++) {
+					$servers[$i] = explode(":", $servers[$i]);
+					$serverName = $servers[$i][0];
+					$title = $serverName;
+					if (isset($servers[$i][1])) {
+						$title = $servers[$i][1] . " (" . $serverName . ")";
+					}
+					echo "<option value=\"$serverName\">$title</option>\n";
+				}
+			echo "</select>\n";
+		echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+		echo "<td>\n";
+			echo _("Check quotas");
+		echo "</td>\n";
+		echo "<td>\n";
+			echo "<input type=\"checkbox\" name=\"checkQuotas\">\n";
+		echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	
+	echo "<br>";
+	
+	echo "<input type=\"submit\" name=\"runTest\" value=\"" . _("Ok") . "\">\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+}
+else {
+	StatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.'));
+}
+
+
+echo "</body>\n";
+echo "</html>\n";
+
+
+
 /**
  * Runs a test case of lamdaemon.
  *
@@ -118,26 +183,23 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 	return $stopTest;
 }
 
-$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
-$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
-
-$servers = explode(";", $_SESSION['config']->get_scriptServers());
-for ($i = 0; $i < sizeof($servers); $i++) {
-	$servers[$i] = explode(":", $servers[$i]);
-	$serverName = $servers[$i][0];
-	$title = $serverName;
-	$serverDisplayName = $servers[$i][0];
-	if (isset($servers[$i][1])) {
-		$serverDisplayName = $servers[$i][1];
-		$title = $serverDisplayName . " (" . $serverName . ")";
-	}
-
+/**
+ * Runs all tests for a given server.
+ *
+ * @param String $serverName server ID
+ * @param String $serverTitle server name
+ * @param boolean $testQuota true, if Quotas should be checked
+ */
+function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
+	$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
+	$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
+	
 	echo "<table class=\"userlist\" rules=\"none\" width=\"750\">\n";
 
 	flush();
 	$stopTest = false;
 
-	echo "<tr class=\"userlist\">\n<td colspan=\"3\" align=\"center\"><b>$title</b>\n</td>\n</tr>";
+	echo "<tr class=\"userlist\">\n<td colspan=\"3\" align=\"center\"><b>$serverTitle</b>\n</td>\n</tr>";
 
 	// check script server and path
 	echo "<tr class=\"userlist\">\n<td nowrap>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
@@ -228,15 +290,14 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 	flush();
 
 	$stopTest = lamTestLamdaemon("+ test basic\n", $stopTest, $handle, _("Execute lamdaemon"));
-	$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
-	$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
+	if ($testQuota) {
+		$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
+		$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
+	}
 
 	echo "</table><br>\n";
+	
+	echo "<h2>" . _("Lamdaemon test finished.") . "</h2>\n";
 }
-
-echo "<h2>" . _("Lamdaemon test finished.") . "</h2>\n";
-
-echo "</body>\n";
-echo "</html>\n";
 
 ?>
