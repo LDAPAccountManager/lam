@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -313,6 +313,17 @@ abstract class baseModule {
 	* <b>Value:</b> array of extension names<br>
 	* <br>
 	* <b>Example:</b> "extensions" => array('mhash')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_help()}</b><br>
+	* <br>
+	* <b>Key:</b> help<br>
+	* <b>Value:</b> hashtable of help entries<br>
+	* <br>
+	* The hashtable is an array which maps help IDs to help entries.<br>
+	* <br>
+	* <b>Example:</b> 'help' => array('myEntry' => array('Headline' => 'This is the head line', 'Text' => 'Help content'))
 	* <br><br>
 	* </li>
 	* 
@@ -691,7 +702,8 @@ abstract class baseModule {
 	/**
 	* Returns an array containing all input columns for the file upload.
 	*
-	* Syntax:
+	* <b>Syntax:</b>
+	* <br>
 	* <br> array(
 	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
 	* <br>  string: description,  // short descriptive name
