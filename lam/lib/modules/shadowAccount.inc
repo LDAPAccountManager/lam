@@ -60,6 +60,8 @@ class shadowAccount extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
+	* 
+	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
 		$return = array();

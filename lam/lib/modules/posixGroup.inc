@@ -148,6 +148,8 @@ class posixGroup extends baseModule {
 	 * Returns the HTML meta data for the main account page.
 	 * 
 	 * @return array HTML meta data
+	 * 
+	 * @see baseModule::get_metaData()
 	 */
 	function display_html_attributes() {
 		$return[] = array(

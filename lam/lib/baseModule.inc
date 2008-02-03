@@ -147,7 +147,194 @@ abstract class baseModule {
 	}
 
 	/**
-	* Dummy function, meta data is provided by sub classes.
+	* This function provides meta data which is interpreted by baseModule.
+	* Only subclasses will return real data.<br>
+	* <br>
+	* The aim of the meta data is to reduce the number
+	* of functions in the subclasses. All major data is centralized in one place.<br>
+	* <br>
+	* The returned array contains a list of key-value pairs for the different functions.<br>
+	* <ul>
+	* 
+	* <li><b>{@link can_manage()}</b><br>
+	* <br>
+	* <b>Key:</b> account_types<br>
+	* <b>Value:</b> array of account types<br>
+	* <br>
+	* <b>Example:</b> "account_types" => array("user", "host")
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link is_base_module()}</b><br>
+	* <br>
+	* <b>Key:</b> is_base<br>
+	* <b>Value:</b> boolean<br>
+	* <br>
+	* <b>Example:</b> "is_base" => true
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_ldap_filter()}</b><br>
+	* <br>
+	* <b>Key:</b> ldap_filter<br>
+	* <b>Value:</b> array of filters<br>
+	* <br>
+	* <b>Example:</b> "ldap_filter" => array('or' => 'objectClass=posixAccount', 'and' => '(!(uid=*$))')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link getManagedObjectClasses()}</b><br>
+	* <br>
+	* <b>Key:</b> objectClasses<br>
+	* <b>Value:</b> array of object classes<br>
+	* <br>
+	* <b>Example:</b> "objectClasses" => array('posixAccount')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link getLDAPAliases()}</b><br>
+	* <br>
+	* <b>Key:</b> LDAPaliases<br>
+	* <b>Value:</b> array of aliases<br>
+	* <br>
+	* <b>Example:</b> "LDAPaliases" => array('commonName' => 'cn')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_RDNAttributes()}</b><br>
+	* <br>
+	* <b>Key:</b> RDN<br>
+	* <b>Value:</b> array of RDNs<br>
+	* <br>
+	* <b>Example:</b> "RDN" => array('uid' => 'normal', 'cn' => 'low')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_dependencies()}</b><br>
+	* <br>
+	* <b>Key:</b> dependencies<br>
+	* <b>Value:</b> array of dependencies<br>
+	* <br>
+	* <b>Example:</b> "dependencies" => array("depends" => array("posixAccount", array("qmail", "sendmail")), "conflicts" => array("exim"))
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_profileOptions()}</b><br>
+	* <br>
+	* <b>Key:</b> profile_options<br>
+	* <b>Value:</b> array of profile options<br>
+	* <br>
+	* The syntax for the value array is the same as for the return value of get_profileOptions().
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link check_profileOptions()}</b><br>
+	* <br>
+	* <b>Key:</b> profile_checks<br>
+	* <b>Value:</b> array of checks (array("optionName" => array()))<br>
+	* <br>
+	* The "optionName" keys of the value array are the names of the option identifiers.<br>
+	* Each array element is an array itself containing these values:
+	* <ul>
+	* <li><b>type:</b> determines how to check input<br>
+	* Possible values:
+	* 	<ul>
+	* 	<li><b>regex:</b> check with regular expression from regex variable, case sensitive</li>
+	*	<li><b>regex_i:</b> check with regular expression from regex variable, case insensitive</li>
+	* 	<li><b>int_greater:</b> integer value of cmp_name1 must be greater than the integer value from the option cmp_name2</li>
+	* 	<li><b>int_greaterOrEqual:</b> integer value of cmp_name1 must be greater or equal than the integer value from the option cmp_name2</li>
+	* 	</ul>
+	* </li>
+	* <li><b>error_message:</b> message that is displayed if input value was syntactically incorrect<br>
+	* 	error_message is an array to build StatusMessages (message type, message head, message text, additional variables)
+	* <li><b>regex:</b> regular expression string (only if type is regex/regex_i)</li>
+	* <li><b>cmp_name1:</b> name of first input variable that is used for comparison (only if type is int_greater/int_greaterOrEqual)</li>
+	* <li><b>cmp_name2:</b> name of second input variable that is used for comparison (only if type is int_greater/int_greaterOrEqual)</li>
+	* <li><b>required:</b> true or false, if this input field must be filled set to true (optional)
+	* <li><b>required_message:</b> message that is displayed if no input value was given (only if required == true)<br>
+	* 	required_message is an array to build StatusMessages (message type, message head, message text, additional variables)
+	* </li>
+	* </ul>
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link load_profile()}</b><br>
+	* <br>
+	* <b>Key:</b> profile_mappings<br>
+	* <b>Value:</b> array('profile_identifier1' => 'LDAP_attribute1', 'profile_identifier2' => 'LDAP_attribute2')<br>
+	* <br>
+	* The mapped values are stored directly in $this->attributes.
+	* <br>
+	* <b>Example:</b> "profile_mappings" => array('inetOrgPerson_title' => 'title')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_configOptions()}</b><br>
+	* <br>
+	* <b>Key:</b> config_options<br>
+	* <b>Value:</b> array('user' => array, 'host' => array, 'all' => array)<br>
+	* <br>
+	* The values from 'all' are always returned, the other values only if they are inside the $scopes array.<br>
+	* The syntax for sub arrays is the same as for the return value of {@link get_configOptions()}.
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link check_configOptions()}</b><br>
+	* <br>
+	* <b>Key:</b> config_checks<br>
+	* <b>Value:</b> array('user' => array, 'host' => 'array', 'all' => array)<br>
+	* <br>
+	* The values from 'all' are always used for checking, the other values only if they are inside the $scopes array.
+	* The syntax for sub arrays is the same as for {@link check_configOptions()}.
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_uploadColumns()}</b><br>
+	* <br>
+	* <b>Key:</b> upload_columns<br>
+	* <b>Value:</b> array<br>
+	* <br>
+	* The syntax for array is the same as for the return value of {@link get_uploadColumns()}.
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link get_uploadPreDepends()}</b><br>
+	* <br>
+	* <b>Key:</b> upload_preDepends<br>
+	* <b>Value:</b> array<br>
+	* <br>
+	* The syntax for array is the same as for the return value of {@link get_uploadPreDepends()}.
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link getRequiredExtensions()}</b><br>
+	* <br>
+	* <b>Key:</b> extensions<br>
+	* <b>Value:</b> array of extension names<br>
+	* <br>
+	* <b>Example:</b> "extensions" => array('mhash')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link getSelfServiceSearchAttributes()}</b><br>
+	* <br>
+	* <b>Key:</b> selfServiceSearchAttributes<br>
+	* <b>Value:</b> array of attribute names<br>
+	* <br>
+	* <b>Example:</b> "selfServiceSearchAttributes" => array('uid')
+	* <br><br>
+	* </li>
+	* 
+	* <li><b>{@link getSelfServiceFields()}</b><br>
+	* <br>
+	* <b>Key:</b> selfServiceFieldSettings<br>
+	* <b>Value:</b> array of self service fields<br>
+	* <br>
+	* <b>Example:</b> "selfServiceFieldSettings" => array('pwd' => 'Password')
+	* <br><br>
+	* </li>
+	* 
+	* </ul>
 	*
 	* @return array empty array
 	*/
@@ -175,11 +362,10 @@ abstract class baseModule {
 	}
 
 	/**
-	* Returns true if this module is enough to provide a sensible account.
+	* Returns true if this module can be used to construct account without additional modules.
+	* Usually, all modules which manage structural object classes are base modules.
 	*
-	* There is no relation to the name of this class.
-	*
-	* @return boolean true if base module
+	* @return boolean true if base module (defaults to false if no meta data is provided)
 	*/
 	function is_base_module() {
 		if (isset($this->meta['is_base']) && ($this->meta['is_base'] == true)) return true;
