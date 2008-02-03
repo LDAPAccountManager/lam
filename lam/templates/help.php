@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Michael Duergner
+  				2008		 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,30 +28,23 @@ $Id$
  * LDAP Account Manager help page.
  * 
  * @author Michael Duergner
+ * @author Roland Gruber
  * @package Help
  */
 
-/**
- * 
- */
+/** LDAP connection */
 include_once("../lib/ldap.inc");
 
-/**
- * 
- */
+/** configuration */
 include_once("../lib/config.inc");
 
-session_save_path("../sess"); // Set session save path
-@session_start(); // Start LDAP Account Manager session
+session_save_path("../sess");
+@session_start();
 
-/**
- * 
- */
-include_once("../lib/status.inc"); // Include lib/status.php which provides statusMessage()
+/** status messages */
+include_once("../lib/status.inc");
 
-/**
- * 
- */
+/** help data */
 include_once("../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
 
 setlanguage();
@@ -88,26 +82,15 @@ function echoHTMLFoot()
  * @param array The help variables that are used to replace the spacer in the help text.
  */
 function displayHelp($helpEntry,$helpVariables) {
-	/* Load external help page */
-	if (isset($helpEntry["ext"]) && ($helpEntry["ext"] == "TRUE"))
-	{
-		echoHTMLHead();
-		include_once("../help/" . $helpEntry["Link"]);
-		echoHTMLFoot();
+	echoHTMLHead();
+	echo "		<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
+	$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
+	array_unshift($helpVariables,$format);
+	call_user_func_array("printf",$helpVariables);
+	if(isset($helpEntry['SeeAlso']) && is_array($helpEntry['SeeAlso'])) {
+		echo '		<p class="help">' . _('See also') . ': <a class="helpSeeAlso" href="' . $helpEntry['SeeAlso']['link'] . '">' . $helpEntry['SeeAlso']['text'] . '</a></p>';
 	}
-	/* Print help site out of $helpEntry */
-	else
-	{
-		echoHTMLHead();
-		echo "		<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
-		$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
-		array_unshift($helpVariables,$format);
-		call_user_func_array("printf",$helpVariables);
-		if(isset($helpEntry['SeeAlso']) && is_array($helpEntry['SeeAlso'])) {
-			echo '		<p class="help">' . _('See also') . ': <a class="helpSeeAlso" href="' . $helpEntry['SeeAlso']['link'] . '">' . $helpEntry['SeeAlso']['text'] . '</a></p>';
-		}
-		echoHTMLFoot();
-	}
+	echoHTMLFoot();
 }
 
 /* If no help number was submitted print error message */

@@ -731,13 +731,26 @@ abstract class baseModule {
 	}
 
 	/**
-	 * This function return the help entry array for a specific help id. Normally this->meta can be used.
+	 * This function returns the help entry array for a specific help id.
+	 * The result is an hashtable with the following keys:<br>
+	 * <ul>
+	 * <li><b>Headline (required)</b><br>
+	 * The headline of this help entry. Can consist of any alpha-numeric characters. No HTML/CSS elements are allowed.</li>
+	 * <li><b>Text (required)</b><br>
+	 * The text of the help entry which may contain any alpha-numeric characters.</li>
+	 * <li><b>SeeAlso (optional)</b><br>
+	 * A reference to anonther related web site. It must be an array containing a field called "text" with the link text
+	 * that should be displayed and a field called "link" which is the link target.</li>
+	 * </ul>
+	 * <br>
+	 * <b>Example:</b><br>
+	 * <br>
+	 * array('Headline' => 'This is the head line', 'Text' => 'Help content', 'SeeAlso' => array('text' => 'LAM homepage', 'link' => 'http://lam.sf.net'))
 	 *
 	 * @param string $id The id string for the help entry needed.
-	 * @param string $scope The scope for which the help entry should be retrieved. May be empty when
-	 * there is now difference of the help entry depending on the actual scope.
-	 *
 	 * @return array The desired help entry.
+	 * 
+	 * @see baseModule::get_metaData()
 	 */
 	function get_help($id) {
 		if(isset($this->meta['help'][$id])) {

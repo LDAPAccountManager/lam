@@ -341,72 +341,72 @@ class sambaAccount extends baseModule {
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
-				"ext" => "FALSE", "Headline" => _("Display name"),
+				"Headline" => _("Display name"),
 				"Text" => _("This is the account's full name on Windows systems.")),
 			"password" => array(
-				"ext" => "FALSE", "Headline" => _("Samba password"),
+				"Headline" => _("Samba password"),
 				"Text" => _("This is the account's Windows password.")),
 			"resetPassword" => array(
-				"ext" => "FALSE", "Headline" => _("Reset password"),
+				"Headline" => _("Reset password"),
 				"Text" => _("This will reset the host's password to a default value.")),
 			"pwdUnix" => array(
-				"ext" => "FALSE", "Headline" => _("Use Unix password"),
+				"Headline" => _("Use Unix password"),
 				"Text" => _("If checked Unix password will also be used as Samba password.")),
 			"pwdUnixUpload" => array(
-				"ext" => "FALSE", "Headline" => _("Use Unix password"),
+				"Headline" => _("Use Unix password"),
 				"Text" => _("If set to \"true\" Unix password will also be used as Samba password.")),
 			"noPassword" => array(
-				"ext" => "FALSE", "Headline" => _("Use no password"),
+				"Headline" => _("Use no password"),
 				"Text" => _("If checked no password will be used.")),
 			"noPasswordUpload" => array(
-				"ext" => "FALSE", "Headline" => _("Use no password"),
+				"Headline" => _("Use no password"),
 				"Text" => _("If set to \"true\" no password will be used.")),
 			"noExpire" => array(
-				"ext" => "FALSE", "Headline" => _("Password does not expire"),
+				"Headline" => _("Password does not expire"),
 				"Text" => _("If checked password does not expire. (Setting X-Flag)")),
 			"noExpireUpload" => array(
-				"ext" => "FALSE", "Headline" => _("Password does not expire"),
+				"Headline" => _("Password does not expire"),
 				"Text" => _("If set to \"true\" password does not expire. (Setting X-Flag)")),
 			"deactivated" => array(
-				"ext" => "FALSE", "Headline" => _("Account is deactivated"),
+				"Headline" => _("Account is deactivated"),
 				"Text" => _("If checked account will be deactivated. (Setting D-Flag)")),
 			"deactivatedUpload" => array(
-				"ext" => "FALSE", "Headline" => _("Account is deactivated"),
+				"Headline" => _("Account is deactivated"),
 				"Text" => _("If set to \"true\" account will be deactivated. (Setting D-Flag)")),
 			"pwdCanChange" => array(
-				"ext" => "FALSE", "Headline" => _("User can change password"),
+				"Headline" => _("User can change password"),
 				"Text" => _("Date after the user is able to change his password. Format: DD-MM-YYYY")),
-			"pwdMustChange" => array ("ext" => "FALSE", "Headline" => _("User must change password"),
+			"pwdMustChange" => array ("Headline" => _("User must change password"),
 				"Text" => _("Date after the user must change his password. Format: DD-MM-YYYY")),
 			"homeDrive" => array(
-				"ext" => "FALSE", "Headline" => _("Home drive"),
+				"Headline" => _("Home drive"),
 				"Text" => _("Drive letter assigned on windows workstations as homedirectory.")),
 			"homePath" => array(
-				"ext" => "FALSE", "Headline" => _("Home path"),
+				"Headline" => _("Home path"),
 				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"profilePath" => array(
-				"ext" => "FALSE", "Headline" => _("Profile path"),
+				"Headline" => _("Profile path"),
 				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"scriptPath" => array(
-				"ext" => "FALSE", "Headline" => _("Logon script"),
+				"Headline" => _("Logon script"),
 				"Text" => _('File name and path relative to the netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"userWorkstations" => array(
-				"ext" => "FALSE", "Headline" => _("Samba workstations"),
+				"Headline" => _("Samba workstations"),
 				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation.")),
 			"workstations" => array(
-				"ext" => "FALSE", "Headline" => _("Samba workstations"),
+				"Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
 			"group" => array(
-				"ext" => "FALSE", "Headline" => _("Windows group name"),
+				"Headline" => _("Windows group name"),
 				"Text" => _("If you want to use a well known RID you can selcet a well known group.")),
 			"groupUpload" => array(
-				"ext" => "FALSE", "Headline" => _("Windows group RID"),
+				"Headline" => _("Windows group RID"),
 				"Text" => _("This is the RID of the user's primary Windows group.")),
 			"specialUser" => array(
-				"ext" => "FALSE", "Headline" => _("Special user"),
+				"Headline" => _("Special user"),
 				"Text" => _("If you want to create domain administrators or other special users use this option.")),
 			"domain" => array(
-				"ext" => "FALSE", "Headline" => _("Domain"),
+				"Headline" => _("Domain"),
 				"Text" => _("Windows domain name of account."). ' '. _("Can be left empty."))
 		);
 		return $return;
