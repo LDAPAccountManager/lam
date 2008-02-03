@@ -639,15 +639,50 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Returns a hastable with all entries that may be printed out in the PDF. The
-	 * syntax of the hashtable is specified by the module specification and the
-	 * corresponding DTD. This method must be overwritten in case that there
-	 * are non static things to be returned. The $this->meta['PDF_entries'] array
-	 * may be used when there is only static content.
-	 *
+	 * Returns a hashtable with all entries that may be printed out in the PDF.
+	 * This method must be overwritten in case that there are non static values
+	 * to be returned. The $this->meta['PDF_entries'] array may be used for static content.<br>
+	 * <br>
+	 * <b>Format of returned hashtable:</b><br>
+	 * <br>
+	 * This function uses XML formatted commands to define the PDF output. Each part in the PDF
+	 * document is surrounded by "<block>" and "</block>".<br>
+	 * Inside the <block> tags there are different ways to format the output:
+	 * <ul>
+	 * <li><b>simple line with attribute name and value:</b> <block><key><b>attribute name</b></key><value><b>attribute value</b></value></block></li>
+	 * <li><b>table:</b> <block><key><b>attribute name</b></key><tr><td><b>value</b><td><td><b>value</b><td></tr></block><block><tr><td><b>value</b></td><td><b>value</b><td></tr></block></li>
+	 * </ul>
+	 * <b>Special commands:</b>
+	 * <ul>
+	 * <li><b>Alignment in <td>:</b> You can specify the alignment in <td> tags with align=(L|R|C) (e.g. <td align=\"L\">)</li>
+	 * <li><b>Cell width:</b> <td> allows an attribute "width" to set the cell width (e.g. <td width=20%> or <td width=30>).</li>
+	 * <li><b>Line breaks:</b> Line breaks can be specified by adding a <<br>> tag. The new line will start at the left border of the PDF document.</li>
+	 * </ul>
+	 * <br>
+	 * <b>Examples:</b><br>
+	 * <br>
+	 * <b>Simple name+value lines:</b><br><br>
+	 * In most cases you will just want to display a single line per attribute with its name and value.<br>
+	 * <br>
+	 * 'myAttribute' => '<block><key>AttrName</key><value>12345</value></block>'<br>
+	 * <br>
+	 * This will give the following PDF output:<br>
+	 * <br>
+	 * <b>Attribute name:</b> 12345<br>
+	 * <br>
+	 * <br>
+	 * <b>Multiline values:</b><br><br>
+	 * Sometimes you have multivalued attributes where it is not applicable to write all values in one line but
+	 * where you want to list your values one below the other or show a table. This can be done by using the <td> tag.<br>
+	 * <br>
+	 * This example only uses one column but you can just use more <td> tags per <block> tag to display more columns.<br>
+	 * <br>
+	 * 'myAttribute' => '<block><key>AttrName</key><tr><td align=\"L\">123</td></tr></block><block><tr><td align=\"L\">456</td></tr></block><block><tr><td align=\"L\">789</td></tr></block>'
+	 * 
 	 * @param string $scope account type
-	 * @return array hastable of entries for the PDF. Each entry is an array where
-	 * each entry is treated as a new line in the PDF.
+	 * @return array PDF entries
+	 * 
+	 * @see baseModule::get_metaData()
 	 */
 	function get_pdf_entries($scope = 'user') {
 		return ((isset($this->meta['PDF_entries'])) ? $this->meta['PDF_entries'] : array());
