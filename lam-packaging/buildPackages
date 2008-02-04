@@ -20,7 +20,6 @@ cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
 
 # remove files which are not in the final release
-rm lam/phpdoc.sh
 rm -r lam/po
 rm -r lam/tests
 find . -name .cvsignore -exec rm {} \;
@@ -33,11 +32,20 @@ cd ../../..
 rm -r lamPro/docs/LAMProHowTo-sources
 
 # create LAM Pro build directory
-cp -a ldap-account-manager-$VERSION ldap-account-manager-pro-$VERSION
 mkdir LAMPro
-mv ldap-account-manager-pro-$VERSION LAMPro/ldap-account-manager-$VERSION
+cp -a ldap-account-manager-$VERSION LAMPro/ldap-account-manager-$VERSION
 cp -a lamPro/* LAMPro/ldap-account-manager-$VERSION
 rm -r lamPro
+
+# create PHPdoc
+cd LAMPro/ldap-account-manager-$VERSION
+./phpdoc.sh
+rm phpdoc.sh
+cd ../..
+cd ldap-account-manager-$VERSION
+./phpdoc.sh
+rm phpdoc.sh
+cd ..
 
 # tar.gz
 cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
