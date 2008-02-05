@@ -622,7 +622,7 @@ class inetOrgPerson extends baseModule {
 					$errors[] = $this->messages['userPassword'][1];
 				}
 				else {
-					$this->attributes['userPassword'][0] = $_POST['userPassword'];
+					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
 				}
 			}
 		}
@@ -682,14 +682,14 @@ class inetOrgPerson extends baseModule {
 		// password
 		if (!in_array('posixAccount', $modules)) {
 			// new account, show input fields
-			if ($this->getAccountContainer()->isNewAccount) {
+			if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['userPassword'][0])) {
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Password') ),
-					array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
+					array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
 					array('kind' => 'help', 'value' => 'userPassword'));
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Repeat password')),
-					array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
+					array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
 					array('kind' => 'text', 'text' => ''));
 			}
 			// old account, show button for password page
@@ -865,7 +865,7 @@ class inetOrgPerson extends baseModule {
 				$messages[] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = $_POST['userPassword'];
+				$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
 			}
 		}
 		return $messages;
@@ -879,11 +879,11 @@ class inetOrgPerson extends baseModule {
 	function display_html_password() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password') ),
-			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
+			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
 			2 => array('kind' => 'help', 'value' => 'userPassword'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Repeat password')),
-			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
+			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
