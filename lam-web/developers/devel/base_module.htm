@@ -1,23 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html; charset=ISO-8859-15"
- http-equiv="content-type">
-  <title>Base module</title>
+<html><head>
+
+
+  <meta content="text/html; charset=ISO-8859-15" http-equiv="content-type"><title>Base module</title>
+  
   <link rel="stylesheet" type="text/css" href="style/layout.css">
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-</head>
-<body>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
 <h1 style="text-align: center;">Base module<br>
 </h1>
-<div style="text-align: center;"><img alt="base module"
- src="images/lam_baseModule.png" style="width: 531px; height: 207px;"><br>
+<div style="text-align: center;"><img alt="base module" src="images/lam_baseModule.png" style="width: 531px; height: 207px;"><br>
 </div>
 <div style="text-align: center;"><br>
 <div style="text-align: left;">The <span style="font-weight: bold;">baseModule</span>
 is the parent class of all account modules. <br>
-It implements most functions of the <a
- href="modules-specification.htm">module interface</a> and provides
+It implements most functions of the <a href="phpdoc/modules/baseModule.html">module interface</a> and provides
 the possibility to use <span style="font-style: italic;">meta data</span>
 for the module functions.<br>
 There are also some class variables which are useful for the child
@@ -26,25 +22,20 @@ classes.<br>
 <br>
 <h2>Meta data</h2>
 The <span style="font-weight: bold;">baseModule</span> allows you to
-not implement the <a href="modules-specification.htm">module
+not implement the <a href="phpdoc/modules/baseModule.html">module
 interface</a> directly but to provide <span style="font-style: italic;">meta
-data</span> which is interpreted by the <span
- style="font-weight: bold;">baseModule</span>.<br>
-If you do not use certain functions of the interface the <span
- style="font-weight: bold;">baseModule</span> also provides dummy
+data</span> which is interpreted by the <span style="font-weight: bold;">baseModule</span>.<br>
+If you do not use certain functions of the interface the <span style="font-weight: bold;">baseModule</span> also provides dummy
 functions. E.g. if your module needs no configuration option you can
-just skip this function in your code and the <span
- style="font-weight: bold;">baseModule</span> will tell the
+just skip this function in your code and the <span style="font-weight: bold;">baseModule</span> will tell the
 configuration part that there is no option.<br>
 <br>
 To <span style="font-style: italic;">define meta</span> data you have
-to implement the function <span
- style="font-weight: bold; font-style: italic;">get_metaData()</span>.
+to implement the function <span style="font-weight: bold; font-style: italic;">get_metaData()</span>.
 This function must return a hash array with the meta options as array
 keys.<br>
-Please refer to the <a href="modules-specification.htm">module
-interface</a> for details about the format of <span
- style="font-style: italic;">meta data</span>.<br>
+Please refer to the <a href="phpdoc/modules/baseModule.html">module
+interface</a> for details about the format of <span style="font-style: italic;">meta data</span>.<br>
 <br>
 <br>
 <h2>Functions<br>
@@ -53,7 +44,7 @@ interface</a> for details about the format of <span
 returns the account type ("user", "group", ...) of the module.<br>
 <br>
 For a list of <span style="font-style: italic;">meta data</span>
-functions please refer to the <a href="modules-specification.htm">module
+functions please refer to the <a href="phpdoc/modules/baseModule.html">module
 interface</a>.<br>
 <br>
 <br>
@@ -71,5 +62,4 @@ parent <span style="font-style: italic;">accountContainer</span>
 <br>
 </div>
 </div>
-</body>
-</html>
+</body></html>

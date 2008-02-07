@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>Docs for page masscreate.php</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">tools</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                                                                                                                                                                                
+                                                  		  [ <a href="../classtrees_tools.html" class="menu">class tree: tools</a> ]
+		  [ <a href="../elementindex_tools.html" class="menu">index: tools</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../tools/_lib---export.inc.html">		export.inc
+		</a><br>
+			<a href="../tools/_templates---tests---index.php.html">		index.php
+		</a><br>
+			<a href="../tools/_templates---tests---lamdaemonTest.php.html">		lamdaemonTest.php
+		</a><br>
+			<a href="../tools/_templates---massBuildAccounts.php.html">		massBuildAccounts.php
+		</a><br>
+			<a href="../tools/_templates---masscreate.php.html">		masscreate.php
+		</a><br>
+			<a href="../tools/_templates---massDoUpload.php.html">		massDoUpload.php
+		</a><br>
+			<a href="../tools/_templates---ou_edit.php.html">		ou_edit.php
+		</a><br>
+			<a href="../tools/_templates---schema---schema.php.html">		schema.php
+		</a><br>
+			<a href="../tools/_templates---tests---schemaTest.php.html">		schemaTest.php
+		</a><br>
+			<a href="../tools/_templates---tools.php.html">		tools.php
+		</a><br>
+	  </div><br />
+
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../tools/LAMTool.html">LAMTool</a><br />
+	    		<a href="../tools/LdapExportInfo.html">LdapExportInfo</a><br />
+	    		<a href="../tools/MyCustomExporter.html">MyCustomExporter</a><br />
+	    		<a href="../tools/PlaAbstractExporter.html">PlaAbstractExporter</a><br />
+	    		<a href="../tools/PlaCSVExporter.html">PlaCSVExporter</a><br />
+	    		<a href="../tools/PlaDsmlExporter.html">PlaDsmlExporter</a><br />
+	    		<a href="../tools/PlaExporter.html">PlaExporter</a><br />
+	    		<a href="../tools/PlaLdapExporter.html">PlaLdapExporter</a><br />
+	    		<a href="../tools/PlaLdifExporter.html">PlaLdifExporter</a><br />
+	    		<a href="../tools/PlaVcardExporter.html">PlaVcardExporter</a><br />
+	  </div>
+
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: masscreate.php</h1>
+Source Location: /templates/masscreate.php<br /><br />
+
+<br>
+<br>
+
+
+<h2>Page Details:</h2>
+Start page of file upload<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Roland Gruber</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<h4>Includes:</h4>
+<div class="tags">
+include_once(<a href="../configuration/_lib---config.inc.html">'../lib/config.inc'</a>) [line 34]<br />
+access to configuration<br /><br />include_once(<a href="../lib/_lib---status.inc.html">'../lib/status.inc'</a>) [line 36]<br />
+status messages<br /><br />include_once(<a href="../lib/_lib---security.inc.html">"../lib/security.inc"</a>) [line 32]<br />
+security functions<br /><br />include_once(<a href="../modules/_lib---modules.inc.html">'../lib/modules.inc'</a>) [line 38]<br />
+account modules<br /><br /></div>
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functionshowColumnData"></a>
+	<h3>showColumnData <span class="smalllinenumber">[line 295]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void showColumnData(
+string $module, array $data, string $scope)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Prints the properties of one input field.<br /><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$module</b>&nbsp;&nbsp;</td>
+        <td>account module name</td>
+      </tr>
+		      <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$data</b>&nbsp;&nbsp;</td>
+        <td>field data from modules</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionshowMainPage"></a>
+	<h3>showMainPage <span class="smalllinenumber">[line 123]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void showMainPage(
+string $scope)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Displays the acount type specific main page of the upload.<br /><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Thu, 07 Feb 2008 20:26:41 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

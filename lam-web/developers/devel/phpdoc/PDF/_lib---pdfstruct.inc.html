@@ -1,0 +1,295 @@
+<html>
+<head>
+<title>Docs for page pdfstruct.inc</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">PDF</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                                                                                                
+                                                                                                                                  		  [ <a href="../classtrees_PDF.html" class="menu">class tree: PDF</a> ]
+		  [ <a href="../elementindex_PDF.html" class="menu">index: PDF</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../PDF/_lib---fpdf.php.html">		fpdf.php
+		</a><br>
+			<a href="../PDF/_lib---lamPDF.inc.html">		lamPDF.inc
+		</a><br>
+			<a href="../PDF/_lib---pdf.inc.html">		pdf.inc
+		</a><br>
+			<a href="../PDF/_templates---pdfedit---pdfdelete.php.html">		pdfdelete.php
+		</a><br>
+			<a href="../PDF/_templates---pdfedit---pdfmain.php.html">		pdfmain.php
+		</a><br>
+			<a href="../PDF/_templates---pdfedit---pdfpage.php.html">		pdfpage.php
+		</a><br>
+			<a href="../PDF/_lib---pdfstruct.inc.html">		pdfstruct.inc
+		</a><br>
+			<a href="../PDF/_lib---ufpdf.php.html">		ufpdf.php
+		</a><br>
+			<a href="../PDF/_lib---font---vera.php.html">		vera.php
+		</a><br>
+			<a href="../PDF/_lib---font---verab.php.html">		verab.php
+		</a><br>
+			<a href="../PDF/_lib---font---verabi.php.html">		verabi.php
+		</a><br>
+			<a href="../PDF/_lib---font---verai.php.html">		verai.php
+		</a><br>
+			<a href="../PDF/_lib---xml_parser.inc.html">		xml_parser.inc
+		</a><br>
+	  </div><br />
+
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../PDF/FPDF.html">FPDF</a><br />
+	    		<a href="../PDF/lamPDF.html">lamPDF</a><br />
+	    		<a href="../PDF/UFPDF.html">UFPDF</a><br />
+	    		<a href="../PDF/xmlParser.html">xmlParser</a><br />
+	  </div>
+
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: pdfstruct.inc</h1>
+Source Location: /lib/pdfstruct.inc<br /><br />
+
+<br>
+<br>
+
+
+<h2>Page Details:</h2>
+Functions to manage the PDF structures.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Michael Dürgner</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<h4>Includes:</h4>
+<div class="tags">
+include_once(<a href="../LDAP/_lib---ldap.inc.html">"ldap.inc"</a>) [line 34]<br />
+LDAP object<br /><br />include_once(<a href="../configuration/_lib---config.inc.html">"config.inc"</a>) [line 31]<br />
+LAM configuration<br /><br /></div>
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functiondeletePDFStructureDefinition"></a>
+	<h3>deletePDFStructureDefinition <span class="smalllinenumber">[line 158]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean deletePDFStructureDefinition(
+string $scope, string $definition)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Deletes XML file with PDF structure definitions.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if file was deleted or false if a problem occured.</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$definition</b>&nbsp;&nbsp;</td>
+        <td>Name of definition to delete</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetAvailableLogos"></a>
+	<h3>getAvailableLogos <span class="smalllinenumber">[line 176]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getAvailableLogos(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		This function returns an array with all aviliable logo images.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>list of logo files</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetPDFStructureDefinitions"></a>
+	<h3>getPDFStructureDefinitions <span class="smalllinenumber">[line 47]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getPDFStructureDefinitions(
+[string $scope = &amp;quot;user&amp;quot;])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		This function will return all available PDF structure definitions for the submitted  account scope.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>All available PDF structure definitions for the submitted account  scope. Each entry is a string being the filename that may be passed to the  createModulePDF() function as second argument.</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>The account scope the PDF structure definitions should be  returned.</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionloadPDFStructureDefinitions"></a>
+	<h3>loadPDFStructureDefinitions <span class="smalllinenumber">[line 72]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array loadPDFStructureDefinitions(
+[string $scope = &#039;user&#039;], [string $pdf_structure = &#039;default&#039;])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		This function is used to get pdf structure from xml file.<br /><br /><p>Used in createModulePDF.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>PDF structure</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>The account scope for wich the PDF structure should be returned.</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$pdf_structure</b>&nbsp;&nbsp;</td>
+        <td>Structure name of selected scope wich should be returned.</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionsavePDFStructureDefinitions"></a>
+	<h3>savePDFStructureDefinitions <span class="smalllinenumber">[line 100]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string savePDFStructureDefinitions(
+string $scope, string $definition)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Saves PDF structure definitions to XML file in format: &lt;name&gt;.&lt;scope&gt;.xml<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>&quot;no perms&quot; if access denied or &quot;ok&quot;.</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$definition</b>&nbsp;&nbsp;</td>
+        <td>Name of definition</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Thu, 07 Feb 2008 20:26:44 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
