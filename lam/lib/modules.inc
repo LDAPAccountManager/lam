@@ -527,6 +527,140 @@ function getRequiredExtensions() {
 
 /**
 * Takes a list of meta-HTML elements and prints the equivalent HTML output.
+* 
+* The modules are not allowed to display HTML code directly but return
+* meta HTML code. This allows to have a common design for all module pages.<br>
+* <br>
+* Meta HTML code is always returned as a three dimensional <b>array[a][b][c]</b>
+* where <b>a</b> is the row number, <b>b</b> is the column number and <b>c</b> is
+* is a <i>data element</i>.<br>
+* <br>
+* <b>Format of data elements:</b><br>
+* <br>
+* A <i>data element</i> is an array which contains the data to display.<br>
+* All <i>data elements</i> must contail a value <b>"kind"</b> which
+* defines what kind of element should be displayed.<br>
+* <br>
+* These are the possibilies for <b>kind</b> and what other options have to be added to the array:<br>
+* <br>
+* <ul>
+*   <li><b>fieldset:</b> Inserts a fieldset.
+* <ul>
+*   <li><b>legend:</b> The legend of the fieldset.</li>
+*   <li><b>value:</b> A <i>data element</i>. Can be used recursively.</li>
+* </ul>
+* </li>
+* <li><b>help:</b> Adds a help link.
+* <ul>
+*   <li><b>value:</b> The help number for the help entry.</li>
+*   <li><b>scope:</b> The account type for the help entry.<br>
+*   </li>
+* </ul>
+* </li>
+* <li><b>input:</b> Adds a HTML input element.
+* <ul>
+*   <li><b>name:</b> The name of the element, will be used later as variable name
+*                    when user input is returned.</li>
+*   <li><b>type:</b> allowed values: submit, reset, checkbox, text, password, file, hidden</li>
+*   <li><b>checked:</b> Boolean value, if true a checkbox will be checked. This
+*                       value is only needed or checkboxes.</li>
+*   <li><b>disabled:</b> Boolean value, if true the element will be disabled.</li>
+*    <li><b>size:</b> The length of the input element, only used for text, password and file.</li>
+*    <li><b>maxlength:</b> The maximum size of the input element, only used for
+*                          text, password and file.</li>
+*   <li><b>value:</b> The element will have this value as default. Button elements will have
+*                     this as caption.</li>
+* </ul>
+* </li>
+* <li><b>select:</b> This will add a select field.
+* <ul>
+*   <li><b>name:</b> The name of the element, will be used later as variable name when user input is
+*                    returned.</li>
+*   <li><b>multiple:</b> Boolean value, if set to true the user can select more than one entry.</li>
+*   <li><b>options:</b> Array of string. This is the list of option values the user can select.</li>
+*   <li><b>options_selected:</b> Array of string. This is the list of pre selected elements, must contain
+*                                values that are also in <i>options</i>.</li>
+*   <li><b>descriptiveOptions:</b>
+* Boolean value, if set to true then all elements in options must be arrays themselves (array(<i>value</i>,
+*<i>description</i>)) (default: false)<br>
+*   </li>
+*   <li><b>size:</b> The size of the select field, if set to 1 a dropdown box will be displayed.</li>
+*   <li><b>noSorting:</b> If set to true then the entries will not be sorted. Default is false.</li>
+*    <li><b>onchange:</b> onchange event<br>
+*    </li>
+* </ul>
+* </li>
+* <li><b>table:</b> Adds a table. Can be used recursively.
+*  <ul>
+*   <li><b>value:</b> A <i>data element</i>. Can be used recursively.</li>
+*  </ul>
+* </li>
+*  <li><b>text:</b> Inserts a text element.
+*  <ul>
+*   <li><b>text:</b> The text to display.</li>
+*  </ul>
+* </li>
+*  <li><b>textarea:</b> Adds a multiline text field.
+*  <ul>
+*   <li><b>name:</b> The name of the element, will be used later as variable name when user
+*                    input is returned.</li>
+*   <li><b>rows:</b> Number of rows (required)<br>
+*   </li>
+*   <li><b>cols:</b> Number of characters for each line (required)<br>
+*   </li>
+*   <li><b>readonly:</b> Boolean value, if true the text field will be read only.<br>
+*   </li>
+* </ul>
+* </li>
+* <li><b>image:</b> Displays an image.
+* <ul>
+*   <li><b>path:</b> Path to the image</li>
+*   <li><b>width:</b> Width of the image</li>
+*   <li><b>height:</b> Height of the image</li>
+*   <li><b>alt:</b> Alt text of the image<br>
+*    </li>
+* </ul>
+* </li>
+* </ul>
+* <br>
+* Beneath those values a <b>"td"</b> value may be added. This has to be an array with one or more
+* of these options:<br>
+* <br>
+* <ul>
+*  <li><b>colspan:</b> Like the HTML colspan attribute for td elements</li>
+*  <li><b>rowspan:</b> Like the HTML rowspan attribute for td elements</li>
+*  <li><b>align:</b> left/center/right/justify Like the HTML align attribute</li>
+*  <li><b>valign:</b> top/middle/bottom Like the HTML valign attribute</li>
+*  <li><b>width:</b> Like the HTML height attribute for td elements</li>
+* </ul>
+* <br>
+* Input buttons which should load a different subpage of a module must have a special <i>name</i> attribute:<br>
+* <br>
+* <b>name</b> => 'form_subpage_' . <i><module name></i> . '_' . <i><subpage name></i> . '_' . <i><button name></i><br>
+* <ul>
+* <li><b><module name>:</b> name of this account module (e.g. 'posixAccount')</li>
+* <li><b><subpage name>:</b> name of next subpage (e.g. 'attributes')</li>
+* <li><b><button name>:</b> a name to distinguish buttons (e.g. 'ok'/'cancel'/'back')</li>
+* </ul>
+* <br>
+* <br>
+* <b>Example:</b>
+* <code>
+* array(
+*  array(
+*    array("kind" => "text", "text" => "This is an example", "td" => array("colspan" => 3))
+*  ),
+*  array(
+*    array("kind" => "text", "text" => "Input:"),
+*    array("kind" => "input", "name" => "myinput", "type" => "text"),
+*    array("kind" => "help", "value" => "42")
+*  ),
+*  array(
+*    array("kind" => "input", "name" => 'form_subpage_myModule_attributes_back', "value" => _("Back"))
+*  )
+*)
+* </code>
+* 
 *
 * @param string $module Name of account module
 * @param array $input List of meta-HTML elements
