@@ -134,6 +134,8 @@ $helpArray = array (
 					"Text" => _("Here you can select where LAM should save its log messages. System logging will go to Syslog on Unix systems and event log on Windows. You can also select an extra file.")),
 				"241" => array ("Headline" => _("Allowed hosts"),
 					"Text" => _("This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*).")),
+				"242" => array ("Headline" => _("Password policy"),
+					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
 				"250" => array ("Headline" => _("Account lists - Filters"),
 					"Text" => _("Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will filter case-insensitive.")),
 				// 300 - 399

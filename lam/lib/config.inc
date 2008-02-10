@@ -898,10 +898,30 @@ class LAMCfgMain {
 
 	/** list of hosts which may access LAM */
 	public $allowedHosts;
+	
+	/** minimum length for passwords */
+	public $passwordMinLength = 0;
+	
+	/** minimum uppercase characters */
+	public $passwordMinUpper = 0;
+
+	/** minimum lowercase characters */
+	public $passwordMinLower = 0;
+
+	/** minimum numeric characters */
+	public $passwordMinNumeric = 0;
+
+	/** minimum symbol characters */
+	public $passwordMinSymbol = 0;
+
+	/** minimum character classes (upper, lower, numeric, symbols) */
+	public $passwordMinClasses = 0;
 
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
-		"logLevel", "logDestination", "allowedHosts");
+		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
+		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
+		"passwordMinClasses", "passwordMinSymbol");
 
 	/**
 	* Loads preferences from config file
@@ -981,6 +1001,12 @@ class LAMCfgMain {
 		if (!in_array("logLevel", $saved)) array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
 		if (!in_array("logDestination", $saved)) array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
 		if (!in_array("allowedHosts", $saved)) array_push($file_array, "\n\n# list of hosts which may access LAM\n" . "allowedHosts: " . $this->allowedHosts);
+		if (!in_array("passwordMinLength", $saved)) array_push($file_array, "\n\n# Password: minimum password length\n" . "passwordMinLength: " . $this->passwordMinLength);
+		if (!in_array("passwordMinUpper", $saved)) array_push($file_array, "\n\n# Password: minimum uppercase characters\n" . "passwordMinUpper: " . $this->passwordMinUpper);
+		if (!in_array("passwordMinLower", $saved)) array_push($file_array, "\n\n# Password: minimum lowercase characters\n" . "passwordMinLower: " . $this->passwordMinLower);
+		if (!in_array("passwordMinNumeric", $saved)) array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
+		if (!in_array("passwordMinSymbol", $saved)) array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
+		if (!in_array("passwordMinClasses", $saved)) array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
 		$file = @fopen($conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);

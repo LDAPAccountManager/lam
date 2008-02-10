@@ -122,6 +122,13 @@ if ($_POST['submit']) {
 		}
 		else $errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -.");
 	}
+	// password policies
+	$cfg->passwordMinLength = $_POST['passwordMinLength'];
+	$cfg->passwordMinLower = $_POST['passwordMinLower'];
+	$cfg->passwordMinUpper = $_POST['passwordMinUpper'];
+	$cfg->passwordMinNumeric = $_POST['passwordMinNumeric'];
+	$cfg->passwordMinSymbol = $_POST['passwordMinSymbol'];
+	$cfg->passwordMinClasses = $_POST['passwordMinClasses'];
 	// save settings
 	$cfg->save();
 	// print messages
@@ -193,6 +200,47 @@ if ($_POST['submit']) {
 					</td>
 				</tr>
 			</table>
+		</fieldset>
+		<BR>
+		<fieldset>
+			<legend><b> <?php echo _("Password policy"); ?> </b></legend>
+			<br>
+			<table cellspacing="0" border="0">
+			<?php
+				$options = array(
+					array('passwordMinLength', _('Minimum password length'), 20),
+					array('passwordMinLower', _('Minimum lowercase characters'), 20),
+					array('passwordMinUpper', _('Minimum uppercase characters'), 20),
+					array('passwordMinNumeric', _('Minimum numeric characters'), 20),
+					array('passwordMinSymbol', _('Minimum symbolic characters'), 20),
+					array('passwordMinClasses', _('Minimum character classes'), 4)
+				);
+				for ($i = 0; $i < sizeof($options); $i++) {
+					echo "<tr>\n";
+						echo "<td>\n";
+							echo $options[$i][1] . "&nbsp;&nbsp;";
+						echo "</td>\n";
+						echo "<td>\n";
+							echo "<select name=\"" . $options[$i][0] . "\">\n";
+								for ($o = 0; $o <= $options[$i][2]; $o++) {
+									$selected = '';
+									if ($cfg->$options[$i][0] == $o) {
+										$selected = ' selected';
+									}
+									echo "<option" . $selected . ">" . $o . "</option>\n";
+								}
+							echo "</select>\n";
+						echo "</td>\n";
+						echo "<td>\n";
+							echo "<a href=\"../help.php?HelpNumber=242\" target=\"lamhelp\">";
+							echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+							echo "</a>\n";
+						echo "</td>\n";
+					echo "</tr>\n";
+				}
+			?>
+			</table>
+			<br>
 		</fieldset>
 		<BR>
 		<fieldset>
