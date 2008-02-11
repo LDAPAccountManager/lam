@@ -105,6 +105,8 @@ Now everything should work fine.
    - If you get garbage characters at the test page then PHP and your php5-ssh2 library may not
      fit together. Try recompiling the library and libssh2.
 
+     This combination was tested successfully: libssh2 0.13 with php5-ssh2 0.10
+
    - Check /var/log/auth.log or the equivalent on your system
      This file contains messages about all logins. If the ssh login
      failed then you will find a description about the reason here.
