@@ -682,7 +682,13 @@ class inetOrgPerson extends baseModule {
 					$errors[] = $this->messages['userPassword'][1];
 				}
 				else {
-					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
+					$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
+					if ($pwdPolicyResult === true) {
+						$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
+					}
+					else {
+						$errors[] = array('ERROR', $pwdPolicyResult);
+					}
 				}
 			}
 		}
@@ -956,7 +962,13 @@ class inetOrgPerson extends baseModule {
 				$messages[] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
+				$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
+				if ($pwdPolicyResult === true) {
+					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
+				}
+				else {
+					$messages[] = array('ERROR', $pwdPolicyResult);
+				}
 			}
 		}
 		return $messages;

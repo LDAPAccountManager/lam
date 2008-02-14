@@ -913,8 +913,14 @@ class posixAccount extends baseModule {
 				$errors[] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->clearTextPassword = $_POST['userPassword'];
-				$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+				$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
+				if ($pwdPolicyResult === true) {
+					$this->clearTextPassword = $_POST['userPassword'];
+					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+				}
+				else {
+					$errors[] = array('ERROR', $pwdPolicyResult);
+				}
 			}
 		}
 		return $errors;
@@ -1729,11 +1735,17 @@ class posixAccount extends baseModule {
 						$return['messages'][] = $this->messages['userPassword'][1];
 					}
 					else {
-						$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings['posixAccount_pwdHash'][0]);
-						if (isset($attributes['shadowLastChange'])) {
-							$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
+						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password']);
+						if ($pwdPolicyResult === true) {
+							$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings['posixAccount_pwdHash'][0]);
+							if (isset($attributes['shadowLastChange'])) {
+								$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
+							}
+							$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 						}
-						$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
+						else {
+							$return['messages'][] = array('ERROR', $pwdPolicyResult);
+						}
 					}
 				}
 			}

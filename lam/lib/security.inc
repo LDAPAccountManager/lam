@@ -209,4 +209,75 @@ function checkIfPasswordChangeIsAllowed() {
 	return false;
 }
 
+/**
+ * Checks if the password fulfills the password policies.
+ * 
+ * @param string $password password
+ * @return mixed true if ok, string with error message if not valid
+ */
+function checkPasswordStrength($password) {
+	if ($password == null) {
+		$password = "";
+	}
+	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
+	else $cfg = new LAMCfgMain();
+	// check length
+	if (strlen($password) < $cfg->passwordMinLength) {
+		return sprintf(_('The password is too short. You have to enter at least %s characters.'), $cfg->passwordMinLength);
+	}
+	// get number of characers per character class
+	$lower = 0;
+	$upper = 0;
+	$numeric = 0;
+	$symbols = 0;
+	for ($i = 0; $i < strlen($password); $i++) {
+		if (ereg("[a-z]", $password[$i])) {
+			$lower++;
+		}
+		if (ereg("[A-Z]", $password[$i])) {
+			$upper++;
+		}
+		if (ereg("[0-9]", $password[$i])) {
+			$numeric++;
+		}
+		if (eregi("[^a-z0-9]", $password[$i])) {
+			$symbols++;
+		}
+	}
+	// check lower case
+	if ($lower < $cfg->passwordMinLower) {
+		return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $cfg->passwordMinLower);
+	}
+	// check upper case
+	if ($upper < $cfg->passwordMinUpper) {
+		return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $cfg->passwordMinUpper);
+	}
+	// check numeric
+	if ($numeric < $cfg->passwordMinNumeric) {
+		return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $cfg->passwordMinNumeric);
+	}
+	// check symbols
+	if ($symbols < $cfg->passwordMinSymbol) {
+		return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $cfg->passwordMinSymbol);
+	}
+	// check classes
+	$classes = 0;
+	if ($lower > 0) {
+		$classes++;
+	}
+	if ($upper > 0) {
+		$classes++;
+	}
+	if ($numeric > 0) {
+		$classes++;
+	}
+	if ($symbols > 0) {
+		$classes++;
+	}
+	if ($classes < $cfg->passwordMinClasses) {
+		return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $cfg->passwordMinClasses);
+	}
+	return true;
+}
+
 ?>
