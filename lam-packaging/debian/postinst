@@ -5,21 +5,28 @@ set -e
 . /usr/share/debconf/confmodule
 db_version 2.0 || [ $? -lt 30 ]
 
-cd /var/lib/ldap-account-manager/config-samples/profiles
+cd /usr/share/ldap-account-manager/config-samples/profiles
 files=`ls -a default.*`
 for file in $files; do
 	if [ ! -f /var/lib/ldap-account-manager/config/profiles/$file ]; then
 		cp $file /var/lib/ldap-account-manager/config/profiles/$file
 	fi
 done
-cd /var/lib/ldap-account-manager/config-samples/pdf
+cd /usr/share/ldap-account-manager/config-samples/pdf
 files=`ls -a default.*`
 for file in $files; do
 	if [ ! -f /var/lib/ldap-account-manager/config/pdf/$file ]; then
 		cp $file /var/lib/ldap-account-manager/config/pdf/$file
 	fi
 done
-cd /var/lib/ldap-account-manager/config-samples/selfService
+cd /usr/share/ldap-account-manager/config-samples/pdf/logos
+files=`ls -a default.*`
+for file in $files; do
+	if [ ! -f /var/lib/ldap-account-manager/config/pdf/logos/$file ]; then
+		cp $file /var/lib/ldap-account-manager/config/pdf/logos/$file
+	fi
+done
+cd /usr/share/ldap-account-manager/config-samples/selfService
 files=`ls -a default.*`
 for file in $files; do
 	if [ ! -f /var/lib/ldap-account-manager/config/selfService/$file ]; then
