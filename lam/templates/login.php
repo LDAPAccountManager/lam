@@ -30,6 +30,25 @@ $Id$
 
 /** status messages */
 include_once("../lib/status.inc");
+
+// check if PHP >= 5.1
+if (version_compare(phpversion(), '5.1.0') < 0) {
+	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	echo "<html>\n<head>\n";
+	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
+	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
+	echo "<title>LDAP Account Manager</title>\n";
+	echo "</head><body>\n";
+	StatusMessage("ERROR", "LAM needs PHP 5 greater or equal as 5.1.0!", "Please upgrade your PHP installation.");
+	echo "<br><br>";
+	echo "</body></html>";
+	exit();
+}
+
+
 /** security functions */
 include_once("../lib/security.inc");
 /** self service functions */
@@ -52,10 +71,6 @@ if (! function_exists('gettext') || !function_exists('_')) {
 // check if PHP has XML support
 if (! function_exists('utf8_decode')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
-}
-// check if PHP >= 5.1
-if (version_compare(phpversion(), '5.1.0') < 0) {
-	$criticalErrors[] = array("ERROR", "LAM needs PHP 5 greater or equal as 5.1.0!", "Please upgrade your PHP installation.");
 }
 // check file permissions
 $writableDirs = array('sess', 'tmp');
