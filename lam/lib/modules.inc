@@ -913,6 +913,9 @@ class accountContainer {
 
 	/** RDN attribute of this account */
 	var $rdn;
+	
+	/** DN of saved account */
+	public $finalDN;
 
 	/** original LDAP attributes when account was loaded from LDAP */
 	var $attributes_orig;
@@ -930,7 +933,7 @@ class accountContainer {
 	private $subpage;
 
 	/** True if this is a newly created account */
-	var $isNewAccount;
+	public $isNewAccount;
 	
 	private $lastLoadedProfile = '';
 
@@ -1593,7 +1596,7 @@ class accountContainer {
 		if (!checkIfWriteAccessIsAllowed()) {
 			die();
 		}
-		$finalDN = $this->dn;
+		$this->finalDN = $this->dn;
 		$errors = array();
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
@@ -1621,38 +1624,38 @@ class accountContainer {
 		$added = false;
 		foreach ($attributes as $DN) {
 			if (isset($DN['modify'][$search][0]) && !$added) {
-				$attributes[$search.'='.$DN['modify'][$search][0].','.$finalDN] = $attributes[$finalDN];
-				unset ($attributes[$finalDN]);
-				$finalDN = $search.'='.$DN['modify'][$search][0].','.$finalDN;
+				$attributes[$search.'='.$DN['modify'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
+				unset ($attributes[$this->finalDN]);
+				$this->finalDN = $search.'='.$DN['modify'][$search][0].','.$this->finalDN;
 				$added = true;
 				}
 			if (isset($DN['add'][$search][0]) && !$added) {
-				$attributes[$search.'='.$DN['add'][$search][0].','.$finalDN] = $attributes[$finalDN];
-				unset ($attributes[$finalDN]);
-				$finalDN = $search.'='.$DN['add'][$search][0].','.$finalDN;
+				$attributes[$search.'='.$DN['add'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
+				unset ($attributes[$this->finalDN]);
+				$this->finalDN = $search.'='.$DN['add'][$search][0].','.$this->finalDN;
 				$added = true;
 				}
 			if (isset($DN['notchanged'][$search][0]) && !$added) {
-				$attributes[$search.'='.$DN['notchanged'][$search][0].','.$finalDN] = $attributes[$finalDN];
-				unset ($attributes[$finalDN]);
-				$finalDN = $search.'='.$DN['notchanged'][$search][0].','.$finalDN;
+				$attributes[$search.'='.$DN['notchanged'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
+				unset ($attributes[$this->finalDN]);
+				$this->finalDN = $search.'='.$DN['notchanged'][$search][0].','.$this->finalDN;
 				$added = true;
 				}
 			}
 		// Add old dn if dn hasn't changed
 		if (!$added) {
-			$attributes[$this->dn_orig] = $attributes[$finalDN];
-			unset ($attributes[$finalDN]);
-			$finalDN = $this->dn_orig;
+			$attributes[$this->dn_orig] = $attributes[$this->finalDN];
+			unset ($attributes[$this->finalDN]);
+			$this->finalDN = $this->dn_orig;
 			}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
-		if (strtolower($finalDN) != strtolower($this->dn_orig)) {
+		if (strtolower($this->finalDN) != strtolower($this->dn_orig)) {
 			// move existing DN
 			if ($this->dn_orig!='') {
-				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($finalDN), $this->getParentDN($finalDN), false);
+				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), false);
 				if ($success) {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $finalDN);
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->finalDN);
 				}
 				else {
 					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to rename DN: ' . $this->dn_orig . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
@@ -1663,19 +1666,19 @@ class accountContainer {
 			// create complete new dn
 			else {
 				$attr = array();
-				if (is_array($attributes[$finalDN]['add'])) $attr = array_merge_recursive($attr, $attributes[$finalDN]['add']);
-				if (is_array($attributes[$finalDN]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$finalDN]['notchanged']);
-				if (is_array($attributes[$finalDN]['modify'])) $attr = array_merge_recursive($attr, $attributes[$finalDN]['modify']);
-				$success = ldap_add($_SESSION['ldap']->server(), $finalDN, $attr);
+				if (is_array($attributes[$this->finalDN]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->finalDN]['add']);
+				if (is_array($attributes[$this->finalDN]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->finalDN]['notchanged']);
+				if (is_array($attributes[$this->finalDN]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->finalDN]['modify']);
+				$success = ldap_add($_SESSION['ldap']->server(), $this->finalDN, $attr);
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $finalDN), ldap_error($_SESSION['ldap']->server()));
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $this->finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->finalDN), ldap_error($_SESSION['ldap']->server()));
 					$stopprocessing = true;
 				}
 				else {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $finalDN);
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $this->finalDN);
 				}
-				unset($attributes[$finalDN]);
+				unset($attributes[$this->finalDN]);
 			}
 		}
 		$DNs = array_keys($attributes);
