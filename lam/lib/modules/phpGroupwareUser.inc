@@ -71,9 +71,22 @@ class phpGroupwareUser extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'extension' => array(
-				"Headline" => _("Adds the phpGroupWare extension"),
+				"Headline" => _("Add phpGroupWare extension"),
 				"Text" => _("If you set this to true then the phpGroupware extension will be added.")
+			),
+			'phpgwAccountStatus' => array(
+				"Headline" => _("Account status"),
+				"Text" => _("Here you can specify if the account is active or inactive.")
+			),
+			'phpgwAccountExpires' => array(
+				"Headline" => _("Account expiration date"),
+				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")
 			)
+		);
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'phpgwAccountStatus', 'phpgwAccountExpires',
+			'phpgwLastLoginFrom', 'phpgwLastLogin'
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount');
@@ -81,15 +94,37 @@ class phpGroupwareUser extends baseModule {
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'phpGroupwareUser_extension',
-				'description' => _('Adds the phpGroupWare extension'),
+				'description' => _('Add phpGroupWare extension'),
 				'help' => 'extension',
 				'example' => 'true',
 				'values' => 'true, false'
+			),
+			array(
+				'name' => 'phpGroupwareUser_accountStatus',
+				'description' => _('Account status'),
+				'help' => 'phpgwAccountStatus',
+				'example' => 'active',
+				'values' => 'active, inactive'
+			),
+			array(
+				'name' => 'phpGroupwareUser_accountExpires',
+				'description' => _('Account expiration date'),
+				'help' => 'phpgwAccountExpires',
+				'example' => '23-07-2011'
 			)
 		);
 		return $return;
 	}
 	
+	/**
+	* This function builds up the message array.
+	*/
+	function load_Messages() {
+		// error messages for input checks
+		$this->messages['phpgwAccountStatus'][0] = array('ERROR', _('Account %s:') . ' phpGroupwareUser_accountStatus', _('Please enter "active" or "inactive".'));
+		$this->messages['phpgwAccountExpires'][0] = array('ERROR',  _('Account %s:') . ' phpGroupwareUser_accountExpires', _('The expiration date is invalid.'));
+	}
+
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
@@ -98,14 +133,46 @@ class phpGroupwareUser extends baseModule {
 	public function display_html_attributes() {
 		$return = array();
 		if (isset($this->attributes['objectClass']) && in_array('phpgwAccount', $this->attributes['objectClass'])) {
-			$statusSelected = array();
+			$phpgwAccountExpires = '';
+			if (isset($this->attributes['phpgwAccountExpires'][0])) {
+				$date = getdate($this->attributes['phpgwAccountExpires'][0]);
+				$phpgwAccountExpires = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
+			}
 			$return[] = array(
+				array('kind' => 'text', 'text' => _('Account expiration date')),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => $phpgwAccountExpires),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareUser_time_phpgwAccountExpires', 'value' => _('Change'))
+				)))
+			);
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Account status')),
 				array('kind' => 'select', 'submit', 'name' => 'phpgwAccountStatus',
 					'options' => array(array('A', _('active')), array('I', _('inactive'))),
 					'options_selected' => array($this->attributes['phpgwAccountStatus'][0]), 'descriptiveOptions' => true)
 			);
+			$phpgwLastLogin = '';
+			if (isset($this->attributes['phpgwLastLogin'][0])) {
+				$date = getdate($this->attributes['phpgwLastLogin'][0]);
+				$phpgwLastLogin = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
+			}
 			$return[] = array(
-				array('kind' => 'text', 'value' => '')
+				array('kind' => 'text', 'text' => _('Last login')),
+				array('kind' => 'text', 'text' => $phpgwLastLogin)
+			);
+			$phpgwLastLoginFrom = '';
+			if (isset($this->attributes['phpgwLastLoginFrom'][0])) {
+				$phpgwLastLoginFrom = $this->attributes['phpgwLastLoginFrom'][0];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Last login from')),
+				array('kind' => 'text', 'text' => $phpgwLastLoginFrom)
+			);
+			$return[] = array(
+				array('kind' => 'text', 'text' => '')
+			);
+			$return[] = array(
+				array('kind' => 'text', 'text' => '')
 			);
 			$return[] = array(
 				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareUser_attributes_remObjectClass', 'value' => _('Remove phpGroupWare extension'))
@@ -145,6 +212,81 @@ class phpGroupwareUser extends baseModule {
 
 	
 	/**
+	* This function will create the meta HTML code to show a page to change time values.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_time() {
+		$return = array();
+		// determine attribute
+		if (isset($_POST['form_subpage_phpGroupwareUser_time_phpgwAccountExpires'])) {
+			$attr = 'phpgwAccountExpires';
+			$text = _('Account expiration date');
+			$help = "phpgwAccountExpires";
+		}
+		$time = 0;
+		if (isset($this->attributes[$attr][0])) {
+			$time = $this->attributes[$attr][0];
+		}
+		$date = getdate($time);
+		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		$return[] = array(
+			array('kind' => 'text', 'text' => $text),
+			array('kind' => 'table', 'value' => array(array(
+				array('kind' => 'select', 'name' => 'expire_day', 'options' => $mday, 'options_selected' => $date['mday']),
+				array('kind' => 'select', 'name' => 'expire_mon', 'options' => $mon, 'options_selected' => $date['mon']),
+				array('kind' => 'select', 'name' => 'expire_yea', 'options' => $year, 'options_selected' => $date['year'])))),
+			array('kind' => 'help', 'value' => $help));
+		$buttons = array();
+		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_phpGroupwareUser_attributes_change' . $attr, 'type' => 'submit', 'value' => _('Change'));
+		if (isset($this->attributes[$attr][0])) {
+			$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_phpGroupwareUser_attributes_del' . $attr, 'type' => 'submit', 'value' => _('Remove'));
+		}
+		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_phpGroupwareUser_attributes_back' . $attr, 'type' => 'submit', 'value' => _('Cancel'));
+		$return[] = array(
+			array('kind' => 'table', 'td' => array('colspan' => 3), 'value' => array($buttons))
+		);
+		return $return;	
+	}
+
+	/**
+	* Processes user input of the time selection page.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_time() {
+		$return = array();
+		// find button name
+		$buttonName = '';
+		$postKeys = array_keys($_POST);
+		for ($i = 0; $i < sizeof($postKeys); $i++) {
+			if (strpos($postKeys[$i], 'form_subpage_phpGroupwareUser_attributes_') !== false) {
+				$buttonName = $postKeys[$i];
+			}
+		}
+		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
+		// get attribute name
+		$attr = '';
+		if (strpos($buttonName, 'phpgwAccountExpires') !== false) {
+			$attr = 'phpgwAccountExpires';
+		}
+		if ($attr == '') return array();
+		// determine action
+		if (strpos($buttonName, '_change') !== false) {
+			// set new time
+			$this->attributes[$attr][0] = gmmktime(0, 0, 0, intval($_POST['expire_mon']), intval($_POST['expire_day']),
+				intval($_POST['expire_yea']));
+		}
+		elseif (strpos($buttonName, '_del') !== false) {
+			// remove attribute value
+			unset($this->attributes[$attr]);
+		}
+		return $return;
+	}
+
+	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
 	* @return array list of modifications
@@ -159,12 +301,19 @@ class phpGroupwareUser extends baseModule {
 		if (!in_array('phpgwAccount', $this->attributes['objectClass'])) {
 			return parent::save_attributes();
 		}
+		// set last password change
+		if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword)) {
+			$return[$this->getAccountContainer()->dn]['modify']['phpgwLastPasswordChange'] = array(time());
+		}
+		elseif ($this->getAccountContainer()->isNewAccount) {
+			$return[$this->getAccountContainer()->dn]['add']['phpgwLastPasswordChange'] = array(time());
+		}		
 		// set phpgwAccountID to UID number for new accounts
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		$this->attributes['phpgwAccountID'][0] = $attrs['uidNumber'][0];
 		return parent::save_attributes();
 	}
-	
+
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
 	 * 
@@ -207,6 +356,38 @@ class phpGroupwareUser extends baseModule {
 	}
 
 	/**
+	* Returns the PDF entries for this module.
+	*
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
+		$return = array();
+		if (isset($this->attributes['phpgwAccountStatus'][0])) {
+			if ($this->attributes['phpgwAccountStatus'][0] == 'A') {
+				$status = _('active');
+			}
+			else {
+				$status = _('inactive');
+			}
+			$return['phpGroupwareUser_phpgwAccountStatus'] = array('<block><key>' . _('Account status') . '</key><value>' . $status . '</value></block>');
+		}
+		if (isset($this->attributes['phpgwAccountExpires'][0])) {
+			$date = getdate($this->attributes['phpgwAccountExpires'][0]);
+			$phpgwAccountExpires = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
+			$return['phpGroupwareUser_phpgwAccountExpires'] = array('<block><key>' . _('Account expiration date') . '</key><value>' . $phpgwAccountExpires . '</value></block>');
+		}
+		if (isset($this->attributes['phpgwLastLoginFrom'][0])) {
+			$return['phpGroupwareUser_phpgwLastLoginFrom'] = array('<block><key>' . _('Last login from') . '</key><value>' . $this->attributes['phpgwLastLoginFrom'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['phpgwLastLogin'][0])) {
+			$date = getdate($this->attributes['phpgwLastLogin'][0]);
+			$phpgwLastLogin = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
+			$return['phpGroupwareUser_phpgwLastLogin'] = array('<block><key>' . _('Last login') . '</key><value>' . $phpgwLastLogin . '</value></block>');
+		}
+		return $return;
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -215,15 +396,41 @@ class phpGroupwareUser extends baseModule {
 	* @return array list of error messages if any
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-			if (!isset($rawAccounts[$i][$ids['phpGroupwareGroup_extension']]) 
-				|| !(strtolower($rawAccounts[$i][$ids['phpGroupwareGroup_extension']]) == "true")) {
+			if (!isset($rawAccounts[$i][$ids['phpGroupwareUser_extension']]) 
+				|| !(strtolower($rawAccounts[$i][$ids['phpGroupwareUser_extension']]) == "true")) {
 					continue;
 			}
 			$partialAccounts[$i]['objectClass'][] = 'phpgwAccount';
 			$partialAccounts[$i]['phpgwAccountID'][0] = $partialAccounts[$i]['uidNumber'];
+			$partialAccounts[$i]['phpgwLastPasswordChange'] = array(time());
+			// account status
+			if ($rawAccounts[$i][$ids['phpGroupwareUser_accountStatus']] != '') {
+				$status = $rawAccounts[$i][$ids['phpGroupwareUser_accountStatus']];
+				if (($status == 'active') || ($status == 'inactive')) {
+					$partialAccounts[$i]['phpgwAccountStatus'] = array($status);
+				}
+				else {
+					$errMsg = $this->messages['phpgwAccountStatus'][0];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			// expiration date
+			if ($rawAccounts[$i][$ids['phpGroupwareUser_accountExpires']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['phpGroupwareUser_accountExpires']], 'date')) {
+					$parts = explode('-', $rawAccounts[$i][$ids['phpGroupwareUser_accountExpires']]);
+					$partialAccounts[$i]['phpgwAccountExpires'] = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
+				}
+				else {
+					$errMsg = $this->messages['phpgwAccountExpires'][0];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
 		}
-		return array();
+		return $messages;
 	}
 
 }
