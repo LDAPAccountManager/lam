@@ -70,7 +70,7 @@ class phpGroupwareGroup extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'extension' => array(
-				"Headline" => _("Adds the phpGroupWare extension"),
+				"Headline" => _("Add phpGroupWare extension"),
 				"Text" => _("If you set this to true then the phpGroupware extension will be added.")
 			)
 		);
@@ -80,7 +80,7 @@ class phpGroupwareGroup extends baseModule {
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'phpGroupwareGroup_extension',
-				'description' => _('Adds the phpGroupWare extension'),
+				'description' => _('Add phpGroupWare extension'),
 				'help' => 'extension',
 				'example' => 'true',
 				'values' => 'true, false'
