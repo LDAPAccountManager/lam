@@ -82,21 +82,21 @@ class kolabUser extends baseModule {
 		// profile options
 		$return['profile_options'] = array(
 			array(
-				0 => array('kind' => 'text', 'text' => _('Mail server') . ":"),
-				1 => array('kind' => 'input', 'name' => 'kolab_homeServer', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'homeServer')),
+				array('kind' => 'text', 'text' => _('Mail server') . ":"),
+				array('kind' => 'input', 'name' => 'kolab_homeServer', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'homeServer')),
 			array(
-				0 => array('kind' => 'text', 'text' => _('Country') . ":"),
-				1 => array('kind' => 'input', 'name' => 'kolab_country', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'country')),
+				array('kind' => 'text', 'text' => _('Country') . ":"),
+				array('kind' => 'input', 'name' => 'kolab_country', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'country')),
 			array(
-				0 => array('kind' => 'text', 'text' => _('Free/Busy interval') . ":"),
-				1 => array('kind' => 'input', 'name' => 'kolab_freeBusy', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'freeBusy')),
+				array('kind' => 'text', 'text' => _('Free/Busy interval') . ":"),
+				array('kind' => 'input', 'name' => 'kolab_freeBusy', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'freeBusy')),
 			array(
-				0 => array('kind' => 'text', 'text' => _('Mail quota') . ":"),
-				1 => array('kind' => 'input', 'name' => 'kolab_quota', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'quota'))
+				array('kind' => 'text', 'text' => _('Mail quota') . ":"),
+				array('kind' => 'input', 'name' => 'kolab_quota', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'quota'))
 		);
 		// profile checks
 		$return['profile_checks']['kolab_homeServer'] = array(
@@ -122,8 +122,26 @@ class kolabUser extends baseModule {
 			'kolab_freeBusy' => 'kolabFreeBusyFuture',
 			'kolab_quota' => 'cyrus-userquota'
 		);
+		// self service field settings
+		$return['selfServiceFieldSettings'] = array(
+			'kolabFreeBusyFuture' => _('Free/Busy interval'),
+			'kolabDelegate' => _('Delegates'),
+			'kolabInvitationPolicy' => _('Invitation policy'),
+			'alias' => _('EMail alias')
+		);
+		// self service configuration settings
+		$return['selfServiceSettings'] = array(
+		array(
+			array('kind' => 'text', 'text' => '<b>' . _("Account suffix") . ': &nbsp;</b>'),
+			array('kind' => 'input', 'type' => 'text', 'name' => 'kolabUser_suffix'),
+			array('kind' => 'help', 'value' => 'suffix'))
+		);
 		// help Entries
 		$return['help'] = array(
+			'suffix' => array(
+				"Headline" => _("Account suffix"),
+				"Text" => _("LDAP DN (e.g. dc=company,dc=com) of accounts. This is used to find possible delegation candidates.")
+			),
 			'invPol' => array(
 				"Headline" => _("Invitation policy"),
 				"Text" => _("For automatic invitation handling.")
@@ -386,15 +404,15 @@ class kolabUser extends baseModule {
 		$returnDelegates = array();
 		for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
 			$returnDelegates[] = array(
-				0 => array('kind' => 'select', 'name' => 'delegate' . $i, 'options' => $delegates, 'options_selected' => array($this->attributes['kolabDelegate'][$i])),
-				1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'delDelegate' . $i, 'value' => _("Remove")),
-				2 => array('kind' => 'help', 'value' => 'delegate'));
+				array('kind' => 'select', 'name' => 'delegate' . $i, 'options' => $delegates, 'options_selected' => array($this->attributes['kolabDelegate'][$i])),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'delDelegate' . $i, 'value' => _("Remove")),
+				array('kind' => 'help', 'value' => 'delegate'));
 		}
 		// input box for new delegate
 		$returnDelegates[] = array(
-			0 => array('kind' => 'select', 'name' => 'delegate', 'options' => $delegates),
-			1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addDelegate', 'value' => _("Add")),
-			2 => array('kind' => 'help', 'value' => 'delegate'));
+			array('kind' => 'select', 'name' => 'delegate', 'options' => $delegates),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addDelegate', 'value' => _("Add")),
+			array('kind' => 'help', 'value' => 'delegate'));
 		$returnDelegates = array(
 				array('kind' => 'fieldset', 'legend' => _('Delegates'), 'value' => $returnDelegates, 'td' => array('colspan' => 3))
 			);
@@ -792,6 +810,146 @@ class kolabUser extends baseModule {
 		// delegates
 		if (sizeof($this->attributes['kolabDelegate']) > 0) {
 			$return['kolabUser_delegate'][0] = '<block><key>' . _('Delegates') . '</key><value>' . implode(", ", $this->attributes['kolabDelegate']) . '</value></block>';
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
+	 * @return array meta HTML
+	 */
+	function getSelfServiceOptions($fields, $attributes) {
+		if (!in_array('kolabInetOrgPerson', $attributes['objectClass'])) {
+			return array();
+		}
+		$return = array();
+		if (in_array('kolabFreeBusyFuture', $fields)) {
+			$kolabFreeBusyFuture = '';
+			if (isset($attributes['kolabFreeBusyFuture'][0])) {
+				$kolabFreeBusyFuture = $attributes['kolabFreeBusyFuture'][0];
+			}
+			$return['kolabFreeBusyFuture'] = array(
+				array('kind' => 'text', 'text' => _('Free/Busy interval')),
+				array('kind' => 'input', 'name' => 'kolabUser_kolabFreeBusyFuture', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $kolabFreeBusyFuture));
+		}
+		if (in_array('kolabDelegate', $fields)) {
+			$delegates = array();
+			$sr = @ldap_search($_SESSION['ldapHandle'], $this->selfServiceSettings['kolabUser_suffix'][0], '(&(objectClass=inetOrgPerson)(mail=*))', array('mail'));
+			if ($sr) {
+				$result = ldap_get_entries($_SESSION['ldapHandle'], $sr);
+				for ($i = 0; $i < $result['count']; $i++) {
+					$delegates[] = $result[$i]['mail'][0];
+				}
+			}
+			$delegates = array_unique($delegates);
+			sort($delegates);
+			$kolabDelegate = array();
+			if (isset($attributes['kolabDelegate'])) {
+				$kolabDelegate = $attributes['kolabDelegate'];
+				// do not show existing delegation candidates in selection list
+				for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
+					$key = array_search($kolabDelegate[$i], $delegates);
+					if ($key !== false) {
+						unset($delegates[$key]);
+					}
+				}
+			}
+			$delegates = array_values($delegates);
+			sort($kolabDelegate);
+			$_SESSION['kolabUser_kolabDelegate'] = $kolabDelegate;
+			$delegateFields = array();
+			for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
+				$delegateFields[] = array(
+					array('kind' => 'text', 'text' => $kolabDelegate[$i]),
+					array('kind' => 'input', 'type' => 'checkbox', 'name' => 'delDelegate_' . $i),
+					array('kind' => 'text', 'text' => _('Delete'))
+				);
+			}
+			$delegateFields[] = array(
+				array('kind' => 'select', 'name' => 'new_delegate_value', 'options' => $delegates),
+				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'new_delegate'),
+				array('kind' => 'text', 'text' => _("Add"))
+			);
+			$return['kolabDelegate'] = array(
+				array('kind' => 'fieldset', 'value' => $delegateFields, 'legend' => _('Delegates'), 'td' => array('colspan' => 2))
+			);
+		}
+		return $return;
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		$attributeNames = array(); // list of attributes which should be checked for modification
+		$attributesNew = $attributes;
+		// kolabFreeBusyFuture
+		if (in_array('kolabFreeBusyFuture', $fields)) {
+			$attributeNames[] = 'kolabFreeBusyFuture';
+			if (isset($_POST['kolabUser_kolabFreeBusyFuture']) && ($_POST['kolabUser_kolabFreeBusyFuture'] != '')) {
+				if (!get_preg($_POST['kolabUser_kolabFreeBusyFuture'], 'digit')) $return['messages'][] = $this->messages['freeBusy'][0];
+				else $attributesNew['kolabFreeBusyFuture'][0] = $_POST['kolabUser_kolabFreeBusyFuture'];
+			}
+			elseif (isset($attributes['kolabFreeBusyFuture'])) {
+				$attributesNew['kolabFreeBusyFuture'] = array();
+			}
+		}
+		// delegates
+		if (in_array('kolabDelegate', $fields)) {
+			$attributeNames[] = 'kolabDelegate';
+			// new delegation
+			if (isset($_POST['new_delegate']) && ($_POST['new_delegate'] == 'on')) {
+				$attributesNew['kolabDelegate'][] = $_POST['new_delegate_value'];
+			}
+			// check for deleted delegations
+			$postKeys = array_keys($_POST);
+			for ($i = 0; $i < sizeof($postKeys); $i++) {
+				if (strpos($postKeys[$i], 'delDelegate_') !== false) {
+					$sKey = substr($postKeys[$i], strlen('delDelegate_'));
+					echo $_SESSION['kolabUser_kolabDelegate'][$sKey];
+					$key = array_search($_SESSION['kolabUser_kolabDelegate'][$sKey], $attributesNew['kolabDelegate']);
+					if ($key !== false) {
+						echo "SEPP";
+						unset($attributesNew['kolabDelegate'][$key]);
+						$attributesNew['kolabDelegate'] = array_values($attributesNew['kolabDelegate']);
+					}
+				}
+			}
+		}
+		// find differences
+		for ($i = 0; $i < sizeof($attributeNames); $i++) {
+			$attrName = $attributeNames[$i];
+			if (isset($attributes[$attrName]) && !isset($attributesNew[$attrName])) {
+				$return['del'][$attrName] = $attributes[$attrName];
+			}
+			elseif (!isset($attributes[$attrName]) && isset($attributesNew[$attrName])) {
+				$return['add'][$attrName] = $attributesNew[$attrName];
+			}
+			else {
+				for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
+					if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
+						$return['mod'][$attrName] = $attributesNew[$attrName];
+						break;
+					}
+				}
+				for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
+					if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
+						$return['mod'][$attrName] = $attributesNew[$attrName];
+						break;
+					}
+				}
+			}
 		}
 		return $return;
 	}
