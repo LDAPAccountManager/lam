@@ -140,9 +140,6 @@ class posixAccount extends baseModule {
 				array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
 				array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
 					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
 				array('kind' => 'help', 'value' => 'pwdHash'))
 			);
 		}
