@@ -464,7 +464,6 @@ echo ("</table>\n");
 echo ("<p>&nbsp;</p>");
 
 echo ("<p>* = ". _("required") . "</p>");
-echo ("<p>** = ". _("required for Samba 3 accounts") . "</p>");
 
 // password for configuration
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");
