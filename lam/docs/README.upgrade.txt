@@ -1,9 +1,19 @@
 Upgrade instructions:
 =====================
 
+2.2.0 -> 2.3.0
+==============
+
+LAM Pro: There is now a separate account type for group of (unique) names.
+         Please edit your server profiles to activate the new account type.
+
+
+
 1.1.0 -> 2.2.0
+==============
 
 No changes.
+
 
 
 1.0.4 -> 1.1.0:
