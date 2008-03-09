@@ -121,8 +121,9 @@ if ($< == 0 ) { # we are root
 								system 'chown', '-hR', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 								if (-e '/usr/sbin/useradd.local') {
 									system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
-									}
 								}
+								system 'chmod', $vals[3], $user[7];     # Edit chmod rights
+							}
 							else {
 								$return = "ERROR,Lamdaemon,Homedirectory already exists.:$return";
 								}
