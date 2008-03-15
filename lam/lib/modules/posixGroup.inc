@@ -208,7 +208,7 @@ class posixGroup extends baseModule {
 	* @return array meta HTML output
 	*/
 	function display_html_user() {
-		// load list with all users
+	// load list with all users
 		$dn_users = $_SESSION['cache']->get_cache(array('uid', 'gidNumber'), 'posixAccount', 'user');
 		$users = array();
 		if (is_array($dn_users)) {
@@ -217,35 +217,41 @@ class posixGroup extends baseModule {
 				// users who can be added have a uid and gidNumber
 				if (isset($dn_users[$DNs[$i]]['uid'][0]) && isset($dn_users[$DNs[$i]]['gidNumber'][0]) &&
 				// are not already member
-				(!isset($this->attributes['memberUid']) || !in_array($dn_users[$DNs[$i]]['uid'][0], $this->attributes['memberUid'])) &&
-				// and do not have this group as their primary group
-				!($this->attributes['gidNumber'][0] == $dn_users[$DNs[$i]]['gidNumber'][0])) {
+				(!isset($this->attributes['memberUid']) || !in_array($dn_users[$DNs[$i]]['uid'][0], $this->attributes['memberUid']))) {
+					if ($this->attributes['gidNumber'][0] == $dn_users[$DNs[$i]]['gidNumber'][0]) {
+						if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
+							&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
+							$users[] = $dn_users[$DNs[$i]]['uid'][0];
+						}
+				}
+				else {
 					$users[] = $dn_users[$DNs[$i]]['uid'][0];
 				}
 			}
 		}
-		$return[] = array(
-			0 => array('kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>	array (
-				0 => array(
-					0 => array('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' => array (
-						0 => array(
-							0 => array ( 'kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $this->attributes['memberUid'])))),
-					1 => array('kind' => 'table', 'value' => array(
-						0 => array(
-							0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
-							1 => array(
-								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-							2 => array(
-								0 => array('kind' => 'help', 'value' => 'members', 'td' => array('align' => 'center'))))),
-					2 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
-						0 => array(
-							0 => array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users))))
+	}
+	$return[] = array(
+		array('kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>	array (
+			array(
+				array('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' => array (
+					array(
+						array ( 'kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $this->attributes['memberUid'])))),
+				array('kind' => 'table', 'value' => array(
+					array(
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
+						array(
+							array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
+						array(
+							array('kind' => 'help', 'value' => 'members', 'td' => array('align' => 'center'))))),
+				array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
+					array(
+						array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users))))
 		))));
 
 		$return[] = array(
-			0 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
-			1 => array('kind' => 'text'),
-			2 => array('kind' => 'text'));
+			array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
+			array('kind' => 'text'),
+			array('kind' => 'text'));
 		return $return;
 	}
 

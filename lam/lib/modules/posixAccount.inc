@@ -153,13 +153,13 @@ class posixAccount extends baseModule {
 		);
 		// configuration options
 		$return['config_options']['user'] = array(
-		array(
-			array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
-			array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
-			array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			array('kind' => 'help', 'value' => 'minMaxUser'))
+			array(
+				array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
+				array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
+				array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'minMaxUser'))
 		);
 		$return['config_options']['host'] = array(
 		array(
@@ -171,14 +171,21 @@ class posixAccount extends baseModule {
 			array('kind' => 'help', 'value' => 'minMaxHost'))
 		);
 		$return['config_options']['all'] = array(
-		array(
-			array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-			array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
-				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'help', 'value' => 'pwdHash'))
+			array(
+				array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+				array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'help', 'value' => 'pwdHash')),
+			array(
+				array('kind' => 'text', 'text' => '<b>' . _('Set primary group as memberUid') . ":</b> "),
+				array('kind' => 'input', 'name' => 'posixAccount_primaryGroupAsSecondary', 'type' => 'checkbox'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'help', 'value' => 'primaryGroupAsSecondary'))
 		);
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
@@ -320,6 +327,10 @@ class posixAccount extends baseModule {
 		);
 		// help Entries
 		$return['help'] = array(
+			'primaryGroupAsSecondary' => array(
+				'Headline' => _('Set primary group as memberUid'),
+				'Text' => _('Usually, users are not added to groups as memberUid if they have this group as primary group. If your application ignores primary groups then you can select this option to override this behaviour.')
+			),
 			'minMaxUser' => array(
 				'Headline' => _('UID number'),
 				'Text' => _('These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.')
@@ -488,8 +499,17 @@ class posixAccount extends baseModule {
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Remove primary group from additional groups
-		for ($i=0; $i<count($this->groups); $i++) {
-			if ($this->groups[$i]==$_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
+		if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
+			|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
+			for ($i=0; $i<count($this->groups); $i++) {
+				if ($this->groups[$i]==$_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
+			}
+		}
+		else {
+			// add user as memberuid in primary group
+			if (!in_array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->groups)) {
+				$this->groups[] = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
+			}
 		}
 
 		// Set additional group memberships
@@ -1540,6 +1560,19 @@ class posixAccount extends baseModule {
 				if (in_array($i, $failed)) continue; // ignore failed accounts
 				if ($data[$i][$col] != "") {
 					$groups = explode(",", $data[$i][$col]);
+					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
+						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
+						if (get_preg($data[$i][$ids['posixAccount_group']], 'digit')) {
+							if (!in_array(getgrnam($data[$i][$ids['posixAccount_group']]), $groups)) {
+								$groups[] = getgrnam($data[$i][$ids['posixAccount_group']]);
+							}
+						}
+						else {
+							if (!in_array(getgrnam($data[$i][$ids['posixAccount_group']]), $groups)) {
+								$groups[] = $data[$i][$ids['posixAccount_group']];
+							}
+						}
+					}
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $temp['groups'])) $temp['groups'][] = $groups[$g];
 						$temp['members'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
