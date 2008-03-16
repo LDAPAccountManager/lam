@@ -1,4 +1,4 @@
-<pdf type="host" filename="printLogo.jpg" headline="Host information" margin-top="10.0" margin-bottom="20.0" margin-left="10.0" margin-right="10.0">
+<pdf type="host" filename="printLogo.jpg" headline="Host information">
 	<section name="_posixAccount_uid">
 		<entry name="main_dn" />
 		<entry name="posixAccount_description" />
