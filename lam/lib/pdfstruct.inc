@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Michael Dürgner
+  Copyright (C) 2003 - 2006  Michael Dï¿½rgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $Id$
 /**
  * Functions to manage the PDF structures.
  * 
- * @author Michael Dürgner
+ * @author Michael Dï¿½rgner
  * @package PDF
  */
 
@@ -75,7 +75,7 @@ function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 	$xml = $parser->parse($file);
 	$border = array();
 	$structure = array();
-	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager', 'margin-top' => '10.0', 'margin-bottom' => '20.0', 'margin-left' => '10.0', 'margin-right' => '10.0');
+	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager');
 	if($xml[0][$xml[1]['PDF'][0]]['attributes']['TYPE'] == $scope) {
 		$border['start'] = $xml[1]['PDF'][0];
 		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];

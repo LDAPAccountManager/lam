@@ -78,8 +78,8 @@ class lamPDF extends UFPDF {
 		$this->setFont($this->fontName,"",12);
 		$this->setTitle($this->page_definitions['headline']);
 		$this->setCreator("LDAP Account Manager");
-		$this->setMargins($this->page_definitions['margin-left'],$this->page_definitions['margin-top'],$this->page_definitions['margin-right']);
-		$this->setAutoPageBreak(true,$this->page_definitions['margin-bottom']);
+		$this->setMargins('10.0','10.0','10.0');
+		$this->setAutoPageBreak(true,'20.0');
 	}
 	
 	/**
@@ -109,8 +109,8 @@ class lamPDF extends UFPDF {
 		$this->Cell(170,5,$this->page_definitions['headline'],0,1,"R",0);
 		$this->Ln(3);
 		$this->SetLineWidth(0.4);
-		$this->Line(10,$this->page_definitions['margin-top'] + 30,200,$this->page_definitions['margin-top'] + 30);
-		$this->Line(10,$this->page_definitions['margin-top'] + 32,200,$this->page_definitions['margin-top'] + 32);
+		$this->Line(10,40,200,40);
+		$this->Line(10,42,200,42);
 		$this->SetY(50);
 	}
 
