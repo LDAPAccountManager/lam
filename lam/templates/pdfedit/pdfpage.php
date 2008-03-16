@@ -399,10 +399,11 @@ echo $_SESSION['header'];
 		<form action="pdfpage.php" method="post">
 			<table width="100%">
 				<tr>
-					<td width="100%" colspan="3" align="left">
+					<!-- print current structure -->
+					<td align="left" valign="top">
 						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
-								<b><?php echo _('Page settings'); if (isset($_GET['pdfname'])) echo " (" . $_GET['pdfname'] . ")"; ?></b>
+								<b><?php if (isset($_GET['pdfname'])) echo $_GET['pdfname']; ?></b>
 							</legend>
 							<BR>
 							<b><?php echo _('Headline'); ?>:</b>
@@ -412,21 +413,7 @@ echo $_SESSION['header'];
 							<select name="logoFile" size="1">
 								<?php echo $logos; ?>
 							</select>
-						</fieldset>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3">
-						<br>
-					</td>
-				</tr>
-				<tr>
-					<!-- print current structure -->
-					<td align="left" valign="top">
-						<fieldset class="<?php echo $_GET['type']; ?>edit">
-							<legend>
-								<b><?php echo _("PDF structure"); ?></b>
-							</legend>
+							<BR><HR><BR>
 							<table>
 <?php
 $sections = '<option value="0">' . _('Beginning') . "</option>\n";
