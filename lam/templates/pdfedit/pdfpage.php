@@ -107,37 +107,39 @@ if(isset($_GET['submit'])) {
 	echo "</body></html>";
 	exit;
 }
-// Add a new section or static text
-elseif(isset($_GET['add'])) {
-	// Check if name for new section is specified when needed
-	if($_GET['section_type'] == 'text' && (!isset($_GET['section_text']) || $_GET['section_text'] == '')) {
-		StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
-	}
+// add a new text field
+elseif(isset($_GET['add_text'])) {
 	// Check if text for static text field is specified
-	elseif($_GET['section_type'] == 'textbox' && (!isset($_GET['text_text']) || $_GET['text_text'] == '')) {
+	if(!isset($_GET['text_text']) || ($_GET['text_text'] == '')) {
 		StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
 	}
 	else {
-		// Add a new section
-		if(($_GET['section_type'] == 'item') || ($_GET['section_type'] == 'text')) {
-			$attributes = array();
-			// Add a new section with user headline
-			if($_GET['section_type'] == 'text') {
-				$attributes['NAME'] = $_GET['section_text'];
-			}
-			// Add a new section with a module value headline
-			elseif($_GET['section_type'] == 'item') {
-				$attributes['NAME'] = '_' . $_GET['section_item'];
-			}
-			$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
-		}
-		// Add new static text field
-		elseif($_GET['section_type'] == 'textbox') {
-			$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']));
-		}
+		$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']));
 		// Insert new field in structure
-		array_splice($_SESSION['currentPDFStructure'],$_GET['add_position'],0,$entry);
+		array_splice($_SESSION['currentPDFStructure'],$_GET['add_text_position'],0,$entry);
 	}
+}
+// add a new section with text headline
+elseif(isset($_GET['add_sectionText'])) {
+	// Check if name for new section is specified when needed
+	if(!isset($_GET['section_text']) || ($_GET['section_text'] == '')) {
+		StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
+	}
+	else {
+		$attributes = array();		
+		$attributes['NAME'] = $_GET['section_text'];
+		$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
+		// Insert new field in structure
+		array_splice($_SESSION['currentPDFStructure'],$_GET['add_sectionText_position'],0,$entry);
+	}
+}
+// Add a new section with item as headline
+elseif(isset($_GET['add_section'])) {
+		$attributes = array();
+		$attributes['NAME'] = '_' . $_GET['section_item'];
+		$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
+		// Insert new field in structure
+		array_splice($_SESSION['currentPDFStructure'],$_GET['add_section_position'],0,$entry);
 }
 // Add a new value field
 elseif(isset($_GET['add_field'])) {
@@ -624,8 +626,8 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 					<td colspan="3">
 							<fieldset class="<?php echo $_GET['type']; ?>edit">
 								<legend>
-									<b><?php echo _('Add section or static text');?></b>
-								</legend>
+									<b><?php echo _('New section');?></b>
+								</legend><BR>
 								<table>
 									<tr>
 										<td>
@@ -636,20 +638,33 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
  												<table align="left" width="100%"> 
 													<tr>
 														<td>
-															<input type="radio" name="section_type" value="text" checked>
+															<?php echo _("Headline"); ?>: <input type="text" name="section_text">&nbsp;&nbsp;&nbsp;
 														</td>
-														<td colspan="2">
-															<?php echo _("Name"); ?>: <input type="text" name="section_text">
+														<td>
+															<B><?php echo _('Position');?>: </B>
+															<select name="add_sectionText_position">
+																<?php echo $sections;?>
+															</select>
+														</td>
+														<td>
+															<input type="submit" name="add_sectionText" value="<?php echo _('Add');?>">
 														</td>
 													</tr>
 													<tr>
 														<td>
-															<input type="radio" name="section_type" value="item">
-														</td>
-														<td>
+															<?php echo _("Headline"); ?>: 
 															<select name="section_item">
 																<?php echo $section_items;?>
+															</select>&nbsp;&nbsp;&nbsp;
+														</td>
+														<td>
+															<B><?php echo _('Position');?>: </B>
+															<select name="add_section_position">
+																<?php echo $sections;?>
 															</select>
+														</td>
+														<td>
+															<input type="submit" name="add_section" value="<?php echo _('Add');?>">
 														</td>
 													</tr>
 												</table>
@@ -665,39 +680,27 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 										<td>
 											<fieldset class="<?php echo $_GET['type']; ?>edit">
 												<legend>
-													<b><?php echo _("Static text"); ?></b>
+													<b><?php echo _("Text field"); ?></b>
 												</legend>
 												<table width="100%">
 													<tr>
-														<td width="10">
-															<input type="radio" name="section_type" value="textbox">
+														<td>
+															<textarea name="text_text" rows="3" cols="40"></textarea>&nbsp;&nbsp;&nbsp;
 														</td>
 														<td>
-															<textarea name="text_text" rows="3" cols="40"></textarea>
+															<B><?php echo _('Position');?>: </B>
+															<select name="add_text_position">
+																<?php echo $sections;?>
+															</select>
+														</td>
+														<td>
+															<input type="submit" name="add_text" value="<?php echo _('Add');?>">
 														</td>
 													</tr>
 												</table>
 											</fieldset>
 										</td>
 									</tr>
-									<tr>
-										<td>
-											<B><?php echo _('Position');?>: </B>
-											<select name="add_position">
-												<?php echo $sections;?>
-											</select>
-										<td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<br>
-										</td>
-									</tr>
-									<TR>
-										<td>
-											<input type="submit" name="add" value="<?php echo _('Add');?>">
-										</td>
-									</TR>
 								</table>
 							</fieldset>
 					</td>
