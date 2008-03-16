@@ -81,20 +81,6 @@ if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDe
 if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
 	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
 }
-if(isset($_POST['defaults'])) {
-	foreach($_POST['defaults'] as $default) {
-		switch($default) {
-			case 'logoFile':
-				unset($_SESSION['currentPageDefinitions']['filename']);
-				break;
-			case 'headline':
-				unset($_SESSION['currentPageDefinitions']['headline']);
-				break;
-			default:
-				break;
-		}
-	}
-}
 
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
@@ -409,39 +395,21 @@ echo $_SESSION['header'];
 	<body>
 		<br>
 		<form action="pdfpage.php" method="post">
-			<table>
+			<table width="100%">
 				<tr>
 					<td width="100%" colspan="3" align="left">
 						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
-								<b><?php echo _('Page settings'); ?></b>
+								<b><?php echo _('Page settings'); if (isset($_GET['pdfname'])) echo " (" . $_GET['pdfname'] . ")"; ?></b>
 							</legend>
-							<table border="0">
-								<tr>
-									<td>
-										<b><?php echo _('Headline'); ?>:</b>
-									</td>
-									<td>
-										<input type="text" name="headline" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['headline'])) ? $_SESSION['currentPageDefinitions']['headline'] : 'LDAP Account Manager'); ?>">
-									</td>
-									<td>
-										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="headline">
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo _('Logo'); ?>:</b>
-									</td>
-									<td>
-										<select name="logoFile" size="1">
-											<?php echo $logos; ?>
-										</select>
-									</td>
-									<td>
-										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="logoFile">
-									</td>
-								</tr>
-							</table>
+							<BR>
+							<b><?php echo _('Headline'); ?>:</b>
+							<input type="text" name="headline" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['headline'])) ? $_SESSION['currentPageDefinitions']['headline'] : 'LDAP Account Manager'); ?>">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<b><?php echo _('Logo'); ?>:</b>
+							<select name="logoFile" size="1">
+								<?php echo $logos; ?>
+							</select>
 						</fieldset>
 					</td>
 				</tr>
