@@ -56,3 +56,10 @@ function listOUchanged(type) {
 	selectOU = document.getElementsByName('suffix')[0];
 	location.href='list.php?type=' + type + '&suffix=' + selectOU.options[selectOU.selectedIndex].value;
 }
+
+function SubmitForm(id, e) {
+	if (e.keyCode == 13) {
+		document.getElementsByName(id)[0].click();
+		return false;
+	}
+}

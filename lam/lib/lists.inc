@@ -398,7 +398,7 @@ class lamList {
 				$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
 			}
 			echo "<td>";
-			echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . ">");
+			echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event)\">");
 			echo "</td>\n";
 		}
 		echo "</tr>\n";
