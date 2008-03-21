@@ -68,27 +68,11 @@ if [ "$1" = "configure" ]; then
        case "$server" in
            apache|apache-perl|apache-ssl)
                if [ -x /usr/sbin/modules-config ]; then
-                   if [ -f /usr/lib/apache/1.3/libphp4.so ]; then
-                       if ! grep "^LoadModule php4_module " /etc/$server/modules.conf > /dev/null 2>&1; then
-                           modules-config $server enable mod_php4
-                       fi
-                   else
-                       if [ -f /usr/lib/apache/1.3/mod_actions.so ]; then
-                           if ! grep "^LoadModule action_module " /etc/$server/modules.conf > /dev/null 2>&1; then
-                               modules-config $server enable mod_actions
-                           fi
-                       fi
-                       if [ -f /usr/lib/apache/1.3/mod_cgi.so ]; then
-                           if ! grep "^LoadModule cgi_module " /etc/$server/modules.conf > /dev/null 2>&1; then
-                               modules-config $server enable mod_cgi
-                           fi
+                   if [ -f /usr/lib/apache/1.3/libphp5.so ]; then
+                       if ! grep "^LoadModule php5_module " /etc/$server/modules.conf > /dev/null 2>&1; then
+                           modules-config $server enable mod_php5
                        fi
                    fi
-               fi
-               if grep "^Include /etc/ldap-account-manager/apache.conf" /etc/$server/httpd.conf > /dev/null 2>&1; then
-                   mv -f /etc/$server/httpd.conf /etc/$server/httpd.conf.old.ldap-account-manager
-                   grep -v "^Include /etc/ldap-account-manager/apache.conf" /etc/$server/httpd.conf.old.ldap-account-manager \
-                       > /etc/$server/httpd.conf
                fi
                if ! grep "^Include /etc/$server/conf.d" /etc/$server/httpd.conf > /dev/null 2>&1; then
                    cp -f /etc/$server/httpd.conf /etc/$server/httpd.conf.old.ldap-account-manager
@@ -104,13 +88,14 @@ if [ "$1" = "configure" ]; then
                    if [ ! -f /etc/$server/mods-enabled/actions.load -a ! -h /etc/$server/mods-enabled/actions.load ]; then
                        ln -s /etc/$server/mods-available/actions.load /etc/$server/mods-enabled/actions.load
                    fi
-                   if [ -f /etc/apache2/mods-available/php4.load ]; then
-                       if [ ! -f /etc/$server/mods-enabled/php4.load -a ! -h /etc/$server/mods-enabled/php4.load ]; then
-                           ln -s /etc/$server/mods-available/php4.load /etc/$server/mods-enabled/php4.load
+                   if [ -f /etc/apache2/mods-available/php5.load ]; then
+                       if [ ! -f /etc/$server/mods-enabled/php5.load -a ! -h /etc/$server/mods-enabled/php5.load ]; then
+                           ln -s /etc/$server/mods-available/php5.load /etc/$server/mods-enabled/php5.load
                        fi
-                   else
-                       if [ ! -f /etc/$server/mods-enabled/cgi.load -a ! -h /etc/$server/mods-enabled/cgi.load ]; then
-                           ln -s /etc/$server/mods-available/cgi.load /etc/$server/mods-enabled/cgi.load
+                   fi
+                   if [ -f /etc/apache2/mods-available/php5.conf ]; then
+                       if [ ! -f /etc/$server/mods-enabled/php5.conf -a ! -h /etc/$server/mods-enabled/php5.conf ]; then
+                           ln -s /etc/$server/mods-available/php5.conf /etc/$server/mods-enabled/php5.conf
                        fi
                    fi
                fi
