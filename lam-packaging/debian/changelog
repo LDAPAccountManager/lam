@@ -1,3 +1,9 @@
+ldap-account-manager (2.3.0RC1-1) unstable; urgency=low
+
+  * Installation fails if php4 is not installed (Closes: #471953)
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 21 Mar 2008 12:37:16 +0100
+
 ldap-account-manager (2.2.0-2) unstable; urgency=low
 
   * overwrites config files on upgrade (Closes: #462192)
