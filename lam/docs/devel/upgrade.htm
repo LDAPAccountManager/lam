@@ -4,6 +4,7 @@
 
 
 
+
   
 
 
@@ -13,13 +14,23 @@
   
   
   <link rel="stylesheet" type="text/css" href="style/layout.css">
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-</head><body>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
 <div style="text-align: center;">
 <h1>Upgrade notes</h1></div>
 
 
+<h2>2.2.0 -&gt; 2.3.0</h2>
+<h3>Style changes</h3>
+If you have defined your own account types then you need to update your CSS files (style/type_&lt;type&gt;.css).<br>
+Please change "table.&lt;type&gt;list input,select" to
+"table.&lt;type&gt;list input,select,button" and
+"fieldset.&lt;type&gt;edit input" to "fieldset.&lt;type&gt;edit
+input,select,button". "fieldset.&lt;type&gt;edit select" may be deleted
+afterwards.<br>
+<br>
+<br>
 <h2>2.1.0 -&gt; 2.2.0</h2>
+
 <h3>Account lists</h3>
 Account lists now support to define tools. These are displayed as linked images like the edit and delete links in the list.<br>
 
@@ -66,7 +77,8 @@ Only LAM Pro allows to change the access level from <span style="font-style: ita
 
 <h2>2.0.0 -&gt; 2.1.0</h2>
 
-<span style="font-weight: bold;">Style changes:</span><br>
+<h3><span style="font-weight: bold;">Style changes</span></h3>
+
 
 <ul>
 
@@ -74,7 +86,8 @@ Only LAM Pro allows to change the access level from <span style="font-style: ita
   <li>"table.&lt;type&gt;list input" changed to "table.&lt;type&gt;list input,select"</li>
 </ul>
 
-<span style="font-weight: bold;">baseModule:</span><br>
+<h3><span style="font-weight: bold;">baseModule</span></h3>
+
 
 &nbsp; The class variable<span style="font-style: italic;"> $base</span> is no longer visible in child classes. Please use <span style="font-style: italic;">$this-&gt;getAccountContainer()</span> to access the accountContainer object.<br>
 
@@ -96,7 +109,8 @@ LAM is now PHP5 only. Several variables are now private and need to be accessed 
 
 <h2>1.2.0 -&gt; 1.3.0</h2>
 
-<span style="font-weight: bold;">New lamList function:</span><br>
+<h3><span style="font-weight: bold;">New lamList functions</span></h3>
+
 
 <ul>
 
@@ -126,7 +140,8 @@ Please use these new functions to call lamdaemon directly:<br>
 
 <h2>1.1.x -&gt; 1.2.0</h2>
 
-<span style="font-weight: bold;">API changes:</span><br>
+<h3><span style="font-weight: bold;">API changes</span></h3>
+
 
 <ul>
 
@@ -137,7 +152,8 @@ Please use these new functions to call lamdaemon directly:<br>
 
 <h2>1.0.4 -&gt; 1.1.0</h2>
 
-<span style="font-weight: bold;">API changes:</span><br>
+<h3><span style="font-weight: bold;">API changes</span></h3>
+
 
 <ul>
 
@@ -154,7 +170,8 @@ array(array('INFO', 'headline', 'text'), array('INFO', 'headline2',
 
 
 
-<span style="font-weight: bold;">New module functions:</span><br>
+<h3><span style="font-weight: bold;">New module functions</span></h3>
+
 
 <ul>
 
