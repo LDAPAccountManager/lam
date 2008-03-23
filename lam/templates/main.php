@@ -58,7 +58,6 @@ for ($i = 0; $i < sizeof($types); $i++) {
 $lang = explode(":",$_SESSION['language']);
 $lang = $lang[1];
 
-echo "<?xml version=\"1.0\" encoding=\"$lang\"?>\n";
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n";
 echo "<html>\n";
 echo "<head>\n";

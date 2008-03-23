@@ -33,7 +33,6 @@ include_once("../lib/status.inc");
 
 // check if PHP >= 5.1
 if (version_compare(phpversion(), '5.1.0') < 0) {
-	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
@@ -93,7 +92,6 @@ if (isset($memLimit) && ($memLimit != '') && (substr(strtoupper($memLimit), strl
 }
 // stop login if critical errors occured
 if (sizeof($criticalErrors) > 0) {
-	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
@@ -145,8 +143,7 @@ function display_LoginPage($config_object) {
 	$_SESSION['language'] = $config_object->get_defaultLanguage();
 
 	$current_language = explode(":",$_SESSION['language']);
-	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n";
-	$_SESSION['header'] .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	$_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	$_SESSION['header'] .= "<html>\n<head>\n";
 	$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
 	$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
@@ -413,8 +410,7 @@ if(!empty($_POST['checklogin']))
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
 			$current_language = explode(":",$_SESSION['language']);
-			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n";
-			$_SESSION['header'] .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+			$_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 			$_SESSION['header'] .= "<html>\n<head>\n";
 			$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
 			$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";

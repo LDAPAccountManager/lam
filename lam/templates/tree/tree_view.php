@@ -64,7 +64,6 @@ if (! isset($_SESSION['tree'])) {
 	$_SESSION['tree_icons'] = $tree_icons;
 }
 
-echo "<?xml version=\"1.0\" encoding=\"$lang\"?>";
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">";
 echo "<html>";
 echo "<head>";

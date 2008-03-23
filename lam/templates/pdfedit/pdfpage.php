@@ -417,6 +417,7 @@ echo $_SESSION['header'];
 							<table>
 <?php
 $sections = '<option value="0">' . _('Beginning') . "</option>\n";
+$nonTextSections = '';
 // Print every entry in the current structure
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// Create the up/down/remove links
@@ -438,6 +439,13 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
+		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
+			$section_headline = substr($name,1);
+		}
+		else {
+			$section_headline = $name;
+		}
+		$nonTextSections .= '<option value="' . $key . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
 									<td width="20" align="left">
@@ -449,7 +457,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
 			?>
 										<select name="section_<?php echo $key;?>">
-											<!-- <?php echo $section_items;?> -->
 			<?php
 			foreach($section_items_array as $item) {
 				?>
@@ -464,7 +471,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		// Section headline is a user text
 		else {
 			?>
-										<input type="text" name="section_<?php echo $key;?>" value="<?php echo $name;?>">&nbsp;&nbsp;<button type="submit" name="change" value="<?php echo $key;?>"><?php echo _('Change');?></button>
+										<input type="text" name="section_<?php echo $key;?>" value="<?php echo $section_headline;?>">&nbsp;&nbsp;<button type="submit" name="change" value="<?php echo $key;?>"><?php echo _('Change');?></button>
 			<?php
 		}
 		?>
@@ -690,6 +697,19 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 									</tr>
 								</table>
 							</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+							<fieldset class="<?php echo $_GET['type']; ?>edit">
+								<legend>
+									<b><?php echo _('New field');?></b>
+								</legend><BR>
+								<B><?php echo _('Position');?>: </B>
+								<select name="add_text_position">
+									<?php echo $nonTextSections;?>
+								</select>
+								<input type="submit" name="add_field" value="<?php echo _('Add');?>">
 					</td>
 				</tr>
 				<tr>
