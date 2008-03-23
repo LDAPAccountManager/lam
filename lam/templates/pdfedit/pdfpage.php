@@ -142,36 +142,23 @@ elseif(isset($_GET['add_section'])) {
 		array_splice($_SESSION['currentPDFStructure'],$_GET['add_section_position'],0,$entry);
 }
 // Add a new value field
-elseif(isset($_GET['add_field'])) {
-	// Get available modules
-	$modules = explode(',',$_GET['modules']);
-	$fields = array();
-	// Search each module for selected values
-	foreach($modules as $module) {
-		if(isset($_GET[$module])) {
-			foreach($_GET[$module] as $field) {
-				// Create ne value entry
-				$fields[] = array('tag' => 'ENTRY','type' => 'complete','level' => '3','attributes' => array('NAME' => $module . '_' . $field));
-			}
-		}
+elseif(isset($_GET['add_new_field'])) {
+	$field = array('tag' => 'ENTRY','type' => 'complete','level' => '3','attributes' => array('NAME' => $_GET['new_field']));
+	$pos = 0;
+	// Find begin section to insert into
+	while($pos < $_GET['add_field_position']) {
+		next($_SESSION['currentPDFStructure']);
+		$pos++;
 	}
-	if(count($fields) > 0) {
-		$pos = 0;
-		// Find begin section to insert into
-		while($pos < $_GET['section']) {
-			next($_SESSION['currentPDFStructure']);
-			$pos++;
-		}
+	$current = next($_SESSION['currentPDFStructure']);
+	$pos++;
+	// End of section to insert into
+	while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
 		$current = next($_SESSION['currentPDFStructure']);
 		$pos++;
-		// End of section to insert into
-		while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-			$current = next($_SESSION['currentPDFStructure']);
-			$pos++;
-		}
-		// Insert new entry before closing section tag
-		array_splice($_SESSION['currentPDFStructure'],$pos,0,$fields);
 	}
+	// Insert new entry before closing section tag
+	array_splice($_SESSION['currentPDFStructure'],$pos,0,array($field));
 }
 // Change section headline
 elseif(isset($_GET['change'])) {
@@ -414,28 +401,29 @@ echo $_SESSION['header'];
 								<?php echo $logos; ?>
 							</select>
 							<BR><HR><BR>
-							<table>
+							<table width="100%">
 <?php
 $sections = '<option value="0">' . _('Beginning') . "</option>\n";
 $nonTextSections = '';
 // Print every entry in the current structure
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// Create the up/down/remove links
-	$links = "<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key .
+	$links = "<td width=18>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key .
 			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
 			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/up.gif\" alt=\"" . _("Up") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key .
+		"<td width=18>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key .
 			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
 			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/down.gif\" alt=\"" . _("Down") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key .
+		"<td width=18>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key .
 			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
 			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
-		"<img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n</td>\n";
+		"<img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n</td>\n" .
+		"<td></td>";
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
@@ -448,10 +436,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$nonTextSections .= '<option value="' . $key . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
-									<td width="20" align="left">
-										<input type="radio" name="section" value="<?php echo $key;?>">
-									</td>
-									<td colspan="2">
+									<td colspan="2" width="200">
 		<?php
 		// Section headline is a value entry
 		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
@@ -495,7 +480,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$sections .= '<option value="' . ($key + 1) . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
-									<td colspan="9">
+									<td colspan="7">
 										<br>
 									</td>
 								</tr>
@@ -508,9 +493,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$sections .= '<option value="' . ($key + 1) . '">' . _('Static text') . "</option>\n";
 		?>
 								<tr>
-									<td>
-									</td>
-									<td colspan="2">
+									<td colspan="2" width="200">
 										<b><?php echo _('Static text');?></b>
 									</td>
 									<td width="20">
@@ -518,16 +501,19 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 									<?php echo $links;?>
 								</tr>
 								<tr>
-									<td colspan="2">
-									</td>
-									<td>
-										<?php echo $entry['value'];?>
-									</td>
-										<td colspan="6">
+									<td colspan="7">
+										<br>
 									</td>
 								</tr>
 								<tr>
-									<td colspan="9">
+									<td>
+									</td>
+									<td  colspan="6">
+										<?php echo $entry['value'];?>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="7">
 										<br>
 									</td>
 								</tr>
@@ -539,8 +525,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$name = $entry['attributes']['NAME'];
 		?>
 								<tr>
-									<td>
-									</td>
 									<td width="20">
 									</td>
 									<td>
@@ -561,60 +545,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 						<p>&nbsp;</p>
 					</td>
 					
-					<td align="center">
-						<input type="submit" name="add_field" value="<=">
-					</td>
-					
-					<!-- print available fields sorted by modul -->
-					<td align="left" valign="top">
-						<fieldset class="<?php echo $_GET['type']; ?>edit">
-							<legend>
-								<b><?php echo _("Available PDF fields"); ?></b>
-							</legend>
-							<table>
-<?php
-// Print all available modules with the value fieds
-foreach($_SESSION['availablePDFFields'] as $module => $fields) {
-	?>
-								<tr>
-									<td colspan="2">
-										<b><?php
-											if ($module != 'main') {
-												echo getModuleAlias($module, $_GET['type']);
-											}
-											else {
-												echo _('Main');
-											}
-										?></b>
-									</td>
-								</tr>
-								<tr>
-									<td width="20">
-									</td>
-									<td>
-										<select name="<?php echo $module?>[]" size="7" multiple>
-	<?php
-	// Print each value field
-	foreach($fields as $field) {
-		?>
-											<option><?php echo $field;?></option>
-		<?php
-	}
-	?>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										<br>
-									</td>
-								</tr>
-	<?php
-}
-?>
-							</table>
-						</fieldset>
-					</td>
 				</tr>
 				<tr>
 					<td colspan="3">
@@ -705,11 +635,30 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 								<legend>
 									<b><?php echo _('New field');?></b>
 								</legend><BR>
+								<select name="new_field">
+								<?php
+									foreach($_SESSION['availablePDFFields'] as $module => $fields) {
+										if ($module != 'main') {
+											$title = getModuleAlias($module, $_GET['type']);
+										}
+										else {
+											$title = _('Main');
+										}
+										echo "<optgroup label=\"$title\">\n";
+											foreach ($fields as $field) {
+												echo "<option value=\"" . $module . "_" . $field . "\" label=\"$field\">$field</option>\n";
+											}
+										echo "</optgroup>\n";
+									}
+								?>
+								</select>
 								<B><?php echo _('Position');?>: </B>
-								<select name="add_text_position">
+								<select name="add_field_position">
 									<?php echo $nonTextSections;?>
 								</select>
-								<input type="submit" name="add_field" value="<?php echo _('Add');?>">
+								<input type="submit" name="add_new_field" value="<?php echo _('Add');?>">
+							</fieldset>
+						<p>&nbsp;</p>
 					</td>
 				</tr>
 				<tr>
@@ -717,7 +666,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 						<fieldset class="<?php echo $_GET['type']; ?>edit">
 							<legend>
 								<b><?php echo _("Save"); ?></b>
-							</legend>
+							</legend><BR>
 							<table border="0" align="left">
 							<?php
 							if(!isset($_GET['pdfname']) || ($_GET['pdfname'] == '')) {
