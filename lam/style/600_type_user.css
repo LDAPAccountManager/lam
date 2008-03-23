@@ -42,7 +42,7 @@ table.userlist td,th {
 }
 
 /* input elements */
-table.userlist input,select {
+table.userlist input,select,button {
   background-color:#fff2a3;
 }
 
@@ -116,13 +116,8 @@ fieldset.useredit legend {
   color:blue;
 }
 
-/* select boxes */
-fieldset.useredit select {
-  background-color:#fff2a3;
-}
-
 /* input elements */
-fieldset.useredit input {
+fieldset.useredit input,select,button {
   background-color:#fff2a3;
 }
 

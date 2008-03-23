@@ -64,7 +64,7 @@ table.smbDomainlist td,th {
 }
 
 /* input elements */
-table.smbDomainlist input,select {
+table.smbDomainlist input,select,button {
   background-color:#a8ddbf;
 }
 
@@ -103,12 +103,8 @@ fieldset.smbDomainedit legend {
   color:blue;
 }
 
-fieldset.smbDomainedit select {
-  background-color:#a8ddbf;
-}
-
 /* input elements */
-fieldset.smbDomainedit input {
+fieldset.smbDomainedit input,select,button {
   background-color:#a8ddbf;
 }
 
