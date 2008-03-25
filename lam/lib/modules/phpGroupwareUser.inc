@@ -134,7 +134,7 @@ class phpGroupwareUser extends baseModule {
 		$return = array();
 		if (isset($this->attributes['objectClass']) && in_array('phpgwAccount', $this->attributes['objectClass'])) {
 			$phpgwAccountExpires = '';
-			if (isset($this->attributes['phpgwAccountExpires'][0])) {
+			if (isset($this->attributes['phpgwAccountExpires'][0]) && ($this->attributes['phpgwAccountExpires'][0] != "-1")) {
 				$date = getdate($this->attributes['phpgwAccountExpires'][0]);
 				$phpgwAccountExpires = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
 			}
@@ -195,6 +195,7 @@ class phpGroupwareUser extends baseModule {
 	public function process_attributes() {
 		if (isset($_POST['form_subpage_phpGroupwareUser_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'phpgwAccount';
+			$this->attributes['phpgwAccountExpires'][0] = "-1";
 		}
 		elseif (isset($_POST['form_subpage_phpGroupwareUser_attributes_remObjectClass'])) {
 			for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
@@ -224,8 +225,8 @@ class phpGroupwareUser extends baseModule {
 			$text = _('Account expiration date');
 			$help = "phpgwAccountExpires";
 		}
-		$time = 0;
-		if (isset($this->attributes[$attr][0])) {
+		$time = time();
+		if (isset($this->attributes[$attr][0]) && ($this->attributes[$attr][0] != "-1")) {
 			$time = $this->attributes[$attr][0];
 		}
 		$date = getdate($time);
@@ -281,7 +282,7 @@ class phpGroupwareUser extends baseModule {
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
 			// remove attribute value
-			unset($this->attributes[$attr]);
+			$this->attributes[$attr][0] = "-1";
 		}
 		return $return;
 	}
@@ -428,6 +429,9 @@ class phpGroupwareUser extends baseModule {
 					array_push($errMsg, array($i));
 					$messages[] = $errMsg;
 				}
+			}
+			else {
+				$partialAccounts[$i]['phpgwAccountExpires'] = "-1";
 			}
 		}
 		return $messages;
