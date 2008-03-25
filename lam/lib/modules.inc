@@ -1026,6 +1026,7 @@ class accountContainer {
 						}
 					}
 				}
+			$this->sortModules();
 			}
 			// save account
 			if (!$errorsOccured && isset($_POST['accountContainerSaveAccount'])) {
@@ -1805,7 +1806,18 @@ class accountContainer {
 		if (sizeof($depModules) > 0) {
 			for ($i = 0; $i < sizeof($depModules); $i++) $order[] = $depModules[$i];
 		}
-		$this->order = $order;
+		// move disabled modules to end
+		$activeModules = array();
+		$passiveModules = array();
+		for ($i = 0; $i < sizeof($order); $i++) {
+			if ($this->module[$order[$i]]->getButtonStatus() == 'enabled') {
+				$activeModules[] = $order[$i];
+			}
+			else {
+				$passiveModules[] = $order[$i];
+			}
+		}
+		$this->order = array_merge($activeModules, $passiveModules);
 	}
 	
 	/**
