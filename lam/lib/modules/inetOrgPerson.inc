@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2007  Roland Gruber
+                2005 - 2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -895,7 +895,7 @@ class inetOrgPerson extends baseModule {
 			array('kind' => 'help', 'value' => 'businessCategory'));
 		if ($this->supportUnixHosts()) {
 			$hostvalue = "";
-			if (is_array($this->attributes['host'])) {
+			if (isset($this->attributes['host']) && is_array($this->attributes['host'])) {
 				$hostvalue .= implode(",", $this->attributes['host']);
 			}
 			$return[] = array(
