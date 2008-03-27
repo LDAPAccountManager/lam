@@ -107,6 +107,8 @@ class lamGroupList extends lamList {
 	private $refresh_primary = false;
 	/** ID for config option */
 	const TRANS_PRIMARY_OPTION_NAME = "LG_TP";
+	/** specifies if primary group members are visible */
+	private $include_primary = false;
 
 	/**
 	 * Constructor
@@ -231,7 +233,6 @@ class lamGroupList extends lamList {
 		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 		$attrs = array( "uid" );
 		for ($i = 0; $i < sizeof($this->entries); $i++) {
-			$this->primary_hash[$i]['memberuid_primary'] = array();
 			$gid = $this->entries[$i]['gidnumber'][0];
 			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
 			$sr = @ldap_search($_SESSION["ldap"]->server(), $module_suffix, $filter, $attrs);
