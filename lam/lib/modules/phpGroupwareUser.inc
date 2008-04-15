@@ -72,7 +72,7 @@ class phpGroupwareUser extends baseModule {
 		$return['help'] = array(
 			'extension' => array(
 				"Headline" => _("Add phpGroupWare extension"),
-				"Text" => _("If you set this to true then the phpGroupware extension will be added.")
+				"Text" => _("If you set this to \"true\" then the phpGroupware extension will be added.")
 			),
 			'phpgwAccountStatus' => array(
 				"Headline" => _("Account status"),
