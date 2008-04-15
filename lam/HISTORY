@@ -1,5 +1,11 @@
-March/April 2.3.0
+30.04.2008 2.3.0
+  - support phpGroupWare accounts
+  - password policies
+  - redesigned PDF editor
   - show mail addresses as link in account list
+  - Unix: allow primary group members to be added as memberUid
+  - Kolab: support LAM Pro self service
+  - LAM Pro: new account type for groupOf(Unique)Names
 
 
 23.01.2008 2.2.0
