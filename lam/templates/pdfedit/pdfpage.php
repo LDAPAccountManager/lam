@@ -436,7 +436,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$nonTextSections .= '<option value="' . $key . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
-									<td colspan="2" width="200">
+									<td nowrap colspan="2" width="400">
 		<?php
 		// Section headline is a value entry
 		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
@@ -493,7 +493,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$sections .= '<option value="' . ($key + 1) . '">' . _('Static text') . "</option>\n";
 		?>
 								<tr>
-									<td colspan="2" width="200">
+									<td nowrap colspan="2" width="400">
 										<b><?php echo _('Static text');?></b>
 									</td>
 									<td width="20">
