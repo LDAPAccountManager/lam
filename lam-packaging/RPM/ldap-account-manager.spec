@@ -48,7 +48,7 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 
 %files
 %defattr(-, root, root)
-%doc docs/*txt COPYING HISTORY INSTALL README TODO VERSION
+%doc docs/*txt COPYING HISTORY INSTALL README VERSION
 %{httpd_rootdir}/%{lam_dir}
 
 %changelog -n lam
