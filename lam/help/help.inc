@@ -179,7 +179,7 @@ $helpArray = array (
 						'<li>' . _('The first line is the subject.') . '</li>' .
 						'<li>' . _('All following lines form the mail body.') . '</li>' .
 						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
-						'<li>' . _('The wildcard for the new password is @@newPasssword@@.') . '</li>'),
+						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page

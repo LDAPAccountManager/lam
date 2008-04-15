@@ -112,7 +112,7 @@ class sambaDomain extends baseModule {
 			),
 			'lockoutThreshold' => array(
 				"Headline" => _("Lockout users after bad logon attempts"),
-				"Text" => _("This is the number of bad logon attempts (0 - 999) before the accounts is deactivated. 0 means unlimited attempts.")
+				"Text" => _("This is the number of bad logon attempts (0 - 999) before the account is deactivated. 0 means unlimited attempts.")
 			),
 			'minPwdAge' => array(
 				"Headline" => _("Minimum password age"),
