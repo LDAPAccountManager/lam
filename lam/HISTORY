@@ -6,6 +6,8 @@
   - Unix: allow primary group members to be added as memberUid
   - Kolab: support LAM Pro self service
   - LAM Pro: new account type for groupOf(Unique)Names
+  - fixed bugs:
+   -> XHTML headers should be removed (1912736)
 
 
 23.01.2008 2.2.0
