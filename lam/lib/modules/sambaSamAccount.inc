@@ -918,21 +918,22 @@ class sambaSamAccount extends baseModule {
 				StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 				return array();
 			}
-			if ($this->attributes['sambaSID'][0]!='') {
+			if (isset($this->attributes['sambaSID'][0]) && $this->attributes['sambaSID'][0] != '') {
 				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 			}
+			$sel_domain = array();
 			for ($i=0; $i<count($sambaDomains); $i++ ) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 				if (isset($domainSID)) {
 					if ($domainSID == $sambaDomains[$i]->SID) {
 						$SID = $domainSID;
-						$sel_domain = $sambaDomains[$i]->name;
+						$sel_domain = array($sambaDomains[$i]->name);
 					}
 				}
 				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
 					if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 						$SID = $sambaDomains[$i]->SID;
-						$sel_domain = $sambaDomains[$i]->name;
+						$sel_domain = array($sambaDomains[$i]->name);
 					}
 				}
 			}
@@ -1076,7 +1077,7 @@ class sambaSamAccount extends baseModule {
 				$options = array();
 				$selected = array();
 				for ($i=0; $i<count($names); $i++) {
-					if ($this->attributes['sambaPrimaryGroupSID'][0]==$SID."-".$this->rids[$names[$i]]) {
+					if (isset($this->attributes['sambaPrimaryGroupSID'][0]) && ($this->attributes['sambaPrimaryGroupSID'][0] == $SID . "-" . $this->rids[$names[$i]])) {
 						$selected[] = $names[$i];
 						$wrid=true;
 					}
@@ -1092,7 +1093,7 @@ class sambaSamAccount extends baseModule {
 				$options = array_keys($this->rids);
 				$options[] = '-';
 				$selected = array();
-				if ($this->attributes['sambaSID'][0]) {
+				if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0] != '')) {
 					$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
 					$specialRids = array_flip($this->rids);
 					if (in_array($rid, $this->rids)) {
@@ -1110,7 +1111,7 @@ class sambaSamAccount extends baseModule {
 				}
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Domain') . "*" ),
-				array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
+				array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $sel_domain),
 				array('kind' => 'help', 'value' => 'domain' ));
 			// logon hours and terminal server options
 			if ($this->get_scope()=='user') {
