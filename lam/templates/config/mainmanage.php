@@ -70,7 +70,7 @@ echo $_SESSION['header'];
 <?php
 
 // check if submit button was pressed
-if ($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	// remove double slashes if magic quotes are on
 	if (get_magic_quotes_gpc() == 1) {
 		$postKeys = array_keys($_POST);

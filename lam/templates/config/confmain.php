@@ -48,7 +48,7 @@ if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
 
 // check if password was entered
 // if not: load login page
-if (!$passwd && !isset($_SESSION['conf_isAuthenticated'])) {
+if (!isset($passwd) && !isset($_SESSION['conf_isAuthenticated'])) {
 	$_SESSION['conf_message'] = _("No password was entered!");
 	/** go back to login if password is empty */
 	require('conflogin.php');
@@ -62,7 +62,7 @@ $conf = &$_SESSION['conf_config'];
 
 // check if password is valid
 // if not: load login page
-if (!$conf->check_Passwd($passwd) && !($_SESSION['conf_isAuthenticated'] === $conf->getName())) {
+if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthenticated'] === $conf->getName())) && !$conf->check_Passwd($passwd)) {
 	$sessionKeys = array_keys($_SESSION);
 	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
@@ -77,21 +77,21 @@ $_SESSION['conf_isAuthenticated'] = $conf->getName();
 // check if button was pressed and if we have to save the setting or go back to login
 if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
 	// go to final page
-	if ($_POST['submitconf']){
+	if (isset($_POST['submitconf'])){
 		saveSettings();
 	}
 	// go to modules page
-	elseif ($_POST['editmodules']){
+	elseif (isset($_POST['editmodules'])){
 		metaRefresh("confmodules.php");
 		exit;
 	}
 	// go to types page
-	elseif ($_POST['edittypes']){
+	elseif (isset($_POST['edittypes'])){
 		metaRefresh("conftypes.php");
 		exit;
 	}
 	// back to login
-	else if ($_POST['back']){
+	else if (isset($_POST['back'])){
 		metaRefresh("../login.php");
 		exit;
 	}
@@ -465,9 +465,6 @@ echo ("<p>&nbsp;</p>");
 
 echo ("<p>* = ". _("required") . "</p>");
 
-// password for configuration
-echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");
-
 echo ("</form>\n");
 echo ("</body>\n");
 echo ("</html>\n");
@@ -560,7 +557,7 @@ function saveSettings() {
 		}
 		// checkboxes
 		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
-			if ($_POST[$element] == "on") $options[$element] = array('true');
+			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
 			else $options[$element] = array('false');
 		}
 		// dropdownbox

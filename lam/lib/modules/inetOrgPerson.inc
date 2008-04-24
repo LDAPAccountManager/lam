@@ -673,7 +673,7 @@ class inetOrgPerson extends baseModule {
 		if ( !get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
 		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
 		if ( !get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
-		if ($_POST['userPassword']) {
+		if (isset($_POST['userPassword'])) {
 			if ($_POST['userPassword'] != $_POST['userPassword2']) {
 				$errors[] = $this->messages['userPassword'][0];
 			}
@@ -692,7 +692,9 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
-		if ($_POST['delPhoto']) $this->attributes['jpegPhoto'] = array();
+		if (isset($_POST['delPhoto'])) {
+			$this->attributes['jpegPhoto'] = array();
+		}
 		// Return error-messages
 		return $errors;
 	}

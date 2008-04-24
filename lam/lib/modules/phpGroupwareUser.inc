@@ -193,6 +193,9 @@ class phpGroupwareUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
+		if (isset($this->attributes['objectClass']) && in_array('phpgwAccount', $this->attributes['objectClass'])) {
+			$this->attributes['phpgwAccountStatus'][0] = $_POST['phpgwAccountStatus'];
+		}
 		if (isset($_POST['form_subpage_phpGroupwareUser_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'phpgwAccount';
 			$this->attributes['phpgwAccountExpires'][0] = "-1";
@@ -204,9 +207,6 @@ class phpGroupwareUser extends baseModule {
 					break;
 				}
 			}
-		}
-		if (isset($this->attributes['objectClass']) && in_array('phpgwAccount', $this->attributes['objectClass'])) {
-			$this->attributes['phpgwAccountStatus'][0] = $_POST['phpgwAccountStatus'];
 		}
 		return array();
 	}

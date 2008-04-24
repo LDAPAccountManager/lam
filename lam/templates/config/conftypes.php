@@ -67,7 +67,7 @@ if (isset($_POST['postAvailable'])) {
 
 $errors = array();
 // user pressed submit/abort button
-if ($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	// check settings
 	$allOK = true;
 	$postKeys = array_keys($_POST);
@@ -111,7 +111,7 @@ if ($_POST['submit']) {
 	}
 }
 // no changes
-elseif ($_POST['abort']) {
+elseif (isset($_POST['abort'])) {
 	$_SESSION['conf_accountTypes'] = $_SESSION['conf_accountTypesOld'];
 	metarefresh('confmain.php?typesback=true');
 	exit;
