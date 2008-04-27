@@ -5014,8 +5014,8 @@ msgid "The static text must contain at least one character."
 msgstr "Der statische Text muss mindestens ein Zeichen enthalten."
 
 #: ../help/help.inc:182
-msgid "The wildcard for the new password is @@newPasssword@@."
-msgstr "Der Platzhalter für das neue Passwort ist @@newPasssword@@."
+msgid "The wildcard for the new password is @@newPassword@@."
+msgstr "Der Platzhalter für das neue Passwort ist @@newPassword@@."
 
 #: ../templates/tree/add_oclass_form.php:125
 msgid "There are new required attributes which need to be set."
@@ -5335,7 +5335,7 @@ msgstr ""
 
 #: ../lib/modules/sambaDomain.inc:115
 msgid ""
-"This is the number of bad logon attempts (0 - 999) before the accounts is "
+"This is the number of bad logon attempts (0 - 999) before the account is "
 "deactivated. 0 means unlimited attempts."
 msgstr ""
 "Dies ist die Anzahl von fehlerhaften Anmeldeversuchen (0 - 999) bis zur "

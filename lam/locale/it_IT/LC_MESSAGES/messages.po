@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2008-04-14 00:00+0200\n"
+"PO-Revision-Date: 2008-04-26 20:09+0200\n"
 "Last-Translator: Massimiliano Ferrero <m.ferrero@midhgard.it>\n"
 "Language-Team: Italiano <lam-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2098,7 +2098,7 @@ msgstr "Il percorso della home non è valido."
 #: ../lib/modules/inetOrgPerson.inc:840 ../lib/modules/inetOrgPerson.inc:1055
 #: ../lib/modules/inetOrgPerson.inc:1373
 msgid "Home telephone number"
-msgstr "Numero teefonico di casa"
+msgstr "Numero telefonico di casa"
 
 #: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:65
 msgid "Homedirectory contains invalid characters."
@@ -6250,7 +6250,7 @@ msgstr ""
 
 #: ../templates/login.php:228
 msgid "Your session expired, please log in again."
-msgstr "La vostra sessione è scaduta, effettuare nuovamente il login."
+msgstr "La vostra sessione è scaduta, effettuate nuovamente il login."
 
 #: ../templates/config/mainmanage.php:139
 #: ../templates/selfService/adminMain.php:113 ../lib/config.inc:389
