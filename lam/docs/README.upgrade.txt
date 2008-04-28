@@ -1,6 +1,31 @@
 Upgrade instructions:
 =====================
 
+1. Migrating configuration files
+================================
+
+LAM stores all configuration files in the "config" folder. Please backup the
+following files and copy them after the new version is installed.
+
+* config/*.conf
+* config/config.cfg
+* config/pdf/*.xml
+* config/profiles/*.xml
+
+LAM Pro only:
+
+* config/selfService/*.*
+* config/passwordMailTemplate.txt
+
+Please check also the version specific instructions. They might include
+additional actions.
+
+
+
+2. Version specific upgrade instructions
+========================================
+
+
 2.2.0 -> 2.3.0
 ==============
 
