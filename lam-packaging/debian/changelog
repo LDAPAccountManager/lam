@@ -1,9 +1,9 @@
-ldap-account-manager (2.3.0RC1-1) unstable; urgency=low
+ldap-account-manager (2.3.0-1) unstable; urgency=low
 
   * Installation fails if php4 is not installed (Closes: #471953)
   * password quality checking (Closes: #462336)
 
- -- Roland Gruber <post@rolandgruber.de>  Tue, 15 Apr 2008 16:44:55 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 28 Apr 2008 16:44:55 +0200
 
 ldap-account-manager (2.2.0-2) unstable; urgency=low
 
