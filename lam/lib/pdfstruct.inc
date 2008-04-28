@@ -120,7 +120,7 @@ function savePDFStructureDefinitions($scope,$definition) {
 				$ident .= "\t";
 			}
 			$attributes = '';
-			if(is_array($entry['attributes'])) {
+			if(isset($entry['attributes']) && is_array($entry['attributes'])) {
 				foreach($entry['attributes'] as $key => $value) {
 					$attributes .= ' ' . strtolower($key) . '="' . $value . '"';
 				}
