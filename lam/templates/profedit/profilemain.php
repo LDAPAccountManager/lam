@@ -137,7 +137,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	echo "<input type=\"radio\" name=\"profile\" value=\"edit" . $profileClasses[$i]['scope'] . "\">\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<select name=\"e_" . $profileClasses[$i]['scope'] . "\" size=1>\n";
+	echo "<select class=\"" . $profileClasses[$i]['scope'] . "\" name=\"e_" . $profileClasses[$i]['scope'] . "\" size=1>\n";
 	echo $profileClasses[$i]['profiles'];
 	echo "</select>\n";
 	echo "</td>\n";
@@ -150,7 +150,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	echo "<input type=\"radio\" name=\"profile\" value=\"del" . $profileClasses[$i]['scope'] . "\">\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<select name=\"d_" . $profileClasses[$i]['scope'] . "\" size=1>\n";
+	echo "<select class=\"" . $profileClasses[$i]['scope'] . "\" name=\"e_" . $profileClasses[$i]['scope'] . "\" name=\"d_" . $profileClasses[$i]['scope'] . "\" size=1>\n";
 	echo $profileClasses[$i]['profiles'];
 	echo "</select>\n";
 	echo "</td>\n";

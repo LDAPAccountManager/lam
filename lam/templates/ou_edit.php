@@ -48,7 +48,7 @@ setlanguage();
 $types = $_SESSION['config']->get_ActiveTypes();
 
 // check if submit button was pressed
-if ($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	// check user input
 	for ($i = 0; $i < sizeof($types); $i++) {
 		// new ou
@@ -167,7 +167,7 @@ function display_main() {
 		echo ("<td><input type=radio name=\"type\" value=\"new_" . $types[$i] . "\"></td>\n");
 		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
 		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><select size=1 name=parentsuff_" . $types[$i] . ">");
+		echo ("<td><select class=\"" . $types[$i] . "\" size=1 name=parentsuff_" . $types[$i] . ">");
 		for ($u = 0; $u < sizeof($units); $u++) {
 			echo ("<option>" . $units[$u] . "</option>\n");
 		}
@@ -182,7 +182,7 @@ function display_main() {
 		echo ("<td><input type=radio name=\"type\" value=\"del_" . $types[$i] . "\"></td>\n");
 		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
 		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><select size=1 name=deletename_" . $types[$i] . ">");
+		echo ("<td><select class=\"" . $types[$i] . "\" size=1 name=deletename_" . $types[$i] . ">");
 		for ($u = 0; $u < sizeof($units); $u++) {
 			echo ("<option>" . $units[$u] . "</option>\n");
 		}
