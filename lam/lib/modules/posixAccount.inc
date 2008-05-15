@@ -190,7 +190,7 @@ class posixAccount extends baseModule {
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
 		// user specific upload options
-		if (($this->get_scope() == 'user') && $_SESSION['loggedIn']) {
+		if (($this->get_scope() == 'user') && isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$return['upload_columns'] = array(
 			array(
 				'name' => 'posixAccount_userName',
@@ -301,7 +301,7 @@ class posixAccount extends baseModule {
 			)
 			);
 		}
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('inetOrgPerson', $modules)) {
 				$return['upload_columns'][] =
@@ -1768,7 +1768,7 @@ class posixAccount extends baseModule {
 						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password']);
 						if ($pwdPolicyResult === true) {
 							$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings['posixAccount_pwdHash'][0]);
-							if (isset($attributes['shadowLastChange'])) {
+							if (isset($attributes['shadowLastChange'][0])) {
 								$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
 							}
 							$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
