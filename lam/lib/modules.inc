@@ -710,7 +710,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 							if (isset($values[$input[$i][$j]['name']])) {
 								if ($values[$input[$i][$j]['name']][0] == "true") $output .= ' checked';
 							}
-							elseif ($input[$i][$j]['checked']) $output .= ' checked';
+							elseif (isset($input[$i][$j]['checked']) && ($input[$i][$j]['checked'])) $output .= ' checked';
 						}
 						// other input element
 						else {

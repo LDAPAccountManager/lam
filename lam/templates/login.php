@@ -455,9 +455,7 @@ elseif(!empty($_POST['profileChange'])) {
 	display_LoginPage($_SESSION['config']); // Load login page
 }
 // Load login page
-else
-{
-	$_SESSION['loggedIn'] = false;
+else {
 	$default_Config = new LAMCfgMain();
 	$default_Profile = $default_Config->default;
 	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object

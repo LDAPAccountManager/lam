@@ -142,7 +142,7 @@ class inetOrgPerson extends baseModule {
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
 			'carLicense');
-		if (($_SESSION['loggedIn']) && $this->supportUnixHosts()) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true) && $this->supportUnixHosts()) {
 			$return['attributes'][] = 'host';
 		}
 		// self service search attributes
@@ -320,7 +320,7 @@ class inetOrgPerson extends baseModule {
 		)
 		);
 		// cn and uid for upload (only if posixAccount is not loaded)
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
 				$return['upload_columns'][] = array(
@@ -341,7 +341,7 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		// Unix workstations for upload
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			if ($this->supportUnixHosts()) {
 				$return['upload_columns'][] = array(
 					'name' => 'inetOrgPerson_hosts',
@@ -376,7 +376,7 @@ class inetOrgPerson extends baseModule {
 			'carLicense',
 			'officeName'
 		);
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
 				$return['PDF_fields'][] = 'uid';
@@ -1660,7 +1660,7 @@ class inetOrgPerson extends baseModule {
 				fclose($handle);
 				$return['add']['jpegPhoto'][0] = $data;
 			}
-			if ($_POST['removeReplacePhoto'] == 'on') {
+			if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')) {
 				if ($_FILES['replacePhotoFile'] && ($_FILES['replacePhotoFile']['size'] > 0)) {
 					$handle = fopen($_FILES['replacePhotoFile']['tmp_name'], "r");
 					$data = fread($handle, 1000000);

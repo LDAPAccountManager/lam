@@ -273,7 +273,7 @@ class sambaGroupMapping extends baseModule {
 		);
 		// upload fields
 		// search existing Samba 3 domains
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$domains = search_domains();
 			$domainNames = array();
 			for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;

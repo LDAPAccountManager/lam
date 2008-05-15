@@ -46,7 +46,7 @@ class account extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		}
 		$return = array();
@@ -74,7 +74,7 @@ class account extends baseModule {
 		$return['PDF_fields'] = array(
 			'description'
 		);
-		if ($_SESSION['loggedIn'] && !in_array('posixAccount', $modules)) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true) && !in_array('posixAccount', $modules)) {
 			$return['PDF_fields'][] = 'uid';
 		}
 		// help Entries
@@ -101,7 +101,7 @@ class account extends baseModule {
 			)
 		);
 		// upload columns
-		if ($_SESSION['loggedIn']) {
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			if ($this->get_scope() == 'user') {
 				$return['upload_columns'][] = array(
 	                'name' => 'account_hosts',

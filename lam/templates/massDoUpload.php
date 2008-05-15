@@ -49,7 +49,7 @@ startSecureSession();
 if (!checkIfWriteAccessIsAllowed()) die();
 
 // Redirect to startpage if user is not loged in
-if (!isset($_SESSION['loggedIn'])) {
+if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 	metaRefresh("login.php");
 	exit;
 }
