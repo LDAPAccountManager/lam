@@ -165,7 +165,7 @@ function logNewMessage($level, $message) {
 	}
 	// log to file
 	else {
-		touch($cfg->logDestination);
+		@touch($cfg->logDestination);
 		if (is_writable($cfg->logDestination)) {
 			$file = fopen($cfg->logDestination, 'a');
 			if ($file) {
