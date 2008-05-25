@@ -115,6 +115,11 @@ include_once("../lib/config.inc"); // Include config.inc which provides Config c
 session_save_path("../sess"); // Set session save path
 session_start(); // Start LDAP Account Manager session
 
+// save last selected login profile
+if(isset($_POST['profile'])) {
+	setcookie("lam_default_profile", $_POST['profile'], time() + 365*60*60*24);
+}
+
 /**
 * Displays the login window.
 *
@@ -458,6 +463,9 @@ elseif(!empty($_POST['profileChange'])) {
 else {
 	$default_Config = new LAMCfgMain();
 	$default_Profile = $default_Config->default;
+	if(isset($_COOKIE["lam_default_profile"])) {
+		$default_Profile = $_COOKIE["lam_default_profile"];
+	}
 	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
 	$_SESSION["cfgMain"] = $default_Config; // Create new CfgMain object
 
