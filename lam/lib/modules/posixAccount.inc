@@ -972,7 +972,7 @@ class posixAccount extends baseModule {
 		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('UID number').'*'),
-			array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $uidNumber),
+			array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $uidNumber),
 			array('kind' => 'help', 'value' => 'uidNumber'));
 		$gecos = '';
 		if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];

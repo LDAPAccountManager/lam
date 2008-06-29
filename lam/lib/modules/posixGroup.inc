@@ -154,11 +154,11 @@ class posixGroup extends baseModule {
 	function display_html_attributes() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _("Group name").'*'),
-			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
+			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '30', 'value' => $this->attributes['cn'][0]),
 			2 => array('kind' => 'help', 'value' => 'cn'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('GID number').'*'),
-			1 => array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['gidNumber'][0]),
+			1 => array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['gidNumber'][0]),
 			2 => array('kind' => 'help', 'value' => 'gidNumber'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Description')),
