@@ -106,8 +106,9 @@ $helpArray = array (
 					"Text" => _("Here you can select which plugins you want to use for account management.") . "<br><br>"
 						. _("Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited.")),
 				"218" => array ("Headline" => _("Configuration wizard") . " - " . _("Script servers"),
-					"Text" => _("This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Manager will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon.") . "<br><br>"
-						. _("Example") . ": <b>127.0.0.1:LOCAL;192.168.0.2:Servername;</b>"),
+					"Text" => _("This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Manager will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon.") . "<br>"
+						. _("If your server runs on another port then add a comma and the port number after the server.") . "<br><br>"
+						. _("Example") . ": <b>127.0.0.1:LOCAL;192.168.0.2,12345:Servername;192.168.0.5</b>"),
 				"219" => array ("Headline" => _("Configuration wizard") . " - " . _("Rights for the home directory"),
 					"Text" => _("This defines the rights for the home directories which are created by lamdaemon.")),
 				"230" => array ("Headline" => _("Profile management") . " - " . _("Add profile"),

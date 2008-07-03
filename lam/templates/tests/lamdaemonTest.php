@@ -269,7 +269,13 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$sshOk = false;
-		$handle = @ssh2_connect($serverName);
+		$serverNameParts = explode(",", $serverName);
+		if (sizeof($serverNameParts) > 1) {
+			$handle = @ssh2_connect($serverNameParts[0], $serverNameParts[1]);
+		}
+		else {
+			$handle = @ssh2_connect($serverName);
+		}
 		if ($handle) {
 			if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
 				$sshOk = true;
