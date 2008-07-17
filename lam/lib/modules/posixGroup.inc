@@ -568,23 +568,25 @@ class posixGroup extends baseModule {
 			}
 			else {
 				// Check manual ID
-				// id-number is out of valid range
-				if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
-					$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-					if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-					else unset($this->attributes['gidNumber'][0]);
-				}
-				// $uids is allways an array but not if no entries were found
-				if (is_array($gids)) {
-					// id-number is in use and account is a new account
-					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {
-						$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-						unset($this->attributes['gidNumber'][0]);
+				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
+					// check range
+					if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
+						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+						if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+						else unset($this->attributes['gidNumber'][0]);
 					}
-					// id-number is in use, account is existing account and id-number is not used by itself
-					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
-						$errors[] = $this->messages['gidNumber'][4];
-						$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+					// $uids is allways an array but not if no entries were found
+					if (is_array($gids)) {
+						// id-number is in use and account is a new account
+						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {
+							$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+							unset($this->attributes['gidNumber'][0]);
+						}
+						// id-number is in use, account is existing account and id-number is not used by itself
+						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
+							$errors[] = $this->messages['gidNumber'][4];
+							$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+						}
 					}
 				}
 			}

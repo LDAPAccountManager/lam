@@ -758,17 +758,19 @@ class posixAccount extends baseModule {
 			// old account -> return id-number which has been used
 		}
 		else {
-			// Check manual ID
-			// id-number is out of valid range
-			if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-			// $uids is allways an array but not if no entries were found
-			if (is_array($uids)) {
-				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-					$errors[] = $this->messages['uidNumber'][3];
-					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+			// check manual ID
+			if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
+				// check range
+				if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+				// $uids is always an array but not if no entries were found
+				if (is_array($uids)) {
+					// id-number is in use and account is a new account
+					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+					// id-number is in use, account is existing account and id-number is not used by itself
+					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+						$errors[] = $this->messages['uidNumber'][3];
+						$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+					}
 				}
 			}
 		}
