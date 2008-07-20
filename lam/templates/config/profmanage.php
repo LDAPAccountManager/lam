@@ -114,21 +114,27 @@ if ($_POST['submit']) {
 			$config = new LAMConfig($_POST['setprofile']);
 			$config->set_Passwd($_POST['setpassword']);
 			$config->save();
+			$config = null;
 			$msg = _("New password set successfully.");
 		}
 		else $error = _("Profile passwords are different or empty!");
 	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
-		$config = new LAMCfgMain();
-		$config->default = $_POST['defaultfilename'];
-		$config->save();
+		$configMain = new LAMCfgMain();
+		$configMain->default = $_POST['defaultfilename'];
+		$configMain->save();
+		$configMain = null;
 		$msg = _("New default profile set successfully.");
 	}
 	// print messages
-	if ($error || $msg) {
-		if ($error) StatusMessage("ERROR", $error);
-		if ($msg) StatusMessage("INFO", $msg);
+	if (isset($error) || isset($msg)) {
+		if (isset($error)) {
+			StatusMessage("ERROR", $error);
+		}
+		if (isset($msg)) {
+			StatusMessage("INFO", $msg);
+		}
 	}
 	else exit;
 }
