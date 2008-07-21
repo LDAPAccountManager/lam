@@ -1,5 +1,7 @@
 August 2008 2.4.0
   - save last selected server profile from login page
+  - lamdaemon: allow to specify SSH port
+  - lamdaemon: added Syslog logging
 
 
 30.04.2008 2.3.0

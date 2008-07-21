@@ -23,6 +23,8 @@
 #
 #  LDAP Account Manager daemon to create and delete homedirecotries and quotas
 
+use Sys::Syslog;
+
 # set a known path
 my $path = "";
 if (-d "/sbin") {
@@ -137,9 +139,11 @@ if ($< == 0 ) { # we are root
 							}
 							system 'chmod', $vals[3], $user[7];     # Edit chmod rights
 							$return = "INFO,Lamdaemon ($hostname),Home directory created (" . $user[7] . ").";
+							logMessage(LOG_INFO, "Home directory created (" . $user[7] . ")");
 						}
 						else {
 							$return = "ERROR,Lamdaemon ($hostname),Home directory already exists (" . $user[7] . ").";
+							logMessage(LOG_INFO, "Home directory already exists (" . $user[7] . ")");
 						}
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
@@ -153,19 +157,22 @@ if ($< == 0 ) { # we are root
 									system '/usr/sbin/userdel.local', $user[0];
 								}
 								$return = "Ok";
+								logMessage(LOG_INFO, "Home directory removed (" . $user[7] . ")");
 							}
 							else {
 								$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $user[2].";
+								logMessage(LOG_ERR, "Home directory owned by wrong user (" . $user[7] . ")");
 							}
 						}
 						else {
 							$return = "INFO,Lamdaemon ($hostname),The directory which should be deleted was not found (skipped).";
-							}
+						}
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
 						};
 						# Show error if undfined command is used
 						$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[2].";
+						logMessage(LOG_ERR, "Unknown command $vals[2]");
 					}
 				last switch;
 				};
@@ -210,6 +217,10 @@ if ($< == 0 ) { # we are root
 							$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
 							if ($return == -1) {
 									$return = "ERROR,Lamdaemon ($hostname),Unable to set quota!";
+									logMessage(LOG_ERR, "Unable to set quota for $user[0].");
+							}
+							else {
+								logMessage(LOG_INFO, "Set quota for $user[0].");
 							}
 							$i++;
 							}
@@ -226,6 +237,7 @@ if ($< == 0 ) { # we are root
 								if ($temp[0]ne'') {
 									if ($temp == -1) {
 											$return = "ERROR,Lamdaemon ($hostname),Unable to read quota!";
+											logMessage(LOG_ERR, "Unable to read quota for $user[0].");
 										}
 									else {
 										$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
@@ -240,14 +252,33 @@ if ($< == 0 ) { # we are root
 						last switch2;
 						};
 					$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[2].";
+					logMessage(LOG_ERR, "Unknown command $vals[2].");
 					}
 				};
 				last switch;
-			$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
+				$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
+				logMessage(LOG_ERR, "Unknown command $vals[1].");
 			};
 			print "$return\n";
 		}
 	}
 else {
 	print "ERROR,Lamdaemon ($hostname),Not called as root!\n";
+	logMessage(LOG_ERR, "Not called as root!");
+}
+
+#
+# Logs a message to the syslog.
+#
+# Parameters: level message
+#
+#             level: error level
+#             message: message text
+#
+sub logMessage {
+	my $level = $_[0];
+	my $message = $_[1];
+	openlog('LAM - lamdaemon','','user');
+	syslog($level, $message);
+	closelog;
 }
