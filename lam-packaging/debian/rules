@@ -43,7 +43,7 @@ install:
 	install -D --mode=644 style/*.css debian/ldap-account-manager/usr/share/ldap-account-manager/style
 	cp -r templates debian/ldap-account-manager/usr/share/ldap-account-manager/
 
-	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager_lamdaemon/usr/share/ldap-account-manager/lib/lamdaemon.pl
+	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager-lamdaemon/usr/share/ldap-account-manager/lib/lamdaemon.pl
 
 # Build architecture-independent files here.
 binary-dep: build install
