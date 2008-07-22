@@ -22,3 +22,12 @@ Description: webfrontend for managing accounts in an LDAP directory
  Account information can be exported as PDF file. There is also
  a script included which manages quota and homedirectories, you
  have to setup sudo if you want to use it.
+
+Package: ldap-account-manager_lamdaemon
+Architecture: all
+Depends: perl
+Conflicts: ldap-account-manager
+Description: Lamdaemon is part of LDAP Account Manager. It
+ is used to manage quotas and home directories. This package
+ needs to be installed on the server where the home directories
+ reside and quotas should be managed.
