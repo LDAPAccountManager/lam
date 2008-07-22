@@ -23,7 +23,7 @@ Description: webfrontend for managing accounts in an LDAP directory
  a script included which manages quota and homedirectories, you
  have to setup sudo if you want to use it.
 
-Package: ldap-account-manager_lamdaemon
+Package: ldap-account-manager-lamdaemon
 Architecture: all
 Depends: perl
 Conflicts: ldap-account-manager
