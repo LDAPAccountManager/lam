@@ -26,7 +26,7 @@ Description: webfrontend for managing accounts in an LDAP directory
 Package: ldap-account-manager-lamdaemon
 Architecture: all
 Depends: perl
-Description: Lamdaemon is used to manage quotas and home directories.
+Description: Lamdaemon is used to manage quotas and home directories
  It is part of LDAP Account Manager. This package
  needs to be installed on the server where the home directories
  reside and/or quotas should be managed.
