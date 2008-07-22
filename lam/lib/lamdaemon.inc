@@ -112,11 +112,11 @@ function lamdaemonSSH($commands, $server) {
 			return $return;
 		}
 		$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		$userName = $entry[0]['uid'][0];
-		if (!$userName) {
+		if (!isset($entry[0]['uid'][0])) {
 			$return = array("ERROR," . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . ",");
 			return $return;
 		}
+		$userName = $entry[0]['uid'][0];
 		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
 			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
 			fwrite($shell, $commands);

@@ -612,7 +612,7 @@ class posixAccount extends baseModule {
 	 */
 	function preDeleteActions() {
 		$return = true;
-		if ($_POST['deletehomedir']) {
+		if (isset($_POST['deletehomedir'])) {
 			// get list of lamdaemon servers
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
