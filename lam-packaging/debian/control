@@ -2,7 +2,7 @@ Source: ldap-account-manager
 Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: extra
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 Build-Depends: debhelper (>= 4.1.16), po-debconf
 Homepage: http://lam.sourceforge.net/
 
@@ -26,7 +26,7 @@ Description: webfrontend for managing accounts in an LDAP directory
 Package: ldap-account-manager-lamdaemon
 Architecture: all
 Depends: perl
-Description: Lamdaemon is used to manage quotas and home directories
- It is part of LDAP Account Manager. This package
+Description: Quota and home directory management for LDAP Account Manager
+ Lamdaemon is part of LDAP Account Manager. This package
  needs to be installed on the server where the home directories
  reside and/or quotas should be managed.
