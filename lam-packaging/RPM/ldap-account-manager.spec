@@ -13,8 +13,6 @@ URL:          http://lam.sourceforge.net
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}
 Summary:      Administration of LDAP users, groups and hosts via Web GUI
 BuildArchitectures: noarch
-# Requires:     mod_php perl
-# Autoreqprov:  on
 
 %description
 LDAP Account Manager (LAM) runs on an existing webserver. LAM
@@ -51,7 +49,10 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 %doc docs/*txt COPYING HISTORY INSTALL README VERSION
 %{httpd_rootdir}/%{lam_dir}
 
-%changelog -n lam
+%changelog
+* Sat Jul 26 2008 - Roland Gruber post@rolandgruber.de
+- Added subpackage for lamdaemon
+
 * Wed Jan 11 2006 - Iain Lea iain@bricbrac.de
 - Updated for 1.0 series on Fedora Core 
 
@@ -60,3 +61,19 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 
 * Sun Mar 21 2004 - TiloLutz@gmx.de
 - Initial release 0.1.0 - 0.4.5
+
+
+%package lamdaemon
+
+Summary:      Quota and home directory management for LDAP Account Manager
+Group:        Productivity/Networking/Web/Frontends
+
+%description lamdaemon
+Lamdaemon is part of LDAP Account Manager. This package
+needs to be installed on the server where the home directories
+reside and/or quotas should be managed.
+
+%files lamdaemon
+%{httpd_rootdir}/%{lam_dir}/lib/lamdaemon.pl
+%{httpd_rootdir}/%{lam_dir}/lib/lamdaemonOld.pl
+
