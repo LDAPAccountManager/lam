@@ -76,4 +76,5 @@ reside and/or quotas should be managed.
 %files lamdaemon
 %{httpd_rootdir}/%{lam_dir}/lib/lamdaemon.pl
 %{httpd_rootdir}/%{lam_dir}/lib/lamdaemonOld.pl
+%doc docs/*txt COPYING HISTORY INSTALL README VERSION
 
