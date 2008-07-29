@@ -1,18 +1,21 @@
 %define httpd_rootdir /var/www/html
 %define lam_dir lam
-%define lam_uid apache
-%define lam_gid apache
+%define lam_uid @@USER@@
+%define lam_gid @@GROUP@@
 
 Name:         ldap-account-manager
 License:      GPL
 Group:        Productivity/Networking/Web/Frontends
 Version:      @@VERSION@@
-Release:      1
+Release:      1.@@DISTRIBUTION@@
 Source0:      ldap-account-manager-%{version}.tar.gz
 URL:          http://lam.sourceforge.net
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}
 Summary:      Administration of LDAP users, groups and hosts via Web GUI
+Vendor:       Roland Gruber
+Packager:     Roland Gruber <post@rolandgruber.de>
 BuildArchitectures: noarch
+
 
 %description
 LDAP Account Manager (LAM) runs on an existing webserver. LAM
