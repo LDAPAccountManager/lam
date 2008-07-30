@@ -234,6 +234,7 @@ function display_LoginPage($config_object) {
 			echo "<br>";
 		}
 		?>
+		<div style="position:relative; z-index:5;">
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">
 			<tr>
 				<td style="border-style:none" width="70" rowspan="2">
@@ -369,6 +370,7 @@ function display_LoginPage($config_object) {
 				</td>
 			</tr>
 		</table>
+		</div>
 		<br><br>
 			<TABLE style="position:absolute; bottom:10px;" border="0" width="99%">
 				<TR><TD align="right"><HR>
