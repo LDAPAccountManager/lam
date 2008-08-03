@@ -3,6 +3,8 @@
 %define lam_uid @@USER@@
 %define lam_gid @@GROUP@@
 %define distribution @@DISTRIBUTION@@
+%define is_suse %(test suse = %distribution && echo 1 || echo 0)
+%define is_fedora %(test fedora = %distribution && echo 1 || echo 0)
 
 Name:         ldap-account-manager
 License:      GPL
@@ -17,7 +19,7 @@ Vendor:       Roland Gruber
 Packager:     Roland Gruber <post@rolandgruber.de>
 BuildArchitectures: noarch
 AutoReqProv:  no
-%if %distribution eq "suse"
+%if %is_suse
 Requires:      mod_php_any perl
 Requires:      php
 Requires:      php-gettext
