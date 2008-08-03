@@ -1,7 +1,8 @@
-%define httpd_rootdir /var/www/html
+%define httpd_rootdir @@HTTP_DIR@@
 %define lam_dir lam
 %define lam_uid @@USER@@
 %define lam_gid @@GROUP@@
+%define distribution @@DISTRIBUTION@@
 
 Name:         ldap-account-manager
 License:      GPL
@@ -15,6 +16,15 @@ Summary:      Administration of LDAP users, groups and hosts via Web GUI
 Vendor:       Roland Gruber
 Packager:     Roland Gruber <post@rolandgruber.de>
 BuildArchitectures: noarch
+AutoReqProv:  no
+%if %distribution eq "SUSE"
+Requires:      mod_php_any perl
+Requires:      php
+Requires:      php-gettext
+Requires:      php-session
+Requires:      php-ldap
+Requires:      php-mhash
+%endif
 
 
 %description
