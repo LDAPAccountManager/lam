@@ -99,18 +99,22 @@ cd ..
 
 # RPM
 perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" lam-packaging/RPM/ldap-account-manager.spec
+
 cp lam-packaging/RPM/ldap-account-manager.spec lam-packaging/RPM/ldap-account-manager-fedora.spec
 perl -pi -e "s/\\@\\@DISTRIBUTION\\@\\@/fedora/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
 perl -pi -e "s/\\@\\@USER\\@\\@/apache/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
 perl -pi -e "s/\\@\\@GROUP\\@\\@/apache/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
-perl -pi -e "s/\\@\\@HTTP_DIR\\@\\@/\\/var\\/www\\/html/g" lam-packaging/RPM/ldap-account-manager-suse.spec
+perl -pi -e "s/\\@\\@HTTP_DIR\\@\\@/\\/var\\/www\\/html/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
+
 cp lam-packaging/RPM/ldap-account-manager.spec lam-packaging/RPM/ldap-account-manager-suse.spec
 perl -pi -e "s/\\@\\@DISTRIBUTION\\@\\@/suse/g" lam-packaging/RPM/ldap-account-manager-suse.spec
 perl -pi -e "s/\\@\\@USER\\@\\@/wwwrun/g" lam-packaging/RPM/ldap-account-manager-suse.spec
 perl -pi -e "s/\\@\\@GROUP\\@\\@/www/g" lam-packaging/RPM/ldap-account-manager-suse.spec
 perl -pi -e "s/\\@\\@HTTP_DIR\\@\\@/\\/srv\\/www\\/htdocs/g" lam-packaging/RPM/ldap-account-manager-suse.spec
+
 mkdir RPM
 mkdir LAMPro/RPM
+
 
 # Fedora RPM
 cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES
