@@ -2,15 +2,16 @@
 %define lam_dir lam
 %define lam_uid @@USER@@
 %define lam_gid @@GROUP@@
-%define distribution @@DISTRIBUTION@@
-%define is_suse %(test suse = %distribution && echo 1 || echo 0)
-%define is_fedora %(test fedora = %distribution && echo 1 || echo 0)
+%define lam_distribution @@DISTRIBUTION@@
+%define is_suse %(test suse = %lam_distribution && echo 1 || echo 0)
+%define is_fedora %(test fedora = %lam_distribution && echo 1 || echo 0)
+
 
 Name:         ldap-account-manager
 License:      GPL
 Group:        Productivity/Networking/Web/Frontends
 Version:      @@VERSION@@
-Release:      1.@@DISTRIBUTION@@
+Release:      1.%lam_distribution
 Source0:      ldap-account-manager-%{version}.tar.gz
 URL:          http://lam.sourceforge.net
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}
