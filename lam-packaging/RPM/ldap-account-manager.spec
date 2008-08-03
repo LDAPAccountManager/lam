@@ -17,7 +17,7 @@ Vendor:       Roland Gruber
 Packager:     Roland Gruber <post@rolandgruber.de>
 BuildArchitectures: noarch
 AutoReqProv:  no
-%if %distribution eq "SUSE"
+%if %distribution eq "suse"
 Requires:      mod_php_any perl
 Requires:      php
 Requires:      php-gettext
