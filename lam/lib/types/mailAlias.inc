@@ -108,9 +108,7 @@ class lamMailAliasList extends lamList {
 			'nav' => _("%s alias(es) found"),
 			'error_noneFound' => _("No aliases found!"),
 			'newEntry' => _("New alias"),
-			'deleteEntry' => _("Delete alias(es)"),
-			'createPDF' => _("Create PDF for selected alias(es)"),
-			'createPDFAll' => _("Create PDF for all aliases"));
+			'deleteEntry' => _("Delete alias(es)"));
 	}
 
 }

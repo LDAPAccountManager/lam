@@ -126,9 +126,7 @@ class lamUserList extends lamList {
 			'nav' => _("%s user(s) found"),
 			'error_noneFound' => _("No users found!"),
 			'newEntry' => _("New user"),
-			'deleteEntry' => _("Delete user(s)"),
-			'createPDF' => _("Create PDF for selected user(s)"),
-			'createPDFAll' => _("Create PDF for all users"));
+			'deleteEntry' => _("Delete user(s)"));
 	}
 	
 	/**

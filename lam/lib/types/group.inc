@@ -122,9 +122,7 @@ class lamGroupList extends lamList {
 			'nav' => _("%s group(s) found"),
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
-			'deleteEntry' => _("Delete group(s)"),
-			'createPDF' => _("Create PDF for selected group(s)"),
-			'createPDFAll' => _("Create PDF for all groups"));
+			'deleteEntry' => _("Delete group(s)"));
 	}
 	
 	/**

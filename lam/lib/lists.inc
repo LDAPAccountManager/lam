@@ -103,9 +103,7 @@ class lamList {
 			'nav' => _("%s object(s) found"),
 			'error_noneFound' => _("No objects found!"),
 			'newEntry' => _("New object"),
-			'deleteEntry' => _("Delete object"),
-			'createPDF' => _("Create PDF for selected object(s)"),
-			'createPDFAll' => _("Create PDF for all objects"));
+			'deleteEntry' => _("Delete object"));
 		$this->configOptions = $this->listGetAllConfigOptions();
 		$this->listReadOptionsFromCookie();
 	}

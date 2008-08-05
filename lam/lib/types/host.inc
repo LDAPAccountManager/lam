@@ -112,9 +112,7 @@ class lamHostList extends lamList {
 			'nav' => _("%s host(s) found"),
 			'error_noneFound' => _("No hosts found!"),
 			'newEntry' => _("New host"),
-			'deleteEntry' => _("Delete host(s)"),
-			'createPDF' => _("Create PDF for selected host(s)"),
-			'createPDFAll' => _("Create PDF for all hosts"));
+			'deleteEntry' => _("Delete host(s)"));
 	}
 
 }
