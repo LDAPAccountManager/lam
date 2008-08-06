@@ -49,11 +49,13 @@ function startSecureSession() {
 	// check session id
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
+		logNewMessage(LOG_WARNING, "Invalid session ID, access denied (" . $_SERVER['REMOTE_ADDR'] . ")");
 		die();
 	}
 	// check if client IP has not changed
 	if (!isset($_SESSION["sec_client_ip"]) || ($_SESSION["sec_client_ip"] != $_SERVER['REMOTE_ADDR'])) {
 		// IP is invalid
+		logNewMessage(LOG_WARNING, "Client IP changed, access denied (" . $_SERVER['REMOTE_ADDR'] . ")");
 		die();
 	}
 	// check if session time has not expired
@@ -93,7 +95,10 @@ function checkClientIP() {
 		}
 	}
 	// stop script is client may not access LAM
-	if (!$grantAccess) die();
+	if (!$grantAccess) {
+		logNewMessage(LOG_WARNING, "Invalid client IP, access denied (" . $_SERVER['REMOTE_ADDR'] . ")");
+		die();
+	}
 }
 
 /**
