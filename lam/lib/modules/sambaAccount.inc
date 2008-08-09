@@ -116,7 +116,7 @@ class sambaAccount extends baseModule {
 			'kickoffTime', 'pwdCanChange', 'pwdMustChange', 'acctFlags', 'displayName', 'smbHome', 'homeDrive',
 			'scriptPath', 'profilePath', 'userWorkstations', 'primaryGroupID', 'domain');
 		// PHP extensions
-		$return['extensions'] = array('mhash', 'iconv');
+		$return['extensions'] = array('hash', 'iconv');
 		// profile options
 		if ($this->get_scope() == 'user') {
 			// set Unix password for Samba

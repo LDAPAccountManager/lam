@@ -13,7 +13,6 @@ Installation Instructions for LAM
    - OpenLDAP (>2.0)
    - A web browser :-)
 
-   MHash is only needed for Samba password hashes.
    MCrypt will be used to store your LDAP password encrypted in the session file.
 
 

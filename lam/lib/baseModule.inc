@@ -334,7 +334,7 @@ abstract class baseModule {
 	* <b>Key:</b> extensions<br>
 	* <b>Value:</b> array of extension names<br>
 	* <br>
-	* <b>Example:</b> "extensions" => array('mhash')
+	* <b>Example:</b> "extensions" => array('hash')
 	* <br><br>
 	* </li>
 	* 
@@ -1142,7 +1142,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * This function returns a list of PHP extensions (e.g. mhash) which are needed by this module.
+	 * This function returns a list of PHP extensions (e.g. hash) which are needed by this module.
 	 * 
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *

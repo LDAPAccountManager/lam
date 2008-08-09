@@ -1,4 +1,6 @@
 August 2008 2.4.0
+  - requires PHP 5.1.2
+  - MHash dependendy replaced by Hash
   - save last selected server profile from login page
   - lamdaemon: allow to specify SSH port
   - lamdaemon: added Syslog logging
