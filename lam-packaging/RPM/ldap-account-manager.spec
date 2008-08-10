@@ -11,36 +11,49 @@ Name:         ldap-account-manager
 License:      GPL
 Group:        Productivity/Networking/Web/Frontends
 Version:      @@VERSION@@
-Release:      1.%lam_distribution
+Release:      0.%lam_distribution.1
 Source0:      ldap-account-manager-%{version}.tar.gz
 URL:          http://lam.sourceforge.net
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}
 Summary:      Administration of LDAP users, groups and hosts via Web GUI
+Summary(de):  Administration von Benutzern, Gruppen und Hosts für LDAP-Server
 Vendor:       Roland Gruber
 Packager:     Roland Gruber <post@rolandgruber.de>
 BuildArchitectures: noarch
 AutoReqProv:  no
 %if %is_suse
-Requires:      mod_php_any perl
-Requires:      php
+Requires:      mod_php_any
+Requires:      php5
 Requires:      php-gettext
 Requires:      php-session
 Requires:      php-ldap
-Requires:      php-mhash
+Requires:      php-hash
+Requires:      perl
+%endif
+%if %is_fedora
 %endif
 
 
 %description
-LDAP Account Manager (LAM) runs on an existing webserver. LAM
-supports LDAP connections via SSL and TLS. It manages user, group
-and host accounts. Currently LAM supports these account types:
-Samba 2 and 3, Unix, Kolab 2, address book entries, NIS mail
-aliases and MAC addresses. There is a tree viewer included to
-allow access to the raw LDAP attributes. You can use templates
-for account creation and use multiple configuration profiles.
-Account information can be exported as PDF file. There is also
-a script included which manages quota and homedirectories, you
-have to setup sudo if you want to use it.
+LDAP Account Manager (LAM) runs on an existing webserver.
+It manages user, group and host accounts. Currently LAM supports
+these account types: Samba 2 and 3, Unix, Kolab 2, address book
+entries, NIS mail aliases and MAC addresses. There is a tree
+viewer included to allow access to the raw LDAP attributes. You
+can use templates for account creation and use multiple configuration
+profiles. Account information can be exported as PDF file. There is also
+a script included which manages quota and homedirectories.
+
+%description -l de
+LDAP Account Manager (LAM) läuft auf einem exisierenden Webserver.
+LAM verwaltet Benutzer, Gruppen und Hosts. Zur Zeit werden folgende Account-Typen
+unterstützt: Samba 2 und 3, Unix, Kolab 2, Addressbuch Einträge, NIS
+mail Aliase und MAC-Addressen. Es gibt eine Baumansicht mit der man die
+LDAP-Daten direkt bearbeiten kann. Zum Anlegen von Accounts können
+Vorlagen definiert werden. Es können mehrere Konfigurations-Profile
+definiert werden. Account-Informationen können als PDF exportiert
+werden. Außerdem exisitiert ein Script mit dem man Quotas und
+Home-Verzeichnisse verwalten kann.
 
 %prep
 %setup -n ldap-account-manager-%{version}
@@ -82,12 +95,25 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 %package lamdaemon
 
 Summary:      Quota and home directory management for LDAP Account Manager
+Summary(de):  Verwaltung von Quotas und Heimatverzeichnissen für LDAP Account Manager
 Group:        Productivity/Networking/Web/Frontends
+AutoReqProv:  no
+%if %is_suse
+Requires:      perl
+Requires:      sudo
+%endif
+%if %is_fedora
+%endif
 
 %description lamdaemon
 Lamdaemon is part of LDAP Account Manager. This package
 needs to be installed on the server where the home directories
 reside and/or quotas should be managed.
+
+%description lamdaemon -l de
+Lamdaemon ist Teil von LDAP Account Manager. Dieses Paket
+wird auf dem Server installiert, auf dem Quotas und
+Heimatverzeichnisse verwaltet werden sollen.
 
 %files lamdaemon
 %{httpd_rootdir}/%{lam_dir}/lib/lamdaemon.pl
