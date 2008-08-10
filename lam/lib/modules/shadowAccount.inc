@@ -225,7 +225,8 @@ class shadowAccount extends baseModule {
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Set shadowLastchange manual.
-		if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword)) {
+		$clearPwd = $this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword();
+		if (isset($clearPwd)) {
 			$return[$this->getAccountContainer()->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
 		}
 		elseif ($this->getAccountContainer()->isNewAccount) {
