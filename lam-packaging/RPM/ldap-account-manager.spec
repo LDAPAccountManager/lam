@@ -31,6 +31,8 @@ Requires:      php-hash
 Requires:      perl
 %endif
 %if %is_fedora
+Requires:      php
+Requires:      perl
 %endif
 
 
@@ -103,6 +105,8 @@ Requires:      perl
 Requires:      sudo
 %endif
 %if %is_fedora
+Requires:      perl
+Requires:      sudo
 %endif
 
 %description lamdaemon
