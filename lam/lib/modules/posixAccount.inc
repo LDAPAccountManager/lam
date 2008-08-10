@@ -1173,6 +1173,23 @@ class posixAccount extends baseModule {
 				array('kind' => 'text', 'text' => _('Login shell') . ": "),
 				array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
 				array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
+			// lamdaemon settings
+			if ($_SESSION['config']->get_scriptPath() != null) {
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Create home directory') . ": "),
+				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'posixAccount_createHomedir'),
+				array('kind' => 'help', 'value' => 'createhomedir', 'scope' => 'user'));				
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+				$temp = explode(":", $lamdaemonServers[$i]);
+				if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+				else $lamdaemonServers[$i] = $temp[0];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Home directory server') . ": "),
+				array('kind' => 'select', 'name' => 'posixAccount_homedirServer', 'options' => $lamdaemonServers),
+				array('kind' => 'help', 'value' => 'createhomedir', 'scope' => 'user'));
+			}
 		}
 		elseif ($this->get_scope() == 'host') {
 			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
@@ -1203,6 +1220,15 @@ class posixAccount extends baseModule {
 		// other group memberships
 		if (isset($profile['posixAccount_additionalGroup'][0])) {
 			$this->groups = $profile['posixAccount_additionalGroup'];
+		}
+		// lamdaemon
+		if (($this->get_scope() == 'user') && $this->getAccountContainer()->isNewAccount) {
+			if (isset($profile['posixAccount_homedirServer'][0])) {
+				$this->lamdaemonServer = $profile['posixAccount_homedirServer'][0];
+			}
+			if (isset($profile['posixAccount_createHomedir'][0]) && ($profile['posixAccount_createHomedir'][0] == 'true')) {
+				$this->createhomedir = true;
+			}
 		}
 	}
 
