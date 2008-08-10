@@ -1,0 +1,119 @@
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+  Copyright (C) 2008  Thomas Manninger
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more detaexils.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+
+/**
+ * style definition for dhcp accounts
+ */
+
+
+/* navigation bar */
+table.dhcpnav {
+  background-color:#d4f19b;
+  border-width:1px;
+  border-style:solid;
+  border-color:#527510;
+}
+
+/* input elements */
+table.dhcpnav input {
+  background-color:#bde178;
+}
+
+/* text in navigation bar */
+td.dhcpnav-text {
+  color:black;
+  font-family:Verdana,sans-serif;
+  font-size:12px;
+}
+
+/* color for active page digit */
+td.dhcpnav-activepage {
+ color:#CCFF33;
+}
+
+/* table preferences */
+table.dhcplist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#527510;
+  border-collapse:collapse;
+}
+
+table.dhcplist td,th {
+  border-color:#527510;
+}
+
+/* input elements */
+table.dhcplist input {
+  background-color:#bde178;
+}
+
+/* color of entry rows */
+tr.dhcplist {
+  background-color:#d4f19b;
+}
+
+/* color of head row */
+tr.dhcplist-head {
+  background-color:#bce077;
+}
+
+/* color of sorted column in head row */
+th.dhcplist-sort {
+  background-color:#9fc653;
+}
+
+/* color of rows on mouseOver */
+tr.dhcplist-over {
+  background-color:#f3ffdc;
+}
+
+/* color of checked rows */
+tr.dhcplist-checked {
+  background-color:#a2bf6b;
+}
+
+fieldset.dhcpedit {
+  background-color:#d4f19b;
+  border:1px solid #527510;
+}
+
+fieldset.dhcpedit legend {
+  color:black;
+}
+
+/* input elements */
+fieldset.dhcpedit input {
+  background-color:#bde178;
+}
+
+/* input elements */
+input.dhcp {
+  background-color:#bde178;
+}
+
+/* select elements */
+select.dhcp {
+  background-color:#bde178;
+}
+
