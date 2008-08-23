@@ -86,35 +86,35 @@ class shadowAccount extends baseModule {
 		$return['profile_options'] = array(
 			// password warning
 			array(
-				0 => array('kind' => 'text', 'text' => _('Password warning')),
-				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'shadowWarning')),
+				array('kind' => 'text', 'text' => _('Password warning')),
+				array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
+				array('kind' => 'help', 'value' => 'shadowWarning')),
 			// password expiration
 			array(
-				0 => array('kind' => 'text', 'text' => _('Password expiration')),
-				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'shadowInactive')),
+				array('kind' => 'text', 'text' => _('Password expiration')),
+				array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
+				array('kind' => 'help', 'value' => 'shadowInactive')),
 			// minimum password age
 			array(
-				0 => array('kind' => 'text', 'text' => _('Minimum password age')),
-				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'shadowMin')),
+				array('kind' => 'text', 'text' => _('Minimum password age')),
+				array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
+				array('kind' => 'help', 'value' => 'shadowMin')),
 			// maximum password age
 			array(
-				0 => array('kind' => 'text', 'text' => _('Maximum password age')),
-				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'shadowMax')),
+				array('kind' => 'text', 'text' => _('Maximum password age')),
+				array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
+				array('kind' => 'help', 'value' => 'shadowMax')),
 			// expiration date
 			array(
-				0 => array('kind' => 'text', 'text' => _('Account expiration date')),
-				1 => array('kind' => 'table', 'value' => array(
-					0 => array (
-						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day', 'options' => $day, 'options_selected' => array('1')),
-						1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon', 'options' => $mon, 'options_selected' => array('1')),
-						2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year, 'options_selected' => array('2030'))
+				array('kind' => 'text', 'text' => _('Account expiration date')),
+				array('kind' => 'table', 'value' => array(
+					array (
+						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day', 'options' => $day, 'options_selected' => array('1')),
+						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon', 'options' => $mon, 'options_selected' => array('1')),
+						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year, 'options_selected' => array('2030'))
 					)
 				)),
-				2 => array('kind' => 'help', 'value' => 'shadowExpire'))
+				array('kind' => 'help', 'value' => 'shadowExpire'))
 		);
 		// profile checks
 		$return['profile_checks']['shadowAccount_shadowMin'] = array(
@@ -266,24 +266,28 @@ class shadowAccount extends baseModule {
 		if (isset($this->attributes['shadowWarning'][0])) {
 			$shWarning = $this->attributes['shadowWarning'][0];
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warning') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Password warning')),
+			array('kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
+			array('kind' => 'help', 'value' => 'shadowWarning'));
 		$shPwdExpiration = '';
 		if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expiration') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shPwdExpiration),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Password expiration')),
+			array('kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shPwdExpiration),
+			array('kind' => 'help', 'value' => 'shadowInactive'));
 		$shMinAge = '';
 		if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMinAge),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowMin' ));
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Minimum password age')),
+			array('kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMinAge),
+			array('kind' => 'help', 'value' => 'shadowMin'));
 		$shMaxAge = '';
 		if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Maximum password age')),
+			array('kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
+			array('kind' => 'help', 'value' => 'shadowMax'));
 
 		$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (isset($this->attributes['shadowExpire'][0])) {
@@ -337,14 +341,14 @@ class shadowAccount extends baseModule {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account expiration date') ),
-			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'shadowExpire_day',
-					'options' => $mday, 'options_selected' => $date['mday']),
-				1 => array ( 'kind' => 'select', 'name' => 'shadowExpire_mon',
-					'options' => $mon, 'options_selected' => $date['mon']),
-				2 => array ( 'kind' => 'select', 'name' => 'shadowExpire_yea',
-					'options' => $year, 'options_selected' => $date['year'])))),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowExpire' ));
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Account expiration date')),
+			array('kind' => 'table', 'value' => array(
+				array(
+					array('kind' => 'select', 'name' => 'shadowExpire_day', 'options' => $mday, 'options_selected' => $date['mday']),
+					array('kind' => 'select', 'name' => 'shadowExpire_mon', 'options' => $mon, 'options_selected' => $date['mon']),
+					array('kind' => 'select', 'name' => 'shadowExpire_yea', 'options' => $year, 'options_selected' => $date['year'])))),
+			array('kind' => 'help', 'value' => 'shadowExpire'));
 		$buttons = array();
 		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_change', 'type' => 'submit', 'value' => _('Change'));
 		if (isset($this->attributes['shadowExpire'][0])) {
