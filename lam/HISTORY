@@ -6,6 +6,8 @@ August 2008 2.4.0
   - lamdaemon: added Syslog logging
   - Unix: added profile options for lamdaemon
   - LAM Pro: password reset page is able to unlock Samba accounts and sets shadowLastChange
+  - fixed bugs:
+    * problems with DN containing ( and ) (2059740)
 
 
 30.04.2008 2.3.0
