@@ -830,7 +830,7 @@ class lamList {
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
 		$filter = "(&" . $module_filter  . ")";
 		$attrs = $this->attrArray;
-		$sr = @ldap_search($_SESSION["ldap"]->server(), $this->suffix, $filter, $attrs);
+		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($this->suffix), $filter, $attrs);
 		if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
 			StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 		}
