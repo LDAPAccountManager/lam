@@ -511,5 +511,19 @@ function get_preg($argument, $regexp) {
 	return false;
 }
 
+/**
+ * Escapes any special characters in an LDAP DN.
+ *
+ * @param String $dn DN
+ * @return String escaped DN
+ */
+function escapeDN($dn) {
+	return str_replace(
+		array(')',    '(',    ' ',    '*'),
+		array('\\29', '\\28', '\\20', '\\2a'),
+		$dn
+	);
+}
+
 
 ?>
