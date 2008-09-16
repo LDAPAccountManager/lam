@@ -59,7 +59,7 @@ class range extends baseModule {
 		// manages dhcp accounts
 		$return["account_types"] = array("dhcp");
 		// alias name
-		$return["alias"] = "Range";
+		$return["alias"] = "DHCP ranges";
 		// this is a base module
 		$return["is_base"] = false;
 		// RDN attribute
