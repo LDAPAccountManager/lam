@@ -878,15 +878,15 @@ class posixAccount extends baseModule {
 		$convert = array ( 'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
 			'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
 			);
-		$index = array_keys($convert);
 		// replace special characters
-		for ($k = 0; $k < count($index); $k++) {
-			$attribute = str_replace($index[$k], $convert[$index[$k]], $attribute);
+		foreach ($convert as $key => $value) {
+			$attribute = str_replace($key, $value, $attribute);
 		}
 		// remove remaining UTF-8 characters
 		for ($c = 0; $c < strlen($attribute); $c++) {
 			if (ord($attribute[$c]) > 127) {
-				$attribute = substr($attribute, 0, $c) . substr($attribute, $c + 2);
+				$attribute = str_replace($attribute[$c], "", $attribute);
+				$c--;
 			}
 		}
 		return $attribute;
@@ -1392,7 +1392,7 @@ class posixAccount extends baseModule {
 			// GECOS
 			if ($rawAccounts[$i][$ids['posixAccount_gecos']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos')) {
-					$partialAccounts[$i]['gecos'] = $rawAccounts[$i][$ids['posixAccount_gecos']];
+					$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccounts[$i][$ids['posixAccount_gecos']]);
 				}
 				else {
 					$errMsg = $this->messages['gecos'][0];
@@ -1411,7 +1411,9 @@ class posixAccount extends baseModule {
 						}
 					}
 				}
-				if ($gecos != "") $partialAccounts[$i]['gecos'] = $gecos;
+				if ($gecos != "") {
+					$partialAccounts[$i]['gecos'] = $this->checkASCII($gecos);
+				}
 			}
 			// user specific attributes
 			if ($this->get_scope() == 'user') {
