@@ -141,7 +141,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	
 	// check if values in unique columns are correct
 	for ($i = 0; $i < sizeof($columns); $i++) {
-		if ($columns[$i]['unique'] == true) {
+		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] == true)) {
 			$colNumber = $ids[$columns[$i]['name']];
 			$values_given = array();
 			for ($r = 0; $r < sizeof($data); $r++) {
