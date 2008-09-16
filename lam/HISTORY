@@ -8,6 +8,7 @@ August 2008 2.4.0
   - LAM Pro: password reset page is able to unlock Samba accounts and sets shadowLastChange
   - fixed bugs:
     * problems with DN containing ( and ) (2059740)
+    * problem with gecos field in file upload (2103936)
 
 
 30.04.2008 2.3.0
