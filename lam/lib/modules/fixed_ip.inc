@@ -58,7 +58,7 @@ class fixed_ip extends baseModule {
 		// manages host accounts
 		$return["account_types"] = array("dhcp");
 		// alias name
-		$return["alias"] = _("DHCP: Fixed IP");
+		$return["alias"] = _("Fixed IP");
 		// this is a base module
 		$return["is_base"] = false;
 		// RDN attribute
