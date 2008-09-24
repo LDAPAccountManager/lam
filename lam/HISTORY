@@ -1,4 +1,5 @@
 August 2008 2.4.0
+  - added DHCP management (donated by Siedl networks GmbH)
   - requires PHP 5.1.2
   - MHash dependendy replaced by Hash
   - save last selected server profile from login page

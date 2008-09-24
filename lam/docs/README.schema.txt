@@ -69,3 +69,10 @@
   These modules are only available in LAM Pro.
   Schema: core.schema
   Source: Part of OpenLDAP installation
+
+
+  12. DHCP (modules dhcp_settings, ddns, fixed_ip, range)
+
+  Schema: dhcp.schema
+  Source: http://kalamazoolinux.org/projects/awilliam/ldap.html
+
