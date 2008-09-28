@@ -72,7 +72,7 @@ class ddns extends baseModule {
 			) , 'keypath' => array(
 				"Headline" => _("Path to key for DNS updates"),
 				"Text" => _("The key enables the DHCP server to perform DNS updates." .
-				" " . "The key is generated with \"genDDNSkey\"")
+				" " . "The key is generated with \"genDDNSkey\".")
 			) , 'dns' => array(
 				"Headline" => _("IP address of the DNS server"),
 				"Text" => _("Please enter the IP address of your DNS server.")

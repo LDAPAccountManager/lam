@@ -84,7 +84,7 @@ class range extends baseModule {
 				"Headline" => _("Delete range"),
 				"Text" => _("Deletes an IP range.")
 			) , 'add_range' => array(
-				"Headline" => _("New Range"),
+				"Headline" => _("New range"),
 				"Text" => _("Adds input fields for a new IP range.")
 			) );
 			
@@ -94,7 +94,7 @@ class range extends baseModule {
 	}
 	
 	public function load_Messages() {
-		$this->messages['range_errors'][0] = array('ERROR', _('One or more errors occured. All wrong fields are marked.'), '');
+		$this->messages['range_errors'][0] = array('ERROR', _('One or more errors occured. The invalid fields are marked.'), '');
 		$this->messages['add_range'][0] = array('ERROR', _('New range'), _('Adding the range failed because errors occured.'));
 		$this->messages['drop_range'][0] = array('ERROR', _('Delete range'), _('It is not possible to delete all ranges.'));
 	}
@@ -394,7 +394,7 @@ class range extends baseModule {
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
-            echo "<b>" . _("Please fill the DHCP settings first.") . "</b>";
+            echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
         }
         else
         {
@@ -438,7 +438,7 @@ class range extends baseModule {
 
 				// Drop range:
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Delete Range') . ':'),
+					0 => array('kind' => 'text', 'text' => _('Delete range') . ':'),
 					1 => array('kind' => 'input', 'name' => 'drop_range_'.$id, 'type' => 'submit', 'value' => _('Delete range')),
 					2 => array('kind' => 'help', 'value' => 'drop_range'));
 

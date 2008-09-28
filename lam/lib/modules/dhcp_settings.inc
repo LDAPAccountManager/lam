@@ -148,7 +148,7 @@ class dhcp_settings extends baseModule {
 				"Text" => _("The IP address of the Netbios name server.")
 			) , 'netbios_type' => array(
 				"Headline" => _("Netbios node type"),
-				"Text" => ("<b>B-Node (0x01): Broadcast.</b><br/>The client tries to find other workstations via broadcasting
+				"Text" => _("<b>B-Node (0x01): Broadcast.</b><br/>The client tries to find other workstations via broadcasting
 (works only inside the same collision domain, viz. the same subnet).<br/><br/>
 
 <b>P-Node (0x02): Point-To-Point</b><br />
@@ -750,7 +750,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				array('kind' => 'help', 'value' => 'subnetmask', 'scope' => 'user'));
 
 			// Netmask
-			if ($this->type!=_("Fix IP")) {
+			if ($this->type!=_("Fixed IP")) {
 		        $return[] = array(
 		        	array('kind' => 'text', 'text' => _('Net mask') . ":* "),
 					array('kind' => 'input', 'name' => 'netmask', 'value' => $this->attributes['dhcpNetMask'][0]),

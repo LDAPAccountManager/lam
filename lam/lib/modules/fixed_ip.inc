@@ -379,7 +379,7 @@ class fixed_ip extends baseModule {
 				elseif ($this->check_mac($this->fixed_ip[$id]['mac'])) {
 				    $error = "&laquo;&laquo; " . _("Invalid MAC address.");
 				}
-				$return[] = array(0 => array('kind' => 'text', 'text' => _('MAC adresse') . ":* "),
+				$return[] = array(0 => array('kind' => 'text', 'text' => _('MAC address') . ":* "),
 					1 => array('kind' => 'input', 'name' => 'mac_'.$id.'', 'value' => $this->fixed_ip[$id]['mac']),
 					2 => array('kind' => 'help', 'value' => 'mac', 'scope' => 'user'),
                     3 => array('kind' => 'text', 'text'=>$error));
