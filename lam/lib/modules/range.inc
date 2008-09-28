@@ -67,7 +67,7 @@ class range extends baseModule {
 		// LDAP filter
 		$return["ldap_filter"] = array('or'=>"(objectClass=dhcpSubnet)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array();
 		// managed attributes

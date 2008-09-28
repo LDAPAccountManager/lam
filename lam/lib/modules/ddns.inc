@@ -54,6 +54,8 @@ class ddns extends baseModule {
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
 		$return["ldap_filter"] = array();
+		// module dependencies
+		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array();
 		// managed attributes
