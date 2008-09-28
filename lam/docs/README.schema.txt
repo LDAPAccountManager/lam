@@ -75,4 +75,5 @@
 
   Schema: dhcp.schema
   Source: http://kalamazoolinux.org/projects/awilliam/ldap.html
+  The LDAP suffix should be set to your dhcpServer entry.
 
