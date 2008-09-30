@@ -849,7 +849,7 @@ class lamList {
 		}
 		else {
 			$this->entries = array();
-			StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."));
+			StatusMessage("ERROR", _("LDAP search failed! Please check your preferences."));
 		}
 		// generate list of possible suffixes
 		$this->possibleSuffixes = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($this->type));
