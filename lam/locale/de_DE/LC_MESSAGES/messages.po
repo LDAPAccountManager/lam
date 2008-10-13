@@ -3823,7 +3823,7 @@ msgstr "Pacific Time (USA & Kanada)"
 
 #: ../lib/modules/dhcp_settings.inc:145
 msgid ""
-"Packages are sent to the default gateway if the receiver does not reside in "
+"Packets are sent to the default gateway if the receiver does not reside in "
 "the same network. The default gateway routes them to the target network."
 msgstr ""
 "Wenn sich der Empfänger nicht im selben Netz befindet dann werden alle "
