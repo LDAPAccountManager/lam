@@ -142,7 +142,7 @@ class dhcp_settings extends baseModule {
 				"Text" => _("The IP address(es) of the DNS servers. Multiple addresses are separated by \",\". Example: 192.168.0.10, 192.168.0.11")
 			) , 'gateway' => array(
 				"Headline" => _("Default gateway"),
-				"Text" => _("Packages are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network.")
+				"Text" => _("Packets are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network.")
 			) , 'netbios' => array(
 				"Headline" => _("Netbios name server"),
 				"Text" => _("The IP address of the Netbios name server.")
