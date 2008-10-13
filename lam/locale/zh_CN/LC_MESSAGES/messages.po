@@ -4048,7 +4048,7 @@ msgid "Pacific Time (US & Canada)"
 msgstr "太平洋时间(美国和加拿大)"
 
 #: ../lib/modules/dhcp_settings.inc:145
-msgid "Packages are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network."
+msgid "Packets are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network."
 msgstr "如果数据包的接收者不在同一个网络,数据包将会发往缺省网关.缺省网关将数据包转向目标网络."
 
 #: ../templates/schema/schema.php:371

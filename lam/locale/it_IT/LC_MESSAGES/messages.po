@@ -3840,7 +3840,7 @@ msgstr "Pacifico (Stati uniti e Canada)"
 
 #: ../lib/modules/dhcp_settings.inc:145
 msgid ""
-"Packages are sent to the default gateway if the receiver does not reside in "
+"Packets are sent to the default gateway if the receiver does not reside in "
 "the same network. The default gateway routes them to the target network."
 msgstr "I pacchetti sono inviati al router di default se il destinatario non risiede nella stessa rete. Il router di default li instrada nella rete di destinazione."
 
