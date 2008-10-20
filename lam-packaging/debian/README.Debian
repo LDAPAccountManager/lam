@@ -1,7 +1,7 @@
 Access to the webfrontend:
 
-  - If you configured Apache(-SSL) at installation
-    you can access LDAP Account Manager via
+  - If you configured Apache at installation you can
+    access LDAP Account Manager via
     http://localhost/lam or https://host.domain/lam.
 
   - Otherwise you will have to setup your webserver
@@ -11,10 +11,9 @@ Access to the webfrontend:
 
 Configuration:
 
-  All settings can be edited via the webfrontend. The default
-  password for the configuration is "lam". However you can
-  also edit the configuration files directly.
-  The configuration files are /etc/ldap-account-manager/config.cfg
-  and /var/lib/ldap-account-manager/config/lam.conf.
+  All settings can be edited via the webfrontend. Please
+  point your browser to the LAM start page and then select
+  "LAM configuration".
+  The default password for the configuration is "lam".
 
 
