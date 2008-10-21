@@ -37,6 +37,17 @@ $Id$
 * @package modules
 */
 class shadowAccount extends baseModule {
+	
+	/**
+	* Creates a new shadowAccount object.
+	*
+	* @param string $scope account type (user, group, host)
+	*/
+	function __construct($scope) {
+		// call parent constructor
+		parent::__construct($scope);
+		$this->autoAddObjectClasses = false;
+	}
 
 	/**
 	* This function builds up the message array.
@@ -223,6 +234,9 @@ class shadowAccount extends baseModule {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
+		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Set shadowLastchange manual.
 		$clearPwd = $this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword();
@@ -242,6 +256,9 @@ class shadowAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$errors = array();
 		// Load attributes
 		$this->attributes['shadowMin'][0] = $_POST['shadowMin'];
@@ -262,47 +279,58 @@ class shadowAccount extends baseModule {
 	* @return array meta HTML code
 	*/
 	function display_html_attributes() {
-		$shWarning = '';
-		if (isset($this->attributes['shadowWarning'][0])) {
-			$shWarning = $this->attributes['shadowWarning'][0];
+		if (isset($_POST['form_subpage_shadowAccount_attributes_addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'shadowAccount';
 		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Password warning')),
-			array('kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
-			array('kind' => 'help', 'value' => 'shadowWarning'));
-		$shPwdExpiration = '';
-		if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Password expiration')),
-			array('kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shPwdExpiration),
-			array('kind' => 'help', 'value' => 'shadowInactive'));
-		$shMinAge = '';
-		if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Minimum password age')),
-			array('kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMinAge),
-			array('kind' => 'help', 'value' => 'shadowMin'));
-		$shMaxAge = '';
-		if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Maximum password age')),
-			array('kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
-			array('kind' => 'help', 'value' => 'shadowMax'));
-
-		$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		if (isset($this->attributes['shadowExpire'][0])) {
-			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
-			$date = getdate($shAccExpirationDate*3600*24);
-			$expirationDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+		$return = array();
+		if (in_array('shadowAccount', $this->attributes['objectClass'])) {
+			$shWarning = '';
+			if (isset($this->attributes['shadowWarning'][0])) {
+				$shWarning = $this->attributes['shadowWarning'][0];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Password warning')),
+				array('kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
+				array('kind' => 'help', 'value' => 'shadowWarning'));
+			$shPwdExpiration = '';
+			if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Password expiration')),
+				array('kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shPwdExpiration),
+				array('kind' => 'help', 'value' => 'shadowInactive'));
+			$shMinAge = '';
+			if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Minimum password age')),
+				array('kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMinAge),
+				array('kind' => 'help', 'value' => 'shadowMin'));
+			$shMaxAge = '';
+			if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Maximum password age')),
+				array('kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
+				array('kind' => 'help', 'value' => 'shadowMax'));
+	
+			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			if (isset($this->attributes['shadowExpire'][0])) {
+				$shAccExpirationDate = $this->attributes['shadowExpire'][0];
+				$date = getdate($shAccExpirationDate*3600*24);
+				$expirationDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Account expiration date')),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => $expirationDate),
+					array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_expire_open', 'type' => 'submit', 'value' => _('Change'))
+				))),
+				array('kind' => 'help', 'value' => 'shadowExpire' ));
 		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Account expiration date')),
-			array('kind' => 'table', 'value' => array(array(
-				array('kind' => 'text', 'text' => $expirationDate),
-				array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_expire_open', 'type' => 'submit', 'value' => _('Change'))
-			))),
-			array('kind' => 'help', 'value' => 'shadowExpire' ));
-
+		else {
+			$return[] = array(
+				array('kind' => 'text', 'text' => '&nbsp;'),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_shadowAccount_attributes_addObjectClass', 'value' => _('Add Shadow account'))
+			);
+		}
 		return $return;
 	}
 
