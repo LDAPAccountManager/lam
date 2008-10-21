@@ -1,3 +1,7 @@
+December 2008 2.5.0
+  - Shadow: module is now optional when creating new accounts
+
+
 15.10.2008 2.4.0
   - added DHCP management (donated by Siedl networks GmbH)
   - requires PHP 5.1.2
