@@ -29,17 +29,3 @@ Default: true
 _Description: Would you like to restart your webserver(s) now?
  Your webserver(s) need to be restarted in order to apply the changes.
 
-Template: ldap-account-manager/note-0_4_9-upgrade
-Type: note
-_Description: Upgrade from pre-0.5.0 versions
- Please note that this version uses new file formats for configuration and
- account profiles. You will have to update your configuration and create new
- account profiles.
-
-Template: ldap-account-manager/note-1_0_0-upgrade
-Type: note
-_Description: Upgrade from pre-1.0.0 versions
- Please note that this version uses new file formats for the configuration
- profiles. Please edit your configuration files and save the new
- settings.
-

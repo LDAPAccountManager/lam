@@ -11,21 +11,6 @@ db_input low "ldap-account-manager/passwd" || true
 db_go
 db_input medium "ldap-account-manager/restart-webserver" || true
 db_go
-if dpkg --compare-versions "$2" le 0.5.0; \
-  then
-    if dpkg --compare-versions "$2" ge 0.1.0; \
-      then
-        db_input high "ldap-account-manager/note-0_4_9-upgrade" || true
-        db_go
-    fi
-elif dpkg --compare-versions "$2" le 1.0.0; \
-  then
-    if dpkg --compare-versions "$2" ge 0.5.0; \
-      then
-        db_input high "ldap-account-manager/note-1_0_0-upgrade" || true
-        db_go
-    fi
-fi
 
 #DEBHELPER#
 
