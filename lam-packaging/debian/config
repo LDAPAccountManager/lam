@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 . /usr/share/debconf/confmodule
 db_version 2.0 || [ 0 -lt 30 ]
 
