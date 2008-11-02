@@ -74,6 +74,6 @@
   12. DHCP (modules dhcp_settings, ddns, fixed_ip, range)
 
   Schema: dhcp.schema
-  Source: http://kalamazoolinux.org/projects/awilliam/ldap.html
+  Source: docs/schema/dhcp.schema
   The LDAP suffix should be set to your dhcpServer entry.
 
