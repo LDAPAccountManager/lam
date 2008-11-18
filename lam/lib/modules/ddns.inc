@@ -163,13 +163,6 @@ class ddns extends baseModule {
 			 * Save main settings
 			 */
 
-			if (!isset($this->getAccountContainer()->dn_already_edit)) {
-			    $a = explode(",", $this->getAccountContainer()->dn);
-				unset($a[0]);
-				$this->getAccountContainer()->dn = implode(",", $a);
-				$this->getAccountContainer()->dn_already_edit = true;
-			}
-						
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
 		else {

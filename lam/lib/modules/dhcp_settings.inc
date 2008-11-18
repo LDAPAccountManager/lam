@@ -120,9 +120,9 @@ class dhcp_settings extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array();
+		$return['objectClasses'] = array('top', 'dhcpOptions');
 		// managed attributes
-		$return['attributes'] = array('cn','dhcpOtions');
+		$return['attributes'] = array('cn');
 		// help Entries
 		$return['help'] = array(
 				'domainname' => array(
@@ -250,10 +250,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	public function save_attributes() {
-		// Get easy attributes
-		$this->attributes['objectClass'][0] = "top";
-		$this->attributes['objectClass'][1] = "dhcpOptions";
-
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 			// Standard Things
 			$this->attributes['objectClass'][2] = "dhcpSubnet";
@@ -283,14 +279,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		else
 		{
 			// Basicsettings...
-			
-			if (!isset($this->getAccountContainer()->dn_already_edit)) {
-			    $a = explode(",", $this->getAccountContainer()->dn);
-				unset($a[0]);
-				//$this->getAccountContainer()->dn = implode(",", $a);
-				$this->getAccountContainer()->dn_already_edit = true;
-			}
-			
 			if (is_array($this->attributes['dhcpOption'])) {
 				$i = 0;
 				foreach($this->attributes['dhcpOption'] AS $key=>$value) {
@@ -311,7 +299,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpStatements'] = $this->attributestmp['dhcpStatements'];
 				unset($this->attributestmp['dhcpStatements']);
 			}
-
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	
 		}
@@ -329,7 +316,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 		parent::load_attributes($attr);
 		// Load DHCP Options:
-		$this->dn = ereg_replace("'", "", $_GET['DN']);
+		$this->dn = $this->getAccountContainer()->dn_orig;
 
         if (!is_array($attr['dhcpOption'])) {
         	$attr['dhcpOption'] = array();

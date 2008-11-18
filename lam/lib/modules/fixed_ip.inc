@@ -198,18 +198,20 @@ class fixed_ip extends baseModule {
 	
 	    if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 	    
-		    $sr = ldap_search($_SESSION['ldap']->server(),'cn='.$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),'(objectClass=dhcpHost)');
-	        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-			for ($i=0; $i < $entries["count"]; $i++)
-			{
-				$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
-				$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-				$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
-
-				$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
-				$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-				$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
-			}
+		    $sr = @ldap_search($_SESSION['ldap']->server(),'cn='.$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),'(objectClass=dhcpHost)');
+		    if ($sr) {
+		        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+				for ($i=0; $i < $entries["count"]; $i++)
+				{
+					$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
+					$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
+					$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+	
+					$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
+					$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
+					$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+				}
+		    }
 		}
 	}
 
