@@ -122,7 +122,7 @@ class dhcp_settings extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('top', 'dhcpOptions');
 		// managed attributes
-		$return['attributes'] = array('cn');
+		$return['attributes'] = array('cn', 'dhcpOption');
 		// help Entries
 		$return['help'] = array(
 				'domainname' => array(
@@ -252,7 +252,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	public function save_attributes() {
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 			// Standard Things
-			$this->attributes['objectClass'][2] = "dhcpSubnet";
+			if (!in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = "dhcpSubnet";
+			}
 			// sort to array:
 			if (is_array($this->attributes['dhcpOption'])) {
 				$i = 0;

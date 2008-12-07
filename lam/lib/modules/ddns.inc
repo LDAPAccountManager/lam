@@ -59,7 +59,7 @@ class ddns extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array();
 		// managed attributes
-		$return['attributes'] = array();
+		$return['attributes'] = array('dhcpOption', 'dhcpStatements');
 		// help Entries
 		$return['help'] = array(
 				'active' => array(

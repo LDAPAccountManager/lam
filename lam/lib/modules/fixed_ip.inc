@@ -70,7 +70,7 @@ class fixed_ip extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array();
 		// managed attributes
-		$return['attributes'] = array();
+		$return['attributes'] = array('dhcpOption');
 		// help Entries
 		$return['help'] = array(
 				'pc' => array(
