@@ -300,14 +300,19 @@ function generateRandomPassword() {
 *
 * @return array list of samba3domain objects
 */
-function search_domains() {
-	$suffix = $_SESSION['config']->get_Suffix('smbDomain');
+function search_domains($server = null, $suffix = null) {
+	if ($suffix == null) {
+		$suffix = $_SESSION['config']->get_Suffix('smbDomain');
+	}
 	$ret = array();
 	$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
-		"sambaNextUserRid", "sambaAlgorithmicRidBase");
-	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($suffix), "objectClass=sambaDomain", $attr);
+		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge');
+	if ($server == null) {
+		$server = $_SESSION['ldap']->server();
+	}
+	$sr = @ldap_search($server, escapeDN($suffix), "objectClass=sambaDomain", $attr);
 	if ($sr) {
-		$units = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		$units = ldap_get_entries($server, $sr);
 		// delete count entry
 		unset($units['count']);
 		// extract attributes
@@ -320,6 +325,8 @@ function search_domains() {
 			if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
 			if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
 			if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
+			if (isset($units[$i]['sambaminpwdage'][0])) $ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
+			if (isset($units[$i]['sambamaxpwdage'][0])) $ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
 		}
 		// sort array by domain name
 		usort($ret, "cmp_domain");
@@ -368,6 +375,12 @@ class samba3domain {
 
 	/** RID base to calculate RIDs, default 1000 */
 	public $RIDbase = 1000;
+	
+	/** seconds after the password can be changed */
+	public $minPwdAge;
+	
+	/** seconds after the password must be changed */
+	public $maxPwdAge;
 }
 
 /**
