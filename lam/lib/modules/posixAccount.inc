@@ -1797,7 +1797,7 @@ class posixAccount extends baseModule {
 					else {
 						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password']);
 						if ($pwdPolicyResult === true) {
-							$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings['posixAccount_pwdHash'][0]);
+							$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
 							if (isset($attributes['shadowLastChange'][0])) {
 								$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
 							}

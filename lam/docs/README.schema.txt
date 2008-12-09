@@ -71,7 +71,13 @@
   Source: Part of OpenLDAP installation
 
 
-  12. DHCP (modules dhcp_settings, ddns, fixed_ip, range)
+  12. phpGroupWare (modules phpGroupwareUser, phpGroupwareGroup)
+
+  Schema: phpgroupware.schema
+  Source: http://www.phpgroupware.org/
+
+
+  13. DHCP (modules dhcp_settings, ddns, fixed_ip, range)
 
   Schema: dhcp.schema
   Source: docs/schema/dhcp.schema

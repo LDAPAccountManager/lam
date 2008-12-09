@@ -91,7 +91,7 @@ abstract class baseModule {
 		$this->autoAddObjectClasses = true;
 		// load configuration
 		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
-		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile']->moduleSettings;
+		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile'];
 	}
 
 	/**
