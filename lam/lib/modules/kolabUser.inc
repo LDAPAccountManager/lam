@@ -131,10 +131,6 @@ class kolabUser extends baseModule {
 		);
 		// help Entries
 		$return['help'] = array(
-			'suffix' => array(
-				"Headline" => _("Account suffix"),
-				"Text" => _("LDAP DN (e.g. dc=company,dc=com) of accounts. This is used to find possible delegation candidates.")
-			),
 			'invPol' => array(
 				"Headline" => _("Invitation policy"),
 				"Text" => _("For automatic invitation handling.")
