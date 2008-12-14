@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2007  Roland Gruber
+                2005 - 2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -185,7 +185,10 @@ class sambaSamAccount extends baseModule {
 		);
 		$return['selfServiceFieldSettings'] = array(
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
-			'syncLMPassword' => _('Sync Samba LM password with Unix password')
+			'syncLMPassword' => _('Sync Samba LM password with Unix password'),
+			'syncSambaPwdLastSet' => _('Update attribute "sambaPwdLastSet" on password change'),
+			'syncSambaPwdMustChange' => _('Update attribute "sambaPwdMustChange" on password change'),
+			'syncSambaPwdCanChange' => _('Update attribute "sambaPwdCanChange" on password change')
 		);
 		// help Entries
 		$return['help'] = array (
@@ -2052,6 +2055,7 @@ class sambaSamAccount extends baseModule {
 					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase);
 				}
 				// passwords ( = host name)
+				$partialAccounts[$i]['sambaPwdLastSet'] = time();
 				$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
 				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
 				// flags
@@ -2070,22 +2074,64 @@ class sambaSamAccount extends baseModule {
 	 */
 	function checkSelfServiceOptions($fields, $attributes) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		if (!in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
+			return $return;
+		}
 		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
 			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
-				return array();
+				return $return;
 			}
 			else {
 				if (!get_preg($_POST['posixAccount_password'], 'password')) {
-					return array();
+					return $return;
 				}
 				else {
-					
+					$setPassword = false;
 					// sync password
 					if (in_array('syncNTPassword', $fields)) {
 						$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['posixAccount_password']);
+						$setPassword = true;
 					}
 					if (in_array('syncLMPassword', $fields)) {
 						$return['mod']['sambaLMPassword'][0] = lmPassword($_POST['posixAccount_password']);
+						$setPassword = true;
+					}
+					if ($setPassword) {
+						if (in_array('syncSambaPwdLastSet', $fields)) {
+							$return['mod']['sambaPwdLastSet'][0] = time();
+						}
+					}
+					if (in_array('syncSambaPwdMustChange', $fields) || in_array('syncSambaPwdCanChange', $fields)) {
+						$sambaDomains = search_domains($_SESSION['ldapHandle'], $this->selfServiceSettings->LDAPSuffix);
+						if (($sambaDomains == null) || (sizeof($sambaDomains) == 0)) {
+							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password as no domain was found.'), '');
+							return $return;
+						}
+						if (!isset($attributes['sambaSID'][0]) || $attributes['sambaSID'][0] == '') {
+							$return['messages'][] = array("ERROR", _('Unable to read sambaSID attribute.'), '');
+							return $return;
+						}
+						$domainSID = substr($attributes['sambaSID'][0], 0, strrpos($attributes['sambaSID'][0], "-"));
+						$sel_domain = null;
+						for ($i = 0; $i < count($sambaDomains); $i++ ) {
+							if ($domainSID == $sambaDomains[$i]->SID) {
+								$sel_domain = $sambaDomains[$i];
+							}
+						}
+						if ($sel_domain == null) {
+							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password as no domain was found.'), $domainSID);
+							return $return;
+						}
+						if (in_array('syncSambaPwdCanChange', $fields)) {
+							if (($sel_domain != null) && (isset($sel_domain->maxPwdAge))) {
+								$return['mod']['sambaPwdCanChange'][0] = time() + $sel_domain->minPwdAge;
+							}
+						}
+						if (in_array('syncSambaPwdMustChange', $fields)) {
+							if (($sel_domain != null) && (isset($sel_domain->maxPwdAge))) {
+								$return['mod']['sambaPwdMustChange'][0] = time() + $sel_domain->maxPwdAge;
+							}
+						}
 					}
 				}
 			}
