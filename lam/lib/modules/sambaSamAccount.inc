@@ -56,6 +56,8 @@ class sambaSamAccount extends baseModule {
 	private $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
 		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
 		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
+	/** specifies if the password should be expired */
+	private $expirePassword = false;
 
 
 	/**
@@ -138,7 +140,7 @@ class sambaSamAccount extends baseModule {
 		// managed attributes
 		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaAcctFlags',
-			'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
+			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial');
 		// PHP extensions
 		$return['extensions'] = array('hash', 'iconv');
@@ -228,6 +230,9 @@ class sambaSamAccount extends baseModule {
 			"deactivatedUpload" => array(
 				"Headline" => _("Account is deactivated"),
 				"Text" => _("If set to \"true\" account will be deactivated. (Setting D-Flag)")),
+			"passwordIsExpired" => array(
+				"Headline" => _("Password change at next login"),
+				"Text" => _("If you set this option then the user has to change his password at the next login.")),
 			"pwdCanChange" => array(
 				"Headline" => _("User can change password"),
 				"Text" => _("Date after the user is able to change his password. Format: DD-MM-YYYY")),
@@ -475,8 +480,8 @@ class sambaSamAccount extends baseModule {
 		// configuration options
 		$return['config_options']['user'] = array(
 		array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Time zone") . ': &nbsp;</b>'),
-			1 => array('kind' => 'select', 'name' => 'sambaSamAccount_timeZone', 'size' => '1',
+			array('kind' => 'text', 'text' => '<b>' . _("Time zone") . ': &nbsp;</b>'),
+			array('kind' => 'select', 'name' => 'sambaSamAccount_timeZone', 'size' => '1',
 				'options' => array(
 					array('-12', "GMT-12: " . _("Eniwetok, Kwajalein")),
 					array('-11', "GMT-11: " . _("Midway Island, Samoa")),
@@ -506,7 +511,7 @@ class sambaSamAccount extends baseModule {
 					),
 					'options_selected' => array('0'),
 					'descriptiveOptions' => true),
-			2 => array('kind' => 'help', 'value' => 'timeZone'))
+			array('kind' => 'help', 'value' => 'timeZone'))
 		);
 		return $return;
 	}
@@ -559,6 +564,9 @@ class sambaSamAccount extends baseModule {
 			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
 			else $this->noexpire = false;
 		}
+		if (isset($this->attributes['sambaPwdLastSet'][0]) && ($this->attributes['sambaPwdLastSet'][0] === '0')) {
+			$this->expirePassword = true;
+		}
 	}
 
 	/**
@@ -575,6 +583,12 @@ class sambaSamAccount extends baseModule {
 	function save_attributes() {
 		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
 			return array();
+		}
+		if ($this->expirePassword === true) {
+			$this->attributes['sambaPwdLastSet'][0] = '0';
+		}
+		elseif ((isset($this->attributes['sambaPwdLastSet'][0])) && ($this->attributes['sambaPwdLastSet'][0] == '0')) {
+			$this->attributes['sambaPwdLastSet'][0] = time();
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		return $return;
@@ -750,6 +764,12 @@ class sambaSamAccount extends baseModule {
 				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 			}
+		}
+		if (isset($_POST['passwordIsExpired'])) {
+			$this->expirePassword = true;
+		}
+		else {
+			$this->expirePassword = false;
 		}
 		return $errors;
 	}
@@ -984,6 +1004,11 @@ class sambaSamAccount extends baseModule {
 					array('kind' => 'input', 'name' => 'sambaAcctFlagsL', 'type' => 'checkbox', 'checked' => $locked),
 					array('kind' => 'help', 'value' => 'locked'));
 	
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Password change at next login') ),
+					array('kind' => 'input', 'name' => 'passwordIsExpired', 'type' => 'checkbox', 'checked' => $this->expirePassword),
+					array('kind' => 'help', 'value' => 'passwordIsExpired'));
+
 				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if (isset($this->attributes['sambaPwdCanChange'][0])) {
 					if ($this->attributes['sambaPwdCanChange'][0] > 2147483648) {
@@ -2104,7 +2129,7 @@ class sambaSamAccount extends baseModule {
 					if (in_array('syncSambaPwdMustChange', $fields) || in_array('syncSambaPwdCanChange', $fields)) {
 						$sambaDomains = search_domains($_SESSION['ldapHandle'], $this->selfServiceSettings->LDAPSuffix);
 						if (($sambaDomains == null) || (sizeof($sambaDomains) == 0)) {
-							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password as no domain was found.'), '');
+							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password because no domain was found.'), '');
 							return $return;
 						}
 						if (!isset($attributes['sambaSID'][0]) || $attributes['sambaSID'][0] == '') {
@@ -2119,7 +2144,7 @@ class sambaSamAccount extends baseModule {
 							}
 						}
 						if ($sel_domain == null) {
-							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password as no domain was found.'), $domainSID);
+							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password because no domain was found.'), $domainSID);
 							return $return;
 						}
 						if (in_array('syncSambaPwdCanChange', $fields)) {
