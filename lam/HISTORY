@@ -1,5 +1,12 @@
-December 2008 2.5.0
+January 2009 2.5.0
   - Shadow: module is now optional when creating new accounts
+  - Kolab: account extension is now optional
+  - Kolab: Self service uses no extra LDAP suffix but uses global setting
+  - DHCP: minor fixes
+  - Samba 3:
+   -> self service sets attribute "sambaPwdLastSet" on password change
+   -> password timestamps can be updated on password reset page
+   -> option to force password change on next login
 
 
 15.10.2008 2.4.0
