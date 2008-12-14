@@ -918,6 +918,9 @@ class kolabUser extends baseModule {
 	 */
 	function checkSelfServiceOptions($fields, $attributes) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		if (!in_array_ignore_case('kolabInetOrgPerson', $attributes['objectClass'])) {
+			return $return;
+		}
 		$attributeNames = array(); // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
 		// kolabFreeBusyFuture
