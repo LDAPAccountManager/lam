@@ -7,6 +7,7 @@ January 2009 2.5.0
    -> self service sets attribute "sambaPwdLastSet" on password change
    -> password timestamps can be updated on password reset page
    -> option to force password change on next login
+   -> profile options for time when the user can/must change the password
 
 
 15.10.2008 2.4.0
