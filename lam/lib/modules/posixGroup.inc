@@ -41,6 +41,9 @@ class posixGroup extends baseModule {
 
 	/** change GIDs of users and hosts? */
 	private $changegids;
+	
+	/** specifies if the cn attribute should be managed by this module */
+	protected $manageCnAttribute = true;
 
 
 	/**
@@ -56,14 +59,16 @@ class posixGroup extends baseModule {
 		$needAutoGID = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
-			// group name
-			if (get_preg($rawAccounts[$i][$ids['posixGroup_cn']], 'groupname')) {
-				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
-			}
-			else {
-				$errMsg = $this->messages['cn'][3];
-				array_push($errMsg, array($i));
-				$error_messages[] = $errMsg;
+			if ($this->manageCnAttribute) {
+				// group name
+				if (get_preg($rawAccounts[$i][$ids['posixGroup_cn']], 'groupname')) {
+					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
+				}
+				else {
+					$errMsg = $this->messages['cn'][3];
+					array_push($errMsg, array($i));
+					$error_messages[] = $errMsg;
+				}
 			}
 			// GID
 			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
@@ -153,10 +158,12 @@ class posixGroup extends baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	function display_html_attributes() {
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Group name").'*'),
-			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '30', 'value' => $this->attributes['cn'][0]),
-			array('kind' => 'help', 'value' => 'cn'));
+		if ($this->manageCnAttribute) {
+			$return[] = array(
+				array('kind' => 'text', 'text' => _("Group name").'*'),
+				array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '30', 'value' => $this->attributes['cn'][0]),
+				array('kind' => 'help', 'value' => 'cn'));
+		}
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('GID number').'*'),
 			array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['gidNumber'][0]),
@@ -337,21 +344,15 @@ class posixGroup extends baseModule {
 			'error_message' => $this->messages['gidNumber'][7]);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'cn',
 			'gidNumber',
 			'memberUid',
 			'description'
 		);
+		if ($this->manageCnAttribute) {
+			array_unshift($return['PDF_fields'], 'cn');
+		}
 		// upload fields
 		$return['upload_columns'] = array(
-		array(
-			'name' => 'posixGroup_cn',
-			'description' => _('Group name'),
-			'help' => 'cn',
-			'example' => _('adminstrators'),
-			'required' => true,
-			'unique' => true
-		),
 		array(
 			'name' => 'posixGroup_gid',
 			'description' => _('GID number'),
@@ -377,12 +378,20 @@ class posixGroup extends baseModule {
 			'example' => _('secret')
 		)
 		);
+		if ($this->manageCnAttribute) {
+			array_unshift($return['upload_columns'], 
+				array(
+					'name' => 'posixGroup_cn',
+					'description' => _('Group name'),
+					'help' => 'cn',
+					'example' => _('adminstrators'),
+					'required' => true,
+					'unique' => true
+				)
+			);
+		}
 		// help Entries
 		$return['help'] = array(
-			'cn' =>	array(
-				"Headline" => _("Group name"),
-				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . LAM does not allow a number as first character because groupadd also does not allow it. If group name is already used group name will be expanded with a number. The next free number will be used.")
-			),
 			'gidNumber'	=> array(
 				"Headline" => _("GID number"),
 				"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")
@@ -412,6 +421,12 @@ class posixGroup extends baseModule {
 				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			)
 		);
+		if ($this->manageCnAttribute) {
+			$return['help']['cn'] = array(
+				"Headline" => _("Group name"),
+				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . LAM does not allow a number as first character because groupadd also does not allow it. If group name is already used group name will be expanded with a number. The next free number will be used.")
+			);
+		}
 
 		return $return;
 	}
@@ -498,7 +513,7 @@ class posixGroup extends baseModule {
 				return true;
 			}
 		}
-		if ($this->attributes['cn'][0] == '') return false;
+		if ($this->manageCnAttribute && ($this->attributes['cn'][0] == '')) return false;
 		if ($this->attributes['gidNumber'][0] == '') return false;
 		return true;
 	}
@@ -592,7 +607,7 @@ class posixGroup extends baseModule {
 				}
 			}
 		}
-		if ($this->attributes['cn'][0]!=$_POST['cn']) {
+		if ($this->manageCnAttribute && ($this->attributes['cn'][0]!=$_POST['cn'])) {
 			$this->attributes['cn'][0] = $_POST['cn'];
 			if (($this->attributes['cn'][0] != $_POST['cn']) &&  ereg('[A-Z]$', $_POST['cn']))
 				$errors[] = $this->messages['cn'][0];
