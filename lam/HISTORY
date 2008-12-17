@@ -1,4 +1,5 @@
 January 2009 2.5.0
+  - LAM Pro: supports rfc2307bis schema for Unix groups
   - Shadow: module is now optional when creating new accounts
   - Kolab: account extension is now optional
   - Kolab: Self service uses no extra LDAP suffix but uses global setting

@@ -8,7 +8,8 @@
   Schema: nis.schema
   Source: Part of OpenLDAP installation
 
-  Suse Linux: Do not use the rfc2307bis.schema but nis.schema instead.
+  The rfc2307bis.schema is only supported by LAM Pro. Use the nis.schema
+  if you do not want to upgrade to LAM Pro.
 
 
   2. Address book entries (module inetOrgPerson)
