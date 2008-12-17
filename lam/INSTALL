@@ -42,14 +42,15 @@ Installation Instructions for LAM
 
 
    3. Configure config.cfg and create a configuration profile.
-      Copy config.cfg_sample to config.cfg and set the master password and default
-      profile.
+      Copy config.cfg_sample to config.cfg and lam.conf_sample to lam.conf.
 
       Open the index.html in your web browser:
-       - Follow the link "Configuration Login" from the start page.
-        (The default password to edit the options is "lam")
-       - Select the default lam profile or create a new profile.
-       - Change the settings to fit your environment.
+       - Follow the link "LAM configuration" from the start page.
+        (The default passwords to edit all options is "lam")
+       - Select "Edit general settings" to setup global settings and to change the configuration master password.
+       - Select "Edit server profiles" to setup your server profiles. There should be the lam profile
+         which you just copied from the sample file. The default password is "lam". Now change the settings
+         to fit for your environment.
 
 
 
