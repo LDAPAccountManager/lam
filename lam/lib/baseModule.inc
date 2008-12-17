@@ -796,6 +796,15 @@ abstract class baseModule {
 	}
 
 	/**
+	* Returns the PDF entries for this module.
+	*
+	* @return array list of possible PDF entries
+	*/
+	public function get_pdfEntries() {
+		return array();
+	}
+
+	/**
 	* Returns an array containing all input columns for the file upload.
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
