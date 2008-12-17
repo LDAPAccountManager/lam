@@ -44,7 +44,9 @@ class posixGroup extends baseModule {
 	
 	/** specifies if the cn attribute should be managed by this module */
 	protected $manageCnAttribute = true;
-
+	/** specifies if the description attribute should be managed by this module */
+	protected $manageDescriptionAttribute = true;
+	
 
 	/**
 	* In this function the LDAP account is built up.
@@ -83,12 +85,14 @@ class posixGroup extends baseModule {
 				array_push($errMsg, array($i));
 				$error_messages[] = $errMsg;
 			}
-			// description (UTF-8, no regex check needed)
-			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
-				$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
-			}
-			else {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
+			if ($this->manageDescriptionAttribute) {
+				// description (UTF-8, no regex check needed)
+				if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
+					$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
+				}
+				else {
+					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
+				}
 			}
 			// group members
 			if ($rawAccounts[$i][$ids['posixGroup_members']] != "") {
@@ -168,10 +172,12 @@ class posixGroup extends baseModule {
 			array('kind' => 'text', 'text' => _('GID number').'*'),
 			array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['gidNumber'][0]),
 			array('kind' => 'help', 'value' => 'gidNumber'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Description')),
-			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
-			array ('kind' => 'help', 'value' => 'description'));
+		if ($this->manageDescriptionAttribute) {
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Description')),
+				array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
+				array ('kind' => 'help', 'value' => 'description'));
+		}
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Group members")),
 			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_open', 'type' => 'submit', 'value' => _('Edit members')),
@@ -345,11 +351,13 @@ class posixGroup extends baseModule {
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'gidNumber',
-			'memberUid',
-			'description'
+			'memberUid'
 		);
 		if ($this->manageCnAttribute) {
 			array_unshift($return['PDF_fields'], 'cn');
+		}
+		if ($this->manageDescriptionAttribute) {
+			$return['PDF_fields'][] = 'description';
 		}
 		// upload fields
 		$return['upload_columns'] = array(
@@ -358,12 +366,6 @@ class posixGroup extends baseModule {
 			'description' => _('GID number'),
 			'help' => 'gidNumber',
 			'example' => '2034'
-		),
-		array(
-			'name' => 'posixGroup_description',
-			'description' => _('Group description'),
-			'help' => 'description',
-			'example' => _('Administrators group')
 		),
 		array(
 			'name' => 'posixGroup_members',
@@ -387,6 +389,16 @@ class posixGroup extends baseModule {
 					'example' => _('adminstrators'),
 					'required' => true,
 					'unique' => true
+				)
+			);
+		}
+		if ($this->manageDescriptionAttribute) {
+			array_unshift($return['upload_columns'],
+				array(
+				'name' => 'posixGroup_description',
+				'description' => _('Group description'),
+				'help' => 'description',
+				'example' => _('Administrators group')
 				)
 			);
 		}
@@ -419,14 +431,12 @@ class posixGroup extends baseModule {
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
 				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
-			)
-		);
-		if ($this->manageCnAttribute) {
-			$return['help']['cn'] = array(
+			),
+			'cn' => array(
 				"Headline" => _("Group name"),
 				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . LAM does not allow a number as first character because groupadd also does not allow it. If group name is already used group name will be expanded with a number. The next free number will be used.")
-			);
-		}
+			)
+		);
 
 		return $return;
 	}
@@ -544,7 +554,9 @@ class posixGroup extends baseModule {
 	*/
 	function process_attributes() {
 		$errors = array();
-		$this->attributes['description'][0] = $_POST['description'];
+		if ($this->manageDescriptionAttribute) {
+			$this->attributes['description'][0] = $_POST['description'];
+		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_lockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
 		}
