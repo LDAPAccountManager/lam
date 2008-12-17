@@ -153,25 +153,25 @@ class posixGroup extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _("Group name").'*'),
-			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '30', 'value' => $this->attributes['cn'][0]),
-			2 => array('kind' => 'help', 'value' => 'cn'));
+			array('kind' => 'text', 'text' => _("Group name").'*'),
+			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '30', 'value' => $this->attributes['cn'][0]),
+			array('kind' => 'help', 'value' => 'cn'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('GID number').'*'),
-			1 => array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['gidNumber'][0]),
-			2 => array('kind' => 'help', 'value' => 'gidNumber'));
+			array('kind' => 'text', 'text' => _('GID number').'*'),
+			array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['gidNumber'][0]),
+			array('kind' => 'help', 'value' => 'gidNumber'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Description')),
-			1 => array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
-			2 => array ('kind' => 'help', 'value' => 'description'));
+			array('kind' => 'text', 'text' => _('Description')),
+			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
+			array ('kind' => 'help', 'value' => 'description'));
 		$return[] = array(
-		0 => array('kind' => 'text', 'text' => _("Group members")),
-		1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
-		2 => array ('kind' => 'help', 'value' => 'members'));
+			array('kind' => 'text', 'text' => _("Group members")),
+			array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
+			array ('kind' => 'help', 'value' => 'members'));
 		if (!isset($this->attributes['userPassword'][0])) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Password') ),
-				1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Set password')));
+				array('kind' => 'text', 'text' => _('Password') ),
+				array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Set password')));
 		}
 		else {
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
@@ -195,9 +195,9 @@ class posixGroup extends baseModule {
 		}
 		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='')
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Change GID number of users and hosts')),
-			1 => array('kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids, 'value' => true),
-			2 => array('kind' => 'help', 'value' => 'changegids'));
+			array('kind' => 'text', 'text' => _('Change GID number of users and hosts')),
+			array('kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids, 'value' => true),
+			array('kind' => 'help', 'value' => 'changegids'));
 		return $return;
 	}
 
@@ -262,18 +262,18 @@ class posixGroup extends baseModule {
 	*/
 	function display_html_password() {
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Password') ),
-			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
-			2 => array('kind' => 'help', 'value' => 'password'));
+			array('kind' => 'text', 'text' => _('Password') ),
+			array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
+			array('kind' => 'help', 'value' => 'password'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Repeat password')),
-			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
+			array('kind' => 'text', 'text' => _('Repeat password')),
+			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
 		$return[] = array(
-			0 => array('kind' => 'table', 'value' => array(
-				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixGroup_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixGroup_attributes_back'),
-					2 => array('kind' => 'text')))));
+			array('kind' => 'table', 'value' => array(
+				array(
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixGroup_attributes_submit'),
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixGroup_attributes_back'),
+					array('kind' => 'text')))));
 		return $return;
 	}
 
@@ -309,12 +309,12 @@ class posixGroup extends baseModule {
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(
-				0 => array('kind' => 'text', 'text' => '<b>' . _("Groups") . ': &nbsp;</b>' . _('Minimum GID number') . " *: "),
-				1 => array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				2 => array('kind' => 'text', 'value' => '&nbsp;'),
-				3 => array('kind' => 'text', 'text' => _('Maximum GID number') . " *: "),
-				4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				5 => array('kind' => 'help', 'value' => 'minMaxGID'))
+				array('kind' => 'text', 'text' => '<b>' . _("Groups") . ': &nbsp;</b>' . _('Minimum GID number') . " *: "),
+				array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				array('kind' => 'text', 'value' => '&nbsp;'),
+				array('kind' => 'text', 'text' => _('Maximum GID number') . " *: "),
+				array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'minMaxGID'))
 		);
 		// configuration checks
 		$return['config_checks']['group']['posixGroup_minGID'] = array (
@@ -426,13 +426,13 @@ class posixGroup extends baseModule {
 	function get_configOptions($scopes, $allScopes) {
 		$return = parent::get_configOptions($scopes, $allScopes);
 		$pwdHash = array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-			1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+			array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+			array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
 				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-			2 => array('kind' => 'text', 'value' => '&nbsp;'),
-			3 => array('kind' => 'text', 'value' => '&nbsp;'),
-			4 => array('kind' => 'text', 'value' => '&nbsp;'),
-			5 => array('kind' => 'help', 'value' => 'pwdHash')
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'text', 'value' => '&nbsp;'),
+			array('kind' => 'help', 'value' => 'pwdHash')
 			);
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) $return[] = $pwdHash;
