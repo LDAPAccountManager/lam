@@ -1,4 +1,8 @@
 # LDAP Account Manager configuration
+#
+# Please do not modify this file manually. The configuration can be done completely by the LAM GUI.
+#
+###################################################################################################
 
 # server address (e.g. ldap://localhost:389 or ldaps://localhost:636)
 serverURL: ldap://localhost:389
