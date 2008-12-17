@@ -4,6 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 Copyright (C) 2003 - 2006  Tilo Lutz
+              2007 - 2008  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -166,30 +167,30 @@ class posixGroup extends baseModule {
 			array ('kind' => 'help', 'value' => 'description'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Group members")),
-			array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
+			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_open', 'type' => 'submit', 'value' => _('Edit members')),
 			array ('kind' => 'help', 'value' => 'members'));
 		if (!isset($this->attributes['userPassword'][0])) {
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Password') ),
-				array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Set password')));
+				array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_password_open', 'type' => 'submit', 'value' => _('Set password')));
 		}
 		else {
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
-				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
+				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
 			}
 			else {
-				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
+				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
 			}
 			$return[] = array(array('kind' => 'text', 'text' => ""));
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Password') ),
 				array('kind' => 'table', 'value' => array(
 					array(
-						array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Change password'))
+						array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_password_open', 'type' => 'submit', 'value' => _('Change password'))
 					),
 					array($lockOption),
 					array(
-						array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
+						array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
 					)
 				)));
 		}
@@ -249,7 +250,7 @@ class posixGroup extends baseModule {
 		))));
 
 		$return[] = array(
-			array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
+			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
 			array('kind' => 'text'),
 			array('kind' => 'text'));
 		return $return;
@@ -271,8 +272,8 @@ class posixGroup extends baseModule {
 		$return[] = array(
 			array('kind' => 'table', 'value' => array(
 				array(
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixGroup_attributes_submit'),
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixGroup_attributes_back'),
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
 					array('kind' => 'text')))));
 		return $return;
 	}
@@ -446,10 +447,10 @@ class posixGroup extends baseModule {
 	*/
 	function get_pdfEntries() {
 		return array(
-		'posixGroup_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
-		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
-		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . implode(', ', $this->attributes['memberUid']) . '</value></block>'),
-		'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+		get_class($this) . '_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+		get_class($this) . '_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
+		get_class($this) . '_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . implode(', ', $this->attributes['memberUid']) . '</value></block>'),
+		get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 
 
@@ -529,13 +530,13 @@ class posixGroup extends baseModule {
 	function process_attributes() {
 		$errors = array();
 		$this->attributes['description'][0] = $_POST['description'];
-		if (isset($_POST['form_subpage_posixGroup_attributes_lockPassword'])) {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_lockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
 		}
-		if (isset($_POST['form_subpage_posixGroup_attributes_unlockPassword'])) {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_unlockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
 		}
-		if (isset($_POST['form_subpage_posixGroup_attributes_removePassword'])) {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removePassword'])) {
 			unset($this->attributes['userPassword']);
 		}
 		if ($_POST['changegids']) $this->changegids=true;
@@ -675,7 +676,7 @@ class posixGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_password() {
-		if ($_POST['form_subpage_posixGroup_attributes_back']) return array();
+		if ($_POST['form_subpage_' . get_class($this) . '_attributes_back']) return array();
 		$errors = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
 			$errors[] = $this->messages['userPassword'][0];
