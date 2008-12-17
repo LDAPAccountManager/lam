@@ -709,7 +709,7 @@ class inetOrgPerson extends baseModule {
 		if (!in_array('posixAccount', $modules)) {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User name')),
+			$return[] = array(array('kind' => 'text', 'text' => _('User name')),
 				array('kind' => 'input', 'name' => 'userName', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $uid),
 				array('kind' => 'help', 'value' => 'uid'));
@@ -745,7 +745,7 @@ class inetOrgPerson extends baseModule {
 				'maxlength' => '255', 'value' => $description),
 			array('kind' => 'help', 'value' => 'description'));
 
-		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
 		// password
 		if (!in_array('posixAccount', $modules)) {
@@ -827,7 +827,7 @@ class inetOrgPerson extends baseModule {
 				'maxlength' => '255', 'value' => $roomNumber),
 			array('kind' => 'help', 'value' => 'roomNumber'));
 
-		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
 		$telephone = '';
 		if (isset($this->attributes['telephoneNumber'][0])) $telephone = $this->attributes['telephoneNumber'][0];
@@ -983,18 +983,18 @@ class inetOrgPerson extends baseModule {
 	*/
 	function display_html_password() {
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Password') ),
-			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
-			2 => array('kind' => 'help', 'value' => 'userPassword'));
+			array('kind' => 'text', 'text' => _('Password') ),
+			array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
+			array('kind' => 'help', 'value' => 'userPassword'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Repeat password')),
-			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
+			array('kind' => 'text', 'text' => _('Repeat password')),
+			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
 		$return[] = array(
-			0 => array('kind' => 'table', 'value' => array(
-				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
-					2 => array('kind' => 'text')))));
+			array('kind' => 'table', 'value' => array(
+				array(
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
+					array('kind' => 'text')))));
 		return $return;
 	}
 
@@ -1023,15 +1023,15 @@ class inetOrgPerson extends baseModule {
 	*/
 	function display_html_photo() {
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Photo file (JPG format)') ),
-			1 => array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file'),
-			2 => array('kind' => 'help', 'value' => 'photoUpload'));
+			array('kind' => 'text', 'text' => _('Photo file (JPG format)') ),
+			array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file'),
+			array('kind' => 'help', 'value' => 'photoUpload'));
 		$return[] = array(
-			0 => array('kind' => 'table', 'value' => array(
-				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Add photo'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
-					2 => array('kind' => 'text')))));
+			array('kind' => 'table', 'value' => array(
+				array(
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Add photo'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
+					array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
+					array('kind' => 'text')))));
 		return $return;
 	}
 
