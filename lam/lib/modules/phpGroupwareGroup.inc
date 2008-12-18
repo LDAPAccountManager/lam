@@ -60,7 +60,7 @@ class phpGroupwareGroup extends baseModule {
 		// alias name
 		$return["alias"] = "phpGroupWare";
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=phpgwGroup)");
 		// managed object classes
@@ -75,7 +75,7 @@ class phpGroupwareGroup extends baseModule {
 			)
 		);
 		// upload dependencies
-		$return['upload_preDepends'] = array('posixGroup');
+		$return['upload_preDepends'] = array('posixGroup', 'rfc2307bisPosixGroup');
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -142,14 +142,31 @@ class phpGroupwareGroup extends baseModule {
 	* <br>"remove" are attributes which have to be removed from LDAP entry
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
-	function save_attributes() {
+	public function save_attributes() {
 		if (!in_array('phpgwGroup', $this->attributes['objectClass'])) {
 			return parent::save_attributes();
 		}
 		// set phpgwGroupID to GID number for new accounts
-		$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-		$this->attributes['phpgwGroupID'][0] = $attrs['gidNumber'][0];
+		$this->attributes['phpgwGroupID'][0] = $this->getGID();
 		return parent::save_attributes();
+	}
+	
+	/**
+	 * Gets the GID number from the Unix group module.
+	 *
+	 * @return String GID number
+	 */
+	private function getGID() {
+		$modules = array('posixGroup', 'rfc2307bisPosixGroup');
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
+				if (isset($attrs['gidNumber'][0])) {
+					return $attrs['gidNumber'][0];
+				}
+			}
+		}
+		return null;
 	}
 	
 	/**
