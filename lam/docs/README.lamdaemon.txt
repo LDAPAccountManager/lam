@@ -47,7 +47,7 @@ Do NOT mix lamdaemon and lamdaemonOld.pl!
    $admin is the admin user from LAM (must be a valid Unix account)
    and $path is the path to lamdaemon.pl
 
-     e.g.: myAdmin All= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl
+     e.g.: myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl
 
 
 3. Setup Perl
@@ -107,6 +107,7 @@ Now everything should work fine.
      fit together. Try recompiling the library and libssh2.
 
      This combination was tested successfully: libssh2 0.13 with php5-ssh2 0.10
+     php5-ssh2 0.11 should have no problems with recent libssh2 releases.
 
    - Check /var/log/auth.log or the equivalent on your system
      This file contains messages about all logins. If the ssh login
