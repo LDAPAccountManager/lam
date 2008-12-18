@@ -137,6 +137,13 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		flush();
 		$lamdaemonOk = false;
 		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
+		if (!$shell) {
+			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td>\n";
+			StatusMessage("ERROR", _("Unable to connect to remote server!"));
+			echo "</td>\n";
+			return true;
+		}
 		$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
 		fwrite($shell, $command);
 		$return = array();
@@ -161,6 +168,8 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		elseif (strlen($errOut) > 0) {
 			$return[] = "ERROR," . _("Unknown error") . "," . htmlspecialchars(str_replace(",", " ", $errOut));
 		}
+		@fclose($shell);
+		@fclose($stderr);
 		if ((sizeof($return) == 1) && (strpos(strtolower($return[0]), "error") === false)) {
 			$lamdaemonOk = true;
 		}
@@ -294,10 +303,14 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	}
 
 	flush();
-
+	
 	$stopTest = lamTestLamdaemon("+ test basic\n", $stopTest, $handle, _("Execute lamdaemon"));
 	if ($testQuota) {
+		$handle = @ssh2_connect($serverName);
+		@ssh2_auth_password($handle, $userName, $credentials[1]);
 		$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
+		$handle = @ssh2_connect($serverName);
+		@ssh2_auth_password($handle, $userName, $credentials[1]);
 		$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
 	}
 
