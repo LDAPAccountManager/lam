@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
+                2007 - 2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,7 +75,7 @@ class quota extends baseModule {
 		$return["alias"] = _('Quota');
 		if ($this->get_scope() == 'group') {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
 		}
 		if ($this->get_scope() == 'user') {
 			// module dependencies
@@ -185,6 +186,24 @@ class quota extends baseModule {
 	}
 
 	/**
+	 * Gets the cn from the Unix group module.
+	 *
+	 * @return String cn attribute
+	 */
+	private function getCn() {
+		$modules = array('posixGroup', 'groupOfNames', 'groupOfUniqueNames');
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
+				if (isset($attrs['cn'][0])) {
+					return $attrs['cn'][0];
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
 	* This function is used to check if this module page can be displayed.
 	* It returns false if a module depends on data from other modules which was not yet entered.
 	*
@@ -196,8 +215,9 @@ class quota extends baseModule {
 			if ($attrs['uid'][0]=='') return false;
 		}
 		if ($this->get_scope()=='group') {
-			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-			if ($attrs['cn'][0]=='') return false;
+			if (($this->getCn() == null) || ($this->getCn() == '')) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -215,8 +235,7 @@ class quota extends baseModule {
 			$id = $attrs['uid'][0];
 		}
 		if ($this->get_scope()=='group') {
-			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-			$id = $attrs['cn'][0];
+			$id = $this->getCn();
 		}
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
@@ -255,8 +274,7 @@ class quota extends baseModule {
 			$id = $attrs['uid'][0];
 		}
 		if ($this->get_scope()=='group') {
-			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-			$id = $attrs['cn'][0];
+			$id = $this->getCn();
 		}
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
