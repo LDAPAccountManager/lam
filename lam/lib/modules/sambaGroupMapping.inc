@@ -92,6 +92,42 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
+	 * Gets the GID number from the Unix group module.
+	 *
+	 * @return String GID number
+	 */
+	private function getGID() {
+		$modules = array('posixGroup', 'rfc2307bisPosixGroup');
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
+				if (isset($attrs['gidNumber'][0])) {
+					return $attrs['gidNumber'][0];
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the cn from the Unix group module.
+	 *
+	 * @return String cn attribute
+	 */
+	private function getCn() {
+		$modules = array('posixGroup', 'groupOfNames', 'groupOfUniqueNames');
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
+				if (isset($attrs['cn'][0])) {
+					return $attrs['cn'][0];
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -194,9 +230,10 @@ class sambaGroupMapping extends baseModule {
 			}
 			$displayName = '';
 			if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Display name') ),
-				1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $displayName),
-				2 => array ( 'kind' => 'help', 'value' => 'displayName' ));
+			$return[] = array (
+				array('kind' => 'text', 'text' => _('Display name') ),
+				array('kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $displayName),
+				array('kind' => 'help', 'value' => 'displayName' ));
 	
 			$names = array_keys($this->rids);
 			$wrid=false;
@@ -207,16 +244,16 @@ class sambaGroupMapping extends baseModule {
 				}
 				else $options[] = $names[$i];
 			}
-			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
 			if ($wrid) {
-				$options[] = $attrs['cn'][0];
+				$options[] = $this->getCn();
 			}
 			else {
-				$selected[] = $attrs['cn'][0];
+				$selected[] = $this->getCn();
 			}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Windows group') ),
+				array('kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
+				array('kind' => 'help', 'value' => 'sambaSID' ));
 	
 			$names = array_keys($this->sambaGroupTypes);
 			$selected = array( _('Domain group') );
@@ -224,14 +261,16 @@ class sambaGroupMapping extends baseModule {
 				if (!isset($this->attributes['sambaGroupType'][0])) break;
 				if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
 			}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Group type') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
-				2 => array ( 'kind' => 'help', 'value' => 'type' ));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Group type') ),
+				array('kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
+				array('kind' => 'help', 'value' => 'type' ));
 			$selectedDomain = array();
 			if (isset($sel_domain)) $selectedDomain = array($sel_domain);
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Domain') ),
+				array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
+				array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		}
 		else {
 			$return[] = array(
@@ -240,7 +279,7 @@ class sambaGroupMapping extends baseModule {
 			);
 		}
 		return $return;
-		}
+	}
 
 	/**
 	* Returns meta data that is interpreted by parent class
@@ -258,7 +297,7 @@ class sambaGroupMapping extends baseModule {
 		// alias name
 		$return["alias"] = _('Samba 3');
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('sambaGroupMapping');
 		// managed attributes
@@ -306,7 +345,7 @@ class sambaGroupMapping extends baseModule {
 					'example' => '2'
 				)
 			);
-			$return['upload_preDepends'] = array('posixGroup');
+			$return['upload_preDepends'] = array('posixGroup', 'rfc2307bisPosixGroup');
 		}
 		// help Entries
 		$return['help'] = array(
@@ -366,9 +405,9 @@ class sambaGroupMapping extends baseModule {
 		}
 		// domain
 		$return[] = array (
-			0 => array('kind' => 'text', 'text' => _('Domain')),
-			1 => array('kind' => 'select', 'name' => 'sambaGroupMapping_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ()),
-			2 => array('kind' => 'help', 'value' => 'sambaDomainName' ));
+			array('kind' => 'text', 'text' => _('Domain')),
+			array('kind' => 'select', 'name' => 'sambaGroupMapping_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ()),
+			array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		return $return;
 	}
 
@@ -407,8 +446,9 @@ class sambaGroupMapping extends baseModule {
 	* @return boolean true, if page can be displayed
 	*/
 	function module_ready() {
-		$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-		if ($attrs['gidNumber'][0]=='') return false;
+		if (($this->getGID() == null) || ($this->getGID() == '')) {
+			return false;
+		}
 		return true;
 	}
 
@@ -460,8 +500,7 @@ class sambaGroupMapping extends baseModule {
 			}
 		}
 		if (!$wrid) {
-			$attrs = $this->getAccountContainer()->getAccountModule('posixGroup')->getAttributes();
-			$this->attributes['sambaSID'][0] = $SID . "-" . ($attrs['gidNumber'][0]*2+$RIDbase+1);
+			$this->attributes['sambaSID'][0] = $SID . "-" . ($this->getGID()*2+$RIDbase+1);
 		}
 		// Return error-messages
 		return $errors;
