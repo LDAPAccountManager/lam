@@ -98,16 +98,20 @@ else {
 	echo "</b></p>\n";
 	
 	echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
-	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
-	for ($i = 0; $i < sizeof($types); $i++) {
-		echo "<tr>\n";
-		echo "<th class=\"" . $types[$i] . "list-sort\" align=\"center\"><input type=\"radio\" name=\"type\" value=\"" . $types[$i] . "\"></th>\n";
-		echo "<th class=\"" . $types[$i] . "list-sort\" align=\"left\">" . getTypeAlias($types[$i]) . "</th>\n";
-		echo "</tr>\n";
-	}
+	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellspacing=\"0\">\n";
+		echo "<tr><td>\n";
+		echo "<select name=\"type\">\n";
+		for ($i = 0; $i < sizeof($types); $i++) {
+			echo "<option value=\"" . $types[$i] . "\">\n";
+				echo getTypeAlias($types[$i]);
+			echo "</option>\n";
+		}
+		echo "</select>\n";
+		echo "</td>\n";
+		echo "<td>\n";
+			echo "<input type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
+		echo "</td></tr>\n";
 	echo "</table>\n";
-	echo "<br><br>\n";
-	echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
 	echo "</form>\n";
 	
 	echo "</body>\n";
