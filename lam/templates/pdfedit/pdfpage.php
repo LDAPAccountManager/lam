@@ -164,7 +164,7 @@ elseif(isset($_GET['add_new_field'])) {
 elseif(isset($_GET['change'])) {
 	$alter = explode('_',$_GET['change']);
 	$newvalue = $_GET['section_' . $alter[0]];
-	if (isset($alter[1]) && ($alter[1] == 'item')) {
+	if (isset($alter[1]) && ($alter[1] == 'item') && ($newvalue[0] != '_')) {
 		$newvalue = '_' . $newvalue;
 	}
 	$_SESSION['currentPDFStructure'][$alter[0]]['attributes']['NAME'] = $newvalue;
