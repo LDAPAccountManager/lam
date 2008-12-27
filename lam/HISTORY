@@ -1,12 +1,14 @@
 January 2009 2.5.0
-  - LAM Pro: supports rfc2307bis schema for Unix groups
+  - LAM Pro:
+   -> supports rfc2307bis schema for Unix groups (RFE 2111694)
+   -> added alias manangement (object classes alias + uidObject) (RFE 1912779)
   - Shadow: module is now optional when creating new accounts
   - Kolab: account extension is now optional
   - Kolab: Self service uses no extra LDAP suffix but uses global setting
   - DHCP: minor fixes
   - Samba 3:
-   -> self service sets attribute "sambaPwdLastSet" on password change
-   -> password timestamps can be updated on password reset page
+   -> self service sets attribute "sambaPwdLastSet" on password change (LAM Pro)
+   -> password timestamps can be updated on password reset page (LAM Pro)
    -> option to force password change on next login
    -> profile options for time when the user can/must change the password
 
