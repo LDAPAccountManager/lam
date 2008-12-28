@@ -63,42 +63,49 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-// check if user has pressed submit or abort button
-if ($_POST['forward'] == "yes") {
-	// on abort go back to main page
-	if ($_POST['abort']) {
-		metaRefresh("../tools.php");
-	}
-	// on submit forward to other pdf structure pages
-	else if($_POST['submit']) {
-		if($_POST['pdf'] == 'new') {
-			metaRefresh('pdfpage.php?type=' . $_POST['scope']);
-		}
-		else if($_POST['pdf'] == 'edit') {
-			$edit = split(':',$_POST['edit']);
-			metaRefresh('pdfpage.php?type=' . $edit[0] . '&edit=' . $edit[1]);
-		}
-		else if($_POST['pdf'] == 'delete') {
-			$delete = split(':',$_POST['delete']);
-			metaRefresh('pdfdelete.php?type=' . $delete[0] . '&delete=' . $delete[1]);
-		}
-	}
-	exit;
+// check if new template should be created
+if(isset($_POST['createNewTemplate'])) {
+	metaRefresh('pdfpage.php?type=' . $_POST['scope']);
+	exit();
 }
 
 $scopes = $_SESSION['config']->get_ActiveTypes();
 
-$availableStructureDefinitions = '';
+// get list of account types
 $availableScopes = '';
+$templateClasses = array();
+for ($i = 0; $i < sizeof($scopes); $i++) {
+	$templateClasses[] = array(
+		'scope' => $scopes[$i],
+		'title' => getTypeAlias($scopes[$i]),
+		'templates' => "");
+	$availableScopes .= '<option value="' . $scopes[$i] . '">' . getTypeAlias($scopes[$i]) . "</option>\n";
+}
+// get list of templates for each account type
+for ($i = 0; $i < sizeof($templateClasses); $i++) {
+	$templateList = getPDFStructureDefinitions($templateClasses[$i]['scope']);
+	$templates = "";
+	for ($l = 0; $l < sizeof($templateList); $l++) {
+		$templates = $templates . "<option>" . $templateList[$l] . "</option>\n";
+	}
+	$templateClasses[$i]['templates'] = $templates;
+}
 
-foreach($scopes as $scope) {
-	$pdfStructDefs = getPDFStructureDefinitions($scope);
-	$availableScopes .= '<option value="' . $scope . '">' . getTypeAlias($scope) . "</option>\n";
-	
-	foreach($pdfStructDefs as $pdfStructureDefinition) {
-		$availableStructureDefinitions .= '<option value="' . $scope . ':' . $pdfStructureDefinition . '">' . getTypeAlias($scope) . ' - ' . $pdfStructureDefinition . "</option>\n";
+// check if a template should be edited
+for ($i = 0; $i < sizeof($templateClasses); $i++) {
+	if (isset($_POST['editTemplate_' . $templateClasses[$i]['scope']]) || isset($_POST['editTemplate_' . $templateClasses[$i]['scope'] . '_x'])) {
+		metaRefresh('pdfpage.php?type=' . $templateClasses[$i]['scope'] . '&edit=' . $_POST['template_' . $templateClasses[$i]['scope']]);
+		exit;
 	}
 }
+// check if a profile should be deleted
+for ($i = 0; $i < sizeof($templateClasses); $i++) {
+	if (isset($_POST['deleteTemplate_' . $templateClasses[$i]['scope']]) || isset($_POST['deleteTemplate_' . $templateClasses[$i]['scope'] . '_x'])) {
+		metaRefresh('pdfdelete.php?type=' . $templateClasses[$i]['scope'] . '&delete=' . $_POST['template_' . $templateClasses[$i]['scope']]);
+		exit;
+	}
+}
+
 
 echo $_SESSION['header'];
 ?>
@@ -108,54 +115,65 @@ echo $_SESSION['header'];
 	</head>
 	<body>
 		<br>
+	<h1><?php echo _('PDF editor'); ?></h1>
+	<br>
 		<form action="pdfmain.php" method="post">
-		<!-- pdf structure options -->
+		
+		<!-- new template -->		
 		<fieldset class="useredit">
-			<legend>
-				<b><?php echo _("PDF structures"); ?></b>
-			</legend>
-			<table border=0>
-				<!-- new pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="new" checked="checked">
-					</td>
-					<td><?php echo _("Create a new PDF structure for scope: "); ?><select name="scope" size="1"><?php echo $availableScopes; ?></select></td>
-				</tr>
-				<!-- edit pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="edit">
-					</td>
-					<td>
-						<select name="edit" size=1>
-							<?php echo $availableStructureDefinitions; ?>
-						</select>
-						<?php echo _("Edit PDF structure"); ?></td>
-				</tr>
-				<!-- delete pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="delete">
-					</td>
-					<td>
-						<select name="delete" size=1>
-							<?php echo $availableStructureDefinitions; ?>
-						</select>
-						<?php echo _("Delete PDF structure"); ?></td>
-				</tr>
-			</table>
+		<legend>
+		<b><?php echo _('Create a new PDF structure'); ?></b>
+		</legend>
+		<br><table border=0>
+			<tr><td>
+				<select class="user" name="scope">
+					<?php echo $availableScopes; ?>
+				</select>
+			</td>
+			<td>
+				<input type="submit" name="createNewTemplate" value="<?php echo _('Create'); ?>">
+			</td></tr>
+		</table>
+		</fieldset>
+		
+		<br>
+
+
+		<!-- existing templates -->
+		<fieldset class="useredit">
+		<legend>
+			<b><?php echo _("Manage existing PDF structures"); ?></b>
+		</legend>
+		<br><table border=0>
+		<?php
+		for ($i = 0; $i < sizeof($templateClasses); $i++) {
+			if ($i > 0) {
+				echo "<tr><td colspan=3>&nbsp;</td></tr>\n";
+			}
+			echo "<tr>\n";
+				echo "<td>";
+					echo "<img alt=\"" . $templateClasses[$i]['title'] . "\" src=\"../../graphics/" . $templateClasses[$i]['scope'] . ".png\">&nbsp;\n";
+					echo $templateClasses[$i]['title'];
+				echo "</td>\n";
+				echo "<td>&nbsp;";
+					echo "<select class=\"user\" style=\"width: 20em;\" name=\"template_" . $templateClasses[$i]['scope'] . "\">\n";
+						echo $templateClasses[$i]['templates'];
+					echo "</select>\n";
+				echo "</td>\n";
+				echo "<td>&nbsp;";
+					echo "<input type=\"image\" src=\"../../graphics/edit.png\" name=\"editTemplate_" . $templateClasses[$i]['scope'] . "\" " .
+					 "alt=\"" . _('Edit') . "\" title=\"" . _('Edit') . "\">";
+					echo "&nbsp;";
+					echo "<input type=\"image\" src=\"../../graphics/delete.png\" name=\"deleteTemplate_" . $templateClasses[$i]['scope'] . "\" " .
+					"alt=\"" . _('Delete') . "\" title=\"" . _('Delete') . "\">";
+				echo "</td>\n";
+			echo "</tr>\n";
+		}
+		?>
+		</table>
 		</fieldset>
 		<br>
 		
-		<!-- forward is used to check if buttons were pressed -->
-		<p>
-		<input type="hidden" name="forward" value="yes">
-
-		<input type="submit" name="submit" value="<?php echo _("Ok"); ?>">
-		<input type="submit" name="abort" value="<?php echo _("Cancel"); ?>">
-		</p>
-
 		</form>
 	</body>
 </html>
