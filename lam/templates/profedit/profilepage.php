@@ -176,7 +176,8 @@ foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 // get RDNs
 $rdns = getRDNAttributes($type);
 
-echo "<fieldset class=\"" . $type . "edit\">\n<legend><b>" . _("LDAP") . "</b></legend>\n";
+echo "<fieldset class=\"" . $type . "edit\">\n";
+echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo32.png\"> <b>" . _("LDAP") . "</b></legend>\n";
 	echo "<table border=0>";
 	echo "<tr><td>";
 	// LDAP suffix
