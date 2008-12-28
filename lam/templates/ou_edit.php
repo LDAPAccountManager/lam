@@ -166,7 +166,7 @@ function display_main() {
 		$options .= "</optgroup>\n";
 	}
 	
-	echo ("<fieldset class=\"useredit\"><br>\n");
+	echo ("<fieldset class=\"useredit\"><legend><b>" . _("OU editor") . "</b></legend><br>\n");
 	echo ("<table border=0>\n");
 	// new OU
 	echo ("<tr>\n");
