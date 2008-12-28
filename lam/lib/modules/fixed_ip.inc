@@ -370,10 +370,11 @@ class fixed_ip extends baseModule {
 					$error="&laquo;&laquo; " . _("The PC name may only contain A-Z, a-z and 0-9.");
 				}
 				$pcs[] = $this->fixed_ip[$id]['cn'];
-				$return[] = array(0 => array('kind' => 'text', 'text' => _('PC name') . ":* "),
-					1 => array('kind' => 'input', 'name' => 'pc_'.$id.'', 'value' => $this->fixed_ip[$id]['cn']),
-					2 => array('kind' => 'help', 'value' => 'pc', 'scope' => 'user'),
-                    3 => array('kind' => 'text', 'text'=>$error));
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('PC name') . ":* "),
+					array('kind' => 'input', 'name' => 'pc_'.$id.'', 'value' => $this->fixed_ip[$id]['cn']),
+					array('kind' => 'help', 'value' => 'pc', 'scope' => 'user'),
+                    array('kind' => 'text', 'text'=>$error));
 
 				// MAC address
 				$error = "";
@@ -383,10 +384,11 @@ class fixed_ip extends baseModule {
 				elseif ($this->check_mac($this->fixed_ip[$id]['mac'])) {
 				    $error = "&laquo;&laquo; " . _("Invalid MAC address.");
 				}
-				$return[] = array(0 => array('kind' => 'text', 'text' => _('MAC address') . ":* "),
-					1 => array('kind' => 'input', 'name' => 'mac_'.$id.'', 'value' => $this->fixed_ip[$id]['mac']),
-					2 => array('kind' => 'help', 'value' => 'mac', 'scope' => 'user'),
-                    3 => array('kind' => 'text', 'text'=>$error));
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('MAC address') . ":* "),
+					array('kind' => 'input', 'name' => 'mac_'.$id.'', 'value' => $this->fixed_ip[$id]['mac']),
+					array('kind' => 'help', 'value' => 'mac', 'scope' => 'user'),
+                    array('kind' => 'text', 'text'=>$error));
                     
 				// fixed ip
 				$error = "";
@@ -399,25 +401,26 @@ class fixed_ip extends baseModule {
 				elseif (!$this->overlapd_ip($this->fixed_ip[$id]['ip'])) {
 				    $error = "&laquo;&laquo; " . _("The IP address is already in use.");
 				}
-				$return[] = array(0 => array('kind' => 'text', 'text' => _('IP address') . ":* "),
-					1 => array('kind' => 'input', 'name' => 'ip_'.$id.'', 'value' => $this->fixed_ip[$id]['ip']),
-					2 => array('kind' => 'help', 'value' => 'ip', 'scope' => 'user'),
-					3 => array('kind' => 'text', 'text'=>$error));
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('IP address') . ":* "),
+					array('kind' => 'input', 'name' => 'ip_'.$id.'', 'value' => $this->fixed_ip[$id]['ip']),
+					array('kind' => 'help', 'value' => 'ip', 'scope' => 'user'),
+					array('kind' => 'text', 'text'=>$error));
 
 				// fixed_ip drop:
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Delete IP') . ':'),
-					1 => array('kind' => 'input', 'name' => 'drop_ip_'.$id, 'type' => 'submit', 'value' => _('Delete IP')),
-					2 => array('kind' => 'help', 'value' => 'drop_ip'));
+					array('kind' => 'text', 'text' => _('Delete IP') . ':'),
+					array('kind' => 'input', 'name' => 'drop_ip_'.$id, 'type' => 'submit', 'value' => _('Delete IP')),
+					array('kind' => 'help', 'value' => 'drop_ip'));
 
 				// Space Line
-			    $return[] = array(0 => array('kind' => 'text', 'text' => '<br />'));
+			    $return[] = array(array('kind' => 'text', 'text' => '<br />'));
 			}
 			// add fixed ip:
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Add IP') . ':'),
-				1 => array('kind' => 'input', 'name' => 'add_ip', 'type' => 'submit', 'value' => _('Add IP')),
-				2 => array('kind' => 'help', 'value' => 'add_ip'));
+				array('kind' => 'text', 'text' => _('Add IP') . ':'),
+				array('kind' => 'input', 'name' => 'add_ip', 'type' => 'submit', 'value' => _('Add IP')),
+				array('kind' => 'help', 'value' => 'add_ip'));
 		}
 		
 		return $return;

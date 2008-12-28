@@ -418,10 +418,11 @@ class range extends baseModule {
 				} else {
 				    $error = "";
 				}
-		        $return[] = array(0 => array('kind' => 'text', 'text' => _('Range from') . ":* "),
-					1 => array('kind' => 'input', 'name' => 'range_start_'.$id.'', 'value' => $this->ranges[$id]['range_start']),
-					2 => array('kind' => 'help', 'value' => 'range_from', 'scope' => 'user'),
-					3 => array('kind' => 'text', 'text'=>$error));
+		        $return[] = array(
+		        	array('kind' => 'text', 'text' => _('Range from') . ":* "),
+					array('kind' => 'input', 'name' => 'range_start_'.$id.'', 'value' => $this->ranges[$id]['range_start']),
+					array('kind' => 'help', 'value' => 'range_from', 'scope' => 'user'),
+					array('kind' => 'text', 'text'=>$error));
 
 				// Range end
 				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
@@ -431,16 +432,17 @@ class range extends baseModule {
 				} else {
 				    $error = "";
 				}
-		        $return[] = array(0 => array('kind' => 'text', 'text' => _('Range to') . ":* "),
-					1 => array('kind' => 'input', 'name' => 'range_end_'.$id.'', 'value' => $this->ranges[$id]['range_end']),
-					2 => array('kind' => 'help', 'value' => 'range_to', 'scope' => 'user'),
-					3 => array('kind' => 'text', 'text'=>$error));
+		        $return[] = array(
+		        	array('kind' => 'text', 'text' => _('Range to') . ":* "),
+					array('kind' => 'input', 'name' => 'range_end_'.$id.'', 'value' => $this->ranges[$id]['range_end']),
+					array('kind' => 'help', 'value' => 'range_to', 'scope' => 'user'),
+					array('kind' => 'text', 'text'=>$error));
 
 				// Drop range:
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Delete range') . ':'),
-					1 => array('kind' => 'input', 'name' => 'drop_range_'.$id, 'type' => 'submit', 'value' => _('Delete range')),
-					2 => array('kind' => 'help', 'value' => 'drop_range'));
+					array('kind' => 'text', 'text' => _('Delete range') . ':'),
+					array('kind' => 'input', 'name' => 'drop_range_'.$id, 'type' => 'submit', 'value' => _('Delete range')),
+					array('kind' => 'help', 'value' => 'drop_range'));
 
 				// Space Line
 		        $return[] = array(0 => array('kind' => 'text', 'text' => '<br />'));
@@ -448,9 +450,9 @@ class range extends baseModule {
 			
 			// Range hinzufügen:
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('New range') . ':'),
-				1 => array('kind' => 'input', 'name' => 'add_range', 'type' => 'submit', 'value' => _('New range')),
-				2 => array('kind' => 'help', 'value' => 'add_range'));
+				array('kind' => 'text', 'text' => _('New range') . ':'),
+				array('kind' => 'input', 'name' => 'add_range', 'type' => 'submit', 'value' => _('New range')),
+				array('kind' => 'help', 'value' => 'add_range'));
 		}
 		
 		return $return;
