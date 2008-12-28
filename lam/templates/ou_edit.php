@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,76 +47,72 @@ setlanguage();
 
 $types = $_SESSION['config']->get_ActiveTypes();
 
+// check if deletion was canceled
+if (isset($_POST['abort'])) {
+	display_main();
+	exit;
+}
+
 // check if submit button was pressed
-if (isset($_POST['submit'])) {
-	// check user input
-	for ($i = 0; $i < sizeof($types); $i++) {
-		// new ou
-		if ($_POST['type'] == "new_" . $types[$i]) {
-			// create ou if valid
-			if (eregi("^[a-z0-9 _\\-]+$", $_POST['newname_' . $types[$i]])) {
-				// check if ou already exists
-				$new_dn = "ou=" . $_POST['newname_' . $types[$i]] . "," . $_POST['parentsuff_' . $types[$i]];
-				if (!in_array($new_dn, $_SESSION['ldap']->search_units($_POST['parentsuff_' . $types[$i]]))) {
-					// add new ou
-					$ou = array();
-					$ou['objectClass'] = "organizationalunit";
-					$ou['ou'] = $_POST['newname_' . $types[$i]];
-					$ret = @ldap_add($_SESSION['ldap']->server(), $new_dn, $ou);
-					if ($ret) {
-						$message = _("New OU created successfully.");
-					}
-					else {
-						$error = _("Unable to create new OU!");
-					}
+if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
+	// new ou
+	if (isset($_POST['createOU'])) {
+		// create ou if valid
+		if (eregi("^[a-z0-9 _\\-]+$", $_POST['newOU'])) {
+			// check if ou already exists
+			$new_dn = "ou=" . $_POST['newOU'] . "," . $_POST['parentOU'];
+			if (!in_array($new_dn, $_SESSION['ldap']->search_units($_POST['parentOU']))) {
+				// add new ou
+				$ou = array();
+				$ou['objectClass'] = "organizationalunit";
+				$ou['ou'] = $_POST['newOU'];
+				$ret = @ldap_add($_SESSION['ldap']->server(), $new_dn, $ou);
+				if ($ret) {
+					$message = _("New OU created successfully.");
 				}
-				else $error = _("OU already exists!");
+				else {
+					$error = _("Unable to create new OU!");
+				}
 			}
-			// show errormessage if ou is invalid
-			else {
-				$error = _("OU is invalid!") . " " . $_POST['newname_' . $types[$i]];
-			}
+			else $error = _("OU already exists!");
 		}
-		// delete ou, user was sure
-		elseif (($_POST['type'] == "del_" . $types[$i]) && ($_POST['sure'])) {
-			$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['deletename_' . $types[$i]]);
-			if ($ret) {
-				$message = _("OU deleted successfully.");
-			}
-			else {
-				$error = _("Unable to delete OU!");
-			}
-		}
-		// do not delete ou
-		elseif (($_POST['type'] == "del_" . $types[$i]) && ($_POST['abort'])) {
-			display_main();
-			exit;
-		}
-		// ask if user is sure to delete
-		elseif ($_POST['type'] == "del_" . $types[$i]) {
-			// check for sub entries
-			$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['deletename_' . $types[$i]], "ObjectClass=*", array(""));
-			$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-			if ($sr && $info['count'] == 0) {
-				$text = "<br>\n" .
-					"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
-					"<br>\n<p>" . $_POST['deletename_' . $types[$i]] . "</p>\n" .
-					"<br>\n" .
-					"<form action=\"ou_edit.php\" method=\"post\">\n" .
-					"<input type=\"hidden\" name=\"type\" value=\"del_" . $types[$i] . "\">\n" .
-					"<input type=\"hidden\" name=\"submit\" value=\"submit\">\n" .
-					"<input type=\"hidden\" name=\"deletename_" . $types[$i] . "\" value=\"" . $_POST['deletename_' . $types[$i]] . "\">\n" .
-					"<input type=\"submit\" name=\"sure\" value=\"" . _("Delete") . "\">\n" .
-					"<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n" .
-					"</form>";
-			}
-			else {
-				$error = _("OU is not empty or invalid!");
-			}
+		// show errormessage if ou is invalid
+		else {
+			$error = _("OU is invalid!") . "<br>" . $_POST['newOU'];
 		}
 	}
-	
-	
+	// delete ou, user was sure
+	elseif (isset($_POST['deleteOU']) && isset($_POST['sure'])) {
+		$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
+		if ($ret) {
+			$message = _("OU deleted successfully.");
+		}
+		else {
+			$error = _("Unable to delete OU!");
+		}
+	}
+	// ask if user is sure to delete
+	elseif (isset($_POST['deleteOU'])) {
+		// check for sub entries
+		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
+		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($sr && $info['count'] == 0) {
+			$text = "<br>\n" .
+				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
+				"<br>\n<p>" . $_POST['deleteableOU'] . "</p>\n" .
+				"<br>\n" .
+				"<form action=\"ou_edit.php\" method=\"post\">\n" .
+				"<input type=\"hidden\" name=\"deleteOU\" value=\"submit\">\n" .
+				"<input type=\"hidden\" name=\"deletename\" value=\"" . $_POST['deleteableOU'] . "\">\n" .
+				"<input type=\"submit\" name=\"sure\" value=\"" . _("Delete") . "\">\n" .
+				"<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n" .
+				"</form>";
+		}
+		else {
+			$error = _("OU is not empty or invalid!");
+		}
+	}
+		
 	// print header
 	echo $_SESSION['header'];
 	echo ("<title>OU-Editor</title>\n");
@@ -139,8 +135,12 @@ if (isset($_POST['submit'])) {
 echo ("</body></html>\n");
 exit;
 }
-else display_main();
 
+display_main();
+
+/**
+ * Displays the main page of the OU editor
+ */
 function display_main() {
 	$types = $_SESSION['config']->get_ActiveTypes();
 	// display main page
@@ -155,49 +155,54 @@ function display_main() {
 	echo "<h1>" . _("OU editor") . "</h1>";
 	echo ("<br>\n");
 	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
-
-	// display fieldsets
+	
+	$options = "";
 	for ($i = 0; $i < sizeof($types); $i++) {
-		// generate lists of possible suffixes
+		$options .= "<optgroup label=\"" . getTypeAlias($types[$i]) . "\">\n";
 		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($types[$i]));
-		echo ("<fieldset class=\"" . $types[$i] . "edit\"><legend><b>" . getTypeAlias($types[$i]) . "</b></legend><br>\n");
-		echo ("<table border=0>\n");
-		// new OU
-		echo ("<tr>\n");
-		echo ("<td><input type=radio name=\"type\" value=\"new_" . $types[$i] . "\"></td>\n");
-		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><select class=\"" . $types[$i] . "\" size=1 name=parentsuff_" . $types[$i] . ">");
 		for ($u = 0; $u < sizeof($units); $u++) {
-			echo ("<option>" . $units[$u] . "</option>\n");
+			$options .= "<option>" . $units[$u] . "</option>\n";
 		}
-		echo ("</select><td>\n");
-		echo ("<td><input type=text name=newname_" . $types[$i] . "></td>\n");
-		echo "<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">";
-			echo "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
-		echo "</a></td>\n";
-		echo ("</tr>\n");
-		// delete OU
-		echo ("<tr>\n");
-		echo ("<td><input type=radio name=\"type\" value=\"del_" . $types[$i] . "\"></td>\n");
-		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><select class=\"" . $types[$i] . "\" size=1 name=deletename_" . $types[$i] . ">");
-		for ($u = 0; $u < sizeof($units); $u++) {
-			echo ("<option>" . $units[$u] . "</option>\n");
-		}
-		echo ("</select><td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo "<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">";
-			echo  "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
-		echo "</a></td>\n";
-		echo ("</tr>\n");
-		echo ("</table>\n");
-		echo ("</fieldset>\n");
-		echo ("<br>\n");
+		$options .= "</optgroup>\n";
 	}
-
-	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">");
+	
+	echo ("<fieldset class=\"useredit\"><br>\n");
+	echo ("<table border=0>\n");
+	// new OU
+	echo ("<tr>\n");
+	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
+	echo ("<td><select size=1 name=\"parentOU\">");
+		echo $options;
+	echo ("</select><td>\n");
+	echo ("<td><input type=text name=\"newOU\"></td>\n");
+	echo "<td>";
+		echo "<input type=\"submit\" name=\"createOU\" value=\"" . _("Ok") . "\">&nbsp;";
+	echo "</td>";
+	echo "<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">";
+		echo "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
+	echo "</a></td>\n";
+	echo ("</tr>\n");
+	echo "<tr><td colspan=5>&nbsp;</td></tr>\n";
+	// delete OU
+	echo ("<tr>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
+	echo ("<td><select size=1 name=\"deleteableOU\">");
+		echo $options;
+	echo ("</select><td>\n");
+	echo ("<td>&nbsp;</td>\n");
+	echo "<td>";
+		echo "<input type=\"submit\" name=\"deleteOU\" value=\"" . _("Ok") . "\">&nbsp;";
+	echo "</td>";
+	echo "<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">";
+		echo  "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
+	echo "</a></td>\n";
+	echo ("</tr>\n");
+	echo ("</table>\n");
+	echo ("</fieldset>\n");
+	echo ("<br>\n");
+	
 	echo ("</form>\n");
 	echo ("</body></html>\n");
 }
