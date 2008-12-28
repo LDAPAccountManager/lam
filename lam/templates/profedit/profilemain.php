@@ -137,6 +137,9 @@ echo "<b>" . _('Manage existing profiles') . "</b>\n";
 echo "</legend>\n";
 echo "<br><table border=0>\n";
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
+	if ($i > 0) {
+		echo "<tr><td colspan=3>&nbsp;</td></tr>\n";
+	}
 	echo "<tr>\n";
 		echo "<td>";
 			echo "<img alt=\"" . $profileClasses[$i]['title'] . "\" src=\"../../graphics/" . $profileClasses[$i]['scope'] . ".png\">&nbsp;\n";
