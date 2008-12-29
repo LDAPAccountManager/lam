@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2008  Thomas Manninger
+                2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ $Id$
 * @package modules
 *
 * @author Thomas Manninger
+* @author Roland Gruber
 */
 
 /**
@@ -89,7 +91,7 @@ class range extends baseModule {
 			) );
 			
 		// available PDF fields
-		$return['PDF_fields'] = array();
+		$return['PDF_fields'] = array('ranges');
 		return $return;
 	}
 	
@@ -141,20 +143,15 @@ class range extends baseModule {
 	 **/
 	
 	public function check_subnet_range($ip,$subnet) {
-
 		// Check if the range was valid with the subnet:
 		$ex = explode(".", $ip);
 		$ex_subnet = explode(".", $subnet);
-
 		if ($ex[0]==$ex_subnet[0] && $ex[1]==$ex_subnet[1] && $ex[2]==$ex_subnet[2]) {
-
 			return true;
 		}
-		else
-		{
+		else {
 		    return false;
 		}
-
 	}
 	
 	/**
@@ -246,8 +243,9 @@ class range extends baseModule {
 	    if(is_array($this->ranges)) {
 		    $ex_subnet = explode(".", $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 		    $range_edit = false;        // Range were edit?
+		    $dhcpAttrs = $_SESSION['account']->getAccountModule('dhcp_settings')->getAttributes();
 		    foreach ($this->ranges AS $id=>$arr) {
-		        if (!empty($this->ranges[$id]['range_start']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$_SESSION['account']->getAccountModule('dhcp_settings')->$this->attributes['cn'][0])) {
+		        if (!empty($this->ranges[$id]['range_start']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0])) {
 		            // Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_start']);
 					$tmp = $this->ranges[$id]['range_start'];
@@ -255,7 +253,7 @@ class range extends baseModule {
 					if($tmp!=$this->ranges[$id]['range_start'])
 						$range_edit = true;
 		        }
-		        if (!empty($this->ranges[$id]['range_end']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$_SESSION['account']->getAccountModule('dhcp_settings')->$this->attributes['cn'][0])) {
+		        if (!empty($this->ranges[$id]['range_end']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0])) {
 		            // Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_end']);
 					$tmp = $this->ranges[$id]['range_end'];
@@ -339,7 +337,7 @@ class range extends baseModule {
 						}
 
 						// Check if Subnet and range last are valid:
-						if (!$this->check_subnet_range($_POST['range_last_'.$id],$_SESSION['account']->getAccountModule('dhcp_settings')->$this->attributes['cn'][0])) {
+						if (!$this->check_subnet_range($_POST['range_end_'.$id],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 						    $was_a_error = true;
 						}
 
@@ -476,5 +474,26 @@ class range extends baseModule {
 		return $return;
 	}
 	
+	/**
+	* Returns the PDF entries for this module.
+	*
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
+		$return = array();
+		if (is_array($this->ranges) && (sizeof($this->ranges) > 0)) {
+			$start = $this->ranges[0]['range_start'];
+			$end = $this->ranges[0]['range_end'];
+			$return[get_class($this) . '_ranges'] = array('<block><key>' . _('Ranges') . '</key><tr><td align=\"L\">' . $start . " - " . $end . '</td></tr></block>');
+			for ($i = 1; $i < sizeof($this->ranges); $i++) {
+				$start = $this->ranges[$i]['range_start'];
+				$end = $this->ranges[$i]['range_end'];
+				$return[get_class($this) . '_ranges'][] = '<block><tr><td align=\"L\">' . $start . " - " . $end . '</td></tr></block>';
+			}
+		}
+		return $return;
+	}
+	
 }
+
 ?>
