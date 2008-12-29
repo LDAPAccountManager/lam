@@ -209,17 +209,18 @@ class ddns extends baseModule {
 		$attrTmp = $attr;
 		
 		unset($attr);
-		foreach($attrTmp['dhcpStatements'] AS $value) {
-			$ex = explode(" ", $value);
-			
-			if ($ex[0] == 'zone') {
-				$attr['dhcpStatements'][] = $value;
+		if (array_key_exists('dhcpStatements', $attrTmp) && is_array($attrTmp['dhcpStatements'])) {
+			foreach($attrTmp['dhcpStatements'] AS $value) {
+				$ex = explode(" ", $value);
+				
+				if ($ex[0] == 'zone') {
+					$attr['dhcpStatements'][] = $value;
+				}
 			}
 		}
 
 		unset($attrTmp);
 		
-		// Alles, was über dem ArrayIndex 3 liegt, wird gelöscht:
 		if (!is_array($attr)) $attr = array();
 			
 		$this->orig = $attr;
