@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2008  Thomas Manninger
+                2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ $Id$
 * @package modules
 *
 * @author Thomas Manninger
+* @author Roland Gruber
 */
 
 /**
@@ -85,6 +87,12 @@ class ddns extends baseModule {
 				"Headline" => _("Reverse zone names"),
 				"Text" => ("Name of the reverse zones of the DNS server (e.g. 0.168.192.in-addr.arpa).")
 			) ,);
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'DNSserver',
+			'zone',
+			'reverseZone',
+		);
 		return $return;
 	}
 	
@@ -507,5 +515,19 @@ class ddns extends baseModule {
 		$this->dhcpSettings['domainname'] = $profile['domainname'][0];
 		$this->attributes['dhcpOption'][5] = "domain-name \"". $profile['domainname'][0]."\"";
 	}
+	
+	/**
+	* Returns the PDF entries for this module.
+	*
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
+		return array(
+			get_class($this) . '_DNSserver' => array('<block><key>' . _('IP address of the DNS server') . '</key><value>' . array_shift(explode(";",array_pop(explode(". { primary ", $this->attributes['dhcpStatements'][0])))) . '</value></block>'),
+			get_class($this) . '_zone' => array('<block><key>' . _('Zone names') . '</key><value>' . substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][0],5))),0,-1) . '</value></block>'),
+			get_class($this) . '_reverseZone' => array('<block><key>' . _('Reverse zone names') . '</key><value>' . substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][1],5))),0,-1) . '</value></block>'),
+		);
+	}
+	
 }
 ?>
