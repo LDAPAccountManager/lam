@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2008  Thomas Manninger
+                2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,12 +28,7 @@ $Id$
 * @package modules
 *
 * @author Thomas Manninger
-*/
-
-/**
-* Manages DHCP entries.
-*
-* @package modules
+* @author Roland Gruber
 */
 
 /**
@@ -68,6 +64,11 @@ if (!function_exists('check_ip')) {
 	}
 }
 
+/**
+* Manages DHCP entries.
+*
+* @package modules
+*/
 class dhcp_settings extends baseModule {
 	
 	// Netbios node type:
@@ -168,6 +169,19 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				"Headline" => _("Net mask"),
 				"Text" => _("The net mask is derived from the subnet mask. If you leave this field empty then LAM will calculate it for you.")
 			) );
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'subnet',
+			'domainName',
+			'leaseTime',
+			'maxLeaseTime',
+			'DNSserver',
+			'gateway',
+			'netbiosServer',
+			'netbiosType',
+			'subnetMask',
+			'netMask'
+		);
 		return $return;
 	}
 	
@@ -857,5 +871,26 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$this->attributes['dhcpNetMask'][0] = $num;
 		}
 	}
+	
+	/**
+	* Returns the PDF entries for this module.
+	*
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
+		return array(
+			get_class($this) . '_subnet' => array('<block><key>' . _('Subnet') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->dhcpSettings['domainname'] . '</value></block>'),
+			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->dhcpStatements['lease_time'] . '</value></block>'),
+			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->dhcpStatements['max_lease_time'] . '</value></block>'),
+			get_class($this) . '_DNSserver' => array('<block><key>' . _('DNS') . '</key><value>' . $this->dhcpSettings['dns'] . '</value></block>'),
+			get_class($this) . '_gateway' => array('<block><key>' . _('Default gateway') . '</key><value>' . $this->dhcpSettings['routers'] . '</value></block>'),
+			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name server') . '</key><value>' . $this->dhcpSettings['netbios'] . '</value></block>'),
+			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $this->netbios_node_type . '</value></block>'),
+			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->subnet . '</value></block>'),
+			get_class($this) . '_netMask' => array('<block><key>' . _('Net mask') . '</key><value>' . $this->attributes['dhcpNetMask'][0] . '</value></block>'),
+		);
+	}
+	
 }
 ?>
