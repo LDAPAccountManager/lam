@@ -338,28 +338,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
         	$attr['dhcpOption'] = array();
         }
 		
-        // Alles aus den DDNS Bereich löschen:
-        /*if (!is_array($attr['dhcpStatements'])) {
-        	$attr['dhcpStatements'] = array();
-        }
-        
-     	foreach($attr['dhcpStatements'] AS $index=>$value) {
-        	$ex = explode(" ", $value);
-        	
-        	if ($ex[0]=="ignore") {
-                unset($attr['dhcpStatements'][$index]);
-			}
-        	if ($ex[0]=="include") {
-                unset($attr['dhcpStatements'][$index]);
-			}
-			if ($ex[0]=="ddns-update-style") {
-                unset($attr['dhcpStatements'][$index]);
-			}
-        	if ($ex[0]=="update-static-leases") {
-                unset($attr['dhcpStatements'][$index]);
-			}
-     	}
-     	*/
      	if (count($attr['dhcpStatements']) == 0) {
      		unset($attr['dhcpStatements']);
      	}
