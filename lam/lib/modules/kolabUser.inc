@@ -591,10 +591,10 @@ class kolabUser extends baseModule {
 	function module_complete() {
 		if (isset($this->attributes['objectClass']) && in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
 			$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			if (!$attrsI['mail'][0]) return false;
 			if ($this->getAccountContainer()->isNewAccount) {
 				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					if (!$attrsP['userPassword'][0]) return false;
 				}
 				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
