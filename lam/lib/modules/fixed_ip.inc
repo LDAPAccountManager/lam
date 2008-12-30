@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2008  Thomas Manninger
+                2008  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ $Id$
 * @package modules
 *
 * @author Thomas Manninger
+* @author Roland Gruber
 */
 
 /**
@@ -90,8 +92,7 @@ class fixed_ip extends baseModule {
 				"Text" => _("Adds input fields for a new fixed IP address.")
 			) );
 		// available PDF fields
-		$return['PDF_fields'] = array();
-		
+		$return['PDF_fields'] = array('IPlist');
 		return $return;
 	}
 	
@@ -176,7 +177,7 @@ class fixed_ip extends baseModule {
 		    $ex_subnet = explode(".", $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 		    $ip_edit = false;        // Range were edit?
 		    foreach ($this->fixed_ip AS $id=>$arr) {
-		        if (!empty($this->fixed_ip[$id]['ip']) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'],$_SESSION['account']->getAccountModule('dhcp_settings')->$this->attributes['cn'][0])) {
+		        if (!empty($this->fixed_ip[$id]['ip']) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 		            // Range anpassen:
 					$ex = explode(".", $this->fixed_ip[$id]['ip']);
 					$tmp = $this->fixed_ip[$id]['ip'];
@@ -498,5 +499,26 @@ class fixed_ip extends baseModule {
 		    }
 		}
 	}
+
+	/**
+	* Returns the PDF entries for this module.
+	*
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
+		$return = array();
+		if (is_array($this->fixed_ip) && (sizeof($this->fixed_ip) > 0)) {
+			$return[get_class($this) . '_IPlist'] = array('<block><tr><td width="20%" align=\"L\"><b>' . _('PC name') . "</b></td><td width=\"20%\" align=\"L\"><b>" . _('IP address') . "</b></td><td width=\"20%\" align=\"L\"><b>" . _('MAC address') . '</b></td></tr></block>');
+			for ($i = 0; $i < sizeof($this->fixed_ip); $i++) {
+				$name = $this->fixed_ip[$i]['cn'];
+				$mac = $this->fixed_ip[$i]['mac'];
+				$ip = $this->fixed_ip[$i]['ip'];
+				$return[get_class($this) . '_IPlist'][] = '<block><tr><td width="20%" align=\"L\">' . $name . "</td><td width=\"20%\" align=\"L\">" . $ip . "</td><td width=\"20%\" align=\"L\">" . $mac . '</td></tr></block>';
+			}
+		}
+		return $return;
+	}
+	
 }
+
 ?>
