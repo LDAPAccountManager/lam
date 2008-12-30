@@ -196,8 +196,8 @@ class ddns extends baseModule {
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 
-		$this->dn = ereg_replace("'", "", $_GET['DN']);
-		$dn = str_replace("'","",$_GET['DN']);
+		$this->dn = $this->getAccountContainer()->dn_orig;
+		$dn = $this->getAccountContainer()->dn_orig;
 		if ($dn==$_SESSION['config']->get_suffix('dhcp')) {
 			
 			// main settings
@@ -205,7 +205,7 @@ class ddns extends baseModule {
 		}
 		else {
 			if (!$this->check_if_ddns_is_enable()) {
-				return "";
+				return;
 			}
 			
 			// account edit
@@ -426,7 +426,6 @@ class ddns extends baseModule {
 			/**
 			 * DHCP main settings
 			 */
-
 			if ($this->attributes['dhcpStatements'][0] == 'ddns-update-style interim') { $checkedStat = true; } else { $checkedStat = false; }
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Activate DynDNS') . ":* "),
