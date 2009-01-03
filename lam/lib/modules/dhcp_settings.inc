@@ -80,9 +80,6 @@ class dhcp_settings extends baseModule {
 	// ALL DHCP Settings
 	public $dhcpSettings;
 	
-	// All DHCP Statements
-	public $dhcpStatements;
-	
 	// DN (cn=192.168.15.0,dc=entwicklung,dc=sin)
 	public $dn="";
 	
@@ -247,8 +244,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				return false;
 			}
 		}
-		if (!empty($this->dhcpStatements['lease_time']) && !is_numeric($this->dhcpStatements['lease_time'])) return false;
-		if (!empty($this->dhcpStatements['max_lease_time']) && !is_numeric($this->dhcpStatements['max_lease_time'])) return false;
 		if (!empty($this->dhcpSettings['routers']) && !check_ip($this->dhcpSettings['routers'])) return false;
 		if (!empty($this->dhcpSettings['netbios']) && !check_ip($this->dhcpSettings['netbios'])) return false;
 		
@@ -280,20 +275,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpOption'] = $this->attributestmp['dhcpOption'];
 				unset($this->attributestmp['dhcpOption']);
 			}
-			if (is_array($this->attributes['dhcpStatements'])) {
-				$i = 0;
-				foreach($this->attributes['dhcpStatements'] AS $key=>$value) {
-				    $this->attributestmp['dhcpStatements'][$i] = $this->attributes['dhcpStatements'][$key];
-				    $i++;
-				}
-				unset($this->attributes['dhcpStatements']);
-				$this->attributes['dhcpStatements'] = $this->attributestmp['dhcpStatements'];
-				unset($this->attributestmp['dhcpStatements']);
-			}
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
-		else
-		{
+		else {
 			// Basicsettings...
 			if (is_array($this->attributes['dhcpOption'])) {
 				$i = 0;
@@ -305,21 +289,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpOption'] = $this->attributestmp['dhcpOption'];
 				unset($this->attributestmp['dhcpOption']);
 			}
-			if (is_array($this->attributes['dhcpStatements'])) {
-				$i = 0;
-				foreach($this->attributes['dhcpStatements'] AS $key=>$value) {
-				    $this->attributestmp['dhcpStatements'][$i] = $this->attributes['dhcpStatements'][$key];
-				    $i++;
-				}
-				unset($this->attributes['dhcpStatements']);
-				$this->attributes['dhcpStatements'] = $this->attributestmp['dhcpStatements'];
-				unset($this->attributestmp['dhcpStatements']);
-			}
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	
 		}
 	
 		// Return attributes
+		echo "<hr>"; print_r($return); echo "<hr>";
 		return $return;
 	}
 	
@@ -338,24 +313,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
         	$attr['dhcpOption'] = array();
         }
 		
-     	if (count($attr['dhcpStatements']) == 0) {
-     		unset($attr['dhcpStatements']);
-     	}
-     	
-     	if (is_array($attr['dhcpStatements'])) {
-	 		foreach($attr['dhcpStatements'] AS $id=>$value) {
-			    $ex = explode(" ", $value);
-			    // Is default lease time?
-				if ($ex[0]=="default-lease-time") {
-	                $this->dhcpStatements['lease_time'] = $ex[1];
-				}
-				// Is max lease time?
-				if ($ex[0]=="max-lease-time") {
-	                $this->dhcpStatements['max_lease_time'] = $ex[1];
-				}
-			}
-     	}
-        
      	if (is_array($attr['dhcpOption'])) {
 			foreach($attr['dhcpOption'] AS $id=>$value) {
 				$ex = explode(" ", $value);
@@ -388,21 +345,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				// Is dns?
 				if ($ex[0]=="netbios-name-servers") {
 					$this->dhcpSettings['netbios'] = $ex[1];
-				}
-			}
-		}
-		
-		// Load DHCP Statements
-		if (is_array($attr['dhcpStatements'])) {
-			foreach($attr['dhcpStatements'] AS $id=>$value) {
-			    $ex = explode(" ", $value);
-			    // Is default lease time?
-				if ($ex[0]=="default-lease-time") {
-	                $this->dhcpStatements['lease_time'] = $ex[1];
-				}
-				// Is max lease time?
-				if ($ex[0]=="max-lease-time") {
-	                $this->dhcpStatements['max_lease_time'] = $ex[1];
 				}
 			}
 		}
@@ -534,37 +476,21 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		
 		// Lease Time
-		if (!empty($_POST['lease_time'])) $_POST['lease_time'] = trim($_POST['lease_time']);
+		if (!empty($_POST['lease_time'])) {
+			$_POST['lease_time'] = trim($_POST['lease_time']);
+		}
+		$this->setDefaultLeaseTime($_POST['lease_time']);
 		if (!is_numeric($_POST['lease_time']) && !empty($_POST['lease_time'])) {
 			$errors[] = $this->messages['lease_time'][0];
-			$this->dhcpStatements['lease_time'] = $_POST['lease_time'];
-			unset($this->attributes['dhcpStatements'][0]);
-		}
-		elseif (empty($_POST['lease_time'])) {
-		    unset($this->dhcpStatements['lease_time']);
-		    unset($this->attributes['dhcpStatements'][0]);
-		}
-		else
-		{
-			$this->dhcpStatements['lease_time'] = $_POST['lease_time'];
-			$this->attributes['dhcpStatements'][0] = "default-lease-time ".$_POST['lease_time'];
 		}
 		
 		// Max lease Time
-		if (!empty($_POST['max_lease_time'])) $_POST['max_lease_time'] = trim($_POST['max_lease_time']);
+		if (!empty($_POST['max_lease_time'])) {
+			$_POST['max_lease_time'] = trim($_POST['max_lease_time']);
+		}
+		$this->setMaxLeaseTime($_POST['max_lease_time']);
 		if (!is_numeric($_POST['max_lease_time']) && !empty($_POST['max_lease_time'])) {
 			$errors[] = $this->messages['max_lease_time'][0];
-			$this->dhcpStatements['max_lease_time'] = $_POST['max_lease_time'];
-			unset($this->attributes['dhcpStatements'][1]);
-		}
-		elseif (empty($_POST['max_lease_time'])) {
-		    unset($this->dhcpStatements['max_lease_time']);
-		    unset($this->attributes['dhcpStatements'][1]);
-		}
-		else
-		{
-			$this->dhcpStatements['max_lease_time'] = $_POST['max_lease_time'];
-			$this->attributes['dhcpStatements'][1] = "max-lease-time ".$_POST['max_lease_time'];
 		}
 		
 		// Default Gateway
@@ -689,13 +615,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// Lease Time
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Lease time') . ": "),
-			array('kind' => 'input', 'name' => 'lease_time', 'value' => $this->dhcpStatements['lease_time']),
+			array('kind' => 'input', 'name' => 'lease_time', 'value' => $this->getDefaultLeaseTime()),
 			array('kind' => 'help', 'value' => 'leasetime', 'scope' => 'user'));
 			
 		// Max lease Time
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
-			array('kind' => 'input', 'name' => 'max_lease_time', 'value' => $this->dhcpStatements['max_lease_time']),
+			array('kind' => 'input', 'name' => 'max_lease_time', 'value' => $this->getMaxLeaseTime()),
 			array('kind' => 'help', 'value' => 'max_leasetime', 'scope' => 'user'));
 
 		// DNS
@@ -765,13 +691,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// Lease Time
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Lease time') . ": "),
-			array('kind' => 'input', 'name' => 'lease_time', 'type'=>'text','value' => $this->dhcpStatements['lease_time']),
+			array('kind' => 'input', 'name' => 'lease_time', 'type'=>'text'),
 			array('kind' => 'help', 'value' => 'leasetime', 'scope' => 'user'));
 
 		// Max lease Time
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
-			array('kind' => 'input', 'name' => 'max_lease_time', 'type'=>'text','value' => $this->dhcpStatements['max_lease_time']),
+			array('kind' => 'input', 'name' => 'max_lease_time', 'type'=>'text'),
 			array('kind' => 'help', 'value' => 'max_leasetime', 'scope' => 'user'));
 
 		// DNS
@@ -818,11 +744,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->dhcpSettings['domainname'] = $profile['domainname'][0];
 		$this->attributes['dhcpOption'][5] = "domain-name \"". $profile['domainname'][0]."\"";
 		
-		$this->dhcpStatements['lease_time'] = $profile['lease_time'][0];
-		$this->attributes['dhcpStatements'][0] = "default-lease-time ".$profile['lease_time'][0];
+		$this->setDefaultLeaseTime($profile['lease_time'][0]);
 		
-		$this->dhcpStatements['max_lease_time'] = $profile['max_lease_time'][0];
-		$this->attributes['dhcpStatements'][1] = "max-lease-time ".$profile['max_lease_time'][0];
+		$this->setMaxLeaseTime($profile['max_lease_time'][0]);
 		
 		$this->dhcpSettings['dns'] = $profile['dns'][0];
 		$this->attributes['dhcpOption'][0] = "domain-name-servers ". $profile['dns'][0];
@@ -859,8 +783,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		return array(
 			get_class($this) . '_subnet' => array('<block><key>' . _('Subnet') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->dhcpSettings['domainname'] . '</value></block>'),
-			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->dhcpStatements['lease_time'] . '</value></block>'),
-			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->dhcpStatements['max_lease_time'] . '</value></block>'),
+			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->getDefaultLeaseTime() . '</value></block>'),
+			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->getMaxLeaseTime() . '</value></block>'),
 			get_class($this) . '_DNSserver' => array('<block><key>' . _('DNS') . '</key><value>' . $this->dhcpSettings['dns'] . '</value></block>'),
 			get_class($this) . '_gateway' => array('<block><key>' . _('Default gateway') . '</key><value>' . $this->dhcpSettings['routers'] . '</value></block>'),
 			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name server') . '</key><value>' . $this->dhcpSettings['netbios'] . '</value></block>'),
@@ -870,5 +794,82 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		);
 	}
 	
+	/**
+	 * Returns the default lease time.
+	 * 
+	 * @return String time
+	 */
+	private function getDefaultLeaseTime() {
+		$return = null;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 19) == 'default-lease-time ') {
+					$return = substr($this->attributes['dhcpStatements'][$i],19);
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets the default lease time.
+	 * 
+	 * $time String time
+	 */
+	private function setDefaultLeaseTime($time) {
+		if (!is_array($this->attributes['dhcpStatements'])) {
+			$this->attributes['dhcpStatements'] = array();
+		}
+		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			if (substr($this->attributes['dhcpStatements'][$i], 0, 19) == 'default-lease-time ') {
+				unset($this->attributes['dhcpStatements'][$i]);
+				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+			}
+		}
+		if (($time != null) && ($time != '')) {
+			$this->attributes['dhcpStatements'][] = 'default-lease-time ' . $time;
+		}
+	}
+
+	/**
+	 * Returns the maximum lease time.
+	 * 
+	 * @return String time
+	 */
+	private function getMaxLeaseTime() {
+		$return = null;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 15) == 'max-lease-time ') {
+					$return = substr($this->attributes['dhcpStatements'][$i],15);
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets the maximum lease time.
+	 * 
+	 * $time String time
+	 */
+	private function setMaxLeaseTime($time) {
+		if (!is_array($this->attributes['dhcpStatements'])) {
+			$this->attributes['dhcpStatements'] = array();
+		}
+		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			if (substr($this->attributes['dhcpStatements'][$i], 0, 15) == 'max-lease-time ') {
+				unset($this->attributes['dhcpStatements'][$i]);
+				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+			}
+		}
+		if (($time != null) && ($time != '')) {
+			$this->attributes['dhcpStatements'][] = 'max-lease-time ' . $time;
+		}
+	}
+
 }
+
 ?>

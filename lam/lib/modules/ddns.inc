@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2008  Thomas Manninger
-                2008  Roland Gruber
+  Copyright (C) 2008         Thomas Manninger
+                2008 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,6 +42,19 @@ class ddns extends baseModule {
 	// Standard DDNS Settings
 	public $ddns = array();
 	
+
+	/**
+	* Initializes the module after it became part of an {@link accountContainer}
+	* 
+	* Calling this method requires the existence of an enclosing {@link accountContainer}.
+	*
+	* @param string $base the name of the {@link accountContainer} object ($_SESSION[$base])
+	*/
+	public function init($base) {
+		parent::init($base);
+		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
+		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
+	}
 
 	public function get_metaData() {
 
@@ -114,25 +127,20 @@ class ddns extends baseModule {
 	*/
 	public function module_complete() {
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
-			/**
-			 * Main settings
-			 */
-			if ($this->attributes['dhcpStatements'][0]=='ddns-update-style interim' && empty($this->attributes['dhcpStatements'][3])) {
+			//Main settings
+			if ($this->isDynDNSActivated() && (($this->getUpdateKey() == null) || ($this->getUpdateKey() == ''))) {
 				return false;
 			}
 		}
 		else {
-			/**
-			 * Account settings
-			 */
-			$ip = array_shift(explode(";",array_pop(explode(". { primary ", $this->attributes['dhcpStatements'][0]))));
+			// Account settings
+			$ip = $this->getDNSServer();
 			if (!empty($ip) && !check_ip($ip)) return false;
 			
-			$zone = substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][0],5))),0,-1);
-			if (empty($zone) && !empty($ip)) return false;
-			
-			$zone_reverse = substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][1],5))),0,-1);
-			if (empty($zone_reverse) && !empty($ip)) return false;
+			$zones = $this->getZoneNames();
+			if (sizeof($zones) < 2) {
+				return false;
+			}
 		}
 		
 		return true;
@@ -154,135 +162,6 @@ class ddns extends baseModule {
 		else {
 			return true;
 		}
-	}
-
-	/* This function returns an array with 4 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
-	*/
-	public function save_attributes() {
-		// Get easy attributes
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
-			/**
-			 * Save main settings
-			 */
-
-			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		}
-		else {
-			/**
-			 * Save account settings
-			 */
-			if (!$this->check_if_ddns_is_enable()) {
-				return array();
-			}
-
-			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		}
-
-		// Return attributes
-		return $return;
-	}
-	
-	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attr list of attributes
-	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
-
-		$this->dn = $this->getAccountContainer()->dn_orig;
-		$dn = $this->getAccountContainer()->dn_orig;
-		if ($dn==$_SESSION['config']->get_suffix('dhcp')) {
-			
-			// main settings
-			$this->load_attributes_dhcpSettings($attr);
-		}
-		else {
-			if (!$this->check_if_ddns_is_enable()) {
-				return;
-			}
-			
-			// account edit
-			$this->load_attributes_account($attr);
-		}
-	}
-	
-	private function load_attributes_account($attr) {
-		$attrTmp = $attr;
-		
-		unset($attr);
-		if (array_key_exists('dhcpStatements', $attrTmp) && is_array($attrTmp['dhcpStatements'])) {
-			foreach($attrTmp['dhcpStatements'] AS $value) {
-				$ex = explode(" ", $value);
-				
-				if ($ex[0] == 'zone') {
-					$attr['dhcpStatements'][] = $value;
-				}
-			}
-		}
-
-		unset($attrTmp);
-		
-		if (!is_array($attr)) $attr = array();
-			
-		$this->orig = $attr;
-		$this->attributes = $attr;
-		
-	}
-
-	private function load_attributes_dhcpSettings($attr) {
-		$attrTmp = $attr;
-
-		/**
-		 * WARNING
-		 * By new attributes for ddns edit ne load function of the dhcp settings.
-		 */
-		
-		unset($attr);
-		if (!is_array($attrTmp['dhcpStatements'])) $attrTmp['dhcpStatements'] = array();
-		foreach($attrTmp['dhcpStatements'] AS $value) {
-			$ex = explode(" ", $value);
-			
-			// ddns active
-			if ($ex[0] == 'ddns-update-style') {
-				
-				if ($ex[1] == 'interim') {
-					$attr['dhcpStatements'][0] = "ddns-update-style interim";
-				} else {
-					$attr['dhcpStatements'][0] = "ddns-update-style none";
-				}
-			}
-			
-			// fixed ips into dns
-			if ($ex[0] == 'update-static-leases') {
-				$attr['dhcpStatements'][1] = "update-static-leases true";
-			}
-			
-			// Client can contribute, which is registered into dns 
-			if ($value == 'ignore client-updates') {
-				$attr['dhcpStatements'][2] = "ignore client-updates";
-			}
-			
-			// Path to the Key
-			if ($ex[0] == 'include') {
-				$attr['dhcpStatements'][3] = $value;
-			}
-		}
-
-		unset($attrTmp);
-		
-		if (!is_array($attr)) $attr = array();
-			
-		$this->orig = $attr;
-		$this->attributes = $attr;
-		
-
 	}
 	
 	/**
@@ -323,50 +202,27 @@ class ddns extends baseModule {
 		// Insert fixed IPs into DNS?
 		$insert_fixed = $_POST['insert_fixed'];
 		
-		// Client can contribute, which is registered into dns 
-		/* Client kann mitbestimmen, was im DNS eingetragen wird. */
+		// Client can contribute which is registered into DNS 
 		$client_insert = $_POST['client_insert'];
 		
 		// The path to the key:
 		$key_path = trim($_POST['key_path']);
 		
-		// Is DDNS active?
-		if ($active == 'on') {
-			$this->attributes['dhcpStatements'][0] = "ddns-update-style interim";
-		}
-		else {
-			$this->attributes['dhcpStatements'][0] = "ddns-update-style none";
-		}
-	
-		// fixed_ips into dns?
-		if ($insert_fixed == 'on') {
-			$this->attributes['dhcpStatements'][1] = "update-static-leases true";
-		}
-		else {
-			unset($this->attributes['dhcpStatements'][1]);
-		}
-		
-		// client can contribute?
-		if ($client_insert == 'on') {
-			$this->attributes['dhcpStatements'][2] = "ignore client-updates";
-		}
-		else {
-			unset($this->attributes['dhcpStatements'][2]);
-		}
+		$this->setDynDNSActivated(($active == 'on'));
 
+		$this->setFixIPs(($insert_fixed == 'on'));
+
+		$this->setIgnoreClientUpdates(($client_insert == 'on'));
+		
+		$this->setUpdateKey($key_path);
 		// key path must be insert, when ddns is active
 		if ($active == 'on' && empty($key_path)) {
 			$errors[] = $this->messages['key_path'][0];
-			unset($this->attributes['dhcpStatements'][3]);
 		}
-		elseif (empty($key_path)) {
-			unset($this->attributes['dhcpStatements'][3]);
-		}
-		else {
+		elseif (!empty($key_path)) {
 			if (str_replace("\"","",$_POST['key_path']) != $key_path) {
 				$errors[] = $this->messages['key_path'][1];
 			}
-			$this->attributes['dhcpStatements'][3] = "include \"$key_path\"";
 		}
 		
 		return $errors;
@@ -389,93 +245,93 @@ class ddns extends baseModule {
 			}
 		}
 		
+		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
+				unset($this->attributes['dhcpStatements'][$i]);
+			}
+		}
+		$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 		
 		// Zone inserted?
 		if (!empty($zone)) {
-			$this->attributes['dhcpStatements'][0] = "zone {$zone}. { primary {$ip}; key DHCP_UPDATER; }";
+			$this->attributes['dhcpStatements'][] = "zone {$zone}. { primary {$ip}; key DHCP_UPDATER; }";
 		}
 		else {
 			if (!empty($ip)) {
 				$errors[] = $this->messages['zone'][0];
 			}
-			unset($this->attributes['dhcpStatements'][0]);
 		}
 		
 		// Zone reverse inserted?
 		if (!empty($zone_reverse)) {
-			$this->attributes['dhcpStatements'][1] = "zone {$zone_reverse}. { primary {$ip}; key DHCP_UPDATER; }";
+			$this->attributes['dhcpStatements'][] = "zone {$zone_reverse}. { primary {$ip}; key DHCP_UPDATER; }";
 		}
 		else {
 			if (!empty($ip)) {
 				$errors[] = $this->messages['zone_reverse'][0];
 			}
-			unset($this->attributes['dhcpStatements'][1]);
 		}
-		
-		
 		return $errors;
 	}
 	
-	/* This function will create the page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	public function display_html_attributes() {
 
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
-			/**
-			 * DHCP main settings
-			 */
-			if ($this->attributes['dhcpStatements'][0] == 'ddns-update-style interim') { $checkedStat = true; } else { $checkedStat = false; }
+			// DHCP main settings
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Activate DynDNS') . ":* "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'active',  'checked' => $checkedStat),
+				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'active',  'checked' => $this->isDynDNSActivated()),
 				array('kind' => 'help', 'value' => 'active', 'scope' => 'user'));
 				
-			if (!empty($this->attributes['dhcpStatements'][1])) { $checkedStat = true; } else { $checkedStat = false; }
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Add fix IP addresses to DNS') . ":* "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'insert_fixed',  'checked' => $checkedStat),
+				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'insert_fixed',  'checked' => $this->addFixIPs()),
 				array('kind' => 'help', 'value' => 'fixed_ips', 'scope' => 'user'));
 
-			if (!empty($this->attributes['dhcpStatements'][2])) { $checkedStat = true; } else { $checkedStat = false; }
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Disable client updates') . ":* "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'client_insert',  'checked' => $checkedStat),
+				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'client_insert',  'checked' => $this->isIgnoreClientUpdates()),
 				array('kind' => 'help', 'value' => 'client_insert', 'scope' => 'user'));
-				
-			$keyPath = str_replace(array("include \"","\""),"",$this->attributes['dhcpStatements'][3]);
+		
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Path to key for DNS updates') . ":* "),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'key_path', 'value' => $keyPath),
+				array('kind' => 'input', 'type' => 'text', 'name' => 'key_path', 'value' => $this->getUpdateKey()),
 				array('kind' => 'help', 'value' => 'keypath', 'scope' => 'user'));
 		}
 		else {
-			/**
-			 * Account Edit.
-			 */
-
+			// Account edit 
 			if (!$this->check_if_ddns_is_enable()) {
 				echo _("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).") . "<br/><br/>";
 			}
 			else {		
-				$ip = (isset($_POST['ip']))?$_POST['ip']:array_shift(explode(";",array_pop(explode(". { primary ", $this->attributes['dhcpStatements'][0]))));			
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('IP address of the DNS server') . ":* "),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'ip', 'value' => $ip),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'ip', 'value' => $this->getDNSServer()),
 					array('kind' => 'help', 'value' => 'dns', 'scope' => 'user'));
 				
 					
-				$zone = (isset($_POST['zone']))?$_POST['zone']:substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][0],5))),0,-1);
+				$zones = $this->getZoneNames();
+				$zone = '';
+				$revzone = '';
+				if (isset($zones[0])) {
+					$zone = $zones[0];
+				}
+				if (isset($zones[1])) {
+					$revzone = $zones[1];
+				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Zone names') . ":* "),
 					array('kind' => 'input', 'type' => 'text', 'name' => 'zone', 'value' => $zone),
 					array('kind' => 'help', 'value' => 'zone', 'scope' => 'user'));
 					
-				$zone_reverse = (isset($_POST['zone_reverse']))?$_POST['zone_reverse']:substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][1],5))),0,-1);
 		        $return[] = array(
 		        	array('kind' => 'text', 'text' => _('Reverse zone names') . ":* "),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'zone_reverse', 'value' => $zone_reverse),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'zone_reverse', 'value' => $revzone),
 					array('kind' => 'help', 'value' => 'zone_reverse', 'scope' => 'user'));
 			}
 		}
@@ -486,47 +342,227 @@ class ddns extends baseModule {
 	}
 	
 	/**
-	* Returns a list of elements for the account profiles.
-	*
-	* @return profile elements
-	*/
-	function get_profileOptions() {
-		$return = array();
-
-		// Subnetz name
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Subnet') . ": "),
-			array('kind' => 'input', 'name' => 'cn', 'type'=>'checkbox'),
-			array('kind' => 'help', 'value' => 'type', 'scope' => 'user'));
-	}
-	
-	/**
-	* TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
-	function load_profile($profile) {
-		// profile mappings in meta data
-		parent::load_profile($profile);
-		$this->attributes['cn'][0] = $profile['cn'][0];
-		
-		$this->dhcpSettings['domainname'] = $profile['domainname'][0];
-		$this->attributes['dhcpOption'][5] = "domain-name \"". $profile['domainname'][0]."\"";
-	}
-	
-	/**
 	* Returns the PDF entries for this module.
 	*
 	* @return array list of possible PDF entries
 	*/
-	function get_pdfEntries() {
+	public function get_pdfEntries() {
+		$zones = $this->getZoneNames();
+		$zone = '';
+		$revzone = '';
+		if (isset($zones[0])) {
+			$zone = $zones[0];
+		}
+		if (isset($zones[1])) {
+			$revzone = $zones[1];
+		}
 		return array(
-			get_class($this) . '_DNSserver' => array('<block><key>' . _('IP address of the DNS server') . '</key><value>' . array_shift(explode(";",array_pop(explode(". { primary ", $this->attributes['dhcpStatements'][0])))) . '</value></block>'),
-			get_class($this) . '_zone' => array('<block><key>' . _('Zone names') . '</key><value>' . substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][0],5))),0,-1) . '</value></block>'),
-			get_class($this) . '_reverseZone' => array('<block><key>' . _('Reverse zone names') . '</key><value>' . substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][1],5))),0,-1) . '</value></block>'),
+			get_class($this) . '_DNSserver' => array('<block><key>' . _('IP address of the DNS server') . '</key><value>' . $this->getDNSServer() . '</value></block>'),
+			get_class($this) . '_zone' => array('<block><key>' . _('Zone names') . '</key><value>' . $zone . '</value></block>'),
+			get_class($this) . '_reverseZone' => array('<block><key>' . _('Reverse zone names') . '</key><value>' . $revzone . '</value></block>'),
 		);
 	}
 	
+	/**
+	 * Returns the IP of the DNS server.
+	 *
+	 * @return String IP address
+	 */
+	private function getDNSServer() {
+		$return = null;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
+					return array_shift(explode(";",array_pop(explode(". { primary ", $this->attributes['dhcpStatements'][$i]))));
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Returns the zone names.
+	 *
+	 * @return array zone names
+	 */
+	private function getZoneNames() {
+		$return = array();
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
+					$return[] = substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][$i],5))),0,-1);
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Returns if DDNS is activated.
+	 * 
+	 * @return boolean activated
+	 */
+	private function isDynDNSActivated() {
+		$return = false;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if ($this->attributes['dhcpStatements'][$i] == 'ddns-update-style interim') {
+					$return = true;
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets if DDNS is activated.
+	 * 
+	 * $activated boolean activated
+	 */
+	private function setDynDNSActivated($activated) {
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 18) == 'ddns-update-style ') {
+					unset($this->attributes['dhcpStatements'][$i]);
+					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+				}
+			}
+		}
+		if ($activated) {
+			$this->attributes['dhcpStatements'][] = 'ddns-update-style interim';
+		}
+		else {
+			$this->attributes['dhcpStatements'][] = 'ddns-update-style none';
+		}
+	}
+	
+	/**
+	 * Returns if fixed IPs are added to DDNS.
+	 * 
+	 * @return boolean add fixed IPs
+	 */
+	private function addFixIPs() {
+		$return = false;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if ($this->attributes['dhcpStatements'][$i] == 'update-static-leases true') {
+					$return = true;
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets if client updates are ignored.
+	 * 
+	 * $add boolean add fixed IPs
+	 */
+	private function setFixIPs($add) {
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 21) == 'update-static-leases ') {
+					unset($this->attributes['dhcpStatements'][$i]);
+					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+				}
+			}
+		}
+		if ($add) {
+			$this->attributes['dhcpStatements'][] = 'update-static-leases true';
+		}
+	}
+	
+	/**
+	 * Returns if client updates are ignored.
+	 * 
+	 * @return boolean ignore client updates
+	 */
+	private function isIgnoreClientUpdates() {
+		$return = false;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if ($this->attributes['dhcpStatements'][$i] == 'ignore client-updates') {
+					$return = true;
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets if client updates are ignored.
+	 * 
+	 * $ignore boolean ignore client updates
+	 */
+	private function setIgnoreClientUpdates($ignore) {
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if ($this->attributes['dhcpStatements'][$i] == 'ignore client-updates') {
+					unset($this->attributes['dhcpStatements'][$i]);
+					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+				}
+			}
+		}
+		if ($ignore) {
+			$this->attributes['dhcpStatements'][] = 'ignore client-updates';
+		}
+	}
+	
+	/**
+	 * Returns the key for DNS updates.
+	 * 
+	 * @return String key
+	 */
+	private function getUpdateKey() {
+		$return = null;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if (substr($this->attributes['dhcpStatements'][$i], 0, 8) == 'include ') {
+					$return = substr($this->attributes['dhcpStatements'][$i],9, strlen($this->attributes['dhcpStatements'][$i]) - 10);
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets the key for DNS updates.
+	 * 
+	 * $key String key
+	 */
+	private function setUpdateKey($key) {
+		if (!is_array($this->attributes['dhcpStatements'])) {
+			$this->attributes['dhcpStatements'] = array();
+		}
+		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			if (substr($this->attributes['dhcpStatements'][$i], 0, 8) == 'include ') {
+				unset($this->attributes['dhcpStatements'][$i]);
+				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+			}
+		}
+		if (($key != null) && ($key != '')) {
+			$this->attributes['dhcpStatements'][] = 'include "' . $key . '"';
+		}
+	}
+
+	/**
+	* This function loads the LDAP attributes when an account should be loaded.
+	* 
+	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
+	* and {@link getManagedAttributes()}.
+	*
+	* @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
+	*/
+	public function load_attributes($attributes) {
+		// load nothing, attributes are saved in "dhcp_settings" module
+	}
+	
 }
+
 ?>
