@@ -73,7 +73,7 @@ class range extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array();
 		// managed attributes
-		$return['attributes'] = array('dhcpOption');
+		$return['attributes'] = array('dhcpRange');
 		// help Entries
 		$return['help'] = array(
 				'range_from' => array(
