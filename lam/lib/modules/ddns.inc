@@ -248,9 +248,10 @@ class ddns extends baseModule {
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
 				unset($this->attributes['dhcpStatements'][$i]);
+				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+				$i--;
 			}
 		}
-		$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 		
 		// Zone inserted?
 		if (!empty($zone)) {
@@ -280,7 +281,6 @@ class ddns extends baseModule {
 	 * @return array HTML meta data
 	 */
 	public function display_html_attributes() {
-
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
 			// DHCP main settings
 	        $return[] = array(
