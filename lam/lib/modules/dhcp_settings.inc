@@ -142,8 +142,8 @@ class dhcp_settings extends baseModule {
 				"Headline" => _("Default gateway"),
 				"Text" => _("Packets are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network.")
 			) , 'netbios' => array(
-				"Headline" => _("Netbios name server"),
-				"Text" => _("The IP address of the Netbios name server.")
+				"Headline" => _("Netbios name servers"),
+				"Text" => _("The IP addresses of the Netbios name servers (e.g. \"123.123.123.123, 123.123.123.124\").")
 			) , 'netbios_type' => array(
 				"Headline" => _("Netbios node type"),
 				"Text" => _("<b>B-Node (0x01): Broadcast.</b><br/>The client tries to find other workstations via broadcasting
@@ -211,9 +211,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	        	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
 				array('kind' => 'input', 'name' => 'routers', 'type'=>'text'),
 				array('kind' => 'help', 'value' => 'gateway', 'scope' => 'user')),
-			// Netbios Name Server
+			// Netbios Name Servers
 	        array(
-	        	array('kind' => 'text', 'text' => _('Netbios name server') . ": "),
+	        	array('kind' => 'text', 'text' => _('Netbios name servers') . ": "),
 				array('kind' => 'input', 'name' => 'netbios', 'type'=>'text'),
 				array('kind' => 'help', 'value' => 'netbios', 'scope' => 'user')),
 			// Netbios Node Type
@@ -293,7 +293,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		if (!empty($this->dhcpSettings['routers']) && !check_ip($this->dhcpSettings['routers'])) return false;
-		if (!empty($this->dhcpSettings['netbios']) && !check_ip($this->dhcpSettings['netbios'])) return false;
 		
 		return true;
 	}
@@ -391,7 +390,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				// Is dns?
 				if ($ex[0]=="netbios-name-servers") {
-					$this->dhcpSettings['netbios'] = $ex[1];
+					$this->dhcpSettings['netbios'] = substr($value, 21);
 				}
 			}
 		}
@@ -559,17 +558,23 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		
 		// Netbios
 		if (!empty($_POST['netbios'])) $_POST['netbios'] = trim($_POST['netbios']);
-		if (!check_ip($_POST['netbios']) && !empty($_POST['netbios'])) {
+		$netbiosServers = explode(', ', $_POST['netbios']);
+		$netbiosServersOk = true;
+		for ($i = 0; $i < sizeof($netbiosServers); $i++) {
+			if (!check_ip($netbiosServers[$i])) {
+				$netbiosServersOk = false;
+				break;
+			}
+		}
+		if (!$netbiosServersOk && !empty($_POST['netbios'])) {
 			$errors[] = $this->messages['netbios'][0];
 			$this->dhcpSettings['netbios'] = $_POST['netbios'];
 			unset($this->attributes['dhcpOption'][2]);
 		}
 		elseif (empty($_POST['netbios'])) {
-		    // Nix tuhen
 		    unset($this->attributes['dhcpOption'][2]);
 		}
-		else
-		{
+		else {
 			$this->dhcpSettings['netbios'] = $_POST['netbios'];
 			$this->attributes['dhcpOption'][2] = "netbios-name-servers ".$_POST['netbios'];
 		}
@@ -683,9 +688,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			array('kind' => 'input', 'name' => 'routers', 'value' => $this->dhcpSettings['routers']),
 			array('kind' => 'help', 'value' => 'gateway', 'scope' => 'user'));
 			
-		// Netbios Name Server
+		// Netbios Name Servers
         $return[] = array(
-        	array('kind' => 'text', 'text' => _('Netbios name server') . ": "),
+        	array('kind' => 'text', 'text' => _('Netbios name servers') . ": "),
 			array('kind' => 'input', 'name' => 'netbios', 'value' => $this->dhcpSettings['netbios']),
 			array('kind' => 'help', 'value' => 'netbios', 'scope' => 'user'));
 
@@ -771,7 +776,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->getMaxLeaseTime() . '</value></block>'),
 			get_class($this) . '_DNSserver' => array('<block><key>' . _('DNS') . '</key><value>' . $this->dhcpSettings['dns'] . '</value></block>'),
 			get_class($this) . '_gateway' => array('<block><key>' . _('Default gateway') . '</key><value>' . $this->dhcpSettings['routers'] . '</value></block>'),
-			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name server') . '</key><value>' . $this->dhcpSettings['netbios'] . '</value></block>'),
+			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name servers') . '</key><value>' . $this->dhcpSettings['netbios'] . '</value></block>'),
 			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $this->netbios_node_type . '</value></block>'),
 			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->subnet . '</value></block>'),
 			get_class($this) . '_netMask' => array('<block><key>' . _('Net mask') . '</key><value>' . $this->attributes['dhcpNetMask'][0] . '</value></block>'),

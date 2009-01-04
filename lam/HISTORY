@@ -7,7 +7,10 @@ January 2009 2.5.0
    -> account extension is now optional
    -> can be used without Unix module
    -> self service uses no extra LDAP suffix but uses global setting
-  - DHCP: added PDF support and minor fixes
+  - DHCP:
+   -> several bugfixes
+   -> added PDF support
+   -> support multiple Netbios name servers (RFE 2180179)
   - Samba 3:
    -> self service sets attribute "sambaPwdLastSet" on password change (LAM Pro)
    -> password timestamps can be updated on password reset page (LAM Pro)
