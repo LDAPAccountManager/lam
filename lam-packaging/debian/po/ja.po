@@ -13,130 +13,110 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ja\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
-"PO-Revision-Date: 2005-08-17 17:22+0900\n"
-"Last-Translator: Yasuhiro Magara <gama@lifemedia.co.jp>\n"
-"Language-Team: Japanese <gama@users.sourceforge.jp>\n"
+"Project-Id-Version: ldap-account-manager 2.4.0-1\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2008-10-21 19:55+0200\n"
+"PO-Revision-Date: 2008-12-28 23:05+0900\n"
+"Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
+"Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid "Web server configuration:"
-msgstr ""
+msgstr "ウェブサーバの設定:"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid ""
 "LDAP Account Manager supports any webserver that supports PHP4, but this "
 "automatic configuration process only supports Apache and Apache2. If you "
 "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP Account ManagerはPHP4をサポートする全てのwebサーバーに対応してますが、こ"
-"の自動構成はApacheおよびApache2にのみ対応しています。もしもApache(2)の構成を"
-"選択したならば、LAMは http(s)://localhost/lam でアクセスできます。"
+"LDAP Account Manager は PHP4 をサポートする全てのウェブサーバーに対応してますが、こ"
+"の自動構成は Apache および Apache2 にのみ対応しています。もしも Apache、あるいは "
+"Apache2 の構成を選択した場合は、LAMは http(s)://localhost/lam でアクセスできます。"
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Alias name:"
-msgstr ""
+msgstr "エイリアス名:"
 
 #. Type: string
 #. Description
-#: ../templates:13
-#, fuzzy
+#: ../templates:2001
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"LAMは http(s)://localhost/lam としてLAMにアクセスできるように、httpd.confに別"
-"名を追加します。もしも\"lam\"以外の別名にしたい場合は、ここに入力してくださ"
-"い。"
+"LAM は http(s)://localhost/lam として LAM にアクセスできるように、httpd.conf "
+"にエイリアス名を追加します。\"lam\" 以外のエイリアス名も選べます。"
 
 #. Type: string
 #. Description
-#: ../templates:21
-#, fuzzy
+#: ../templates:3001
 msgid "Master configuration password (clear text):"
-msgstr "マスター構成パスワードを入力してください(クリアテキスト):"
+msgstr "マスター構成パスワード (クリアテキスト):"
 
 #. Type: string
 #. Description
-#: ../templates:21
-#, fuzzy
+#: ../templates:3001
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
 "changed directly in LAM."
 msgstr ""
-"構成プロファイルはマスターパスワードで保護されます。マスターパスワードは、プ"
-"ロファイルの新規作成および削除の際に必要となります。デフォルトでは\"lam\"が設"
-"定されます。これはLAMの中で変更可能ですが、ここで変更することも可能です。"
+"構成プロファイルはマスターパスワードで保護されています。マスターパスワードは、プ"
+"ロファイルの作成／削除の際に必要となります。マスターパスワードはデフォルトでは "
+"\"lam\" が設定され、LAM にて直接変更が可能です。"
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Would you like to restart your webserver(s) now?"
-msgstr "今すぐwebサーバーを再起動しますか?"
+msgstr "今すぐウェブサーバを再起動しますか?"
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr ""
+msgstr "変更を適用するためにウェブサーバを再起動する必要があります。"
 
 #. Type: note
 #. Description
-#: ../templates:34
+#: ../templates:5001
 msgid "Upgrade from pre-0.5.0 versions"
-msgstr ""
+msgstr "0.5.0 より前のバージョンからのアップグレード"
 
 #. Type: note
 #. Description
-#: ../templates:34
+#: ../templates:5001
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
 "account profiles."
 msgstr ""
-"注意：このバージョンでは新しいファイルフォーマットの構成とアカウントプロファ"
-"イルを使用します。構成のアップグレードとアカウントプロファイルの新規作成が必"
-"要です。"
+"このバージョンでは設定に新しいファイル形式とアカウントプロファイルを使用するのに"
+"注意してください。設定の更新とアカウントプロファイルの新規作成が必要になります。"
 
 #. Type: note
 #. Description
-#: ../templates:41
+#: ../templates:6001
 msgid "Upgrade from pre-1.0.0 versions"
-msgstr ""
+msgstr "1.0.0 より前のバージョンからのアップグレード"
 
 #. Type: note
 #. Description
-#: ../templates:41
-#, fuzzy
+#: ../templates:6001
 msgid ""
 "Please note that this version uses new file formats for the configuration "
 "profiles. Please edit your configuration files and save the new settings."
 msgstr ""
-"注意：このバージョンでは新しいファイルフォーマットの構成とアカウントプロファ"
-"イルを使用します。構成のアップグレードとアカウントプロファイルの新規作成が必"
-"要です。"
+"このバージョンでは設定プロファイルに新しいファイル形式を使用するのに注意して"
+"ください。設定ファイルを編集して新しい設定を保存してください。"
 
-#~ msgid "Enter alias:"
-#~ msgstr "別名の入力:"
-
-#~ msgid "Which webserver would you like to configure automatically?"
-#~ msgstr "どのwebサーバーを自動構成しますか?"
-
-#~ msgid ""
-#~ "Remember that in order to apply the changes your webserver(s) need to be "
-#~ "restarted."
-#~ msgstr "変更を反映するためには、webサーバーを再起動する必要があります。"
-
-#~ msgid "It seems that you are upgrading LAM from a version before 0.5.0."
-#~ msgstr "0.5.0以前のバージョンからLAMをアップグレードしようとしてます。"
