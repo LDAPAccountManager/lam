@@ -179,6 +179,54 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'subnetMask',
 			'netMask'
 		);
+		// profile elements
+		$return['profile_options'] = array(
+			// Subnetz name
+	        array(
+	        	array('kind' => 'text', 'text' => _('Subnet') . ": "),
+				array('kind' => 'input', 'name' => 'cn', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'subnet', 'scope' => 'user')),
+			// Domainname
+	        array(
+	        	array('kind' => 'text', 'text' => _('Domain name') . ": "),
+				array('kind' => 'input', 'name' => 'domainname', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'domainname', 'scope' => 'user')),
+			// Lease Time
+	        array(
+	        	array('kind' => 'text', 'text' => _('Lease time') . ": "),
+				array('kind' => 'input', 'name' => 'lease_time', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'leasetime', 'scope' => 'user')),
+			// Max lease Time
+	        array(
+	        	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
+				array('kind' => 'input', 'name' => 'max_lease_time', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'max_leasetime', 'scope' => 'user')),
+			// DNS
+	        array(
+	        	array('kind' => 'text', 'text' => _('DNS') . ": "),
+				array('kind' => 'input', 'name' => 'dns', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'dns', 'scope' => 'user')),
+			// Gateway
+	        array(
+	        	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
+				array('kind' => 'input', 'name' => 'routers', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'gateway', 'scope' => 'user')),
+			// Netbios Name Server
+	        array(
+	        	array('kind' => 'text', 'text' => _('Netbios name server') . ": "),
+				array('kind' => 'input', 'name' => 'netbios', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'netbios', 'scope' => 'user')),
+			// Netbios Node Type
+	        array(
+	        	array('kind' => 'text', 'text' => _('Netbios node type') . ": "),
+				array('kind' => 'select', 'name' => 'netbios_node_type', 'options' => $this->all_netbios_node_types),
+				array('kind' => 'help', 'value' => 'netbios_type', 'scope' => 'user')),
+			// subnetmask
+	        array(
+	        	array('kind' => 'text', 'text' => _('Subnet mask') . ": "),
+				array('kind' => 'input', 'name' => 'subnet', 'type'=>'text'),
+				array('kind' => 'help', 'value' => 'subnetmask', 'scope' => 'user'))
+			);
 		return $return;
 	}
 	
@@ -294,7 +342,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 	
 		// Return attributes
-		echo "<hr>"; print_r($return); echo "<hr>";
 		return $return;
 	}
 	
@@ -665,69 +712,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		
-		return $return;
-	}
-	
-	/**
-	* Returns a list of elements for the account profiles.
-	*
-	* @return profile elements
-	*/
-	function get_profileOptions() {
-		$return = array();
-
-		// Subnetz name
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Subnet') . ": "),
-			array('kind' => 'input', 'name' => 'cn', 'type'=>'text','value' => $this->attributes['cn'][0]),
-			array('kind' => 'help', 'value' => 'subnet', 'scope' => 'user'));
-
-		// Domainname
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Domain name') . ": "),
-			array('kind' => 'input', 'name' => 'domainname', 'type'=>'text','value' => $this->dhcpSettings['domainname']),
-			array('kind' => 'help', 'value' => 'domainname', 'scope' => 'user'));
-
-		// Lease Time
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Lease time') . ": "),
-			array('kind' => 'input', 'name' => 'lease_time', 'type'=>'text'),
-			array('kind' => 'help', 'value' => 'leasetime', 'scope' => 'user'));
-
-		// Max lease Time
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
-			array('kind' => 'input', 'name' => 'max_lease_time', 'type'=>'text'),
-			array('kind' => 'help', 'value' => 'max_leasetime', 'scope' => 'user'));
-
-		// DNS
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('DNS') . ": "),
-			array('kind' => 'input', 'name' => 'dns', 'type'=>'text','value' => $this->dhcpSettings['dns']),
-			array('kind' => 'help', 'value' => 'dns', 'scope' => 'user'));
-
-		// Gateway
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
-			array('kind' => 'input', 'name' => 'routers', 'type'=>'text','value' => $this->dhcpSettings['routers']),
-			array('kind' => 'help', 'value' => 'gateway', 'scope' => 'user'));
-
-		// Netbios Name Server
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Netbios name server') . ": "),
-			array('kind' => 'input', 'name' => 'netbios', 'type'=>'text','value' => $this->dhcpSettings['netbios']),
-			array('kind' => 'help', 'value' => 'netbios', 'scope' => 'user'));
-
-		// Netbios Node Type
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Netbios node type') . ": "),
-			array('kind' => 'select', 'name' => 'netbios_node_type', 'options' => $this->all_netbios_node_types, 'options_selected' => array($this->netbios_node_type)),
-			array('kind' => 'help', 'value' => 'netbios_type', 'scope' => 'user'));
-		// subnetmask
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Subnet mask') . ": "),
-			array('kind' => 'input', 'name' => 'subnet', 'type'=>'text','value' => $this->subnet),
-			array('kind' => 'help', 'value' => 'subnetmask', 'scope' => 'user'));
 		return $return;
 	}
 	
