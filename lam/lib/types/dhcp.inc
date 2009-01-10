@@ -129,22 +129,24 @@ class lamDHCPList extends lamList {
         	$ldap = $_SESSION['ldap'];
         	$suffix = $_SESSION['config']->get_Suffix('dhcp');
         	
-        	$sr = ldap_search($ldap->server(),"cn=".$entry['cn'][0].",".$suffix,"objectClass=dhcpHost");
-        	$get = ldap_get_entries($ldap->server(),$sr);
-        	
-        	// Now list all fixed_ips:
-			echo "<table border=\"0\" width=\"100%\">";
-        	$this->fixed_ips = array();
-        	foreach($get AS $id=>$arr) {
-        		if (is_numeric($id)) {
-        				echo "<tr>";
-        					echo "<td width=\"25%\">".array_pop(explode(" ",$get[$id]['dhcpstatements'][0]))."</td>";
-        					echo "<td width=\"35%\">".array_pop(explode(" ",$get[$id]['dhcphwaddress'][0]))."</td>";
-        					echo "<td width=\"40%\">".$get[$id]['cn'][0]."</td>";
-        				echo "</tr>";
-        		}
+        	$sr = @ldap_search($ldap->server(),"cn=".$entry['cn'][0].",".$suffix,"objectClass=dhcpHost");
+        	if ($sr) {
+	        	$get = ldap_get_entries($ldap->server(),$sr);
+	        	
+	        	// Now list all fixed_ips:
+				echo "<table border=\"0\" width=\"100%\">";
+	        	$this->fixed_ips = array();
+	        	foreach($get AS $id=>$arr) {
+	        		if (is_numeric($id)) {
+	        				echo "<tr>";
+	        					echo "<td width=\"25%\">".array_pop(explode(" ",$get[$id]['dhcpstatements'][0]))."</td>";
+	        					echo "<td width=\"35%\">".array_pop(explode(" ",$get[$id]['dhcphwaddress'][0]))."</td>";
+	        					echo "<td width=\"40%\">".$get[$id]['cn'][0]."</td>";
+	        				echo "</tr>";
+	        		}
+	        	}
+	        	echo "</table>";
         	}
-        	echo "</table>";
         }
 		// fixed ip address
         elseif ($attribute=="dhcpstatements") {
