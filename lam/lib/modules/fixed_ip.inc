@@ -244,7 +244,7 @@ class fixed_ip extends baseModule {
 				    }
 
 				    // If all three inputs are empty, then do nothing:
-				    if (!empty($_POST['pc_'.$id]) && !empty($_POST['mac_'.$id]) && !empty($_POST['ip_'.$id]) ) {
+				    if (!empty($_POST['pc_'.$id]) || !empty($_POST['mac_'.$id]) || !empty($_POST['ip_'.$id]) ) {
 						// MAC address
 						$_POST['mac_'.$id] = strtolower(trim($_POST['mac_'.$id]));
 
@@ -252,15 +252,16 @@ class fixed_ip extends baseModule {
 						if ($invalid) {
 						    $error = true;
 						}
-						else
-						{
+						else {
 						    $this->attributes['dhcpHWAddress'][0] = "ethernet ". $_POST['mac'];
 						}
 						$this->fixed_ip[$id]['mac'] = $_POST['mac_'.$id];
 
 						// Ip address
-						if (!empty($_POST['ip_'.$id])) $_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
-						if (!check_ip($_POST['ip_'.$id]) && !empty($_POST['ip_'.$id])) {
+						if (!empty($_POST['ip_'.$id])) {
+							$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
+						}
+						if (!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id]) || get_preg($_POST['ip_'.$id], 'DNSname'))) {
 							$error = true;
 							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 						}
@@ -272,16 +273,14 @@ class fixed_ip extends baseModule {
 							$error = true;
 							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 						}
-						else
-						{
+						else {
 							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 						}
 
 						// Is ip correct with subnet:
-						if (!$_SESSION['account']->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+						if (check_ip($_POST['ip_'.$id]) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
 						    $error = true;
 						}
-
 
 						// cn:
 						if (!empty($_POST['pc_'.$id])) $_POST['pc_'.$id] = trim($_POST['pc_'.$id]);
@@ -291,13 +290,11 @@ class fixed_ip extends baseModule {
 							if (in_array($_POST['pc_'.$id], $pcs) ) {
 							    $error = true;
 							}
-							else
-							{
+							else {
 							    $pcs[] = $_POST['pc_'.$id];
 							}
 						}
-						else
-						{
+						else {
 							$error = true;
 						}
 						if (strlen($_POST['pc_'.$id])>30) {
@@ -320,8 +317,7 @@ class fixed_ip extends baseModule {
 				if ($error) {
 				    $errors[] = $this->messages['add_ip'][0];
 				}
-				else
-				{
+				else {
 				    // Add IP:
 					$this->fixed_ip[] = array('cn'=>'','mac'=>'','ip'=>'');
 				}
@@ -336,12 +332,10 @@ class fixed_ip extends baseModule {
 	* It will output a complete html-table
 	*/
 	public function display_html_attributes() {
-
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
             echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
         }
-        else
-        {
+        else {
 			// Reset oberldapd ips
 			$this->reset_overlapd_ip();
 
@@ -396,7 +390,7 @@ class fixed_ip extends baseModule {
 				if (!$this->processed) {
                 	$error = "";
 				}
-				elseif (!$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+				elseif (check_ip($this->fixed_ip[$id]['ip']) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
 				    $error = "&laquo;&laquo; " . _("The IP address does not match the subnet.");
 				}
 				elseif (!$this->overlapd_ip($this->fixed_ip[$id]['ip'])) {
