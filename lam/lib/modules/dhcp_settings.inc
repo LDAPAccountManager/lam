@@ -259,12 +259,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* @return boolean true if LDAP operation can be done
 	*/
 	public function module_complete() {
-		
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
-			if (!check_ip($this->attributes['cn'][0],true)) return false;
-        	if (array_pop(explode(".",  $this->attributes['cn'][0]))!=0) return false;
-			if ($_SESSION['cache']->in_cache($this->attributes['cn'][0],'cn', array('dhcp')) && $this->orig['cn']['0']!=$this->attributes['cn'][0]) return false;
-			if (!check_ip($this->subnet, true)) return false;
+		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
+			// check if DHCP main settings and valid DHCP entry
+			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				return false;
+			}
 		}
 
 		if (!empty($this->dhcpSettings['domainname']) && (strlen($this->dhcpSettings['domainname'])>15 ||
@@ -350,7 +349,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param array $attr list of attributes
 	 */
 	function load_attributes($attr) {
-
 		parent::load_attributes($attr);
 		// Load DHCP Options:
 		$this->dn = $this->getAccountContainer()->dn_orig;
@@ -419,6 +417,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
+		// check if DHCP main settings and valid DHCP entry
+		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
+			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				return array();
+			}
+		}
 		$errors = array();
 
 		// Check if cn is not empty
@@ -639,9 +643,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* It will output a complete html-table
 	*/
 	public function display_html_attributes() {
-		// user name if no posixAccount
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		
+		// check if DHCP main settings and valid DHCP entry
+		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
+			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				StatusMessage("ERROR", _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".'));
+				return array();
+			}
+		}
 		// Subnetz name
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
 	        $return[] = array(
@@ -649,8 +657,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				array('kind' => 'text', 'text' => $this->attributes['cn'][0]),
 				array('kind' => 'help', 'value' => 'subnet', 'scope' => 'user'));
 		}
-		else
-		{
+		else {
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
 				array('kind' => 'input', 'name' => 'cn', 'value' => $this->attributes['cn'][0]),

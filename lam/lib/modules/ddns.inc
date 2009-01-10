@@ -126,7 +126,11 @@ class ddns extends baseModule {
 	* @return boolean true if LDAP operation can be done
 	*/
 	public function module_complete() {
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
+			// check if DHCP main settings and valid DHCP entry
+			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				return false;
+			}
 			//Main settings
 			if ($this->isDynDNSActivated() && (($this->getUpdateKey() == null) || ($this->getUpdateKey() == ''))) {
 				return false;
@@ -194,6 +198,9 @@ class ddns extends baseModule {
 	 * Process for mainsettings
 	 */
 	public function process_attributes_mainSettings() {
+		if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$errors = array();
 		
 		// Is DDNS active?
@@ -281,6 +288,13 @@ class ddns extends baseModule {
 	 * @return array HTML meta data
 	 */
 	public function display_html_attributes() {
+		// check if DHCP main settings and valid DHCP entry
+		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
+			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				StatusMessage("ERROR", _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".'));
+				return array();
+			}
+		}
 		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
 			// DHCP main settings
 	        $return[] = array(
