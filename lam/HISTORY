@@ -1,4 +1,4 @@
-January 2009 2.5.0
+21.01.2009 2.5.0
   - LAM Pro:
    -> supports rfc2307bis schema for Unix groups (RFE 2111694)
    -> added alias manangement (object classes alias + uidObject) (RFE 1912779)
