@@ -1,10 +1,12 @@
 ldap-account-manager (2.5.0.RC1-1) unstable; urgency=low
 
+  * new upstream release
   * [INTL:ja] Update po-debconf template translation (ja.po) (Closes:
     #510706)
-  * new upstream release
+  * [INTL:es] Spanish debconf template translation for ldap-account-
+    manager (Closes: #511917)
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 04 Jan 2009 15:57:17 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 15 Jan 2009 20:06:43 +0100
 
 ldap-account-manager (2.4.0-1) unstable; urgency=low
 
