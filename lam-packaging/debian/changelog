@@ -1,4 +1,4 @@
-ldap-account-manager (2.5.0.RC1-1) unstable; urgency=low
+ldap-account-manager (2.5.0-1) unstable; urgency=low
 
   * new upstream release
   * [INTL:ja] Update po-debconf template translation (ja.po) (Closes:
