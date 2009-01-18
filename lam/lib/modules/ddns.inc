@@ -137,6 +137,9 @@ class ddns extends baseModule {
 			}
 		}
 		else {
+			if (!$this->check_if_ddns_is_enable()) {
+				return true;
+			}
 			// Account settings
 			$ip = $this->getDNSServer();
 			if (!empty($ip) && !check_ip($ip)) return false;
