@@ -570,6 +570,9 @@ function getRequiredExtensions() {
 *                          text, password and file.</li>
 *   <li><b>value:</b> The element will have this value as default. Button elements will have
 *                     this as caption.</li>
+*   <li><b>title:</b> Title value for input element (optional).</li>
+*   <li><b>image:</b> This is used to display image buttons. File name of an 16x16px image in the graphics folder
+*                     (e.g. add.png). You may only use this for submit buttons.</li>
 * </ul>
 * </li>
 * <li><b>select:</b> This will add a select field.
@@ -720,6 +723,12 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 							elseif (isset($input[$i][$j]['value']) && $input[$i][$j]['value']!='') {
 								$output .= ' value="' . htmlspecialchars($input[$i][$j]['value'], ENT_QUOTES, "UTF-8") . '"';
 							}
+							if (($type == "submit") && isset($input[$i][$j]['image'])) {
+								$output .= ' style="background-image: url(../../graphics/' . $input[$i][$j]['image'] . ');background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent"';
+							}
+						}
+						if (isset($input[$i][$j]['title'])) {
+							$output .= ' title="' . $input[$i][$j]['title'] . '"';
 						}
 						if (isset($input[$i][$j]['disabled']) && ($input[$i][$j]['disabled'] == true)) $output .= ' disabled';
 						// Show taborder
