@@ -1,0 +1,7 @@
+<pdf type="netgroup" filename="printLogo.jpg" headline="NIS netgroup information">
+	<section name="_nisnetgroup_cn">
+		<entry name="nisnetgroup_description" />
+		<entry name="nisnetgroup_subgroups" />
+		<entry name="nisnetgroup_members" />
+	</section>
+</pdf>

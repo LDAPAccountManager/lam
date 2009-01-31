@@ -1,0 +1,119 @@
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+  Copyright (C) 2009  Roland Gruber
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more detaexils.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+ 
+/**
+ * style definition for NIS netnetgroup entries
+ */
+
+
+/* navigation bar */
+table.netgroupnav {
+  background-color:#d6e3ff;
+  border-width:1px;
+  border-style:solid;
+  border-color:#7167bf;
+}
+
+/* input elements */
+table.netgroupnav input {
+  background-color:#a8c3ff;
+}
+
+/* text in navigation bar */
+td.netgroupnav-text {
+  color:green;
+  font-family:Verdana,sans-serif;
+  font-size:12px;
+}
+
+/* color for active page digit */
+td.netgroupnav-activepage {
+ color:red;
+}
+
+/* table preferences */
+table.netgrouplist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#7167bf;
+  border-collapse:collapse;
+}
+
+table.netgrouplist td,th {
+  border-color:#7167bf;
+}
+
+/* input elements */
+table.netgrouplist input,select,button {
+  background-color:#a8c3ff;
+}
+
+/* color of entry rows */
+tr.netgrouplist {
+  background-color:#d6e3ff;
+}
+
+/* color of head row */
+tr.netgrouplist-head {
+  background-color:#a8c3ff;
+}
+
+/* color of sorted column in head row */
+th.netgrouplist-sort {
+  background-color:#d6e3ff;
+}
+
+/* color of rows on mouseOver */
+tr.netgrouplist-over {
+  background-color:#a8c3ff;
+}
+
+/* color of checked rows */
+tr.netgrouplist-checked {
+  background-color:#f27c71;
+}
+
+fieldset.netgroupedit {
+  background-color:#d6e3ff;
+  border:1px solid #7167bf;
+}
+
+fieldset.netgroupedit legend {
+  color:blue;
+}
+
+/* input elements */
+fieldset.netgroupedit input,select,button {
+  background-color:#a8c3ff;
+}
+
+/* input elements */
+input.netgroup {
+  background-color:#a8c3ff;
+}
+
+/* select elements */
+select.netgroup {
+  background-color:#a8c3ff;
+}
+
