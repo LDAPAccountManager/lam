@@ -119,6 +119,31 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
+	*/
+	function save_attributes() {
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+		// nisNetgroupTriple needs special changing
+		if (isset($return[$this->getAccountContainer()->dn]['remove']['nisNetgroupTriple'])) {
+			$return[$this->getAccountContainer()->dn]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
+			unset($return[$this->getAccountContainer()->dn]['remove']['nisNetgroupTriple']);
+		}
+		if (isset($return[$this->getAccountContainer()->dn]['add']['nisNetgroupTriple'])) {
+			$return[$this->getAccountContainer()->dn]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
+			unset($return[$this->getAccountContainer()->dn]['add']['nisNetgroupTriple']);
+		}
+		return $return;
+	}
+
+	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
 	 * @return array HTML meta data
@@ -140,10 +165,15 @@ class nisnetgroup extends baseModule {
 			array('kind' => 'text', 'text' => _('Subgroups')),
 			array('kind' => 'input', 'name' => 'form_subpage_nisnetgroup_group_open', 'type' => 'submit', 'value' => _('Edit subgroups')),
 			array('kind' => 'help', 'value' => 'memberNisNetgroup'));
+		$return[] = array(
+			array('kind' => 'text', 'text' => '&nbsp;'),
+			array('kind' => 'text', 'text' => '&nbsp;'),
+			array('kind' => 'text', 'text' => '&nbsp;'),
+		);
 		// members
 		$memberTable = array(array(
-			array('kind' => 'text', 'text' => _('Host')),
-			array('kind' => 'text', 'text' => _('User')),
+			array('kind' => 'text', 'text' => _('Host'), 'td' => array('colspan' => 2)),
+			array('kind' => 'text', 'text' => _('User'), 'td' => array('colspan' => 2)),
 			array('kind' => 'text', 'text' => _('Domain'),
 			),
 		));
@@ -151,11 +181,19 @@ class nisnetgroup extends baseModule {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
 				$triple = explode(',', $triple);
+				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'host') && ($_POST['position'] == $i)) {
+					$triple[0] = $_POST['selectBox'];
+				}
+				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'user') && ($_POST['position'] == $i)) {
+					$triple[1] = $_POST['selectBox'];
+				}
 				$memberTable[] = array(
 					array('kind' => 'input', 'type' => 'text', 'name' => 'host_' . $i, 'value' => $triple[0]),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_host' . $i, 'image' => 'host.png', 'value' => ' ', 'title' => _('Select host')),
 					array('kind' => 'input', 'type' => 'text', 'name' => 'user_' . $i, 'value' => $triple[1]),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_user' . $i, 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
 					array('kind' => 'input', 'type' => 'text', 'name' => 'domain_' . $i, 'value' => $triple[2]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'del_' . $i, 'value' => _('Delete'))
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'del_' . $i, 'image' => 'delete.png', 'value' => ' ', 'title' => _('Delete'))
 				);
 			}
 		}
@@ -172,9 +210,11 @@ class nisnetgroup extends baseModule {
 		if (isset($_POST['domain_new'])) $domainNew = $_POST['domain_new'];
 		$memberTable[] = array(
 			array('kind' => 'input', 'type' => 'text', 'name' => 'host_new', 'value' => $hostNew),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_hostNew', 'image' => 'host.png', 'value' => ' ', 'title' => _('Select host')),
 			array('kind' => 'input', 'type' => 'text', 'name' => 'user_new', 'value' => $userNew),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_userNew', 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
 			array('kind' => 'input', 'type' => 'text', 'name' => 'domain_new', 'value' => $domainNew),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'add_new', 'value' => _('Add'))
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'add_new', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
 		);
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Members'), 'td' => array('valign' => 'top')),
@@ -202,6 +242,10 @@ class nisnetgroup extends baseModule {
 		$this->attributes['nisNetgroupTriple'] = array();
 		$i = 0;
 		while (isset($_POST['host_' . $i]) || isset($_POST['user_' . $i]) || isset($_POST['domain_' . $i])) {
+			if (isset($_POST['del_' . $i])) {
+				$i++;
+				continue;
+			}
 			// build NIS triple
 			$this->attributes['nisNetgroupTriple'][] = '(' . $_POST['host_' . $i] . ',' . $_POST['user_' . $i] . ',' . $_POST['domain_' . $i] . ')';
 			// check user input
@@ -222,21 +266,31 @@ class nisnetgroup extends baseModule {
 			}
 			$i++;
 		}
+		$addNewTriple = isset($_POST['add_new']);
 		// check user input
 		if (($_POST['host_new'] != '') && !get_preg($_POST['host_new'], 'DNSname')) {
 			$message = $this->messages['host'][0];
 			$message[2] = $message[2] . '<br><br>' . $_POST['host_new'];
 			$errors[] = $message;
+			$addNewTriple = false;
 		}
 		if (($_POST['user_new'] != '') && !get_preg($_POST['user_new'], 'username')) {
 			$message = $this->messages['user'][0];
 			$message[2] = $message[2] . '<br><br>' . $_POST['user_new'];
 			$errors[] = $message;
+			$addNewTriple = false;
 		}
 		if (($_POST['domain_new'] != '') && !get_preg($_POST['domain_new'], 'DNSname')) {
 			$message = $this->messages['domain'][0];
 			$message[2] = $message[2] . '<br><br>' . $_POST['domain_new'];
 			$errors[] = $message;
+			$addNewTriple = false;
+		}
+		if ($addNewTriple) {
+			$this->attributes['nisNetgroupTriple'][] = '(' . $_POST['host_new'] . ',' . $_POST['user_new'] . ',' . $_POST['domain_new'] . ')';
+			unset($_POST['host_new']);
+			unset($_POST['user_new']);
+			unset($_POST['domain_new']);
 		}
 		return $errors;
 	}
@@ -309,6 +363,86 @@ class nisnetgroup extends baseModule {
 		return array();
 	}
 
+	/**
+	* Displays the host/user selection.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_select() {
+		$selectHost = true;
+		$postKeys = array_keys($_POST);
+		$position = 'New';
+		for ($i = 0; $i < sizeof($postKeys); $i++) {
+			if 	(substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_user') {
+				$selectHost = false;
+				$position = substr($postKeys[$i], 36);
+				break;
+			}
+			if 	(substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_host') {
+				$position = substr($postKeys[$i], 36);
+				break;
+			}
+		}
+		$options = array();
+		if ($selectHost) {
+			// load list with all hosts
+			$dn_hosts = $_SESSION['cache']->get_cache('uid', 'account', 'host');
+			$DNs = array_keys($dn_hosts);
+			foreach ($DNs as $DN) {
+				if (get_preg($dn_hosts[$DN][0], 'DNSname')) {
+					$options[] = $dn_hosts[$DN][0];
+				}
+			}
+		}
+		else {
+			// load list with all users
+			$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
+			$DNs = array_keys($dn_users);
+			foreach ($DNs as $DN) {
+				$options[] = $dn_users[$DN][0];
+			}
+		}
+		$title = _('Host name');
+		if (!$selectHost) $title = _('User name');
+		$return[] = array(
+			array('kind' => 'text', 'text' => $title),
+			array('kind' => 'select', 'name' => 'selectBox', 'options' => $options)
+		);
+		$return[] = array(
+			array('kind' => 'text', 'text' => '&nbsp;')
+		);
+		$type = 'host';
+		if (!$selectHost) $type = 'user';
+		$return[] = array(
+			array('kind' => 'table', 'td' => array('colspan' => 2), 'value' => array(array(
+				array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_nisnetgroup_attributes_select'),
+				array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_nisnetgroup_attributes_back'),
+			))),
+			array('kind' => 'input', 'type' => 'hidden', 'name' => 'host_new', 'value' => $_POST['host_new']),
+			array('kind' => 'input', 'type' => 'hidden', 'name' => 'user_new', 'value' => $_POST['user_new']),
+			array('kind' => 'input', 'type' => 'hidden', 'name' => 'domain_new', 'value' => $_POST['domain_new']),
+			array('kind' => 'input', 'type' => 'hidden', 'name' => 'type', 'value' => $type),
+			array('kind' => 'input', 'type' => 'hidden', 'name' => 'position', 'value' => $position),
+			);
+		return $return;
+	}
+	
+	/**
+	* Processes user input of the host/user selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_select() {
+		if (isset($_POST['form_subpage_nisnetgroup_attributes_back'])) {
+			return array();
+		}
+		if ($_POST['position'] == 'New') {
+			$_POST[$_POST['type'] . '_new'] = $_POST['selectBox'];
+		}
+		return array();
+	}
+	
 	/**
 	* In this function the LDAP account is built up.
 	*
