@@ -193,6 +193,7 @@ class nisnetgroup extends baseModule {
 					array('kind' => 'input', 'type' => 'text', 'name' => 'user_' . $i, 'value' => $triple[1]),
 					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_user' . $i, 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
 					array('kind' => 'input', 'type' => 'text', 'name' => 'domain_' . $i, 'value' => $triple[2]),
+					array('kind' => 'text', 'text' => '&nbsp;'),
 					array('kind' => 'input', 'type' => 'submit', 'name' => 'del_' . $i, 'image' => 'delete.png', 'value' => ' ', 'title' => _('Delete'))
 				);
 			}
@@ -214,6 +215,7 @@ class nisnetgroup extends baseModule {
 			array('kind' => 'input', 'type' => 'text', 'name' => 'user_new', 'value' => $userNew),
 			array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_userNew', 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
 			array('kind' => 'input', 'type' => 'text', 'name' => 'domain_new', 'value' => $domainNew),
+			array('kind' => 'text', 'text' => '&nbsp;'),
 			array('kind' => 'input', 'type' => 'submit', 'name' => 'add_new', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
 		);
 		$return[] = array(
@@ -514,10 +516,22 @@ class nisnetgroup extends baseModule {
 			$return[get_class($this) . '_subgroups'] = array('<block><key>' . _('Subgroups') . '</key><value>' . implode(', ', $this->attributes['memberNisNetgroup']) . '</value></block>');
 		}
 		if (sizeof($this->attributes['nisNetgroupTriple']) > 0) {
-			$return[get_class($this) . '_members'][0] = '<block><key>' . _('Members') . '</key><tr><td align=\"L\">' . $this->attributes['nisNetgroupTriple'][0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
-				$return[get_class($this) . '_members'][] = '<block><tr><td align=\"L\">' . $this->attributes['nisNetgroupTriple'][$i] . '</td></tr></block>'; 
+			$return[get_class($this) . '_subgroups'] = array('<block><key>' . _('Members') . '</key><value> </value></block>');
+			$return[get_class($this) . '_members'][] = '<block><tr><td width="30%"> </td>' .
+					'<td width="20%"><b>' . _('Host') . '</b></td>' .
+					'<td width="20%"><b>' . _('User') . '</b></td>' .
+					'<td width="30%"><b>' . _('Domain') . '</b></td>' .
+					'</tr></block>';
+			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
+				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
+				$triple = explode(',', $triple);
+				$return[get_class($this) . '_members'][] = '<block><tr><td width="30%"> </td>' .
+					'<td width="20%" align=\"L\">' . $triple[0] . ' </td>' .
+					'<td width="20%" align=\"L\">' . $triple[1] . ' </td>' .
+					'<td width="30%" align=\"L\">' . $triple[2] . ' </td>' .
+					'</tr></block>';
 			}
+			$return[get_class($this) . '_members'][] = '<block><tr><td width="80%"> </td></tr></block>';
 		}
 		return $return;
 	}
