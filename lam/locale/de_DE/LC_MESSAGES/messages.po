@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2009-01-04 18:00+0100\n"
+"PO-Revision-Date: 2009-02-01 17:31+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,8 @@ msgstr "%s Alias(e) gefunden"
 msgid "%s domain(s) found"
 msgstr "%s Domäne(n) gefunden"
 
-#: ../lib/types/group.inc:122 ../lib/types/gon.inc:110
+#: ../lib/types/group.inc:122 ../lib/types/netgroup.inc:110
+#: ../lib/types/gon.inc:110
 #, php-format
 msgid "%s group(s) found"
 msgstr "%s Gruppe(n) gefunden"
@@ -151,7 +152,7 @@ msgstr ""
 "Benutzer können erlauben, dass andere in ihrem Namen handeln. Diese Option "
 "wird geprüft wenn über Kolab emails versendet werden."
 
-#: ../lib/modules/sambaSamAccount.inc:514
+#: ../lib/modules/sambaSamAccount.inc:510
 msgid "Abu Dhabi, Muscat, Baku"
 msgstr "Abu Dhabi, Muscat, Baku"
 
@@ -241,11 +242,11 @@ msgstr "Account deaktiviert"
 msgid "Account details"
 msgstr "Accountdetails"
 
-#: ../lib/modules/sambaSamAccount.inc:294
-#: ../lib/modules/sambaSamAccount.inc:417
-#: ../lib/modules/sambaSamAccount.inc:1069
-#: ../lib/modules/sambaSamAccount.inc:1302
-#: ../lib/modules/sambaSamAccount.inc:1492
+#: ../lib/modules/sambaSamAccount.inc:290
+#: ../lib/modules/sambaSamAccount.inc:413
+#: ../lib/modules/sambaSamAccount.inc:1092
+#: ../lib/modules/sambaSamAccount.inc:1325
+#: ../lib/modules/sambaSamAccount.inc:1515
 #: ../lib/modules/shadowAccount.inc:120 ../lib/modules/shadowAccount.inc:185
 #: ../lib/modules/shadowAccount.inc:217 ../lib/modules/shadowAccount.inc:321
 #: ../lib/modules/shadowAccount.inc:373 ../lib/modules/phpGroupwareUser.inc:82
@@ -262,16 +263,16 @@ msgstr "Account ist deaktiviert"
 
 #: ../lib/modules/sambaAccount.inc:142 ../lib/modules/sambaAccount.inc:259
 #: ../lib/modules/sambaAccount.inc:371 ../lib/modules/sambaAccount.inc:374
-#: ../lib/modules/sambaAccount.inc:762 ../lib/modules/sambaSamAccount.inc:234
-#: ../lib/modules/sambaSamAccount.inc:240
-#: ../lib/modules/sambaSamAccount.inc:395
-#: ../lib/modules/sambaSamAccount.inc:1007
-#: ../lib/modules/sambaSamAccount.inc:1480
+#: ../lib/modules/sambaAccount.inc:762 ../lib/modules/sambaSamAccount.inc:230
+#: ../lib/modules/sambaSamAccount.inc:236
+#: ../lib/modules/sambaSamAccount.inc:391
+#: ../lib/modules/sambaSamAccount.inc:1030
+#: ../lib/modules/sambaSamAccount.inc:1503
 msgid "Account is deactivated"
 msgstr "Account deaktiviert"
 
-#: ../lib/modules/sambaSamAccount.inc:237
-#: ../lib/modules/sambaSamAccount.inc:1015
+#: ../lib/modules/sambaSamAccount.inc:233
+#: ../lib/modules/sambaSamAccount.inc:1038
 msgid "Account is locked"
 msgstr "Account gesperrt"
 
@@ -313,35 +314,35 @@ msgstr ""
 "Gruppen) verwaltet werden sollen. Die Account-Module legen fest, welche "
 "Attribute (z.B. Unix und Samba) bearbeitet werden können."
 
-#: ../lib/modules.inc:1205
+#: ../lib/modules.inc:1214
 msgid "Account was created successfully."
 msgstr "Account wurde erfolgreich erstellt."
 
-#: ../templates/lists/changePassword.php:413 ../lib/modules.inc:1208
+#: ../templates/lists/changePassword.php:413 ../lib/modules.inc:1217
 msgid "Account was modified successfully."
 msgstr "Account wurde erfolgreich geändert."
 
-#: ../lib/modules/ddns.inc:81 ../lib/modules/ddns.inc:287
+#: ../lib/modules/ddns.inc:81 ../lib/modules/ddns.inc:304
 msgid "Activate DynDNS"
 msgstr "DynDNS aktivieren"
 
-#: ../lib/modules/sambaSamAccount.inc:301
+#: ../lib/modules/sambaSamAccount.inc:297
 msgid "Activate this checkbox to allow this user to use the terminal service."
 msgstr ""
 "Aktivieren Sie dieses Kästchen, damit der Benutzer den Terminalservice "
 "benutzen darf."
 
-#: ../lib/modules/sambaSamAccount.inc:322
+#: ../lib/modules/sambaSamAccount.inc:318
 msgid "Activate this checkbox to connect drives from the client machine."
 msgstr "Aktivieren Sie dieses Kästchen um Client-Laufwerke zu verbinden."
 
-#: ../lib/modules/sambaSamAccount.inc:325
+#: ../lib/modules/sambaSamAccount.inc:321
 msgid "Activate this checkbox to connect printers from the client machine."
 msgstr ""
 "Wenn Sie dieses Kästchen aktivieren, dann werden die Client-Drucker "
 "verbunden."
 
-#: ../lib/modules/sambaSamAccount.inc:310
+#: ../lib/modules/sambaSamAccount.inc:306
 msgid ""
 "Activate this checkbox to inherit the initial program and working directory "
 "from the client machine."
@@ -349,7 +350,7 @@ msgstr ""
 "Aktivieren Sie dieses Kästchen um das Startprogramm und Arbeitsverzeichnis "
 "von der Client-Maschine zu übernehmen."
 
-#: ../lib/modules/sambaSamAccount.inc:328
+#: ../lib/modules/sambaSamAccount.inc:324
 msgid "Activate this checkbox to set the client's printer as default printer."
 msgstr ""
 "Wenn Sie dieses Kästchen aktivieren, dann der Client-Drucker als "
@@ -372,18 +373,18 @@ msgstr "Aktive Accounttypen"
 #: ../templates/tree/add_attr_form.php:162
 #: ../templates/pdfedit/pdfpage.php:574 ../templates/pdfedit/pdfpage.php:591
 #: ../templates/pdfedit/pdfpage.php:621 ../templates/pdfedit/pdfpage.php:662
-#: ../templates/config/conftypes.php:180 ../lib/modules/nisMailAlias.inc:154
-#: ../lib/modules/ieee802device.inc:111 ../lib/modules/groupOfNames.inc:168
-#: ../lib/modules/groupOfNames.inc:310 ../lib/modules/kolabUser.inc:342
-#: ../lib/modules/kolabUser.inc:359 ../lib/modules/kolabUser.inc:385
-#: ../lib/modules/kolabUser.inc:863 ../lib/modules/kolabUser.inc:903
-#: ../lib/modules/ldapPublicKey.inc:105
+#: ../templates/config/conftypes.php:180 ../lib/modules/nisnetgroup.inc:219
+#: ../lib/modules/nisMailAlias.inc:154 ../lib/modules/ieee802device.inc:111
+#: ../lib/modules/groupOfNames.inc:168 ../lib/modules/groupOfNames.inc:310
+#: ../lib/modules/kolabUser.inc:342 ../lib/modules/kolabUser.inc:359
+#: ../lib/modules/kolabUser.inc:385 ../lib/modules/kolabUser.inc:863
+#: ../lib/modules/kolabUser.inc:903 ../lib/modules/ldapPublicKey.inc:105
 #: ../lib/modules/inetLocalMailRecipient.inc:167
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: ../lib/modules/fixed_ip.inc:91 ../lib/modules/fixed_ip.inc:422
-#: ../lib/modules/fixed_ip.inc:423
+#: ../lib/modules/fixed_ip.inc:91 ../lib/modules/fixed_ip.inc:416
+#: ../lib/modules/fixed_ip.inc:417
 msgid "Add IP"
 msgstr "IP hinzufügen"
 
@@ -392,7 +393,7 @@ msgid "Add Kolab extension"
 msgstr "Kolab-Erweiterung hinzufügen"
 
 #: ../lib/modules/sambaGroupMapping.inc:279
-#: ../lib/modules/sambaSamAccount.inc:1179
+#: ../lib/modules/sambaSamAccount.inc:1202
 msgid "Add Samba 3 account"
 msgstr "Samba 3-Account hinzufügen"
 
@@ -404,7 +405,7 @@ msgstr "Shadow-Account hinzufügen"
 msgid "Add entries of this type:"
 msgstr "Einträge diesen Typs hinzufügen:"
 
-#: ../lib/modules/ddns.inc:292
+#: ../lib/modules/ddns.inc:309
 msgid "Add fix IP addresses to DNS"
 msgstr "Feste IP-Adressen zum DNS hinzufügen"
 
@@ -459,9 +460,9 @@ msgid "Adding the range failed because errors occured."
 msgstr "Hinzufügen des Adressbereiches schlug fehl."
 
 #: ../lib/modules/posixAccount.inc:224 ../lib/modules/posixAccount.inc:355
-#: ../lib/modules/posixAccount.inc:400 ../lib/modules/posixAccount.inc:997
-#: ../lib/modules/posixAccount.inc:1090 ../lib/modules/posixAccount.inc:1162
-#: ../lib/modules/posixAccount.inc:1248
+#: ../lib/modules/posixAccount.inc:400 ../lib/modules/posixAccount.inc:992
+#: ../lib/modules/posixAccount.inc:1085 ../lib/modules/posixAccount.inc:1157
+#: ../lib/modules/posixAccount.inc:1243
 msgid "Additional groups"
 msgstr "Zusätzliche Gruppen"
 
@@ -493,11 +494,12 @@ msgstr "Fügt Eingabefelder für eine neue, feste IP-Adresse hinzu."
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: ../lib/modules/groupOfNames.inc:93 ../lib/modules/posixGroup.inc:401
+#: ../lib/modules/nisnetgroup.inc:94 ../lib/modules/groupOfNames.inc:93
+#: ../lib/modules/posixGroup.inc:401
 msgid "Administrators group"
 msgstr "Administratoren"
 
-#: ../lib/modules/sambaSamAccount.inc:501
+#: ../lib/modules/sambaSamAccount.inc:497
 msgid "Alaska"
 msgstr "Alaska"
 
@@ -554,9 +556,9 @@ msgstr "Alle selektierten Accounts (%s)"
 msgid "Allow machine password changes"
 msgstr "PC-Passwortänderungen erlauben"
 
-#: ../lib/modules/sambaSamAccount.inc:300
-#: ../lib/modules/sambaSamAccount.inc:1345
-#: ../lib/modules/sambaSamAccount.inc:1726
+#: ../lib/modules/sambaSamAccount.inc:296
+#: ../lib/modules/sambaSamAccount.inc:1368
+#: ../lib/modules/sambaSamAccount.inc:1749
 msgid "Allow terminal server login"
 msgstr "Terminalserver-Login erlauben"
 
@@ -566,12 +568,12 @@ msgid "Allowed hosts"
 msgstr "Erlaubte PCs"
 
 #: ../lib/modules/sambaAccount.inc:867 ../lib/modules/sambaAccount.inc:868
-#: ../lib/modules/sambaSamAccount.inc:1202
-#: ../lib/modules/sambaSamAccount.inc:1203
+#: ../lib/modules/sambaSamAccount.inc:1225
+#: ../lib/modules/sambaSamAccount.inc:1226
 msgid "Allowed workstations"
 msgstr "Erlaubte PCs"
 
-#: ../lib/modules/sambaSamAccount.inc:516
+#: ../lib/modules/sambaSamAccount.inc:512
 msgid "Almaty, Dhaka, Colombo"
 msgstr "Almaty, Dhaka, Colombo"
 
@@ -597,15 +599,13 @@ msgstr "Jeder"
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "Soll dieses Objekt gelöscht werden?"
 
-#: ../lib/modules/sambaSamAccount.inc:506
+#: ../lib/modules/sambaSamAccount.inc:502
 msgid "Atlantic time (Canada), Caracas"
 msgstr "Atlantic time (Kanada), Caracas"
 
-#: ../lib/modules/ddns.inc:339
-msgid ""
-"Attention: The DHCP service needs to be restarted after changes in DDNS."
-msgstr ""
-"Achtung: Der DHCP-Service muss nach Änderungen am DDNS neugestartet werden."
+#: ../lib/modules/ddns.inc:356
+msgid "Attention: The DHCP service needs to be restarted after changes in DDNS."
+msgstr "Achtung: Der DHCP-Service muss nach Änderungen am DDNS neugestartet werden."
 
 #: ../templates/tree/update_confirm.php:152
 msgid "Attribute"
@@ -615,7 +615,7 @@ msgstr "Attribut"
 msgid "Attribute types"
 msgstr "Attributtypen"
 
-#: ../lib/modules/sambaSamAccount.inc:522
+#: ../lib/modules/sambaSamAccount.inc:518
 msgid "Auckland, Fiji, Kamchatka"
 msgstr "Auckland, Fiji, Kamchatka"
 
@@ -623,7 +623,7 @@ msgstr "Auckland, Fiji, Kamchatka"
 msgid "Available account types"
 msgstr "Verfügbare Accounttypen"
 
-#: ../lib/modules/posixAccount.inc:1102
+#: ../lib/modules/nisnetgroup.inc:336 ../lib/modules/posixAccount.inc:1097
 msgid "Available groups"
 msgstr "Verfügbare Gruppen"
 
@@ -635,11 +635,11 @@ msgstr "Verfügbare Module"
 msgid "Available users"
 msgstr "Verfügbare Benutzer"
 
-#: ../lib/modules/sambaAccount.inc:873 ../lib/modules/sambaSamAccount.inc:1208
+#: ../lib/modules/sambaAccount.inc:873 ../lib/modules/sambaSamAccount.inc:1231
 msgid "Available workstations"
 msgstr "Verfügbare PCs"
 
-#: ../lib/modules/sambaSamAccount.inc:509
+#: ../lib/modules/sambaSamAccount.inc:505
 msgid "Azores, Cape Verde Islands"
 msgstr "Azoren, Kap Verde Inseln"
 
@@ -647,11 +647,11 @@ msgstr "Azoren, Kap Verde Inseln"
 msgid "B-Node (0x01)"
 msgstr "B-Knoten (0x01)"
 
-#: ../templates/tree/update_confirm.php:255
+#: ../templates/tree/update_confirm.php:255 ../lib/modules/nisnetgroup.inc:342
 #: ../lib/modules/inetOrgPerson.inc:1033 ../lib/modules/groupOfNames.inc:352
 #: ../lib/modules/sambaAccount.inc:878 ../lib/modules/posixGroup.inc:266
-#: ../lib/modules/posixGroup.inc:289 ../lib/modules/posixAccount.inc:1108
-#: ../lib/modules/sambaSamAccount.inc:1212
+#: ../lib/modules/posixGroup.inc:289 ../lib/modules/posixAccount.inc:1103
+#: ../lib/modules/sambaSamAccount.inc:1235
 msgid "Back"
 msgstr "Zurück"
 
@@ -671,7 +671,7 @@ msgstr "Zurück zum OU-Editor"
 msgid "Back to PDF Editor"
 msgstr "Zurück zum PDF-Editor"
 
-#: ../lib/modules.inc:1216
+#: ../lib/modules.inc:1225
 msgid "Back to account list"
 msgstr "Zurück zur Accountliste"
 
@@ -699,11 +699,11 @@ msgstr "Zurück zum Profileditor"
 msgid "Back to profile login"
 msgstr "Zurück zum Konfigurationslogin"
 
-#: ../lib/modules/sambaSamAccount.inc:513
+#: ../lib/modules/sambaSamAccount.inc:509
 msgid "Baghdad, Riyadh, Moscow"
 msgstr "Baghdad, Riyadh, Moskau"
 
-#: ../lib/modules/sambaSamAccount.inc:517
+#: ../lib/modules/sambaSamAccount.inc:513
 msgid "Bangkok, Hanoi, Jakarta"
 msgstr "Bangkok, Hanoi, Jakarta"
 
@@ -723,7 +723,7 @@ msgstr "Basismodul"
 msgid "Beginning"
 msgstr "Anfang"
 
-#: ../lib/modules/sambaSamAccount.inc:518
+#: ../lib/modules/sambaSamAccount.inc:514
 msgid "Beijing, Perth, Singapore"
 msgstr "Beijing, Perth, Singapur"
 
@@ -763,7 +763,7 @@ msgstr ""
 msgid "Block soft quota must be smaller than block hard quota."
 msgstr "Weiches Block-Quota muss kleiner sein als hartes Block-Quota."
 
-#: ../lib/modules/sambaSamAccount.inc:507
+#: ../lib/modules/sambaSamAccount.inc:503
 msgid "Brazil, Buenos Aires"
 msgstr "Brasilien, Buenos Aires"
 
@@ -797,10 +797,10 @@ msgstr "Cache Zeitbegrenzung ist ungültig!"
 #: ../lib/modules/sambaAccount.inc:392 ../lib/modules/sambaAccount.inc:398
 #: ../lib/modules/sambaAccount.inc:410
 #: ../lib/modules/sambaGroupMapping.inc:367
-#: ../lib/modules/posixAccount.inc:401 ../lib/modules/sambaSamAccount.inc:255
-#: ../lib/modules/sambaSamAccount.inc:258
-#: ../lib/modules/sambaSamAccount.inc:261
-#: ../lib/modules/sambaSamAccount.inc:267 ../lib/modules/shadowAccount.inc:170
+#: ../lib/modules/posixAccount.inc:401 ../lib/modules/sambaSamAccount.inc:251
+#: ../lib/modules/sambaSamAccount.inc:254
+#: ../lib/modules/sambaSamAccount.inc:257
+#: ../lib/modules/sambaSamAccount.inc:263 ../lib/modules/shadowAccount.inc:170
 #: ../lib/modules/shadowAccount.inc:174 ../lib/modules/shadowAccount.inc:178
 #: ../lib/modules/shadowAccount.inc:182
 msgid "Can be left empty."
@@ -815,12 +815,12 @@ msgstr "Kann leer bleiben."
 #: ../templates/profedit/profiledelete.php:86
 #: ../templates/config/conftypes.php:239 ../templates/config/confmain.php:457
 #: ../templates/config/confmodules.php:116 ../templates/initsuff.php:193
-#: ../lib/modules/inetOrgPerson.inc:996 ../lib/modules/groupOfNames.inc:231
-#: ../lib/modules/groupOfNames.inc:258 ../lib/modules/groupOfNames.inc:311
-#: ../lib/modules/posixAccount.inc:1137 ../lib/modules/kolabUser.inc:572
-#: ../lib/modules/sambaSamAccount.inc:1277
-#: ../lib/modules/sambaSamAccount.inc:1325
-#: ../lib/modules/sambaSamAccount.inc:1448
+#: ../lib/modules/nisnetgroup.inc:421 ../lib/modules/inetOrgPerson.inc:996
+#: ../lib/modules/groupOfNames.inc:231 ../lib/modules/groupOfNames.inc:258
+#: ../lib/modules/groupOfNames.inc:311 ../lib/modules/posixAccount.inc:1132
+#: ../lib/modules/kolabUser.inc:572 ../lib/modules/sambaSamAccount.inc:1300
+#: ../lib/modules/sambaSamAccount.inc:1348
+#: ../lib/modules/sambaSamAccount.inc:1471
 #: ../lib/modules/shadowAccount.inc:385
 #: ../lib/modules/phpGroupwareUser.inc:248 ../lib/modules/aliasEntry.inc:147
 #: ../lib/modules/aliasEntry.inc:173 ../lib/lists.inc:667 ../lib/lists.inc:898
@@ -832,8 +832,7 @@ msgstr "Abbrechen"
 #: ../templates/selfService/selfServiceMain.php:86 ../templates/login.php:437
 #: ../templates/login.php:442
 msgid "Cannot connect to specified LDAP server. Please try again."
-msgstr ""
-"Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
+msgstr "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
 
 #: ../lib/config.inc:392 ../lib/config.inc:1016
 msgid "Cannot open config file!"
@@ -849,21 +848,21 @@ msgstr "Überschriften und Beschriftungen"
 msgid "Car license"
 msgstr "Führerschein"
 
-#: ../lib/modules/sambaSamAccount.inc:511
+#: ../lib/modules/sambaSamAccount.inc:507
 msgid "Central Europe Time, Paris, Berlin"
 msgstr "Mitteleuropäische Zeit, Paris, Berlin"
 
-#: ../lib/modules/sambaSamAccount.inc:504
+#: ../lib/modules/sambaSamAccount.inc:500
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Central Time (USA & Kanada), Mexiko Stadt"
 
 #: ../templates/selfService/adminMain.php:409
 #: ../templates/pdfedit/pdfpage.php:453 ../templates/pdfedit/pdfpage.php:459
 #: ../lib/modules/groupOfNames.inc:157 ../lib/modules/groupOfNames.inc:174
-#: ../lib/modules/sambaSamAccount.inc:1038
-#: ../lib/modules/sambaSamAccount.inc:1055
-#: ../lib/modules/sambaSamAccount.inc:1072
-#: ../lib/modules/sambaSamAccount.inc:1321
+#: ../lib/modules/sambaSamAccount.inc:1061
+#: ../lib/modules/sambaSamAccount.inc:1078
+#: ../lib/modules/sambaSamAccount.inc:1095
+#: ../lib/modules/sambaSamAccount.inc:1344
 #: ../lib/modules/shadowAccount.inc:324 ../lib/modules/shadowAccount.inc:381
 #: ../lib/modules/phpGroupwareUser.inc:145
 #: ../lib/modules/phpGroupwareUser.inc:244 ../lib/modules/aliasEntry.inc:100
@@ -890,7 +889,7 @@ msgstr "Hauptpasswort ändern"
 #: ../templates/lists/changePassword.php:193
 #: ../templates/lists/changePassword.php:220
 #: ../lib/modules/inetOrgPerson.inc:767 ../lib/modules/posixGroup.inc:202
-#: ../lib/modules/posixAccount.inc:1043 ../lib/types/user.inc:234
+#: ../lib/modules/posixAccount.inc:1038 ../lib/types/user.inc:234
 #: ../help/help.inc:99
 msgid "Change password"
 msgstr "Passwort ändern"
@@ -911,7 +910,7 @@ msgstr "Einstellungen ändern"
 msgid "Change suffix"
 msgstr "Suffix wechseln"
 
-#: ../lib/modules/posixAccount.inc:862
+#: ../lib/modules/posixAccount.inc:857
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "Wert wurde geändert da nur ASCII-Zeichen erlaubt sind."
 
@@ -951,9 +950,9 @@ msgstr "Wählen Sie eine Vorlage"
 msgid "Click here if you are not directed to the next page."
 msgstr "Hier klicken wenn Sie nicht zur nächsten Seite weitergeleitet werden."
 
-#: ../lib/modules/sambaSamAccount.inc:327
-#: ../lib/modules/sambaSamAccount.inc:1411
-#: ../lib/modules/sambaSamAccount.inc:1754
+#: ../lib/modules/sambaSamAccount.inc:323
+#: ../lib/modules/sambaSamAccount.inc:1434
+#: ../lib/modules/sambaSamAccount.inc:1777
 msgid "Client printer is default"
 msgstr "Client-Drucker ist Standarddrucker"
 
@@ -965,7 +964,7 @@ msgstr "Gemeinsam"
 msgid "Columns:"
 msgstr "Spalten:"
 
-#: ../lib/modules/sambaAccount.inc:398 ../lib/modules/sambaSamAccount.inc:267
+#: ../lib/modules/sambaAccount.inc:398 ../lib/modules/sambaSamAccount.inc:263
 msgid ""
 "Comma separated list of Samba workstations the user is allowed to login. "
 "Empty means every workstation."
@@ -981,8 +980,8 @@ msgstr "Bestätigen"
 #: ../lib/modules/inetOrgPerson.inc:446 ../lib/modules/inetOrgPerson.inc:735
 #: ../lib/modules/inetOrgPerson.inc:1061 ../lib/modules/posixAccount.inc:92
 #: ../lib/modules/posixAccount.inc:205 ../lib/modules/posixAccount.inc:404
-#: ../lib/modules/posixAccount.inc:426 ../lib/modules/posixAccount.inc:970
-#: ../lib/modules/posixAccount.inc:1243
+#: ../lib/modules/posixAccount.inc:426 ../lib/modules/posixAccount.inc:965
+#: ../lib/modules/posixAccount.inc:1238
 msgid "Common name"
 msgstr "Allgemeiner Name"
 
@@ -1002,20 +1001,20 @@ msgstr "Einstellungsassistent"
 msgid "Conflicting module:"
 msgstr "Modulkonflikt:"
 
-#: ../lib/modules/sambaSamAccount.inc:321
-#: ../lib/modules/sambaSamAccount.inc:1401
-#: ../lib/modules/sambaSamAccount.inc:1744
+#: ../lib/modules/sambaSamAccount.inc:317
+#: ../lib/modules/sambaSamAccount.inc:1424
+#: ../lib/modules/sambaSamAccount.inc:1767
 msgid "Connect client drives"
 msgstr "Verbinde Client-Laufwerke"
 
-#: ../lib/modules/sambaSamAccount.inc:324
-#: ../lib/modules/sambaSamAccount.inc:1406
-#: ../lib/modules/sambaSamAccount.inc:1749
+#: ../lib/modules/sambaSamAccount.inc:320
+#: ../lib/modules/sambaSamAccount.inc:1429
+#: ../lib/modules/sambaSamAccount.inc:1772
 msgid "Connect client printers"
 msgstr "Verbinde Client-Drucker"
 
-#: ../lib/modules/sambaSamAccount.inc:1386
-#: ../lib/modules/sambaSamAccount.inc:1737
+#: ../lib/modules/sambaSamAccount.inc:1409
+#: ../lib/modules/sambaSamAccount.inc:1760
 msgid "Connection time limit"
 msgstr "Zeitlimit für Verbindung"
 
@@ -1063,7 +1062,7 @@ msgstr "Erstellen"
 msgid "Create Object"
 msgstr "Objekt erstellen"
 
-#: ../lib/modules.inc:1223 ../lib/lists.inc:469 ../lib/lists.inc:631
+#: ../lib/modules.inc:1232 ../lib/lists.inc:469 ../lib/lists.inc:631
 #: ../help/help.inc:155
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
@@ -1076,7 +1075,7 @@ msgstr "Neue PDF-Struktur erstellen"
 msgid "Create a new profile"
 msgstr "Neues Profil erstellen"
 
-#: ../lib/modules.inc:1215
+#: ../lib/modules.inc:1224
 msgid "Create another account"
 msgstr "Weiteren Account anlegen"
 
@@ -1084,8 +1083,8 @@ msgstr "Weiteren Account anlegen"
 msgid "Create for"
 msgstr "Erstellen für"
 
-#: ../lib/modules/posixAccount.inc:237 ../lib/modules/posixAccount.inc:1013
-#: ../lib/modules/posixAccount.inc:1179
+#: ../lib/modules/posixAccount.inc:237 ../lib/modules/posixAccount.inc:1008
+#: ../lib/modules/posixAccount.inc:1174
 msgid "Create home directory"
 msgstr "Heimatverzeichnis anlegen"
 
@@ -1117,9 +1116,8 @@ msgstr "Individuell"
 msgid "DDNS"
 msgstr "DDNS"
 
-#: ../lib/modules/ddns.inc:309
-msgid ""
-"DDNS ist not activated. You can activate it in the DHCP settings (DDNS)."
+#: ../lib/modules/ddns.inc:326
+msgid "DDNS ist not activated. You can activate it in the DHCP settings (DDNS)."
 msgstr ""
 "DDNS ist nicht aktiviert. Sie können es in den DHCP-Einstellungen (DDNS) "
 "ändern."
@@ -1141,7 +1139,7 @@ msgstr "DHCP-Einstellungen"
 #: ../templates/tree/update_confirm.php:79
 #: ../templates/tree/add_oclass_form.php:124
 #: ../templates/tree/add_attr_form.php:73 ../templates/tree/edit.php:92
-#: ../templates/delete.php:95 ../lib/modules.inc:1308 ../lib/modules.inc:1748
+#: ../templates/delete.php:95 ../lib/modules.inc:1317 ../lib/modules.inc:1757
 msgid "DN"
 msgstr "DN"
 
@@ -1153,8 +1151,8 @@ msgstr "DN-Einstellungen"
 msgid "DN suffix"
 msgstr "DN-Suffix"
 
-#: ../lib/modules/dhcp_settings.inc:206 ../lib/modules/dhcp_settings.inc:681
-#: ../lib/modules/dhcp_settings.inc:777
+#: ../lib/modules/dhcp_settings.inc:206 ../lib/modules/dhcp_settings.inc:688
+#: ../lib/modules/dhcp_settings.inc:784
 msgid "DNS"
 msgstr "DNS"
 
@@ -1171,15 +1169,13 @@ msgstr "DSML-Export für: %s"
 msgid "Data field for RDN is empty!"
 msgstr "Datenfeld für RDN ist leer!"
 
-#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaSamAccount.inc:247
+#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaSamAccount.inc:243
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
-msgstr ""
-"Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
+msgstr "Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
 
-#: ../lib/modules/sambaAccount.inc:380 ../lib/modules/sambaSamAccount.inc:249
+#: ../lib/modules/sambaAccount.inc:380 ../lib/modules/sambaSamAccount.inc:245
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
-msgstr ""
-"Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
+msgstr "Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
 
 #: ../lib/modules/shadowAccount.inc:170
 msgid ""
@@ -1190,7 +1186,7 @@ msgstr ""
 "muss größer 0 sein."
 
 #: ../lib/modules/dhcp_settings.inc:142 ../lib/modules/dhcp_settings.inc:211
-#: ../lib/modules/dhcp_settings.inc:687 ../lib/modules/dhcp_settings.inc:778
+#: ../lib/modules/dhcp_settings.inc:694 ../lib/modules/dhcp_settings.inc:785
 msgid "Default gateway"
 msgstr "Standard-Gateway"
 
@@ -1204,8 +1200,7 @@ msgstr "Standardwert"
 
 #: ../lib/modules/sambaDomain.inc:111
 msgid "Defines if workstations may change their passwords."
-msgstr ""
-"Hier können Sie bestimmen, ob Computer ihre Domänenpasswörter ändern dürfen."
+msgstr "Hier können Sie bestimmen, ob Computer ihre Domänenpasswörter ändern dürfen."
 
 #: ../lib/modules/kolabUser.inc:129 ../lib/modules/kolabUser.inc:143
 #: ../lib/modules/kolabUser.inc:147 ../lib/modules/kolabUser.inc:207
@@ -1221,7 +1216,8 @@ msgstr "Vollmachten haben ungültiges Format!"
 #: ../templates/tree/delete_form.php:159 ../templates/tree/edit.php:115
 #: ../templates/pdfedit/pdfdelete.php:96 ../templates/pdfedit/pdfmain.php:168
 #: ../templates/delete.php:116 ../templates/ou_edit.php:107
-#: ../templates/profedit/profilemain.php:158 ../lib/modules/kolabUser.inc:857
+#: ../templates/profedit/profilemain.php:158
+#: ../lib/modules/nisnetgroup.inc:197 ../lib/modules/kolabUser.inc:857
 #: ../lib/lists.inc:465 ../lib/tree.inc:1178
 msgid "Delete"
 msgstr "Löschen"
@@ -1235,8 +1231,8 @@ msgstr "%s löschen"
 msgid "Delete DHCP(s)"
 msgstr "DHCP(s) löschen"
 
-#: ../lib/modules/fixed_ip.inc:88 ../lib/modules/fixed_ip.inc:413
-#: ../lib/modules/fixed_ip.inc:414
+#: ../lib/modules/fixed_ip.inc:88 ../lib/modules/fixed_ip.inc:407
+#: ../lib/modules/fixed_ip.inc:408
 msgid "Delete IP"
 msgstr "IP löschen"
 
@@ -1261,11 +1257,12 @@ msgstr "Alle %s-Objekte löschen"
 msgid "Delete domain(s)"
 msgstr "Lösche Domäne(n)"
 
-#: ../lib/types/group.inc:125 ../lib/types/gon.inc:113
+#: ../lib/types/group.inc:125 ../lib/types/netgroup.inc:113
+#: ../lib/types/gon.inc:113
 msgid "Delete group(s)"
 msgstr "Lösche Gruppe(n)"
 
-#: ../lib/modules/posixAccount.inc:1062
+#: ../lib/modules/posixAccount.inc:1057
 msgid "Delete home directory"
 msgstr "Heimatverzeichnis löschen"
 
@@ -1342,43 +1339,43 @@ msgstr "Lösche. Bitte haben Sie ein wenig Geduld..."
 
 #: ../templates/schema/schema.php:94 ../templates/schema/schema.php:148
 #: ../templates/schema/schema.php:351 ../templates/tree/add_value_form.php:186
-#: ../lib/modules/account.inc:88 ../lib/modules/account.inc:98
-#: ../lib/modules/account.inc:122 ../lib/modules/account.inc:226
-#: ../lib/modules/account.inc:240 ../lib/modules/inetOrgPerson.inc:209
-#: ../lib/modules/inetOrgPerson.inc:390 ../lib/modules/inetOrgPerson.inc:743
-#: ../lib/modules/inetOrgPerson.inc:1045 ../lib/modules/groupOfNames.inc:64
-#: ../lib/modules/groupOfNames.inc:91 ../lib/modules/groupOfNames.inc:143
-#: ../lib/modules/groupOfNames.inc:443 ../lib/modules/sambaAccount.inc:898
+#: ../lib/modules/nisnetgroup.inc:72 ../lib/modules/nisnetgroup.inc:161
+#: ../lib/modules/nisnetgroup.inc:513 ../lib/modules/account.inc:88
+#: ../lib/modules/account.inc:98 ../lib/modules/account.inc:122
+#: ../lib/modules/account.inc:226 ../lib/modules/account.inc:240
+#: ../lib/modules/inetOrgPerson.inc:209 ../lib/modules/inetOrgPerson.inc:390
+#: ../lib/modules/inetOrgPerson.inc:743 ../lib/modules/inetOrgPerson.inc:1045
+#: ../lib/modules/groupOfNames.inc:64 ../lib/modules/groupOfNames.inc:91
+#: ../lib/modules/groupOfNames.inc:143 ../lib/modules/groupOfNames.inc:443
+#: ../lib/modules/sambaAccount.inc:898
 #: ../lib/modules/sambaGroupMapping.inc:389 ../lib/modules/posixGroup.inc:177
 #: ../lib/modules/posixGroup.inc:412 ../lib/modules/posixGroup.inc:478
 #: ../lib/modules/posixAccount.inc:310 ../lib/modules/posixAccount.inc:422
-#: ../lib/types/user.inc:92
+#: ../lib/types/netgroup.inc:83 ../lib/types/user.inc:92
 msgid "Description"
 msgstr "Beschreibung"
 
-#: ../lib/modules/ddns.inc:87 ../lib/modules/ddns.inc:297
+#: ../lib/modules/ddns.inc:87 ../lib/modules/ddns.inc:314
 msgid "Disable client updates"
 msgstr "Client-Änderungen deaktivieren"
 
 #: ../lib/modules/ddns.inc:88
 msgid "Disables the client to update DNS entries."
-msgstr ""
-"Deaktiviert die Möglichkeit, dass Clients DNS-Einträge verändern dürfen."
+msgstr "Deaktiviert die Möglichkeit, dass Clients DNS-Einträge verändern dürfen."
 
 #: ../lib/modules/sambaDomain.inc:106 ../lib/modules/sambaDomain.inc:288
 #: ../lib/modules/sambaDomain.inc:664
 msgid "Disconnect users outside logon hours"
 msgstr "Abmeldung außerhalb der Anmeldezeiten"
 
-#: ../lib/modules/sambaSamAccount.inc:1391
-#: ../lib/modules/sambaSamAccount.inc:1738
+#: ../lib/modules/sambaSamAccount.inc:1414
+#: ../lib/modules/sambaSamAccount.inc:1761
 msgid "Disconnection time limit"
 msgstr "Zeitlimit für Trennung"
 
 #: ../lib/modules/sambaDomain.inc:107
 msgid "Disconnects users if they are logged in outside logon hours."
-msgstr ""
-"Meldet Benutzer ab, die außerhalb der definierten Anmeldezeiten aktiv sind."
+msgstr "Meldet Benutzer ab, die außerhalb der definierten Anmeldezeiten aktiv sind."
 
 #: ../lib/modules/sambaAccount.inc:78 ../lib/modules/sambaAccount.inc:223
 #: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaAccount.inc:728
@@ -1387,10 +1384,10 @@ msgstr ""
 #: ../lib/modules/sambaGroupMapping.inc:354
 #: ../lib/modules/sambaGroupMapping.inc:387
 #: ../lib/modules/sambaSamAccount.inc:100
-#: ../lib/modules/sambaSamAccount.inc:207
-#: ../lib/modules/sambaSamAccount.inc:359
-#: ../lib/modules/sambaSamAccount.inc:979
-#: ../lib/modules/sambaSamAccount.inc:1695
+#: ../lib/modules/sambaSamAccount.inc:203
+#: ../lib/modules/sambaSamAccount.inc:355
+#: ../lib/modules/sambaSamAccount.inc:1002
+#: ../lib/modules/sambaSamAccount.inc:1718
 msgid "Display name"
 msgstr "Anzeigename"
 
@@ -1426,6 +1423,7 @@ msgstr "Sollen die folgenden Accounts wirklich gelöscht werden?"
 msgid "Do you want to make these changes?"
 msgstr "Wollen Sie die Änderungen übernehmen?"
 
+#: ../lib/modules/nisnetgroup.inc:177 ../lib/modules/nisnetgroup.inc:523
 #: ../lib/modules/sambaAccount.inc:181 ../lib/modules/sambaAccount.inc:325
 #: ../lib/modules/sambaAccount.inc:335 ../lib/modules/sambaAccount.inc:409
 #: ../lib/modules/sambaAccount.inc:839 ../lib/modules/sambaAccount.inc:897
@@ -1433,13 +1431,13 @@ msgstr "Wollen Sie die Änderungen übernehmen?"
 #: ../lib/modules/sambaGroupMapping.inc:272
 #: ../lib/modules/sambaGroupMapping.inc:366
 #: ../lib/modules/sambaGroupMapping.inc:409
-#: ../lib/modules/sambaSamAccount.inc:285
-#: ../lib/modules/sambaSamAccount.inc:352
-#: ../lib/modules/sambaSamAccount.inc:478
-#: ../lib/modules/sambaSamAccount.inc:1153
-#: ../lib/modules/sambaSamAccount.inc:1550
-#: ../lib/modules/sambaSamAccount.inc:1580
-#: ../lib/modules/sambaSamAccount.inc:1713
+#: ../lib/modules/sambaSamAccount.inc:281
+#: ../lib/modules/sambaSamAccount.inc:348
+#: ../lib/modules/sambaSamAccount.inc:474
+#: ../lib/modules/sambaSamAccount.inc:1176
+#: ../lib/modules/sambaSamAccount.inc:1573
+#: ../lib/modules/sambaSamAccount.inc:1603
+#: ../lib/modules/sambaSamAccount.inc:1736
 msgid "Domain"
 msgstr "Domäne"
 
@@ -1468,7 +1466,7 @@ msgstr "Domänen-Zertifikats-Administratoren"
 #: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:570
 #: ../lib/modules/sambaGroupMapping.inc:59
 #: ../lib/modules/sambaSamAccount.inc:72
-#: ../lib/modules/sambaSamAccount.inc:675
+#: ../lib/modules/sambaSamAccount.inc:692
 msgid "Domain computers"
 msgstr "Domänen-PCs"
 
@@ -1492,12 +1490,12 @@ msgstr "Domänengruppe"
 msgid "Domain guests"
 msgstr "Domänengäste"
 
-#: ../lib/modules/dhcp_settings.inc:127 ../lib/modules/dhcp_settings.inc:191
-#: ../lib/modules/dhcp_settings.inc:663 ../lib/modules/dhcp_settings.inc:774
-#: ../lib/modules/sambaAccount.inc:72 ../lib/modules/sambaDomain.inc:70
-#: ../lib/modules/sambaDomain.inc:137 ../lib/modules/sambaDomain.inc:218
-#: ../lib/modules/sambaDomain.inc:224 ../lib/modules/sambaDomain.inc:633
-#: ../lib/types/smbDomain.inc:83
+#: ../lib/modules/nisnetgroup.inc:118 ../lib/modules/dhcp_settings.inc:127
+#: ../lib/modules/dhcp_settings.inc:191 ../lib/modules/dhcp_settings.inc:670
+#: ../lib/modules/dhcp_settings.inc:781 ../lib/modules/sambaAccount.inc:72
+#: ../lib/modules/sambaDomain.inc:70 ../lib/modules/sambaDomain.inc:137
+#: ../lib/modules/sambaDomain.inc:218 ../lib/modules/sambaDomain.inc:224
+#: ../lib/modules/sambaDomain.inc:633 ../lib/types/smbDomain.inc:83
 msgid "Domain name"
 msgstr "Domänenname"
 
@@ -1509,7 +1507,8 @@ msgstr ""
 "Domänenname enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und -."
 
-#: ../lib/modules/sambaDomain.inc:188 ../lib/modules/sambaDomain.inc:189
+#: ../lib/modules/nisnetgroup.inc:118 ../lib/modules/sambaDomain.inc:188
+#: ../lib/modules/sambaDomain.inc:189
 msgid "Domain name is invalid!"
 msgstr "Domänenname ist ungültig!"
 
@@ -1525,7 +1524,7 @@ msgstr "Domänen-Schema-Administratoren"
 
 #: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaGroupMapping.inc:57
 #: ../lib/modules/sambaSamAccount.inc:71
-#: ../lib/modules/sambaSamAccount.inc:2039
+#: ../lib/modules/sambaSamAccount.inc:2062
 msgid "Domain users"
 msgstr "Domänenbenutzer"
 
@@ -1574,22 +1573,22 @@ msgstr "EMail-Aliasliste hat ungültiges Format!"
 msgid "EMail aliases"
 msgstr "EMail-Aliase"
 
-#: ../lib/modules/sambaSamAccount.inc:520
+#: ../lib/modules/sambaSamAccount.inc:516
 msgid "East Australian Standard, Guam"
 msgstr "Ostaustralien, Guam"
 
-#: ../lib/modules/sambaSamAccount.inc:512
+#: ../lib/modules/sambaSamAccount.inc:508
 msgid "Eastern Europe Time, South Africa"
 msgstr "Osteuropäische Zeit, Südafrika"
 
-#: ../lib/modules/sambaSamAccount.inc:505
+#: ../lib/modules/sambaSamAccount.inc:501
 msgid "Eastern Time (US & Canada), Bogota"
 msgstr "Eastern Time (USA & Kanada), Bogota"
 
 #: ../templates/pdfedit/pdfmain.php:165
 #: ../templates/profedit/profilemain.php:155
-#: ../lib/modules/sambaSamAccount.inc:1160
-#: ../lib/modules/sambaSamAccount.inc:1164 ../lib/lists.inc:460
+#: ../lib/modules/sambaSamAccount.inc:1183
+#: ../lib/modules/sambaSamAccount.inc:1187 ../lib/lists.inc:460
 msgid "Edit"
 msgstr "Editieren"
 
@@ -1601,7 +1600,7 @@ msgstr "Accounttypen ändern"
 msgid "Edit general settings"
 msgstr "Allgemeine Einstellungen ändern"
 
-#: ../lib/modules/posixAccount.inc:998
+#: ../lib/modules/posixAccount.inc:993
 msgid "Edit groups"
 msgstr "Gruppen ändern"
 
@@ -1621,7 +1620,11 @@ msgstr "SelfService bearbeiten"
 msgid "Edit server profiles"
 msgstr "Serverprofile ändern"
 
-#: ../lib/modules/sambaAccount.inc:798 ../lib/modules/sambaSamAccount.inc:1112
+#: ../lib/modules/nisnetgroup.inc:166
+msgid "Edit subgroups"
+msgstr "Untergruppen ändern"
+
+#: ../lib/modules/sambaAccount.inc:798 ../lib/modules/sambaSamAccount.inc:1135
 msgid "Edit workstations"
 msgstr "Arbeitsstationen ändern"
 
@@ -1644,7 +1647,7 @@ msgstr "Das Passwort war leer. Bitte erneut eingeben."
 msgid "Encountered an error while performing search."
 msgstr "Die LDAP-Suche ist fehlgeschlagen."
 
-#: ../lib/modules/sambaSamAccount.inc:498
+#: ../lib/modules/sambaSamAccount.inc:494
 msgid "Eniwetok, Kwajalein"
 msgstr "Eniwetok, Kwajalein"
 
@@ -1687,7 +1690,7 @@ msgstr ""
 "Jeder Accounttyp benötigt exakt ein Basismodul. Dieses Modul stellt die "
 "strukturelle Objektklasse bereit."
 
-#: ../lib/modules/dhcp_settings.inc:658 ../help/help.inc:74
+#: ../lib/modules/dhcp_settings.inc:665 ../help/help.inc:74
 #: ../help/help.inc:80 ../help/help.inc:86 ../help/help.inc:91
 #: ../help/help.inc:111
 msgid "Example"
@@ -1743,7 +1746,7 @@ msgstr "Faxnummer"
 msgid "File"
 msgstr "Datei"
 
-#: ../lib/modules/sambaSamAccount.inc:261
+#: ../lib/modules/sambaSamAccount.inc:257
 msgid ""
 "File name and path relative to netlogon-share which should be executed on "
 "logon. $user and $group are replaced with user and group name."
@@ -1786,14 +1789,13 @@ msgstr "Vorname enthält ungültige Zeichen!"
 
 #: ../lib/modules/inetOrgPerson.inc:399
 msgid "First name of user. Only letters, - and spaces are allowed."
-msgstr ""
-"Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+msgstr "Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/ddns.inc:84
 msgid "Fix IP addresses"
 msgstr "Feste IP-Adressen"
 
-#: ../lib/modules/dhcp_settings.inc:712 ../lib/modules/fixed_ip.inc:63
+#: ../lib/modules/dhcp_settings.inc:719 ../lib/modules/fixed_ip.inc:63
 msgid "Fixed IP"
 msgstr "Feste IP"
 
@@ -1816,7 +1818,7 @@ msgstr "Frei/Besetzt-Intervall"
 msgid "Free/Busy interval must be a number!"
 msgstr "Frei/Besetzt-Intervall muss eine Nummer sein!"
 
-#: ../lib/modules/sambaSamAccount.inc:1230
+#: ../lib/modules/sambaSamAccount.inc:1253
 msgid "Friday"
 msgstr "Freitag"
 
@@ -1832,7 +1834,7 @@ msgstr "DE-12345"
 #: ../lib/modules/posixGroup.inc:366 ../lib/modules/posixGroup.inc:408
 #: ../lib/modules/posixGroup.inc:428 ../lib/modules/posixGroup.inc:476
 #: ../lib/modules/posixGroup.inc:496 ../lib/modules/posixAccount.inc:88
-#: ../lib/modules/posixAccount.inc:1245 ../lib/types/group.inc:84
+#: ../lib/modules/posixAccount.inc:1240 ../lib/types/group.inc:84
 #: ../lib/types/user.inc:84 ../lib/types/host.inc:87
 msgid "GID number"
 msgstr "GID Nummer"
@@ -1861,7 +1863,7 @@ msgstr "GID-Nummer muss eine Zahl sein!"
 
 #: ../lib/modules/posixAccount.inc:266 ../lib/modules/posixAccount.inc:298
 #: ../lib/modules/posixAccount.inc:376 ../lib/modules/posixAccount.inc:414
-#: ../lib/modules/posixAccount.inc:982 ../lib/modules/posixAccount.inc:1246
+#: ../lib/modules/posixAccount.inc:977 ../lib/modules/posixAccount.inc:1241
 msgid "Gecos"
 msgstr "Gecos"
 
@@ -1883,17 +1885,14 @@ msgid "Grace block period"
 msgstr "Block-Frist"
 
 #: ../lib/modules/quota.inc:114
-msgid ""
-"Grace block period. Most filesystems use a fixed maximum value of 7 days."
-msgstr ""
-"Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgid "Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgstr "Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:136
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
-msgstr ""
-"Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgstr "Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:135 ../lib/modules/quota.inc:382
 msgid "Grace inode period"
@@ -1908,7 +1907,8 @@ msgstr "Gruppe"
 msgid "Group accounts (e.g. Unix and Samba)"
 msgstr "Gruppenaccounts (z.B. Unix und Samba)"
 
-#: ../lib/modules/posixGroup.inc:399 ../lib/types/group.inc:87
+#: ../lib/modules/nisnetgroup.inc:92 ../lib/modules/posixGroup.inc:399
+#: ../lib/types/group.inc:87
 msgid "Group description"
 msgstr "Gruppenbeschreibung"
 
@@ -1927,16 +1927,20 @@ msgstr "DNs der Gruppenmitglieder"
 msgid "Group members"
 msgstr "Gruppenmitglieder"
 
-#: ../lib/modules/groupOfNames.inc:60 ../lib/modules/groupOfNames.inc:84
-#: ../lib/modules/groupOfNames.inc:439 ../lib/modules/posixGroup.inc:167
-#: ../lib/modules/posixGroup.inc:387 ../lib/modules/posixGroup.inc:436
-#: ../lib/modules/posixGroup.inc:475 ../lib/modules/posixGroup.inc:504
-#: ../lib/modules/posixGroup.inc:505 ../lib/modules/posixGroup.inc:506
-#: ../lib/types/group.inc:83 ../lib/types/gon.inc:82
+#: ../lib/modules/nisnetgroup.inc:68 ../lib/modules/nisnetgroup.inc:84
+#: ../lib/modules/nisnetgroup.inc:115 ../lib/modules/nisnetgroup.inc:157
+#: ../lib/modules/nisnetgroup.inc:511 ../lib/modules/groupOfNames.inc:60
+#: ../lib/modules/groupOfNames.inc:84 ../lib/modules/groupOfNames.inc:439
+#: ../lib/modules/posixGroup.inc:167 ../lib/modules/posixGroup.inc:387
+#: ../lib/modules/posixGroup.inc:436 ../lib/modules/posixGroup.inc:475
+#: ../lib/modules/posixGroup.inc:504 ../lib/modules/posixGroup.inc:505
+#: ../lib/modules/posixGroup.inc:506 ../lib/types/group.inc:83
+#: ../lib/types/netgroup.inc:82 ../lib/types/gon.inc:82
 msgid "Group name"
 msgstr "Gruppenname"
 
-#: ../lib/modules/posixGroup.inc:506 ../lib/modules/posixGroup.inc:507
+#: ../lib/modules/nisnetgroup.inc:115 ../lib/modules/posixGroup.inc:506
+#: ../lib/modules/posixGroup.inc:507
 msgid ""
 "Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -1986,7 +1990,7 @@ msgstr "Gruppentyp"
 msgid "Groups"
 msgstr "Gruppen"
 
-#: ../lib/modules/dhcp_settings.inc:99 ../lib/modules/dhcp_settings.inc:698
+#: ../lib/modules/dhcp_settings.inc:99 ../lib/modules/dhcp_settings.inc:705
 msgid "H-Node (0x08)"
 msgstr "H-Knoten (0x08)"
 
@@ -2012,7 +2016,7 @@ msgstr "Hartes Inode-Limit (Datein)"
 msgid "Hard inode limit"
 msgstr "hartes Inode-Limit"
 
-#: ../lib/modules/sambaSamAccount.inc:500
+#: ../lib/modules/sambaSamAccount.inc:496
 msgid "Hawaii"
 msgstr "Hawaii"
 
@@ -2063,8 +2067,8 @@ msgstr "Überschrift"
 #: ../templates/config/profmanage.php:341
 #: ../templates/config/profmanage.php:365
 #: ../templates/config/confmodules.php:123
-#: ../templates/config/mainlogin.php:120 ../lib/modules.inc:831
-#: ../lib/modules.inc:1168 ../lib/modules.inc:1224 ../lib/modules.inc:1341
+#: ../templates/config/mainlogin.php:120 ../lib/modules.inc:840
+#: ../lib/modules.inc:1177 ../lib/modules.inc:1233 ../lib/modules.inc:1350
 #: ../lib/lists.inc:383
 msgid "Help"
 msgstr "Hilfe"
@@ -2082,7 +2086,7 @@ msgstr ""
 msgid "Here you can browse LDAP object classes and attributes."
 msgstr "Hier können Sie LDAP-Objektklassen und Attribute betrachten."
 
-#: ../lib/modules/sambaSamAccount.inc:340
+#: ../lib/modules/sambaSamAccount.inc:336
 msgid "Here you can change the settings for the terminal server access."
 msgstr "Hier können Sie die Terminalserver-Einstellungen ändern."
 
@@ -2092,7 +2096,7 @@ msgstr ""
 "Hier können Sie mehrere Accounts mittels einer CSV-formatierten Datei "
 "erstellen."
 
-#: ../lib/modules/groupOfNames.inc:65
+#: ../lib/modules/nisnetgroup.inc:73 ../lib/modules/groupOfNames.inc:65
 msgid "Here you can enter a description for this group."
 msgstr "Hier können Sie eine Beschreibung für die Gruppe eintragen."
 
@@ -2125,8 +2129,7 @@ msgid "Here you can manage your account profiles."
 msgstr "Hier können Sie Ihre Accountprofile verwalten."
 
 #: ../help/help.inc:156
-msgid ""
-"Here you can select a PDF structure and export the account to a PDF file."
+msgid "Here you can select a PDF structure and export the account to a PDF file."
 msgstr ""
 "Die Account-Daten können als PDF-Datei exportiert werden. Wählen Sie hierfür "
 "das gewünschte PDF-Profil."
@@ -2142,8 +2145,7 @@ msgstr ""
 "Windows-Systemen. Sie können auch eine Datei angeben."
 
 #: ../help/help.inc:106
-msgid ""
-"Here you can select which plugins you want to use for account management."
+msgid "Here you can select which plugins you want to use for account management."
 msgstr ""
 "Hier können Sie die Plugins wählen, die Sie zur Accountverwaltung verwenden "
 "möchten."
@@ -2161,23 +2163,27 @@ msgstr ""
 "Zeichenklassen sind: Kleinbuchstaben, Großbuchstaben, Zahlen und "
 "Sonderzeichen"
 
-#: ../lib/modules/sambaDomain.inc:95
+#: ../lib/modules/nisnetgroup.inc:77
 msgid ""
-"Here you can specify the minimum number of characters for a user password."
+"Here you can specify subgroups which are included in this NIS netgroup. All "
+"members of the subgroups will be treated as members of this group."
+msgstr "Hiermit können Sie Untergruppen für diese NIS Netzgruppe wählen. Alle Mitglieder der Untergruppen werden auch als Mitglieder dieser Gruppe behandelt."
+
+#: ../lib/modules/sambaDomain.inc:95
+msgid "Here you can specify the minimum number of characters for a user password."
 msgstr "Bestimmt die minimale Länge für Benutzerpasswörter."
 
 #: ../templates/lists/changePassword.php:200
 msgid "Here you can specify the new password yourself."
 msgstr "Hier können Sie das neue Passwort selbst eingeben."
 
-#: ../lib/modules/sambaSamAccount.inc:331
+#: ../lib/modules/sambaSamAccount.inc:327
 msgid "Here you can specify the shadowing mode."
 msgstr "Hier können Sie den Spiegel-Modus einstellen."
 
 #: ../templates/tools.php:96
 msgid "Here you can test if certain LAM features work on your installation."
-msgstr ""
-"Hier können Sie prüfen, ob bestimmte LAM-Funktionen korrekt funktionieren."
+msgstr "Hier können Sie prüfen, ob bestimmte LAM-Funktionen korrekt funktionieren."
 
 #: ../templates/tree/edit.php:104
 msgid "Hide internal attributes"
@@ -2206,10 +2212,10 @@ msgstr "Halten Sie Strg gedrückt um mehrere Gruppen zu markieren."
 #: ../lib/modules/posixAccount.inc:230 ../lib/modules/posixAccount.inc:359
 #: ../lib/modules/posixAccount.inc:363 ../lib/modules/posixAccount.inc:367
 #: ../lib/modules/posixAccount.inc:384 ../lib/modules/posixAccount.inc:787
-#: ../lib/modules/posixAccount.inc:1001 ../lib/modules/posixAccount.inc:1168
-#: ../lib/modules/posixAccount.inc:1249 ../lib/modules/sambaSamAccount.inc:303
-#: ../lib/modules/sambaSamAccount.inc:1350
-#: ../lib/modules/sambaSamAccount.inc:1727 ../lib/types/user.inc:89
+#: ../lib/modules/posixAccount.inc:996 ../lib/modules/posixAccount.inc:1163
+#: ../lib/modules/posixAccount.inc:1244 ../lib/modules/sambaSamAccount.inc:299
+#: ../lib/modules/sambaSamAccount.inc:1373
+#: ../lib/modules/sambaSamAccount.inc:1750 ../lib/types/user.inc:89
 msgid "Home directory"
 msgstr "Heimatverzeichnis"
 
@@ -2222,19 +2228,19 @@ msgstr ""
 "Heimatverzeichnis wurde geändert. Sie müssen folgendes Kommando als root-"
 "Benutzer ausführen um das alte Verzeichnis zu ändern: 'mv %s %s'"
 
-#: ../lib/modules/posixAccount.inc:1189
+#: ../lib/modules/posixAccount.inc:1184
 msgid "Home directory server"
 msgstr "Heimatverzeichnis-Server"
 
 #: ../lib/modules/sambaAccount.inc:150 ../lib/modules/sambaAccount.inc:281
 #: ../lib/modules/sambaAccount.inc:382 ../lib/modules/sambaAccount.inc:785
-#: ../lib/modules/sambaAccount.inc:893 ../lib/modules/sambaSamAccount.inc:251
-#: ../lib/modules/sambaSamAccount.inc:424
-#: ../lib/modules/sambaSamAccount.inc:1083
-#: ../lib/modules/sambaSamAccount.inc:1361
-#: ../lib/modules/sambaSamAccount.inc:1515
-#: ../lib/modules/sambaSamAccount.inc:1701
-#: ../lib/modules/sambaSamAccount.inc:1728
+#: ../lib/modules/sambaAccount.inc:893 ../lib/modules/sambaSamAccount.inc:247
+#: ../lib/modules/sambaSamAccount.inc:420
+#: ../lib/modules/sambaSamAccount.inc:1106
+#: ../lib/modules/sambaSamAccount.inc:1384
+#: ../lib/modules/sambaSamAccount.inc:1538
+#: ../lib/modules/sambaSamAccount.inc:1724
+#: ../lib/modules/sambaSamAccount.inc:1751
 msgid "Home drive"
 msgstr "Heimatlaufwerk"
 
@@ -2243,11 +2249,11 @@ msgstr "Heimatlaufwerk"
 #: ../lib/modules/sambaAccount.inc:385 ../lib/modules/sambaAccount.inc:788
 #: ../lib/modules/sambaAccount.inc:892 ../lib/modules/sambaSamAccount.inc:83
 #: ../lib/modules/sambaSamAccount.inc:84
-#: ../lib/modules/sambaSamAccount.inc:254
-#: ../lib/modules/sambaSamAccount.inc:430
-#: ../lib/modules/sambaSamAccount.inc:1091
-#: ../lib/modules/sambaSamAccount.inc:1521
-#: ../lib/modules/sambaSamAccount.inc:1698
+#: ../lib/modules/sambaSamAccount.inc:250
+#: ../lib/modules/sambaSamAccount.inc:426
+#: ../lib/modules/sambaSamAccount.inc:1114
+#: ../lib/modules/sambaSamAccount.inc:1544
+#: ../lib/modules/sambaSamAccount.inc:1721
 msgid "Home path"
 msgstr "Heimatverzeichnis"
 
@@ -2267,6 +2273,10 @@ msgstr "Telefon privat"
 msgid "Homedirectory contains invalid characters."
 msgstr "Heimatverzeichnis enthält ungültige Zeichen."
 
+#: ../lib/modules/nisnetgroup.inc:175 ../lib/modules/nisnetgroup.inc:521
+msgid "Host"
+msgstr "Host"
+
 #: ../lib/types/host.inc:53
 msgid "Host accounts (e.g. Samba)"
 msgstr "Hostaccounts (z.B. Samba)"
@@ -2284,6 +2294,7 @@ msgstr "Hostbeschreibung. Falls leer wird der Hostname verwendet."
 msgid "Host list"
 msgstr "Hostliste"
 
+#: ../lib/modules/nisnetgroup.inc:117 ../lib/modules/nisnetgroup.inc:407
 #: ../lib/modules/account.inc:84 ../lib/modules/posixAccount.inc:78
 #: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:81
 #: ../lib/modules/posixAccount.inc:277 ../lib/modules/posixAccount.inc:410
@@ -2295,6 +2306,7 @@ msgstr "Hostname"
 msgid "Host name already exists!"
 msgstr "Host-Name besteht schon!"
 
+#: ../lib/modules/nisnetgroup.inc:117 ../lib/modules/posixAccount.inc:79
 #: ../lib/modules/posixAccount.inc:83
 msgid ""
 "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
@@ -2303,18 +2315,13 @@ msgstr ""
 "Hostname enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und .-_!"
 
-#: ../lib/modules/posixAccount.inc:79
-msgid ""
-"Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
-"and .-_ ! Host name must end with $ !"
-msgstr ""
-"Hostname enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
-"und .-_! Hostname muss mit $ enden!"
-
 #: ../lib/modules/posixAccount.inc:81
 msgid "Host name in use. Selected next free host name."
-msgstr ""
-"Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
+msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
+
+#: ../lib/modules/sambaSamAccount.inc:970
+msgid "Host name must end with $!"
+msgstr "Der Hostname muss mit einem $ enden!"
 
 #: ../lib/modules/account.inc:85 ../lib/modules/posixAccount.inc:411
 msgid ""
@@ -2352,13 +2359,13 @@ msgstr "ID wird bereits verwendet"
 msgid "ID-Number"
 msgstr "ID-Nummer"
 
-#: ../lib/modules/fixed_ip.inc:85 ../lib/modules/fixed_ip.inc:406
-#: ../lib/modules/fixed_ip.inc:511
+#: ../lib/modules/fixed_ip.inc:85 ../lib/modules/fixed_ip.inc:400
+#: ../lib/modules/fixed_ip.inc:505
 msgid "IP address"
 msgstr "IP-Adresse"
 
-#: ../lib/modules/ddns.inc:94 ../lib/modules/ddns.inc:313
-#: ../lib/modules/ddns.inc:360
+#: ../lib/modules/ddns.inc:94 ../lib/modules/ddns.inc:330
+#: ../lib/modules/ddns.inc:377
 msgid "IP address of the DNS server"
 msgstr "IP-Adresse des DNS-Servers"
 
@@ -2367,15 +2374,14 @@ msgstr "IP-Adresse des DNS-Servers"
 msgid "Identifier"
 msgstr "Bezeichner"
 
-#: ../lib/modules/sambaSamAccount.inc:1396
-#: ../lib/modules/sambaSamAccount.inc:1739
+#: ../lib/modules/sambaSamAccount.inc:1419
+#: ../lib/modules/sambaSamAccount.inc:1762
 msgid "Idle time limit"
 msgstr "Zeitlimit für Leerlauf"
 
-#: ../lib/modules/sambaAccount.inc:354 ../lib/modules/sambaSamAccount.inc:217
+#: ../lib/modules/sambaAccount.inc:354 ../lib/modules/sambaSamAccount.inc:213
 msgid "If checked Unix password will also be used as Samba password."
-msgstr ""
-"Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
+msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
 #: ../lib/modules/posixAccount.inc:393
 msgid ""
@@ -2389,19 +2395,19 @@ msgstr ""
 msgid "If checked account will be deactivated. (Setting D-Flag)"
 msgstr "Falls angekreuzt wird der Account deaktiviert. (D-Flag wird gesetzt)"
 
-#: ../lib/modules/sambaAccount.inc:360 ../lib/modules/sambaSamAccount.inc:223
+#: ../lib/modules/sambaAccount.inc:360 ../lib/modules/sambaSamAccount.inc:219
 msgid "If checked no password will be used."
 msgstr "Falls angekreuzt wird kein Passwort verwendet."
 
-#: ../lib/modules/sambaAccount.inc:366 ../lib/modules/sambaSamAccount.inc:229
+#: ../lib/modules/sambaAccount.inc:366 ../lib/modules/sambaSamAccount.inc:225
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "Falls angekreuzt läuft das Passwort nicht aus. (X-Flag wird gesetzt)"
 
-#: ../lib/modules/sambaSamAccount.inc:235
+#: ../lib/modules/sambaSamAccount.inc:231
 msgid "If checked then the account will be deactivated. (Setting D-Flag)"
 msgstr "Falls angekreuzt wird der Account deaktiviert. (D-Flag wird gesetzt)"
 
-#: ../lib/modules/sambaSamAccount.inc:238
+#: ../lib/modules/sambaSamAccount.inc:234
 msgid ""
 "If checked then the account will be locked (setting L-Flag). You usually "
 "want to use this setting to unlock user accounts which were locked because "
@@ -2425,26 +2431,25 @@ msgstr "Falls leer wird die UID-Nummer automatisch generiert."
 
 #: ../lib/modules/sambaDomain.inc:103
 msgid "If set then users need to login to change their password."
-msgstr ""
-"Falls aktiviert, dann müssen sich Benutzer zur Passwortänderung anmelden."
+msgstr "Falls aktiviert, dann müssen sich Benutzer zur Passwortänderung anmelden."
 
-#: ../lib/modules/sambaAccount.inc:357 ../lib/modules/sambaSamAccount.inc:220
+#: ../lib/modules/sambaAccount.inc:357 ../lib/modules/sambaSamAccount.inc:216
 msgid "If set to \"true\" Unix password will also be used as Samba password."
 msgstr ""
 "Falls auf \"true\" gesetzt wird das Unix-Passwort auch als Samba-Passwort "
 "verwendet."
 
-#: ../lib/modules/sambaAccount.inc:375 ../lib/modules/sambaSamAccount.inc:241
+#: ../lib/modules/sambaAccount.inc:375 ../lib/modules/sambaSamAccount.inc:237
 msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
 msgstr ""
 "Falls auf \"true\" gesetzt wird der Account deaktiviert. (D-Flag wird "
 "gesetzt)"
 
-#: ../lib/modules/sambaAccount.inc:363 ../lib/modules/sambaSamAccount.inc:226
+#: ../lib/modules/sambaAccount.inc:363 ../lib/modules/sambaSamAccount.inc:222
 msgid "If set to \"true\" no password will be used."
 msgstr "Falls auf \"true\" gesetzt wird kein Passwort verwendet."
 
-#: ../lib/modules/sambaAccount.inc:369 ../lib/modules/sambaSamAccount.inc:232
+#: ../lib/modules/sambaAccount.inc:369 ../lib/modules/sambaSamAccount.inc:228
 msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
 msgstr ""
 "Falls auf \"true\" gesetzt läuft das Passwort nicht aus. (X-Flag wird "
@@ -2458,14 +2463,13 @@ msgstr ""
 "Wenn Sie sich entscheiden das Passwort per mail zu senden dann wird dazu die "
 "Vorlage aus \"config/passwordMailTemplate.txt\" verwendet."
 
-#: ../lib/modules/sambaSamAccount.inc:280
-msgid ""
-"If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
+#: ../lib/modules/sambaSamAccount.inc:276
+msgid "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr ""
 "Wenn Sie das Feld leer lassen wird LAM folgenden Wert einfügen: uidNumber*2 "
 "+ sambaAlgorithmicRidBase."
 
-#: ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:240
 msgid ""
 "If you set this option then the user has to change his password at the next "
 "login."
@@ -2475,24 +2479,20 @@ msgstr ""
 
 #: ../lib/modules/phpGroupwareGroup.inc:74
 #: ../lib/modules/phpGroupwareUser.inc:75
-msgid ""
-"If you set this to \"true\" then the phpGroupware extension will be added."
+msgid "If you set this to \"true\" then the phpGroupware extension will be added."
 msgstr ""
 "Wenn Sie diesen Wert auf \"true\" setzen, dann wird die phpGroupWare-"
 "Erweiterung hinzugefügt."
 
 #: ../help/help.inc:100
-msgid ""
-"If you want to change the current preferences password, please enter it here."
-msgstr ""
-"Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
+msgid "If you want to change the current preferences password, please enter it here."
+msgstr "Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../help/help.inc:125
 msgid ""
 "If you want to change your master configuration password, please enter it "
 "here."
-msgstr ""
-"Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
+msgstr "Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../lib/modules/sambaAccount.inc:407
 msgid ""
@@ -2521,9 +2521,9 @@ msgstr ""
 msgid "Include system attributes"
 msgstr "Systemattribute miteinbeziehen"
 
-#: ../lib/modules/sambaSamAccount.inc:309
-#: ../lib/modules/sambaSamAccount.inc:1371
-#: ../lib/modules/sambaSamAccount.inc:1734
+#: ../lib/modules/sambaSamAccount.inc:305
+#: ../lib/modules/sambaSamAccount.inc:1394
+#: ../lib/modules/sambaSamAccount.inc:1757
 msgid "Inherit client startup configuration"
 msgstr "Client-Startkonfiguration verwenden"
 
@@ -2535,9 +2535,9 @@ msgstr "Geerbt von"
 msgid "Inherits from"
 msgstr "Erbt von"
 
-#: ../lib/modules/sambaSamAccount.inc:312
-#: ../lib/modules/sambaSamAccount.inc:1376
-#: ../lib/modules/sambaSamAccount.inc:1735
+#: ../lib/modules/sambaSamAccount.inc:308
+#: ../lib/modules/sambaSamAccount.inc:1399
+#: ../lib/modules/sambaSamAccount.inc:1758
 msgid "Initial program"
 msgstr "Startprogramm"
 
@@ -2591,7 +2591,7 @@ msgstr "Benutzer- oder Gruppenname wurde in Anmeldeskript eingefügt."
 msgid "Inserted user or group name in profile path."
 msgstr "Benutzer- oder Gruppenname wurde in Profilpfad eingefügt."
 
-#: ../lib/modules/fixed_ip.inc:386
+#: ../lib/modules/fixed_ip.inc:380
 msgid "Invalid MAC address."
 msgstr "Ungültige MAC-Adresse."
 
@@ -2613,7 +2613,7 @@ msgstr "Einladungsregeln"
 msgid "Invitation policy list"
 msgstr "Liste der Einladungsregeln"
 
-#: ../lib/modules/sambaSamAccount.inc:515
+#: ../lib/modules/sambaSamAccount.inc:511
 msgid "Islamabad, Karachi"
 msgstr "Islamabad, Karachi"
 
@@ -2710,7 +2710,7 @@ msgstr "LAM konnte keine Domäne mit diesem Namen finden!"
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM konnte keine Gruppe mit diesem Namen finden!"
 
-#: ../lib/modules/posixAccount.inc:1643
+#: ../lib/modules/posixAccount.inc:1638
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM konnte die Gruppenzugehörigkeiten für Gruppe %s nicht ändern."
@@ -2747,7 +2747,7 @@ msgstr "LDAP-Suffix ist ungültig!"
 msgid "LDAP error, server says:"
 msgstr "LDAP-Fehler, der Server meldet:"
 
-#: ../lib/modules.inc:1210
+#: ../lib/modules.inc:1219
 msgid "LDAP operation successful."
 msgstr "LDAP-Operation war erfolgreich."
 
@@ -2861,15 +2861,14 @@ msgstr "Nachname enthält ungültige Zeichen oder ist leer!"
 
 #: ../lib/modules/inetOrgPerson.inc:403
 msgid "Last name of user. Only letters, - and spaces are allowed."
-msgstr ""
-"Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+msgstr "Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/shadowAccount.inc:398
 msgid "Last password change"
 msgstr "Letzte Passwortänderung"
 
 #: ../lib/modules/dhcp_settings.inc:133 ../lib/modules/dhcp_settings.inc:196
-#: ../lib/modules/dhcp_settings.inc:669 ../lib/modules/dhcp_settings.inc:775
+#: ../lib/modules/dhcp_settings.inc:676 ../lib/modules/dhcp_settings.inc:782
 msgid "Lease time"
 msgstr "Lease-Zeit"
 
@@ -2889,7 +2888,7 @@ msgstr "Attribute der Listen"
 msgid "List attributes are invalid!"
 msgstr "Attribute der Liste sind ungültig!"
 
-#: ../lib/modules/sambaAccount.inc:395 ../lib/modules/sambaSamAccount.inc:264
+#: ../lib/modules/sambaAccount.inc:395 ../lib/modules/sambaSamAccount.inc:260
 msgid ""
 "List of Samba workstations the user is allowed to login. Empty means every "
 "workstation."
@@ -2909,7 +2908,7 @@ msgstr "Liste der zu löschenden Einträge:"
 msgid "List of valid users"
 msgstr "Liste der berechtigten Benutzer"
 
-#: ../lib/modules.inc:1166 ../help/help.inc:153
+#: ../lib/modules.inc:1175 ../help/help.inc:153
 msgid "Load profile"
 msgstr "Profil laden"
 
@@ -2936,7 +2935,7 @@ msgid "Location"
 msgstr "Ort"
 
 #: ../lib/modules/posixGroup.inc:192 ../lib/modules/posixAccount.inc:258
-#: ../lib/modules/posixAccount.inc:1034
+#: ../lib/modules/posixAccount.inc:1029
 msgid "Lock password"
 msgstr "Passwort deaktivieren"
 
@@ -2989,8 +2988,8 @@ msgid "Login caption"
 msgstr "Login-Überschrift"
 
 #: ../lib/modules/posixAccount.inc:244 ../lib/modules/posixAccount.inc:396
-#: ../lib/modules/posixAccount.inc:1022 ../lib/modules/posixAccount.inc:1173
-#: ../lib/modules/posixAccount.inc:1250 ../lib/types/user.inc:90
+#: ../lib/modules/posixAccount.inc:1017 ../lib/modules/posixAccount.inc:1168
+#: ../lib/modules/posixAccount.inc:1245 ../lib/types/user.inc:90
 msgid "Login shell"
 msgstr "Login Shell"
 
@@ -3004,11 +3003,11 @@ msgid "Logon for password change"
 msgstr "Anmeldung für Passwortänderung"
 
 #: ../lib/modules/sambaSamAccount.inc:110
-#: ../lib/modules/sambaSamAccount.inc:288
-#: ../lib/modules/sambaSamAccount.inc:291
-#: ../lib/modules/sambaSamAccount.inc:468
-#: ../lib/modules/sambaSamAccount.inc:1159
-#: ../lib/modules/sambaSamAccount.inc:1567
+#: ../lib/modules/sambaSamAccount.inc:284
+#: ../lib/modules/sambaSamAccount.inc:287
+#: ../lib/modules/sambaSamAccount.inc:464
+#: ../lib/modules/sambaSamAccount.inc:1182
+#: ../lib/modules/sambaSamAccount.inc:1590
 msgid "Logon hours"
 msgstr "Anmeldezeiten"
 
@@ -3017,11 +3016,11 @@ msgstr "Anmeldezeiten"
 #: ../lib/modules/sambaAccount.inc:391 ../lib/modules/sambaAccount.inc:794
 #: ../lib/modules/sambaAccount.inc:894 ../lib/modules/sambaSamAccount.inc:89
 #: ../lib/modules/sambaSamAccount.inc:90
-#: ../lib/modules/sambaSamAccount.inc:260
-#: ../lib/modules/sambaSamAccount.inc:442
-#: ../lib/modules/sambaSamAccount.inc:1107
-#: ../lib/modules/sambaSamAccount.inc:1533
-#: ../lib/modules/sambaSamAccount.inc:1704
+#: ../lib/modules/sambaSamAccount.inc:256
+#: ../lib/modules/sambaSamAccount.inc:438
+#: ../lib/modules/sambaSamAccount.inc:1130
+#: ../lib/modules/sambaSamAccount.inc:1556
+#: ../lib/modules/sambaSamAccount.inc:1727
 msgid "Logon script"
 msgstr "Anmeldeskript"
 
@@ -3042,8 +3041,8 @@ msgstr "M-Knoten (0x04)"
 
 #: ../lib/modules/ieee802device.inc:51 ../lib/modules/ieee802device.inc:61
 #: ../lib/modules/ieee802device.inc:72 ../lib/modules/ieee802device.inc:102
-#: ../lib/modules/fixed_ip.inc:82 ../lib/modules/fixed_ip.inc:389
-#: ../lib/modules/fixed_ip.inc:511
+#: ../lib/modules/fixed_ip.inc:82 ../lib/modules/fixed_ip.inc:383
+#: ../lib/modules/fixed_ip.inc:505
 msgid "MAC address"
 msgstr "MAC-Adresse"
 
@@ -3055,7 +3054,7 @@ msgstr "Liste von MAC-Adressen"
 msgid "MAC address(es)"
 msgstr "MAC-Adresse(n)"
 
-#: ../lib/modules/sambaSamAccount.inc:521
+#: ../lib/modules/sambaSamAccount.inc:517
 msgid "Magadan, Solomon Islands"
 msgstr "Magadan, Solomon-Inseln"
 
@@ -3217,7 +3216,7 @@ msgid "Maximum file size: %s"
 msgstr "Maximale Dateigröße: %s"
 
 #: ../lib/modules/dhcp_settings.inc:136 ../lib/modules/dhcp_settings.inc:201
-#: ../lib/modules/dhcp_settings.inc:675 ../lib/modules/dhcp_settings.inc:776
+#: ../lib/modules/dhcp_settings.inc:682 ../lib/modules/dhcp_settings.inc:783
 msgid "Maximum lease time"
 msgstr "Maximale Lease-Zeit"
 
@@ -3238,17 +3237,18 @@ msgstr "Maximale Listeneinträge"
 msgid "Maximum password age"
 msgstr "Maximales Passwortalter"
 
+#: ../lib/modules/nisnetgroup.inc:222 ../lib/modules/nisnetgroup.inc:519
 #: ../lib/modules/groupOfNames.inc:72 ../lib/modules/groupOfNames.inc:76
 #: ../lib/modules/groupOfNames.inc:103 ../lib/modules/groupOfNames.inc:173
-#: ../lib/modules/groupOfNames.inc:451
+#: ../lib/modules/groupOfNames.inc:451 ../lib/types/netgroup.inc:85
 msgid "Members"
 msgstr "Mitglieder"
 
-#: ../lib/modules/sambaSamAccount.inc:508
+#: ../lib/modules/sambaSamAccount.inc:504
 msgid "Mid-Atlantic"
 msgstr "Mittelatlantik"
 
-#: ../lib/modules/sambaSamAccount.inc:499
+#: ../lib/modules/sambaSamAccount.inc:495
 msgid "Midway Island, Samoa"
 msgstr "Midway Island, Samoa"
 
@@ -3329,11 +3329,11 @@ msgstr "Modus"
 msgid "Module selection"
 msgstr "Modulauswahl"
 
-#: ../lib/modules/sambaSamAccount.inc:1229
+#: ../lib/modules/sambaSamAccount.inc:1252
 msgid "Monday"
 msgstr "Montag"
 
-#: ../lib/modules/sambaSamAccount.inc:503
+#: ../lib/modules/sambaSamAccount.inc:499
 msgid "Mountain Time (US & Canada)"
 msgstr "Mountain Time (USA & Kanada)"
 
@@ -3358,6 +3358,18 @@ msgstr "Stadt"
 msgid "Mystreetname 42"
 msgstr "Musterstraße 42"
 
+#: ../lib/modules/nisnetgroup.inc:52
+msgid "NIS net group"
+msgstr "NIS Netzgruppe"
+
+#: ../lib/types/netgroup.inc:53
+msgid "NIS netgroup entries"
+msgstr "NIS Netzgruppeneinträge"
+
+#: ../lib/types/netgroup.inc:44
+msgid "NIS netgroups"
+msgstr "NIS Netzgruppen"
+
 #: ../templates/schema/schema.php:273
 #: ../templates/tree/templates/creation/new_ou_template.php:59
 #: ../templates/tree/templates/creation/new_ou_template.php:104
@@ -3374,18 +3386,18 @@ msgstr ""
 "Name, unter dem das Profil gespeichert wird. Falls ein Profil mit diesem "
 "Namen existiert wird es überschrieben."
 
-#: ../lib/modules/dhcp_settings.inc:166 ../lib/modules/dhcp_settings.inc:714
-#: ../lib/modules/dhcp_settings.inc:782
+#: ../lib/modules/dhcp_settings.inc:166 ../lib/modules/dhcp_settings.inc:721
+#: ../lib/modules/dhcp_settings.inc:789
 msgid "Net mask"
 msgstr "Netzmaske"
 
 #: ../lib/modules/dhcp_settings.inc:145 ../lib/modules/dhcp_settings.inc:216
-#: ../lib/modules/dhcp_settings.inc:693 ../lib/modules/dhcp_settings.inc:779
+#: ../lib/modules/dhcp_settings.inc:700 ../lib/modules/dhcp_settings.inc:786
 msgid "Netbios name servers"
 msgstr "Netbios-Name-Server"
 
 #: ../lib/modules/dhcp_settings.inc:148 ../lib/modules/dhcp_settings.inc:221
-#: ../lib/modules/dhcp_settings.inc:700 ../lib/modules/dhcp_settings.inc:780
+#: ../lib/modules/dhcp_settings.inc:707 ../lib/modules/dhcp_settings.inc:787
 msgid "Netbios node type"
 msgstr "Netbios-Knotentyp"
 
@@ -3425,7 +3437,8 @@ msgstr "Neue Domäne"
 msgid "New field"
 msgstr "Neues Feld"
 
-#: ../lib/types/group.inc:124 ../lib/types/gon.inc:112
+#: ../lib/types/group.inc:124 ../lib/types/netgroup.inc:112
+#: ../lib/types/gon.inc:112
 msgid "New group"
 msgstr "Neue Gruppe"
 
@@ -3458,7 +3471,7 @@ msgstr "Neue Organizational Unit"
 msgid "New owner"
 msgstr "Neuer Besitzer"
 
-#: ../templates/config/confmain.php:431 ../lib/modules/posixAccount.inc:1770
+#: ../templates/config/confmain.php:431 ../lib/modules/posixAccount.inc:1765
 msgid "New password"
 msgstr "Neues Passwort"
 
@@ -3548,14 +3561,14 @@ msgstr "Keine DHCPs gefunden!"
 #: ../lib/modules/sambaGroupMapping.inc:90
 #: ../lib/modules/sambaGroupMapping.inc:217
 #: ../lib/modules/sambaGroupMapping.inc:470
-#: ../lib/modules/sambaSamAccount.inc:545
-#: ../lib/modules/sambaSamAccount.inc:622
-#: ../lib/modules/sambaSamAccount.inc:953
+#: ../lib/modules/sambaSamAccount.inc:541
+#: ../lib/modules/sambaSamAccount.inc:639
+#: ../lib/modules/sambaSamAccount.inc:976
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "Keine Samba 3 Domänen gefunden, bitte erstellen Sie eine."
 
 #: ../lib/modules/posixAccount.inc:448 ../lib/modules/posixAccount.inc:651
-#: ../lib/modules/posixAccount.inc:956
+#: ../lib/modules/posixAccount.inc:951
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "Keine Unix-Gruppen gefunden, bitte erstellen Sie eine."
 
@@ -3583,7 +3596,8 @@ msgstr "Keine Datei gewählt."
 msgid "No free ID-Number!"
 msgstr "Keine ID-Nummer mehr frei!"
 
-#: ../lib/types/group.inc:123 ../lib/types/gon.inc:111
+#: ../lib/types/group.inc:123 ../lib/types/netgroup.inc:111
+#: ../lib/types/gon.inc:111
 msgid "No groups found!"
 msgstr "Keine Gruppen gefunden!"
 
@@ -3683,8 +3697,7 @@ msgid "Number of child entries"
 msgstr "Anzahl Untereinträge"
 
 #: ../lib/modules/shadowAccount.inc:174
-msgid ""
-"Number of days a user can login even his password has expired. -1=always."
+msgid "Number of days a user can login even his password has expired. -1=always."
 msgstr ""
 "Anzahl der Tage, in denen sich ein Benutzer anmelden kann, obwohl sein "
 "Passwort bereits abgelaufen ist. -1 = immer."
@@ -3712,10 +3725,8 @@ msgstr ""
 "zurückgesetzt wird."
 
 #: ../lib/modules/sambaDomain.inc:119
-msgid ""
-"Number of seconds after the user is allowed to change his password again."
-msgstr ""
-"Zeit in Sekunden nach der der Benutzer sein Passwort erneut ändern darf."
+msgid "Number of seconds after the user is allowed to change his password again."
+msgstr "Zeit in Sekunden nach der der Benutzer sein Passwort erneut ändern darf."
 
 #: ../lib/modules/sambaDomain.inc:123
 msgid "Number of seconds after which the user must change his password."
@@ -3788,12 +3799,12 @@ msgstr "Büroname"
 #: ../templates/config/profmanage.php:360
 #: ../templates/config/confmodules.php:110
 #: ../templates/config/confmodules.php:113
-#: ../templates/config/mainlogin.php:118 ../lib/modules/inetOrgPerson.inc:995
-#: ../lib/modules/groupOfNames.inc:230 ../lib/modules/groupOfNames.inc:257
-#: ../lib/modules/groupOfNames.inc:344 ../lib/modules/posixGroup.inc:288
-#: ../lib/modules/posixAccount.inc:1136
-#: ../lib/modules/sambaSamAccount.inc:1276
-#: ../lib/modules/sambaSamAccount.inc:1447 ../lib/modules/aliasEntry.inc:146
+#: ../templates/config/mainlogin.php:118 ../lib/modules/nisnetgroup.inc:420
+#: ../lib/modules/inetOrgPerson.inc:995 ../lib/modules/groupOfNames.inc:230
+#: ../lib/modules/groupOfNames.inc:257 ../lib/modules/groupOfNames.inc:344
+#: ../lib/modules/posixGroup.inc:288 ../lib/modules/posixAccount.inc:1131
+#: ../lib/modules/sambaSamAccount.inc:1299
+#: ../lib/modules/sambaSamAccount.inc:1470 ../lib/modules/aliasEntry.inc:146
 #: ../lib/modules/aliasEntry.inc:172 ../lib/lists.inc:666 ../lib/lists.inc:897
 msgid "Ok"
 msgstr "Ok"
@@ -3808,9 +3819,9 @@ msgstr "Alter Wert"
 msgid "On"
 msgstr "An"
 
-#: ../lib/modules/sambaSamAccount.inc:333
-#: ../lib/modules/sambaSamAccount.inc:1432
-#: ../lib/modules/sambaSamAccount.inc:1773
+#: ../lib/modules/sambaSamAccount.inc:329
+#: ../lib/modules/sambaSamAccount.inc:1455
+#: ../lib/modules/sambaSamAccount.inc:1796
 msgid "On broken or timed out connection"
 msgstr "Bei Trennung oder abgelaufenem Zeitlimit"
 
@@ -3820,8 +3831,7 @@ msgstr "Eine Ebene (eine Ebene unter Basis)"
 
 #: ../lib/modules/range.inc:99 ../lib/modules/fixed_ip.inc:100
 msgid "One or more errors occured. The invalid fields are marked."
-msgstr ""
-"Mindestens ein Fehler ist aufgetreten. Alle ungültigen Felder sind markiert."
+msgstr "Mindestens ein Fehler ist aufgetreten. Alle ungültigen Felder sind markiert."
 
 #: ../templates/schema/schema.php:389
 #: ../templates/tree/templates/creation/custom.php:209
@@ -3859,8 +3869,8 @@ msgstr "Besitzer"
 msgid "P-Node (0x02)"
 msgstr "P-Knoten (0x02)"
 
-#: ../lib/modules/fixed_ip.inc:79 ../lib/modules/fixed_ip.inc:375
-#: ../lib/modules/fixed_ip.inc:511
+#: ../lib/modules/fixed_ip.inc:79 ../lib/modules/fixed_ip.inc:369
+#: ../lib/modules/fixed_ip.inc:505
 msgid "PC name"
 msgstr "PC-Name"
 
@@ -3880,7 +3890,7 @@ msgstr "PDF-Profil wurde erfolgreich gespeichert."
 msgid "PDF-structure name not valid"
 msgstr "PDF-Strukturname ist nicht gültig"
 
-#: ../lib/modules/sambaSamAccount.inc:502
+#: ../lib/modules/sambaSamAccount.inc:498
 msgid "Pacific Time (US & Canada)"
 msgstr "Pacific Time (USA & Kanada)"
 
@@ -3908,16 +3918,16 @@ msgstr "Elter von"
 #: ../lib/modules/posixGroup.inc:494 ../lib/modules/posixGroup.inc:495
 #: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:73
 #: ../lib/modules/posixAccount.inc:136 ../lib/modules/posixAccount.inc:252
-#: ../lib/modules/posixAccount.inc:388 ../lib/modules/posixAccount.inc:1029
-#: ../lib/modules/posixAccount.inc:1040 ../lib/modules/posixAccount.inc:1121
-#: ../lib/modules/posixAccount.inc:1253 ../lib/modules/sambaSamAccount.inc:94
+#: ../lib/modules/posixAccount.inc:388 ../lib/modules/posixAccount.inc:1024
+#: ../lib/modules/posixAccount.inc:1035 ../lib/modules/posixAccount.inc:1116
+#: ../lib/modules/posixAccount.inc:1248 ../lib/modules/sambaSamAccount.inc:94
 #: ../lib/modules/sambaSamAccount.inc:95
-#: ../lib/modules/sambaSamAccount.inc:365
+#: ../lib/modules/sambaSamAccount.inc:361
 msgid "Password"
 msgstr "Passwort"
 
-#: ../lib/modules/sambaSamAccount.inc:243
-#: ../lib/modules/sambaSamAccount.inc:1020
+#: ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaSamAccount.inc:1043
 msgid "Password change at next login"
 msgstr "Passwortänderung beim nächsten Login"
 
@@ -3935,11 +3945,11 @@ msgstr ""
 
 #: ../lib/modules/sambaAccount.inc:136 ../lib/modules/sambaAccount.inc:251
 #: ../lib/modules/sambaAccount.inc:365 ../lib/modules/sambaAccount.inc:368
-#: ../lib/modules/sambaAccount.inc:759 ../lib/modules/sambaSamAccount.inc:228
-#: ../lib/modules/sambaSamAccount.inc:231
-#: ../lib/modules/sambaSamAccount.inc:387
-#: ../lib/modules/sambaSamAccount.inc:1003
-#: ../lib/modules/sambaSamAccount.inc:1486
+#: ../lib/modules/sambaAccount.inc:759 ../lib/modules/sambaSamAccount.inc:224
+#: ../lib/modules/sambaSamAccount.inc:227
+#: ../lib/modules/sambaSamAccount.inc:383
+#: ../lib/modules/sambaSamAccount.inc:1026
+#: ../lib/modules/sambaSamAccount.inc:1509
 msgid "Password does not expire"
 msgstr "Passwort läuft nicht ab"
 
@@ -3997,11 +4007,11 @@ msgstr "Passwortwarnung muss eine natürliche Zahl sein."
 msgid "Passwords are different!"
 msgstr "Die Passwörter stimmen nicht überein!"
 
-#: ../lib/modules/sambaSamAccount.inc:307
+#: ../lib/modules/sambaSamAccount.inc:303
 msgid "Path of the user profile."
 msgstr "Pfad des Benutzerprofils."
 
-#: ../lib/modules/sambaAccount.inc:389 ../lib/modules/sambaSamAccount.inc:258
+#: ../lib/modules/sambaAccount.inc:389 ../lib/modules/sambaSamAccount.inc:254
 msgid ""
 "Path of the user profile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user and group name."
@@ -4014,7 +4024,7 @@ msgstr ""
 msgid "Path to external script"
 msgstr "Pfad zum externen Script"
 
-#: ../lib/modules/ddns.inc:90 ../lib/modules/ddns.inc:302
+#: ../lib/modules/ddns.inc:90 ../lib/modules/ddns.inc:319
 msgid "Path to key for DNS updates"
 msgstr "Pfad zum Schlüssel für DNS-Änderungen"
 
@@ -4039,8 +4049,11 @@ msgstr "Fotodatei (JPG-Format)"
 
 #: ../lib/modules/ldapPublicKey.inc:67
 msgid "Please a comma separated list of your public SSH keys."
-msgstr ""
-"Bitte geben Sie eine Liste von SSH-Schlüsseln, getrennt durch Kommata, ein."
+msgstr "Bitte geben Sie eine Liste von SSH-Schlüsseln, getrennt durch Kommata, ein."
+
+#: ../lib/modules/sambaSamAccount.inc:970
+msgid "Please check your settings on the Unix page!"
+msgstr "Bitte überprüfen Sie Ihre Eingaben auf der Unix-Seite!"
 
 #: ../templates/delete.php:86
 msgid "Please confirm:"
@@ -4052,8 +4065,7 @@ msgstr "Bitte geben Sie \"active\" oder \"inactive\" ein."
 
 #: ../lib/modules/sambaSamAccount.inc:97
 msgid "Please enter a RID number or the name of a special account!"
-msgstr ""
-"Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
+msgstr "Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:455
 msgid ""
@@ -4168,7 +4180,7 @@ msgstr "Bitte geben Sie eine e-mail Adresse auf dieser Seite ein: %s"
 msgid "Please enter the IP address of your DNS server."
 msgstr "Bitte geben Sie die IP-Adresse Ihres DNS-Servers ein."
 
-#: ../lib/modules.inc:1088
+#: ../lib/modules.inc:1097
 msgid "Please enter the account information on the other pages first."
 msgstr "Bitte geben Sie erst auf den anderen Seiten die Accountdaten ein."
 
@@ -4194,8 +4206,7 @@ msgstr ""
 
 #: ../templates/config/mainlogin.php:98
 msgid "Please enter the master password to change the general preferences:"
-msgstr ""
-"Bitte Hauptpasswort eingeben, um die allgemeinen Einstellungen zu ändern:"
+msgstr "Bitte Hauptpasswort eingeben, um die allgemeinen Einstellungen zu ändern:"
 
 #: ../help/help.inc:115
 msgid ""
@@ -4240,7 +4251,7 @@ msgstr "Bitte geben Sie das selbe Passwort in beide Felder ein."
 msgid "Please enter the same password in both password-fields."
 msgstr "Bitte geben Sie das selbe Passwort in beide Felder ein."
 
-#: ../lib/modules/sambaSamAccount.inc:319
+#: ../lib/modules/sambaSamAccount.inc:315
 msgid "Please enter the time limit in minutes. 0 means unlimited."
 msgstr "Bitte geben Sie das Zeitlimit in Minuten ein. 0 heißt unbegrenzt."
 
@@ -4248,19 +4259,17 @@ msgstr "Bitte geben Sie das Zeitlimit in Minuten ein. 0 heißt unbegrenzt."
 msgid ""
 "Please enter your master configuration password to change the self service "
 "profile:"
-msgstr ""
-"Bitte geben Sie Ihr Hauptpasswort ein, um das SelfService-Profil zu ändern:"
+msgstr "Bitte geben Sie Ihr Hauptpasswort ein, um das SelfService-Profil zu ändern:"
 
 #: ../templates/config/conflogin.php:90
 msgid "Please enter your password to change the server preferences:"
-msgstr ""
-"Bitte geben Sie Ihr Passwort ein, um die Servereinstellungen zu ändern:"
+msgstr "Bitte geben Sie Ihr Passwort ein, um die Servereinstellungen zu ändern:"
 
 #: ../lib/modules/ldapPublicKey.inc:63
 msgid "Please enter your public SSH key."
 msgstr "Bitte geben Sie Ihren SSH-Schlüssel ein."
 
-#: ../lib/modules/range.inc:395 ../lib/modules/fixed_ip.inc:341
+#: ../lib/modules/range.inc:395 ../lib/modules/fixed_ip.inc:336
 msgid "Please fill out the DHCP settings first."
 msgstr "Bitte füllen Sie zuerst die DHCP-Einstellungen aus."
 
@@ -4281,8 +4290,7 @@ msgstr ""
 "Alle nachfolgenden Zeilen repräsentieren jeweils einen Account."
 
 #: ../lib/modules/inetOrgPerson.inc:463
-msgid ""
-"Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
+msgid "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
 msgstr ""
 "Bitte wählen Sie ein Foto zum Hochladen. Es muss im JPG-Format (.jpg/.jpeg) "
 "vorliegen."
@@ -4303,7 +4311,7 @@ msgstr ""
 msgid "Please select your user name and enter your password to log in."
 msgstr "Bitte wählen Sie Ihren Benutzernamen und geben Ihr Passwort ein."
 
-#: ../lib/modules.inc:1043
+#: ../lib/modules.inc:1052
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "Bitte setzen Sie alle erforderlichen Werte auf der Seite: %s"
@@ -4314,6 +4322,12 @@ msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr ""
 "Bitte konfigurieren Sie zuerst die Haupteinstellungsdatei (config/config."
 "cfg)!"
+
+#: ../lib/modules/dhcp_settings.inc:649 ../lib/modules/ddns.inc:297
+msgid ""
+"Please set your LDAP suffix to an LDAP entry with object class \"dhcpServer"
+"\"."
+msgstr "Bitte ändern Sie Ihren LDAP-Suffix auf einen LDAP-Eintrag mit der Objektklasse \"dhcpServer\"."
 
 #: ../lib/modules/kolabUser.inc:236
 msgid "Policy list has invalid format!"
@@ -4365,8 +4379,8 @@ msgstr "Präsident"
 #: ../lib/modules/posixGroup.inc:509 ../lib/modules/posixAccount.inc:217
 #: ../lib/modules/posixAccount.inc:291 ../lib/modules/posixAccount.inc:351
 #: ../lib/modules/posixAccount.inc:380 ../lib/modules/posixAccount.inc:418
-#: ../lib/modules/posixAccount.inc:991 ../lib/modules/posixAccount.inc:1157
-#: ../lib/modules/posixAccount.inc:1197 ../lib/modules/posixAccount.inc:1247
+#: ../lib/modules/posixAccount.inc:986 ../lib/modules/posixAccount.inc:1152
+#: ../lib/modules/posixAccount.inc:1192 ../lib/modules/posixAccount.inc:1242
 msgid "Primary group"
 msgstr "Primäre Gruppe"
 
@@ -4422,14 +4436,14 @@ msgstr "Die Passwörter stimmen nicht überein!"
 #: ../lib/modules/sambaAccount.inc:388 ../lib/modules/sambaAccount.inc:791
 #: ../lib/modules/sambaAccount.inc:895 ../lib/modules/sambaSamAccount.inc:86
 #: ../lib/modules/sambaSamAccount.inc:87
-#: ../lib/modules/sambaSamAccount.inc:257
-#: ../lib/modules/sambaSamAccount.inc:306
-#: ../lib/modules/sambaSamAccount.inc:436
-#: ../lib/modules/sambaSamAccount.inc:1099
-#: ../lib/modules/sambaSamAccount.inc:1366
-#: ../lib/modules/sambaSamAccount.inc:1527
-#: ../lib/modules/sambaSamAccount.inc:1707
-#: ../lib/modules/sambaSamAccount.inc:1729
+#: ../lib/modules/sambaSamAccount.inc:253
+#: ../lib/modules/sambaSamAccount.inc:302
+#: ../lib/modules/sambaSamAccount.inc:432
+#: ../lib/modules/sambaSamAccount.inc:1122
+#: ../lib/modules/sambaSamAccount.inc:1389
+#: ../lib/modules/sambaSamAccount.inc:1550
+#: ../lib/modules/sambaSamAccount.inc:1730
+#: ../lib/modules/sambaSamAccount.inc:1752
 msgid "Profile path"
 msgstr "Profilpfad"
 
@@ -4460,7 +4474,7 @@ msgid "RDN"
 msgstr "RDN"
 
 #: ../templates/masscreate.php:171 ../templates/profedit/profilepage.php:204
-#: ../lib/modules.inc:1330 ../help/help.inc:145
+#: ../lib/modules.inc:1339 ../help/help.inc:145
 msgid "RDN identifier"
 msgstr "RDN-Bezeichner"
 
@@ -4511,9 +4525,9 @@ msgstr "Empfänger"
 msgid "Recipient list"
 msgstr "Empfängerliste"
 
-#: ../lib/modules/sambaSamAccount.inc:336
-#: ../lib/modules/sambaSamAccount.inc:1441
-#: ../lib/modules/sambaSamAccount.inc:1781
+#: ../lib/modules/sambaSamAccount.inc:332
+#: ../lib/modules/sambaSamAccount.inc:1464
+#: ../lib/modules/sambaSamAccount.inc:1804
 msgid "Reconnect if disconnected"
 msgstr "Wiederherstellen falls unterbrochen"
 
@@ -4525,7 +4539,7 @@ msgstr "Fortschritt des Löschvorgangs"
 msgid "Reenter new master password"
 msgstr "Neues Hauptpasswort erneut eingeben"
 
-#: ../templates/config/confmain.php:441 ../lib/modules/posixAccount.inc:1772
+#: ../templates/config/confmain.php:441 ../lib/modules/posixAccount.inc:1767
 msgid "Reenter password"
 msgstr "Passwort nochmal eingeben"
 
@@ -4553,13 +4567,13 @@ msgstr "Relativer eindeutiger Name"
 #: ../lib/modules/kolabUser.inc:379 ../lib/modules/kolabUser.inc:895
 #: ../lib/modules/ldapPublicKey.inc:98
 #: ../lib/modules/inetLocalMailRecipient.inc:160
-#: ../lib/modules/sambaSamAccount.inc:1323
+#: ../lib/modules/sambaSamAccount.inc:1346
 #: ../lib/modules/shadowAccount.inc:383
 #: ../lib/modules/phpGroupwareUser.inc:246
 msgid "Remove"
 msgstr "Löschen"
 
-#: ../lib/modules/posixGroup.inc:206 ../lib/modules/posixAccount.inc:1047
+#: ../lib/modules/posixGroup.inc:206 ../lib/modules/posixAccount.inc:1042
 msgid "Remove password"
 msgstr "Passwort entfernen"
 
@@ -4593,7 +4607,8 @@ msgstr "Profil umbenannt."
 #: ../templates/lists/changePassword.php:212
 #: ../lib/modules/inetOrgPerson.inc:759 ../lib/modules/inetOrgPerson.inc:990
 #: ../lib/modules/sambaAccount.inc:748 ../lib/modules/posixGroup.inc:283
-#: ../lib/modules/posixAccount.inc:1125 ../lib/modules/sambaSamAccount.inc:990
+#: ../lib/modules/posixAccount.inc:1120
+#: ../lib/modules/sambaSamAccount.inc:1013
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
 
@@ -4612,17 +4627,17 @@ msgid "Required attributes"
 msgstr "Vorgeschriebene Attribute"
 
 #: ../templates/profedit/profilepage.php:261
-#: ../lib/modules/sambaAccount.inc:845 ../lib/modules/sambaSamAccount.inc:1172
+#: ../lib/modules/sambaAccount.inc:845 ../lib/modules/sambaSamAccount.inc:1195
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: ../lib/modules.inc:1149
+#: ../lib/modules.inc:1158
 msgid "Reset changes"
 msgstr "Änderungen zurücksetzen"
 
 #: ../lib/modules/sambaAccount.inc:350 ../lib/modules/sambaAccount.inc:844
-#: ../lib/modules/sambaSamAccount.inc:213
-#: ../lib/modules/sambaSamAccount.inc:1171
+#: ../lib/modules/sambaSamAccount.inc:209
+#: ../lib/modules/sambaSamAccount.inc:1194
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
@@ -4635,8 +4650,8 @@ msgstr "Rücksetzzeit nach Sperrung"
 msgid "Reset time after lockout must be are natural number."
 msgstr "Rücksetzzeit muss eine natürliche Zahl sein."
 
-#: ../lib/modules/ddns.inc:100 ../lib/modules/ddns.inc:333
-#: ../lib/modules/ddns.inc:362
+#: ../lib/modules/ddns.inc:100 ../lib/modules/ddns.inc:350
+#: ../lib/modules/ddns.inc:379
 msgid "Reverse zone names"
 msgstr "Namen der Reverse-Zonen"
 
@@ -4688,7 +4703,7 @@ msgid "Samba 2"
 msgstr "Samba 2"
 
 #: ../lib/modules/sambaGroupMapping.inc:299
-#: ../lib/modules/sambaSamAccount.inc:134
+#: ../lib/modules/sambaSamAccount.inc:130
 msgid "Samba 3"
 msgstr "Samba 3"
 
@@ -4700,10 +4715,10 @@ msgstr "Samba 3 Domänen-SID ist ungültig!"
 msgid "Samba 3 domain entries"
 msgstr "Samba 3 Domäneneinträge"
 
+#: ../lib/modules/sambaSamAccount.inc:274
 #: ../lib/modules/sambaSamAccount.inc:278
-#: ../lib/modules/sambaSamAccount.inc:282
-#: ../lib/modules/sambaSamAccount.inc:461
-#: ../lib/modules/sambaSamAccount.inc:485
+#: ../lib/modules/sambaSamAccount.inc:457
+#: ../lib/modules/sambaSamAccount.inc:481
 msgid "Samba RID"
 msgstr "Samba-RID"
 
@@ -4735,8 +4750,8 @@ msgid "Samba group type"
 msgstr "Samba-Gruppentyp"
 
 #: ../lib/modules/sambaAccount.inc:347 ../lib/modules/sambaAccount.inc:745
-#: ../lib/modules/sambaSamAccount.inc:210
-#: ../lib/modules/sambaSamAccount.inc:986
+#: ../lib/modules/sambaSamAccount.inc:206
+#: ../lib/modules/sambaSamAccount.inc:1009
 msgid "Samba password"
 msgstr "Samba-Passwort"
 
@@ -4744,23 +4759,23 @@ msgstr "Samba-Passwort"
 #: ../lib/modules/sambaAccount.inc:305 ../lib/modules/sambaAccount.inc:394
 #: ../lib/modules/sambaAccount.inc:397 ../lib/modules/sambaAccount.inc:797
 #: ../lib/modules/sambaAccount.inc:896 ../lib/modules/sambaSamAccount.inc:92
-#: ../lib/modules/sambaSamAccount.inc:263
-#: ../lib/modules/sambaSamAccount.inc:266
-#: ../lib/modules/sambaSamAccount.inc:448
-#: ../lib/modules/sambaSamAccount.inc:1111
-#: ../lib/modules/sambaSamAccount.inc:1539
-#: ../lib/modules/sambaSamAccount.inc:1710
+#: ../lib/modules/sambaSamAccount.inc:259
+#: ../lib/modules/sambaSamAccount.inc:262
+#: ../lib/modules/sambaSamAccount.inc:444
+#: ../lib/modules/sambaSamAccount.inc:1134
+#: ../lib/modules/sambaSamAccount.inc:1562
+#: ../lib/modules/sambaSamAccount.inc:1733
 msgid "Samba workstations"
 msgstr "Samba PCs"
 
-#: ../lib/modules/sambaSamAccount.inc:1230
+#: ../lib/modules/sambaSamAccount.inc:1253
 msgid "Saturday"
 msgstr "Samstag"
 
 #: ../templates/tree/edit.php:512
 #: ../templates/selfService/selfServiceMain.php:270
 #: ../templates/pdfedit/pdfpage.php:671 ../templates/pdfedit/pdfpage.php:705
-#: ../templates/profedit/profilepage.php:259 ../lib/modules.inc:1146
+#: ../templates/profedit/profilepage.php:259 ../lib/modules.inc:1155
 msgid "Save"
 msgstr "Speichern"
 
@@ -4838,7 +4853,15 @@ msgstr "Wählen Sie eine Vorlage für den Anlegevorgang"
 msgid "Select all"
 msgstr "Alle auswählen"
 
-#: ../lib/modules/posixAccount.inc:1092
+#: ../lib/modules/nisnetgroup.inc:192 ../lib/modules/nisnetgroup.inc:214
+msgid "Select host"
+msgstr "Host wählen"
+
+#: ../lib/modules/nisnetgroup.inc:194 ../lib/modules/nisnetgroup.inc:216
+msgid "Select user"
+msgstr "Benutzer wählen"
+
+#: ../lib/modules/nisnetgroup.inc:326 ../lib/modules/posixAccount.inc:1087
 msgid "Selected groups"
 msgstr "Gewählte Gruppen"
 
@@ -4893,7 +4916,7 @@ msgstr "Zeitbeschränkung für Sitzung"
 msgid "Set"
 msgstr "Setzen"
 
-#: ../lib/modules/posixGroup.inc:188 ../lib/modules/posixAccount.inc:1030
+#: ../lib/modules/posixGroup.inc:188 ../lib/modules/posixAccount.inc:1025
 msgid "Set password"
 msgstr "Passwort setzen"
 
@@ -4905,7 +4928,7 @@ msgstr "Setze primäre Gruppe als memberUid"
 msgid "Set profile password"
 msgstr "Profilpasswort setzen"
 
-#: ../lib/modules/posixAccount.inc:1139
+#: ../lib/modules/posixAccount.inc:1134
 msgid "Set random password"
 msgstr "Zufälliges Passwort setzen"
 
@@ -4921,9 +4944,9 @@ msgstr "Setzt das Gruppenpasswort."
 msgid "Shadow"
 msgstr "Shadow"
 
-#: ../lib/modules/sambaSamAccount.inc:330
-#: ../lib/modules/sambaSamAccount.inc:1423
-#: ../lib/modules/sambaSamAccount.inc:1765
+#: ../lib/modules/sambaSamAccount.inc:326
+#: ../lib/modules/sambaSamAccount.inc:1446
+#: ../lib/modules/sambaSamAccount.inc:1788
 msgid "Shadowing"
 msgstr "Spiegeln"
 
@@ -4982,7 +5005,7 @@ msgstr "weiches Inode-Limit"
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "Einige Attribute (%s) wurden geändert und sind nun hervorgehoben."
 
-#: ../lib/modules.inc:1042
+#: ../lib/modules.inc:1051
 msgid "Some required information is missing"
 msgstr "Einige benötigte Informationen fehlen noch"
 
@@ -5001,8 +5024,8 @@ msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%d{endbold}"
 
 #: ../lib/modules/sambaAccount.inc:318 ../lib/modules/sambaAccount.inc:406
-#: ../lib/modules/sambaAccount.inc:835 ../lib/modules/sambaSamAccount.inc:275
-#: ../lib/modules/sambaSamAccount.inc:1148
+#: ../lib/modules/sambaAccount.inc:835 ../lib/modules/sambaSamAccount.inc:271
+#: ../lib/modules/sambaSamAccount.inc:1171
 msgid "Special user"
 msgstr "Spezieller Benutzer"
 
@@ -5030,7 +5053,7 @@ msgid "Steve"
 msgstr "Hans"
 
 #: ../lib/modules/inetOrgPerson.inc:330 ../lib/modules/sambaAccount.inc:225
-#: ../lib/modules/posixAccount.inc:207 ../lib/modules/sambaSamAccount.inc:361
+#: ../lib/modules/posixAccount.inc:207 ../lib/modules/sambaSamAccount.inc:357
 msgid "Steve Miller"
 msgstr "Hans Müller"
 
@@ -5053,14 +5076,20 @@ msgstr "Name der Struktur"
 msgid "Sub (entire subtree)"
 msgstr "Unterhalb (kompletter Baum unter Basis-DN)"
 
+#: ../lib/modules/nisnetgroup.inc:76 ../lib/modules/nisnetgroup.inc:98
+#: ../lib/modules/nisnetgroup.inc:165 ../lib/modules/nisnetgroup.inc:324
+#: ../lib/modules/nisnetgroup.inc:516 ../lib/types/netgroup.inc:84
+msgid "Subgroups"
+msgstr "Untergruppen"
+
 #: ../lib/modules/dhcp_settings.inc:130 ../lib/modules/dhcp_settings.inc:186
-#: ../lib/modules/dhcp_settings.inc:648 ../lib/modules/dhcp_settings.inc:655
-#: ../lib/modules/dhcp_settings.inc:773
+#: ../lib/modules/dhcp_settings.inc:656 ../lib/modules/dhcp_settings.inc:662
+#: ../lib/modules/dhcp_settings.inc:780
 msgid "Subnet"
 msgstr "Subnetz"
 
 #: ../lib/modules/dhcp_settings.inc:163 ../lib/modules/dhcp_settings.inc:226
-#: ../lib/modules/dhcp_settings.inc:707 ../lib/modules/dhcp_settings.inc:781
+#: ../lib/modules/dhcp_settings.inc:714 ../lib/modules/dhcp_settings.inc:788
 msgid "Subnet mask"
 msgstr "Subnetzmaske"
 
@@ -5076,21 +5105,21 @@ msgstr "Erfolg"
 msgid "Sudo is not setup correctly!"
 msgstr "Sudo ist nicht korrekt eingerichtet!"
 
-#: ../lib/modules.inc:1312 ../lib/lists.inc:687
+#: ../lib/modules.inc:1321 ../lib/lists.inc:687
 msgid "Suffix"
 msgstr "Suffix"
 
-#: ../lib/modules/sambaSamAccount.inc:1230
+#: ../lib/modules/sambaSamAccount.inc:1253
 msgid "Sunday"
 msgstr "Sonntag"
 
 #: ../templates/lists/changePassword.php:112
-#: ../lib/modules/sambaSamAccount.inc:199
+#: ../lib/modules/sambaSamAccount.inc:195
 msgid "Sync Samba LM password with Unix password"
 msgstr "Samba LM-Passwörter mit Unix synchronisieren"
 
 #: ../templates/lists/changePassword.php:111
-#: ../lib/modules/sambaSamAccount.inc:198
+#: ../lib/modules/sambaSamAccount.inc:194
 msgid "Sync Samba NT password with Unix password"
 msgstr "Samba NT-Passwörter mit Unix synchronisieren"
 
@@ -5134,8 +5163,8 @@ msgstr "Aushilfskraft, Vertrag bis Dezember"
 msgid "Template"
 msgstr "Vorlage"
 
-#: ../lib/modules/sambaSamAccount.inc:339
-#: ../lib/modules/sambaSamAccount.inc:1163
+#: ../lib/modules/sambaSamAccount.inc:335
+#: ../lib/modules/sambaSamAccount.inc:1186
 msgid "Terminal server options"
 msgstr "Terminalserver-Einstellungen"
 
@@ -5152,8 +5181,7 @@ msgid "Text for user PDF"
 msgstr "Text für Benutzer-PDF"
 
 #: ../lib/modules/kolabUser.inc:172
-msgid ""
-"The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
+msgid "The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
 msgstr ""
 "Das Cyrus-Mailquota für Benutzer in MBytes, leer heißt unbegrenzter "
 "Speicherplatz."
@@ -5167,11 +5195,11 @@ msgstr "Die DHCP-Bereiche wurden an das neue Subnetz angepasst."
 msgid "The IP address %s is invalid!"
 msgstr "Die IP-Adresse %s ist ungültig!"
 
-#: ../lib/modules/fixed_ip.inc:400
+#: ../lib/modules/fixed_ip.inc:394
 msgid "The IP address does not match the subnet."
 msgstr "Die IP-Adressen passen nicht zum Subnetz."
 
-#: ../lib/modules/fixed_ip.inc:403
+#: ../lib/modules/fixed_ip.inc:397
 msgid "The IP address is already in use."
 msgstr "Diese IP-Adresse wird bereits verwendet."
 
@@ -5211,15 +5239,15 @@ msgstr "Die MAC-Adresse des PCs. Beispiel: 11:22:33:44:55:aa"
 msgid "The Netbios server is invalid."
 msgstr "Der Netbios-Server ist ungültig."
 
-#: ../lib/modules/fixed_ip.inc:362
+#: ../lib/modules/fixed_ip.inc:356
 msgid "The PC name may not be longer than 20 characters."
 msgstr "Der PC-Name darf maximal 20 Zeichen lang sein."
 
-#: ../lib/modules/fixed_ip.inc:371
+#: ../lib/modules/fixed_ip.inc:365
 msgid "The PC name may only contain A-Z, a-z and 0-9."
 msgstr "Der PC-Name darf nur A-Z, a-z und 0-9 enthalten."
 
-#: ../lib/modules/fixed_ip.inc:365
+#: ../lib/modules/fixed_ip.inc:359
 msgid "The PC name needs to be at least 2 characters long."
 msgstr "Der PC-Name muss mindestens zwei Zeichen lang sein."
 
@@ -5254,8 +5282,7 @@ msgstr ""
 #: ../templates/tree/templates/creation/custom.php:99
 #, php-format
 msgid "The container you specified (%s) does not exist. Please try again."
-msgstr ""
-"Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es erneut."
+msgstr "Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es erneut."
 
 #: ../lib/modules/kolabUser.inc:160
 msgid "The country name of the user."
@@ -5302,8 +5329,7 @@ msgid "The first line is the subject."
 msgstr "Die erste Zeile ist der Betreff."
 
 #: ../templates/initsuff.php:183
-msgid ""
-"The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgid "The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
 #: ../lib/modules/sambaSamAccount.inc:110
@@ -5317,7 +5343,7 @@ msgstr ""
 "Die Überschrift für einen neuen Abschnitt muss mindestens ein Zeichen "
 "enthalten."
 
-#: ../lib/modules/sambaSamAccount.inc:252
+#: ../lib/modules/sambaSamAccount.inc:248
 msgid "The home directory will be connected under this drive letter."
 msgstr "Das Heimatverzeichnis wird unter diesem Buchstaben verbunden."
 
@@ -5361,7 +5387,7 @@ msgstr ""
 "Die maximale Lease-Zeit bestimmt nach wie vielen Sekunden der Client eine "
 "neue IP-Adresse beantragen muss."
 
-#: ../lib/modules.inc:1087
+#: ../lib/modules.inc:1096
 #, php-format
 msgid "The module %s is not yet ready."
 msgstr "Das Modul %s ist noch nicht bereit."
@@ -5450,15 +5476,12 @@ msgstr ""
 
 #: ../lib/security.inc:262
 #, php-format
-msgid ""
-"The password is too weak. You have to enter at least %s numeric characters."
-msgstr ""
-"Das Passwort ist zu unsicher. Sie müssen mindestens %s Zahlen eingeben."
+msgid "The password is too weak. You have to enter at least %s numeric characters."
+msgstr "Das Passwort ist zu unsicher. Sie müssen mindestens %s Zahlen eingeben."
 
 #: ../lib/security.inc:266
 #, php-format
-msgid ""
-"The password is too weak. You have to enter at least %s symbolic characters."
+msgid "The password is too weak. You have to enter at least %s symbolic characters."
 msgstr ""
 "Das Passwort ist zu unsicher. Sie müssen mindestens %s Sonderzeichen "
 "eingeben."
@@ -5573,9 +5596,8 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:340
 msgid ""
 "These are the minimum and maximum numbers to use for machine IDs when "
-"creating new accounts for Samba hosts. The range should be different from "
-"that of users. New host accounts will always get the highest number in use "
-"plus one."
+"creating new accounts for hosts. The range should be different from that of "
+"users. New host accounts will always get the highest number in use plus one."
 msgstr ""
 "Das sind die minimalen und maximalen Nummern für Host-IDs wenn neue Hosts "
 "erstellt werden. Der Bereich sollte sich von dem der Benutzer unterscheiden. "
@@ -5593,13 +5615,12 @@ msgstr ""
 "plus 1."
 
 #: ../lib/modules/posixAccount.inc:87
-msgid ""
-"This GID number is invalid! Please provide either a number or a group name."
+msgid "This GID number is invalid! Please provide either a number or a group name."
 msgstr ""
 "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen "
 "Gruppennamen."
 
-#: ../lib/modules/fixed_ip.inc:368
+#: ../lib/modules/fixed_ip.inc:362
 msgid "This PC name already exists."
 msgstr "Der PC-Name existiert bereits."
 
@@ -5607,17 +5628,15 @@ msgstr "Der PC-Name existiert bereits."
 msgid "This account is marked for deletion."
 msgstr "Dieser Account wurde zum Löschen markiert."
 
-#: ../lib/modules/sambaSamAccount.inc:276
+#: ../lib/modules/sambaSamAccount.inc:272
 msgid ""
 "This allows you to define this account as a special user like administrator "
 "or guest."
-msgstr ""
-"Hier können Sie spezielle Accounts definieren, z.B. Administrator oder Gast."
+msgstr "Hier können Sie spezielle Accounts definieren, z.B. Administrator oder Gast."
 
 #: ../lib/modules/inetOrgPerson.inc:487
 msgid "This can be used to specify if the user has a car license."
-msgstr ""
-"Sie können in diesem Feld speichern, ob der Benutzer einen Führerschein hat."
+msgstr "Sie können in diesem Feld speichern, ob der Benutzer einen Führerschein hat."
 
 #: ../help/help.inc:121
 msgid "This changes the password of the selected profile."
@@ -5628,8 +5647,7 @@ msgid "This changes the profile which is selected by default at login."
 msgstr "Damit ändern Sie das Standardprofil am Login."
 
 #: ../templates/massBuildAccounts.php:152
-msgid ""
-"This column is defined to include unique entries but duplicates were found:"
+msgid "This column is defined to include unique entries but duplicates were found:"
 msgstr "Diese Spalte darf keine doppelten Einträge enthalten:"
 
 #: ../help/help.inc:96
@@ -5644,8 +5662,7 @@ msgstr ""
 msgid ""
 "This defines the rights for the home directories which are created by "
 "lamdaemon."
-msgstr ""
-"Dies definiert, mit welchen Rechten die Heimatverzeichnisse angelegt werden."
+msgstr "Dies definiert, mit welchen Rechten die Heimatverzeichnisse angelegt werden."
 
 #: ../lib/modules/inetOrgPerson.inc:479
 msgid "This describes the location of the user."
@@ -5785,14 +5802,13 @@ msgstr ""
 msgid ""
 "This is the MAC address of the network card of the device (e.g. 00:01:02:DE:"
 "EF:18)."
-msgstr ""
-"Dies ist die MAC-Adresse der Netzwerkkarte im Gerät (z.B. 00:01:02:DE:EF:18)."
+msgstr "Dies ist die MAC-Adresse der Netzwerkkarte im Gerät (z.B. 00:01:02:DE:EF:18)."
 
 #: ../lib/modules/sambaAccount.inc:404
 msgid "This is the RID of the user's primary Windows group."
 msgstr "Das ist die RID-Nummer der primären Gruppe des Benutzers."
 
-#: ../lib/modules/sambaSamAccount.inc:273
+#: ../lib/modules/sambaSamAccount.inc:269
 msgid "This is the SID of the user's primary Windows group."
 msgstr "Das ist die SID der primären Gruppe des Benutzers."
 
@@ -5804,15 +5820,15 @@ msgstr ""
 "Das ist der absolute Pfad zu einem externen Script, das Quotas und "
 "Heimatverzeichnisse verwaltet."
 
-#: ../lib/modules/sambaAccount.inc:348 ../lib/modules/sambaSamAccount.inc:211
+#: ../lib/modules/sambaAccount.inc:348 ../lib/modules/sambaSamAccount.inc:207
 msgid "This is the account's Windows password."
 msgstr "Das ist das Windows-Passwort für den Account."
 
-#: ../lib/modules/sambaAccount.inc:345 ../lib/modules/sambaSamAccount.inc:208
+#: ../lib/modules/sambaAccount.inc:345 ../lib/modules/sambaSamAccount.inc:204
 msgid "This is the account's full name on Windows systems."
 msgstr "Das ist der Name, der auf Windows-Systemen angezeigt wird."
 
-#: ../lib/modules/sambaSamAccount.inc:295 ../lib/modules/shadowAccount.inc:186
+#: ../lib/modules/sambaSamAccount.inc:291 ../lib/modules/shadowAccount.inc:186
 #: ../lib/modules/phpGroupwareUser.inc:83
 msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
 msgstr "Account-Ablaufdatum im Format: TT-MM-JJJJ"
@@ -5846,15 +5862,13 @@ msgstr ""
 msgid "This is the mail server for the user."
 msgstr "Dies ist der Mailserver des Benutzers."
 
-#: ../lib/modules/groupOfNames.inc:61
+#: ../lib/modules/nisnetgroup.inc:69 ../lib/modules/groupOfNames.inc:61
 msgid "This is the name of this group."
 msgstr "Das ist der Name dieser Gruppe."
 
 #: ../lib/modules/posixAccount.inc:427
-msgid ""
-"This is the natural name of the host. If empty, the host name will be used."
-msgstr ""
-"Dies ist der übliche Name des Hosts, falls leer wird der Hostname verwendet."
+msgid "This is the natural name of the host. If empty, the host name will be used."
+msgstr "Dies ist der übliche Name des Hosts, falls leer wird der Hostname verwendet."
 
 #: ../lib/modules/inetOrgPerson.inc:447
 msgid ""
@@ -5896,14 +5910,13 @@ msgstr ""
 "Das ist die Anzahl von Zeilen, die in den Accountlisten angezeigt wird. Wenn "
 "mehr Einträge gefunden werden, wird die Liste auf mehrere Seiten aufgeteilt."
 
-#: ../lib/modules/sambaSamAccount.inc:343
+#: ../lib/modules/sambaSamAccount.inc:339
 msgid ""
 "This is the number of seconds after when the user may or has to change his "
 "password."
-msgstr ""
-"Zeit in Sekunden nach der der Benutzer sein Passwort ändern kan oder muss."
+msgstr "Zeit in Sekunden nach der der Benutzer sein Passwort ändern kan oder muss."
 
-#: ../lib/modules/sambaSamAccount.inc:304
+#: ../lib/modules/sambaSamAccount.inc:300
 msgid "This is the path to the user's home directory."
 msgstr "Das ist der Pfad zum Heimatverzeichnis des Benutzers."
 
@@ -5917,7 +5930,7 @@ msgstr ""
 "Accounts. Wenn Sie das Feld leer lassen wird LAM die RID aus der UID "
 "berechnen. Mögliche Werte sind eine Zahl oder eine spezielle Gruppe:"
 
-#: ../lib/modules/sambaSamAccount.inc:279
+#: ../lib/modules/sambaSamAccount.inc:275
 msgid ""
 "This is the relative ID number for your Windows account. You can either "
 "enter a number or one of these special accounts: "
@@ -5925,7 +5938,7 @@ msgstr ""
 "Das ist die relative ID-Nummer für den Windows-Account. Sie können entweder "
 "eine Nummer angeben oder den Namen eines dieser Spezialaccounts: "
 
-#: ../lib/modules/sambaSamAccount.inc:283
+#: ../lib/modules/sambaSamAccount.inc:279
 msgid ""
 "This is the relative ID number for your host account. If you leave this "
 "empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
@@ -6000,7 +6013,7 @@ msgstr ""
 "Termine abfragen möchten. Wenn Sie das Feld leer lassen wird der "
 "Standardwert (60 Tage) verwendet."
 
-#: ../lib/modules/sambaSamAccount.inc:298
+#: ../lib/modules/sambaSamAccount.inc:294
 msgid ""
 "This is the time zone of your Samba server. LAM needs this information to "
 "display the logon hours correctly."
@@ -6008,7 +6021,7 @@ msgstr ""
 "Hier können Sie die Zeitzone Ihres Samba-Servers einstellen. LAM benötigt "
 "die Information zur korrekten Darstellung der Anmeldezeiten."
 
-#: ../lib/modules/sambaSamAccount.inc:270
+#: ../lib/modules/sambaSamAccount.inc:266
 msgid "This is the user's primary Windows group."
 msgstr "Das ist die primäre Windows-Gruppe des Benutzers."
 
@@ -6024,11 +6037,11 @@ msgstr "Diese Mailadresse wird bereits verwendet:"
 msgid "This object class is obsolete."
 msgstr "Diese Objektklasse ist veraltet."
 
-#: ../lib/modules/sambaSamAccount.inc:289
+#: ../lib/modules/sambaSamAccount.inc:285
 msgid "This option defines the allowed logon hours for this account."
 msgstr "Diese Einstellung dient zur Zuweisung der erlaubten Anmeldezeiten."
 
-#: ../lib/modules/sambaSamAccount.inc:292
+#: ../lib/modules/sambaSamAccount.inc:288
 msgid ""
 "This option defines the allowed logon hours for this account. The format is "
 "the same as for the LDAP attribute. The 24*7 hours are represented as 168 "
@@ -6041,15 +6054,15 @@ msgstr ""
 "werden. Das erste Bit stellt den Zeitraum 00:00 - 00:59 Uhr GMT am Sonntag "
 "dar."
 
-#: ../lib/modules/sambaSamAccount.inc:313
+#: ../lib/modules/sambaSamAccount.inc:309
 msgid "This program is run after the login."
 msgstr "Dieses Programm wird nach der Anmeldung gestartet."
 
-#: ../lib/modules/sambaSamAccount.inc:337
+#: ../lib/modules/sambaSamAccount.inc:333
 msgid "This specifies the reconnect policy."
 msgstr "Hier spezifizieren Sie die Wiederherstellungsrichtlinie."
 
-#: ../lib/modules/sambaSamAccount.inc:334
+#: ../lib/modules/sambaSamAccount.inc:330
 msgid "This specifies what to do when the client connection is broken."
 msgstr ""
 "Hier spezifizieren Sie, was passiert wenn die Client-Verbindung getrennt "
@@ -6106,8 +6119,7 @@ msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 
 #: ../lib/modules/posixGroup.inc:508
 msgid "This value must be a list of user names separated by semicolons."
-msgstr ""
-"Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
+msgstr "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
 
 #: ../help/help.inc:188
 msgid "This will create a new organizational unit under the selected one."
@@ -6120,15 +6132,14 @@ msgstr ""
 "Benutzers auf dem angegebenen Server erstellt."
 
 #: ../help/help.inc:190
-msgid ""
-"This will delete the selected organizational unit. The OU has to be empty."
+msgid "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
 #: ../help/help.inc:119
 msgid "This will delete the selected profile."
 msgstr "Dies löscht das markierte Profil."
 
-#: ../lib/modules/sambaAccount.inc:351 ../lib/modules/sambaSamAccount.inc:214
+#: ../lib/modules/sambaAccount.inc:351 ../lib/modules/sambaSamAccount.inc:210
 msgid "This will reset the host's password to a default value."
 msgstr "Dies setzt das Maschinenpasswort auf den Standardwert zurück."
 
@@ -6148,20 +6159,20 @@ msgstr ""
 "Damit wird der Account für Kolabd als löschbar gekennzeichnet. Verwenden Sie "
 "dies um Kolab-Accounts sauber zu löschen (löscht z.B. das Postfach)."
 
-#: ../lib/modules/sambaSamAccount.inc:1229
+#: ../lib/modules/sambaSamAccount.inc:1252
 msgid "Thursday"
 msgstr "Donnerstag"
 
-#: ../lib/modules/sambaSamAccount.inc:1270
+#: ../lib/modules/sambaSamAccount.inc:1293
 msgid "Time"
 msgstr "Zeit"
 
-#: ../lib/modules/sambaSamAccount.inc:318
+#: ../lib/modules/sambaSamAccount.inc:314
 msgid "Time limit"
 msgstr "Zeitlimit"
 
-#: ../lib/modules/sambaSamAccount.inc:297
-#: ../lib/modules/sambaSamAccount.inc:495
+#: ../lib/modules/sambaSamAccount.inc:293
+#: ../lib/modules/sambaSamAccount.inc:491
 msgid "Time zone"
 msgstr "Zeitzone"
 
@@ -6179,7 +6190,7 @@ msgstr ""
 "Verwenden Sie /bin/false um den Login zu deaktivieren. Die Shellliste wird "
 "von lam/config/shells gelesen."
 
-#: ../lib/modules/sambaSamAccount.inc:519
+#: ../lib/modules/sambaSamAccount.inc:515
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "Tokyo, Seoul, Osaka, Yakutsk"
 
@@ -6207,7 +6218,7 @@ msgstr "Baumansicht"
 msgid "TreeSuffix is invalid!"
 msgstr "BaumSuffix ist ungültig!"
 
-#: ../lib/modules/sambaSamAccount.inc:1229
+#: ../lib/modules/sambaSamAccount.inc:1252
 msgid "Tuesday"
 msgstr "Dienstag"
 
@@ -6222,8 +6233,7 @@ msgstr "Benutzer ID"
 
 #: ../lib/modules/posixAccount.inc:75
 msgid "UID has changed. Do you want to change home directory?"
-msgstr ""
-"UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
+msgstr "UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
 
 #: ../lib/modules/posixAccount.inc:70
 msgid ""
@@ -6236,7 +6246,7 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:71 ../lib/modules/posixAccount.inc:211
 #: ../lib/modules/posixAccount.inc:285 ../lib/modules/posixAccount.inc:335
 #: ../lib/modules/posixAccount.inc:339 ../lib/modules/posixAccount.inc:347
-#: ../lib/modules/posixAccount.inc:976 ../lib/modules/posixAccount.inc:1244
+#: ../lib/modules/posixAccount.inc:971 ../lib/modules/posixAccount.inc:1239
 #: ../lib/types/user.inc:83 ../lib/types/host.inc:86
 msgid "UID number"
 msgstr "UID Nummer"
@@ -6255,7 +6265,7 @@ msgstr ""
 msgid "UID ranges for Unix accounts"
 msgstr "UID-Bereiche für Unix-Accounts"
 
-#: ../lib/modules/sambaAccount.inc:386 ../lib/modules/sambaSamAccount.inc:255
+#: ../lib/modules/sambaAccount.inc:386 ../lib/modules/sambaSamAccount.inc:251
 msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
 "with user and group name."
@@ -6300,11 +6310,12 @@ msgstr "Kann die PDF-Struktur nicht löschen!"
 msgid "Unable to delete profile!"
 msgstr "Kann das Profil nicht löschen!"
 
-#: ../lib/modules/posixAccount.inc:1425 ../lib/modules/posixAccount.inc:1660
+#: ../lib/modules/nisnetgroup.inc:479 ../lib/modules/posixAccount.inc:1420
+#: ../lib/modules/posixAccount.inc:1655
 msgid "Unable to find group in LDAP."
 msgstr "Kann Gruppe nicht im LDAP-Baum finden."
 
-#: ../lib/modules.inc:1440 ../lib/modules.inc:1444
+#: ../lib/modules.inc:1449 ../lib/modules.inc:1453
 msgid "Unable to load LDAP entry:"
 msgstr "Kann den LDAP-Eintrag nicht einlesen:"
 
@@ -6323,7 +6334,7 @@ msgid "Unable to load profile!"
 msgstr "Kann das Profil nicht laden!"
 
 #: ../templates/lists/changePassword.php:379
-#: ../lib/modules/sambaSamAccount.inc:2165
+#: ../lib/modules/sambaSamAccount.inc:2188
 msgid "Unable to read sambaSID attribute."
 msgstr "Konnte das Attribut sambaSID nicht lesen."
 
@@ -6344,8 +6355,8 @@ msgstr "Kann die mail nicht versenden!"
 
 #: ../templates/lists/changePassword.php:375
 #: ../templates/lists/changePassword.php:390
-#: ../lib/modules/sambaSamAccount.inc:2161
-#: ../lib/modules/sambaSamAccount.inc:2176
+#: ../lib/modules/sambaSamAccount.inc:2184
+#: ../lib/modules/sambaSamAccount.inc:2199
 msgid ""
 "Unable to sync the time when the user can/must change his password because "
 "no domain was found."
@@ -6379,7 +6390,7 @@ msgstr "Unbekannter Fehler"
 msgid "Unlock Samba account"
 msgstr "Samba 3-Account entsperren"
 
-#: ../lib/modules/posixGroup.inc:195 ../lib/modules/posixAccount.inc:1037
+#: ../lib/modules/posixGroup.inc:195 ../lib/modules/posixAccount.inc:1032
 msgid "Unlock password"
 msgstr "Passwort reaktivieren"
 
@@ -6395,15 +6406,15 @@ msgstr "Hoch"
 msgid "Update Samba password timestamps"
 msgstr "Samba-Passwortzeitstempel anpassen"
 
-#: ../lib/modules/sambaSamAccount.inc:202
+#: ../lib/modules/sambaSamAccount.inc:198
 msgid "Update attribute \"sambaPwdCanChange\" on password change"
 msgstr "Attribut \"sambaPwdCanChange\" bei Passwortänderung anpassen"
 
-#: ../lib/modules/sambaSamAccount.inc:200
+#: ../lib/modules/sambaSamAccount.inc:196
 msgid "Update attribute \"sambaPwdLastSet\" on password change"
 msgstr "Attribut \"sambaPwdLastSet\" bei Passwortänderung anpassen"
 
-#: ../lib/modules/sambaSamAccount.inc:201
+#: ../lib/modules/sambaSamAccount.inc:197
 msgid "Update attribute \"sambaPwdMustChange\" on password change"
 msgstr "Attribut \"sambaPwdMustChange\" bei Passwortänderung anpassen"
 
@@ -6426,21 +6437,21 @@ msgstr "Benutzung"
 
 #: ../lib/modules/sambaAccount.inc:124 ../lib/modules/sambaAccount.inc:235
 #: ../lib/modules/sambaAccount.inc:353 ../lib/modules/sambaAccount.inc:356
-#: ../lib/modules/sambaAccount.inc:752 ../lib/modules/sambaSamAccount.inc:216
-#: ../lib/modules/sambaSamAccount.inc:219
-#: ../lib/modules/sambaSamAccount.inc:371
-#: ../lib/modules/sambaSamAccount.inc:994
-#: ../lib/modules/sambaSamAccount.inc:1468
+#: ../lib/modules/sambaAccount.inc:752 ../lib/modules/sambaSamAccount.inc:212
+#: ../lib/modules/sambaSamAccount.inc:215
+#: ../lib/modules/sambaSamAccount.inc:367
+#: ../lib/modules/sambaSamAccount.inc:1017
+#: ../lib/modules/sambaSamAccount.inc:1491
 msgid "Use Unix password"
 msgstr "Unix-Passwort verwenden"
 
 #: ../lib/modules/sambaAccount.inc:130 ../lib/modules/sambaAccount.inc:243
 #: ../lib/modules/sambaAccount.inc:359 ../lib/modules/sambaAccount.inc:362
-#: ../lib/modules/sambaAccount.inc:756 ../lib/modules/sambaSamAccount.inc:222
-#: ../lib/modules/sambaSamAccount.inc:225
-#: ../lib/modules/sambaSamAccount.inc:379
-#: ../lib/modules/sambaSamAccount.inc:999
-#: ../lib/modules/sambaSamAccount.inc:1474
+#: ../lib/modules/sambaAccount.inc:756 ../lib/modules/sambaSamAccount.inc:218
+#: ../lib/modules/sambaSamAccount.inc:221
+#: ../lib/modules/sambaSamAccount.inc:375
+#: ../lib/modules/sambaSamAccount.inc:1022
+#: ../lib/modules/sambaSamAccount.inc:1497
 msgid "Use no password"
 msgstr "Kein Passwort setzen"
 
@@ -6474,6 +6485,7 @@ msgstr "benutzte Inodes"
 msgid "Used inodes (files)"
 msgstr "Benutze Inodes (Dateien)"
 
+#: ../lib/modules/nisnetgroup.inc:176 ../lib/modules/nisnetgroup.inc:522
 #: ../lib/modules/sambaGroupMapping.inc:67
 msgid "User"
 msgstr "Benutzer"
@@ -6487,15 +6499,15 @@ msgid "User accounts (e.g. Unix, Samba and Kolab)"
 msgstr "Benutzeraccounts (z.B. Unix, Samba und Kolab)"
 
 #: ../lib/modules/sambaAccount.inc:267 ../lib/modules/sambaAccount.inc:377
-#: ../lib/modules/sambaAccount.inc:768 ../lib/modules/sambaSamAccount.inc:246
-#: ../lib/modules/sambaSamAccount.inc:403
-#: ../lib/modules/sambaSamAccount.inc:1035
-#: ../lib/modules/sambaSamAccount.inc:1292
-#: ../lib/modules/sambaSamAccount.inc:1503
+#: ../lib/modules/sambaAccount.inc:768 ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaSamAccount.inc:399
+#: ../lib/modules/sambaSamAccount.inc:1058
+#: ../lib/modules/sambaSamAccount.inc:1315
+#: ../lib/modules/sambaSamAccount.inc:1526
 msgid "User can change password"
 msgstr "Benutzer kann Passwort ändern"
 
-#: ../lib/modules/sambaSamAccount.inc:342
+#: ../lib/modules/sambaSamAccount.inc:338
 msgid "User can/must change password"
 msgstr "Benutzer kann/muss Passwort ändern"
 
@@ -6516,15 +6528,16 @@ msgid "User modification"
 msgstr "Vom Benutzer änderbar"
 
 #: ../lib/modules/sambaAccount.inc:274 ../lib/modules/sambaAccount.inc:379
-#: ../lib/modules/sambaAccount.inc:776 ../lib/modules/sambaSamAccount.inc:248
-#: ../lib/modules/sambaSamAccount.inc:410
-#: ../lib/modules/sambaSamAccount.inc:1052
-#: ../lib/modules/sambaSamAccount.inc:1297
-#: ../lib/modules/sambaSamAccount.inc:1508
+#: ../lib/modules/sambaAccount.inc:776 ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:406
+#: ../lib/modules/sambaSamAccount.inc:1075
+#: ../lib/modules/sambaSamAccount.inc:1320
+#: ../lib/modules/sambaSamAccount.inc:1531
 msgid "User must change password"
 msgstr "Benutzer muss Passwort ändern"
 
 #: ../templates/lists/changePassword.php:138 ../templates/login.php:254
+#: ../lib/modules/nisnetgroup.inc:116 ../lib/modules/nisnetgroup.inc:408
 #: ../lib/modules/account.inc:94 ../lib/modules/account.inc:115
 #: ../lib/modules/account.inc:135 ../lib/modules/account.inc:137
 #: ../lib/modules/account.inc:138 ../lib/modules/account.inc:220
@@ -6536,7 +6549,7 @@ msgstr "Benutzer muss Passwort ändern"
 #: ../lib/modules/uidObject.inc:153 ../lib/modules/posixAccount.inc:76
 #: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:80
 #: ../lib/modules/posixAccount.inc:197 ../lib/modules/posixAccount.inc:372
-#: ../lib/modules/posixAccount.inc:964 ../lib/modules/posixAccount.inc:1242
+#: ../lib/modules/posixAccount.inc:959 ../lib/modules/posixAccount.inc:1237
 #: ../lib/types/user.inc:85 ../lib/types/alias.inc:82
 msgid "User name"
 msgstr "Benutzername"
@@ -6545,10 +6558,11 @@ msgstr "Benutzername"
 msgid "User name already exists!"
 msgstr "Benutzername besteht schon!"
 
-#: ../lib/modules/account.inc:135 ../lib/modules/account.inc:136
-#: ../lib/modules/account.inc:138 ../lib/modules/inetOrgPerson.inc:99
-#: ../lib/modules/inetOrgPerson.inc:100 ../lib/modules/uidObject.inc:78
-#: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/nisnetgroup.inc:116 ../lib/modules/account.inc:135
+#: ../lib/modules/account.inc:136 ../lib/modules/account.inc:138
+#: ../lib/modules/inetOrgPerson.inc:99 ../lib/modules/inetOrgPerson.inc:100
+#: ../lib/modules/uidObject.inc:78 ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:82
 msgid ""
 "User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -6638,12 +6652,12 @@ msgstr "Sie möchten mehr Funktionen? Bestellen Sie LAM Pro!"
 msgid "Warning"
 msgstr "Warnung"
 
-#: ../templates/delete.php:204 ../lib/modules.inc:1705
+#: ../templates/delete.php:204 ../lib/modules.inc:1714
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "Konnte keine Attribute zum DN hinzufügen: %s."
 
-#: ../lib/modules.inc:1676
+#: ../lib/modules.inc:1685
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "Konnte DN nicht erstellen: %s."
@@ -6656,7 +6670,7 @@ msgstr "Konnte DN nicht löschen: %s."
 
 #: ../templates/tree/update.php:109 ../templates/tree/add_oclass_form.php:162
 #: ../templates/tree/add_oclass.php:93 ../templates/delete.php:196
-#: ../lib/modules.inc:1693
+#: ../lib/modules.inc:1702
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "Konnte die Attribute nicht ändern: %s."
@@ -6666,7 +6680,7 @@ msgstr "Konnte die Attribute nicht ändern: %s."
 msgid "Was unable to modify attributes from DN: %s."
 msgstr "Konnte die Attribute von DN %s nicht ändern."
 
-#: ../templates/delete.php:212 ../lib/modules.inc:1717
+#: ../templates/delete.php:212 ../lib/modules.inc:1726
 #: ../lib/modules/phpGroupwareGroup.inc:190
 #: ../lib/modules/phpGroupwareUser.inc:333
 #: ../lib/modules/phpGroupwareUser.inc:353
@@ -6674,16 +6688,16 @@ msgstr "Konnte die Attribute von DN %s nicht ändern."
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "Konnte die Attribute nicht löschen: %s."
 
-#: ../lib/modules.inc:1663
+#: ../lib/modules.inc:1672
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "Konnte DN nicht umbenennen: %s."
 
-#: ../lib/modules/sambaSamAccount.inc:1229
+#: ../lib/modules/sambaSamAccount.inc:1252
 msgid "Wednesday"
 msgstr "Donnerstag"
 
-#: ../lib/modules/sambaSamAccount.inc:510
+#: ../lib/modules/sambaSamAccount.inc:506
 msgid "Western Europe Time, London, Lisbon"
 msgstr "Westeuropäische Zeit, London, Lissabon"
 
@@ -6695,17 +6709,17 @@ msgstr ""
 "Wenn Sie ldaps:// verwenden stellen Sie sicher, dass Sie genau die selbe IP/"
 "Domäne wie in ihrem Zertifikat verwenden!"
 
-#: ../lib/modules/sambaAccount.inc:410 ../lib/modules/sambaSamAccount.inc:286
+#: ../lib/modules/sambaAccount.inc:410 ../lib/modules/sambaSamAccount.inc:282
 msgid "Windows domain name of account."
 msgstr "Windows-Domänenname des Accounts."
 
 #: ../lib/modules/sambaAccount.inc:311 ../lib/modules/sambaAccount.inc:820
 #: ../lib/modules/sambaGroupMapping.inc:255
 #: ../lib/modules/sambaGroupMapping.inc:386
-#: ../lib/modules/sambaSamAccount.inc:454
-#: ../lib/modules/sambaSamAccount.inc:1129
-#: ../lib/modules/sambaSamAccount.inc:1561
-#: ../lib/modules/sambaSamAccount.inc:1716
+#: ../lib/modules/sambaSamAccount.inc:450
+#: ../lib/modules/sambaSamAccount.inc:1152
+#: ../lib/modules/sambaSamAccount.inc:1584
+#: ../lib/modules/sambaSamAccount.inc:1739
 msgid "Windows group"
 msgstr "Windows-Gruppe"
 
@@ -6722,11 +6736,11 @@ msgstr "Windows-Gruppenname"
 msgid "Windows group type."
 msgstr "Windows-Gruppentyp."
 
-#: ../lib/modules/sambaSamAccount.inc:269
+#: ../lib/modules/sambaSamAccount.inc:265
 msgid "Windows primary group"
 msgstr "Primäre Windows-Gruppe"
 
-#: ../lib/modules/sambaSamAccount.inc:272
+#: ../lib/modules/sambaSamAccount.inc:268
 msgid "Windows primary group SID"
 msgstr "Primäre Windows-Gruppen-SID"
 
@@ -6738,13 +6752,13 @@ msgstr "Windows-Domänenname der Gruppe."
 msgid "Workgroup"
 msgstr "Arbeitsgruppe"
 
-#: ../lib/modules/sambaSamAccount.inc:315
-#: ../lib/modules/sambaSamAccount.inc:1381
-#: ../lib/modules/sambaSamAccount.inc:1736
+#: ../lib/modules/sambaSamAccount.inc:311
+#: ../lib/modules/sambaSamAccount.inc:1404
+#: ../lib/modules/sambaSamAccount.inc:1759
 msgid "Working directory"
 msgstr "Arbeitsverzeichnis"
 
-#: ../lib/modules/sambaSamAccount.inc:316
+#: ../lib/modules/sambaSamAccount.inc:312
 msgid "Working directory of initial program."
 msgstr "Arbeitsverzeichnis des Startprogramms."
 
@@ -6839,15 +6853,13 @@ msgstr "Sie müssen mindestens ein Mitglied zu dieser Gruppe hinzufügen."
 
 #: ../templates/tests/lamdaemonTest.php:251
 #, php-format
-msgid ""
-"Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"
+msgid "Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"
 msgstr ""
 "Ihr LAM-Admin-Benutzer (%s) muss ein gültiger Unix-Account sein um mit "
 "Lamdaemon zu funktionieren!"
 
 #: ../lib/lamdaemon.inc:111 ../lib/lamdaemon.inc:116
-msgid ""
-"Your LAM admin user must be a valid Unix account to work with lamdaemon!"
+msgid "Your LAM admin user must be a valid Unix account to work with lamdaemon!"
 msgstr ""
 "Ihr LAM-Admin-Benutzer muss ein gültiger Unix-Account sein um mit Lamdaemon "
 "zu funktionieren!"
@@ -6879,8 +6891,8 @@ msgstr "Ihre Einstellungen wurden erfolgreich gespeichert."
 msgid "YourCompany, Human Resources"
 msgstr "IhreFirma, Personalabteilung"
 
-#: ../lib/modules/ddns.inc:97 ../lib/modules/ddns.inc:328
-#: ../lib/modules/ddns.inc:361
+#: ../lib/modules/ddns.inc:97 ../lib/modules/ddns.inc:345
+#: ../lib/modules/ddns.inc:378
 msgid "Zone names"
 msgstr "Zonennamen"
 
@@ -6893,11 +6905,11 @@ msgstr "Zonennamen für die DNS-Server (z.B. firma.local)."
 msgid "[attribute deleted]"
 msgstr "[Attribut gelöscht]"
 
-#: ../lib/modules/sambaAccount.inc:289 ../lib/modules/sambaSamAccount.inc:432
+#: ../lib/modules/sambaAccount.inc:289 ../lib/modules/sambaSamAccount.inc:428
 msgid "\\\\server\\homes\\smiller"
 msgstr "\\\\server\\homes\\hmueller"
 
-#: ../lib/modules/sambaAccount.inc:295 ../lib/modules/sambaSamAccount.inc:438
+#: ../lib/modules/sambaAccount.inc:295 ../lib/modules/sambaSamAccount.inc:434
 msgid "\\\\server\\profiles\\smiller"
 msgstr "\\\\server\\profile\\hmueller"
 
@@ -6910,7 +6922,8 @@ msgstr "aktiv"
 msgid "add value"
 msgstr "Wert hinzufügen"
 
-#: ../lib/modules/groupOfNames.inc:86 ../lib/modules/posixGroup.inc:389
+#: ../lib/modules/nisnetgroup.inc:86 ../lib/modules/groupOfNames.inc:86
+#: ../lib/modules/posixGroup.inc:389
 msgid "adminstrators"
 msgstr "administratoren"
 
@@ -6930,13 +6943,13 @@ msgstr "dc=ihreFirma,dc=com"
 msgid "delete attribute"
 msgstr "Attribut löschen"
 
-#: ../lib/modules/sambaSamAccount.inc:1416
-#: ../lib/modules/sambaSamAccount.inc:1756
+#: ../lib/modules/sambaSamAccount.inc:1439
+#: ../lib/modules/sambaSamAccount.inc:1779
 msgid "disabled"
 msgstr "deaktiviert"
 
-#: ../lib/modules/sambaSamAccount.inc:1428
-#: ../lib/modules/sambaSamAccount.inc:1767
+#: ../lib/modules/sambaSamAccount.inc:1451
+#: ../lib/modules/sambaSamAccount.inc:1790
 msgid "disconnect"
 msgstr "trennen"
 
@@ -6963,17 +6976,17 @@ msgstr "E-Mail Adresse"
 msgid "false"
 msgstr "falsch"
 
-#: ../lib/modules/sambaSamAccount.inc:1437
-#: ../lib/modules/sambaSamAccount.inc:1775
+#: ../lib/modules/sambaSamAccount.inc:1460
+#: ../lib/modules/sambaSamAccount.inc:1798
 msgid "from any client"
 msgstr "von jedem Client"
 
-#: ../lib/modules/sambaSamAccount.inc:1438
-#: ../lib/modules/sambaSamAccount.inc:1776
+#: ../lib/modules/sambaSamAccount.inc:1461
+#: ../lib/modules/sambaSamAccount.inc:1799
 msgid "from previous client only"
 msgstr "nur vom letzten Client"
 
-#: ../lib/modules/posixAccount.inc:226
+#: ../lib/modules/nisnetgroup.inc:100 ../lib/modules/posixAccount.inc:226
 msgid "group01,group02"
 msgstr "gruppe01,gruppe02"
 
@@ -6986,23 +6999,23 @@ msgstr "Stunden"
 msgid "inactive"
 msgstr "inaktiv"
 
-#: ../lib/modules/sambaSamAccount.inc:1420
-#: ../lib/modules/sambaSamAccount.inc:1760
+#: ../lib/modules/sambaSamAccount.inc:1443
+#: ../lib/modules/sambaSamAccount.inc:1783
 msgid "input off, notify off"
 msgstr "Eingabe aus, Benachrichtigung aus"
 
-#: ../lib/modules/sambaSamAccount.inc:1419
-#: ../lib/modules/sambaSamAccount.inc:1759
+#: ../lib/modules/sambaSamAccount.inc:1442
+#: ../lib/modules/sambaSamAccount.inc:1782
 msgid "input off, notify on"
 msgstr "Eingabe aus, Benachrichtigung ein"
 
-#: ../lib/modules/sambaSamAccount.inc:1418
-#: ../lib/modules/sambaSamAccount.inc:1758
+#: ../lib/modules/sambaSamAccount.inc:1441
+#: ../lib/modules/sambaSamAccount.inc:1781
 msgid "input on, notify off"
 msgstr "Eingabe ein, Benachrichtigung aus"
 
-#: ../lib/modules/sambaSamAccount.inc:1417
-#: ../lib/modules/sambaSamAccount.inc:1757
+#: ../lib/modules/sambaSamAccount.inc:1440
+#: ../lib/modules/sambaSamAccount.inc:1780
 msgid "input on, notify on"
 msgstr "Eingabe ein, Benachrichtigung ein"
 
@@ -7014,8 +7027,7 @@ msgstr "JPEG-Bild enthält Fehler"
 msgid ""
 "ldap://localhost:389 connects to localhost using a standard LDAP connection "
 "on port 389"
-msgstr ""
-"ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
+msgstr "ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
 
 #: ../help/help.inc:66
 msgid ""
@@ -7034,20 +7046,20 @@ msgid "mail.yourdomain.org"
 msgstr "mail.ihredomain.de"
 
 #: ../lib/modules/sambaAccount.inc:327 ../lib/modules/sambaAccount.inc:337
-#: ../lib/modules/sambaSamAccount.inc:355
-#: ../lib/modules/sambaSamAccount.inc:481
+#: ../lib/modules/sambaSamAccount.inc:351
+#: ../lib/modules/sambaSamAccount.inc:477
 msgid "mydomain"
 msgstr "meineDomaene"
 
-#: ../lib/modules/sambaSamAccount.inc:456
+#: ../lib/modules/sambaSamAccount.inc:452
 msgid "mygroup"
 msgstr "meineGruppe"
 
-#: ../lib/modules/sambaSamAccount.inc:1724
-#: ../lib/modules/sambaSamAccount.inc:1732
-#: ../lib/modules/sambaSamAccount.inc:1742
 #: ../lib/modules/sambaSamAccount.inc:1747
-#: ../lib/modules/sambaSamAccount.inc:1752
+#: ../lib/modules/sambaSamAccount.inc:1755
+#: ../lib/modules/sambaSamAccount.inc:1765
+#: ../lib/modules/sambaSamAccount.inc:1770
+#: ../lib/modules/sambaSamAccount.inc:1775
 msgid "no"
 msgstr "nein"
 
@@ -7098,17 +7110,17 @@ msgid "pc01,pc02"
 msgstr "pc01,pc02"
 
 #: ../templates/tree/edit.php:246 ../templates/selfService/adminMain.php:554
-#: ../templates/config/confmain.php:466 ../lib/modules.inc:1134
+#: ../templates/config/confmain.php:466 ../lib/modules.inc:1143
 msgid "required"
 msgstr "erforderlich"
 
-#: ../lib/modules/sambaSamAccount.inc:1429
-#: ../lib/modules/sambaSamAccount.inc:1768
+#: ../lib/modules/sambaSamAccount.inc:1452
+#: ../lib/modules/sambaSamAccount.inc:1791
 msgid "reset"
 msgstr "zurücksetzen"
 
 #: ../lib/modules/sambaAccount.inc:231 ../lib/modules/posixGroup.inc:380
-#: ../lib/modules/posixAccount.inc:254 ../lib/modules/sambaSamAccount.inc:367
+#: ../lib/modules/posixAccount.inc:254 ../lib/modules/sambaSamAccount.inc:363
 msgid "secret"
 msgstr "geheim"
 
@@ -7158,10 +7170,11 @@ msgid "users"
 msgstr "Benutzer"
 
 #: ../lib/modules/inetOrgPerson.inc:313
-#: ../lib/modules/sambaSamAccount.inc:1722
-#: ../lib/modules/sambaSamAccount.inc:1730
-#: ../lib/modules/sambaSamAccount.inc:1740
 #: ../lib/modules/sambaSamAccount.inc:1745
-#: ../lib/modules/sambaSamAccount.inc:1750
+#: ../lib/modules/sambaSamAccount.inc:1753
+#: ../lib/modules/sambaSamAccount.inc:1763
+#: ../lib/modules/sambaSamAccount.inc:1768
+#: ../lib/modules/sambaSamAccount.inc:1773
 msgid "yes"
 msgstr "ja"
+
