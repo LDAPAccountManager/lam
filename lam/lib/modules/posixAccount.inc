@@ -76,7 +76,7 @@ class posixAccount extends baseModule {
 		$this->messages['uid'][1] = array('WARN', _('User name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['uid'][2] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][3] = array('WARN', _('Host name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->messages['uid'][4] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Host name must end with $ !'));
+		$this->messages['uid'][4] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][5] = array('WARN', _('User name'), _('User name in use. Selected next free user name.'));
 		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use. Selected next free host name.'));
 		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
@@ -337,7 +337,7 @@ class posixAccount extends baseModule {
 			),
 			'minMaxHost' => array(
 				'Headline' => _('UID number'),
-				'Text' => _('These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.')
+				'Text' => _('These are the minimum and maximum numbers to use for machine IDs when creating new accounts for hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.')
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
@@ -790,11 +790,6 @@ class posixAccount extends baseModule {
 			$errors[] = $this->messages['uid'][2];
 		}
 		if ($this->get_scope()=='host') {
-			// add "$" to uid if needed
-			if (substr($this->attributes['uid'][0], -1, 1) != '$') {
-				$this->attributes['uid'][0] .= '$';
-				$_POST['uid'] .= '$';
-			}
 			// Check if Hostname contains only valid characters
 			if ( !get_preg($this->attributes['uid'][0], 'hostname'))
 			$errors[] = $this->messages['uid'][4];

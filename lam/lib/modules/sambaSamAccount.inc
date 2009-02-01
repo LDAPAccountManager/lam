@@ -126,10 +126,6 @@ class sambaSamAccount extends baseModule {
 		$return['icon'] = 'samba.png';
 		// manages user and host accounts
 		$return["account_types"] = array("user", "host");
-		if ($this->get_scope() == "host") {
-			// LDAP filter
-			$return["ldap_filter"] = array('and' => '(uid=*$)', 'or' => "(objectClass=posixAccount)");
-		}
 		// alias name
 		$return["alias"] = _('Samba 3');
 		// RDN attribute
@@ -560,6 +556,27 @@ class sambaSamAccount extends baseModule {
 		if ($attrs['uid'][0]=='') return false;
 		return true;
 	}
+	
+	/**
+	* This function is used to check if all settings for this module have been made.
+	* 
+	* @see baseModule::module_complete
+	*
+	* @return boolean true, if settings are complete
+	*/
+	public function module_complete() {
+		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+			return true;
+		}
+		if ($this->get_scope() == "host") {
+			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+			if (substr($attrs['uid'][0], -1, 1) != '$') {
+				return false;			
+			}
+		}
+		return true;
+	}
+
 
 	/**
 	* This function loads the LDAP attributes for this module.
@@ -947,6 +964,12 @@ class sambaSamAccount extends baseModule {
 		}
 		$return = array();
 		if (in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+			if ($this->get_scope() == "host") {
+				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+				if (substr($attrs['uid'][0], -1, 1) != '$') {
+					StatusMessage("ERROR", _('Host name must end with $!'), _('Please check your settings on the Unix page!'));
+				}
+			}
 			// Get Domain SID from user SID
 			$sambaDomains = search_domains();
 			if (sizeof($sambaDomains) == 0) {
