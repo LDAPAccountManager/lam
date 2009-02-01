@@ -78,11 +78,11 @@ class nisnetgroup extends baseModule {
 			),
 			'members' => array(
 				"Headline" => _("Members"),
-				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name or any combination of them.")
+				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.")
 						),
 			'membersUpload' => array(
 				"Headline" => _("Members"),
-				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name or any combination of them.") . ' ' .
+				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.") . ' ' .
 						_("For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon.")
 			)
 		);
