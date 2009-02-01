@@ -404,14 +404,12 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
-					$pregexpr = '/^[[:alpha:]]([[:alnum:]@\\.\\ \\_-])*$/u';
+		case 'hostname':	
+					$pregexpr = '/^[[:alpha:]]([[:alnum:]@\\.\\ \\_\\$-])*$/u';
 					break;
 		case 'usernameList':	// comma separated list of user names
 		case 'groupnameList':	// comma separated list of group names
 					$pregexpr = '/^[[:alpha:]]([[:alnum:]@\\.\\ \\_-])*(,[[:alpha:]]([[:alnum:]@\\.\\ \\_-])*)*$/u';
-					break;
-		case 'hostname':	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
-					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
 		case 'realname':	// Allow all but \, <, >, =, $, ?
 		case 'cn':
