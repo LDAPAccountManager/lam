@@ -919,7 +919,7 @@ abstract class baseModule {
 	}
 
 	/**
-	* This functions is used to check if all settings for this module have been made.
+	* This function is used to check if all settings for this module have been made.
 	* 
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
