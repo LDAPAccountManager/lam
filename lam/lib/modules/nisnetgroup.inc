@@ -75,6 +75,15 @@ class nisnetgroup extends baseModule {
 			'memberNisNetgroup' => array(
 				"Headline" => _("Subgroups"),
 				"Text" => _("Here you can specify subgroups which are included in this NIS netgroup. All members of the subgroups will be treated as members of this group.")
+			),
+			'members' => array(
+				"Headline" => _("Members"),
+				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name or any combination of them.")
+						),
+			'membersUpload' => array(
+				"Headline" => _("Members"),
+				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name or any combination of them.") . ' ' .
+						_("For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon.")
 			)
 		);
 		// upload fields
@@ -98,6 +107,12 @@ class nisnetgroup extends baseModule {
 				'description' => _('Subgroups'),
 				'help' => 'memberNisNetgroup',
 				'example' => _('group01,group02')
+			),
+			array(
+				'name' => 'nisnetgroup_members',
+				'description' => _('Members'),
+				'help' => 'membersUpload',
+				'example' => _('(host1,user1,example.com);(host2,user2,example.com)')
 			)
 		);
 		// available PDF fields
@@ -483,6 +498,11 @@ class nisnetgroup extends baseModule {
 				if (!$skipSubgroups) {
 					$partialAccounts[$i]['memberNisNetgroup'] = $groups;
 				}
+			}
+			// members
+			if ($rawAccounts[$i][$ids['nisnetgroup_members']] != "") {
+				$members = explode(';', $rawAccounts[$i][$ids['nisnetgroup_members']]);
+				$partialAccounts[$i]['nisNetgroupTriple'] = $members;
 			}
 		}
 		return $messages;
