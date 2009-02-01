@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2009-02-01 17:31+0100\n"
+"PO-Revision-Date: 2009-02-01 20:02+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -67,6 +67,10 @@ msgstr "(z.B. cn=NeuerAccount)"
 #: ../templates/tree/templates/creation/new_ou_template.php:60
 msgid "(hint: do not include \"ou=\")"
 msgstr "(Tipp: ohne \"ou=\")"
+
+#: ../lib/modules/nisnetgroup.inc:115
+msgid "(host1,user1,example.com);(host2,user2,example.com)"
+msgstr "(host1,benutzer1,firma.de);(host2,benutzer2,firma.de)"
 
 #: ../templates/tree/add_attr_form.php:136
 msgid "(no new attributes available for this entry)"
@@ -373,7 +377,7 @@ msgstr "Aktive Accounttypen"
 #: ../templates/tree/add_attr_form.php:162
 #: ../templates/pdfedit/pdfpage.php:574 ../templates/pdfedit/pdfpage.php:591
 #: ../templates/pdfedit/pdfpage.php:621 ../templates/pdfedit/pdfpage.php:662
-#: ../templates/config/conftypes.php:180 ../lib/modules/nisnetgroup.inc:219
+#: ../templates/config/conftypes.php:180 ../lib/modules/nisnetgroup.inc:234
 #: ../lib/modules/nisMailAlias.inc:154 ../lib/modules/ieee802device.inc:111
 #: ../lib/modules/groupOfNames.inc:168 ../lib/modules/groupOfNames.inc:310
 #: ../lib/modules/kolabUser.inc:342 ../lib/modules/kolabUser.inc:359
@@ -494,7 +498,7 @@ msgstr "Fügt Eingabefelder für eine neue, feste IP-Adresse hinzu."
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: ../lib/modules/nisnetgroup.inc:94 ../lib/modules/groupOfNames.inc:93
+#: ../lib/modules/nisnetgroup.inc:103 ../lib/modules/groupOfNames.inc:93
 #: ../lib/modules/posixGroup.inc:401
 msgid "Administrators group"
 msgstr "Administratoren"
@@ -623,7 +627,7 @@ msgstr "Auckland, Fiji, Kamchatka"
 msgid "Available account types"
 msgstr "Verfügbare Accounttypen"
 
-#: ../lib/modules/nisnetgroup.inc:336 ../lib/modules/posixAccount.inc:1097
+#: ../lib/modules/nisnetgroup.inc:351 ../lib/modules/posixAccount.inc:1097
 msgid "Available groups"
 msgstr "Verfügbare Gruppen"
 
@@ -647,7 +651,7 @@ msgstr "Azoren, Kap Verde Inseln"
 msgid "B-Node (0x01)"
 msgstr "B-Knoten (0x01)"
 
-#: ../templates/tree/update_confirm.php:255 ../lib/modules/nisnetgroup.inc:342
+#: ../templates/tree/update_confirm.php:255 ../lib/modules/nisnetgroup.inc:357
 #: ../lib/modules/inetOrgPerson.inc:1033 ../lib/modules/groupOfNames.inc:352
 #: ../lib/modules/sambaAccount.inc:878 ../lib/modules/posixGroup.inc:266
 #: ../lib/modules/posixGroup.inc:289 ../lib/modules/posixAccount.inc:1103
@@ -815,7 +819,7 @@ msgstr "Kann leer bleiben."
 #: ../templates/profedit/profiledelete.php:86
 #: ../templates/config/conftypes.php:239 ../templates/config/confmain.php:457
 #: ../templates/config/confmodules.php:116 ../templates/initsuff.php:193
-#: ../lib/modules/nisnetgroup.inc:421 ../lib/modules/inetOrgPerson.inc:996
+#: ../lib/modules/nisnetgroup.inc:436 ../lib/modules/inetOrgPerson.inc:996
 #: ../lib/modules/groupOfNames.inc:231 ../lib/modules/groupOfNames.inc:258
 #: ../lib/modules/groupOfNames.inc:311 ../lib/modules/posixAccount.inc:1132
 #: ../lib/modules/kolabUser.inc:572 ../lib/modules/sambaSamAccount.inc:1300
@@ -1217,7 +1221,7 @@ msgstr "Vollmachten haben ungültiges Format!"
 #: ../templates/pdfedit/pdfdelete.php:96 ../templates/pdfedit/pdfmain.php:168
 #: ../templates/delete.php:116 ../templates/ou_edit.php:107
 #: ../templates/profedit/profilemain.php:158
-#: ../lib/modules/nisnetgroup.inc:197 ../lib/modules/kolabUser.inc:857
+#: ../lib/modules/nisnetgroup.inc:212 ../lib/modules/kolabUser.inc:857
 #: ../lib/lists.inc:465 ../lib/tree.inc:1178
 msgid "Delete"
 msgstr "Löschen"
@@ -1339,8 +1343,8 @@ msgstr "Lösche. Bitte haben Sie ein wenig Geduld..."
 
 #: ../templates/schema/schema.php:94 ../templates/schema/schema.php:148
 #: ../templates/schema/schema.php:351 ../templates/tree/add_value_form.php:186
-#: ../lib/modules/nisnetgroup.inc:72 ../lib/modules/nisnetgroup.inc:161
-#: ../lib/modules/nisnetgroup.inc:513 ../lib/modules/account.inc:88
+#: ../lib/modules/nisnetgroup.inc:72 ../lib/modules/nisnetgroup.inc:176
+#: ../lib/modules/nisnetgroup.inc:533 ../lib/modules/account.inc:88
 #: ../lib/modules/account.inc:98 ../lib/modules/account.inc:122
 #: ../lib/modules/account.inc:226 ../lib/modules/account.inc:240
 #: ../lib/modules/inetOrgPerson.inc:209 ../lib/modules/inetOrgPerson.inc:390
@@ -1423,7 +1427,7 @@ msgstr "Sollen die folgenden Accounts wirklich gelöscht werden?"
 msgid "Do you want to make these changes?"
 msgstr "Wollen Sie die Änderungen übernehmen?"
 
-#: ../lib/modules/nisnetgroup.inc:177 ../lib/modules/nisnetgroup.inc:523
+#: ../lib/modules/nisnetgroup.inc:192 ../lib/modules/nisnetgroup.inc:543
 #: ../lib/modules/sambaAccount.inc:181 ../lib/modules/sambaAccount.inc:325
 #: ../lib/modules/sambaAccount.inc:335 ../lib/modules/sambaAccount.inc:409
 #: ../lib/modules/sambaAccount.inc:839 ../lib/modules/sambaAccount.inc:897
@@ -1490,7 +1494,7 @@ msgstr "Domänengruppe"
 msgid "Domain guests"
 msgstr "Domänengäste"
 
-#: ../lib/modules/nisnetgroup.inc:118 ../lib/modules/dhcp_settings.inc:127
+#: ../lib/modules/nisnetgroup.inc:133 ../lib/modules/dhcp_settings.inc:127
 #: ../lib/modules/dhcp_settings.inc:191 ../lib/modules/dhcp_settings.inc:670
 #: ../lib/modules/dhcp_settings.inc:781 ../lib/modules/sambaAccount.inc:72
 #: ../lib/modules/sambaDomain.inc:70 ../lib/modules/sambaDomain.inc:137
@@ -1507,7 +1511,7 @@ msgstr ""
 "Domänenname enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und -."
 
-#: ../lib/modules/nisnetgroup.inc:118 ../lib/modules/sambaDomain.inc:188
+#: ../lib/modules/nisnetgroup.inc:133 ../lib/modules/sambaDomain.inc:188
 #: ../lib/modules/sambaDomain.inc:189
 msgid "Domain name is invalid!"
 msgstr "Domänenname ist ungültig!"
@@ -1620,7 +1624,7 @@ msgstr "SelfService bearbeiten"
 msgid "Edit server profiles"
 msgstr "Serverprofile ändern"
 
-#: ../lib/modules/nisnetgroup.inc:166
+#: ../lib/modules/nisnetgroup.inc:181
 msgid "Edit subgroups"
 msgstr "Untergruppen ändern"
 
@@ -1803,6 +1807,14 @@ msgstr "Feste IP"
 msgid "For automatic invitation handling."
 msgstr "Regelt automatische Einladungen."
 
+#: ../lib/modules/nisnetgroup.inc:86
+msgid ""
+"For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)"
+"\". Multiple entries are separated by semicolon."
+msgstr ""
+"Für den Upload geben Sie bitte die Einträge im Format \"(HOST,BENUTZER,"
+"DOMAIN)\" ein. Mehrere Einträge werden durch Strichpunkt getrennt."
+
 #: ../help/help.inc:179
 msgid "Format"
 msgstr "Format"
@@ -1907,7 +1919,7 @@ msgstr "Gruppe"
 msgid "Group accounts (e.g. Unix and Samba)"
 msgstr "Gruppenaccounts (z.B. Unix und Samba)"
 
-#: ../lib/modules/nisnetgroup.inc:92 ../lib/modules/posixGroup.inc:399
+#: ../lib/modules/nisnetgroup.inc:101 ../lib/modules/posixGroup.inc:399
 #: ../lib/types/group.inc:87
 msgid "Group description"
 msgstr "Gruppenbeschreibung"
@@ -1927,9 +1939,9 @@ msgstr "DNs der Gruppenmitglieder"
 msgid "Group members"
 msgstr "Gruppenmitglieder"
 
-#: ../lib/modules/nisnetgroup.inc:68 ../lib/modules/nisnetgroup.inc:84
-#: ../lib/modules/nisnetgroup.inc:115 ../lib/modules/nisnetgroup.inc:157
-#: ../lib/modules/nisnetgroup.inc:511 ../lib/modules/groupOfNames.inc:60
+#: ../lib/modules/nisnetgroup.inc:68 ../lib/modules/nisnetgroup.inc:93
+#: ../lib/modules/nisnetgroup.inc:130 ../lib/modules/nisnetgroup.inc:172
+#: ../lib/modules/nisnetgroup.inc:531 ../lib/modules/groupOfNames.inc:60
 #: ../lib/modules/groupOfNames.inc:84 ../lib/modules/groupOfNames.inc:439
 #: ../lib/modules/posixGroup.inc:167 ../lib/modules/posixGroup.inc:387
 #: ../lib/modules/posixGroup.inc:436 ../lib/modules/posixGroup.inc:475
@@ -1939,7 +1951,7 @@ msgstr "Gruppenmitglieder"
 msgid "Group name"
 msgstr "Gruppenname"
 
-#: ../lib/modules/nisnetgroup.inc:115 ../lib/modules/posixGroup.inc:506
+#: ../lib/modules/nisnetgroup.inc:130 ../lib/modules/posixGroup.inc:506
 #: ../lib/modules/posixGroup.inc:507
 msgid ""
 "Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
@@ -2167,7 +2179,10 @@ msgstr ""
 msgid ""
 "Here you can specify subgroups which are included in this NIS netgroup. All "
 "members of the subgroups will be treated as members of this group."
-msgstr "Hiermit können Sie Untergruppen für diese NIS Netzgruppe wählen. Alle Mitglieder der Untergruppen werden auch als Mitglieder dieser Gruppe behandelt."
+msgstr ""
+"Hiermit können Sie Untergruppen für diese NIS Netzgruppe wählen. Alle "
+"Mitglieder der Untergruppen werden auch als Mitglieder dieser Gruppe "
+"behandelt."
 
 #: ../lib/modules/sambaDomain.inc:95
 msgid "Here you can specify the minimum number of characters for a user password."
@@ -2273,7 +2288,7 @@ msgstr "Telefon privat"
 msgid "Homedirectory contains invalid characters."
 msgstr "Heimatverzeichnis enthält ungültige Zeichen."
 
-#: ../lib/modules/nisnetgroup.inc:175 ../lib/modules/nisnetgroup.inc:521
+#: ../lib/modules/nisnetgroup.inc:190 ../lib/modules/nisnetgroup.inc:541
 msgid "Host"
 msgstr "Host"
 
@@ -2294,7 +2309,7 @@ msgstr "Hostbeschreibung. Falls leer wird der Hostname verwendet."
 msgid "Host list"
 msgstr "Hostliste"
 
-#: ../lib/modules/nisnetgroup.inc:117 ../lib/modules/nisnetgroup.inc:407
+#: ../lib/modules/nisnetgroup.inc:132 ../lib/modules/nisnetgroup.inc:422
 #: ../lib/modules/account.inc:84 ../lib/modules/posixAccount.inc:78
 #: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:81
 #: ../lib/modules/posixAccount.inc:277 ../lib/modules/posixAccount.inc:410
@@ -2306,7 +2321,7 @@ msgstr "Hostname"
 msgid "Host name already exists!"
 msgstr "Host-Name besteht schon!"
 
-#: ../lib/modules/nisnetgroup.inc:117 ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/nisnetgroup.inc:132 ../lib/modules/posixAccount.inc:79
 #: ../lib/modules/posixAccount.inc:83
 msgid ""
 "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
@@ -3237,10 +3252,12 @@ msgstr "Maximale Listeneinträge"
 msgid "Maximum password age"
 msgstr "Maximales Passwortalter"
 
-#: ../lib/modules/nisnetgroup.inc:222 ../lib/modules/nisnetgroup.inc:519
-#: ../lib/modules/groupOfNames.inc:72 ../lib/modules/groupOfNames.inc:76
-#: ../lib/modules/groupOfNames.inc:103 ../lib/modules/groupOfNames.inc:173
-#: ../lib/modules/groupOfNames.inc:451 ../lib/types/netgroup.inc:85
+#: ../lib/modules/nisnetgroup.inc:80 ../lib/modules/nisnetgroup.inc:84
+#: ../lib/modules/nisnetgroup.inc:113 ../lib/modules/nisnetgroup.inc:237
+#: ../lib/modules/nisnetgroup.inc:539 ../lib/modules/groupOfNames.inc:72
+#: ../lib/modules/groupOfNames.inc:76 ../lib/modules/groupOfNames.inc:103
+#: ../lib/modules/groupOfNames.inc:173 ../lib/modules/groupOfNames.inc:451
+#: ../lib/types/netgroup.inc:85
 msgid "Members"
 msgstr "Mitglieder"
 
@@ -3799,7 +3816,7 @@ msgstr "Büroname"
 #: ../templates/config/profmanage.php:360
 #: ../templates/config/confmodules.php:110
 #: ../templates/config/confmodules.php:113
-#: ../templates/config/mainlogin.php:118 ../lib/modules/nisnetgroup.inc:420
+#: ../templates/config/mainlogin.php:118 ../lib/modules/nisnetgroup.inc:435
 #: ../lib/modules/inetOrgPerson.inc:995 ../lib/modules/groupOfNames.inc:230
 #: ../lib/modules/groupOfNames.inc:257 ../lib/modules/groupOfNames.inc:344
 #: ../lib/modules/posixGroup.inc:288 ../lib/modules/posixAccount.inc:1131
@@ -4327,7 +4344,9 @@ msgstr ""
 msgid ""
 "Please set your LDAP suffix to an LDAP entry with object class \"dhcpServer"
 "\"."
-msgstr "Bitte ändern Sie Ihren LDAP-Suffix auf einen LDAP-Eintrag mit der Objektklasse \"dhcpServer\"."
+msgstr ""
+"Bitte ändern Sie Ihren LDAP-Suffix auf einen LDAP-Eintrag mit der "
+"Objektklasse \"dhcpServer\"."
 
 #: ../lib/modules/kolabUser.inc:236
 msgid "Policy list has invalid format!"
@@ -4853,15 +4872,15 @@ msgstr "Wählen Sie eine Vorlage für den Anlegevorgang"
 msgid "Select all"
 msgstr "Alle auswählen"
 
-#: ../lib/modules/nisnetgroup.inc:192 ../lib/modules/nisnetgroup.inc:214
+#: ../lib/modules/nisnetgroup.inc:207 ../lib/modules/nisnetgroup.inc:229
 msgid "Select host"
 msgstr "Host wählen"
 
-#: ../lib/modules/nisnetgroup.inc:194 ../lib/modules/nisnetgroup.inc:216
+#: ../lib/modules/nisnetgroup.inc:209 ../lib/modules/nisnetgroup.inc:231
 msgid "Select user"
 msgstr "Benutzer wählen"
 
-#: ../lib/modules/nisnetgroup.inc:326 ../lib/modules/posixAccount.inc:1087
+#: ../lib/modules/nisnetgroup.inc:341 ../lib/modules/posixAccount.inc:1087
 msgid "Selected groups"
 msgstr "Gewählte Gruppen"
 
@@ -5076,9 +5095,9 @@ msgstr "Name der Struktur"
 msgid "Sub (entire subtree)"
 msgstr "Unterhalb (kompletter Baum unter Basis-DN)"
 
-#: ../lib/modules/nisnetgroup.inc:76 ../lib/modules/nisnetgroup.inc:98
-#: ../lib/modules/nisnetgroup.inc:165 ../lib/modules/nisnetgroup.inc:324
-#: ../lib/modules/nisnetgroup.inc:516 ../lib/types/netgroup.inc:84
+#: ../lib/modules/nisnetgroup.inc:76 ../lib/modules/nisnetgroup.inc:107
+#: ../lib/modules/nisnetgroup.inc:180 ../lib/modules/nisnetgroup.inc:339
+#: ../lib/modules/nisnetgroup.inc:536 ../lib/types/netgroup.inc:84
 msgid "Subgroups"
 msgstr "Untergruppen"
 
@@ -5613,6 +5632,15 @@ msgstr ""
 "Benutzer erstellt werden. Der Bereich sollte sich von dem der Hosts "
 "unterscheiden. Neue Benutzer bekommen die immer die höchste verwendete Zahl "
 "plus 1."
+
+#: ../lib/modules/nisnetgroup.inc:81 ../lib/modules/nisnetgroup.inc:85
+msgid ""
+"These entries specify the members of the netgroup. You can limit the set to "
+"a host name, a user name, a domain name or any combination of them."
+msgstr ""
+"Diese Einträge definieren die Mitglieder dieser Netzgruppe. Sie können die "
+"Menge durch die Angabe eines Maschinennamens, Benutzers oder Domainnamens "
+"einschränken. Kombinationen sind ebenfalls möglich."
 
 #: ../lib/modules/posixAccount.inc:87
 msgid "This GID number is invalid! Please provide either a number or a group name."
@@ -6310,7 +6338,7 @@ msgstr "Kann die PDF-Struktur nicht löschen!"
 msgid "Unable to delete profile!"
 msgstr "Kann das Profil nicht löschen!"
 
-#: ../lib/modules/nisnetgroup.inc:479 ../lib/modules/posixAccount.inc:1420
+#: ../lib/modules/nisnetgroup.inc:494 ../lib/modules/posixAccount.inc:1420
 #: ../lib/modules/posixAccount.inc:1655
 msgid "Unable to find group in LDAP."
 msgstr "Kann Gruppe nicht im LDAP-Baum finden."
@@ -6485,7 +6513,7 @@ msgstr "benutzte Inodes"
 msgid "Used inodes (files)"
 msgstr "Benutze Inodes (Dateien)"
 
-#: ../lib/modules/nisnetgroup.inc:176 ../lib/modules/nisnetgroup.inc:522
+#: ../lib/modules/nisnetgroup.inc:191 ../lib/modules/nisnetgroup.inc:542
 #: ../lib/modules/sambaGroupMapping.inc:67
 msgid "User"
 msgstr "Benutzer"
@@ -6537,7 +6565,7 @@ msgid "User must change password"
 msgstr "Benutzer muss Passwort ändern"
 
 #: ../templates/lists/changePassword.php:138 ../templates/login.php:254
-#: ../lib/modules/nisnetgroup.inc:116 ../lib/modules/nisnetgroup.inc:408
+#: ../lib/modules/nisnetgroup.inc:131 ../lib/modules/nisnetgroup.inc:423
 #: ../lib/modules/account.inc:94 ../lib/modules/account.inc:115
 #: ../lib/modules/account.inc:135 ../lib/modules/account.inc:137
 #: ../lib/modules/account.inc:138 ../lib/modules/account.inc:220
@@ -6558,7 +6586,7 @@ msgstr "Benutzername"
 msgid "User name already exists!"
 msgstr "Benutzername besteht schon!"
 
-#: ../lib/modules/nisnetgroup.inc:116 ../lib/modules/account.inc:135
+#: ../lib/modules/nisnetgroup.inc:131 ../lib/modules/account.inc:135
 #: ../lib/modules/account.inc:136 ../lib/modules/account.inc:138
 #: ../lib/modules/inetOrgPerson.inc:99 ../lib/modules/inetOrgPerson.inc:100
 #: ../lib/modules/uidObject.inc:78 ../lib/modules/posixAccount.inc:77
@@ -6922,7 +6950,7 @@ msgstr "aktiv"
 msgid "add value"
 msgstr "Wert hinzufügen"
 
-#: ../lib/modules/nisnetgroup.inc:86 ../lib/modules/groupOfNames.inc:86
+#: ../lib/modules/nisnetgroup.inc:95 ../lib/modules/groupOfNames.inc:86
 #: ../lib/modules/posixGroup.inc:389
 msgid "adminstrators"
 msgstr "administratoren"
@@ -6986,7 +7014,7 @@ msgstr "von jedem Client"
 msgid "from previous client only"
 msgstr "nur vom letzten Client"
 
-#: ../lib/modules/nisnetgroup.inc:100 ../lib/modules/posixAccount.inc:226
+#: ../lib/modules/nisnetgroup.inc:109 ../lib/modules/posixAccount.inc:226
 msgid "group01,group02"
 msgstr "gruppe01,gruppe02"
 
