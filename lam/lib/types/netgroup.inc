@@ -68,7 +68,7 @@ class netgroup extends baseType {
 	* @return string attribute list
 	*/
 	function getDefaultListAttributes() {
-		return "#cn;#description;#memberNisNetgroup;#nisNetgroupTriple";
+		return "#cn;#description;#memberNisNetgroup";
 	}
 
 	/**
