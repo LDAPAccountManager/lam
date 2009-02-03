@@ -176,9 +176,18 @@ class nisnetgroup extends baseModule {
 			array('kind' => 'text', 'text' => _('Description')),
 			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
 			array ('kind' => 'help', 'value' => 'description'));
+		$subgroups = array();
+		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {
+			$membergroups = $this->attributes['memberNisNetgroup'];
+			while (sizeof($membergroups) > 0) {
+				$parts = array_splice($membergroups, 0, 8);
+				$subgroups[] = array(array('kind' => 'text', 'text' => implode(', ', $parts)));
+			}
+		}
+		$subgroups[] = array(array('kind' => 'input', 'name' => 'form_subpage_nisnetgroup_group_open', 'type' => 'submit', 'value' => _('Edit subgroups'))); 	
 		$return[] = array(
-			array('kind' => 'text', 'text' => _('Subgroups')),
-			array('kind' => 'input', 'name' => 'form_subpage_nisnetgroup_group_open', 'type' => 'submit', 'value' => _('Edit subgroups')),
+			array('kind' => 'text', 'text' => _('Subgroups'), 'td' => array('valign' => 'top')),
+			array('kind' => 'table', 'value' => $subgroups),
 			array('kind' => 'help', 'value' => 'memberNisNetgroup'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => '&nbsp;'),
