@@ -84,6 +84,10 @@ class nisnetgroup extends baseModule {
 				"Headline" => _("Members"),
 				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.") . ' ' .
 						_("For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon.")
+						),
+			'filter' => array(
+				"Headline" => _("Filter"),
+				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
 			)
 		);
 		// upload fields
@@ -354,9 +358,9 @@ class nisnetgroup extends baseModule {
 							array(
 								array('kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button', 'value' => '<=', 'td' => array('align' => 'center'))),
 							array(
-								array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
+								array('kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
 							array(
-								array ( 'kind' => 'help', 'value' => 'memberNisNetgroup', 'td' => array('align' => 'center'))))),
+								array('kind' => 'help', 'value' => 'memberNisNetgroup', 'td' => array('align' => 'center'))))),
 						array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available groups"), 'value' => array(
 							array(
 								array('kind' => 'select', 'name' => 'addgroups', 'size' => '15', 'multiple' => true, 'options' => $allGroups))))
@@ -395,17 +399,25 @@ class nisnetgroup extends baseModule {
 	* @return array meta HTML code
 	*/
 	function display_html_select() {
+		$return = array();
 		$selectHost = true;
 		$postKeys = array_keys($_POST);
 		$position = 'New';
+		$filterButtonName = '';
+		$filter = '';
+		if (isset($_POST['filter'])) {
+			$filter = $_POST['filter'];
+		}
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
 			if 	(substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_user') {
 				$selectHost = false;
 				$position = substr($postKeys[$i], 36);
+				$filterButtonName = $postKeys[$i];
 				break;
 			}
 			if 	(substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_host') {
 				$position = substr($postKeys[$i], 36);
+				$filterButtonName = $postKeys[$i];
 				break;
 			}
 		}
@@ -416,7 +428,9 @@ class nisnetgroup extends baseModule {
 			$DNs = array_keys($dn_hosts);
 			foreach ($DNs as $DN) {
 				if (get_preg($dn_hosts[$DN][0], 'DNSname')) {
-					$options[] = $dn_hosts[$DN][0];
+					if (($filter == '') || !(strpos($dn_hosts[$DN][0], $filter) === false)) {
+						$options[] = $dn_hosts[$DN][0];
+					}
 				}
 			}
 		}
@@ -425,9 +439,17 @@ class nisnetgroup extends baseModule {
 			$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
 			$DNs = array_keys($dn_users);
 			foreach ($DNs as $DN) {
-				$options[] = $dn_users[$DN][0];
+				if (($filter == '') || !(strpos($dn_users[$DN][0], $filter) === false)) {
+					$options[] = $dn_users[$DN][0];
+				}
 			}
 		}
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Filter')),
+			array('kind' => 'input', 'type' => 'text', 'name' => 'filter', 'value' => $filter),
+			array('kind' => 'input', 'type' => 'submit', 'name' => $filterButtonName, 'value' => _('Ok')),
+			array('kind' => 'help', 'value' => 'filter')
+		);
 		$title = _('Host name');
 		if (!$selectHost) $title = _('User name');
 		$return[] = array(
