@@ -340,7 +340,9 @@ function getHelp($module,$helpID,$scope='') {
 	if (!isset($module) || ($module == '') || ($module == 'main')) {
 		$helpPath = "../help/help.inc";
 		if (is_file("../../help/help.inc")) $helpPath = "../../help/help.inc";
-		include_once($helpPath);
+		if (!isset($helpArray)) {
+			include($helpPath);
+		}
 		return $helpArray[$helpID];
 	}
 	$moduleObject = new $module((($scope != '') ? $scope : 'none'));
@@ -884,7 +886,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	$message = $entry['Text'];
 	// if help message contains special characters then point to help page
 	if (!(strpos($message, '"') === false) || !(strpos($message, "'") === false) || !(strpos($message, "\n") === false)) {
-		$message = _('Please click on the icon to view the help text.');
+		$message = _('Please click on the icon to view the help page.');
 	}
 	echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\" ";
@@ -1197,9 +1199,7 @@ class accountContainer {
 				}
 			echo "</select> \n";
 			echo "<input type=\"submit\" name=\"accountContainerLoadProfile\" value=\"" . _('Load profile') . "\"> &nbsp;\n";
-			echo "<a href=\"../help.php?HelpNumber=401\" target=\"help\" tabindex=10001>";
-				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
+			printHelpLink(getHelp('', '401'), '401');
 		}
 		echo "</td>";
 		echo "</tr></table>";		
@@ -1255,7 +1255,7 @@ class accountContainer {
 		}
 		echo "</select>\n";
 		echo "<input name=\"accountContainerCreatePDF\" type=\"submit\" value=\"" . _('Create PDF file') . "\">\n";
-		echo "<a href=\"../help.php?HelpNumber=403\" target=\"help\"><img src=\"../../graphics/help.png\" alt=\"" . _("Help") . "\" title=\"" . _("Help") . "\"></a>\n";
+		printHelpLink(getHelp('', '403'), '403');
 		echo "</td></tr></table>\n";
 		$this->printPageFooter();
 	}
@@ -1371,9 +1371,7 @@ class accountContainer {
 					echo ">" . $rdnlist[$i] . "</option>\n";
 				}
 			echo "</select>\n";
-			echo "<a href=\"../help.php?HelpNumber=301\" target=\"help\" tabindex=10001>";
-				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";	
+			printHelpLink(getHelp('', '301'), '301');
 		echo "</td>\n";
 		echo "</tr></table>\n";
 		// separator line
