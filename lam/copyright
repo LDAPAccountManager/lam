@@ -1,4 +1,4 @@
-This software is copyright (c) 2003 - 2007 by Tilo Lutz, Roland Gruber
+This software is copyright (c) 2003 - 2009 by Tilo Lutz, Roland Gruber
 and Michael Duergner.
 
 If you purchased a copy of LDAP Account Manager Pro then the following
@@ -9,6 +9,11 @@ time.
 * templates/selfService/*
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfUniqueNames.inc
+* lib/modules/aliasEntry.inc
+* lib/modules/rfc2307bisPosixGroup.inc
+* lib/modules/uidObject.inc
+* lib/types/alias.inc
+* lib/types/gon.inc
 
 
 All other files are licensed under the conditions below.
@@ -87,6 +92,20 @@ B:
    fonts at gnome dot org.
 
 
+C:
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License (LGPL) as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+   For more details on the GNU Lesser General Public License,
+   see http://www.gnu.org/copyleft/lesser.html
+
 
 
 Programs and licenses with other licenses and/or authors than the
@@ -94,3 +113,4 @@ main license and authors:
 
 lib/fpdf.php  A  2003  Olivier Plathey
 lib/font/Vera*  B  2003  Bitstream, Inc.
+templates/wz_tooltip.js  C  Walter Zorn
