@@ -98,6 +98,8 @@ $helpArray = array (
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"214" => array ("Headline" => _("Configuration wizard") . " - " . _("Cache timeout"),
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
+				"215" => array ("Headline" => _("Configuration wizard") . " - " . _("Access level"),
+					"Text" => _("You can specify if LAM allows full write access, password changes or only read access.")),
 				"216" => array ("Headline" => _("Configuration wizard") . " - " . _("Text for user PDF"),
 					"Text" => _("This text will appear on top of every user PDF file.")),
 				"217" => array ("Headline" => _("Configuration wizard") . " - " . _("Account types and modules"),
