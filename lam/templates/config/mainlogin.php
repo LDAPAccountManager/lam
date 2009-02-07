@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ echo $_SESSION['header'];
 			echo "}\n";
 			echo "//-->\n";
 			echo "</script>\n";
+			echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 		?>
 		<p align="center"><a href="http://lam.sourceforge.net" target="_blank">
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
@@ -116,9 +117,8 @@ echo $_SESSION['header'];
 				<td style="border-style:none" align="center">
 					<input type="password" name="passwd">
 					<input type="submit" name="submit" value="<?php echo _("Ok"); ?>">
-					&nbsp;<a href="../help.php?HelpNumber=236" target="lamhelp">
-					<img src="../../graphics/help.png" alt="<?php echo _('Help'); ?>" title="<?php echo _('Help'); ?>">
-					</a>
+					&nbsp;
+					<?php printHelpLink(getHelp('', '236'), '236'); ?>
 				</td>
 				<td style="border-style:none" rowspan="3" width="20"></td>
 			</tr>

@@ -150,9 +150,7 @@ echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
 	"<input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '201'), '201');
 echo "</td></tr>\n";
 $tabindex++;
 
@@ -164,9 +162,7 @@ echo ("<tr><td align=\"right\"><b>".
 	_("Tree suffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"sufftree\" value=\"" . $conf->get_Suffix('tree') . "\"></td>\n");
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '203'), '203');
 echo "</td></tr>\n";
 $tabindex++;
 
@@ -186,9 +182,7 @@ if ($conf->get_cacheTimeout() != 15) echo("<option>15</option>\n");
 echo ("</select></td>\n");
 $tabindex++;
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '214'), '214');
 echo "</td></tr>\n";
 
 // access level is only visible in Pro version
@@ -221,9 +215,7 @@ if (isLAMProVersion()) {
 	echo ("</select></td>\n");
 	$tabindex++;
 	echo "<td>";
-	echo "<a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">";
-	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-	echo "</a>\n";
+	printHelpLink(getHelp('', '215'), '215');
 	echo "</td></tr>\n";
 }
 
@@ -245,9 +237,7 @@ echo "<br>\n";
 echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"edittypes\" value=\"" . _("Edit account types") . "\">&nbsp;&nbsp;";
 $tabindex++;
 echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;";
-echo "<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '217'), '217');
 $tabindex++;
 
 echo ("</fieldset>");
@@ -326,9 +316,7 @@ else
 }
 echo ("</td>\n");
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '209'), '209');
 echo "</td></tr>\n";
 
 echo ("</table>\n");
@@ -345,18 +333,14 @@ echo ("<tr><td align=\"right\"><b>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptservers\" value=\"" . $conf->get_scriptServers(false) . "\"></td>\n");
 $tabindex++;
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=218\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '218'), '218');
 echo "</td></tr>\n";
 echo ("<tr><td align=\"right\"><b>".
 	_("Path to external script") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
 $tabindex++;
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '210'), '210');
 echo "</td></tr>\n";
 echo "<tr><td align=\"right\"><b>". _("Rights for the home directory") . ": </b></td>\n";
 $owr = "";
@@ -399,9 +383,7 @@ echo "<td align=\"center\">\n";
 	echo "</tr></table>";
 	$tabindex++;
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=219\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '219'), '219');
 echo "</td></tr>\n";
 
 echo ("</table>\n");
@@ -418,9 +400,7 @@ echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
 	"<td><textarea tabindex=\"$tabindex\" name=\"admins\" cols=75 rows=5>" . $adminText . "</textarea></td>\n");
 echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '207'), '207');
 echo "</td></tr>\n";
 $tabindex++;
 
@@ -432,9 +412,7 @@ echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd1\"></td>\n");
 $tabindex++;
 echo "<td rowspan=2>";
-echo "<a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
+printHelpLink(getHelp('', '212'), '212');
 echo "</td></tr>\n";
 // reenter password
 echo ("<tr><td align=\"right\"><font color=\"red\"><b>".

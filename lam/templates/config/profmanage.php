@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ echo $_SESSION['header'];
 		<hr><br>
 
 <?php
+echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
 $cfg = new LAMCfgMain();
 // check if submit button was pressed
@@ -175,10 +176,7 @@ if (!isset($cfg->default)) {
 					</td>
 					<td>&nbsp;
 					<?PHP
-						// help link
-						echo "<a href=\"../help.php?HelpNumber=230\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
+						printHelpLink(getHelp('', '230'), '230');
 					?>
 					</td>
 				</tr>
@@ -227,10 +225,7 @@ if (!isset($cfg->default)) {
 					</td>
 					<td>&nbsp;
 					<?PHP
-						// help link
-						echo "<a href=\"../help.php?HelpNumber=231\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
+						printHelpLink(getHelp('', '231'), '231');
 					?>
 					</td>
 				</tr>
@@ -257,10 +252,7 @@ if (!isset($cfg->default)) {
 					</td>
 					<td>&nbsp;
 					<?PHP
-						// help link
-						echo "<a href=\"../help.php?HelpNumber=232\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
+						printHelpLink(getHelp('', '232'), '232');
 					?>
 					</td>
 				</tr>
@@ -291,10 +283,7 @@ if (!isset($cfg->default)) {
 					</td>
 					<td>&nbsp;
 					<?PHP
-						// help link
-						echo "<a href=\"../help.php?HelpNumber=233\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
+						printHelpLink(getHelp('', '233'), '233');
 					?>
 					</td>
 				</tr>
@@ -336,10 +325,7 @@ if (!isset($cfg->default)) {
 					<td>&nbsp;</td>
 					<td>&nbsp;
 					<?PHP
-						// help link
-						echo "<a href=\"../help.php?HelpNumber=234\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
+						printHelpLink(getHelp('', '234'), '234');
 					?>
 					</td>
 				</tr>
@@ -360,10 +346,7 @@ if (!isset($cfg->default)) {
 			<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
 			&nbsp;
 			<?PHP
-				// help link
-				echo "<a href=\"../help.php?HelpNumber=236\" target=\"lamhelp\">";
-				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-				echo "</a>\n";
+				printHelpLink(getHelp('', '236'), '236');
 			?>
 
 		</form>

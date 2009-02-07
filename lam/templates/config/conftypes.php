@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -158,6 +158,7 @@ for ($i = 0; $i < sizeof($allTypes); $i++){
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $allTypes[$i] . ".css\">\n";
 }
 echo "</head><body>\n";
+echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br>\n");
@@ -200,9 +201,7 @@ if (sizeof($activeTypes) > 0) {
 			echo "<td>" . _("LDAP suffix") . "</td>\n";
 			echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $_SESSION['conf_typeSettings']['suffix_' . $activeTypes[$i]] . "\"></td>\n";
 			echo "<td>";
-			echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-			echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
+			printHelpLink(getHelp('', '202'), '202');
 			echo "</td>\n";
 		echo "</tr>\n";
 		// list attributes
@@ -216,9 +215,7 @@ if (sizeof($activeTypes) > 0) {
 			echo "<td>" . _("List attributes") . "</td>\n";
 			echo "<td><input type=\"text\" size=\"40\" name=\"attr_" . $activeTypes[$i] . "\" value=\"" . $attributes . "\"></td>\n";
 			echo "<td>";
-			echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
-			echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
+			printHelpLink(getHelp('', '206'), '206');
 			echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";

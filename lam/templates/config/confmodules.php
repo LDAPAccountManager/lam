@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ for ($i = 0; $i < sizeof($types); $i++){
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $types[$i] . ".css\">\n";
 }
 echo "</head><body>\n";
+echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br>\n");
@@ -119,10 +120,9 @@ echo "</p>\n";
 echo "<p><br><br>\n";
 echo "(*) " . _("Base module");
 // help link
-echo "&nbsp;<a href=\"../help.php?HelpNumber=237\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</p>\n";
+echo "&nbsp;";
+printHelpLink(getHelp('', '237'), '237');
+echo "<br><br><br></p>\n";
 
 echo "</form>\n";
 echo "</body>\n";

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ echo $_SESSION['header'];
 	</head>
 	<body>
 		<?php
+			echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 			// set focus on password field
 			echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 			echo "<!--\n";
@@ -123,11 +124,9 @@ echo $_SESSION['header'];
 						if (sizeof($files) > 0) echo "<input type=\"password\" name=\"passwd\">\n";
 						else echo "<input disabled type=\"password\" name=\"passwd\">\n";
 						if (sizeof($files) > 0) echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
-						else echo "<input disabled type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
+						else echo "<input disabled type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">&nbsp;\n";
 						// help link
-						echo "&nbsp;<a href=\"../help.php?HelpNumber=200\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
+						printHelpLink(getHelp('', '200'), '200');
 					?>
 				</td>
 				<td style="border-style:none" rowspan="4" width="20"></td>
