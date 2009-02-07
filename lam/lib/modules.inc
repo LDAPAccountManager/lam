@@ -332,8 +332,9 @@ function checkConfigOptions($scopes, $options) {
 /**
 * Returns a help entry from an account module.
 *
-* @param string $helpID help identifier
 * @param string $module module name
+* @param string $helpID help identifier
+* @param string $scope account type
 * @return array help entry
 */
 function getHelp($module,$helpID,$scope='') {
