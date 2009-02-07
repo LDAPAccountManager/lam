@@ -378,10 +378,7 @@ class lamList {
 		// print filter row
 		echo "<tr align=\"center\" class=\"" . $this->type . "list\">\n";
 		echo "<td width=22 height=34>";
-			// help link
-			echo "<a href=\"../help.php?HelpNumber=250\" target=\"lamhelp\">";
-			echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
+			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
 		echo "<td>";
 		echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
