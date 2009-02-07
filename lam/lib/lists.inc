@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2008  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -736,6 +736,7 @@ class lamList {
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
 		echo "</head><body>\n";
 		echo "<script type=\"text/javascript\" src=\"list.js\"></script>\n";
+		echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 	}
 	
 	/**
@@ -888,9 +889,8 @@ class lamList {
 		echo "<tr class=\"" . $this->type . "list\"><td>\n";
 
 		$tabindex = 0;
-		$tabindexLink = 0;
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-			parseHtml('main', $this->configOptions[$i]->getMetaHTML(), array(), true, $tabindex, $tabindexLink, $this->type);
+			parseHtml('', $this->configOptions[$i]->getMetaHTML(), array(), true, $tabindex, $this->type);
 		}
 
 		echo "<br>";

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2007 Roland Gruber
+                2003 - 2009 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,8 +30,6 @@ $Id$
  * @author Michael Duergner
  * @package Help
  */
-
-setlanguage();
 
 // generate help entry for translated list attributes
 $types = getTypes();

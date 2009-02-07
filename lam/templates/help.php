@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Michael Duergner
-  				2008		 Roland Gruber
+                2008 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -44,35 +44,33 @@ session_save_path("../sess");
 /** status messages */
 include_once("../lib/status.inc");
 
+setlanguage();
+
 /** help data */
 include_once("../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
-
-setlanguage();
 
 
 /**
  * Print HTML header of the help page.
  */
-function echoHTMLHead()
-{
-echo $_SESSION['header'];
-?>
-		<title>LDAP Account Manager Help Center</title>
-		<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	</head>
-	<body>
-<?php
+function echoHTMLHead() {
+	echo $_SESSION['header'];
+	?>
+			<title>LDAP Account Manager Help Center</title>
+			<link rel="stylesheet" type="text/css" href="../style/layout.css">
+		</head>
+		<body>
+	<?php
 }
 
 /**
  * Print HTML footer of the help page.
  */
-function echoHTMLFoot()
-{
-?>
-	</body>
-</html>
-<?php
+function echoHTMLFoot() {
+	?>
+		</body>
+	</html>
+	<?php
 }
 
 /**
@@ -106,7 +104,7 @@ if(!isset($_GET['HelpNumber']))
 $helpEntry = array();
 
 // module help
-if(isset($_GET['module']) && !($_GET['module'] == 'main')) {
+if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
 	include_once("../lib/modules.inc");
 	if(isset($_GET['scope'])) {
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);

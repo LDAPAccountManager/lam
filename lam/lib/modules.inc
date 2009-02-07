@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2007  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -337,6 +337,12 @@ function checkConfigOptions($scopes, $options) {
 * @return array help entry
 */
 function getHelp($module,$helpID,$scope='') {
+	if (!isset($module) || ($module == '') || ($module == 'main')) {
+		$helpPath = "../help/help.inc";
+		if (is_file("../../help/help.inc")) $helpPath = "../../help/help.inc";
+		include_once($helpPath);
+		return $helpArray[$helpID];
+	}
 	$moduleObject = new $module((($scope != '') ? $scope : 'none'));
 	return $moduleObject->get_help($helpID);
 }
@@ -670,11 +676,10 @@ function getRequiredExtensions() {
 * @param array $values List of values which override the defaults in $input (name => value)
 * @param boolean $restricted If true then no buttons will be displayed
 * @param integer $tabindex Start value of tabulator index for input fields
-* @param integer $tabindexLink Start value of tabulator index for links
 * @param string $scope Account type
 * @return array List of input field names and their type (name => type)
 */
-function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindexLink, $scope) {
+function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 	$ret = array();
 	if (is_array($input)) {
 		echo "<table>\n";
@@ -761,7 +766,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 					case 'fieldset':
 						echo "<fieldset class=\"" . $scope . "edit\">\n";
 						if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
+						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $scope);
 						$ret = array_merge($ret, $retTemp);
 						echo "</fieldset>\n";
 						break;
@@ -829,17 +834,13 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// sub table
 					case 'table':
-						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
+						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $scope);
 						$ret = array_merge($ret, $retTemp);
 						break;
 					// help link
 					case 'help':
-						$helpPath = "../";
-						if (is_file("./help.php")) $helpPath = "";
-						echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $scope . "\" target=\"help\" tabindex=$tabindexLink>";
-						echo "<img src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
-						$tabindexLink++;
+						$helpEntry = getHelp($module, $input[$i][$j]['value'], $scope);
+						printHelpLink($helpEntry, $input[$i][$j]['value'], $module, $scope);
 						break;
 					// status message
 					case 'message':
@@ -866,6 +867,30 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 	}
 	echo "</table>\n";
 	return $ret;
+}
+
+/**
+ * Prints a LAM help link.
+ *
+ * @param array $entry help entry
+ * @param String $number help number
+ * @param String $module module name
+ * @param String $scope account scope
+ */
+function printHelpLink($entry, $number, $module='', $scope='') {
+	$helpPath = "../";
+	if (is_file("./help.php")) $helpPath = "";
+	$title = $entry['Headline'];
+	$message = $entry['Text'];
+	// if help message contains special characters then point to help page
+	if (!(strpos($message, '"') === false) || !(strpos($message, "'") === false) || !(strpos($message, "\n") === false)) {
+		$message = _('Please click on the icon to view the help text.');
+	}
+	echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
+		echo "target=\"help\" ";
+		echo "onmouseover=\"Tip('" . $message . "', TITLE, '" . $title . "')\" onmouseout=\"UnTip()\">";
+		echo "<img src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+	echo "</a>";
 }
 
 
@@ -1137,8 +1162,7 @@ class accountContainer {
 		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
 				
 		$y = 5000;
-		$z = 10000;
-		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
+		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
 		// Display rest of html-page
 		echo "<br>*" . _('required');
 		echo "</td></tr></table>\n";
@@ -1190,6 +1214,7 @@ class accountContainer {
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
 		echo "</head><body>\n";
+		echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";		
 	}
 	

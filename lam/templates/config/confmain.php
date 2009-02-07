@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2007  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -114,7 +114,6 @@ if (!isset($_SESSION['conf_typeSettings'])) $_SESSION['conf_typeSettings'] = $co
 
 // index for tab order
 $tabindex = 1;
-$tabindexLink = 1000;
 
 echo $_SESSION['header'];
 
@@ -123,6 +122,7 @@ echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 echo ("</head>\n");
 echo ("<body>\n");
+echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p>&nbsp;</p>\n");
 
@@ -283,7 +283,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend><br>\n";
-	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, $tabindexLink, 'config');
+	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, 'config');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
 	echo "<br>";

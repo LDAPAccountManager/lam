@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2008  Roland Gruber
+	Copyright (C) 2007 - 2009  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $_GET['type'] . ".css\">\n";
 	echo "</head><body>\n";
+	echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
 	echo _('Please confirm:');
@@ -106,10 +107,9 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$modules = $_SESSION['config']->get_AccountModules($_GET['type']);
 	$values = array();
 	$tabindex = 100;
-	$tabindexLink = 1000;
 	foreach ($modules as $module) {
 		$module = new $module($_GET['type']);
-		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $tabindexLink, $_GET['type']);
+		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $_GET['type']);
 	}
 	echo "</table>\n";
 	echo "<br>\n";

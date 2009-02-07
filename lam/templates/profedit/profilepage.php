@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -71,6 +71,7 @@ echo $_SESSION['header'];
 echo "<title>Profile editor</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
 echo "</head><body><br>\n";
+echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
 // save button was presed
 if (isset($_POST['save'])) {
@@ -226,7 +227,6 @@ $_SESSION['profile_types']['ldap_rdn'] = 'select';
 
 // index for tab order (1 is LDAP suffix)
 $tabindex = 2;
-$tabindexLink = 1000;	// links are at the end
 
 // display module options
 $modules = array_keys($options);
@@ -241,7 +241,7 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon<b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
-	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $tabindexLink, $type);
+	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $type);
 	$_SESSION['profile_types'] = array_merge($profileTypes, $_SESSION['profile_types']);
 	echo "</fieldset>\n";
 	echo "<br>";
