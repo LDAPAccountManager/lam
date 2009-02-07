@@ -152,6 +152,7 @@ function display_main() {
 	}
 	echo ("</head>\n");
 	echo ("<body>\n");
+	echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
 	echo "<h1>" . _("OU editor") . "</h1>";
 	echo ("<br>\n");
 	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
@@ -179,9 +180,9 @@ function display_main() {
 	echo "<td>";
 		echo "<input type=\"submit\" name=\"createOU\" value=\"" . _("Ok") . "\">&nbsp;";
 	echo "</td>";
-	echo "<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">";
-		echo "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
-	echo "</a></td>\n";
+	echo "<td>";
+		printHelpLink(getHelp('', '601'), '601');
+	echo "</td>\n";
 	echo ("</tr>\n");
 	echo "<tr><td colspan=5>&nbsp;</td></tr>\n";
 	// delete OU
@@ -195,9 +196,9 @@ function display_main() {
 	echo "<td>";
 		echo "<input type=\"submit\" name=\"deleteOU\" value=\"" . _("Ok") . "\">&nbsp;";
 	echo "</td>";
-	echo "<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">";
-		echo  "<img src=\"../graphics/help.png\" alt=\"". _("Help") ."\" title=\"" . _("Help") . "\">";
-	echo "</a></td>\n";
+	echo "<td>";
+		printHelpLink(getHelp('', '602'), '602');
+	echo "</td>\n";
 	echo ("</tr>\n");
 	echo ("</table>\n");
 	echo ("</fieldset>\n");

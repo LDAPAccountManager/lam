@@ -196,9 +196,9 @@ echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo
 	echo "</select>\n";
 	echo "</td><td>";
 	// help link
-	echo "&nbsp;<a href=\"../help.php?HelpNumber=361\" target=\"lamhelp\">";
-	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-	echo "</a><br>\n";
+	echo "&nbsp;";
+	printHelpLink(getHelp('', '361'), '361');
+	echo "<br>\n";
 	echo "</td></tr>";
 	// LDAP RDN
 	echo "<tr><td>";
@@ -216,9 +216,9 @@ echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo
 	echo "</select>\n";
 	echo "</td><td>";
 	// help link
-	echo "&nbsp;<a href=\"../help.php?HelpNumber=301\" target=\"lamhelp\">";
-	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-	echo "</a><br>\n";
+	echo "&nbsp;";
+	printHelpLink(getHelp('', '301'), '301');
+	echo "<br>\n";
 	echo "</td></tr>";
 	echo "</table>";
 echo "</fieldset>\n<br>\n";
@@ -251,10 +251,8 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 echo ("<b>" . _("Profile name") . ":</b> \n");
 $tabindex++;
 echo ("<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $_GET['edit'] . "\">\n");
-// help link
-echo "<a href=\"../help.php?HelpNumber=360\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a><br><br>\n";
+printHelpLink(getHelp('', '360'), '360');
+echo "<br><br>\n";
 $tabindex++;
 echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"save\" value=\"" . _("Save") . "\">\n");
 $tabindex++;
@@ -262,6 +260,7 @@ echo ("<input tabindex=\"$tabindex\" type=\"reset\" name=\"reset\" value=\"" . _
 $tabindex++;
 echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n");
 echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
+echo "<br><br><br><br>\n";
 
 echo ("</form></body></html>\n");
 

@@ -77,6 +77,7 @@ for ($i = 0; $i < sizeof($types); $i++) {
 }
 echo "</head>\n";
 echo "<body>\n";
+echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
 
 // check if account specific page should be shown
 if (isset($_POST['type'])) showMainPage($_POST['type']);
@@ -157,9 +158,8 @@ function showMainPage($scope) {
 			echo "<td width=\"50%\">\n";
 			echo "<b>" . _("DN suffix") . "</b>\n";
 			// help link
-			echo "&nbsp;<a href=\"help.php?HelpNumber=361\" target=\"lamhelp\">";
-			echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
+			echo "&nbsp;";
+			printHelpLink(getHelp('', '361'), '361');
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
@@ -170,9 +170,8 @@ function showMainPage($scope) {
 			echo "<td width=\"50%\">\n";
 			echo "<b><font color=\"red\">" . _("RDN identifier") . "</font></b>\n";
 			// help link
-			echo "&nbsp;<a href=\"help.php?HelpNumber=301\" target=\"lamhelp\">";
-			echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-			echo "</a>\n";
+			echo "&nbsp;";
+			printHelpLink(getHelp('', '301'), '301');
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
@@ -308,9 +307,8 @@ function showColumnData($module, $data, $scope) {
 		echo "</b>\n";
 	}
 	// help link
-	echo "&nbsp;<a href=\"help.php?module=$module&amp;HelpNumber=". $data['help'] . "&amp;scope=" . $scope . "\" target=\"lamhelp\">";
-	echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-	echo "</a>\n";
+	echo "&nbsp;";
+	printHelpLink(getHelp($module, $data['help'], $scope), $data['help'], $module, $scope);
 	echo "<br>\n";
 	echo "<ul>\n";
 		echo "<li>\n";
