@@ -153,7 +153,7 @@ class inetOrgPerson extends baseModule {
 			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'),
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
-			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'));
+			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'));
 		// profile elements
 		$return['profile_options'] = array(
 			array(
@@ -1464,6 +1464,14 @@ class inetOrgPerson extends baseModule {
 				array('kind' => 'input', 'name' => 'inetOrgPerson_officeName', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $physicalDeliveryOfficeName));
 		}
+		if (in_array('businessCategory', $fields)) {
+			$businessCategory = '';
+			if (isset($attributes['businessCategory'][0])) $businessCategory = $attributes['businessCategory'][0];
+			$return['businessCategory'] = array(
+				array('kind' => 'text', 'text' => _('Business category')),
+				array('kind' => 'input', 'name' => 'inetOrgPerson_businessCategory', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $businessCategory));
+		}
 		if (in_array('jpegPhoto', $fields)) {
 			if (isset($attributes['jpegPhoto'][0])) {
 				$jpeg_filename = 'jpegPhoto' . session_id() . '.jpg';
@@ -1651,6 +1659,19 @@ class inetOrgPerson extends baseModule {
 				$attributesNew['physicalDeliveryOfficeName'][0] = $_POST['inetOrgPerson_officeName'];
 			}
 			elseif (isset($attributes['physicalDeliveryOfficeName'])) unset($attributesNew['physicalDeliveryOfficeName']);
+		}
+		// business category
+		if (in_array('businessCategory', $fields)) {
+			$attributeNames[] = 'businessCategory';
+			if (isset($_POST['inetOrgPerson_businessCategory']) && ($_POST['inetOrgPerson_businessCategory'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_businessCategory'], 'businessCategory')) {
+					$return['messages'][] = $this->messages['businessCategory'][0];
+				}
+				else {
+					$attributesNew['businessCategory'][0] = $_POST['inetOrgPerson_businessCategory'];
+				}
+			}
+			elseif (isset($attributes['businessCategory'])) unset($attributesNew['businessCategory']);
 		}
 		// photo
 		if (in_array('jpegPhoto', $fields)) {
