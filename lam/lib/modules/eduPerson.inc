@@ -154,7 +154,7 @@ class eduPerson extends baseModule {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonAffiliation']); $i++) {
 					$affiliations[] = array(
 						array('kind' => 'select', 'name' => 'affiliation' . $i, 'options' => $this->affiliationTypes, 'options_selected' => array($this->attributes['eduPersonAffiliation'][$i])),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delAffiliation' . $i, 'image' => 'delete.png', 'value' => ' ', 'title' => _('Delete'))
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'delAffiliation' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
 					);
 				}
 			}
@@ -179,7 +179,7 @@ class eduPerson extends baseModule {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonNickname']); $i++) {
 					$nicks[] = array(
 						array('kind' => 'input', 'name' => 'nickName' . $i, 'type' => 'text', 'value' => $this->attributes['eduPersonNickname'][$i]),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delNickName' . $i, 'image' => 'delete.png', 'value' => ' ', 'title' => _('Delete'))
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'delNickName' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
 					);
 				}
 			}

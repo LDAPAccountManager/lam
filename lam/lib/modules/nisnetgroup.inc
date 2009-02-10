@@ -222,7 +222,7 @@ class nisnetgroup extends baseModule {
 					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_user' . $i, 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
 					array('kind' => 'input', 'type' => 'text', 'name' => 'domain_' . $i, 'value' => $triple[2]),
 					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'del_' . $i, 'image' => 'delete.png', 'value' => ' ', 'title' => _('Delete'))
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'del_' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
 				);
 			}
 		}
