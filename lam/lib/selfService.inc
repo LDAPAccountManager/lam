@@ -268,6 +268,9 @@ class selfServiceProfile {
 
 	/** LDAP search attribute */
 	public $searchAttribute;
+	
+	/** header for self service pages */
+	public $pageHeader;
 
 	/** describing text for user login */
 	public $loginCaption;
@@ -299,6 +302,7 @@ class selfServiceProfile {
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
 		$this->searchAttribute = "uid";
+		$this->pageHeader = '<p align="center"><a href="http://lam.sourceforge.net" target="_blank"><img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a></p><hr>';
 		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";
 		$this->loginAttributeText = "User name";
 		$this->mainPageText = "<h1>LAM self service</h1>\nHere you can change your personal settings.";

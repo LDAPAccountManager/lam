@@ -173,6 +173,8 @@ $helpArray = array (
 					"Text" => _("Adds a new group element to the list of self service options. Use this to structure the input fields.")),
 				"508" => array ("Headline" => _("Add input field"),
 					"Text" => _("Adds a new self service option to the selected group element.")),
+				"509" => array ("Headline" => _("Page header"),
+					"Text" => _("This HTML code will be placed on top of all self service pages. E.g. you can use this to place your custom logo. Any HTML code is permitted.")),
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it the user via mail.") .
 						'<br><br>' . _('If you decide to send the password via mail then the mail template "config/passwordMailTemplate.txt" will be used.') .
