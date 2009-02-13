@@ -88,8 +88,7 @@ class eduPerson extends baseModule {
 			),
 			'principalName' => array(
 				"Headline" => _("Principal name"),
-				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication.") .
-							" " . _("It should be represented in the form \"user@scope\" where scope defines a local security domain.")
+				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication. It should be represented in the form \"user@scope\" where scope defines a local security domain.")
 			));
 		// upload fields
 		$return['upload_columns'] = array(
