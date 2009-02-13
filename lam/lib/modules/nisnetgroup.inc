@@ -567,8 +567,8 @@ class nisnetgroup extends baseModule {
 			$return[get_class($this) . '_subgroups'] = array('<block><key>' . _('Subgroups') . '</key><value>' . implode(', ', $this->attributes['memberNisNetgroup']) . '</value></block>');
 		}
 		if (sizeof($this->attributes['nisNetgroupTriple']) > 0) {
-			$return[get_class($this) . '_subgroups'] = array('<block><key>' . _('Members') . '</key><value> </value></block>');
-			$return[get_class($this) . '_members'][] = '<block><tr><td width="30%"> </td>' .
+			$return[get_class($this) . '_members'] = array('<block><key>' . _('Members') . '</key><value> </value></block>');
+			$return[get_class($this) . '_members'][] = '<block><tr>' .
 					'<td width="20%"><b>' . _('Host') . '</b></td>' .
 					'<td width="20%"><b>' . _('User') . '</b></td>' .
 					'<td width="30%"><b>' . _('Domain') . '</b></td>' .
@@ -576,7 +576,7 @@ class nisnetgroup extends baseModule {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
 				$triple = explode(',', $triple);
-				$return[get_class($this) . '_members'][] = '<block><tr><td width="30%"> </td>' .
+				$return[get_class($this) . '_members'][] = '<block><tr>' .
 					'<td width="20%" align=\"L\">' . $triple[0] . ' </td>' .
 					'<td width="20%" align=\"L\">' . $triple[1] . ' </td>' .
 					'<td width="30%" align=\"L\">' . $triple[2] . ' </td>' .
