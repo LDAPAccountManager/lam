@@ -767,7 +767,11 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 						break;
 					// inner fieldset
 					case 'fieldset':
-						echo "<fieldset class=\"" . $scope . "edit\">\n";
+						$styleClass = '';
+						if (isset($scope) && ($scope != '')) {
+							$styleClass = ' class="' . $scope . 'edit"';
+						}
+						echo "<fieldset" . $styleClass . ">\n";
 						if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
 						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $scope);
 						$ret = array_merge($ret, $retTemp);
