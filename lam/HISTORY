@@ -1,3 +1,11 @@
+March/April 2009
+  - support NIS netgroups
+  - help messages are displayed as tooltips
+  - LAM Pro:
+   -> add businessCategory to self service (RFE 2494246)
+   -> allow to customize page headers and use custom CSS styles
+
+
 21.01.2009 2.5.0
   - LAM Pro:
    -> supports rfc2307bis schema for Unix groups (RFE 2111694)
