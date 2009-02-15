@@ -141,7 +141,7 @@ class inetOrgPerson extends baseModule {
 		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
-			'carLicense');
+			'carLicense', 'departmentNumber');
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true) && $this->supportUnixHosts()) {
 			$return['attributes'][] = 'host';
 		}
@@ -153,13 +153,18 @@ class inetOrgPerson extends baseModule {
 			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'),
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
-			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'));
+			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
+			'departmentNumber' => _('Department(s)'));
 		// profile elements
 		$return['profile_options'] = array(
 			array(
 				array('kind' => 'text', 'text' => _('Location') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_l', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'l')),
+			array(
+				array('kind' => 'text', 'text' => _('Department(s)') . ":"),
+				array('kind' => 'input', 'name' => 'inetOrgPerson_departmentNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'departmentNumber')),
 			array(
 				array('kind' => 'text', 'text' => _('State') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_st', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
@@ -295,6 +300,12 @@ class inetOrgPerson extends baseModule {
 		'example' => 'A 2.24'
 		),
 		array(
+		'name' => 'inetOrgPerson_departmentNumber',
+		'description' => _('Department(s)'),
+		'help' => 'departmentNumber',
+		'example' => _('Administration')
+		),
+		array(
 		'name' => 'inetOrgPerson_l',
 		'description' => _('Location'),
 		'help' => 'l',
@@ -374,7 +385,8 @@ class inetOrgPerson extends baseModule {
 			'location',
 			'state',
 			'carLicense',
-			'officeName'
+			'officeName',
+			'departmentNumber'
 		);
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
@@ -489,6 +501,10 @@ class inetOrgPerson extends baseModule {
 				'physicalDeliveryOfficeName' => array(
 					"Headline" => _("Office name"),
 					"Text" => _("The office name of the user (e.g. YourCompany, Human Resources).")
+				),
+				'departmentNumber' => array(
+					"Headline" => _("Department(s)"),
+					"Text" => _("Here you can enter the user's department(s). Multiple entries are separated by semicolons.")
 				)
 			)
 		);
@@ -610,6 +626,16 @@ class inetOrgPerson extends baseModule {
 		$this->attributes['st'][0] = $_POST['st'];
 		$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
+		if (isset($_POST['departmentNumber'])) {
+			$this->attributes['departmentNumber'] = explode(';', $_POST['departmentNumber']);
+			// remove extra spaces
+			$this->attributes['departmentNumber'] = array_map('trim', $this->attributes['departmentNumber']);
+		}
+		else {
+			if (isset($this->attributes['departmentNumber'])) {
+				unset($this->attributes['departmentNumber']);
+			}
+		}
 		if ($_POST['manager'] != '-') {
 			$this->attributes['manager'][0] = $_POST['manager'];
 		}
@@ -826,6 +852,13 @@ class inetOrgPerson extends baseModule {
 			array('kind' => 'input', 'name' => 'roomNumber', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $roomNumber),
 			array('kind' => 'help', 'value' => 'roomNumber'));
+		$departmentNumber = '';
+		if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Department(s)')),
+			array('kind' => 'input', 'name' => 'departmentNumber', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $departmentNumber),
+			array('kind' => 'help', 'value' => 'departmentNumber'));
 
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
@@ -1041,7 +1074,7 @@ class inetOrgPerson extends baseModule {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		return array(
+		$return = array(
 			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 			get_class($this) . '_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
 			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
@@ -1065,7 +1098,28 @@ class inetOrgPerson extends baseModule {
 			get_class($this) . '_carLicense' => array('<block><key>' . _('Car license') . '</key><value>' . $this->attributes['carLicense'][0] . '</value></block>'),
 			get_class($this) . '_location' => array('<block><key>' . _('Location') . '</key><value>' . $this->attributes['l'][0] . '</value></block>'),
 			get_class($this) . '_state' => array('<block><key>' . _('State') . '</key><value>' . $this->attributes['st'][0] . '</value></block>'),
-			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $this->attributes['physicalDeliveryOfficeName'][0] . '</value></block>'));
+			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $this->attributes['physicalDeliveryOfficeName'][0] . '</value></block>')
+		);
+		if (isset($this->attributes['departmentNumber'])) {
+			$return[get_class($this) . '_departmentNumber'] = array('<block><key>' . _('Department(s)') . '</key><value>' . implode(', ', $this->attributes['departmentNumber']) . '</value></block>');
+		}
+		return $return;
+	}
+	
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// departments
+		if (isset($profile['inetOrgPerson_departmentNumber'][0]) && $profile['inetOrgPerson_departmentNumber'][0] != '') {
+			$departments = explode(';', $profile['inetOrgPerson_departmentNumber'][0]);
+			// remove extra spaces and set attributes
+			$this->attributes['departmentNumber'] = array_map('trim', $departments);
+		}
 	}
 
 	/**
@@ -1174,6 +1228,12 @@ class inetOrgPerson extends baseModule {
 			// room number
 			if ($rawAccounts[$i][$ids['inetOrgPerson_roomNumber']] != "") {
 				$partialAccounts[$i]['roomNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_roomNumber']];
+			}
+			// departments
+			if ($rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']] != "") {
+				$partialAccounts[$i]['departmentNumber'] = explode(';', $rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']]);
+				// remove extra spaces
+				$partialAccounts[$i]['departmentNumber'] = array_map('trim', $partialAccounts[$i]['departmentNumber']);
 			}
 			// location
 			if ($rawAccounts[$i][$ids['inetOrgPerson_l']] != "") {
@@ -1505,6 +1565,14 @@ class inetOrgPerson extends baseModule {
 				);	
 			}
 		}
+		if (in_array('departmentNumber', $fields)) {
+			$departmentNumber = '';
+			if (isset($attributes['departmentNumber'][0])) $departmentNumber = implode(';', $attributes['departmentNumber']);
+			$return['departmentNumber'] = array(
+				array('kind' => 'text', 'text' => _('Department(s)')),
+				array('kind' => 'input', 'name' => 'inetOrgPerson_departmentNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $departmentNumber));
+		}
 		return $return;
 	}
 
@@ -1693,6 +1761,16 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
+		// departments
+		if (in_array('departmentNumber', $fields)) {
+			$attributeNames[] = 'departmentNumber';
+			if (isset($_POST['inetOrgPerson_departmentNumber']) && ($_POST['inetOrgPerson_departmentNumber'] != '')) {
+				$attributesNew['departmentNumber'] = explode(';', $_POST['inetOrgPerson_departmentNumber']);
+				// remove extra spaces
+				$attributesNew['departmentNumber'] = array_map('trim', $attributesNew['departmentNumber']);
+			}
+			elseif (isset($attributes['departmentNumber'])) unset($attributesNew['departmentNumber']);
+		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
 			$attrName = $attributeNames[$i];
@@ -1701,6 +1779,12 @@ class inetOrgPerson extends baseModule {
 			else {
 				for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
 					if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
+						$return['mod'][$attrName] = $attributesNew[$attrName];
+						break;
+					}
+				}
+				for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
+					if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
 						$return['mod'][$attrName] = $attributesNew[$attrName];
 						break;
 					}
