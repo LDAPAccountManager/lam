@@ -889,10 +889,8 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	if (is_file("./help.php")) $helpPath = "";
 	$title = $entry['Headline'];
 	$message = $entry['Text'];
-	// if help message contains special characters then point to help page
-	if (!(strpos($message, '"') === false) || !(strpos($message, "'") === false) || !(strpos($message, "\n") === false)) {
-		$message = _('Please click on the icon to view the help page.');
-	}
+	// replace special characters
+	$message = str_replace(array("'", '"', "\n"), array("\\'", '&quot;', ''), $message);
 	echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\" ";
 		echo "onmouseover=\"Tip('" . $message . "', TITLE, '" . $title . "')\" onmouseout=\"UnTip()\">";
