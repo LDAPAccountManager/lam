@@ -1,6 +1,7 @@
 March/April 2009
   - support NIS netgroups
   - help messages are displayed as tooltips
+  - Personal: support departmentNumber attribute
   - LAM Pro:
    -> add businessCategory to self service (RFE 2494246)
    -> allow to customize page headers and use custom CSS styles
