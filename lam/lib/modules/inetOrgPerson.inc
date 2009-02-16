@@ -852,13 +852,6 @@ class inetOrgPerson extends baseModule {
 			array('kind' => 'input', 'name' => 'roomNumber', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $roomNumber),
 			array('kind' => 'help', 'value' => 'roomNumber'));
-		$departmentNumber = '';
-		if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Department(s)')),
-			array('kind' => 'input', 'name' => 'departmentNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $departmentNumber),
-			array('kind' => 'help', 'value' => 'departmentNumber'));
 
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
@@ -928,6 +921,13 @@ class inetOrgPerson extends baseModule {
 			array('kind' => 'input', 'name' => 'businessCategory', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $businessCategory),
 			array('kind' => 'help', 'value' => 'businessCategory'));
+		$departmentNumber = '';
+		if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Department(s)')),
+			array('kind' => 'input', 'name' => 'departmentNumber', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $departmentNumber),
+			array('kind' => 'help', 'value' => 'departmentNumber'));
 		if ($this->supportUnixHosts()) {
 			$hostvalue = "";
 			if (isset($this->attributes['host']) && is_array($this->attributes['host'])) {
