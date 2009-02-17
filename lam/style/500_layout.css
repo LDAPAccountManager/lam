@@ -2,8 +2,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Leonhard Walchshäusl
-  Copyright (C) 2005 - 2007  Roland Gruber
+  Copyright (C) 2003  Leonhard Walchshaeusl
+  Copyright (C) 2005 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -65,19 +65,14 @@ a img {
 }
 
 fieldset {
-background-color:#EEEEEE;
-border:1px solid green;
+background-color:#fff3c8;
+border:1px solid #af8800;
 padding:0px 15px 15px 15px;
 }
 
 legend {
-color:#007a3b;
+color:blue;
 }
-
-fieldset fieldset legend {
-color:black;
-}
-
 
 /**
  * table style for delete.php
