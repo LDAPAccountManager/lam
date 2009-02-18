@@ -137,7 +137,7 @@ $helpArray = array (
 					"Text" => _("This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*).")),
 				"242" => array ("Headline" => _("Password policy"),
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
-				"250" => array ("Headline" => _("Account lists - Filters"),
+				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will filter case-insensitive.")),
 				// 300 - 399
 				// Roland Gruber
