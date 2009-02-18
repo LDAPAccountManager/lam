@@ -35,13 +35,24 @@ $Id$
 */
 class baseType {
 	
+	public $LABEL_CREATE_ANOTHER_ACCOUNT;
+	public $LABEL_BACK_TO_ACCOUNT_LIST;
+
+	/**
+	 * Creates a new type object.
+	 */
+	public function __construct() {
+		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another account');
+		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to account list');
+	}
+	
 	/**
 	* Returns the alias name of this account type.
 	* This function must be overwritten by the child classes.
 	*
 	* @return string alias name
 	*/
-	function getAlias() {
+	public function getAlias() {
 		return "baseType";
 	}
 	
@@ -51,7 +62,7 @@ class baseType {
 	*
 	* @return string description
 	*/
-	function getDescription() {
+	public function getDescription() {
 		return "base type";
 	}
 	
@@ -60,7 +71,7 @@ class baseType {
 	*
 	* @return string class name
 	*/
-	function getListClassName() {
+	public function getListClassName() {
 		return "lamList";
 	}
 	
@@ -70,7 +81,7 @@ class baseType {
 	*
 	* @return string attribute list
 	*/
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes() {
 		return "dn:DN,objectClass:Object classes";
 	}
 
@@ -80,7 +91,7 @@ class baseType {
 	*
 	* @return array list of descriptions
 	*/
-	function getListAttributeDescriptions() {
+	public function getListAttributeDescriptions() {
 		return array();
 	}
 

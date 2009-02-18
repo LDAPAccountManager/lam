@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2008  Thomas Manninger
+                2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +37,16 @@ $Id$
 **/
 
 class dhcp extends baseType {
+	
+	/**
+	 * Constructs a new DHCP type object.
+	 */
+	public function __construct() {
+		parent::__construct();
+		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another DHCP entry');
+		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to DHCP list');
+	}
+	
 	/**
 	* Returns the alias name of this account type.
 	*

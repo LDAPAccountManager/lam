@@ -1249,8 +1249,9 @@ class accountContainer {
 		echo "<br>\n";
 		echo "<table class=\"".$this->type."list\" width=\"100%\" style=\"border-width:0px;\"><tr><td>\n";
 		
-		echo "<input name=\"accountContainerCreateAgain\" type=\"submit\" value=\"" . _('Create another account') . "\"> \n";
-		echo "<input name=\"accountContainerBackToList\" type=\"submit\" value=\"" . _('Back to account list') . "\"> \n";
+		$type = new $this->type();
+		echo "<input name=\"accountContainerCreateAgain\" type=\"submit\" value=\"" . $type->LABEL_CREATE_ANOTHER_ACCOUNT . "\"> \n";
+		echo "<input name=\"accountContainerBackToList\" type=\"submit\" value=\"" . $type->LABEL_BACK_TO_ACCOUNT_LIST . "\"> \n";
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "<select name=\"pdfStructure\" size=1>\n";
 		for ($i = 0; $i < sizeof($pdfStructures); $i++) {

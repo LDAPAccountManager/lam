@@ -36,6 +36,15 @@ $Id$
 class netgroup extends baseType {
 	
 	/**
+	 * Constructs a new group type object.
+	 */
+	public function __construct() {
+		parent::__construct();
+		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another group');
+		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to group list');
+	}
+	
+	/**
 	* Returns the alias name of this account type.
 	*
 	* @return string alias name
