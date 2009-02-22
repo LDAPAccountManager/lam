@@ -57,7 +57,7 @@ class eduPerson extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'uid.png';
+		$return['icon'] = 'eduPerson.png';
 		// manages host accounts
 		$return["account_types"] = array("user");
 		// alias name
@@ -78,6 +78,10 @@ class eduPerson extends baseModule {
 				"Headline" => _("Primary affiliation"),
 				"Text" => _("Specifies the person's primary relationship to the institution in broad categories such as student, faculty, staff, alum, etc.")
 			),
+			'scopedAffiliation' => array(
+				"Headline" => _("Scoped affiliation"),
+				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.")
+			),
 			'nickName' => array(
 				"Headline" => _("Nick names"),
 				"Text" => _("This is a list of nick names for this user.")
@@ -89,7 +93,11 @@ class eduPerson extends baseModule {
 			'principalName' => array(
 				"Headline" => _("Principal name"),
 				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication. It should be represented in the form \"user@scope\" where scope defines a local security domain.")
-			));
+			),
+			'entitlement' => array(
+				"Headline" => _("Entitlements"),
+				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.")
+		));
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -147,6 +155,23 @@ class eduPerson extends baseModule {
 				array('kind' => 'select', 'name' => 'primaryAffiliation', 'options' => $this->affiliationTypes, 'options_selected' => $primaryAffiliation),
 				array('kind' => 'help', 'value' => 'primaryAffiliation')
 			);
+			// scoped affiliation
+			$scopedAffiliation = '';
+			$scopedAffiliationPrefix = array();
+			if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
+				$parts = explode('@', $this->attributes['eduPersonScopedAffiliation'][0]);
+				$scopedAffiliationPrefix = array($parts[0]);
+				$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][0], strlen($parts[0]) + 1);
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Scoped affiliation')),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'select', 'name' => 'scopedAffiliationPrefix', 'options' => $this->affiliationTypes, 'options_selected' => $scopedAffiliationPrefix),
+					array('kind' => 'text', 'text' => '@'),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'scopedAffiliation', 'value' => $scopedAffiliation)
+				))),
+				array('kind' => 'help', 'value' => 'scopedAffiliation')
+			);
 			// affiliations
 			$affiliations = array();
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
@@ -196,8 +221,35 @@ class eduPerson extends baseModule {
 					array('kind' => 'input', 'name' => 'nickName', 'type' => 'text', 'value' => ''),
 					array('kind' => 'input', 'type' => 'submit', 'name' => 'newNickName', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
 				))),
-				array('kind' => 'text', 'text' => ' '));
+				array('kind' => 'text', 'text' => ' ')
+			);
+			// entitlements
+			$entitlements = array();
+			if (isset($this->attributes['eduPersonEntitlement'][0])) {
+				for ($i = 0; $i < sizeof($this->attributes['eduPersonEntitlement']); $i++) {
+					$entitlements[] = array(
+						array('kind' => 'input', 'name' => 'entitlement' . $i, 'type' => 'text', 'value' => $this->attributes['eduPersonEntitlement'][$i]),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'delEntitlement' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
+					);
+				}
 			}
+			else {
+				$entitlements = array(array(array('kind' => 'text', 'text' => '-')));
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Entitlements'), 'td' => array('valign' => 'top')),
+				array('kind' => 'table', 'value' => $entitlements),
+				array('kind' => 'help', 'value' => 'entitlement', 'td' => array('valign' => 'top'))
+			);
+			$return[] = array(
+				array('kind' => 'text', 'text' => ' '),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'input', 'name' => 'entitlement', 'type' => 'text', 'value' => ''),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'newEntitlement', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
+				))),
+				array('kind' => 'text', 'text' => ' ')
+			);
+		}
 		else {
 			$return[] = array(
 				array('kind' => 'text', 'text' => '&nbsp;'),
@@ -217,6 +269,13 @@ class eduPerson extends baseModule {
 		$errors = array();
 		// primary affiliation
 		$this->attributes['eduPersonPrimaryAffiliation'][0] = $_POST['primaryAffiliation'];
+		// scoped affiliation
+		if (isset($_POST['scopedAffiliation']) && ($_POST['scopedAffiliation'] != '')) {
+			$this->attributes['eduPersonScopedAffiliation'][0] = $_POST['scopedAffiliationPrefix'] . '@' . $_POST['scopedAffiliation'];
+		}
+		elseif (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
+			unset($this->attributes['eduPersonScopedAffiliation']);
+		}
 		// principal name
 		$this->attributes['eduPersonPrincipalName'][0] = $_POST['principalName'];
 		if ($_POST['principalName'] != '') {
@@ -250,6 +309,19 @@ class eduPerson extends baseModule {
 			$this->attributes['eduPersonNickname'][] = $_POST['nickName'];
 		}
 		$this->attributes['eduPersonNickname'] = array_unique($this->attributes['eduPersonNickname']);
+		// entitlements
+		$this->attributes['eduPersonEntitlement'] = array();
+		$i = 0;
+		while (isset($_POST['entitlement' . $i])) {
+			if (!isset($_POST['delEntitlement' . $i]) && ($_POST['entitlement' . $i] != '')) {
+				$this->attributes['eduPersonEntitlement'][] = $_POST['entitlement' . $i];
+			}
+			$i++;
+		}
+		if (isset($_POST['newEntitlement']) && ($_POST['entitlement'] != '')) {
+			$this->attributes['eduPersonEntitlement'][] = $_POST['entitlement'];
+		}
+		$this->attributes['eduPersonEntitlement'] = array_unique($this->attributes['eduPersonEntitlement']);
 		return $errors;
 	}
 
@@ -284,6 +356,9 @@ class eduPerson extends baseModule {
 		if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
 			$return['eduPerson_primaryAffiliation'][0] = '<block><key>' . _('Primary affiliation') . '</key><value>' . $this->attributes['eduPersonPrimaryAffiliation'][0] . '</value></block>';
 		}
+		if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
+			$return['eduPerson_scopedAffiliation'][0] = '<block><key>' . _('Scoped affiliation') . '</key><value>' . $this->attributes['eduPersonScopedAffiliation'][0] . '</value></block>';
+		}
 		if (isset($this->attributes['eduPersonPrincipalName'][0])) {
 			$return['eduPerson_principalName'][0] = '<block><key>' . _('Principal name') . '</key><value>' . $this->attributes['eduPersonPrincipalName'][0] . '</value></block>';
 		}
@@ -294,6 +369,10 @@ class eduPerson extends baseModule {
 		if (isset($this->attributes['eduPersonAffiliation'][0])) {
 			sort($this->attributes['eduPersonAffiliation']);
 			$return['eduPerson_affiliation'][0] = '<block><key>' . _('Affiliations') . '</key><value>' . implode(', ', $this->attributes['eduPersonAffiliation']) . '</value></block>';
+		}
+		if (isset($this->attributes['eduPersonEntitlement'][0])) {
+			sort($this->attributes['eduPersonEntitlement']);
+			$return['eduPerson_entitlement'][0] = '<block><key>' . _('Entitlements') . '</key><value>' . implode(', ', $this->attributes['eduPersonEntitlement']) . '</value></block>';
 		}
 		return $return;
 	}
