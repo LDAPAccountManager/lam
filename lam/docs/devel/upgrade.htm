@@ -6,6 +6,7 @@
 
 
 
+
   
 
 
@@ -19,6 +20,20 @@
 <div style="text-align: center;">
 <h1>Upgrade notes</h1>
 <div style="text-align: left;">
+This is a list of API changes for all LAM releases.
+<br><br>
+<h2>2.5.0 -&gt; 2.6.0</h2>
+The class <span style="font-weight: bold; font-style: italic;">baseType</span> has two new member variables:<br>
+<ul>
+  <li>$LABEL_CREATE_ANOTHER_ACCOUNT</li>
+  <li>$LABEL_BACK_TO_ACCOUNT_LIST</li>
+</ul>
+They can be used to show a more specific text when the user is asked to
+create another account or return back to the account list.<br>
+<br>
+The meta HTML code now supports image buttons.<br>
+<br>
+<br>
 <h2>2.4.0 -&gt; 2.5.0</h2>
 <h3>Self service</h3>
 <span style="font-weight: bold;">$selfServiceSettings</span> in class <span style="font-style: italic;">baseModule</span> is now an object of the class <span style="font-style: italic;">selfServiceProfile.</span> This way all profile settings can be read. To access the module settings use <span style="font-weight: bold;">$this-&gt;selfServiceSettings-&gt;moduleSettings</span>.<br>
