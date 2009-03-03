@@ -97,7 +97,19 @@ class eduPerson extends baseModule {
 			'entitlement' => array(
 				"Headline" => _("Entitlements"),
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.")
-		));
+			),
+			'orgDN' => array(
+				"Headline" => _("Organization"),
+				"Text" => _("The DN of the directory entry representing the institution with which the person is associated.")
+			),
+			'primaryOrgUnitDN' => array(
+				"Headline" => _("Primary organizational unit"),
+				"Text" => _("The DN of the directory entry representing the person's primary organizational unit.")
+			),
+			'orgUnitDN' => array(
+				"Headline" => _("Organizational units"),
+				"Text" => _("The DNs of the directory entries representing the person's organizational units.")
+			));
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -120,8 +132,11 @@ class eduPerson extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['principalName'][0] = array('ERROR', 'Principal name is invalid!');
-		$this->messages['principalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', 'Principal name is invalid!');
+		$this->messages['principalName'][0] = array('ERROR', _('Principal name is invalid!'));
+		$this->messages['principalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!'));
+		$this->messages['orgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organization"));
+		$this->messages['primaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organizational unit"));
+		$this->messages['orgUnitDN'][0] = array('ERROR', _('Organizational units contains an invalid entry.'));
 	}
 
 	/**
@@ -249,6 +264,52 @@ class eduPerson extends baseModule {
 				))),
 				array('kind' => 'text', 'text' => ' ')
 			);
+			// org DN
+			$orgDN = '';
+			if (isset($this->attributes['eduPersonOrgDN'][0])) {
+				$orgDN = $this->attributes['eduPersonOrgDN'][0];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Organization')),
+				array('kind' => 'input', 'type' => 'text', 'size' => '40', 'name' => 'orgDN', 'value' => $orgDN),
+				array('kind' => 'help', 'value' => 'orgDN')
+			);
+			// primare OU DN
+			$primaryOrgUnitDN = '';
+			if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
+				$primaryOrgUnitDN = $this->attributes['eduPersonPrimaryOrgUnitDN'][0];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Primary organizational unit')),
+				array('kind' => 'input', 'type' => 'text', 'size' => '40', 'name' => 'primaryOrgUnitDN', 'value' => $primaryOrgUnitDN),
+				array('kind' => 'help', 'value' => 'primaryOrgUnitDN')
+			);
+			// OUs
+			$orgUnitDN = array();
+			if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
+				for ($i = 0; $i < sizeof($this->attributes['eduPersonOrgUnitDN']); $i++) {
+					$orgUnitDN[] = array(
+						array('kind' => 'input', 'name' => 'orgUnitDN' . $i, 'type' => 'text', 'value' => $this->attributes['eduPersonOrgUnitDN'][$i], 'size' => '40'),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'delOrgUnitDN' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
+					);
+				}
+			}
+			else {
+				$orgUnitDN = array(array(array('kind' => 'text', 'text' => '-')));
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Organizational units'), 'td' => array('valign' => 'top')),
+				array('kind' => 'table', 'value' => $orgUnitDN),
+				array('kind' => 'help', 'value' => 'orgUnitDN', 'td' => array('valign' => 'top'))
+			);
+			$return[] = array(
+				array('kind' => 'text', 'text' => ' '),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'input', 'name' => 'orgUnitDN', 'type' => 'text', 'value' => '', 'size' => '40'),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'newOrgUnitDN', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
+				))),
+				array('kind' => 'text', 'text' => ' ')
+			);
 		}
 		else {
 			$return[] = array(
@@ -322,6 +383,43 @@ class eduPerson extends baseModule {
 			$this->attributes['eduPersonEntitlement'][] = $_POST['entitlement'];
 		}
 		$this->attributes['eduPersonEntitlement'] = array_unique($this->attributes['eduPersonEntitlement']);
+		// org DN
+		$this->attributes['eduPersonOrgDN'][0] = $_POST['orgDN'];
+		if ($_POST['orgDN'] != '') {
+			if (!get_preg($_POST['orgDN'], 'dn')) {
+				$errors[] = $this->messages['orgDN'][0];
+			}
+		}
+		// primary OU
+		$this->attributes['eduPersonPrimaryOrgUnitDN'][0] = $_POST['primaryOrgUnitDN'];
+		if ($_POST['primaryOrgUnitDN'] != '') {
+			if (!get_preg($_POST['primaryOrgUnitDN'], 'dn')) {
+				$errors[] = $this->messages['primaryOrgUnitDN'][0];
+			}
+		}
+		// OUs
+		$this->attributes['eduPersonOrgUnitDN'] = array();
+		$i = 0;
+		while (isset($_POST['orgUnitDN' . $i])) {
+			if (!isset($_POST['delOrgUnitDN' . $i]) && ($_POST['orgUnitDN' . $i] != '')) {
+				$this->attributes['eduPersonOrgUnitDN'][] = $_POST['orgUnitDN' . $i];
+				if (!get_preg($_POST['orgUnitDN' . $i], 'dn')) {
+					$error = $this->messages['orgUnitDN'][0];
+					array_push($error, $_POST['orgUnitDN' . $i]);
+					$errors[] = $error;
+				}
+			}
+			$i++;
+		}
+		if (isset($_POST['newOrgUnitDN']) && ($_POST['orgUnitDN'] != '')) {
+			$this->attributes['eduPersonOrgUnitDN'][] = $_POST['orgUnitDN'];
+			if (!get_preg($_POST['orgUnitDN'], 'dn')) {
+				$error = $this->messages['orgUnitDN'][0];
+				array_push($error, $_POST['orgUnitDN']);
+				$errors[] = $error;
+			}
+		}
+		$this->attributes['eduPersonOrgUnitDN'] = array_unique($this->attributes['eduPersonOrgUnitDN']);
 		return $errors;
 	}
 
@@ -373,6 +471,15 @@ class eduPerson extends baseModule {
 		if (isset($this->attributes['eduPersonEntitlement'][0])) {
 			sort($this->attributes['eduPersonEntitlement']);
 			$return['eduPerson_entitlement'][0] = '<block><key>' . _('Entitlements') . '</key><value>' . implode(', ', $this->attributes['eduPersonEntitlement']) . '</value></block>';
+		}
+		if (isset($this->attributes['eduPersonOrgDN'][0])) {
+			$return['eduPerson_orgDN'][0] = '<block><key>' . _('Organization') . '</key><value>' . $this->attributes['eduPersonOrgDN'][0] . '</value></block>';
+		}
+		if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
+			$return['eduPerson_primaryOrgUnitDN'][0] = '<block><key>' . _('Primary organizational unit') . '</key><value>' . $this->attributes['eduPersonPrimaryOrgUnitDN'][0] . '</value></block>';
+		}
+		if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
+			$return['eduPerson_orgUnitDN'][0] = '<block><key>' . _('Organizational units') . '</key><value>' . implode(', ', $this->attributes['eduPersonOrgUnitDN']) . '</value></block>';
 		}
 		return $return;
 	}
