@@ -90,6 +90,11 @@ class eduPerson extends baseModule {
 				"Headline" => _("Affiliations"),
 				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc.")
 			),
+			'affiliationUpload' => array(
+				"Headline" => _("Affiliations"),
+				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc." . " " .
+							_('Multiple values are separated by comma.'))
+			),
 			'principalName' => array(
 				"Headline" => _("Principal name"),
 				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication. It should be represented in the form \"user@scope\" where scope defines a local security domain.")
@@ -97,6 +102,10 @@ class eduPerson extends baseModule {
 			'entitlement' => array(
 				"Headline" => _("Entitlements"),
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.")
+			),
+			'entitlementUpload' => array(
+				"Headline" => _("Entitlements"),
+				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources." . " " . _('Multiple values are separated by comma.'))
 			),
 			'orgDN' => array(
 				"Headline" => _("Organization"),
@@ -109,14 +118,69 @@ class eduPerson extends baseModule {
 			'orgUnitDN' => array(
 				"Headline" => _("Organizational units"),
 				"Text" => _("The DNs of the directory entries representing the person's organizational units.")
+			),
+			'orgUnitDNUpload' => array(
+				"Headline" => _("Organizational units"),
+				"Text" => _("The DNs of the directory entries representing the person's organizational units." . ' ' . _('Multiple values are separated by comma.'))
 			));
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
-				'name' => 'ieee802Device_mac',
-				'description' => _('MAC address'),
-				'help' => 'macList',
-				'example' => '00:01:02:DE:EF:18'
+				'name' => 'eduPerson_principalName',
+				'description' => _('Principal name'),
+				'help' => 'principalName',
+				'example' => _('user@company.com'),
+				'unique' => 'true'
+			),
+			array(
+				'name' => 'eduPerson_primaryAffiliation',
+				'description' => _('Primary affiliation'),
+				'help' => 'primaryAffiliation',
+				'example' => 'student',
+				'values' => implode(", ", $this->affiliationTypes)
+			),
+			array(
+				'name' => 'eduPerson_scopedAffiliation',
+				'description' => _('Scoped affiliation'),
+				'help' => 'scopedAffiliation',
+				'example' => 'student@domain'
+			),
+			array(
+				'name' => 'eduPerson_affiliation',
+				'description' => _('Affiliations'),
+				'help' => 'affiliationUpload',
+				'example' => 'student, employee',
+				'values' => implode(", ", $this->affiliationTypes)
+			),
+			array(
+				'name' => 'eduPerson_nickname',
+				'description' => _('Nick names'),
+				'help' => 'nickName',
+				'example' => _('Steve, Stevo')
+			),
+			array(
+				'name' => 'eduPerson_entitlement',
+				'description' => _('Entitlements'),
+				'help' => 'entitlementUpload',
+				'example' => 'http://xstor.com/contracts/HEd123'
+			),
+			array(
+				'name' => 'eduPerson_orgDN',
+				'description' => _('Organization'),
+				'help' => 'orgDN',
+				'example' => _('ou=accounts,dc=yourdomain,dc=org')
+			),
+			array(
+				'name' => 'eduPerson_primaryOrgUnitDN',
+				'description' => _('Primary organizational unit'),
+				'help' => 'primaryOrgUnitDN',
+				'example' => _('ou=accounts,dc=yourdomain,dc=org')
+			),
+			array(
+				'name' => 'eduPerson_orgUnitDN',
+				'description' => _('Organizational units'),
+				'help' => 'orgUnitDNUpload',
+				'example' => _('ou=accounts,dc=yourdomain,dc=org')
 			)
 		);
 		// available PDF fields
@@ -135,8 +199,14 @@ class eduPerson extends baseModule {
 		$this->messages['principalName'][0] = array('ERROR', _('Principal name is invalid!'));
 		$this->messages['principalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!'));
 		$this->messages['orgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organization"));
+		$this->messages['orgDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgDN', _('This is not a valid DN!'));
 		$this->messages['primaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organizational unit"));
+		$this->messages['primaryOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_primaryOrgUnitDN', _('This is not a valid DN!'));
 		$this->messages['orgUnitDN'][0] = array('ERROR', _('Organizational units contains an invalid entry.'));
+		$this->messages['orgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgUnitDN', _('This is not a valid list of DNs!'));
+		$this->messages['primaryAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_primaryAffiliation', _('Please enter a valid primary affiliation.'));
+		$this->messages['scopedAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_scopedAffiliation', _('Please enter a valid scoped affiliation.'));
+		$this->messages['affiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_affiliation', _('Please enter a valid list of affiliations.'));
 	}
 
 	/**
@@ -436,9 +506,105 @@ class eduPerson extends baseModule {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("eduPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "eduPerson";
+			// principal name
+			if ($rawAccounts[$i][$ids['eduPerson_principalName']] != "") {
+				if (eregi('^[0-9a-z_\\.@-]+$', $rawAccounts[$i][$ids['eduPerson_principalName']]) === false) {
+					$error = $this->messages['principalName'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				else {
+					$partialAccounts[$i]['eduPersonPrincipalName'] = $rawAccounts[$i][$ids['eduPerson_principalName']];
+				}
+			}
 			// primary affiliation
 			if ($rawAccounts[$i][$ids['eduPerson_primaryAffiliation']] != "") {
-				
+				if (!in_array($rawAccounts[$i][$ids['eduPerson_primaryAffiliation']], $this->affiliationTypes)) {
+					$error = $this->messages['primaryAffiliation'][0];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				else {
+					$partialAccounts[$i]['eduPersonPrimaryAffiliation'] = $rawAccounts[$i][$ids['eduPerson_primaryAffiliation']];
+				}
+			}
+			// scoped affiliation
+			if ($rawAccounts[$i][$ids['eduPerson_scopedAffiliation']] != "") {
+				$parts = explode('@', $rawAccounts[$i][$ids['eduPerson_scopedAffiliation']]);
+				if (!in_array($parts[0], $this->affiliationTypes)) {
+					$error = $this->messages['scopedAffiliation'][0];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				else {
+					$partialAccounts[$i]['eduPersonScopedAffiliation'] = $rawAccounts[$i][$ids['eduPerson_scopedAffiliation']];
+				}
+			}
+			// affiliations
+			if ($rawAccounts[$i][$ids['eduPerson_affiliation']] != "") {
+				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_affiliation']]);
+				$valid = true;
+				for ($a = 0; $a < sizeof($parts); $a++) {
+					if (!in_array($parts[$a], $this->affiliationTypes)) {
+						$valid = false;
+						$error = $this->messages['affiliation'][0];
+						array_push($error, $i);
+						$messages[] = $error;
+						break;
+					}
+				}
+				if ($valid) {
+					$partialAccounts[$i]['eduPersonAffiliation'] = $parts;
+				}
+			}
+			// nick names
+			if ($rawAccounts[$i][$ids['eduPerson_nickname']] != "") {
+				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_nickname']]);
+				$partialAccounts[$i]['eduPersonNickname'] = $parts;
+			}
+			// entitlements
+			if ($rawAccounts[$i][$ids['eduPerson_entitlement']] != "") {
+				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_entitlement']]);
+				$partialAccounts[$i]['eduPersonEntitlement'] = $parts;
+			}
+			// organization
+			if ($rawAccounts[$i][$ids['eduPerson_orgDN']] != "") {
+				if (!get_preg($rawAccounts[$i][$ids['eduPerson_orgDN']], 'dn')) {
+					$error = $this->messages['orgDN'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				else {
+					$partialAccounts[$i]['eduPersonOrgDN'] = $rawAccounts[$i][$ids['eduPerson_orgDN']];
+				}
+			}
+			// primary OU
+			if ($rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']] != "") {
+				if (!get_preg($rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']], 'dn')) {
+					$error = $this->messages['primaryOrgUnitDN'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				else {
+					$partialAccounts[$i]['eduPersonPrimaryOrgUnitDN'] = $rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']];
+				}
+			}
+			// OUs
+			if ($rawAccounts[$i][$ids['eduPerson_orgUnitDN']] != "") {
+				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_orgUnitDN']]);
+				$valid = true;
+				for ($a = 0; $a < sizeof($parts); $a++) {
+					if (!get_preg($parts[$a], 'dn')) {
+						$valid = false;
+						$error = $this->messages['orgUnitDN'][1];
+						array_push($error, $i);
+						$messages[] = $error;
+						break;
+					}
+				}
+				if ($valid) {
+					$partialAccounts[$i]['eduPersonOrgUnitDN'] = $parts;
+				}
 			}
 		}
 		return $messages;
