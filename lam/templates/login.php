@@ -189,14 +189,20 @@ function display_LoginPage($config_object) {
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
 		<link rel="shortcut icon" type="image/x-icon" href="../graphics/favicon.ico">
 	</head>
-	<body>
+	<body onload="focusLogin()">
 	<?php
 		// set focus on password field
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
-		echo "window.onload = function() {\n";
-			echo "loginField = document.getElementsByName('passwd')[0];\n";
-			echo "loginField.focus();\n";
+		echo "function focusLogin() {\n";
+		if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
+			echo "myElement = document.getElementsByName('passwd')[0];\n";
+			echo "myElement.focus();\n";
+		}
+		else {
+			echo "myElement = document.getElementsByName('username')[0];\n";
+			echo "myElement.focus();\n";
+		}
 		echo "}\n";
 		echo "//-->\n";
 		echo "</script>\n";
@@ -255,18 +261,21 @@ function display_LoginPage($config_object) {
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
-									<select name="username" size="1" tabindex="0">
 									<?php
-									$admins = $config_object->get_Admins();
-									for($i = 0; $i < count($admins); $i++) {
-										$text = explode(",", $admins[$i]);
-										$text = explode("=", $text[0]);
-										?>
-										<option value="<?php echo $admins[$i]; ?>"><?php echo $text[1]; ?></option>
-										<?php
+									if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
+										echo '<select name="username" size="1" tabindex="0">';
+										$admins = $config_object->get_Admins();
+										for($i = 0; $i < count($admins); $i++) {
+											$text = explode(",", $admins[$i]);
+											$text = explode("=", $text[0]);
+											echo '<option value="' . $admins[$i] . '">' . $text[1] . '</option>';
+										}
+										echo '</select>';
+									}
+									else {
+										echo '<input type="text" name="username" tabindex="1">';
 									}
 									?>
-									</select>
 								</td>
 							</tr>
 							<tr>
@@ -276,7 +285,7 @@ function display_LoginPage($config_object) {
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
-									<input type="password" name="passwd" tabindex="1">
+									<input type="password" name="passwd" tabindex="2">
 								</td>
 							</tr>
 							<tr>
@@ -286,7 +295,7 @@ function display_LoginPage($config_object) {
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
-									<select name="language" size="1" tabindex="2">
+									<select name="language" size="1" tabindex="3">
 									<?php
 									for($i = 0; $i < count($languages); $i++) {
 										if($languages[$i]["default"] == "YES") {
@@ -308,7 +317,7 @@ function display_LoginPage($config_object) {
 							<tr>
 								<td style="border-style:none" height="50" colspan="2" align="center">
 									<input name="checklogin" type="hidden" value="checklogin">
-									<input name="submit" type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
+									<input name="submit" type="submit" value="<?php echo _("Login"); ?>" tabindex="4">
 								</td>
 							</tr>
 							<tr>
@@ -349,7 +358,7 @@ function display_LoginPage($config_object) {
 								<?php echo $_POST['profile']; ?>
 							</td>
 							<td style="border-style:none" height="30" align="right">
-								<select name="profile" size="1" tabindex="4">
+								<select name="profile" size="1" tabindex="5">
 								<?php
 								for($i=0;$i<count($profiles);$i++) {
 									?>
@@ -359,7 +368,7 @@ function display_LoginPage($config_object) {
 								?>
 								</select>
 								<input name="profileChange" type="hidden" value="profileChange">
-								<input name="submit" type="submit" value="<?php echo _("Change profile"); ?>" tabindex="5">
+								<input name="submit" type="submit" value="<?php echo _("Change profile"); ?>" tabindex="6">
 							</td>
 							</tr>
 							<tr>
@@ -410,10 +419,52 @@ if(!empty($_POST['checklogin']))
 		if (get_magic_quotes_gpc() == 1) {
 			$_POST['passwd'] = stripslashes($_POST['passwd']);
 		}
-		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
-
-		if($result === 0) // Username/password correct. Do some configuration and load main frame.
-		{
+		$username = $_POST['username'];
+		// search user in LDAP if needed
+		if ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
+			$searchLDAP = new Ldap($_SESSION['config']);
+			$searchLDAP->connect('', '');
+			$searchFilter = $_SESSION['config']->getLoginSearchFilter();
+			$searchFilter = str_replace('%USER%', $username ,$searchFilter);
+			$searchSuccess = true;
+			$searchError = '';
+			$searchResult = @ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'));
+			if ($searchResult) {
+				$searchInfo = @ldap_get_entries($searchLDAP->server(), $searchResult);
+				if ($searchInfo) {
+					if ($searchInfo['count'] == 0) {
+						$searchSuccess = false;
+						$searchError = _('Wrong password/user name combination. Please try again.');
+					}
+					elseif ($searchInfo['count'] > 1) {
+						$searchSuccess = false;
+						$searchError = _('The given user name matches multiple LDAP entries.');
+					}
+					else {
+						$username = $searchInfo[0]['dn'];
+					}
+				}
+				else {
+					$searchSuccess = false;
+					$searchError = _('Unable to find the user name in LDAP.');
+				}
+			}
+			else {
+				$searchSuccess = false;
+				$searchError = _('Unable to find the user name in LDAP.');
+			}
+			if (!$searchSuccess) {
+				$error_message = $searchError;
+				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in. ' . $searchError . '');
+				$searchLDAP->close();
+				display_LoginPage($_SESSION['config']);
+				exit();
+			}
+			$searchLDAP->close();
+		}
+		// try to connect to LDAP
+		$result = $_SESSION['ldap']->connect($username,$_POST['passwd']); // Connect to LDAP server for verifing username/password
+		if($result === 0) {// Username/password correct. Do some configuration and load main frame.
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
 			$current_language = explode(":",$_SESSION['language']);
@@ -431,27 +482,30 @@ if(!empty($_POST['checklogin']))
 			metaRefresh("./main.php");
 			die();
 		}
-		else
-		{
+		else {
 			if ($result === False) {
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 				display_LoginPage($_SESSION['config']); // connection failed
+				exit();
 			}
 			elseif ($result == 81) {
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 				display_LoginPage($_SESSION['config']); // connection failed
+				exit();
 			}
 			elseif ($result == 49) {
 				$error_message = _("Wrong password/user name combination. Please try again.");
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (wrong password).');
 				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+				exit();
 			}
 			else {
 				$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 				display_LoginPage($_SESSION['config']); // other errors
+				exit();
 			}
 		}
 	}
