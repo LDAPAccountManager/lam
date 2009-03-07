@@ -446,12 +446,12 @@ if(!empty($_POST['checklogin']))
 				}
 				else {
 					$searchSuccess = false;
-					$searchError = _('Unable to find the user name in LDAP.');
+					$searchError = _('Unable to find the user name in LDAP.') . ' ' . ldap_error($searchLDAP->server());
 				}
 			}
 			else {
 				$searchSuccess = false;
-				$searchError = _('Unable to find the user name in LDAP.');
+				$searchError = _('Unable to find the user name in LDAP.') . ' ' . ldap_error($searchLDAP->server());
 			}
 			if (!$searchSuccess) {
 				$error_message = $searchError;
