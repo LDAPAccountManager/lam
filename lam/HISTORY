@@ -1,6 +1,7 @@
 March/April 2009
   - support NIS netgroups
   - support EDU person accounts (RFE 1413731)
+  - added config option to search LAM login users in LDAP
   - help messages are displayed as tooltips
   - Personal: support departmentNumber attribute
   - LAM Pro:
