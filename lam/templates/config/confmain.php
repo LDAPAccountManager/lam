@@ -121,8 +121,9 @@ echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n");
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 echo ("</head>\n");
-echo ("<body>\n");
+echo ("<body onload=\"configLoginMethodChanged()\">\n");
 echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
+echo "<script type=\"text/javascript\" src=\"config.js\"></script>\n";
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p>&nbsp;</p>\n");
 
@@ -394,13 +395,53 @@ echo ("<br>\n");
 // security setings
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
+// login method
+echo ("<tr><td align=\"right\"><b>".
+	_("Login method") . ": </b></td>".
+	"<td><select tabindex=\"$tabindex\" name=\"loginMethod\" onchange=\"configLoginMethodChanged()\">\n");
+if ($conf->getLoginMethod() == LAMConfig::LOGIN_LIST) {
+	echo("<option selected value=" . LAMConfig::LOGIN_LIST . ">" . _('Fixed list') . "</option>\n");
+}
+else {
+	echo("<option value=" . LAMConfig::LOGIN_LIST . ">" . _('Fixed list') . "</option>\n");
+}
+if ($conf->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
+	echo("<option selected value=" . LAMConfig::LOGIN_SEARCH . ">" . _('LDAP search') . "</option>\n");
+}
+else {
+	echo("<option value=" . LAMConfig::LOGIN_SEARCH . ">" . _('LDAP search') . "</option>\n");
+}
+echo ("</select></td>\n");
+$tabindex++;
+echo "<td>";
+printHelpLink(getHelp('', '220'), '220');
+echo "</td></tr>\n";
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
-echo ("<tr><td align=\"right\"><b>".
+echo "<tr id=\"trAdminList\"><td align=\"right\">\n";
+echo "<b>".
 	_("List of valid users") . " *: </b></td>".
-	"<td><textarea tabindex=\"$tabindex\" name=\"admins\" cols=75 rows=5>" . $adminText . "</textarea></td>\n");
+	"<td><textarea tabindex=\"$tabindex\" name=\"admins\" cols=75 rows=3>" . $adminText . "</textarea></td>\n";
 echo "<td>";
 printHelpLink(getHelp('', '207'), '207');
+echo "</td></tr>\n";
+$tabindex++;
+// login search suffix
+echo "<tr id=\"trLoginSearchSuffix\"><td align=\"right\">\n";
+echo "<b>".
+	_("LDAP suffix") . " *: </b></td>".
+	"<td><input type=\"text\" tabindex=\"$tabindex\" name=\"loginSearchSuffix\" value=\"" . $conf->getLoginSearchSuffix() . "\"  size=50></td>\n";
+echo "<td>";
+printHelpLink(getHelp('', '221'), '221');
+echo "</td></tr>\n";
+$tabindex++;
+// login search filter
+echo "<tr id=\"trLoginSearchFilter\"><td align=\"right\">\n";
+echo "<b>".
+	_("LDAP filter") . " *: </b></td>".
+	"<td><input type=\"text\" tabindex=\"$tabindex\" name=\"loginSearchFilter\" value=\"" . $conf->getLoginSearchFilter() . "\"  size=50></td>\n";
+echo "<td>";
+printHelpLink(getHelp('', '221'), '221');
 echo "</td></tr>\n";
 $tabindex++;
 
@@ -481,6 +522,9 @@ function saveSettings() {
 		if (trim($adminText[$i]) == "") continue;
 		$adminTextNew[] = trim($adminText[$i]);
 	}
+	$conf->setLoginMethod($_POST['loginMethod']);
+	$conf->setLoginSearchFilter($_POST['loginSearchFilter']);
+	$conf->setLoginSearchSuffix($_POST['loginSearchSuffix']);
 	if (!$conf->set_Adminstring(implode(";", $adminTextNew))) {
 		$errors[] = array("ERROR", _("List of admin users is empty or invalid!"));
 	}

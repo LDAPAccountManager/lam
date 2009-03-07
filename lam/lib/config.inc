@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2007  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -163,9 +163,14 @@ function metaRefresh($page) {
 */
 class LAMConfig {
 	
+	/* access levels */
 	const ACCESS_ALL = 100;
 	const ACCESS_PASSWORD_CHANGE = 20;
 	const ACCESS_READ_ONLY = 0;
+	
+	/* login method: predefined list or LDAP search */
+	const LOGIN_LIST = 'list';
+	const LOGIN_SEARCH = 'search';
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
@@ -218,12 +223,23 @@ class LAMConfig {
 	/** Name of configuration file */
 	private $file;
 	
-	private $accessLevel = 100;
+	/** access level */
+	private $accessLevel = LAMconfig::ACCESS_ALL;
+	
+	/** login method */
+	private $loginMethod = LAMconfig::LOGIN_LIST;
+	
+	/** search suffix for login */
+	private $loginSearchSuffix = 'dc=yourdomain,dc=org';
+	
+	/** search filter for login */
+	private $loginSearchFilter = 'uid=%USER%';
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
-		"modules", "activeTypes", "types", "accessLevel");
+		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
+		'loginSearchFilter');
 
 
 	/**
@@ -367,6 +383,9 @@ class LAMConfig {
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
 			if (!in_array("accessLevel", $saved)) array_push($file_array, "\n\n# Access level for this profile.\n" . "accessLevel: " . $this->accessLevel . "\n");
+			if (!in_array("loginMethod", $saved)) array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
+			if (!in_array("loginSearchSuffix", $saved)) array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
+			if (!in_array("loginSearchFilter", $saved)) array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -869,6 +888,62 @@ class LAMConfig {
 	 */
 	public function setAccessLevel($level) {
 		$this->accessLevel = $level;
+	}
+	
+	/**
+	 * Returns the login method.
+	 * 
+	 * @return String login method
+	 * @see LAMconfig::LOGIN_LIST
+	 * @see LAMconfig::LOGIN_SEARCH
+	 */
+	public function getLoginMethod() {
+		return $this->loginMethod;
+	}
+	
+	/**
+	 * Sets the login method.
+	 * 
+	 * @param String $loginMethod
+	 */
+	public function setLoginMethod($loginMethod) {
+		$this->loginMethod = $loginMethod;
+	}
+	
+	/**
+	 * Returns the login search filter.
+	 * 
+	 * @return String search filter
+	 */
+	public function getLoginSearchFilter() {
+		return $this->loginSearchFilter;
+	}
+	
+	/**
+	 * Sets the login search filter.
+	 * 
+	 * @param String $loginSearchFilter search filter
+	 */
+	public function setLoginSearchFilter($loginSearchFilter) {
+		$this->loginSearchFilter = $loginSearchFilter;
+	}
+	
+	/**
+	 * Returns the login search suffix.
+	 * 
+	 * @return String suffix
+	 */
+	public function getLoginSearchSuffix() {
+		return $this->loginSearchSuffix;
+	}
+	
+	/**
+	 * Sets the login search suffix.
+	 * 
+	 * @param String $loginSearchSuffix suffix
+	 */
+	public function setLoginSearchSuffix($loginSearchSuffix) {
+		$this->loginSearchSuffix = $loginSearchSuffix;
 	}
 
 }

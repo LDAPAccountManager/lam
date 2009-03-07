@@ -52,9 +52,9 @@ $helpArray = array (
 				// configuration wizard
 				// configuration login
 				// config profile management
-				"200" => array ("Headline" => _("Configuration wizard") . " - " . _("Login"),
+				"200" => array ("Headline" => _("Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
-				"201" => array ("Headline" => _("Configuration wizard") . " - " . _("Server address"),
+				"201" => array ("Headline" => _("Server address"),
 					"Text" => _("This is the server address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
 						"<br><br><b> " .
 						_("Examples") .
@@ -66,51 +66,55 @@ $helpArray = array (
 						_("Note") .
 						":</b><br><br>" .
 						_("When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!")),
-				"202" => array ("Headline" => _("Configuration wizard") . " - " . _("LDAP suffix"),
+				"202" => array ("Headline" => _("LDAP suffix"),
 					"Text" => _("This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new accont this will be the DN where it is saved.") .
 						"<br><br><b>".
 						_("Example").
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
-				"203" => array ("Headline" => _("Configuration wizard") . " - " . _("Tree suffix"),
+				"203" => array ("Headline" => _("Tree suffix"),
 					"Text" => _("This is the suffix for the LDAP tree viewer.") .
 						"<br><br><b>".
 						_("Example").
 						":</b><br><br>".
 						_("dc=yourcompany,dc=com")),
-				"206" => array ("Headline" => _("Configuration wizard") . " - " . _("List attributes"),
+				"206" => array ("Headline" => _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are separated by semicolons.") .
 						"<br><br><br><big><b>" .
 						_("Example") . ": </b></big>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br>" .
 						"<br><big><b>" . _("Predefined values") . ":</b></big><br><br><br>" . $entry206Example),
-				"207" => array ("Headline" => _("Configuration wizard") . " - " . _("Valid users"),
+				"207" => array ("Headline" => _("Valid users"),
 					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. Please enter one DN per line.") .
 						"<br><br><b>" .
 						_("Example") .
 						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
 				"208" => array ("Headline" => _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the account list. If more entries are found the list will be split into several pages.")),
-				"209" => array ("Headline" => _("Configuration wizard") . " - " . _("Default language"),
+				"209" => array ("Headline" => _("Default language"),
 					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
-				"210" => array ("Headline" => _("Configuration wizard") . " - " . _("Script path"),
+				"210" => array ("Headline" => _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.")),
-				"212" => array ("Headline" => _("Configuration wizard") . " - " . _("Change password"),
+				"212" => array ("Headline" => _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
-				"214" => array ("Headline" => _("Configuration wizard") . " - " . _("Cache timeout"),
+				"214" => array ("Headline" => _("Cache timeout"),
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
-				"215" => array ("Headline" => _("Configuration wizard") . " - " . _("Access level"),
+				"215" => array ("Headline" => _("Access level"),
 					"Text" => _("You can specify if LAM allows full write access, password changes or only read access.")),
-				"216" => array ("Headline" => _("Configuration wizard") . " - " . _("Text for user PDF"),
+				"216" => array ("Headline" => _("Text for user PDF"),
 					"Text" => _("This text will appear on top of every user PDF file.")),
-				"217" => array ("Headline" => _("Configuration wizard") . " - " . _("Account types and modules"),
+				"217" => array ("Headline" => _("Account types and modules"),
 					"Text" => _("Here you can select which plugins you want to use for account management.") . "<br><br>"
 						. _("Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited.")),
-				"218" => array ("Headline" => _("Configuration wizard") . " - " . _("Script servers"),
+				"218" => array ("Headline" => _("Script servers"),
 					"Text" => _("This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Manager will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon.") . "<br>"
 						. _("If your server runs on another port then add a comma and the port number after the server.") . "<br><br>"
 						. _("Example") . ": <b>127.0.0.1:LOCAL;192.168.0.2,12345:Servername;192.168.0.5</b>"),
-				"219" => array ("Headline" => _("Configuration wizard") . " - " . _("Rights for the home directory"),
+				"219" => array ("Headline" => _("Rights for the home directory"),
 					"Text" => _("This defines the rights for the home directories which are created by lamdaemon.")),
+				"220" => array ("Headline" => _("Login method"),
+					"Text" => _("The number of users who may login to LAM is restricted. This can be either a fixed list of DNs or LAM can search LDAP to find a DN which matches the given user name.")),
+				"221" => array ("Headline" => _("LDAP search"),
+					"Text" => _("Please enter the LDAP suffix where LAM should start to search for users. The LDAP filter needs to match the given user name to exactly one DN. The value \"%USER%\" will be replaced by the user name from the login page.")),
 				"230" => array ("Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("Headline" => _("Profile management") . " - " . _("Rename profile"),
@@ -125,7 +129,7 @@ $helpArray = array (
 					"Text" => _("If you want to change your master configuration password, please enter it here.")),
 				"236" => array ("Headline" => _("Master password"),
 					"Text" => _("Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\".")),
-				"237" => array ("Headline" => _("Configuration wizard") . " - " . _("Base module"),
+				"237" => array ("Headline" => _("Base module"),
 					"Text" => _("Every account type needs exactly one base module. This module provides a structural object class.")),
 				"238" => array ("Headline" => _("Session timeout"),
 					"Text" => _("This is the time (in minutes) of inactivity after which a user is automatically logged off.")),
