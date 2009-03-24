@@ -4,6 +4,7 @@ March/April 2009
   - added config option to search LAM login users in LDAP (RFE 2494249)
   - help messages are displayed as tooltips
   - Personal: support departmentNumber attribute
+  - DHCP: allow file upload
   - LAM Pro:
    -> add businessCategory to self service (RFE 2494246)
    -> allow to customize page headers and use custom CSS styles
