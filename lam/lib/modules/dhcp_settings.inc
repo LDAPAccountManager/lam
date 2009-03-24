@@ -227,6 +227,68 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				array('kind' => 'input', 'name' => 'subnet', 'type'=>'text'),
 				array('kind' => 'help', 'value' => 'subnetmask', 'scope' => 'user'))
 			);
+		// upload fields
+		$return['upload_columns'] = array(
+			array(
+				'name' => 'dhcp_settings_subnet',
+				'description' => _('Subnet'),
+				'help' => 'subnet',
+				'example' => '192.168.10.0',
+				'required' => true,
+				'unique' => 'true'
+			),
+			array(
+				'name' => 'dhcp_settings_domainName',
+				'description' => _('Domain name'),
+				'help' => 'domainname',
+				'example' => 'mydomain.com',
+			),
+			array(
+				'name' => 'dhcp_settings_leaseTime',
+				'description' => _('Lease time'),
+				'help' => 'leasetime',
+				'example' => '86400',
+			),
+			array(
+				'name' => 'dhcp_settings_maxLeaseTime',
+				'description' => _('Maximum lease time'),
+				'help' => 'max_leasetime',
+				'example' => '172800',
+			),
+			array(
+				'name' => 'dhcp_settings_DNSserver',
+				'description' => _('DNS'),
+				'help' => 'dns',
+				'example' => '192.168.10.250',
+			),
+			array(
+				'name' => 'dhcp_settings_gateway',
+				'description' => _('Default gateway'),
+				'help' => 'gateway',
+				'example' => '192.168.10.251',
+			),
+			array(
+				'name' => 'dhcp_settings_netbiosServer',
+				'description' => _('Netbios name servers'),
+				'help' => 'netbios',
+				'example' => '192.168.10.252, 192.168.10.253',
+			),
+			array(
+				'name' => 'dhcp_settings_netbiosType',
+				'description' => _('Netbios node type'),
+				'help' => 'netbios_type',
+				'example' => 'M',
+				'default' => 'H',
+				'values' => 'B, H, M, P'
+			),
+			array(
+				'name' => 'dhcp_settings_subnetMask',
+				'description' => _('Subnet mask'),
+				'help' => 'subnetmask',
+				'required' => true,
+				'example' => '255.255.255.0',
+			),
+		);
 		return $return;
 	}
 	
@@ -237,13 +299,21 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['cn'][0] = array('ERROR', _('No subnet entered.'));
 		$this->messages['cn'][1] = array('ERROR', _('The subnet is already in use.'));
 		$this->messages['cn'][2] = array('ERROR', _('The subnet is invalid.'));
+		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' dhcp_settings_subnet', _('The subnet is invalid.'));
 		$this->messages['dns'][0] = array('ERROR', _('You entered one or more invalid DNS servers.'));
+		$this->messages['dns'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_DNSserver', _('You entered one or more invalid DNS servers.'));
 		$this->messages['lease_time'][0] = array('ERROR', _('The lease time is invalid.'));
+		$this->messages['lease_time'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_leaseTime', _('The lease time is invalid.'));
 		$this->messages['routers'][0] = array('ERROR', _('The default gateway is invalid.'));
+		$this->messages['routers'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_gateway', _('The default gateway is invalid.'));
 		$this->messages['netbios'][0] = array('ERROR', _('The Netbios server is invalid.'));
+		$this->messages['netbios'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_netbiosServer', _('The Netbios server is invalid.'));
 		$this->messages['netbios_node_type'][0] = array('ERROR', _('The entered Netbios node type does not exist.'));
+		$this->messages['netbios_node_type'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_netbiosType', _('The entered Netbios node type does not exist.'));
 		$this->messages['max_lease_time'][0] = array('ERROR', _('The maximum lease time is invalid.'));
+		$this->messages['max_lease_time'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_maxLeaseTime', _('The maximum lease time is invalid.'));
 		$this->messages['subnet'][0] = array('ERROR', _('The subnet mask is invalid.'));
+		$this->messages['subnet'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_subnetMask', _('The subnet mask is invalid.'));
 		$this->messages['netmask'][0] = array('INFO', _('The netmask was set.'));
 		$this->messages['netmask'][1] = array('INFO', _('The net mask was invalid and was corrected.'));
 		$this->messages['ranges_reload'][0] = array('INFO', _('The DHCP ranges were changed to fit for the new subnet.'));
@@ -251,6 +321,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['domainname'][0] = array('ERROR', _('The domain name needs to be shorter than 15 characters.'));
 		$this->messages['domainname'][1] = array('ERROR', _('The domain name needs to have at least 3 characters.'));
 		$this->messages['domainname'][2] = array('ERROR', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
+		$this->messages['domainname'][3] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to be shorter than 15 characters.'));
+		$this->messages['domainname'][4] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to have at least 3 characters.'));
+		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 	}
 	
 	/**
@@ -494,8 +567,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		    unset($this->attributes['dhcpOption'][0]);
 		    $this->dhcpSettings['dns'] = "";
 		}
-		else
-		{
+		else {
 			$ex = explode(",", $_POST['dns']);
 			$dns = "";
 			$is_first=true;
@@ -505,8 +577,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 					$dns .= $string;
 					$is_first=false;
 			    }
-				else
-				{
+				else {
 			    	$dns .= ",$string";
 				}
 
@@ -518,8 +589,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			    $errors[] = $this->messages['dns'][0];
 			    $this->dhcpSettings['dns'] = $dns;
 			}
-			else
-			{
+			else {
 			    $this->dhcpSettings['dns'] = $dns;
 			    $this->attributes['dhcpOption'][0] = "domain-name-servers ".$dns."";
 			}
@@ -612,30 +682,40 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 
 			// Check Netmask, obly for Range:
-				$_POST['netmask'] = trim($_POST['netmask']);
-				// calculate netmask from subnet:
-				if (!empty($this->attributes['dhcpOption'][4])) {
-					$ex=explode(".", $_POST['subnet']);
-					$num = 0;
-					foreach($ex AS $mask) {
-					    $binär = decbin($mask);
-					    $num += substr_count($binär, 1);
-					}
-					if (empty($_POST['netmask'])) {
-					    $errors[] = $this->messages['netmask'][0];
-					}
-					elseif ($num!=$_POST['netmask']) {
-					    $errors[] = $this->messages['netmask'][1];
-					}
-					$this->attributes['dhcpNetMask'][0] = $num;
+			$_POST['netmask'] = trim($_POST['netmask']);
+			// calculate netmask from subnet:
+			if (!empty($this->attributes['dhcpOption'][4])) {
+				$num = $this->calculateNetMask($_POST['subnet']);
+				if (empty($_POST['netmask'])) {
+				    $errors[] = $this->messages['netmask'][0];
 				}
-				else
-				{
-				    unset($this->attributes['dhcpNetMask'][0]);
+				elseif ($num!=$_POST['netmask']) {
+				    $errors[] = $this->messages['netmask'][1];
 				}
+				$this->attributes['dhcpNetMask'][0] = $num;
+			}
+			else {
+			    unset($this->attributes['dhcpNetMask'][0]);
+			}
 		}
 
 		return $errors;
+	}
+	
+	/**
+	 * Calculates the net mask from the subnet.
+	 *
+	 * @param String $subnet subnet
+	 * @return integer netmask
+	 */
+	private function calculateNetMask($subnet) {
+		$ex = explode(".", $subnet);
+		$num = 0;
+		foreach($ex AS $mask) {
+		    $binary = decbin($mask);
+		    $num += substr_count($binary, 1);
+		}
+		return $num;
 	}
 	
 	/* This function will create the html-page
@@ -763,8 +843,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$ex=explode(".", $this->subnet);
 			$num = 0;
 			foreach($ex AS $mask) {
-			    $binär = decbin($mask);
-			    $num += substr_count($binär, 1);
+			    $binary = decbin($mask);
+			    $num += substr_count($binary, 1);
 			}
 			$this->attributes['dhcpNetMask'][0] = $num;
 		}
@@ -865,6 +945,161 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$this->attributes['dhcpStatements'][] = 'max-lease-time ' . $time;
 		}
 	}
+	
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$messages = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			// add object class
+			if (!in_array("dhcpOptions", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "dhcpOptions";
+			if (!in_array("dhcpSubnet", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "dhcpSubnet";
+			// subnet
+			if (check_ip($rawAccounts[$i][$ids['dhcp_settings_subnet']],true)) {
+				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['dhcp_settings_subnet']];
+			}
+			else {
+				$error = $this->messages['cn'][3];
+				array_push($error, $i);
+				$messages[] = $error;
+			}
+			// domain name
+			if ($rawAccounts[$i][$ids['dhcp_settings_domainName']] != "") {
+				if (strlen($rawAccounts[$i][$ids['dhcp_settings_domainName']])>15) {
+					$error = $this->messages['domainname'][3];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				elseif (strlen($rawAccounts[$i][$ids['dhcp_settings_domainName']])<3) {
+					$error = $this->messages['domainname'][4];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+				elseif (eregi("^[A-Za-z0-9\._-]*$", $rawAccounts[$i][$ids['dhcp_settings_domainName']])) {
+					$partialAccounts[$i]['dhcpOption'][] = "domain-name \"".$rawAccounts[$i][$ids['dhcp_settings_domainName']]."\"";
+				}
+				else {
+					$error = $this->messages['domainname'][5];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// lease time
+			if ($rawAccounts[$i][$ids['dhcp_settings_leaseTime']] != '') {
+				if (is_numeric($rawAccounts[$i][$ids['dhcp_settings_leaseTime']])) {
+					$partialAccounts[$i]['dhcpStatements'][] = 'default-lease-time ' . $rawAccounts[$i][$ids['dhcp_settings_leaseTime']];
+				}
+				else {
+					$error = $this->messages['lease_time'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// max lease time
+			if ($rawAccounts[$i][$ids['dhcp_settings_maxLeaseTime']] != '') {
+				if (is_numeric($rawAccounts[$i][$ids['dhcp_settings_maxLeaseTime']])) {
+					$partialAccounts[$i]['dhcpStatements'][] = 'max-lease-time ' . $rawAccounts[$i][$ids['dhcp_settings_maxLeaseTime']];
+				}
+				else {
+					$error = $this->messages['max_lease_time'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// DNS
+			if ($rawAccounts[$i][$ids['dhcp_settings_DNSserver']] != '') {
+				$ex = explode(",", $rawAccounts[$i][$ids['dhcp_settings_DNSserver']]);
+				$invalid = false;
+				foreach($ex AS $string) {
+		            if (!check_ip($string)) {
+				        $invalid = true;
+				    }
+				}
+				if (!$invalid) {
+					$partialAccounts[$i]['dhcpOption'][] = 'domain-name-servers ' . $rawAccounts[$i][$ids['dhcp_settings_DNSserver']];
+				}
+				else {
+					$error = $this->messages['dns'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// gateway
+			if ($rawAccounts[$i][$ids['dhcp_settings_gateway']] != '') {
+				if (check_ip($rawAccounts[$i][$ids['dhcp_settings_gateway']])) {
+					$partialAccounts[$i]['dhcpOption'][] = "routers ".$rawAccounts[$i][$ids['dhcp_settings_gateway']];
+				}
+				else {
+					$error = $this->messages['routers'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// netbios name servers
+			if ($rawAccounts[$i][$ids['dhcp_settings_netbiosServer']] != '') {
+				$ex = explode(",", $rawAccounts[$i][$ids['dhcp_settings_netbiosServer']]);
+				$invalid = false;
+				foreach($ex AS $string) {
+		            if (!check_ip($string)) {
+				        $invalid = true;
+				    }
+				}
+				if (!$invalid) {
+					$partialAccounts[$i]['dhcpOption'][] = "netbios-name-servers " . $rawAccounts[$i][$ids['dhcp_settings_netbiosServer']];
+				}
+				else {
+					$error = $this->messages['netbios'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// node type
+			if ($rawAccounts[$i][$ids['dhcp_settings_netbiosType']] != '') {
+				if (in_array($rawAccounts[$i][$ids['dhcp_settings_netbiosType']], array('B', 'P', 'M', 'H'))) {
+					if ($rawAccounts[$i][$ids['dhcp_settings_netbiosType']] == 'B') {
+						$partialAccounts[$i]['dhcpOption'][] = "netbios-node-type 1";
+					}
+					elseif ($rawAccounts[$i][$ids['dhcp_settings_netbiosType']] == 'P') {
+						$partialAccounts[$i]['dhcpOption'][] = "netbios-node-type 2";
+					}
+					elseif ($rawAccounts[$i][$ids['dhcp_settings_netbiosType']] == 'M') {
+						$partialAccounts[$i]['dhcpOption'][] = "netbios-node-type 4";
+					}
+					elseif ($rawAccounts[$i][$ids['dhcp_settings_netbiosType']] == 'H') {
+						$partialAccounts[$i]['dhcpOption'][] = "netbios-node-type 8";
+					}
+				}
+				else {
+					$error = $this->messages['netbios_node_type'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			else {
+				$partialAccounts[$i]['dhcpOption'][] = "netbios-node-type 8"; // default H
+			}
+			// subnet mask
+			if (check_ip($rawAccounts[$i][$ids['dhcp_settings_subnetMask']],true)) {
+				$partialAccounts[$i]['dhcpOption'][] = "subnet-mask ".$rawAccounts[$i][$ids['dhcp_settings_subnetMask']];
+			}
+			else {
+				$error = $this->messages['subnet'][1];
+				array_push($error, $i);
+				$messages[] = $error;
+			}
+			// net mask
+			$mask = $this->calculateNetMask($rawAccounts[$i][$ids['dhcp_settings_subnetMask']]);
+			$partialAccounts[$i]['dhcpNetMask'][0] = $mask;
+		}
+		return $messages;
+	}
+
 
 }
 
