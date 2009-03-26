@@ -1,4 +1,4 @@
-March/April 2009
+08.04.2009 2.6.0
   - support NIS netgroups
   - support EDU person accounts (RFE 1413731)
   - added config option to search LAM login users in LDAP (RFE 2494249)
