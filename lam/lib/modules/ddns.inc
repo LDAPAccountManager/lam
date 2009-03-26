@@ -106,6 +106,32 @@ class ddns extends baseModule {
 			'zone',
 			'reverseZone',
 		);
+		// upload fields
+		if (isset($_SESSION['loggedIn']) && $this->check_if_ddns_is_enable()) {
+			$return['upload_columns'] = array(
+				array(
+					'name' => 'ddns_DNSserver',
+					'description' => _('IP address of the DNS server'),
+					'help' => 'dns',
+					'example' => '123.123.123.123',
+					'required' => true
+				),
+				array(
+					'name' => 'ddns_zone',
+					'description' => _('Zone names'),
+					'help' => 'zone',
+					'example' => 'company.local',
+					'required' => true
+				),
+				array(
+					'name' => 'ddns_reverseZone',
+					'description' => _('Reverse zone names'),
+					'help' => 'zone_reverse',
+					'example' => '0.168.192.in-addr.arpa',
+					'required' => true
+				),
+			);
+		}
 		return $return;
 	}
 	
@@ -116,6 +142,7 @@ class ddns extends baseModule {
 		$this->messages['key_path'][0] = array('ERROR', 'Please enter the path to the key.', '');
 		$this->messages['key_path'][1] = array('ERROR', 'The key path contains invalid characters.', '');
 		$this->messages['ip'][0] = array('ERROR', 'The IP address of the DNS server is invalid.');
+		$this->messages['ip'][1] = array('ERROR', _('Account %s:') . ' ddns_DNSserver', 'The IP address of the DNS server is invalid.');
 		$this->messages['zone'][0] = array('ERROR', 'Please enter a zone name.');
 		$this->messages['zone_reverse'][0] = array('ERROR', 'Please enter the reverse zone.');
 	}
@@ -578,6 +605,34 @@ class ddns extends baseModule {
 	*/
 	public function load_attributes($attributes) {
 		// load nothing, attributes are saved in "dhcp_settings" module
+	}
+	
+		/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$messages = array();
+		if (!$this->check_if_ddns_is_enable()) {
+			return $messages;
+		}
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			// principal name
+			if (!check_ip($rawAccounts[$i][$ids['ddns_DNSserver']])) {
+				$error = $this->messages['ip'][1];
+				array_push($error, $i);
+				$messages[] = $error;
+			}
+			else {
+				$partialAccounts[$i]['dhcpStatements'][] = "zone {$rawAccounts[$i][$ids['ddns_zone']]}. { primary {$rawAccounts[$i][$ids['ddns_DNSserver']]}; key DHCP_UPDATER; }";
+				$partialAccounts[$i]['dhcpStatements'][] = "zone {$rawAccounts[$i][$ids['ddns_reverseZone']]}. { primary {$rawAccounts[$i][$ids['ddns_DNSserver']]}; key DHCP_UPDATER; }";
+			}
+		}
+		return $messages;
 	}
 	
 }
