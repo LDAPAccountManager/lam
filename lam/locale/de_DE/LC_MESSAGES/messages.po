@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2009-03-28 19:23+0100\n"
+"PO-Revision-Date: 2009-03-28 19:30+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -4980,7 +4980,7 @@ msgstr "Typ"
 #: ../lib/modules/eduPerson.inc:82 ../lib/modules/eduPerson.inc:144
 #: ../lib/modules/eduPerson.inc:252 ../lib/modules/eduPerson.inc:624
 msgid "Scoped affiliation"
-msgstr "Zugehörigkeitsbereiche"
+msgstr "Zugehörigkeitsbereich"
 
 #: ../help/help.inc:95
 msgid "Script path"
@@ -5692,7 +5692,10 @@ msgid ""
 "The number of users who may login to LAM is restricted. This can be either a "
 "fixed list of DNs or LAM can search LDAP to find a DN which matches the "
 "given user name."
-msgstr "Die Anzahl von Benutzern mit Zugriff auf LAM ist begrenzt. Dies kann entweder eine feste Liste sein oder LAM kann in LDAP nach einem DN suchen, der auf den Benutzernamen passt."
+msgstr ""
+"Die Anzahl von Benutzern mit Zugriff auf LAM ist begrenzt. Dies kann "
+"entweder eine feste Liste sein oder LAM kann in LDAP nach einem DN suchen, "
+"der auf den Benutzernamen passt."
 
 #: ../templates/tests/schemaTest.php:122
 #, php-format
@@ -6563,7 +6566,9 @@ msgstr ""
 
 #: ../lib/modules/eduPerson.inc:104 ../lib/modules/eduPerson.inc:108
 msgid "URI (either URN or URL) that indicates a set of rights to specific resources."
-msgstr "URI (entweder URN oder URL) die eine Menge an Rechten für bestimmte Ressourcen definiert."
+msgstr ""
+"URI (entweder URN oder URL) die eine Menge an Rechten für bestimmte "
+"Ressourcen definiert."
 
 #: ../templates/selfService/selfServiceMain.php:176
 msgid ""
