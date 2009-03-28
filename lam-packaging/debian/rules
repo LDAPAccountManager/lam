@@ -11,7 +11,7 @@ build:
 install: 
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_installdirs
 
 	install -D --mode=644 index.html debian/ldap-account-manager/usr/share/ldap-account-manager/index.html
