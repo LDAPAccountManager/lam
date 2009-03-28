@@ -92,8 +92,8 @@ class eduPerson extends baseModule {
 			),
 			'affiliationUpload' => array(
 				"Headline" => _("Affiliations"),
-				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc." . " " .
-							_('Multiple values are separated by comma.'))
+				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc.") . " " .
+							_('Multiple values are separated by comma.')
 			),
 			'principalName' => array(
 				"Headline" => _("Principal name"),
@@ -105,7 +105,7 @@ class eduPerson extends baseModule {
 			),
 			'entitlementUpload' => array(
 				"Headline" => _("Entitlements"),
-				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources." . " " . _('Multiple values are separated by comma.'))
+				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.") . " " . _('Multiple values are separated by comma.')
 			),
 			'orgDN' => array(
 				"Headline" => _("Organization"),
@@ -121,7 +121,7 @@ class eduPerson extends baseModule {
 			),
 			'orgUnitDNUpload' => array(
 				"Headline" => _("Organizational units"),
-				"Text" => _("The DNs of the directory entries representing the person's organizational units." . ' ' . _('Multiple values are separated by comma.'))
+				"Text" => _("The DNs of the directory entries representing the person's organizational units.") . ' ' . _('Multiple values are separated by comma.')
 			));
 		// upload fields
 		$return['upload_columns'] = array(
