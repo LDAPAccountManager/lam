@@ -187,15 +187,17 @@ class ddns extends baseModule {
 		$ldap = $_SESSION['ldap']->server();
 		$dn = $_SESSION['config']->get_suffix('dhcp');
 		
-		$search = ldap_search($ldap,$dn,"dhcpStatements=ddns-update-style interim");
-		$info = ldap_get_entries($ldap,$search);
-		
-		if ($info['count'] == 0) {
-			return false;
+		$search = @ldap_search($ldap,$dn,"dhcpStatements=ddns-update-style interim");
+		if ($search) {
+			$info = @ldap_get_entries($ldap,$search);
+			if ($info && ($info['count'] > 0)) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
-		else {
-			return true;
-		}
+		return false;
 	}
 	
 	/**
