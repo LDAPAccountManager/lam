@@ -22,6 +22,7 @@ export VERSION=`./getVersion`
 # remove files which are not in the final release
 rm -r lam/po
 rm -r lam/tests
+rm lam/lib/font/*.ttf
 find . -name .cvsignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
