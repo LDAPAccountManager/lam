@@ -1,10 +1,10 @@
 08.04.2009 2.6.0
   - support NIS netgroups
   - support EDU person accounts (RFE 1413731)
-  - added config option to search LAM login users in LDAP (RFE 2494249)
-  - help messages are displayed as tooltips
   - Personal: support departmentNumber attribute
   - DHCP: allow file upload
+  - added config option to search LAM login users in LDAP (RFE 2494249)
+  - help messages are displayed as tooltips
   - LAM Pro:
    -> add businessCategory to self service (RFE 2494246)
    -> allow to customize page headers and use custom CSS styles
