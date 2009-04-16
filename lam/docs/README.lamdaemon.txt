@@ -49,6 +49,8 @@ Do NOT mix lamdaemon and lamdaemonOld.pl!
 
      e.g.: myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl
 
+   You might need to run the sudo command once manually to init sudo.
+
 
 3. Setup Perl
 ==============
