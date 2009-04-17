@@ -9,7 +9,7 @@ Homepage: http://lam.sourceforge.net/
 Package: ldap-account-manager
 Architecture: all
 Depends: php5 (>= 5.1), php5-ldap, apache | apache-ssl | apache-perl | apache2 | httpd, php-fpdf, debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
-Suggests: ldap-server, php5-mcrypt, ldap-account-manager-lamdaemon, perl
+Suggests: ldap-server, php5-mcrypt, ldap-account-manager-lamdaemon, perl, libssh2-php
 Description: webfrontend for managing accounts in an LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver.It manages user, group
  and host accounts. Currently LAM supports these account types:
