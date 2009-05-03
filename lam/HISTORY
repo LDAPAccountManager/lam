@@ -1,4 +1,5 @@
 July 2009 2.7.0
+  - log client IP at login attempt
   - Samba 3: allow to disable LM hashes (on by default)
 
 
