@@ -143,13 +143,32 @@ if (isset($_SESSION['conf_errors'])) {
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
-echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> <b>" . _("Server settings") . "</b></legend><br>\n");
 echo ("<table border=0>");
 // serverURL
 echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
 	"<td align=\"left\">".
 	"<input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
+echo "<td>";
+printHelpLink(getHelp('', '201'), '201');
+echo "</td></tr>\n";
+$tabindex++;
+// use TLS
+echo "<tr><td align=\"right\"><b>" . _("Activate TLS") . ": </b></td>\n";
+echo "<td align=\"left\">\n";
+echo "<select tabindex=\"$tabindex\" size=1 name=\"useTLS\">";
+$useTLS = $conf->getUseTLS();
+if (isset($useTLS) && ($useTLS == 'yes')) {
+	echo "<option value=\"yes\" selected>" . _("yes") . "</option>";
+	echo "<option value=\"no\">" . _("no") . "</option>";
+}
+else {
+	echo "<option value=\"yes\">" . _("yes") . "</option>";
+	echo "<option value=\"no\" selected>" . _("no") . "</option>";
+}
+echo "</select>\n";
+echo "</td>\n";
 echo "<td>";
 printHelpLink(getHelp('', '201'), '201');
 echo "</td></tr>\n";
@@ -225,7 +244,7 @@ echo ("</fieldset>");
 
 echo ("<br>");
 
-echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/modules.png\" alt=\"modules.png\"> <b>" . _("Account types and modules") . "</b></legend><br>\n");
 
 // Account modules
 $types = $conf->get_ActiveTypes();
@@ -281,7 +300,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 }
 
 
-echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/language.png\" alt=\"language.png\"> <b>" . _("Language settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 
 // language
@@ -326,7 +345,7 @@ echo ("</fieldset>\n");
 echo ("<br>\n");
 
 // script settings
-echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/lamdaemon.png\" alt=\"lamdaemon.png\"> <b>" . _("Script settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"right\"><b>".
@@ -393,7 +412,7 @@ echo ("</fieldset>\n");
 echo ("<br>\n");
 
 // security setings
-echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/security.png\" alt=\"security.png\"> <b>" . _("Security settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 // login method
 echo ("<tr><td align=\"right\"><b>".
@@ -509,6 +528,7 @@ function saveSettings() {
 	if (!$conf->set_ServerURL($_POST['serverurl'])) {
 		$errors[] = array("ERROR", _("Server address is invalid!"));
 	}
+	$conf->setUseTLS($_POST['useTLS']);
 	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
 	}
