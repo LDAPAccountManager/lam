@@ -174,6 +174,9 @@ class LAMConfig {
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
+	
+	/** enables/disables TLS encryption */
+	private $useTLS;
 
 	/** Array of string: users with admin rights */
 	private $Admins;
@@ -236,7 +239,7 @@ class LAMConfig {
 	private $loginSearchFilter = 'uid=%USER%';
 
 	/** List of all settings in config file */
-	private $settings = array("ServerURL", "Passwd", "Admins", "treesuffix",
+	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter');
@@ -370,6 +373,7 @@ class LAMConfig {
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 			if (!in_array("ServerURL", $saved)) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
+			if (!in_array("useTLS", $saved)) array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
 			if (!in_array("Passwd", $saved)) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
 			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 								"# names have to be seperated by semicolons\n" .
@@ -463,6 +467,30 @@ class LAMConfig {
 		else return false;
 		return true;
 	}
+	
+	/**
+	 * Returns if TLS is activated.
+	 * 
+	 * @return String yes or no
+	 */
+	public function getUseTLS() {
+		return $this->useTLS;
+	}
+	
+	/**
+	 * Sets if TLS is activated.
+	 * 
+	 * @param String yes or no
+	 * @return boolean true if $useTLS has correct format
+	 */
+	public function setUseTLS($useTLS) {
+		if (($useTLS == "yes") || ($useTLS == "no")) {
+			$this->useTLS = $useTLS;
+			return true;
+		}
+		return false;
+	}
+
 
 	/**
 	* Returns an array of string with all admin names

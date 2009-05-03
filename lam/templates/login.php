@@ -234,6 +234,14 @@ function display_LoginPage($config_object) {
 				echo "<br>";
 			}
 		}
+		// check TLS
+		$useTLS = $config_object->getUseTLS();
+		if (isset($useTLS) && ($useTLS == "yes")) {
+			if (!function_exists('ldap_start_tls')) {
+				StatusMessage("ERROR", "Your PHP installation does not support TLS encryption!");
+				echo "<br>";
+			}
+		}
 		// check if session expired
 		if (isset($_GET['expired'])) {
 			StatusMessage("ERROR", _("Your session expired, please log in again."));
