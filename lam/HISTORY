@@ -1,3 +1,7 @@
+July 2009 2.7.0
+  - Samba 3: allow to disable LM hashes (on by default)
+
+
 08.04.2009 2.6.0
   - support NIS netgroups
   - support EDU person accounts (RFE 1413731)

@@ -336,7 +336,10 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("Here you can change the settings for the terminal server access.")),
 			'profilePwdCanMustChange' => array (
 				"Headline" => _("User can/must change password"),
-				"Text" => _("This is the number of seconds after when the user may or has to change his password."))
+				"Text" => _("This is the number of seconds after when the user may or has to change his password.")),
+			'lmHash' => array (
+				"Headline" => _("Disable LM hashes"),
+				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them."))
 			);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -519,7 +522,18 @@ class sambaSamAccount extends baseModule {
 					),
 					'options_selected' => array('0'),
 					'descriptiveOptions' => true),
-			array('kind' => 'help', 'value' => 'timeZone'))
+			array('kind' => 'help', 'value' => 'timeZone')),
+		array(
+			array('kind' => 'text', 'text' => '<b>' . _("Disable LM hashes") . ': &nbsp;</b>'),
+			array('kind' => 'select', 'name' => 'sambaSamAccount_lmHash', 'size' => '1',
+				'options' => array(
+					array('yes', _('yes')),
+					array('no', _('no'))
+					),
+				'options_selected' => array('yes'),
+				'descriptiveOptions' => true),
+			array('kind' => 'help', 'value' => 'lmHash')
+		)
 		);
 		return $return;
 	}
@@ -633,6 +647,12 @@ class sambaSamAccount extends baseModule {
 		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
 			return array();
 		}
+		// delete LM hash if needed
+		if (!isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) || ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'yes')) {
+			if (isset($this->attributes['sambaLMPassword'])) {
+				unset($this->attributes['sambaLMPassword']);
+			}
+		}
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
@@ -690,11 +710,13 @@ class sambaSamAccount extends baseModule {
 		// host attributes
 		if ($this->get_scope()=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain computers')];
-			if ($_POST['ResetSambaPassword'] || !$this->attributes['sambaLMPassword'][0]) {
+			if ($_POST['ResetSambaPassword'] || !$this->attributes['sambaNTPassword'][0]) {
 				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				$hostname = $attrs['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
-				$this->attributes['sambaLMPassword'][0] = lmPassword($hostname);
+				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+					$this->attributes['sambaLMPassword'][0] = lmPassword($hostname);
+				}
 				$this->attributes['sambaNTPassword'][0] = ntPassword($hostname);
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
@@ -734,7 +756,9 @@ class sambaSamAccount extends baseModule {
 
 			if (isset($_POST['useunixpwd'])) {
 				$this->useunixpwd = true;
-				$this->attributes['sambaLMPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
+				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+					$this->attributes['sambaLMPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
+				}
 				$this->attributes['sambaNTPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
@@ -747,7 +771,9 @@ class sambaSamAccount extends baseModule {
 				else {
 					if (!get_preg($_POST['sambaLMPassword'], 'password')) $errors[] = $this->messages['sambaLMPassword'][1];
 					else {
-						$this->attributes['sambaLMPassword'][0] = lmPassword($_POST['sambaLMPassword']);
+						if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+							$this->attributes['sambaLMPassword'][0] = lmPassword($_POST['sambaLMPassword']);
+						}
 						$this->attributes['sambaNTPassword'][0] = ntPassword($_POST['sambaLMPassword']);
 						$this->attributes['sambaPwdLastSet'][0] = time();
 					}
@@ -1853,16 +1879,22 @@ class sambaSamAccount extends baseModule {
 				}
 				// use Unix password
 				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == "") {  // default: use Unix
-					$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
+					if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+						$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
+					}
 					$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 				}
 				elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']], array('true', 'false'))) {
 					if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == 'true') {  // use Unix
-						$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
+						if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+							$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
+						}
 						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 					}
 					else {  // use given password
-						$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
+						if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+							$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
+						}
 						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
 					}
 				}
@@ -2133,7 +2165,9 @@ class sambaSamAccount extends baseModule {
 				}
 				// passwords ( = host name)
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
-				$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+					$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				}
 				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
 				// flags
 				$partialAccounts[$i]['sambaAcctFlags'] = "[W          ]";
