@@ -212,16 +212,16 @@ function display_LoginPage($config_object) {
 		</p>
 		<table width="100%" border="0">
 			<tr>
-				<TD width="50%" align="left">
+				<td width="50%" align="left">
+					<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<?php echo _("LAM configuration") ?></a>
+				</td>
+				<TD width="50%" align="right">
 					<?PHP
 						if (!isLAMProVersion()) {
 							echo "<a href=\"http://lam.sourceforge.net/lamPro/index.htm\">" . _("Want more features? Get LAM Pro!") . "</a>";
 						}
 					?>
 				</TD>
-				<td width="50%" align="right">
-					<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<?php echo _("LAM configuration") ?></a>
-				</td>
 			</tr>
 		</table>
 		<hr><br><br>
