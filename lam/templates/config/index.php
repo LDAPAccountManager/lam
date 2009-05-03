@@ -56,11 +56,9 @@ echo $_SESSION['header'];
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
 		<hr>
-		<H1 align="center">
-			<?php
-				echo _("LAM configuration");
-			?>
-		</H1>
+		<br><br>
+		<fieldset>
+			<legend><b> <?php echo _("LAM configuration"); ?> </b></legend>
 		<TABLE border="0">
 		<?php
 			if (is_dir("../selfService")) echo "<tr><td rowspan=4 width=20>&nbsp;</td><td></td><td></td></tr>\n";
@@ -69,7 +67,7 @@ echo $_SESSION['header'];
 		<TR>
 			<TD width="60" height="70">
 			<a href="mainlogin.php">
-				<IMG height="50" width="50" alt="general settings" src="../../graphics/bigTools.png">
+				<IMG height="32" width="32" alt="general settings" src="../../graphics/bigTools.png">
 			</a>
 			</TD>
 			<TD><BIG>
@@ -81,7 +79,7 @@ echo $_SESSION['header'];
 		<TR>
 			<TD height="70">
 			<a href="conflogin.php" target="_self">
-				<IMG height="50" width="50" alt="server settings" src="../../graphics/bigServers.png">
+				<IMG height="32" width="32" alt="server settings" src="../../graphics/profiles.png">
 			</a>
 			</TD>
 			<TD><BIG>
@@ -95,7 +93,7 @@ echo $_SESSION['header'];
 			echo "<TR>\n";
 				echo "<TD height=\"70\">\n";
 				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
-					echo "<IMG height=\"50\" width=\"50\" alt=\"self service\" src=\"../../graphics/bigPeople.png\">\n";
+					echo "<IMG height=\"32\" width=\"32\" alt=\"self service\" src=\"../../graphics/bigPeople.png\">\n";
 				echo "</a>\n";
 				echo "</TD>\n";
 				echo "<TD><BIG>\n";
@@ -107,6 +105,7 @@ echo $_SESSION['header'];
 		}
 		?>
 		</TABLE>
+		</fieldset>
 		<p><br><br><br><br><br></p>
 
 		<!-- back to login page -->
