@@ -55,17 +55,18 @@ $helpArray = array (
 				"200" => array ("Headline" => _("Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
 				"201" => array ("Headline" => _("Server address"),
-					"Text" => _("This is the server address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
+					"Text" => _("This is the server address of your LDAP server. Use ldap:// for unencrypted LDAP connections or TLS encrypted connections. LDAP+SSL (LDAPS) encrypted connections are specified with ldaps://. The port value is optional.") .
+						" " . _("TLS cannot be combined with ldaps://.") .
 						"<br><br><b> " .
 						_("Examples") .
 						":</b><br><br> " .
 						_("ldap://localhost:389 connects to localhost using a standard LDAP connection on port 389") .
 						"<br> " .
-						_("ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP connection.") .
+						_("ldaps://ldap.domain.com connects to ldap.domain.com using an encrypted LDAP connection.") .
 						"<br><br><br><b> " .
 						_("Note") .
 						":</b><br><br>" .
-						_("When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!")),
+						_("When using ldaps:// or TLS be sure to use exactly the same IP/domain name as in your certificate!")),
 				"202" => array ("Headline" => _("LDAP suffix"),
 					"Text" => _("This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new accont this will be the DN where it is saved.") .
 						"<br><br><b>".
