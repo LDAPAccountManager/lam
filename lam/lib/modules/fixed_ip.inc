@@ -84,12 +84,6 @@ class fixed_ip extends baseModule {
 			) , 'ip' => array(
 				"Headline" => _("IP address"),
 				"Text" => _("The IP address of the PC.")
-			) , 'drop_ip' => array(
-				"Headline" => _("Delete IP"),
-				"Text" => _("Deletes a fixed IP address.")
-			) , 'add_ip' => array(
-				"Headline" => _("Add IP"),
-				"Text" => _("Adds input fields for a new fixed IP address.")
 			) );
 		// available PDF fields
 		$return['PDF_fields'] = array('IPlist');
@@ -98,7 +92,6 @@ class fixed_ip extends baseModule {
 	
 	public function load_Messages() {
 		$this->messages['errors'][0] = array('ERROR', _('One or more errors occured. The invalid fields are marked.'), '');
-		$this->messages['add_ip'][0] = array('ERROR', _('Adding of a fixed IP failed because of errors.'), '');
 	}
 	
 	/**
@@ -202,8 +195,7 @@ class fixed_ip extends baseModule {
 		    $sr = @ldap_search($_SESSION['ldap']->server(),'cn='.$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),'(objectClass=dhcpHost)');
 		    if ($sr) {
 		        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-				for ($i=0; $i < $entries["count"]; $i++)
-				{
+				for ($i=0; $i < $entries["count"]; $i++) {
 					$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
 					$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
 					$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
@@ -243,68 +235,65 @@ class fixed_ip extends baseModule {
 				        continue;
 				    }
 
-				    // If all three inputs are empty, then do nothing:
-				    if (!empty($_POST['pc_'.$id]) || !empty($_POST['mac_'.$id]) || !empty($_POST['ip_'.$id]) ) {
-						// MAC address
-						$_POST['mac_'.$id] = strtolower(trim($_POST['mac_'.$id]));
+					// MAC address
+					$_POST['mac_'.$id] = strtolower(trim($_POST['mac_'.$id]));
 
-						$invalid = $this->check_mac($_POST['mac_'.$id]);
-						if ($invalid) {
-						    $error = true;
-						}
-						else {
-						    $this->attributes['dhcpHWAddress'][0] = "ethernet ". $_POST['mac'];
-						}
-						$this->fixed_ip[$id]['mac'] = $_POST['mac_'.$id];
-
-						// Ip address
-						if (!empty($_POST['ip_'.$id])) {
-							$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
-						}
-						if (!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id]) || get_preg($_POST['ip_'.$id], 'DNSname'))) {
-							$error = true;
-							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
-						}
-						elseif (empty($_POST['ip_'.$id])) {
-							$error = true;
-							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
-						}
-						elseif (!$this->overlapd_ip($_POST['ip_'.$id])) {
-							$error = true;
-							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
-						}
-						else {
-							$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
-						}
-
-						// Is ip correct with subnet:
-						if (check_ip($_POST['ip_'.$id]) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
-						    $error = true;
-						}
-
-						// cn:
-						if (!empty($_POST['pc_'.$id])) $_POST['pc_'.$id] = trim($_POST['pc_'.$id]);
-		                if (!empty($_POST['pc_'.$id])) {
-
-							// Already use?
-							if (in_array($_POST['pc_'.$id], $pcs) ) {
-							    $error = true;
-							}
-							else {
-							    $pcs[] = $_POST['pc_'.$id];
-							}
-						}
-						else {
-							$error = true;
-						}
-						if (strlen($_POST['pc_'.$id])>30) {
-						    $error = true;
-						}
-						if (!eregi("^[A-Za-z0-9\._-]*$",$_POST['pc_'.$id])) {
-						    $error = true;
-						}
-						$this->fixed_ip[$id]['cn'] = $_POST['pc_'.$id];
+					$invalid = $this->check_mac($_POST['mac_'.$id]);
+					if ($invalid) {
+					    $error = true;
 					}
+					else {
+					    $this->attributes['dhcpHWAddress'][0] = "ethernet ". $_POST['mac'];
+					}
+					$this->fixed_ip[$id]['mac'] = $_POST['mac_'.$id];
+
+					// Ip address
+					if (!empty($_POST['ip_'.$id])) {
+						$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
+					}
+					if (!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id]) || get_preg($_POST['ip_'.$id], 'DNSname'))) {
+						$error = true;
+						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
+					}
+					elseif (empty($_POST['ip_'.$id])) {
+						$error = true;
+						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
+					}
+					elseif (!$this->overlapd_ip($_POST['ip_'.$id])) {
+						$error = true;
+						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
+					}
+					else {
+						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
+					}
+
+					// Is ip correct with subnet:
+					if (check_ip($_POST['ip_'.$id]) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+					    $error = true;
+					}
+
+					// cn:
+					if (!empty($_POST['pc_'.$id])) $_POST['pc_'.$id] = trim($_POST['pc_'.$id]);
+	                if (!empty($_POST['pc_'.$id])) {
+
+						// Already use?
+						if (in_array($_POST['pc_'.$id], $pcs) ) {
+						    $error = true;
+						}
+						else {
+						    $pcs[] = $_POST['pc_'.$id];
+						}
+					}
+					else {
+						$error = true;
+					}
+					if (strlen($_POST['pc_'.$id])>30) {
+					    $error = true;
+					}
+					if (!eregi("^[A-Za-z0-9\._-]*$",$_POST['pc_'.$id])) {
+					    $error = true;
+					}
+					$this->fixed_ip[$id]['cn'] = $_POST['pc_'.$id];
 				}
 				if ($error) {
 				    $errors[] = $this->messages['errors'][0];
@@ -313,14 +302,8 @@ class fixed_ip extends baseModule {
 
 			// Add new IP
 			if(isset($_POST['add_ip'])) {
-				// Check, if there where no errors:
-				if ($error) {
-				    $errors[] = $this->messages['add_ip'][0];
-				}
-				else {
-				    // Add IP:
-					$this->fixed_ip[] = array('cn'=>'','mac'=>'','ip'=>'');
-				}
+			    // Add IP:
+				$this->fixed_ip[] = array('cn' => $_POST['pc_add'], 'mac' => $_POST['mac_add'], 'ip' => $_POST['ip_add']);
 			}
 		}
 		
@@ -336,10 +319,26 @@ class fixed_ip extends baseModule {
             echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
         }
         else {
-			// Reset oberldapd ips
+        	// caption
+			$return[] = array(
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => _('PC name') . "*"),
+					array('kind' => 'help', 'value' => 'pc', 'scope' => 'user'),
+				))),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => _('MAC address') . "*"),
+					array('kind' => 'help', 'value' => 'mac', 'scope' => 'user'),
+				))),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => _('IP address') . "*"),
+					array('kind' => 'help', 'value' => 'ip', 'scope' => 'user'),
+				))),
+				array('kind' => 'text', 'text' => ''),
+			);
+        	// Reset oberlaped ips
 			$this->reset_overlapd_ip();
 
-			// If $ranges is not a array, then create an:
+			// If $ranges is not a array, then create one:
 			if (!is_array($this->fixed_ip)) {
 				$this->fixed_ip[] = array();
 			}
@@ -348,74 +347,78 @@ class fixed_ip extends baseModule {
 				// pc name
 				$result = @ldap_search($_SESSION['ldap']->server(),"cn=".$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].",".$_SESSION['config']->get_Suffix('dhcp'),'(cn='.$_POST['pc_'.$id].')');
 	            $num = (@ldap_get_entries($_SESSION['ldap']->server(), $result)=="")?0:ldap_get_entries($_SESSION['ldap']->server(), $result);
-				$error = "";
+				$pcError = "";
 				if (!$this->processed) {
-                	$error = "";
+                	$pcError = "";
 				}
 				elseif (strlen($this->fixed_ip[$id]['cn'])>20) {
-				    $error = "&laquo;&laquo; " . _("The PC name may not be longer than 20 characters.");
+				    $pcError = _("The PC name may not be longer than 20 characters.");
 				}
 				elseif (strlen($this->fixed_ip[$id]['cn'])<2) {
-				    $error = "&laquo;&laquo; " . _("The PC name needs to be at least 2 characters long.");
+				    $pcError = _("The PC name needs to be at least 2 characters long.");
 				}
 				elseif (in_array($this->fixed_ip[$id]['cn'], $pcs) ) {
-				    $error="&laquo;&laquo; " . _("This PC name already exists.");
+				    $pcError = _("This PC name already exists.");
 				}
 				elseif (!eregi("^[A-Za-z0-9\._-]*$",$_POST['pc_'.$id])) {
-					$error="&laquo;&laquo; " . _("The PC name may only contain A-Z, a-z and 0-9.");
+					$pcError = _("The PC name may only contain A-Z, a-z and 0-9.");
 				}
 				$pcs[] = $this->fixed_ip[$id]['cn'];
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('PC name') . ":* "),
-					array('kind' => 'input', 'name' => 'pc_'.$id.'', 'value' => $this->fixed_ip[$id]['cn']),
-					array('kind' => 'help', 'value' => 'pc', 'scope' => 'user'),
-                    array('kind' => 'text', 'text'=>$error));
 
 				// MAC address
-				$error = "";
+				$macError = "";
 				if (!$this->processed) {
-                	$error = "";
+                	$macError = "";
 				}
 				elseif ($this->check_mac($this->fixed_ip[$id]['mac'])) {
-				    $error = "&laquo;&laquo; " . _("Invalid MAC address.");
+				    $macError = _("Invalid MAC address.");
 				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('MAC address') . ":* "),
-					array('kind' => 'input', 'name' => 'mac_'.$id.'', 'value' => $this->fixed_ip[$id]['mac']),
-					array('kind' => 'help', 'value' => 'mac', 'scope' => 'user'),
-                    array('kind' => 'text', 'text'=>$error));
                     
 				// fixed ip
-				$error = "";
+				$ipError = "";
 				if (!$this->processed) {
-                	$error = "";
+                	$ipError = "";
 				}
-				elseif (check_ip($this->fixed_ip[$id]['ip']) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
-				    $error = "&laquo;&laquo; " . _("The IP address does not match the subnet.");
+				elseif (($this->fixed_ip[$id]['ip'] == '') || !check_ip($this->fixed_ip[$id]['ip'])) {
+					$ipError = _("The IP address is invalid.");
+				}
+				elseif (!$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+				    $ipError = _("The IP address does not match the subnet.");
 				}
 				elseif (!$this->overlapd_ip($this->fixed_ip[$id]['ip'])) {
-				    $error = "&laquo;&laquo; " . _("The IP address is already in use.");
+				    $ipError = _("The IP address is already in use.");
+				}
+				$error = '';
+				if ($pcError != '') {
+					$error .= ' ' . $pcError;
+				}
+				if ($macError != '') {
+					$error .= ' ' . $macError;
+				}
+				if ($ipError != '') {
+					$error .= ' ' . $ipError;
+				}
+				if ($error != '') {
+					$error = '&nbsp;&laquo; ' . $error;
 				}
 				$return[] = array(
-					array('kind' => 'text', 'text' => _('IP address') . ":* "),
-					array('kind' => 'input', 'name' => 'ip_'.$id.'', 'value' => $this->fixed_ip[$id]['ip']),
-					array('kind' => 'help', 'value' => 'ip', 'scope' => 'user'),
-					array('kind' => 'text', 'text'=>$error));
-
-				// fixed_ip drop:
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Delete IP') . ':'),
-					array('kind' => 'input', 'name' => 'drop_ip_'.$id, 'type' => 'submit', 'value' => _('Delete IP')),
-					array('kind' => 'help', 'value' => 'drop_ip'));
-
-				// Space Line
-			    $return[] = array(array('kind' => 'text', 'text' => '<br />'));
+					array('kind' => 'input', 'name' => 'pc_'.$id, 'value' => $this->fixed_ip[$id]['cn']),
+					array('kind' => 'input', 'name' => 'mac_'.$id, 'value' => $this->fixed_ip[$id]['mac']),
+					array('kind' => 'input', 'name' => 'ip_'.$id, 'value' => $this->fixed_ip[$id]['ip']),
+					array('kind' => 'input', 'name' => 'drop_ip_'.$id, 'type' => 'submit', 'value' => ' ', 'image' => 'del.png'),
+					array('kind' => 'text', 'text'=>$error),
+				);
 			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => ''),
+			);
 			// add fixed ip:
 			$return[] = array(
-				array('kind' => 'text', 'text' => _('Add IP') . ':'),
-				array('kind' => 'input', 'name' => 'add_ip', 'type' => 'submit', 'value' => _('Add IP')),
-				array('kind' => 'help', 'value' => 'add_ip'));
+				array('kind' => 'input', 'name' => 'pc_add', 'value' => ''),
+				array('kind' => 'input', 'name' => 'mac_add', 'value' => ''),
+				array('kind' => 'input', 'name' => 'ip_add', 'value' => ''),
+				array('kind' => 'input', 'name' => 'add_ip', 'type' => 'submit', 'value' => ' ', 'image' => 'add.png'),
+			);
 		}
 		
 		return $return;
