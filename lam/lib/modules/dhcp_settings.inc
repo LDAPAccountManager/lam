@@ -118,7 +118,7 @@ class dhcp_settings extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('top', 'dhcpOptions');
+		$return['objectClasses'] = array('top', 'dhcpOptions', 'dhcpComments');
 		// managed attributes
 		$return['attributes'] = array('cn', 'dhcpOption');
 		// help Entries
@@ -165,6 +165,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			) , 'netmask' => array(
 				"Headline" => _("Net mask"),
 				"Text" => _("The net mask is derived from the subnet mask. If you leave this field empty then LAM will calculate it for you.")
+			), 'description' => array(
+				"Headline" => _("Description"),
+				"Text" => _("Here you can enter a description for this DHCP entry.")
 			) );
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -177,7 +180,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'netbiosServer',
 			'netbiosType',
 			'subnetMask',
-			'netMask'
+			'netMask',
+			'description'
 		);
 		// profile elements
 		$return['profile_options'] = array(
@@ -287,6 +291,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'help' => 'subnetmask',
 				'required' => true,
 				'example' => '255.255.255.0',
+			),
+			array(
+				'name' => 'dhcp_settings_description',
+				'description' => _('Description'),
+				'help' => 'description',
 			),
 		);
 		return $return;
@@ -662,8 +671,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$netbios_node_type = (int) $ex['0'];
             $this->attributes['dhcpOption'][3] = "netbios-node-type ".$netbios_node_type;
 		}
-		else
-		{
+		else {
 		    $errors[] = $this->messages['netbios_node_type'][0];
 		    unset($this->attributes['dhcpOption'][3]);
 		}
@@ -675,8 +683,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			    $this->subnet = $_POST['subnet'];
 			    unset($this->attributes['dhcpOption'][4]);
 			}
-			else
-			{
+			else {
 			    $this->subnet = $_POST['subnet'];
 			    $this->attributes['dhcpOption'][4] = "subnet-mask ".$_POST['subnet'];
 			}
@@ -698,7 +705,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			    unset($this->attributes['dhcpNetMask'][0]);
 			}
 		}
-
+		$this->attributes['dhcpComments'][0] = $_POST['description'];
+		
 		return $errors;
 	}
 	
@@ -804,6 +812,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		
+		// description
+        $return[] = array(
+        	array('kind' => 'text', 'text' => _('Description') . ": "),
+			array('kind' => 'input', 'name' => 'description', 'value' => $this->attributes['dhcpComments'][0]),
+			array('kind' => 'help', 'value' => 'description', 'scope' => 'user'));
+
 		return $return;
 	}
 	
@@ -867,6 +881,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $this->netbios_node_type . '</value></block>'),
 			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->subnet . '</value></block>'),
 			get_class($this) . '_netMask' => array('<block><key>' . _('Net mask') . '</key><value>' . $this->attributes['dhcpNetMask'][0] . '</value></block>'),
+			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['dhcpComments'][0] . '</value></block>'),
 		);
 	}
 	
@@ -1096,6 +1111,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			// net mask
 			$mask = $this->calculateNetMask($rawAccounts[$i][$ids['dhcp_settings_subnetMask']]);
 			$partialAccounts[$i]['dhcpNetMask'][0] = $mask;
+			// description
+			if (isset($rawAccounts[$i][$ids['dhcp_settings_description']]) && ($rawAccounts[$i][$ids['dhcp_settings_description']] != '')) {
+				$partialAccounts[$i]['dhcpComments'][0] = $rawAccounts[$i][$ids['dhcp_settings_description']];
+			}
 		}
 		return $messages;
 	}
