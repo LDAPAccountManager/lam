@@ -174,7 +174,7 @@ function logNewMessage($level, $message) {
 		if (is_writable($cfg->logDestination)) {
 			$file = fopen($cfg->logDestination, 'a');
 			if ($file) {
-				fwrite($file, $message . "\n");
+				fwrite($file, date('Y-m-d H:i:s') . ': ' . $message . "\n");
 				fclose($file);
 			}
 		}
