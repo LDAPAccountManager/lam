@@ -1012,7 +1012,7 @@ abstract class baseModule {
 	 * An error message should be printed if the function returns false.
 	 * 
 	 * @param boolean $newAccount new account
-	 * @return true, if no problems occured
+	 * @return boolean true, if no problems occured
 	 */
 	public function preModifyActions($newAccount) {
 		return true;
@@ -1036,7 +1036,7 @@ abstract class baseModule {
 	 * <br>
 	 * An error message should be printed if the function returns false.
 	 * 
-	 * @return true, if no problems occured
+	 * @return boolean true, if no problems occured
 	 */
 	public function preDeleteActions() {
 		return true;
