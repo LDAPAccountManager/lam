@@ -550,11 +550,12 @@ class posixAccount extends baseModule {
 	}
 
 	/**
-	 * Allows the module to run commands after the LDAP entry was changed or created.
+	 * @see baseModule::postModifyActions()
 	 *
-	 * @param boolean $newAccount new account
+	 * @param boolean $newAccount
+	 * @param array $attributes LDAP attributes of this entry
 	 */
-	function postModifyActions($newAccount) {
+	public function postModifyActions($newAccount, $attributes) {
 		// create home directory if needed
 		if ($this->createhomedir) {
 			$server = null;

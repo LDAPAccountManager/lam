@@ -170,22 +170,21 @@ class phpGroupwareGroup extends baseModule {
 	}
 	
 	/**
-	 * Allows the module to run commands after the LDAP entry is changed or created.
-	 * 
-	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
+	 * @see baseModule::postModifyActions()
 	 *
-	 * @param boolean $newAccount new account
+	 * @param boolean $newAccount
+	 * @param array $attributes LDAP attributes of this entry
 	 */
-	public function postModifyActions($newAccount) {
+	public function postModifyActions($newAccount, $attributes) {
 		// check if extension was removed
 		if (!$newAccount &&
 			(in_array('phpgwGroup', $this->orig['objectClass']) && !in_array('phpgwGroup', $this->attributes['objectClass']))) {
 			$dn = $this->getAccountContainer()->finalDN;
-			$attributes = array(
+			$myattributes = array(
 				'objectClass' => array('phpgwGroup'),
 				'phpgwGroupID' => $this->attributes['phpgwGroupID']
 			);
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, $attributes);
+			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, $myattributes);
 			if (!$success) {
 				StatusMessage('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
 			}

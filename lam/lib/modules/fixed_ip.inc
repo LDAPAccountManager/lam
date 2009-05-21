@@ -437,11 +437,15 @@ class fixed_ip extends baseModule {
 	}
 	
 	/**
-	 * This function will be overwrite, because this function
-	 * creates the fixed ips after ldap_add command.
-	 **/
-	public function postModifyActions($newAccount) {
-	    if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	 * This function is overwritten because the fixed IPs are set after the ldap_add command.
+	 * 
+	 * @see baseModule::postModifyActions()
+	 *
+	 * @param boolean $newAccount
+	 * @param array $attributes LDAP attributes of this entry
+	 */
+	public function postModifyActions($newAccount, $attributes) {
+		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 		    $add = array();
 		    $delete = array();
 			// Which dns are to delete and to add

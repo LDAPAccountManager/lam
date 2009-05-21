@@ -1684,7 +1684,33 @@ class accountContainer {
 			$attributes[$this->dn_orig] = $attributes[$this->finalDN];
 			unset ($attributes[$this->finalDN]);
 			$this->finalDN = $this->dn_orig;
+		}
+		// pre modify actions
+		$currentAccountAttributes = array();
+		if (isset($attributes[$this->finalDN]) && is_array($attributes[$this->finalDN])) {
+			if (isset($attributes[$this->finalDN]['modify'])) {
+				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['modify']);
 			}
+			if (isset($attributes[$this->finalDN]['add'])) {
+				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['add']);
+			}
+			if (isset($attributes[$this->finalDN]['notchanged'])) {
+				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['notchanged']);
+			}
+		}
+		$currentAccountAttributes['dn'] = $this->finalDN;
+		$preModifyOk = true;
+		foreach ($module as $singlemodule) {
+			$result = $this->module[$singlemodule]->preModifyActions($this->isNewAccount, $currentAccountAttributes);
+			if (!$result) {
+				$preModifyOk = false;
+				break;
+			}
+		}
+		if (!$preModifyOk) {
+			$errors[] = array('ERROR', _('The operation was stopped because of the above errors.'));
+			return $errors;
+		}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
 		if (strtolower($this->finalDN) != strtolower($this->dn_orig)) {
@@ -1763,7 +1789,7 @@ class accountContainer {
 		if (!$stopprocessing) {
 			// post modify actions
 			foreach ($module as $singlemodule) {
-				$this->module[$singlemodule]->postModifyActions($this->isNewAccount);
+				$this->module[$singlemodule]->postModifyActions($this->isNewAccount, $currentAccountAttributes);
 			}
 		}
 		$_SESSION['cache']->refresh_cache(true);

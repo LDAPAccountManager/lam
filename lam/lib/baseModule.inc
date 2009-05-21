@@ -1012,9 +1012,10 @@ abstract class baseModule {
 	 * An error message should be printed if the function returns false.
 	 * 
 	 * @param boolean $newAccount new account
+	 * @param array $attributes LDAP attributes of this entry
 	 * @return boolean true, if no problems occured
 	 */
-	public function preModifyActions($newAccount) {
+	public function preModifyActions($newAccount, $attributes) {
 		return true;
 	}
 	
@@ -1024,8 +1025,9 @@ abstract class baseModule {
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param boolean $newAccount new account
+	 * @param array $attributes LDAP attributes of this entry
 	 */
-	public function postModifyActions($newAccount) {
+	public function postModifyActions($newAccount, $attributes) {
 		return;
 	}
 	
