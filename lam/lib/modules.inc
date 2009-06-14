@@ -1698,7 +1698,7 @@ class accountContainer {
 				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['notchanged']);
 			}
 		}
-		$currentAccountAttributes['dn'] = $this->finalDN;
+		$currentAccountAttributes['dn'][0] = $this->finalDN;
 		$preModifyOk = true;
 		foreach ($module as $singlemodule) {
 			$result = $this->module[$singlemodule]->preModifyActions($this->isNewAccount, $currentAccountAttributes);
