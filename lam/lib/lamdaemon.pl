@@ -112,15 +112,7 @@ while (1) {
 	switch: {
 		# test if lamdaemon can be run
 		if (($vals[1] eq 'test')) {
-			# basic test
-			if ($vals[2] eq 'basic') {
-				$return = "Ok";
-			}
-			# quota test
-			elsif ($vals[2] eq 'quota') {
-				require Quota;
-				$return = "Ok";
-			}
+			runTest();
 			last switch;
 		}
 		# Get user information
@@ -128,56 +120,14 @@ while (1) {
 		else { @user = getgrnam($vals[0]); }
 		if ($vals[1] eq 'home') {
 				if ($vals[2] eq 'add') {
-					# split homedir to set all directories below the last dir. to 0755
-					my $homedir = $user[7];
-					my $path = $homedir;
-					$path =~ s,/(?:[^/]*)$,,;
-					($<, $>) = ($>, $<); # Get root privileges
-					if (! -e $path) {
-						system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
-					}
-					if (! -e $homedir) {
-						system 'mkdir', '-m', $vals[3], $homedir; # Create homedir itself
-						system ("(cd /etc/skel && tar cf - .) | (cd $homedir && tar xmf -)"); # Copy /etc/sekl into homedir
-						system 'chown', '-hR', "$user[2]:$user[3]" , $homedir; # Change owner to new user
-						if (-e '/usr/sbin/useradd.local') {
-							system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
-							system 'chmod', '-R', $vals[3], $homedir;     # Edit chmod rights
-						}
-						system 'chmod', $vals[3], $homedir;     # Edit chmod rights
-						$return = "INFO,Lamdaemon ($hostname),Home directory created (" . $homedir . ").";
-						logMessage(LOG_INFO, "Home directory created (" . $homedir . ")");
-					}
-					else {
-						$return = "ERROR,Lamdaemon ($hostname),Home directory already exists (" . $homedir . ").";
-						logMessage(LOG_INFO, "Home directory already exists (" . $homedir . ")");
-					}
-					($<, $>) = ($>, $<); # Give up root previleges
+					createHomedir();
 				}
 				elsif ($vals[2] eq 'rem') {
-					($<, $>) = ($>, $<); # Get root previliges
-					if (-d $user[7] && $user[7] ne '/') {
-						if ((stat($user[7]))[4] eq $user[2]) {
-							system 'rm', '-R', $user[7]; # Delete Homedirectory
-							if (-e '/usr/sbin/userdel.local') {
-								system '/usr/sbin/userdel.local', $user[0];
-							}
-							$return = "Ok";
-							logMessage(LOG_INFO, "Home directory removed (" . $user[7] . ")");
-						}
-						else {
-							$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $user[2].";
-							logMessage(LOG_ERR, "Home directory owned by wrong user (" . $user[7] . ")");
-						}
-					}
-					else {
-						$return = "INFO,Lamdaemon ($hostname),The directory which should be deleted was not found (skipped).";
-					}
-					($<, $>) = ($>, $<); # Give up root previleges
+					removeHomedir();
 				}
 				else {
 					# Show error if undefined command is used
-					$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[2].";
+					$return = "ERROR,Lamdaemon ($hostname),Unknown home command $vals[2].";
 					logMessage(LOG_ERR, "Unknown command $vals[2]");
 				}
 			last switch;
@@ -202,70 +152,159 @@ while (1) {
 			else {
 				$group=1;
 				@quota_usr = @quota_grp;
-				}
-			switch2: {
-				$vals[2] eq 'rem' && do {
-					$i=0;
-					($<, $>) = ($>, $<); # Get root privileges
-					while ($quota_usr[$i][0]) {
-						$dev = Quota::getqcarg($quota_usr[$i][1]);
-						$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
-						$i++;
-						}
-					($<, $>) = ($>, $<); # Give up root previleges
-					last switch2;
-					};
-				$vals[2] eq 'set' && do {
-					$i=0;
-					($<, $>) = ($>, $<); # Get root privileges
-					while ($quota[$i][0]) {
-						$dev = Quota::getqcarg($quota[$i][0]);
-						$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
-						if ($return == -1) {
-								$return = "ERROR,Lamdaemon ($hostname),Unable to set quota!";
-								logMessage(LOG_ERR, "Unable to set quota for $user[0].");
-						}
-						else {
-							logMessage(LOG_INFO, "Set quota for $user[0].");
-						}
-						$i++;
-						}
-					($<, $>) = ($>, $<); # Give up root previleges
-					last switch2;
-					};
-				$vals[2] eq 'get' && do {
-					$i=0;
-					($<, $>) = ($>, $<); # Get root privileges
-					while ($quota_usr[$i][0]) {
-						if ($vals[0]ne'+') {
-							$dev = Quota::getqcarg($quota_usr[$i][1]);
-							@temp = Quota::query($dev,$user[2],$group);
-							if ($temp[0]ne'') {
-								if ($temp == -1) {
-										$return = "ERROR,Lamdaemon ($hostname),Unable to read quota!";
-										logMessage(LOG_ERR, "Unable to read quota for $user[0].");
-									}
-								else {
-									$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
-									}
-								}
-							else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
-							}
-						else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
-						$i++;
-						}
-					($<, $>) = ($>, $<); # Give up root previleges
-					last switch2;
-					};
-				$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[2].";
+			}
+			if ($vals[2] eq 'rem') {
+				remQuotas();
+			}
+			elsif ($vals[2] eq 'set') {
+				setQuotas();
+			}
+			elsif ($vals[2] eq 'get') {
+				getQuotas();
+			}
+			else {
+				$return = "ERROR,Lamdaemon ($hostname),Unknown quota command $vals[2].";
 				logMessage(LOG_ERR, "Unknown command $vals[2].");
-				}
-			};
-			last switch;
-			$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
-			logMessage(LOG_ERR, "Unknown command $vals[1].");
+			}
 		};
+		last switch;
+		$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
+		logMessage(LOG_ERR, "Unknown command $vals[1].");
+	};
 		print "$return\n";
+}
+
+#
+# Runs tests to check the environment
+#
+sub runTest {
+	# basic test
+	if ($vals[2] eq 'basic') {
+		$return = "Ok";
+	}
+	# quota test
+	elsif ($vals[2] eq 'quota') {
+		require Quota;
+		$return = "Ok";
+	}
+}
+
+#
+# Creates the homedirectory of the user
+#
+sub createHomedir {
+	my $homedir = $user[7];
+	my $path = $homedir;
+	# split homedir to set all directories below the last dir. to 0755
+	$path =~ s,/(?:[^/]*)$,,;
+	($<, $>) = ($>, $<); # Get root privileges
+	if (! -e $path) {
+		system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
+	}
+	if (! -e $homedir) {
+		system 'mkdir', '-m', $vals[3], $homedir; # Create homedir itself
+		system ("(cd /etc/skel && tar cf - .) | (cd $homedir && tar xmf -)"); # Copy /etc/sekl into homedir
+		system 'chown', '-hR', "$user[2]:$user[3]" , $homedir; # Change owner to new user
+		if (-e '/usr/sbin/useradd.local') {
+			system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
+			system 'chmod', '-R', $vals[3], $homedir;     # Edit chmod rights
+		}
+		system 'chmod', $vals[3], $homedir;     # Edit chmod rights
+		$return = "INFO,Lamdaemon ($hostname),Home directory created (" . $homedir . ").";
+		logMessage(LOG_INFO, "Home directory created (" . $homedir . ")");
+	}
+	else {
+		$return = "ERROR,Lamdaemon ($hostname),Home directory already exists (" . $homedir . ").";
+		logMessage(LOG_INFO, "Home directory already exists (" . $homedir . ")");
+	}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Removes the homedirectory of the user
+#
+sub removeHomedir {
+	($<, $>) = ($>, $<); # Get root previliges
+	if (-d $user[7] && $user[7] ne '/') {
+		if ((stat($user[7]))[4] eq $user[2]) {
+			system 'rm', '-R', $user[7]; # Delete Homedirectory
+			if (-e '/usr/sbin/userdel.local') {
+				system '/usr/sbin/userdel.local', $user[0];
+			}
+			$return = "Ok";
+			logMessage(LOG_INFO, "Home directory removed (" . $user[7] . ")");
+		}
+		else {
+			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $user[2].";
+			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $user[7] . ")");
+		}
+	}
+	else {
+		$return = "INFO,Lamdaemon ($hostname),The directory which should be deleted was not found (skipped).";
+	}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Removes the quotas of a user or group
+#
+sub remQuotas {
+	$i=0;
+	($<, $>) = ($>, $<); # Get root privileges
+	while ($quota_usr[$i][0]) {
+		$dev = Quota::getqcarg($quota_usr[$i][1]);
+		$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
+		$i++;
+		}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Sets the quota values
+#
+sub setQuotas {
+	$i=0;
+	($<, $>) = ($>, $<); # Get root privileges
+	while ($quota[$i][0]) {
+		$dev = Quota::getqcarg($quota[$i][0]);
+		$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
+		if ($return == -1) {
+				$return = "ERROR,Lamdaemon ($hostname),Unable to set quota!";
+				logMessage(LOG_ERR, "Unable to set quota for $user[0].");
+		}
+		else {
+			logMessage(LOG_INFO, "Set quota for $user[0].");
+		}
+		$i++;
+		}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Reads the quota values
+#
+sub getQuotas {
+	$i=0;
+	($<, $>) = ($>, $<); # Get root privileges
+	while ($quota_usr[$i][0]) {
+		if ($vals[0]ne'+') {
+			$dev = Quota::getqcarg($quota_usr[$i][1]);
+			@temp = Quota::query($dev,$user[2],$group);
+			if ($temp[0]ne'') {
+				if ($temp == -1) {
+						$return = "ERROR,Lamdaemon ($hostname),Unable to read quota!";
+						logMessage(LOG_ERR, "Unable to read quota for $user[0].");
+					}
+				else {
+					$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
+					}
+				}
+			else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+			}
+		else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+		$i++;
+		}
+	($<, $>) = ($>, $<); # Give up root previleges
 }
 
 #
