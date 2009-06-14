@@ -109,69 +109,24 @@ while (1) {
 	chop($input);
 	$return = "";
 	@vals = split (' ', $input);
-	switch: {
-		# test if lamdaemon can be run
-		if (($vals[1] eq 'test')) {
-			runTest();
-			last switch;
-		}
-		# Get user information
-		if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
-		else { @user = getgrnam($vals[0]); }
-		if ($vals[1] eq 'home') {
-				if ($vals[2] eq 'add') {
-					createHomedir();
-				}
-				elsif ($vals[2] eq 'rem') {
-					removeHomedir();
-				}
-				else {
-					# Show error if undefined command is used
-					$return = "ERROR,Lamdaemon ($hostname),Unknown home command $vals[2].";
-					logMessage(LOG_ERR, "Unknown command $vals[2]");
-				}
-			last switch;
-		};
-		if ($vals[1] eq 'quota') {
-			require Quota; # Needed to get and set quotas
-			get_fs(); # Load list of devices with enabled quotas
-			# Store quota information in array
-			@quota_temp1 = split (':', $vals[4]);
-			$group=0;
-			$i=0;
-			while ($quota_temp1[$i]) {
-				$j=0;
-				@temp = split (',', $quota_temp1[$i]);
-					while ($temp[$j]) {
-						$quota[$i][$j] = $temp[$j];
-						$j++;
-						}
-					$i++;
-				}
-			if ($vals[3] eq 'user') { $group=false; }
-			else {
-				$group=1;
-				@quota_usr = @quota_grp;
-			}
-			if ($vals[2] eq 'rem') {
-				remQuotas();
-			}
-			elsif ($vals[2] eq 'set') {
-				setQuotas();
-			}
-			elsif ($vals[2] eq 'get') {
-				getQuotas();
-			}
-			else {
-				$return = "ERROR,Lamdaemon ($hostname),Unknown quota command $vals[2].";
-				logMessage(LOG_ERR, "Unknown command $vals[2].");
-			}
-		};
-		last switch;
+	# Get user information
+	if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
+	else { @user = getgrnam($vals[0]); }
+	# run tests
+	if (($vals[1] eq 'test')) {
+		runTest();
+	}
+	elsif ($vals[1] eq 'home') {
+		manageHomedirs();
+	}
+	elsif ($vals[1] eq 'quota') {
+		manageQuotas();
+	}
+	else {
 		$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
 		logMessage(LOG_ERR, "Unknown command $vals[1].");
-	};
-		print "$return\n";
+	}
+	print "$return\n";
 }
 
 #
@@ -186,6 +141,23 @@ sub runTest {
 	elsif ($vals[2] eq 'quota') {
 		require Quota;
 		$return = "Ok";
+	}
+}
+
+#
+# Handles all homedir related commands
+#
+sub manageHomedirs {
+	if ($vals[2] eq 'add') {
+		createHomedir();
+	}
+	elsif ($vals[2] eq 'rem') {
+		removeHomedir();
+	}
+	else {
+		# Show error if undefined command is used
+		$return = "ERROR,Lamdaemon ($hostname),Unknown home command $vals[2].";
+		logMessage(LOG_ERR, "Unknown command $vals[2]");
 	}
 }
 
@@ -243,6 +215,45 @@ sub removeHomedir {
 		$return = "INFO,Lamdaemon ($hostname),The directory which should be deleted was not found (skipped).";
 	}
 	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Handles all quota related commands
+#
+sub manageQuotas {
+	require Quota; # Needed to get and set quotas
+	get_fs(); # Load list of devices with enabled quotas
+	# Store quota information in array
+	@quota_temp1 = split (':', $vals[4]);
+	$group=0;
+	$i=0;
+	while ($quota_temp1[$i]) {
+		$j=0;
+		@temp = split (',', $quota_temp1[$i]);
+			while ($temp[$j]) {
+				$quota[$i][$j] = $temp[$j];
+				$j++;
+				}
+			$i++;
+		}
+	if ($vals[3] eq 'user') { $group=false; }
+	else {
+		$group=1;
+		@quota_usr = @quota_grp;
+	}
+	if ($vals[2] eq 'rem') {
+		remQuotas();
+	}
+	elsif ($vals[2] eq 'set') {
+		setQuotas();
+	}
+	elsif ($vals[2] eq 'get') {
+		getQuotas();
+	}
+	else {
+		$return = "ERROR,Lamdaemon ($hostname),Unknown quota command $vals[2].";
+		logMessage(LOG_ERR, "Unknown command $vals[2].");
+	}
 }
 
 #
