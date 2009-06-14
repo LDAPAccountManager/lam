@@ -166,6 +166,11 @@ sub manageHomedirs {
 #
 sub createHomedir {
 	my $homedir = $user[7];
+	if ($homedir eq '') {
+		$return = "ERROR,Lamdaemon ($hostname),Home directory path is empty.";
+		logMessage(LOG_ERR, "Home directory path is empty.");
+		return;
+	}
 	my $path = $homedir;
 	# split homedir to set all directories below the last dir. to 0755
 	$path =~ s,/(?:[^/]*)$,,;
@@ -187,7 +192,7 @@ sub createHomedir {
 	}
 	else {
 		$return = "ERROR,Lamdaemon ($hostname),Home directory already exists (" . $homedir . ").";
-		logMessage(LOG_INFO, "Home directory already exists (" . $homedir . ")");
+		logMessage(LOG_ERR, "Home directory already exists (" . $homedir . ")");
 	}
 	($<, $>) = ($>, $<); # Give up root previleges
 }
@@ -196,6 +201,11 @@ sub createHomedir {
 # Removes the homedirectory of the user
 #
 sub removeHomedir {
+	if ($user[7] eq '') {
+		$return = "ERROR,Lamdaemon ($hostname),Home directory path is empty.";
+		logMessage(LOG_ERR, "Home directory path is empty.");
+		return;
+	}
 	($<, $>) = ($>, $<); # Get root previliges
 	if (-d $user[7] && $user[7] ne '/') {
 		if ((stat($user[7]))[4] eq $user[2]) {
