@@ -159,7 +159,7 @@ if ($_POST['delete']) {
 					break;
 				}
 			}
-		}		
+		}
 		if (!$stopprocessing) {
 			// load attributes
 			foreach ($moduleNames as $singlemodule) {
@@ -168,7 +168,6 @@ if ($_POST['delete']) {
 				if (is_array($temp)) {
 					// merge changes
 					$DNs = array_keys($temp);
-					// *** fixme don't include references
 					$attributes = array_merge_recursive($temp, $attributes);
 					for ($i=0; $i<count($DNs); $i++) {
 						$ops = array_keys($temp[$DNs[$i]]);
