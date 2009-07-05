@@ -6,10 +6,20 @@
    protect yourself against network sniffers.
 
 
-2. LDAP+SSL and TLS
+2. LDAP with SSL and TLS
 
-   LAM should start TLS automatically if possible. LDAP+SSL will be used if you use
-   ldaps://servername in your configuration profile.
+   SSL will be used if you use ldaps://servername in your configuration profile.
+   TLS can be activated with the "Activate TLS" option.
+
+   You will need to setup ldap.conf to trust your server certificate. Some installations
+   use /etc/ldap.conf and some use /etc/ldap/ldap.conf. It is a good idea to symlink
+   /etc/ldap.conf to /etc/ldap/ldap.conf.
+   Specify the server CA certificate with the following option:
+
+   TLS_CACERT /etc/ldap/ca/myCA/cacert.pem
+
+   This needs to be the public part of the signing certificate authority. See "man ldap.conf"
+   for additional options.
 
 
 3. Chrooted servers
