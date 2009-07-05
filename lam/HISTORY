@@ -3,6 +3,8 @@ July 2009 2.7.0
   - added separate configuration option to enable/disable TLS encryption
   - Samba 3: allow to disable LM hashes (on by default) (RFE 2657140)
   - DHCP: added description field and reordered fixed IP input fields
+  - fixed bugs:
+    * added additional check for creating home directories (2798489)
 
 
 08.04.2009 2.6.0
