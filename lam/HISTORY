@@ -5,6 +5,7 @@ July 2009 2.7.0
   - DHCP: added description field and reordered fixed IP input fields
   - fixed bugs:
     * added additional check for creating home directories (2798489)
+		* support memcache for session storage (2811505)
 
 
 08.04.2009 2.6.0

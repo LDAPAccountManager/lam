@@ -34,7 +34,9 @@ $Id$
 include_once('../../lib/config.inc');
 
 // start session
-session_save_path("../../sess");
+if (strtolower(session_module_name()) == 'files') {
+	session_save_path("../../sess");
+}
 @session_start();
 
 setlanguage();

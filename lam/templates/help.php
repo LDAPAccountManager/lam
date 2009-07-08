@@ -38,7 +38,9 @@ include_once("../lib/ldap.inc");
 /** configuration */
 include_once("../lib/config.inc");
 
-session_save_path("../sess");
+if (strtolower(session_module_name()) == 'files') {
+	session_save_path("../sess");
+}
 @session_start();
 
 /** status messages */

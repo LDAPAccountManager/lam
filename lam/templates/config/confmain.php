@@ -38,7 +38,9 @@ include_once("../../lib/config.inc");
 include_once("../../lib/modules.inc");
 
 // start session
-session_save_path("../../sess");
+if (strtolower(session_module_name()) == 'files') {
+	session_save_path("../../sess");
+}
 @session_start();
 
 setlanguage();
@@ -142,7 +144,48 @@ if (isset($_SESSION['conf_errors'])) {
 
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
+echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
+// show tabs
+echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
+echo "<tr>\n";
+	$buttonWidth = 15;
+	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	// general settings
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"generalSettingsButton\" type=\"submit\" value=\"" . $buttonSpace . _('General settings') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// account types
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('accountTypesButton')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"accountTypesButton\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// module selection
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('modulesButton')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"modulesButton\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "<td width=\"100%\">&nbsp;</td></tr></table>\n";		
+// end tabs
+echo "</td></tr>\n";
 
+echo "<tr><td><br><br>\n";
 echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> <b>" . _("Server settings") . "</b></legend><br>\n");
 echo ("<table border=0>");
 // serverURL
@@ -503,6 +546,7 @@ echo ("<p>&nbsp;</p>");
 
 echo ("<p>* = ". _("required") . "</p>");
 
+echo '</td></tr></table>';
 echo ("</form>\n");
 echo ("</body>\n");
 echo ("</html>\n");

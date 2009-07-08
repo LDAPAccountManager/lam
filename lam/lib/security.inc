@@ -43,8 +43,10 @@ checkClientIP();
 function startSecureSession() {
 	// start session
 	if (isset($_SESSION)) unset($_SESSION);
-	$sessionDir = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/sess";
-	session_save_path($sessionDir);
+	if (strtolower(session_module_name()) == 'files') {
+		$sessionDir = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/sess";
+		session_save_path($sessionDir);
+	}
 	@session_start();
 	// check session id
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {

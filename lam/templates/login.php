@@ -112,7 +112,10 @@ if (sizeof($criticalErrors) > 0) {
 /** access to configuration options */
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
-session_save_path("../sess"); // Set session save path
+// set session save path
+if (strtolower(session_module_name()) == 'files') {
+	session_save_path("../sess");
+}
 session_start(); // Start LDAP Account Manager session
 
 // save last selected login profile
