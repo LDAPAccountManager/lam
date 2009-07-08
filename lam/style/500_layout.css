@@ -74,6 +74,32 @@ legend {
 color:blue;
 }
 
+table.settingsTab {
+  border-width:1px;
+  border-style:solid;
+  border-color:#9b8523;
+  border-collapse:collapse;
+  background-color:#ffe27f;
+}
+
+td.settingsActiveTab {
+  background-color:#fff3c8;
+}
+
+table.settingsTab td {
+  border: 1px solid;
+  border-bottom: 0px solid;
+  padding:5px;
+}
+
+table.settingsTab input {
+  background-position: 2px center;
+  background-repeat: no-repeat;
+  height:32px;
+  background-color:transparent;
+  border:0px solid;
+}
+
 /**
  * table style for delete.php
  *
