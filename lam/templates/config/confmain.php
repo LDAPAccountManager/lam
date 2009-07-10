@@ -77,9 +77,9 @@ if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthentica
 $_SESSION['conf_isAuthenticated'] = $conf->getName();
 
 // check if button was pressed and if we have to save the setting or go back to login
-if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
+if (isset($_POST['cancelSettings']) || isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
 	// go to final page
-	if (isset($_POST['submitconf'])){
+	if (isset($_POST['saveSettings'])){
 		saveSettings();
 	}
 	// go to modules page
@@ -93,7 +93,7 @@ if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmo
 		exit;
 	}
 	// back to login
-	else if (isset($_POST['back'])){
+	else if (isset($_POST['cancelSettings'])){
 		metaRefresh("../login.php");
 		exit;
 	}
@@ -149,14 +149,19 @@ echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" col
 // show tabs
 echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
 echo "<tr>\n";
-	$buttonWidth = 15;
+	$buttonWidth = 0;
+	$buttonTexts = array(_('General settings'), _('Account types'), _('Modules'), _('Save'), _('Cancel'));
+	for ($b = 0; $b < sizeof($buttonTexts); $b++) {
+		$tempWidth = round(0.8 * strlen(utf8_decode($buttonTexts[$b]))) + 2;
+		if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
+	}
 	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	// general settings
 	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	$buttonStyle = 'background-image: url(../../graphics/bigTools.png);width:' . $buttonWidth . 'em;';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"generalSettingsButton\" type=\"submit\" value=\"" . $buttonSpace . _('General settings') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
@@ -164,24 +169,45 @@ echo "<tr>\n";
 	// account types
 	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('accountTypesButton')[0].click();\"";
+	echo "<tr><td onclick=\"document.getElementsByName('edittypes')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"accountTypesButton\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
+	$buttonStyle = 'background-image: url(../../graphics/gear.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"edittypes\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// module selection
 	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('modulesButton')[0].click();\"";
+	echo "<tr><td onclick=\"document.getElementsByName('editmodules')[0].click();\"";
 	echo " align=\"center\">\n";
 	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"modulesButton\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
+	echo "<input style=\"" . $buttonStyle . "\" name=\"editmodules\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
-	echo "<td width=\"100%\">&nbsp;</td></tr></table>\n";		
+	echo "<td width=\"100%\">&nbsp;</td>";
+	// save button
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('saveSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/pass.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"saveSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Save') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// cancel button
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('cancelSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/fail.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"cancelSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Cancel') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "</tr></table>\n";		
 // end tabs
 echo "</td></tr>\n";
 
@@ -287,28 +313,9 @@ echo ("</fieldset>");
 
 echo ("<br>");
 
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/modules.png\" alt=\"modules.png\"> <b>" . _("Account types and modules") . "</b></legend><br>\n");
-
-// Account modules
-$types = $conf->get_ActiveTypes();
-for ($i = 0; $i < sizeof($types); $i++) {
-	$moduleNames = $conf->get_AccountModules($types[$i]);
-	for ($m = 0; $m < sizeof($moduleNames); $m++) $moduleNames[$m] = getModuleAlias($moduleNames[$m], $types[$i]);
-	echo "<b>" . getTypeAlias($types[$i]) . ": </b>" . implode(", ", $moduleNames) . "<br>\n";
-}
-echo "<br>\n";
-echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"edittypes\" value=\"" . _("Edit account types") . "\">&nbsp;&nbsp;";
-$tabindex++;
-echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;";
-printHelpLink(getHelp('', '217'), '217');
-$tabindex++;
-
-echo ("</fieldset>");
-
-echo ("<br>");
-
 
 // module settings
+$types = $conf->get_ActiveTypes();
 
 // get list of scopes of modules
 $scopes = array();
@@ -524,27 +531,9 @@ echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 $tabindex++;
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<p>&nbsp;</p>\n");
-
-
-// buttons
-echo ("<table border=0>\n");
-
-echo "<tr>";
-echo "<td align=\"left\"><pre>";
-	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"submitconf\" value=\"" . _("Ok") . "\">";
-	$tabindex++;
-	echo "&nbsp;";
-	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"back\" value=\"" . _("Cancel") . "\"\n";
-	$tabindex++;
-
-echo ("></pre></td></tr>\n");
-
-echo ("</table>\n");
-
-echo ("<p>&nbsp;</p>");
 
 echo ("<p>* = ". _("required") . "</p>");
+echo ("<p>&nbsp;</p>\n");
 
 echo '</td></tr></table>';
 echo ("</form>\n");
@@ -668,31 +657,15 @@ function saveSettings() {
 	}
 	// check options
 	$errors = array_merge($errors, checkConfigOptions($scopes, $options));
+	$conf->set_moduleSettings($options);
 	// print error messages if any
 	if (sizeof($errors) > 0) {
 		$_SESSION['conf_errors'] = $errors;
-		$conf->set_moduleSettings($options);
 	}
 	// save settings if no errors occured
 	else {
-		// page head
-		echo $_SESSION['header'];
-		echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-		echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
-		echo "</head><body>\n";
-		echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
-			"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
-		$conf->set_moduleSettings($options);
-		$conf->save();
-		echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
-		echo("</body></html>");
-		// remove settings from session
-		$sessionKeys = array_keys($_SESSION);
-		for ($i = 0; $i < sizeof($sessionKeys); $i++) {
-			if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
-		}
-		exit();
+		metaRefresh("confsave.php");
+		exit;
 	}
 }
 
