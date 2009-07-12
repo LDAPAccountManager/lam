@@ -248,9 +248,11 @@ function config_showAccountModules($scope, $title) {
 			echo "</td>\n";
 			echo "<td width=\"10%\" align=\"center\">\n";
 				echo "<p>";
-					echo "<input type=submit value=\"&lt;=\" name=\"" . $scope . "_add\">";
+					echo "<input type=submit title=\"" . _('Add') . "\" value=\" \" name=\"" . $scope . "_add\"" .
+					"style=\"background-image: url(../../graphics/back.gif);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">";
 					echo "<br>";
-					echo "<input type=submit value=\"=&gt;\" name=\"" . $scope . "_remove\">";
+					echo "<input type=submit title=\"" . _('Remove') . "\" value=\" \" name=\"" . $scope . "_remove\"" .
+					"style=\"background-image: url(../../graphics/forward.gif);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">";
 				echo "</p>\n";
 			echo "</td>\n";
 			echo "<td width=\"40%\">\n";
