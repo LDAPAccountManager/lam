@@ -187,7 +187,8 @@ if (sizeof($availableTypes) > 0) {
 		echo "<tr>\n";
 			echo "<td>$icon<b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
 			echo "<td>" . getTypeDescription($availableTypes[$i]) . "</td>\n";
-			echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" value=\"" . _("Add") . "\"></td>\n";
+			echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" title=\"" . _("Add") . "\" value=\" \"" .
+				" style=\"background-image: url(../../graphics/add.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\"></td>\n";
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
@@ -202,7 +203,10 @@ if (sizeof($activeTypes) > 0) {
 	for ($i = 0; $i < sizeof($activeTypes); $i++) {
 		echo "<fieldset class=\"" . $activeTypes[$i] . "edit\">\n";
 		$icon = '<img alt="' . $activeTypes[$i] . '" src="../../graphics/' . $activeTypes[$i] . '.png">&nbsp;';
-		echo "<legend>" . $icon . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . "</legend>";
+		echo "<legend>" . $icon . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . " " .
+			"<input type=\"submit\" name=\"rem_" . $activeTypes[$i] . "\" value=\" \" title=\"" . _("Remove this account type") . "\" " .
+			"style=\"background-image: url(../../graphics/del.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">" .
+			"</legend>";
 		echo "<br>\n";
 		echo "<table>\n";
 		// LDAP suffix
@@ -226,11 +230,6 @@ if (sizeof($activeTypes) > 0) {
 			echo "<td>";
 			printHelpLink(getHelp('', '206'), '206');
 			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
-		// remove button
-		echo "<tr>\n";
-			echo "<td colspan=\"2\"><input type=\"submit\" name=\"rem_" . $activeTypes[$i] . "\" value=\"" . _("Remove this account type") . "\"></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</fieldset><br>\n";
