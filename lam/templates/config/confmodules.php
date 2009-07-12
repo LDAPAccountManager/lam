@@ -52,23 +52,35 @@ if (!isset($_SESSION['conf_config'])) {
 	exit;
 }
 
-$conf = &$_SESSION['conf_config'];
-
-
-// user pressed submit/abort button
-if (isset($_POST['submit'])) {
-	// save new module settings
-	$_SESSION['conf_accountTypesOld'] = $_SESSION['conf_accountTypes'];
-	$conf->set_typeSettings($_SESSION['conf_typeSettings']);
-	//selection ok, back to other settings
-	metarefresh('confmain.php?modulesback=true');
+// check if user canceled editing
+if (isset($_POST['cancelSettings'])) {
+	metaRefresh("../login.php");
 	exit;
 }
-elseif (isset($_POST['abort'])) {
-	// no changes
-	$_SESSION['conf_accountTypes'] = $_SESSION['conf_accountTypesOld'];
-	metarefresh('confmain.php?modulesback=true');
-	exit;
+
+$conf = &$_SESSION['conf_config'];
+
+$errorsToDisplay = checkInput();
+
+// check if button was pressed and if we have to save the settings or go to another tab
+if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])) {
+	if (sizeof($errorsToDisplay) == 0) {
+		// go to final page
+		if (isset($_POST['saveSettings'])) {
+			metaRefresh("confsave.php");
+			exit;
+		}
+		// go to modules page
+		elseif (isset($_POST['edittypes'])) {
+			metaRefresh("conftypes.php");
+			exit;
+		}
+		// go to types page
+		elseif (isset($_POST['generalSettingsButton'])) {
+			metaRefresh("confmain.php");
+			exit;
+		}
+	}
 }
 
 $types = $conf->get_ActiveTypes();
@@ -85,10 +97,80 @@ echo "</head><body>\n";
 echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br>\n");
+	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr>\n<p>&nbsp;</p>\n");
+
+// print error messages
+for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
 echo ("<form action=\"confmodules.php\" method=\"post\">\n");
-echo "<h1 align=\"center\">" . _("Module selection") . "</h1>";
+echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
+// show tabs
+echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
+echo "<tr>\n";
+	$buttonWidth = 0;
+	$buttonTexts = array(_('General settings'), _('Account types'), _('Modules'), _('Save'), _('Cancel'));
+	for ($b = 0; $b < sizeof($buttonTexts); $b++) {
+		$tempWidth = round(0.8 * strlen(utf8_decode($buttonTexts[$b]))) + 2;
+		if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
+	}
+	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	// general settings
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/bigTools.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"generalSettingsButton\" type=\"submit\" value=\"" . $buttonSpace . _('General settings') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// account types
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('edittypes')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/gear.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"edittypes\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// module selection
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('editmodules')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"editmodules\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "<td width=\"100%\">&nbsp;</td>";
+	// save button
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('saveSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/pass.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"saveSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Save') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// cancel button
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('cancelSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/fail.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"cancelSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Cancel') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "</tr></table>\n";		
+// end tabs
+echo "</td></tr>\n";
+
+echo "<tr><td><br><br>\n";
 
 
 $account_list = array();
@@ -96,35 +178,21 @@ for ($i = 0; $i < sizeof($types); $i++) {
 	$account_list[] = array($types[$i], getTypeAlias($types[$i]));
 }
 
-$allDependenciesOk  = true;
-
 for ($i = 0; $i < sizeof($account_list); $i++) {
-	$ret = config_showAccountModules($account_list[$i][0], $account_list[$i][1]);
-	if (!$ret) {
-		$allDependenciesOk = false;
-	}
+	config_showAccountModules($account_list[$i][0], $account_list[$i][1]);
 }
 
 
-// submit buttons
 echo "<p>\n";
-	// disable button if there are conflicts/depends
-	if ($allDependenciesOk) {
-		echo "<input type=\"submit\" value=\"" . _("Ok") . "\" name=\"submit\">\n";
-	}
-	else {
-		echo "<input type=\"submit\" value=\"" . _("Ok") . "\" name=\"submit\" disabled>\n";
-	}
-	echo "&nbsp;";
-	echo "<input type=\"submit\" value=\"" . _("Cancel") . "\" name=\"abort\">\n";
-echo "</p>\n";
-
-echo "<p><br><br>\n";
 echo "(*) " . _("Base module");
 // help link
 echo "&nbsp;";
 printHelpLink(getHelp('', '237'), '237');
-echo "<br><br><br></p>\n";
+echo "<br><br><br><br><br></p>\n";
+
+echo '</td></tr></table>';
+
+echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 
 echo "</form>\n";
 echo "</body>\n";
@@ -136,43 +204,20 @@ echo "</html>\n";
 *
 * @param string $scope account type
 * @param string $title title for module selection (e.g. "User modules")
-* @return boolean true if all dependencies are ok
 */
 function config_showAccountModules($scope, $title) {
+	$conf = &$_SESSION['conf_config'];
+	$typeSettings = $conf->get_typeSettings();
 	// account modules
-	$selected_temp = $_SESSION['conf_typeSettings']['modules_' . $scope];
-	if (isset($selected_temp)) $selected_temp = explode(',', $selected_temp);
-	$available = array();
 	$available = getAvailableModules($scope);
-	$selected = array();
-	// only use available modules as selected
-	for ($i = 0; $i < sizeof($selected_temp); $i++) {
-		if (in_array($selected_temp[$i], $available)) $selected[] = $selected_temp[$i];
+	$selected = $typeSettings['modules_' . $scope];
+	if (isset($selected) && ($selected != '')) {
+		$selected = explode(',', $selected);
 	}
-	$no_conflicts = true;
-	$no_depends = true;
-	$no_missing_basemodule = true;
-	
-	// remove modules from selection
-	if (isset($_POST[$scope . '_selected']) && isset($_POST[$scope . '_remove'])) {
-		$new_selected = array();
-		for ($i = 0; $i < sizeof($selected); $i++) {
-			if (! in_array($selected[$i], $_POST[$scope . '_selected'])) $new_selected[] = $selected[$i];
-		}
-		$selected = $new_selected;
-		$_SESSION['conf_typeSettings']['modules_' . $scope] = implode(',', $selected);
+	else {
+		$selected = array();
 	}
-	
-	// add modules to selection
-	elseif (isset($_POST[$scope . '_available']) && isset($_POST[$scope . '_add'])) {
-		$new_selected = $selected;
-		for ($i = 0; $i < sizeof($_POST[$scope . '_available']); $i++) {
-			if (! in_array($_POST[$scope . '_available'][$i], $selected)) $new_selected[] = $_POST[$scope . '_available'][$i];
-		}
-		$selected = $new_selected;
-		$_SESSION['conf_typeSettings']['modules_' . $scope] = implode(',', $selected);
-	}
-	
+
 	// show account modules
 	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp;';
 	echo "<fieldset class=\"" . $scope . "edit\"><legend>$icon<b>" . $title . "</b></legend><br>\n";
@@ -233,52 +278,85 @@ function config_showAccountModules($scope, $title) {
 		echo "</tr>\n";
 	echo "</table>\n";
 	
-	// check dependencies
-	$depends = check_module_depends($selected, getModulesDependencies($scope));
-	if ($depends != false) {
-		$no_depends = false;
-		echo "<p>\n";
-			for ($i = 0; $i < sizeof($depends); $i++) {
-				echo "<font color=\"red\"><b>" . _("Unsolved dependency:") . " </b>" . $depends[$i][0] . " (" .
-					$depends[$i][1] . ")" . "</font><br>\n";
-			}
-		echo "<p>\n";
-	}
-	
-	// check conflicts
-	$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
-	if ($conflicts != false) {
-		$no_conflicts = false;
-		echo "<p>\n";
-			for ($i = 0; $i < sizeof($conflicts); $i++) {
-				echo "<font color=\"red\"><b>" . _("Conflicting module:") . " </b>" . $conflicts[$i][0] . " (" .
-					$conflicts[$i][1] . ")" . "</font><br>\n";
-			}
-		echo "<p>\n";
-	}
-	
-	// check for base module
-	$baseCount = 0;
-	for ($i = 0; $i < sizeof($selected); $i++) {
-		if (is_base_module($selected[$i], $scope)) {
-			$baseCount++;
-		}
-	}
-	if ($baseCount != 1) {
-		$no_missing_basemodule = false;
-		echo "<p>\n";
-				echo "<font color=\"red\"><b>" . _("No or more than one base module selected!") . "</b></font><br>\n";
-		echo "<p>\n";
-	}
-	
 	echo "</fieldset>\n";
 	
 	echo "<br>\n";
-	
-	return ($no_conflicts & $no_depends & $no_missing_basemodule);
-	
 }
 
+/**
+ * Checks user input and saves the entered settings.
+ *
+ * @return array list of errors
+ */
+function checkInput() {
+	if (!isset($_POST['postAvailable'])) {
+		return array();
+	}
+	$errors = array();
+	$conf = &$_SESSION['conf_config'];
+	$typeSettings = $conf->get_typeSettings();
+	$accountTypes = $conf->get_ActiveTypes();
+	for ($t = 0; $t < sizeof($accountTypes); $t++) {
+		$scope = $accountTypes[$t];
+		$available = getAvailableModules($scope);
+		$selected_temp = $typeSettings['modules_' . $scope];
+		if (isset($selected_temp)) $selected_temp = explode(',', $selected_temp);
+		$selected = array();
+		// only use available modules as selected
+		for ($i = 0; $i < sizeof($selected_temp); $i++) {
+			if (in_array($selected_temp[$i], $available)) {
+				$selected[] = $selected_temp[$i];
+			}
+		}
+		// remove modules from selection
+		if (isset($_POST[$scope . '_selected']) && isset($_POST[$scope . '_remove'])) {
+			$new_selected = array();
+			for ($i = 0; $i < sizeof($selected); $i++) {
+				if (! in_array($selected[$i], $_POST[$scope . '_selected'])) $new_selected[] = $selected[$i];
+			}
+			$selected = $new_selected;
+			$typeSettings['modules_' . $scope] = implode(',', $selected);
+		}
+		// add modules to selection
+		elseif (isset($_POST[$scope . '_available']) && isset($_POST[$scope . '_add'])) {
+			$new_selected = $selected;
+			for ($i = 0; $i < sizeof($_POST[$scope . '_available']); $i++) {
+				if (! in_array($_POST[$scope . '_available'][$i], $selected)) $new_selected[] = $_POST[$scope . '_available'][$i];
+			}
+			$selected = $new_selected;
+			$typeSettings['modules_' . $scope] = implode(',', $selected);
+		}
+		// check dependencies
+		$depends = check_module_depends($selected, getModulesDependencies($scope));
+		if ($depends != false) {
+			for ($i = 0; $i < sizeof($depends); $i++) {
+				$errors[] = array('ERROR', getTypeAlias($scope), _("Unsolved dependency:") . ' ' .
+					$depends[$i][0] . " (" . $depends[$i][1] . ")");
+			}
+		}
+		// check conflicts
+		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
+		if ($conflicts != false) {
+			for ($i = 0; $i < sizeof($conflicts); $i++) {
+				$errors[] = array('ERROR', getTypeAlias($scope), _("Conflicting module:") . ' ' .
+					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")");
+			}
+		}
+		// check for base module
+		$baseCount = 0;
+		for ($i = 0; $i < sizeof($selected); $i++) {
+			if (is_base_module($selected[$i], $scope)) {
+				$baseCount++;
+			}
+		}
+		if ($baseCount != 1) {
+			$errors[] = array('ERROR', getTypeAlias($scope), _("No or more than one base module selected!"));
+		}	
+	}
+	$conf->set_typeSettings($typeSettings);
+
+	return $errors;
+}
 
 ?>
 
