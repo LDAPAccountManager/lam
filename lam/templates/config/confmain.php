@@ -76,43 +76,36 @@ if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthentica
 }
 $_SESSION['conf_isAuthenticated'] = $conf->getName();
 
-// check if button was pressed and if we have to save the setting or go back to login
-if (isset($_POST['cancelSettings']) || isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
-	// go to final page
-	if (isset($_POST['saveSettings'])){
-		saveSettings();
-	}
-	// go to modules page
-	elseif (isset($_POST['editmodules'])){
-		metaRefresh("confmodules.php");
-		exit;
-	}
-	// go to types page
-	elseif (isset($_POST['edittypes'])){
-		metaRefresh("conftypes.php");
-		exit;
-	}
-	// back to login
-	else if (isset($_POST['cancelSettings'])){
-		metaRefresh("../login.php");
-		exit;
+// check if user canceled editing
+if (isset($_POST['cancelSettings'])) {
+	metaRefresh("../login.php");
+	exit;
+}
+
+$errorsToDisplay = array();
+
+// check if button was pressed and if we have to save the settings or go to another tab
+if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])) {
+	$errorsToDisplay = checkInput();
+	if (sizeof($errorsToDisplay) == 0) {
+		// go to final page
+		if (isset($_POST['saveSettings'])) {
+			metaRefresh("confsave.php");
+			exit;
+		}
+		// go to modules page
+		elseif (isset($_POST['editmodules'])) {
+			metaRefresh("confmodules.php");
+			exit;
+		}
+		// go to types page
+		elseif (isset($_POST['edittypes'])) {
+			metaRefresh("conftypes.php");
+			exit;
+		}
 	}
 }
 
-
-// check if user comes from types page
-if (isset($_GET["typesback"])) {
-	// check if a new account type was added
-	if (isset($_GET["typeschanged"])) {
-		metaRefresh("confmodules.php");
-		exit;
-	}
-}
-
-// type information
-if (!isset($_SESSION['conf_accountTypes'])) $_SESSION['conf_accountTypes'] = $conf->get_ActiveTypes();
-if (!isset($_SESSION['conf_accountTypesOld'])) $_SESSION['conf_accountTypesOld'] = $conf->get_ActiveTypes();
-if (!isset($_SESSION['conf_typeSettings'])) $_SESSION['conf_typeSettings'] = $conf->get_typeSettings();
 
 // index for tab order
 $tabindex = 1;
@@ -135,9 +128,9 @@ if (!$conf->isWritable()) {
 }
 
 // display error messages
-if (isset($_SESSION['conf_errors'])) {
-	for ($i = 0; $i < sizeof($_SESSION['conf_errors']); $i++) {
-		call_user_func_array('StatusMessage', $_SESSION['conf_errors'][$i]);
+if (sizeof($errorsToDisplay) > 0) {
+	for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
+		call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 	}
 	echo "<br>";
 }
@@ -542,10 +535,11 @@ echo ("</html>\n");
 
 
 /**
- * Saves the entered settings.
+ * Checks user input and saves the entered settings.
  *
+ * @return array list of errors
  */
-function saveSettings() {
+function checkInput() {
 	$conf = &$_SESSION['conf_config'];
 	$types = $conf->get_ActiveTypes();
 
@@ -658,15 +652,7 @@ function saveSettings() {
 	// check options
 	$errors = array_merge($errors, checkConfigOptions($scopes, $options));
 	$conf->set_moduleSettings($options);
-	// print error messages if any
-	if (sizeof($errors) > 0) {
-		$_SESSION['conf_errors'] = $errors;
-	}
-	// save settings if no errors occured
-	else {
-		metaRefresh("confsave.php");
-		exit;
-	}
+	return $errors;
 }
 
 ?>

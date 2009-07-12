@@ -51,101 +51,41 @@ if (!isset($_SESSION['conf_config'])) {
 	exit;
 }
 
-$conf = &$_SESSION['conf_config'];
-
-// update type settings
-if (isset($_POST['postAvailable'])) {
-	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
-		$key = $postKeys[$i];
-		if (substr($key, 0, 7) == "suffix_") {
-			$_SESSION['conf_typeSettings'][$key] = $_POST[$key];
-		}
-		elseif (substr($key, 0, 5) == "attr_") {
-			$_SESSION['conf_typeSettings'][$key] = $_POST[$key];
-		}
-	}
-}
-
-$errors = array();
-// user pressed submit/abort button
-if (isset($_POST['submit'])) {
-	// check settings
-	$allOK = true;
-	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
-		$key = $postKeys[$i];
-		if (substr($key, 0, 7) == "suffix_") {
-			$type = substr($postKeys[$i], 7);
-			if (strlen($_POST[$key]) < 1) {
-				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), getTypeAlias($type));
-				$allOK = false;
-			}
-		}
-		elseif (substr($key, 0, 5) == "attr_") {
-			$type = substr($postKeys[$i], 5);
-			if (!is_string($_POST[$key]) || !eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $_POST[$key])) {
-				$errors[] = array("ERROR", _("List attributes are invalid!"), getTypeAlias($type));
-				$allOK = false;
-			}
-		}
-	}
-	//selection ok, back to other settings
-	if ($allOK) {
-		// check if there is a new type
-		$addedType = false;
-		for ($i = 0; $i < sizeof($_SESSION['conf_accountTypes']); $i++) {
-			if (!in_array($_SESSION['conf_accountTypes'][$i], $_SESSION['conf_accountTypesOld'])) {
-				$addedType = true;
-				break;
-			}
-		}
-		$_SESSION['conf_accountTypesOld'] = $_SESSION['conf_accountTypes'];
-		$conf->set_ActiveTypes($_SESSION['conf_accountTypes']);
-		$conf->set_typeSettings($_SESSION['conf_typeSettings']);
-		if ($addedType) {
-			metarefresh('confmain.php?typesback=true&amp;typeschanged=true');
-		}
-		else {
-			metarefresh('confmain.php?typesback=true');
-		}
-		exit;
-	}
-}
-// no changes
-elseif (isset($_POST['abort'])) {
-	$_SESSION['conf_accountTypes'] = $_SESSION['conf_accountTypesOld'];
-	metarefresh('confmain.php?typesback=true');
+// check if user canceled editing
+if (isset($_POST['cancelSettings'])) {
+	metaRefresh("../login.php");
 	exit;
 }
 
-// check if remove button was pressed
-$postKeys = array_keys($_POST);
-for ($i = 0; $i < sizeof($postKeys); $i++) {
-	$key = $postKeys[$i];
-	if (substr($key, 0, 4) == "rem_") {
-		$type = substr($key, 4);
-		$_SESSION['conf_accountTypes'] = array_flip($_SESSION['conf_accountTypes']);
-		unset($_SESSION['conf_accountTypes'][$type]);
-		$_SESSION['conf_accountTypes'] = array_flip($_SESSION['conf_accountTypes']);
-		$_SESSION['conf_accountTypes'] = array_values($_SESSION['conf_accountTypes']);
+$conf = &$_SESSION['conf_config'];
+
+$errorsToDisplay = checkInput();
+
+// check if button was pressed and if we have to save the settings or go to another tab
+if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])) {
+	if (sizeof($errorsToDisplay) == 0) {
+		// go to final page
+		if (isset($_POST['saveSettings'])) {
+			metaRefresh("confsave.php");
+			exit;
+		}
+		// go to modules page
+		elseif (isset($_POST['editmodules'])) {
+			metaRefresh("confmodules.php");
+			exit;
+		}
+		// go to types page
+		elseif (isset($_POST['generalSettingsButton'])) {
+			metaRefresh("confmain.php");
+			exit;
+		}
 	}
 }
 
-// check if add button was pressed
-$postKeys = array_keys($_POST);
-for ($i = 0; $i < sizeof($postKeys); $i++) {
-	$key = $postKeys[$i];
-	if (substr($key, 0, 4) == "add_") {
-		$type = substr($key, 4);
-		$_SESSION['conf_accountTypes'][] = $type;
-	}
-}
-
-
+$typeSettings = $conf->get_typeSettings();
 // get active and available types
 $allTypes = getTypes();
-$activeTypes = $_SESSION['conf_accountTypes'];
+$activeTypes = $conf->get_ActiveTypes();
 $availableTypes = array();
 for ($i = 0; $i < sizeof($allTypes); $i++) {
 	if (!in_array($allTypes[$i], $activeTypes)) $availableTypes[] = $allTypes[$i];
@@ -163,13 +103,80 @@ echo "</head><body>\n";
 echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br>\n");
+	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr>\n<p>&nbsp;</p>\n");
 
 // print error messages
-for ($i = 0; $i < sizeof($errors); $i++) call_user_func_array('StatusMessage', $errors[$i]);
+for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
 echo ("<form action=\"conftypes.php\" method=\"post\">\n");
-echo "<h1 align=\"center\">" . _("Account type selection") . "</h1>";
+echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
+// show tabs
+echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
+echo "<tr>\n";
+	$buttonWidth = 0;
+	$buttonTexts = array(_('General settings'), _('Account types'), _('Modules'), _('Save'), _('Cancel'));
+	for ($b = 0; $b < sizeof($buttonTexts); $b++) {
+		$tempWidth = round(0.8 * strlen(utf8_decode($buttonTexts[$b]))) + 2;
+		if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
+	}
+	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	// general settings
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/bigTools.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"generalSettingsButton\" type=\"submit\" value=\"" . $buttonSpace . _('General settings') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// account types
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('edittypes')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/gear.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"edittypes\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// module selection
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('editmodules')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"editmodules\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "<td width=\"100%\">&nbsp;</td>";
+	// save button
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('saveSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/pass.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"saveSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Save') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	// cancel button
+	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('cancelSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/fail.png);width:' . $buttonWidth . 'em;';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"cancelSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Cancel') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "</tr></table>\n";		
+// end tabs
+echo "</td></tr>\n";
+
+echo "<tr><td><br><br>\n";
 
 // show available types
 if (sizeof($availableTypes) > 0) {
@@ -201,14 +208,14 @@ if (sizeof($activeTypes) > 0) {
 		// LDAP suffix
 		echo "<tr>\n";
 			echo "<td>" . _("LDAP suffix") . "</td>\n";
-			echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $_SESSION['conf_typeSettings']['suffix_' . $activeTypes[$i]] . "\"></td>\n";
+			echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $typeSettings['suffix_' . $activeTypes[$i]] . "\"></td>\n";
 			echo "<td>";
 			printHelpLink(getHelp('', '202'), '202');
 			echo "</td>\n";
 		echo "</tr>\n";
 		// list attributes
-		if (isset($_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]])) {
-			$attributes = $_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]];
+		if (isset($typeSettings['attr_' . $activeTypes[$i]])) {
+			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
 		}
 		else {
 			$attributes = getDefaultListAttributes($activeTypes[$i]);
@@ -232,20 +239,65 @@ if (sizeof($activeTypes) > 0) {
 	echo "<p><br><br></p>\n";
 }
 
-// submit and abort button
-echo "<p>";
-echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
-echo "<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n";
 echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
-echo "</p>";
 
 echo "<p><br><br></p>\n";
+echo '</td></tr></table>';
 echo "</form>\n";
 echo "</body>\n";
 echo "</html>\n";
 
 
-
+/**
+ * Checks user input and saves the entered settings.
+ *
+ * @return array list of errors
+ */
+function checkInput() {
+	if (!isset($_POST['postAvailable'])) {
+		return array();
+	}
+	$errors = array();
+	$conf = &$_SESSION['conf_config'];
+	$typeSettings = $conf->get_typeSettings();
+	$accountTypes = $conf->get_ActiveTypes();
+	$postKeys = array_keys($_POST);
+	for ($i = 0; $i < sizeof($postKeys); $i++) {
+		$key = $postKeys[$i];
+		// check if remove button was pressed
+		if (substr($key, 0, 4) == "rem_") {
+			$type = substr($key, 4);
+			$accountTypes = array_flip($accountTypes);
+			unset($accountTypes[$type]);
+			$accountTypes = array_flip($accountTypes);
+			$accountTypes = array_values($accountTypes);
+		}
+		// check if add button was pressed
+		else if (substr($key, 0, 4) == "add_") {
+			$type = substr($key, 4);
+			$accountTypes[] = $type;
+		}
+		// set suffixes
+		elseif (substr($key, 0, 7) == "suffix_") {
+			$typeSettings[$key] = $_POST[$key];
+			$type = substr($postKeys[$i], 7);
+			if (strlen($_POST[$key]) < 1) {
+				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), getTypeAlias($type));
+			}
+		}
+		elseif (substr($key, 0, 5) == "attr_") {
+			$typeSettings[$key] = $_POST[$key];
+			$type = substr($postKeys[$i], 5);
+			if (!is_string($_POST[$key]) || !eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $_POST[$key])) {
+				$errors[] = array("ERROR", _("List attributes are invalid!"), getTypeAlias($type));
+			}
+		}
+	}
+	// save input
+	$conf->set_typeSettings($typeSettings);
+	$conf->set_ActiveTypes($accountTypes);
+	return $errors;
+}
 
 ?>
 
