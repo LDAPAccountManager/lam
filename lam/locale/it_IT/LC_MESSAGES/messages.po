@@ -2220,7 +2220,7 @@ msgstr ""
 #: ../help/help.inc:183
 msgid ""
 "Here you can specify additional CSS links to change the layout of the self "
-"service pages. This is useful to adopt them to your corporate design. Please "
+"service pages. This is useful to adapt them to your corporate design. Please "
 "enter one link per line."
 msgstr "Qui è possibile specificare collegamenti a CSS aggiuntivi per cambiare l'aspetto delle pagine di auto-aiuto. Può essere utilizzato per adattarle alle pagine aziendali. Inserire un collegamento per linea."
 

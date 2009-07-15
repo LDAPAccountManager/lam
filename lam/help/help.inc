@@ -181,7 +181,7 @@ $helpArray = array (
 				"509" => array ("Headline" => _("Page header"),
 					"Text" => _("This HTML code will be placed on top of all self service pages. E.g. you can use this to place your custom logo. Any HTML code is permitted.")),
 				"510" => array ("Headline" => _("Additional CSS links"),
-					"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adopt them to your corporate design. Please enter one link per line.")),
+					"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line.")),
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it the user via mail.") .
 						'<br><br>' . _('If you decide to send the password via mail then the mail template "config/passwordMailTemplate.txt" will be used.') .

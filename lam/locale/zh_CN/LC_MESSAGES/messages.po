@@ -2404,7 +2404,7 @@ msgid "Here you can select which plugins you want to use for account management.
 msgstr "在此您可以选择一些选择帐号管理的插件"
 
 #: ../help/help.inc:183
-msgid "Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adopt them to your corporate design. Please enter one link per line."
+msgid "Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line."
 msgstr "这里可以指定附加的CSS链接来改变自助服务页的布局.这样做有利于采用公司的统一设计.每行添加一个CSS连接."
 
 #: ../lib/modules/phpGroupwareUser.inc:79
