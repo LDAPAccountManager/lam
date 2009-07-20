@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LAM 1.3\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2009-04-01 22:31+0800\n"
+"PO-Revision-Date: 2009-07-20 10:54+0800\n"
 "Last-Translator: Alan Needham <needham@sina.com>\n"
 "Language-Team: Chinese(Simplified) <needham@sina.com>\n"
 "MIME-Version: 1.0\n"
@@ -142,12 +142,12 @@ msgstr "您的CSV文件中缺少一个必要的列."
 msgid "A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails."
 msgstr "使用者可以同意由某人来代表自己，在 Kolab smtp 服务器(Postfix)发送电子邮件时会检查这个属性."
 
-#: ../lib/modules/sambaSamAccount.inc:510
+#: ../lib/modules/sambaSamAccount.inc:513
 msgid "Abu Dhabi, Muscat, Baku"
 msgstr "阿布达比, 马斯凯特, 巴库"
 
-#: ../templates/config/confmain.php:196
-#: ../help/help.inc:101
+#: ../templates/config/confmain.php:277
+#: ../help/help.inc:102
 msgid "Access level"
 msgstr "访问级别"
 
@@ -156,17 +156,17 @@ msgid "Account"
 msgstr "帐号"
 
 #: ../templates/massBuildAccounts.php:170
-#: ../lib/modules/dhcp_settings.inc:302
-#: ../lib/modules/dhcp_settings.inc:304
-#: ../lib/modules/dhcp_settings.inc:306
-#: ../lib/modules/dhcp_settings.inc:308
-#: ../lib/modules/dhcp_settings.inc:310
-#: ../lib/modules/dhcp_settings.inc:312
-#: ../lib/modules/dhcp_settings.inc:314
-#: ../lib/modules/dhcp_settings.inc:316
-#: ../lib/modules/dhcp_settings.inc:324
+#: ../lib/modules/dhcp_settings.inc:311
+#: ../lib/modules/dhcp_settings.inc:313
+#: ../lib/modules/dhcp_settings.inc:315
+#: ../lib/modules/dhcp_settings.inc:317
+#: ../lib/modules/dhcp_settings.inc:319
+#: ../lib/modules/dhcp_settings.inc:321
+#: ../lib/modules/dhcp_settings.inc:323
 #: ../lib/modules/dhcp_settings.inc:325
-#: ../lib/modules/dhcp_settings.inc:326
+#: ../lib/modules/dhcp_settings.inc:333
+#: ../lib/modules/dhcp_settings.inc:334
+#: ../lib/modules/dhcp_settings.inc:335
 #: ../lib/modules/nisMailAlias.inc:106
 #: ../lib/modules/nisMailAlias.inc:108
 #: ../lib/modules/account.inc:136
@@ -300,10 +300,10 @@ msgid "Account details"
 msgstr "帐号详细信息"
 
 #: ../lib/modules/sambaSamAccount.inc:290
-#: ../lib/modules/sambaSamAccount.inc:413
-#: ../lib/modules/sambaSamAccount.inc:1092
-#: ../lib/modules/sambaSamAccount.inc:1325
-#: ../lib/modules/sambaSamAccount.inc:1515
+#: ../lib/modules/sambaSamAccount.inc:416
+#: ../lib/modules/sambaSamAccount.inc:1118
+#: ../lib/modules/sambaSamAccount.inc:1351
+#: ../lib/modules/sambaSamAccount.inc:1541
 #: ../lib/modules/shadowAccount.inc:120
 #: ../lib/modules/shadowAccount.inc:185
 #: ../lib/modules/shadowAccount.inc:217
@@ -313,7 +313,7 @@ msgstr "帐号详细信息"
 #: ../lib/modules/phpGroupwareUser.inc:111
 #: ../lib/modules/phpGroupwareUser.inc:142
 #: ../lib/modules/phpGroupwareUser.inc:225
-#: ../lib/modules/phpGroupwareUser.inc:378
+#: ../lib/modules/phpGroupwareUser.inc:377
 msgid "Account expiration date"
 msgstr "帐号过期日期"
 
@@ -328,14 +328,14 @@ msgstr "帐号停用(inactive)"
 #: ../lib/modules/sambaAccount.inc:762
 #: ../lib/modules/sambaSamAccount.inc:230
 #: ../lib/modules/sambaSamAccount.inc:236
-#: ../lib/modules/sambaSamAccount.inc:391
-#: ../lib/modules/sambaSamAccount.inc:1030
-#: ../lib/modules/sambaSamAccount.inc:1503
+#: ../lib/modules/sambaSamAccount.inc:394
+#: ../lib/modules/sambaSamAccount.inc:1056
+#: ../lib/modules/sambaSamAccount.inc:1529
 msgid "Account is deactivated"
 msgstr "帐号已经停用"
 
 #: ../lib/modules/sambaSamAccount.inc:233
-#: ../lib/modules/sambaSamAccount.inc:1038
+#: ../lib/modules/sambaSamAccount.inc:1064
 msgid "Account is locked"
 msgstr "帐号锁定"
 
@@ -346,7 +346,7 @@ msgstr "帐号名"
 #: ../lib/modules/phpGroupwareUser.inc:78
 #: ../lib/modules/phpGroupwareUser.inc:104
 #: ../lib/modules/phpGroupwareUser.inc:149
-#: ../lib/modules/phpGroupwareUser.inc:373
+#: ../lib/modules/phpGroupwareUser.inc:372
 msgid "Account status"
 msgstr "帐号状态"
 
@@ -356,16 +356,20 @@ msgstr "帐号状态"
 msgid "Account type"
 msgstr "帐号类型"
 
-#: ../templates/config/conftypes.php:170
-msgid "Account type selection"
-msgstr "帐号类型选择"
+#: ../templates/config/conftypes.php:118
+#: ../templates/config/conftypes.php:140
+#: ../templates/config/confmain.php:146
+#: ../templates/config/confmain.php:168
+#: ../templates/config/confmodules.php:112
+#: ../templates/config/confmodules.php:134
+msgid "Account types"
+msgstr "帐号类型"
 
-#: ../templates/config/confmain.php:228
-#: ../help/help.inc:105
+#: ../help/help.inc:106
 msgid "Account types and modules"
 msgstr "帐号类型和模块"
 
-#: ../help/help.inc:107
+#: ../help/help.inc:108
 msgid "Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited."
 msgstr "LDAP条目类型中的帐号类型定义必须是可管理的（比如user和group),帐号模块定义中的属性（例如 UNIX 和SAMBA）必须是可编辑的。"
 
@@ -378,10 +382,18 @@ msgstr "新增帐号成功"
 msgid "Account was modified successfully."
 msgstr "帐号修改成功"
 
+#: ../lib/modules/customScripts.inc:98
+msgid "Action type"
+msgstr "动作类型"
+
 #: ../lib/modules/ddns.inc:81
-#: ../lib/modules/ddns.inc:331
+#: ../lib/modules/ddns.inc:333
 msgid "Activate DynDNS"
 msgstr "活动的动态DNS"
+
+#: ../templates/config/confmain.php:220
+msgid "Activate TLS"
+msgstr "激活TLS"
 
 #: ../lib/modules/sambaSamAccount.inc:297
 msgid "Activate this checkbox to allow this user to use the terminal service."
@@ -407,7 +419,7 @@ msgstr "激活这个选项将会设置客户打印机为缺省打印机。"
 msgid "Activating this checkbox will remove the user's home directory."
 msgstr "激活这个选项将会删除用户的主目录."
 
-#: ../templates/config/conftypes.php:192
+#: ../templates/config/conftypes.php:202
 msgid "Active account types"
 msgstr "激活帐号类型"
 
@@ -420,7 +432,8 @@ msgstr "激活帐号类型"
 #: ../templates/pdfedit/pdfpage.php:591
 #: ../templates/pdfedit/pdfpage.php:621
 #: ../templates/pdfedit/pdfpage.php:662
-#: ../templates/config/conftypes.php:181
+#: ../templates/config/conftypes.php:190
+#: ../templates/config/confmodules.php:251
 #: ../lib/modules/nisnetgroup.inc:247
 #: ../lib/modules/nisMailAlias.inc:154
 #: ../lib/modules/ieee802device.inc:111
@@ -444,18 +457,12 @@ msgstr "增加"
 msgid "Add EDU person extension"
 msgstr "增加EDU用户扩展"
 
-#: ../lib/modules/fixed_ip.inc:91
-#: ../lib/modules/fixed_ip.inc:416
-#: ../lib/modules/fixed_ip.inc:417
-msgid "Add IP"
-msgstr "增加IP"
-
 #: ../lib/modules/kolabUser.inc:403
 msgid "Add Kolab extension"
 msgstr "增加 Kolab 扩展"
 
 #: ../lib/modules/sambaGroupMapping.inc:279
-#: ../lib/modules/sambaSamAccount.inc:1202
+#: ../lib/modules/sambaSamAccount.inc:1228
 msgid "Add Samba 3 account"
 msgstr "增加Samba3帐号"
 
@@ -467,12 +474,12 @@ msgstr "增加 Shadow 帐号"
 msgid "Add entries of this type:"
 msgstr "增加类型条目"
 
-#: ../lib/modules/ddns.inc:336
+#: ../lib/modules/ddns.inc:338
 msgid "Add fix IP addresses to DNS"
 msgstr "为DNS增加一个固定的IP地址"
 
-#: ../templates/selfService/adminMain.php:510
-#: ../help/help.inc:178
+#: ../templates/selfService/adminMain.php:512
+#: ../help/help.inc:179
 msgid "Add input field"
 msgstr "增加输入栏目"
 
@@ -488,8 +495,8 @@ msgstr "新增属性"
 msgid "Add new binary attribute"
 msgstr "新增binary属性."
 
-#: ../templates/selfService/adminMain.php:495
-#: ../help/help.inc:176
+#: ../templates/selfService/adminMain.php:497
+#: ../help/help.inc:177
 msgid "Add new group"
 msgstr "新增组"
 
@@ -509,9 +516,9 @@ msgstr "新增照片"
 msgid "Add phpGroupWare extension"
 msgstr "增加 phpGroupWare 扩展"
 
-#: ../templates/selfService/profManage.php:139
-#: ../templates/config/profmanage.php:170
-#: ../help/help.inc:118
+#: ../templates/selfService/profManage.php:141
+#: ../templates/config/profmanage.php:172
+#: ../help/help.inc:119
 msgid "Add profile"
 msgstr "增加配置文件"
 
@@ -519,26 +526,22 @@ msgstr "增加配置文件"
 msgid "Adding attribute failed!"
 msgstr "增加属性失败！"
 
-#: ../lib/modules/fixed_ip.inc:101
-msgid "Adding of a fixed IP failed because of errors."
-msgstr "因为发生了错误致使增加固定IP失败"
-
 #: ../lib/modules/range.inc:100
 msgid "Adding the range failed because errors occured."
 msgstr "因为发生了错误致使增加范围失败"
 
-#: ../templates/selfService/adminMain.php:413
-#: ../help/help.inc:182
+#: ../templates/selfService/adminMain.php:415
+#: ../help/help.inc:183
 msgid "Additional CSS links"
 msgstr "附加的CSS连接"
 
 #: ../lib/modules/posixAccount.inc:224
 #: ../lib/modules/posixAccount.inc:355
 #: ../lib/modules/posixAccount.inc:400
-#: ../lib/modules/posixAccount.inc:992
-#: ../lib/modules/posixAccount.inc:1085
-#: ../lib/modules/posixAccount.inc:1157
-#: ../lib/modules/posixAccount.inc:1243
+#: ../lib/modules/posixAccount.inc:993
+#: ../lib/modules/posixAccount.inc:1086
+#: ../lib/modules/posixAccount.inc:1158
+#: ../lib/modules/posixAccount.inc:1244
 msgid "Additional groups"
 msgstr "附加组"
 
@@ -546,21 +549,17 @@ msgstr "附加组"
 msgid "Additional tasks for module:"
 msgstr "模块的附加任务："
 
-#: ../help/help.inc:177
+#: ../help/help.inc:178
 msgid "Adds a new group element to the list of self service options. Use this to structure the input fields."
 msgstr "为自助服务选项列表新增组元素.利用它建立输入栏目."
 
-#: ../help/help.inc:179
+#: ../help/help.inc:180
 msgid "Adds a new self service option to the selected group element."
 msgstr "为选定的组元素增加新的自助服务选项."
 
 #: ../lib/modules/range.inc:90
 msgid "Adds input fields for a new IP range."
 msgstr "为新IP范围增加输入域"
-
-#: ../lib/modules/fixed_ip.inc:92
-msgid "Adds input fields for a new fixed IP address."
-msgstr "为新IP地址增加新输入域"
 
 #: ../lib/modules/inetOrgPerson.inc:240
 #: ../lib/modules/inetOrgPerson.inc:306
@@ -581,7 +580,7 @@ msgstr "管理员组"
 msgid "Affiliations"
 msgstr "联系"
 
-#: ../lib/modules/sambaSamAccount.inc:497
+#: ../lib/modules/sambaSamAccount.inc:500
 msgid "Alaska"
 msgstr "阿拉斯加"
 
@@ -607,6 +606,7 @@ msgid "Alias name"
 msgstr "别名"
 
 #: ../lib/modules/uidObject.inc:52
+#: ../lib/modules/customScripts.inc:45
 #: ../lib/modules/aliasEntry.inc:54
 #: ../lib/modules/aliasEntry.inc:62
 #: ../lib/modules/aliasEntry.inc:92
@@ -627,12 +627,12 @@ msgstr "别名"
 msgid "All accounts (%s)"
 msgstr "所有帐号 %s:"
 
-#: ../templates/selfService/selfServiceMain.php:186
+#: ../templates/selfService/selfServiceMain.php:188
 #: ../templates/initsuff.php:160
 msgid "All changes were successful."
 msgstr "修改成功."
 
-#: ../help/help.inc:189
+#: ../help/help.inc:190
 msgid "All following lines form the mail body."
 msgstr "邮件主体的所有行"
 
@@ -648,25 +648,25 @@ msgid "Allow machine password changes"
 msgstr "允许改变主机密码"
 
 #: ../lib/modules/sambaSamAccount.inc:296
-#: ../lib/modules/sambaSamAccount.inc:1368
-#: ../lib/modules/sambaSamAccount.inc:1749
+#: ../lib/modules/sambaSamAccount.inc:1394
+#: ../lib/modules/sambaSamAccount.inc:1775
 msgid "Allow terminal server login"
 msgstr "允许终端服务登录"
 
-#: ../templates/config/mainmanage.php:186
+#: ../templates/config/mainmanage.php:188
 #: ../lib/types/user.inc:95
-#: ../help/help.inc:140
+#: ../help/help.inc:141
 msgid "Allowed hosts"
 msgstr "允许的主机"
 
 #: ../lib/modules/sambaAccount.inc:867
 #: ../lib/modules/sambaAccount.inc:868
-#: ../lib/modules/sambaSamAccount.inc:1225
-#: ../lib/modules/sambaSamAccount.inc:1226
+#: ../lib/modules/sambaSamAccount.inc:1251
+#: ../lib/modules/sambaSamAccount.inc:1252
 msgid "Allowed workstations"
 msgstr "允许的工作站"
 
-#: ../lib/modules/sambaSamAccount.inc:512
+#: ../lib/modules/sambaSamAccount.inc:515
 msgid "Almaty, Dhaka, Colombo"
 msgstr "阿尔迈迪，达卡，科伦坡"
 
@@ -693,11 +693,11 @@ msgstr "任何人"
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "确认永久删除这个对象?"
 
-#: ../lib/modules/sambaSamAccount.inc:502
+#: ../lib/modules/sambaSamAccount.inc:505
 msgid "Atlantic time (Canada), Caracas"
 msgstr "大西洋时间(加拿大),卡拉卡斯"
 
-#: ../lib/modules/ddns.inc:383
+#: ../lib/modules/ddns.inc:385
 msgid "Attention: The DHCP service needs to be restarted after changes in DDNS."
 msgstr "注意:如果DDNS发生改变,DHCP服务需要重启."
 
@@ -710,20 +710,25 @@ msgstr "属性"
 msgid "Attribute types"
 msgstr "属性类型"
 
-#: ../lib/modules/sambaSamAccount.inc:518
+#: ../lib/modules/sambaSamAccount.inc:521
 msgid "Auckland, Fiji, Kamchatka"
 msgstr "奥克兰,斐济,堪察加"
 
-#: ../templates/config/conftypes.php:174
+#: ../templates/config/conftypes.php:183
+#: ../lib/modules/customScripts.inc:54
 msgid "Available account types"
 msgstr "有效的帐号类型"
 
+#: ../lib/modules/customScripts.inc:55
+msgid "Available actions"
+msgstr "可选动作"
+
 #: ../lib/modules/nisnetgroup.inc:364
-#: ../lib/modules/posixAccount.inc:1097
+#: ../lib/modules/posixAccount.inc:1098
 msgid "Available groups"
 msgstr "可选组"
 
-#: ../templates/config/confmodules.php:211
+#: ../templates/config/confmodules.php:260
 msgid "Available modules"
 msgstr "可选模块"
 
@@ -732,11 +737,11 @@ msgid "Available users"
 msgstr "可选用户"
 
 #: ../lib/modules/sambaAccount.inc:873
-#: ../lib/modules/sambaSamAccount.inc:1231
+#: ../lib/modules/sambaSamAccount.inc:1257
 msgid "Available workstations"
 msgstr "可选工作站"
 
-#: ../lib/modules/sambaSamAccount.inc:505
+#: ../lib/modules/sambaSamAccount.inc:508
 msgid "Azores, Cape Verde Islands"
 msgstr "亚速尔,维德角岛"
 
@@ -751,8 +756,8 @@ msgstr "B-节点 (0x01)"
 #: ../lib/modules/sambaAccount.inc:878
 #: ../lib/modules/posixGroup.inc:266
 #: ../lib/modules/posixGroup.inc:289
-#: ../lib/modules/posixAccount.inc:1103
-#: ../lib/modules/sambaSamAccount.inc:1235
+#: ../lib/modules/posixAccount.inc:1104
+#: ../lib/modules/sambaSamAccount.inc:1261
 msgid "Back"
 msgstr "返回"
 
@@ -761,12 +766,12 @@ msgid "Back to DHCP list"
 msgstr "返回到DHCP列表"
 
 #: ../templates/logout.php:78
-#: ../templates/selfService/adminMain.php:134
-#: ../templates/selfService/adminLogin.php:148
-#: ../templates/config/index.php:114
-#: ../templates/config/conflogin.php:152
-#: ../templates/config/confmain.php:624
-#: ../templates/config/mainlogin.php:138
+#: ../templates/selfService/adminMain.php:136
+#: ../templates/selfService/adminLogin.php:150
+#: ../templates/config/index.php:115
+#: ../templates/config/conflogin.php:154
+#: ../templates/config/confsave.php:88
+#: ../templates/config/mainlogin.php:140
 msgid "Back to Login"
 msgstr "返回到登录界面"
 
@@ -805,12 +810,12 @@ msgstr "返回到组列表"
 msgid "Back to host list"
 msgstr "返回到主机列表"
 
-#: ../templates/delete.php:242
+#: ../templates/delete.php:241
 msgid "Back to list"
 msgstr "返回列表"
 
-#: ../templates/config/mainmanage.php:142
-#: ../templates/config/mainmanage.php:368
+#: ../templates/config/mainmanage.php:144
+#: ../templates/config/mainmanage.php:370
 msgid "Back to login"
 msgstr "返回到登录界面"
 
@@ -820,8 +825,8 @@ msgstr "返回到登录界面"
 msgid "Back to profile editor"
 msgstr "返回到配置文件编辑器"
 
-#: ../templates/selfService/profManage.php:257
-#: ../templates/config/profmanage.php:357
+#: ../templates/selfService/profManage.php:259
+#: ../templates/config/profmanage.php:359
 msgid "Back to profile login"
 msgstr "返回到配置文件登录"
 
@@ -829,11 +834,11 @@ msgstr "返回到配置文件登录"
 msgid "Back to user list"
 msgstr "返回到用户列表"
 
-#: ../lib/modules/sambaSamAccount.inc:509
+#: ../lib/modules/sambaSamAccount.inc:512
 msgid "Baghdad, Riyadh, Moscow"
 msgstr "巴格达,利雅得,莫斯科"
 
-#: ../lib/modules/sambaSamAccount.inc:513
+#: ../lib/modules/sambaSamAccount.inc:516
 msgid "Bangkok, Hanoi, Jakarta"
 msgstr "曼谷,河内,安卡拉"
 
@@ -845,8 +850,8 @@ msgstr "Base (只有基本DN)"
 msgid "Base DN"
 msgstr "基本DN"
 
-#: ../templates/config/confmodules.php:121
-#: ../help/help.inc:132
+#: ../templates/config/confmodules.php:187
+#: ../help/help.inc:133
 msgid "Base module"
 msgstr "基本模块"
 
@@ -854,7 +859,7 @@ msgstr "基本模块"
 msgid "Beginning"
 msgstr "开始"
 
-#: ../lib/modules/sambaSamAccount.inc:514
+#: ../lib/modules/sambaSamAccount.inc:517
 msgid "Beijing, Perth, Singapore"
 msgstr "北京,佩斯,新加坡"
 
@@ -890,7 +895,7 @@ msgstr "块数软性限额包含非法字符,只能使用自然数."
 msgid "Block soft quota must be smaller than block hard quota."
 msgstr "块数软性限额必须小于硬性限额."
 
-#: ../lib/modules/sambaSamAccount.inc:503
+#: ../lib/modules/sambaSamAccount.inc:506
 msgid "Brazil, Buenos Aires"
 msgstr "巴西,布宜诺斯艾利斯"
 
@@ -916,12 +921,12 @@ msgstr "商业种类(比如:行政部门,IT服务部门,管理部门,...)"
 msgid "CSV file:"
 msgstr "CSV 文件:"
 
-#: ../templates/config/confmain.php:175
-#: ../help/help.inc:99
+#: ../templates/config/confmain.php:256
+#: ../help/help.inc:100
 msgid "Cache timeout"
 msgstr "缓存超时"
 
-#: ../templates/config/confmain.php:513
+#: ../templates/config/confmain.php:560
 msgid "Cache timeout is invalid!"
 msgstr "缓存超时非法"
 
@@ -946,27 +951,30 @@ msgstr "可以置空"
 #: ../templates/tree/delete_form.php:119
 #: ../templates/tree/delete_form.php:168
 #: ../templates/tree/update_confirm.php:241
-#: ../templates/selfService/adminMain.php:572
+#: ../templates/selfService/adminMain.php:574
 #: ../templates/pdfedit/pdfpage.php:708
 #: ../templates/pdfedit/pdfdelete.php:97
 #: ../templates/delete.php:117
 #: ../templates/ou_edit.php:108
 #: ../templates/profedit/profilepage.php:261
 #: ../templates/profedit/profiledelete.php:86
-#: ../templates/config/conftypes.php:236
-#: ../templates/config/confmain.php:476
-#: ../templates/config/confmodules.php:117
+#: ../templates/config/conftypes.php:118
+#: ../templates/config/conftypes.php:171
+#: ../templates/config/confmain.php:146
+#: ../templates/config/confmain.php:199
+#: ../templates/config/confmodules.php:112
+#: ../templates/config/confmodules.php:165
 #: ../templates/initsuff.php:193
 #: ../lib/modules/nisnetgroup.inc:467
 #: ../lib/modules/inetOrgPerson.inc:1029
 #: ../lib/modules/groupOfNames.inc:231
 #: ../lib/modules/groupOfNames.inc:258
 #: ../lib/modules/groupOfNames.inc:311
-#: ../lib/modules/posixAccount.inc:1132
+#: ../lib/modules/posixAccount.inc:1133
 #: ../lib/modules/kolabUser.inc:572
-#: ../lib/modules/sambaSamAccount.inc:1300
-#: ../lib/modules/sambaSamAccount.inc:1348
-#: ../lib/modules/sambaSamAccount.inc:1471
+#: ../lib/modules/sambaSamAccount.inc:1326
+#: ../lib/modules/sambaSamAccount.inc:1374
+#: ../lib/modules/sambaSamAccount.inc:1497
 #: ../lib/modules/shadowAccount.inc:385
 #: ../lib/modules/phpGroupwareUser.inc:248
 #: ../lib/modules/aliasEntry.inc:147
@@ -976,20 +984,20 @@ msgstr "可以置空"
 msgid "Cancel"
 msgstr "取消"
 
-#: ../templates/selfService/selfServiceLogin.php:111
-#: ../templates/selfService/selfServiceLogin.php:115
-#: ../templates/selfService/selfServiceMain.php:86
-#: ../templates/login.php:487
-#: ../templates/login.php:493
+#: ../templates/selfService/selfServiceLogin.php:113
+#: ../templates/selfService/selfServiceLogin.php:117
+#: ../templates/selfService/selfServiceMain.php:88
+#: ../templates/login.php:496
+#: ../templates/login.php:502
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "无法连接指定的LDAP服务器,请再试一次."
 
-#: ../lib/config.inc:411
-#: ../lib/config.inc:1091
+#: ../lib/config.inc:415
+#: ../lib/config.inc:1119
 msgid "Cannot open config file!"
 msgstr "无法打开配置文件!"
 
-#: ../templates/selfService/adminMain.php:360
+#: ../templates/selfService/adminMain.php:362
 msgid "Captions and labels"
 msgstr "标题和标签"
 
@@ -1002,23 +1010,23 @@ msgstr "标题和标签"
 msgid "Car license"
 msgstr "汽车执照"
 
-#: ../lib/modules/sambaSamAccount.inc:507
+#: ../lib/modules/sambaSamAccount.inc:510
 msgid "Central Europe Time, Paris, Berlin"
 msgstr "欧洲中央时间,巴黎,柏林"
 
-#: ../lib/modules/sambaSamAccount.inc:500
+#: ../lib/modules/sambaSamAccount.inc:503
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "中央时间(美国和加拿大),墨西哥市 "
 
-#: ../templates/selfService/adminMain.php:438
+#: ../templates/selfService/adminMain.php:440
 #: ../templates/pdfedit/pdfpage.php:453
 #: ../templates/pdfedit/pdfpage.php:459
 #: ../lib/modules/groupOfNames.inc:157
 #: ../lib/modules/groupOfNames.inc:174
-#: ../lib/modules/sambaSamAccount.inc:1061
-#: ../lib/modules/sambaSamAccount.inc:1078
-#: ../lib/modules/sambaSamAccount.inc:1095
-#: ../lib/modules/sambaSamAccount.inc:1344
+#: ../lib/modules/sambaSamAccount.inc:1087
+#: ../lib/modules/sambaSamAccount.inc:1104
+#: ../lib/modules/sambaSamAccount.inc:1121
+#: ../lib/modules/sambaSamAccount.inc:1370
 #: ../lib/modules/shadowAccount.inc:324
 #: ../lib/modules/shadowAccount.inc:381
 #: ../lib/modules/phpGroupwareUser.inc:145
@@ -1031,8 +1039,8 @@ msgstr "更改"
 msgid "Change GID number of users and hosts"
 msgstr "更改用户和主机的GID号"
 
-#: ../templates/config/profmanage.php:322
-#: ../help/help.inc:126
+#: ../templates/config/profmanage.php:324
+#: ../help/help.inc:127
 msgid "Change default profile"
 msgstr "更改缺省的配置文件"
 
@@ -1040,8 +1048,8 @@ msgstr "更改缺省的配置文件"
 msgid "Change list settings"
 msgstr "改变列表设置"
 
-#: ../templates/config/mainmanage.php:325
-#: ../help/help.inc:128
+#: ../templates/config/mainmanage.php:327
+#: ../help/help.inc:129
 msgid "Change master password"
 msgstr "更改管理员密码"
 
@@ -1050,18 +1058,18 @@ msgstr "更改管理员密码"
 #: ../templates/lists/changePassword.php:219
 #: ../lib/modules/inetOrgPerson.inc:793
 #: ../lib/modules/posixGroup.inc:202
-#: ../lib/modules/posixAccount.inc:1038
+#: ../lib/modules/posixAccount.inc:1039
 #: ../lib/types/user.inc:243
-#: ../help/help.inc:97
+#: ../help/help.inc:98
 msgid "Change password"
 msgstr "更改密码"
 
-#: ../templates/config/confmain.php:205
-#: ../templates/config/confmain.php:208
+#: ../templates/config/confmain.php:286
+#: ../templates/config/confmain.php:289
 msgid "Change passwords"
 msgstr "更改密码 "
 
-#: ../templates/login.php:371
+#: ../templates/login.php:382
 msgid "Change profile"
 msgstr "改变配置文件"
 
@@ -1074,7 +1082,7 @@ msgstr "修改设置"
 msgid "Change suffix"
 msgstr "更改后缀"
 
-#: ../lib/modules/posixAccount.inc:857
+#: ../lib/modules/posixAccount.inc:858
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "值已改变,因为只能使用ASCII字符."
 
@@ -1108,8 +1116,8 @@ msgid "Click here if you are not directed to the next page."
 msgstr "如果没有自动跳转到下一页请点此处."
 
 #: ../lib/modules/sambaSamAccount.inc:323
-#: ../lib/modules/sambaSamAccount.inc:1434
-#: ../lib/modules/sambaSamAccount.inc:1777
+#: ../lib/modules/sambaSamAccount.inc:1460
+#: ../lib/modules/sambaSamAccount.inc:1803
 msgid "Client printer is default"
 msgstr "缺省为客户打印机"
 
@@ -1126,6 +1134,10 @@ msgstr "列:"
 msgid "Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."
 msgstr "用户可以登录的Samba工作站,用逗号分隔,空值表示所有工作站."
 
+#: ../lib/modules/customScripts.inc:99
+msgid "Command"
+msgstr "命令"
+
 #: ../templates/tree/update_confirm.php:234
 msgid "Commit"
 msgstr "提交"
@@ -1139,33 +1151,33 @@ msgstr "提交"
 #: ../lib/modules/posixAccount.inc:205
 #: ../lib/modules/posixAccount.inc:404
 #: ../lib/modules/posixAccount.inc:426
-#: ../lib/modules/posixAccount.inc:965
-#: ../lib/modules/posixAccount.inc:1238
+#: ../lib/modules/posixAccount.inc:966
+#: ../lib/modules/posixAccount.inc:1239
 msgid "Common name"
 msgstr "全名"
 
-#: ../templates/config/index.php:48
+#: ../templates/config/index.php:50
 msgid "Configuration overview"
 msgstr "配置总览"
 
-#: ../templates/config/confmodules.php:252
+#: ../templates/config/confmodules.php:343
 msgid "Conflicting module:"
 msgstr "冲突的模块:"
 
 #: ../lib/modules/sambaSamAccount.inc:317
-#: ../lib/modules/sambaSamAccount.inc:1424
-#: ../lib/modules/sambaSamAccount.inc:1767
+#: ../lib/modules/sambaSamAccount.inc:1450
+#: ../lib/modules/sambaSamAccount.inc:1793
 msgid "Connect client drives"
 msgstr "连接客户驱动器"
 
 #: ../lib/modules/sambaSamAccount.inc:320
-#: ../lib/modules/sambaSamAccount.inc:1429
-#: ../lib/modules/sambaSamAccount.inc:1772
+#: ../lib/modules/sambaSamAccount.inc:1455
+#: ../lib/modules/sambaSamAccount.inc:1798
 msgid "Connect client printers"
 msgstr "连接客户打印机"
 
-#: ../lib/modules/sambaSamAccount.inc:1409
-#: ../lib/modules/sambaSamAccount.inc:1760
+#: ../lib/modules/sambaSamAccount.inc:1435
+#: ../lib/modules/sambaSamAccount.inc:1786
 msgid "Connection time limit"
 msgstr "连接时间限制"
 
@@ -1182,8 +1194,8 @@ msgstr "容器的DN"
 msgid "Could not perform ldap_modify operation."
 msgstr "无法执行ldap_modify命令"
 
-#: ../templates/selfService/profManage.php:87
-#: ../templates/config/profmanage.php:101
+#: ../templates/selfService/profManage.php:89
+#: ../templates/config/profmanage.php:103
 msgid "Could not rename file!"
 msgstr "不能更改文件名"
 
@@ -1220,7 +1232,7 @@ msgstr "对立对象"
 #: ../lib/modules.inc:1261
 #: ../lib/lists.inc:466
 #: ../lib/lists.inc:628
-#: ../help/help.inc:159
+#: ../help/help.inc:160
 msgid "Create PDF file"
 msgstr "建立PDF文件"
 
@@ -1268,8 +1280,8 @@ msgid "Create for"
 msgstr "建立"
 
 #: ../lib/modules/posixAccount.inc:237
-#: ../lib/modules/posixAccount.inc:1008
-#: ../lib/modules/posixAccount.inc:1174
+#: ../lib/modules/posixAccount.inc:1009
+#: ../lib/modules/posixAccount.inc:1175
 msgid "Create home directory"
 msgstr "建立主目录"
 
@@ -1285,8 +1297,8 @@ msgstr "建立主目录"
 msgid "Create new entry"
 msgstr "新建条目"
 
-#: ../templates/selfService/profManage.php:70
-#: ../templates/config/profmanage.php:86
+#: ../templates/selfService/profManage.php:72
+#: ../templates/config/profmanage.php:88
 msgid "Created new profile."
 msgstr "新增配置文件"
 
@@ -1302,11 +1314,17 @@ msgstr "当前属性所有值: "
 msgid "Custom"
 msgstr "自定义"
 
+#: ../lib/modules/customScripts.inc:41
+#: ../lib/modules/customScripts.inc:52
+#: ../lib/modules/customScripts.inc:68
+msgid "Custom scripts"
+msgstr "自定义脚本"
+
 #: ../lib/modules/ddns.inc:65
 msgid "DDNS"
 msgstr "DDNS"
 
-#: ../lib/modules/ddns.inc:353
+#: ../lib/modules/ddns.inc:355
 msgid "DDNS ist not activated. You can activate it in the DHCP settings (DDNS)."
 msgstr "DDNS没有激活.可以DHCP设置中激活(DDNS)"
 
@@ -1332,7 +1350,7 @@ msgstr "DHCP 设置"
 #: ../templates/tree/edit.php:92
 #: ../templates/delete.php:96
 #: ../lib/modules.inc:1346
-#: ../lib/modules.inc:1784
+#: ../lib/modules.inc:1810
 msgid "DN"
 msgstr "DN"
 
@@ -1341,14 +1359,14 @@ msgid "DN settings"
 msgstr "DN 设置"
 
 #: ../templates/masscreate.php:159
-#: ../help/help.inc:153
+#: ../help/help.inc:154
 msgid "DN suffix"
 msgstr "DN 后缀"
 
-#: ../lib/modules/dhcp_settings.inc:206
-#: ../lib/modules/dhcp_settings.inc:260
-#: ../lib/modules/dhcp_settings.inc:768
-#: ../lib/modules/dhcp_settings.inc:864
+#: ../lib/modules/dhcp_settings.inc:210
+#: ../lib/modules/dhcp_settings.inc:264
+#: ../lib/modules/dhcp_settings.inc:776
+#: ../lib/modules/dhcp_settings.inc:878
 msgid "DNS"
 msgstr "DNS"
 
@@ -1380,15 +1398,15 @@ msgid "Days before password is to expire that user is warned of pending password
 msgstr "在密码过期前提醒用户的天数,若设其值,必大于0."
 
 #: ../lib/modules/dhcp_settings.inc:142
-#: ../lib/modules/dhcp_settings.inc:211
-#: ../lib/modules/dhcp_settings.inc:266
-#: ../lib/modules/dhcp_settings.inc:774
-#: ../lib/modules/dhcp_settings.inc:865
+#: ../lib/modules/dhcp_settings.inc:215
+#: ../lib/modules/dhcp_settings.inc:270
+#: ../lib/modules/dhcp_settings.inc:782
+#: ../lib/modules/dhcp_settings.inc:879
 msgid "Default gateway"
 msgstr "缺省网关"
 
-#: ../templates/config/confmain.php:289
-#: ../help/help.inc:93
+#: ../templates/config/confmain.php:351
+#: ../help/help.inc:94
 msgid "Default language"
 msgstr "缺省语言"
 
@@ -1442,12 +1460,6 @@ msgstr "删除 %s"
 msgid "Delete DHCP(s)"
 msgstr "删除DHCP"
 
-#: ../lib/modules/fixed_ip.inc:88
-#: ../lib/modules/fixed_ip.inc:407
-#: ../lib/modules/fixed_ip.inc:408
-msgid "Delete IP"
-msgstr "删除IP"
-
 #: ../lib/modules/kolabUser.inc:397
 msgid "Delete Kolab account"
 msgstr "删除Kolab帐号"
@@ -1476,7 +1488,7 @@ msgstr "删除域"
 msgid "Delete group(s)"
 msgstr "删除组"
 
-#: ../lib/modules/posixAccount.inc:1057
+#: ../lib/modules/posixAccount.inc:1058
 msgid "Delete home directory"
 msgstr "删除主目录"
 
@@ -1494,7 +1506,7 @@ msgid "Delete operation canceled."
 msgstr "取消删除动作"
 
 #: ../templates/ou_edit.php:190
-#: ../help/help.inc:197
+#: ../help/help.inc:198
 msgid "Delete organizational unit"
 msgstr "删除组织单元"
 
@@ -1502,10 +1514,10 @@ msgstr "删除组织单元"
 msgid "Delete photo"
 msgstr "删除照片"
 
-#: ../templates/selfService/profManage.php:223
+#: ../templates/selfService/profManage.php:225
 #: ../templates/profedit/profiledelete.php:56
-#: ../templates/config/profmanage.php:250
-#: ../help/help.inc:122
+#: ../templates/config/profmanage.php:252
+#: ../help/help.inc:123
 msgid "Delete profile"
 msgstr "删除配置文件"
 
@@ -1520,7 +1532,7 @@ msgstr "删除范围"
 msgid "Delete user(s)"
 msgstr "删除用户"
 
-#: ../templates/delete.php:230
+#: ../templates/delete.php:229
 #, php-format
 msgid "Deleted DN: %s"
 msgstr "删除的DN: %s"
@@ -1536,10 +1548,6 @@ msgstr "已删除的帐号"
 #: ../templates/profedit/profiledelete.php:66
 msgid "Deleted profile:"
 msgstr "已删除的配置文件:"
-
-#: ../lib/modules/fixed_ip.inc:89
-msgid "Deletes a fixed IP address."
-msgstr "删除一个固定的IP地址."
 
 #: ../lib/modules/range.inc:87
 msgid "Deletes an IP range."
@@ -1573,6 +1581,10 @@ msgstr "部门"
 #: ../lib/modules/nisnetgroup.inc:72
 #: ../lib/modules/nisnetgroup.inc:180
 #: ../lib/modules/nisnetgroup.inc:564
+#: ../lib/modules/dhcp_settings.inc:169
+#: ../lib/modules/dhcp_settings.inc:297
+#: ../lib/modules/dhcp_settings.inc:817
+#: ../lib/modules/dhcp_settings.inc:884
 #: ../lib/modules/account.inc:88
 #: ../lib/modules/account.inc:98
 #: ../lib/modules/account.inc:122
@@ -1598,8 +1610,13 @@ msgstr "部门"
 msgid "Description"
 msgstr "描述"
 
+#: ../lib/modules/sambaSamAccount.inc:341
+#: ../lib/modules/sambaSamAccount.inc:527
+msgid "Disable LM hashes"
+msgstr "屏蔽LM哈希方法"
+
 #: ../lib/modules/ddns.inc:87
-#: ../lib/modules/ddns.inc:341
+#: ../lib/modules/ddns.inc:343
 msgid "Disable client updates"
 msgstr "禁止客户端更新"
 
@@ -1613,8 +1630,8 @@ msgstr "禁止客户端更新DNS条目."
 msgid "Disconnect users outside logon hours"
 msgstr "切断连接前用户登录小时数"
 
-#: ../lib/modules/sambaSamAccount.inc:1414
-#: ../lib/modules/sambaSamAccount.inc:1761
+#: ../lib/modules/sambaSamAccount.inc:1440
+#: ../lib/modules/sambaSamAccount.inc:1787
 msgid "Disconnection time limit"
 msgstr "断开连接时间限制"
 
@@ -1632,9 +1649,9 @@ msgstr "如果用户登录限制时间到则断开连接."
 #: ../lib/modules/sambaGroupMapping.inc:387
 #: ../lib/modules/sambaSamAccount.inc:100
 #: ../lib/modules/sambaSamAccount.inc:203
-#: ../lib/modules/sambaSamAccount.inc:355
-#: ../lib/modules/sambaSamAccount.inc:1002
-#: ../lib/modules/sambaSamAccount.inc:1718
+#: ../lib/modules/sambaSamAccount.inc:358
+#: ../lib/modules/sambaSamAccount.inc:1028
+#: ../lib/modules/sambaSamAccount.inc:1744
 msgid "Display name"
 msgstr "显示名"
 
@@ -1679,12 +1696,12 @@ msgstr "确认如下更改?"
 #: ../lib/modules/sambaGroupMapping.inc:366
 #: ../lib/modules/sambaGroupMapping.inc:409
 #: ../lib/modules/sambaSamAccount.inc:281
-#: ../lib/modules/sambaSamAccount.inc:348
-#: ../lib/modules/sambaSamAccount.inc:474
-#: ../lib/modules/sambaSamAccount.inc:1176
-#: ../lib/modules/sambaSamAccount.inc:1573
-#: ../lib/modules/sambaSamAccount.inc:1603
-#: ../lib/modules/sambaSamAccount.inc:1736
+#: ../lib/modules/sambaSamAccount.inc:351
+#: ../lib/modules/sambaSamAccount.inc:477
+#: ../lib/modules/sambaSamAccount.inc:1202
+#: ../lib/modules/sambaSamAccount.inc:1599
+#: ../lib/modules/sambaSamAccount.inc:1629
+#: ../lib/modules/sambaSamAccount.inc:1762
 msgid "Domain"
 msgstr "域"
 
@@ -1719,7 +1736,7 @@ msgstr "域认证管理员"
 #: ../lib/modules/sambaAccount.inc:570
 #: ../lib/modules/sambaGroupMapping.inc:59
 #: ../lib/modules/sambaSamAccount.inc:72
-#: ../lib/modules/sambaSamAccount.inc:692
+#: ../lib/modules/sambaSamAccount.inc:712
 msgid "Domain computers"
 msgstr "域内计算机"
 
@@ -1748,10 +1765,10 @@ msgstr "域内来宾"
 
 #: ../lib/modules/nisnetgroup.inc:137
 #: ../lib/modules/dhcp_settings.inc:127
-#: ../lib/modules/dhcp_settings.inc:191
-#: ../lib/modules/dhcp_settings.inc:242
-#: ../lib/modules/dhcp_settings.inc:750
-#: ../lib/modules/dhcp_settings.inc:861
+#: ../lib/modules/dhcp_settings.inc:195
+#: ../lib/modules/dhcp_settings.inc:246
+#: ../lib/modules/dhcp_settings.inc:758
+#: ../lib/modules/dhcp_settings.inc:875
 #: ../lib/modules/sambaAccount.inc:72
 #: ../lib/modules/sambaDomain.inc:70
 #: ../lib/modules/sambaDomain.inc:137
@@ -1788,7 +1805,7 @@ msgstr "域架构管理员"
 #: ../lib/modules/sambaAccount.inc:48
 #: ../lib/modules/sambaGroupMapping.inc:57
 #: ../lib/modules/sambaSamAccount.inc:71
-#: ../lib/modules/sambaSamAccount.inc:2062
+#: ../lib/modules/sambaSamAccount.inc:2094
 msgid "Domain users"
 msgstr "域内用户"
 
@@ -1842,46 +1859,38 @@ msgstr "电子邮件别名列表格式非法!"
 msgid "EMail aliases"
 msgstr "电子邮件别名"
 
-#: ../lib/modules/sambaSamAccount.inc:516
+#: ../lib/modules/sambaSamAccount.inc:519
 msgid "East Australian Standard, Guam"
 msgstr "澳东标准时间,关岛"
 
-#: ../lib/modules/sambaSamAccount.inc:508
+#: ../lib/modules/sambaSamAccount.inc:511
 msgid "Eastern Europe Time, South Africa"
 msgstr "东欧时间,南非"
 
-#: ../lib/modules/sambaSamAccount.inc:501
+#: ../lib/modules/sambaSamAccount.inc:504
 msgid "Eastern Time (US & Canada), Bogota"
 msgstr "美国东部时间(美国和加拿大),波哥大"
 
 #: ../templates/pdfedit/pdfmain.php:165
 #: ../templates/profedit/profilemain.php:155
-#: ../lib/modules/sambaSamAccount.inc:1183
-#: ../lib/modules/sambaSamAccount.inc:1187
+#: ../lib/modules/sambaSamAccount.inc:1209
+#: ../lib/modules/sambaSamAccount.inc:1213
 #: ../lib/lists.inc:457
 msgid "Edit"
 msgstr "编辑"
 
-#: ../templates/config/confmain.php:238
-msgid "Edit account types"
-msgstr "编辑帐号类型"
-
 #: ../templates/config/index.php:77
-#: ../templates/config/mainmanage.php:58
+#: ../templates/config/mainmanage.php:60
 msgid "Edit general settings"
 msgstr "编辑通用设置"
 
-#: ../lib/modules/posixAccount.inc:993
+#: ../lib/modules/posixAccount.inc:994
 msgid "Edit groups"
 msgstr "编辑组"
 
 #: ../lib/modules/posixGroup.inc:183
 msgid "Edit members"
 msgstr "编辑成员"
-
-#: ../templates/config/confmain.php:240
-msgid "Edit modules"
-msgstr "编辑模块"
 
 #: ../templates/config/index.php:103
 msgid "Edit self service"
@@ -1896,7 +1905,7 @@ msgid "Edit subgroups"
 msgstr "编辑分组"
 
 #: ../lib/modules/sambaAccount.inc:798
-#: ../lib/modules/sambaSamAccount.inc:1135
+#: ../lib/modules/sambaSamAccount.inc:1161
 msgid "Edit workstations"
 msgstr "编辑工作站"
 
@@ -1915,7 +1924,7 @@ msgstr "雇员类型: 承包商,雇员,实习生,临时工,外部员工,..."
 
 #: ../templates/lists/changePassword.php:257
 #: ../templates/lists/changePassword.php:263
-#: ../templates/login.php:414
+#: ../templates/login.php:423
 msgid "Empty password submitted. Please try again."
 msgstr "提交了空密码,请重试."
 
@@ -1923,7 +1932,7 @@ msgstr "提交了空密码,请重试."
 msgid "Encountered an error while performing search."
 msgstr "检索时发生错误."
 
-#: ../lib/modules/sambaSamAccount.inc:494
+#: ../lib/modules/sambaSamAccount.inc:497
 msgid "Eniwetok, Kwajalein"
 msgstr "埃尼威托克,瓜加林"
 
@@ -1957,25 +1966,26 @@ msgstr "条目%s删除成功"
 msgid "Equality"
 msgstr "相等"
 
-#: ../templates/config/mainmanage.php:249
+#: ../templates/config/mainmanage.php:251
 msgid "Error"
 msgstr "错误"
 
-#: ../templates/delete.php:235
+#: ../templates/delete.php:234
 #, php-format
 msgid "Error while deleting DN: %s"
 msgstr "删除DN: %s时发生错误"
 
-#: ../help/help.inc:133
+#: ../help/help.inc:134
 msgid "Every account type needs exactly one base module. This module provides a structural object class."
 msgstr "每个帐号类型都需要一个基本模块,这个模块提供一个结构化对象类"
 
-#: ../lib/modules/dhcp_settings.inc:745
-#: ../help/help.inc:72
-#: ../help/help.inc:78
-#: ../help/help.inc:84
-#: ../help/help.inc:89
-#: ../help/help.inc:111
+#: ../lib/modules/dhcp_settings.inc:753
+#: ../lib/modules/customScripts.inc:60
+#: ../help/help.inc:73
+#: ../help/help.inc:79
+#: ../help/help.inc:85
+#: ../help/help.inc:90
+#: ../help/help.inc:112
 msgid "Example"
 msgstr "示例"
 
@@ -1984,11 +1994,11 @@ msgstr "示例"
 msgid "Example value"
 msgstr "示例值"
 
-#: ../help/help.inc:60
+#: ../help/help.inc:61
 msgid "Examples"
 msgstr "示例"
 
-#: ../templates/config/confmain.php:371
+#: ../templates/config/confmain.php:433
 msgid "Execute"
 msgstr "运行"
 
@@ -2032,7 +2042,7 @@ msgstr "删除 %s 条目失败!"
 msgid "Fax number"
 msgstr "传真号"
 
-#: ../templates/config/mainmanage.php:316
+#: ../templates/config/mainmanage.php:318
 msgid "File"
 msgstr "文件"
 
@@ -2056,7 +2066,7 @@ msgstr "文件上传失败!"
 #: ../lib/modules/nisnetgroup.inc:89
 #: ../lib/modules/nisnetgroup.inc:448
 #: ../lib/lists.inc:384
-#: ../help/help.inc:144
+#: ../help/help.inc:145
 msgid "Filter"
 msgstr "过滤器"
 
@@ -2084,13 +2094,13 @@ msgstr "用户名字只允许字母,-和空格"
 msgid "Fix IP addresses"
 msgstr "固定IP地址"
 
-#: ../lib/modules/dhcp_settings.inc:799
+#: ../lib/modules/dhcp_settings.inc:807
 #: ../lib/modules/fixed_ip.inc:63
 msgid "Fixed IP"
 msgstr "固定IP"
 
-#: ../templates/config/confmain.php:403
-#: ../templates/config/confmain.php:406
+#: ../templates/config/confmain.php:465
+#: ../templates/config/confmain.php:468
 msgid "Fixed list"
 msgstr "固定列表"
 
@@ -2102,7 +2112,7 @@ msgstr "自动处理邀请."
 msgid "For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon."
 msgstr "上传请使用\"(主机,用户,域)\"格式来编写条目.多条目请用分号隔开."
 
-#: ../help/help.inc:187
+#: ../help/help.inc:188
 msgid "Format"
 msgstr "格式"
 
@@ -2121,7 +2131,7 @@ msgstr "空闲/忙碌 间隔"
 msgid "Free/Busy interval must be a number!"
 msgstr "空闲/忙碌间隔必须是一个数字!"
 
-#: ../lib/modules/sambaSamAccount.inc:1253
+#: ../lib/modules/sambaSamAccount.inc:1279
 msgid "Friday"
 msgstr "星期五"
 
@@ -2141,7 +2151,7 @@ msgstr "GB-12345"
 #: ../lib/modules/posixGroup.inc:476
 #: ../lib/modules/posixGroup.inc:496
 #: ../lib/modules/posixAccount.inc:88
-#: ../lib/modules/posixAccount.inc:1240
+#: ../lib/modules/posixAccount.inc:1241
 #: ../lib/types/group.inc:93
 #: ../lib/types/user.inc:93
 #: ../lib/types/host.inc:96
@@ -2165,13 +2175,22 @@ msgstr "GID号必须使用数字"
 #: ../lib/modules/posixAccount.inc:298
 #: ../lib/modules/posixAccount.inc:376
 #: ../lib/modules/posixAccount.inc:414
-#: ../lib/modules/posixAccount.inc:977
-#: ../lib/modules/posixAccount.inc:1241
+#: ../lib/modules/posixAccount.inc:978
+#: ../lib/modules/posixAccount.inc:1242
 msgid "Gecos"
 msgstr "备注(Gecos)"
 
+#: ../templates/config/conftypes.php:118
+#: ../templates/config/conftypes.php:130
+#: ../templates/config/confmain.php:146
+#: ../templates/config/confmain.php:158
+#: ../templates/config/confmodules.php:112
+#: ../templates/config/confmodules.php:124
+msgid "General settings"
+msgstr "通用设置"
+
 #: ../templates/lists/changePassword.php:179
-#: ../help/help.inc:184
+#: ../help/help.inc:185
 msgid "Generate random password"
 msgstr "生成随机密码"
 
@@ -2187,7 +2206,7 @@ msgid "Go"
 msgstr "开始"
 
 #: ../lib/modules/quota.inc:113
-#: ../lib/modules/quota.inc:378
+#: ../lib/modules/quota.inc:379
 msgid "Grace block period"
 msgstr "块限制宽限周期"
 
@@ -2200,12 +2219,12 @@ msgid "Grace inode (files) period. Most filesystems use a fixed maximum value of
 msgstr "节点限制的宽限期,大部分文件系统都使用最大值7天."
 
 #: ../lib/modules/quota.inc:135
-#: ../lib/modules/quota.inc:382
+#: ../lib/modules/quota.inc:383
 msgid "Grace inode period"
 msgstr "节点限制宽限期"
 
-#: ../templates/selfService/adminMain.php:525
-#: ../templates/config/confmain.php:376
+#: ../templates/selfService/adminMain.php:527
+#: ../templates/config/confmain.php:438
 msgid "Group"
 msgstr "组"
 
@@ -2302,22 +2321,22 @@ msgid "Groups"
 msgstr "组"
 
 #: ../lib/modules/dhcp_settings.inc:99
-#: ../lib/modules/dhcp_settings.inc:785
+#: ../lib/modules/dhcp_settings.inc:793
 msgid "H-Node (0x08)"
 msgstr "H-节点 (0x08)"
 
-#: ../lib/modules/quota.inc:571
+#: ../lib/modules/quota.inc:572
 msgid "Hard block"
 msgstr "块的硬性限制"
 
 #: ../lib/modules/quota.inc:107
 #: ../lib/modules/quota.inc:108
-#: ../lib/modules/quota.inc:377
-#: ../lib/modules/quota.inc:462
+#: ../lib/modules/quota.inc:378
+#: ../lib/modules/quota.inc:463
 msgid "Hard block limit"
 msgstr "块的硬性限制"
 
-#: ../lib/modules/quota.inc:573
+#: ../lib/modules/quota.inc:574
 msgid "Hard inode"
 msgstr "节点的硬性限制"
 
@@ -2326,12 +2345,12 @@ msgid "Hard inode (files) limit"
 msgstr "节点的硬性限制"
 
 #: ../lib/modules/quota.inc:129
-#: ../lib/modules/quota.inc:381
-#: ../lib/modules/quota.inc:464
+#: ../lib/modules/quota.inc:382
+#: ../lib/modules/quota.inc:465
 msgid "Hard inode limit"
 msgstr "节点硬性限制"
 
-#: ../lib/modules/sambaSamAccount.inc:496
+#: ../lib/modules/sambaSamAccount.inc:499
 msgid "Hawaii"
 msgstr "夏威夷"
 
@@ -2362,6 +2381,10 @@ msgstr "这里可以改变终端服务访问的设置。"
 msgid "Here you can create multiple accounts by providing a CSV file."
 msgstr "您可以上传CSV文件来建立多个帐号"
 
+#: ../lib/modules/dhcp_settings.inc:170
+msgid "Here you can enter a description for this DHCP entry."
+msgstr "可以输入此DHCP条目的描述"
+
 #: ../lib/modules/nisnetgroup.inc:73
 #: ../lib/modules/groupOfNames.inc:65
 msgid "Here you can enter a description for this group."
@@ -2379,11 +2402,11 @@ msgstr "您可以在此输入附加的组成员,组名以逗号分隔."
 msgid "Here you can enter the user's department(s). Multiple entries are separated by semicolons."
 msgstr "这里可以输入用户的部门.多个条目以分号隔开."
 
-#: ../help/help.inc:145
+#: ../help/help.inc:146
 msgid "Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will filter case-insensitive."
 msgstr "在此输入简单的过滤语法(例如'value'或'v*'),系统在过滤时不分大小写."
 
-#: ../help/help.inc:158
+#: ../help/help.inc:159
 msgid "Here you can load an account profile to set default settings for your account. The \"default\" profile is automatically loaded for new accounts."
 msgstr "您可以指定一个帐号配置文件做为缺省的配置文件,缺省的配置文件会自动做为新帐号的配置文件."
 
@@ -2391,19 +2414,19 @@ msgstr "您可以指定一个帐号配置文件做为缺省的配置文件,缺�
 msgid "Here you can manage your account profiles."
 msgstr "您可以管理您的帐号配置文件."
 
-#: ../help/help.inc:160
+#: ../help/help.inc:161
 msgid "Here you can select a PDF structure and export the account to a PDF file."
 msgstr "您可以选择一个PDF结构,您可以在此選擇一個PDF架構,然後將帳號滙出成PDF檔."
 
-#: ../help/help.inc:139
+#: ../help/help.inc:140
 msgid "Here you can select where LAM should save its log messages. System logging will go to Syslog on Unix systems and event log on Windows. You can also select an extra file."
 msgstr "您在此选择系统日志的存入位置,系统日志记录可以记录在UNIX 系统或WINDOWS 日志系统,您也可以选择文件"
 
-#: ../help/help.inc:106
+#: ../help/help.inc:107
 msgid "Here you can select which plugins you want to use for account management."
 msgstr "在此您可以选择一些选择帐号管理的插件"
 
-#: ../help/help.inc:183
+#: ../help/help.inc:184
 msgid "Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line."
 msgstr "这里可以指定附加的CSS链接来改变自助服务页的布局.这样做有利于采用公司的统一设计.每行添加一个CSS连接."
 
@@ -2411,7 +2434,7 @@ msgstr "这里可以指定附加的CSS链接来改变自助服务页的布局.�
 msgid "Here you can specify if the account is active or inactive."
 msgstr "这里可以指定用户的激活状态."
 
-#: ../help/help.inc:143
+#: ../help/help.inc:144
 msgid "Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols."
 msgstr "在此指定用户密码的最小需求.字符类别包括:小写,大写,数字和标点符号."
 
@@ -2460,13 +2483,13 @@ msgstr "按住CTRL键可以多选组."
 #: ../lib/modules/posixAccount.inc:363
 #: ../lib/modules/posixAccount.inc:367
 #: ../lib/modules/posixAccount.inc:384
-#: ../lib/modules/posixAccount.inc:787
-#: ../lib/modules/posixAccount.inc:996
-#: ../lib/modules/posixAccount.inc:1163
-#: ../lib/modules/posixAccount.inc:1244
+#: ../lib/modules/posixAccount.inc:788
+#: ../lib/modules/posixAccount.inc:997
+#: ../lib/modules/posixAccount.inc:1164
+#: ../lib/modules/posixAccount.inc:1245
 #: ../lib/modules/sambaSamAccount.inc:299
-#: ../lib/modules/sambaSamAccount.inc:1373
-#: ../lib/modules/sambaSamAccount.inc:1750
+#: ../lib/modules/sambaSamAccount.inc:1399
+#: ../lib/modules/sambaSamAccount.inc:1776
 #: ../lib/types/user.inc:98
 msgid "Home directory"
 msgstr "个人目录"
@@ -2476,7 +2499,7 @@ msgstr "个人目录"
 msgid "Home directory changed. To keep home directory you have to run the following command as root: 'mv %s %s'"
 msgstr "使用者目录已经改变,要操持一致需要在系统以ROOT用户运行如下命令:'mv %s %s'"
 
-#: ../lib/modules/posixAccount.inc:1184
+#: ../lib/modules/posixAccount.inc:1185
 msgid "Home directory server"
 msgstr "主目录服务器"
 
@@ -2486,12 +2509,12 @@ msgstr "主目录服务器"
 #: ../lib/modules/sambaAccount.inc:785
 #: ../lib/modules/sambaAccount.inc:893
 #: ../lib/modules/sambaSamAccount.inc:247
-#: ../lib/modules/sambaSamAccount.inc:420
-#: ../lib/modules/sambaSamAccount.inc:1106
-#: ../lib/modules/sambaSamAccount.inc:1384
-#: ../lib/modules/sambaSamAccount.inc:1538
-#: ../lib/modules/sambaSamAccount.inc:1724
-#: ../lib/modules/sambaSamAccount.inc:1751
+#: ../lib/modules/sambaSamAccount.inc:423
+#: ../lib/modules/sambaSamAccount.inc:1132
+#: ../lib/modules/sambaSamAccount.inc:1410
+#: ../lib/modules/sambaSamAccount.inc:1564
+#: ../lib/modules/sambaSamAccount.inc:1750
+#: ../lib/modules/sambaSamAccount.inc:1777
 msgid "Home drive"
 msgstr "个人驱动器"
 
@@ -2505,10 +2528,10 @@ msgstr "个人驱动器"
 #: ../lib/modules/sambaSamAccount.inc:83
 #: ../lib/modules/sambaSamAccount.inc:84
 #: ../lib/modules/sambaSamAccount.inc:250
-#: ../lib/modules/sambaSamAccount.inc:426
-#: ../lib/modules/sambaSamAccount.inc:1114
-#: ../lib/modules/sambaSamAccount.inc:1544
-#: ../lib/modules/sambaSamAccount.inc:1721
+#: ../lib/modules/sambaSamAccount.inc:429
+#: ../lib/modules/sambaSamAccount.inc:1140
+#: ../lib/modules/sambaSamAccount.inc:1570
+#: ../lib/modules/sambaSamAccount.inc:1747
 msgid "Home path"
 msgstr "个人目录路径"
 
@@ -2583,7 +2606,7 @@ msgstr "主机名包含非法字符,合法字符包括 a-z, A-Z, 0-9 和 .-_"
 msgid "Host name in use. Selected next free host name."
 msgstr "主机名已被使用, 请选择其它的主机名."
 
-#: ../lib/modules/sambaSamAccount.inc:970
+#: ../lib/modules/sambaSamAccount.inc:996
 msgid "Host name must end with $!"
 msgstr "主机名必须使用$结尾!"
 
@@ -2607,7 +2630,7 @@ msgstr "确认"
 #: ../lib/modules/posixGroup.inc:499
 #: ../lib/modules/posixGroup.inc:610
 #: ../lib/modules/posixAccount.inc:69
-#: ../lib/modules/posixAccount.inc:768
+#: ../lib/modules/posixAccount.inc:769
 msgid "ID is already in use"
 msgstr "ID已经被使用"
 
@@ -2619,21 +2642,21 @@ msgstr "ID已经被使用"
 #: ../lib/modules/posixAccount.inc:67
 #: ../lib/modules/posixAccount.inc:68
 #: ../lib/modules/posixAccount.inc:69
-#: ../lib/modules/posixAccount.inc:764
-#: ../lib/modules/posixAccount.inc:768
+#: ../lib/modules/posixAccount.inc:765
+#: ../lib/modules/posixAccount.inc:769
 msgid "ID-Number"
 msgstr "ID号"
 
 #: ../lib/modules/fixed_ip.inc:85
-#: ../lib/modules/fixed_ip.inc:400
-#: ../lib/modules/fixed_ip.inc:505
+#: ../lib/modules/fixed_ip.inc:333
+#: ../lib/modules/fixed_ip.inc:512
 msgid "IP address"
 msgstr "IP地址"
 
 #: ../lib/modules/ddns.inc:94
 #: ../lib/modules/ddns.inc:114
-#: ../lib/modules/ddns.inc:357
-#: ../lib/modules/ddns.inc:404
+#: ../lib/modules/ddns.inc:359
+#: ../lib/modules/ddns.inc:406
 msgid "IP address of the DNS server"
 msgstr "DNS服务器IP地址"
 
@@ -2643,8 +2666,8 @@ msgstr "DNS服务器IP地址"
 msgid "Identifier"
 msgstr "标识"
 
-#: ../lib/modules/sambaSamAccount.inc:1419
-#: ../lib/modules/sambaSamAccount.inc:1762
+#: ../lib/modules/sambaSamAccount.inc:1445
+#: ../lib/modules/sambaSamAccount.inc:1788
 msgid "Idle time limit"
 msgstr "空闲时间限制"
 
@@ -2711,7 +2734,7 @@ msgstr "如果设为\"true\",则不需要密码."
 msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
 msgstr "如果设为\"true\",密码不会过期(设为X标志)."
 
-#: ../help/help.inc:186
+#: ../help/help.inc:187
 msgid "If you decide to send the password via mail then the mail template \"config/passwordMailTemplate.txt\" will be used."
 msgstr "如果您决定通过邮件发送密码，将会使用\"config/passwordMailTemplate.txt\"邮件模板。"
 
@@ -2728,11 +2751,11 @@ msgstr "如果您选中此项，用户在下次登录时必须修改密码。"
 msgid "If you set this to \"true\" then the phpGroupware extension will be added."
 msgstr "如果设为\"true\",则会增加 phpGroupWare 扩展."
 
-#: ../help/help.inc:98
+#: ../help/help.inc:99
 msgid "If you want to change the current preferences password, please enter it here."
 msgstr "在此设置当前管理密码."
 
-#: ../help/help.inc:129
+#: ../help/help.inc:130
 msgid "If you want to change your master configuration password, please enter it here."
 msgstr "在此变更管理配置密码."
 
@@ -2745,7 +2768,7 @@ msgstr "使用这个选项,建立域管理员或其它特殊帐号."
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr "如果想用知名的RID,需要选择知名的组。"
 
-#: ../help/help.inc:110
+#: ../help/help.inc:111
 msgid "If your server runs on another port then add a comma and the port number after the server."
 msgstr "如果服务器运行在其它端口,需要在服务器后加一个逗号和端口号."
 
@@ -2754,8 +2777,8 @@ msgid "Include system attributes"
 msgstr "包括系统属性"
 
 #: ../lib/modules/sambaSamAccount.inc:305
-#: ../lib/modules/sambaSamAccount.inc:1394
-#: ../lib/modules/sambaSamAccount.inc:1757
+#: ../lib/modules/sambaSamAccount.inc:1420
+#: ../lib/modules/sambaSamAccount.inc:1783
 msgid "Inherit client startup configuration"
 msgstr "继承客户初始配置"
 
@@ -2770,8 +2793,8 @@ msgid "Inherits from"
 msgstr "继承自"
 
 #: ../lib/modules/sambaSamAccount.inc:308
-#: ../lib/modules/sambaSamAccount.inc:1399
-#: ../lib/modules/sambaSamAccount.inc:1758
+#: ../lib/modules/sambaSamAccount.inc:1425
+#: ../lib/modules/sambaSamAccount.inc:1784
 msgid "Initial program"
 msgstr "初始化程序"
 
@@ -2802,7 +2825,7 @@ msgstr "inode软配额包含非法字符,只能使用自然数."
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "inode软配额必须小于硬配额."
 
-#: ../templates/selfService/adminMain.php:429
+#: ../templates/selfService/adminMain.php:431
 msgid "Input fields"
 msgstr "输入框"
 
@@ -2823,7 +2846,7 @@ msgstr "在登录脚本中插入用户名或组名."
 msgid "Inserted user or group name in profile path."
 msgstr "在配置路径中插入用户名或组名."
 
-#: ../lib/modules/fixed_ip.inc:380
+#: ../lib/modules/fixed_ip.inc:374
 msgid "Invalid MAC address."
 msgstr "非法的MAC地址"
 
@@ -2848,7 +2871,7 @@ msgstr "邀请原则"
 msgid "Invitation policy list"
 msgstr "邀请原则列表"
 
-#: ../lib/modules/sambaSamAccount.inc:511
+#: ../lib/modules/sambaSamAccount.inc:514
 msgid "Islamabad, Karachi"
 msgstr "伊斯兰堡,卡拉奇"
 
@@ -2897,8 +2920,8 @@ msgstr "Kolab"
 msgid "LAM can recursively delete this entry and all of its children. See below for a list of all the entries that this action will delete. Do you want to do this?"
 msgstr "LAM会递归删除本条目及所有子条目,下面列表中所有条目都会被删除,确定吗?"
 
-#: ../templates/login.php:223
-#: ../templates/config/index.php:61
+#: ../templates/login.php:219
+#: ../templates/config/index.php:63
 msgid "LAM configuration"
 msgstr "LAM 配置"
 
@@ -2933,16 +2956,16 @@ msgstr "LAM找不到这个域!"
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM找不到这个组"
 
-#: ../lib/modules/posixAccount.inc:1638
+#: ../lib/modules/posixAccount.inc:1639
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM无法修改 %s组成员"
 
-#: ../help/help.inc:165
+#: ../help/help.inc:166
 msgid "LAM will search for accounts in this part of the LDAP tree."
 msgstr "LAM将在这部分LDAP树搜索帐号."
 
-#: ../help/help.inc:167
+#: ../help/help.inc:168
 msgid "LAM will use this LDAP DN and password to search for accounts. It is sufficient to specify an account with read rights. If nothing is inserted then LAM will try to connect anonymously."
 msgstr "LAM将会这个使用 LDAP DN 和密码搜索帐号.这个帐号需要有读权限.如果留空,LAM将匿名登录LDAP."
 
@@ -2950,23 +2973,23 @@ msgstr "LAM将会这个使用 LDAP DN 和密码搜索帐号.这个帐号需要�
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../templates/selfService/adminMain.php:127
-#: ../templates/config/conftypes.php:154
-#: ../templates/config/confmain.php:120
-#: ../templates/config/confmain.php:616
-#: ../templates/config/confmodules.php:76
+#: ../templates/selfService/adminMain.php:129
+#: ../templates/config/conftypes.php:96
+#: ../templates/config/confmain.php:115
+#: ../templates/config/confmodules.php:90
+#: ../templates/config/confsave.php:81
 msgid "LDAP Account Manager Configuration"
 msgstr "LDAP帐号管理配置"
 
-#: ../templates/config/conftypes.php:79
+#: ../templates/config/conftypes.php:284
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP后缀无效!"
 
-#: ../templates/login.php:505
+#: ../templates/login.php:514
 msgid "LDAP error, server says:"
 msgstr "LDAP错误,服务器错误消息:"
 
-#: ../templates/config/confmain.php:441
+#: ../templates/config/confmain.php:503
 msgid "LDAP filter"
 msgstr "LDAP过滤条件"
 
@@ -2974,18 +2997,18 @@ msgstr "LDAP过滤条件"
 msgid "LDAP operation successful."
 msgstr "LDAP操作成功."
 
-#: ../templates/selfService/adminMain.php:327
+#: ../templates/selfService/adminMain.php:329
 msgid "LDAP password"
 msgstr "LDAP 密码"
 
-#: ../templates/config/confmain.php:409
-#: ../templates/config/confmain.php:412
-#: ../help/help.inc:116
+#: ../templates/config/confmain.php:471
+#: ../templates/config/confmain.php:474
+#: ../help/help.inc:117
 msgid "LDAP search"
 msgstr "LDAP搜索"
 
-#: ../templates/selfService/adminMain.php:338
-#: ../help/help.inc:168
+#: ../templates/selfService/adminMain.php:340
+#: ../help/help.inc:169
 msgid "LDAP search attribute"
 msgstr "LDAP搜索属性"
 
@@ -2993,7 +3016,7 @@ msgstr "LDAP搜索属性"
 msgid "LDAP search failed! Please check your preferences."
 msgstr "LDAP搜索失败，请检查配置。"
 
-#: ../templates/login.php:345
+#: ../templates/login.php:356
 msgid "LDAP server"
 msgstr "LDAP服务器"
 
@@ -3002,12 +3025,12 @@ msgstr "LDAP服务器"
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "超过LDAP限制的大小,无法显示所有条目."
 
-#: ../templates/selfService/adminMain.php:303
+#: ../templates/selfService/adminMain.php:305
 #: ../templates/profedit/profilepage.php:185
-#: ../templates/config/conftypes.php:201
-#: ../templates/config/confmain.php:432
-#: ../help/help.inc:69
-#: ../help/help.inc:164
+#: ../templates/config/conftypes.php:214
+#: ../templates/config/confmain.php:494
+#: ../help/help.inc:70
+#: ../help/help.inc:165
 msgid "LDAP suffix"
 msgstr "LDAP后缀"
 
@@ -3019,11 +3042,11 @@ msgstr "LDAP上传完毕"
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP上传中,请稍等..."
 
-#: ../templates/selfService/adminMain.php:315
+#: ../templates/selfService/adminMain.php:317
 msgid "LDAP user"
 msgstr "LDAP用户"
 
-#: ../help/help.inc:166
+#: ../help/help.inc:167
 msgid "LDAP user and password"
 msgstr "LDAP用户名和密码"
 
@@ -3058,25 +3081,25 @@ msgstr "Lamdaemon: 配额模块已安装."
 msgid "Lamdaemon: read quotas"
 msgstr "Lamdaemon: 读取配额"
 
-#: ../templates/login.php:294
+#: ../templates/login.php:305
 msgid "Language"
 msgstr "语言"
 
-#: ../templates/config/confmain.php:535
+#: ../templates/config/confmain.php:582
 msgid "Language is not defined!"
 msgstr "尚未定义语言"
 
-#: ../templates/config/confmain.php:284
+#: ../templates/config/confmain.php:346
 msgid "Language settings"
 msgstr "语言设定"
 
 #: ../lib/modules/phpGroupwareUser.inc:160
-#: ../lib/modules/phpGroupwareUser.inc:386
+#: ../lib/modules/phpGroupwareUser.inc:385
 msgid "Last login"
 msgstr "上次登录"
 
 #: ../lib/modules/phpGroupwareUser.inc:168
-#: ../lib/modules/phpGroupwareUser.inc:381
+#: ../lib/modules/phpGroupwareUser.inc:380
 msgid "Last login from"
 msgstr "上一次登录地"
 
@@ -3105,10 +3128,10 @@ msgid "Last password change"
 msgstr "最后密码变更"
 
 #: ../lib/modules/dhcp_settings.inc:133
-#: ../lib/modules/dhcp_settings.inc:196
-#: ../lib/modules/dhcp_settings.inc:248
-#: ../lib/modules/dhcp_settings.inc:756
-#: ../lib/modules/dhcp_settings.inc:862
+#: ../lib/modules/dhcp_settings.inc:200
+#: ../lib/modules/dhcp_settings.inc:252
+#: ../lib/modules/dhcp_settings.inc:764
+#: ../lib/modules/dhcp_settings.inc:876
 msgid "Lease time"
 msgstr "释放时间"
 
@@ -3116,16 +3139,16 @@ msgstr "释放时间"
 msgid "Line ends"
 msgstr "行结尾"
 
-#: ../templates/selfService/adminMain.php:277
+#: ../templates/selfService/adminMain.php:279
 msgid "Link to login page for this self service profile"
 msgstr "自助服务登录界面."
 
-#: ../templates/config/conftypes.php:215
-#: ../help/help.inc:81
+#: ../templates/config/conftypes.php:228
+#: ../help/help.inc:82
 msgid "List attributes"
 msgstr "属性列表"
 
-#: ../templates/config/conftypes.php:86
+#: ../templates/config/conftypes.php:291
 msgid "List attributes are invalid!"
 msgstr "属性列表非法!"
 
@@ -3134,7 +3157,7 @@ msgstr "属性列表非法!"
 msgid "List of Samba workstations the user is allowed to login. Empty means every workstation."
 msgstr "允许用户登录的Samba工作站,留空表示所有工作站."
 
-#: ../templates/config/confmain.php:529
+#: ../templates/config/confmain.php:576
 msgid "List of admin users is empty or invalid!"
 msgstr "管理员清单为空或非法."
 
@@ -3142,12 +3165,12 @@ msgstr "管理员清单为空或非法."
 msgid "List of entries to be deleted:"
 msgstr "将被删除的条目列表:"
 
-#: ../templates/config/confmain.php:423
+#: ../templates/config/confmain.php:485
 msgid "List of valid users"
 msgstr "合法用户列表"
 
 #: ../lib/modules.inc:1204
-#: ../help/help.inc:157
+#: ../help/help.inc:158
 msgid "Load profile"
 msgstr "调入配置文件"
 
@@ -3178,7 +3201,7 @@ msgstr "地点"
 
 #: ../lib/modules/posixGroup.inc:192
 #: ../lib/modules/posixAccount.inc:258
-#: ../lib/modules/posixAccount.inc:1029
+#: ../lib/modules/posixAccount.inc:1030
 msgid "Lock password"
 msgstr "锁定密码"
 
@@ -3204,50 +3227,50 @@ msgstr "在多次错误登录后锁定用户."
 msgid "Lockout users after bad logon attempts must be between 0 and 999."
 msgstr "用户锁定前错误的登录次数必须在0－999之间。"
 
-#: ../templates/config/mainmanage.php:272
-#: ../help/help.inc:138
+#: ../templates/config/mainmanage.php:274
+#: ../help/help.inc:139
 msgid "Log destination"
 msgstr "日志存储位置"
 
-#: ../templates/config/mainmanage.php:246
-#: ../help/help.inc:136
+#: ../templates/config/mainmanage.php:248
+#: ../help/help.inc:137
 msgid "Log level"
 msgstr "日志等级"
 
-#: ../templates/config/mainmanage.php:240
+#: ../templates/config/mainmanage.php:242
 msgid "Logging"
 msgstr "日志"
 
-#: ../templates/selfService/adminMain.php:278
-#: ../templates/selfService/adminLogin.php:61
-#: ../templates/selfService/selfServiceLogin.php:135
-#: ../templates/login.php:320
-#: ../templates/config/conflogin.php:59
-#: ../templates/config/mainlogin.php:67
+#: ../templates/selfService/adminMain.php:280
+#: ../templates/selfService/adminLogin.php:63
+#: ../templates/selfService/selfServiceLogin.php:137
+#: ../templates/login.php:331
+#: ../templates/config/conflogin.php:61
+#: ../templates/config/mainlogin.php:69
 #: ../help/help.inc:55
 msgid "Login"
 msgstr "登录"
 
-#: ../templates/selfService/adminMain.php:364
-#: ../help/help.inc:170
+#: ../templates/selfService/adminMain.php:366
+#: ../help/help.inc:171
 msgid "Login attribute label"
 msgstr "登录属性标签"
 
-#: ../templates/selfService/adminMain.php:377
-#: ../help/help.inc:172
+#: ../templates/selfService/adminMain.php:379
+#: ../help/help.inc:173
 msgid "Login caption"
 msgstr "登录标题"
 
-#: ../templates/config/confmain.php:400
-#: ../help/help.inc:114
+#: ../templates/config/confmain.php:462
+#: ../help/help.inc:115
 msgid "Login method"
 msgstr "登录方法"
 
 #: ../lib/modules/posixAccount.inc:244
 #: ../lib/modules/posixAccount.inc:396
-#: ../lib/modules/posixAccount.inc:1017
-#: ../lib/modules/posixAccount.inc:1168
-#: ../lib/modules/posixAccount.inc:1245
+#: ../lib/modules/posixAccount.inc:1018
+#: ../lib/modules/posixAccount.inc:1169
+#: ../lib/modules/posixAccount.inc:1246
 #: ../lib/types/user.inc:99
 msgid "Login shell"
 msgstr "登录shell"
@@ -3265,9 +3288,9 @@ msgstr "密码修改登录"
 #: ../lib/modules/sambaSamAccount.inc:110
 #: ../lib/modules/sambaSamAccount.inc:284
 #: ../lib/modules/sambaSamAccount.inc:287
-#: ../lib/modules/sambaSamAccount.inc:464
-#: ../lib/modules/sambaSamAccount.inc:1182
-#: ../lib/modules/sambaSamAccount.inc:1590
+#: ../lib/modules/sambaSamAccount.inc:467
+#: ../lib/modules/sambaSamAccount.inc:1208
+#: ../lib/modules/sambaSamAccount.inc:1616
 msgid "Logon hours"
 msgstr "可登录时间"
 
@@ -3281,10 +3304,10 @@ msgstr "可登录时间"
 #: ../lib/modules/sambaSamAccount.inc:89
 #: ../lib/modules/sambaSamAccount.inc:90
 #: ../lib/modules/sambaSamAccount.inc:256
-#: ../lib/modules/sambaSamAccount.inc:438
-#: ../lib/modules/sambaSamAccount.inc:1130
-#: ../lib/modules/sambaSamAccount.inc:1556
-#: ../lib/modules/sambaSamAccount.inc:1727
+#: ../lib/modules/sambaSamAccount.inc:441
+#: ../lib/modules/sambaSamAccount.inc:1156
+#: ../lib/modules/sambaSamAccount.inc:1582
+#: ../lib/modules/sambaSamAccount.inc:1753
 msgid "Logon script"
 msgstr "登录脚本"
 
@@ -3296,8 +3319,8 @@ msgid "Logon script is invalid!"
 msgstr "登录脚本非法!"
 
 #: ../templates/logout.php:67
-#: ../templates/selfService/selfServiceMain.php:43
-#: ../templates/selfService/selfServiceMain.php:253
+#: ../templates/selfService/selfServiceMain.php:45
+#: ../templates/selfService/selfServiceMain.php:255
 #: ../templates/main_header.php:69
 msgid "Logout"
 msgstr "退出"
@@ -3311,8 +3334,8 @@ msgstr "M-节点 (0x04)"
 #: ../lib/modules/ieee802device.inc:72
 #: ../lib/modules/ieee802device.inc:102
 #: ../lib/modules/fixed_ip.inc:82
-#: ../lib/modules/fixed_ip.inc:383
-#: ../lib/modules/fixed_ip.inc:505
+#: ../lib/modules/fixed_ip.inc:329
+#: ../lib/modules/fixed_ip.inc:512
 msgid "MAC address"
 msgstr "MAC地址"
 
@@ -3324,7 +3347,7 @@ msgstr "MAC地址列表"
 msgid "MAC address(es)"
 msgstr "MAC地址"
 
-#: ../lib/modules/sambaSamAccount.inc:517
+#: ../lib/modules/sambaSamAccount.inc:520
 msgid "Magadan, Solomon Islands"
 msgstr "马加丹,所罗门群岛"
 
@@ -3393,8 +3416,8 @@ msgstr "邮件转发."
 msgid "Main"
 msgstr "主要设置"
 
-#: ../templates/selfService/adminMain.php:390
-#: ../help/help.inc:174
+#: ../templates/selfService/adminMain.php:392
+#: ../help/help.inc:175
 msgid "Main page caption"
 msgstr "主页标题"
 
@@ -3406,11 +3429,11 @@ msgstr "管理已有的PDF架构"
 msgid "Manage existing profiles"
 msgstr "管理已有的设置"
 
-#: ../templates/selfService/adminLogin.php:135
+#: ../templates/selfService/adminLogin.php:137
 msgid "Manage self service profiles"
 msgstr "管理自助服务设置"
 
-#: ../templates/config/conflogin.php:139
+#: ../templates/config/conflogin.php:141
 msgid "Manage server profiles"
 msgstr "管理服务器设置"
 
@@ -3442,18 +3465,18 @@ msgstr "将此帐号标记为删除"
 msgid "Mark for deletion"
 msgstr "标记为删除"
 
-#: ../templates/selfService/profManage.php:241
-#: ../templates/config/profmanage.php:341
-#: ../help/help.inc:130
+#: ../templates/selfService/profManage.php:243
+#: ../templates/config/profmanage.php:343
+#: ../help/help.inc:131
 msgid "Master password"
 msgstr "管理员密码"
 
-#: ../templates/selfService/profManage.php:58
-#: ../templates/config/profmanage.php:70
+#: ../templates/selfService/profManage.php:60
+#: ../templates/config/profmanage.php:72
 msgid "Master password is wrong!"
 msgstr "系统管理员密码错误!"
 
-#: ../templates/config/mainmanage.php:90
+#: ../templates/config/mainmanage.php:92
 msgid "Master passwords are different or empty!"
 msgstr "管理员密码不同或为空!"
 
@@ -3505,10 +3528,10 @@ msgid "Maximum file size: %s"
 msgstr "最大文件大小: %s"
 
 #: ../lib/modules/dhcp_settings.inc:136
-#: ../lib/modules/dhcp_settings.inc:201
-#: ../lib/modules/dhcp_settings.inc:254
-#: ../lib/modules/dhcp_settings.inc:762
-#: ../lib/modules/dhcp_settings.inc:863
+#: ../lib/modules/dhcp_settings.inc:205
+#: ../lib/modules/dhcp_settings.inc:258
+#: ../lib/modules/dhcp_settings.inc:770
+#: ../lib/modules/dhcp_settings.inc:877
 msgid "Maximum lease time"
 msgstr "最大释放时间"
 
@@ -3518,7 +3541,7 @@ msgid "Maximum length"
 msgstr "最大长度"
 
 #: ../lib/lists.inc:871
-#: ../help/help.inc:91
+#: ../help/help.inc:92
 msgid "Maximum list entries"
 msgstr "最大列表条目"
 
@@ -3550,11 +3573,11 @@ msgstr "密码最长生命"
 msgid "Members"
 msgstr "组成员"
 
-#: ../lib/modules/sambaSamAccount.inc:504
+#: ../lib/modules/sambaSamAccount.inc:507
 msgid "Mid-Atlantic"
 msgstr "大西洋地区中部"
 
-#: ../lib/modules/sambaSamAccount.inc:495
+#: ../lib/modules/sambaSamAccount.inc:498
 msgid "Midway Island, Samoa"
 msgstr "中途岛,萨摩亚"
 
@@ -3589,15 +3612,15 @@ msgstr "最小UID号"
 msgid "Minimum UID number is invalid!"
 msgstr "最小UID非法!"
 
-#: ../templates/config/mainmanage.php:211
+#: ../templates/config/mainmanage.php:213
 msgid "Minimum character classes"
 msgstr "最少字符类别"
 
-#: ../templates/config/mainmanage.php:207
+#: ../templates/config/mainmanage.php:209
 msgid "Minimum lowercase characters"
 msgstr "最少小写字母字符数"
 
-#: ../templates/config/mainmanage.php:209
+#: ../templates/config/mainmanage.php:211
 msgid "Minimum numeric characters"
 msgstr "最少数字字符数"
 
@@ -3613,15 +3636,15 @@ msgstr "最少数字字符数"
 msgid "Minimum password age"
 msgstr "密码最短生命"
 
-#: ../templates/config/mainmanage.php:206
+#: ../templates/config/mainmanage.php:208
 msgid "Minimum password length"
 msgstr "最短密码长度"
 
-#: ../templates/config/mainmanage.php:210
+#: ../templates/config/mainmanage.php:212
 msgid "Minimum symbolic characters"
 msgstr "最少标点符号字符数"
 
-#: ../templates/config/mainmanage.php:208
+#: ../templates/config/mainmanage.php:210
 msgid "Minimum uppercase characters"
 msgstr "最少的大字字母字符数"
 
@@ -3643,22 +3666,27 @@ msgstr "手机号码"
 msgid "Mode"
 msgstr "模式"
 
-#: ../templates/config/confmodules.php:89
-msgid "Module selection"
-msgstr "模块选择"
+#: ../templates/config/conftypes.php:118
+#: ../templates/config/conftypes.php:150
+#: ../templates/config/confmain.php:146
+#: ../templates/config/confmain.php:178
+#: ../templates/config/confmodules.php:112
+#: ../templates/config/confmodules.php:144
+msgid "Modules"
+msgstr "模块"
 
-#: ../lib/modules/sambaSamAccount.inc:1252
+#: ../lib/modules/sambaSamAccount.inc:1278
 msgid "Monday"
 msgstr "星期一"
 
-#: ../lib/modules/sambaSamAccount.inc:499
+#: ../lib/modules/sambaSamAccount.inc:502
 msgid "Mountain Time (US & Canada)"
 msgstr "时区(美国和加拿大)"
 
 #: ../lib/modules/quota.inc:93
-#: ../lib/modules/quota.inc:374
-#: ../lib/modules/quota.inc:460
-#: ../lib/modules/quota.inc:569
+#: ../lib/modules/quota.inc:375
+#: ../lib/modules/quota.inc:461
+#: ../lib/modules/quota.inc:570
 msgid "Mountpoint"
 msgstr "挂接点"
 
@@ -3706,29 +3734,29 @@ msgstr "NIS网络组"
 msgid "Name"
 msgstr "名"
 
-#: ../help/help.inc:152
+#: ../help/help.inc:153
 msgid "Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten."
 msgstr "将来保存的配置名,如果配置名存在,会被覆盖."
 
 #: ../lib/modules/dhcp_settings.inc:166
-#: ../lib/modules/dhcp_settings.inc:801
-#: ../lib/modules/dhcp_settings.inc:869
+#: ../lib/modules/dhcp_settings.inc:809
+#: ../lib/modules/dhcp_settings.inc:883
 msgid "Net mask"
 msgstr "子网掩码"
 
 #: ../lib/modules/dhcp_settings.inc:145
-#: ../lib/modules/dhcp_settings.inc:216
-#: ../lib/modules/dhcp_settings.inc:272
-#: ../lib/modules/dhcp_settings.inc:780
-#: ../lib/modules/dhcp_settings.inc:866
+#: ../lib/modules/dhcp_settings.inc:220
+#: ../lib/modules/dhcp_settings.inc:276
+#: ../lib/modules/dhcp_settings.inc:788
+#: ../lib/modules/dhcp_settings.inc:880
 msgid "Netbios name servers"
 msgstr "Netbios命名服务器"
 
 #: ../lib/modules/dhcp_settings.inc:148
-#: ../lib/modules/dhcp_settings.inc:221
-#: ../lib/modules/dhcp_settings.inc:278
-#: ../lib/modules/dhcp_settings.inc:787
-#: ../lib/modules/dhcp_settings.inc:867
+#: ../lib/modules/dhcp_settings.inc:225
+#: ../lib/modules/dhcp_settings.inc:282
+#: ../lib/modules/dhcp_settings.inc:795
+#: ../lib/modules/dhcp_settings.inc:881
 msgid "Netbios node type"
 msgstr "Netbios 节点类型"
 
@@ -3757,7 +3785,7 @@ msgstr "纽约"
 msgid "New alias"
 msgstr "新别名"
 
-#: ../templates/config/profmanage.php:129
+#: ../templates/config/profmanage.php:131
 msgid "New default profile set successfully."
 msgstr "新缺省配置设置成功."
 
@@ -3783,11 +3811,11 @@ msgstr "新主机"
 msgid "New local address"
 msgstr "新本地邮件地址"
 
-#: ../templates/config/mainmanage.php:332
+#: ../templates/config/mainmanage.php:334
 msgid "New master password"
 msgstr "新管理员密码"
 
-#: ../templates/config/mainmanage.php:87
+#: ../templates/config/mainmanage.php:89
 msgid "New master password set successfully."
 msgstr "新管理员密码设置成功."
 
@@ -3797,7 +3825,7 @@ msgstr "新对象"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:47
 #: ../templates/ou_edit.php:174
-#: ../help/help.inc:195
+#: ../help/help.inc:196
 msgid "New organizational unit"
 msgstr "新组织单元"
 
@@ -3805,12 +3833,12 @@ msgstr "新组织单元"
 msgid "New owner"
 msgstr "新拥有者"
 
-#: ../templates/config/confmain.php:452
-#: ../lib/modules/posixAccount.inc:1765
+#: ../templates/config/confmain.php:514
+#: ../lib/modules/posixAccount.inc:1766
 msgid "New password"
 msgstr "新密码"
 
-#: ../templates/config/profmanage.php:119
+#: ../templates/config/profmanage.php:121
 msgid "New password set successfully."
 msgstr "新密码设置成功."
 
@@ -3916,15 +3944,15 @@ msgstr "没有发现DHCP主机!"
 #: ../lib/modules/sambaGroupMapping.inc:90
 #: ../lib/modules/sambaGroupMapping.inc:217
 #: ../lib/modules/sambaGroupMapping.inc:470
-#: ../lib/modules/sambaSamAccount.inc:541
-#: ../lib/modules/sambaSamAccount.inc:639
-#: ../lib/modules/sambaSamAccount.inc:976
+#: ../lib/modules/sambaSamAccount.inc:555
+#: ../lib/modules/sambaSamAccount.inc:659
+#: ../lib/modules/sambaSamAccount.inc:1002
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "在LDAP中没有发现Samba域,请先建立一个."
 
 #: ../lib/modules/posixAccount.inc:448
-#: ../lib/modules/posixAccount.inc:651
-#: ../lib/modules/posixAccount.inc:951
+#: ../lib/modules/posixAccount.inc:652
+#: ../lib/modules/posixAccount.inc:952
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "在LDAP中没有发现Unix组,请先建立一个."
 
@@ -3977,7 +4005,7 @@ msgstr "没有设定lamdaemon路径设置,请更改LAM配置."
 msgid "No lamdaemon server set, please update your LAM configuration settings."
 msgstr "没有设置lamdaemon服务器,请先设置LAM配置."
 
-#: ../templates/config/mainmanage.php:288
+#: ../templates/config/mainmanage.php:290
 msgid "No logging"
 msgstr "无日志"
 
@@ -3989,11 +4017,12 @@ msgstr "无标志"
 msgid "No objects found!"
 msgstr "未发现对象!"
 
-#: ../templates/config/confmodules.php:268
+#: ../templates/config/confmodules.php:355
 msgid "No or more than one base module selected!"
 msgstr "未选择基本模块或选择多于一个!"
 
-#: ../templates/config/confmain.php:52
+#: ../templates/config/confmain.php:54
+#: ../templates/config/confsave.php:53
 msgid "No password was entered!"
 msgstr "没有输入密码!"
 
@@ -4001,11 +4030,15 @@ msgstr "没有输入密码!"
 msgid "No problems found."
 msgstr "未发现问题!"
 
+#: ../lib/modules/customScripts.inc:131
+msgid "No scripts to run."
+msgstr "没有运行的脚本"
+
 #: ../templates/pdfedit/pdfpage.php:126
 msgid "No section text specified"
 msgstr "没有指定段文本"
 
-#: ../templates/config/conflogin.php:96
+#: ../templates/config/conflogin.php:98
 msgid "No server profiles found. Please create one."
 msgstr "没有服务器设置,请先建立一个."
 
@@ -4013,7 +4046,7 @@ msgstr "没有服务器设置,请先建立一个."
 msgid "No static text specified"
 msgstr "没有指定静态文本"
 
-#: ../lib/modules/dhcp_settings.inc:299
+#: ../lib/modules/dhcp_settings.inc:308
 msgid "No subnet entered."
 msgstr "没有输入子网掩码!"
 
@@ -4030,7 +4063,7 @@ msgstr "没有这个schema项:\"%s\""
 msgid "No users found!"
 msgstr "未发现用户!"
 
-#: ../help/help.inc:66
+#: ../help/help.inc:67
 msgid "Note"
 msgstr "备注"
 
@@ -4038,7 +4071,7 @@ msgstr "备注"
 msgid "Note: You will get an \"inappropriate matching\" error if you have not setup an EQUALITY rule on your LDAP server for this attribute."
 msgstr "注意:如果在LDAP中没有为这个发生设置EQUALITY规则,会产生\"inappropriate matching\"错误."
 
-#: ../templates/config/mainmanage.php:249
+#: ../templates/config/mainmanage.php:251
 msgid "Notice"
 msgstr "注意"
 
@@ -4097,8 +4130,8 @@ msgstr "OU无效!"
 msgid "OU is not empty or invalid!"
 msgstr "OU不为空或非法!"
 
-#: ../help/help.inc:195
-#: ../help/help.inc:197
+#: ../help/help.inc:196
+#: ../help/help.inc:198
 msgid "OU-Editor"
 msgstr "OU编辑器"
 
@@ -4132,27 +4165,23 @@ msgid "Office name"
 msgstr "办公室名"
 
 #: ../templates/tree/export_form.php:165
-#: ../templates/selfService/profManage.php:246
-#: ../templates/selfService/adminMain.php:499
-#: ../templates/selfService/adminMain.php:531
-#: ../templates/selfService/adminMain.php:569
-#: ../templates/selfService/adminLogin.php:123
-#: ../templates/selfService/adminLogin.php:124
-#: ../templates/selfService/selfServiceLogin.php:218
+#: ../templates/selfService/profManage.php:248
+#: ../templates/selfService/adminMain.php:501
+#: ../templates/selfService/adminMain.php:533
+#: ../templates/selfService/adminMain.php:571
+#: ../templates/selfService/adminLogin.php:125
+#: ../templates/selfService/adminLogin.php:126
+#: ../templates/selfService/selfServiceLogin.php:220
 #: ../templates/tests/lamdaemonTest.php:108
 #: ../templates/masscreate.php:113
 #: ../templates/ou_edit.php:181
 #: ../templates/ou_edit.php:197
 #: ../templates/profedit/profiledelete.php:85
-#: ../templates/config/conftypes.php:235
-#: ../templates/config/conflogin.php:126
-#: ../templates/config/conflogin.php:127
-#: ../templates/config/mainmanage.php:358
-#: ../templates/config/confmain.php:473
-#: ../templates/config/profmanage.php:346
-#: ../templates/config/confmodules.php:111
-#: ../templates/config/confmodules.php:114
-#: ../templates/config/mainlogin.php:119
+#: ../templates/config/conflogin.php:128
+#: ../templates/config/conflogin.php:129
+#: ../templates/config/mainmanage.php:360
+#: ../templates/config/profmanage.php:348
+#: ../templates/config/mainlogin.php:121
 #: ../lib/modules/nisnetgroup.inc:450
 #: ../lib/modules/nisnetgroup.inc:466
 #: ../lib/modules/inetOrgPerson.inc:1028
@@ -4160,9 +4189,9 @@ msgstr "办公室名"
 #: ../lib/modules/groupOfNames.inc:257
 #: ../lib/modules/groupOfNames.inc:344
 #: ../lib/modules/posixGroup.inc:288
-#: ../lib/modules/posixAccount.inc:1131
-#: ../lib/modules/sambaSamAccount.inc:1299
-#: ../lib/modules/sambaSamAccount.inc:1470
+#: ../lib/modules/posixAccount.inc:1132
+#: ../lib/modules/sambaSamAccount.inc:1325
+#: ../lib/modules/sambaSamAccount.inc:1496
 #: ../lib/modules/aliasEntry.inc:146
 #: ../lib/modules/aliasEntry.inc:172
 #: ../lib/lists.inc:663
@@ -4184,8 +4213,8 @@ msgid "On"
 msgstr "On"
 
 #: ../lib/modules/sambaSamAccount.inc:329
-#: ../lib/modules/sambaSamAccount.inc:1455
-#: ../lib/modules/sambaSamAccount.inc:1796
+#: ../lib/modules/sambaSamAccount.inc:1481
+#: ../lib/modules/sambaSamAccount.inc:1822
 msgid "On broken or timed out connection"
 msgstr "中断或超时连接"
 
@@ -4194,7 +4223,7 @@ msgid "One (one level beneath base)"
 msgstr "One (基类下第一层)"
 
 #: ../lib/modules/range.inc:99
-#: ../lib/modules/fixed_ip.inc:100
+#: ../lib/modules/fixed_ip.inc:94
 msgid "One or more errors occured. The invalid fields are marked."
 msgstr "发生了错误,非法域已经被标记."
 
@@ -4239,11 +4268,16 @@ msgstr "组织单元"
 msgid "Organizational units contains an invalid entry."
 msgstr "组织单元中有一个非法条目"
 
-#: ../templates/config/confmain.php:380
+#: ../templates/config/confmain.php:442
 msgid "Other"
 msgstr "其它"
 
-#: ../templates/config/confmain.php:372
+#: ../lib/modules/customScripts.inc:294
+#, php-format
+msgid "Output of command \"%s\" with return code %s"
+msgstr "\"%s\"命令的输出和返回值%s"
+
+#: ../templates/config/confmain.php:434
 #: ../lib/modules/groupOfNames.inc:68
 #: ../lib/modules/groupOfNames.inc:97
 #: ../lib/modules/groupOfNames.inc:149
@@ -4258,8 +4292,8 @@ msgid "P-Node (0x02)"
 msgstr "P-节点 (0x02)"
 
 #: ../lib/modules/fixed_ip.inc:79
-#: ../lib/modules/fixed_ip.inc:369
-#: ../lib/modules/fixed_ip.inc:505
+#: ../lib/modules/fixed_ip.inc:325
+#: ../lib/modules/fixed_ip.inc:512
 msgid "PC name"
 msgstr "PC机器名"
 
@@ -4280,7 +4314,7 @@ msgstr "PDF架构成功保存."
 msgid "PDF-structure name not valid"
 msgstr "PDF架构名无效"
 
-#: ../lib/modules/sambaSamAccount.inc:498
+#: ../lib/modules/sambaSamAccount.inc:501
 msgid "Pacific Time (US & Canada)"
 msgstr "太平洋时间(美国和加拿大)"
 
@@ -4288,8 +4322,8 @@ msgstr "太平洋时间(美国和加拿大)"
 msgid "Packets are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network."
 msgstr "如果数据包的接收者不在同一个网络,数据包将会发往缺省网关.缺省网关将数据包转向目标网络."
 
-#: ../templates/selfService/adminMain.php:403
-#: ../help/help.inc:180
+#: ../templates/selfService/adminMain.php:405
+#: ../help/help.inc:181
 msgid "Page header"
 msgstr "页首"
 
@@ -4297,9 +4331,9 @@ msgstr "页首"
 msgid "Parent to"
 msgstr "继承于"
 
-#: ../templates/selfService/selfServiceLogin.php:204
+#: ../templates/selfService/selfServiceLogin.php:206
 #: ../templates/lists/changePassword.php:203
-#: ../templates/login.php:284
+#: ../templates/login.php:295
 #: ../lib/modules/inetOrgPerson.inc:103
 #: ../lib/modules/inetOrgPerson.inc:104
 #: ../lib/modules/inetOrgPerson.inc:470
@@ -4319,18 +4353,18 @@ msgstr "继承于"
 #: ../lib/modules/posixAccount.inc:136
 #: ../lib/modules/posixAccount.inc:252
 #: ../lib/modules/posixAccount.inc:388
-#: ../lib/modules/posixAccount.inc:1024
-#: ../lib/modules/posixAccount.inc:1035
-#: ../lib/modules/posixAccount.inc:1116
-#: ../lib/modules/posixAccount.inc:1248
+#: ../lib/modules/posixAccount.inc:1025
+#: ../lib/modules/posixAccount.inc:1036
+#: ../lib/modules/posixAccount.inc:1117
+#: ../lib/modules/posixAccount.inc:1249
 #: ../lib/modules/sambaSamAccount.inc:94
 #: ../lib/modules/sambaSamAccount.inc:95
-#: ../lib/modules/sambaSamAccount.inc:361
+#: ../lib/modules/sambaSamAccount.inc:364
 msgid "Password"
 msgstr "密码"
 
 #: ../lib/modules/sambaSamAccount.inc:239
-#: ../lib/modules/sambaSamAccount.inc:1043
+#: ../lib/modules/sambaSamAccount.inc:1069
 msgid "Password change at next login"
 msgstr "下次登录时修改密码"
 
@@ -4353,9 +4387,9 @@ msgstr "密码包括无效字符,合法字符为a-z, A-Z, 0-9 和 #*,.;:_-+!%&/|
 #: ../lib/modules/sambaAccount.inc:759
 #: ../lib/modules/sambaSamAccount.inc:224
 #: ../lib/modules/sambaSamAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:383
-#: ../lib/modules/sambaSamAccount.inc:1026
-#: ../lib/modules/sambaSamAccount.inc:1509
+#: ../lib/modules/sambaSamAccount.inc:386
+#: ../lib/modules/sambaSamAccount.inc:1052
+#: ../lib/modules/sambaSamAccount.inc:1535
 msgid "Password does not expire"
 msgstr "密码永不过期"
 
@@ -4405,8 +4439,8 @@ msgstr "密码最长生命期必须小于最短生命期."
 msgid "Password minimum age must be are natural number."
 msgstr "密码最短生命期必须是自然数."
 
-#: ../templates/config/mainmanage.php:201
-#: ../help/help.inc:142
+#: ../templates/config/mainmanage.php:203
+#: ../help/help.inc:143
 msgid "Password policy"
 msgstr "密码策略"
 
@@ -4424,7 +4458,7 @@ msgstr "密码提醒日期"
 msgid "Password warning must be are natural number."
 msgstr "密码提醒日期必须是自然数."
 
-#: ../templates/config/confmain.php:562
+#: ../templates/config/confmain.php:609
 msgid "Passwords are different!"
 msgstr "密码不同!"
 
@@ -4437,12 +4471,12 @@ msgstr "用户配置文件所在路径。"
 msgid "Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name."
 msgstr "用户配置文件路径. 可以是本地绝对路径或UNC路径(\\\\server\\share).$user和$group会被用户名和组名代替."
 
-#: ../templates/config/confmain.php:340
+#: ../templates/config/confmain.php:402
 msgid "Path to external script"
 msgstr "外部脚本路径"
 
 #: ../lib/modules/ddns.inc:90
-#: ../lib/modules/ddns.inc:346
+#: ../lib/modules/ddns.inc:348
 msgid "Path to key for DNS updates"
 msgstr "DNS更新的KEY文件所有路径"
 
@@ -4472,7 +4506,7 @@ msgstr "照片文件(JPG格式)"
 msgid "Please a comma separated list of your public SSH keys."
 msgstr "您的公钥列表,以逗号分隔."
 
-#: ../lib/modules/sambaSamAccount.inc:970
+#: ../lib/modules/sambaSamAccount.inc:996
 msgid "Please check your settings on the Unix page!"
 msgstr "请在UNIX中检查设置"
 
@@ -4618,7 +4652,7 @@ msgid "Please enter a valid telephone number!"
 msgstr "请输入有效的电话号码!"
 
 #: ../lib/modules/posixGroup.inc:602
-#: ../lib/modules/posixAccount.inc:764
+#: ../lib/modules/posixAccount.inc:765
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "请输入有效值(介于%s和%s之间)!"
@@ -4632,7 +4666,7 @@ msgstr "请在本页面输入邮件地址:%s"
 msgid "Please enter the IP address of your DNS server."
 msgstr "请输入DNS服务器IP地址"
 
-#: ../help/help.inc:117
+#: ../help/help.inc:118
 msgid "Please enter the LDAP suffix where LAM should start to search for users. The LDAP filter needs to match the given user name to exactly one DN. The value \"%USER%\" will be replaced by the user name from the login page."
 msgstr "请输入LAM开始搜索用户的LDAP后缀.所给用户名经LDAP过滤器后需要精确匹配到一个DN.\"%USER%\"将在登录页替换为用户名."
 
@@ -4644,19 +4678,23 @@ msgstr "请先在另一个页面输入帐号信息."
 msgid "Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\"."
 msgstr "请输入配置文件的密码,不是LDAP中的密码,这个密码存放在配置文件中,第一次登录的话,请输入\"lam\"."
 
-#: ../help/help.inc:131
+#: ../lib/modules/customScripts.inc:53
+msgid "Please enter the list of scripts which should be run. Each line has the following format: [account type] [action] [script and arguments]"
+msgstr "请输入运行的脚本列表。每一行遵循如下格式：[帐号类型] [动作] [脚本和参数]"
+
+#: ../help/help.inc:132
 msgid "Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\"."
 msgstr "请输入本系统管理配置密码,不是LDAP密码,存在在config.cfg文件中,如果第一次登录,请输入\"lam\"."
 
-#: ../templates/config/mainlogin.php:99
+#: ../templates/config/mainlogin.php:101
 msgid "Please enter the master password to change the general preferences:"
 msgstr "更改一般配置,请输入管理密码:"
 
-#: ../help/help.inc:119
+#: ../help/help.inc:120
 msgid "Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_."
 msgstr "请输入新配置文件名和密码.配置文件名可以包含字符和-/_ ."
 
-#: ../help/help.inc:121
+#: ../help/help.inc:122
 msgid "Please enter the new name of the profile. The name may contain letters, numbers and -/_."
 msgstr "請輸入新的設定檔名稱.可以包含字母,數字和 -/_ ."
 
@@ -4689,11 +4727,11 @@ msgstr "请在两个密码输入框输入相同的密码."
 msgid "Please enter the time limit in minutes. 0 means unlimited."
 msgstr "请输入时间限制（分钟）。0代表不限制。"
 
-#: ../templates/selfService/adminLogin.php:98
+#: ../templates/selfService/adminLogin.php:100
 msgid "Please enter your master configuration password to change the self service profile:"
 msgstr "改变自助服务配置文件,请输入管理密码:"
 
-#: ../templates/config/conflogin.php:91
+#: ../templates/config/conflogin.php:93
 msgid "Please enter your password to change the server preferences:"
 msgstr "改变服务器配置,请输入密码:"
 
@@ -4702,7 +4740,7 @@ msgid "Please enter your public SSH key."
 msgstr "请输入您的SSH公钥."
 
 #: ../lib/modules/range.inc:395
-#: ../lib/modules/fixed_ip.inc:336
+#: ../lib/modules/fixed_ip.inc:319
 msgid "Please fill out the DHCP settings first."
 msgstr "请先填写DHCP设置"
 
@@ -4722,11 +4760,11 @@ msgstr "请选择图像文件上传,必须是JPG格式(.jpg/.jpeg)."
 msgid "Please select your account type:"
 msgstr "请选择帐号类型:"
 
-#: ../help/help.inc:137
+#: ../help/help.inc:138
 msgid "Please select your prefered log level. Messages with a lower level will not be logged."
 msgstr "请选择日志等级,在此等级以下的日志不会被记录."
 
-#: ../templates/login.php:254
+#: ../templates/login.php:265
 msgid "Please select your user name and enter your password to log in."
 msgstr "请输入用户名和密码登录."
 
@@ -4735,13 +4773,13 @@ msgstr "请输入用户名和密码登录."
 msgid "Please set up all required attributes on page: %s"
 msgstr "请在页面%s上输入必须的属性."
 
-#: ../templates/selfService/profManage.php:115
-#: ../templates/config/profmanage.php:146
+#: ../templates/selfService/profManage.php:117
+#: ../templates/config/profmanage.php:148
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr "请先主配置文件(config/config.cfg)!"
 
-#: ../lib/modules/dhcp_settings.inc:729
-#: ../lib/modules/ddns.inc:324
+#: ../lib/modules/dhcp_settings.inc:737
+#: ../lib/modules/ddns.inc:326
 msgid "Please set your LDAP suffix to an LDAP entry with object class \"dhcpServer\"."
 msgstr "请在您的LDAP后缀中设置一个含对象类\"dhcpServer\"."
 
@@ -4759,6 +4797,8 @@ msgstr "位置"
 #: ../templates/masscreate.php:178
 #: ../templates/masscreate.php:319
 #: ../lib/modules/sambaGroupMapping.inc:439
+#: ../lib/modules/customScripts.inc:83
+#: ../lib/modules/customScripts.inc:85
 msgid "Possible values"
 msgstr "可能的值"
 
@@ -4797,7 +4837,7 @@ msgstr "邮政地址,城市"
 msgid "Postal code"
 msgstr "邮政编码"
 
-#: ../help/help.inc:85
+#: ../help/help.inc:86
 msgid "Predefined values"
 msgstr "预订值"
 
@@ -4818,10 +4858,10 @@ msgstr "主要联系"
 #: ../lib/modules/posixAccount.inc:351
 #: ../lib/modules/posixAccount.inc:380
 #: ../lib/modules/posixAccount.inc:418
-#: ../lib/modules/posixAccount.inc:986
-#: ../lib/modules/posixAccount.inc:1152
-#: ../lib/modules/posixAccount.inc:1192
-#: ../lib/modules/posixAccount.inc:1242
+#: ../lib/modules/posixAccount.inc:987
+#: ../lib/modules/posixAccount.inc:1153
+#: ../lib/modules/posixAccount.inc:1193
+#: ../lib/modules/posixAccount.inc:1243
 msgid "Primary group"
 msgstr "主要组"
 
@@ -4849,8 +4889,8 @@ msgstr "主要的名字非法!"
 msgid "Private telephone number"
 msgstr "个人电话号码"
 
-#: ../templates/selfService/profManage.php:98
-#: ../templates/config/profmanage.php:108
+#: ../templates/selfService/profManage.php:100
+#: ../templates/config/profmanage.php:110
 msgid "Profile deleted."
 msgstr "配置文件被删除."
 
@@ -4859,41 +4899,41 @@ msgstr "配置文件被删除."
 msgid "Profile editor"
 msgstr "配置文件编辑器"
 
-#: ../templates/selfService/profManage.php:36
-#: ../templates/selfService/profManage.php:128
-#: ../templates/config/profmanage.php:50
-#: ../templates/config/profmanage.php:159
-#: ../help/help.inc:118
-#: ../help/help.inc:120
-#: ../help/help.inc:122
-#: ../help/help.inc:124
-#: ../help/help.inc:126
+#: ../templates/selfService/profManage.php:38
+#: ../templates/selfService/profManage.php:130
+#: ../templates/config/profmanage.php:52
+#: ../templates/config/profmanage.php:161
+#: ../help/help.inc:119
+#: ../help/help.inc:121
+#: ../help/help.inc:123
+#: ../help/help.inc:125
+#: ../help/help.inc:127
 msgid "Profile management"
 msgstr "配置文件管理"
 
-#: ../templates/selfService/profManage.php:143
-#: ../templates/selfService/profManage.php:191
+#: ../templates/selfService/profManage.php:145
+#: ../templates/selfService/profManage.php:193
 #: ../templates/profedit/profilepage.php:251
-#: ../templates/config/profmanage.php:174
-#: ../templates/config/profmanage.php:223
-#: ../help/help.inc:151
+#: ../templates/config/profmanage.php:176
+#: ../templates/config/profmanage.php:225
+#: ../help/help.inc:152
 msgid "Profile name"
 msgstr "配置文件名"
 
-#: ../templates/selfService/profManage.php:74
-#: ../templates/selfService/profManage.php:89
-#: ../templates/config/profmanage.php:92
-#: ../templates/config/profmanage.php:103
+#: ../templates/selfService/profManage.php:76
+#: ../templates/selfService/profManage.php:91
+#: ../templates/config/profmanage.php:94
+#: ../templates/config/profmanage.php:105
 msgid "Profile name is invalid!"
 msgstr "配置文件名非法!"
 
-#: ../templates/config/profmanage.php:187
-#: ../templates/config/profmanage.php:281
+#: ../templates/config/profmanage.php:189
+#: ../templates/config/profmanage.php:283
 msgid "Profile password"
 msgstr "配置文件密码"
 
-#: ../templates/config/profmanage.php:90
-#: ../templates/config/profmanage.php:121
+#: ../templates/config/profmanage.php:92
+#: ../templates/config/profmanage.php:123
 msgid "Profile passwords are different or empty!"
 msgstr "配置文件密码不同或为空!"
 
@@ -4908,12 +4948,12 @@ msgstr "配置文件密码不同或为空!"
 #: ../lib/modules/sambaSamAccount.inc:87
 #: ../lib/modules/sambaSamAccount.inc:253
 #: ../lib/modules/sambaSamAccount.inc:302
-#: ../lib/modules/sambaSamAccount.inc:432
-#: ../lib/modules/sambaSamAccount.inc:1122
-#: ../lib/modules/sambaSamAccount.inc:1389
-#: ../lib/modules/sambaSamAccount.inc:1550
-#: ../lib/modules/sambaSamAccount.inc:1730
-#: ../lib/modules/sambaSamAccount.inc:1752
+#: ../lib/modules/sambaSamAccount.inc:435
+#: ../lib/modules/sambaSamAccount.inc:1148
+#: ../lib/modules/sambaSamAccount.inc:1415
+#: ../lib/modules/sambaSamAccount.inc:1576
+#: ../lib/modules/sambaSamAccount.inc:1756
+#: ../lib/modules/sambaSamAccount.inc:1778
 msgid "Profile path"
 msgstr "配置文件路径"
 
@@ -4932,7 +4972,7 @@ msgstr "配置文件已保存."
 msgid "Quota"
 msgstr "配额"
 
-#: ../lib/modules/quota.inc:626
+#: ../lib/modules/quota.inc:627
 #, php-format
 msgid "Quota for %s on %s"
 msgstr "%s 在 %s 的硬盘配额:"
@@ -4948,7 +4988,7 @@ msgstr "RDN"
 #: ../templates/masscreate.php:171
 #: ../templates/profedit/profilepage.php:205
 #: ../lib/modules.inc:1368
-#: ../help/help.inc:149
+#: ../help/help.inc:150
 msgid "RDN identifier"
 msgstr "RDN标志"
 
@@ -4979,12 +5019,12 @@ msgstr "范围到"
 msgid "Ranges"
 msgstr "范围"
 
-#: ../templates/config/confmain.php:369
+#: ../templates/config/confmain.php:431
 msgid "Read"
 msgstr "读"
 
-#: ../templates/config/confmain.php:211
-#: ../templates/config/confmain.php:214
+#: ../templates/config/confmain.php:292
+#: ../templates/config/confmain.php:295
 msgid "Read only"
 msgstr "只读"
 
@@ -5009,8 +5049,8 @@ msgid "Recipient list"
 msgstr "收件人列表"
 
 #: ../lib/modules/sambaSamAccount.inc:332
-#: ../lib/modules/sambaSamAccount.inc:1464
-#: ../lib/modules/sambaSamAccount.inc:1804
+#: ../lib/modules/sambaSamAccount.inc:1490
+#: ../lib/modules/sambaSamAccount.inc:1830
 msgid "Reconnect if disconnected"
 msgstr "如果中断重新连接"
 
@@ -5018,17 +5058,17 @@ msgstr "如果中断重新连接"
 msgid "Recursive delete progress"
 msgstr "递归删除过程"
 
-#: ../templates/config/mainmanage.php:345
+#: ../templates/config/mainmanage.php:347
 msgid "Reenter new master password"
 msgstr "请重新输入管理密码"
 
-#: ../templates/config/confmain.php:460
-#: ../lib/modules/posixAccount.inc:1767
+#: ../templates/config/confmain.php:522
+#: ../lib/modules/posixAccount.inc:1768
 msgid "Reenter password"
 msgstr "再次输入密码"
 
-#: ../templates/config/profmanage.php:196
-#: ../templates/config/profmanage.php:294
+#: ../templates/config/profmanage.php:198
+#: ../templates/config/profmanage.php:296
 msgid "Reenter profile password"
 msgstr "再次输入配置文件密码"
 
@@ -5048,6 +5088,7 @@ msgid "Relative distinguished name"
 msgstr "相对区别名称(RDN)"
 
 #: ../templates/pdfedit/pdfpage.php:425
+#: ../templates/config/confmodules.php:254
 #: ../lib/modules/nisMailAlias.inc:147
 #: ../lib/modules/ieee802device.inc:104
 #: ../lib/modules/groupOfNames.inc:158
@@ -5057,14 +5098,14 @@ msgstr "相对区别名称(RDN)"
 #: ../lib/modules/kolabUser.inc:895
 #: ../lib/modules/ldapPublicKey.inc:98
 #: ../lib/modules/inetLocalMailRecipient.inc:160
-#: ../lib/modules/sambaSamAccount.inc:1346
+#: ../lib/modules/sambaSamAccount.inc:1372
 #: ../lib/modules/shadowAccount.inc:383
 #: ../lib/modules/phpGroupwareUser.inc:246
 msgid "Remove"
 msgstr "删除"
 
 #: ../lib/modules/posixGroup.inc:206
-#: ../lib/modules/posixAccount.inc:1042
+#: ../lib/modules/posixAccount.inc:1043
 msgid "Remove password"
 msgstr "删除密码"
 
@@ -5077,7 +5118,7 @@ msgstr "删除 phpGroupWare 扩展"
 msgid "Remove selected entries"
 msgstr "删除所选条目"
 
-#: ../templates/config/conftypes.php:224
+#: ../templates/config/conftypes.php:207
 msgid "Remove this account type"
 msgstr "删除这个帐号类型"
 
@@ -5085,14 +5126,14 @@ msgstr "删除这个帐号类型"
 msgid "Remove/replace photo"
 msgstr "删除/更改照片"
 
-#: ../templates/selfService/profManage.php:187
-#: ../templates/config/profmanage.php:219
-#: ../help/help.inc:120
+#: ../templates/selfService/profManage.php:189
+#: ../templates/config/profmanage.php:221
+#: ../help/help.inc:121
 msgid "Rename profile"
 msgstr "配置文件重命名"
 
-#: ../templates/selfService/profManage.php:85
-#: ../templates/config/profmanage.php:99
+#: ../templates/selfService/profManage.php:87
+#: ../templates/config/profmanage.php:101
 msgid "Renamed profile."
 msgstr "已更名的配置文件."
 
@@ -5101,13 +5142,13 @@ msgstr "已更名的配置文件."
 #: ../lib/modules/inetOrgPerson.inc:1023
 #: ../lib/modules/sambaAccount.inc:748
 #: ../lib/modules/posixGroup.inc:283
-#: ../lib/modules/posixAccount.inc:1120
-#: ../lib/modules/sambaSamAccount.inc:1013
+#: ../lib/modules/posixAccount.inc:1121
+#: ../lib/modules/sambaSamAccount.inc:1039
 msgid "Repeat password"
 msgstr "确认密码"
 
 #: ../lib/modules/posixAccount.inc:64
-#: ../lib/modules/posixAccount.inc:787
+#: ../lib/modules/posixAccount.inc:788
 msgid "Replaced $user or $group in homedir."
 msgstr "在homedir中已更改$user和$group. "
 
@@ -5123,7 +5164,7 @@ msgstr "必选属性"
 
 #: ../templates/profedit/profilepage.php:259
 #: ../lib/modules/sambaAccount.inc:845
-#: ../lib/modules/sambaSamAccount.inc:1195
+#: ../lib/modules/sambaSamAccount.inc:1221
 msgid "Reset"
 msgstr "复位"
 
@@ -5134,7 +5175,7 @@ msgstr "复位设定"
 #: ../lib/modules/sambaAccount.inc:350
 #: ../lib/modules/sambaAccount.inc:844
 #: ../lib/modules/sambaSamAccount.inc:209
-#: ../lib/modules/sambaSamAccount.inc:1194
+#: ../lib/modules/sambaSamAccount.inc:1220
 msgid "Reset password"
 msgstr "复位密码"
 
@@ -5151,13 +5192,13 @@ msgstr "锁定帐号后复位时间必须是自然数."
 
 #: ../lib/modules/ddns.inc:100
 #: ../lib/modules/ddns.inc:128
-#: ../lib/modules/ddns.inc:377
-#: ../lib/modules/ddns.inc:406
+#: ../lib/modules/ddns.inc:379
+#: ../lib/modules/ddns.inc:408
 msgid "Reverse zone names"
 msgstr "反向域名"
 
-#: ../templates/config/confmain.php:346
-#: ../help/help.inc:112
+#: ../templates/config/confmain.php:408
+#: ../help/help.inc:113
 msgid "Rights for the home directory"
 msgstr "个人目录的权限"
 
@@ -5225,8 +5266,8 @@ msgstr "Samba 3 域条目"
 
 #: ../lib/modules/sambaSamAccount.inc:274
 #: ../lib/modules/sambaSamAccount.inc:278
-#: ../lib/modules/sambaSamAccount.inc:457
-#: ../lib/modules/sambaSamAccount.inc:481
+#: ../lib/modules/sambaSamAccount.inc:460
+#: ../lib/modules/sambaSamAccount.inc:484
 msgid "Samba RID"
 msgstr "Samba RID"
 
@@ -5260,7 +5301,7 @@ msgstr "Samba 组类型"
 #: ../lib/modules/sambaAccount.inc:347
 #: ../lib/modules/sambaAccount.inc:745
 #: ../lib/modules/sambaSamAccount.inc:206
-#: ../lib/modules/sambaSamAccount.inc:1009
+#: ../lib/modules/sambaSamAccount.inc:1035
 msgid "Samba password"
 msgstr "Samba密码"
 
@@ -5274,22 +5315,28 @@ msgstr "Samba密码"
 #: ../lib/modules/sambaSamAccount.inc:92
 #: ../lib/modules/sambaSamAccount.inc:259
 #: ../lib/modules/sambaSamAccount.inc:262
-#: ../lib/modules/sambaSamAccount.inc:444
-#: ../lib/modules/sambaSamAccount.inc:1134
-#: ../lib/modules/sambaSamAccount.inc:1562
-#: ../lib/modules/sambaSamAccount.inc:1733
+#: ../lib/modules/sambaSamAccount.inc:447
+#: ../lib/modules/sambaSamAccount.inc:1160
+#: ../lib/modules/sambaSamAccount.inc:1588
+#: ../lib/modules/sambaSamAccount.inc:1759
 msgid "Samba workstations"
 msgstr "Samba工作站"
 
-#: ../lib/modules/sambaSamAccount.inc:1253
+#: ../lib/modules/sambaSamAccount.inc:1279
 msgid "Saturday"
 msgstr "星期六"
 
 #: ../templates/tree/edit.php:512
-#: ../templates/selfService/selfServiceMain.php:283
+#: ../templates/selfService/selfServiceMain.php:285
 #: ../templates/pdfedit/pdfpage.php:671
 #: ../templates/pdfedit/pdfpage.php:705
 #: ../templates/profedit/profilepage.php:257
+#: ../templates/config/conftypes.php:118
+#: ../templates/config/conftypes.php:161
+#: ../templates/config/confmain.php:146
+#: ../templates/config/confmain.php:189
+#: ../templates/config/confmodules.php:112
+#: ../templates/config/confmodules.php:155
 #: ../lib/modules.inc:1184
 msgid "Save"
 msgstr "保存"
@@ -5319,27 +5366,27 @@ msgstr "范围"
 msgid "Scoped affiliation"
 msgstr "联系范围"
 
-#: ../help/help.inc:95
+#: ../help/help.inc:96
 msgid "Script path"
 msgstr "脚本路径"
 
-#: ../templates/config/confmain.php:538
+#: ../templates/config/confmain.php:585
 msgid "Script path is invalid!"
 msgstr "脚本路径非法!"
 
-#: ../templates/config/confmain.php:557
+#: ../templates/config/confmain.php:604
 msgid "Script rights are invalid!"
 msgstr "脚本权限非法!"
 
-#: ../templates/config/confmain.php:541
+#: ../templates/config/confmain.php:588
 msgid "Script server is invalid!"
 msgstr "脚本服务器非法!"
 
-#: ../help/help.inc:108
+#: ../help/help.inc:109
 msgid "Script servers"
 msgstr "脚本服务器"
 
-#: ../templates/config/confmain.php:329
+#: ../templates/config/confmain.php:391
 msgid "Script settings"
 msgstr "脚本设定"
 
@@ -5359,8 +5406,8 @@ msgstr "搜索范围"
 msgid "Section"
 msgstr "节"
 
-#: ../templates/config/mainmanage.php:154
-#: ../templates/config/confmain.php:396
+#: ../templates/config/mainmanage.php:156
+#: ../templates/config/confmain.php:458
 msgid "Security settings"
 msgstr "安全设定"
 
@@ -5369,7 +5416,7 @@ msgstr "安全设定"
 msgid "See README.openldap.txt to solve this problem."
 msgstr "参考README.openldap.txt解决本问题."
 
-#: ../templates/help.php:89
+#: ../templates/help.php:91
 msgid "See also"
 msgstr "同时参考"
 
@@ -5392,11 +5439,11 @@ msgid "Select user"
 msgstr "选择用户"
 
 #: ../lib/modules/nisnetgroup.inc:354
-#: ../lib/modules/posixAccount.inc:1087
+#: ../lib/modules/posixAccount.inc:1088
 msgid "Selected groups"
 msgstr "已选择的组"
 
-#: ../templates/config/confmodules.php:183
+#: ../templates/config/confmodules.php:230
 msgid "Selected modules"
 msgstr "已选择的模块"
 
@@ -5404,11 +5451,11 @@ msgstr "已选择的模块"
 msgid "Selected users"
 msgstr "已选择的用户"
 
-#: ../templates/selfService/adminMain.php:247
+#: ../templates/selfService/adminMain.php:249
 msgid "Self service configuration"
 msgstr "自助服务配置"
 
-#: ../templates/selfService/adminMain.php:261
+#: ../templates/selfService/adminMain.php:263
 msgid "Self service configuration editor"
 msgstr "自助服务配置编辑器"
 
@@ -5416,32 +5463,32 @@ msgstr "自助服务配置编辑器"
 msgid "Server"
 msgstr "服务器"
 
-#: ../templates/selfService/adminMain.php:289
-#: ../templates/config/confmain.php:149
+#: ../templates/selfService/adminMain.php:291
+#: ../templates/config/confmain.php:211
 #: ../help/help.inc:57
 msgid "Server address"
 msgstr "服务器地址"
 
-#: ../templates/selfService/adminMain.php:93
-#: ../templates/config/confmain.php:510
+#: ../templates/selfService/adminMain.php:95
+#: ../templates/config/confmain.php:556
 msgid "Server address is invalid!"
 msgstr "服务器地址非法!"
 
-#: ../templates/config/confmain.php:333
+#: ../templates/config/confmain.php:395
 msgid "Server list"
 msgstr "服务器列表"
 
-#: ../templates/login.php:353
+#: ../templates/login.php:364
 msgid "Server profile"
 msgstr "服务器设置文件"
 
-#: ../templates/selfService/adminMain.php:286
-#: ../templates/config/confmain.php:146
+#: ../templates/selfService/adminMain.php:288
+#: ../templates/config/confmain.php:208
 msgid "Server settings"
 msgstr "服务器设置"
 
-#: ../templates/config/mainmanage.php:160
-#: ../help/help.inc:134
+#: ../templates/config/mainmanage.php:162
+#: ../help/help.inc:135
 msgid "Session timeout"
 msgstr "会话超时"
 
@@ -5450,7 +5497,7 @@ msgid "Set"
 msgstr "设置"
 
 #: ../lib/modules/posixGroup.inc:188
-#: ../lib/modules/posixAccount.inc:1025
+#: ../lib/modules/posixAccount.inc:1026
 msgid "Set password"
 msgstr "设置密码"
 
@@ -5459,12 +5506,12 @@ msgstr "设置密码"
 msgid "Set primary group as memberUid"
 msgstr "为主组设置memberUid"
 
-#: ../templates/config/profmanage.php:277
-#: ../help/help.inc:124
+#: ../templates/config/profmanage.php:279
+#: ../help/help.inc:125
 msgid "Set profile password"
 msgstr "设置文件密码"
 
-#: ../lib/modules/posixAccount.inc:1134
+#: ../lib/modules/posixAccount.inc:1135
 msgid "Set random password"
 msgstr "设置随机密码"
 
@@ -5481,8 +5528,8 @@ msgid "Shadow"
 msgstr "Shadow"
 
 #: ../lib/modules/sambaSamAccount.inc:326
-#: ../lib/modules/sambaSamAccount.inc:1446
-#: ../lib/modules/sambaSamAccount.inc:1788
+#: ../lib/modules/sambaSamAccount.inc:1472
+#: ../lib/modules/sambaSamAccount.inc:1814
 msgid "Shadowing"
 msgstr "遮蔽化(shadow)"
 
@@ -5510,13 +5557,13 @@ msgstr "主组用户显示为普通组用户"
 msgid "Single valued"
 msgstr "单值"
 
-#: ../lib/modules/quota.inc:570
+#: ../lib/modules/quota.inc:571
 msgid "Soft block"
 msgstr "软块"
 
 #: ../lib/modules/quota.inc:101
-#: ../lib/modules/quota.inc:376
-#: ../lib/modules/quota.inc:461
+#: ../lib/modules/quota.inc:377
+#: ../lib/modules/quota.inc:462
 msgid "Soft block limit"
 msgstr "软块限制"
 
@@ -5524,7 +5571,7 @@ msgstr "软块限制"
 msgid "Soft block limit."
 msgstr "软块限制."
 
-#: ../lib/modules/quota.inc:572
+#: ../lib/modules/quota.inc:573
 msgid "Soft inode"
 msgstr "软节点"
 
@@ -5533,8 +5580,8 @@ msgid "Soft inode (files) limit."
 msgstr "软节点限制."
 
 #: ../lib/modules/quota.inc:123
-#: ../lib/modules/quota.inc:380
-#: ../lib/modules/quota.inc:463
+#: ../lib/modules/quota.inc:381
+#: ../lib/modules/quota.inc:464
 msgid "Soft inode limit"
 msgstr "软节点限制."
 
@@ -5547,12 +5594,12 @@ msgstr "下面被选中的属性(%s)已经被修改."
 msgid "Some required information is missing"
 msgstr "缺少一些必要的信息"
 
-#: ../templates/help.php:119
+#: ../templates/help.php:121
 #, php-format
 msgid "Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold})."
 msgstr "对不起，本模块({bold}%s{endbold}) 尚无帮助说明 (help id {bold}%s{endbold})."
 
-#: ../templates/help.php:133
+#: ../templates/help.php:135
 #, php-format
 msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "对不起,本帮助号({bold}%d{endbold})并不存在."
@@ -5561,7 +5608,7 @@ msgstr "对不起,本帮助号({bold}%d{endbold})并不存在."
 #: ../lib/modules/sambaAccount.inc:406
 #: ../lib/modules/sambaAccount.inc:835
 #: ../lib/modules/sambaSamAccount.inc:271
-#: ../lib/modules/sambaSamAccount.inc:1171
+#: ../lib/modules/sambaSamAccount.inc:1197
 msgid "Special user"
 msgstr "特殊用户"
 
@@ -5608,7 +5655,7 @@ msgstr "Steve"
 #: ../lib/modules/inetOrgPerson.inc:341
 #: ../lib/modules/sambaAccount.inc:225
 #: ../lib/modules/posixAccount.inc:207
-#: ../lib/modules/sambaSamAccount.inc:357
+#: ../lib/modules/sambaSamAccount.inc:360
 msgid "Steve Miller"
 msgstr "Steve Miller"
 
@@ -5649,19 +5696,19 @@ msgid "Subgroups"
 msgstr "分组"
 
 #: ../lib/modules/dhcp_settings.inc:130
-#: ../lib/modules/dhcp_settings.inc:186
-#: ../lib/modules/dhcp_settings.inc:234
-#: ../lib/modules/dhcp_settings.inc:736
-#: ../lib/modules/dhcp_settings.inc:742
-#: ../lib/modules/dhcp_settings.inc:860
+#: ../lib/modules/dhcp_settings.inc:190
+#: ../lib/modules/dhcp_settings.inc:238
+#: ../lib/modules/dhcp_settings.inc:744
+#: ../lib/modules/dhcp_settings.inc:750
+#: ../lib/modules/dhcp_settings.inc:874
 msgid "Subnet"
 msgstr "子网"
 
 #: ../lib/modules/dhcp_settings.inc:163
-#: ../lib/modules/dhcp_settings.inc:226
-#: ../lib/modules/dhcp_settings.inc:286
-#: ../lib/modules/dhcp_settings.inc:794
-#: ../lib/modules/dhcp_settings.inc:868
+#: ../lib/modules/dhcp_settings.inc:230
+#: ../lib/modules/dhcp_settings.inc:290
+#: ../lib/modules/dhcp_settings.inc:802
+#: ../lib/modules/dhcp_settings.inc:882
 msgid "Subnet mask"
 msgstr "子网掩码"
 
@@ -5683,7 +5730,7 @@ msgstr "Sudo的设置不正确 !"
 msgid "Suffix"
 msgstr "后缀"
 
-#: ../lib/modules/sambaSamAccount.inc:1253
+#: ../lib/modules/sambaSamAccount.inc:1279
 msgid "Sunday"
 msgstr "星期日"
 
@@ -5711,9 +5758,13 @@ msgstr "OID语法"
 msgid "Syntaxes"
 msgstr "语法"
 
-#: ../templates/config/mainmanage.php:301
+#: ../templates/config/mainmanage.php:303
 msgid "System logging"
 msgstr "系统日志"
+
+#: ../help/help.inc:59
+msgid "TLS cannot be combined with ldaps://."
+msgstr "TLS不能与ldaps://结合"
 
 #: ../lib/modules/kolabUser.inc:235
 msgid "Target of invitation policy is invalid!"
@@ -5744,7 +5795,7 @@ msgid "Template"
 msgstr "模板"
 
 #: ../lib/modules/sambaSamAccount.inc:335
-#: ../lib/modules/sambaSamAccount.inc:1186
+#: ../lib/modules/sambaSamAccount.inc:1212
 msgid "Terminal server options"
 msgstr "终端服务选项"
 
@@ -5756,7 +5807,7 @@ msgstr "测试"
 msgid "Text field"
 msgstr "输入框"
 
-#: ../help/help.inc:103
+#: ../help/help.inc:104
 msgid "Text for user PDF"
 msgstr "用户PDF的文本"
 
@@ -5768,7 +5819,7 @@ msgstr "用户用来进行机构间认证的\"NetID\".格式是\"user@scope\",�
 msgid "The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
 msgstr "用户Cyrus邮件限制(MB),留空意味着不限制."
 
-#: ../lib/modules/dhcp_settings.inc:319
+#: ../lib/modules/dhcp_settings.inc:328
 msgid "The DHCP ranges were changed to fit for the new subnet."
 msgstr "为适应新子网的变化,DHCP范围已经更改."
 
@@ -5785,21 +5836,22 @@ msgstr "代表用户主要组织单位的目录条目的DN."
 msgid "The DNs of the directory entries representing the person's organizational units."
 msgstr "代表用户组织单元的目录条目的DN."
 
-#: ../templates/config/mainmanage.php:108
+#: ../templates/config/mainmanage.php:110
 #, php-format
 msgid "The IP address %s is invalid!"
 msgstr "IP地址 %s非法 !"
 
-#: ../lib/modules/fixed_ip.inc:394
+#: ../lib/modules/fixed_ip.inc:386
 msgid "The IP address does not match the subnet."
 msgstr "IP地址与子网不匹配."
 
-#: ../lib/modules/fixed_ip.inc:397
+#: ../lib/modules/fixed_ip.inc:389
 msgid "The IP address is already in use."
 msgstr "IP地址已被使用: "
 
 #: ../lib/modules/range.inc:409
 #: ../lib/modules/range.inc:427
+#: ../lib/modules/fixed_ip.inc:383
 msgid "The IP address is invalid."
 msgstr "IP地址非法 !"
 
@@ -5824,20 +5876,20 @@ msgstr "IP与子网掩码不匹配."
 msgid "The MAC address of the PC. Example: 11:22:33:44:55:aa"
 msgstr "PC机的 MAC 地址.比如: 11:22:33:44:55:aa"
 
-#: ../lib/modules/dhcp_settings.inc:309
-#: ../lib/modules/dhcp_settings.inc:310
+#: ../lib/modules/dhcp_settings.inc:318
+#: ../lib/modules/dhcp_settings.inc:319
 msgid "The Netbios server is invalid."
 msgstr "Netbios服务器非法."
 
-#: ../lib/modules/fixed_ip.inc:356
+#: ../lib/modules/fixed_ip.inc:355
 msgid "The PC name may not be longer than 20 characters."
 msgstr "PC机器名的长度不能超过20个字符."
 
-#: ../lib/modules/fixed_ip.inc:365
+#: ../lib/modules/fixed_ip.inc:364
 msgid "The PC name may only contain A-Z, a-z and 0-9."
 msgstr "PC机的机器名只能包含 A-Z, a-z 和 0-9."
 
-#: ../lib/modules/fixed_ip.inc:359
+#: ../lib/modules/fixed_ip.inc:358
 msgid "The PC name needs to be at least 2 characters long."
 msgstr "PC机器名的长度最短需要两个字符."
 
@@ -5849,7 +5901,7 @@ msgstr "您的Samba服务器的SID,可以通过使用\"net getlocalsid\"命令�
 msgid "The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1 for new accounts. Please set the minimum UID to equal values or use independent ranges."
 msgstr "用户UID范围与主机帐号重叠,因为LAM用户使用最高UID+1做为新帐号的UID.请将最小的UID设为相等或使用独立的范围."
 
-#: ../help/help.inc:154
+#: ../help/help.inc:155
 msgid "The account will be saved under this LDAP suffix."
 msgstr "帐号将会保存在此后缀下."
 
@@ -5867,23 +5919,23 @@ msgstr "您指定的容器%s不存在,请重试."
 msgid "The country name of the user."
 msgstr "用户国籍."
 
-#: ../lib/modules/dhcp_settings.inc:307
-#: ../lib/modules/dhcp_settings.inc:308
+#: ../lib/modules/dhcp_settings.inc:316
+#: ../lib/modules/dhcp_settings.inc:317
 msgid "The default gateway is invalid."
 msgstr "缺省网关非法."
 
-#: ../lib/modules/dhcp_settings.inc:323
-#: ../lib/modules/dhcp_settings.inc:326
+#: ../lib/modules/dhcp_settings.inc:332
+#: ../lib/modules/dhcp_settings.inc:335
 msgid "The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, \".\", \"_\",\"-\"."
 msgstr "域名包含非法字符,只能使用A-Z, a-z, 0-9, \".\", \"_\",\"-\"."
 
-#: ../lib/modules/dhcp_settings.inc:321
-#: ../lib/modules/dhcp_settings.inc:324
+#: ../lib/modules/dhcp_settings.inc:330
+#: ../lib/modules/dhcp_settings.inc:333
 msgid "The domain name needs to be shorter than 15 characters."
 msgstr "域名的长度不能超过15个字符."
 
-#: ../lib/modules/dhcp_settings.inc:322
-#: ../lib/modules/dhcp_settings.inc:325
+#: ../lib/modules/dhcp_settings.inc:331
+#: ../lib/modules/dhcp_settings.inc:334
 msgid "The domain name needs to have at least 3 characters."
 msgstr "域名最少需要3个字符."
 
@@ -5895,8 +5947,8 @@ msgstr "域名的子网掩码."
 msgid "The ending IP address of the range."
 msgstr "范围的最高IP地址."
 
-#: ../lib/modules/dhcp_settings.inc:311
-#: ../lib/modules/dhcp_settings.inc:312
+#: ../lib/modules/dhcp_settings.inc:320
+#: ../lib/modules/dhcp_settings.inc:321
 msgid "The entered Netbios node type does not exist."
 msgstr "输入的Netbios节点类型不存在."
 
@@ -5905,7 +5957,7 @@ msgstr "输入的Netbios节点类型不存在."
 msgid "The expiration date is invalid."
 msgstr "过期日期非法."
 
-#: ../help/help.inc:188
+#: ../help/help.inc:189
 msgid "The first line is the subject."
 msgstr "第一行是对象。"
 
@@ -5918,7 +5970,11 @@ msgstr "LDAP中没有下列后缀,LAM会自动建立."
 msgid "The format of the logon hours field is invalid!"
 msgstr "登录时间列的格式非法!"
 
-#: ../templates/login.php:441
+#: ../lib/modules/customScripts.inc:81
+msgid "The format of this custom script setting is invalid."
+msgstr "自定义脚本设置的格式非法!"
+
+#: ../templates/login.php:450
 msgid "The given user name matches multiple LDAP entries."
 msgstr "给定的用户名匹配了多条LDAP条目."
 
@@ -5934,8 +5990,8 @@ msgstr "将会从这个驱动器号上连接用户目录。"
 msgid "The key enables the DHCP server to perform DNS updates. The key is generated with \"genDDNSkey\"."
 msgstr "使DHCP服务器能够进行DNS更新的KEY. 产生KEY的命令是 \"genDDNSkey\"."
 
-#: ../lib/modules/dhcp_settings.inc:305
-#: ../lib/modules/dhcp_settings.inc:306
+#: ../lib/modules/dhcp_settings.inc:314
+#: ../lib/modules/dhcp_settings.inc:315
 msgid "The lease time is invalid."
 msgstr "释放时间非法."
 
@@ -5943,12 +5999,12 @@ msgstr "释放时间非法."
 msgid "The lease time specifies after how many seconds the client should request a new IP address."
 msgstr "指定客户端必须重新申请新IP地址的释放时间(秒数)."
 
-#: ../templates/config/mainmanage.php:124
+#: ../templates/config/mainmanage.php:126
 msgid "The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -."
 msgstr "日志文件为空或包含非法字符.合法字符为a-z, A-Z, 0-9, /, \\, ., :, _和-."
 
-#: ../lib/modules/dhcp_settings.inc:313
-#: ../lib/modules/dhcp_settings.inc:314
+#: ../lib/modules/dhcp_settings.inc:322
+#: ../lib/modules/dhcp_settings.inc:323
 msgid "The maximum lease time is invalid."
 msgstr "最长释放时间非法."
 
@@ -5985,15 +6041,15 @@ msgstr "WINDOWS域名或工作组名."
 msgid "The net mask is derived from the subnet mask. If you leave this field empty then LAM will calculate it for you."
 msgstr "网络掩码源自子网掩码,如果留空LAM将会计算得出."
 
-#: ../lib/modules/dhcp_settings.inc:318
+#: ../lib/modules/dhcp_settings.inc:327
 msgid "The net mask was invalid and was corrected."
 msgstr "网络掩码非法,已经进行修正."
 
-#: ../lib/modules/dhcp_settings.inc:317
+#: ../lib/modules/dhcp_settings.inc:326
 msgid "The netmask was set."
 msgstr "网络掩码已经设置."
 
-#: ../help/help.inc:115
+#: ../help/help.inc:116
 msgid "The number of users who may login to LAM is restricted. This can be either a fixed list of DNs or LAM can search LDAP to find a DN which matches the given user name."
 msgstr "可以登录LAM的用户数量受限,或是DN的固定列表数量受限,还可能是LAM在LDAP中搜索给定用户名的DN数量受限."
 
@@ -6006,42 +6062,47 @@ msgstr "在你的LDAP服务器中对象类%s不被支持。"
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "用户的办公室名(比如:某某公司,人力资源部)"
 
+#: ../lib/modules.inc:1711
+msgid "The operation was stopped because of the above errors."
+msgstr "由于发生了以上错误，操作中止."
+
 #: ../lib/modules/groupOfNames.inc:69
 msgid "The owner of this group."
 msgstr "此组的拥有者."
 
-#: ../templates/selfService/adminLogin.php:51
-#: ../templates/config/confmain.php:70
-#: ../templates/config/mainlogin.php:56
+#: ../templates/selfService/adminLogin.php:53
+#: ../templates/config/confmain.php:72
+#: ../templates/config/confsave.php:71
+#: ../templates/config/mainlogin.php:58
 msgid "The password is invalid! Please try again."
 msgstr "密码无效,请重试!"
 
-#: ../lib/security.inc:231
+#: ../lib/security.inc:233
 #, php-format
 msgid "The password is too short. You have to enter at least %s characters."
 msgstr "密码太短,至少需要%s个字符."
 
-#: ../lib/security.inc:283
+#: ../lib/security.inc:285
 #, php-format
 msgid "The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols)."
 msgstr "密码弱度不够.最少需要输入%s个字符类别(大/小写,数字和符号)."
 
-#: ../lib/security.inc:254
+#: ../lib/security.inc:256
 #, php-format
 msgid "The password is too weak. You have to enter at least %s lower case characters."
 msgstr "密码强度不够,最少需要%s个小写字母."
 
-#: ../lib/security.inc:262
+#: ../lib/security.inc:264
 #, php-format
 msgid "The password is too weak. You have to enter at least %s numeric characters."
 msgstr "密码强度不够,最少需要%s个数字字符."
 
-#: ../lib/security.inc:266
+#: ../lib/security.inc:268
 #, php-format
 msgid "The password is too weak. You have to enter at least %s symbolic characters."
 msgstr "密码强度不够.最少需要%s个标点符号字符."
 
-#: ../lib/security.inc:258
+#: ../lib/security.inc:260
 #, php-format
 msgid "The password is too weak. You have to enter at least %s upper case characters."
 msgstr "密码强度不够.最少需要%s个大写字母字符."
@@ -6074,6 +6135,10 @@ msgstr "范围的终止地址需要大于起始地址."
 msgid "The room number of the employee's office."
 msgstr "雇员办公室房间号码"
 
+#: ../lib/modules/customScripts.inc:57
+msgid "The scripts will be run on your web server in the user context of your web server (e.g. apache/www-data)."
+msgstr "在web服务器中运行的与用户上下文相关的脚本(比如:apache/www-data)."
+
 #: ../lib/modules/range.inc:81
 msgid "The starting IP address of the range."
 msgstr "范围的起始IP地址."
@@ -6086,17 +6151,17 @@ msgstr "用户居住或工作地点."
 msgid "The static text must contain at least one character."
 msgstr "静态文本至少包含一个字符."
 
-#: ../lib/modules/dhcp_settings.inc:300
+#: ../lib/modules/dhcp_settings.inc:309
 msgid "The subnet is already in use."
 msgstr "子网掩码已经被占用."
 
-#: ../lib/modules/dhcp_settings.inc:301
-#: ../lib/modules/dhcp_settings.inc:302
+#: ../lib/modules/dhcp_settings.inc:310
+#: ../lib/modules/dhcp_settings.inc:311
 msgid "The subnet is invalid."
 msgstr "子网非法"
 
-#: ../lib/modules/dhcp_settings.inc:315
-#: ../lib/modules/dhcp_settings.inc:316
+#: ../lib/modules/dhcp_settings.inc:324
+#: ../lib/modules/dhcp_settings.inc:325
 msgid "The subnet mask is invalid."
 msgstr "子网掩码非法"
 
@@ -6108,7 +6173,7 @@ msgstr "网络的子网掩码."
 msgid "The value for the Samba 3 field \"User can/must change password\" needs to be a number."
 msgstr "Samba 3 的 \"用户可以/必须修改密码\" 的取值必须是一个数字."
 
-#: ../help/help.inc:191
+#: ../help/help.inc:192
 msgid "The wildcard for the new password is @@newPassword@@."
 msgstr "新密码的通配符为@@newPassword@@."
 
@@ -6149,11 +6214,11 @@ msgstr "这些条目指定了网络组的成员.您可以指定一个主机名�
 msgid "This GID number is invalid! Please provide either a number or a group name."
 msgstr "GID号非法!请提供新号或组名."
 
-#: ../help/help.inc:181
+#: ../help/help.inc:182
 msgid "This HTML code will be placed on top of all self service pages. E.g. you can use this to place your custom logo. Any HTML code is permitted."
 msgstr "这些HTML代码将显示在自助服务主页的上端,比如可以在此放在贵公司标志,可以输入任何HTML代码."
 
-#: ../lib/modules/fixed_ip.inc:362
+#: ../lib/modules/fixed_ip.inc:361
 msgid "This PC name already exists."
 msgstr "PC机器名已经存在!"
 
@@ -6169,11 +6234,11 @@ msgstr "您可以指定本帐号为特殊帐号,比如管理员或来宾."
 msgid "This can be used to specify if the user has a car license."
 msgstr "用来指定用户是否拥有汽车执照."
 
-#: ../help/help.inc:125
+#: ../help/help.inc:126
 msgid "This changes the password of the selected profile."
 msgstr "改变设置文件的密码."
 
-#: ../help/help.inc:127
+#: ../help/help.inc:128
 msgid "This changes the profile which is selected by default at login."
 msgstr "改变缺省登录使用的配置文件."
 
@@ -6181,11 +6246,19 @@ msgstr "改变缺省登录使用的配置文件."
 msgid "This column is defined to include unique entries but duplicates were found:"
 msgstr "本列不能有重复的条目,但发现了下列重复条目:"
 
-#: ../help/help.inc:94
+#: ../lib/modules/customScripts.inc:82
+msgid "This custom script setting includes an invalid account type."
+msgstr "自定义脚本设置中包含一个非法的帐号类型."
+
+#: ../lib/modules/customScripts.inc:84
+msgid "This custom script setting includes an invalid action type."
+msgstr "自定义脚本设置中包含一个非法的动作类型"
+
+#: ../help/help.inc:95
 msgid "This defines the language of the login window and sets this language as the default language. Users can change the language at login."
 msgstr "设置登录语言和默认语言.用户可以在登录时更改."
 
-#: ../help/help.inc:113
+#: ../help/help.inc:114
 msgid "This defines the rights for the home directories which are created by lamdaemon."
 msgstr "设置lamdaemon建立的用户目录的权限."
 
@@ -6234,7 +6307,7 @@ msgstr "这是以逗号分隔的收件人列表."
 msgid "This is a comma separated list of the users public email addresses."
 msgstr "这是逗号分隔的用户公开邮件地址."
 
-#: ../help/help.inc:141
+#: ../help/help.inc:142
 msgid "This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*)."
 msgstr "这是可以访问本系统的IP地址列表,你可以使用\"*\" 代表多台主机,(例如192.168.0.*)."
 
@@ -6250,11 +6323,11 @@ msgstr "这是以分号分隔的本组用户列表."
 msgid "This is a list of nick names for this user."
 msgstr "这是该用户的昵称列表."
 
-#: ../help/help.inc:109
+#: ../help/help.inc:110
 msgid "This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Manager will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon."
 msgstr "这是lamdaemon指令所在的服务器列表.本系统将用户登录时提供的用户名和密码,通过SSH连接这台服务器.服务器列表以分号分隔.可以在冒号号添加一些说明."
 
-#: ../help/help.inc:87
+#: ../help/help.inc:88
 msgid "This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. Please enter one DN per line."
 msgstr "这是允许登录本系统的DN列表,每行输入一个DN."
 
@@ -6262,7 +6335,7 @@ msgstr "这是允许登录本系统的DN列表,每行输入一个DN."
 msgid "This is an example how it would look in your spreadsheet program before you convert to CSV:"
 msgstr "电子表格未存成CSV格式的样例:"
 
-#: ../help/help.inc:169
+#: ../help/help.inc:170
 msgid "This is needed to find the LDAP DNs of your user accounts. E.g. if you use \"uid\" and your user inputs \"miller\" then LAM will search for an account with uid=miller."
 msgstr "用于搜索用户帐号的LDAP DN.比如您输入\"uid\" 而用户输入\"miller\" ,系统会使用uid=miller这个条件来搜索帐号."
 
@@ -6309,7 +6382,7 @@ msgstr "用户主Windows组的RID号."
 msgid "This is the SID of the user's primary Windows group."
 msgstr "用户Windows主组的SID."
 
-#: ../help/help.inc:96
+#: ../help/help.inc:97
 msgid "This is the absolute path to an external script for setting quotas and creating home directories."
 msgstr "这是设置硬盘配额和建立主目录的外部脚本所在的绝对路径."
 
@@ -6333,11 +6406,11 @@ msgstr "帐号过期日期: DD-MM-YYYY"
 msgid "This is the group name which will be shown in Windows."
 msgstr "显示在Windows系统中的组名."
 
-#: ../help/help.inc:150
+#: ../help/help.inc:151
 msgid "This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\")."
 msgstr "RDN值的标志.必须是您LDAP属性中的一个值(比如,用户帐号经常使用\"uid\",而组名经常使用\"cn\"))"
 
-#: ../help/help.inc:82
+#: ../help/help.inc:83
 msgid "This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are separated by semicolons."
 msgstr "帐号列表所显示的属性列表.可以是预定义值\"#attribute\",或者独立的值,\"attribute:description\".用分号隔离多个条目."
 
@@ -6370,7 +6443,7 @@ msgstr "在帐号被锁定前失败的登录次数(0-999)，0代表不限制。"
 msgid "This is the number of passwords which are saved to prevent that users reuse old passwords."
 msgstr "为防止用户使用旧的密码而保存的历史密码数量."
 
-#: ../help/help.inc:92
+#: ../help/help.inc:93
 msgid "This is the number of rows to show in the account list. If more entries are found the list will be split into several pages."
 msgstr "显示帐号中的行数，如果搜索到更多的行数会分页显示."
 
@@ -6395,14 +6468,14 @@ msgid "This is the relative ID number for your host account. If you leave this e
 msgstr "主机帐号的关联ID号.留空系统使用:uidNumber*2 + sambaAlgorithmicRidBase."
 
 #: ../help/help.inc:58
-msgid "This is the server address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional."
-msgstr "LDAP服务器地址,使用ldap://的格式用于标准连接或 ldaps://用于加密连接(需要服务器认证).端口号可选."
+msgid "This is the server address of your LDAP server. Use ldap:// for unencrypted LDAP connections or TLS encrypted connections. LDAP+SSL (LDAPS) encrypted connections are specified with ldaps://. The port value is optional."
+msgstr "LDAP服务器地址,使用ldap://的格式用于非加密LDAP连接或TLS加密连接,LDAP+SSL(LDAPS)加密连接使用特殊的ldap://格式.端口号可选."
 
-#: ../help/help.inc:76
+#: ../help/help.inc:77
 msgid "This is the suffix for the LDAP tree viewer."
 msgstr "LDAP树状显示的后缀."
 
-#: ../help/help.inc:70
+#: ../help/help.inc:71
 msgid "This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new accont this will be the DN where it is saved."
 msgstr "搜索LDAP时的LDAP树后缀.只有在这个子树下的条目被显示.当建立一个新帐号时,这是新帐号存在的DN位置."
 
@@ -6411,6 +6484,7 @@ msgid "This is the target email address for the user's mails."
 msgstr "用户邮件的最终地址."
 
 #: ../lib/modules/uidObject.inc:53
+#: ../lib/modules/customScripts.inc:46
 #: ../lib/modules/aliasEntry.inc:55
 msgid "This is the target of this alias entry."
 msgstr "此别名条件的实际名."
@@ -6419,11 +6493,11 @@ msgstr "此别名条件的实际名."
 msgid "This is the time (in minutes) for which the user may not log in after the account was locked. -1 means forever."
 msgstr "用户帐号被锁定后用户不能登录的时间(分钟),-1表示永久."
 
-#: ../help/help.inc:135
+#: ../help/help.inc:136
 msgid "This is the time (in minutes) of inactivity after which a user is automatically logged off."
 msgstr "在自动退出前,用户不活动时间(分钟)."
 
-#: ../help/help.inc:100
+#: ../help/help.inc:101
 msgid "This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified."
 msgstr "LAM缓存有效时间(分钟),较短的时间会增加LDAP压力,但减少了数据不一致的可能."
 
@@ -6471,19 +6545,19 @@ msgstr "这里指定断开连接的策略。"
 msgid "This specifies what to do when the client connection is broken."
 msgstr "这里指定客户连接中断的动作。"
 
-#: ../help/help.inc:173
+#: ../help/help.inc:174
 msgid "This text is displayed on top of the self service login page. You can also input HTML code here."
 msgstr "这些文本显示在自助服务登录面的上端.你可以在此输入HTML代码."
 
-#: ../help/help.inc:175
+#: ../help/help.inc:176
 msgid "This text is displayed on top of the self service main page. You can also input HTML code here."
 msgstr "这些文本显示在自助服务主页的上端,可以在此输入HTML代码."
 
-#: ../help/help.inc:171
+#: ../help/help.inc:172
 msgid "This text should shortly describe your selected LDAP search attribute (e.g. email or user name)."
 msgstr "这些文本简短描述了您所选的LDAP搜索属性(比如邮件或用户名)."
 
-#: ../help/help.inc:104
+#: ../help/help.inc:105
 msgid "This text will appear on top of every user PDF file."
 msgstr "这些文本会显示在每个用户PDF文件的上端."
 
@@ -6515,7 +6589,7 @@ msgstr "此值只能设为 \\\"true\\\" 或 \\\"false\\\"."
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "此值必须是用分号分开的用户名列表."
 
-#: ../help/help.inc:196
+#: ../help/help.inc:197
 msgid "This will create a new organizational unit under the selected one."
 msgstr "在所选的节点下建立新的组织单元."
 
@@ -6523,11 +6597,11 @@ msgstr "在所选的节点下建立新的组织单元."
 msgid "This will create the user's home directory on the specified server."
 msgstr "将在指定的服务器上建立用户的主目录."
 
-#: ../help/help.inc:198
+#: ../help/help.inc:199
 msgid "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "将删除所选的组织单元.组织单元必须为空."
 
-#: ../help/help.inc:123
+#: ../help/help.inc:124
 msgid "This will delete the selected profile."
 msgstr "将删除所选的配置文件."
 
@@ -6537,7 +6611,7 @@ msgid "This will reset the host's password to a default value."
 msgstr "将主机密码复位到缺省值."
 
 #: ../templates/lists/changePassword.php:180
-#: ../help/help.inc:185
+#: ../help/help.inc:186
 msgid "This will set a random password and display it on the screen or send it the user via mail."
 msgstr "将会生成一个随机的密码并在屏幕上显示或通过邮件发送给用户。"
 
@@ -6545,11 +6619,11 @@ msgstr "将会生成一个随机的密码并在屏幕上显示或通过邮件发
 msgid "This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
 msgstr "将为用户设定特殊的标记,以通知Kolabd删除帐号.用来完全删除Kolab帐号(比如删除邮箱)."
 
-#: ../lib/modules/sambaSamAccount.inc:1252
+#: ../lib/modules/sambaSamAccount.inc:1278
 msgid "Thursday"
 msgstr "星期四"
 
-#: ../lib/modules/sambaSamAccount.inc:1293
+#: ../lib/modules/sambaSamAccount.inc:1319
 msgid "Time"
 msgstr "时间"
 
@@ -6558,7 +6632,7 @@ msgid "Time limit"
 msgstr "时间限制"
 
 #: ../lib/modules/sambaSamAccount.inc:293
-#: ../lib/modules/sambaSamAccount.inc:491
+#: ../lib/modules/sambaSamAccount.inc:494
 msgid "Time zone"
 msgstr "时区"
 
@@ -6571,7 +6645,7 @@ msgstr "运行lamdaemon命令超时!"
 msgid "To disable login use /bin/false. The list of shells is read from lam/config/shells"
 msgstr "使用/bin/false来禁止用户登录.shells列表来自/lam/config/shells."
 
-#: ../lib/modules/sambaSamAccount.inc:515
+#: ../lib/modules/sambaSamAccount.inc:518
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "东京,首尔,大孤,雅库茨克"
 
@@ -6588,8 +6662,8 @@ msgstr "所有条目"
 msgid "Translate GID number to group name"
 msgstr "将GID号改为组名"
 
-#: ../templates/config/confmain.php:163
-#: ../help/help.inc:75
+#: ../templates/config/confmain.php:244
+#: ../help/help.inc:76
 msgid "Tree suffix"
 msgstr "树状结构后缀"
 
@@ -6597,16 +6671,16 @@ msgstr "树状结构后缀"
 msgid "Tree view"
 msgstr "树状结构"
 
-#: ../templates/config/confmain.php:532
+#: ../templates/config/confmain.php:579
 msgid "TreeSuffix is invalid!"
 msgstr "树状结构后缀非法!"
 
-#: ../lib/modules/sambaSamAccount.inc:1252
+#: ../lib/modules/sambaSamAccount.inc:1278
 msgid "Tuesday"
 msgstr "星期二"
 
 #: ../templates/schema/schema.php:353
-#: ../templates/selfService/profManage.php:146
+#: ../templates/selfService/profManage.php:148
 msgid "Type"
 msgstr "类型"
 
@@ -6628,8 +6702,8 @@ msgstr "UID必须是一个数字,必须在配置文件中所定的UID范围内."
 #: ../lib/modules/posixAccount.inc:335
 #: ../lib/modules/posixAccount.inc:339
 #: ../lib/modules/posixAccount.inc:347
-#: ../lib/modules/posixAccount.inc:971
-#: ../lib/modules/posixAccount.inc:1239
+#: ../lib/modules/posixAccount.inc:972
+#: ../lib/modules/posixAccount.inc:1240
 #: ../lib/types/user.inc:92
 #: ../lib/types/host.inc:95
 msgid "UID number"
@@ -6654,7 +6728,7 @@ msgstr "用户主目录(\\\\server\\share).$user和$group会使用用户和组�
 msgid "URI (either URN or URL) that indicates a set of rights to specific resources."
 msgstr "表示指定资源的权限集的URI(或是URN,或是URL)"
 
-#: ../templates/selfService/selfServiceMain.php:176
+#: ../templates/selfService/selfServiceMain.php:178
 msgid "Unable to change your account. Maybe you do not have enough rights to change the settings."
 msgstr "无法改变您的帐号,可以没有足够的权限改变设置."
 
@@ -6669,8 +6743,8 @@ msgstr "无法连接远端服务器 !"
 msgid "Unable to create new OU!"
 msgstr "无法建立新OU!"
 
-#: ../templates/selfService/profManage.php:72
-#: ../templates/config/profmanage.php:88
+#: ../templates/selfService/profManage.php:74
+#: ../templates/config/profmanage.php:90
 msgid "Unable to create new profile!"
 msgstr "无法建立新的配置文件!"
 
@@ -6682,20 +6756,20 @@ msgstr "无法删除OU!"
 msgid "Unable to delete PDF structure!"
 msgstr "无法删除PDF结构!"
 
-#: ../templates/selfService/profManage.php:100
+#: ../templates/selfService/profManage.php:102
 #: ../templates/profedit/profiledelete.php:64
-#: ../templates/config/profmanage.php:110
+#: ../templates/config/profmanage.php:112
 msgid "Unable to delete profile!"
 msgstr "无法删除配置文件!"
 
 #: ../lib/modules/nisnetgroup.inc:525
-#: ../lib/modules/posixAccount.inc:1420
-#: ../lib/modules/posixAccount.inc:1655
+#: ../lib/modules/posixAccount.inc:1421
+#: ../lib/modules/posixAccount.inc:1656
 msgid "Unable to find group in LDAP."
 msgstr "LDAP中找不到组."
 
-#: ../templates/login.php:449
-#: ../templates/login.php:454
+#: ../templates/login.php:458
+#: ../templates/login.php:463
 msgid "Unable to find the user name in LDAP."
 msgstr "LDAP中找不到用户名."
 
@@ -6704,7 +6778,7 @@ msgstr "LDAP中找不到用户名."
 msgid "Unable to load LDAP entry:"
 msgstr "无法调入LDAP条目:"
 
-#: ../templates/config/confmain.php:316
+#: ../templates/config/confmain.php:378
 msgid "Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site."
 msgstr "无法调入语言配置文件,将使用英语做为缺省语言,请联系网络管理员获取进一步的信息."
 
@@ -6716,7 +6790,7 @@ msgid "Unable to load profile!"
 msgstr "无法调入配置文件!"
 
 #: ../templates/lists/changePassword.php:378
-#: ../lib/modules/sambaSamAccount.inc:2188
+#: ../lib/modules/sambaSamAccount.inc:2222
 msgid "Unable to read sambaSID attribute."
 msgstr "读取sambaSID属性失败."
 
@@ -6728,7 +6802,7 @@ msgstr "读取sambaSID属性失败."
 msgid "Unable to retrieve schema!"
 msgstr "无法获取schema!"
 
-#: ../templates/selfService/adminMain.php:144
+#: ../templates/selfService/adminMain.php:146
 #: ../templates/profedit/profilepage.php:131
 msgid "Unable to save profile!"
 msgstr "无法存储配置文件!"
@@ -6739,8 +6813,8 @@ msgstr "无法发送邮件!"
 
 #: ../templates/lists/changePassword.php:374
 #: ../templates/lists/changePassword.php:389
-#: ../lib/modules/sambaSamAccount.inc:2184
-#: ../lib/modules/sambaSamAccount.inc:2199
+#: ../lib/modules/sambaSamAccount.inc:2218
+#: ../lib/modules/sambaSamAccount.inc:2233
 msgid "Unable to sync the time when the user can/must change his password because no domain was found."
 msgstr "用户可以/必须修改密码时,因域名未发现而不能同步时间."
 
@@ -6775,11 +6849,11 @@ msgid "Unlock Samba account"
 msgstr "解锁Samba账号."
 
 #: ../lib/modules/posixGroup.inc:195
-#: ../lib/modules/posixAccount.inc:1032
+#: ../lib/modules/posixAccount.inc:1033
 msgid "Unlock password"
 msgstr "解除密码锁定"
 
-#: ../templates/config/confmodules.php:240
+#: ../templates/config/confmodules.php:335
 msgid "Unsolved dependency:"
 msgstr "未解决的依赖性问题:"
 
@@ -6827,9 +6901,9 @@ msgstr "用法"
 #: ../lib/modules/sambaAccount.inc:752
 #: ../lib/modules/sambaSamAccount.inc:212
 #: ../lib/modules/sambaSamAccount.inc:215
-#: ../lib/modules/sambaSamAccount.inc:367
-#: ../lib/modules/sambaSamAccount.inc:1017
-#: ../lib/modules/sambaSamAccount.inc:1491
+#: ../lib/modules/sambaSamAccount.inc:370
+#: ../lib/modules/sambaSamAccount.inc:1043
+#: ../lib/modules/sambaSamAccount.inc:1517
 msgid "Use Unix password"
 msgstr "使用unix的密码"
 
@@ -6840,14 +6914,14 @@ msgstr "使用unix的密码"
 #: ../lib/modules/sambaAccount.inc:756
 #: ../lib/modules/sambaSamAccount.inc:218
 #: ../lib/modules/sambaSamAccount.inc:221
-#: ../lib/modules/sambaSamAccount.inc:375
-#: ../lib/modules/sambaSamAccount.inc:1022
-#: ../lib/modules/sambaSamAccount.inc:1497
+#: ../lib/modules/sambaSamAccount.inc:378
+#: ../lib/modules/sambaSamAccount.inc:1048
+#: ../lib/modules/sambaSamAccount.inc:1523
 msgid "Use no password"
 msgstr "无需密码"
 
 #: ../lib/modules/quota.inc:97
-#: ../lib/modules/quota.inc:375
+#: ../lib/modules/quota.inc:376
 msgid "Used blocks"
 msgstr "已使用的块数"
 
@@ -6868,7 +6942,7 @@ msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr "用来从UID/GID计算RID,不确定的话请不用修改."
 
 #: ../lib/modules/quota.inc:119
-#: ../lib/modules/quota.inc:379
+#: ../lib/modules/quota.inc:380
 msgid "Used inodes"
 msgstr "已经使用的节点"
 
@@ -6894,10 +6968,10 @@ msgstr "用户帐号(例如 Unix, Samba和Kolab)"
 #: ../lib/modules/sambaAccount.inc:377
 #: ../lib/modules/sambaAccount.inc:768
 #: ../lib/modules/sambaSamAccount.inc:242
-#: ../lib/modules/sambaSamAccount.inc:399
-#: ../lib/modules/sambaSamAccount.inc:1058
-#: ../lib/modules/sambaSamAccount.inc:1315
-#: ../lib/modules/sambaSamAccount.inc:1526
+#: ../lib/modules/sambaSamAccount.inc:402
+#: ../lib/modules/sambaSamAccount.inc:1084
+#: ../lib/modules/sambaSamAccount.inc:1341
+#: ../lib/modules/sambaSamAccount.inc:1552
 msgid "User can change password"
 msgstr "用户可以修改密码"
 
@@ -6925,15 +6999,15 @@ msgstr "用户修改"
 #: ../lib/modules/sambaAccount.inc:379
 #: ../lib/modules/sambaAccount.inc:776
 #: ../lib/modules/sambaSamAccount.inc:244
-#: ../lib/modules/sambaSamAccount.inc:406
-#: ../lib/modules/sambaSamAccount.inc:1075
-#: ../lib/modules/sambaSamAccount.inc:1320
-#: ../lib/modules/sambaSamAccount.inc:1531
+#: ../lib/modules/sambaSamAccount.inc:409
+#: ../lib/modules/sambaSamAccount.inc:1101
+#: ../lib/modules/sambaSamAccount.inc:1346
+#: ../lib/modules/sambaSamAccount.inc:1557
 msgid "User must change password"
 msgstr "用户必须修改密码"
 
 #: ../templates/lists/changePassword.php:139
-#: ../templates/login.php:260
+#: ../templates/login.php:271
 #: ../lib/modules/nisnetgroup.inc:135
 #: ../lib/modules/nisnetgroup.inc:454
 #: ../lib/modules/account.inc:94
@@ -6958,8 +7032,8 @@ msgstr "用户必须修改密码"
 #: ../lib/modules/posixAccount.inc:80
 #: ../lib/modules/posixAccount.inc:197
 #: ../lib/modules/posixAccount.inc:372
-#: ../lib/modules/posixAccount.inc:959
-#: ../lib/modules/posixAccount.inc:1237
+#: ../lib/modules/posixAccount.inc:960
+#: ../lib/modules/posixAccount.inc:1238
 #: ../lib/types/user.inc:94
 #: ../lib/types/alias.inc:91
 msgid "User name"
@@ -7026,32 +7100,32 @@ msgstr "使用模板:"
 msgid "Usually, users are not added to groups as memberUid if they have this group as primary group. If your application ignores primary groups then you can select this option to override this behaviour."
 msgstr "通常,用户不作为memberUid加入主组.如果你的应用程序不支持主组,你可以选择此项修改原来的选项."
 
-#: ../help/help.inc:86
+#: ../help/help.inc:87
 msgid "Valid users"
 msgstr "合法用户"
 
-#: ../templates/login.php:218
+#: ../templates/login.php:224
 msgid "Want more features? Get LAM Pro!"
 msgstr "需要更多的功能吗? 参见系统专业版! "
 
-#: ../templates/config/mainmanage.php:249
+#: ../templates/config/mainmanage.php:251
 msgid "Warning"
 msgstr "警告"
 
-#: ../templates/delete.php:204
-#: ../lib/modules.inc:1741
+#: ../templates/delete.php:203
+#: ../lib/modules.inc:1767
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "无法为DN: %s增加属性."
 
-#: ../lib/modules.inc:1712
+#: ../lib/modules.inc:1738
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "无法创建DN: %s."
 
 #: ../templates/tree/delete.php:113
-#: ../templates/delete.php:284
-#: ../templates/delete.php:292
+#: ../templates/delete.php:283
+#: ../templates/delete.php:291
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "无法删除DN: %s."
@@ -7059,8 +7133,8 @@ msgstr "无法删除DN: %s."
 #: ../templates/tree/update.php:109
 #: ../templates/tree/add_oclass_form.php:162
 #: ../templates/tree/add_oclass.php:93
-#: ../templates/delete.php:196
-#: ../lib/modules.inc:1729
+#: ../templates/delete.php:195
+#: ../lib/modules.inc:1755
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "无法修改DN: %s的属性"
@@ -7070,31 +7144,31 @@ msgstr "无法修改DN: %s的属性"
 msgid "Was unable to modify attributes from DN: %s."
 msgstr "无法修改DN: %s的属性"
 
-#: ../templates/delete.php:212
-#: ../lib/modules.inc:1753
-#: ../lib/modules/phpGroupwareGroup.inc:190
-#: ../lib/modules/phpGroupwareUser.inc:333
-#: ../lib/modules/phpGroupwareUser.inc:353
+#: ../templates/delete.php:211
+#: ../lib/modules.inc:1779
+#: ../lib/modules/phpGroupwareGroup.inc:189
+#: ../lib/modules/phpGroupwareUser.inc:332
+#: ../lib/modules/phpGroupwareUser.inc:352
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "无法删除DN: %s的属性."
 
-#: ../lib/modules.inc:1699
+#: ../lib/modules.inc:1725
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "无法重命名DN: %s."
 
-#: ../lib/modules/sambaSamAccount.inc:1252
+#: ../lib/modules/sambaSamAccount.inc:1278
 msgid "Wednesday"
 msgstr "星期三"
 
-#: ../lib/modules/sambaSamAccount.inc:506
+#: ../lib/modules/sambaSamAccount.inc:509
 msgid "Western Europe Time, London, Lisbon"
 msgstr "西欧时间,伦敦,里斯本"
 
-#: ../help/help.inc:68
-msgid "When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!"
-msgstr "当使用ldaps://时必须使用和您的证书相同的ip/domain!"
+#: ../help/help.inc:69
+msgid "When using ldaps:// or TLS be sure to use exactly the same IP/domain name as in your certificate!"
+msgstr "当使用ldaps://或TLS协议时确认在证书中使用相同的ip/domain!"
 
 #: ../lib/modules/sambaAccount.inc:410
 #: ../lib/modules/sambaSamAccount.inc:282
@@ -7105,10 +7179,10 @@ msgstr "帐号所属的windows域"
 #: ../lib/modules/sambaAccount.inc:820
 #: ../lib/modules/sambaGroupMapping.inc:255
 #: ../lib/modules/sambaGroupMapping.inc:386
-#: ../lib/modules/sambaSamAccount.inc:450
-#: ../lib/modules/sambaSamAccount.inc:1152
-#: ../lib/modules/sambaSamAccount.inc:1584
-#: ../lib/modules/sambaSamAccount.inc:1739
+#: ../lib/modules/sambaSamAccount.inc:453
+#: ../lib/modules/sambaSamAccount.inc:1178
+#: ../lib/modules/sambaSamAccount.inc:1610
+#: ../lib/modules/sambaSamAccount.inc:1765
 msgid "Windows group"
 msgstr "Windows组"
 
@@ -7124,6 +7198,10 @@ msgstr "Windows组名"
 #: ../lib/modules/sambaGroupMapping.inc:371
 msgid "Windows group type."
 msgstr "Windows组类型"
+
+#: ../lib/modules/sambaSamAccount.inc:342
+msgid "Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them."
+msgstr "windows密码的哈希方法缺少设置为NT和LM方法.LM哈希方法是不安全的,只用于旧版本的Windows系统.除非必要,一般需要屏蔽之."
 
 #: ../lib/modules/sambaSamAccount.inc:265
 msgid "Windows primary group"
@@ -7142,8 +7220,8 @@ msgid "Workgroup"
 msgstr "工作组"
 
 #: ../lib/modules/sambaSamAccount.inc:311
-#: ../lib/modules/sambaSamAccount.inc:1404
-#: ../lib/modules/sambaSamAccount.inc:1759
+#: ../lib/modules/sambaSamAccount.inc:1430
+#: ../lib/modules/sambaSamAccount.inc:1785
 msgid "Working directory"
 msgstr "工作目录"
 
@@ -7151,19 +7229,19 @@ msgstr "工作目录"
 msgid "Working directory of initial program."
 msgstr "初始化程序的工作目录。"
 
-#: ../templates/config/confmain.php:370
+#: ../templates/config/confmain.php:432
 msgid "Write"
 msgstr "写入"
 
-#: ../templates/config/confmain.php:199
-#: ../templates/config/confmain.php:202
+#: ../templates/config/confmain.php:280
+#: ../templates/config/confmain.php:283
 msgid "Write access"
 msgstr "写权限"
 
-#: ../templates/selfService/selfServiceLogin.php:89
-#: ../templates/selfService/selfServiceLogin.php:107
-#: ../templates/login.php:437
-#: ../templates/login.php:499
+#: ../templates/selfService/selfServiceLogin.php:91
+#: ../templates/selfService/selfServiceLogin.php:109
+#: ../templates/login.php:446
+#: ../templates/login.php:508
 msgid "Wrong password/user name combination. Please try again."
 msgstr "错误的密码和用户组合,请重试!"
 
@@ -7184,13 +7262,17 @@ msgstr "您使用了大写字符,这会造成一些问题,因为windows大小写
 msgid "You are using a capital letters. This can cause problems because windows isn't case-sensitive."
 msgstr "您使用了大写字符,这会造成一些问题,因为windows大小写不敏感."
 
-#: ../help/help.inc:102
+#: ../help/help.inc:103
 msgid "You can specify if LAM allows full write access, password changes or only read access."
 msgstr "您可以指定LAM是否允许全部权限,只能更改密码,或是只读."
 
-#: ../help/help.inc:190
+#: ../help/help.inc:191
 msgid "You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name)."
 msgstr "您可以用@@attribute@@的通配符形式代表LDAP属性（比如@@uid@@代表用户名）。"
+
+#: ../lib/modules/customScripts.inc:58
+msgid "You can use wildcards in the format $wildcard$ which are replaced by the LDAP attribute with the same name. For multi-value attributes the values will be separated by commas."
+msgstr "可以按照$wildcard$的格式来利用通配符,该内容将会被相同内容的LDAP属性所替代.多值的属性值用逗号隔离."
 
 #: ../templates/tree/templates/creation/custom.php:106
 msgid "You did not select any object classes for this object. Please go back and do so."
@@ -7200,8 +7282,8 @@ msgstr "您没有为此对象选择对象类,请返回重新选择."
 msgid "You do not have the required access rights or the LDAP schema is not published by your server."
 msgstr "您无权访问或LDAP架构未发布到LDAP服务器。"
 
-#: ../lib/modules/dhcp_settings.inc:303
-#: ../lib/modules/dhcp_settings.inc:304
+#: ../lib/modules/dhcp_settings.inc:312
+#: ../lib/modules/dhcp_settings.inc:313
 msgid "You entered one or more invalid DNS servers."
 msgstr "您输入了一个或多个非常的DNS服务器."
 
@@ -7245,17 +7327,17 @@ msgstr "系统管理者必须有一个合法的UNIX帐号才能运行lamdaemon !
 msgid "Your PHP configuration has disabled file uploads. Please check php.ini before proceeding."
 msgstr "PHP设置已经关闭了文件上传,请检查PHP.INI ."
 
-#: ../lib/security.inc:139
+#: ../lib/security.inc:141
 msgid "Your session expired, click here to go back to the login page."
 msgstr "超时,请点此外返回到登录界面."
 
-#: ../templates/login.php:239
+#: ../templates/login.php:250
 msgid "Your session expired, please log in again."
 msgstr "超时,请重新登录."
 
-#: ../templates/selfService/adminMain.php:133
-#: ../templates/config/mainmanage.php:140
-#: ../lib/config.inc:408
+#: ../templates/selfService/adminMain.php:135
+#: ../templates/config/mainmanage.php:142
+#: ../lib/config.inc:412
 msgid "Your settings were successfully saved."
 msgstr "设置保存成功."
 
@@ -7265,8 +7347,8 @@ msgstr "某某公司,人力资源部"
 
 #: ../lib/modules/ddns.inc:97
 #: ../lib/modules/ddns.inc:121
-#: ../lib/modules/ddns.inc:372
-#: ../lib/modules/ddns.inc:405
+#: ../lib/modules/ddns.inc:374
+#: ../lib/modules/ddns.inc:407
 msgid "Zone names"
 msgstr "区域名"
 
@@ -7280,17 +7362,17 @@ msgid "[attribute deleted]"
 msgstr "[删除属性]"
 
 #: ../lib/modules/sambaAccount.inc:289
-#: ../lib/modules/sambaSamAccount.inc:428
+#: ../lib/modules/sambaSamAccount.inc:431
 msgid "\\\\server\\homes\\smiller"
 msgstr "\\\\server\\homes\\smiller"
 
 #: ../lib/modules/sambaAccount.inc:295
-#: ../lib/modules/sambaSamAccount.inc:434
+#: ../lib/modules/sambaSamAccount.inc:437
 msgid "\\\\server\\profiles\\smiller"
 msgstr "\\\\server\\profiles\\smiller"
 
 #: ../lib/modules/phpGroupwareUser.inc:151
-#: ../lib/modules/phpGroupwareUser.inc:368
+#: ../lib/modules/phpGroupwareUser.inc:367
 msgid "active"
 msgstr "激活"
 
@@ -7312,7 +7394,7 @@ msgstr "字符"
 msgid "characters"
 msgstr "字符"
 
-#: ../help/help.inc:80
+#: ../help/help.inc:81
 msgid "dc=yourcompany,dc=com"
 msgstr "dc=yourcompany,dc=com"
 
@@ -7320,13 +7402,13 @@ msgstr "dc=yourcompany,dc=com"
 msgid "delete attribute"
 msgstr "删除属性"
 
-#: ../lib/modules/sambaSamAccount.inc:1439
-#: ../lib/modules/sambaSamAccount.inc:1779
+#: ../lib/modules/sambaSamAccount.inc:1465
+#: ../lib/modules/sambaSamAccount.inc:1805
 msgid "disabled"
 msgstr "关闭"
 
-#: ../lib/modules/sambaSamAccount.inc:1451
-#: ../lib/modules/sambaSamAccount.inc:1790
+#: ../lib/modules/sambaSamAccount.inc:1477
+#: ../lib/modules/sambaSamAccount.inc:1816
 msgid "disconnect"
 msgstr "中断连接"
 
@@ -7359,13 +7441,13 @@ msgstr "电子邮件地址"
 msgid "false"
 msgstr "失败"
 
-#: ../lib/modules/sambaSamAccount.inc:1460
-#: ../lib/modules/sambaSamAccount.inc:1798
+#: ../lib/modules/sambaSamAccount.inc:1486
+#: ../lib/modules/sambaSamAccount.inc:1824
 msgid "from any client"
 msgstr "从任何客户端"
 
-#: ../lib/modules/sambaSamAccount.inc:1461
-#: ../lib/modules/sambaSamAccount.inc:1799
+#: ../lib/modules/sambaSamAccount.inc:1487
+#: ../lib/modules/sambaSamAccount.inc:1825
 msgid "from previous client only"
 msgstr "仅从以前的客户端"
 
@@ -7380,27 +7462,27 @@ msgid "hours"
 msgstr "小时"
 
 #: ../lib/modules/phpGroupwareUser.inc:151
-#: ../lib/modules/phpGroupwareUser.inc:371
+#: ../lib/modules/phpGroupwareUser.inc:370
 msgid "inactive"
 msgstr "停用"
 
-#: ../lib/modules/sambaSamAccount.inc:1443
-#: ../lib/modules/sambaSamAccount.inc:1783
+#: ../lib/modules/sambaSamAccount.inc:1469
+#: ../lib/modules/sambaSamAccount.inc:1809
 msgid "input off, notify off"
 msgstr "输入关，提醒关"
 
-#: ../lib/modules/sambaSamAccount.inc:1442
-#: ../lib/modules/sambaSamAccount.inc:1782
+#: ../lib/modules/sambaSamAccount.inc:1468
+#: ../lib/modules/sambaSamAccount.inc:1808
 msgid "input off, notify on"
 msgstr "输入关，提醒开"
 
-#: ../lib/modules/sambaSamAccount.inc:1441
-#: ../lib/modules/sambaSamAccount.inc:1781
+#: ../lib/modules/sambaSamAccount.inc:1467
+#: ../lib/modules/sambaSamAccount.inc:1807
 msgid "input on, notify off"
 msgstr "输入开，提醒关"
 
-#: ../lib/modules/sambaSamAccount.inc:1440
-#: ../lib/modules/sambaSamAccount.inc:1780
+#: ../lib/modules/sambaSamAccount.inc:1466
+#: ../lib/modules/sambaSamAccount.inc:1806
 msgid "input on, notify on"
 msgstr "输入开，提醒开"
 
@@ -7408,13 +7490,13 @@ msgstr "输入开，提醒开"
 msgid "jpegPhoto contains errors"
 msgstr "jpeg照片有误"
 
-#: ../help/help.inc:62
+#: ../help/help.inc:63
 msgid "ldap://localhost:389 connects to localhost using a standard LDAP connection on port 389"
 msgstr "ldap://localhost:389 表示使用标准的LDAP连接端口389连接到localhost."
 
-#: ../help/help.inc:64
-msgid "ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP connection."
-msgstr "ldaps://141.40.146.133 表示 使用加密的LDAP连接到141.40.146.133"
+#: ../help/help.inc:65
+msgid "ldaps://ldap.domain.com connects to ldap.domain.com using an encrypted LDAP connection."
+msgstr "连接到ldap.domain.com的ldaps://ldap.domain.com连接使用加密的LDAP连接."
 
 #: ../lib/modules/posixAccount.inc:293
 msgid "machines"
@@ -7426,20 +7508,23 @@ msgstr "mail.yourdomain.org"
 
 #: ../lib/modules/sambaAccount.inc:327
 #: ../lib/modules/sambaAccount.inc:337
-#: ../lib/modules/sambaSamAccount.inc:351
-#: ../lib/modules/sambaSamAccount.inc:477
+#: ../lib/modules/sambaSamAccount.inc:354
+#: ../lib/modules/sambaSamAccount.inc:480
 msgid "mydomain"
 msgstr "我的域"
 
-#: ../lib/modules/sambaSamAccount.inc:452
+#: ../lib/modules/sambaSamAccount.inc:455
 msgid "mygroup"
 msgstr "我的组"
 
-#: ../lib/modules/sambaSamAccount.inc:1747
-#: ../lib/modules/sambaSamAccount.inc:1755
-#: ../lib/modules/sambaSamAccount.inc:1765
-#: ../lib/modules/sambaSamAccount.inc:1770
-#: ../lib/modules/sambaSamAccount.inc:1775
+#: ../templates/config/confmain.php:226
+#: ../templates/config/confmain.php:230
+#: ../lib/modules/sambaSamAccount.inc:531
+#: ../lib/modules/sambaSamAccount.inc:1773
+#: ../lib/modules/sambaSamAccount.inc:1781
+#: ../lib/modules/sambaSamAccount.inc:1791
+#: ../lib/modules/sambaSamAccount.inc:1796
+#: ../lib/modules/sambaSamAccount.inc:1801
 msgid "no"
 msgstr "否"
 
@@ -7471,7 +7556,7 @@ msgstr "不可用"
 msgid "not specified"
 msgstr "未指定"
 
-#: ../help/help.inc:74
+#: ../help/help.inc:75
 msgid "ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree."
 msgstr "ou=People,dc=yourcompany,dc=com 表示将会在此子树下读取和保存所有帐号"
 
@@ -7495,21 +7580,21 @@ msgid "pc01,pc02"
 msgstr "pc01,pc02"
 
 #: ../templates/tree/edit.php:246
-#: ../templates/selfService/adminMain.php:579
-#: ../templates/config/confmain.php:485
+#: ../templates/selfService/adminMain.php:581
+#: ../templates/config/confmain.php:528
 #: ../lib/modules.inc:1172
 msgid "required"
 msgstr "必选项"
 
-#: ../lib/modules/sambaSamAccount.inc:1452
-#: ../lib/modules/sambaSamAccount.inc:1791
+#: ../lib/modules/sambaSamAccount.inc:1478
+#: ../lib/modules/sambaSamAccount.inc:1817
 msgid "reset"
 msgstr "复位"
 
 #: ../lib/modules/sambaAccount.inc:231
 #: ../lib/modules/posixGroup.inc:380
 #: ../lib/modules/posixAccount.inc:254
-#: ../lib/modules/sambaSamAccount.inc:363
+#: ../lib/modules/sambaSamAccount.inc:366
 msgid "secret"
 msgstr "secret"
 
@@ -7562,15 +7647,36 @@ msgstr "user@company.com"
 msgid "users"
 msgstr "用户"
 
+#: ../templates/config/confmain.php:225
+#: ../templates/config/confmain.php:229
 #: ../lib/modules/inetOrgPerson.inc:324
-#: ../lib/modules/sambaSamAccount.inc:1745
-#: ../lib/modules/sambaSamAccount.inc:1753
-#: ../lib/modules/sambaSamAccount.inc:1763
-#: ../lib/modules/sambaSamAccount.inc:1768
-#: ../lib/modules/sambaSamAccount.inc:1773
+#: ../lib/modules/sambaSamAccount.inc:530
+#: ../lib/modules/sambaSamAccount.inc:1771
+#: ../lib/modules/sambaSamAccount.inc:1779
+#: ../lib/modules/sambaSamAccount.inc:1789
+#: ../lib/modules/sambaSamAccount.inc:1794
+#: ../lib/modules/sambaSamAccount.inc:1799
 msgid "yes"
 msgstr "是"
 
+#~ msgid "Account type selection"
+#~ msgstr "帐号类型选择"
+#~ msgid "Add IP"
+#~ msgstr "增加IP"
+#~ msgid "Adding of a fixed IP failed because of errors."
+#~ msgstr "因为发生了错误致使增加固定IP失败"
+#~ msgid "Adds input fields for a new fixed IP address."
+#~ msgstr "为新IP地址增加新输入域"
+#~ msgid "Delete IP"
+#~ msgstr "删除IP"
+#~ msgid "Deletes a fixed IP address."
+#~ msgstr "删除一个固定的IP地址."
+#~ msgid "Edit account types"
+#~ msgstr "编辑帐号类型"
+#~ msgid "Edit modules"
+#~ msgstr "编辑模块"
+#~ msgid "Module selection"
+#~ msgstr "模块选择"
 #~ msgid "Account lists - Filters"
 #~ msgstr "帐号清单 － 过滤器"
 #~ msgid "Configuration wizard"
