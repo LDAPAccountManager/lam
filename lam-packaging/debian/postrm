@@ -12,7 +12,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 	for server in $webservers; do
 			 server=${server%,}
 			 case "$server" in
-					 apache|apache-perl|apache-ssl|apache2)
+					 apache2)
 							 rm -f /etc/$server/conf.d/ldap-account-manager
 							 test -x /usr/sbin/$server || continue
 							 restart="$restart $server"

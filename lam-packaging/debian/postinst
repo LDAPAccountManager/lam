@@ -66,23 +66,6 @@ if [ "$1" = "configure" ]; then
        server=${server%,}
        test -x /usr/sbin/$server || continue
        case "$server" in
-           apache|apache-perl|apache-ssl)
-               if [ -x /usr/sbin/modules-config ]; then
-                   if [ -f /usr/lib/apache/1.3/libphp5.so ]; then
-                       if ! grep "^LoadModule php5_module " /etc/$server/modules.conf > /dev/null 2>&1; then
-                           modules-config $server enable mod_php5
-                       fi
-                   fi
-               fi
-               if ! grep "^Include /etc/$server/conf.d" /etc/$server/httpd.conf > /dev/null 2>&1; then
-                   cp -f /etc/$server/httpd.conf /etc/$server/httpd.conf.old.ldap-account-manager
-                   echo "Include /etc/$server/conf.d" >> /etc/$server/httpd.conf
-               fi
-               if [ -f /etc/$server/httpd.conf.old.ldap-account-manager -a ! -f /etc/$server/httpd.conf.old ]; then
-                   mv -f /etc/$server/httpd.conf.old.ldap-account-manager /etc/$server/httpd.conf.old
-               fi
-               mkdir -p /etc/$server/conf.d
-               ;;
            apache2)
                if [ -d /etc/$server/mods-enabled ]; then
                    if [ ! -f /etc/$server/mods-enabled/actions.load -a ! -h /etc/$server/mods-enabled/actions.load ]; then

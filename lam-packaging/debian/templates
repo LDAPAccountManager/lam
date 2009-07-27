@@ -1,11 +1,11 @@
 Template: ldap-account-manager/config-webserver
 Type: multiselect
-Choices: apache, apache-ssl, apache-perl, apache2
-Default: apache, apache-ssl, apache-perl, apache2
+Choices: apache2
+Default: apache2
 _Description: Web server configuration:
- LDAP Account Manager supports any webserver that supports PHP4, but this
- automatic configuration process only supports Apache and Apache2.
- If you choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam
+ LDAP Account Manager supports any webserver that supports PHP5, but this
+ automatic configuration process only supports Apache2.
+ If you choose to configure Apache2 then LAM can be accessed at http(s)://localhost/lam
 
 Template: ldap-account-manager/alias
 Type: string
