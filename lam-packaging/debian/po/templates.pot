@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,28 @@ msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid "Web server configuration:"
 msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Alias name:"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
@@ -47,13 +47,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:21
+#: ../templates:3001
 msgid "Master configuration password (clear text):"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:21
+#: ../templates:3001
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
@@ -62,41 +62,12 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr ""
-
-#. Type: note
-#. Description
-#: ../templates:34
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr ""
-
-#. Type: note
-#. Description
-#: ../templates:34
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr ""
-
-#. Type: note
-#. Description
-#: ../templates:41
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr ""
-
-#. Type: note
-#. Description
-#: ../templates:41
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
 msgstr ""
