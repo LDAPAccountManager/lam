@@ -1,110 +1,127 @@
+# Translation of ldap account manager debconf template to Swedish
+# Copyright (C) 2009 Martin Bagge <brother@bsnet.se>
+# This file is distributed under the same license as the ldap account manager debconf package.
 #
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
-#
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
-#
-#    Developers do not need to manually edit POT or PO files.
-#
+# Daniel Nylander <po@danielnylander.se>, 2007
+# Martin Bagge <brother@bsnet.se>, 2009
 msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 0.5.1-1\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
-"PO-Revision-Date: 2007-03-11 21:16+0100\n"
-"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
-"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-07-29 21:15+0100\n"
+"Last-Translator: Martin Bagge <brother@bsnet.se>\n"
+"Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: Sweden\n"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid "Web server configuration:"
 msgstr "Webbserverkonfiguration:"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
-msgid "LDAP Account Manager supports any webserver that supports PHP4, but this automatic configuration process only supports Apache and Apache2. If you choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
-msgstr "LDAP Account Manager har stöd för de webbservrar som har stöd för PHP4 men den här automatiska konfigurationsprocessen har endast stöd för Apache och Apache2. Om du väljer att konfigurera Apache(2) kan LAM nås på http(s)://localhost/lam"
+#: ../templates:1001
+#| msgid ""
+#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
+#| "automatic configuration process only supports Apache and Apache2. If you "
+#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
+#| "lam"
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"LDAP Account Manager har stÃ¶d fÃ¶r de webbservrar som har stÃ¶d fÃ¶r PHP5 men "
+"den hÃ¤r automatiska konfigurationsprocessen har endast stÃ¶d fÃ¶r Apache2. Om "
+"du vÃ¤ljer att konfigurera Apache2 kan LAM nÃ¥s pÃ¥ http(s)://localhost/lam"
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Alias name:"
 msgstr "Aliasnamn:"
 
 #. Type: string
 #. Description
-#: ../templates:13
-msgid "LAM will add an alias to your httpd.conf which allows you to access LAM at http(s)://localhost/lam. You may select an alias other than \"lam\"."
-msgstr "LAM kommer att lägga till ett alias till din httpd.conf som låter dig komma åt LAM på http(s)://localhost/lam. Du kan välja ett annat alias än \"lam\"."
+#: ../templates:2001
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
+msgstr ""
+"LAM kommer att lÃ¤gga till ett alias till din httpd.conf som lÃ¥ter dig komma "
+"Ã¥t LAM pÃ¥ http(s)://localhost/lam. Du kan vÃ¤lja ett annat alias Ã¤n \"lam\"."
 
 #. Type: string
 #. Description
-#: ../templates:21
+#: ../templates:3001
 msgid "Master configuration password (clear text):"
-msgstr "Lösenord för huvudkonfigurationen (klartext):"
+msgstr "LÃ¶senord fÃ¶r huvudkonfigurationen (klartext):"
 
 #. Type: string
 #. Description
-#: ../templates:21
-msgid "The configuration profiles are secured by a master password. You will need it to create and delete profiles. As default it is set to \"lam\" and can be changed directly in LAM."
-msgstr "Konfigurationsprofilerna är säkrade av ett huvudlösenord. Du kommer att behöva det för att skapa och ta bort profiler. Som standard är det inställt till \"lam\" och kan ändras direkt i LAM."
+#: ../templates:3001
+msgid ""
+"The configuration profiles are secured by a master password. You will need "
+"it to create and delete profiles. As default it is set to \"lam\" and can be "
+"changed directly in LAM."
+msgstr ""
+"Konfigurationsprofilerna skyddas av ett huvudlÃ¶senord. Du kommer att behÃ¶va "
+"det fÃ¶r att skapa och ta bort profiler. Som standard Ã¤r det instÃ¤llt till "
+"\"lam\" och kan Ã¤ndras direkt i LAM."
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Vill du starta om din webbserver nu?"
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Din webbserver behöver startas om för att ändringarna ska bli aktiva."
+msgstr "Din webbserver behÃ¶ver startas om fÃ¶r att Ã¤ndringarna ska bli aktiva."
 
-#. Type: note
-#. Description
-#: ../templates:34
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Uppgradera från versioner före 0.5.0"
+#~ msgid "Upgrade from pre-0.5.0 versions"
+#~ msgstr "Uppgradera frÃ¥n versioner fÃ¶re 0.5.0"
 
-#. Type: note
-#. Description
-#: ../templates:34
-msgid "Please note that this version uses new file formats for configuration and account profiles. You will have to update your configuration and create new account profiles."
-msgstr "Notera att den här versionen använder nya filformat för konfiguration och kontoprofiler. Du behöver uppdatera din konfiguration och skapa nya kontoprofiler."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for configuration and "
+#~ "account profiles. You will have to update your configuration and create "
+#~ "new account profiles."
+#~ msgstr ""
+#~ "Notera att den hÃ¤r versionen anvÃ¤nder nya filformat fÃ¶r konfiguration och "
+#~ "kontoprofiler. Du behÃ¶ver uppdatera din konfiguration och skapa nya "
+#~ "kontoprofiler."
 
-#. Type: note
-#. Description
-#: ../templates:41
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Uppgradera från versioner före 1.0.0"
+#~ msgid "Upgrade from pre-1.0.0 versions"
+#~ msgstr "Uppgradera frÃ¥n versioner fÃ¶re 1.0.0"
 
-#. Type: note
-#. Description
-#: ../templates:41
-msgid "Please note that this version uses new file formats for the configuration profiles. Please edit your configuration files and save the new settings."
-msgstr "Notera att den här versionen använder nya filformat för konfigurationsprofiler. Redigera dina konfigurationsfiler och spara de nya inställningarna."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for the configuration "
+#~ "profiles. Please edit your configuration files and save the new settings."
+#~ msgstr ""
+#~ "Notera att den hÃ¤r versionen anvÃ¤nder nya filformat fÃ¶r "
+#~ "konfigurationsprofiler. Redigera dina konfigurationsfiler och spara de "
+#~ "nya instÃ¤llningarna."
 
 #~ msgid "Enter alias:"
 #~ msgstr "Ange alias:"
+
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Vilken webbserver vill du automatiskt konfigurera?"
+
 #~ msgid ""
 #~ "Remember that in order to apply the changes your webserver(s) need to be "
 #~ "restarted."
 #~ msgstr ""
-#~ "Tänk på att för att verkställa ändringarna till din webbserver behöver "
+#~ "TÃ¤nk pÃ¥ att fÃ¶r att verkstÃ¤lla Ã¤ndringarna till din webbserver behÃ¶ver "
 #~ "den startas om."
-#~ msgid "It seems that you are upgrading LAM from a version before 0.5.0."
-#~ msgstr "Det verkar som om du uppgraderar LAM från en version före 0.5.0."
 
+#~ msgid "It seems that you are upgrading LAM from a version before 0.5.0."
+#~ msgstr "Det verkar som om du uppgraderar LAM frÃ¥n en version fÃ¶re 0.5.0."

@@ -1,8 +1,10 @@
 ldap-account-manager (2.7.0.RC1-1) unstable; urgency=low
 
   * new upstream release
+  * Fix "[INTL:sv] Swedish strings for ldap-account-manager debconf"
+    updated translation (Closes: #539208)
 
- -- Roland Gruber <post@rolandgruber.de>  Fri, 24 Jul 2009 22:35:54 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 31 Jul 2009 19:40:18 +0200
 
 ldap-account-manager (2.6.0-1) unstable; urgency=low
 

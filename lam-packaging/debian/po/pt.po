@@ -1,14 +1,14 @@
 # Portuguese translation for ldap-account-manager's debconf messages
-# Copyright (C) 2007 Luís Picciochi
+# Copyright (C) 2009 Luís Picciochi
 # This file is distributed under the same license as the ldap-account-manager package.
-# Luís Picciochi, 2007.
+# Luís Picciochi, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-22 21:47+0100\n"
-"PO-Revision-Date: 2007-03-10 22:57+0000\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-07-30 15:32+0000\n"
 "Last-Translator: Luís Picciochi <Pitxyoki@Gmail.com>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,14 +25,14 @@ msgstr "Configuração do servidor web:"
 #. Description
 #: ../templates:1001
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"O Gestor de Contas LDAP suporta qualquer servidor web que suporte "
-"PHP4, mas este processo de configuração automático suporta apenas Apache e "
-"Apache2. Se escolher configurar Apache(2) o LAM pode ser acedido em "
-"http(s)://localhost/lam"
+"O Gestor de Contas LDAP (LAM) suporta qualquer servidor web que suporte PHP5, "
+"mas este processo de configuração automático suporta apenas Apache2. Se "
+"escolher configurar o Apache2, o LAM pode ser acedido em http(s)://localhost/"
+"lam"
 
 #. Type: string
 #. Description
@@ -47,9 +47,9 @@ msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"O LAM irá adicionar um nome alternativo (alias) ao seu httpd.conf, que "
-"lhe permite aceder ao LAM através de http(s)://localhost/lam. Pode escolher "
-"um nome alternativo (alias) que não seja \"lam\"."
+"O LAM irá adicionar um nome alternativo (alias) ao seu httpd.conf, que lhe "
+"permite aceder ao LAM através de http(s)://localhost/lam. Pode escolher um "
+"nome alternativo (alias) que não seja \"lam\"."
 
 #. Type: string
 #. Description
@@ -66,8 +66,8 @@ msgid ""
 "changed directly in LAM."
 msgstr ""
 "Os perfis de configuração são protegidos por uma palavra-chave principal. "
-"Irá necessitar dela para criar e apagar perfis. Por omissão, esta "
-"palavra-chave é \"lam\" e pode ser alterada directamente no LAM."
+"Irá necessitar dela para criar e apagar perfis. Por omissão, esta palavra-"
+"chave é \"lam\" e pode ser alterada directamente no LAM."
 
 #. Type: boolean
 #. Description
@@ -79,40 +79,7 @@ msgstr "Reiniciar o(s) seu(s) servidor(es) web agora?"
 #. Description
 #: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "O(s) seu(s) servidor(es) web necessitam de ser reiniciados para "
-"aplicar as alterações."
-
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Actualização de versões anteriores à 0.5.0"
-
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
 msgstr ""
-"Por favor tenha em linha de conta que esta versão usa novos formatos para os "
-"ficheiros de configuração e perfis de contas. Irá necessitar de actualizar "
-"a sua configuração e criar novos perfis."
+"O(s) seu(s) servidor(es) web necessitam de ser reiniciados para aplicar as "
+"alterações."
 
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Actualização de versões anteriores à 1.0.0"
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr ""
-"Por favor tenha em linha de conta que esta versão usa novos formatos para os "
-"perfis de configuração. Por favor edite os seus ficheiros de configuração e "
-"grave as suas novas definições."
