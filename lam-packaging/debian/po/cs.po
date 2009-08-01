@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
+# Czech translation of ldap-account-manager debconf messages.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the ldap-acount-manager package.
+# Miroslav Kure <kurem@debian.cz>, 2006-2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-08-07 18:43+0200\n"
-"PO-Revision-Date: 2006-09-25 20:56+0200\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-07-31 22:23+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,14 +24,19 @@ msgstr "Nastavení webového serveru:"
 #. Type: multiselect
 #. Description
 #: ../templates:1001
+#| msgid ""
+#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
+#| "automatic configuration process only supports Apache and Apache2. If you "
+#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
+#| "lam"
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "LDAP Account Manager podporuje libovolný webový server, pod kterým běží "
-"PHP4, avšak automatické nastavení umí pouze ve spojení se servery Apache a "
-"Apache2. Zvolíte-li nastavení Apache(2), LAM bude přístupný na adrese http"
+"PHP5, avšak automatické nastavení umí pouze ve spojení se Apache2. "
+"Zvolíte-li nastavení Apache2, LAM bude přístupný na adrese http"
 "(s)://localhost/lam."
 
 #. Type: string
@@ -48,7 +53,7 @@ msgid ""
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "LAM přidá do vašeho httpd.conf alias, který vám umožní přistupovat k LAM "
-"přes adresu http(s)://localhost/lam. Můžete zadat i jiný alias než \"lam\"."
+"přes adresu http(s)://localhost/lam. Můžete zadat i jiný alias než „lam“."
 
 #. Type: string
 #. Description
@@ -65,7 +70,7 @@ msgid ""
 "changed directly in LAM."
 msgstr ""
 "Konfigurační profily jsou chráněny hlavním heslem. Toto heslo budete "
-"potřebovat při vytváření a mazání profilů. Výchozí hodnota je \"lam\" a "
+"potřebovat při vytváření a mazání profilů. Výchozí hodnota je „lam“ a "
 "můžete ji změnit kdykoliv později přímo v LAM."
 
 #. Type: boolean
@@ -81,40 +86,28 @@ msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 "Aby se vaše nové nastavení aktivovalo, musí se webové servery restartovat."
 
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Přechod z verzí před 0.5.0"
+#~ msgid "Upgrade from pre-0.5.0 versions"
+#~ msgstr "Přechod z verzí před 0.5.0"
 
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr ""
-"Poznamenejme, že tato verze používá nový formát konfiguračních souborů a "
-"souborů s profily. To znamená, že budete muset vytvořit nové profily účtů a "
-"aktualizovat své konfigurační soubory."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for configuration and "
+#~ "account profiles. You will have to update your configuration and create "
+#~ "new account profiles."
+#~ msgstr ""
+#~ "Poznamenejme, že tato verze používá nový formát konfiguračních souborů a "
+#~ "souborů s profily. To znamená, že budete muset vytvořit nové profily účtů "
+#~ "a aktualizovat své konfigurační soubory."
 
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Přechod z verzí před 1.0.0"
+#~ msgid "Upgrade from pre-1.0.0 versions"
+#~ msgstr "Přechod z verzí před 1.0.0"
 
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr ""
-"Vemte prosím na vědomí, že tato verze používá nový formát konfiguračních "
-"profilů. Upravte prosím své konfigurační soubory a toto nové nastavení "
-"uložte ."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for the configuration "
+#~ "profiles. Please edit your configuration files and save the new settings."
+#~ msgstr ""
+#~ "Vemte prosím na vědomí, že tato verze používá nový formát konfiguračních "
+#~ "profilů. Upravte prosím své konfigurační soubory a toto nové nastavení "
+#~ "uložte ."
 
 #~ msgid "Enter alias:"
 #~ msgstr "Zadejte alias:"
