@@ -1,14 +1,15 @@
 # Italian (it) translation of debconf templates for ldap-account-manager
 # Copyright (C) 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the ldap-account-manager package.
-# Luca Monducci <luca.mo@tiscali.it>, 2007.
+# Luca Monducci <luca.mo@tiscali.it>, 2007 - 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ldap-account-manager 1.3.0 italian debconf templates\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2007-03-26 21:52+0200\n"
-"PO-Revision-Date: 2007-05-06 12:28+0200\n"
+"Project-Id-Version: lam 2.7.0.RC1-1  italian debconf "
+"templates\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-08-01 15:48+0200\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +26,14 @@ msgstr "Configurazione del server web:"
 #. Description
 #: ../templates:1001
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP Account Manager può essere usato su qualsiasi server web con PHP4 ma "
-"questo processo di configurazione automatica supporta solo Apache e Apache2. "
-"Se si configura Apache(2), si può accedere a LAM da http(s)://localhost/lam"
+"LDAP Account Manager può essere usato su qualsiasi server web con PHP5 ma "
+"questo processo di configurazione automatica supporta solo Apache2. Se si "
+"sceglie di configurare Apache2, si potrà accedere a LAM da http(s)://"
+"localhost/lam"
 
 #. Type: string
 #. Description
@@ -46,8 +48,8 @@ msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"LAM aggiunge un alias in httpd.conf che permette di accedere a LAM da "
-"http(s)://localhost/lam. È possibile scegliere un alias diverso da \"lam\"."
+"LAM aggiunge un alias in httpd.conf che permette di accedere a LAM da http"
+"(s)://localhost/lam. È possibile scegliere un alias diverso da \"lam\"."
 
 #. Type: string
 #. Description
@@ -78,38 +80,3 @@ msgstr "Si vuole riavviare il/i server web adesso?"
 #: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "Per applicare le modifiche è necessario riavviare il/i server web."
-
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Aggiornamento da versioni precedenti la 0.5.0"
-
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr ""
-"Notare che questa versione utilizza un nuovo formato per la configurazione "
-"e per i profili degli account. È necessario modificare la propria "
-"configurazione e creare dei nuovi profili per gli account."
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Aggiornamento da versioni precedenti la 1.0.0"
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr ""
-"Notare che questa versione utilizza un nuovo formato per i profili di "
-"configurazione. Modificare i propri file di configurazione e salvare le "
-"nuove impostazioni."
