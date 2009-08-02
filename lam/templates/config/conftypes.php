@@ -64,6 +64,16 @@ $errorsToDisplay = checkInput();
 // check if button was pressed and if we have to save the settings or go to another tab
 if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])) {
 	if (sizeof($errorsToDisplay) == 0) {
+		// check if all types have modules
+		$activeTypes = $conf->get_ActiveTypes();
+		for ($i = 0; $i < sizeof($activeTypes); $i++) {
+			$selectedModules = $conf->get_AccountModules($activeTypes[$i]);
+			if (sizeof($selectedModules) == 0) {
+				// go to module selection
+				metaRefresh("confmodules.php");
+				exit;
+			}
+		}
 		// go to final page
 		if (isset($_POST['saveSettings'])) {
 			metaRefresh("confsave.php");
@@ -83,7 +93,6 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POS
 }
 
 $typeSettings = $conf->get_typeSettings();
-// get active and available types
 $allTypes = getTypes();
 $activeTypes = $conf->get_ActiveTypes();
 $availableTypes = array();
