@@ -8,8 +8,11 @@ ldap-account-manager (2.7.0.RC1-1) unstable; urgency=low
 		updated translation (Closes: #539437)
   * Fix "[INTL:it] Italian debconf templates translation" 
 	  updated translation (Closes: #539501)
+  * Fix "[INTL:es] Spanish debconf template translation for  ldap-
+    account-manager"
+		updated translation (Closes: #539645)
 
- -- Roland Gruber <post@rolandgruber.de>  Sat, 01 Aug 2009 17:00:19 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 02 Aug 2009 19:06:04 +0200
 
 ldap-account-manager (2.6.0-1) unstable; urgency=low
 

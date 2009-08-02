@@ -1,10 +1,11 @@
-# ldap-account-manager translation to spanish
-# Copyright (C) 2005, 2007 Free Software Foundation, Inc.
-# This file is distributed under the same license as the package.
+# ldap-account-manager translation to Spanish
+# Copyright (C) 2005, 2007, 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the ldap-account-manager package.
 #
 # Changes:
 #   - Initial translation
 #       César Gómez Martí­n , 2005
+#
 #   - Updates
 #       Manuel Porras Peralta <venturi.debian@gmail.com>, 2007
 #       Francisco Javier Cuadrado <fcocuadrado@gmail.com>, 2009
@@ -12,8 +13,8 @@
 # Traductores, si no conocen el formato PO, merece la pena leer la
 # documentación de gettext, especialmente las secciones dedicadas a este
 # formato, por ejemplo ejecutando:
-#   info -n '(gettext)PO Files'
-#   info -n '(gettext)Header Entry'
+#       info -n '(gettext)PO Files'
+#       info -n '(gettext)Header Entry'
 #
 # Equipo de traducción al español, por favor lean antes de traducir
 # los siguientes documentos:
@@ -29,10 +30,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ldap-account-manager 2.4.0-1\n"
+"Project-Id-Version: ldap-account-manager 2.7.0.RC1-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2008-10-21 19:55+0200\n"
-"PO-Revision-Date: 2009-01-12 20:09+0100\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-07-30 08:37+0100\n"
 "Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
 "Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -48,8 +49,13 @@ msgstr "Configuración del servidor web:"
 #. Type: multiselect
 #. Description
 #: ../templates:1001
-msgid "LDAP Account Manager supports any webserver that supports PHP4, but this automatic configuration process only supports Apache and Apache2. If you choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
-msgstr "El gestor de cuentas LDAP es compatible con cualquier servidor web que permita usar PHP4, pero este proceso automático de configuración sólo es compatible con Apache y Apache2. Si escoge configurar Apache(2), podrá acceder a LAM desde «http(s)://localhost/lam»"
+#| msgid ""
+#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
+#| "automatic configuration process only supports Apache and Apache2. If you "
+#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
+#| "lam"
+msgid "LDAP Account Manager supports any webserver that supports PHP5, but this automatic configuration process only supports Apache2. If you choose to configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr "El gestor de cuentas LDAP es compatible con cualquier servidor web que permita usar PHP5, pero este proceso automático de configuración sólo es compatible con Apache2. Si escoge configurar Apache2, podrá acceder a LAM desde «http(s)://localhost/lam»."
 
 #. Type: string
 #. Description
@@ -87,27 +93,23 @@ msgstr "¿Desea reiniciar ahora su(s) servidor(es) web?"
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "Su(s) servidor(es) web necesitan reiniciarse para que se apliquen los cambios."
 
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Actualizar desde versiones anteriores a la 0.5.0"
-
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Please note that this version uses new file formats for configuration and account profiles. You will have to update your configuration and create new account profiles."
-msgstr "Por favor, tenga en cuenta que esta versión usa formatos nuevos de archivo para la configuración y los perfiles de usuario. Tendrá que actualizar su configuración y crear nuevos perfiles de usuario."
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Actualizar desde versiones anteriores a la 1.0.0"
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Please note that this version uses new file formats for the configuration profiles. Please edit your configuration files and save the new settings."
-msgstr "Por favor, tenga en cuenta que esta versión usa formatos nuevos de archivo para los perfiles de configuración. Edite sus archivos de configuración y guarde los cambios."
+#~ msgid "Upgrade from pre-0.5.0 versions"
+#~ msgstr "Actualizar desde versiones anteriores a la 0.5.0"
+#~ msgid ""
+#~ "Please note that this version uses new file formats for configuration and "
+#~ "account profiles. You will have to update your configuration and create "
+#~ "new account profiles."
+#~ msgstr ""
+#~ "Por favor, tenga en cuenta que esta versión usa formatos nuevos de "
+#~ "archivo para la configuración y los perfiles de usuario. Tendrá que "
+#~ "actualizar su configuración y crear nuevos perfiles de usuario."
+#~ msgid "Upgrade from pre-1.0.0 versions"
+#~ msgstr "Actualizar desde versiones anteriores a la 1.0.0"
+#~ msgid ""
+#~ "Please note that this version uses new file formats for the configuration "
+#~ "profiles. Please edit your configuration files and save the new settings."
+#~ msgstr ""
+#~ "Por favor, tenga en cuenta que esta versión usa formatos nuevos de "
+#~ "archivo para los perfiles de configuración. Edite sus archivos de "
+#~ "configuración y guarde los cambios."
 
