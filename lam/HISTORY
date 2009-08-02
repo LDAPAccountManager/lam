@@ -1,4 +1,5 @@
 05.08.2009 2.7.0
+  - LAM Pro: allow to execute custom scripts
   - log client IP at login attempt
   - added separate configuration option to enable/disable TLS encryption
   - Samba 3: allow to disable LM hashes (on by default) (RFE 2657140)
