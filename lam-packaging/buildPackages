@@ -118,27 +118,27 @@ mkdir LAMPro/RPM
 
 
 # Fedora RPM
-cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES
+cp ldap-account-manager-$VERSION.tar.gz ~/rpmbuild/SOURCES
 rpmbuild --sign --clean --rmsource -bb lam-packaging/RPM/ldap-account-manager-fedora.spec
-mv /usr/src/rpm/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 
 # Fedora RPM for LAM Pro
 cd LAMPro
-cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES/ldap-account-manager-$VERSION.tar.gz
+cp ldap-account-manager-$VERSION.tar.gz ~/rpmbuild/SOURCES/ldap-account-manager-$VERSION.tar.gz
 rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager-fedora.spec
-mv /usr/src/rpm/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 cd ..
 
 # Suse RPM
-cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES
+cp ldap-account-manager-$VERSION.tar.gz ~/rpmbuild/SOURCES
 rpmbuild --sign --clean --rmsource -bb lam-packaging/RPM/ldap-account-manager-suse.spec
-mv /usr/src/rpm/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 
 # Suse RPM for LAM Pro
 cd LAMPro
-cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES/ldap-account-manager-$VERSION.tar.gz
+cp ldap-account-manager-$VERSION.tar.gz ~/rpmbuild/SOURCES/ldap-account-manager-$VERSION.tar.gz
 rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager-suse.spec
-mv /usr/src/rpm/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 cd ..
 
 # clean up
