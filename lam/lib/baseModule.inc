@@ -883,7 +883,7 @@ abstract class baseModule {
 	 * <br>
 	 * <b>Example:</b><br>
 	 * <br>
-	 * array('Headline' => 'This is the head line', 'Text' => 'Help content', 'SeeAlso' => array('text' => 'LAM homepage', 'link' => 'http://lam.sf.net'))
+	 * array('Headline' => 'This is the head line', 'Text' => 'Help content', 'SeeAlso' => array('text' => 'LAM homepage', 'link' => 'http://www.ldap-account-manager.org/'))
 	 *
 	 * @param string $id The id string for the help entry needed.
 	 * @return array The desired help entry.

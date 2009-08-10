@@ -211,7 +211,7 @@ function display_LoginPage($config_object) {
 		echo "</script>\n";
 	?>
 		<p align="center">
-			<a href="http://lam.sourceforge.net" target="_blank"><img src="../graphics/banner.jpg" border="1" alt="LDAP Account Manager"></a>
+			<a href="http://www.ldap-account-manager.org/" target="_blank"><img src="../graphics/banner.jpg" border="1" alt="LDAP Account Manager"></a>
 		</p>
 		<table width="100%" border="0">
 			<tr>
@@ -221,7 +221,7 @@ function display_LoginPage($config_object) {
 				<TD width="50%" align="right">
 					<?PHP
 						if (!isLAMProVersion()) {
-							echo "<a href=\"http://lam.sourceforge.net/lamPro/index.htm\">" . _("Want more features? Get LAM Pro!") . "</a>";
+							echo "<a href=\"http://www.ldap-account-manager.org/lamcms/lamPro\">" . _("Want more features? Get LAM Pro!") . "</a>";
 						}
 					?>
 				</TD>

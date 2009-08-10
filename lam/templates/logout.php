@@ -69,7 +69,7 @@ unset($_SESSION);
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>
 	<body>
-	<p align="center"><a href="http://lam.sourceforge.net" target="new_window">
+	<p align="center"><a href="http://www.ldap-account-manager.org/" target="new_window">
 		<img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 	</p>
 	<hr>

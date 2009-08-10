@@ -56,7 +56,7 @@ echo $_SESSION['header'];
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
 	<body>
-		<p align="center"><a href="http://lam.sourceforge.net" target="_blank">
+		<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank">
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
 		<hr><br>

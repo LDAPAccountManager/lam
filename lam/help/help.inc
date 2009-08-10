@@ -203,7 +203,7 @@ $helpArray = array (
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.
 
 	"[HelpNumber]" => array ("Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => array('link' => "[SeeAlso link]", 'text' => '[link text]')),
-	"999" => array ("Headline" => _("This is a sample entry"), "Text" => _("Sample text"), "SeeAlso" => array('link' => "http://lam.sf.net", 'text' => 'Project page')),
+	"999" => array ("Headline" => _("This is a sample entry"), "Text" => _("Sample text"), "SeeAlso" => array('link' => "http://www.ldap-account-manager.org/", 'text' => 'Project page')),
 
 
 

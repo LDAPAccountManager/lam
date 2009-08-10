@@ -57,14 +57,14 @@ $types = $_SESSION['config']->get_ActiveTypes();
 		<td width="200">
 			<?PHP
 			if (!isLAMProVersion()) {
-				echo "<a href=\"http://lam.sourceforge.net/sponsors/donations.htm\" target=\"_blank\"><img alt=\"donations\" src=\"../graphics/smile.png\">&nbsp;" . _("Donate") . "</a>";
+				echo "<a href=\"http://www.ldap-account-manager.org/lamcms/donations\" target=\"_blank\"><img alt=\"donations\" src=\"../graphics/smile.png\">&nbsp;" . _("Donate") . "</a>";
 				echo "<br><br>";
 			}
 			?>
 			<a href="tools.php" target="mainpart"><img alt="tools" src="../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
 		</td>
 		<td align="center">
-			<a href="http://lam.sourceforge.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
+			<a href="http://www.ldap-account-manager.org/" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
 	<td width="200" align="right" height=20><a href="./logout.php" target="_top"><img alt="logout" src="../graphics/exit.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>

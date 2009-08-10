@@ -111,7 +111,7 @@ for ($i = 0; $i < sizeof($allTypes); $i++){
 echo "</head><body>\n";
 echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
 
-echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
+echo ("<p align=\"center\"><a href=\"http://www.ldap-account-manager.org/\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr>\n<p>&nbsp;</p>\n");
 
 // print error messages

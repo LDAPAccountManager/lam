@@ -305,7 +305,7 @@ class selfServiceProfile {
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
 		$this->searchAttribute = "uid";
-		$this->pageHeader = '<p align="center"><a href="http://lam.sourceforge.net" target="_blank"><img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a></p><hr>';
+		$this->pageHeader = '<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank"><img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a></p><hr>';
 		$this->additionalCSS = '';
 		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";
 		$this->loginAttributeText = "User name";
