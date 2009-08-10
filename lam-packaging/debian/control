@@ -4,7 +4,7 @@ Section: web
 Priority: extra
 Standards-Version: 3.8.2
 Build-Depends: debhelper (>= 7), po-debconf
-Homepage: http://lam.sourceforge.net/
+Homepage: http://www.ldap-account-manager.org/
 
 Package: ldap-account-manager
 Architecture: all

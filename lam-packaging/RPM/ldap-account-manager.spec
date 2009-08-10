@@ -13,7 +13,7 @@ Group:        Productivity/Networking/Web/Frontends
 Version:      @@VERSION@@
 Release:      0.%lam_distribution.1
 Source0:      ldap-account-manager-%{version}.tar.gz
-URL:          http://lam.sourceforge.net
+URL:          http://www.ldap-account-manager.org/
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}
 Summary:      Administration of LDAP users, groups and hosts via Web GUI
 Summary(de):  Administration von Benutzern, Gruppen und Hosts für LDAP-Server
