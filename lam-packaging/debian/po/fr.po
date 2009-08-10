@@ -1,133 +1,114 @@
+# Translation of ldap-account-manager debconf templates to French
+# Copyright (C) 2006-2009 Debian French l10n team <debian-l10n-french@lists.debian.org>
+# This file is distributed under the same license as the ldap-account-manager package.
 #
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
-#
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
-#
-#    Developers do not need to manually edit POT or PO files.
-#
+# Translators:
+# Steve Petruzzello <dlist@bluewin.ch> 2006-2009
 msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager_1.0.2-1\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
 "PO-Revision-Date: 2006-05-26 11:45+0100\n"
 "Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid "Web server configuration:"
-msgstr "Configuration du serveur web :"
+msgstr "Configuration du serveur webÂ :"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP Account Manager s'occupe de tous les serveurs web qui gérent PHP4, mais "
-"ce processus de configuration ne fonctionne qu'avec Apache et Apache2. Si "
-"vous choisissez de configurer Apache(2), vous pourrez accéder à LAM via "
-"l'adresse http(s)://localhost/lam"
+"LDAP Account Manager s'occupe de tous les serveurs web qui gÃ©rent PHP5, mais "
+"ce processus de configuration ne fonctionne qu'avec Apache2. Si "
+"vous choisissez de configurer Apache2, vous pourrez accÃ©der Ã  LAM via "
+"l'adresse http(s)://localhost/lam."
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Alias name:"
-msgstr "Alias :"
+msgstr "AliasÂ :"
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"LAM ajoute un alias au fichier httpd.conf, ce qui permet d'accéder à LAM à "
-"l'adresse http(s)://localhost/lam. Si vous désirez un alias différent de "
-"« lam », veuillez l'indiquer ici."
+"LAM ajoute un alias au fichier httpd.conf, ce qui permet d'accÃ©der Ã  LAM Ã  "
+"l'adresse http(s)://localhost/lam. Si vous dÃ©sirez un alias diffÃ©rent de "
+"Â«Â lamÂ Â», veuillez l'indiquer ici."
 
 #. Type: string
 #. Description
-#: ../templates:21
+#: ../templates:3001
 msgid "Master configuration password (clear text):"
-msgstr "Mot de passe principal (en clair) :"
+msgstr "Mot de passe principal (en clair)Â :"
 
 #. Type: string
 #. Description
-#: ../templates:21
+#: ../templates:3001
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
 "changed directly in LAM."
 msgstr ""
-"Les profils de configuration sont protégés par un mot de passe principal. "
-"Vous en aurez besoin pour créer et effacer des profils. Sa valeur par défaut "
-"est « lam » et vous pourrez le modifier directement dans LAM."
+"Les profils de configuration sont protÃ©gÃ©s par un mot de passe principal. "
+"Vous en aurez besoin pour crÃ©er et effacer des profils. Sa valeur par dÃ©faut "
+"est Â«Â lamÂ Â» et vous pourrez le modifier directement dans LAM."
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Would you like to restart your webserver(s) now?"
-msgstr "Faut-il redémarrer le(s) serveur(s) web maintenant ?"
+msgstr "Faut-il redÃ©marrer le(s) serveur(s) web maintenantÂ ?"
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
-"Le(s) serveur(s) web doivent être redémarrés afin que les changements soient "
-"appliqués."
+"Le(s) serveur(s) web doivent Ãªtre redÃ©marrÃ©s afin que les changements soient "
+"appliquÃ©s."
 
-#. Type: note
-#. Description
-#: ../templates:34
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Mise à niveau depuis les versions pre-0.5.0"
+#~ msgid "Upgrade from pre-0.5.0 versions"
+#~ msgstr "Mise Ã  niveau depuis les versions pre-0.5.0"
 
-#. Type: note
-#. Description
-#: ../templates:34
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr ""
-"Veuillez noter que la nouvelle version utilise de nouveaux formats de "
-"fichiers pour la configuration et les profils. Vous devez mettre à jour "
-"votre configuration et créer de nouveaux profils de compte."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for configuration and "
+#~ "account profiles. You will have to update your configuration and create "
+#~ "new account profiles."
+#~ msgstr ""
+#~ "Veuillez noter que la nouvelle version utilise de nouveaux formats de "
+#~ "fichiers pour la configuration et les profils. Vous devez mettre Ã  jour "
+#~ "votre configuration et crÃ©er de nouveaux profils de compte."
 
-#. Type: note
-#. Description
-#: ../templates:41
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Mise à niveau depuis les versions pre-1.0.0"
+#~ msgid "Upgrade from pre-1.0.0 versions"
+#~ msgstr "Mise Ã  niveau depuis les versions pre-1.0.0"
 
-#. Type: note
-#. Description
-#: ../templates:41
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr ""
-"Veuillez noter que cette nouvelle version utilise de nouveaux formats de "
-"fichiers pour la configuration des profils. Vous devez mettre à jour votre "
-"configuration et sauver les nouveaux réglages."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for the configuration "
+#~ "profiles. Please edit your configuration files and save the new settings."
+#~ msgstr ""
+#~ "Veuillez noter que cette nouvelle version utilise de nouveaux formats de "
+#~ "fichiers pour la configuration des profils. Vous devez mettre Ã  jour "
+#~ "votre configuration et sauver les nouveaux rÃ©glages."
 
 #~ msgid "Enter alias:"
-#~ msgstr "Alias :"
+#~ msgstr "AliasÂ :"
 
 #~ msgid "Which webserver would you like to configure automatically?"
-#~ msgstr "Serveur web à configurer automatiquement :"
+#~ msgstr "Serveur web Ã  configurer automatiquementÂ :"

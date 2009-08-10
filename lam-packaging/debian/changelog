@@ -1,3 +1,11 @@
+ldap-account-manager (2.8.0.RC1-1) unstable; urgency=low
+
+  * new upstream release
+  * Fix "[INTL:fr] French debconf templates translation update"
+    updated translation (Closes: #540505)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 10 Aug 2009 17:31:38 +0200
+
 ldap-account-manager (2.7.0-1) unstable; urgency=low
 
   * new upstream release
