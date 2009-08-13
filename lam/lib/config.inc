@@ -518,7 +518,7 @@ class LAMConfig {
 	*/
 	public function set_Adminstring($value) {
 		if (is_string($value) &&
-		eregi("^[^;]+(;[^;]+)*$", $value)) {
+		preg_match("/^[^;]+(;[^;]+)*$/", $value)) {
 			$this->Admins = $value;
 		}
 		else return false;
@@ -630,7 +630,7 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_listAttributes($value, $scope) {
-		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
+		if (is_string($value) && preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $value)) {
 			$this->typeSettings['attr_' . $scope] = $value;
 			return true;
 		}
@@ -677,7 +677,7 @@ class LAMConfig {
 	*/
 	public function set_scriptPath($value) {
 		if (!$value) $this->scriptPath = ""; // optional parameter
-		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\.\\-])+)+$", $value)) $this->scriptPath = $value;
+		elseif (is_string($value) && preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) $this->scriptPath = $value;
 		else return false;
 		return true;
 	}
@@ -709,7 +709,7 @@ class LAMConfig {
 			$valid_ips = array();
 			foreach($array_string as $arr_value) {
 				// Explode name and IP, if a name exists
-				if (eregi(":", $arr_value)) {
+				if (preg_match("/:/", $arr_value)) {
 					$arr_value_explode = explode(":", $arr_value);
 					$ip = $arr_value_explode[1];
 					$servername = $arr_value_explode[0];
@@ -718,7 +718,7 @@ class LAMConfig {
 			 		$ip = $arr_value;
 					$servername = "";
 				}
-				if (isset($ip) && is_string($ip) && eregi("^[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*$", $ip)) {
+				if (isset($ip) && is_string($ip) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*$/i", $ip)) {
 					// Check if the IP has a server name
 					if (!empty($servername)) {
 						$valid_ips[] = $servername.":".$ip;

@@ -621,8 +621,9 @@ class posixGroup extends baseModule {
 		}
 		if ($this->manageCnAttribute && ($this->attributes['cn'][0]!=$_POST['cn'])) {
 			$this->attributes['cn'][0] = $_POST['cn'];
-			if (($this->attributes['cn'][0] != $_POST['cn']) &&  ereg('[A-Z]$', $_POST['cn']))
+			if (preg_match('/^[A-Z]+$/', $_POST['cn'])) {
 				$errors[] = $this->messages['cn'][0];
+			}
 			// Check if Groupname contains only valid characters
 			if ( !get_preg($this->attributes['cn'][0],'groupname'))
 			$errors[] = $this->messages['cn'][2];
@@ -637,7 +638,7 @@ class posixGroup extends baseModule {
 				// get last character of username
 				$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
 				// Last character is no number
-				if ( !ereg('^([0-9])+$', $lastchar))
+				if ( !preg_match('/^([0-9])+$/', $lastchar))
 				/* Last character is no number. Therefore we only have to
 				* add "2" to it.
 				*/
@@ -653,7 +654,7 @@ class posixGroup extends baseModule {
 					$mark = false;
 					// Set $i to the last character which is a number in $account_new->general_username
 					while (!$mark) {
-						if (ereg('^([0-9])+$',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
+						if (preg_match('/^([0-9])+$/',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
 						else $mark=true;
 					}
 					// increase last number with one
@@ -665,7 +666,7 @@ class posixGroup extends baseModule {
 			}
 			// Show warning if lam has changed username
 			if ($this->attributes['cn'][0] != $_POST['cn']) {
-				$errors[] = $this->messages['cn'][0];
+				$errors[] = $this->messages['cn'][1];
 			}
 			// show info when gidnumber has changed
 			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $_POST['gidNumber']!=$this->attributes['gidNumber'][0]) {

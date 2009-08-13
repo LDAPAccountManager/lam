@@ -86,12 +86,12 @@ function checkClientIP() {
 	$grantAccess = false;
 	for ($i = 0; $i < sizeof($allowedHosts); $i++) {
 		$host = $allowedHosts[$i];
-		$ipRegex = '^[0-9\\.\\*]+$';
-		if (!ereg($ipRegex, $host)) continue;
+		$ipRegex = '/^[0-9\\.\\*]+$/';
+		if (!preg_match($ipRegex, $host)) continue;
 		$hostRegex = str_replace(".", "\\.", $host);
-		$hostRegex = '^' . str_replace("*", ".*", $hostRegex) . '$';
+		$hostRegex = '/^' . str_replace("*", ".*", $hostRegex) . '$/';
 		$clientIP = $_SERVER['REMOTE_ADDR'];
-		if (ereg($hostRegex, $clientIP)) {
+		if (preg_match($hostRegex, $clientIP)) {
 			// client is allowed to access LAM
 			$grantAccess = true;
 		}
@@ -238,16 +238,16 @@ function checkPasswordStrength($password) {
 	$numeric = 0;
 	$symbols = 0;
 	for ($i = 0; $i < strlen($password); $i++) {
-		if (ereg("[a-z]", $password[$i])) {
+		if (preg_match("/[a-z]/", $password[$i])) {
 			$lower++;
 		}
-		if (ereg("[A-Z]", $password[$i])) {
+		if (preg_match("/[A-Z]/", $password[$i])) {
 			$upper++;
 		}
-		if (ereg("[0-9]", $password[$i])) {
+		if (preg_match("/[0-9]/", $password[$i])) {
 			$numeric++;
 		}
-		if (eregi("[^a-z0-9]", $password[$i])) {
+		if (preg_match("/[^a-z0-9]/i", $password[$i])) {
 			$symbols++;
 		}
 	}

@@ -349,7 +349,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 
 		if (!empty($this->dhcpSettings['domainname']) && (strlen($this->dhcpSettings['domainname'])>15 ||
-		    strlen($this->dhcpSettings['domainname'])<3 || !eregi("^[A-Za-z0-9\._-]*$", $this->dhcpSettings['domainname']))) return false;
+		    strlen($this->dhcpSettings['domainname'])<3 || !preg_match("/^[A-Za-z0-9\._-]*$/", $this->dhcpSettings['domainname']))) return false;
 		//DNS
 		if (!empty($this->dhcpSettings['dns'])) {
 			$ex = explode(",", $this->dhcpSettings['dns']);
@@ -457,7 +457,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				// Is domainname?
 				if ($ex[0]=="domain-name") {
-					$this->dhcpSettings['domainname'] = ereg_replace("\"","", $ex[1]);
+					$this->dhcpSettings['domainname'] = str_replace('"',"", $ex[1]);
 				}
 				// Is netbios-name-servers?
 				if ($ex[0]=="domain-name-servers") {
@@ -553,7 +553,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			    $this->dhcpSettings['domainname'] = $_POST['domainname'];
 			    unset($this->attributes['dhcpOption'][5]);
 			}
-			elseif (eregi("^[A-Za-z0-9\._-]*$", $_POST['domainname'])) {
+			elseif (preg_match("/^[A-Za-z0-9\._-]*$/", $_POST['domainname'])) {
 				$this->dhcpSettings['domainname'] = $_POST['domainname'];
 				$this->attributes['dhcpOption'][5] = "domain-name \"".$_POST['domainname']."\"";
 			}
@@ -996,7 +996,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 					array_push($error, $i);
 					$messages[] = $error;
 				}
-				elseif (eregi("^[A-Za-z0-9\._-]*$", $rawAccounts[$i][$ids['dhcp_settings_domainName']])) {
+				elseif (preg_match("/^[A-Za-z0-9\._-]*$/", $rawAccounts[$i][$ids['dhcp_settings_domainName']])) {
 					$partialAccounts[$i]['dhcpOption'][] = "domain-name \"".$rawAccounts[$i][$ids['dhcp_settings_domainName']]."\"";
 				}
 				else {

@@ -813,7 +813,7 @@ class posixAccount extends baseModule {
 			// get last character of username
 			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
 			// Last character is no number
-			if ( !ereg('^([0-9])+$', $lastchar)) {
+			if ( !preg_match('/^([0-9])+$/', $lastchar)) {
 				// Last character is no number. Therefore we only have to add "2" to it.
 				if ($this->get_scope()=='host') {
 					$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
@@ -833,7 +833,7 @@ class posixAccount extends baseModule {
 				$mark = false;
 				// Set $i to the last character which is a number in $account_new->general_username
 				while (!$mark)
-				if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
+				if (preg_match('/^([0-9])+$/',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
 				else $mark=true;
 				// increase last number with one
 				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
@@ -1263,10 +1263,10 @@ class posixAccount extends baseModule {
 		// user settings
 		if (in_array('user', $scopes)) {
 			// min/maxUID are required, check if they are numeric
-			if (!isset($options['posixAccount_minUID'][0]) || !ereg('^[0-9]+$', $options['posixAccount_minUID'][0])) {
+			if (!isset($options['posixAccount_minUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minUID'][0])) {
 				$return[] = $this->messages['minUID'][0];
 			}
-			if (!isset($options['posixAccount_maxUID'][0]) || !ereg('^[0-9]+$', $options['posixAccount_maxUID'][0])) {
+			if (!isset($options['posixAccount_maxUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxUID'][0])) {
 				$return[] = $this->messages['maxUID'][0];
 			}
 			// minUID < maxUID
@@ -1279,10 +1279,10 @@ class posixAccount extends baseModule {
 		// host settings
 		if (in_array('host', $scopes)) {
 			// min/maxUID are required, check if they are numeric
-			if (!isset($options['posixAccount_minMachine'][0]) || !ereg('^[0-9]+$', $options['posixAccount_minMachine'][0])) {
+			if (!isset($options['posixAccount_minMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minMachine'][0])) {
 				$return[] = $this->messages['minMachine'][0];
 			}
-			if (!isset($options['posixAccount_maxMachine'][0]) || !ereg('^[0-9]+$', $options['posixAccount_maxMachine'][0])) {
+			if (!isset($options['posixAccount_maxMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxMachine'][0])) {
 				$return[] = $this->messages['maxMachine'][0];
 			}
 			// minUID < maxUID

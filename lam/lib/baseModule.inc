@@ -559,7 +559,7 @@ abstract class baseModule {
 					case 'regex_i':
 						// ignore empty fileds
 						if ($options[$identifiers[$i]][0] == '') continue;
-						if (! eregi($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+						if (! preg_match('/' . $this->meta['profile_checks'][$identifiers[$i]]['regex'] . '/i', $options[$identifiers[$i]][0])) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 						}
 						break;
@@ -567,7 +567,7 @@ abstract class baseModule {
 					case 'regex':
 						// ignore empty fileds
 						if ($options[$identifiers[$i]][0] == '') continue;
-						if (! ereg($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+						if (! preg_match('/' . $this->meta['profile_checks'][$identifiers[$i]]['regex'] . '/', $options[$identifiers[$i]][0])) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 						}
 						break;
@@ -691,7 +691,7 @@ abstract class baseModule {
 						case "regex_i":
 							// ignore empty fileds
 							if ($options[$identifiers[$i]][0] == '') continue;
-							if (! eregi($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+							if (! preg_match('/' . $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'] . '/i', $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
 							}
 							break;
@@ -699,7 +699,7 @@ abstract class baseModule {
 						case "regex":
 							// ignore empty fileds
 							if ($options[$identifiers[$i]][0] == '') continue;
-							if (! ereg($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+							if (! preg_match('/' . $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'] . '/', $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
 							}
 							break;

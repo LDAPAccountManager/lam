@@ -1029,7 +1029,7 @@ class sambaAccount extends baseModule {
 				}
 				// home drive
 				if ($rawAccounts[$i][$ids['sambaAccount_homeDrive']] != "") {
-					if (eregi("[d-z]:", $rawAccounts[$i][$ids['sambaAccount_homeDrive']])) {
+					if (preg_match("/[d-z]:/i", $rawAccounts[$i][$ids['sambaAccount_homeDrive']])) {
 						$partialAccounts[$i]['homeDrive'] = $rawAccounts[$i][$ids['sambaAccount_homeDrive']];
 					}
 					else {

@@ -410,7 +410,7 @@ class eduPerson extends baseModule {
 		// principal name
 		$this->attributes['eduPersonPrincipalName'][0] = $_POST['principalName'];
 		if ($_POST['principalName'] != '') {
-			if (eregi('^[0-9a-z_\\.@-]+$', $_POST['principalName']) === false) {
+			if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $_POST['principalName'])) {
 				$errors[] = $this->messages['principalName'][0];
 			}
 		}
@@ -508,7 +508,7 @@ class eduPerson extends baseModule {
 			if (!in_array("eduPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "eduPerson";
 			// principal name
 			if ($rawAccounts[$i][$ids['eduPerson_principalName']] != "") {
-				if (eregi('^[0-9a-z_\\.@-]+$', $rawAccounts[$i][$ids['eduPerson_principalName']]) === false) {
+				if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $rawAccounts[$i][$ids['eduPerson_principalName']])) {
 					$error = $this->messages['principalName'][1];
 					array_push($error, $i);
 					$messages[] = $error;

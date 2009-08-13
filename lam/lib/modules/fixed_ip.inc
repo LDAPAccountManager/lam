@@ -150,7 +150,7 @@ class fixed_ip extends baseModule {
 		}
 
 		foreach($ex AS $value) {
-			if (!eregi("[0-9a-fA-F][0-9a-fA-F]", $value) || strlen($value)!="2") {
+			if (!preg_match("/[0-9a-fA-F][0-9a-fA-F]/", $value) || strlen($value)!="2") {
 				$invalid = true;
 			}
 		}
@@ -290,7 +290,7 @@ class fixed_ip extends baseModule {
 					if (strlen($_POST['pc_'.$id])>30) {
 					    $error = true;
 					}
-					if (!eregi("^[A-Za-z0-9\._-]*$",$_POST['pc_'.$id])) {
+					if (!preg_match("/^[A-Za-z0-9\._-]*$/",$_POST['pc_'.$id])) {
 					    $error = true;
 					}
 					$this->fixed_ip[$id]['cn'] = $_POST['pc_'.$id];
@@ -360,7 +360,7 @@ class fixed_ip extends baseModule {
 				elseif (in_array($this->fixed_ip[$id]['cn'], $pcs) ) {
 				    $pcError = _("This PC name already exists.");
 				}
-				elseif (!eregi("^[A-Za-z0-9\._-]*$",$_POST['pc_'.$id])) {
+				elseif (!preg_match("/^[A-Za-z0-9\._-]*$/",$_POST['pc_'.$id])) {
 					$pcError = _("The PC name may only contain A-Z, a-z and 0-9.");
 				}
 				$pcs[] = $this->fixed_ip[$id]['cn'];
