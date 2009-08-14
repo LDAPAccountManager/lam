@@ -312,7 +312,7 @@ class kolabUser extends baseModule {
 			// default invitation policy
 			$defaultInvPol = $this->invitationPolicies['ACT_MANUAL'];
 			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
-				$parts = split(":", $this->attributes['kolabInvitationPolicy'][$i]);
+				$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 1) {
 					$defaultInvPol = $this->invitationPolicies[$this->attributes['kolabInvitationPolicy'][$i]];
 					unset($this->attributes['kolabInvitationPolicy'][$i]);
@@ -326,7 +326,7 @@ class kolabUser extends baseModule {
 				array('kind' => 'help', 'value' => 'invPol'));
 			// other invitation policies
 			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
-				$parts = split(":", $this->attributes['kolabInvitationPolicy'][$i]);
+				$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
 					$returnPol[] = array(
 						array('kind' => 'input', 'name' => 'invPol1' . $i, 'type' => 'text', 'value' => $parts[0]),
@@ -647,7 +647,7 @@ class kolabUser extends baseModule {
 				$policies = array_keys($this->invitationPolicies);
 				$defaultFound = false;
 				for ($p = 0; $p < sizeof($pols); $p++) {
-					$parts = split(":", $pols[$p]);
+					$parts = explode(":", $pols[$p]);
 					// default policy
 					if (sizeof($parts) == 1) {
 						if (!$defaultFound && get_preg($parts[0], 'email')) {
@@ -781,7 +781,7 @@ class kolabUser extends baseModule {
 			}
 			$return['kolabUser_invPol'][0] = '<block><key>' . _('Invitation policy') . '</key><tr><td align=\"L\">' . _('Anyone') . ": " . $this->invitationPolicies[$default] . '</td></tr></block>';
 			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
-				$parts = split(':', $this->attributes['kolabInvitationPolicy'][$i]);
+				$parts = explode(':', $this->attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
 					$return['kolabUser_invPol'][] = '<block><tr><td align=\"L\">' . $parts[0] . ": " . $this->invitationPolicies[$parts[1]] . '</td></tr></block>';
 				}
@@ -872,7 +872,7 @@ class kolabUser extends baseModule {
 			// default invitation policy
 			$defaultInvPol = $this->invitationPolicies['ACT_MANUAL'];
 			for ($i = 0; $i < sizeof($attributes['kolabInvitationPolicy']); $i++) {
-				$parts = split(":", $attributes['kolabInvitationPolicy'][$i]);
+				$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 1) {
 					$defaultInvPol = $this->invitationPolicies[$attributes['kolabInvitationPolicy'][$i]];
 					unset($attributes['kolabInvitationPolicy'][$i]);
@@ -886,7 +886,7 @@ class kolabUser extends baseModule {
 				array('kind' => 'text', 'text' => ''));
 			// other invitation policies
 			for ($i = 0; $i < sizeof($attributes['kolabInvitationPolicy']); $i++) {
-				$parts = split(":", $attributes['kolabInvitationPolicy'][$i]);
+				$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
 					$returnPol[] = array(
 						array('kind' => 'input', 'name' => 'invPol1' . $i, 'type' => 'text', 'value' => $parts[0]),

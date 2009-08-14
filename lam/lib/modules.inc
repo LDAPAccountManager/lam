@@ -1482,7 +1482,7 @@ class accountContainer {
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
 		// extract RDN
-		$this->rdn = split("=", substr($dn, 0, strpos($dn, ',')));
+		$this->rdn = explode("=", substr($dn, 0, strpos($dn, ',')));
 		$this->rdn = $this->rdn[0];
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		// remove 'count' entries and numerical entries

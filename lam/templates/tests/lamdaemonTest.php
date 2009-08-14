@@ -155,7 +155,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 				break;
 			}
 			usleep(100);
-			$read = split("\n", trim(fread($shell, 100000)));
+			$read = explode("\n", trim(fread($shell, 100000)));
 			if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
 			for ($i = 0; $i < sizeof($read); $i++) {
 				$return[] = $read[$i];
@@ -181,7 +181,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>\n";
 			for ($i = 0; $i < sizeof($return); $i++) {
-				call_user_func_array('StatusMessage', split(",", $return[$i]));
+				call_user_func_array('StatusMessage', explode(",", $return[$i]));
 			}
 			echo "</td>\n";
 			$stopTest = true;

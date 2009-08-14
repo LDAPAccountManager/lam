@@ -75,7 +75,7 @@ function loadAccountProfile($profile, $scope) {
 				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
 				// search keywords
 				$parts = array();
-				$parts = split(": ", $line);
+				$parts = explode(": ", $line);
 				if (sizeof($parts) != 2) continue;  // ignore malformed settings
 				else {
 					$option = $parts[0];

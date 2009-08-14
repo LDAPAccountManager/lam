@@ -40,7 +40,7 @@ $Id$
  **/
 if (!function_exists('check_ip')) {
 	function check_ip($ip,$subnet=false) {
-		$part = split("[.]", $ip);
+		$part = explode(".", $ip);
 		// Wenn... Keine 4 Segmente gefunden wurde
 		if (count($part) != 4) {
 			return false;

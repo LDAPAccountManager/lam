@@ -449,10 +449,10 @@ class quota extends baseModule {
 
 			// Get quotas
 			$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
-			$dirs = split(":", $quotas[0]);
+			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
-				$dirs[$i] = split(",", $dirs[$i]);
+				$dirs[$i] = explode(",", $dirs[$i]);
 				$dirs[$i] = $dirs[$i][0];
 			}
 			if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
@@ -503,10 +503,10 @@ class quota extends baseModule {
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
 			$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
-			$dirs = split(":", $quotas[0]);
+			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
-				$dirs[$i] = split(",", $dirs[$i]);
+				$dirs[$i] = explode(",", $dirs[$i]);
 				$dirs[$i] = $dirs[$i][0];
 			}
 			for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -615,10 +615,10 @@ class quota extends baseModule {
 				$server = $temp[0];
 				// Get quotas
 				$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
-				$dirs = split(":", $quotas[0]);
+				$dirs = explode(":", $quotas[0]);
 				array_pop($dirs); // remove empty element at the end
 				for ($i = 0; $i < sizeof($dirs); $i++) {
-					$dirs[$i] = split(",", $dirs[$i]);
+					$dirs[$i] = explode(",", $dirs[$i]);
 					$dirs[$i] = $dirs[$i][0];
 				}
 				for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -729,7 +729,7 @@ class quota extends baseModule {
 			$mountPoints = array_keys($temp['accounts'][$name]);
 			// set quota
 			for ($m = 0; $m < sizeof($mountPoints); $m++) {
-				$mpParts = split(":", $mountPoints[$m]);
+				$mpParts = explode(":", $mountPoints[$m]);
 				$server = $mpParts[0];
 				$dir = $mpParts[1];
 				$quotaString = $name . " quota set " . $this->get_scope() . " " . $dir . ',' .

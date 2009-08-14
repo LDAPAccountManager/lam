@@ -128,7 +128,7 @@ function lamdaemonSSH($commands, $server) {
 					return $return;
 				}
 				usleep(100);
-				$read = split("\n", trim(fread($shell, 100000)));
+				$read = explode("\n", trim(fread($shell, 100000)));
 				if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
 				for ($i = 0; $i < sizeof($read); $i++) {
 					$return[] = $read[$i];
