@@ -159,8 +159,8 @@ function getSelfServiceProfiles() {
 * @return selfServiceProfile true if file was readable
 */
 function loadSelfServiceProfile($name, $scope) {
-	if (!eregi("^[0-9a-z _-]+$", $name)) return false;
-	if (!eregi("^[0-9a-z _-]+$", $scope)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $name)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $scope)) return false;
 	$profile = new selfServiceProfile();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
 	if (is_file($file) === True) {
@@ -193,8 +193,8 @@ function loadSelfServiceProfile($name, $scope) {
 */
 function saveSelfServiceProfile($name, $scope, $profile) {
 	// check profile name
-	if (!eregi("^[0-9a-z _-]+$", $scope)) return false;
-	if (!eregi("^[0-9a-z _-]+$", $name)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $scope)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $name)) return false;
 	if (!get_class($profile) === 'selfServiceProfile') {
 		return false;
 	}

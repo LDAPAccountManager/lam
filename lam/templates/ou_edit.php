@@ -58,7 +58,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	// new ou
 	if (isset($_POST['createOU'])) {
 		// create ou if valid
-		if (eregi("^[a-z0-9 _\\-]+$", $_POST['newOU'])) {
+		if (preg_match("/^[a-z0-9 _\\-]+$/i", $_POST['newOU'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newOU'] . "," . $_POST['parentOU'];
 			if (!in_array($new_dn, $_SESSION['ldap']->search_units($_POST['parentOU']))) {

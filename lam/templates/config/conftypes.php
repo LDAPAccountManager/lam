@@ -296,7 +296,7 @@ function checkInput() {
 		elseif (substr($key, 0, 5) == "attr_") {
 			$typeSettings[$key] = $_POST[$key];
 			$type = substr($postKeys[$i], 5);
-			if (!is_string($_POST[$key]) || !eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $_POST[$key])) {
+			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
 				$errors[] = array("ERROR", _("List attributes are invalid!"), getTypeAlias($type));
 			}
 		}

@@ -105,8 +105,8 @@ if (isset($_POST['submit'])) {
 				continue;
 			}
 			// check each line
-			$ipRegex = '^[0-9\\.\\*]+$';
-			if (!ereg($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 15)) {
+			$ipRegex = '/^[0-9\\.\\*]+$/';
+			if (!preg_match($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 15)) {
 				$errors[] = sprintf(_("The IP address %s is invalid!"), $allowedHostsList[$i]);
 			}
 		}
@@ -120,7 +120,7 @@ if (isset($_POST['submit'])) {
 	if ($_POST['logDestination'] == "none") $cfg->logDestination = "NONE";
 	elseif ($_POST['logDestination'] == "syslog") $cfg->logDestination = "SYSLOG";
 	else {
-		if (isset($_POST['logFile']) && ($_POST['logFile'] != "") && eregi("^[a-z0-9/\\\\:\\._-]+$", $_POST['logFile'])) {
+		if (isset($_POST['logFile']) && ($_POST['logFile'] != "") && preg_match("/^[a-z0-9/\\\\:\\._-]+$/i", $_POST['logFile'])) {
 			$cfg->logDestination = $_POST['logFile'];
 		}
 		else $errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -.");
