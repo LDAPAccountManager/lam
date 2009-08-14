@@ -171,8 +171,6 @@ function draw_server_tree()
  */
 function initialize_session_tree()
 {
-	// From the PHP manual: If you use $_SESSION don't use
-	// session_register(), session_is_registered() or session_unregister()!
 	if( ! array_key_exists( 'tree',  $_SESSION ) )
 		$_SESSION['tree'] = array();
 	if( ! array_key_exists( 'tree_icons', $_SESSION ) )

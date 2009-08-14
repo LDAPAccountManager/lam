@@ -49,9 +49,6 @@ setlanguage();
 
 // Unset pdf structure definitions in session if set
 if(isset($_SESSION['currentPDFStructure'])) {
-	session_unregister('currentPDFStructure');
-	session_unregister('availablePDFFields');
-	session_unregister('currentPageDefinitions');
 	unset($_SESSION['currentPDFStructure']);
 	unset($_SESSION['availablePDFFields']);
 	unset($_SESSION['currentPageDefinitions']);
