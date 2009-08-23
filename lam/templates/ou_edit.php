@@ -147,9 +147,7 @@ function display_main() {
 	echo $_SESSION['header'];
 	echo ("<title>OU-Editor</title>\n");
 	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n");
-	for ($i = 0; $i < sizeof($types); $i++) {
-		echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $types[$i] . ".css\">\n");
-	}
+	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_user.css\">\n");
 	echo ("</head>\n");
 	echo ("<body>\n");
 	echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
