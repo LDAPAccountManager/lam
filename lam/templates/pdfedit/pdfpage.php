@@ -384,7 +384,7 @@ echo $_SESSION['header'];
 	<body>
 		<br>
 		<form action="pdfpage.php" method="post">
-			<table width="100%">
+			<table>
 				<tr>
 					<!-- print current structure -->
 					<td align="left" valign="top">
@@ -423,7 +423,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
 			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
 		"<img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td></td>";
+		"<td width=\"100%\">&nbsp;</td>";
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
@@ -436,7 +436,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		$nonTextSections .= '<option value="' . $key . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
-									<td nowrap colspan="2" width="400">
+									<td nowrap colspan="2">
 		<?php
 		// Section headline is a value entry
 		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
@@ -461,8 +461,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		}
 		?>
 									</td>
-									<td width="20">
-									</td>
+									<td width="20">&nbsp;</td>
 									<?php echo $links;?>
 								</tr>
 		<?php
@@ -596,9 +595,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2">
-											<br/>
-										</td>
+										<td colspan="2">&nbsp;</td>
 									</tr>
 									<tr>
 										<td>
@@ -638,20 +635,20 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 								<select name="new_field">
 								<?php
 									foreach($_SESSION['availablePDFFields'] as $module => $fields) {
-										if (isset($fields) && is_array($fields)) {
+										if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
 											sort($fields);
-										}
-										if ($module != 'main') {
-											$title = getModuleAlias($module, $_GET['type']);
-										}
-										else {
-											$title = _('Main');
-										}
-										echo "<optgroup label=\"$title\">\n";
-											foreach ($fields as $field) {
-												echo "<option value=\"" . $module . "_" . $field . "\" label=\"$field\">$field</option>\n";
+											if ($module != 'main') {
+												$title = getModuleAlias($module, $_GET['type']);
 											}
-										echo "</optgroup>\n";
+											else {
+												$title = _('Main');
+											}
+											echo "<optgroup label=\"$title\">\n";
+												foreach ($fields as $field) {
+													echo "<option value=\"" . $module . "_" . $field . "\" label=\"$field\">$field</option>\n";
+												}
+											echo "</optgroup>\n";
+										}
 									}
 								?>
 								</select>
