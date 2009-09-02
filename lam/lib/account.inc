@@ -405,7 +405,7 @@ function get_preg($argument, $regexp) {
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'hostname':	
-					$pregexpr = '/^[[:alpha:]]([[:alnum:]@\\.\\ \\_\\$-])*$/u';
+					$pregexpr = '/^([[:alnum:]@\\.\\ \\_\\$-])+$/u';
 					break;
 		case 'usernameList':	// comma separated list of user names
 		case 'groupnameList':	// comma separated list of group names
