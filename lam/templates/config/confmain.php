@@ -142,60 +142,54 @@ echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" col
 // show tabs
 echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
 echo "<tr>\n";
-	$buttonWidth = 0;
-	$buttonTexts = array(_('General settings'), _('Account types'), _('Modules'), _('Save'), _('Cancel'));
-	for ($b = 0; $b < sizeof($buttonTexts); $b++) {
-		$tempWidth = round(0.8 * strlen(utf8_decode($buttonTexts[$b]))) + 2;
-		if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
-	}
-	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	// general settings
-	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/bigTools.png);width:' . $buttonWidth . 'em;';
+	$buttonStyle = 'background-image: url(../../graphics/bigTools.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"generalSettingsButton\" type=\"submit\" value=\"" . $buttonSpace . _('General settings') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// account types
-	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('edittypes')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/gear.png);width:' . $buttonWidth . 'em;';
+	$buttonStyle = 'background-image: url(../../graphics/gear.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"edittypes\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// module selection
-	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('editmodules')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/modules.png);width:' . $buttonWidth . 'em;';
+	$buttonStyle = 'background-image: url(../../graphics/modules.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"editmodules\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	echo "<td width=\"100%\">&nbsp;</td>";
 	// save button
-	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('saveSettings')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/pass.png);width:' . $buttonWidth . 'em;';
+	$buttonStyle = 'background-image: url(../../graphics/pass.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"saveSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Save') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// cancel button
-	echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('cancelSettings')[0].click();\"";
 	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/fail.png);width:' . $buttonWidth . 'em;';
+	$buttonStyle = 'background-image: url(../../graphics/fail.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"cancelSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Cancel') . "\"";
 	echo ">\n";
 	echo "</td></tr></table>\n";
