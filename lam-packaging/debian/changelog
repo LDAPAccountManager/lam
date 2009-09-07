@@ -5,8 +5,10 @@ ldap-account-manager (2.8.0.RC1-1) unstable; urgency=low
     updated translation (Closes: #540505)
   * Fix "[INTL:ru] Russian debconf templates translation"
     added translation (Closes: #543182)
+  * Fix "[INTL:ja] Update po-debconf template translation (ja.po)"
+    added translation (Closes: #545404)
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 23 Aug 2009 15:32:39 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 07 Sep 2009 20:53:47 +0200
 
 ldap-account-manager (2.7.0-1) unstable; urgency=low
 

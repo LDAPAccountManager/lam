@@ -1,22 +1,22 @@
-#
+# 
 #    Translators, if you are not familiar with the PO format, gettext
 #    documentation is worth reading, especially sections dedicated to
 #    this format, e.g. by running:
 #         info -n '(gettext)PO Files'
 #         info -n '(gettext)Header Entry'
-#
+# 
 #    Some information specific to po-debconf are available at
 #            /usr/share/doc/po-debconf/README-trans
 #         or http://www.debian.org/intl/l10n/po-debconf/README-trans
-#
+# 
 #    Developers do not need to manually edit POT or PO files.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: ldap-account-manager 2.4.0-1\n"
+"Project-Id-Version: ldap-account-manager 2.7.0-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2008-10-21 19:55+0200\n"
-"PO-Revision-Date: 2008-12-28 23:05+0900\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-09-07 07:05+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,13 +33,13 @@ msgstr "ウェブサーバの設定:"
 #. Description
 #: ../templates:1001
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP Account Manager は PHP4 をサポートする全てのウェブサーバーに対応してますが、こ"
-"の自動構成は Apache および Apache2 にのみ対応しています。もしも Apache、あるいは "
-"Apache2 の構成を選択した場合は、LAMは http(s)://localhost/lam でアクセスできます。"
+"LDAP Account Manager は PHP5 をサポートする全てのウェブサーバーに対応してます"
+"が、この自動構成は Apache2 にのみ対応しています。もしも Apache(2) の構成を選択"
+"した場合は、LAMは http(s)://localhost/lam でアクセスできます。"
 
 #. Type: string
 #. Description
@@ -71,9 +71,9 @@ msgid ""
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
 "changed directly in LAM."
 msgstr ""
-"構成プロファイルはマスターパスワードで保護されています。マスターパスワードは、プ"
-"ロファイルの作成／削除の際に必要となります。マスターパスワードはデフォルトでは "
-"\"lam\" が設定され、LAM にて直接変更が可能です。"
+"構成プロファイルはマスターパスワードで保護されています。マスターパスワード"
+"は、プロファイルの作成／削除の際に必要となります。マスターパスワードはデフォ"
+"ルトでは \"lam\" が設定され、LAM にて直接変更が可能です。"
 
 #. Type: boolean
 #. Description
@@ -87,36 +87,4 @@ msgstr "今すぐウェブサーバを再起動しますか?"
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "変更を適用するためにウェブサーバを再起動する必要があります。"
 
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "0.5.0 より前のバージョンからのアップグレード"
-
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr ""
-"このバージョンでは設定に新しいファイル形式とアカウントプロファイルを使用するのに"
-"注意してください。設定の更新とアカウントプロファイルの新規作成が必要になります。"
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "1.0.0 より前のバージョンからのアップグレード"
-
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr ""
-"このバージョンでは設定プロファイルに新しいファイル形式を使用するのに注意して"
-"ください。設定ファイルを編集して新しい設定を保存してください。"
 
