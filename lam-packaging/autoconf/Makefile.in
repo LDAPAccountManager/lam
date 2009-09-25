@@ -19,6 +19,7 @@ TAR = @TAR@
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+sbindir=@sbindir@
 datarootdir = @datarootdir@
 sysconfdir=@sysconfdir@
 localstatedir=@localstatedir@
@@ -37,11 +38,12 @@ HTTPD_GROUP = @HTTPD_GROUP@
 #INSTALL_DATA = $(INSTALL) -m 644
 #INSTALL_SCRIPT = $(INSTALL) -m 755
 
-DOCS = COPYING HISTORY INSTALL README TODO copyright \
+DOCS = COPYING HISTORY INSTALL README copyright \
 	docs/README.Kolab.txt docs/README.fpdf.htm \
 	docs/README.hosts.txt docs/README.lamdaemon.txt \
 	docs/README.openldap.txt docs/README.schema.txt \
-	docs/README.security.txt docs/README.upgrade.txt
+	docs/README.security.txt docs/README.upgrade.txt \
+	docs/schema/dhcp.schema
 
 HTML_DOCS = docs/devel
 
@@ -69,6 +71,8 @@ install-lam:
 		    $(MKDIR) -p $(DESTDIR)$(localstatedir)/$${i}  ||  exit 1 ; \
 		$(CHMOD) 750 $(DESTDIR)$(localstatedir)/$${i} ; \
 		$(LN_S) $(localstatedir)/$${i} $${i} ; \
+		(cd $(srcdir) ; $(COPY) $${i}/.htaccess \
+			$(DESTDIR)$(localstatedir)/$${i}) ; \
 	done ; \
 	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d * | $(GREP) -v sample)`" ; \
 	(cd $(srcdir)/$(LIST3) ; $(TAR) cf - .) | \
