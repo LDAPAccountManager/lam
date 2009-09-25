@@ -7,8 +7,10 @@ ldap-account-manager (2.8.0.RC1-1) unstable; urgency=low
     added translation (Closes: #543182)
   * Fix "[INTL:ja] Update po-debconf template translation (ja.po)"
     added translation (Closes: #545404)
+  * Fix "[INTL:vi] Vietnamese debconf templates translation update"
+    added translation (Closes: #548018)
 
- -- Roland Gruber <post@rolandgruber.de>  Mon, 07 Sep 2009 20:53:47 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 25 Sep 2009 19:29:37 +0200
 
 ldap-account-manager (2.7.0-1) unstable; urgency=low
 

@@ -1,118 +1,86 @@
 # Vietnamese translation for LDAP Account Manager.
-# Copyright © 2007 Free Software Foundation, Inc.
-# Clytie Siddall <clytie@riverland.net.au>, 2007.
-# 
+# Copyright © 2009 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2007-2009.
+#
 msgid ""
-""
-msgstr "Project-Id-Version: ldap-account-manager 1.3.0.RC1-1\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
-"PO-Revision-Date: 2007-05-30 18:35+0930\n"
+msgstr ""
+"Project-Id-Version: ldap-account-manager 2.7.0.RC1-1\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"PO-Revision-Date: 2009-09-23 18:33+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: LocFactoryEditor 1.6.3b1\n"
+"X-Generator: LocFactoryEditor 1.8\n"
 
-#.Type: multiselect
-#.Description
-#: ../templates:5
+#: ../templates:1001
+#. Type: multiselect
+#. Description
 msgid "Web server configuration:"
-msgstr "Cấu hình phục vụ Mạng:"
+msgstr "Cấu hình phục vụ Web:"
 
-#.Type: multiselect
-#.Description
-#: ../templates:5
+#: ../templates:1001
+#. Type: multiselect
+#. Description
+#| msgid ""
+#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
+#| "automatic configuration process only supports Apache and Apache2. If you "
+#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
+#| "lam"
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
-msgstr "Bộ Quản lý Tài khoản LDAP hỗ trợ trình phục vụ nào cũng hỗ trợ PHP4, nhưng "
-"mà tiến trình tự động cấu hình này chỉ hỗ trợ Apache và Apache2 thôi. Nếu "
-"bạn chọn cấu hình Apache(2), BQT có thể được truy cập tại <http(s)://"
-"localhost/lam>."
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"Bộ Quản lý Tài khoản LDAP hỗ trợ cùng những trình phục vụ Web cũng hỗ trợ PHP5, nhưng mà tiến trình tự động cấu hình này chỉ hỗ trợ Apache2. Nếu bạn chọn cấu hình Apache2 thì Bộ Quản lý Tài khoản LDAP có thể được truy cập ở địa chỉ « http(s)://localhost/lam »."
 
-#.Type: string
-#.Description
-#: ../templates:13
+#: ../templates:2001
+#. Type: string
+#. Description
 msgid "Alias name:"
 msgstr "Tên bí danh:"
 
-#.Type: string
-#.Description
-#: ../templates:13
+#: ../templates:2001
+#. Type: string
+#. Description
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
-msgstr "BQT sẽ thêm một bí danh vào tập tin cấu hình <httpd.conf> của bạn, cho "
-"phép bạn truy cập BQT tại <http(s)://localhost/lam>. Bạn cũng có thể chọn bí danh "
-"khác với « lam »."
+msgstr ""
+"BQT sẽ thêm một bí danh vào tập tin cấu hình « httpd.conf » của bạn, để cho phép "
+"bạn truy cập đến BQT ở địa chỉ « http(s)://localhost/lam ». Bạn cũng có thể chọn bí danh "
+"khác với « lam » (v.d. « bqt »)."
 
-#.Type: string
-#.Description
-#: ../templates:21
+#: ../templates:3001
+#. Type: string
+#. Description
 msgid "Master configuration password (clear text):"
 msgstr "Mật khẩu cấu hình chủ (chữ rõ):"
 
-#.Type: string
-#.Description
-#: ../templates:21
+#: ../templates:3001
+#. Type: string
+#. Description
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
 "changed directly in LAM."
-msgstr "Những hồ sơ cấu hình đựơc bảo mật bằng mật khẩu chủ. Bạn cần thiết nó "
-"để tạo hay xóa hồ sơ. Mật khẩu mặc định là « lam » mà có thể được thay đổi trực "
-"tiếp trong BQT."
+msgstr ""
+"Những hồ sơ cấu hình đựơc bảo mật bằng một mật khẩu chủ. Bạn cần thiết nó để tạo "
+"hay xoá hồ sơ. Mật khẩu mặc định là « lam » mà có thể được thay đổi trực tiếp "
+"trong BQT."
 
-#.Type: boolean
-#.Description
-#: ../templates:29
+#: ../templates:4001
+#. Type: boolean
+#. Description
 msgid "Would you like to restart your webserver(s) now?"
-msgstr "Vậy bạn có muốn khởi chạy trình phục vụ Mạng không?"
+msgstr "Vậy bạn có muốn khởi chạy (các) trình phục vụ Web ngay bây giờ không?"
 
-#.Type: boolean
-#.Description
-#: ../templates:29
+#: ../templates:4001
+#. Type: boolean
+#. Description
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Cần phải khởi chạy lại trình phục vụ Mạng, để làm cho các thay đổi hoạt động."
-
-#.Type: note
-#.Description
-#: ../templates:34
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Nâng cấp từ phiên bản trước 0.5.0"
-
-#.Type: note
-#.Description
-#: ../templates:34
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr "Hãy ghi chú rằng phiên bản này sử dụng định dạng tập tin mới cho cấu hình "
-"và hồ sơ tài khoản. Bạn cần phải cập nhật cấu hình, và tạo hồ sơ tài khoản "
-"mới."
-
-#.Type: note
-#.Description
-#: ../templates:41
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Nâng cấp từ phiên bản trước 1.0.0"
-
-#.Type: note
-#.Description
-#: ../templates:41
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr "Hãy ghi chú rằng phiên bản này sử dụng dạng thức tập tin mới cho hồ sơ cấu "
-"hình. Vui lòng hiệu chỉnh các tập tin cấu hình và lưu thiết lập mới đó."
-
-#~ msgid "Enter alias:"
-#~ msgstr "Gõ bí danh:"
-
-#~ msgid "Which webserver would you like to configure automatically?"
-#~ msgstr "Bạn có muốn tự động cấu hình trình phục vụ Mạng nào?"
+msgstr ""
+"Cần phải khởi chạy lại (các) trình phục vụ Web, để áp dụng các thay đổi."
