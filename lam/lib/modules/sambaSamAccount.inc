@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2008  Roland Gruber
+                2005 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -172,13 +172,23 @@ class sambaSamAccount extends baseModule {
 			'error_message' => $this->messages['profileCanMustChange'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'sambaSamAccount_smbhome' => 'sambaHomePath',
-			'sambaSamAccount_profilePath' => 'sambaProfilePath',
-			'sambaSamAccount_logonScript' => 'sambaLogonScript',
-			'sambaSamAccount_userWorkstations' => 'sambaUserWorkstations',
 			'sambaSamAccount_sambaDomainName' => 'sambaDomainName',
-			'sambaSamAccount_logonHours' => 'sambaLogonHours'
 		);
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
+			$return['profile_mappings']['sambaSamAccount_smbhome'] = 'sambaHomePath';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
+			$return['profile_mappings']['sambaSamAccount_profilePath'] = 'sambaProfilePath';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
+			$return['profile_mappings']['sambaSamAccount_logonScript'] = 'sambaLogonScript';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
+			$return['profile_mappings']['sambaSamAccount_userWorkstations'] = 'sambaUserWorkstations';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
+			$return['profile_mappings']['sambaSamAccount_logonHours'] = 'sambaLogonHours';
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'displayName', 'sambaHomePath', 'sambaHomeDrive',
@@ -339,7 +349,10 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("This is the number of seconds after when the user may or has to change his password.")),
 			'lmHash' => array (
 				"Headline" => _("Disable LM hashes"),
-				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them."))
+				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them.")),
+			'hiddenOptions' => array(
+				"Headline" => _("Hidden options"),
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields."))
 			);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -533,6 +546,37 @@ class sambaSamAccount extends baseModule {
 				'options_selected' => array('yes'),
 				'descriptiveOptions' => true),
 			array('kind' => 'help', 'value' => 'lmHash')
+		),
+		array(
+			array('kind' => 'text', 'text' => '<b>' . _('Hidden options') . ":</b> ", 'td' => array('valign' => 'top')),
+			array('kind' => 'table', 'value' => array(
+				array(
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideHomeDrive', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Home drive')),
+					array('kind' => 'text', 'text' => '&nbsp;'),
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideHomePath', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Home path')),
+					array('kind' => 'text', 'text' => '&nbsp;'),
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideProfilePath', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Profile path')),
+				),
+				array(
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideLogonScript', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Logon script')),
+					array('kind' => 'text', 'text' => '&nbsp;'),
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideWorkstations', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Samba workstations')),
+					array('kind' => 'text', 'text' => '&nbsp;'),
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideLogonHours', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Logon hours')),
+				),
+				array(
+					array('kind' => 'input', 'name' => 'sambaSamAccount_hideTerminalServer', 'type' => 'checkbox'),
+					array('kind' => 'text', 'text' => _('Terminal server options')),
+				),
+			)),
+			array('kind' => 'text', 'text' => '&nbsp;'),
+			array('kind' => 'help', 'value' => 'hiddenOptions'),
 		)
 		);
 		return $return;
@@ -1557,38 +1601,48 @@ class sambaSamAccount extends baseModule {
 				array('kind' => 'text', 'text' => _('User must change password')),
 				array('kind' => 'input', 'name' => 'sambaSamAccount_pwdMustChange', 'type' => 'text', 'size' => '20', 'maxlength' => '10', 'value' => ""),
 				array('kind' => 'help', 'value' => 'profilePwdCanMustChange'));
-			// letter of home drive
-			$drives = array('-');
-			for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Home drive') . ': '),
-				array('kind' => 'select', 'name' => 'sambaSamAccount_sambaHomeDrive', 'options' => $drives, 'options_selected' => array('-')),
-				array('kind' => 'help', 'value' => 'homeDrive')
-				);
-			// path to home directory
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Home path') . ': '),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_smbhome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				array('kind' => 'help', 'value' => 'homePath')
-				);
-			// profile path
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Profile path') . ': '),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				array('kind' => 'help', 'value' => 'profilePath')
-				);
-			// logon script
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Logon script') . ': '),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonScript', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				array('kind' => 'help', 'value' => 'scriptPath')
-				);
-			// allowed workstations
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_userWorkstations', 'value' => ''),
-				array('kind' => 'help', 'value' => 'workstations')
-				);
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
+				// letter of home drive
+				$drives = array('-');
+				for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Home drive') . ': '),
+					array('kind' => 'select', 'name' => 'sambaSamAccount_sambaHomeDrive', 'options' => $drives, 'options_selected' => array('-')),
+					array('kind' => 'help', 'value' => 'homeDrive')
+					);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
+				// path to home directory
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Home path') . ': '),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_smbhome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+					array('kind' => 'help', 'value' => 'homePath')
+					);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
+				// profile path
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Profile path') . ': '),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+					array('kind' => 'help', 'value' => 'profilePath')
+					);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
+				// logon script
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Logon script') . ': '),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonScript', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+					array('kind' => 'help', 'value' => 'scriptPath')
+					);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
+				// allowed workstations
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_userWorkstations', 'value' => ''),
+					array('kind' => 'help', 'value' => 'workstations')
+					);
+			}
 			// domains
 			$sambaDomains = search_domains();
 			$sambaDomainNames = array();
@@ -1611,12 +1665,14 @@ class sambaSamAccount extends baseModule {
 				array('kind' => 'select', 'name' => 'sambaSamAccount_group', 'options' => $groups, 'options_selected' => array('513'), 'descriptiveOptions' => true),
 				array('kind' => 'help', 'value' => 'group')
 				);
-			// logon hours
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Logon hours') . ': '),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonHours', 'value' => ''),
-				array('kind' => 'help', 'value' => 'logonHoursUpload')
-				);
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
+				// logon hours
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Logon hours') . ': '),
+					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonHours', 'value' => ''),
+					array('kind' => 'help', 'value' => 'logonHoursUpload')
+					);
+			}
 		}
 		elseif ($this->get_scope() == 'host') {
 			// domains
@@ -1671,12 +1727,14 @@ class sambaSamAccount extends baseModule {
 		elseif ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "false") {
 			$this->deactivated = false;
 		}
-		// home drive
-		if ($profile['sambaSamAccount_sambaHomeDrive'][0] == "-") {
-			$this->attributes['sambaHomeDrive'][0] = '';
-		}
-		elseif ($profile['sambaSamAccount_sambaHomeDrive'][0]) {
-			$this->attributes['sambaHomeDrive'][0] = $profile['sambaSamAccount_sambaHomeDrive'][0];
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
+			// home drive
+			if ($profile['sambaSamAccount_sambaHomeDrive'][0] == "-") {
+				$this->attributes['sambaHomeDrive'][0] = '';
+			}
+			elseif ($profile['sambaSamAccount_sambaHomeDrive'][0]) {
+				$this->attributes['sambaHomeDrive'][0] = $profile['sambaSamAccount_sambaHomeDrive'][0];
+			}
 		}
 		// expiration date
 		if (isset($profile['sambaSamAccount_expire_day'][0]) && ($profile['sambaSamAccount_expire_day'][0] != "")) {
