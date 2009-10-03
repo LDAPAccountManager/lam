@@ -156,28 +156,37 @@ class inetOrgPerson extends baseModule {
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
 			'departmentNumber' => _('Department(s)'));
 		// profile elements
-		$return['profile_options'] = array(
-			array(
+		$return['profile_options'] = array();
+		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Location') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_l', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'l')),
-			array(
+				array('kind' => 'help', 'value' => 'l'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Department(s)') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_departmentNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'departmentNumber')),
-			array(
+				array('kind' => 'help', 'value' => 'departmentNumber'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('State') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_st', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'st')),
-			array(
+				array('kind' => 'help', 'value' => 'st'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Job title') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'title')),
-			array(
+				array('kind' => 'help', 'value' => 'title'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Employee type') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'employeeType'))
-		);
+				array('kind' => 'help', 'value' => 'employeeType'));
+		}
 		// profile checks
 		$return['profile_checks']['inetOrgPerson_title'] = array(
 			'type' => 'ext_preg',
@@ -194,142 +203,259 @@ class inetOrgPerson extends baseModule {
 			'inetOrgPerson_title' => 'title',
 			'inetOrgPerson_employeeType' => 'employeeType'
 		);
+		// configuration settings
+		$return['config_options']['all'] = array(
+			array(
+				array('kind' => 'text', 'text' => '<b>' . _('Hidden options') . ":</b> ", 'td' => array('valign' => 'top')),
+				array('kind' => 'table', 'value' => array(
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideDescription', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Description')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideStreet', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Street')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hidePostOfficeBox', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Post office box')),
+					),
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hidePostalCode', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Postal code')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideLocation', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Location')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideState', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('State')),
+					),
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hidePostalAddress', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Postal address')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideOfficeName', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Office name')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideRoomNumber', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Room number')),
+					),
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideTelephoneNumber', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Telephone number')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideHomeTelephoneNumber', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Home telephone number')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideMobileNumber', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Mobile number')),
+					),
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideFaxNumber', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Fax number')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideEMailAddress', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('eMail address')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideJobTitle', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Job title')),
+					),
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideCarLicense', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Car license')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideEmployeeType', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Employee type')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideBusinessCategory', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Business category')),
+					),
+					array(
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideDepartments', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Department(s)')),
+						array('kind' => 'text', 'text' => '&nbsp;'),
+						array('kind' => 'input', 'name' => 'inetOrgPerson_hideManager', 'type' => 'checkbox'),
+						array('kind' => 'text', 'text' => _('Manager')),
+					),
+				)),
+				array('kind' => 'text', 'text' => '&nbsp;'),
+				array('kind' => 'help', 'value' => 'hiddenOptions'),
+			)
+		);
 		// upload fields
 		$return['upload_columns'] = array(
-		array(
-		'name' => 'inetOrgPerson_firstName',
-		'description' => _('First name'),
-		'help' => 'givenName',
-		'example' => _('Steve')
-		),
-		array(
-		'name' => 'inetOrgPerson_lastName',
-		'description' => _('Last name'),
-		'help' => 'sn',
-		'example' => _('Miller'),
-		'required' => true
-		),
-		array(
-		'name' => 'inetOrgPerson_description',
-		'description' => _('Description'),
-		'help' => 'description',
-		'example' => _('Temp, contract until december')
-		),
-		array(
-		'name' => 'inetOrgPerson_title',
-		'description' => _('Job title'),
-		'help' => 'title',
-		'example' => _('President')
-		),
-		array(
-		'name' => 'inetOrgPerson_type',
-		'description' => _('Employee type'),
-		'help' => 'employeeType',
-		'example' => _('Temp')
-		),
-		array(
-		'name' => 'inetOrgPerson_manager',
-		'description' => _('Manager'),
-		'help' => 'manager',
-		'example' => _('uid=smiller,ou=People,dc=company,dc=com')
-		),
-		array(
-		'name' => 'inetOrgPerson_businessCategory',
-		'description' => _('Business category'),
-		'help' => 'businessCategory',
-		'example' => _('Administration')
-		),
-		array(
-		'name' => 'inetOrgPerson_street',
-		'description' => _('Street'),
-		'help' => 'street',
-		'example' => _('Mystreetname 42')
-		),
-		array(
-		'name' => 'inetOrgPerson_postalCode',
-		'description' => _('Postal code'),
-		'help' => 'postalCode',
-		'example' => _('GB-12345')
-		),
-		array(
-		'name' => 'inetOrgPerson_address',
-		'description' => _('Postal address'),
-		'help' => 'postalAddress',
-		'example' => _('Mycity')
-		),
-		array(
-		'name' => 'inetOrgPerson_postOfficeBox',
-		'description' => _('Post office box'),
-		'help' => 'postOfficeBox',
-		'example' => _('12345')
-		),
-		array(
-		'name' => 'inetOrgPerson_telephone',
-		'description' => _('Telephone number'),
-		'help' => 'telephoneNumber',
-		'example' => _('123-123-1234')
-		),
-		array(
-		'name' => 'inetOrgPerson_homePhone',
-		'description' => _('Home telephone number'),
-		'help' => 'homePhone',
-		'example' => _('123-124-1234')
-		),
-		array(
-		'name' => 'inetOrgPerson_mobile',
-		'description' => _('Mobile number'),
-		'help' => 'mobileTelephoneNumber',
-		'example' => _('123-123-1235')
-		),
-		array(
-		'name' => 'inetOrgPerson_fax',
-		'description' => _('Fax number'),
-		'help' => 'facsimileTelephoneNumber',
-		'example' => _('123-123-1236')
-		),
-		array(
-		'name' => 'inetOrgPerson_email',
-		'description' => _('eMail address'),
-		'help' => 'mail',
-		'example' => _('user@company.com')
-		),
-		array(
-		'name' => 'inetOrgPerson_roomNumber',
-		'description' => _('Room number'),
-		'help' => 'roomNumber',
-		'example' => 'A 2.24'
-		),
-		array(
-		'name' => 'inetOrgPerson_departmentNumber',
-		'description' => _('Department(s)'),
-		'help' => 'departmentNumber',
-		'example' => _('Administration')
-		),
-		array(
-		'name' => 'inetOrgPerson_l',
-		'description' => _('Location'),
-		'help' => 'l',
-		'example' => _('MyCity')
-		),
-		array(
-		'name' => 'inetOrgPerson_st',
-		'description' => _('State'),
-		'help' => 'st',
-		'example' => _('New York')
-		),
-		array(
-		'name' => 'inetOrgPerson_carLicense',
-		'description' => _('Car license'),
-		'help' => 'carLicense',
-		'example' => _('yes')
-		),
-		array(
-		'name' => 'inetOrgPerson_physicalDeliveryOfficeName',
-		'description' => _('Office name'),
-		'help' => 'physicalDeliveryOfficeName',
-		'example' => _('YourCompany, Human Resources')
-		)
+			array(
+				'name' => 'inetOrgPerson_firstName',
+				'description' => _('First name'),
+				'help' => 'givenName',
+				'example' => _('Steve')
+			),
+			array(
+				'name' => 'inetOrgPerson_lastName',
+				'description' => _('Last name'),
+				'help' => 'sn',
+				'example' => _('Miller'),
+				'required' => true
+			)
 		);
+		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_description',
+				'description' => _('Description'),
+				'help' => 'description',
+				'example' => _('Temp, contract until december')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_title',
+				'description' => _('Job title'),
+				'help' => 'title',
+				'example' => _('President')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_type',
+				'description' => _('Employee type'),
+				'help' => 'employeeType',
+				'example' => _('Temp')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_manager',
+				'description' => _('Manager'),
+				'help' => 'manager',
+				'example' => _('uid=smiller,ou=People,dc=company,dc=com')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_businessCategory',
+				'description' => _('Business category'),
+				'help' => 'businessCategory',
+				'example' => _('Administration')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_street',
+				'description' => _('Street'),
+				'help' => 'street',
+				'example' => _('Mystreetname 42')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_postalCode',
+				'description' => _('Postal code'),
+				'help' => 'postalCode',
+				'example' => _('GB-12345')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_address',
+				'description' => _('Postal address'),
+				'help' => 'postalAddress',
+				'example' => _('Mycity')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_postOfficeBox',
+				'description' => _('Post office box'),
+				'help' => 'postOfficeBox',
+				'example' => _('12345')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_telephone',
+				'description' => _('Telephone number'),
+				'help' => 'telephoneNumber',
+				'example' => _('123-123-1234')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_homePhone',
+				'description' => _('Home telephone number'),
+				'help' => 'homePhone',
+				'example' => _('123-124-1234')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_mobile',
+				'description' => _('Mobile number'),
+				'help' => 'mobileTelephoneNumber',
+				'example' => _('123-123-1235')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_fax',
+				'description' => _('Fax number'),
+				'help' => 'facsimileTelephoneNumber',
+				'example' => _('123-123-1236')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_email',
+				'description' => _('eMail address'),
+				'help' => 'mail',
+				'example' => _('user@company.com')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_roomNumber',
+				'description' => _('Room number'),
+				'help' => 'roomNumber',
+				'example' => 'A 2.24'
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_departmentNumber',
+				'description' => _('Department(s)'),
+				'help' => 'departmentNumber',
+				'example' => _('Administration')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_l',
+				'description' => _('Location'),
+				'help' => 'l',
+				'example' => _('MyCity')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_st',
+				'description' => _('State'),
+				'help' => 'st',
+				'example' => _('New York')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_carLicense',
+				'description' => _('Car license'),
+				'help' => 'carLicense',
+				'example' => _('yes')
+			);
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_physicalDeliveryOfficeName',
+				'description' => _('Office name'),
+				'help' => 'physicalDeliveryOfficeName',
+				'example' => _('YourCompany, Human Resources')
+			);
+		}
 		// cn and uid for upload (only if posixAccount is not loaded)
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
@@ -364,30 +490,71 @@ class inetOrgPerson extends baseModule {
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'description',
 			'host',
 			'givenName',
-			'sn',
-			'title',
-			'employeeType',
-			'manager',
-			'street',
-			'postOfficeBox',
-			'postalCode',
-			'postalAddress',
-			'telephoneNumber',
-			'mobileTelephoneNumber',
-			'facimilieTelephoneNumber',
-			'mail',
-			'homePhone',
-			'roomNumber',
-			'businessCategory',
-			'location',
-			'state',
-			'carLicense',
-			'officeName',
-			'departmentNumber'
+			'sn'
 		);
+		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+			$return['PDF_fields'][] = 'description';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+			$return['PDF_fields'][] = 'street';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+			$return['PDF_fields'][] = 'postOfficeBox';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+			$return['PDF_fields'][] = 'postalCode';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+			$return['PDF_fields'][] = 'location';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+			$return['PDF_fields'][] = 'state';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+			$return['PDF_fields'][] = 'postalAddress';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+			$return['PDF_fields'][] = 'officeName';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$return['PDF_fields'][] = 'roomNumber';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+			$return['PDF_fields'][] = 'telephoneNumber';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+			$return['PDF_fields'][] = 'homePhone';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+			$return['PDF_fields'][] = 'mobileTelephoneNumber';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+			$return['PDF_fields'][] = 'facimilieTelephoneNumber';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$return['PDF_fields'][] = 'mail';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+			$return['PDF_fields'][] = 'title';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+			$return['PDF_fields'][] = 'carLicense';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$return['PDF_fields'][] = 'employeeType';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$return['PDF_fields'][] = 'businessCategory';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+			$return['PDF_fields'][] = 'departmentNumber';
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+			$return['PDF_fields'][] = 'manager';
+		}
+		
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
@@ -397,115 +564,117 @@ class inetOrgPerson extends baseModule {
 		}
 		// help Entries
 		$return['help'] = array (
-			'user' => array (
-				'description' => array (
-					"Headline" => _("Description"),
-					"Text" => _("User description. If left empty sur- and give name will be used.")
-				),
-				'title' => array (
-					"Headline" => _("Job title"),
-					"Text" => _("Job title of user: President, department manager, ...")
-				),
-				'givenName' => array (
-					"Headline" => _("First name"),
-					"Text" => _("First name of user. Only letters, - and spaces are allowed.")
-				),
-				'sn' => array (
-					"Headline" => _("Last name"),
-					"Text" => _("Last name of user. Only letters, - and spaces are allowed.")
-				),
-				'employeeType' => array (
-					"Headline" => _("Employee type"),
-					"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
-				),
-				'manager' => array (
-					"Headline" => _("Manager"),
-					"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
-				),
-				'street' => array (
-					"Headline" => _("Street"),
-					"Text" => _("Street")
-				),
-				'postOfficeBox' => array (
-					"Headline" => _("Post office box"),
-					"Text" => _("Post office box")
-				),
-				'postalCode' => array (
-					"Headline" => _("Postal code"),
-					"Text" => _("Postal code")
-				),
-				'postalAddress' => array (
-					"Headline" => _("Postal address"),
-					"Text" => _("Postal address, city")
-				),
-				'telephoneNumber' => array (
-					"Headline" => _("Telephone number"),
-					"Text" => _("Telephone number")
-				),
-				'mobileTelephoneNumber' => array (
-					"Headline" => _("Mobile number"),
-					"Text" => _("Mobile number")
-				),
-				'facsimileTelephoneNumber' => array (
-					"Headline" => _("Fax number"),
-					"Text" => _("Fax number")
-				),
-				'mail' => array (
-					"Headline" => _("eMail address"),
-					"Text" => _("eMail address")
-				),
-				'cn' => array (
-					"Headline" => _("Common name"),
-					"Text" => _("This is the natural name of the user. If empty, the first and last name is used.")
-				),
-				'uid' => array(
-					"Headline" => _("User name"),
-					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
-				),
-				'workstations' => array (
-					"Headline" => _("Unix workstations"),
-					"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. If you enable host restrictions for your servers then \"*\" means every host and an empty field means no host.")
-				),
-				'userPassword' => array(
-					"Headline" => _("Password"),
-					"Text" => _("Please enter the password which you want to set for this account.")
-				),
-				'photoUpload' => array(
-					"Headline" => _("Add photo"),
-					"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
-				),
-				'homePhone' => array(
-					"Headline" => _("Home telephone number"),
-					"Text" => _("Private telephone number")
-				),
-				'roomNumber' => array(
-					"Headline" => _("Room number"),
-					"Text" => _("The room number of the employee's office.")
-				),
-				'businessCategory' => array(
-					"Headline" => _("Business category"),
-					"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
-				),
-				'l' => array(
-					"Headline" => _("Location"),
-					"Text" => _("This describes the location of the user.")
-				),
-				'st' => array(
-					"Headline" => _("State"),
-					"Text" => _("The state where the user resides or works.")
-				),
-				'carLicense' => array(
-					"Headline" => _("Car license"),
-					"Text" => _("This can be used to specify if the user has a car license.")
-				),
-				'physicalDeliveryOfficeName' => array(
-					"Headline" => _("Office name"),
-					"Text" => _("The office name of the user (e.g. YourCompany, Human Resources).")
-				),
-				'departmentNumber' => array(
-					"Headline" => _("Department(s)"),
-					"Text" => _("Here you can enter the user's department(s). Multiple entries are separated by semicolons.")
-				)
+			'description' => array (
+				"Headline" => _("Description"),
+				"Text" => _("User description. If left empty sur- and give name will be used.")
+			),
+			'title' => array (
+				"Headline" => _("Job title"),
+				"Text" => _("Job title of user: President, department manager, ...")
+			),
+			'givenName' => array (
+				"Headline" => _("First name"),
+				"Text" => _("First name of user. Only letters, - and spaces are allowed.")
+			),
+			'sn' => array (
+				"Headline" => _("Last name"),
+				"Text" => _("Last name of user. Only letters, - and spaces are allowed.")
+			),
+			'employeeType' => array (
+				"Headline" => _("Employee type"),
+				"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
+			),
+			'manager' => array (
+				"Headline" => _("Manager"),
+				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
+			),
+			'street' => array (
+				"Headline" => _("Street"),
+				"Text" => _("Street")
+			),
+			'postOfficeBox' => array (
+				"Headline" => _("Post office box"),
+				"Text" => _("Post office box")
+			),
+			'postalCode' => array (
+				"Headline" => _("Postal code"),
+				"Text" => _("Postal code")
+			),
+			'postalAddress' => array (
+				"Headline" => _("Postal address"),
+				"Text" => _("Postal address, city")
+			),
+			'telephoneNumber' => array (
+				"Headline" => _("Telephone number"),
+				"Text" => _("Telephone number")
+			),
+			'mobileTelephoneNumber' => array (
+				"Headline" => _("Mobile number"),
+				"Text" => _("Mobile number")
+			),
+			'facsimileTelephoneNumber' => array (
+				"Headline" => _("Fax number"),
+				"Text" => _("Fax number")
+			),
+			'mail' => array (
+				"Headline" => _("eMail address"),
+				"Text" => _("eMail address")
+			),
+			'cn' => array (
+				"Headline" => _("Common name"),
+				"Text" => _("This is the natural name of the user. If empty, the first and last name is used.")
+			),
+			'uid' => array(
+				"Headline" => _("User name"),
+				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
+			),
+			'workstations' => array (
+				"Headline" => _("Unix workstations"),
+				"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. If you enable host restrictions for your servers then \"*\" means every host and an empty field means no host.")
+			),
+			'userPassword' => array(
+				"Headline" => _("Password"),
+				"Text" => _("Please enter the password which you want to set for this account.")
+			),
+			'photoUpload' => array(
+				"Headline" => _("Add photo"),
+				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
+			),
+			'homePhone' => array(
+				"Headline" => _("Home telephone number"),
+				"Text" => _("Private telephone number")
+			),
+			'roomNumber' => array(
+				"Headline" => _("Room number"),
+				"Text" => _("The room number of the employee's office.")
+			),
+			'businessCategory' => array(
+				"Headline" => _("Business category"),
+				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
+			),
+			'l' => array(
+				"Headline" => _("Location"),
+				"Text" => _("This describes the location of the user.")
+			),
+			'st' => array(
+				"Headline" => _("State"),
+				"Text" => _("The state where the user resides or works.")
+			),
+			'carLicense' => array(
+				"Headline" => _("Car license"),
+				"Text" => _("This can be used to specify if the user has a car license.")
+			),
+			'physicalDeliveryOfficeName' => array(
+				"Headline" => _("Office name"),
+				"Text" => _("The office name of the user (e.g. YourCompany, Human Resources).")
+			),
+			'departmentNumber' => array(
+				"Headline" => _("Department(s)"),
+				"Text" => _("Here you can enter the user's department(s). Multiple entries are separated by semicolons.")
+			),
+			'hiddenOptions' => array(
+				"Headline" => _("Hidden options"),
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
 			)
 		);
 
@@ -1792,6 +1961,25 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	 * Returns if the given configuration option is set.
+	 * This function returns false if the configuration options cannot be read.
+	 *
+	 * @param String $optionName name of the option 
+	 * @return boolean true if option is set
+	 */
+	private function configOptionSet($optionName) {
+		//print_r($this->moduleSettings);die;
+		// abort if configuration is not available
+		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings)) {
+			return false;
+		}
+		if (isset($this->moduleSettings[$optionName][0]) && ($this->moduleSettings[$optionName][0] == 'true')) {
+			return true;
+		}
+		return false;
 	}
 
 }
