@@ -85,13 +85,14 @@ abstract class baseModule {
 	* @param string $scope the account type (user, group, host)
 	*/
 	public function __construct($scope) {
+		// load configuration
+		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
+		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile'];
+		// initialize module
 		$this->scope = $scope;
 		$this->load_Messages();
 		$this->meta = $this->get_metaData();
 		$this->autoAddObjectClasses = true;
-		// load configuration
-		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
-		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile'];
 	}
 
 	/**
@@ -634,7 +635,7 @@ abstract class baseModule {
 	* 
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
-	* The type "fieldset" is not allowed here. The name attributes are used as keywords to load and save settings.
+	* The type "fieldset" is not allowed here. The attribute names are used as keywords to load and save settings.
 	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	*
 	* @param array $scopes account types (user, group, host)
