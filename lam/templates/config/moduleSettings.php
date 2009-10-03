@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2004 - 2009  Roland Gruber
+  Copyright (C) 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $Id$
 
 
 /**
-* Here the user can select the account types.
+* Here the user can edit the module settings.
 *
 * @package configuration
 * @author Roland Gruber
@@ -66,19 +66,14 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
 	|| isset($_POST['moduleSettings'])) {
 	if (sizeof($errorsToDisplay) == 0) {
-		// check if all types have modules
-		$activeTypes = $conf->get_ActiveTypes();
-		for ($i = 0; $i < sizeof($activeTypes); $i++) {
-			$selectedModules = $conf->get_AccountModules($activeTypes[$i]);
-			if (sizeof($selectedModules) == 0) {
-				// go to module selection
-				metaRefresh("confmodules.php");
-				exit;
-			}
-		}
 		// go to final page
 		if (isset($_POST['saveSettings'])) {
 			metaRefresh("confsave.php");
+			exit;
+		}
+		// go to types page
+		elseif (isset($_POST['edittypes'])) {
+			metaRefresh("conftypes.php");
 			exit;
 		}
 		// go to modules page
@@ -86,26 +81,15 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 			metaRefresh("confmodules.php");
 			exit;
 		}
-		// go to general page
+		// go to types page
 		elseif (isset($_POST['generalSettingsButton'])) {
 			metaRefresh("confmain.php");
-			exit;
-		}
-		// go to module settings page
-		elseif (isset($_POST['moduleSettings'])) {
-			metaRefresh("moduleSettings.php");
 			exit;
 		}
 	}
 }
 
-$typeSettings = $conf->get_typeSettings();
 $allTypes = getTypes();
-$activeTypes = $conf->get_ActiveTypes();
-$availableTypes = array();
-for ($i = 0; $i < sizeof($allTypes); $i++) {
-	if (!in_array($allTypes[$i], $activeTypes)) $availableTypes[] = $allTypes[$i];
-}
 
 echo $_SESSION['header'];
 
@@ -124,7 +108,7 @@ echo ("<p align=\"center\"><a href=\"http://www.ldap-account-manager.org/\" targ
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
-echo ("<form action=\"conftypes.php\" method=\"post\">\n");
+echo ("<form action=\"moduleSettings.php\" method=\"post\">\n");
 echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
 // show tabs
@@ -144,7 +128,7 @@ echo "<tr>\n";
 	// account types
 	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('edittypes')[0].click();\"";
+	echo "<tr><td onclick=\"document.getElementsByName('edittypes')[0].click();\"";
 	echo " align=\"center\">\n";
 	$buttonStyle = 'background-image: url(../../graphics/gear.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"edittypes\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
@@ -164,7 +148,7 @@ echo "<tr>\n";
 	// module settings
 	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('moduleSettings')[0].click();\"";
+	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('moduleSettings')[0].click();\"";
 	echo " align=\"center\">\n";
 	$buttonStyle = 'background-image: url(../../graphics/moduleSettings.png);';
 	echo "<input style=\"" . $buttonStyle . "\" name=\"moduleSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Module settings') . "\"";
@@ -200,64 +184,39 @@ echo "</td></tr>\n";
 
 echo "<tr><td><br><br>\n";
 
-// show available types
-if (sizeof($availableTypes) > 0) {
-	echo "<fieldset><legend><b>" . _("Available account types") . "</b></legend>\n";
-	echo "<table>\n";
-	for ($i = 0; $i < sizeof($availableTypes); $i++) {
-		$icon = '<img alt="' . $availableTypes[$i] . '" src="../../graphics/' . $availableTypes[$i] . '.png">&nbsp;';
-		echo "<tr>\n";
-			echo "<td>$icon<b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
-			echo "<td>" . getTypeDescription($availableTypes[$i]) . "</td>\n";
-			echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" title=\"" . _("Add") . "\" value=\" \"" .
-				" style=\"background-image: url(../../graphics/add.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\"></td>\n";
-		echo "</tr>\n";
-	}
-	echo "</table>\n";
-	echo "</fieldset>\n";
-	
-	echo "<p><br><br></p>";
+// module settings
+$types = $conf->get_ActiveTypes();
+
+// get list of scopes of modules
+$scopes = array();
+for ($m = 0; $m < sizeof($types); $m++) {
+	$mods = $conf->get_AccountModules($types[$m]);
+	for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
 }
 
-// show active types
-if (sizeof($activeTypes) > 0) {
-	echo "<fieldset><legend><b>" . _("Active account types") . "</b></legend><br>\n";
-	for ($i = 0; $i < sizeof($activeTypes); $i++) {
-		echo "<fieldset class=\"" . $activeTypes[$i] . "edit\">\n";
-		$icon = '<img alt="' . $activeTypes[$i] . '" src="../../graphics/' . $activeTypes[$i] . '.png">&nbsp;';
-		echo "<legend>" . $icon . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . " " .
-			"<input type=\"submit\" name=\"rem_" . $activeTypes[$i] . "\" value=\" \" title=\"" . _("Remove this account type") . "\" " .
-			"style=\"background-image: url(../../graphics/del.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">" .
-			"</legend>";
-		echo "<br>\n";
-		echo "<table>\n";
-		// LDAP suffix
-		echo "<tr>\n";
-			echo "<td>" . _("LDAP suffix") . "</td>\n";
-			echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $typeSettings['suffix_' . $activeTypes[$i]] . "\"></td>\n";
-			echo "<td>";
-			printHelpLink(getHelp('', '202'), '202');
-			echo "</td>\n";
-		echo "</tr>\n";
-		// list attributes
-		if (isset($typeSettings['attr_' . $activeTypes[$i]])) {
-			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
-		}
-		else {
-			$attributes = getDefaultListAttributes($activeTypes[$i]);
-		}
-		echo "<tr>\n";
-			echo "<td>" . _("List attributes") . "</td>\n";
-			echo "<td><input type=\"text\" size=\"40\" name=\"attr_" . $activeTypes[$i] . "\" value=\"" . $attributes . "\"></td>\n";
-			echo "<td>";
-			printHelpLink(getHelp('', '206'), '206');
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		echo "</fieldset><br>\n";
+// get module options
+$options = getConfigOptions($scopes);
+// get current setting
+$old_options = $conf->get_moduleSettings();
+
+
+// display module boxes
+$modules = array_keys($options);
+$_SESSION['conf_types'] = array();
+for ($i = 0; $i < sizeof($modules); $i++) {
+	if (sizeof($options[$modules[$i]]) < 1) continue;
+	echo "<fieldset>\n";
+	$icon = '';
+	$module = new $modules[$i]('none');
+	$iconImage = $module->getIcon();
+	if ($iconImage != null) {
+		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
+	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend><br>\n";
+	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, 'config');
+	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
-	echo "<p><br><br></p>\n";
+	echo "<br>";
 }
 
 echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
@@ -278,45 +237,47 @@ function checkInput() {
 	if (!isset($_POST['postAvailable'])) {
 		return array();
 	}
-	$errors = array();
 	$conf = &$_SESSION['conf_config'];
-	$typeSettings = $conf->get_typeSettings();
-	$accountTypes = $conf->get_ActiveTypes();
-	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
-		$key = $postKeys[$i];
-		// check if remove button was pressed
-		if (substr($key, 0, 4) == "rem_") {
-			$type = substr($key, 4);
-			$accountTypes = array_flip($accountTypes);
-			unset($accountTypes[$type]);
-			$accountTypes = array_flip($accountTypes);
-			$accountTypes = array_values($accountTypes);
+	$types = $conf->get_ActiveTypes();
+	
+	// check module options
+	// create option array to check and save
+	$options = array();
+	$opt_keys = array_keys($_SESSION['conf_types']);
+	for ($i = 0; $i < sizeof($opt_keys); $i++) {
+		$element = $opt_keys[$i];
+		// text fields
+		if ($_SESSION['conf_types'][$element] == "text") {
+			$options[$element] = array($_POST[$element]);
 		}
-		// check if add button was pressed
-		else if (substr($key, 0, 4) == "add_") {
-			$type = substr($key, 4);
-			$accountTypes[] = $type;
+		// checkboxes
+		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
+			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
+			else $options[$element] = array('false');
 		}
-		// set suffixes
-		elseif (substr($key, 0, 7) == "suffix_") {
-			$typeSettings[$key] = $_POST[$key];
-			$type = substr($postKeys[$i], 7);
-			if (strlen($_POST[$key]) < 1) {
-				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), getTypeAlias($type));
-			}
+		// dropdownbox
+		elseif ($_SESSION['conf_types'][$element] == "select") {
+			$options[$element] = array($_POST[$element]);
 		}
-		elseif (substr($key, 0, 5) == "attr_") {
-			$typeSettings[$key] = $_POST[$key];
-			$type = substr($postKeys[$i], 5);
-			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
-				$errors[] = array("ERROR", _("List attributes are invalid!"), getTypeAlias($type));
-			}
+		// multiselect
+		elseif ($_SESSION['conf_types'][$element] == "multiselect") {
+			$options[$element] = $_POST[$element];  // value is already an array
+		}
+		// textarea
+		elseif ($_SESSION['conf_types'][$element] == "textarea") {
+			$options[$element] = explode("\r\n", $_POST[$element]);
 		}
 	}
-	// save input
-	$conf->set_typeSettings($typeSettings);
-	$conf->set_ActiveTypes($accountTypes);
+
+	// get list of scopes of modules
+	$scopes = array();
+	for ($m = 0; $m < sizeof($types); $m++) {
+		$mods = $conf->get_AccountModules($types[$m]);
+		for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
+	}
+	// check options
+	$errors = checkConfigOptions($scopes, $options);
+	$conf->set_moduleSettings($options);
 	return $errors;
 }
 

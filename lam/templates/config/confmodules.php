@@ -63,21 +63,28 @@ $conf = &$_SESSION['conf_config'];
 $errorsToDisplay = checkInput();
 
 // check if button was pressed and if we have to save the settings or go to another tab
-if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])) {
+if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
+	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
+	|| isset($_POST['moduleSettings'])) {
 	if (sizeof($errorsToDisplay) == 0) {
 		// go to final page
 		if (isset($_POST['saveSettings'])) {
 			metaRefresh("confsave.php");
 			exit;
 		}
-		// go to modules page
+		// go to types page
 		elseif (isset($_POST['edittypes'])) {
 			metaRefresh("conftypes.php");
 			exit;
 		}
-		// go to types page
+		// go to general page
 		elseif (isset($_POST['generalSettingsButton'])) {
 			metaRefresh("confmain.php");
+			exit;
+		}
+		// go to module settings page
+		elseif (isset($_POST['moduleSettings'])) {
+			metaRefresh("moduleSettings.php");
 			exit;
 		}
 	}
@@ -139,6 +146,18 @@ echo "<tr>\n";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
+	// module settings
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('moduleSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/moduleSettings.png);';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"moduleSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Module settings') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "<td width=\"100%\">&nbsp;</td>";
+	// spacer
 	echo "<td width=\"100%\">&nbsp;</td>";
 	// save button
 	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";

@@ -85,7 +85,9 @@ if (isset($_POST['cancelSettings'])) {
 $errorsToDisplay = array();
 
 // check if button was pressed and if we have to save the settings or go to another tab
-if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])) {
+if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
+	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
+	|| isset($_POST['moduleSettings'])) {
 	$errorsToDisplay = checkInput();
 	if (sizeof($errorsToDisplay) == 0) {
 		// go to final page
@@ -101,6 +103,11 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules']) || isset($_POS
 		// go to types page
 		elseif (isset($_POST['edittypes'])) {
 			metaRefresh("conftypes.php");
+			exit;
+		}
+		// go to module settings page
+		elseif (isset($_POST['moduleSettings'])) {
+			metaRefresh("moduleSettings.php");
 			exit;
 		}
 	}
@@ -173,6 +180,18 @@ echo "<tr>\n";
 	echo ">\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
+	// module settings
+	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<table class=\"settingsTab\" width=\"100%\">\n";
+	echo "<tr><td onclick=\"document.getElementsByName('moduleSettings')[0].click();\"";
+	echo " align=\"center\">\n";
+	$buttonStyle = 'background-image: url(../../graphics/moduleSettings.png);';
+	echo "<input style=\"" . $buttonStyle . "\" name=\"moduleSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Module settings') . "\"";
+	echo ">\n";
+	echo "</td></tr></table>\n";
+	echo '</td>';
+	echo "<td width=\"100%\">&nbsp;</td>";
+	// spacer
 	echo "<td width=\"100%\">&nbsp;</td>";
 	// save button
 	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
@@ -299,43 +318,6 @@ echo ("</table>");
 echo ("</fieldset>");
 
 echo ("<br>");
-
-
-// module settings
-$types = $conf->get_ActiveTypes();
-
-// get list of scopes of modules
-$scopes = array();
-for ($m = 0; $m < sizeof($types); $m++) {
-	$mods = $conf->get_AccountModules($types[$m]);
-	for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
-}
-
-// get module options
-$options = getConfigOptions($scopes);
-// get current setting
-$old_options = $conf->get_moduleSettings();
-
-
-// display module boxes
-$modules = array_keys($options);
-$_SESSION['conf_types'] = array();
-for ($i = 0; $i < sizeof($modules); $i++) {
-	if (sizeof($options[$modules[$i]]) < 1) continue;
-	echo "<fieldset>\n";
-	$icon = '';
-	$module = new $modules[$i]('none');
-	$iconImage = $module->getIcon();
-	if ($iconImage != null) {
-		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
-	}
-	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend><br>\n";
-	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, 'config');
-	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
-	echo "</fieldset>\n";
-	echo "<br>";
-}
-
 
 echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/language.png\" alt=\"language.png\"> <b>" . _("Language settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
@@ -608,44 +590,6 @@ function checkInput() {
 		}
 	}
 
-	// check module options
-	// create option array to check and save
-	$options = array();
-	$opt_keys = array_keys($_SESSION['conf_types']);
-	for ($i = 0; $i < sizeof($opt_keys); $i++) {
-		$element = $opt_keys[$i];
-		// text fields
-		if ($_SESSION['conf_types'][$element] == "text") {
-			$options[$element] = array($_POST[$element]);
-		}
-		// checkboxes
-		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
-			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
-			else $options[$element] = array('false');
-		}
-		// dropdownbox
-		elseif ($_SESSION['conf_types'][$element] == "select") {
-			$options[$element] = array($_POST[$element]);
-		}
-		// multiselect
-		elseif ($_SESSION['conf_types'][$element] == "multiselect") {
-			$options[$element] = $_POST[$element];  // value is already an array
-		}
-		// textarea
-		elseif ($_SESSION['conf_types'][$element] == "textarea") {
-			$options[$element] = explode("\r\n", $_POST[$element]);
-		}
-	}
-
-	// get list of scopes of modules
-	$scopes = array();
-	for ($m = 0; $m < sizeof($types); $m++) {
-		$mods = $conf->get_AccountModules($types[$m]);
-		for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
-	}
-	// check options
-	$errors = array_merge($errors, checkConfigOptions($scopes, $options));
-	$conf->set_moduleSettings($options);
 	return $errors;
 }
 
