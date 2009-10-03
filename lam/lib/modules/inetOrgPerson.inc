@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2008  Roland Gruber
+                2005 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -157,31 +157,31 @@ class inetOrgPerson extends baseModule {
 			'departmentNumber' => _('Department(s)'));
 		// profile elements
 		$return['profile_options'] = array();
-		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Location') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_l', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'l'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Department(s)') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_departmentNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'departmentNumber'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('State') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_st', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'st'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Job title') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'title'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$return['profile_options'][] = array(
 				array('kind' => 'text', 'text' => _('Employee type') . ":"),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
@@ -296,7 +296,7 @@ class inetOrgPerson extends baseModule {
 				'required' => true
 			)
 		);
-		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_description',
 				'description' => _('Description'),
@@ -304,7 +304,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('Temp, contract until december')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_title',
 				'description' => _('Job title'),
@@ -312,7 +312,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('President')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_type',
 				'description' => _('Employee type'),
@@ -320,7 +320,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('Temp')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_manager',
 				'description' => _('Manager'),
@@ -328,7 +328,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('uid=smiller,ou=People,dc=company,dc=com')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_businessCategory',
 				'description' => _('Business category'),
@@ -336,7 +336,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('Administration')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_street',
 				'description' => _('Street'),
@@ -344,7 +344,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('Mystreetname 42')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_postalCode',
 				'description' => _('Postal code'),
@@ -352,7 +352,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('GB-12345')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_address',
 				'description' => _('Postal address'),
@@ -360,7 +360,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('Mycity')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_postOfficeBox',
 				'description' => _('Post office box'),
@@ -368,7 +368,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('12345')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_telephone',
 				'description' => _('Telephone number'),
@@ -376,7 +376,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('123-123-1234')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_homePhone',
 				'description' => _('Home telephone number'),
@@ -384,7 +384,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('123-124-1234')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_mobile',
 				'description' => _('Mobile number'),
@@ -392,7 +392,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('123-123-1235')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_fax',
 				'description' => _('Fax number'),
@@ -400,7 +400,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('123-123-1236')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_email',
 				'description' => _('eMail address'),
@@ -408,7 +408,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('user@company.com')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_roomNumber',
 				'description' => _('Room number'),
@@ -416,7 +416,7 @@ class inetOrgPerson extends baseModule {
 				'example' => 'A 2.24'
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_departmentNumber',
 				'description' => _('Department(s)'),
@@ -424,7 +424,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('Administration')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_l',
 				'description' => _('Location'),
@@ -432,7 +432,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('MyCity')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_st',
 				'description' => _('State'),
@@ -440,7 +440,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('New York')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_carLicense',
 				'description' => _('Car license'),
@@ -448,7 +448,7 @@ class inetOrgPerson extends baseModule {
 				'example' => _('yes')
 			);
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_physicalDeliveryOfficeName',
 				'description' => _('Office name'),
@@ -494,64 +494,64 @@ class inetOrgPerson extends baseModule {
 			'givenName',
 			'sn'
 		);
-		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$return['PDF_fields'][] = 'description';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$return['PDF_fields'][] = 'street';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
 			$return['PDF_fields'][] = 'postOfficeBox';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
 			$return['PDF_fields'][] = 'postalCode';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$return['PDF_fields'][] = 'location';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$return['PDF_fields'][] = 'state';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$return['PDF_fields'][] = 'postalAddress';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$return['PDF_fields'][] = 'officeName';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$return['PDF_fields'][] = 'roomNumber';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$return['PDF_fields'][] = 'telephoneNumber';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
 			$return['PDF_fields'][] = 'homePhone';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
 			$return['PDF_fields'][] = 'mobileTelephoneNumber';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$return['PDF_fields'][] = 'facimilieTelephoneNumber';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$return['PDF_fields'][] = 'mail';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$return['PDF_fields'][] = 'title';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$return['PDF_fields'][] = 'carLicense';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$return['PDF_fields'][] = 'employeeType';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$return['PDF_fields'][] = 'businessCategory';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$return['PDF_fields'][] = 'departmentNumber';
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			$return['PDF_fields'][] = 'manager';
 		}
 		
@@ -775,76 +775,76 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		// Load and check attributes
-		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$this->attributes['description'][0] = $_POST['description'];
 		}
 		$this->attributes['sn'][0] = $_POST['sn'];
 		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
 		$this->attributes['givenName'][0] = $_POST['givenName'];
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
-		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$this->attributes['title'][0] = $_POST['title'];
 			if ( !get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$this->attributes['mail'][0] = $_POST['mail'];
 			if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors[] = $this->messages['email'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$this->attributes['telephoneNumber'][0] = $_POST['telephoneNumber'];
 			if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
 			$this->attributes['mobile'][0] = $_POST['mobileTelephoneNumber'];
 			if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$this->attributes['facsimileTelephoneNumber'][0] = $_POST['facsimileTelephoneNumber'];
 			if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$this->attributes['street'][0] = $_POST['street'];
 			if ( !get_preg($this->attributes['street'][0], 'street')) $errors[] = $this->messages['street'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
 			$this->attributes['postOfficeBox'][0] = $_POST['postOfficeBox'];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
 			$this->attributes['postalCode'][0] = $_POST['postalCode'];
 			if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$this->attributes['postalAddress'][0] = $_POST['postalAddress'];
 			if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$this->attributes['employeeType'][0] = $_POST['employeeType'];
 			if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
 			$this->attributes['homePhone'][0] = $_POST['homePhone'];
 			if ( !get_preg($this->attributes['homePhone'][0], 'telephone')) $errors[] = $this->messages['homePhone'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$this->attributes['businessCategory'][0] = $_POST['businessCategory'];
 			if ( !get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$this->attributes['l'][0] = $_POST['l'];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$this->attributes['st'][0] = $_POST['st'];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			if (isset($_POST['departmentNumber'])) {
 				$this->attributes['departmentNumber'] = explode(';', $_POST['departmentNumber']);
 				// remove extra spaces
@@ -856,7 +856,7 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			if ($_POST['manager'] != '-') {
 				$this->attributes['manager'][0] = $_POST['manager'];
 			}
@@ -972,7 +972,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $cn),
 				array('kind' => 'help', 'value' => 'cn'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$description = '';
 			if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
 			$return[] = array (
@@ -1006,7 +1006,7 @@ class inetOrgPerson extends baseModule {
 			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 		}
 
-		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$street = '';
 			if (isset($this->attributes['street'][0])) $street = $this->attributes['street'][0];
 			$return[] = array(
@@ -1015,7 +1015,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $street),
 				array('kind' => 'help', 'value' => 'street'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
 			$postOffice = '';
 			if (isset($this->attributes['postOfficeBox'][0])) $postOffice = $this->attributes['postOfficeBox'][0];
 			$return[] = array(
@@ -1024,7 +1024,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $postOffice),
 				array('kind' => 'help', 'value' => 'postOfficeBox'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
 			$postalCode = '';
 			if (isset($this->attributes['postalCode'][0])) $postalCode = $this->attributes['postalCode'][0];
 			$return[] = array(
@@ -1033,7 +1033,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $postalCode),
 				array('kind' => 'help', 'value' => 'postalCode'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$l = '';
 			if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
 			$return[] = array(
@@ -1042,7 +1042,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $l),
 				array('kind' => 'help', 'value' => 'l'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$st = '';
 			if (isset($this->attributes['st'][0])) $st = $this->attributes['st'][0];
 			$return[] = array(
@@ -1051,7 +1051,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $st),
 				array('kind' => 'help', 'value' => 'st'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$postalAddress = '';
 			if (isset($this->attributes['postalAddress'][0])) $postalAddress = $this->attributes['postalAddress'][0];
 			$return[] = array(
@@ -1060,7 +1060,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $postalAddress),
 				array('kind' => 'help', 'value' => 'postalAddress'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$physicalDeliveryOfficeName = '';
 			if (isset($this->attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
 			$return[] = array(
@@ -1069,7 +1069,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $physicalDeliveryOfficeName),
 				array('kind' => 'help', 'value' => 'physicalDeliveryOfficeName'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$roomNumber = '';
 			if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
 			$return[] = array(
@@ -1081,7 +1081,7 @@ class inetOrgPerson extends baseModule {
 
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
-		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephone = '';
 			if (isset($this->attributes['telephoneNumber'][0])) $telephone = $this->attributes['telephoneNumber'][0];
 			$return[] = array(
@@ -1090,7 +1090,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $telephone),
 				array('kind' => 'help', 'value' => 'telephoneNumber'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
 			$homePhone = '';
 			if (isset($this->attributes['homePhone'][0])) $homePhone = $this->attributes['homePhone'][0];
 			$return[] = array(
@@ -1099,7 +1099,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $homePhone),
 				array('kind' => 'help', 'value' => 'homePhone'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
 			$mobile = '';
 			if (isset($this->attributes['mobile'][0])) $mobile = $this->attributes['mobile'][0];
 			$return[] = array(
@@ -1108,7 +1108,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $mobile),
 				array('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$fax = '';
 			if (isset($this->attributes['facsimileTelephoneNumber'][0])) $fax = $this->attributes['facsimileTelephoneNumber'][0];
 			$return[] = array(
@@ -1117,7 +1117,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $fax),
 				array('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$email = '';
 			if (isset($this->attributes['mail'][0])) $email = $this->attributes['mail'][0];
 			$return[] = array(
@@ -1129,7 +1129,7 @@ class inetOrgPerson extends baseModule {
 
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
-		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$title = '';
 			if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
 			$return[] = array(
@@ -1138,7 +1138,7 @@ class inetOrgPerson extends baseModule {
 					'value' => $title),
 				array('kind' => 'help', 'value' => 'title'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$carLicense = '';
 			if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
 			$return[] = array(
@@ -1147,7 +1147,7 @@ class inetOrgPerson extends baseModule {
 					'value' => $carLicense),
 				array('kind' => 'help', 'value' => 'carLicense'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$employeeType = '';
 			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
 			$return[] = array(
@@ -1156,7 +1156,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $employeeType),
 				array('kind' => 'help', 'value' => 'employeeType'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$businessCategory = '';
 			if (isset($this->attributes['businessCategory'][0])) $businessCategory = $this->attributes['businessCategory'][0];
 			$return[] = array(
@@ -1165,7 +1165,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $businessCategory),
 				array('kind' => 'help', 'value' => 'businessCategory'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$departmentNumber = '';
 			if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
 			$return[] = array(
@@ -1185,7 +1185,7 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $hostvalue ),
 				array('kind' => 'help', 'value' => 'workstations'));
 		}
-		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			// get list of existing users for manager attribute
 			$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
 			if (!is_array($dnUsers)) $dnUsers = array();
@@ -2042,25 +2042,6 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 	
-	/**
-	 * Returns if the given configuration option is set.
-	 * This function returns false if the configuration options cannot be read.
-	 *
-	 * @param String $optionName name of the option 
-	 * @return boolean true if option is set
-	 */
-	private function configOptionSet($optionName) {
-		//print_r($this->moduleSettings);die;
-		// abort if configuration is not available
-		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings)) {
-			return false;
-		}
-		if (isset($this->moduleSettings[$optionName][0]) && ($this->moduleSettings[$optionName][0] == 'true')) {
-			return true;
-		}
-		return false;
-	}
-
 }
 
 ?>

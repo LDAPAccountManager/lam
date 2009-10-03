@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2008  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1314,6 +1314,28 @@ abstract class baseModule {
 			return $this->meta['icon'];
 		}
 		return null;
+	}
+	
+	
+	
+	// helper functions
+
+	/**
+	 * Returns if the given configuration option is set.
+	 * This function returns false if the configuration options cannot be read.
+	 *
+	 * @param String $optionName name of the option 
+	 * @return boolean true if option is set
+	 */
+	protected function isBooleanConfigOptionSet($optionName) {
+		// abort if configuration is not available
+		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings)) {
+			return false;
+		}
+		if (isset($this->moduleSettings[$optionName][0]) && ($this->moduleSettings[$optionName][0] == 'true')) {
+			return true;
+		}
+		return false;
 	}
 
 }
