@@ -188,21 +188,26 @@ class inetOrgPerson extends baseModule {
 				array('kind' => 'help', 'value' => 'employeeType'));
 		}
 		// profile checks
-		$return['profile_checks']['inetOrgPerson_title'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'title',
-			'error_message' => $this->messages['title'][0]);
-		$return['profile_checks']['inetOrgPerson_employeeType'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'employeeType',
-			'error_message' => $this->messages['employeeType'][0]);
-		// profile mappings
-		$return['profile_mappings'] = array(
-			'inetOrgPerson_l' => 'l',
-			'inetOrgPerson_st' => 'st',
-			'inetOrgPerson_title' => 'title',
-			'inetOrgPerson_employeeType' => 'employeeType'
-		);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
+			$return['profile_checks']['inetOrgPerson_title'] = array(
+				'type' => 'ext_preg',
+				'regex' => 'title',
+				'error_message' => $this->messages['title'][0]);
+			$return['profile_mappings']['inetOrgPerson_title'] = 'title';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$return['profile_checks']['inetOrgPerson_employeeType'] = array(
+				'type' => 'ext_preg',
+				'regex' => 'employeeType',
+				'error_message' => $this->messages['employeeType'][0]);
+			$return['profile_mappings']['inetOrgPerson_employeeType'] = 'employeeType';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
+			$return['profile_mappings']['inetOrgPerson_l'] = 'l';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
+			$return['profile_mappings']['inetOrgPerson_st'] = 'st';
+		}
 		// configuration settings
 		$return['config_options']['all'] = array(
 			array(
@@ -1362,11 +1367,13 @@ class inetOrgPerson extends baseModule {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
-		// departments
-		if (isset($profile['inetOrgPerson_departmentNumber'][0]) && $profile['inetOrgPerson_departmentNumber'][0] != '') {
-			$departments = explode(';', $profile['inetOrgPerson_departmentNumber'][0]);
-			// remove extra spaces and set attributes
-			$this->attributes['departmentNumber'] = array_map('trim', $departments);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
+			// departments
+			if (isset($profile['inetOrgPerson_departmentNumber'][0]) && $profile['inetOrgPerson_departmentNumber'][0] != '') {
+				$departments = explode(';', $profile['inetOrgPerson_departmentNumber'][0]);
+				// remove extra spaces and set attributes
+				$this->attributes['departmentNumber'] = array_map('trim', $departments);
+			}
 		}
 	}
 
