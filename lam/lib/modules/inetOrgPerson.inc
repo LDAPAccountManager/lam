@@ -774,42 +774,95 @@ class inetOrgPerson extends baseModule {
 				$this->attributes['objectClass'][] = 'person';
 			}
 		}
-		// Load attributes
-		$this->attributes['description'][0] = $_POST['description'];
-		$this->attributes['sn'][0] = $_POST['sn'];
-		$this->attributes['givenName'][0] = $_POST['givenName'];
-		$this->attributes['title'][0] = $_POST['title'];
-		$this->attributes['mail'][0] = $_POST['mail'];
-		$this->attributes['telephoneNumber'][0] = $_POST['telephoneNumber'];
-		$this->attributes['mobile'][0] = $_POST['mobileTelephoneNumber'];
-		$this->attributes['facsimileTelephoneNumber'][0] = $_POST['facsimileTelephoneNumber'];
-		$this->attributes['street'][0] = $_POST['street'];
-		$this->attributes['postOfficeBox'][0] = $_POST['postOfficeBox'];
-		$this->attributes['postalCode'][0] = $_POST['postalCode'];
-		$this->attributes['postalAddress'][0] = $_POST['postalAddress'];
-		$this->attributes['employeeType'][0] = $_POST['employeeType'];
-		$this->attributes['homePhone'][0] = $_POST['homePhone'];
-		$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
-		$this->attributes['businessCategory'][0] = $_POST['businessCategory'];
-		$this->attributes['l'][0] = $_POST['l'];
-		$this->attributes['st'][0] = $_POST['st'];
-		$this->attributes['carLicense'][0] = $_POST['carLicense'];
-		$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
-		if (isset($_POST['departmentNumber'])) {
-			$this->attributes['departmentNumber'] = explode(';', $_POST['departmentNumber']);
-			// remove extra spaces
-			$this->attributes['departmentNumber'] = array_map('trim', $this->attributes['departmentNumber']);
+		// Load and check attributes
+		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+			$this->attributes['description'][0] = $_POST['description'];
 		}
-		else {
-			if (isset($this->attributes['departmentNumber'])) {
-				unset($this->attributes['departmentNumber']);
+		$this->attributes['sn'][0] = $_POST['sn'];
+		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
+		$this->attributes['givenName'][0] = $_POST['givenName'];
+		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
+		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+			$this->attributes['title'][0] = $_POST['title'];
+			if ( !get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$this->attributes['mail'][0] = $_POST['mail'];
+			if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors[] = $this->messages['email'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+			$this->attributes['telephoneNumber'][0] = $_POST['telephoneNumber'];
+			if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+			$this->attributes['mobile'][0] = $_POST['mobileTelephoneNumber'];
+			if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+			$this->attributes['facsimileTelephoneNumber'][0] = $_POST['facsimileTelephoneNumber'];
+			if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+			$this->attributes['street'][0] = $_POST['street'];
+			if ( !get_preg($this->attributes['street'][0], 'street')) $errors[] = $this->messages['street'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+			$this->attributes['postOfficeBox'][0] = $_POST['postOfficeBox'];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+			$this->attributes['postalCode'][0] = $_POST['postalCode'];
+			if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+			$this->attributes['postalAddress'][0] = $_POST['postalAddress'];
+			if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$this->attributes['employeeType'][0] = $_POST['employeeType'];
+			if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+			$this->attributes['homePhone'][0] = $_POST['homePhone'];
+			if ( !get_preg($this->attributes['homePhone'][0], 'telephone')) $errors[] = $this->messages['homePhone'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$this->attributes['businessCategory'][0] = $_POST['businessCategory'];
+			if ( !get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+			$this->attributes['l'][0] = $_POST['l'];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+			$this->attributes['st'][0] = $_POST['st'];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+			$this->attributes['carLicense'][0] = $_POST['carLicense'];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+			$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+			if (isset($_POST['departmentNumber'])) {
+				$this->attributes['departmentNumber'] = explode(';', $_POST['departmentNumber']);
+				// remove extra spaces
+				$this->attributes['departmentNumber'] = array_map('trim', $this->attributes['departmentNumber']);
+			}
+			else {
+				if (isset($this->attributes['departmentNumber'])) {
+					unset($this->attributes['departmentNumber']);
+				}
 			}
 		}
-		if ($_POST['manager'] != '-') {
-			$this->attributes['manager'][0] = $_POST['manager'];
-		}
-		else {
-			unset($this->attributes['manager'][0]);
+		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+			if ($_POST['manager'] != '-') {
+				$this->attributes['manager'][0] = $_POST['manager'];
+			}
+			else {
+				unset($this->attributes['manager'][0]);
+			}
 		}
 
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
@@ -854,20 +907,7 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
-		// Do some regex-checks and return error if attributes are set to wrong values
-		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
-		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
-		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
-		if ( !get_preg($this->attributes['homePhone'][0], 'telephone')) $errors[] = $this->messages['homePhone'][0];
-		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
-		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
-		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors[] = $this->messages['email'][0];
-		if ( !get_preg($this->attributes['street'][0], 'street')) $errors[] = $this->messages['street'][0];
-		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
-		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
-		if ( !get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
-		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
-		if ( !get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
+		// check password
 		if (isset($_POST['userPassword']) && ($_POST['userPassword'] != '')) {
 			if ($_POST['userPassword'] != $_POST['userPassword2']) {
 				$errors[] = $this->messages['userPassword'][0];
@@ -932,16 +972,17 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $cn),
 				array('kind' => 'help', 'value' => 'cn'));
 		}
-		$description = '';
-		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
-		$return[] = array (
-			array('kind' => 'text', 'text' => _('Description')),
-			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $description),
-			array('kind' => 'help', 'value' => 'description'));
-
+		if (!$this->configOptionSet('inetOrgPerson_hideDescription')) {
+			$description = '';
+			if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
+			$return[] = array (
+				array('kind' => 'text', 'text' => _('Description')),
+				array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $description),
+				array('kind' => 'help', 'value' => 'description'));
+	
+		}
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-
 		// password
 		if (!in_array('posixAccount', $modules)) {
 			// new account, show input fields
@@ -965,138 +1006,174 @@ class inetOrgPerson extends baseModule {
 			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 		}
 
-		$street = '';
-		if (isset($this->attributes['street'][0])) $street = $this->attributes['street'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Street')),
-			array('kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $street),
-			array('kind' => 'help', 'value' => 'street'));
-		$postOffice = '';
-		if (isset($this->attributes['postOfficeBox'][0])) $postOffice = $this->attributes['postOfficeBox'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Post office box')),
-			array('kind' => 'input', 'name' => 'postOfficeBox', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $postOffice),
-			array('kind' => 'help', 'value' => 'postOfficeBox'));
-		$postalCode = '';
-		if (isset($this->attributes['postalCode'][0])) $postalCode = $this->attributes['postalCode'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Postal code')),
-			array('kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $postalCode),
-			array('kind' => 'help', 'value' => 'postalCode'));
-		$l = '';
-		if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Location')),
-			array('kind' => 'input', 'name' => 'l', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $l),
-			array('kind' => 'help', 'value' => 'l'));
-		$st = '';
-		if (isset($this->attributes['st'][0])) $st = $this->attributes['st'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('State')),
-			array('kind' => 'input', 'name' => 'st', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $st),
-			array('kind' => 'help', 'value' => 'st'));
-		$postalAddress = '';
-		if (isset($this->attributes['postalAddress'][0])) $postalAddress = $this->attributes['postalAddress'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Postal address')),
-			array('kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $postalAddress),
-			array('kind' => 'help', 'value' => 'postalAddress'));
-		$physicalDeliveryOfficeName = '';
-		if (isset($this->attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Office name')),
-			array('kind' => 'input', 'name' => 'physicalDeliveryOfficeName', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $physicalDeliveryOfficeName),
-			array('kind' => 'help', 'value' => 'physicalDeliveryOfficeName'));
-		$roomNumber = '';
-		if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Room number')),
-			array('kind' => 'input', 'name' => 'roomNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $roomNumber),
-			array('kind' => 'help', 'value' => 'roomNumber'));
+		if (!$this->configOptionSet('inetOrgPerson_hideStreet')) {
+			$street = '';
+			if (isset($this->attributes['street'][0])) $street = $this->attributes['street'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Street')),
+				array('kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $street),
+				array('kind' => 'help', 'value' => 'street'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+			$postOffice = '';
+			if (isset($this->attributes['postOfficeBox'][0])) $postOffice = $this->attributes['postOfficeBox'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Post office box')),
+				array('kind' => 'input', 'name' => 'postOfficeBox', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $postOffice),
+				array('kind' => 'help', 'value' => 'postOfficeBox'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalCode')) {
+			$postalCode = '';
+			if (isset($this->attributes['postalCode'][0])) $postalCode = $this->attributes['postalCode'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Postal code')),
+				array('kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $postalCode),
+				array('kind' => 'help', 'value' => 'postalCode'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideLocation')) {
+			$l = '';
+			if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Location')),
+				array('kind' => 'input', 'name' => 'l', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $l),
+				array('kind' => 'help', 'value' => 'l'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideState')) {
+			$st = '';
+			if (isset($this->attributes['st'][0])) $st = $this->attributes['st'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('State')),
+				array('kind' => 'input', 'name' => 'st', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $st),
+				array('kind' => 'help', 'value' => 'st'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hidePostalAddress')) {
+			$postalAddress = '';
+			if (isset($this->attributes['postalAddress'][0])) $postalAddress = $this->attributes['postalAddress'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Postal address')),
+				array('kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $postalAddress),
+				array('kind' => 'help', 'value' => 'postalAddress'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideOfficeName')) {
+			$physicalDeliveryOfficeName = '';
+			if (isset($this->attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Office name')),
+				array('kind' => 'input', 'name' => 'physicalDeliveryOfficeName', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $physicalDeliveryOfficeName),
+				array('kind' => 'help', 'value' => 'physicalDeliveryOfficeName'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$roomNumber = '';
+			if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Room number')),
+				array('kind' => 'input', 'name' => 'roomNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $roomNumber),
+				array('kind' => 'help', 'value' => 'roomNumber'));
+		}
 
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
-		$telephone = '';
-		if (isset($this->attributes['telephoneNumber'][0])) $telephone = $this->attributes['telephoneNumber'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Telephone number')),
-			array('kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $telephone),
-			array('kind' => 'help', 'value' => 'telephoneNumber'));
-		$homePhone = '';
-		if (isset($this->attributes['homePhone'][0])) $homePhone = $this->attributes['homePhone'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Home telephone number')),
-			array('kind' => 'input', 'name' => 'homePhone', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $homePhone),
-			array('kind' => 'help', 'value' => 'homePhone'));
-		$mobile = '';
-		if (isset($this->attributes['mobile'][0])) $mobile = $this->attributes['mobile'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Mobile number')),
-			array('kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $mobile),
-			array('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
-		$fax = '';
-		if (isset($this->attributes['facsimileTelephoneNumber'][0])) $fax = $this->attributes['facsimileTelephoneNumber'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Fax number')),
-			array('kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $fax),
-			array('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
-		$email = '';
-		if (isset($this->attributes['mail'][0])) $email = $this->attributes['mail'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('eMail address')),
-			array('kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $email),
-			array('kind' => 'help', 'value' => 'mail'));
+		if (!$this->configOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+			$telephone = '';
+			if (isset($this->attributes['telephoneNumber'][0])) $telephone = $this->attributes['telephoneNumber'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Telephone number')),
+				array('kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $telephone),
+				array('kind' => 'help', 'value' => 'telephoneNumber'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+			$homePhone = '';
+			if (isset($this->attributes['homePhone'][0])) $homePhone = $this->attributes['homePhone'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Home telephone number')),
+				array('kind' => 'input', 'name' => 'homePhone', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $homePhone),
+				array('kind' => 'help', 'value' => 'homePhone'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideMobileNumber')) {
+			$mobile = '';
+			if (isset($this->attributes['mobile'][0])) $mobile = $this->attributes['mobile'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Mobile number')),
+				array('kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $mobile),
+				array('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideFaxNumber')) {
+			$fax = '';
+			if (isset($this->attributes['facsimileTelephoneNumber'][0])) $fax = $this->attributes['facsimileTelephoneNumber'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Fax number')),
+				array('kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $fax),
+				array('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$email = '';
+			if (isset($this->attributes['mail'][0])) $email = $this->attributes['mail'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('eMail address')),
+				array('kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $email),
+				array('kind' => 'help', 'value' => 'mail'));
+		}
 
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
 
-		$title = '';
-		if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Job title')),
-			array('kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
-				'value' => $title),
-			array('kind' => 'help', 'value' => 'title'));
-		$carLicense = '';
-		if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Car license')),
-			array('kind' => 'input', 'name' => 'carLicense', 'type' => 'text', 'size' => '30',
-				'value' => $carLicense),
-			array('kind' => 'help', 'value' => 'carLicense'));
-		$employeeType = '';
-		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Employee type')),
-			array('kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $employeeType),
-			array('kind' => 'help', 'value' => 'employeeType'));
-		$businessCategory = '';
-		if (isset($this->attributes['businessCategory'][0])) $businessCategory = $this->attributes['businessCategory'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Business category')),
-			array('kind' => 'input', 'name' => 'businessCategory', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $businessCategory),
-			array('kind' => 'help', 'value' => 'businessCategory'));
-		$departmentNumber = '';
-		if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Department(s)')),
-			array('kind' => 'input', 'name' => 'departmentNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $departmentNumber),
-			array('kind' => 'help', 'value' => 'departmentNumber'));
+		if (!$this->configOptionSet('inetOrgPerson_hideJobTitle')) {
+			$title = '';
+			if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Job title')),
+				array('kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
+					'value' => $title),
+				array('kind' => 'help', 'value' => 'title'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideCarLicense')) {
+			$carLicense = '';
+			if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Car license')),
+				array('kind' => 'input', 'name' => 'carLicense', 'type' => 'text', 'size' => '30',
+					'value' => $carLicense),
+				array('kind' => 'help', 'value' => 'carLicense'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$employeeType = '';
+			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Employee type')),
+				array('kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $employeeType),
+				array('kind' => 'help', 'value' => 'employeeType'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$businessCategory = '';
+			if (isset($this->attributes['businessCategory'][0])) $businessCategory = $this->attributes['businessCategory'][0];
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Business category')),
+				array('kind' => 'input', 'name' => 'businessCategory', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $businessCategory),
+				array('kind' => 'help', 'value' => 'businessCategory'));
+		}
+		if (!$this->configOptionSet('inetOrgPerson_hideDepartments')) {
+			$departmentNumber = '';
+			if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Department(s)')),
+				array('kind' => 'input', 'name' => 'departmentNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $departmentNumber),
+				array('kind' => 'help', 'value' => 'departmentNumber'));
+		}
 		if ($this->supportUnixHosts()) {
 			$hostvalue = "";
 			if (isset($this->attributes['host']) && is_array($this->attributes['host'])) {
@@ -1108,24 +1185,26 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $hostvalue ),
 				array('kind' => 'help', 'value' => 'workstations'));
 		}
-		// get list of existing users for manager attribute
-		$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
-		if (!is_array($dnUsers)) $dnUsers = array();
-		$dnUsers = array_keys($dnUsers);
-		usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
-		array_unshift($dnUsers, '-');
-		$optionsSelected = array();
-		if (isset($this->attributes['manager'][0])) {
-			$optionsSelected[] = $this->attributes['manager'][0];
+		if (!$this->configOptionSet('inetOrgPerson_hideManager')) {
+			// get list of existing users for manager attribute
+			$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
+			if (!is_array($dnUsers)) $dnUsers = array();
+			$dnUsers = array_keys($dnUsers);
+			usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
+			array_unshift($dnUsers, '-');
+			$optionsSelected = array();
+			if (isset($this->attributes['manager'][0])) {
+				$optionsSelected[] = $this->attributes['manager'][0];
+			}
+			else {
+				$optionsSelected[] = '-';
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Manager')),
+				array('kind' => 'select', 'name' => 'manager', 'size' => '1',
+					'options' => $dnUsers, 'options_selected' => $optionsSelected),
+				array('kind' => 'help', 'value' => 'manager'));
 		}
-		else {
-			$optionsSelected[] = '-';
-		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Manager')),
-			array('kind' => 'select', 'name' => 'manager', 'size' => '1',
-				'options' => $dnUsers, 'options_selected' => $optionsSelected),
-			array('kind' => 'help', 'value' => 'manager'));
 		// photo
 		$photoFile = '../../graphics/userDefault.png';
 		$noPhoto = true;
