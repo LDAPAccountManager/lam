@@ -75,12 +75,12 @@ tr.dhcplist {
 
 /* color of head row */
 tr.dhcplist-head {
-  background-color:#bce077;
+  background-color:#9fc653;
 }
 
 /* color of sorted column in head row */
 th.dhcplist-sort {
-  background-color:#9fc653;
+  background-color:#bce077;
 }
 
 /* color of rows on mouseOver */
