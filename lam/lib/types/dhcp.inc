@@ -147,14 +147,16 @@ class lamDHCPList extends lamList {
 	        	// Now list all fixed_ips:
 				echo "<table border=\"0\" width=\"100%\">";
 	        	$this->fixed_ips = array();
-	        	foreach($get AS $id=>$arr) {
-	        		if (is_numeric($id)) {
-	        				echo "<tr>";
-	        					echo "<td width=\"25%\">".array_pop(explode(" ",$get[$id]['dhcpstatements'][0]))."</td>";
-	        					echo "<td width=\"35%\">".array_pop(explode(" ",$get[$id]['dhcphwaddress'][0]))."</td>";
-	        					echo "<td width=\"40%\">".$get[$id]['cn'][0]."</td>";
-	        				echo "</tr>";
-	        		}
+	        	if (isset($get)) {
+		        	foreach($get AS $id=>$arr) {
+		        		if (is_numeric($id)) {
+		        				echo "<tr>";
+		        					echo "<td width=\"25%\">".array_pop(explode(" ",$get[$id]['dhcpstatements'][0]))."</td>";
+		        					echo "<td width=\"35%\">".array_pop(explode(" ",$get[$id]['dhcphwaddress'][0]))."</td>";
+		        					echo "<td width=\"40%\">".$get[$id]['cn'][0]."</td>";
+		        				echo "</tr>";
+		        		}
+		        	}
 	        	}
 	        	echo "</table>";
         	}
