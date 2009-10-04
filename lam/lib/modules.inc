@@ -1181,10 +1181,10 @@ class accountContainer {
 		echo "<table class=\"".$this->type."list\" style=\"border-width:0px;\" width=\"100%\"><tr>";
 		echo "<td align=\"left\">";
 		// save button
-		echo "<input style=\"margin:2px;\" name=\"accountContainerSaveAccount\" type=\"submit\" value=\"" . _('Save') . "\"> \n";
+		echo "<input style=\"background-image: url(../../graphics/save.png);background-position: 2px center;background-repeat: no-repeat;height:24px;\" name=\"accountContainerSaveAccount\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Save') . "\"> \n";
 		// reset button
 		if ($this->dn_orig!='') {
-			echo "<input style=\"margin:2px;\" name=\"accountContainerReset\" type=\"submit\" value=\"" . _('Reset changes') . "\">\n";
+			echo "<input style=\"background-image: url(../../graphics/undo.png);background-position: 2px center;background-repeat: no-repeat;height:24px;\" name=\"accountContainerReset\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Reset changes') . "\">\n";
 		}
 		echo "</td>";
 		echo "<td align=\"right\">";
@@ -1201,7 +1201,7 @@ class accountContainer {
 					echo "<option $selected>" . $profilelist[$i] . "</option>\n";
 				}
 			echo "</select> \n";
-			echo "<input type=\"submit\" name=\"accountContainerLoadProfile\" value=\"" . _('Load profile') . "\"> &nbsp;\n";
+			echo "<input style=\"background-image: url(../../graphics/loadProfile.png);background-position: 2px center;background-repeat: no-repeat;height:24px;\" type=\"submit\" name=\"accountContainerLoadProfile\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Load profile') . "\"> &nbsp;\n";
 			printHelpLink(getHelp('', '401'), '401');
 		}
 		echo "</td>";
@@ -1931,4 +1931,33 @@ class accountContainer {
 	}
 
 }
+
+/**
+ * This interface needs to be implemented by all account modules which manage passwords.
+ * It allows LAM to provide central password changes.
+ *
+ * @package modules
+ */
+interface passwordService {
+	
+	/**
+	 * This method specifies if a module manages password attributes. The module alias will
+	 * then appear as option in the GUI. 
+	 * <br>If the module only wants to get notified about password changes then return false.
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes();
+
+	/**
+	 * This function is called whenever the password of this module should be changed.
+	 *
+	 * @param String $password new password
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 */
+	public function passwordChanged($password);
+	
+}
+
 ?>
