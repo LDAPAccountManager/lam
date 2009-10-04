@@ -1,3 +1,8 @@
+October 2009 2.8.0
+  - ability to hide fields: inetOrgPerson, sambaSamAccount
+	- compatibility with PHP 5.3
+
+
 05.08.2009 2.7.0
   - LAM Pro: allow to execute custom scripts
   - log client IP at login attempt

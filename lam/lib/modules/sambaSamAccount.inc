@@ -191,15 +191,41 @@ class sambaSamAccount extends baseModule {
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'displayName', 'sambaHomePath', 'sambaHomeDrive',
-			'sambaLogonScript', 'sambaProfilePath', 'sambaUserWorkstations',
-			'sambaDomainName', 'sambaPrimaryGroupSID', 'tsAllowLogin',
-			'tsHomeDir', 'tsHomeDrive', 'tsProfilePath',
-			'tsInherit', 'tsInitialProgram', 'tsWorkDirectory',
-			'tsConnectionLimit', 'tsDisconnectionLimit', 'tsIdleLimit',
-			'tsConnectDrives', 'tsConnectPrinters', 'tsClientPrinterDefault',
-			'tsShadowing', 'tsBrokenConn', 'tsReconnect'
+			'displayName', 'sambaDomainName', 'sambaPrimaryGroupSID'
 		);
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
+			$return['PDF_fields'][] = 'sambaHomeDrive';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
+			$return['PDF_fields'][] = 'sambaHomePath';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
+			$return['PDF_fields'][] = 'sambaProfilePath';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
+			$return['PDF_fields'][] = 'sambaLogonScript';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
+			$return['PDF_fields'][] = 'sambaUserWorkstations';
+		}
+		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideTerminalServer')) {
+			$return['PDF_fields'][] = 'tsAllowLogin';
+			$return['PDF_fields'][] = 'tsHomeDir';
+			$return['PDF_fields'][] = 'tsHomeDrive';
+			$return['PDF_fields'][] = 'tsProfilePath';
+			$return['PDF_fields'][] = 'tsInherit';
+			$return['PDF_fields'][] = 'tsInitialProgram';
+			$return['PDF_fields'][] = 'tsWorkDirectory';
+			$return['PDF_fields'][] = 'tsConnectionLimit';
+			$return['PDF_fields'][] = 'tsDisconnectionLimit';
+			$return['PDF_fields'][] = 'tsIdleLimit';
+			$return['PDF_fields'][] = 'tsConnectDrives';
+			$return['PDF_fields'][] = 'tsConnectPrinters';
+			$return['PDF_fields'][] = 'tsClientPrinterDefault';
+			$return['PDF_fields'][] = 'tsShadowing';
+			$return['PDF_fields'][] = 'tsBrokenConn';
+			$return['PDF_fields'][] = 'tsReconnect';
+		}
 		$return['selfServiceFieldSettings'] = array(
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
 			'syncLMPassword' => _('Sync Samba LM password with Unix password'),
@@ -432,36 +458,6 @@ class sambaSamAccount extends baseModule {
 					'example' => '15-10-2006'
 				),
 				array(
-					'name' => 'sambaSamAccount_homeDrive',
-					'description' => _('Home drive'),
-					'help' => 'homeDrive',
-					'example' => 'k:'
-				),
-				array(
-					'name' => 'sambaSamAccount_homePath',
-					'description' => _('Home path'),
-					'help' => 'homePath',
-					'example' => _('\\\\server\\homes\\smiller')
-				),
-				array(
-					'name' => 'sambaSamAccount_profilePath',
-					'description' => _('Profile path'),
-					'help' => 'profilePath',
-					'example' => _('\\\\server\\profiles\\smiller')
-				),
-				array(
-					'name' => 'sambaSamAccount_logonScript',
-					'description' => _('Logon script'),
-					'help' => 'scriptPath',
-					'example' => 'logon.bat'
-				),
-				array(
-					'name' => 'sambaSamAccount_workstations',
-					'description' => _('Samba workstations'),
-					'help' => 'workstations',
-					'example' => 'PC01,PC02,PC03'
-				),
-				array(
 					'name' => 'sambaSamAccount_group',
 					'description' => _('Windows group'),
 					'help' => 'groupUpload',
@@ -475,13 +471,55 @@ class sambaSamAccount extends baseModule {
 					'example' => '1235',
 					'default' => '&lt;uidNumber&gt;*2 + &lt;sambaAlgorithmicRidBase&gt;'
 				),
-				array(
+			);
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
+				$return['upload_columns'][] = array(
+					'name' => 'sambaSamAccount_homeDrive',
+					'description' => _('Home drive'),
+					'help' => 'homeDrive',
+					'example' => 'k:'
+				);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
+				$return['upload_columns'][] = array(
+					'name' => 'sambaSamAccount_homePath',
+					'description' => _('Home path'),
+					'help' => 'homePath',
+					'example' => _('\\\\server\\homes\\smiller')
+				);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
+				$return['upload_columns'][] = array(
+					'name' => 'sambaSamAccount_profilePath',
+					'description' => _('Profile path'),
+					'help' => 'profilePath',
+					'example' => _('\\\\server\\profiles\\smiller')
+				);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
+				$return['upload_columns'][] = array(
+					'name' => 'sambaSamAccount_logonScript',
+					'description' => _('Logon script'),
+					'help' => 'scriptPath',
+					'example' => 'logon.bat'
+				);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
+				$return['upload_columns'][] = array(
+					'name' => 'sambaSamAccount_workstations',
+					'description' => _('Samba workstations'),
+					'help' => 'workstations',
+					'example' => 'PC01,PC02,PC03'
+				);
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
+				$return['upload_columns'][] = array(
 					'name' => 'sambaSamAccount_logonHours',
 					'description' => _('Logon hours'),
 					'help' => 'logonHoursUpload',
 					'example' => 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
-				)
-			);
+				);
+			}
 		}
 		elseif ($this->get_scope() == "host") {
 			$return['upload_columns'] = array(
@@ -702,6 +740,7 @@ class sambaSamAccount extends baseModule {
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
 		}
+		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $_POST['sambaDomainName'];
 		// Get Domain SID from name
@@ -755,7 +794,6 @@ class sambaSamAccount extends baseModule {
 		if ($this->get_scope()=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain computers')];
 			if ($_POST['ResetSambaPassword'] || !$this->attributes['sambaNTPassword'][0]) {
-				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				$hostname = $attrs['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
 				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
@@ -767,13 +805,38 @@ class sambaSamAccount extends baseModule {
 		}
 		// user attributes
 		if ($this->get_scope()=='user') {
-			$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
-			if ($_POST['sambaHomeDrive'] == "-")
-				$this->attributes['sambaHomeDrive'][0] = '';
-			else
-				$this->attributes['sambaHomeDrive'][0] = $_POST['sambaHomeDrive'];
-			$this->attributes['sambaLogonScript'][0] = $_POST['sambaLogonScript'];
-			$this->attributes['sambaProfilePath'][0] = $_POST['sambaProfilePath'];
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
+				$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
+				$this->attributes['sambaHomePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaHomePath'][0]);
+				$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
+				if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors[] = $this->messages['homePath'][1];
+				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC'))) {
+					$errors[] = $this->messages['homePath'][0];
+				}
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
+				if ($_POST['sambaHomeDrive'] == "-") $this->attributes['sambaHomeDrive'][0] = '';
+				else $this->attributes['sambaHomeDrive'][0] = $_POST['sambaHomeDrive'];
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
+				$this->attributes['sambaLogonScript'][0] = $_POST['sambaLogonScript'];
+				$this->attributes['sambaLogonScript'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaLogonScript'][0]);
+				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
+				if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors[] = $this->messages['logonScript'][1];
+				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript'))) {
+					$errors[] = $this->messages['logonScript'][0];
+				}
+			}
+			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
+				$this->attributes['sambaProfilePath'][0] = $_POST['sambaProfilePath'];
+				$this->attributes['sambaProfilePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaProfilePath'][0]);
+				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
+				if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors[] = $this->messages['profilePath'][1];
+				if (!($this->attributes['sambaProfilePath'][0] == '') &&
+					!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory'))) {
+						$errors[] = $this->messages['profilePath'][0];
+				}
+			}
 			$rids = array_keys($this->rids);
 			$wrid = false;
 			for ($i=0; $i<count($rids); $i++) {
@@ -784,7 +847,6 @@ class sambaSamAccount extends baseModule {
 					}
 				}
 			if (!$wrid) {
-				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				$gidnumber = $attrs['gidNumber'][0];
 				$groups = $_SESSION['cache']->get_cache(array('gidNumber', 'sambaSID'), 'sambaGroupMapping', 'group');
 				$groupKeys = array_keys($groups);
@@ -835,32 +897,12 @@ class sambaSamAccount extends baseModule {
 				if (!isset($this->attributes['sambaSID'][0])
 					|| in_array($rid, $this->rids)
 					|| (strpos($this->attributes['sambaSID'][0], $SID) === false)) {
-					$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 				}
 			}
-			// Check values
-			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-			$this->attributes['sambaHomePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaHomePath'][0]);
-			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
-			if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors[] = $this->messages['homePath'][1];
-			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaLogonScript'][0]);
-			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
-			if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors[] = $this->messages['logonScript'][1];
-			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaProfilePath'][0]);
-			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
-			if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors[] = $this->messages['profilePath'][1];
-			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
-				$errors[] = $this->messages['homePath'][0];
-			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript')))
-				$errors[] = $this->messages['logonScript'][0];
-			if (!($this->attributes['sambaProfilePath'][0] == '') &&
-				!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory')))
-					$errors[] = $this->messages['profilePath'][0];
 		}
 		else {  // host
 			if (!$this->attributes['sambaSID'][0]) {
-				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 			}
 		}
@@ -1166,45 +1208,54 @@ class sambaSamAccount extends baseModule {
 					))),
 					array('kind' => 'help', 'value' => 'expireDate' ));
 	
-				$drives = array('-');
-				for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
-				if (isset($this->attributes['sambaHomeDrive'][0])) {
-					$selected = array ($this->attributes['sambaHomeDrive'][0]);
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
+					$drives = array('-');
+					for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+					if (isset($this->attributes['sambaHomeDrive'][0])) {
+						$selected = array ($this->attributes['sambaHomeDrive'][0]);
+					}
+					else $selected = array('-');
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Home drive') ),
+						array('kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => $selected),
+						array('kind' => 'help', 'value' => 'homeDrive' ));
 				}
-				else $selected = array('-');
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Home drive') ),
-					array('kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => $selected),
-					array('kind' => 'help', 'value' => 'homeDrive' ));
-				$sambaHomePath = '';
-				if (isset($this->attributes['sambaHomePath'][0])) {
-					$sambaHomePath = $this->attributes['sambaHomePath'][0];
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
+					$sambaHomePath = '';
+					if (isset($this->attributes['sambaHomePath'][0])) {
+						$sambaHomePath = $this->attributes['sambaHomePath'][0];
+					}
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Home path') ),
+						array('kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $sambaHomePath),
+						array('kind' => 'help', 'value' => 'homePath' ));
 				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Home path') ),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $sambaHomePath),
-					array('kind' => 'help', 'value' => 'homePath' ));
-				$sambaProfilePath = '';
-				if (isset($this->attributes['sambaProfilePath'][0])) {
-					$sambaProfilePath = $this->attributes['sambaProfilePath'][0];
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
+					$sambaProfilePath = '';
+					if (isset($this->attributes['sambaProfilePath'][0])) {
+						$sambaProfilePath = $this->attributes['sambaProfilePath'][0];
+					}
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Profile path') ),
+						array('kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $sambaProfilePath),
+						array('kind' => 'help', 'value' => 'profilePath' ));
 				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Profile path') ),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $sambaProfilePath),
-					array('kind' => 'help', 'value' => 'profilePath' ));
-				$sambaLogonScript = '';
-				if (isset($this->attributes['sambaLogonScript'][0])) {
-					$sambaLogonScript = $this->attributes['sambaLogonScript'][0];
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
+					$sambaLogonScript = '';
+					if (isset($this->attributes['sambaLogonScript'][0])) {
+						$sambaLogonScript = $this->attributes['sambaLogonScript'][0];
+					}
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Logon script') ),
+						array('kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $sambaLogonScript),
+						array('kind' => 'help', 'value' => 'scriptPath' ));
 				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Logon script') ),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $sambaLogonScript),
-					array('kind' => 'help', 'value' => 'scriptPath' ));
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Samba workstations') ),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_sambaUserWorkstations_open', 'value' => _('Edit workstations')),
-					array('kind' => 'help', 'value' => 'userWorkstations' ));
-	
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Samba workstations') ),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_sambaUserWorkstations_open', 'value' => _('Edit workstations')),
+						array('kind' => 'help', 'value' => 'userWorkstations' ));
+				}
 				$names = array_keys($this->rids);
 				$wrid=false;
 				$options = array();
@@ -1219,9 +1270,10 @@ class sambaSamAccount extends baseModule {
 				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				if ($wrid) $options[] = $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]);
 					else $selected[] = $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]);
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
-					1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
-					2 => array ( 'kind' => 'help', 'value' => 'group' ));
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('Windows group')),
+					array('kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
+					array('kind' => 'help', 'value' => 'group'));
 				// display if group SID should be mapped to a well known SID
 				$options = array_keys($this->rids);
 				$options[] = '-';
@@ -1248,14 +1300,18 @@ class sambaSamAccount extends baseModule {
 				array('kind' => 'help', 'value' => 'domain' ));
 			// logon hours and terminal server options
 			if ($this->get_scope()=='user') {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Logon hours')),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit')),
-					array('kind' => 'help', 'value' => 'logonHours'));
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Terminal server options') ),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_terminalServer_open', 'value' => _('Edit')),
-					array('kind' => 'help', 'value' => 'terminalServer'));
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Logon hours')),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit')),
+						array('kind' => 'help', 'value' => 'logonHours'));
+				}
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideTerminalServer')) {
+					$return[] = array(
+						array('kind' => 'text', 'text' => _('Terminal server options') ),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_terminalServer_open', 'value' => _('Edit')),
+						array('kind' => 'help', 'value' => 'terminalServer'));
+				}
 			}
 			// reset host password
 			if ($this->get_scope()=='host') {
