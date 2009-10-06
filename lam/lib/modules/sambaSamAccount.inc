@@ -132,6 +132,8 @@ class sambaSamAccount extends baseModule {
 		$return["RDN"] = array("sambaSID" => "low");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		// LDAP filter
+		$return["ldap_filter"] = array('or' => "(objectClass=sambaSamAccount)");
 		// managed object classes
 		$return['objectClasses'] = array('sambaSamAccount');
 		// managed attributes
