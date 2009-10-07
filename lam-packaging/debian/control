@@ -22,7 +22,7 @@ Description: webfrontend for managing accounts in an LDAP directory
 
 Package: ldap-account-manager-lamdaemon
 Architecture: all
-Depends: perl, sudo, ${misc:Depends}
+Depends: perl, sudo, ${misc:Depends}, libquota-perl, libsys-syslog-perl
 Description: Quota and home directory management for LDAP Account Manager
  Lamdaemon is part of LDAP Account Manager. This package
  needs to be installed on the server where the home directories
