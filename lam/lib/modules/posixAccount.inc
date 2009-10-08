@@ -37,7 +37,7 @@
 *
 * @package modules
 */
-class posixAccount extends baseModule {
+class posixAccount extends baseModule implements passwordService {
 
 	// Variables
 
@@ -919,7 +919,7 @@ class posixAccount extends baseModule {
 			$pwd = generateRandomPassword();
 			$this->clearTextPassword = $pwd;
 			$this->attributes['userPassword'][0] = pwd_hash($pwd, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-			return array(array('INFO', 'The password was set to:' . ' ' . $pwd));
+			return array(array('INFO', _('The password was set to:') . ' ' . $pwd));
 		}
 		$errors = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
@@ -1820,6 +1820,28 @@ class posixAccount extends baseModule {
 		return $this->clearTextPassword;
 	}
 
+	/**
+	 * This method specifies if a module manages password attributes.
+	 * @see passwordService::managesPasswordAttributes
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		return true;
+	}
+
+	/**
+	 * This function is called whenever the password of this module should be changed.
+	 * @see passwordService::managesPasswordAttributes
+	 * 
+	 * @param String $password new password
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 */
+	public function passwordChanged($password) {
+		return array();
+	}
+		
 }
 
 ?>

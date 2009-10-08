@@ -1022,6 +1022,26 @@ class accountContainer {
 		if (isset($_POST['accountContainerReset'])) {
 			$result = $this->load_account($this->dn_orig);
 		}
+		elseif (isset($_POST['setNewPasswordCancel'])) {
+			// ignore
+		}
+		elseif (isset($_POST['setNewPasswordOk']) || isset($_POST['setNewPasswordRandom'])) {
+			$pwdMessages = $this->setNewPassword();
+			$pwdErrors = 0;
+			for ($i = 0; $i < sizeof($pwdMessages); $i++) {
+				if ($pwdMessages[$i][0] == 'ERROR') {
+					$pwdErrors++;
+				}
+			}
+			if ($pwdErrors == 0) {
+				$result[] = array('INFO', 'New password set successfully.');
+				$result = array_merge($result, $pwdMessages);
+			}
+			else {
+				$this->printPasswordPromt($pwdMessages);
+				return;
+			}
+		}
 		elseif (!$profileLoaded) {
 			// change dn suffix
 			if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) {
@@ -1130,6 +1150,22 @@ class accountContainer {
 				}
 			}
 		}
+		// check if password change was requested
+		if (!$errorsOccured && isset($_POST['accountContainerSetPassword'])) {
+			$this->printPasswordPromt(array());
+			return;
+		}
+		// prints a module content page
+		$this->printModuleContent($result, $stopProcessing);
+	}
+	
+	/**
+	 * Prints the content part provided by the current module.
+	 * 
+	 * @param array $result list of messages
+	 * @param boolean $stopProcessing true if page should end after displaying the messages
+	 */
+	private function printModuleContent($result, $stopProcessing) {
 		$this->printPageHeader();
 		// Display error-messages
 		if (is_array($result)) {
@@ -1162,10 +1198,7 @@ class accountContainer {
 		// content area
 		echo "<td width=\"100%\" style=\"padding:10px;\">";
 		// display html-code from modules
-		$return = array();
-		
 		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
-				
 		$y = 5000;
 		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
 		// Display rest of html-page
@@ -1173,6 +1206,97 @@ class accountContainer {
 		echo "</td></tr></table>\n";
 		$this->printPageFooter();
 	}
+
+	/**
+	 * Prints the input fields of the central password service.
+	 * 
+	 * @param $errors list of error messages
+	 */
+	private function printPasswordPromt($errors) {
+		$this->printPageHeader();
+		// print error messages
+		for ($i = 0; $i < sizeof($errors); $i++) {
+			call_user_func_array('StatusMessage', $errors[$i]);
+		}
+		// create module menu
+		echo "<br><table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<tr class=\"" . $this->type . "list\"><td colspan=2>&nbsp;<img alt=\"key.png\" src=\"../../graphics/key.png\"> \n";
+		echo "Set password<hr class=\"modulePage\" noshade>\n";
+		echo "<table>\n";
+		echo "<tr><td>\n";
+			echo _('Password') . '</td><td><input type="password" name="newPassword1">';
+
+		echo '</td>';
+		echo '<td width=30 rowspan=2>&nbsp;</td>';
+		echo '<td rowspan=3 valign="top">';
+		echo '<table>';
+		foreach ($this->module as $name => $module) {
+			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
+				echo '<tr><td>';
+				$buttonImage = $module->getIcon();
+				if ($buttonImage != null) {
+					$buttonImage = '<img src="../../graphics/' . $buttonImage . '" alt="' . getModuleAlias($name, $this->type) . '"></td><td>';
+				}
+				echo '<input type="checkbox" checked name="cb_' . $name . '"></td><td>' . $buttonImage . getModuleAlias($name, $this->type) . "<br>\n";
+				echo '</td></tr>';
+			}
+		}
+		echo '</table></td>';
+		echo '<td width=20 rowspan=3>&nbsp;</td>';
+		echo '<td rowspan=3 valign="top">';
+			printHelpLink(getHelp(null, 404), 404);
+		echo "</td></tr>";
+		
+		echo "<tr><td>";
+			echo _('Repeat password') . '</td><td><input type="password" name="newPassword2">';
+		echo "</td></tr>\n";
+		echo "<tr><td colspan=3 valign=\"top\"><br><br>";
+			echo '<input type="submit" name="setNewPasswordOk" value="'. _('Ok') . '">';
+			echo '&nbsp;';
+			echo '<input type="submit" name="setNewPasswordCancel" value="'. _('Cancel') . '">';
+			echo '&nbsp;&nbsp;&nbsp;';
+			echo '<input type="submit" name="setNewPasswordRandom" value="'. _('Set random password') . '">';
+			echo "</td></tr>\n";
+		echo "</table>\n";
+		echo "</td></tr>\n";
+		echo "</table>\n";
+		$this->printPageFooter();
+	}
+	
+	/**
+	 * Sets the new password in all selected account modules.
+	 * 
+	 * @return array list of messages
+	 */
+	private function setNewPassword() {
+		$return = array();
+		if (isset($_POST['setNewPasswordRandom'])) {
+			$_POST['newPassword1'] = generateRandomPassword();
+			$return[] = array('INFO', _('The password was set to:') . ' ' . $_POST['newPassword1']);
+		}
+		else {
+			// check if passwords match
+			if ($_POST['newPassword1'] != $_POST['newPassword2']) {
+				$return[] = array('ERROR', _('Passwords are different!'));
+				return $return;
+			}
+			// check passsword stregth
+			$pwdPolicyResult = checkPasswordStrength($_POST['newPassword1']);
+			if ($pwdPolicyResult !== true) {
+				$return[] = array('ERROR', $pwdPolicyResult);
+				return $return;
+			}
+		}
+		// set new password
+		foreach ($_POST as $key => $value) {
+			if (substr($key, 0, 3) == 'cb_') {
+				$name = substr($key, 3);
+				$return = array_merge($return, $this->module[$name]->passwordChanged($_POST['newPassword1']));
+			}
+		}
+		return $return;		
+	}
+	
 	
 	/**
 	 * Prints common controls like the save button and the ou selection.
@@ -1181,10 +1305,14 @@ class accountContainer {
 		echo "<table class=\"".$this->type."list\" style=\"border-width:0px;\" width=\"100%\"><tr>";
 		echo "<td align=\"left\">";
 		// save button
-		echo "<input style=\"background-image: url(../../graphics/save.png);background-position: 2px center;background-repeat: no-repeat;height:24px;\" name=\"accountContainerSaveAccount\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Save') . "\"> \n";
+		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/save.png);\" name=\"accountContainerSaveAccount\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Save') . "\"> \n";
 		// reset button
 		if ($this->dn_orig!='') {
-			echo "<input style=\"background-image: url(../../graphics/undo.png);background-position: 2px center;background-repeat: no-repeat;height:24px;\" name=\"accountContainerReset\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Reset changes') . "\">\n";
+			echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/undo.png);\" name=\"accountContainerReset\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Reset changes') . "\">\n";
+		}
+		if ($this->showSetPasswordButton()) {
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/key.png);\" name=\"accountContainerSetPassword\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Set password') . "\"> \n";
 		}
 		echo "</td>";
 		echo "<td align=\"right\">";
@@ -1206,6 +1334,20 @@ class accountContainer {
 		}
 		echo "</td>";
 		echo "</tr></table>";		
+	}
+	
+	/**
+	 * Returns if the page should show a button to set the password.
+	 *
+	 * @return boolean show or hide button
+	 */
+	private function showSetPasswordButton() {
+		foreach ($this->module as $name => $module) {
+			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -1379,7 +1521,7 @@ class accountContainer {
 		echo "</td>\n";
 		echo "</tr></table>\n";
 		// separator line
-		echo '<hr noshade style="width: 100%; height: 2px;">';
+		echo '<hr class="modulePage" noshade>';
 	}
 
 	/**

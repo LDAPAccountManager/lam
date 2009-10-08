@@ -39,7 +39,7 @@ include_once('sambaSamAccount/sambaMungedDial.inc');
 *
 * @package modules
 */
-class sambaSamAccount extends baseModule {
+class sambaSamAccount extends baseModule implements passwordService {
 
 	// Variables
 	/** use Unix password as samba password? */
@@ -2366,6 +2366,30 @@ class sambaSamAccount extends baseModule {
 		return $return;
 	}
 
+	/**
+	 * This method specifies if a module manages password attributes.
+	 * @see passwordService::managesPasswordAttributes
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		if ($this->get_scope() == "user") {
+			return true;
+		}
+	}
+
+	/**
+	 * This function is called whenever the password of this module should be changed.
+	 * @see passwordService::managesPasswordAttributes
+	 * 
+	 * @param String $password new password
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 */
+	public function passwordChanged($password) {
+		return array();
+	}
+		
 }
 
 ?>

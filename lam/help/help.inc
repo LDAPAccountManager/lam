@@ -159,6 +159,8 @@ $helpArray = array (
 					"Text" => _("Here you can load an account profile to set default settings for your account. The \"default\" profile is automatically loaded for new accounts.")),
 				"403" => array ("Headline" => _("Create PDF file"),
 					"Text" => _("Here you can select a PDF structure and export the account to a PDF file.")),
+				"404" => array ("Headline" => _("Password"),
+					"Text" => _("Please enter the password which you want to set for this account. You may also generate a random password (12 characters) which will be displayed on your screen.")),
 				// 500 - 599
 				// Roland Gruber
 				// LAM Pro
