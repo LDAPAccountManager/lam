@@ -1,6 +1,7 @@
 October 2009 2.8.0
   - ability to hide fields: inetOrgPerson, sambaSamAccount
 	- compatibility with PHP 5.3
+	- one central button to change passwords on account pages
 
 
 05.08.2009 2.7.0
