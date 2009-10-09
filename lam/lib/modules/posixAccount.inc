@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2007  Roland Gruber
+    Copyright (C) 2005 - 2009  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ class posixAccount extends baseModule implements passwordService {
 	private $groups_orig;
 	private $createhomedir;
 	private $lamdaemonServer;
-	private $clearTextPassword;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -69,8 +68,6 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s:') . ' posixAccount_uid', _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
 		$this->messages['uidNumber'][5] = array('INFO', _('UID number'), _('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''));
-		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['userPassword'][4] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['uid'][0] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
 		$this->messages['uid'][1] = array('WARN', _('User name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
@@ -323,7 +320,6 @@ class posixAccount extends baseModule implements passwordService {
 			'primaryGroup',
 			'additionalGroups',
 			'homeDirectory',
-			'userPassword',
 			'loginShell',
 			'cn'
 		);
@@ -908,42 +904,6 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Processes user input of the password page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
-	function process_password() {
-		if ($_POST['form_subpage_posixAccount_attributes_back']) return array();
-		else if ($_POST['form_subpage_posixAccount_attributes_randomPassword']) {
-			$pwd = generateRandomPassword();
-			$this->clearTextPassword = $pwd;
-			$this->attributes['userPassword'][0] = pwd_hash($pwd, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-			return array(array('INFO', _('The password was set to:') . ' ' . $pwd));
-		}
-		$errors = array();
-		if ($_POST['userPassword'] != $_POST['userPassword2']) {
-			$errors[] = $this->messages['userPassword'][0];
-		}
-		else {
-			if (!get_preg($_POST['userPassword'], 'password')) {
-				$errors[] = $this->messages['userPassword'][1];
-			}
-			else {
-				$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
-				if ($pwdPolicyResult === true) {
-					$this->clearTextPassword = $_POST['userPassword'];
-					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-				}
-				else {
-					$errors[] = array('ERROR', $pwdPolicyResult);
-				}
-			}
-		}
-		return $errors;
-	}
-
-	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
 	 * @return array HTML meta data
@@ -1022,30 +982,20 @@ class posixAccount extends baseModule implements passwordService {
 					array('kind' => 'help', 'value' => 'loginShell'));
 			}
 		}
-		if (!isset($this->attributes['userPassword'][0])) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password') ),
-				array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Set password')));
+		if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+			$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
 		}
 		else {
-			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
-				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
-			}
-			else {
-				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
-			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password') ),
-				array('kind' => 'table', 'value' => array(
-					array(
-						array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Change password'))
-					),
-					array($lockOption),
-					array(
-						array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
-					)
-				)));
+			$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
 		}
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Password') ),
+			array('kind' => 'table', 'value' => array(
+				array($lockOption),
+				array(
+					array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
+				)
+			)));
 	return $return;
 	}
 
@@ -1106,37 +1056,6 @@ class posixAccount extends baseModule implements passwordService {
 			array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
 			array('kind' => 'text'),
 			array('kind' => 'text'));
-		return $return;
-	}
-
-	/**
-	* Displays the password changing dialog.
-	*
-	* @return array meta HTML code
-	*/
-	function display_html_password() {
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Password') ),
-			array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
-			array('kind' => 'help', 'value' => 'userPassword'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Repeat password')),
-			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
-		$return[] = array(
-			array('kind' => 'text', 'text' => ' ')
-		);
-		$return[] = array(
-			array('kind' => 'text', 'text' => ' ')
-		);
-		$return[] = array(
-			array('kind' => 'table', 'value' => array(
-				array(
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_posixAccount_attributes_back'),
-					array('kind' => 'text')))),
-			array('kind' => 'input', 'type' => 'submit', 'value' => _('Set random password'),
-				'name' => 'form_subpage_posixAccount_attributes_randomPassword', 'td' => array('align' => 'right', 'colspan' => 2))
-			);
 		return $return;
 	}
 
@@ -1247,9 +1166,6 @@ class posixAccount extends baseModule implements passwordService {
 			'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 			'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 		);
-		if (isset($this->clearTextPassword)) {
-			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
-		}
 		return $return;
 	}
 
@@ -1812,15 +1728,6 @@ class posixAccount extends baseModule implements passwordService {
 	}
 	
 	/**
-	 * Returns the clear text password.
-	 *
-	 * @return string password
-	 */
-	public function getClearTextPassword() {
-		return $this->clearTextPassword;
-	}
-
-	/**
 	 * This method specifies if a module manages password attributes.
 	 * @see passwordService::managesPasswordAttributes
 	 *
@@ -1831,14 +1738,20 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This function is called whenever the password of this module should be changed.
-	 * @see passwordService::managesPasswordAttributes
-	 * 
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
 	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 * @see passwordService::passwordChangeRequested
 	 */
-	public function passwordChanged($password) {
+	public function passwordChangeRequested($password, $modules) {
+		if (!in_array(get_class($this), $modules)) {
+			return array();
+		}
+		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
 		

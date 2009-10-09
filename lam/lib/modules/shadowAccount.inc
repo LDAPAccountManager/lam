@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007  Roland Gruber
+  Copyright (C) 2007 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ $Id$
 *
 * @package modules
 */
-class shadowAccount extends baseModule {
+class shadowAccount extends baseModule implements passwordService {
 	
 	/**
 	* Creates a new shadowAccount object.
@@ -237,16 +237,7 @@ class shadowAccount extends baseModule {
 		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
 			return array();
 		}
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		// Set shadowLastchange manual.
-		$clearPwd = $this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword();
-		if (isset($clearPwd)) {
-			$return[$this->getAccountContainer()->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
-		}
-		elseif ($this->getAccountContainer()->isNewAccount) {
-			$return[$this->getAccountContainer()->dn]['add']['shadowLastChange'] = array(intval(time()/3600/24));
-		}
-		return $return;
+		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
 
 	/**
@@ -501,6 +492,37 @@ class shadowAccount extends baseModule {
 		}
 	}
 
+
+	/**
+	 * This method specifies if a module manages password attributes.
+	 * @see passwordService::managesPasswordAttributes
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		// only listen to password changes
+		return false;
+	}
+
+	/**
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
+	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 * @see passwordService::passwordChangeRequested
+	 */
+	public function passwordChangeRequested($password, $modules) {
+		// update password timestamp when Unix password was updated
+		if (!in_array('posixAccount', $modules)) {
+			return array();
+		}
+		$this->attributes['shadowLastChange'][0] = intval(time()/3600/24);
+		return array();
+	}
+		
 }
 
 ?>

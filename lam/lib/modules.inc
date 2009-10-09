@@ -1288,10 +1288,16 @@ class accountContainer {
 			}
 		}
 		// set new password
+		$selectedModules = array();
 		foreach ($_POST as $key => $value) {
 			if (substr($key, 0, 3) == 'cb_') {
 				$name = substr($key, 3);
-				$return = array_merge($return, $this->module[$name]->passwordChanged($_POST['newPassword1']));
+				$selectedModules[] = $name;
+			}
+		}
+		foreach ($this->module as $name => $module) {
+			if ($module instanceof passwordService) {
+				$return = array_merge($return, $module->passwordChangeRequested($_POST['newPassword1'], $selectedModules));
 			}
 		}
 		return $return;		
@@ -2092,13 +2098,15 @@ interface passwordService {
 	public function managesPasswordAttributes();
 
 	/**
-	 * This function is called whenever the password of this module should be changed.
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
 	 *
 	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
 	 */
-	public function passwordChanged($password);
+	public function passwordChangeRequested($password, $modules);
 	
 }
 

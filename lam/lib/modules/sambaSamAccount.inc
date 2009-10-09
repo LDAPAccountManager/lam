@@ -42,8 +42,6 @@ include_once('sambaSamAccount/sambaMungedDial.inc');
 class sambaSamAccount extends baseModule implements passwordService {
 
 	// Variables
-	/** use Unix password as samba password? */
-	private $useunixpwd;
 	/** use no password? */
 	private $nopwd;
 	/** password does not expire? */
@@ -91,8 +89,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
 		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!'));
-		$this->messages['sambaLMPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-		$this->messages['sambaLMPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['sambaLMPassword'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
 		$this->messages['rid'][3] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!'));
@@ -630,7 +626,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->useunixpwd = true;
 		$this->noexpire = true;
 		$this->nopwd = false;
 		$this->deactivated = false;
@@ -862,31 +857,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 			}
 
-			if (isset($_POST['useunixpwd'])) {
-				$this->useunixpwd = true;
-				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-					$this->attributes['sambaLMPassword'][0] = lmPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
-				}
-				$this->attributes['sambaNTPassword'][0] = ntPassword($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword());
-				$this->attributes['sambaPwdLastSet'][0] = time();
-			}
-			else $this->useunixpwd = false;
-			if (!$this->useunixpwd && isset($_POST['sambaLMPassword']) && ($_POST['sambaLMPassword'] != '')) {
-				if ($_POST['sambaLMPassword'] != $_POST['sambaLMPassword2']) {
-					$errors[] = $this->messages['sambaLMPassword'][0];
-					unset ($_POST['sambaLMPassword2']);
-				}
-				else {
-					if (!get_preg($_POST['sambaLMPassword'], 'password')) $errors[] = $this->messages['sambaLMPassword'][1];
-					else {
-						if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-							$this->attributes['sambaLMPassword'][0] = lmPassword($_POST['sambaLMPassword']);
-						}
-						$this->attributes['sambaNTPassword'][0] = ntPassword($_POST['sambaLMPassword']);
-						$this->attributes['sambaPwdLastSet'][0] = time();
-					}
-				}
-			}
 			$specialRids = array_flip($this->rids);
 			// set special RID if selected
 			if (in_array($_POST['sambaSID'], $specialRids)) {
@@ -1119,19 +1089,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if ($this->get_scope()=='user') {
 				$return[] = array(
 						array('kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Samba password')),
-					array('kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
-					array('kind' => 'help', 'value' => 'password'));
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Repeat password')),
-					array('kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
-				if ($this->getAccountContainer()->getAccountModule('posixAccount')->getClearTextPassword() != null) {
-					$return[] = array(
-						array('kind' => 'text', 'text' => _('Use Unix password') ),
-						array('kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
-						array('kind' => 'help', 'value' => 'useunixpwd'));
-				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Use no password') ),
 					array('kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd),
@@ -1614,12 +1571,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ( $i=1; $i<=31; $i++ ) $day[] = $i;
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-			// use Unix password as Samba password
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Use Unix password') . ': '),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_useunixpwd', 'type' => 'checkbox', 'checked' => true),
-				array('kind' => 'help', 'value' => 'pwdunix')
-				);
 			// use no password at all
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Use no password') . ': '),
@@ -1757,13 +1708,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// special profile options
-		// use Unix password
-		if ($profile['sambaSamAccount_useunixpwd'][0] == "true") {
-			$this->useunixpwd = true;
-		}
-		elseif ($profile['sambaSamAccount_useunixpwd'][0] == "false") {
-			$this->useunixpwd = false;
-		}
 		// use no password
 		if ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "true") {
 			$this->nopwd = true;
@@ -2379,14 +2323,24 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This function is called whenever the password of this module should be changed.
-	 * @see passwordService::managesPasswordAttributes
-	 * 
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
 	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 * @see passwordService::passwordChangeRequested
 	 */
-	public function passwordChanged($password) {
+	public function passwordChangeRequested($password, $modules) {
+		if (!in_array(get_class($this), $modules)) {
+			return array();
+		}
+		if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
+			$this->attributes['sambaLMPassword'][0] = lmPassword($password);
+		}
+		$this->attributes['sambaNTPassword'][0] = ntPassword($password);
+		$this->attributes['sambaPwdLastSet'][0] = time();
 		return array();
 	}
 		
