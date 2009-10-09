@@ -1220,8 +1220,16 @@ class accountContainer {
 		}
 		// create module menu
 		echo "<br><table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $this->type . "list\"><td colspan=2>&nbsp;<img alt=\"key.png\" src=\"../../graphics/key.png\"> \n";
-		echo "Set password<hr class=\"modulePage\" noshade>\n";
+		echo "<tr class=\"" . $this->type . "list\">";
+		echo "<td nowrap>&nbsp;<img alt=\"key.png\" src=\"../../graphics/key.png\">&nbsp;</td> \n";
+		echo "<td nowrap>" . _("Set password") . "&nbsp;&nbsp;&nbsp;</td>";
+		echo "<td>\n";
+		printHelpLink(getHelp(null, 404), 404);
+		echo "</td><td width=\"100%\">&nbsp;</td>\n";
+		echo "<tr class=\"" . $this->type . "list\"><td colspan=4>\n";
+		echo "<hr class=\"modulePage\" noshade>\n";
+		echo "</td></tr>\n";
+		echo "<tr class=\"" . $this->type . "list\"><td colspan=4>\n";
 		echo "<table>\n";
 		echo "<tr><td>\n";
 			echo _('Password') . '</td><td><input type="password" name="newPassword1">';
@@ -1242,10 +1250,7 @@ class accountContainer {
 			}
 		}
 		echo '</table></td>';
-		echo '<td width=20 rowspan=3>&nbsp;</td>';
-		echo '<td rowspan=3 valign="top">';
-			printHelpLink(getHelp(null, 404), 404);
-		echo "</td></tr>";
+		echo "</tr>";
 		
 		echo "<tr><td>";
 			echo _('Repeat password') . '</td><td><input type="password" name="newPassword2">';
