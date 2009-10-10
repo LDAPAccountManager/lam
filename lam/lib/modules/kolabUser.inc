@@ -261,13 +261,11 @@ class kolabUser extends baseModule {
 				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					if (!isset($attrsP['userPassword'][0]) || ($attrsP['userPassword'][0] == '')) {
-						StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('posixAccount')->get_alias()));
+						StatusMessage('ERROR', _("Please enter a user password."));
 					}
 				}
-				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-					if (!isset($attrsI['userPassword'][0]) || ($attrsI['userPassword'][0] == '')) {
-						StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
-					}
+				elseif (!isset($attrsI['userPassword'][0]) || ($attrsI['userPassword'][0] == '')) {
+					StatusMessage('ERROR', _("Please enter a user password."));
 				}
 			}
 			if (!$attrsI['mail'][0]) {
@@ -597,8 +595,8 @@ class kolabUser extends baseModule {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					if (!$attrsP['userPassword'][0]) return false;
 				}
-				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-					if (!$attrsI['userPassword'][0]) return false;
+				elseif (!$attrsI['userPassword'][0]) {
+					return false;
 				}
 			}
 		}
