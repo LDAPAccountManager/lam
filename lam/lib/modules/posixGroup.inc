@@ -4,7 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2008  Roland Gruber
+              2007 - 2009  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * @package modules
 */
-class posixGroup extends baseModule {
+class posixGroup extends baseModule implements passwordService {
 
 	/** change GIDs of users and hosts? */
 	private $changegids;
@@ -182,12 +182,7 @@ class posixGroup extends baseModule {
 			array('kind' => 'text', 'text' => _("Group members")),
 			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_open', 'type' => 'submit', 'value' => _('Edit members')),
 			array ('kind' => 'help', 'value' => 'members'));
-		if (!isset($this->attributes['userPassword'][0])) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password') ),
-				array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_password_open', 'type' => 'submit', 'value' => _('Set password')));
-		}
-		else {
+		if (isset($this->attributes['userPassword'][0])) {
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
 				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
 			}
@@ -198,9 +193,6 @@ class posixGroup extends baseModule {
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Password') ),
 				array('kind' => 'table', 'value' => array(
-					array(
-						array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_password_open', 'type' => 'submit', 'value' => _('Change password'))
-					),
 					array($lockOption),
 					array(
 						array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
@@ -266,28 +258,6 @@ class posixGroup extends baseModule {
 			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
 			array('kind' => 'text'),
 			array('kind' => 'text'));
-		return $return;
-	}
-
-	/**
-	* Displays the password changing dialog.
-	*
-	* @return array meta HTML code
-	*/
-	function display_html_password() {
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Password') ),
-			array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
-			array('kind' => 'help', 'value' => 'password'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Repeat password')),
-			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
-		$return[] = array(
-			array('kind' => 'table', 'value' => array(
-				array(
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
-					array('kind' => 'text')))));
 		return $return;
 	}
 
@@ -491,7 +461,6 @@ class posixGroup extends baseModule {
 	* This function fills the $messages variable with output messages from this module.
 	*/
 	function load_Messages() {
-		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
@@ -698,32 +667,6 @@ class posixGroup extends baseModule {
 
 
 	/**
-	* Processes user input of the password page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
-	function process_password() {
-		if ($_POST['form_subpage_' . get_class($this) . '_attributes_back']) return array();
-		$errors = array();
-		if ($_POST['userPassword'] != $_POST['userPassword2']) {
-			$errors[] = $this->messages['userPassword'][0];
-			if (!get_preg($_POST['userPassword'], 'password'))
-				$errors[] = $this->messages['userPassword'][1];
-			}
-			else {
-				$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
-				if ($pwdPolicyResult === true) {
-					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-				}
-				else {
-					$errors[] = array('ERROR', $pwdPolicyResult);
-				}
-			}
-		return $errors;
-	}
-
-	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
 	* @return array list of modifications
@@ -815,6 +758,34 @@ class posixGroup extends baseModule {
 		return $ret;
 	}
 
+	/**
+	 * This method specifies if a module manages password attributes.
+	 * @see passwordService::managesPasswordAttributes
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		return true;
+	}
+
+	/**
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
+	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 * @see passwordService::passwordChangeRequested
+	 */
+	public function passwordChangeRequested($password, $modules) {
+		if (!in_array(get_class($this), $modules)) {
+			return array();
+		}
+		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		return array();
+	}
+		
 }
 
 ?>
