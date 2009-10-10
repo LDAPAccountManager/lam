@@ -21,5 +21,3 @@ Lamdaemon:
 
 If you want to use the lamdaemon you need to install the
 package ldap-account-manager-lamdaemon on the target machine.
-For lamdaemonOld the package needs to be installed additionally
-on the machine where ldap-account-manager is installed.

@@ -43,7 +43,6 @@ install:
 	cp -r templates debian/ldap-account-manager/usr/share/ldap-account-manager/
 
 	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager-lamdaemon/usr/share/ldap-account-manager/lib/lamdaemon.pl
-	install -D --mode=755 lib/lamdaemonOld.pl debian/ldap-account-manager-lamdaemon/usr/share/ldap-account-manager/lib/lamdaemonOld.pl
 	install -D --mode=755 debian/README-lamdaemon.Debian debian/ldap-account-manager-lamdaemon/usr/share/doc/ldap-account-manager-lamdaemon/README.Debian
 
 # Build architecture-independent files here.
