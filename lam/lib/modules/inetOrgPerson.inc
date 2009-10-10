@@ -35,7 +35,7 @@ $Id$
 *
 * @package modules
 */
-class inetOrgPerson extends baseModule {
+class inetOrgPerson extends baseModule implements passwordService {
 	
 	private static $unix_hosts_supported = 'unknown';
 	
@@ -100,9 +100,6 @@ class inetOrgPerson extends baseModule {
 		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
-		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
-		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
@@ -637,10 +634,6 @@ class inetOrgPerson extends baseModule {
 				"Headline" => _("Unix workstations"),
 				"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. If you enable host restrictions for your servers then \"*\" means every host and an empty field means no host.")
 			),
-			'userPassword' => array(
-				"Headline" => _("Password"),
-				"Text" => _("Please enter the password which you want to set for this account.")
-			),
 			'photoUpload' => array(
 				"Headline" => _("Add photo"),
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
@@ -736,16 +729,6 @@ class inetOrgPerson extends baseModule {
 			return array();
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		// do not set password if posixAccount is active
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (in_array('posixAccount', $modules)) {
-			if (isset($return[$this->getAccountContainer()->dn]['modify']['userPassword'])) {
-				unset($return[$this->getAccountContainer()->dn]['modify']['userPassword']);
-			}
-			if (isset($return[$this->getAccountContainer()->dn]['add']['userPassword'])) {
-				unset($return[$this->getAccountContainer()->dn]['add']['userPassword']);
-			}
-		}
 		// postalAddress, facsimileTelephoneNumber and jpegPhoto need special removing
 		if (isset($return[$this->getAccountContainer()->dn]['remove']['postalAddress'])) {
 			$return[$this->getAccountContainer()->dn]['modify']['postalAddress'] = array();
@@ -912,26 +895,6 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
-		// check password
-		if (isset($_POST['userPassword']) && ($_POST['userPassword'] != '')) {
-			if ($_POST['userPassword'] != $_POST['userPassword2']) {
-				$errors[] = $this->messages['userPassword'][0];
-			}
-			else {
-				if (!get_preg($_POST['userPassword'], 'password')) {
-					$errors[] = $this->messages['userPassword'][1];
-				}
-				else {
-					$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
-					if ($pwdPolicyResult === true) {
-						$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
-					}
-					else {
-						$errors[] = array('ERROR', $pwdPolicyResult);
-					}
-				}
-			}
-		}
 		if (isset($_POST['delPhoto'])) {
 			$this->attributes['jpegPhoto'] = array();
 		}
@@ -988,29 +951,6 @@ class inetOrgPerson extends baseModule {
 	
 		}
 		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-		// password
-		if (!in_array('posixAccount', $modules)) {
-			// new account, show input fields
-			if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['userPassword'][0])) {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Password') ),
-					array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
-					array('kind' => 'help', 'value' => 'userPassword'));
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Repeat password')),
-					array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
-					array('kind' => 'text', 'text' => ''));
-			}
-			// old account, show button for password page
-			else {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Password') ),
-					array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_password_open', 'type' => 'submit', 'value' => _('Change password')));
-			}
-
-			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-		}
-
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$street = '';
 			if (isset($this->attributes['street'][0])) $street = $this->attributes['street'][0];
@@ -1233,54 +1173,6 @@ class inetOrgPerson extends baseModule {
 			array('kind' => 'table', 'value' => $return, 'td' => array('width' => '100%')),
 			array('kind' => 'table', 'value' => $photo, 'td' => array('valign' => 'top', 'align' => 'right','width' => '100%'))
 			));
-		return $return;
-		}
-
-	/**
-	* Sets a new password.
-	*/
-	function process_password() {
-		if ($_POST['form_subpage_' . get_class($this) . '_attributes_back']) return array();
-		$messages = array();
-		if ($_POST['userPassword'] != $_POST['userPassword2']) {
-			$messages[] = $this->messages['userPassword'][0];
-		}
-		else {
-			if (!get_preg($_POST['userPassword'], 'password')) {
-				$messages[] = $this->messages['userPassword'][1];
-			}
-			else {
-				$pwdPolicyResult = checkPasswordStrength($_POST['userPassword']);
-				if ($pwdPolicyResult === true) {
-					$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, 'SSHA');
-				}
-				else {
-					$messages[] = array('ERROR', $pwdPolicyResult);
-				}
-			}
-		}
-		return $messages;
-	}
-
-	/**
-	* Displays the password changing dialog.
-	*
-	* @return array meta HTML code
-	*/
-	function display_html_password() {
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Password') ),
-			array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
-			array('kind' => 'help', 'value' => 'userPassword'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Repeat password')),
-			array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
-		$return[] = array(
-			array('kind' => 'table', 'value' => array(
-				array(
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
-					array('kind' => 'text')))));
 		return $return;
 	}
 
@@ -2049,6 +1941,38 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 	
+	/**
+	 * This method specifies if a module manages password attributes.
+	 * @see passwordService::managesPasswordAttributes
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (!in_array('posixAccount', $modules)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
+	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 * @see passwordService::passwordChangeRequested
+	 */
+	public function passwordChangeRequested($password, $modules) {
+		if (!in_array(get_class($this), $modules)) {
+			return array();
+		}
+		$this->attributes['userPassword'][0] = pwd_hash($password, true, 'SSHA');
+		return array();
+	}
+
 }
 
 ?>
