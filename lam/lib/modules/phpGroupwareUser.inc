@@ -32,7 +32,7 @@ $Id$
 *
 * @package modules
 */
-class phpGroupwareUser extends baseModule {
+class phpGroupwareUser extends baseModule implements passwordService {
 	
 	/**
 	* Creates a new kolabUser object.
@@ -199,6 +199,7 @@ class phpGroupwareUser extends baseModule {
 		if (isset($_POST['form_subpage_phpGroupwareUser_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'phpgwAccount';
 			$this->attributes['phpgwAccountExpires'][0] = "-1";
+			$this->attributes['phpgwLastPasswordChange'][0] = time();
 		}
 		elseif (isset($_POST['form_subpage_phpGroupwareUser_attributes_remObjectClass'])) {
 			for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
@@ -302,13 +303,6 @@ class phpGroupwareUser extends baseModule {
 		if (!in_array('phpgwAccount', $this->attributes['objectClass'])) {
 			return parent::save_attributes();
 		}
-		// set last password change
-		if (isset($this->getAccountContainer()->getAccountModule('posixAccount')->clearTextPassword)) {
-			$return[$this->getAccountContainer()->dn]['modify']['phpgwLastPasswordChange'] = array(time());
-		}
-		elseif ($this->getAccountContainer()->isNewAccount) {
-			$return[$this->getAccountContainer()->dn]['add']['phpgwLastPasswordChange'] = array(time());
-		}		
 		// set phpgwAccountID to UID number for new accounts
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		$this->attributes['phpgwAccountID'][0] = $attrs['uidNumber'][0];
@@ -436,6 +430,36 @@ class phpGroupwareUser extends baseModule {
 		return $messages;
 	}
 
+	/**
+	 * This method specifies if a module manages password attributes.
+	 * @see passwordService::managesPasswordAttributes
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		// only listen to password changes
+		return false;
+	}
+
+	/**
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
+	 * @param String $password new password
+	 * @param $modules list of modules for which the password should be changed
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 * @see passwordService::passwordChangeRequested
+	 */
+	public function passwordChangeRequested($password, $modules) {
+		// update password timestamp when Unix password was updated
+		if (!in_array('posixAccount', $modules)) {
+			return array();
+		}
+		$this->attributes['phpgwLastPasswordChange'][0] = time();
+		return array();
+	}
+		
 }
 
 ?>
