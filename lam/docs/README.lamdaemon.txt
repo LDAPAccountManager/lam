@@ -1,12 +1,6 @@
+
  This document describes the installation of lamdaemon which is responsible
  for managing quotas and creating home directories.
-
-
-Attention! The old version of lamdaemon is no longer supported. However,
-if you do not install libssh2 then LAM will fall back to the old mechanismn.
-If you want to stay with the old lamdaemon then change your /etc/sudoers entries
-to point to lamdaemonOld.pl.
-Do NOT mix lamdaemon and lamdaemonOld.pl!
 
 
  Setting up lamdaemon:
