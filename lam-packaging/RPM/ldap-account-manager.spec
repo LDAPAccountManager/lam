@@ -39,7 +39,7 @@ Requires:      perl
 %description
 LDAP Account Manager (LAM) runs on an existing webserver.
 It manages user, group and host accounts. Currently LAM supports
-these account types: Samba 2 and 3, Unix, Kolab 2, address book
+these account types: Samba 3, Unix, Kolab 2, address book
 entries, NIS mail aliases and MAC addresses. There is a tree
 viewer included to allow access to the raw LDAP attributes. You
 can use templates for account creation and use multiple configuration
@@ -49,7 +49,7 @@ a script included which manages quota and homedirectories.
 %description -l de
 LDAP Account Manager (LAM) läuft auf einem exisierenden Webserver.
 LAM verwaltet Benutzer, Gruppen und Hosts. Zur Zeit werden folgende Account-Typen
-unterstützt: Samba 2 und 3, Unix, Kolab 2, Addressbuch Einträge, NIS
+unterstützt: Samba 3, Unix, Kolab 2, Addressbuch Einträge, NIS
 mail Aliase und MAC-Addressen. Es gibt eine Baumansicht mit der man die
 LDAP-Daten direkt bearbeiten kann. Zum Anlegen von Accounts können
 Vorlagen definiert werden. Es können mehrere Konfigurations-Profile
