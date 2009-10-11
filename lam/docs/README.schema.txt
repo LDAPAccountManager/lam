@@ -18,7 +18,7 @@
   Source: Part of OpenLDAP installation
 
   
-  3. Samba 2/3 accounts (modules sambaAccount/sambaSamAccount)
+  3. Samba 3 accounts (modules sambaSamAccount)
 
   Schema: samba.schema
   Source: Part of Samba tarball (examples/LDAP/samba.schema)

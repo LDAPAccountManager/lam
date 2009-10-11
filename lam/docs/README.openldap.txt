@@ -12,9 +12,6 @@ INDICES:  Indices will improve the performance when searching for entries in the
           index gidNumber eq
           index memberUid eq
           index cn,sn,uid,displayName pres,sub,eq
-          # Samba 2.x
-          index rid eq
-          index primaryGroupID eq
           # Samba 3.x
           index sambaSID eq
           index sambaPrimaryGroupSID eq
