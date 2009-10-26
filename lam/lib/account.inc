@@ -310,7 +310,7 @@ function search_domains($server = null, $suffix = null) {
 	if ($server == null) {
 		$server = $_SESSION['ldap']->server();
 	}
-	$sr = @ldap_search($server, escapeDN($suffix), "objectClass=sambaDomain", $attr);
+	$sr = @ldap_search($server, escapeDN($suffix), "objectClass=sambaDomain", $attr, 0, 0, 0, LDAP_DEREF_ALWAYS);
 	if ($sr) {
 		$units = ldap_get_entries($server, $sr);
 		// delete count entry

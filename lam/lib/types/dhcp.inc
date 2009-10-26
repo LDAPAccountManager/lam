@@ -140,7 +140,7 @@ class lamDHCPList extends lamList {
         	$ldap = $_SESSION['ldap'];
         	$suffix = $_SESSION['config']->get_Suffix('dhcp');
         	
-        	$sr = @ldap_search($ldap->server(),"cn=".$entry['cn'][0].",".$suffix,"objectClass=dhcpHost");
+        	$sr = @ldap_search($ldap->server(),"cn=".$entry['cn'][0].",".$suffix,"objectClass=dhcpHost", array(), 0, 0, 0, LDAP_DEREF_ALWAYS);
         	if ($sr) {
 	        	$get = ldap_get_entries($ldap->server(),$sr);
 	        	

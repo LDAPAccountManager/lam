@@ -167,7 +167,7 @@ class lamUserList extends lamList {
 		$grp_suffix = $_SESSION['config']->get_Suffix('group');
 		$filter = "objectClass=posixGroup";
 		$attrs = array("cn", "gidNumber");
-		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($grp_suffix), $filter, $attrs);
+		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($grp_suffix), $filter, $attrs, 0, 0, 0, LDAP_DEREF_ALWAYS);
 		if ($sr) {
 			$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 			unset($info['count']); // delete count entry
@@ -200,7 +200,7 @@ class lamUserList extends lamList {
 		elseif ($attribute == "jpegphoto") {
 			if (sizeof($entry[$attribute][0]) < 100) {
 				// looks like we have read broken binary data, reread photo
-				$result = @ldap_search($_SESSION['ldap']->server(), escapeDN($entry['dn']), $attribute . "=*", array($attribute));
+				$result = @ldap_search($_SESSION['ldap']->server(), escapeDN($entry['dn']), $attribute . "=*", array($attribute), 0, 0, 0, LDAP_DEREF_ALWAYS);
 				if ($result) {
 					$tempEntry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 					if ($tempEntry) {

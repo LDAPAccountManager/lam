@@ -437,7 +437,7 @@ if(!empty($_POST['checklogin'])) {
 			$searchFilter = str_replace('%USER%', $username ,$searchFilter);
 			$searchSuccess = true;
 			$searchError = '';
-			$searchResult = @ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'));
+			$searchResult = @ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_ALWAYS);
 			if ($searchResult) {
 				$searchInfo = @ldap_get_entries($searchLDAP->server(), $searchResult);
 				if ($searchInfo) {

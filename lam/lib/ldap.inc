@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ class Ldap{
 	*/
 	function search_units($suffix) {
 		$ret = array();
-		$sr = @ldap_search($this->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"));
+		$sr = @ldap_search($this->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_ALWAYS);
 		if ($sr) {
 			$units = ldap_get_entries($this->server, $sr);
 			unset($units['count']);
