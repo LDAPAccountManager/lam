@@ -2,7 +2,7 @@
 /*
 $Id$
 
-  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
                 2005 - 2007  Roland Gruber
 
