@@ -5,7 +5,7 @@
 
   1. Unix accounts (modules posixAccount/shadowAccount/posixGroup)
 
-  Schema: nis.schema
+  Schema: nis.schema, rfc2307bis.schema
   Source: Part of OpenLDAP installation
 
   The rfc2307bis.schema is only supported by LAM Pro. Use the nis.schema
@@ -62,7 +62,7 @@
   10. SSH public keys (module ldapPublicKey)
 
   Schema: openssh-lpk.schema
-  Source: Included in patch from http://www.opendarwin.org/en/projects/openssh-lpk/
+  Source: Included in patch from http://code.google.com/p/openssh-lpk/
 
 
   11. Group of (unique) names (modules groupOfNames/groupOfUniqueNames)
