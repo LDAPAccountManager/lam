@@ -61,7 +61,7 @@ types: suffix_host: ou=machines,dc=my-domain,dc=com
 types: attr_host: #cn;#description;#uidNumber;#gidNumber
 types: modules_host: account,posixAccount,sambaSamAccount
 
-types: suffix_smbDomain: ou=domains,dc=my-domain,dc=com
+types: suffix_smbDomain: dc=my-domain,dc=com
 types: attr_smbDomain: sambaDomainName:Domain name;sambaSID:Domain SID
 types: modules_smbDomain: sambaDomain
 
