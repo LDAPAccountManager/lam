@@ -58,7 +58,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 		// add entries
 		for ($i = 0; $i < sizeof($new_suff); $i++) {
 			// check if entry is already present
-			$info = @ldap_search($_SESSION['ldap']->server(), escapeDN($new_suff[$i]), "", array(), 0, 0, 0, LDAP_DEREF_ALWAYS);
+			$info = @ldap_search($_SESSION['ldap']->server(), escapeDN($new_suff[$i]), "", array(), 0, 0, 0, LDAP_DEREF_NEVER);
 			$res = @ldap_get_entries($_SESSION['ldap']->server(), $info);
 			if ($res) continue;
 			$suff = $new_suff[$i];
@@ -100,7 +100,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 						// create missing entries
 						for ($k = sizeof($subsuffs) - 1; $k >= 0; $k--) {
 							// check if subsuffix is present
-							$info = @ldap_search($_SESSION['ldap']->server(), escapeDN($subsuffs[$k]), "", array(), 0, 0, 0, LDAP_DEREF_ALWAYS);
+							$info = @ldap_search($_SESSION['ldap']->server(), escapeDN($subsuffs[$k]), "", array(), 0, 0, 0, LDAP_DEREF_NEVER);
 							$res = @ldap_get_entries($_SESSION['ldap']->server(), $info);
 							if (!$res) {
 								$suffarray = explode(",", $subsuffs[$k]);

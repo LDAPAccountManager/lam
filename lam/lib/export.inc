@@ -285,7 +285,7 @@ class PlaLdapExporter extends PlaAbstractExporter{
     elseif( $this->scope == 'one' )
       $this->results = @ldap_list($this->ds, $this->base_dn, $this->queryFilter, $this->attributes);
     else // scope == 'sub'
-      $this->results = @ldap_search($this->ds, $this->base_dn, $this->queryFilter, $this->attributes, 0, 0, 0, LDAP_DEREF_ALWAYS);
+      $this->results = @ldap_search($this->ds, $this->base_dn, $this->queryFilter, $this->attributes, 0, 0, 0, LDAP_DEREF_NEVER);
     
     // if no result, there is a something wrong
     if( ! $this->results ) 

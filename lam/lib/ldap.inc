@@ -134,7 +134,7 @@ class Ldap{
 	*/
 	function search_units($suffix) {
 		$ret = array();
-		$sr = @ldap_search($this->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_ALWAYS);
+		$sr = @ldap_search($this->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($this->server, $sr);
 			unset($units['count']);

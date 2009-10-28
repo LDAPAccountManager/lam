@@ -183,7 +183,7 @@ class cache {
 				// Get Data from ldap
 				$search = $this->attributes[$scope];
 				$search[] = 'objectClass';
-				$result = @ldap_search($_SESSION['ldap']->server(), escapeDN($suffix), 'objectClass=*', $search, 0, 0, 0, LDAP_DEREF_ALWAYS);
+				$result = @ldap_search($_SESSION['ldap']->server(), escapeDN($suffix), 'objectClass=*', $search, 0, 0, 0, LDAP_DEREF_NEVER);
 				if ($result) {
 					// Write search result in array
 					$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);

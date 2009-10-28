@@ -77,7 +77,7 @@ else {
 function search_username($name) {
 	$filter = "(uid=$name)";
 	$attrs = array();
-	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix('user')), $filter, $attrs, 0, 0, 0, LDAP_DEREF_ALWAYS);
+	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix('user')), $filter, $attrs, 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		// return only first DN entry

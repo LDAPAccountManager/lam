@@ -824,7 +824,7 @@ class kolabUser extends baseModule {
 		// delegates
 		if (in_array('kolabDelegate', $fields)) {
 			$delegates = array();
-			$sr = @ldap_search($_SESSION['ldapHandle'], escapeDN($this->selfServiceSettings->LDAPSuffix), '(&(objectClass=inetOrgPerson)(mail=*))', array('mail'), 0, 0, 0, LDAP_DEREF_ALWAYS);
+			$sr = @ldap_search($_SESSION['ldapHandle'], escapeDN($this->selfServiceSettings->LDAPSuffix), '(&(objectClass=inetOrgPerson)(mail=*))', array('mail'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$result = ldap_get_entries($_SESSION['ldapHandle'], $sr);
 				for ($i = 0; $i < $result['count']; $i++) {
