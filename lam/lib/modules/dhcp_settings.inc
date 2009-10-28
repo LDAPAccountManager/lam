@@ -118,9 +118,9 @@ class dhcp_settings extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('top', 'dhcpOptions', 'dhcpComments');
+		$return['objectClasses'] = array('top', 'dhcpOptions');
 		// managed attributes
-		$return['attributes'] = array('cn', 'dhcpOption');
+		$return['attributes'] = array('cn', 'dhcpOption', 'dhcpComments');
 		// help Entries
 		$return['help'] = array(
 				'domainname' => array(
