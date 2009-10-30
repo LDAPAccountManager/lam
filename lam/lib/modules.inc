@@ -933,7 +933,7 @@ class accountContainer {
 	* Array of all used attributes
 	* Syntax is attribute => array ( objectClass => MUST or MAY, ...)
 	*/
-	var $attributes;
+	public $attributes;
 
 	/**
 	* This variale stores the account type.
@@ -945,19 +945,19 @@ class accountContainer {
 	private $module;
 
 	/** DN suffix of the account */
-	var $dn;
+	public $dn;
 
 	/** DN suffix of account when it was loaded */
-	var $dn_orig;
+	public $dn_orig;
 
 	/** RDN attribute of this account */
-	var $rdn;
+	public $rdn;
 	
 	/** DN of saved account */
 	public $finalDN;
 
 	/** original LDAP attributes when account was loaded from LDAP */
-	var $attributes_orig;
+	public $attributes_orig;
 
 	/** Module order */
 	private $order;
