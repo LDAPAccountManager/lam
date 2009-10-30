@@ -32,6 +32,8 @@ $Id$
 include_once("../lib/security.inc");
 /** access to configuration options */
 include_once("../lib/config.inc");
+/** tool definitions */
+include_once("../lib/tools.inc");
 
 // start session
 startSecureSession();
@@ -48,55 +50,19 @@ echo "</head>";
 
 echo "<body>\n";
 
-// list of tools and descriptions
+// get tool list
+$availableTools = getTools();
+// sort tools
+$toSort = array();
+for ($i = 0; $i < sizeof($availableTools); $i++) {
+	$myTool = new $availableTools[$i]();
+	$toSort[$availableTools[$i]] = $myTool->getPosition();
+}
+asort($toSort);
 $tools = array();
-
-// profile editor
-$pEditor = new LAMTool();
-$pEditor->name = _("Profile editor");
-$pEditor->description = _("Here you can manage your account profiles.");
-$pEditor->link = "profedit/profilemain.php";
-$pEditor->requiresWriteAccess = true;
-$tools[] = $pEditor;
-
-// file upload
-$fUpload = new LAMTool();
-$fUpload->name = _("File upload");
-$fUpload->description = _("Creates accounts by uploading a CSV formated file.");
-$fUpload->link = "masscreate.php";
-$fUpload->requiresWriteAccess = true;
-$tools[] = $fUpload;
-
-// OU editor
-$ouEditor = new LAMTool();
-$ouEditor->name = _("OU editor");
-$ouEditor->description = _("Manages OU objects in your LDAP tree.");
-$ouEditor->link = "ou_edit.php";
-$ouEditor->requiresWriteAccess = true;
-$tools[] = $ouEditor;
-
-// PDF editor
-$pdfEditor = new LAMTool();
-$pdfEditor->name = _("PDF editor");
-$pdfEditor->description = _("This tool allows you to customize the PDF pages.");
-$pdfEditor->link = "pdfedit/pdfmain.php";
-$pdfEditor->requiresWriteAccess = true;
-$tools[] = $pdfEditor;
-
-// schema browser
-$sBrowser = new LAMTool();
-$sBrowser->name = _("Schema browser");
-$sBrowser->description = _("Here you can browse LDAP object classes and attributes.");
-$sBrowser->link = "schema/schema.php";
-$tools[] = $sBrowser;
-
-// tests
-$tests = new LAMTool();
-$tests->name = _("Tests");
-$tests->description = _("Here you can test if certain LAM features work on your installation.");
-$tests->link = "tests/index.php";
-$tests->requiresWriteAccess = true;
-$tools[] = $tests;
+foreach ($toSort as $key => $value) {
+	$tools[] = new $key();
+}
 
 echo "<p>&nbsp;</p>\n";
 
@@ -105,21 +71,21 @@ echo "<table class=\"userlist\" rules=\"none\">\n";
 
 for ($i = 0; $i < sizeof($tools); $i++) {
 	// check access level
-	if ($tools[$i]->requiresWriteAccess && !checkIfWriteAccessIsAllowed()) {
+	if ($tools[$i]->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
 	}
-	if ($tools[$i]->requiresPasswordChanges && !checkIfPasswordChangeIsAllowed()) {
+	if ($tools[$i]->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
 		continue;
 	}
 	// print tool
 	echo "<tr class=\"userlist\">\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td><br>";
-			echo "<a href=\"" . $tools[$i]->link . "\" target=\"mainpart\"><b>" . $tools[$i]->name . "</b></a>";
+			echo "<a href=\"" . $tools[$i]->getLink() . "\" target=\"mainpart\"><img src=\"../graphics/" . $tools[$i]->getImageLink() . "\"> <b>" . $tools[$i]->getName() . "</b></a>";
 		echo "<br><br></td>\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td>";
-			echo $tools[$i]->description;
+			echo $tools[$i]->getDescription();
 		echo "</td>\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 	echo "</tr>\n";
@@ -130,30 +96,5 @@ echo "</table>\n";
 
 echo "</body>\n";
 echo "</html>\n";
-
-/**
- * Represents a tool.
- *
- * @author Roland Gruber
- * @package tools
- */
-class LAMTool {
-	
-	/** name of the tool */
-	public $name;
-	
-	/** description text */
-	public $description;
-	
-	/** link to tool page (relative to templates/) */
-	public $link;
-	
-	/** tool requires write access to LDAP */
-	public $requiresWriteAccess = false;
-	
-	/** tool requires password change rights */
-	public $requiresPasswordChanges = false;
-	
-}
 
 ?>
