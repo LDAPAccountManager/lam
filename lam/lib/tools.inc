@@ -58,10 +58,11 @@ function getTools() {
 
 /**
  * Represents a tool.
- * LAM will scan lib/tools/*.inc for classes which implement this interface. There will be an
- * entry on the tools page inside LAM for each found class (if it matches the security level).
+ * LAM will scan lib/tools/*.inc for classes which implement this interface. This alows to
+ * dynamically plugin additional tools. There will be an entry on the tools page inside LAM
+ * for each found class (if it matches the security level).
  * A LAMTool only specifies name, description and location of a tool. The tool functionality
- * is provided by the target page.
+ * is provided by the tool's target page.
  *
  * @author Roland Gruber
  * @package tools
