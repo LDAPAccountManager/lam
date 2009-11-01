@@ -210,7 +210,7 @@ class lamList {
 			if (isset($_POST["filter" . strtolower($this->attrArray[$i])])) {
 				$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 			}
-			if (isset($foundFilter) && preg_match('/^([0-9a-z _\\*\\$\\.-])+$/i', $foundFilter)) {
+			if (isset($foundFilter) && preg_match('/^([\p{L}\p{N} _\\*\\$\\.-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
 				$filter[$this->attrArray[$i]]['original'] = $foundFilter;
 				$filter[$this->attrArray[$i]]['regex'] = $foundFilter;
 				// replace special characters
