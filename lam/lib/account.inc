@@ -529,6 +529,7 @@ function get_preg($argument, $regexp) {
  * @return String escaped DN
  */
 function escapeDN($dn) {
+	$dn = preg_replace('/[ ]*,[ ]*/', ',', $dn);
 	return str_replace(
 		array(')',    '(',    ' ',    '*'),
 		array('\\29', '\\28', '\\20', '\\2a'),
