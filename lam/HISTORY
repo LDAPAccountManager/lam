@@ -1,3 +1,9 @@
+December 2009 2.9.0
+  - fixed bugs:
+	 -> Unable to edit accounts with DNs that contain spaces next to a comma (2889473)
+	 -> Login method "LDAP search" has problems if LDAP server is down (2889414)
+
+
 28.10.2009 2.8.0
   - ability to hide fields: inetOrgPerson, sambaSamAccount
 	- compatibility with PHP 5.3
