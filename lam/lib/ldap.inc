@@ -112,6 +112,7 @@ class Ldap{
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 				$return = ldap_errno($this->server);
+				$this->is_connected = true;
 				// return success number
 				return $return;
 			}
