@@ -136,24 +136,24 @@ class nisMailAlias extends baseModule {
 		$return = array();
 		// alias name
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Alias name') . '*'),
-			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'value' => $this->attributes['cn'][0]),
-			2 => array('kind' => 'help', 'value' => 'alias'));
+			array('kind' => 'text', 'text' => _('Alias name') . '*'),
+			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'value' => $this->attributes['cn'][0]),
+			array('kind' => 'help', 'value' => 'alias'));
 		// list current recipients
 		for ($i = 0; $i < sizeof($this->attributes['rfc822MailMember']); $i++) {
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Recipient')),
-				1 => array('kind' => 'input', 'name' => 'rfc822MailMember' . $i, 'type' => 'text', 'size' => '17', 'value' => $this->attributes['rfc822MailMember'][$i]),
-				2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'delRec' . $i, 'value' => _("Remove")),
-				3 => array('kind' => 'help', 'value' => 'recipient'));
+				array('kind' => 'text', 'text' => _('Recipient')),
+				array('kind' => 'input', 'name' => 'rfc822MailMember' . $i, 'type' => 'text', 'size' => '17', 'value' => $this->attributes['rfc822MailMember'][$i]),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'delRec' . $i, 'title' => _("Remove"), 'value' => ' ', 'image' => 'del.png'),
+				array('kind' => 'help', 'value' => 'recipient'));
 		}
 		// input box for new recipient
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('New recipient')),
-			1 => array('kind' => 'input', 'name' => 'rfc822MailMember', 'type' => 'text', 'size' => '17', 'value' => ''),
-			2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addRec', 'value' => _("Add")),
-			3 => array('kind' => 'help', 'value' => 'recipient'),
-			4 => array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['rfc822MailMember']), 'name' => 'rec_number'));
+			array('kind' => 'text', 'text' => _('New recipient')),
+			array('kind' => 'input', 'name' => 'rfc822MailMember', 'type' => 'text', 'size' => '17', 'value' => ''),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addRec', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
+			array('kind' => 'help', 'value' => 'recipient'),
+			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['rfc822MailMember']), 'name' => 'rec_number'));
 		return $return;
 	}
 
