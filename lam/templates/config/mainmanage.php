@@ -145,6 +145,11 @@ if (isset($_POST['submit'])) {
 		exit();
 	}
 }
+
+// check if config file is writable
+if (!$cfg->isWritable()) {
+	StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
+}
 ?>
 
 		<br>
@@ -357,7 +362,9 @@ if (isset($_POST['submit'])) {
 			<TR>
 				<TD>
 					<BR>
+					<?php if ($cfg->isWritable()) { ?>
 					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
+					<?php } ?>
 				</TD>
 			</TR>
 			</table>

@@ -404,7 +404,7 @@ class LAMConfig {
 					array_push($file_array, "types: " . $t_settings[$i] . ": " . $this->typeSettings[$t_settings[$i]] . "\n");
 				}
 			}
-			$file = fopen($conffile, "w");
+			$file = @fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 				fclose($file);
@@ -413,7 +413,6 @@ class LAMConfig {
 			}
 			else {
 				StatusMessage("ERROR", _("Cannot open config file!") . " (" . $conffile . ")");
-				exit;
 			}
 		}
 	}
@@ -1019,6 +1018,8 @@ class LAMCfgMain {
 
 	/** minimum character classes (upper, lower, numeric, symbols) */
 	public $passwordMinClasses = 0;
+	
+	private $conffile;
 
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
@@ -1030,6 +1031,7 @@ class LAMCfgMain {
 	* Loads preferences from config file
 	*/
 	function __construct() {
+		$this->conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		// set default values
 		$this->sessionTimeout = 30;
 		$this->logLevel = LOG_NOTICE;
@@ -1044,9 +1046,8 @@ class LAMCfgMain {
 	* @return boolean true if file was readable
 	*/
 	private function reload() {
-		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
-		if (is_file($conffile) == True) {
-			$file = @fopen($conffile, "r");
+		if (is_file($this->conffile) == True) {
+			$file = @fopen($this->conffile, "r");
 			if (!$file) return false; // abort if file is not readable
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
@@ -1071,9 +1072,8 @@ class LAMCfgMain {
 	* Saves preferences to config file config.cfg
 	*/
 	public function save() {
-		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
-		if (is_file($conffile) == True) {
-			$file = fopen($conffile, "r");
+		if (is_file($this->conffile) == True) {
+			$file = fopen($this->conffile, "r");
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {
@@ -1110,14 +1110,13 @@ class LAMCfgMain {
 		if (!in_array("passwordMinNumeric", $saved)) array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
 		if (!in_array("passwordMinSymbol", $saved)) array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
 		if (!in_array("passwordMinClasses", $saved)) array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
-		$file = @fopen($conffile, "w");
+		$file = @fopen($this->conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 			fclose($file);
 		}
 		else {
-			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
-			exit;
+			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $this->conffile . ")");
 		}
 	}
 	
@@ -1163,6 +1162,15 @@ class LAMCfgMain {
 	 */
 	private function hashPassword($password, $salt) {
 		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+	}
+	
+	/**
+	 * Returns if the configuration file is writable.
+	 *
+	 * @return boolean writable
+	 */
+	public function isWritable() {
+		return is_writeable($this->conffile);
 	}
 	
 }

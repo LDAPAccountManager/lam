@@ -46,9 +46,9 @@ setlanguage();
 // remove settings from session
 if (isset($_SESSION["mainconf_password"])) unset($_SESSION["mainconf_password"]);
 
+$cfgMain = new LAMCfgMain();
 // check if user entered a password
 if (isset($_POST['passwd'])) {
-	$cfgMain = new LAMCfgMain();
 	if (isset($_POST['passwd']) && ($cfgMain->checkPassword($_POST['passwd']))) {
 		$_SESSION["mainconf_password"] = $_POST['passwd'];
 		metaRefresh("mainmanage.php");
@@ -88,7 +88,14 @@ echo $_SESSION['header'];
 		<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank">
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
-		<hr><br><br>
+		<hr><br>
+		<?php
+			// check if config file is writable
+			if (!$cfgMain->isWritable()) {
+				StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
+			}
+		?>
+		<br>
 		<!-- form to change main options -->
 		<form action="mainlogin.php" method="post">
 		<table align="center" border="2" rules="none" bgcolor="white">
