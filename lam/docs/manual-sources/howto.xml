@@ -1,0 +1,1144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <title>LDAP Account Manager - Manual</title>
+
+  <preface>
+    <title>Overview</title>
+
+    <para>LDAP Account Manager (LAM) manages user, group and host accounts in
+    an LDAP directory. LAM runs on any webserver with PHP5 support and
+    connects to your LDAP server unencrypted or via SSL/TLS.</para>
+
+    <para>Currently LAM supports these account types: Samba 3, Unix, Kolab 2,
+    address book entries, NIS mail aliases and MAC addresses. There is a tree
+    viewer included to allow access to the raw LDAP attributes. You can use
+    templates for account creation and use multiple configuration profiles.
+    LAM is translated to Catalan, Chinese (Traditional + Simplified), Czech,
+    Dutch, English, French, German, Hungarian, Italian, Japanese, Polish,
+    Portuguese, Russian and Spanish.</para>
+
+    <para><ulink
+    url="http://www.ldap-account-manager.org/">http://www.ldap-account-manager.org/</ulink></para>
+
+    <para>Copyright (C) 2003 - 2009</para>
+
+    <simplelist>
+      <member>Michael Duergner &lt;michael@duergner.com&gt;</member>
+
+      <member>Roland Gruber &lt;post@rolandgruber.de&gt;</member>
+
+      <member>Tilo Lutz &lt;tilolutz@gmx.de&gt;</member>
+    </simplelist>
+
+    <para><emphasis role="bold">Requirements:</emphasis></para>
+
+    <simplelist>
+      <member>PHP5 (&gt;= 5.1)</member>
+
+      <member>Openldap (2.0 or greater)</member>
+
+      <member>A web browser that supports CSS</member>
+    </simplelist>
+
+    <para>The default password to edit the configuration options is
+    "lam".</para>
+
+    <para><emphasis role="bold">License:</emphasis></para>
+
+    <para>LAM is published under the GNU General Public License. The complete
+    list of licenses can be found in the copyright file.</para>
+
+    <literallayout>
+Have fun!
+     The LAM development team</literallayout>
+  </preface>
+
+  <chapter>
+    <title>Installation</title>
+
+    <section>
+      <title>New installation</title>
+
+      <section>
+        <title>Requirements</title>
+
+        <para>LAM has the following requirements to run:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Apache webserver (SSL recommended) with PHP module (PHP 5
+            (&gt;= 5.1) with ldap, gettext, xml and optional mcrypt)</para>
+          </listitem>
+
+          <listitem>
+            <para>Some LAM plugins may require additional PHP extensions (you
+            will get a note on the login page if something is missing)</para>
+          </listitem>
+
+          <listitem>
+            <para>Perl (optional, needed only for lamdaemon)</para>
+          </listitem>
+
+          <listitem>
+            <para>OpenLDAP (&gt;2.0)</para>
+          </listitem>
+
+          <listitem>
+            <para>A web browser :-)</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>MCrypt will be used to store your LDAP password encrypted in the
+        session file.</para>
+
+        <para>See <link linkend="a_schema">LDAP schema fles</link> for
+        information about used LDAP schema files.</para>
+      </section>
+
+      <section>
+        <title>Prepackaged releases</title>
+
+        <para>LAM is available as prepackaged version for various
+        platforms.</para>
+
+        <section>
+          <title>Debian</title>
+
+          <informaltable frame="none" tabstyle="noborder">
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/debian.png" />
+                      </imageobject>
+                    </inlinemediaobject></entry>
+
+                  <entry>LAM is part of the official Debian repository. New
+                  releases are uploaded to unstable and will available
+                  automatically in testing and the stable releases. You can
+                  run<literal> </literal><para><emphasis role="bold">apt-get
+                  install ldap-account-manager</emphasis></para>to install LAM
+                  on your server. Additionally, you may download the LAM
+                  Debian packages from the <ulink type=""
+                  url="http://www.ldap-account-manager.org/">LAM
+                  homepage</ulink> or the <ulink
+                  url="http://packages.debian.org/search?keywords=ldap-account-manager">Debian
+                  package homepage</ulink>.</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+
+        <section>
+          <title>Suse/Fedora</title>
+
+          <informaltable frame="none">
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/suse.png" />
+                      </imageobject>
+                    </inlinemediaobject><para></para><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/fedora.png" />
+                      </imageobject>
+                    </inlinemediaobject></entry>
+
+                  <entry>There are RPM packages available on the <ulink
+                  type="" url="http://www.ldap-account-manager.org/">LAM
+                  homepage</ulink>. The packages can be installed with this
+                  command<para><emphasis role="bold">rpm -i &lt;path to LAM
+                  package&gt;</emphasis></para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+
+        <section>
+          <title>Other RPM based distributions</title>
+
+          <para>The RPM packages for Suse/Fedora are very generic and should
+          be installable on other RPM-based distributions, too. The Fedora
+          packages use apache:apache as file owner and the Suse ones use
+          wwwrun:www.</para>
+        </section>
+
+        <section>
+          <title>FreeBSD</title>
+
+          <informaltable frame="none">
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/freebsd.png" />
+                      </imageobject>
+                    </inlinemediaobject></entry>
+
+                  <entry>LAM is part of the official FreeBSD ports tree. For
+                  more details see these pages:<para>FreeBSD-CVS: <ulink
+                  url="http://www.freebsd.org/cgi/cvsweb.cgi/ports/sysutils/ldap-account-manager">http://www.freebsd.org/cgi/cvsweb.cgi/ports/sysutils/ldap-account-manager</ulink></para><para>FreshPorts:
+                  <ulink
+                  url="http://www.freshports.org/sysutils/ldap-account-manager">http://www.freshports.org/sysutils/ldap-account-manager</ulink></para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+      </section>
+
+      <section>
+        <title>Installing the tar.gz</title>
+
+        <section>
+          <title>Extract the archive</title>
+
+          <para>Please extract the archive with the following command:</para>
+
+          <para>tar xzf ldap-account-manager-&lt;version&gt;.tar.gz</para>
+        </section>
+
+        <section>
+          <title>Install the files</title>
+
+          <section>
+            <title>Manual copy</title>
+
+            <para>Copy the files into the html-file scope of the web server.
+            For example /apache/htdocs.</para>
+
+            <para>Then set the appropriate file permissions:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>lam/sess: write permission for apache user</para>
+              </listitem>
+
+              <listitem>
+                <para>lam/tmp: write permission for apache user</para>
+              </listitem>
+
+              <listitem>
+                <para>lam/config (with subdirectories): write permission for
+                apache user</para>
+              </listitem>
+
+              <listitem>
+                <para>lam/lib: lamdaemon.pl must be set executable (See also
+                docs/readme.lamdeamon.txt)</para>
+              </listitem>
+            </itemizedlist>
+          </section>
+
+          <section>
+            <title>With configure script</title>
+
+            <para>Instead of manually copying files you can also use the
+            included configure script to install LAM. See "./configure --help"
+            for a list of install options.</para>
+          </section>
+        </section>
+
+        <section>
+          <title>Configuration files</title>
+
+          <para>Copy conf/config.cfg_sample to conf/config.cfg and
+          conf/lam.conf_sample to conf/lam.conf. Open the index.html in your
+          web browser:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Follow the link "LAM configuration" from the start page.
+              (The default passwords to edit all options is "lam")</para>
+            </listitem>
+
+            <listitem>
+              <para>Select "Edit general settings" to setup global settings
+              and to change the configuration master password.</para>
+            </listitem>
+
+            <listitem>
+              <para>Select "Edit server profiles" to setup your server
+              profiles. There should be the lam profile which you just copied
+              from the sample file. The default password is "lam". Now change
+              the settings to fit for your environment.</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+      </section>
+
+      <section>
+        <title>System configuration</title>
+
+        <section>
+          <title>PHP</title>
+
+          <para>LAM runs with PHP5 (&gt;= 5.1). Needed changes in your
+          php.ini:</para>
+
+          <para>memory_limit = 64M</para>
+        </section>
+
+        <section>
+          <title>Locales for non-Englisch translation</title>
+
+          <para>If you want to use a translated version of LAM be sure to
+          install the needed locales. The following table shows the needed
+          locales for the different languages.</para>
+
+          <table>
+            <title>Locales</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Language</emphasis></entry>
+
+                  <entry><emphasis role="bold">Locale</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Catalan</entry>
+
+                  <entry>ca_ES.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Chinese (Simplified)</entry>
+
+                  <entry>zh_CN.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Chinese (Traditional)</entry>
+
+                  <entry>zh_TW.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Czech</entry>
+
+                  <entry>cs_CZ.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Dutch</entry>
+
+                  <entry>nl_NL.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>English</entry>
+
+                  <entry>no extra locale needed</entry>
+                </row>
+
+                <row>
+                  <entry>French</entry>
+
+                  <entry>fr_FR.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>German</entry>
+
+                  <entry>de_DE.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Hungarian</entry>
+
+                  <entry>hu_HU.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Italian</entry>
+
+                  <entry>it_IT.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Japanese</entry>
+
+                  <entry>ja_JP.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Polish</entry>
+
+                  <entry>pl_PL.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Portuguese</entry>
+
+                  <entry>pt_BR.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Russian</entry>
+
+                  <entry>ru_RU.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Spanish</entry>
+
+                  <entry>es_ES.utf8</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <para>You can get a list of all installed locales on your system by
+          executing: </para>
+
+          <para> locale -a</para>
+
+          <para>Debian users can add locales with "dpkg-reconfigure
+          locales".</para>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Upgrading LAM</title>
+
+      <section>
+        <title>Migrating configuration files</title>
+
+        <para>LAM stores all configuration files in the "config" folder.
+        Please backup the following files and copy them after the new version
+        is installed.</para>
+
+        <simplelist>
+          <member>config/*.conf</member>
+
+          <member>config/config.cfg</member>
+
+          <member>config/pdf/*.xml</member>
+
+          <member>config/profiles/*.xml</member>
+        </simplelist>
+
+        <para>LAM Pro only:</para>
+
+        <simplelist>
+          <member>config/selfService/*.*</member>
+
+          <member>config/passwordMailTemplate.txt</member>
+        </simplelist>
+
+        <para>Please check also the version specific instructions. They might
+        include additional actions.</para>
+      </section>
+
+      <section>
+        <title>Version specific upgrade instructions</title>
+
+        <section>
+          <title>2.2.0 -&gt; 2.3.0</title>
+
+          <para><emphasis role="bold">LAM Pro:</emphasis> There is now a
+          separate account type for group of (unique) names. Please edit your
+          server profiles to activate the new account type.</para>
+        </section>
+
+        <section>
+          <title>1.1.0 -&gt; 2.2.0</title>
+
+          <para>No changes.</para>
+        </section>
+      </section>
+    </section>
+  </chapter>
+
+  <appendix id="a_schema">
+    <title>LDAP schema files</title>
+
+    <para>Here is a list of needed LDAP schema files for the different LAM
+    modules. For OpenLDAP we also provide a source where you can get the
+    files.</para>
+
+    <table frame="none" lang="" role="" tabstyle="nogrid">
+      <title>LDAP schema files</title>
+
+      <tgroup cols="6">
+        <thead>
+          <row>
+            <entry></entry>
+
+            <entry>Account type</entry>
+
+            <entry>Object class(es)</entry>
+
+            <entry>Schema name</entry>
+
+            <entry>Source</entry>
+
+            <entry>Notes</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_unix.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Unix accounts</entry>
+
+            <entry>posixAccount, shadowAccount, posixGroup</entry>
+
+            <entry>nis.schema, rfc2307bis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>The rfc2307bis.schema is only supported by LAM Pro. Use the
+            nis.schema if you do not want to upgrade to LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_inetOrgPerson.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Address book entries</entry>
+
+            <entry>inetOrgPerson</entry>
+
+            <entry>inetorgperson.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_samba.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Samba 3 accounts</entry>
+
+            <entry>sambaSamAccount, sambaGroupMapping, sambaDomain</entry>
+
+            <entry>samba.schema</entry>
+
+            <entry>Part of Samba tarball (examples/LDAP/samba.schema)</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_kolab.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Kolab 2 users</entry>
+
+            <entry>kolabUser</entry>
+
+            <entry>kolab2.schema, rfc2739.schema</entry>
+
+            <entry>Part of Kolab 2 installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Mail routing</entry>
+
+            <entry>inetLocalMailRecipient</entry>
+
+            <entry>misc.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Mail aliases</entry>
+
+            <entry>nisMailAlias</entry>
+
+            <entry>misc.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mac.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>MAC addresses</entry>
+
+            <entry>ieee802device</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_user.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Simple Accounts</entry>
+
+            <entry>account</entry>
+
+            <entry>cosine.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_ssh.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>SSH public keys</entry>
+
+            <entry>ldapPublicKey</entry>
+
+            <entry>openssh-lpk.schema</entry>
+
+            <entry>Included in patch from <ulink
+            url="http://code.google.com/p/openssh-lpk/">http://code.google.com/p/openssh-lpk/</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_groupOfNames.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Group of (unique) names</entry>
+
+            <entry>groupOfNames, groupOfUniqueNames</entry>
+
+            <entry>core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>These modules are only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_phpgroupware.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>phpGroupWare</entry>
+
+            <entry>phpGroupwareUser, phpGroupwareGroup</entry>
+
+            <entry>phpgroupware.schema</entry>
+
+            <entry><ulink
+            url="http://www.phpgroupware.org/">http://www.phpgroupware.org/</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_dhcp.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>DHCP</entry>
+
+            <entry></entry>
+
+            <entry>dhcp.schema</entry>
+
+            <entry>docs/schema/dhcp.schema</entry>
+
+            <entry>The LDAP suffix should be set to your dhcpServer
+            entry.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_alias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Aliases</entry>
+
+            <entry>alias, uidObject</entry>
+
+            <entry>core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>These modules are only available in LAM Pro.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </appendix>
+
+  <appendix id="a_security">
+    <title>Security</title>
+
+    <section>
+      <title>Use of SSL</title>
+
+      <para>The data which is transfered between you and LAM is very
+      sensitive. Please always use SSL encrypted connections between LAM and
+      your browser to protect yourself against network sniffers.</para>
+    </section>
+
+    <section>
+      <title>LDAP with SSL and TLS</title>
+
+      <para>SSL will be used if you use ldaps://servername in your
+      configuration profile. TLS can be activated with the "Activate TLS"
+      option.</para>
+
+      <para>You will need to setup ldap.conf to trust your server certificate.
+      Some installations use /etc/ldap.conf and some use /etc/ldap/ldap.conf.
+      It is a good idea to symlink /etc/ldap.conf to /etc/ldap/ldap.conf.
+      Specify the server CA certificate with the following option:</para>
+
+      <para>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</para>
+
+      <para>This needs to be the public part of the signing certificate
+      authority. See "man ldap.conf" for additional options.</para>
+    </section>
+
+    <section>
+      <title>Chrooted servers</title>
+
+      <para>If your server is chrooted and you have no access to /dev/random
+      or /dev/urandom this can be a security risk. LAM stores your LDAP
+      password encrypted in the session. LAM uses rand() to generate the key
+      if /dev/random and /dev/urandom are not accessible. Therefore the key
+      can be easily guessed. An attaker needs read access to the session file
+      (e.g. by another Apache instance) to exploit this.</para>
+    </section>
+
+    <section>
+      <title>Protection of your LDAP password and directory contents</title>
+
+      <para>You have to install the MCrypt extension for PHP to enable
+      encryption.</para>
+
+      <para>Your LDAP password is stored encrypted in the session file. The
+      key and IV to decrypt it are stored in two cookies. We use MCrypt/AES to
+      encrypt the password. All data that was read from LDAP and needs to be
+      stored in the session file is also encrypted.</para>
+    </section>
+
+    <section>
+      <title>Apache configuration</title>
+
+      <para>LAM includes several .htaccess files to protect your configuration
+      files and temporary data. Apache is often configured to not use
+      .htaccess files by default. Therefore, please check your Apache
+      configuration and change the override setting to:</para>
+
+      <para>AllowOverride All</para>
+
+      <para>If you are experienced in configuring Apache then you can also
+      copy the security settings from the .htaccess files to your main Apache
+      configuration.</para>
+
+      <para>If possible, you should not rely on .htaccess files but also move
+      the config and sess directory to a place outside of your WWW root. You
+      can put a symbolic link in the LAM directory so that LAM finds the
+      configuration/session files.</para>
+
+      <para>Security sensitive directories:</para>
+
+      <para><emphasis role="bold">config: </emphasis>Contains your LAM
+      configuration and account profiles</para>
+
+      <itemizedlist>
+        <listitem>LAM configuration passwords (SSHA hashed)</listitem>
+
+        <listitem>default values for new accounts</listitem>
+
+        <listitem>directory must be accessibly by Apache but needs not to be
+        accessible by the browser</listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">sess:</emphasis> PHP session files</para>
+
+      <itemizedlist>
+        <listitem>LAM admin password in clear text or MCrypt encrypted</listitem>
+
+        <listitem>cached LDAP entries in clear text or MCrypt encrypted</listitem>
+
+        <listitem>directory must be accessibly by Apache but needs not to be
+        accessible by the browser</listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">tmp:</emphasis> temporary files</para>
+
+      <itemizedlist>
+        <listitem>PDF documents which may also include passwords</listitem>
+
+        <listitem>images of your users</listitem>
+
+        <listitem>directory contents must be accessible by browser but directory
+        itself needs not to be browseable</listitem>
+      </itemizedlist>
+    </section>
+  </appendix>
+
+  <appendix>
+    <title>Recommended OpenLDAP settings</title>
+
+    <para>Some basic hints to configure the OpenLDAP server:</para>
+
+    <para><emphasis role="bold">Size limit:</emphasis> OpenLDAP allows by
+    default 500 return values per search, if you have more users/groups/hosts
+    change this in slapd.conf: e.g. "sizelimit 10000" or "sizelimit -1" for
+    unlimited return values.</para>
+
+    <para><emphasis role="bold">Indices:</emphasis> Indices will improve the
+    performance when searching for entries in the LDAP directory. The
+    following indices are recommended:</para>
+
+    <simplelist>
+      <member>index objectClass eq</member>
+
+      <member>index default sub</member>
+
+      <member>index uidNumber eq</member>
+
+      <member>index gidNumber eq</member>
+
+      <member>index memberUid eq</member>
+
+      <member>index cn,sn,uid,displayName pres,sub,eq</member>
+
+      <member># Samba 3.x</member>
+
+      <member>index sambaSID eq</member>
+
+      <member>index sambaPrimaryGroupSID eq</member>
+
+      <member>index sambaDomainName eq</member>
+    </simplelist>
+  </appendix>
+
+  <appendix>
+    <title>Setup for home directory and quota management</title>
+
+    <para>Lamdaemon.pl is used to modify quota and home directories on a
+    remote or local host via SSH. If you want wo use it you have to set up the
+    following things to get it to work:</para>
+
+    <section>
+      <title>LDAP Account Manager configuration</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Set the remote or local host in the configuration (e.g.
+          127.0.0.1)</para>
+        </listitem>
+
+        <listitem>
+          <para>Path to lamdaemon.pl, e.g.
+          /srv/www/htdocs/lam/lib/lamdaemon.pl If you installed a Debian or
+          RPM package then the script may be located at
+          /usr/share/ldap-account-manager/lib or /var/www/html/lam/lib.</para>
+        </listitem>
+
+        <listitem>
+          <para>Your LAM admin user must be a valid Unix account. It needs to
+          have the object class "posixAccount" and an attribute "uid". This
+          account must be accepted by the SSH daemon of your home directory
+          server. Do not create a second local account but change your system
+          to accept LDAP users. You can use LAM to add the Unix account part
+          to your admin user.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Setup sudo</title>
+
+      <para>The perl script has to run as root. Therefore we need a wrapper,
+      sudo. Edit /etc/sudoers on host where homedirs or quotas should be used
+      and add the following line:</para>
+
+      <para>$admin All= NOPASSWD: $path</para>
+
+      <para>$admin is the admin user from LAM (must be a valid Unix account)
+      and $path is the path to lamdaemon.pl. Example:</para>
+
+      <para>myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl</para>
+
+      <para>You might need to run the sudo command once manually to init sudo.
+      The command "sudo -l" will show all possible sudo commands of the
+      current user.</para>
+    </section>
+
+    <section>
+      <title>Setup Perl</title>
+
+      <para>We need an extra Perl module - Quota. To install it, run:</para>
+
+      <simplelist>
+        <member>perl -MCPAN -e shell</member>
+
+        <member>install Quota</member>
+      </simplelist>
+
+      <para>If your Perl executable is not located in /usr/bin/perl you will
+      have to edit the path in the first line of lamdaemon.pl. If you have
+      problems compiling the Perl modules try installing a newer release of
+      your GCC compiler and the "make" application.</para>
+
+      <para>Several Linux distributions already include a quota package for
+      Perl.</para>
+    </section>
+
+    <section>
+      <title>Install libssh2</title>
+
+      <para>The libssh2 library is needed to connect to the homedir/quota
+      server via SSH.</para>
+
+      <section>
+        <title>Install libssh2</title>
+
+        <para>You can get libssh2 here: <ulink
+        url="http://www.libssh2.org">http://www.libssh2.org</ulink> Unpack the
+        package and install it by executing the commands "./configure", "make"
+        and "make install" in the extracted directory. Several Linux
+        distributions already include a package for libssh2.</para>
+      </section>
+
+      <section>
+        <title>Install SSH2 for PHP</title>
+
+        <para>Several Linux distributions already include a package (e.g.
+        libssh2-php).</para>
+
+        <para>Otherwise, run "pecl install ssh2-beta". If you have no pecl
+        command then install the PHP Pear package (e.g. php-pear or php5-pear)
+        for your distribution.</para>
+
+        <para>If you want to compile it yourself, get the sources here: <ulink
+        url="http://pecl.php.net/package/ssh2">http://pecl.php.net/package/ssh2</ulink></para>
+
+        <para>After installing the PHP module please add this line to your
+        php.ini:</para>
+
+        <para>extension=ssh2.so</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Set up SSH</title>
+
+      <para>Your SSH daemon must offer the password authentication method. To
+      activate it just use this configuration option in
+      /etc/ssh/sshd_config:</para>
+
+      <para>PasswordAuthentication yes</para>
+    </section>
+
+    <section>
+      <title>Troubleshooting</title>
+
+      <para>If you have problems managing quotas and home directories then
+      these points might help:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>There is a test page for lamdaemon: Login to LAM and open
+          Tools -&gt; Tests -&gt; Lamdaemon test</para>
+        </listitem>
+
+        <listitem>
+          <para>If you get garbage characters at the test page then PHP and
+          your php5-ssh2 library may not fit together. Try recompiling the
+          library and libssh2.</para>
+
+          <para>This combination was tested successfully: libssh2 0.13 with
+          php5-ssh2 0.10</para>
+
+          <para>php5-ssh2 0.11 should have no problems with recent libssh2
+          releases.</para>
+        </listitem>
+
+        <listitem>
+          <para>Check /var/log/auth.log or its equivalent on your system. This
+          file contains messages about all logins. If the ssh login failed
+          then you will find a description about the reason here.</para>
+        </listitem>
+
+        <listitem>
+          <para>Set sshd in debug mode. In /etc/ssh/sshd_conf add these
+          lines:</para>
+
+          <simplelist>
+            <member>SyslogFacility AUTH</member>
+
+            <member>LogLevel DEBUG3</member>
+          </simplelist>
+
+          <para>Now check /var/log/syslog for messages from sshd.</para>
+        </listitem>
+
+        <listitem>
+          <para>Update Openssh. A Suse Linux user reported that upgrading
+          Openssh solved the problem.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </appendix>
+
+  <appendix>
+    <title>Kolab user management</title>
+
+    <para>Here are some notes on managing Kolab accounts with LAM:</para>
+
+    <section>
+      <title>Creating accounts</title>
+
+      <para>The mailbox server cannot be changed after the account has been
+      saved. Please make sure that the value is correct. The email address
+      ("Personal" page) must match your Kolab domain, otherwise the account
+      will not work.</para>
+    </section>
+
+    <section>
+      <title>Deleting accounts</title>
+
+      <para>If you want to cleanly delete accounts use the "Mark for deletion"
+      button on the Kolab subpage of an account. This will also remove the
+      user's mailbox. If you delete the account from the account list (which
+      is standard for LAM accounts) then no cleanup actions are made.</para>
+    </section>
+
+    <section>
+      <title>Managing accounts with both LAM and Kolab Admin GUI</title>
+
+      <para>The Kolab GUI has some restrictions that LAM does not have. Please
+      pay attention to the following restrictions:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Common name in LAM</para>
+
+          <para>The common name must have the format "&lt;first name&gt;
+          &lt;last name&gt;". You can leave the field empty in LAM and it will
+          automatically fill in the correct value.</para>
+        </listitem>
+
+        <listitem>
+          <para>Changing first/last name in Kolab GUI</para>
+
+          <para>Do not change the first/last name of your users in the Kolab
+          GUI! The GUI will change the common name which leads to an LDAP
+          object class violation. This is caused by a bug in the Kolab
+          GUI.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Adding a Kolab part to existing accounts</title>
+
+      <para>If you upgrade existing non-Kolab accounts please make sure that
+      the account has an Unix password.</para>
+    </section>
+
+    <section>
+      <title>Installing LAM on the Kolab server</title>
+
+      <para>You can install LAM in the directory "/kolab/var/kolab/www" which
+      is the root directory for Apache. The PHP installation already includes
+      all required packages.</para>
+    </section>
+  </appendix>
+
+  <appendix>
+    <title>InetOrgPerson and the host attribute</title>
+
+    <para>The attribute "host" is only in objectclass account. Unfortunatly
+    "account" conflicts with "inetorgperson". so there's no perfect way to use
+    both.</para>
+
+    <para>In order to get attribute host working you have to modify
+    schema/inetorgperson and include host:</para>
+
+    <literallayout># inetOrgPerson
+# The inetOrgPerson represents people who are associated with an
+# organization in some way.  It is a structural class and is derived
+# from the organizationalPerson which is defined in X.521 [X521].
+objectclass     ( 2.16.840.1.113730.3.2.2
+    NAME 'inetOrgPerson'
+        DESC 'RFC2798: Internet Organizational Person'
+    SUP organizationalPerson
+    STRUCTURAL
+        MAY (
+                audio $ businessCategory $ carLicense $ departmentNumber $
+                displayName $ employeeNumber $ employeeType $ givenName $
+                homePhone $ homePostalAddress $ initials $ jpegPhoto $
+                labeledURI $ mail $ manager $ mobile $ o $ pager $
+                photo $ roomNumber $ secretary $ uid $ userCertificate $
+                x500uniqueIdentifier $ preferredLanguage $
+                userSMIMECertificate $ userPKCS12 $ host )
+        )</literallayout>
+  </appendix>
+</book>
