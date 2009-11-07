@@ -26,6 +26,12 @@ rm lam/lib/font/*.ttf
 find . -name .cvsignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
+# create LAM manual
+cd ldap-account-manager-$VERSION/docs/manual-sources
+./make.sh
+cd ../../..
+rm -r ldap-account-manager-$VERSION/docs/manual-sources
+
 # create LAM Pro documentation
 cd lamPro/docs/LAMProHowTo-sources
 ./make.sh

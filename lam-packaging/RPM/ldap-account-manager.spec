@@ -77,10 +77,13 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 
 %files
 %defattr(-, root, root)
-%doc docs/*txt COPYING HISTORY INSTALL README VERSION
+%doc COPYING HISTORY README docs
 %{httpd_rootdir}/%{lam_dir}
 
 %changelog
+* Sat Nov 07 2009 - Roland Gruber post@rolandgruber.de
+- Added LAM manuals
+
 * Sat Jul 26 2008 - Roland Gruber post@rolandgruber.de
 - Added subpackage for lamdaemon
 

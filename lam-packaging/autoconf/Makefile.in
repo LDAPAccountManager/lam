@@ -34,18 +34,9 @@ top_builddir = .
 HTTPD_USER = @HTTPD_USER@
 HTTPD_GROUP = @HTTPD_GROUP@
 
-#INSTALL_PROGRAM = $(INSTALL)
-#INSTALL_DATA = $(INSTALL) -m 644
-#INSTALL_SCRIPT = $(INSTALL) -m 755
+DOCS = COPYING HISTORY README copyright
 
-DOCS = COPYING HISTORY INSTALL README copyright \
-	docs/README.Kolab.txt docs/README.fpdf.htm \
-	docs/README.hosts.txt docs/README.lamdaemon.txt \
-	docs/README.openldap.txt docs/README.schema.txt \
-	docs/README.security.txt docs/README.upgrade.txt \
-	docs/schema/dhcp.schema
-
-HTML_DOCS = docs/devel
+HTML_DOCS = docs
 
 LIST1 = graphics help index.html lib locale style templates VERSION
 LIST2 = sess tmp
