@@ -4,6 +4,7 @@ usr/share/ldap-account-manager/help
 usr/share/ldap-account-manager/lib
 usr/share/ldap-account-manager/lib/font
 usr/share/ldap-account-manager/lib/modules
+usr/share/ldap-account-manager/lib/tools
 usr/share/ldap-account-manager/locale
 usr/share/ldap-account-manager/locale/ca_ES
 usr/share/ldap-account-manager/locale/ca_ES/LC_MESSAGES
