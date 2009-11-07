@@ -19,53 +19,12 @@ LAM - Readme
                               Roland Gruber <post@rolandgruber.de>
                               Tilo Lutz <tilolutz@gmx.de>
 
-  Requirements:
-    PHP5 (>= 5.1)
-    Openldap (2.0 or greater)
-    A web-browser that supports CSS
+  Installation and documentation:
+    Please see the LAM manual in docs/manual/index.htm.
 
-  Summary:
-    With LAM you can easily manage user, group and machine accounts stored in
-    an LDAP directory over a web interface. At the moment it supports:
-
-      - managing user/group/host/domain entries
-      - filtering and sorting
-      - account profiles
-      - multiple configuration profiles
-      - tree viwer
-      - schema browser
-      - OU Editor
-      - account creation via file upload
-      - PDF export for all accounts
-      - manage user/group Quota and create home directories
-
-  Important:
+  Default password:
     The default password to edit the configuration options is "lam".
 
-  Installation:
-    Please see the INSTALL file.
-
-  Documentation:
-    Basic documentation is available in the directory "docs".
-
-  Upgrade from older versions:
-    See docs/README.upgrade.txt for upgrade instructions.
-
-  Internationalisation:
-    If you want to use a translated version of LAM be sure to install the
-    needed locales. See the LAM "locale" directory for a list of supported locales and languages.
-    You can get a list of all installed locales on your sysem by executing: locale -a
-    Debian users can add locales with "dpkg-reconfigure locales".
-
-  Security:
-    It is strongly recommended to use a SSL connection to your web server.
-
-    LAM needs to store your LDAP user name + password in the session. The session
-    files are saved in sess/ and are accessible only by the web server. To increase
-    security username and password are encrypted with MCrypt/AES if available.
-    The key and IV are generated at random when you log in. They are stored in two
-    cookies.
- 
   Download:
     You can get the newest version at http://www.ldap-account-manager.org/.
 
@@ -75,4 +34,4 @@ LAM - Readme
 
 
     Have fun!
-        The LAM devel team
+        The LAM development team

@@ -32,6 +32,46 @@
       <member>Tilo Lutz &lt;tilolutz@gmx.de&gt;</member>
     </simplelist>
 
+    <para><emphasis role="bold">Key features:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>managing user/group/host/domain entries</para>
+      </listitem>
+
+      <listitem>
+        <para>account profiles</para>
+      </listitem>
+
+      <listitem>
+        <para>account creation via file upload</para>
+      </listitem>
+
+      <listitem>
+        <para>multiple configuration profiles</para>
+      </listitem>
+
+      <listitem>
+        <para>tree view</para>
+      </listitem>
+
+      <listitem>
+        <para>schema browser</para>
+      </listitem>
+
+      <listitem>
+        <para>OU editor</para>
+      </listitem>
+
+      <listitem>
+        <para>PDF export for all accounts</para>
+      </listitem>
+
+      <listitem>
+        <para>manage user/group Quota and create home directories</para>
+      </listitem>
+    </itemizedlist>
+
     <para><emphasis role="bold">Requirements:</emphasis></para>
 
     <simplelist>
@@ -49,6 +89,10 @@
 
     <para>LAM is published under the GNU General Public License. The complete
     list of licenses can be found in the copyright file.</para>
+
+    <para><emphasis role="bold">Default password:</emphasis></para>
+
+    <para>The default password for the LAM configuration is "lam".</para>
 
     <literallayout>
 Have fun!
@@ -288,7 +332,7 @@ Have fun!
         </section>
 
         <section>
-          <title>Locales for non-Englisch translation</title>
+          <title>Locales for non-English translation</title>
 
           <para>If you want to use a translated version of LAM be sure to
           install the needed locales. The following table shows the needed
@@ -399,9 +443,9 @@ Have fun!
           </table>
 
           <para>You can get a list of all installed locales on your system by
-          executing: </para>
+          executing:</para>
 
-          <para> locale -a</para>
+          <para>locale -a</para>
 
           <para>Debian users can add locales with "dpkg-reconfigure
           locales".</para>
@@ -808,34 +852,49 @@ Have fun!
       configuration and account profiles</para>
 
       <itemizedlist>
-        <listitem>LAM configuration passwords (SSHA hashed)</listitem>
+        <listitem>
+          LAM configuration passwords (SSHA hashed)
+        </listitem>
 
-        <listitem>default values for new accounts</listitem>
+        <listitem>
+          default values for new accounts
+        </listitem>
 
-        <listitem>directory must be accessibly by Apache but needs not to be
-        accessible by the browser</listitem>
+        <listitem>
+          directory must be accessibly by Apache but needs not to be accessible by the browser
+        </listitem>
       </itemizedlist>
 
       <para><emphasis role="bold">sess:</emphasis> PHP session files</para>
 
       <itemizedlist>
-        <listitem>LAM admin password in clear text or MCrypt encrypted</listitem>
+        <listitem>
+          LAM admin password in clear text or MCrypt encrypted
+        </listitem>
 
-        <listitem>cached LDAP entries in clear text or MCrypt encrypted</listitem>
+        <listitem>
+          cached LDAP entries in clear text or MCrypt encrypted
+        </listitem>
 
-        <listitem>directory must be accessibly by Apache but needs not to be
-        accessible by the browser</listitem>
+        <listitem>
+          directory must be accessibly by Apache but needs not to be accessible by the browser
+        </listitem>
       </itemizedlist>
 
       <para><emphasis role="bold">tmp:</emphasis> temporary files</para>
 
       <itemizedlist>
-        <listitem>PDF documents which may also include passwords</listitem>
+        <listitem>
+          PDF documents which may also include passwords
+        </listitem>
 
-        <listitem>images of your users</listitem>
+        <listitem>
+          images of your users
+        </listitem>
 
-        <listitem>directory contents must be accessible by browser but directory
-        itself needs not to be browseable</listitem>
+        <listitem>
+          directory contents must be accessible by browser but directory itself needs not to be browseable
+        </listitem>
       </itemizedlist>
     </section>
   </appendix>
