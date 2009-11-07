@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 	echo "<tr class=\"userlist\">\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td><br>";
-			echo "<a href=\"" . $tools[$i]->getLink() . "\" target=\"mainpart\"><img src=\"../graphics/" . $tools[$i]->getImageLink() . "\"> <b>" . $tools[$i]->getName() . "</b></a>";
+			echo "<a href=\"" . $tools[$i]->getLink() . "\" target=\"mainpart\"><img src=\"../graphics/" . $tools[$i]->getImageLink() . "\"> &nbsp;<b>" . $tools[$i]->getName() . "</b></a>";
 		echo "<br><br></td>\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td>";

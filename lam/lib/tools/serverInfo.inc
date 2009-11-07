@@ -22,18 +22,18 @@ $Id$
 */
 
 /**
-* This file includes the test tool specification.
+* This file includes the server information tool specification.
 *
 * @author Roland Gruber
 * @package tools
 */
 
 /**
- * Tests page
+ * Server information
  * 
  * @package tools
  */ 
-class toolTests implements LAMTool {
+class toolServerInformation implements LAMTool {
 	
 	/**
 	 * Returns the name of the tool.
@@ -41,7 +41,7 @@ class toolTests implements LAMTool {
 	 * @return string name
 	 */
 	 function getName() {
-	 	return _("Tests");
+	 	return _("Server information");
 	 }
 	
 	/**
@@ -50,7 +50,7 @@ class toolTests implements LAMTool {
 	 * @return string description
 	 */
 	function getDescription() {
-		return _("Here you can test if certain LAM features work on your installation.");
+		return _("Information about the LDAP server.");
 	}
 	
 	/**
@@ -59,7 +59,7 @@ class toolTests implements LAMTool {
 	 * @return string link
 	 */
 	function getLink() {
-		return "tests/index.php";
+		return "serverInfo.php";
 	}
 	
 	/** 
@@ -68,7 +68,7 @@ class toolTests implements LAMTool {
 	 * @return boolean true if write access is needed
 	 */
 	function getRequiresWriteAccess() {
-		return true;
+		return false;
 	}
 	
 	/**
@@ -86,7 +86,7 @@ class toolTests implements LAMTool {
 	 * @return string image URL
 	 */
 	function getImageLink() {
-		return 'tests.png';
+		return 'tree_info.png';
 	}
 	
 	/**
@@ -96,7 +96,7 @@ class toolTests implements LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition() {
-		return 1000;
+		return 600;
 	}
 	
 }
