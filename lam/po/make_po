@@ -2,7 +2,7 @@
 # $Id$
 #
 # Copyright (C) 2003 - 2006  Roland Gruber
-# This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 
 # This script generates a messages.po file for translation from all .inc and .php files.
 

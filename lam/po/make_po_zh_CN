@@ -2,7 +2,7 @@
 # $Id$
 #
 # Copyright (C) 2007  Roland Gruber
-# This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 
 # This script is run after make_po to merge the existing Chinese translations to messages.po
 
