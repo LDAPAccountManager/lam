@@ -1034,7 +1034,7 @@ class accountContainer {
 				}
 			}
 			if ($pwdErrors == 0) {
-				$result[] = array('INFO', 'New password set successfully.');
+				$result[] = array('INFO', _('New password set successfully.'), _('The new password will be stored in the directory after you save this account.'));
 				$result = array_merge($result, $pwdMessages);
 			}
 			else {
