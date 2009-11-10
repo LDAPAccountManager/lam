@@ -853,15 +853,15 @@ Have fun!
 
       <itemizedlist>
         <listitem>
-          LAM configuration passwords (SSHA hashed)
+          <para>LAM configuration passwords (SSHA hashed)</para>
         </listitem>
 
         <listitem>
-          default values for new accounts
+          <para>default values for new accounts</para>
         </listitem>
 
         <listitem>
-          directory must be accessibly by Apache but needs not to be accessible by the browser
+          <para>directory must be accessibly by Apache but needs not to be accessible by the browser</para>
         </listitem>
       </itemizedlist>
 
@@ -869,15 +869,15 @@ Have fun!
 
       <itemizedlist>
         <listitem>
-          LAM admin password in clear text or MCrypt encrypted
+          <para>LAM admin password in clear text or MCrypt encrypted</para>
         </listitem>
 
         <listitem>
-          cached LDAP entries in clear text or MCrypt encrypted
+          <para>cached LDAP entries in clear text or MCrypt encrypted</para>
         </listitem>
 
         <listitem>
-          directory must be accessibly by Apache but needs not to be accessible by the browser
+          <para>directory must be accessibly by Apache but needs not to be accessible by the browser</para>
         </listitem>
       </itemizedlist>
 
@@ -885,15 +885,15 @@ Have fun!
 
       <itemizedlist>
         <listitem>
-          PDF documents which may also include passwords
+          <para>PDF documents which may also include passwords</para>
         </listitem>
 
         <listitem>
-          images of your users
+          <para>images of your users</para>
         </listitem>
 
         <listitem>
-          directory contents must be accessible by browser but directory itself needs not to be browseable
+          <para>directory contents must be accessible by browser but directory itself needs not to be browseable</para>
         </listitem>
       </itemizedlist>
     </section>
