@@ -43,8 +43,10 @@ $configcontext = '';
 $supportedldapversion = '';
 $supportedsaslmechanisms = '';
 $subschemasubentry = '';
+$vendorname = '';
+$vendorversion = '';
 
-$result = @ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*'));
+$result = @ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*', 'subschemasubentry'));
 if ($result) {
 	$info = @ldap_get_entries($_SESSION['ldap']->server(), $result);
 	if ($info) {
@@ -61,13 +63,19 @@ if ($result) {
 			$configcontext = $info['configcontext'][0];
 		}
 		if (isset($info['supportedldapversion'])) {
-			$supportedldapversion = $info['supportedldapversion'][0];
+			$supportedldapversion = implode(', ', $info['supportedldapversion']);
 		}
 		if (isset($info['supportedsaslmechanisms'])) {
 			$supportedsaslmechanisms = implode(', ', $info['supportedsaslmechanisms']);
 		}
 		if (isset($info['subschemasubentry'])) {
 			$subschemasubentry = $info['subschemasubentry'][0];
+		}
+		if (isset($info['vendorname'])) {
+			$vendorname = $info['vendorname'][0];
+		}
+		if (isset($info['vendorversion'])) {
+			$vendorversion = $info['vendorversion'][0];
 		}
 	}
 }
@@ -92,14 +100,26 @@ echo "<td style=\"padding:10px;\">" . $namingContexts . "</td></tr>";
 echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("LDAP version") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $supportedldapversion . "</td></tr>";
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Config suffix") . "</b>&nbsp;&nbsp;</td>";
-echo "<td style=\"padding:10px;\">" . $configcontext . "</td></tr>";
+if ($configcontext != '') {
+	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Config suffix") . "</b>&nbsp;&nbsp;</td>";
+	echo "<td style=\"padding:10px;\">" . $configcontext . "</td></tr>";
+}
 
 echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Schema suffix") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $subschemasubentry . "</td></tr>";
 
 echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("SASL mechanisms") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $supportedsaslmechanisms . "</td></tr>";
+
+if ($vendorname != '') {
+	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Vendor name") . "</b>&nbsp;&nbsp;</td>";
+	echo "<td style=\"padding:10px;\">" . $vendorname . "</td></tr>";
+}
+
+if ($vendorversion != '') {
+	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Vendor version") . "</b>&nbsp;&nbsp;</td>";
+	echo "<td style=\"padding:10px;\">" . $vendorversion . "</td></tr>";
+}
 
 echo "</table>\n";
 
