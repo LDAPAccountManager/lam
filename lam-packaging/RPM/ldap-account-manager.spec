@@ -77,7 +77,7 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 
 %files
 %defattr(-, root, root)
-%doc COPYING HISTORY README docs
+%doc COPYING HISTORY README docs/*
 %{httpd_rootdir}/%{lam_dir}
 
 %changelog
@@ -124,5 +124,5 @@ Heimatverzeichnisse verwaltet werden sollen.
 
 %files lamdaemon
 %{httpd_rootdir}/%{lam_dir}/lib/lamdaemon.pl
-%doc COPYING HISTORY README VERSION docs
+%doc COPYING HISTORY README VERSION docs/*
 
