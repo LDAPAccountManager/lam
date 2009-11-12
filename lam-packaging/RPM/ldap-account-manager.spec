@@ -124,5 +124,5 @@ Heimatverzeichnisse verwaltet werden sollen.
 
 %files lamdaemon
 %{httpd_rootdir}/%{lam_dir}/lib/lamdaemon.pl
-%doc docs/*txt COPYING HISTORY INSTALL README VERSION
+%doc COPYING HISTORY README VERSION docs
 
