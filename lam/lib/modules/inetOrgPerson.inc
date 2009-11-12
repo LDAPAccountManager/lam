@@ -282,6 +282,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 				array('kind' => 'help', 'value' => 'hiddenOptions'),
 			)
 		);
+		if (isset($_SESSION['conf_config'])) {
+			// add password hash type if posixAccount is inactive
+			$confActiveUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			if (!in_array('posixAccount', $confActiveUserModules)) {
+				$return['config_options']['all'][] = array(
+					array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+					array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+						'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+					array('kind' => 'text', 'value' => '&nbsp;'),
+					array('kind' => 'text', 'value' => '&nbsp;'),
+					array('kind' => 'text', 'value' => '&nbsp;'),
+					array('kind' => 'help', 'value' => 'pwdHash'));
+			}
+		}
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -673,6 +687,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
+			),
+			'pwdHash' => array(
+				"Headline" => _("Password hash type"),
+				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			)
 		);
 
@@ -1969,7 +1987,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$this->attributes['userPassword'][0] = pwd_hash($password, true, 'SSHA');
+		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
 
