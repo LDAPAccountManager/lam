@@ -20,7 +20,7 @@ LAM - Readme
                               Tilo Lutz <tilolutz@gmx.de>
 
   Installation and documentation:
-    Please see the LAM manual in docs/manual/index.htm.
+    Please see the LAM manual in docs/manual/index.html.
 
   Default password:
     The default password to edit the configuration options is "lam".
