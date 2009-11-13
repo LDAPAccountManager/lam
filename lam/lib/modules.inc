@@ -1463,7 +1463,7 @@ class accountContainer {
 			if ($buttonStatus == 'hidden') continue;
 			$class = $this->type . "list-head";
 			if ($this->order[$this->current_page] == $this->order[$i]) $class = $this->type . "list-edit";
-			echo "<td width=\"$buttonWidth\" style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+			echo "<td class=\"settingsTab\" width=\"$buttonWidth\">\n";
 			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
 			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
 				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:5px;\">\n";

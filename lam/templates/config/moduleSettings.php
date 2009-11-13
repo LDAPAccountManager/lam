@@ -116,7 +116,7 @@ echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
 echo "<tr>\n";
 	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	// general settings
-	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td class=\"settingsTab\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
 	echo " align=\"center\">\n";
@@ -126,7 +126,7 @@ echo "<tr>\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// account types
-	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td class=\"settingsTab\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('edittypes')[0].click();\"";
 	echo " align=\"center\">\n";
@@ -136,7 +136,7 @@ echo "<tr>\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// module selection
-	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td class=\"settingsTab\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('editmodules')[0].click();\"";
 	echo " align=\"center\">\n";
@@ -146,7 +146,7 @@ echo "<tr>\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// module settings
-	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td class=\"settingsTab\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('moduleSettings')[0].click();\"";
 	echo " align=\"center\">\n";
@@ -159,7 +159,7 @@ echo "<tr>\n";
 	// spacer
 	echo "<td width=\"100%\">&nbsp;</td>";
 	// save button
-	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td class=\"settingsTab\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('saveSettings')[0].click();\"";
 	echo " align=\"center\">\n";
@@ -169,7 +169,7 @@ echo "<tr>\n";
 	echo "</td></tr></table>\n";
 	echo '</td>';
 	// cancel button
-	echo "<td style=\"padding-bottom:0px;padding-right:5px;padding-left:5px;padding-top:10px;\">\n";
+	echo "<td class=\"settingsTab\">\n";
 	echo "<table class=\"settingsTab\" width=\"100%\">\n";
 	echo "<tr><td onclick=\"document.getElementsByName('cancelSettings')[0].click();\"";
 	echo " align=\"center\">\n";
