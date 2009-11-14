@@ -1,0 +1,119 @@
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+  Copyright (C) 2009  Roland Gruber
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more detaexils.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+
+/**
+ * style definition for Asterisk accounts
+ */
+
+
+/* navigation bar */
+table.asteriskExtnav {
+  background-color:#fff3c8;
+  border-width:1px;
+  border-style:solid;
+  border-color:#af8800;
+}
+
+/* input elements */
+table.asteriskExtnav input {
+  background-color:#ffe27f;
+}
+
+/* text in navigation bar */
+td.asteriskExtnav-text {
+  color:green;
+  font-family:Verdana,sans-serif;
+  font-size:12px;
+}
+
+/* color for active page digit */
+td.asteriskExtnav-activepage {
+ color:red;
+}
+
+/* table preferences */
+table.asteriskExtlist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#af8800;
+  border-collapse:collapse;
+}
+
+table.asteriskExtlist td,th {
+  border-color:#af8800;
+}
+
+/* input elements */
+table.asteriskExtlist input,select,button {
+  background-color:#ffe27f;
+}
+
+/* color of entry rows */
+tr.asteriskExtlist {
+  background-color:#fff3c8;
+}
+
+/* color of head row */
+tr.asteriskExtlist-head {
+  background-color:#ffe27f;
+}
+
+/* color of sorted column in head row */
+th.asteriskExtlist-sort {
+  background-color:#fff3c8;
+}
+
+/* color of rows on mouseOver */
+tr.asteriskExtlist-over {
+  background-color:#ffe27f;
+}
+
+/* color of checked rows */
+tr.asteriskExtlist-checked {
+  background-color:#f27c71;
+}
+
+fieldset.asteriskExtedit {
+  background-color:#fff3c8;
+  border:1px solid #af8800;
+}
+
+fieldset.asteriskExtedit legend {
+  color:blue;
+}
+
+/* input elements */
+fieldset.asteriskExtedit input,select,button {
+  background-color:#ffe27f;
+}
+
+/* input elements */
+input.asteriskExt {
+  background-color:#ffe27f;
+}
+
+/* select elements */
+select.asteriskExt {
+  background-color:#ffe27f;
+}
+
