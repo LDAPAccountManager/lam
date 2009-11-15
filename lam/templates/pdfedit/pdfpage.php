@@ -382,6 +382,7 @@ echo $_SESSION['header'];
 		<link rel="stylesheet" type="text/css" href="../../style/type_<?php echo $_GET['type']; ?>.css">
 	</head>
 	<body>
+	<script type="text/javascript" src="../wz_tooltip.js"></script>
 		<br>
 		<form action="pdfpage.php" method="post">
 			<table>
@@ -679,7 +680,9 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 										<input type="text" name="pdfname" value="<?php if (isset($_GET['edit'])) echo $_GET['edit'];?>">
 									</td>
 									<td>
-										<a href="../help.php?HelpNumber=360" target="lamhelp"><?php echo _("Help");?></a>
+									<?php
+										printHelpLink(getHelp('', '360'), '360');
+									?>
 									</td>
 								</tr>
 								<tr>
