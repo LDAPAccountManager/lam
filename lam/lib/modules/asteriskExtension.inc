@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009  Pozdnyak Pavel
+                2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ $Id$
  * Description of asteriskExtension
  *
  * @author Pozdnyak Pavel
+ * @author Roland Gruber
  */
 class asteriskExtension extends baseModule {
 
@@ -41,7 +43,7 @@ class asteriskExtension extends baseModule {
 		$return["is_base"] = true;
 		// RDN attribute
 		$return["RDN"] = array("cn" => "normal");
-
+		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=AsteriskExtension)"); 
 		// alias name
 		$return["alias"] = _("Asterisk extension");
@@ -107,7 +109,61 @@ class asteriskExtension extends baseModule {
 			'AsteriskExtension_AstPriority' => 'AstPriority',
 			'AsteriskExtension_AstApplication' => 'AstApplication',
 		);
-
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'AstApplicationData', 'AstContext', 'AstExtension',
+			'AstPriority', 'AstApplication', 'member', 'cn'
+		);
+		// upload fields
+		$return['upload_columns'] = array(
+			array(
+				'name' => 'asteriskExtension_AstExtension',
+				'description' => _('Asterisk extension'),
+				'help' => 'AstExtension',
+				'example' => '500',
+				'required' => true
+			),
+			array(
+				'name' => 'asteriskExtension_AstPriority',
+				'description' => _('Asterisk priority'),
+				'help' => 'AstPriority',
+				'example' => '3',
+				'required' => true
+			),
+			array(
+				'name' => 'asteriskExtension_cn',
+				'description' => _('Common name'),
+				'help' => 'cn',
+				'example' => _('500-1'),
+				'required' => true
+			),
+			array(
+				'name' => 'asteriskExtension_AstApplication',
+				'description' => _('Asterisk application'),
+				'help' => 'AstApplication',
+				'example' => 'Playback',
+			),
+			array(
+				'name' => 'asteriskExtension_AstApplicationData',
+				'description' => _('Asterisk application data'),
+				'help' => 'AstApplicationData',
+				'example' => _('test-start'),
+			),
+			array(
+				'name' => 'asteriskExtension_AstContext',
+				'description' => _('Account context'),
+				'help' => 'AstContext',
+				'example' => _('test'),
+			),
+			array(
+				'name' => 'asteriskExtension_member',
+				'description' => _('Extension owners'),
+				'help' => 'member',
+				'example' => 'uid=user1,o=test;uid=user2,o=test',
+				'required' => true
+			),
+		);
+		
 		return $return;
 	}
 
@@ -135,6 +191,10 @@ class asteriskExtension extends baseModule {
 		$return = array();
 
 		$return[] = array(
+			array('kind' => 'text', 'text' => _("Common name") . '*'),
+			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
+			array('kind' => 'help', 'value' => 'cn'));
+		$return[] = array(
 			array('kind' => 'text', 'text' => _("Account context")),
 			array('kind' => 'input', 'name' => 'AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstContext'][0]),
 			array('kind' => 'help', 'value' => 'AstContext'));
@@ -154,10 +214,6 @@ class asteriskExtension extends baseModule {
 			array('kind' => 'text', 'text' => _("Asterisk application data")),
 			array('kind' => 'input', 'name' => 'AstApplicationData', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstApplicationData'][0]),
 			array('kind' => 'help', 'value' => 'AstApplicationData'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Common name") . '*'),
-			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
-			array('kind' => 'help', 'value' => 'cn'));
 		
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Extension owners") . '*'),
@@ -318,68 +374,58 @@ class asteriskExtension extends baseModule {
 	 * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
 	 * @return array list of error messages if any
 	 */
-	function build_uploadExtensions($rawAccounts, $ids, &$partialAccounts) {
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-		// add object class
+			// add object class
 			if (!in_array("AsteriskExtension", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskExtension";
-			
-			if ($rawAccounts[$i][$ids['AstApplicationData']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['AstApplicationData']], 'realname')) {
-					$partialAccounts[$i]['AstApplicationData'] = $rawAccounts[$i][$ids['AstApplicationData']];
-				}else {
-					$message = $this->messages['AstApplicationData'][0];
-				}
+			if (!in_array("groupOfNames", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "groupOfNames";
+			// attributes
+			$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['asteriskExtension_cn']];
+			$partialAccounts[$i]['AstExtension'] = $rawAccounts[$i][$ids['asteriskExtension_AstExtension']];
+			$partialAccounts[$i]['AstPriority'] = $rawAccounts[$i][$ids['asteriskExtension_AstPriority']];
+			$partialAccounts[$i]['member'] = explode(';', $rawAccounts[$i][$ids['asteriskExtension_member']]);
+			if ($rawAccounts[$i][$ids['asteriskExtension_AstApplication']] != "") {
+				$partialAccounts[$i]['AstApplication'] = $rawAccounts[$i][$ids['asteriskExtension_AstApplication']];
 			}
-			if ($rawAccounts[$i][$ids['cn']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['cn']], 'realname')) {
-					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['cn']];
-				}else {
-					$message = $this->messages['cn'][0];
-				}
+			if ($rawAccounts[$i][$ids['asteriskExtension_AstApplicationData']] != "") {
+				$partialAccounts[$i]['AstApplicationData'] = $rawAccounts[$i][$ids['asteriskExtension_AstApplicationData']];
 			}
-			if ($rawAccounts[$i][$ids['member']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['member']], 'realname')) {
-					$partialAccounts[$i]['member'] = $rawAccounts[$i][$ids['member']];
-				}else {
-					$message = $this->messages['member'][0];
-				}
+			if ($rawAccounts[$i][$ids['asteriskExtension_AstContext']] != "") {
+				$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['asteriskExtension_AstContext']];
 			}
-			if ($rawAccounts[$i][$ids['AstExtension']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['AstExtension']], 'realname')) {
-					$partialAccounts[$i]['AstExtension'] = $rawAccounts[$i][$ids['AstExtension']];
-				}else {
-					$message = $this->messages['AstExtension'][0];
-				}
-			}			
-			if ($rawAccounts[$i][$ids['AstPriority']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['AstPriority']], 'realname')) {
-					$partialAccounts[$i]['AstPriority'] = $rawAccounts[$i][$ids['AstPriority']];
-				}else {
-					$message = $this->messages['AstPriority'][0];
-				}
-			}
-			if ($rawAccounts[$i][$ids['AstApplication']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['AstApplication']], 'realname')) {
-					$partialAccounts[$i]['AstApplication'] = $rawAccounts[$i][$ids['AstApplication']];
-				}else {
-					$message = $this->messages['AstApplication'][0];
-				}
-			}
-			if ($rawAccounts[$i][$ids['AstContext']] != "") {
-				if(get_preg($rawAccounts[$i][$ids['AstContext']], 'realname')) {
-					$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['AstContext']];
-				}else {
-					$message = $this->messages['AstContext'][0];
-				}
-			}
-
 		}
+		return $messages;
 	}
 	
-	// TODO add file upload
-	
-	// TODO add PDF support
+	/**
+	* Returns a list of PDF entries
+	*/
+	function get_pdfEntries() {
+		$return = array();
+		if (isset($this->attributes['AstContext'])) {
+			$return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstContext'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['AstApplicationData'])) {
+			$return[get_class($this) . '_AstApplicationData'] = array('<block><key>' . _('Asterisk application data') . '</key><value>' . $this->attributes['AstApplicationData'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['AstApplication'])) {
+			$return[get_class($this) . '_AstApplication'] = array('<block><key>' . _('Asterisk application') . '</key><value>' . $this->attributes['AstApplication'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['AstPriority'])) {
+			$return[get_class($this) . '_AstPriority'] = array('<block><key>' . _('Asterisk priority') . '</key><value>' . $this->attributes['AstPriority'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['AstExtension'])) {
+			$return[get_class($this) . '_AstExtension'] = array('<block><key>' . _('Asterisk extension') . '</key><value>' . $this->attributes['AstExtension'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['member'])) {
+			$return[get_class($this) . '_member'] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $this->attributes['member']) . '</value></block>');
+		}
+		if (isset($this->attributes['cn'])) {
+			$return[get_class($this) . '_cn'] = array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>');
+		}
+		return $return;
+	}
 
 }
 ?>
