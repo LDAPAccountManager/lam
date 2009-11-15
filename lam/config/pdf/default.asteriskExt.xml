@@ -1,0 +1,9 @@
+<pdf type="asteriskExt" filename="printLogo.jpg" headline="LDAP Account Manager">
+	<section name="_asteriskExtension_cn">
+		<entry name="asteriskExtension_AstExtension" />
+		<entry name="asteriskExtension_AstApplication" />
+		<entry name="asteriskExtension_AstApplicationData" />
+		<entry name="asteriskExtension_AstContext" />
+		<entry name="asteriskExtension_member" />
+	</section>
+</pdf>
