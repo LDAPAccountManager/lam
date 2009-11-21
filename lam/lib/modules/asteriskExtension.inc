@@ -61,7 +61,7 @@ class asteriskExtension extends baseModule {
 		// help
 		$return['help'] = array(
 			'AstApplicationData' => array(
-			"Headline" => _("Asterisk application data"),
+			"Headline" => _("Application data"),
 			"Text" => _("This defines what application Asterisk has to start for this user (e.g. SIP/user1).")
 			),			
 			'AstContext' => array(
@@ -69,15 +69,15 @@ class asteriskExtension extends baseModule {
 			"Text" => _("The account context stores information about the dial plan.")
 			),
 			'AstExtension' => array(
-			"Headline" => _("Asterisk extension"),
+			"Headline" => _("Extension name"),
 			"Text" => _("The name of the extension (e.g. voicemail or sip).")
 			),
 			'AstPriority' => array(
-			"Headline" => _("Asterisk priority"),
+			"Headline" => _("Priority"),
 			"Text" => _("The priority is a sequence number used to order the execution of commands. Commands are executed beginning with the lowest sequence number.")
 			),
 			'AstApplication' => array(
-			"Headline" => _("Asterisk application"),
+			"Headline" => _("Application"),
 			"Text" => _("The name of a command to execute. The available commands may be listed at the Asterisk command line by executing \"core show applications\".")
 			),
 			'member' => array(
@@ -96,11 +96,11 @@ class asteriskExtension extends baseModule {
 				array('kind' => 'input', 'name' => 'AsteriskExtension_AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'AstContext')),
 			array(
-				array('kind' => 'text', 'text' => _('Asterisk priority') . ":"),
+				array('kind' => 'text', 'text' => _('Priority') . ":"),
 				array('kind' => 'input', 'name' => 'AsteriskExtension_AstPriority', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'AstPriority')),
 			array(
-				array('kind' => 'text', 'text' => _('Asterisk application') . ":"),
+				array('kind' => 'text', 'text' => _('Application') . ":"),
 				array('kind' => 'input', 'name' => 'AsteriskExtension_AstApplication', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'AstApplication'))
 		);
@@ -118,14 +118,14 @@ class asteriskExtension extends baseModule {
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'asteriskExtension_AstExtension',
-				'description' => _('Asterisk extension'),
+				'description' => _('Extension name'),
 				'help' => 'AstExtension',
 				'example' => '500',
 				'required' => true
 			),
 			array(
 				'name' => 'asteriskExtension_AstPriority',
-				'description' => _('Asterisk priority'),
+				'description' => _('Priority'),
 				'help' => 'AstPriority',
 				'example' => '3',
 				'required' => true
@@ -139,13 +139,14 @@ class asteriskExtension extends baseModule {
 			),
 			array(
 				'name' => 'asteriskExtension_AstApplication',
-				'description' => _('Asterisk application'),
+				'description' => _('Application'),
 				'help' => 'AstApplication',
 				'example' => 'Playback',
+				'required' => true
 			),
 			array(
 				'name' => 'asteriskExtension_AstApplicationData',
-				'description' => _('Asterisk application data'),
+				'description' => _('Application data'),
 				'help' => 'AstApplicationData',
 				'example' => _('test-start'),
 			),
@@ -154,6 +155,7 @@ class asteriskExtension extends baseModule {
 				'description' => _('Account context'),
 				'help' => 'AstContext',
 				'example' => _('test'),
+				'required' => true
 			),
 			array(
 				'name' => 'asteriskExtension_member',
@@ -172,14 +174,14 @@ class asteriskExtension extends baseModule {
 	 * This function fills the error message array with messages
 	 */
 	function load_Messages() {		
-		$this->messages['cn'][0] = array('ERROR', _('Please enter a valid common name!'));
-		$this->messages['AstApplication'][0] = array('ERROR', _('Please enter a valid extension name.'));
+		$this->messages['cn'][0] = array('ERROR', _('Please enter a common name.'));
+		$this->messages['AstApplication'][0] = array('ERROR', _('Please enter the application.'));
 		$this->messages['AstApplicationData'][0] = array('ERROR', _('Please enter the application data.'));
-		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the extenion context.'));
+		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the extension context.'));
 		$this->messages['AstExtension'][0] = array('ERROR', _('Please enter the extension name.'));
 		$this->messages['AstPriority'][0] = array('ERROR', _('Please enter the priority.'));
-		$this->messages['member'][0] = array('ERROR', _('This pair AstExtension and AstPriority already exist'));
-		$this->messages['AstExtensionAstPriority'][0] = array('ERROR', _('This pair AstExtension and AstPriority already exist'));
+		$this->messages['AstExtensionAstPriority'][0] = array('ERROR', _('This pair of extension name and priority already exists.'));
+		$this->messages['member'][0] = array('ERROR', _('Please add at least one member.'));
 	}
 
 	/**
@@ -195,23 +197,23 @@ class asteriskExtension extends baseModule {
 			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
 			array('kind' => 'help', 'value' => 'cn'));
 		$return[] = array(
-			array('kind' => 'text', 'text' => _("Account context")),
+			array('kind' => 'text', 'text' => _("Account context") . '*'),
 			array('kind' => 'input', 'name' => 'AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstContext'][0]),
 			array('kind' => 'help', 'value' => 'AstContext'));
 		$return[] = array(
-			array('kind' => 'text', 'text' => _("Asterisk extension") . '*'),
+			array('kind' => 'text', 'text' => _("Extension name") . '*'),
 			array('kind' => 'input', 'name' => 'AstExtension', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstExtension'][0]),
 			array('kind' => 'help', 'value' => 'AstExtension'));
 		$return[] = array(
-			array('kind' => 'text', 'text' => _("Asterisk priority") . '*'),
+			array('kind' => 'text', 'text' => _("Priority") . '*'),
 			array('kind' => 'input', 'name' => 'AstPriority', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstPriority'][0]),
 			array('kind' => 'help', 'value' => 'AstPriority'));
 		$return[] = array(
-			array('kind' => 'text', 'text' => _("Asterisk application")),
+			array('kind' => 'text', 'text' => _("Application") . '*'),
 			array('kind' => 'input', 'name' => 'AstApplication', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstApplication'][0]),
 			array('kind' => 'help', 'value' => 'AstApplication'));
 		$return[] = array(
-			array('kind' => 'text', 'text' => _("Asterisk application data")),
+			array('kind' => 'text', 'text' => _("Application data")),
 			array('kind' => 'input', 'name' => 'AstApplicationData', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstApplicationData'][0]),
 			array('kind' => 'help', 'value' => 'AstApplicationData'));
 		
@@ -245,8 +247,8 @@ class asteriskExtension extends baseModule {
 		$searchroot = $_SESSION['config']->get_Suffix('user');
 		$filter = 'objectClass=AsteriskSIPUser';
 		$ldapc = $_SESSION['ldap']->server();
-		$attributes = array("DN,cn");
-		$res = ldap_search($ldapc,$searchroot,$filter,$attributes);
+		$attributes = array("DN", "cn");
+		$res = ldap_search($ldapc,$searchroot,$filter,$attributes,0,0,0,LDAP_DEREF_NEVER);
 		if (!$res) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " .$searchroot, ldap_error($_SESSION['ldap']->server())));
 		}
@@ -322,6 +324,9 @@ class asteriskExtension extends baseModule {
 		$this->attributes['cn'] = array();
 		if (isset($_POST['AstContext'])) {
 			$this->attributes['AstContext'][0] = $_POST['AstContext'];
+			if($this->attributes['AstContext'][0] == '') {
+				$errors[] = $this->messages['AstContext'][0];
+			}
 		}
 		if (isset($_POST['AstExtension'])) {
 			$this->attributes['AstExtension'][0] = $_POST['AstExtension'];
@@ -336,29 +341,41 @@ class asteriskExtension extends baseModule {
 			}
 		}
 
-		if (isset($this->attributes['AstExtension'][0]) && isset($this->attributes['AstPriority'][0])) {			
+		if (!isset($this->orig['AstExtension']) || !isset($this->orig['AstPriority']) || ($this->orig['AstExtension'][0] != $this->attributes['AstExtension'][0])
+			|| ($this->orig['AstPriority'][0] != $this->attributes['AstPriority'][0])) {			
 			$searchroot = $_SESSION['config']->get_Suffix($this->get_scope());
 			$filter = '(& (objectClass=AsteriskExtension) (AstExtension=' . $this->attributes['AstExtension'][0] .') (AstPriority=' . $this->attributes['AstPriority'][0] .') )';
 			$ldapc = $_SESSION['ldap']->server();
 			$attributes = array("DN");
-			$res = ldap_search($ldapc,$searchroot,$filter,$attributes);
+			$res = ldap_search($ldapc,$searchroot,$filter,$attributes,0,0,0,LDAP_DEREF_NEVER);
 			if (!$res) {
 				return array(array("ERROR", _("Unable to load LDAP entry:") . " " .$searchroot, ldap_error($_SESSION['ldap']->server())));
 			}
 			$count = ldap_count_entries($ldapc, $res);
-			if(($count >= 1) && $this->getAccountContainer()->isNewAccount ) {
+			if($count > 0) {
 				$errors[] = $this->messages['AstExtensionAstPriority'][0];
 			}
 		}
 
 		if (isset($_POST['AstApplication'])) {
 			$this->attributes['AstApplication'][0] = $_POST['AstApplication'];
+			if($this->attributes['AstApplication'][0] == '') {
+				$errors[] = $this->messages['AstApplication'][0];
+			}
 		}
 		if (isset($_POST['AstApplicationData'])) {
 			$this->attributes['AstApplicationData'][0] = $_POST['AstApplicationData'];
 		}
 		if (isset($_POST['cn'])) {
 			$this->attributes['cn'][0] = $_POST['cn'];
+			if($this->attributes['cn'][0] == '') {
+				$errors[] = $this->messages['cn'][0];
+			}
+		}
+		if (!isset($this->attributes['member']) || (sizeof($this->attributes['member']) == 0)) {
+			if (!isset($_POST['form_subpage_' . get_class($this) . '_user_open'])) {
+				$errors[] = $this->messages['member'][0];
+			}
 		}
 		return $errors;
 	}
@@ -407,16 +424,16 @@ class asteriskExtension extends baseModule {
 			$return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstContext'][0] . '</value></block>');
 		}
 		if (isset($this->attributes['AstApplicationData'])) {
-			$return[get_class($this) . '_AstApplicationData'] = array('<block><key>' . _('Asterisk application data') . '</key><value>' . $this->attributes['AstApplicationData'][0] . '</value></block>');
+			$return[get_class($this) . '_AstApplicationData'] = array('<block><key>' . _('Application data') . '</key><value>' . $this->attributes['AstApplicationData'][0] . '</value></block>');
 		}
 		if (isset($this->attributes['AstApplication'])) {
-			$return[get_class($this) . '_AstApplication'] = array('<block><key>' . _('Asterisk application') . '</key><value>' . $this->attributes['AstApplication'][0] . '</value></block>');
+			$return[get_class($this) . '_AstApplication'] = array('<block><key>' . _('Application') . '</key><value>' . $this->attributes['AstApplication'][0] . '</value></block>');
 		}
 		if (isset($this->attributes['AstPriority'])) {
-			$return[get_class($this) . '_AstPriority'] = array('<block><key>' . _('Asterisk priority') . '</key><value>' . $this->attributes['AstPriority'][0] . '</value></block>');
+			$return[get_class($this) . '_AstPriority'] = array('<block><key>' . _('Priority') . '</key><value>' . $this->attributes['AstPriority'][0] . '</value></block>');
 		}
 		if (isset($this->attributes['AstExtension'])) {
-			$return[get_class($this) . '_AstExtension'] = array('<block><key>' . _('Asterisk extension') . '</key><value>' . $this->attributes['AstExtension'][0] . '</value></block>');
+			$return[get_class($this) . '_AstExtension'] = array('<block><key>' . _('Extension name') . '</key><value>' . $this->attributes['AstExtension'][0] . '</value></block>');
 		}
 		if (isset($this->attributes['member'])) {
 			$return[get_class($this) . '_member'] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $this->attributes['member']) . '</value></block>');
