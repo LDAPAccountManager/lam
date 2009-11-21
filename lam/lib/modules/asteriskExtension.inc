@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009  Pozdnyak Pavel
+  Copyright (C) 2009  Pavel Pozdnyak
                 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ $Id$
 /**
  * Description of asteriskExtension
  *
- * @author Pozdnyak Pavel
+ * @author Pavel Pozdnyak
  * @author Roland Gruber
  */
 class asteriskExtension extends baseModule {
