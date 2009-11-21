@@ -242,7 +242,7 @@ class asteriskExtension extends baseModule {
 	 */
 	function display_html_user() {
 		// load list with all users with objectClass AsteriskSIPUser
-		$searchroot = $_SESSION['config']->get_Suffix('tree');
+		$searchroot = $_SESSION['config']->get_Suffix('user');
 		$filter = 'objectClass=AsteriskSIPUser';
 		$ldapc = $_SESSION['ldap']->server();
 		$attributes = array("DN,cn");
