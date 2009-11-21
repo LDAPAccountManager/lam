@@ -1701,6 +1701,7 @@ function get_schema_attributes($dn = null, $use_cache=true )
  */
 function add_aliases_to_attrs( &$attrs )
 {
+	$toaddAttrs = array();
 	// go back and add data from aliased attributeTypes
 	foreach( $attrs as $name => $attr ) {
 		$aliases = $attr->getAliases();
@@ -1708,15 +1709,16 @@ function add_aliases_to_attrs( &$attrs )
 			// foreach of the attribute's aliases, create a new entry in the attrs array
 			// with its name set to the alias name, and all other data copied
 			foreach( $aliases as $alias_attr_name ) {
-				$new_attr = $attr;
+				$new_attr = clone $attr;
 				$new_attr->setName( $alias_attr_name );
 				$new_attr->addAlias( $attr->getName() );
 				$new_attr->removeAlias( $alias_attr_name );
 				$new_attr_key = strtolower( $alias_attr_name );
-				$attrs[ $new_attr_key ] = $new_attr;
+				$toaddAttrs[ $new_attr_key ] = $new_attr;
 			}
 		}
 	}
+	$attrs = array_merge($attrs, $toaddAttrs);
 }
 
 /**

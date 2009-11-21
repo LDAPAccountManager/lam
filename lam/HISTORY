@@ -5,6 +5,7 @@ December 2009 2.9.0
 	 -> Unable to edit accounts with DNs that contain spaces next to a comma (2889473)
 	 -> Login method "LDAP search" has problems if LDAP server is down (2889414)
 	 -> filter in account lists did not support non-ASCII letters
+	 -> alias handling (2901248)
 
 
 28.10.2009 2.8.0
