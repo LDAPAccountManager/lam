@@ -15,3 +15,5 @@ sambaSamAccount_sambaHomeDrive: U:
 sambaSamAccount_group: 513
 posixAccount_homeDirectory: /home/$user
 posixAccount_loginShell: /bin/bash
+asteriskAccount_AstAccountHost: dynamic
+asteriskAccount_AstAccountContext: default
