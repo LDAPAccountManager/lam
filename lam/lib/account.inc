@@ -402,14 +402,14 @@ function get_preg($argument, $regexp) {
 		case 'password':
 					$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]\\$@=-])*$/u';
 					break;
-		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
-		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
+		case 'groupname':	// all letters, numbers, space and ._- are allowed characters
+		case 'username':
 		case 'hostname':	
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_\\$-])+$/u';
 					break;
 		case 'usernameList':	// comma separated list of user names
 		case 'groupnameList':	// comma separated list of group names
-					$pregexpr = '/^[[:alpha:]]([[:alnum:]@\\.\\ \\_-])*(,[[:alpha:]]([[:alnum:]@\\.\\ \\_-])*)*$/u';
+					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+(,([[:alnum:]@\\.\\ \\_-])+)*$/u';
 					break;
 		case 'realname':	// Allow all but \, <, >, =, $, ?
 		case 'cn':
