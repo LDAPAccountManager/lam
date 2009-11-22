@@ -75,8 +75,12 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountContext' => array(
 			"Headline" => _("Account context"),
 			"Text" => _("The account context stores information about the dial plan.")
-			)
-		);
+			),
+			'AstAccountRealmedPassword' => array(
+				"Headline" => _("Password"),
+				"Text" => _("Please enter the password which you want to set for this account.")
+			),
+			);
 		// profile options
 		$return['profile_options'] = array(
 			array(
@@ -93,6 +97,42 @@ class asteriskAccount extends baseModule implements passwordService {
 			'asteriskAccount_AstAccountHost' => 'AstAccountHost',
 			'asteriskAccount_AstAccountContext' => 'AstAccountContext'
 		);
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'AstAccountCallerID', 'AstAccountContext', 'AstAccountHost',
+		);
+		// upload dependencies
+		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
+		// upload fields
+		$return['upload_columns'] = array(
+			array(
+				'name' => 'asteriskAccount_AstAccountCallerID',
+				'description' => _('Caller ID'),
+				'help' => 'AstAccountCallerID',
+				'example' => '12345',
+				'required' => true
+			),
+			array(
+				'name' => 'asteriskAccount_AstAccountContext',
+				'description' => _('Account context'),
+				'help' => 'AstAccountContext',
+				'example' => _('default'),
+				'required' => true
+			),
+			array(
+				'name' => 'asteriskAccount_AstAccountHost',
+				'description' => _('Host'),
+				'help' => 'AstAccountHost',
+				'example' => 'dynamic',
+				'default' => 'dynamic',
+			),
+			array(
+				'name' => 'asteriskAccount_AstAccountRealmedPassword',
+				'description' => _('Password'),
+				'help' => 'AstAccountRealmedPassword',
+				'example' => _('secret'),
+			),
+		);
 		return $return;
 	}
 
@@ -103,14 +143,17 @@ class asteriskAccount extends baseModule implements passwordService {
 		$this->messages['AstAccountCallerID'][0] = array('ERROR', _('Please enter a caller ID.'));
 		$this->messages['AstAccountCallerID'][1] = array('ERROR', _('The caller ID format is invalid.'));
 		$this->messages['AstAccountCallerID'][2] = array('ERROR', _('There is already another user with this caller ID.'));
+		$this->messages['AstAccountCallerID'][3] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountCallerID', _('The caller ID format is invalid.'));
 		$this->messages['AstAccountContext'][0] = array('ERROR', _('Please enter the extension context.'));
+		$this->messages['AstAccountContext'][1] = array('ERROR', _('The extension context is invalid.'));
+		$this->messages['AstAccountContext'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountContext', _('The extension context is invalid.'));
 		$this->messages['AstAccountHost'][0] = array('ERROR', _('Please enter the host name.'));
+		$this->messages['AstAccountHost'][1] = array('ERROR', _('The host name is invalid.'));
+		$this->messages['AstAccountHost'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountHost', _('The host name is invalid.'));
 	}
 
 	/**
 	 * This function will create the meta HTML code to show a page with all attributes.
-	 *
-	 * @param array $_POST HTTP-POST values
 	 */
 	function display_html_attributes() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addObjectClass'])) {
@@ -145,8 +188,6 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	 * Write variables into object and do some regex checks
-	 *
-	 * @param array $_POST HTTP-POST values
 	 */
 	function process_attributes() {
 		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
@@ -158,10 +199,16 @@ class asteriskAccount extends baseModule implements passwordService {
 		$this->attributes['AstAccountContext'] = array();
 		if (isset($_POST['AstAccountCallerID'])) {
 			$this->attributes['AstAccountCallerID'][0] = $_POST['AstAccountCallerID'];
+			// check if caller ID is empty
 			if($this->attributes['AstAccountCallerID'][0] == '') {
 				$errors[] = $this->messages['AstAccountCallerID'][0];
 			}
-			if (!isset($this->orig['AstAccountCallerID'][0]) || (($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0]))) {
+			// check format
+			else if (!get_preg($this->attributes['AstAccountCallerID'][0], 'username')) {
+				$errors[] = $this->messages['AstAccountCallerID'][1];
+			}
+			// check for duplicate caller ID
+			else if (!isset($this->orig['AstAccountCallerID'][0]) || (($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0]))) {
 				$searchroot =  $_SESSION['config']->get_Suffix('user');
 				$filter = '(& (objectClass=AsteriskSIPUser) (AstAccountCallerID=' . $this->attributes['AstAccountCallerID'][0] .'))';
 				$ldapc =  $_SESSION['ldap']->server();
@@ -181,14 +228,31 @@ class asteriskAccount extends baseModule implements passwordService {
 			if($this->attributes['AstAccountHost'][0] == '') {
 				$errors[] = $this->messages['AstAccountHost'][0];
 			}
+			elseif (!get_preg($this->attributes['AstAccountHost'][0], 'hostname')) {
+				$errors[] = $this->messages['AstAccountHost'][1];
+			}
 		}
 		if (isset($_POST['AstAccountContext'])) {
 			$this->attributes['AstAccountContext'][0] = $_POST['AstAccountContext'];
 			if($this->attributes['AstAccountContext'][0] == '') {
 				$errors[] = $this->messages['AstAccountContext'][0];
 			}
+			elseif (!get_preg($this->attributes['AstAccountContext'][0], 'username')) {
+				$errors[] = $this->messages['AstAccountContext'][1];
+			}
 		}
 		return $errors;
+	}
+
+	/**
+	* Returns a list of PDF entries
+	*/
+	function get_pdfEntries() {
+		$return = array();
+		$return[get_class($this) . '_AstAccountCallerID'] = array('<block><key>' . _('Caller ID') . '</key><value>' . $this->attributes['AstAccountCallerID'][0] . '</value></block>');
+		$return[get_class($this) . '_AstAccountContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstAccountContext'][0] . '</value></block>');
+		$return[get_class($this) . '_AstAccountHost'] = array('<block><key>' . _('Host') . '</key><value>' . $this->attributes['AstAccountHost'][0] . '</value></block>');
+		return $return;
 	}
 
 	/**
@@ -204,27 +268,40 @@ class asteriskAccount extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 		// add object class
 			if (!in_array("AsteriskSIPUser", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskSIPUser";
-			// add asterisk account caller id
-			// check format
-			if (get_preg($rawAccounts[$i][$ids['AstAccountCallerID']], 'realname')) {
-				$partialAccounts[$i]['AstAccountCallerID'] = $rawAccounts[$i][$ids['AstAccountCallerID']];
+			// add account caller id
+			if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountCallerID']], 'username')) {
+				$partialAccounts[$i]['AstAccountCallerID'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountCallerID']];
 			}
 			else {
-				$errMsg = $this->messages['AstAccountCallerID'][1];
+				$errMsg = $this->messages['AstAccountCallerID'][3];
 				array_push($errMsg, array($i));
 				$messages[] = $errMsg;
 			}
-			// add AstAccountHost
-			if (($rawAccounts[$i][$ids['AstAccountHost']] != "") && (get_preg($rawAccounts[$i][$ids['AstAccountHost']], 'realname')) ) {
-				$partialAccounts[$i]['AstAccountHost'] = $rawAccounts[$i][$ids['AstAccountHost']];
+			// add host
+			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']] == "") {
+				// default value
+				$partialAccounts[$i]['AstAccountHost'] = 'dynamic';
 			}
-			//add AstAccountContext
-			if (($rawAccounts[$i][$ids['AstAccountContext']] != "") && (get_preg($rawAccounts[$i][$ids['AstAccountContext']], 'realname')) ) {
-				$partialAccounts[$i]['AstAccountContext'] = $rawAccounts[$i][$ids['AstAccountContext']];
+			elseif (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']], 'realname')) {
+				$partialAccounts[$i]['AstAccountHost'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']];
 			}
-			//add AstAccountRealmedPassword
-			if (($rawAccounts[$i][$ids['AstAccountRealmedPassword']] != "") && (get_preg($rawAccounts[$i][$ids['AstAccountRealmedPassword']], 'password')) ) {
-				$partialAccounts[$i]['AstAccountRealmedPassword'] = $rawAccounts[$i][$ids['AstAccountRealmedPassword']];
+			else {
+				$errMsg = $this->messages['AstAccountHost'][2];
+				array_push($errMsg, array($i));
+				$messages[] = $errMsg;
+			}
+			//add context
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountContext']] != "") && (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountContext']], 'realname')) ) {
+				$partialAccounts[$i]['AstAccountContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountContext']];
+			}
+			else {
+				$errMsg = $this->messages['AstAccountContext'][2];
+				array_push($errMsg, array($i));
+				$messages[] = $errMsg;
+			}
+			//add password
+			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']] != "") {
+				$partialAccounts[$i]['AstAccountRealmedPassword'] = $this->hashPassword($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
 			}
 		}
 		return $messages;
@@ -255,8 +332,18 @@ class asteriskAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$this->attributes['AstAccountRealmedPassword'][0] = base64_encode(hex2bin(md5($password)));
+		$this->attributes['AstAccountRealmedPassword'][0] = $this->hashPassword($password);
 		return array();
+	}
+	
+	/**
+	 * Hashes a password value to Asterisk format.
+	 *
+	 * @param String $password password
+	 * @return String hash
+	 */
+	private function hashPassword($password) {
+		return base64_encode(hex2bin(md5($password)));
 	}
 
 }
