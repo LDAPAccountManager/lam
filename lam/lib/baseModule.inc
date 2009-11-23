@@ -1267,6 +1267,28 @@ abstract class baseModule {
 	}
 	
 	/**
+	 * Allows the module to run commands before the LDAP entry is changed or created.
+	 * 
+	 * An error message should be printed if the function returns false.
+	 * 
+	 * @param array $attributes LDAP attributes of this entry
+	 * @return boolean true, if no problems occured
+	 */
+	public function preModifySelfService($attributes) {
+		return true;
+	}
+	
+	/**
+	 * Allows the module to run commands after the LDAP entry is changed or created.
+	 *
+	 * @param array $attributes LDAP attributes of this entry
+	 * @return boolean true, if no problems occured
+	 */
+	public function postModifySelfService($attributes) {
+		return true;
+	}
+	
+	/**
 	 * Returns the {@link accountContainer} object.
 	 * 
 	 * @return accountContainer accountContainer object
