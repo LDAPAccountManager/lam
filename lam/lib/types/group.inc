@@ -244,7 +244,7 @@ class lamGroupList extends lamList {
 			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
 			$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($module_suffix), $filter, $attrs, 0, 0, 0, LDAP_DEREF_NEVER);
 			if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
-				StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
+				StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See the manual for instructions to solve this problem."));
 				$this->refresh_primary = true;
 			}
 			if ($sr) {
