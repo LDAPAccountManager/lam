@@ -76,9 +76,9 @@ class inetLocalMailRecipient extends baseModule {
 		// profile options
 		$return['profile_options'] = array(
 			array(
-				0 => array('kind' => 'text', 'text' => _('Mail server') . ":"),
-				1 => array('kind' => 'input', 'name' => 'inetLocalMailRecipient_host', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'host'))
+				array('kind' => 'text', 'text' => _('Mail server') . ":"),
+				array('kind' => 'input', 'name' => 'inetLocalMailRecipient_host', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'host'))
 		);
 		// profile checks
 		$return['profile_checks']['inetLocalMailRecipient_host'] = array(
