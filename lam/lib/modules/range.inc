@@ -49,14 +49,10 @@ class range extends baseModule {
 	// Range -> Function attibute_processed already running?
 	public $processed;
 	
-	// Are the ranges ok???
-	public $ranges_ok;
-	
 	// For check, if IPs overlaped.
 	public $overlaped;
 
 	public function get_metaData() {
-
 		$return = array();
 		// manages dhcp accounts
 		$return["account_types"] = array("dhcp");
@@ -102,56 +98,50 @@ class range extends baseModule {
 	}
 	
 	/**
+	 * Calculates the subnet for a given IP and netmask.
 	 *
-	 * Checked, if it's a valid range
+	 * @param String $ip IP address
+	 * @param String $mask network mask
+	 */
+	private static function calculateSubnet($ip, $mask) {
+		return long2ip(ip2long($ip) & ip2long($mask));
+	}
+	
+	/**
+	 * Checks if the first IP is smaller than the second IP.
 	 *
-	 * @param first ip
-	 * @param second ip
+	 * @param String $first_ip first ip
+	 * @param String $second_ip second ip
 	 *
 	 * @return true, if it's a valid Range, else false;
 	 **/
 	
-	public function check_range($first_ip,$second_ip) {
-
+	public function check_range($first_ip, $second_ip) {
 		$ex_first = explode(".", $first_ip);
 		$ex_second = explode(".", $second_ip);
-
-		if ($ex_first[0]!=$ex_second[0])
-		    return false;
-		    
-		if ($ex_first[1]!=$ex_second[1])
-		    return false;
-
-		if ($ex_first[2]!=$ex_second[2])
-		    return false;
-
-		if ($ex_first[3]>$ex_second[3]) {
-			return false;
+		if ($ex_first[0]<$ex_second[0])
+		    return true;
+		if ($ex_first[1]<$ex_second[1])
+		    return true;
+		if ($ex_first[2]<$ex_second[2])
+		    return true;
+		if ($ex_first[3]<$ex_second[3]) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	/**
+	 * Check if an IP address is in the correct subnet.
 	 *
-	 * Check if the range and subnet are valid.
-	 *
-	 * @param IP
-	 * @param Subnet
-	 *
-	 * @return true if the range and subnet valid, else false!
-	 *
+	 * @param String $ip IP address
+	 * @param String $subnet subnet
+	 * @param String $mask network mask
+	 * @return true if the range and subnet valid, else false
 	 **/
-	
-	public function check_subnet_range($ip,$subnet) {
-		// Check if the range was valid with the subnet:
-		$ex = explode(".", $ip);
-		$ex_subnet = explode(".", $subnet);
-		if ($ex[0]==$ex_subnet[0] && $ex[1]==$ex_subnet[1] && $ex[2]==$ex_subnet[2]) {
-			return true;
-		}
-		else {
-		    return false;
-		}
+	public static function check_subnet_range($ip, $subnet, $mask) {
+		$ipSubnet = range::calculateSubnet($ip, $mask);
+		return ($subnet == $ipSubnet);
 	}
 	
 	/**
@@ -175,8 +165,7 @@ class range extends baseModule {
 		    if (in_array($n, $this->overlaped)) {
 				return false;
 		    }
-		    else
-		    {
+		    else {
 		    	$this->overlaped[] = $n;
 			}
 		}
@@ -244,8 +233,9 @@ class range extends baseModule {
 		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 		    $range_edit = false;        // Range were edit?
 		    $dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
+		    $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
 		    foreach ($this->ranges AS $id=>$arr) {
-		        if (!empty($this->ranges[$id]['range_start']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0])) {
+		        if (!empty($this->ranges[$id]['range_start']) && !range::check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0], $mask)) {
 		            // Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_start']);
 					$tmp = $this->ranges[$id]['range_start'];
@@ -253,7 +243,7 @@ class range extends baseModule {
 					if($tmp!=$this->ranges[$id]['range_start'])
 						$range_edit = true;
 		        }
-		        if (!empty($this->ranges[$id]['range_end']) && !$this->check_subnet_range($this->ranges[$id]['range_end'],$dhcpAttrs['cn'][0])) {
+		        if (!empty($this->ranges[$id]['range_end']) && !range::check_subnet_range($this->ranges[$id]['range_end'],$dhcpAttrs['cn'][0], $mask)) {
 		            // Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_end']);
 					$tmp = $this->ranges[$id]['range_end'];
@@ -302,8 +292,8 @@ class range extends baseModule {
 			        if ($_POST['range_start_'.$id]=="" && $_POST['range_end_'.$id]=="") {
 			            unset($this->attributes['dhcpRange'][$id]);
 			        }
-			        else
-			        {
+			        else {
+			        	$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
 						// Check range_start:
 						$_POST['range_start_'.$id] = trim($_POST['range_start_'.$id]);
 				        if (!check_ip($_POST['range_start_'.$id])) {
@@ -332,12 +322,12 @@ class range extends baseModule {
 				        }
 
 						// Check if Subnet and range first are valid:
-						if (!$this->check_subnet_range($_POST['range_start_'.$id],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+						if (!range::check_subnet_range($_POST['range_start_'.$id],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
 						    $was_a_error = true;
 						}
 
 						// Check if Subnet and range last are valid:
-						if (!$this->check_subnet_range($_POST['range_end_'.$id],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+						if (!range::check_subnet_range($_POST['range_end_'.$id],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
 						    $was_a_error = true;
 						}
 
@@ -349,12 +339,9 @@ class range extends baseModule {
 				        // Check, if range_start and range_end are ok!
 				        if (!$was_a_error) {
 				            $this->attributes['dhcpRange'][$id] = $_POST['range_start_'.$id]." ".$_POST['range_end_'.$id];
-				            $this->ranges_ok = true;
 				        }
-				        else
-				        {
+				        else {
 				            unset($this->attributes['dhcpRange'][$id]);
-							$this->ranges_ok = false;
 				        }
 					}
 				}
@@ -402,6 +389,7 @@ class range extends baseModule {
             	$this->ranges[] = array();
             }
             $this->reset_overlaped_range();
+            $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
             foreach($this->ranges AS $id=>$arr) {
 
 				// Range start
@@ -409,7 +397,7 @@ class range extends baseModule {
 				    $error = "&laquo;&laquo; " . _("The IP address is invalid.");
 				} elseif($this->processed && !$this->check_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end'])) {
                     $error = "&laquo;&laquo; " . _("The range end needs to be greater than the range start.");
-				} elseif ($this->processed && !$this->check_subnet_range($this->ranges[$id]['range_start'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
 					$error = "&laquo;&laquo; " . _("The IP does not match the subnet.");
 				} elseif ($this->processed && !$this->overlaped_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
 					$error = "&laquo;&laquo; " . _("The range conflicts with another range.");
@@ -425,7 +413,7 @@ class range extends baseModule {
 				// Range end
 				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
 				    $error = "&laquo;&laquo; " . _("The IP address is invalid.");
-				} elseif ($this->processed && !$this->check_subnet_range($this->ranges[$id]['range_end'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
 					$error = "&laquo;&laquo; " . _("The IP does not match the subnet.");
 				} else {
 				    $error = "";

@@ -170,7 +170,9 @@ class fixed_ip extends baseModule {
 		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 		    $ip_edit = false;        // Range were edit?
 		    foreach ($this->fixed_ip AS $id=>$arr) {
-		        if (!empty($this->fixed_ip[$id]['ip']) && !$this->getAccountContainer()->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+		        if (!empty($this->fixed_ip[$id]['ip']) && !range::check_subnet_range($this->fixed_ip[$id]['ip'],
+		        																	$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
+		        																	$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 		            // Range anpassen:
 					$ex = explode(".", $this->fixed_ip[$id]['ip']);
 					$tmp = $this->fixed_ip[$id]['ip'];
@@ -271,7 +273,9 @@ class fixed_ip extends baseModule {
 					}
 
 					// Is ip correct with subnet:
-					if (check_ip($_POST['ip_'.$id]) && !$this->getAccountContainer()->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+					if (check_ip($_POST['ip_'.$id]) && !range::check_subnet_range($_POST['ip_'.$id],
+																				 $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
+																				 $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 					    $error = true;
 					}
 
@@ -386,7 +390,9 @@ class fixed_ip extends baseModule {
 				elseif (($this->fixed_ip[$id]['ip'] == '') || !check_ip($this->fixed_ip[$id]['ip'])) {
 					$ipError = _("The IP address is invalid.");
 				}
-				elseif (!$this->getAccountContainer()->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+				elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'], 
+													$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
+													$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 				    $ipError = _("The IP address does not match the subnet.");
 				}
 				elseif (!$this->overlapd_ip($this->fixed_ip[$id]['ip'])) {
