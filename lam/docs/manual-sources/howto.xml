@@ -861,7 +861,8 @@ Have fun!
         </listitem>
 
         <listitem>
-          <para>directory must be accessibly by Apache but needs not to be accessible by the browser</para>
+          <para>directory must be accessibly by Apache but needs not to be
+          accessible by the browser</para>
         </listitem>
       </itemizedlist>
 
@@ -877,7 +878,8 @@ Have fun!
         </listitem>
 
         <listitem>
-          <para>directory must be accessibly by Apache but needs not to be accessible by the browser</para>
+          <para>directory must be accessibly by Apache but needs not to be
+          accessible by the browser</para>
         </listitem>
       </itemizedlist>
 
@@ -893,7 +895,8 @@ Have fun!
         </listitem>
 
         <listitem>
-          <para>directory contents must be accessible by browser but directory itself needs not to be browseable</para>
+          <para>directory contents must be accessible by browser but directory
+          itself needs not to be browseable</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -977,10 +980,14 @@ Have fun!
       sudo. Edit /etc/sudoers on host where homedirs or quotas should be used
       and add the following line:</para>
 
-      <para>$admin All= NOPASSWD: $path</para>
+      <para>$admin All= NOPASSWD: $path_to_lamdaemon</para>
 
-      <para>$admin is the admin user from LAM (must be a valid Unix account)
-      and $path is the path to lamdaemon.pl. Example:</para>
+      <para><emphasis condition="">$admin</emphasis> is the admin user from
+      LAM (must be a valid Unix account) and
+      <emphasis>$path_to_lamdaemon</emphasis> is the path to
+      lamdaemon.pl.</para>
+
+      <para><emphasis role="bold">Example:</emphasis></para>
 
       <para>myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl</para>
 
