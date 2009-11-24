@@ -41,7 +41,7 @@ $Id$
 class fixed_ip extends baseModule {
 
 	// fixed ips
-	public $fixed_ips;
+	public $fixed_ip;
 	
 	// already processed?
 	public $processed = false;
@@ -196,15 +196,17 @@ class fixed_ip extends baseModule {
 		    		'(objectClass=dhcpHost)', array(), 0, 0, 0, LDAP_DEREF_NEVER);
 		    if ($sr) {
 		        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-				for ($i=0; $i < $entries["count"]; $i++) {
-					$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
-					$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-					$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
-	
-					$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
-					$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-					$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
-				}
+		        if ($entries) {
+					for ($i=0; $i < $entries["count"]; $i++) {
+						$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
+						$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
+						$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+		
+						$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
+						$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
+						$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+					}
+		        }
 		    }
 		}
 	}
@@ -324,15 +326,15 @@ class fixed_ip extends baseModule {
 			$return[] = array(
 				array('kind' => 'table', 'value' => array(array(
 					array('kind' => 'text', 'text' => _('PC name') . "*"),
-					array('kind' => 'help', 'value' => 'pc', 'scope' => 'user'),
+					array('kind' => 'help', 'value' => 'pc'),
 				))),
 				array('kind' => 'table', 'value' => array(array(
 					array('kind' => 'text', 'text' => _('MAC address') . "*"),
-					array('kind' => 'help', 'value' => 'mac', 'scope' => 'user'),
+					array('kind' => 'help', 'value' => 'mac'),
 				))),
 				array('kind' => 'table', 'value' => array(array(
 					array('kind' => 'text', 'text' => _('IP address') . "*"),
-					array('kind' => 'help', 'value' => 'ip', 'scope' => 'user'),
+					array('kind' => 'help', 'value' => 'ip'),
 				))),
 				array('kind' => 'text', 'text' => ''),
 			);
@@ -341,7 +343,7 @@ class fixed_ip extends baseModule {
 
 			// If $ranges is not a array, then create one:
 			if (!is_array($this->fixed_ip)) {
-				$this->fixed_ip[] = array();
+				$this->fixed_ip = array();
 			}
             $pcs = array();
 	        foreach($this->fixed_ip AS $id=>$arr) {
