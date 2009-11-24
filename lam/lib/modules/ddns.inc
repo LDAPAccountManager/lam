@@ -210,7 +210,7 @@ class ddns extends baseModule {
 		$errors = array();
 		
 		// Main Settings and Account have to different processes.
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
 			// main settings:
 			$errors = $this->process_attributes_mainSettings();
 		}
@@ -327,7 +327,7 @@ class ddns extends baseModule {
 				return array();
 			}
 		}
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn==$_SESSION['config']->get_suffix('dhcp')) {
 			// DHCP main settings
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Activate DynDNS') . ":* "),

@@ -198,7 +198,7 @@ class range extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-	    if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 	    	return "enabled";
 		}
 		else {
@@ -214,7 +214,7 @@ class range extends baseModule {
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// Load DHCP Options:
-        if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+        if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 			$this->orig = $attr;
 			$this->attributes = $attr;
 
@@ -241,9 +241,9 @@ class range extends baseModule {
 	public function reload_ranges() {
 	    // Only run it, when ranges already exists:
 	    if(is_array($this->ranges)) {
-		    $ex_subnet = explode(".", $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]);
+		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 		    $range_edit = false;        // Range were edit?
-		    $dhcpAttrs = $_SESSION['account']->getAccountModule('dhcp_settings')->getAttributes();
+		    $dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
 		    foreach ($this->ranges AS $id=>$arr) {
 		        if (!empty($this->ranges[$id]['range_start']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0])) {
 		            // Range anpassen:
@@ -282,8 +282,8 @@ class range extends baseModule {
 		$errors = array();
 		
 		$droped = false;    // Was a Range droped???
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
-			if ($_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+			if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
 			    $was_a_error = false;
 			    $this->reset_overlaped_range();
 
@@ -332,12 +332,12 @@ class range extends baseModule {
 				        }
 
 						// Check if Subnet and range first are valid:
-						if (!$this->check_subnet_range($_POST['range_start_'.$id],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+						if (!$this->check_subnet_range($_POST['range_start_'.$id],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 						    $was_a_error = true;
 						}
 
 						// Check if Subnet and range last are valid:
-						if (!$this->check_subnet_range($_POST['range_end_'.$id],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+						if (!$this->check_subnet_range($_POST['range_end_'.$id],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 						    $was_a_error = true;
 						}
 
@@ -391,7 +391,7 @@ class range extends baseModule {
 	public function display_html_attributes() {
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
             echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
         }
         else
@@ -409,7 +409,7 @@ class range extends baseModule {
 				    $error = "&laquo;&laquo; " . _("The IP address is invalid.");
 				} elseif($this->processed && !$this->check_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end'])) {
                     $error = "&laquo;&laquo; " . _("The range end needs to be greater than the range start.");
-				} elseif ($this->processed && !$this->check_subnet_range($this->ranges[$id]['range_start'],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+				} elseif ($this->processed && !$this->check_subnet_range($this->ranges[$id]['range_start'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 					$error = "&laquo;&laquo; " . _("The IP does not match the subnet.");
 				} elseif ($this->processed && !$this->overlaped_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
 					$error = "&laquo;&laquo; " . _("The range conflicts with another range.");
@@ -425,7 +425,7 @@ class range extends baseModule {
 				// Range end
 				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
 				    $error = "&laquo;&laquo; " . _("The IP address is invalid.");
-				} elseif ($this->processed && !$this->check_subnet_range($this->ranges[$id]['range_end'],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+				} elseif ($this->processed && !$this->check_subnet_range($this->ranges[$id]['range_end'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 					$error = "&laquo;&laquo; " . _("The IP does not match the subnet.");
 				} else {
 				    $error = "";
@@ -467,7 +467,7 @@ class range extends baseModule {
 	public function save_attributes() {
 		$return = array();
 		// Get easy attributes
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
 		// Return attributes

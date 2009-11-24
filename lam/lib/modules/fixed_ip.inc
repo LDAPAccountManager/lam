@@ -100,7 +100,7 @@ class fixed_ip extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-	    if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 	    	return "enabled";
 		}
 		else {
@@ -167,10 +167,10 @@ class fixed_ip extends baseModule {
 	public function reload_ips() {
 	    // Only run it, when ranges already exists:
 	    if(is_array($this->fixed_ip)) {
-		    $ex_subnet = explode(".", $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]);
+		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 		    $ip_edit = false;        // Range were edit?
 		    foreach ($this->fixed_ip AS $id=>$arr) {
-		        if (!empty($this->fixed_ip[$id]['ip']) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'],$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
+		        if (!empty($this->fixed_ip[$id]['ip']) && !$this->getAccountContainer()->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0])) {
 		            // Range anpassen:
 					$ex = explode(".", $this->fixed_ip[$id]['ip']);
 					$tmp = $this->fixed_ip[$id]['ip'];
@@ -190,9 +190,9 @@ class fixed_ip extends baseModule {
 	 */
 	function load_attributes($attr) {
 	
-	    if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 	    
-		    $sr = @ldap_search($_SESSION['ldap']->server(),'cn='.$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),
+		    $sr = @ldap_search($_SESSION['ldap']->server(),'cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),
 		    		'(objectClass=dhcpHost)', array(), 0, 0, 0, LDAP_DEREF_NEVER);
 		    if ($sr) {
 		        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
@@ -218,12 +218,12 @@ class fixed_ip extends baseModule {
 	*/
 	public function process_attributes() {
 		$errors = array();
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 			$this->processed = true;
 
 			$this->reset_overlapd_ip();
 
-			if ($_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
+			if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
 
 				$error = false;     // errors by process_attributes()?
 				$pcs = array();
@@ -269,7 +269,7 @@ class fixed_ip extends baseModule {
 					}
 
 					// Is ip correct with subnet:
-					if (check_ip($_POST['ip_'.$id]) && !$_SESSION['account']->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+					if (check_ip($_POST['ip_'.$id]) && !$this->getAccountContainer()->getAccountModule('range')->check_subnet_range($_POST['ip_'.$id], $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
 					    $error = true;
 					}
 
@@ -316,7 +316,7 @@ class fixed_ip extends baseModule {
 	* It will output a complete html-table
 	*/
 	public function display_html_attributes() {
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
             echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
         }
         else {
@@ -346,7 +346,7 @@ class fixed_ip extends baseModule {
             $pcs = array();
 	        foreach($this->fixed_ip AS $id=>$arr) {
 				// pc name
-				$result = @ldap_search($_SESSION['ldap']->server(),"cn=".$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].",".$_SESSION['config']->get_Suffix('dhcp'),
+				$result = @ldap_search($_SESSION['ldap']->server(),"cn=".$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].",".$_SESSION['config']->get_Suffix('dhcp'),
 							'(cn='.$_POST['pc_'.$id].')', array(), 0, 0, 0, LDAP_DEREF_NEVER);
 	            $num = (@ldap_get_entries($_SESSION['ldap']->server(), $result)=="")?0:ldap_get_entries($_SESSION['ldap']->server(), $result);
 				$pcError = "";
@@ -384,7 +384,7 @@ class fixed_ip extends baseModule {
 				elseif (($this->fixed_ip[$id]['ip'] == '') || !check_ip($this->fixed_ip[$id]['ip'])) {
 					$ipError = _("The IP address is invalid.");
 				}
-				elseif (!$_SESSION['account']->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
+				elseif (!$this->getAccountContainer()->getAccountModule('range')->check_subnet_range($this->fixed_ip[$id]['ip'], $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]) ) {
 				    $ipError = _("The IP address does not match the subnet.");
 				}
 				elseif (!$this->overlapd_ip($this->fixed_ip[$id]['ip'])) {
@@ -447,7 +447,7 @@ class fixed_ip extends baseModule {
 	 * @param array $attributes LDAP attributes of this entry
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
 		    $add = array();
 		    $delete = array();
 			// Which dns are to delete and to add
@@ -487,7 +487,7 @@ class fixed_ip extends baseModule {
 		    }
 
 			foreach($delete AS $dn) {
-			    ldap_delete($_SESSION['ldap']->server(),'cn='.$dn.',cn='.$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'));
+			    ldap_delete($_SESSION['ldap']->server(),'cn='.$dn.',cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'));
 			}
 
 		    foreach($add AS $id=>$arr) {
@@ -498,7 +498,7 @@ class fixed_ip extends baseModule {
 				$attr['dhcpHWAddress'] = 'ethernet '.$add[$id]['mac'];
 				$attr['dhcpStatements'] = 'fixed-address '.$add[$id]['ip'];
 				if ($attr['cn']!="")
-					ldap_add($_SESSION['ldap']->server(),'cn='.$add[$id]['cn'].',cn='.$_SESSION['account']->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),$attr);
+					ldap_add($_SESSION['ldap']->server(),'cn='.$add[$id]['cn'].',cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),$attr);
 		    }
 		}
 	}
