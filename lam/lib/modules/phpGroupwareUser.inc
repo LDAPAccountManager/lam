@@ -456,7 +456,9 @@ class phpGroupwareUser extends baseModule implements passwordService {
 		if (!in_array('posixAccount', $modules)) {
 			return array();
 		}
-		$this->attributes['phpgwLastPasswordChange'][0] = time();
+		if (in_array_ignore_case('phpgwAccount', $this->attributes['objectClass'])) {
+			$this->attributes['phpgwLastPasswordChange'][0] = time();
+		}
 		return array();
 	}
 		

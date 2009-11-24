@@ -519,7 +519,9 @@ class shadowAccount extends baseModule implements passwordService {
 		if (!in_array('posixAccount', $modules)) {
 			return array();
 		}
-		$this->attributes['shadowLastChange'][0] = intval(time()/3600/24);
+		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
+			$this->attributes['shadowLastChange'][0] = intval(time()/3600/24);
+		}
 		return array();
 	}
 		
