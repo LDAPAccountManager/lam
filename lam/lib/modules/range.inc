@@ -253,7 +253,7 @@ class range extends baseModule {
 					if($tmp!=$this->ranges[$id]['range_start'])
 						$range_edit = true;
 		        }
-		        if (!empty($this->ranges[$id]['range_end']) && !$this->check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0])) {
+		        if (!empty($this->ranges[$id]['range_end']) && !$this->check_subnet_range($this->ranges[$id]['range_end'],$dhcpAttrs['cn'][0])) {
 		            // Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_end']);
 					$tmp = $this->ranges[$id]['range_end'];
