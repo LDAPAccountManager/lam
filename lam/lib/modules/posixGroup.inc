@@ -404,7 +404,7 @@ class posixGroup extends baseModule implements passwordService {
 			),
 			'cn' => array(
 				"Headline" => _("Group name"),
-				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . LAM does not allow a number as first character because groupadd also does not allow it. If group name is already used group name will be expanded with a number. The next free number will be used.")
+				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . If group name is already used group name will be expanded with a number. The next free number will be used.")
 			)
 		);
 

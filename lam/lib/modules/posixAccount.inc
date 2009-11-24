@@ -368,7 +368,7 @@ class posixAccount extends baseModule implements passwordService {
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("User name"),
-					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
+					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"),
@@ -406,7 +406,7 @@ class posixAccount extends baseModule implements passwordService {
 			'host' => array(
 				'uid' => array(
 					"Headline" => _("Host name"),
-					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. LAM does not allow a number as first character because useradd also does not allow it. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
+					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"),
