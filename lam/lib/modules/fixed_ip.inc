@@ -100,7 +100,7 @@ class fixed_ip extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-	    if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 	    	return "enabled";
 		}
 		else {
@@ -190,7 +190,7 @@ class fixed_ip extends baseModule {
 	 */
 	function load_attributes($attr) {
 	
-	    if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 	    
 		    $sr = @ldap_search($_SESSION['ldap']->server(),'cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),
 		    		'(objectClass=dhcpHost)', array(), 0, 0, 0, LDAP_DEREF_NEVER);
@@ -218,7 +218,7 @@ class fixed_ip extends baseModule {
 	*/
 	public function process_attributes() {
 		$errors = array();
-		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			$this->processed = true;
 
 			$this->reset_overlapd_ip();
@@ -447,7 +447,7 @@ class fixed_ip extends baseModule {
 	 * @param array $attributes LDAP attributes of this entry
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 		    $add = array();
 		    $delete = array();
 			// Which dns are to delete and to add

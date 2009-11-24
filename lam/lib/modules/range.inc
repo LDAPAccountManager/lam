@@ -198,7 +198,7 @@ class range extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-	    if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 	    	return "enabled";
 		}
 		else {
@@ -214,7 +214,7 @@ class range extends baseModule {
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// Load DHCP Options:
-        if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+        if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			$this->orig = $attr;
 			$this->attributes = $attr;
 
@@ -282,7 +282,7 @@ class range extends baseModule {
 		$errors = array();
 		
 		$droped = false;    // Was a Range droped???
-		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
 			    $was_a_error = false;
 			    $this->reset_overlaped_range();
@@ -467,7 +467,7 @@ class range extends baseModule {
 	public function save_attributes() {
 		$return = array();
 		// Get easy attributes
-		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
 		// Return attributes

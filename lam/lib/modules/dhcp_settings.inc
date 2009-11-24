@@ -70,18 +70,9 @@ if (!function_exists('check_ip')) {
 * @package modules
 */
 class dhcp_settings extends baseModule {
-	
-	// Netbios node type:
-	public $netbios_node_type;
-	
+
 	// All netbios node types:
 	private $all_netbios_node_types;
-	
-	// ALL DHCP Settings
-	public $dhcpSettings;
-	
-	// DN (cn=192.168.15.0,dc=entwicklung,dc=sin)
-	public $dn="";
 	
 	public $attributes;
 	
@@ -91,7 +82,7 @@ class dhcp_settings extends baseModule {
 	* @param string $scope account type
 	*/
 	function __construct($scope) {
-		// List of well known rids
+		// list of node types
 		$this->all_netbios_node_types = array(
 			"1" => _("B-Node (0x01)"),
 			"2" => _("P-Node (0x02)"),
@@ -120,7 +111,7 @@ class dhcp_settings extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('top', 'dhcpOptions');
 		// managed attributes
-		$return['attributes'] = array('cn', 'dhcpOption', 'dhcpComments');
+		$return['attributes'] = array('cn', 'dhcpOption', 'dhcpComments', 'dhcpNetMask', 'dhcpStatements');
 		// help Entries
 		$return['help'] = array(
 				'domainname' => array(
@@ -129,6 +120,9 @@ class dhcp_settings extends baseModule {
 			) , 'subnet' => array(
 				"Headline" => _("Subnet"),
 				"Text" => _("The name of the subnet. Example: 192.168.10.0")
+			) , 'host-name' => array(
+				"Headline" => _("Host name"),
+				"Text" => _("The host name of this entry.")
 			) , 'leasetime' => array(
 				"Headline" => _("Lease time"),
 				"Text" => _("The lease time specifies after how many seconds the client should request a new IP address.")
@@ -185,51 +179,51 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		);
 		// profile elements
 		$return['profile_options'] = array(
-			// Subnetz name
+			// Subnet name
 	        array(
 	        	array('kind' => 'text', 'text' => _('Subnet') . ": "),
 				array('kind' => 'input', 'name' => 'cn', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'subnet', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'subnet')),
 			// Domainname
 	        array(
 	        	array('kind' => 'text', 'text' => _('Domain name') . ": "),
 				array('kind' => 'input', 'name' => 'domainname', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'domainname', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'domainname')),
 			// Lease Time
 	        array(
 	        	array('kind' => 'text', 'text' => _('Lease time') . ": "),
 				array('kind' => 'input', 'name' => 'lease_time', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'leasetime', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'leasetime')),
 			// Max lease Time
 	        array(
 	        	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
 				array('kind' => 'input', 'name' => 'max_lease_time', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'max_leasetime', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'max_leasetime')),
 			// DNS
 	        array(
 	        	array('kind' => 'text', 'text' => _('DNS') . ": "),
 				array('kind' => 'input', 'name' => 'dns', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'dns', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'dns')),
 			// Gateway
 	        array(
 	        	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
 				array('kind' => 'input', 'name' => 'routers', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'gateway', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'gateway')),
 			// Netbios Name Servers
 	        array(
 	        	array('kind' => 'text', 'text' => _('Netbios name servers') . ": "),
 				array('kind' => 'input', 'name' => 'netbios', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'netbios', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'netbios')),
 			// Netbios Node Type
 	        array(
 	        	array('kind' => 'text', 'text' => _('Netbios node type') . ": "),
 				array('kind' => 'select', 'name' => 'netbios_node_type', 'options' => $this->all_netbios_node_types),
-				array('kind' => 'help', 'value' => 'netbios_type', 'scope' => 'user')),
+				array('kind' => 'help', 'value' => 'netbios_type')),
 			// subnetmask
 	        array(
 	        	array('kind' => 'text', 'text' => _('Subnet mask') . ": "),
 				array('kind' => 'input', 'name' => 'subnet', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'subnetmask', 'scope' => 'user'))
+				array('kind' => 'help', 'value' => 'subnetmask'))
 			);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -317,7 +311,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['routers'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_gateway', _('The default gateway is invalid.'));
 		$this->messages['netbios'][0] = array('ERROR', _('The Netbios server is invalid.'));
 		$this->messages['netbios'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_netbiosServer', _('The Netbios server is invalid.'));
-		$this->messages['netbios_node_type'][0] = array('ERROR', _('The entered Netbios node type does not exist.'));
 		$this->messages['netbios_node_type'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_netbiosType', _('The entered Netbios node type does not exist.'));
 		$this->messages['max_lease_time'][0] = array('ERROR', _('The maximum lease time is invalid.'));
 		$this->messages['max_lease_time'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_maxLeaseTime', _('The maximum lease time is invalid.'));
@@ -333,51 +326,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['domainname'][3] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to be shorter than 15 characters.'));
 		$this->messages['domainname'][4] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to have at least 3 characters.'));
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
+		$this->messages['host-name'][0] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	}
 	
-	/**
-	* This functions returns true if all needed settings are done.
-	*
-	* @return boolean true if LDAP operation can be done
-	*/
-	public function module_complete() {
-		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
-			// check if DHCP main settings and valid DHCP entry
-			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				return false;
-			}
-		}
-
-		if (!empty($this->dhcpSettings['domainname']) && (strlen($this->dhcpSettings['domainname'])>15 ||
-		    strlen($this->dhcpSettings['domainname'])<3 || !preg_match("/^[A-Za-z0-9\._-]*$/", $this->dhcpSettings['domainname']))) return false;
-		//DNS
-		if (!empty($this->dhcpSettings['dns'])) {
-			$ex = explode(",", $this->dhcpSettings['dns']);
-			$dns = "";
-			$is_first=true;
-			$invalid = false;
-			foreach($ex AS $string) {
-				if ($is_first) {
-					$dns .= $string;
-					$is_first=false;
-			    }
-				else
-				{
-			    	$dns .= ",$string";
-				}
-	            if (!check_ip($string)) {
-			        $invalid = true;
-			    }
-			}
-			if ($invalid) {
-				return false;
-			}
-		}
-		if (!empty($this->dhcpSettings['routers']) && !check_ip($this->dhcpSettings['routers'])) return false;
-		
-		return true;
-	}
-
 	/* This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
@@ -387,109 +338,15 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	public function save_attributes() {
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
-			// Standard Things
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+			// add object class
 			if (!in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = "dhcpSubnet";
 			}
-			// sort to array:
-			if (is_array($this->attributes['dhcpOption'])) {
-				$i = 0;
-				foreach($this->attributes['dhcpOption'] AS $key=>$value) {
-				    $this->attributestmp['dhcpOption'][$i] = $this->attributes['dhcpOption'][$key];
-				    $i++;
-				}
-				unset($this->attributes['dhcpOption']);
-				$this->attributes['dhcpOption'] = $this->attributestmp['dhcpOption'];
-				unset($this->attributestmp['dhcpOption']);
-			}
-			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
-		else {
-			// Basicsettings...
-			if (is_array($this->attributes['dhcpOption'])) {
-				$i = 0;
-				foreach($this->attributes['dhcpOption'] AS $key=>$value) {
-				    $this->attributestmp['dhcpOption'][$i] = $this->attributes['dhcpOption'][$key];
-				    $i++;
-				}
-				unset($this->attributes['dhcpOption']);
-				$this->attributes['dhcpOption'] = $this->attributestmp['dhcpOption'];
-				unset($this->attributestmp['dhcpOption']);
-			}
-			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-	
-		}
-	
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Return attributes
 		return $return;
-	}
-	
-	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attr list of attributes
-	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
-		// Load DHCP Options:
-		$this->dn = $this->getAccountContainer()->dn_orig;
-
-        if (!is_array($attr['dhcpOption'])) {
-        	$attr['dhcpOption'] = array();
-        }
-		
-     	if (is_array($attr['dhcpOption'])) {
-			foreach($attr['dhcpOption'] AS $id=>$value) {
-				$ex = explode(" ", $value);
-				// Is domainname?
-	            if ($ex[0]=="domain-name") {
-					$this->dhcpSettings['domainname'] = $ex[1];
-					$attr[] = $value;
-				}
-				// Is Gateway?
-				if ($ex[0]=="routers") {
-					$this->dhcpSettings['routers'] = $ex[1];
-				}
-				// Is subnetmask?
-				if ($ex[0]=="subnet-mask") {
-					$this->subnet = $ex[1];
-				}
-				// Is domainname?
-				if ($ex[0]=="domain-name") {
-					$this->dhcpSettings['domainname'] = str_replace('"',"", $ex[1]);
-				}
-				// Is netbios-name-servers?
-				if ($ex[0]=="domain-name-servers") {
-	
-					$this->dhcpSettings['dns'] = $ex[1];
-				}
-				// Is netbios-node-type?
-				if ($ex[0]=="netbios-node-type") {
-					$this->netbios_node_type = $this->all_netbios_node_types[$ex[1]];
-				}
-				// Is dns?
-				if ($ex[0]=="netbios-name-servers") {
-					$this->dhcpSettings['netbios'] = substr($value, 21);
-				}
-			}
-		}
-		
-        if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
-	        if (!is_array($attr['dhcpNetMask'])) {
-	        	$attr['dhcpNetMask'] = array();
-	        }
-		
-			// Load DHCP netmask
-			foreach($attr['dhcpNetMask'] AS $id=>$value) {
-			    $ex = explode(" ", $value);
-				// netmask
-				$this->attributes['dhcpNetMask'][0] = $value;
-			}
-		}
-		
-		$this->orig = $attr;
-		$this->attributes = $attr;
 	}
 	
 	/**
@@ -510,31 +367,26 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// Check if cn is not empty
 		if ($_SESSION['config']->get_suffix('dhcp') != $this->getAccountContainer()->dn_orig) {
 			if (!empty($_POST['cn'])) $_POST['cn'] = trim($_POST['cn']);
+			$this->attributes['cn'][0] = $_POST['cn'];
 			if (empty($_POST['cn'])) {
 			    $errors[] = $this->messages['cn'][0];
-			    $this->attributes['cn'][0] = $_POST['cn'];
 			}
 			// Check, if cn is not already use:
 		    elseif ( $_SESSION['cache']->in_cache($_POST['cn'],'cn', array('dhcp')) && $this->orig['cn']['0']!=$_POST['cn'] ) {
 		       	$errors[] = $this->messages['cn'][1];
-		      	$this->attributes['cn'][0] = $_POST['cn'];
 		    }
 			elseif (!check_ip($_POST['cn'],true)) {
 				$errors[] = $this->messages['cn'][2];
-				$this->attributes['cn'][0] = $_POST['cn'];
 			}
 			elseif (array_pop(explode(".",  $_POST['cn']))!=0) {
 				$errors[] = $this->messages['cn'][2];
-				$this->attributes['cn'][0] = $_POST['cn'];
 			}
-			else
-			{
-				$this->attributes['cn'][0] = $_POST['cn'];
-					// if the cn was edit, reload the Ranges:
-	            if ($_SESSION['account']->getAccountModule('range')->reload_ranges())
+			else {
+				// if the cn was edit, reload the Ranges:
+	            if ($this->getAccountContainer()->getAccountModule('range')->reload_ranges())
 	            	$errors[] = $this->messages['ranges_reload'][0];
 		            // if the cn was edit, reload the ips:
-	            if ($_SESSION['account']->getAccountModule('fixed_ip')->reload_ips())
+	            if ($this->getAccountContainer()->getAccountModule('fixed_ip')->reload_ips())
 	            	$errors[] = $this->messages['ips_reload'][0];
 			}
 		}
@@ -544,39 +396,19 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!empty($_POST['domainname'])) {
 		    if (strlen($_POST['domainname'])>15) {
 		        $errors[] = $this->messages['domainname'][0];
-		        $this->dhcpSettings['domainname'] = $_POST['domainname'];
-		        unset($this->attributes['dhcpOption'][5]);
 			}
-			elseif (strlen($_POST['domainname'])<3)
-			{
+			elseif (strlen($_POST['domainname'])<3) {
 			    $errors[] = $this->messages['domainname'][1];
-			    $this->dhcpSettings['domainname'] = $_POST['domainname'];
-			    unset($this->attributes['dhcpOption'][5]);
 			}
-			elseif (preg_match("/^[A-Za-z0-9\._-]*$/", $_POST['domainname'])) {
-				$this->dhcpSettings['domainname'] = $_POST['domainname'];
-				$this->attributes['dhcpOption'][5] = "domain-name \"".$_POST['domainname']."\"";
-			}
-			else
-			{
+			elseif (!preg_match("/^[A-Za-z0-9\._-]*$/", $_POST['domainname'])) {
 			    $errors[] = $this->messages['domainname'][2];
-			    $this->dhcpSettings['domainname'] = $_POST['domainname'];
-			    unset($this->attributes['dhcpOption'][5]);
 			}
 		}
-		else
-		{
-		    $this->dhcpSettings['domainname'] = "";
-		    unset($this->attributes['dhcpOption'][5]);
-		}
+		$this->setDHCPOption('domain-name', $_POST['domainname']);
 
 		// Check DNS
-		if (!empty($_POST['dns'])) $_POST['dns'] = trim($_POST['dns']);
-		if (empty($_POST['dns'])) {
-		    unset($this->attributes['dhcpOption'][0]);
-		    $this->dhcpSettings['dns'] = "";
-		}
-		else {
+		if (!empty($_POST['dns'])) {
+			$_POST['dns'] = trim($_POST['dns']);
 			$ex = explode(",", $_POST['dns']);
 			$dns = "";
 			$is_first=true;
@@ -596,13 +428,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			if ($invalid) {
 			    $errors[] = $this->messages['dns'][0];
-			    $this->dhcpSettings['dns'] = $dns;
-			}
-			else {
-			    $this->dhcpSettings['dns'] = $dns;
-			    $this->attributes['dhcpOption'][0] = "domain-name-servers ".$dns."";
 			}
 		}
+		$this->setDHCPOption('domain-name-servers', $_POST['dns']);
 		
 		// Lease Time
 		if (!empty($_POST['lease_time'])) {
@@ -623,21 +451,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		
 		// Default Gateway
-		if (!empty($_POST['routers'])) $_POST['routers'] = trim($_POST['routers']);
-		if (!check_ip($_POST['routers']) && !empty($_POST['routers'])) {
-			$errors[] = $this->messages['routers'][0];
-			$this->dhcpSettings['routers'] = $_POST['routers'];
-			unset($this->attributes['dhcpOption'][1]);
+		if (!empty($_POST['routers'])) {
+			$_POST['routers'] = trim($_POST['routers']);
+			if (!check_ip($_POST['routers'])) {
+				$errors[] = $this->messages['routers'][0];
+			}
 		}
-		elseif (empty($_POST['routers'])) {
-		    unset($this->dhcpSettings['routers']);
-		    unset($this->attributes['dhcpOption'][1]);
-		}
-		else
-		{
-			$this->dhcpSettings['routers'] = $_POST['routers'];
-			$this->attributes['dhcpOption'][1] = "routers ".$_POST['routers'];
-		}
+		$this->setDHCPOption('routers', $_POST['routers']);
 		
 		// Netbios
 		if (!empty($_POST['netbios'])) $_POST['netbios'] = trim($_POST['netbios']);
@@ -651,42 +471,18 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		if (!$netbiosServersOk && !empty($_POST['netbios'])) {
 			$errors[] = $this->messages['netbios'][0];
-			$this->dhcpSettings['netbios'] = $_POST['netbios'];
-			unset($this->attributes['dhcpOption'][2]);
 		}
-		elseif (empty($_POST['netbios'])) {
-		    unset($this->attributes['dhcpOption'][2]);
-		}
-		else {
-			$this->dhcpSettings['netbios'] = $_POST['netbios'];
-			$this->attributes['dhcpOption'][2] = "netbios-name-servers ".$_POST['netbios'];
-		}
+		$this->setDHCPOption('netbios-name-servers', $_POST['netbios']);
 		
-		// Netbios Node Type:
-		if (in_array($_POST['netbios_node_type'],$this->all_netbios_node_types)) {
-			$this->netbios_node_type = $_POST['netbios_node_type'];
-			// Nummer ermitteln
-			$ex = explode("x", $_POST['netbios_node_type']);
-			$ex = explode(")", $ex['1']);
-			$netbios_node_type = (int) $ex['0'];
-            $this->attributes['dhcpOption'][3] = "netbios-node-type ".$netbios_node_type;
-		}
-		else {
-		    $errors[] = $this->messages['netbios_node_type'][0];
-		    unset($this->attributes['dhcpOption'][3]);
-		}
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		$this->setDHCPOption('netbios-node-type', $_POST['netbios_node_type']);
+		
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			// Check subnet
 			$_POST['subnet'] = trim($_POST['subnet']);
 			if (!check_ip($_POST['subnet'], true)) {
 			    $errors[] = $this->messages['subnet'][0];
-			    $this->subnet = $_POST['subnet'];
-			    unset($this->attributes['dhcpOption'][4]);
 			}
-			else {
-			    $this->subnet = $_POST['subnet'];
-			    $this->attributes['dhcpOption'][4] = "subnet-mask ".$_POST['subnet'];
-			}
+			$this->setDHCPOption('subnet-mask', $_POST['subnet']);
 
 			// Check Netmask, obly for Range:
 			$_POST['netmask'] = trim($_POST['netmask']);
@@ -738,77 +534,91 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				return array();
 			}
 		}
-		// Subnetz name
+
+		// host name
+        $return[] = array(
+        	array('kind' => 'text', 'text' => _('Host name') . ": "),
+			array('kind' => 'input', 'name' => 'host-name', 'value' => $this->getDHCPOption('host-name')),
+			array('kind' => 'help', 'value' => 'host-name'));
+			
+		// Subnet name
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
 				array('kind' => 'text', 'text' => $this->attributes['cn'][0]),
-				array('kind' => 'help', 'value' => 'subnet', 'scope' => 'user'));
+				array('kind' => 'help', 'value' => 'subnet'));
 		}
 		else {
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
 				array('kind' => 'input', 'name' => 'cn', 'value' => $this->attributes['cn'][0]),
-				array('kind' => 'help', 'value' => 'subnet', 'scope' => 'user'),
+				array('kind' => 'help', 'value' => 'subnet'),
 				array('kind' => 'text', 'text' => "&nbsp;&nbsp;&nbsp;" . _('Example') . ": 192.168.10.<b>0</b>") );
 		}
 
 		// Domainname
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Domain name') . ": "),
-			array('kind' => 'input', 'name' => 'domainname', 'value' => $this->dhcpSettings['domainname']),
-			array('kind' => 'help', 'value' => 'domainname', 'scope' => 'user'));
+			array('kind' => 'input', 'name' => 'domainname', 'value' => $this->getDHCPOption('domain-name')),
+			array('kind' => 'help', 'value' => 'domainname'));
 			
 		// Lease Time
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Lease time') . ": "),
 			array('kind' => 'input', 'name' => 'lease_time', 'value' => $this->getDefaultLeaseTime()),
-			array('kind' => 'help', 'value' => 'leasetime', 'scope' => 'user'));
+			array('kind' => 'help', 'value' => 'leasetime'));
 			
 		// Max lease Time
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
 			array('kind' => 'input', 'name' => 'max_lease_time', 'value' => $this->getMaxLeaseTime()),
-			array('kind' => 'help', 'value' => 'max_leasetime', 'scope' => 'user'));
+			array('kind' => 'help', 'value' => 'max_leasetime'));
 
 		// DNS
         $return[] = array(
         	array('kind' => 'text', 'text' => _('DNS') . ": "),
-			array('kind' => 'input', 'name' => 'dns', 'value' => $this->dhcpSettings['dns']),
-			array('kind' => 'help', 'value' => 'dns', 'scope' => 'user'));
+			array('kind' => 'input', 'name' => 'dns', 'value' => $this->getDHCPOption('domain-name-servers')),
+			array('kind' => 'help', 'value' => 'dns'));
 
 		// Gateway
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
-			array('kind' => 'input', 'name' => 'routers', 'value' => $this->dhcpSettings['routers']),
-			array('kind' => 'help', 'value' => 'gateway', 'scope' => 'user'));
+			array('kind' => 'input', 'name' => 'routers', 'value' => $this->getDHCPOption('routers')),
+			array('kind' => 'help', 'value' => 'gateway'));
 			
 		// Netbios Name Servers
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Netbios name servers') . ": "),
-			array('kind' => 'input', 'name' => 'netbios', 'value' => $this->dhcpSettings['netbios']),
-			array('kind' => 'help', 'value' => 'netbios', 'scope' => 'user'));
+			array('kind' => 'input', 'name' => 'netbios', 'value' => $this->getDHCPOption('netbios-name-servers')),
+			array('kind' => 'help', 'value' => 'netbios'));
 
 		// Netbios Node Type
-		if(empty($this->netbios_node_type)) $this->netbios_node_type = _("H-Node (0x08)");
+		$nodeType = $this->getDHCPOption('netbios-node-type');
+		if ($nodeType == '') {
+			$nodeType = 8;
+		}
+		$nodeOptions = array();
+		foreach ($this->all_netbios_node_types as $key => $value) {
+			$nodeOptions[] = array($key, $value);
+		}
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Netbios node type') . ": "),
-			array('kind' => 'select', 'name' => 'netbios_node_type', 'options' => $this->all_netbios_node_types, 'options_selected' => array($this->netbios_node_type)),
-			array('kind' => 'help', 'value' => 'netbios_type', 'scope' => 'user'));
+			array('kind' => 'select', 'name' => 'netbios_node_type', 'descriptiveOptions' => true, 'options' => $nodeOptions, 'options_selected' => array($nodeType)),
+			array('kind' => 'help', 'value' => 'netbios_type'));
 
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			// subnetmask
 	        $return[] = array(
 	        	array('kind' => 'text', 'text' => _('Subnet mask') . ":* "),
-				array('kind' => 'input', 'name' => 'subnet', 'value' => $this->subnet),
-				array('kind' => 'help', 'value' => 'subnetmask', 'scope' => 'user'));
+				array('kind' => 'input', 'name' => 'subnet', 'value' => $this->getDHCPOption('subnet-mask')),
+				array('kind' => 'help', 'value' => 'subnetmask'));
 
 			// Netmask
 			if ($this->type!=_("Fixed IP")) {
 		        $return[] = array(
 		        	array('kind' => 'text', 'text' => _('Net mask') . ":* "),
 					array('kind' => 'input', 'name' => 'netmask', 'value' => $this->attributes['dhcpNetMask'][0]),
-					array('kind' => 'help', 'value' => 'netmask', 'scope' => 'user'));
+					array('kind' => 'help', 'value' => 'netmask'));
 			}
 		}
 		
@@ -816,7 +626,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
         $return[] = array(
         	array('kind' => 'text', 'text' => _('Description') . ": "),
 			array('kind' => 'input', 'name' => 'description', 'value' => $this->attributes['dhcpComments'][0]),
-			array('kind' => 'help', 'value' => 'description', 'scope' => 'user'));
+			array('kind' => 'help', 'value' => 'description'));
 
 		return $return;
 	}
@@ -831,30 +641,20 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		parent::load_profile($profile);
 		$this->attributes['cn'][0] = $profile['cn'][0];
 		
-		$this->dhcpSettings['domainname'] = $profile['domainname'][0];
-		$this->attributes['dhcpOption'][5] = "domain-name \"". $profile['domainname'][0]."\"";
-		
 		$this->setDefaultLeaseTime($profile['lease_time'][0]);
-		
 		$this->setMaxLeaseTime($profile['max_lease_time'][0]);
 		
-		$this->dhcpSettings['dns'] = $profile['dns'][0];
-		$this->attributes['dhcpOption'][0] = "domain-name-servers ". $profile['dns'][0];
+		$this->setDHCPOption('domain-name', $profile['domainname'][0]);
+		$this->setDHCPOption('domain-name-servers', $profile['dns'][0]);
+		$this->setDHCPOption('routers', $profile['routers'][0]);
+		$this->setDHCPOption('netbios-name-servers', $profile['netbios'][0]);
+		$this->setDHCPOption('netbios-node-type', $profile['netbios_node_type'][0]);
 		
-		$this->dhcpSettings['routers'] = $profile['routers'][0];
-		$this->attributes['dhcpOption'][1] = "routers ".$profile['routers'][0];
-		
-		$this->dhcpSettings['netbios'] = $profile['netbios'][0];
-		$this->attributes['dhcpOption'][2] = "netbios-name-servers ".$profile['netbios'][0];
-		
-		$this->netbios_node_type =  $profile['netbios_node_type'][0];
-		$this->attributes['dhcpOption'][3] = "netbios-node-type ".((int) array_shift(explode("(", array_pop(explode("x", $profile['netbios_node_type'][0])))));
-		if ($_SESSION['account']->getAccountModule('dhcp_settings')->dn!=$_SESSION['config']->get_suffix('dhcp')) {
-			$this->subnet = $profile['subnet'][0];
-			$this->attributes['dhcpOption'][4] = "subnet-mask ". $profile['subnet'][0];
+		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+			$this->setDHCPOption('subnet-mask', $profile['subnet'][0]);
 
 	        // calc the netmask:
-			$ex=explode(".", $this->subnet);
+			$ex=explode(".", $profile['subnet'][0]);
 			$num = 0;
 			foreach($ex AS $mask) {
 			    $binary = decbin($mask);
@@ -870,21 +670,67 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
+		$nodeType = $this->getDHCPOption('netbios-node-type');
+		$nodeTypeValue = '';
+		if (isset($this->all_netbios_node_types[$nodeType])) {
+			$nodeTypeValue = $this->all_netbios_node_types[$nodeType];
+		}
 		return array(
 			get_class($this) . '_subnet' => array('<block><key>' . _('Subnet') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
-			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->dhcpSettings['domainname'] . '</value></block>'),
+			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->getDHCPOption('domain-name') . '</value></block>'),
 			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->getDefaultLeaseTime() . '</value></block>'),
 			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->getMaxLeaseTime() . '</value></block>'),
-			get_class($this) . '_DNSserver' => array('<block><key>' . _('DNS') . '</key><value>' . $this->dhcpSettings['dns'] . '</value></block>'),
-			get_class($this) . '_gateway' => array('<block><key>' . _('Default gateway') . '</key><value>' . $this->dhcpSettings['routers'] . '</value></block>'),
-			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name servers') . '</key><value>' . $this->dhcpSettings['netbios'] . '</value></block>'),
-			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $this->netbios_node_type . '</value></block>'),
-			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->subnet . '</value></block>'),
+			get_class($this) . '_DNSserver' => array('<block><key>' . _('DNS') . '</key><value>' . $this->getDHCPOption('domain-name-servers') . '</value></block>'),
+			get_class($this) . '_gateway' => array('<block><key>' . _('Default gateway') . '</key><value>' . $this->getDHCPOption('routers') . '</value></block>'),
+			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name servers') . '</key><value>' . $this->getDHCPOption('netbios-name-servers') . '</value></block>'),
+			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $nodeTypeValue . '</value></block>'),
+			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->getDHCPOption('subnet-mask') . '</value></block>'),
 			get_class($this) . '_netMask' => array('<block><key>' . _('Net mask') . '</key><value>' . $this->attributes['dhcpNetMask'][0] . '</value></block>'),
 			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['dhcpComments'][0] . '</value></block>'),
 		);
 	}
 	
+	/**
+	 * Returns a DHCP option.
+	 * 
+	 * @param String $name option name
+	 * @return String value
+	 */
+	private function getDHCPOption($name) {
+		$return = null;
+		if (is_array($this->attributes['dhcpOption'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpOption']); $i++) {
+				if (substr($this->attributes['dhcpOption'][$i], 0, strlen($name) + 1) == ($name . ' ')) {
+					$return = substr($this->attributes['dhcpOption'][$i], strlen($name) + 1);
+					$return = str_replace('"', '', $return);
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets a DHCP option.
+	 * 
+	 * @param String $name option name
+	 * @param String $value option value
+	 */
+	private function setDHCPOption($name, $value) {
+		if (!is_array($this->attributes['dhcpOption'])) {
+			$this->attributes['dhcpOption'] = array();
+		}
+		for ($i = 0; $i < sizeof($this->attributes['dhcpOption']); $i++) {
+			if (substr($this->attributes['dhcpOption'][$i], 0, strlen($name) + 1) == ($name . ' ')) {
+				unset($this->attributes['dhcpOption'][$i]);
+				$this->attributes['dhcpOption'] = array_values($this->attributes['dhcpOption']);
+			}
+		}
+		if (($value != null) && ($value != '')) {
+			$this->attributes['dhcpOption'][] = $name . ' ' . $value;
+		}
+	}
+
 	/**
 	 * Returns the default lease time.
 	 * 
@@ -906,7 +752,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets the default lease time.
 	 * 
-	 * $time String time
+	 * @param String $time time
 	 */
 	private function setDefaultLeaseTime($time) {
 		if (!is_array($this->attributes['dhcpStatements'])) {
@@ -944,7 +790,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets the maximum lease time.
 	 * 
-	 * $time String time
+	 * @param String $time time
 	 */
 	private function setMaxLeaseTime($time) {
 		if (!is_array($this->attributes['dhcpStatements'])) {
