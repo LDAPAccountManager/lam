@@ -1,6 +1,7 @@
 December 2009 2.9.0
   - new tool: Server information
   - consolidated LAM documentation in new manual (docs/manual/index.html)
+	- DHCP: allow to specify a host name (RFE 2898948)
 	- LAM Pro:
 	 -> enabled custom scripts for self service
   - fixed bugs:
@@ -8,6 +9,7 @@ December 2009 2.9.0
 	 -> Login method "LDAP search" has problems if LDAP server is down (2889414)
 	 -> filter in account lists did not support non-ASCII letters
 	 -> alias handling (2901248)
+	 -> DHCP range check (2903267)
 
 
 28.10.2009 2.8.0
