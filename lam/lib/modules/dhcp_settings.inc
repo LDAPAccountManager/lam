@@ -322,8 +322,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['max_lease_time'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_maxLeaseTime', _('The maximum lease time is invalid.'));
 		$this->messages['subnet'][0] = array('ERROR', _('The subnet mask is invalid.'));
 		$this->messages['subnet'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_subnetMask', _('The subnet mask is invalid.'));
-		$this->messages['netmask'][0] = array('INFO', _('The netmask was set.'));
-		$this->messages['netmask'][1] = array('INFO', _('The net mask was invalid and was corrected.'));
 		$this->messages['ranges_reload'][0] = array('INFO', _('The DHCP ranges were changed to fit for the new subnet.'));
 		$this->messages['ips_reload'][0] = array('INFO', 'The fixed IP addresses were changed to fit for the new subnet.');
 		$this->messages['domainname'][0] = array('ERROR', _('The domain name needs to be shorter than 15 characters.'));
@@ -498,21 +496,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			$this->setDHCPOption('subnet-mask', $_POST['subnet']);
 
-			// Check Netmask, obly for Range:
-			$_POST['netmask'] = trim($_POST['netmask']);
 			// calculate netmask from subnet:
-			if (!empty($this->attributes['dhcpOption'][4])) {
-				$num = $this->calculateNetMask($_POST['subnet']);
-				if (empty($_POST['netmask'])) {
-				    $errors[] = $this->messages['netmask'][0];
-				}
-				elseif ($num!=$_POST['netmask']) {
-				    $errors[] = $this->messages['netmask'][1];
-				}
-				$this->attributes['dhcpNetMask'][0] = $num;
-			}
-			else {
-			    unset($this->attributes['dhcpNetMask'][0]);
+			if (!empty($_POST['subnet'])) {
+				$this->attributes['dhcpNetMask'][0] = $this->calculateNetMask($_POST['subnet']);
 			}
 		}
 		$this->attributes['dhcpComments'][0] = $_POST['description'];
@@ -627,12 +613,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				array('kind' => 'help', 'value' => 'subnetmask'));
 
 			// Netmask
-			if ($this->type!=_("Fixed IP")) {
-		        $return[] = array(
-		        	array('kind' => 'text', 'text' => _('Net mask') . ":* "),
-					array('kind' => 'input', 'name' => 'netmask', 'value' => $this->attributes['dhcpNetMask'][0]),
-					array('kind' => 'help', 'value' => 'netmask'));
-			}
+	        $return[] = array(
+	        	array('kind' => 'text', 'text' => _('Net mask') . ":* "),
+				array('kind' => 'text', 'text' => $this->attributes['dhcpNetMask'][0]),
+				array('kind' => 'help', 'value' => 'netmask'));
 		}
 		
 		// description
