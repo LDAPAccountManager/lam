@@ -384,9 +384,9 @@ class range extends baseModule {
         else
         {
         
-            // If $ranges is not a array, then create an:
+            // If $ranges is not a array, then create it
             if (!is_array($this->ranges)) {
-            	$this->ranges[] = array();
+            	$this->ranges = array();
             }
             $this->reset_overlaped_range();
             $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
