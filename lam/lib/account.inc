@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
+                       2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -82,8 +83,7 @@ function array_delete($values, $array) {
 /**
  * Checks if a string exists in an array, ignoring case.
  */
-function in_array_ignore_case( $needle, $haystack )
-{
+function in_array_ignore_case($needle, $haystack) {
     if( ! is_array( $haystack ) )
         return false;
     if( ! is_string( $needle ) )
@@ -535,6 +535,77 @@ function escapeDN($dn) {
 		array('\\29', '\\28', '\\20', '\\2a'),
 		$dn
 	);
+}
+
+/**
+ * This will search the given LDAP suffix for all entries which have the given attribute.
+ *
+ * @param String $name attribute name (may be null)
+ * @param String $value attribute value
+ * @param String $objectClass object class (may be null)
+ * @param array $attributes list of attributes to return
+ * @param array $scope account types
+ * @return array list of found entries
+ */
+function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes) {
+	$return = array();
+	// build filter
+	$filter = '';
+	$filterParts = array();
+	if ($name != null) {
+		$filterParts[] = '(' . $name . '=' . $value . ')';
+	}
+	if ($objectClass != null) {
+		$filterParts[] = '(objectClass=' . $objectClass . ')';
+	}
+	if (sizeof($filterParts) == 1) {
+		$filter = $filterParts[0];
+	}
+	elseif (sizeof($filterParts) > 1) {
+		$filter = '(& ' . implode(' ', $filterParts) . ')';
+	}
+	for ($s = 0; $s < sizeof($scopes); $s++) {
+		// search LDAP
+		$sr = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_Suffix($scopes[$s]), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			if ($entries) {
+				$return = array_merge($return, cleanLDAPResult($entries));
+			}
+			@ldap_free_result($sr);
+		}
+	}
+	return $return;
+}
+
+/**
+ * Cleans the result of an LDAP search.
+ * This will remove all 'count' entries and also all numeric array keys.
+ *
+ * @param array $entries LDAP entries in format $entries[entry number][attribute name][attribute values]
+ * @return array cleaned entries
+ */
+function cleanLDAPResult($entries) {
+	if (isset($entries['count'])) {
+		unset($entries['count']);
+	}
+	// iterate over all results
+	for ($e = 0; $e < sizeof($entries); $e++) {
+		// remove 'count' entries and numerical entries
+		for ($i = 0; $i < $entries[$e]['count']; $i++) {
+			if (isset($entries[$e][$i])) {
+				unset($entries[$e][$i]);
+			}
+		}
+		unset($entries[$e]['count']);
+		$attrNames = array_keys($entries[$e]);
+		for ($i = 0; $i < sizeof($attrNames); $i++) {
+			if (is_array($entries[$e][$attrNames[$i]])) {
+				unset($entries[$e][$attrNames[$i]]['count']);
+			}
+		}
+	}
+	return $entries;
 }
 
 
