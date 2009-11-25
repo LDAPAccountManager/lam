@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2008  Thomas Manninger
-                2008  Roland Gruber
+  Copyright (C) 2008         Thomas Manninger
+                2008 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -465,22 +465,26 @@ class fixed_ip extends baseModule {
 				foreach($this->fixed_ip AS $idB=>$arr) {
 				    if ($this->orig_ips[$id]['cn']==$this->fixed_ip[$idB]['cn']) {
 				        $in_arr = true;
-
-						// Was cn edit?
+						// check if IP changed
 						if($this->orig_ips[$id]['ip']!=$this->fixed_ip[$idB]['ip']) {
 							$delete[] = $this->orig_ips[$id]['cn'];
 							$add[] = $this->fixed_ip[$idB];
 						}
-					}
+						// check if MAC changed
+						elseif($this->orig_ips[$id]['mac']!=$this->fixed_ip[$idB]['mac']) {
+							$delete[] = $this->orig_ips[$id]['cn'];
+							$add[] = $this->fixed_ip[$idB];
+						}
+				    }
 				}
 	            if (!$in_arr) {
 	            	$delete[] = $this->orig_ips[$id]['cn'];
 	            }
 		    }
 
-			if (!is_array($this->fixed_ip))
+			if (!is_array($this->fixed_ip)) {
 			    $this->fixed_ip = array();
-
+			}
 		    // Which entrys are new:
 		    foreach($this->fixed_ip AS $id=>$arr) {
 		        $in_arr = false;
@@ -503,9 +507,10 @@ class fixed_ip extends baseModule {
 				$attr['cn'] = $add[$id]['cn'];
 				$attr['objectClass'][0] = 'top';
 				$attr['objectClass'][1] = 'dhcpHost';
-				$attr['dhcpHWAddress'] = 'ethernet '.$add[$id]['mac'];
+				$attr['dhcpHWAddress'] = 'ethernet ' . $add[$id]['mac'];
 				$attr['dhcpStatements'] = 'fixed-address '.$add[$id]['ip'];
-				if ($attr['cn']!="")
+				$attr['dhcpOption'] = 'host-name "' . $add[$id]['cn'] . '"';
+				if ($attr['cn'] != "")
 					ldap_add($_SESSION['ldap']->server(),'cn='.$add[$id]['cn'].',cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),$attr);
 		    }
 		}
