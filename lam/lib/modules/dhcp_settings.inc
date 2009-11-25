@@ -518,13 +518,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 
 		// Subnet name
-		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
-				array('kind' => 'text', 'text' => $this->attributes['cn'][0]),
-				array('kind' => 'help', 'value' => 'subnet'));
-		}
-		else {
+		if ($_SESSION['config']->get_suffix('dhcp') != $this->getAccountContainer()->dn_orig) {
 			$return[] = array(
 	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
 				array('kind' => 'input', 'name' => 'cn', 'value' => $this->attributes['cn'][0]),
