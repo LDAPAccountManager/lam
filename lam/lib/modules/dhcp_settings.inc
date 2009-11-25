@@ -120,9 +120,6 @@ class dhcp_settings extends baseModule {
 			) , 'subnet' => array(
 				"Headline" => _("Subnet"),
 				"Text" => _("The name of the subnet. Example: 192.168.10.0")
-			) , 'host-name' => array(
-				"Headline" => _("Host name"),
-				"Text" => _("The host name of this entry.")
 			) , 'leasetime' => array(
 				"Headline" => _("Lease time"),
 				"Text" => _("The lease time specifies after how many seconds the client should request a new IP address.")
@@ -228,12 +225,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
-				'name' => 'dhcp_settings_host-name',
-				'description' => _('Host name'),
-				'help' => 'host-name',
-				'example' => _('server01'),
-			),
-			array(
 				'name' => 'dhcp_settings_subnet',
 				'description' => _('Subnet'),
 				'help' => 'subnet',
@@ -330,8 +321,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['domainname'][3] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to be shorter than 15 characters.'));
 		$this->messages['domainname'][4] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to have at least 3 characters.'));
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
-		$this->messages['host-name'][0] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['host-name'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_host-name', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	}
 	
 	/* This function returns an array with 4 entries:
@@ -482,13 +471,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->setDHCPOption('netbios-node-type', $_POST['netbios_node_type']);
 		
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-			// check host name
-			if ($_POST['host-name'] != '') {
-				if (!get_preg($_POST['host-name'], 'hostname')) {
-					$errors[] = $this->messages['host-name'][0];
-				}
-			}
-			$this->setDHCPOption('host-name', '"' . $_POST['host-name'] . '"');
 			// Check subnet
 			$_POST['subnet'] = trim($_POST['subnet']);
 			if (!check_ip($_POST['subnet'], true)) {
@@ -543,11 +525,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				array('kind' => 'help', 'value' => 'subnet'));
 		}
 		else {
-			// host name
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Host name') . ": "),
-				array('kind' => 'input', 'name' => 'host-name', 'value' => $this->getDHCPOption('host-name')),
-				array('kind' => 'help', 'value' => 'host-name'));
 			$return[] = array(
 	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
 				array('kind' => 'input', 'name' => 'cn', 'value' => $this->attributes['cn'][0]),
@@ -818,17 +795,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			// add object class
 			if (!in_array("dhcpOptions", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "dhcpOptions";
 			if (!in_array("dhcpSubnet", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "dhcpSubnet";
-			// host name
-			if ($rawAccounts[$i][$ids['dhcp_settings_host-name']] != '') {
-				if (get_preg($rawAccounts[$i][$ids['dhcp_settings_host-name']], 'hostname')) {
-					$partialAccounts[$i]['dhcpOption'][] = 'host-name "' . $rawAccounts[$i][$ids['dhcp_settings_host-name']] . '"';
-				}
-				else {
-					$error = $this->messages['host-name'][1];
-					array_push($error, $i);
-					$messages[] = $error;
-				}
-			}
 			// subnet
 			if (check_ip($rawAccounts[$i][$ids['dhcp_settings_subnet']],true)) {
 				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['dhcp_settings_subnet']];
