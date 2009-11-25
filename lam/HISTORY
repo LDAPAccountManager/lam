@@ -1,7 +1,7 @@
 December 2009 2.9.0
   - new tool: Server information
   - consolidated LAM documentation in new manual (docs/manual/index.html)
-	- DHCP: allow to specify a host name (RFE 2898948)
+	- DHCP: add host name to fixed IPs (RFE 2898948)
 	- LAM Pro:
 	 -> enabled custom scripts for self service
   - fixed bugs:
