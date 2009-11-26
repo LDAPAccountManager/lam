@@ -63,7 +63,7 @@ class cache {
 	 * 
 	 * @param array $attributes syntax: is array( scope1 => array ( attributes ), scope2 => array ( attributes ), ...)
 	 */
-	function add_cache($attributes) {
+	private function add_cache($attributes) {
 		if (!is_array($attributes)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
 		foreach ($attributes as $attribute) {
 			if (!is_array($attribute)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
@@ -92,7 +92,7 @@ class cache {
 	* <br>or array(dn1 => array(uid => array(myuid), uidNumber => array(1234)), ... ) if $attributes is an array
 	*
 	*/
-	function get_cache($attributes, $objectClass, $scopelist) {
+	public function get_cache($attributes, $objectClass, $scopelist) {
 		$return = array();
 		$this->refresh_cache();
 		if (is_array($scopelist)) $scopes = $scopelist;
@@ -172,7 +172,7 @@ class cache {
 	 * 
 	 * @param boolean $rebuild forces a refresh if set to true
 	 */
-	function refresh_cache($rebuild=false) {
+	public function refresh_cache($rebuild=false) {
 		if ($this->time + $_SESSION['config']->get_cacheTimeoutSec() < time() || $rebuild) {
 			// unset old cache
 			unset ($this->ldapcache);
@@ -211,63 +211,6 @@ class cache {
 			}
 			$this->time = time();
 		}
-	}
-
-
-	/**
-	* This function will return the GID number to an existing group name (using the cache).
-	*
-	* @param string $groupname name of group
-	* @return string GID number
-	*/
-	function getgid($groupname) {
-		$dn_groups = $_SESSION['cache']->get_cache(array('gidNumber', 'cn'), 'posixGroup', 'group');
-		if (is_array($dn_groups)) {
-			$DNs = array_keys($dn_groups);
-			foreach ($DNs as $DN) {
-				if ($dn_groups[$DN]['cn'][0] == $groupname) {
-					return $dn_groups[$DN]['gidNumber'][0];
-				}
-			}
-		}
-		return null;
-	}
-
-
-	/**
-	 * This function returns an array with all group names which were found in the LDAP directory.
-	 * 
-	 * @return array group names
-	 */
-	function findgroups() {
-		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-		if (is_array($dn_groups)) {
-			$DNs = array_keys($dn_groups);
-			foreach ($DNs as $DN)
-				$return[] = $dn_groups[$DN][0];
-			return $return;
-			}
-		return array();
-	}
-
-
-	/**
-	 * This function returns the group name to an existing gidNumber.
-	 * 
-	 * @param string $gidNumber GID number
-	 * @return group name
-	 */
-	function getgrnam($gidNumber) {
-		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
-		if (is_array($dn_groups)) {
-			$DNs = array_keys($dn_groups);
-			foreach ($DNs as $DN) {
-				if ($dn_groups[$DN][0]==$gidNumber)
-					$return = substr($DN, 3, strpos($DN, ',')-3);
-				}
-			return $return;
-			}
-		else return -1;
 	}
 
 	/**
