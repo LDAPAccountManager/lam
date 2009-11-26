@@ -801,11 +801,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 		}
 		// user attributes
+		$unixGroupName = $this->getGroupName($attrs['gidNumber'][0]);
 		if ($this->get_scope()=='user') {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
 				$this->attributes['sambaHomePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaHomePath'][0]);
-				$this->attributes['sambaHomePath'][0] = str_replace('$group', $this->getGroupName($attrs['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
+				$this->attributes['sambaHomePath'][0] = str_replace('$group', $unixGroupName, $this->attributes['sambaHomePath'][0]);
 				if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors[] = $this->messages['homePath'][1];
 				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC'))) {
 					$errors[] = $this->messages['homePath'][0];
@@ -818,7 +819,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
 				$this->attributes['sambaLogonScript'][0] = $_POST['sambaLogonScript'];
 				$this->attributes['sambaLogonScript'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaLogonScript'][0]);
-				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $this->getGroupName($attrs['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
+				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $unixGroupName, $this->attributes['sambaLogonScript'][0]);
 				if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors[] = $this->messages['logonScript'][1];
 				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript'))) {
 					$errors[] = $this->messages['logonScript'][0];
@@ -827,7 +828,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
 				$this->attributes['sambaProfilePath'][0] = $_POST['sambaProfilePath'];
 				$this->attributes['sambaProfilePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaProfilePath'][0]);
-				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $this->getGroupName($attrs['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
+				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $unixGroupName, $this->attributes['sambaProfilePath'][0]);
 				if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors[] = $this->messages['profilePath'][1];
 				if (!($this->attributes['sambaProfilePath'][0] == '') &&
 					!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory'))) {
