@@ -492,7 +492,8 @@ class sambaGroupMapping extends baseModule {
 				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
 				// Do a check if special group is unique
 				if ($this->getAccountContainer()->isNewAccount) {
-					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
+					$result = searchLDAPByAttribute('sambaSID', $SID."-".$this->rids[$rids[$i]], 'sambaGroupMapping', array('sambaSID'), array('group'));
+					if (sizeof($result) > 0) {
 						$message = $this->messages['sambaSID'][0];
 						$message[] = $rids[$i];
 						$errors[] = $message;

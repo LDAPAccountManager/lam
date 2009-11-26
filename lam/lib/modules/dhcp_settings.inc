@@ -366,7 +366,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			    $errors[] = $this->messages['cn'][0];
 			}
 			// Check, if cn is not already use:
-		    elseif ( $_SESSION['cache']->in_cache($_POST['cn'],'cn', array('dhcp')) && $this->orig['cn']['0']!=$_POST['cn'] ) {
+		    elseif ((sizeof(searchLDAPByAttribute('cn', $_POST['cn'], 'dhcpOptions', array('cn'), array('dhcp'))) > 0) && $this->orig['cn']['0']!=$_POST['cn']) {
 		       	$errors[] = $this->messages['cn'][1];
 		    }
 			elseif (!check_ip($_POST['cn'],true)) {
