@@ -599,11 +599,11 @@ class posixGroup extends baseModule implements passwordService {
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
 			// Set username back to original name if new username is in use
-			if ($_SESSION['cache']->in_cache($this->attributes['cn'][0],'cn', 'group')!=false && ($this->orig['cn'][0]!='')) {
+			if ((sizeof(searchLDAPByAttribute('cn', $this->attributes['cn'][0], 'posixGroup', array('cn'), array('group'))) > 0) && ($this->orig['cn'][0]!='')) {
 				$this->attributes['cn'][0] = $this->orig['cn'][0];
 			}
 			// Change gid to a new gid until a free gid is found
-			else while ($_SESSION['cache']->in_cache($this->attributes['cn'][0], 'cn', 'group')) {
+			else while (sizeof(searchLDAPByAttribute('cn', $this->attributes['cn'][0], 'posixGroup', array('cn'), array('group'))) > 0) {
 				// get last character of username
 				$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
 				// Last character is no number
