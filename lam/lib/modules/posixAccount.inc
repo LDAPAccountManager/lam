@@ -527,7 +527,7 @@ class posixAccount extends baseModule implements passwordService {
 			// Add new memberships
 			if (is_array($this->groups)) {
 				foreach ($this->groups as $group) {
-					$dn = $_SESSION['cache']->in_cache($group, 'cn', 'group');
+					$dn = $this->getGroupDN($group);
 					$return[$dn]['add']['memberUid'][0] = $this->attributes['uid'][0];
 				}
 			}
@@ -808,11 +808,11 @@ class posixAccount extends baseModule implements passwordService {
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ($_SESSION['cache']->in_cache($this->attributes['uid'][0],'uid', array('user', 'host')) && ($this->orig['uid'][0]!=''))
+		if ((sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) && ($this->orig['uid'][0]!=''))
 		$this->attributes['uid'][0] = $this->orig['uid'][0];
 		// Change uid to a new uid until a free uid is found
 		else
-		while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', array('user', 'host'))) {
+		while (sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) {
 			if ($this->get_scope()=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
 			// get last character of username
 			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
@@ -1772,7 +1772,7 @@ class posixAccount extends baseModule implements passwordService {
 	}
 	
 	/**
-	 * Returns the group ID of the given group
+	 * Returns the group ID of the given group.
 	 *
 	 * @param String $groupname group name
 	 * @return String GID
@@ -1795,6 +1795,20 @@ class posixAccount extends baseModule implements passwordService {
 		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', array('cn'), array('group'));
 		if ((sizeof($results) > 0) && isset($results[0]['cn'][0])) {
 			return $results[0]['cn'][0];
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the group DN of the given group.
+	 *
+	 * @param String $groupname group name
+	 * @return String DN
+	 */
+	private function getGroupDN($groupname) {
+		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', array('dn'), array('group'));
+		if ((sizeof($results) > 0) && isset($results[0]['dn'][0])) {
+			return $results[0]['dn'];
 		}
 		return null;
 	}
