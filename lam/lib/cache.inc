@@ -131,43 +131,6 @@ class cache {
 	}
 
 	/**
-	 * This function returns the DN if an LDAP entry with $attribute=$value is found.
-	 * 
-	 * @param string $value is the searched value of the attribute $attribute
-	 * @param string $attribute name of the LDAP attribute
-	 * @param mixed $scopelist the account type(s) as string or array, all scopes if NULL given
-	 */
-	function in_cache($value, $attribute, $scopelist) {
-		$this->refresh_cache();
-		if (is_array($scopelist)) $scopes = $scopelist;
-		elseif (is_string($scopelist)) $scopes = array($scopelist);
-		else $scopes = getTypes();
-		// Add cache entry dynamic
-		$add = array();
-		foreach ($scopes as $scope) {
-			if (!@in_array($attribute ,$this->attributes[$scope])) $add[$scope][] = $attribute;
-			}
-		if (count($add)!=0) $this->add_cache($add);
-
-		foreach ($scopes as $scope) {
-			if (isset($this->ldapcache[$scope])) {
-				$DNs = array_keys($this->ldapcache[$scope]);
-				foreach ($DNs as $dn) {
-					if (is_array($this->ldapcache[$scope][$dn][$attribute])) {
-						if (in_array($value, $this->ldapcache[$scope][$dn][$attribute])) {
-							// Return value if value was found
-							return $dn;
-							}
-						}
-					}
-				}
-			}
-		// Return false if value wasn't found
-		return false;
-	}
-
-
-	/**
 	 *  This function refreshes the cache.
 	 * 
 	 * @param boolean $rebuild forces a refresh if set to true
