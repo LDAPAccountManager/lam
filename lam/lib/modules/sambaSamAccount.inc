@@ -805,7 +805,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
 				$this->attributes['sambaHomePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaHomePath'][0]);
-				$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
+				$this->attributes['sambaHomePath'][0] = str_replace('$group', $this->getGroupName($attrs['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
 				if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors[] = $this->messages['homePath'][1];
 				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC'))) {
 					$errors[] = $this->messages['homePath'][0];
@@ -818,7 +818,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
 				$this->attributes['sambaLogonScript'][0] = $_POST['sambaLogonScript'];
 				$this->attributes['sambaLogonScript'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaLogonScript'][0]);
-				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
+				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $this->getGroupName($attrs['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
 				if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors[] = $this->messages['logonScript'][1];
 				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript'))) {
 					$errors[] = $this->messages['logonScript'][0];
@@ -827,7 +827,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
 				$this->attributes['sambaProfilePath'][0] = $_POST['sambaProfilePath'];
 				$this->attributes['sambaProfilePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaProfilePath'][0]);
-				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
+				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $this->getGroupName($attrs['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
 				if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors[] = $this->messages['profilePath'][1];
 				if (!($this->attributes['sambaProfilePath'][0] == '') &&
 					!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory'))) {
@@ -1227,8 +1227,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 					else $options[] = $names[$i];
 				}
 				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-				if ($wrid) $options[] = $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]);
-					else $selected[] = $_SESSION['cache']->getgrnam($attrs['gidNumber'][0]);
+				if ($wrid) $options[] = $this->getGroupName($attrs['gidNumber'][0]);
+					else $selected[] = $this->getGroupName($attrs['gidNumber'][0]);
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('Windows group')),
 					array('kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
@@ -2344,6 +2344,20 @@ class sambaSamAccount extends baseModule implements passwordService {
 		return array();
 	}
 		
+	/**
+	 * Returns the group name of the group with the given group ID.
+	 *
+	 * @param String $groupID group ID
+	 * @return String group name
+	 */
+	private function getGroupName($groupID) {
+		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', array('cn'), array('group'));
+		if ((sizeof($results) > 0) && isset($results[0]['cn'][0])) {
+			return $results[0]['cn'][0];
+		}
+		return null;
+	}
+	
 }
 
 ?>
