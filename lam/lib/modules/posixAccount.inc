@@ -44,8 +44,10 @@ class posixAccount extends baseModule implements passwordService {
 	/* These two variables keep an array of groups the user is also member of. */
 	private $groups;
 	private $groups_orig;
+
 	private $createhomedir;
 	private $lamdaemonServer;
+	private $groupCache = null;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -441,7 +443,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->createhomedir=false;
 		$this->groups = array();
 		$this->groups_orig = array();
-		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+		$groups = $this->findGroups(); // list of all groupnames
 		if (count($groups)==0) {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
 			return;
@@ -500,13 +502,15 @@ class posixAccount extends baseModule implements passwordService {
 		if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 			|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
 			for ($i=0; $i<count($this->groups); $i++) {
-				if ($this->groups[$i]==$_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
+				if ($this->groups[$i] == $this->getGroupName($this->attributes['gidNumber'][0])) {
+					unset($this->groups[$i]);
+				}
 			}
 		}
 		else {
 			// add user as memberuid in primary group
-			if (!in_array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->groups)) {
-				$this->groups[] = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
+			if (!in_array($this->getGroupName($this->attributes['gidNumber'][0]), $this->groups)) {
+				$this->groups[] = $this->getGroupName($this->attributes['gidNumber'][0]);
 			}
 		}
 
@@ -645,15 +649,17 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function process_attributes() {
 		$errors = array();
-		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+		$groups = $this->findGroups(); // list of all groupnames
 		if (count($groups)==0) {
-			return array(array(array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '')));
+			// abort if no groups were found
+			return array();
 		}
 		$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
-		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0])
+		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0]) {
 			$errors[] = $this->messages['uid'][0];
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($_POST['gidNumber'])!=$this->attributes['gidNumber'][0]) {
+		}
+		if (($this->orig['gidNumber'][0] != '') && ($_POST['gidNumber'] != $this->attributes['gidNumber'][0])) {
 			$errorMessage = $this->messages['gidNumber'][2];
 			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
 			$errors[] = $errorMessage;
@@ -724,7 +730,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errors[] = $this->messages['cn'][0];
 		}
 		$this->attributes['uidNumber'][0] = $_POST['uidNumber'];
-		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($_POST['gidNumber']);
+		$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
 		if ($this->get_scope()=='user') {
@@ -780,7 +786,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errors[] = $this->messages['homeDirectory'][0];
 		}
 		if ($this->get_scope()=='user') {
-			$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
+			$this->attributes['homeDirectory'][0] = str_replace('$group', $this->getGroupName($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
 			if ($this->attributes['uid'][0] != '')
 			$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
 			if ($this->attributes['homeDirectory'][0] != $_POST['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
@@ -909,7 +915,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+		$groups = $this->findGroups(); // list of all group names
 		if (count($groups)==0) {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
 			return array();
@@ -940,14 +946,9 @@ class posixAccount extends baseModule implements passwordService {
 			array('kind' => 'text', 'text' => _('Gecos')),
 			array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $gecos),
 			array('kind' => 'help', 'value' => 'gecos'));
-		$groupSelected = array();
-		if (isset($this->attributes['gidNumber'][0])) {
-			$gid = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
-			$groupSelected = array($gid);
-		}
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Primary group').'*' ),
-			array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => $groupSelected),
+			array('kind' => 'select', 'name' => 'gidNumber', 'descriptiveOptions' => true, 'options' => $groups, 'options_selected' => array($this->attributes['gidNumber'][0])),
 			array('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($this->get_scope()=='user') {
@@ -1029,7 +1030,7 @@ class posixAccount extends baseModule implements passwordService {
 		// remove groups the user is member of from grouplist
 		$groups = array_delete($this->groups, $groups);
 		// Remove primary group from grouplist
-		$group = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
+		$group = $this->getGroupName($this->attributes['gidNumber'][0]);
 		$groups = array_flip($groups);
 		unset ($groups[$group]);
 		$groups = array_flip($groups);
@@ -1066,8 +1067,12 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function get_profileOptions() {
 		$return = array();
+		$groupList = $this->findGroups();
+		$groups = array();
+		for ($i = 0; $i < sizeof($groupList); $i++) {
+			$groups[] = $groupList[$i][1];
+		}
 		if ($this->get_scope() == 'user') {
-			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
 			$return[] = array(
@@ -1109,11 +1114,11 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
-			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			// primary Unix group
-			$return[] = array(array('kind' => 'text', 'text' => _('Primary group') . ": "),
-			1 => array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
-			2 => array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'host'));
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Primary group') . ": "),
+				array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
+				array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'host'));
 		}
 		return $return;
 	}
@@ -1129,8 +1134,8 @@ class posixAccount extends baseModule implements passwordService {
 		// special profile options
 		// GID
 		if (isset($profile['posixAccount_primaryGroup'][0])) {
-			$gid = $_SESSION['cache']->getgid($profile['posixAccount_primaryGroup'][0]);
-			if (isset($gid)) {
+			$gid = $this->getGID($profile['posixAccount_primaryGroup'][0]);
+			if ($gid != null) {
 				$this->attributes['gidNumber'][0] = $gid;
 			}
 		}
@@ -1161,7 +1166,7 @@ class posixAccount extends baseModule implements passwordService {
 			'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
 			'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 			'posixAccount_gecos' => array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>'),
-			'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]) . '</value></block>'),
+			'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $this->getGroupName($this->attributes['gidNumber'][0]) . '</value></block>'),
 			'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . implode(", ", $this->groups) . '</value></block>'),
 			'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 			'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
@@ -1245,7 +1250,12 @@ class posixAccount extends baseModule implements passwordService {
 			$existingUsers[] = $dn[0];
 		}
 		// get list of existing groups
-		$existingGroups = $_SESSION['cache']->findgroups();
+		$groupList = $this->findGroups();
+		$groupMap = array();
+		for ($i = 0; $i < sizeof($groupList); $i++) {
+			$groupMap[$groupList[$i][1]] = $groupList[$i][0];
+		}
+		$existingGroups = array_keys($groupMap);
 		// check input
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
@@ -1288,7 +1298,7 @@ class posixAccount extends baseModule implements passwordService {
 				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixAccount_group']];
 			}
 			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'groupname')) {
-				$gid = $_SESSION['cache']->getgid($rawAccounts[$i][$ids['posixAccount_group']]);
+				$gid = $groupMap[$rawAccounts[$i][$ids['posixAccount_group']]];
 				if (is_numeric($gid)) {
 					$partialAccounts[$i]['gidNumber'] = $gid;
 				}
@@ -1500,6 +1510,12 @@ class posixAccount extends baseModule implements passwordService {
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
 			$col_home = $ids['posixAccount_createHomeDir'];
+			// get list of existing groups
+			$groupList = $this->findGroups();
+			$groupMap = array();
+			for ($i = 0; $i < sizeof($groupList); $i++) {
+				$groupMap[$groupList[$i][0]] = $groupList[$i][1];
+			}
 			for ($i = 0; $i < sizeof($data); $i++) {
 				if (in_array($i, $failed)) continue; // ignore failed accounts
 				if ($data[$i][$col] != "") {
@@ -1507,12 +1523,12 @@ class posixAccount extends baseModule implements passwordService {
 					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
 						if (get_preg($data[$i][$ids['posixAccount_group']], 'digit')) {
-							if (!in_array(getgrnam($data[$i][$ids['posixAccount_group']]), $groups)) {
-								$groups[] = getgrnam($data[$i][$ids['posixAccount_group']]);
+							if (!in_array($groupMap[$data[$i][$ids['posixAccount_group']]], $groups)) {
+								$groups[] = $groupMap[$data[$i][$ids['posixAccount_group']]];
 							}
 						}
 						else {
-							if (!in_array(getgrnam($data[$i][$ids['posixAccount_group']]), $groups)) {
+							if (!in_array($groupMap[$data[$i][$ids['posixAccount_group']]], $groups)) {
 								$groups[] = $data[$i][$ids['posixAccount_group']];
 							}
 						}
@@ -1753,6 +1769,54 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
+	}
+	
+	/**
+	 * Returns the group ID of the given group
+	 *
+	 * @param String $groupname group name
+	 * @return String GID
+	 */
+	private function getGID($groupname) {
+		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', array('gidnumber'), array('group'));
+		if ((sizeof($results) > 0) && isset($results[0]['gidnumber'][0])) {
+			return $results[0]['gidnumber'][0];
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the group name of the group with the given group ID.
+	 *
+	 * @param String $groupID group ID
+	 * @return String group name
+	 */
+	private function getGroupName($groupID) {
+		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', array('cn'), array('group'));
+		if ((sizeof($results) > 0) && isset($results[0]['cn'][0])) {
+			return $results[0]['cn'][0];
+		}
+		return null;
+	}
+	
+	/**
+	 * Finds all existing LDAP groups.
+	 *
+	 * @return array groups array(array(cn, gidnumber), array(cn, gidnumber), ...)
+	 */
+	private function findGroups() {
+		if ($this->groupCache != null) {
+			return $this->groupCache;
+		}
+		$results = searchLDAPByAttribute(null, null, 'posixGroup', array('cn', 'gidnumber'), array('group'));
+		$return = array();
+		for ($i = 0; $i < sizeof($results); $i++) {
+			if (isset($results[$i]['cn'][0]) && isset($results[$i]['gidnumber'][0])) {
+				$return[] = array($results[$i]['gidnumber'][0], $results[$i]['cn'][0]);
+			}
+		}
+		$this->groupCache = $return;
+		return $return;
 	}
 		
 }
