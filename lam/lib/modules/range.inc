@@ -376,13 +376,10 @@ class range extends baseModule {
 	* It will output a complete html-table
 	*/
 	public function display_html_attributes() {
-		// user name if no posixAccount
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
             echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
         }
-        else
-        {
+        else {
         
             // If $ranges is not a array, then create it
             if (!is_array($this->ranges)) {
