@@ -247,9 +247,11 @@ class lamList {
 		$entries = array();
 		$filter = $this->listBuildFilter();
 		$attributes = array_keys($filter);
-		for ($r = 0; $r < sizeof($this->entries); $r++) {
+		$attributeCount = sizeof($attributes);
+		$entryCount = sizeof($this->entries);
+		for ($r = 0; $r < $entryCount; $r++) {
 			$skip = false;
-			for ($a = 0; $a < sizeof($attributes); $a++) {
+			for ($a = 0; $a < $attributeCount; $a++) {
 				// check if filter fits
 				$found = false;
 				for ($i = 0; $i < sizeof($this->entries[$r][$attributes[$a]]); $i++) {
@@ -834,7 +836,8 @@ class lamList {
 			// delete first array entry which is "count"
 			unset($info['count']);
 			// save position in original $info
-			for ($i = 0; $i < sizeof($info); $i++) {
+			$infoCount = sizeof($info);
+			for ($i = 0; $i < $infoCount; $i++) {
 				$info[$i]['LAM_ID'] = $i;
 				if (isset($info[$i]['count'])) unset($info[$i]['count']);
 			}
