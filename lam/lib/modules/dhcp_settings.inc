@@ -109,7 +109,7 @@ class dhcp_settings extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('top', 'dhcpOptions');
+		$return['objectClasses'] = array('top', 'dhcpOptions', 'dhcpSubnet');
 		// managed attributes
 		$return['attributes'] = array('cn', 'dhcpOption', 'dhcpComments', 'dhcpNetMask', 'dhcpStatements');
 		// help Entries
@@ -332,14 +332,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	public function save_attributes() {
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-			// add object class
-			if (!in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = "dhcpSubnet";
+		// remove dhcpSubnet object class if only the DHCP settings were changed
+		if ($this->getAccountContainer()->dn_orig == $_SESSION['config']->get_suffix('dhcp')) {
+			if (!in_array_ignore_case("dhcpSubnet", $this->orig['objectClass']) && in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'] = array_delete(array("dhcpSubnet"), $this->attributes['objectClass']);
 			}
 		}
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		// Return attributes
+		$return = parent::save_attributes();
 		return $return;
 	}
 	
