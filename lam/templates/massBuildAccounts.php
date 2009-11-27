@@ -163,15 +163,17 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	else {
 		$accounts = buildUploadAccounts($_POST['scope'], $data, $ids);
 		if ($accounts != false) {
+			$rdnList = getRDNAttributes($_POST['scope']);
+			$suffix = $_SESSION['config']->get_Suffix($_POST['scope']);
 			// set DN
 			for ($i = 0; $i < sizeof($accounts); $i++) {
 				// check against list of possible RDN attributes
-				if (!in_array($data[$i][$ids['dn_rdn']], getRDNAttributes($_POST['scope']))) {
+				if (!in_array($data[$i][$ids['dn_rdn']], $rdnList)) {
 					$errors[] = array(_('Account %s:') . ' dn_rdn' . $accounts[$i][$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
 				}
 				else {
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $accounts[$i][$data[$i][$ids['dn_rdn']]] . ",";
-					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $_SESSION['config']->get_Suffix($_POST['scope']);
+					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $suffix;
 					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
 					$accounts[$i]['dn'] = $account_dn;
 				}
