@@ -298,16 +298,12 @@ class lamList {
 	* @return integer 0 if both are equal, 1 if $a is greater, -1 if $b is greater
 	*/
 	protected function cmp_array(&$a, &$b) {
-		// sort specifies the sort column
-		$sort = $this->sortColumn;
-		// sort by first column if no attribute is given
-		if (!$sort) $sort = strtolower($this->attrArray[0]);
-		if ($sort != "dn") {
+		if ($this->sortColumn != "dn") {
 			// sort by first attribute with name $sort
-			return @strnatcasecmp($a[$sort][0], $b[$sort][0]) * $this->sortDirection;
+			return @strnatcasecmp($a[$this->sortColumn][0], $b[$this->sortColumn][0]) * $this->sortDirection;
 		}
 		else {
-			return strnatcasecmp($a[$sort], $b[$sort]) * $this->sortDirection;
+			return strnatcasecmp($a[$this->sortColumn], $b[$this->sortColumn]) * $this->sortDirection;
 		}
 	}
 
