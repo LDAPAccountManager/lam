@@ -81,6 +81,8 @@ class quota extends baseModule {
 			// module dependencies
 			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		}
+		// PHP extensions
+		$return['extensions'] = array('ssh2');
 		// managed attributes
 		$return['attributes'] = array('uid', 'cn');
 		// available PDF fields
