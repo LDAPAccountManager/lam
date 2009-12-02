@@ -155,6 +155,7 @@ class quota extends baseModule {
 	 *
 	 */
 	function initQuotas() {
+		if (!extension_loaded('ssh2')) return;
 		if (isset($this->quota)) return;
 		$userName = '+';
 		if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
@@ -356,6 +357,11 @@ class quota extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
+		if (!extension_loaded('ssh2')) {
+			return array(
+				array(array('kind' => 'text', 'text' => _('This module requires the PHP ssh2 extension.'))
+			));
+		}
 		$return = array();
 		$this->initQuotas();
 		if (!is_array($this->quota)) return $return;
