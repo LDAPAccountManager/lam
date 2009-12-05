@@ -421,9 +421,9 @@ class lamList {
 				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
 					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
 			}
-			echo " <td align='center'>";
+			echo " <td align='center'><nobr>";
 				$this->listPrintToolLinks($info[$i], $info[$i]['LAM_ID']);
-			echo "</td>\n";
+			echo "</nobr></td>\n";
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
 				$attrName = strtolower($this->attrArray[$k]);
