@@ -409,21 +409,22 @@ class lamList {
 		else $table_end = ($this->page * $this->maxPageEntries);
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
-			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onMouseOut=\"list_out(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
+			$rowID = base64_encode($info[$i]['dn']);
+			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
+				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
+				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 			if (isset($_GET['selectall'])) {
-				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" checked name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
+				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
+					" type=\"checkbox\" checked name=\"" . $rowID . "\"></td>\n";
 			}
 			else {
-				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
+				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
+					" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
 			}
-			echo " <td align='center'><nobr>";
-				$this->listPrintToolLinks($info[$i], $info[$i]['LAM_ID']);
-			echo "</nobr></td>\n";
+			echo " <td align='center' style=\"white-space: nowrap;\">";
+				$this->listPrintToolLinks($info[$i], $rowID);
+			echo "</td>\n";
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
 				$attrName = strtolower($this->attrArray[$k]);
@@ -550,7 +551,7 @@ class lamList {
 			// create for clicked account
 			if ($option == 'DN') {
 				$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
-				$_SESSION["accountPDF"]->load_account($this->entries[$_POST['clickedAccount']]['dn']);
+				$_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
 				createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
 				unset($_SESSION["accountPDF"]);
 				exit;
@@ -562,9 +563,8 @@ class lamList {
 				$list = array();
 				// load accounts from LDAP
 				for ($i = 0; $i < sizeof($accounts); $i++) {
-					if (!isset($this->entries[$accounts[$i]]['dn'])) continue;
 					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					$_SESSION["accountPDF-$i"]->load_account($this->entries[$accounts[$i]]['dn']);
+					$_SESSION["accountPDF-$i"]->load_account(base64_decode($accounts[$i]));
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
@@ -623,10 +623,10 @@ class lamList {
 
 		$this->listPrintHeader();
 
-		echo '<h1 align="center">' . _('Create PDF file') . "</h1>\n";
+		echo "<br>\n";
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 
-		echo '<fieldset class="' . $this->type . 'edit"><br>';
+		echo '<fieldset class="' . $this->type . 'edit"><legend>' . _('Create PDF file') . '</legend><br>';
 		echo '<table class="' . $this->type . 'edit">';
 			echo '<tr>';
 				echo '<td>';
@@ -647,7 +647,7 @@ class lamList {
 				echo '</td>';
 				echo '<td>';
 					echo '<select name="createFor">';
-					echo '<option value="DN">' . $this->entries[$id]['dn'] . '</option>';
+					echo '<option value="DN">' . base64_decode($id) . '</option>';
 					echo '<option value="SELECTED">' . sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) . '</option>';
 					echo '<option value="ALL">' . sprintf(_('All accounts (%s)'), sizeof($this->entries)) . '</option>';
 					echo '</select>';
@@ -838,7 +838,6 @@ class lamList {
 			// save position in original $info
 			$infoCount = sizeof($info);
 			for ($i = 0; $i < $infoCount; $i++) {
-				$info[$i]['LAM_ID'] = $i;
 				if (isset($info[$i]['count'])) unset($info[$i]['count']);
 			}
 			// save results
