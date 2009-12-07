@@ -1,13 +1,14 @@
-December 2009 2.9.0
-  - new tool: Server information
+16.12.2009 2.9.0
+  - Asterisk support
+  - new tool: server information
   - consolidated LAM documentation in new manual (docs/manual/index.html)
 	- DHCP: add host name to fixed IPs (RFE 2898948)
 	- LAM Pro:
 	 -> enabled custom scripts for self service
 	 -> support for nisObject object class
   - fixed bugs:
-	 -> Unable to edit accounts with DNs that contain spaces next to a comma (2889473)
-	 -> Login method "LDAP search" has problems if LDAP server is down (2889414)
+	 -> unable to edit accounts with DNs that contain spaces next to a comma (2889473)
+	 -> login method "LDAP search" has problems if LDAP server is down (2889414)
 	 -> filter in account lists did not support non-ASCII letters
 	 -> alias handling (2901248)
 	 -> DHCP range check (2903267)
