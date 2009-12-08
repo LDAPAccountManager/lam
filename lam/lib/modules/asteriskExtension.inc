@@ -134,7 +134,7 @@ class asteriskExtension extends baseModule {
 				'name' => 'asteriskExtension_cn',
 				'description' => _('Common name'),
 				'help' => 'cn',
-				'example' => _('500-1'),
+				'example' => '500-1',
 				'required' => true
 			),
 			array(

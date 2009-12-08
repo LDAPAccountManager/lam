@@ -382,7 +382,7 @@ class posixAccount extends baseModule implements passwordService {
 				),
 				'homeDirectory' => array(
 					"Headline" => _("Home directory"),
-					"Text" => _('$user and $group are replaced with user name or primary group name.')
+					"Text" => _('$user and $group will be replaced with user name and primary group name.')
 				),
 				'userPassword' => array(
 					"Headline" => _("Password"),

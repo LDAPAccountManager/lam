@@ -94,7 +94,7 @@ echo "<h1 align=\"center\">" . _("Server information") . "</h1>\n";
 
 echo "<table class=\"userlist\" rules=\"none\">\n";
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Managed suffix(es)") . "</b>&nbsp;&nbsp;</td>";
+echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Managed suffixes") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $namingContexts . "</td></tr>";
 
 echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("LDAP version") . "</b>&nbsp;&nbsp;</td>";

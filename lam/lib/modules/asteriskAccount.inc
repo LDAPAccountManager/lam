@@ -116,7 +116,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				'name' => 'asteriskAccount_AstAccountContext',
 				'description' => _('Account context'),
 				'help' => 'AstAccountContext',
-				'example' => _('default'),
+				'example' => 'default',
 				'required' => true
 			),
 			array(
