@@ -609,6 +609,24 @@ Have fun!
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_asterisk.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Asterisk (extension)</entry>
+
+            <entry>AsteriskSIPUser, AsteriskExtension</entry>
+
+            <entry>asterisk.schema</entry>
+
+            <entry>Part of Asterisk installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_mailAlias.png" />
                 </imageobject>
               </inlinemediaobject></entry>
@@ -743,7 +761,7 @@ Have fun!
 
             <entry>DHCP</entry>
 
-            <entry></entry>
+            <entry>dhcpOptions, dhcpSubnet, dhcpServer</entry>
 
             <entry>dhcp.schema</entry>
 
@@ -769,6 +787,42 @@ Have fun!
             <entry>Part of OpenLDAP installation</entry>
 
             <entry>These modules are only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_netgroup.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>NIS netgroups</entry>
+
+            <entry>nisNetgroup</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_nisObject.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>NIS objects</entry>
+
+            <entry>nisObject</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>This module is only available in LAM Pro.</entry>
           </row>
         </tbody>
       </tgroup>
