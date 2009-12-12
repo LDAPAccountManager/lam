@@ -96,8 +96,8 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 
 # check if script runs as root
 if ($< != 0 ) {
-	print "ERROR,Lamdaemon ($hostname),Not called as root!\n";
-	logMessage(LOG_ERR, "Not called as root!");
+	print "ERROR,Lamdaemon ($hostname),Not called as root (user id " . $< . ").\n";
+	logMessage(LOG_ERR, "Not called as root (user id " . $< . ").");
 	exit 1;
 }
 
@@ -112,8 +112,11 @@ while (1) {
 	# Get user information
 	if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
 	else { @user = getgrnam($vals[0]); }
-	# run tests
-	if (($vals[1] eq 'test')) {
+	if ($vals[1] eq '') {
+		# empty line, nothing to do
+	}
+	elsif (($vals[1] eq 'test')) {
+		# run tests
 		runTest();
 	}
 	elsif ($vals[1] eq 'home') {
