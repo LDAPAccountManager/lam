@@ -44,7 +44,6 @@ setlanguage();
 
 echo $_SESSION['header'];
 
-
 echo "<title></title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_user.css\">\n";
@@ -200,6 +199,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
  * @param boolean $testQuota true, if Quotas should be checked
  */
 function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
+	$SPLIT_DELIMITER = "###x##y##x###";
 	$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
 	$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
 	
@@ -304,14 +304,14 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 
 	flush();
 	
-	$stopTest = lamTestLamdaemon("+ test basic\n", $stopTest, $handle, _("Execute lamdaemon"));
+	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic\n", $stopTest, $handle, _("Execute lamdaemon"));
 	if ($testQuota) {
 		$handle = @ssh2_connect($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);
-		$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
 		$handle = @ssh2_connect($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);
-		$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
 	}
 
 	echo "</table><br>\n";

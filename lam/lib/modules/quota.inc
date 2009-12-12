@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2008  Roland Gruber
+                2007 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,24 +38,26 @@ $Id$
 * @package modules
 */
 class quota extends baseModule {
+	
+	private static $SPLIT_DELIMITER = "###x##y##x###";
 
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {
-	// error messages for input checks
-	$this->messages['softblock'][0] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['softblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['hardblock'][0] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['hardblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['softinode'][0] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['softinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['hardinode'][0] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['hardinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
-	$this->messages['block_cmp'][0] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.'));
-	$this->messages['block_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota must be smaller than block hard quota.'));
-	$this->messages['inode_cmp'][0] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.'));
-	$this->messages['inode_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota must be smaller than inode hard quota.'));
-	$this->messages['upload'][0] = array('ERROR', _('Account %s:') . ' %s', _('Quota has wrong format!'));
+		// error messages for input checks
+		$this->messages['softblock'][0] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['softblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['hardblock'][0] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['hardblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['softinode'][0] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['softinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['hardinode'][0] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['hardinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
+		$this->messages['block_cmp'][0] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.'));
+		$this->messages['block_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota must be smaller than block hard quota.'));
+		$this->messages['inode_cmp'][0] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.'));
+		$this->messages['inode_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota must be smaller than inode hard quota.'));
+		$this->messages['upload'][0] = array('ERROR', _('Account %s:') . ' %s', _('Quota has wrong format!'));
 	}
 
 	/**
@@ -174,7 +176,7 @@ class quota extends baseModule {
 			$temp = explode(":", $lamdaemonServers[$s]);
 			$server = $temp[0];
 			// get quotas
-			$quotas = lamdaemon(array($userName . " quota get " . $this->get_scope()), $server);
+			$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope()))), $server);
 			$allQuotas = explode(":", $quotas[0]);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
@@ -259,7 +261,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
 					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
 			}
-			lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
+			lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n"))), $server);
 		}
 	}
 
@@ -298,7 +300,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 				}
-			lamdaemon(array($id . " quota set " . $this->get_scope() . " $quotastring\n"), $server);
+			lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n"))), $server);
 		}
 		return true;
 	}
@@ -456,7 +458,7 @@ class quota extends baseModule {
 			if (isset($temp[1])) $description = $temp[1];
 
 			// Get quotas
-			$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
+			$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope()))), $server);
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -510,7 +512,7 @@ class quota extends baseModule {
 			$server = $temp[0];
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
-			$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
+			$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope()))), $server);
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -622,7 +624,7 @@ class quota extends baseModule {
 				$temp = explode(":", $lamdaemonServers[$s]);
 				$server = $temp[0];
 				// Get quotas
-				$quotas = lamdaemon(array("+ quota get " . $this->get_scope()), $server);
+				$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope()))), $server);
 				$dirs = explode(":", $quotas[0]);
 				array_pop($dirs); // remove empty element at the end
 				for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -740,8 +742,8 @@ class quota extends baseModule {
 				$mpParts = explode(":", $mountPoints[$m]);
 				$server = $mpParts[0];
 				$dir = $mpParts[1];
-				$quotaString = $name . " quota set " . $this->get_scope() . " " . $dir . ',' .
-					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n";
+				$quotaString = implode(quota::$SPLIT_DELIMITER, array($name, "quota", "set", $this->get_scope(), $dir . ',' .
+					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"));
 				$result = lamdaemon(array($quotaString), $server);
 				if (is_array($result)) {
 					for ($i = 0; $i < sizeof($result); $i++) {
@@ -761,7 +763,7 @@ class quota extends baseModule {
 		}
 		return array('status' => 'finished');
 	}
-
+	
 }
 
 ?>

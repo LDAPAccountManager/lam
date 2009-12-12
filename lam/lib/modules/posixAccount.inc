@@ -40,7 +40,8 @@
 class posixAccount extends baseModule implements passwordService {
 
 	// Variables
-
+	private static $SPLIT_DELIMITER = "###x##y##x###";
+	
 	/* These two variables keep an array of groups the user is also member of. */
 	private $groups;
 	private $groups_orig;
@@ -575,7 +576,7 @@ class posixAccount extends baseModule implements passwordService {
 					break;
 				}
 			}
-			$result = lamdaemon(array($this->attributes['uid'][0] . " home add 0".$_SESSION['config']->get_scriptRights()), $server);
+			$result = lamdaemon(array(implode(posixAccount::$SPLIT_DELIMITER, array($this->attributes['uid'][0], "home", "add", "0".$_SESSION['config']->get_scriptRights()))), $server);
 			// lamdaemon results
 			if (is_array($result)) {
 				foreach ($result as $singleresult) {
@@ -624,7 +625,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			// try to delete directory on all servers
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$result = lamdaemon(array($this->attributes['uid'][0] . " home rem"), $lamdaemonServers[$i]);
+				$result = lamdaemon(array(implode(posixAccount::$SPLIT_DELIMITER, array($this->attributes['uid'][0], "home", "rem"))), $lamdaemonServers[$i]);
 				// lamdaemon results
 				if (is_array($result)) {
 					foreach ($result as $singleresult) {
@@ -1596,7 +1597,7 @@ class posixAccount extends baseModule implements passwordService {
 		// create home directories
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
-			$result = lamdaemon(array($data[$pos][$ids['posixAccount_userName']] . " home add 0".$_SESSION['config']->get_scriptRights()),
+			$result = lamdaemon(array(implode(posixAccount::$SPLIT_DELIMITER, array($data[$pos][$ids['posixAccount_userName']], "home", "add", "0".$_SESSION['config']->get_scriptRights()))),
 				$data[$pos][$ids['posixAccount_createHomeDir']]);
 			$errors = array();
 			if (($result != false) && (sizeof($result) == 1)) {
