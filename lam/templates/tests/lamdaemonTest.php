@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2007  Roland Gruber
+  Copyright (C) 2006 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -278,13 +278,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$sshOk = false;
-		$serverNameParts = explode(",", $serverName);
-		if (sizeof($serverNameParts) > 1) {
-			$handle = @ssh2_connect($serverNameParts[0], $serverNameParts[1]);
-		}
-		else {
-			$handle = @ssh2_connect($serverName);
-		}
+		$handle = lamTestConnectSSH($serverName);
 		if ($handle) {
 			if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
 				$sshOk = true;
@@ -306,10 +300,10 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	
 	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic\n", $stopTest, $handle, _("Execute lamdaemon"));
 	if ($testQuota) {
-		$handle = @ssh2_connect($serverName);
+		$handle = lamTestConnectSSH($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
-		$handle = @ssh2_connect($serverName);
+		$handle = lamTestConnectSSH($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
 	}
@@ -317,6 +311,22 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	echo "</table><br>\n";
 	
 	echo "<h2>" . _("Lamdaemon test finished.") . "</h2>\n";
+}
+
+/**
+ * Connects to the given SSH server.
+ *
+ * @param String $server server name (e.g. localhost or localhost,1234)
+ * @return object handle
+ */
+function lamTestConnectSSH($server) {
+	$serverNameParts = explode(",", $server);
+	if (sizeof($serverNameParts) > 1) {
+		return @ssh2_connect($serverNameParts[0], $serverNameParts[1]);
+	}
+	else {
+		return @ssh2_connect($server);
+	}
 }
 
 ?>
