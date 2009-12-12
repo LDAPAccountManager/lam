@@ -110,7 +110,6 @@ while (1) {
 	my $input = <STDIN>;
 	chop($input);
 	$return = "";
-	logMessage(LOG_ERR, $input);
 	@vals = split ($SPLIT_DELIMITER, $input);
 	# Get user information
 	if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
