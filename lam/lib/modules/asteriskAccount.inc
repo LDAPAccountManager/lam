@@ -22,8 +22,18 @@ $Id$
 
 */
 
+
 /**
- * Description of asteriskAccount
+* Manages the Asterisk extension of user accounts.
+*
+* @package modules
+*
+* @author Pavel Pozdnyak
+* @author Roland Gruber
+*/
+
+/**
+ * Manages the Asterisk extension of user accounts.
  *
  * @author Pavel Pozdnyak
  * @author Roland Gruber

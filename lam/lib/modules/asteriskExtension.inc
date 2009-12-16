@@ -24,7 +24,16 @@ $Id$
 
 
 /**
- * Description of asteriskExtension
+* Manages Asterisk extensions.
+*
+* @package modules
+*
+* @author Pavel Pozdnyak
+* @author Roland Gruber
+*/
+
+/**
+ * Manages Asterisk extensions.
  *
  * @author Pavel Pozdnyak
  * @author Roland Gruber
