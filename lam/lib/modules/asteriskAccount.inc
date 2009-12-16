@@ -35,8 +35,7 @@ $Id$
 /**
  * Manages the Asterisk extension of user accounts.
  *
- * @author Pavel Pozdnyak
- * @author Roland Gruber
+ * @package modules
  */
 class asteriskAccount extends baseModule implements passwordService {
 

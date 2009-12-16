@@ -35,8 +35,7 @@ $Id$
 /**
  * Manages Asterisk extensions.
  *
- * @author Pavel Pozdnyak
- * @author Roland Gruber
+ * @package modules
  */
 class asteriskExtension extends baseModule {
 
