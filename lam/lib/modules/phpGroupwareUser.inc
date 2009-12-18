@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2008  Roland Gruber
+  Copyright (C) 2008 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -202,10 +202,10 @@ class phpGroupwareUser extends baseModule implements passwordService {
 			$this->attributes['phpgwLastPasswordChange'][0] = time();
 		}
 		elseif (isset($_POST['form_subpage_phpGroupwareUser_attributes_remObjectClass'])) {
-			for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
-				if ($this->attributes['objectClass'][$i] == 'phpgwAccount') {
-					unset($this->attributes['objectClass'][$i]);
-					break;
+			$this->attributes['objectClass'] = array_delete(array('phpgwAccount'), $this->attributes['objectClass']);
+			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
+					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
 			}
 		}
@@ -307,46 +307,6 @@ class phpGroupwareUser extends baseModule implements passwordService {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		$this->attributes['phpgwAccountID'][0] = $attrs['uidNumber'][0];
 		return parent::save_attributes();
-	}
-
-	/**
-	 * @see baseModule::postModifyActions()
-	 *
-	 * @param boolean $newAccount
-	 * @param array $attributes LDAP attributes of this entry
-	 */
-	public function postModifyActions($newAccount, $attributes) {
-		// check if extension was removed
-		if (!$newAccount &&
-			(in_array('phpgwAccount', $this->orig['objectClass']) && !in_array('phpgwAccount', $this->attributes['objectClass']))) {
-			$dn = $this->getAccountContainer()->finalDN;
-			$myattributes = array_merge(array('objectClass'), $this->meta['attributes']);
-			$sr = @ldap_read($_SESSION['ldap']->server(), $dn, 'objectClass=*', $myattributes);
-			if (!$sr) {
-				StatusMessage('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));				
-				return;
-			}
-			$entry = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-			$newAttributes = array();
-			$newAttributes['objectclass'] = $entry[0]['objectclass'];
-			unset($newAttributes['objectclass']['count']);
-			for ($i = 0; $i < sizeof($newAttributes['objectclass']); $i++) {
-				if ($newAttributes['objectclass'][$i] == 'phpgwAccount') {
-					unset($newAttributes['objectclass'][$i]);
-					break;
-				}
-			}
-			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
-				if (isset($entry[0][strtolower($this->meta['attributes'][$i])])) {
-					$newAttributes[$this->meta['attributes'][$i]] = array();
-				}
-			}
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $newAttributes);
-			if (!$success) {
-				StatusMessage('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
-			}
-		}
-		return;
 	}
 
 	/**

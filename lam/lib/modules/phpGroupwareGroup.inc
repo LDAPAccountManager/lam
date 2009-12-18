@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2008  Roland Gruber
+  Copyright (C) 2008 - 2009  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -120,12 +120,8 @@ class phpGroupwareGroup extends baseModule {
 			$this->attributes['objectClass'][] = 'phpgwGroup';
 		}
 		elseif (isset($_POST['form_subpage_phpGroupwareGroup_attributes_remObjectClass'])) {
-			for ($i = 0; $i < sizeof($this->attributes['objectClass']); $i++) {
-				if ($this->attributes['objectClass'][$i] == 'phpgwGroup') {
-					unset($this->attributes['objectClass'][$i]);
-					break;
-				}
-			}
+			$this->attributes['objectClass'] = array_delete(array('phpgwGroup'), $this->attributes['objectClass']);
+			if (isset($this->attributes['phpgwGroupID'])) unset($this->attributes['phpgwGroupID']);
 		}
 		return array();
 	}
@@ -169,29 +165,6 @@ class phpGroupwareGroup extends baseModule {
 		return null;
 	}
 	
-	/**
-	 * @see baseModule::postModifyActions()
-	 *
-	 * @param boolean $newAccount
-	 * @param array $attributes LDAP attributes of this entry
-	 */
-	public function postModifyActions($newAccount, $attributes) {
-		// check if extension was removed
-		if (!$newAccount &&
-			(in_array('phpgwGroup', $this->orig['objectClass']) && !in_array('phpgwGroup', $this->attributes['objectClass']))) {
-			$dn = $this->getAccountContainer()->finalDN;
-			$myattributes = array(
-				'objectClass' => array('phpgwGroup'),
-				'phpgwGroupID' => $this->attributes['phpgwGroupID']
-			);
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, $myattributes);
-			if (!$success) {
-				StatusMessage('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
-			}
-		}
-		return;
-	}
-
 	/**
 	* In this function the LDAP account is built up.
 	*
