@@ -1563,10 +1563,10 @@ class accountContainer {
 				foreach ($orig[$name] as $j => $value) {
 					if (is_array($attributes[$name])) {
 						if (!in_array($value, $attributes[$name])) {
-							if (($value != '') && ($name != 'objectClass')) $torem[$name][] = $value;
+							if ($value != '') $torem[$name][] = $value;
 						}
 					}
-					else if (($value != '') && ($name != 'objectClass')) $torem[$name][] = $value;
+					else if ($value != '') $torem[$name][] = $value;
 				}
 			}
 			// find new attributes
