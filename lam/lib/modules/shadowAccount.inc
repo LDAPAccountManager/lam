@@ -88,7 +88,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$return['objectClasses'] = array('shadowAccount');
 		// managed attributes
 		$return['attributes'] = array('shadowLastChange', 'shadowMin', 'shadowMax', 'shadowWarning',
-			'shadowInactive', 'shadowExpire');
+			'shadowInactive', 'shadowExpire', 'shadowFlag');
 		// lists for expiration date
 		$day = array(); $mon = array(); $year = array();
 		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
@@ -234,10 +234,11 @@ class shadowAccount extends baseModule implements passwordService {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
-		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
+		if (!in_array('shadowAccount', $this->attributes['objectClass']) && !in_array('shadowAccount', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
 			return array();
 		}
-		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+		return parent::save_attributes();
 	}
 
 	/**
@@ -247,6 +248,17 @@ class shadowAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (isset($_POST['form_subpage_shadowAccount_attributes_remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('shadowAccount'), $this->attributes['objectClass']);
+			if (isset($this->attributes['shadowMin'])) unset($this->attributes['shadowMin']);
+			if (isset($this->attributes['shadowMax'])) unset($this->attributes['shadowMax']);
+			if (isset($this->attributes['shadowWarning'])) unset($this->attributes['shadowWarning']);
+			if (isset($this->attributes['shadowInactive'])) unset($this->attributes['shadowInactive']);
+			if (isset($this->attributes['shadowLastChange'])) unset($this->attributes['shadowLastChange']);
+			if (isset($this->attributes['shadowExpire'])) unset($this->attributes['shadowExpire']);
+			if (isset($this->attributes['shadowFlag'])) unset($this->attributes['shadowFlag']);
+			return array();
+		}
 		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
 			return array();
 		}
@@ -315,11 +327,18 @@ class shadowAccount extends baseModule implements passwordService {
 					array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_expire_open', 'type' => 'submit', 'value' => _('Change'))
 				))),
 				array('kind' => 'help', 'value' => 'shadowExpire' ));
+			$return[] = array(
+				array('kind' => 'text', 'text' => '&nbsp;')
+			);
+			$return[] = array(
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_shadowAccount_attributes_remObjectClass',
+					'value' => _('Remove Shadow account extension'), 'td' => array('colspan' => '4'))
+			);
 		}
 		else {
 			$return[] = array(
 				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_shadowAccount_attributes_addObjectClass', 'value' => _('Add Shadow account'))
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_shadowAccount_attributes_addObjectClass', 'value' => _('Add Shadow account extension'))
 			);
 		}
 		return $return;
