@@ -1,3 +1,6 @@
+March 2010 3.0.0
+  - support to remove extension from an existing account: shadowAccount
+
 16.12.2009 2.9.0
   - Asterisk support
   - new tool: server information
