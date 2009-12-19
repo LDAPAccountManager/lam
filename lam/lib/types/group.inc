@@ -165,11 +165,8 @@ class lamGroupList extends lamList {
 					isset($this->primary_hash[$gid]) && is_array($this->primary_hash[$gid]) &&
 					(sizeof($this->primary_hash[$gid]) > 0));
 			}
-			if ($use_primary) {
-				if (isset($entry[$attribute]) && isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
-			} else {
+			if (!$use_primary) {
 				if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
-				if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
 				// sort array
 				sort($entry[$attribute]);
 			}
@@ -250,8 +247,7 @@ class lamGroupList extends lamList {
 			if ($sr) {
 				$members = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 				ldap_free_result($sr);
-				// delete first array entry which is "count"
-				unset($members['count']);
+				$members = cleanLDAPResult($members);
 				for ($j = 0; $j < sizeof($members); $j++) {
 					$this->primary_hash[$gid][$j] = $members[$j]['uid'][0];
 				}

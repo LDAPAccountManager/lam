@@ -170,7 +170,7 @@ class lamUserList extends lamList {
 		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($grp_suffix), $filter, $attrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
-			unset($info['count']); // delete count entry
+			$info = cleanLDAPResult($info);
 			for ($i = 0; $i < sizeof($info); $i++) {
 				$this->trans_primary_hash[$info[$i]['gidnumber'][0]] = $info[$i]['cn'][0];
 			}
@@ -186,7 +186,6 @@ class lamUserList extends lamList {
 	protected function listPrintTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
 		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
-		if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
 		// translate GID to group name
 		if (($attribute == "gidnumber") && ($this->trans_primary == "on")) {
 			if (isset($this->trans_primary_hash[$entry[$attribute][0]])) {
@@ -205,7 +204,6 @@ class lamUserList extends lamList {
 					$tempEntry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 					if ($tempEntry) {
 						$binData = ldap_get_values_len($_SESSION['ldap']->server(), $tempEntry, $attribute);
-						if (isset($binData['count'])) unset($binData['count']);
 						$entry[$attribute] = $binData;
 					}
 				}

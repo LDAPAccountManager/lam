@@ -190,8 +190,11 @@ class ddns extends baseModule {
 		$search = @ldap_search($ldap,$dn,"dhcpStatements=ddns-update-style interim", array(), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($search) {
 			$info = @ldap_get_entries($ldap,$search);
-			if ($info && ($info['count'] > 0)) {
-				return true;
+			if ($info) {
+				$info = cleanLDAPResult($info);
+				if (sizeof($info) > 0) {
+					return true;
+				}
 			}
 			else {
 				return false;
