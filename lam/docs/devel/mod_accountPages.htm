@@ -28,7 +28,7 @@ in your module gets the complete attribute list from LDAP.<br>
 <br>
 The <span style="font-style: italic;">ieee802Device</span> uses an
 object class and the <span style="font-style: italic;">'macAddress'</span>
-attribute. Therefore we will save this two values.<br>
+attribute. Therefore we will save these two values.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -51,15 +51,11 @@ array();<br>
 array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isset($attr['objectClass'])) {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-unset($attr['objectClass']['count']);<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['objectClass'] = $attr['objectClass'];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;orig['objectClass'] = $attr['objectClass'];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isset($attr['macAddress'])) {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-unset($attr['macAddress']['count']);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['macAddress'] = $attr['macAddress'];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
