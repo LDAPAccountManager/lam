@@ -138,7 +138,7 @@ class Ldap{
 		$sr = @ldap_search($this->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($this->server, $sr);
-			unset($units['count']);
+			$units = cleanLDAPResult($units);
 			// extract Dns
 			for ($i = 0; $i < sizeof($units); $i++) {
 				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];

@@ -257,7 +257,8 @@ function getChildCount($dn) {
 	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($dn), 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		$return = $entries['count'] - 1;
+		$entries = cleanLDAPResult($entries);
+		$return = sizeof($entries) - 1;
 	}
 	return $return;
 }
@@ -273,7 +274,8 @@ function deleteDN($dn) {
 	$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0);
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		for ($i = 0; $i < $entries['count']; $i++) {
+		$entries = cleanLDAPResult($entries);
+		for ($i = 0; $i < sizeof($entries); $i++) {
 			// delete recursively
 			$subErrors = deleteDN($entries[$i]['dn']);
 			for ($e = 0; $e < sizeof($subErrors); $e++) $errors[] = $subErrors[$e];

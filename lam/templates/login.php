@@ -446,11 +446,12 @@ if(!empty($_POST['checklogin'])) {
 				if ($searchResult) {
 					$searchInfo = @ldap_get_entries($searchLDAP->server(), $searchResult);
 					if ($searchInfo) {
-						if ($searchInfo['count'] == 0) {
+						$searchInfo = cleanLDAPResult($searchInfo);
+						if (sizeof($searchInfo) == 0) {
 							$searchSuccess = false;
 							$searchError = _('Wrong password/user name combination. Please try again.');
 						}
-						elseif ($searchInfo['count'] > 1) {
+						elseif (sizeof($searchInfo) > 1) {
 							$searchSuccess = false;
 							$searchError = _('The given user name matches multiple LDAP entries.');
 						}

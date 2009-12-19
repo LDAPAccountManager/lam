@@ -481,8 +481,6 @@ class lamList {
 	protected function listPrintTableCellContent(&$entry, &$attribute) {
 		// print all attribute entries seperated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
-			// delete "count" entry
-			unset($entry[$attribute]['count']);
 			if (is_array($entry[$attribute])) {
 				// sort array
 				sort($entry[$attribute]);
@@ -832,14 +830,8 @@ class lamList {
 		}
 		if ($sr) {
 			$info = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
+			$info = cleanLDAPResult($info);
 			ldap_free_result($sr);
-			// delete first array entry which is "count"
-			unset($info['count']);
-			// save position in original $info
-			$infoCount = sizeof($info);
-			for ($i = 0; $i < $infoCount; $i++) {
-				if (isset($info[$i]['count'])) unset($info[$i]['count']);
-			}
 			// save results
 			$this->entries = $info;
 		}
