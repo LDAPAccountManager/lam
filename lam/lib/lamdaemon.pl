@@ -172,8 +172,8 @@ sub manageHomedirs {
 sub createHomedir {
 	my $homedir = $user[7];
 	if ($homedir eq '') {
-		$return = "ERROR,Lamdaemon ($hostname),Home directory path is empty.";
-		logMessage(LOG_ERR, "Home directory path is empty.");
+		$return = "ERROR,Lamdaemon ($hostname),Unable to determine home directory path. Please check if NSS LDAP is correctly configured.";
+		logMessage(LOG_ERR, "Unable to determine home directory path. Please check if NSS LDAP is correctly configured.");
 		return;
 	}
 	my $path = $homedir;
