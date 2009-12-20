@@ -139,6 +139,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial');
 		// PHP extensions
 		$return['extensions'] = array('hash', 'iconv');
+		// profile options
+		$return['profile_options'] = array(
+			array(
+				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
+				array('kind' => 'input', 'name' => 'sambaSamAccount_addExt', 'type' => 'checkbox'),
+				array('kind' => 'help', 'value' => 'autoAdd')),
+		);
 		// profile checks
 		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
 			'type' => 'ext_preg',
@@ -376,8 +383,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them.")),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
-				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields."))
-			);
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded."))
+				);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
 		// upload options
@@ -703,17 +713,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
-		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+		if (!in_array('sambaSamAccount', $this->attributes['objectClass']) && !in_array('sambaSamAccount', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
 			return array();
 		}
-		if ($this->expirePassword === true) {
-			$this->attributes['sambaPwdLastSet'][0] = '0';
+		if (in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+			if ($this->expirePassword === true) {
+				$this->attributes['sambaPwdLastSet'][0] = '0';
+			}
+			elseif ((isset($this->attributes['sambaPwdLastSet'][0])) && ($this->attributes['sambaPwdLastSet'][0] == '0')) {
+				$this->attributes['sambaPwdLastSet'][0] = time();
+			}
 		}
-		elseif ((isset($this->attributes['sambaPwdLastSet'][0])) && ($this->attributes['sambaPwdLastSet'][0] == '0')) {
-			$this->attributes['sambaPwdLastSet'][0] = time();
-		}
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		return $return;
+		return parent::save_attributes();
 	}
 
 	/**
@@ -723,6 +735,26 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		// add extension
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'sambaSamAccount';
+			return array();
+		}
+		// remove extension
+		elseif (isset($_POST['form_subpage_sambaSamAccount_attributes_remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('sambaSamAccount'), $this->attributes['objectClass']);
+			$attrKeys = array_keys($this->attributes);
+			for ($k = 0; $k < sizeof($attrKeys); $k++) {
+				if (strpos($attrKeys[$k], 'samba') > -1) {
+					unset($this->attributes[$attrKeys[$k]]);
+				}
+			}
+			if (isset($this->attributes['displayName'])) {
+				unset($this->attributes['displayName']);
+			}
+			return array();
+		}
+		// skip processing if extension is not active
 		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
 			return array();
 		}
@@ -1044,9 +1076,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		if (isset($_POST['form_subpage_sambaSamAccount_attributes_addObjectClass'])) {
-			$this->attributes['objectClass'][] = 'sambaSamAccount';
-		}
 		$return = array();
 		if (in_array('sambaSamAccount', $this->attributes['objectClass'])) {
 			if ($this->get_scope() == "host") {
@@ -1280,12 +1309,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 					array('kind' => 'text', 'text' => _('Reset password') ),
 					array('kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Reset')),
 					array('kind' => 'help', 'value' => 'resetPassword' ));
-				}
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => '&nbsp;')
+			);
+			$return[] = array(
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_attributes_remObjectClass',
+						'value' => _('Remove Samba 3 extension'), 'td' => array('colspan' => '3'))
+			);
 		}
 		else {
 			$return[] = array(
 				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_attributes_addObjectClass', 'value' => _('Add Samba 3 account'))
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_attributes_addObjectClass', 'value' => _('Add Samba 3 extension'))
 			);
 		}
 		return $return;
@@ -1565,7 +1601,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return profile elements
 	*/
 	function get_profileOptions() {
-		$return = array();
+		$return = parent::get_profileOptions();
 		if ($this->get_scope() == 'user') {
 			// lists for expiration date
 			$day = array(); $mon = array(); $year = array();
@@ -1708,7 +1744,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
-		// special profile options
+		// add extension
+		if ($profile['sambaSamAccount_addExt'][0] == "true") {
+			if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'sambaSamAccount';
+			}
+		}
 		// use no password
 		if ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "true") {
 			$this->nopwd = true;

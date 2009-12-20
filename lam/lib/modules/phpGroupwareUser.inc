@@ -81,7 +81,18 @@ class phpGroupwareUser extends baseModule implements passwordService {
 			'phpgwAccountExpires' => array(
 				"Headline" => _("Account expiration date"),
 				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")
+			),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			)
+		);
+		// profile options
+		$return['profile_options'] = array(
+			array(
+				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
+				array('kind' => 'input', 'name' => 'phpGroupwareUser_addExt', 'type' => 'checkbox'),
+				array('kind' => 'help', 'value' => 'autoAdd')),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -339,6 +350,21 @@ class phpGroupwareUser extends baseModule implements passwordService {
 			$return['phpGroupwareUser_phpgwLastLogin'] = array('<block><key>' . _('Last login') . '</key><value>' . $phpgwLastLogin . '</value></block>');
 		}
 		return $return;
+	}
+	
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		parent::load_profile($profile);
+		// add extension
+		if ($profile['phpGroupwareUser_addExt'][0] == "true") {
+			if (!in_array('phpgwAccount', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'phpgwAccount';
+			}
+		}
 	}
 
 	/**

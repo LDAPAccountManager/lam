@@ -276,7 +276,7 @@ class sambaGroupMapping extends baseModule {
 		else {
 			$return[] = array(
 				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaGroupMapping_attributes_addObjectClass', 'value' => _('Add Samba 3 account'))
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaGroupMapping_attributes_addObjectClass', 'value' => _('Add Samba 3 extension'))
 			);
 		}
 		return $return;

@@ -95,6 +95,10 @@ class shadowAccount extends baseModule implements passwordService {
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
 		$return['profile_options'] = array(
+			array(
+				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
+				array('kind' => 'input', 'name' => 'shadowAccount_addExt', 'type' => 'checkbox'),
+				array('kind' => 'help', 'value' => 'autoAdd')),
 			// password warning
 			array(
 				array('kind' => 'text', 'text' => _('Password warning')),
@@ -125,7 +129,7 @@ class shadowAccount extends baseModule implements passwordService {
 						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year, 'options_selected' => array('2030'))
 					)
 				)),
-				array('kind' => 'help', 'value' => 'shadowExpire'))
+				array('kind' => 'help', 'value' => 'shadowExpire')),
 		);
 		// profile checks
 		$return['profile_checks']['shadowAccount_shadowMin'] = array(
@@ -184,6 +188,10 @@ class shadowAccount extends baseModule implements passwordService {
 			'shadowExpire' => array (
 				"Headline" => _("Account expiration date"),
 				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")
+			),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			)
 		);
 		// upload fields
@@ -502,7 +510,12 @@ class shadowAccount extends baseModule implements passwordService {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
-		// special profile options
+		// add extension
+		if ($profile['shadowAccount_addExt'][0] == "true") {
+			if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'shadowAccount';
+			}
+		}
 		// expiration date
 		if (isset($profile['shadowAccount_shadowExpire_day'][0]) && ($profile['shadowAccount_shadowExpire_day'][0] != "")) {
 			$date = intval(mktime(0, 0, 0, intval($profile['shadowAccount_shadowExpire_mon'][0]),

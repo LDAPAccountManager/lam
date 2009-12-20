@@ -122,7 +122,18 @@ class eduPerson extends baseModule {
 			'orgUnitDNUpload' => array(
 				"Headline" => _("Organizational units"),
 				"Text" => _("The DNs of the directory entries representing the person's organizational units.") . ' ' . _('Multiple values are separated by comma.')
+			),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			));
+		// profile options
+		$return['profile_options'] = array(
+			array(
+				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
+				array('kind' => 'input', 'name' => 'eduPerson_addExt', 'type' => 'checkbox'),
+				array('kind' => 'help', 'value' => 'autoAdd')),
+		);
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -215,9 +226,6 @@ class eduPerson extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		if (isset($_POST['form_subpage_eduPerson_attributes_addObjectClass'])) {
-			$this->attributes['objectClass'][] = 'eduPerson';
-		}
 		$return = array();
 		if (in_array('eduPerson', $this->attributes['objectClass'])) {
 			// principal name
@@ -380,6 +388,13 @@ class eduPerson extends baseModule {
 				))),
 				array('kind' => 'text', 'text' => ' ')
 			);
+			$return[] = array(
+				array('kind' => 'text', 'text' => '&nbsp;')
+			);
+			$return[] = array(
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_eduPerson_attributes_remObjectClass',
+						'value' => _('Remove EDU person extension'), 'td' => array('colspan' => '3'))
+			);
 		}
 		else {
 			$return[] = array(
@@ -397,6 +412,19 @@ class eduPerson extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (isset($_POST['form_subpage_eduPerson_attributes_addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'eduPerson';
+			return array();
+		}
+		elseif (isset($_POST['form_subpage_eduPerson_attributes_remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('eduPerson'), $this->attributes['objectClass']);
+			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
+					unset($this->attributes[$this->meta['attributes'][$i]]);
+				}
+			}
+			return array();
+		}
 		$errors = array();
 		// primary affiliation
 		$this->attributes['eduPersonPrimaryAffiliation'][0] = $_POST['primaryAffiliation'];
@@ -491,6 +519,21 @@ class eduPerson extends baseModule {
 		}
 		$this->attributes['eduPersonOrgUnitDN'] = array_unique($this->attributes['eduPersonOrgUnitDN']);
 		return $errors;
+	}
+
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		parent::load_profile($profile);
+		// add extension
+		if ($profile['eduPerson_addExt'][0] == "true") {
+			if (!in_array('eduPerson', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'eduPerson';
+			}
+		}
 	}
 
 	/**
