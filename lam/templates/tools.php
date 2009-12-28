@@ -81,7 +81,7 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 	echo "<tr class=\"userlist\">\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td><br>";
-			echo "<a href=\"" . $tools[$i]->getLink() . "\" target=\"mainpart\"><img src=\"../graphics/" . $tools[$i]->getImageLink() . "\"> &nbsp;<b>" . $tools[$i]->getName() . "</b></a>";
+			echo "<a href=\"" . $tools[$i]->getLink() . "\"><img src=\"../graphics/" . $tools[$i]->getImageLink() . "\"> &nbsp;<b>" . $tools[$i]->getName() . "</b></a>";
 		echo "<br><br></td>\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td>";
