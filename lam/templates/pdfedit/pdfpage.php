@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-  Copyright (C) 2007         Roland Gruber
+                2007 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -85,12 +85,7 @@ if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDe
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
 if(isset($_GET['submit'])) {
-	echo $_SESSION['header'];
-	echo "<title>LDAP Account Manager</title>";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
-	echo "</head>";
-	echo "<body>";
+	include '../main_header.php';
 	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_]+/',$_GET['pdfname'])) {
 		StatusMessage('ERROR', _('PDF-structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
 	}
@@ -374,15 +369,9 @@ foreach($logoFiles as $logoFile) {
 }
 
 // print header
-echo $_SESSION['header'];
+include '../main_header.php';
 // TODO Change enctype of form
 ?>
-		<title>LDAP Account Manager</title>
-		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
-		<link rel="stylesheet" type="text/css" href="../../style/type_<?php echo $_GET['type']; ?>.css">
-	</head>
-	<body>
-	<script type="text/javascript" src="../wz_tooltip.js"></script>
 		<br>
 		<form action="pdfpage.php" method="post">
 			<table>

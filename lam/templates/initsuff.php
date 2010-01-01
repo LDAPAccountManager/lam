@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -142,10 +142,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 			}
 		}
 	}
-	echo $_SESSION['header'];
-	echo "<title>initsuff</title>\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-	echo "</head>\n<body>\n";
+	include 'main_header.php';
 	// print error/success messages
 	if ($_POST['add_suff']) {
 		if (sizeof($fail) > 0) {
@@ -175,10 +172,7 @@ $new_suff = str_replace("\\", "", $new_suff);
 $new_suff = str_replace("'", "", $new_suff);
 $new_suff = explode(";", $new_suff);
 
-echo $_SESSION['header'];
-echo "<title>initsuff</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-echo "</head><body>\n";
+include 'main_header.php';
 	echo "<p>&nbsp;</p>\n";
 	echo "<p><font color=\"red\"><b>" . _("The following suffix(es) are missing in LDAP. LAM can create them for you.") . "</b></font></p>\n";
 	echo "<p>&nbsp;</p>\n";

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,10 +57,7 @@ if ($dn) {
 }
 else {
 	// print error message if user was not found
-	echo $_SESSION['header'];
-	echo "<title>userlink</title>\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-	echo "</head><body>\n";
+	include '../main_header.php';
 	StatusMessage("ERROR", "", _("This user was not found!") . " (" . $user . ")");
 	echo "<p>&nbsp;</p>";
 	echo "<p><a href=\"list.php?type=group\">" . _("Back to group list") . "</a></p>";

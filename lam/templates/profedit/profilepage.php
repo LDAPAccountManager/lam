@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,11 +67,7 @@ if (isset($_POST['abort'])) {
 }
 
 // print header
-echo $_SESSION['header'];
-echo "<title>Profile editor</title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
-echo "</head><body><br>\n";
-echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
+include '../main_header.php';
 
 // save button was presed
 if (isset($_POST['save'])) {

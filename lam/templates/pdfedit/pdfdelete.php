@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2006  Michael Duergner
-  Copyright (C) 2007         Roland Gruber
+                2007 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ $Id$
 *
 * @package PDF
 * @author Michael Duergner
+* @author Roland Gruber
 */
 
 /** security functions */
@@ -49,11 +50,8 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // print standard header
-echo $_SESSION['header'];
-echo ("<title>" . _("Delete PDF structure") . "</title>\n");
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_POST['type'] . ".css\">\n";
-echo ("</head>\n<body>\n<p><br></p>\n");
+include '../main_header.php';
+echo ("<p><br></p>\n");
 
 // check if admin has submited delete operation
 if ($_POST['submit']) {

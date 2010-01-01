@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -83,11 +83,7 @@ if (isset($_GET['showldif'])) {
 	exit;
 }
 
-echo $_SESSION['header'];
-echo "<title>account upload</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-echo "</head>\n";
-echo "<body>\n";
+include 'main_header.php';
 
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// check if input file is well formated

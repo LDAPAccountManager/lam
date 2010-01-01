@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -52,10 +52,8 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // print standard header
-echo $_SESSION['header'];
-echo ("<title>" . _("Delete profile") . "</title>\n");
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo ("</head>\n<body>\n<p><br></p>\n");
+include '../main_header.php';
+echo ("<p><br></p>\n");
 
 // check if admin has submited delete operation
 if ($_POST['submit']) {

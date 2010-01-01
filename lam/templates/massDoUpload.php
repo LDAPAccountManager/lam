@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,9 +57,7 @@ if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 // Set correct language, codepages, ....
 setlanguage();
 
-echo $_SESSION['header'];
-echo "<title>account upload</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+include 'main_header.php';
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
@@ -69,8 +67,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	if ($maxTime > 60) $maxTime = 60;
 	if ($maxTime <= 0) $maxTime = 60;
 	$refreshTime = $maxTime + 7;
-	echo "<meta http-equiv=\"refresh\" content=\"" . $refreshTime . "; URL=massDoUpload.php\">\n";
-	echo "</head>\n<body>\n";
+	// TODO refresh with JavaScript to massDoUpload.php
 	echo "<h1>" . _("LDAP upload in progress. Please wait.") . "</h1>\n";
 	echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
 	echo "<tr><td bgcolor=\"blue\" width=\"" . ($_SESSION['mass_counter'] * 100) / sizeof($accounts) . "%\">&nbsp;</td>";

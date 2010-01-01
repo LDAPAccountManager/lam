@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,34 +58,16 @@ for ($i = 0; $i < sizeof($types); $i++) {
 $lang = explode(":",$_SESSION['language']);
 $lang = $lang[1];
 
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n";
-echo "<html>\n";
-echo "<head>\n";
-echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=$lang\">\n";
-echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
-echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-echo ("<title>LDAP Account Manager</title>\n");
-echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
-echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
-echo ("</head>\n");
-echo ("<frameset rows=\"150,*\">\n");
-echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\">\n");
 // display page to add suffixes, if needed
 if ((sizeof($new_suffs) > 0) && checkIfWriteAccessIsAllowed()) {
-	echo ("<frame src=\"initsuff.php?suffs='" . implode(";", $new_suffs) . "'\" name=\"mainpart\" frameborder=\"0\">\n");
+	metaRefresh("initsuff.php?suffs='" . implode(";", $new_suffs));
 }
 else {
 	if (sizeof($types) > 0) {
-		echo ("<frame src=\"./lists/list.php?type=" . $types[0] . "\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
+		metaRefresh("lists/list.php?type=" . $types[0]);
 	}
 	else {
-		echo ("<frame src=\"./tree/tree_view.php\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
+		metaRefresh("tree/tree_view.php");
 	}
 }
-echo ("<noframes>\n");
-echo ("This page requires a browser that can show frames!\n");
-echo ("</noframes>\n");
-echo ("</frameset>\n");
-echo ("</html>\n");
-
 ?>

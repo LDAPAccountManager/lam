@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2009  Roland Gruber
+	Copyright (C) 2007 - 2010  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -76,12 +76,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	//load account
 	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
 	// Show HTML Page
-	echo $_SESSION['header'];
-	echo "<title>LDAP Account Manager</title>\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $_GET['type'] . ".css\">\n";
-	echo "</head><body>\n";
-	echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
+	include 'main_header.php';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
 	echo _('Please confirm:');
@@ -128,11 +123,7 @@ if ($_POST['cancel']) {
 
 if ($_POST['delete']) {
 	// Show HTML Page
-	echo $_SESSION['header'];
-	echo "<title>LDAP Account Manager</title>\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $_POST['type'] . ".css\">\n";
-	echo "</head><body>\n";
+	include 'main_header.php';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
 	echo "<fieldset class=\"".$_POST['type']."edit\"><legend><b>";

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -69,23 +69,14 @@ if (isset($_GET['getCSV'])) {
 
 $types = $_SESSION['config']->get_ActiveTypes();
 
-echo $_SESSION['header'];
-echo "<title>account upload</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-for ($i = 0; $i < sizeof($types); $i++) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $types[$i] . ".css\">\n";
-}
-echo "</head>\n";
-echo "<body>\n";
-echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
+include 'main_header.php';
 
 // check if account specific page should be shown
 if (isset($_POST['type'])) showMainPage($_POST['type']);
 
 // show start page
 else {
-	echo "<h1 align=\"center\">" . _("Account creation via file upload") . "</h1>\n";
-	echo "<p>&nbsp;</p>\n";
+	echo "<h1>" . _("Account creation via file upload") . "</h1>\n";
 	echo "<p>&nbsp;</p>\n";
 	
 	echo "<p>\n";
@@ -126,7 +117,7 @@ else {
 * @param string $scope account type
 */
 function showMainPage($scope) {
-	echo "<h1 align=\"center\">" . _("File upload") . "</h1>";
+	echo "<h1>" . _("File upload") . "</h1>";
 	echo "<p>\n";
 		echo _("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.");
 		echo "<br>";

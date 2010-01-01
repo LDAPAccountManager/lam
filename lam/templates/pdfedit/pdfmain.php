@@ -3,7 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Michael D�rgner
+  Copyright (C) 2003 - 2006  Michael Duergner
+                2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,7 +25,8 @@ $Id$
 /**
 * This is the main window of the pdf structure editor.
 *
-* @author Michael D�rgner
+* @author Michael Duergner
+* @author Roland Gruber
 * @package PDF
 */
 
@@ -103,15 +105,8 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 	}
 }
 
-
-echo $_SESSION['header'];
+include '../main_header.php';
 ?>
-		<title>LDAP Account Manager</title>
-		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
-		<link rel="stylesheet" type="text/css" href="../../style/type_user.css">
-	</head>
-	<body>
-		<br>
 	<h1><?php echo _('PDF editor'); ?></h1>
 	<br>
 		<form action="pdfmain.php" method="post">

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -162,7 +162,7 @@ class lamList {
 		if (sizeof($filteredEntries) > 0) {
 			// buttons
 			$this->listPrintButtons(false);
-			echo ("<hr style=\"background-color: #999999;\">\n");
+			echo ("<br>\n");
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($filteredEntries));
 			echo ("<br>\n");
@@ -174,7 +174,6 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($filteredEntries));
 			echo ("<br>\n");
-			echo ("<hr style=\"background-color: #999999;\">\n");
 			// buttons
 			$this->listPrintButtons(false);
 			echo ("<br>\n");
@@ -413,7 +412,7 @@ class lamList {
 			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
-				" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . $info[$i]['dn'] . "'\">\n");
+				" onDblClick=\"parent.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 			if (isset($_GET['selectall'])) {
 				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $rowID . "\"></td>\n";
@@ -723,13 +722,7 @@ class lamList {
 	 * Prints the HTML header.
 	 */
 	protected function listPrintHeader() {
-		echo $_SESSION['header'];
-		echo "<title>Account list</title>\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
-		echo "</head><body>\n";
-		echo "<script type=\"text/javascript\" src=\"list.js\"></script>\n";
-		echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
+		include '../main_header.php';
 	}
 	
 	/**

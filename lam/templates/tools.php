@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,15 +40,7 @@ startSecureSession();
 
 setlanguage();
 
-echo $_SESSION['header'];
-
-
-echo "<title></title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_user.css\">\n";
-echo "</head>";
-
-echo "<body>\n";
+include 'main_header.php';
 
 // get tool list
 $availableTools = getTools();
@@ -81,7 +73,10 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 	echo "<tr class=\"userlist\">\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td><br>";
-			echo "<a href=\"" . $tools[$i]->getLink() . "\"><img src=\"../graphics/" . $tools[$i]->getImageLink() . "\"> &nbsp;<b>" . $tools[$i]->getName() . "</b></a>";
+			echo "<a href=\"" . $tools[$i]->getLink() . "\">";
+				echo "<img src=\"../graphics/" . $tools[$i]->getImageLink() . "\" alt=\"" . $tools[$i]->getName() . "\">";
+				echo " &nbsp;<b>" . $tools[$i]->getName() . "</b>";
+			echo "</a>\n";
 		echo "<br><br></td>\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td>";

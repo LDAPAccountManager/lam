@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,66 +22,71 @@ $Id$
 */
 
 /**
-* Head frame in main window, includes links to lists etc.
+* Head part of page which includes links to lists etc.
 *
 * @package main
 * @author Roland Gruber
 */
 
-/** security functions */
-include_once("../lib/security.inc");
-/** access to configuration options */
-include_once("../lib/config.inc");
-/** self service functions */
-include_once("../lib/selfService.inc");
-
-// start session
-startSecureSession();
-
-setlanguage();
-
-echo $_SESSION['header'];
-
 // number of list views (users, groups, ...)
 $types = $_SESSION['config']->get_ActiveTypes();
 
+$headerPrefix = "";
+if (is_file("../login.php")) $headerPrefix = "../";
+elseif (is_file("../../login.php")) $headerPrefix = "../../";
+
+// HTML header and title
+echo $_SESSION['header'];
+echo "<title>LDAP Account Manager</title>\n";
+
+// include all CSS files
+$cssDirName = dirname(__FILE__) . '/../style';
+$cssDir = dir($cssDirName);
+while ($cssEntry = $cssDir->read()) {
+	if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $headerPrefix . "../style/" . $cssEntry . "\">\n";
+}
+
+echo "</head><body>\n";
+
+// include all JavaScript files
+$jsDirName = dirname(__FILE__) . '/lib';
+$jsDir = dir($jsDirName);
+while ($jsEntry = $jsDir->read()) {
+	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+	echo "<script type=\"text/javascript\" src=\"" . $headerPrefix . "lib/" . $jsEntry . "\"></script>\n";
+}
+
 ?>
 
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-</head>
-
-<body>
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
 			<?PHP
 			if (!isLAMProVersion()) {
-				echo "<a href=\"http://www.ldap-account-manager.org/lamcms/donations\" target=\"_blank\"><img alt=\"donations\" src=\"../graphics/smile.png\">&nbsp;" . _("Donate") . "</a>";
+				echo "<a href=\"http://www.ldap-account-manager.org/lamcms/donations\" target=\"_blank\"><img alt=\"donations\" src=\"" . $headerPrefix . "../graphics/smile.png\">&nbsp;" . _("Donate") . "</a>";
 				echo "<br><br>";
 			}
 			?>
-			<a href="tools.php" target="mainpart"><img alt="tools" src="../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
+			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
 		</td>
 		<td align="center">
-			<a href="http://www.ldap-account-manager.org/" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
+			<a href="http://www.ldap-account-manager.org/" target="new_window"><img src="<?php echo $headerPrefix; ?>../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
-	<td width="200" align="right" height=20><a href="./logout.php" target="_top"><img alt="logout" src="../graphics/exit.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
+	<td width="200" align="right" height=20><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 </table>
 	<p align="center">
 		<?php
 			$linkList = array();
 			if ($_SESSION['config']->get_Suffix('tree') != "") {
-				$linkList[] = '<a href="./tree/tree_view.php" target="mainpart"><img alt="tree view" src="../graphics/process.png">&nbsp;<big>' . _("Tree view") . '</big></a>' . "\n";
+				$linkList[] = '<a href="' . $headerPrefix . 'tree/treeViewContainer.php"><img alt="tree view" src="' . $headerPrefix . '../graphics/process.png">&nbsp;<big>' . _("Tree view") . '</big></a>' . "\n";
 			}
 			for ($i = 0; $i < sizeof($types); $i++) {
-					$linkList[] = '<a href="./lists/list.php?type=' . $types[$i] . '" target="mainpart">' .
-					'<img alt="' . $types[$i] . '" src="../graphics/' . $types[$i] . '.png">&nbsp;' .
+					$linkList[] = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] . '">' .
+					'<img alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
 					'<big>' . getTypeAlias($types[$i]) . '</big></a>';
 			}
-			echo implode('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $linkList);
+			echo implode("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n", $linkList);
 		?>
-	</p>
-</body>
-</html>
+	</p><hr><br>

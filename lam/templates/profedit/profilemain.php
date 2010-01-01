@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2008  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -93,18 +93,8 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$profileClasses[$i]['profiles'] = $profiles;
 }
 
-echo $_SESSION['header'];
+include '../main_header.php';
 
-
-echo "<title>LDAP Account Manager</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $profileClasses[$i]['scope'] . ".css\">\n";
-}
-echo "</head>\n";
-echo "<body>\n";
-
-echo "<br>\n";
 echo "<h1>" . _('Profile editor') . "</h1>\n";
 echo "<br>\n";
 

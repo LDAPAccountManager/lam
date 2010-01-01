@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1365,12 +1365,7 @@ class accountContainer {
 	 * Prints the header of the account pages.
 	 */
 	private function printPageHeader() {
-		echo $_SESSION['header'];
-		echo "<title>LDAP Account Manager</title>\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
-		echo "</head><body>\n";
-		echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
+		include '../main_header.php';
 		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";		
 	}
 	

@@ -3,7 +3,7 @@
 $Id$
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2010 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,12 +45,7 @@ startSecureSession();
 
 setlanguage();
 
-echo $_SESSION['header'];
-
-
-echo "<title>LDAP Account Manager</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "</head>\n";
+include '../main_header.php';
 
 
 $view = isset( $_GET['view'] ) ? $_GET['view'] : 'objectClasses';
@@ -61,8 +56,6 @@ if( ! is_null( $viewvalue ) )
     $viewed = false;
 
 ?>
-
-<body>
 
 <br />
 <center><big>

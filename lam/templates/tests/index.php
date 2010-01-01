@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006  Roland Gruber
+  Copyright (C) 2006 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,17 +41,9 @@ if (!checkIfWriteAccessIsAllowed()) die();
 
 setlanguage();
 
-echo $_SESSION['header'];
+include '../main_header.php';
 
-
-echo "<title></title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_user.css\">\n";
-echo "</head>";
-
-echo "<body>\n";
-
-echo "<h1 align=\"center\">" . _("LAM tests") . "</h1>\n";
+echo "<h1>" . _("LAM tests") . "</h1>\n";
 
 echo "<table class=\"userlist\" rules=\"none\">\n";
 

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2008  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -114,11 +114,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	}
 		
 	// print header
-	echo $_SESSION['header'];
-	echo ("<title>OU-Editor</title>\n");
-	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n");
-	echo ("</head>\n");
-	echo ("<body>\n");
+	include 'main_header.php';
 	// display messages
 	if ($error || $message || $text) {
 		if ($text) echo $text;
@@ -144,13 +140,7 @@ display_main();
 function display_main() {
 	$types = $_SESSION['config']->get_ActiveTypes();
 	// display main page
-	echo $_SESSION['header'];
-	echo ("<title>OU-Editor</title>\n");
-	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n");
-	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_user.css\">\n");
-	echo ("</head>\n");
-	echo ("<body>\n");
-	echo "<script type=\"text/javascript\" src=\"wz_tooltip.js\"></script>\n";
+	include 'main_header.php';
 	echo "<h1>" . _("OU editor") . "</h1>";
 	echo ("<br>\n");
 	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
