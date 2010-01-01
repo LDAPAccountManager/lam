@@ -70,7 +70,13 @@ echo $_SESSION['header'];
 		<hr><br>
 
 <?php
-echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
+// include all JavaScript files
+$jsDirName = dirname(__FILE__) . '/../lib';
+$jsDir = dir($jsDirName);
+while ($jsEntry = $jsDir->read()) {
+	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
+}
 
 // check if submit button was pressed
 if (isset($_POST['submit'])) {

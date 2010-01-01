@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,7 +66,13 @@ echo $_SESSION['header'];
 	</head>
 	<body>
 		<?php
-			echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
+			// include all JavaScript files
+			$jsDirName = dirname(__FILE__) . '/../lib';
+			$jsDir = dir($jsDirName);
+			while ($jsEntry = $jsDir->read()) {
+				if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+				echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
+			}
 			// set focus on password field
 			echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 			echo "<!--\n";

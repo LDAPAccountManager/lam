@@ -124,8 +124,13 @@ echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 echo ("</head>\n");
 echo ("<body onload=\"configLoginMethodChanged()\">\n");
-echo "<script type=\"text/javascript\" src=\"../wz_tooltip.js\"></script>\n";
-echo "<script type=\"text/javascript\" src=\"config.js\"></script>\n";
+// include all JavaScript files
+$jsDirName = dirname(__FILE__) . '/../lib';
+$jsDir = dir($jsDirName);
+while ($jsEntry = $jsDir->read()) {
+	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
+}
 echo ("<p align=\"center\"><a href=\"http://www.ldap-account-manager.org/\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p>&nbsp;</p>\n");
 
