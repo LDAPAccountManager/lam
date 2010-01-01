@@ -71,6 +71,10 @@ if (! function_exists('gettext') || !function_exists('_')) {
 if (! function_exists('utf8_decode')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
 }
+// check if PHP has GD support
+if (! function_exists('getimagesize')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no GD support!", "Please install the GD extension for PHP.");
+}
 // check file permissions
 $writableDirs = array('sess', 'tmp');
 for ($i = 0; $i < sizeof($writableDirs); $i++) {
