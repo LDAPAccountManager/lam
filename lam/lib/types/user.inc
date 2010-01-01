@@ -213,7 +213,13 @@ class lamUserList extends lamList {
 			fwrite($outjpeg, $entry[$attribute][0]);
 			fclose ($outjpeg);
 			$photoFile = '../../tmp/' . $jpeg_filename;
-			echo "<img src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
+			$imgSize = getimagesize($photoFile);
+			$minSize = 64;
+			if ($imgSize[0] < 64) {
+				$minSize = $imgSize[0];
+			}
+			$imgTitle = _('Click to switch between thumbnail and original size.');
+			echo "<img title=\"$imgTitle\" onload=\"addResizeHandler(this, $minSize, " . $imgSize[1] . ")\" height=$minSize src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
 		}
 		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {
 			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
@@ -263,7 +269,34 @@ class lamUserList extends lamList {
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();
 	}
+	
+	/**
+	 * @see lamList::listPrintHeader()
+	 */
+	protected function listPrintHeader() {
+		parent::listPrintHeader();
+		// add code to animate images
+		?>
+		<script>
+		function addResizeHandler(item, min, max) {
+			jQuery(item).toggle(
+				function(){
+					jQuery(item).animate({
+						height: max
+					});
+				},
+				function(){
+					jQuery(item).animate({
+						height: min
+					});
+				}
+			);	
+		}
+		</script>
+		<?php
+	}
 
+	
 }
 
 ?>
