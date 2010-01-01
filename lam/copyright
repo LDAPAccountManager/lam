@@ -1,4 +1,4 @@
-This software is copyright (c) 2003 - 2009 by Tilo Lutz, Roland Gruber
+This software is copyright (c) 2003 - 2010 by Tilo Lutz, Roland Gruber
 and Michael Duergner.
 
 If you purchased a copy of LDAP Account Manager Pro then the following
@@ -7,13 +7,16 @@ time.
 
 * templates/lists/changePassword.php
 * templates/selfService/*
+* lib/modules/aliasEntry.inc
+* lib/modules/customScripts.inc
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfUniqueNames.inc
-* lib/modules/aliasEntry.inc
+* lib/modules/nisObject.inc
 * lib/modules/rfc2307bisPosixGroup.inc
 * lib/modules/uidObject.inc
 * lib/types/alias.inc
 * lib/types/gon.inc
+* lib/types/nisObjectType.inc
 
 
 All other files are licensed under the conditions below.
@@ -113,4 +116,4 @@ main license and authors:
 
 lib/fpdf.php  A  2003  Olivier Plathey
 lib/font/Vera*  B  2003  Bitstream, Inc.
-templates/wz_tooltip.js  C  Walter Zorn
+templates/lib/wz_tooltip.js  C  Walter Zorn
