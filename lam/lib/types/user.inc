@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2009  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -208,7 +208,8 @@ class lamUserList extends lamList {
 					}
 				}
 			}
-			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
+			$imgNumber = $_SESSION['ldap']->new_rand(); 
+			$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
 			$outjpeg = @fopen($_SESSION['lampath'] . 'tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $entry[$attribute][0]);
 			fclose ($outjpeg);
@@ -219,7 +220,10 @@ class lamUserList extends lamList {
 				$minSize = $imgSize[0];
 			}
 			$imgTitle = _('Click to switch between thumbnail and original size.');
-			echo "<img title=\"$imgTitle\" onload=\"addResizeHandler(this, $minSize, " . $imgSize[1] . ")\" height=$minSize src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
+			echo "<img id=\"img$imgNumber\" title=\"$imgTitle\" height=$minSize src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
+			echo '<script type="text/javascript">';
+			echo "addResizeHandler(document.getElementById(\"img$imgNumber\"), $minSize, " . $imgSize[1] . ")";
+			echo '</script>';
 		}
 		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {
 			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
@@ -269,33 +273,6 @@ class lamUserList extends lamList {
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();
 	}
-	
-	/**
-	 * @see lamList::listPrintHeader()
-	 */
-	protected function listPrintHeader() {
-		parent::listPrintHeader();
-		// add code to animate images
-		?>
-		<script>
-		function addResizeHandler(item, min, max) {
-			jQuery(item).toggle(
-				function(){
-					jQuery(item).animate({
-						height: max
-					});
-				},
-				function(){
-					jQuery(item).animate({
-						height: min
-					});
-				}
-			);	
-		}
-		</script>
-		<?php
-	}
-
 	
 }
 

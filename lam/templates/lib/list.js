@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2007  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,4 +62,19 @@ function SubmitForm(id, e) {
 		document.getElementsByName(id)[0].click();
 		return false;
 	}
+}
+
+function addResizeHandler(item, min, max) {
+	jQuery(item).toggle(
+		function(){
+			jQuery(item).animate({
+				height: max
+			});
+		},
+		function(){
+			jQuery(item).animate({
+				height: min
+			});
+		}
+	);	
 }
