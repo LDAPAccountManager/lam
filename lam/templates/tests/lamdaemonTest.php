@@ -292,6 +292,9 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	flush();
 	
 	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic\n", $stopTest, $handle, _("Execute lamdaemon"));
+	$handle = lamTestConnectSSH($serverName);
+	@ssh2_auth_password($handle, $userName, $credentials[1]);
+	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName\n", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"));
 	if ($testQuota) {
 		$handle = lamTestConnectSSH($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);

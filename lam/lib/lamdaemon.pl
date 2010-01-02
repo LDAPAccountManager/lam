@@ -140,12 +140,34 @@ while (1) {
 sub runTest {
 	# basic test
 	if ($vals[2] eq 'basic') {
-		$return = "Ok";
+		$return = "INFO,Basic test ok";
 	}
 	# quota test
 	elsif ($vals[2] eq 'quota') {
 		require Quota;
-		$return = "Ok";
+		$return = "INFO,Quota test ok";
+	}
+	# NSS LDAP
+	elsif ($vals[2] eq 'nss') {
+		$userName = $vals[3];
+		# check if the user exists in /etc/passwd
+		system("grep", "-q", "^" . $userName . ":", "/etc/passwd");
+		if ( $? == 0 ) {
+			$error = "User $userName is a local user (/etc/passwd) but should be LDAP only.";
+			$return = "ERROR,$error";
+			logMessage(LOG_ERR, $error);
+		}
+		else {
+			# check if home directory is readable
+			@user = getpwnam($userName);
+			if ($user[7] eq '') {
+				$return = "ERROR,Unable to determine home directory of user $userName. Please check that NSS LDAP is correctly configured.";
+				logMessage(LOG_ERR, "Unable to determine home directory of user $userName. Please check that NSS LDAP is correctly configured.");
+			}
+			else {
+				$return = "INFO,NSS test ok";
+			}
+		}
 	}
 }
 
