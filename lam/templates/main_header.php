@@ -62,12 +62,6 @@ while ($jsEntry = $jsDir->read()) {
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
-			<?PHP
-			if (!isLAMProVersion()) {
-				echo "<a href=\"http://www.ldap-account-manager.org/lamcms/donations\" target=\"_blank\"><img alt=\"donations\" src=\"" . $headerPrefix . "../graphics/smile.png\">&nbsp;" . _("Donate") . "</a>";
-				echo "<br><br>";
-			}
-			?>
 			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
 		</td>
 		<td align="center">
