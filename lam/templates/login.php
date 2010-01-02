@@ -87,12 +87,17 @@ for ($i = 0; $i < sizeof($writableDirs); $i++) {
 if (ini_get("session.auto_start") == "1") {
 	$criticalErrors[] = array("ERROR", "Please deactivate session.auto_start in your php.ini. LAM will not work if it is activated.");
 }
+// check memory limit
 $memLimit = ini_get('memory_limit');
 if (isset($memLimit) && ($memLimit != '') && (substr(strtoupper($memLimit), strlen($memLimit) - 1) == 'M')) {
 	if (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 64) {
 		$criticalErrors[] = array("ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"64M\".",
 			"Your current memory limit is $memLimit.");	
 	}
+}
+// check PCRE regex system
+if (!@preg_match('/^\p{L}+$/u', "abc")) {
+	$criticalErrors[] = array("ERROR", "Your PCRE library has no complete Unicode support. Please upgrade libpcre or compile with \"--enable-unicode-properties\".");
 }
 // stop login if critical errors occured
 if (sizeof($criticalErrors) > 0) {
