@@ -28,6 +28,7 @@ Requires:      php-gettext
 Requires:      php-session
 Requires:      php-ldap
 Requires:      php-hash
+Requires:      php-gd
 Requires:      perl
 %endif
 %if %is_fedora
