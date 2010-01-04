@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,14 +101,14 @@ class ieee802Device extends baseModule {
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('MAC address')),
 				array('kind' => 'input', 'name' => 'macAddress' . $i, 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => $this->attributes['macAddress'][$i]),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'delMAC' . $i, 'value' => _("Remove")),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'delMAC' . $i, 'value' => ' ', 'title' => _("Remove"), 'image' => 'del.png'),
 				array('kind' => 'help', 'value' => 'mac'));
 		}
 		// input box for new MAC
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('New MAC address')),
 			array('kind' => 'input', 'name' => 'macAddress', 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => ''),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'addMAC', 'value' => _("Add")),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addMAC', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
 			array('kind' => 'help', 'value' => 'mac'),
 			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['macAddress']), 'name' => 'mac_number'));
 		return $return;
