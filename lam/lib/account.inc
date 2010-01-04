@@ -488,6 +488,9 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'domainSID': // Samba domain SID
 					$pregexpr = "/^S\\-[0-9]\\-[0-9]\\-[0-9]{2,2}\\-[0-9]+\\-[0-9]+\\-[0-9]+$/";
+		case 'ip': // IP address
+					$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
