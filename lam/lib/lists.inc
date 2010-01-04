@@ -509,21 +509,10 @@ class lamList {
 			elseif (isset($_POST['del'])){
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
-				// skip option boxes
-				$change = false;
-				for ($i = 0; $i < sizeof($accounts); $i++) {
-					if (!is_numeric($accounts[$i])) {
-						unset($accounts[$i]);
-						$change = true;
-					}
-				}
-				if ($change) {
-					$accounts = array_values($accounts);
-				}
 				// build DN list
 				$_SESSION['delete_dn'] = array();
 				for ($i = 0; $i < sizeof($accounts); $i++) {
-					$_SESSION['delete_dn'][] = $this->entries[$accounts[$i]]['dn'];
+					$_SESSION['delete_dn'][] = base64_decode($accounts[$i]);
 				}
 				if (sizeof($accounts) > 0) {
 					metaRefresh("../delete.php?type=" . $this->type);
