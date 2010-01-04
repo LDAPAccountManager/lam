@@ -1070,8 +1070,7 @@ class accountContainer {
 			}
 			// create PDF file
 			if (isset($_POST['accountContainerCreatePDF'])) {
-				// display PDf-file
-				createModulePDF(array($_SESSION[$this->base]), $_POST['pdfStructure']);
+				metaRefresh('../lists/list.php?printPDF=1&amp;type=' . $this->type . "&amp;dn=" . base64_encode($this->finalDN));
 				exit;
 			}
 			// module actions
@@ -1383,7 +1382,6 @@ class accountContainer {
 	 *
 	 */
 	private function printSuccessPage() {
-		$pdfStructures = getPDFStructureDefinitions($this->type);
 		$this->printPageHeader();
 		// Show success message
 		if ($this->dn_orig == '') {
@@ -1401,13 +1399,7 @@ class accountContainer {
 		echo "<input name=\"accountContainerCreateAgain\" type=\"submit\" value=\"" . $type->LABEL_CREATE_ANOTHER_ACCOUNT . "\"> \n";
 		echo "<input name=\"accountContainerBackToList\" type=\"submit\" value=\"" . $type->LABEL_BACK_TO_ACCOUNT_LIST . "\"> \n";
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-		echo "<select name=\"pdfStructure\" size=1>\n";
-		for ($i = 0; $i < sizeof($pdfStructures); $i++) {
-			echo "<option>" . $pdfStructures[$i] . "</option>\n";
-		}
-		echo "</select>\n";
 		echo "<input name=\"accountContainerCreatePDF\" type=\"submit\" value=\"" . _('Create PDF file') . "\">\n";
-		printHelpLink(getHelp('', '403'), '403');
 		echo "</td></tr></table>\n";
 		$this->printPageFooter();
 	}

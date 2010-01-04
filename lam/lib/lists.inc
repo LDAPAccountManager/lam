@@ -610,7 +610,7 @@ class lamList {
 		$this->listPrintHeader();
 
 		echo "<br>\n";
-		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		echo "<form target=\"_blank\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 
 		echo '<fieldset class="' . $this->type . 'edit"><legend>' . _('Create PDF file') . '</legend><br>';
 		echo '<table class="' . $this->type . 'edit">';
@@ -763,6 +763,11 @@ class lamList {
 	 * Sets some internal parameters.
 	 */
 	protected function listGetParams() {
+		// check if only PDF should be shown
+		if (isset($_GET['printPDF'])) {
+			$this->showPDFPage($_GET['dn']);
+			exit();
+		}
 		// get current page
 		if (isset($_GET["page"])) $this->page = $_GET["page"];
 		else $this->page = 1;
