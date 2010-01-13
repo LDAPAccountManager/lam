@@ -412,7 +412,7 @@ class lamList {
 			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
-				" onDblClick=\"parent.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . $info[$i]['dn'] . "'\">\n");
+				" onDblClick=\"parent.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
 			if (isset($_GET['selectall'])) {
 				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $rowID . "\"></td>\n";
@@ -451,12 +451,12 @@ class lamList {
 	 */
 	private function listPrintToolLinks($account, $id) {
 		// edit image
-		echo "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+		echo "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
 		echo "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
 		echo "</a>\n ";
 		// delete image
 		if (checkIfWriteAccessIsAllowed()) {
-			echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+			echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
 			echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
 			echo "</a>\n ";
 		}
@@ -465,7 +465,7 @@ class lamList {
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
-			echo "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . $account['dn'] . "'\">";
+			echo "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
 			echo "<img src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
 			echo "</a>\n ";
 		}
