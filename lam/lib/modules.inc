@@ -1942,7 +1942,11 @@ class accountContainer {
 			$return = array_merge($return,$current->get_pdfEntries());
 			next($this->module);
 		}
-		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
+		$dn = $this->dn_orig;
+		if (isset($this->finalDN)) {
+			$dn = $this->finalDN;
+		}
+		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $dn . '</value></block>')));
 		return $return;
 	}
 
