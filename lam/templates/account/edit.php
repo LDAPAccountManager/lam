@@ -64,10 +64,7 @@ if (isset($_GET['DN'])) {
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {
-		echo $_SESSION['header'];
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $type . ".css\">\n";
-		echo "</head><body>\n";
+		include '../main_header.php';
 		for ($i=0; $i<sizeof($result); $i++) {
 			call_user_func_array("StatusMessage", $result[$i]);
 		}
