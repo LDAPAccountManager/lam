@@ -412,7 +412,7 @@ class lamList {
 			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
-				" onDblClick=\"parent.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
+				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
 			if (isset($_GET['selectall'])) {
 				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $rowID . "\"></td>\n";
