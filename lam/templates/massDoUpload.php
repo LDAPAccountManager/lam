@@ -67,7 +67,6 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	if ($maxTime > 60) $maxTime = 60;
 	if ($maxTime <= 0) $maxTime = 60;
 	$refreshTime = $maxTime + 7;
-	// TODO refresh with JavaScript to massDoUpload.php
 	echo "<h1>" . _("LDAP upload in progress. Please wait.") . "</h1>\n";
 	echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
 	echo "<tr><td bgcolor=\"blue\" width=\"" . ($_SESSION['mass_counter'] * 100) / sizeof($accounts) . "%\">&nbsp;</td>";
@@ -114,6 +113,10 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 			for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
 		}
 	}
+	// refresh with JavaScript
+	echo "<script type=\"text/javascript\">\n";
+	echo "top.location.href = \"massDoUpload.php\";\n";
+	echo "</script>\n";
 	echo "</body></html>";
 }
 // all accounts have been created
