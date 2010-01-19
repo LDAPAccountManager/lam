@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2009  Roland Gruber
+                2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -98,8 +98,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noPassword', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['noExpire'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noExpire', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['deactivated'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_deactivated', _('This value can only be \"true\" or \"false\"!'));
-		$this->messages['pwdCanChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdCanChange', _('Please enter a valid date in format DD-MM-YYYY.'));
-		$this->messages['pwdMustChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdMustChange', _('Please enter a valid date in format DD-MM-YYYY.'));
 		$this->messages['expireDate'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_expireDate', _('Please enter a valid date in format DD-MM-YYYY.'));
 		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homeDrive', _('Please enter a valid drive letter.'));
 		$this->messages['domain'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_domain', _('LAM was unable to find a domain with this name!'));
@@ -134,7 +132,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return['objectClasses'] = array('sambaSamAccount');
 		// managed attributes
 		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
-			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaAcctFlags',
+			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaAcctFlags',
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial');
 		// PHP extensions
@@ -167,14 +165,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'type' => 'ext_preg',
 			'regex' => 'sambaLogonHours',
 			'error_message' => $this->messages['logonHours'][0]);
-		$return['profile_checks']['sambaSamAccount_pwdCanChange'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'digit',
-			'error_message' => $this->messages['profileCanMustChange'][0]);
-		$return['profile_checks']['sambaSamAccount_pwdMustChange'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'digit',
-			'error_message' => $this->messages['profileCanMustChange'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'sambaSamAccount_sambaDomainName' => 'sambaDomainName',
@@ -235,8 +225,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
 			'syncLMPassword' => _('Sync Samba LM password with Unix password'),
 			'syncSambaPwdLastSet' => _('Update attribute "sambaPwdLastSet" on password change'),
-			'syncSambaPwdMustChange' => _('Update attribute "sambaPwdMustChange" on password change'),
-			'syncSambaPwdCanChange' => _('Update attribute "sambaPwdCanChange" on password change')
 		);
 		// help Entries
 		$return['help'] = array (
@@ -281,9 +269,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				"Text" => _("If you set this option then the user has to change his password at the next login.")),
 			"pwdCanChange" => array(
 				"Headline" => _("User can change password"),
-				"Text" => _("Date after the user is able to change his password. Format: DD-MM-YYYY")),
+				"Text" => _("Date after the user is able to change his password.")),
 			"pwdMustChange" => array ("Headline" => _("User must change password"),
-				"Text" => _("Date after the user must change his password. Format: DD-MM-YYYY")),
+				"Text" => _("Date after the user must change his password.")),
 			"homeDrive" => array(
 				"Headline" => _("Home drive"),
 				"Text" => _("The home directory will be connected under this drive letter.")),
@@ -375,9 +363,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'terminalServer' => array (
 				"Headline" => _("Terminal server options"),
 				"Text" => _("Here you can change the settings for the terminal server access.")),
-			'profilePwdCanMustChange' => array (
-				"Headline" => _("User can/must change password"),
-				"Text" => _("This is the number of seconds after when the user may or has to change his password.")),
 			'lmHash' => array (
 				"Headline" => _("Disable LM hashes"),
 				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them.")),
@@ -443,20 +428,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 					'default' => 'false',
 					'values' => 'true, false',
 					'example' => 'false'
-				),
-				array(
-					'name' => 'sambaSamAccount_pwdCanChange',
-					'description' => _('User can change password'),
-					'help' => 'pwdCanChange',
-					'default' => '31-12-2030',
-					'example' => '15-11-2006'
-				),
-				array(
-					'name' => 'sambaSamAccount_pwdMustChange',
-					'description' => _('User must change password'),
-					'help' => 'pwdMustChange',
-					'default' => '31-12-2030',
-					'example' => '15-10-2006'
 				),
 				array(
 					'name' => 'sambaSamAccount_expireDate',
@@ -1015,13 +986,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
 		// get attribute name
 		$attr = '';
-		if (strpos($buttonName, 'sambaPwdCanChange') !== false) {
-			$attr = 'sambaPwdCanChange';
-		}
-		elseif (strpos($buttonName, 'sambaPwdMustChange') !== false) {
-			$attr = 'sambaPwdMustChange';
-		}
-		elseif (strpos($buttonName, 'sambaKickoffTime') !== false) {
+		if (strpos($buttonName, 'sambaKickoffTime') !== false) {
 			$attr = 'sambaKickoffTime';
 		}
 		if ($attr == '') return array();
@@ -1145,38 +1110,16 @@ class sambaSamAccount extends baseModule implements passwordService {
 					array('kind' => 'input', 'name' => 'passwordIsExpired', 'type' => 'checkbox', 'checked' => $this->expirePassword),
 					array('kind' => 'help', 'value' => 'passwordIsExpired'));
 
-				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				if (isset($this->attributes['sambaPwdCanChange'][0])) {
-					if ($this->attributes['sambaPwdCanChange'][0] > 2147483648) {
-						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					}
-					else {
-						$date = getdate($this->attributes['sambaPwdCanChange'][0]);
-						$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
-					}
-				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('User can change password')),
 					array('kind' => 'table', 'value' => array(array(
-						array('kind' => 'text', 'text' => $dateValue),
-						array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdCanChange', 'type' => 'submit', 'value' => _('Change'))
+						array('kind' => 'text', 'text' => $this->getPasswordCanChangeTime($sambaDomains, $sel_domain)),
 					))),
 					array('kind' => 'help', 'value' => 'pwdCanChange' ));
-				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				if (isset($this->attributes['sambaPwdMustChange'][0])) {
-					if ($this->attributes['sambaPwdMustChange'][0] > 2147483648) {
-						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					}
-					else {
-						$date = getdate($this->attributes['sambaPwdMustChange'][0]);
-						$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
-					}
-				}
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('User must change password')),
 					array('kind' => 'table', 'value' => array(array(
-						array('kind' => 'text', 'text' => $dateValue),
-						array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdMustChange', 'type' => 'submit', 'value' => _('Change'))
+						array('kind' => 'text', 'text' => $this->getPasswordMustChangeTime($sambaDomains, $sel_domain)),
 					))),
 					array('kind' => 'help', 'value' => 'pwdMustChange' ));
 				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1432,16 +1375,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 	function display_html_time() {
 		$return = array();
 		// determine attribute
-		if (isset($_POST['form_subpage_sambaSamAccount_time_sambaPwdCanChange'])) {
-			$attr = 'sambaPwdCanChange';
-			$text = _('User can change password');
-			$help = "pwdCanChange";
-		}
-		elseif (isset($_POST['form_subpage_sambaSamAccount_time_sambaPwdMustChange'])) {
-			$attr = 'sambaPwdMustChange';
-			$text = _('User must change password');
-			$help = "pwdMustChange";
-		}
 		if (isset($_POST['form_subpage_sambaSamAccount_time_sambaKickoffTime'])) {
 			$attr = 'sambaKickoffTime';
 			$text = _('Account expiration date');
@@ -1637,16 +1570,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 					)
 				)),
 				array('kind' => 'help', 'value' => 'expireDate'));
-			// user can change password
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('User can change password')),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_pwdCanChange', 'type' => 'text', 'size' => '20', 'maxlength' => '10', 'value' => ""),
-				array('kind' => 'help', 'value' => 'profilePwdCanMustChange'));
-			// user must change password
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('User must change password')),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_pwdMustChange', 'type' => 'text', 'size' => '20', 'maxlength' => '10', 'value' => ""),
-				array('kind' => 'help', 'value' => 'profilePwdCanMustChange'));
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 				// letter of home drive
 				$drives = array('-');
@@ -1824,14 +1747,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$this->attributes['sambaPrimaryGroupSID'][0] = $domSID . "-" . $profile['sambaSamAccount_group'][0];
 				}
 			}
-		}
-		// user can change password
-		if (isset($profile['sambaSamAccount_pwdCanChange'][0]) && ($profile['sambaSamAccount_pwdCanChange'][0] != '')) {
-			$this->attributes['sambaPwdCanChange'][0] = time() + $profile['sambaSamAccount_pwdCanChange'][0];
-		}
-		// user must change password
-		if (isset($profile['sambaSamAccount_pwdMustChange'][0]) && ($profile['sambaSamAccount_pwdMustChange'][0] != '')) {
-			$this->attributes['sambaPwdMustChange'][0] = time() + $profile['sambaSamAccount_pwdMustChange'][0];
 		}
 	}
 
@@ -2058,32 +1973,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// End character
 				$flags = $flags . "]";
 				$partialAccounts[$i]['sambaAcctFlags'] = $flags;
-				// passsword can be changed
-				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']], 'date')) {
-						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']]);
-						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
-						$partialAccounts[$i]['sambaPwdCanChange'] = $time;
-					}
-					else {
-						$errMsg = $this->messages['pwdCanChange'][0];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
-				// passsword must be changed
-				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']], 'date')) {
-						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']]);
-						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
-						$partialAccounts[$i]['sambaPwdMustChange'] = $time;
-					}
-					else {
-						$errMsg = $this->messages['pwdMustChange'][0];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
 				// expiration date
 				if ($rawAccounts[$i][$ids['sambaSamAccount_expireDate']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_expireDate']], 'date')) {
@@ -2314,38 +2203,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 							$return['mod']['sambaPwdLastSet'][0] = time();
 						}
 					}
-					if (in_array('syncSambaPwdMustChange', $fields) || in_array('syncSambaPwdCanChange', $fields)) {
-						$sambaDomains = search_domains($_SESSION['ldapHandle'], $this->selfServiceSettings->LDAPSuffix);
-						if (($sambaDomains == null) || (sizeof($sambaDomains) == 0)) {
-							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password because no domain was found.'), '');
-							return $return;
-						}
-						if (!isset($attributes['sambaSID'][0]) || $attributes['sambaSID'][0] == '') {
-							$return['messages'][] = array("ERROR", _('Unable to read sambaSID attribute.'), '');
-							return $return;
-						}
-						$domainSID = substr($attributes['sambaSID'][0], 0, strrpos($attributes['sambaSID'][0], "-"));
-						$sel_domain = null;
-						for ($i = 0; $i < count($sambaDomains); $i++ ) {
-							if ($domainSID == $sambaDomains[$i]->SID) {
-								$sel_domain = $sambaDomains[$i];
-							}
-						}
-						if ($sel_domain == null) {
-							$return['messages'][] = array("ERROR", _('Unable to sync the time when the user can/must change his password because no domain was found.'), $domainSID);
-							return $return;
-						}
-						if (in_array('syncSambaPwdCanChange', $fields)) {
-							if (($sel_domain != null) && (isset($sel_domain->maxPwdAge))) {
-								$return['mod']['sambaPwdCanChange'][0] = time() + $sel_domain->minPwdAge;
-							}
-						}
-						if (in_array('syncSambaPwdMustChange', $fields)) {
-							if (($sel_domain != null) && (isset($sel_domain->maxPwdAge))) {
-								$return['mod']['sambaPwdMustChange'][0] = time() + $sel_domain->maxPwdAge;
-							}
-						}
-					}
 				}
 			}
 		}
@@ -2398,6 +2255,66 @@ class sambaSamAccount extends baseModule implements passwordService {
 			return $results[0]['cn'][0];
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns the time when the user needs to change his password.
+	 *
+	 * @param array $domains list of domain objects
+	 * @param String $selectedDomain selected domain name
+	 */
+	private function getPasswordMustChangeTime($domains, $selectedDomain) {
+		if (is_array($selectedDomain) && (sizeof($selectedDomain) > 0)) {
+			$selectedDomain = $selectedDomain[0];
+		}
+		$return = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		// check if password expires at all
+		if ($this->noexpire) {
+			return $return;	
+		}
+		// check if there is a time set for the last password change
+		if (!isset($this->attributes['sambaPwdLastSet'][0])) {
+			return $return;
+		}
+		for ($i = 0; $i < sizeof($domains); $i++) {
+			if ($domains[$i]->name == $selectedDomain) {
+				// check if a domain policy is set
+				if (!isset($domains[$i]->maxPwdAge) || ($domains[$i]->maxPwdAge < 0)) {
+					return $return;
+				}
+				$time = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->maxPwdAge;
+				return date('d.m.Y H:i', $time);
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Returns the time when the user can change his password.
+	 *
+	 * @param array $domains list of domain objects
+	 * @param String $selectedDomain selected domain name
+	 */
+	private function getPasswordCanChangeTime($domains, $selectedDomain) {
+		if (is_array($selectedDomain) && (sizeof($selectedDomain) > 0)) {
+			$selectedDomain = $selectedDomain[0];
+		}
+		$return = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		// check if there is a time set for the last password change
+		if (!isset($this->attributes['sambaPwdLastSet'][0])) {
+			return $return;
+		}
+		for ($i = 0; $i < sizeof($domains); $i++) {
+			if ($domains[$i]->name == $selectedDomain) {
+				// check if a domain policy is set
+				if (!isset($domains[$i]->minPwdAge) || ($domains[$i]->minPwdAge < 0)) {
+					return $return;
+				}
+				$time = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->minPwdAge;
+				return date('d.m.Y H:i', $time);
+			}
+		}
+		return $return;
 	}
 	
 }
