@@ -33,93 +33,13 @@ $Id$
 /** status messages */
 include_once("../lib/status.inc");
 
-// check if PHP >= 5.1
-if (version_compare(phpversion(), '5.1.0') < 0) {
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
-	echo "<html>\n<head>\n";
-	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
-	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
-	echo "<title>LDAP Account Manager</title>\n";
-	echo "</head><body>\n";
-	StatusMessage("ERROR", "LAM needs PHP 5 greater or equal as 5.1.0!", "Please upgrade your PHP installation.");
-	echo "<br><br>";
-	echo "</body></html>";
-	exit();
-}
-
+/** check environment */
+include '../lib/checkEnvironment.inc';
 
 /** security functions */
 include_once("../lib/security.inc");
 /** self service functions */
 include_once("../lib/selfService.inc");
-
-// check environment
-$criticalErrors = array();
-// check if PHP has session support
-if (! function_exists('session_start')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no session support!", "Please install the session extension for PHP.");
-}
-// check if PHP has LDAP support
-if (! function_exists('ldap_search')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
-}
-// check if PHP has gettext support
-if (! function_exists('gettext') || !function_exists('_')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
-}
-// check if PHP has XML support
-if (! function_exists('utf8_decode')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
-}
-// check if PHP has GD support
-if (! function_exists('getimagesize')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no GD support!", "Please install the GD extension for PHP.");
-}
-// check file permissions
-$writableDirs = array('sess', 'tmp');
-for ($i = 0; $i < sizeof($writableDirs); $i++) {
-	$path = realpath('../') . "/" . $writableDirs[$i];
-	if (!is_writable($path)) {
-		$criticalErrors[] = array("ERROR", 'The directory %s is not writable for the web server. Please change your file permissions.', '', array($path));
-	}
-}
-// check session auto start
-if (ini_get("session.auto_start") == "1") {
-	$criticalErrors[] = array("ERROR", "Please deactivate session.auto_start in your php.ini. LAM will not work if it is activated.");
-}
-// check memory limit
-$memLimit = ini_get('memory_limit');
-if (isset($memLimit) && ($memLimit != '') && (substr(strtoupper($memLimit), strlen($memLimit) - 1) == 'M')) {
-	if (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 64) {
-		$criticalErrors[] = array("ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"64M\".",
-			"Your current memory limit is $memLimit.");	
-	}
-}
-// check PCRE regex system
-if (!@preg_match('/^\p{L}+$/u', "abc")) {
-	$criticalErrors[] = array("ERROR", "Your PCRE library has no complete Unicode support. Please upgrade libpcre or compile with \"--enable-unicode-properties\".");
-}
-// stop login if critical errors occured
-if (sizeof($criticalErrors) > 0) {
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
-	echo "<html>\n<head>\n";
-	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
-	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
-	echo "<title>LDAP Account Manager</title>\n";
-	echo "</head><body>\n";
-	for ($i = 0; $i < sizeof($criticalErrors); $i++) {
-		call_user_func_array("StatusMessage", $criticalErrors[$i]);
-		echo "<br><br>";
-	}
-	echo "</body></html>";
-	exit();
-}
-
-
 /** access to configuration options */
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
