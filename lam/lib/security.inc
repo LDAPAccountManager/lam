@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006  Roland Gruber
+  Copyright (C) 2006 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -151,11 +151,11 @@ function logoffAndBackToLoginPage() {
 /**
  * Puts a new message in the log file.
  *
- * @param string $level log level (LOG_NOTICE, LOG_WARNING, LOG_ERR)
+ * @param string $level log level (LOG_DEBUG, LOG_NOTICE, LOG_WARNING, LOG_ERR)
  * @param string $message log message
  */
 function logNewMessage($level, $message) {
-	$possibleLevels = array(LOG_NOTICE => 'NOTICE', LOG_WARNING => 'WARNING', LOG_ERR => 'ERROR');
+	$possibleLevels = array(LOG_DEBUG => 'DEBUG', LOG_NOTICE => 'NOTICE', LOG_WARNING => 'WARNING', LOG_ERR => 'ERROR');
 	if (!in_array($level, array_keys($possibleLevels))) StatusMessage('ERROR', 'Invalid log level!', $level);
 	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
 	else $cfg = new LAMCfgMain();

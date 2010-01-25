@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -259,14 +259,13 @@ if (!$cfg->isWritable()) {
 						<?php echo _("Log level"); ?>
 						<SELECT name="logLevel">
 						<?php
-						$options = array(_("Notice"), _("Warning"), _("Error"));
-						$levels = array(LOG_NOTICE, LOG_WARNING, LOG_ERR);
-						for ($i = 0; $i < sizeof($options); $i++) {
-							if ($cfg->logLevel == $levels[$i]) {
-								echo "<option selected value=\"" . $levels[$i] . "\">" . $options[$i] . "</option>";
+						$options = array(_("Debug") => LOG_DEBUG, _("Notice") => LOG_NOTICE, _("Warning") => LOG_WARNING, _("Error") => LOG_ERR);
+						foreach ($options as $key => $value) {
+							if ($cfg->logLevel == $value) {
+								echo "<option selected value=\"" . $value . "\">" . $key . "</option>";
 							}
 							else {
-								echo "<option value=\"" . $levels[$i] . "\">" . $options[$i] . "</option>";
+								echo "<option value=\"" . $value . "\">" . $key . "</option>";
 							}
 						}
 						?>

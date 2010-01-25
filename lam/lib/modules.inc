@@ -1608,6 +1608,7 @@ class accountContainer {
 	* @return array error messages
 	*/
 	function load_account($dn) {
+		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		$search = substr($dn, 0, strpos($dn, ','));
@@ -1735,6 +1736,7 @@ class accountContainer {
 	* This function will prepare the object for a new account.
 	*/
 	function new_account() {
+		logNewMessage(LOG_DEBUG, "New account with type " . $this->type);
 		$this->isNewAccount = true;
 		$this->lastLoadedProfile = 'default';
 		$modules = $_SESSION['config']->get_AccountModules($this->type);

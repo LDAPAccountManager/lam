@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
+                2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@ $Id$
 * Login form of LDAP Account Manager.
 *
 * @author Michael Duergner
+* @author Roland Gruber
 * @package main
 */
 
@@ -138,6 +140,7 @@ if(isset($_POST['profile'])) {
 * @param object $config_object current active configuration
 */
 function display_LoginPage($config_object) {
+	logNewMessage(LOG_DEBUG, "Display login page");
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/random otherwise use /dev/urandom or rand()
@@ -407,9 +410,11 @@ function display_LoginPage($config_object) {
 					<?php
 						if (isLAMProVersion()) {
 							echo "LDAP Account Manager <b>Pro</b>: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+							logNewMessage(LOG_DEBUG, "LAM Pro " . LAMVersion());
 						}
 						else {
 							echo "LDAP Account Manager: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+							logNewMessage(LOG_DEBUG, "LAM " . LAMVersion());
 						}
 					?>
 					</SMALL>
@@ -429,6 +434,7 @@ if(!empty($_POST['checklogin'])) {
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
 
 	if($_POST['passwd'] == "") {
+		logNewMessage(LOG_DEBUG, "Empty password for login");
 		$error_message = _("Empty password submitted. Please try again.");
 		display_LoginPage($_SESSION['config']); // Empty password submitted. Return to login page.
 	}
@@ -543,6 +549,7 @@ if(!empty($_POST['checklogin'])) {
 }
 // Reload loginpage after a profile change
 elseif(!empty($_POST['profileChange'])) {
+	logNewMessage(LOG_DEBUG, "Change server profile to " . $_POST['profile']);
 	$_SESSION['config'] = new LAMConfig($_POST['profile']); // Recreate the config object with the submited
 	display_LoginPage($_SESSION['config']); // Load login page
 }
