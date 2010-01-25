@@ -1,5 +1,12 @@
+
 # password to add/delete/rename configuration profiles (default: lam)
 password: {SSHA}D6AaX93kPmck9wAxNlq3GF93S7A= R7gkjQ==
 
 # default profile, without ".conf"
 default: lam
+
+# log level
+logLevel: 4
+
+# log destination
+logDestination: SYSLOG
