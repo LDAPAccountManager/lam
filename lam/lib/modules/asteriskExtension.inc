@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009  Pavel Pozdnyak
-                2009  Roland Gruber
+  Copyright (C) 2009 - 2010  Pavel Pozdnyak
+                2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,6 +38,9 @@ $Id$
  * @package modules
  */
 class asteriskExtension extends baseModule {
+	
+	/** if true then only Asterisk accounts are shown as possible owners */
+	private $filterOwnerForAsteriskAccounts = true;
 
 	/**
 	 * Returns meta data that is interpreted by parent class
@@ -253,7 +256,12 @@ class asteriskExtension extends baseModule {
 	function display_html_user() {
 		// load list with all users with objectClass AsteriskSIPUser
 		$searchroot = $_SESSION['config']->get_Suffix('user');
-		$filter = 'objectClass=AsteriskSIPUser';
+		if ($this->filterOwnerForAsteriskAccounts) {
+			$filter = 'objectClass=AsteriskSIPUser';
+		}
+		else {
+			$filter = 'objectClass=inetOrgPerson';
+		}
 		$ldapc = $_SESSION['ldap']->server();
 		$attributes = array("DN", "cn");
 		$res = ldap_search($ldapc,$searchroot,$filter,$attributes,0,0,0,LDAP_DEREF_NEVER);
@@ -272,6 +280,13 @@ class asteriskExtension extends baseModule {
 		}
 		$members = $this->attributes['member'];
 
+		$return[] =	array(array('kind' => 'table', 'value' => array(
+			array(
+				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'filterAsteriskUsers', 'checked' => $this->filterOwnerForAsteriskAccounts),
+				array('kind' => 'text', 'text' => _('Show only Asterisk accounts')),
+				array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_changeFilter' ,'type' => 'submit', 'value' => _('Refresh') ),
+			)
+		)));
 		$return[] = array(
 			array('kind' => 'fieldset', 'legend' => _("Extension owners"), 'value' => array(
 				array(
@@ -304,6 +319,10 @@ class asteriskExtension extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function process_user() {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_user_changeFilter'])) {
+			// update filter value
+			$this->filterOwnerForAsteriskAccounts = ($_POST['filterAsteriskUsers'] == 'on');
+		}
 		if (!isset($this->attributes['member'])) $this->attributes['member'] = array();
 		if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
 		// Add new user
