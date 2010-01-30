@@ -815,9 +815,15 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 							// merge both option arrays and sort them.
 							$options = array_merge($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 							$options = array_unique($options);
+							if (!isset($input[$i][$j]['noSorting']) || !$input[$i][$j]['noSorting']) {
+								natcasesort($options);
+							}
 						}
-						if (!isset($input[$i][$j]['noSorting']) || !$input[$i][$j]['noSorting']) {
-							sort($options);
+						else {
+							if (!isset($input[$i][$j]['noSorting']) || !$input[$i][$j]['noSorting']) {
+								// sort descriptive options with helper function
+								usort($options, 'lamCompareDescriptiveOptions');
+							}
 						}
 						foreach ($options as $option) {
 							if (isset($input[$i][$j]['descriptiveOptions']) && ($input[$i][$j]['descriptiveOptions'] === true)) {
@@ -874,6 +880,22 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 	}
 	echo "</table>\n";
 	return $ret;
+}
+
+/**
+ * Helper function to sort descriptive options in parseHTML().
+ * It compares the second entries of two arrays.
+ *
+ * @param array $a first array
+ * @param array $b second array
+ * @return integer compare result
+ */
+function lamCompareDescriptiveOptions(&$a, &$b) {
+	// check parameters
+	if (!is_array($a) || !isset($a[1]) || !is_array($b) || !isset($b[1])) {
+		return 0;
+	}
+	return strnatcasecmp($a[1], $b[1]);
 }
 
 /**
