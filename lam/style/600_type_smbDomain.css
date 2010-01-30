@@ -64,7 +64,7 @@ table.smbDomainlist td,th {
 }
 
 /* input elements */
-table.smbDomainlist input,select,button {
+table.smbDomainlist input, table.smbDomainlist select, table.smbDomainlist button {
   background-color:#a8ddbf;
 }
 
@@ -104,7 +104,7 @@ fieldset.smbDomainedit legend {
 }
 
 /* input elements */
-fieldset.smbDomainedit input,select,button {
+fieldset.smbDomainedit input, fieldset.smbDomainedit select, fieldset.smbDomainedit button {
   background-color:#a8ddbf;
 }
 

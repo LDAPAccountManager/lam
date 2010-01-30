@@ -64,7 +64,7 @@ table.hostlist td,th {
 }
 
 /* input elements */
-table.hostlist input,select,button {
+table.hostlist input, table.hostlist select, table.hostlist button {
   background-color:#ffc4ba;
 }
 
@@ -103,7 +103,7 @@ fieldset.hostedit legend {
 }
 
 /* input elements */
-fieldset.hostedit input,select,button {
+fieldset.hostedit input, fieldset.hostedit select, fieldset.hostedit button {
   background-color:#ffc4ba;
 }
 

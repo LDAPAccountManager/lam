@@ -64,7 +64,7 @@ table.netgrouplist td,th {
 }
 
 /* input elements */
-table.netgrouplist input,select,button {
+table.netgrouplist input, table.netgrouplist select, table.netgrouplist button {
   background-color:#a8c3ff;
 }
 
@@ -103,7 +103,7 @@ fieldset.netgroupedit legend {
 }
 
 /* input elements */
-fieldset.netgroupedit input,select,button {
+fieldset.netgroupedit input, fieldset.netgroupedit select, fieldset.netgroupedit button {
   background-color:#a8c3ff;
 }
 

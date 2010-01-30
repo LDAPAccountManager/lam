@@ -64,7 +64,7 @@ table.dhcplist td,th {
 }
 
 /* input elements */
-table.dhcplist input {
+table.dhcplist input, table.dhcplist select, table.dhcplist button {
   background-color:#bde178;
 }
 
@@ -103,7 +103,7 @@ fieldset.dhcpedit legend {
 }
 
 /* input elements */
-fieldset.dhcpedit input {
+fieldset.dhcpedit input, fieldset.dhcpedit select, fieldset.dhcpedit button {
   background-color:#bde178;
 }
 

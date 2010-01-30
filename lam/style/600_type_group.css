@@ -64,7 +64,7 @@ table.grouplist td,th {
 }
 
 /* input elements */
-table.grouplist input,select,button {
+table.grouplist input, table.grouplist select, table.grouplist button {
   background-color:#a8c3ff;
 }
 
@@ -103,7 +103,7 @@ fieldset.groupedit legend {
 }
 
 /* input elements */
-fieldset.groupedit input,select,button {
+fieldset.groupedit input, fieldset.groupedit select, fieldset.groupedit button {
   background-color:#a8c3ff;
 }
 

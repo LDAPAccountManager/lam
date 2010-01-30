@@ -64,7 +64,7 @@ table.asteriskExtlist td,th {
 }
 
 /* input elements */
-table.asteriskExtlist input,select,button {
+table.asteriskExtlist input, table.asteriskExtlist select, table.asteriskExtlist button {
   background-color:#ffe27f;
 }
 
@@ -103,7 +103,7 @@ fieldset.asteriskExtedit legend {
 }
 
 /* input elements */
-fieldset.asteriskExtedit input,select,button {
+fieldset.asteriskExtedit input, fieldset.asteriskExtedit select, fieldset.asteriskExtedit button {
   background-color:#ffe27f;
 }
 
