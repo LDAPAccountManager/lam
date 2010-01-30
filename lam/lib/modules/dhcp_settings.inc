@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 -2009  Roland Gruber
+                2008 -2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,7 +94,6 @@ class dhcp_settings extends baseModule {
 	}
 
 	public function get_metaData() {
-
 		$return = array();
 		// manages host accounts
 		$return["account_types"] = array("dhcp");
@@ -472,7 +471,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			// Check subnet
 			$_POST['subnet'] = trim($_POST['subnet']);
-			if (!check_ip($_POST['subnet'], true)) {
+			if (!$this->checkSubnetMask($_POST['subnet'])) {
 			    $errors[] = $this->messages['subnet'][0];
 			}
 			$this->setDHCPOption('subnet-mask', $_POST['subnet']);
@@ -485,6 +484,26 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->attributes['dhcpComments'][0] = $_POST['description'];
 		
 		return $errors;
+	}
+	
+	/**
+	 * Checks if the subnet mask is valid.
+	 *
+	 * @param String $mask subnet mask
+	 * @return boolean correct or incorrect
+	 */
+	private function checkSubnetMask($mask) {
+		// check basic format
+		if (!check_ip($mask, true)) {
+			return false;
+		}
+		// check if bit order is 11...00...
+		$parts = explode('.', $mask);
+		$bits = '';
+		for ($i = 0; $i < sizeof($parts); $i++) {
+			$bits .= decbin($parts[$i]);
+		}
+		return preg_match('/^1*0*$/', $bits);
 	}
 	
 	/**
