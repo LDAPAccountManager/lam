@@ -92,7 +92,7 @@ else {
 	echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellspacing=\"0\">\n";
 		echo "<tr><td>\n";
-		echo "<select name=\"type\">\n";
+		echo "<select class=\"user\" name=\"type\">\n";
 		for ($i = 0; $i < sizeof($types); $i++) {
 			echo "<option value=\"" . $types[$i] . "\">\n";
 				echo getTypeAlias($types[$i]);
@@ -101,7 +101,7 @@ else {
 		echo "</select>\n";
 		echo "</td>\n";
 		echo "<td>\n";
-			echo "<input type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
+			echo "<input class=\"user\" type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
 		echo "</td></tr>\n";
 	echo "</table>\n";
 	echo "</form>\n";
@@ -130,8 +130,8 @@ function showMainPage($scope) {
 
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
 	echo "<p>\n";
-	echo "<b>" . _("CSV file:") . "</b> <input name=\"inputfile\" type=\"file\">&nbsp;&nbsp;";
-	echo "<input name=\"submitfile\" type=\"submit\" value=\"" . _('Upload file and create accounts') . "\">\n";
+	echo "<b>" . _("CSV file:") . "</b> <input class=\"$scope\" name=\"inputfile\" type=\"file\">&nbsp;&nbsp;";
+	echo "<input class=\"$scope\" name=\"submitfile\" type=\"submit\" value=\"" . _('Upload file and create accounts') . "\">\n";
 	echo "<input type=\"hidden\" name=\"scope\" value=\"$scope\">\n";
 	echo "</p>\n";
 	echo "</form>\n";
