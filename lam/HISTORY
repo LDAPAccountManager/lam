@@ -1,6 +1,7 @@
 March 2010 3.0.0
   - support to remove extension from an existing account: shadowAccount, sambaSamAccount, eduPerson
   - removed frames
+  - Unix: automatic user name generation from first and last name (2492675)
   - fixed bugs:
    -> Multi-delete not working (2931458)
    -> Samba: can/must change password needs to be read from domain policy (2919236)

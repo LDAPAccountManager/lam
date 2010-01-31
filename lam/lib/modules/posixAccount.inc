@@ -706,8 +706,24 @@ class posixAccount extends baseModule implements passwordService {
 			unset($this->attributes['userPassword']);
 		}
 		$this->attributes['uid'][0] = $_POST['uid'];
+		$setDefaultUserName = false;
+		if (($this->attributes['uid'][0] == '') && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
+			// fill default value for user ID with first/last name
+			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			if (isset($attrs['sn'][0])) {
+				if (isset($attrs['givenName'])) {
+					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
+					$setDefaultUserName = true;
+				}
+				else {
+					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['sn'][0]));
+					$setDefaultUserName = true;
+				}
+			}
+		}
 		$this->attributes['cn'][0] = $_POST['cn'];
 		if ($this->attributes['cn'][0] == '') {
+			// set a default value for common name
 			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
@@ -809,47 +825,49 @@ class posixAccount extends baseModule implements passwordService {
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ((sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) && ($this->orig['uid'][0]!=''))
-		$this->attributes['uid'][0] = $this->orig['uid'][0];
-		// Change uid to a new uid until a free uid is found
-		else
-		while (sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) {
-			if ($this->get_scope()=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
-			// get last character of username
-			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
-			// Last character is no number
-			if ( !preg_match('/^([0-9])+$/', $lastchar)) {
-				// Last character is no number. Therefore we only have to add "2" to it.
-				if ($this->get_scope()=='host') {
-					$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
+		if ((sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) && ($this->orig['uid'][0]!='')) {
+			$this->attributes['uid'][0] = $this->orig['uid'][0];
+		}
+		else {
+			// Change uid to a new uid until a free uid is found
+			while (sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) {
+				if ($this->get_scope()=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
+				// get last character of username
+				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
+				// Last character is no number
+				if ( !preg_match('/^([0-9])+$/', $lastchar)) {
+					// Last character is no number. Therefore we only have to add "2" to it.
+					if ($this->get_scope()=='host') {
+						$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
+					}
+					else {
+						$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
+					}
 				}
 				else {
-					$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
+					/* Last character is a number -> we have to increase the number until we've
+					* found a groupname with trailing number which is not in use.
+					*
+					* $i will show us were we have to split groupname so we get a part
+					* with the groupname and a part with the trailing number
+					*/
+					$i=strlen($this->attributes['uid'][0])-1;
+					$mark = false;
+					// Set $i to the last character which is a number in $account_new->general_username
+					while (!$mark)
+					if (preg_match('/^([0-9])+$/',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
+					else $mark=true;
+					// increase last number with one
+					$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
+					$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
+					// Put username together
+					if ($this->get_scope()=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
+					else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
 				}
-			}
-			else {
-				/* Last character is a number -> we have to increase the number until we've
-				* found a groupname with trailing number which is not in use.
-				*
-				* $i will show us were we have to split groupname so we get a part
-				* with the groupname and a part with the trailing number
-				*/
-				$i=strlen($this->attributes['uid'][0])-1;
-				$mark = false;
-				// Set $i to the last character which is a number in $account_new->general_username
-				while (!$mark)
-				if (preg_match('/^([0-9])+$/',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
-				else $mark=true;
-				// increase last number with one
-				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
-				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
-				// Put username together
-				if ($this->get_scope()=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
-				else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
 			}
 		}
 		// Show warning if lam has changed username
-		if ($this->attributes['uid'][0] != $_POST['uid']) {
+		if (!$setDefaultUserName && ($this->attributes['uid'][0] != $_POST['uid'])) {
 			if ($this->get_scope()=='user') $errors[] = $this->messages['uid'][5];
 			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
 		}
@@ -1835,7 +1853,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->groupCache = $return;
 		return $return;
 	}
-		
+	
 }
 
 ?>
