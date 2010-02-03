@@ -42,6 +42,9 @@ class asteriskExtension extends baseModule {
 	/** if true then only Asterisk accounts are shown as possible owners */
 	private $filterOwnerForAsteriskAccounts = true;
 
+	/** if true then the tree suffix will be used to search potential owners */
+	private $searchOwnersInTreeSuffix = false;
+
 	/**
 	 * Returns meta data that is interpreted by parent class
 	 *
@@ -98,6 +101,10 @@ class asteriskExtension extends baseModule {
 			'cn' => array(
 			"Headline" => _("Common name"),
 			"Text" => _("Common name of the Asterisk extension.")
+			),
+			'ownerOptions' => array(
+			"Headline" => _("Options"),
+			"Text" => _("These options change the list of potential extension owners below. You can select to show Asterisk accounts or all users. It is also possible to search the tree suffix if you have users which are not in the standard user suffix.")
 			)
 		);
 		// profile options
@@ -256,6 +263,9 @@ class asteriskExtension extends baseModule {
 	function display_html_user() {
 		// load list with all users with objectClass AsteriskSIPUser
 		$searchroot = $_SESSION['config']->get_Suffix('user');
+		if ($this->searchOwnersInTreeSuffix) {
+			$searchroot = $_SESSION['config']->get_Suffix('tree');
+		}
 		if ($this->filterOwnerForAsteriskAccounts) {
 			$filter = 'objectClass=AsteriskSIPUser';
 		}
@@ -282,8 +292,19 @@ class asteriskExtension extends baseModule {
 
 		$return[] =	array(array('kind' => 'table', 'value' => array(
 			array(
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'filterAsteriskUsers', 'checked' => $this->filterOwnerForAsteriskAccounts),
-				array('kind' => 'text', 'text' => _('Show only Asterisk accounts')),
+				array('kind' => 'table', 'value' => array(
+					array(
+						array('kind' => 'input', 'type' => 'checkbox', 'name' => 'filterAsteriskUsers', 'checked' => $this->filterOwnerForAsteriskAccounts),
+						array('kind' => 'text', 'text' => _('Show only Asterisk accounts')),
+						array('kind' => 'help', 'value' => 'ownerOptions')
+					),
+					array(
+						array('kind' => 'input', 'type' => 'checkbox', 'name' => 'useTreeSuffix', 'checked' => $this->searchOwnersInTreeSuffix),
+						array('kind' => 'text', 'text' => _('Search tree suffix for users')),
+						array('kind' => 'help', 'value' => 'ownerOptions')
+					)
+				)),
+				array('kind' => 'text', 'text' => '&nbsp;&nbsp;&nbsp;'),
 				array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_changeFilter' ,'type' => 'submit', 'value' => _('Refresh') ),
 			)
 		)));
@@ -296,7 +317,7 @@ class asteriskExtension extends baseModule {
 					array('kind' => 'table', 'value' => array(
 						array(array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
 						array(array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-						array(array('kind' => 'help', 'value' => 'members', 'td' => array('align' => 'center')))
+						array(array('kind' => 'help', 'value' => 'member', 'td' => array('align' => 'center')))
 					)),
 					array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
 						array(array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users_dn)))
@@ -322,6 +343,8 @@ class asteriskExtension extends baseModule {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_user_changeFilter'])) {
 			// update filter value
 			$this->filterOwnerForAsteriskAccounts = ($_POST['filterAsteriskUsers'] == 'on');
+			// update search suffix
+			$this->searchOwnersInTreeSuffix = ($_POST['useTreeSuffix'] == 'on');
 		}
 		if (!isset($this->attributes['member'])) $this->attributes['member'] = array();
 		if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
