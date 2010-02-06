@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                       2009  Roland Gruber
+                2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -310,43 +310,22 @@ function search_domains($server = null, $suffix = null) {
 	if ($server == null) {
 		$server = $_SESSION['ldap']->server();
 	}
-	$sr = @ldap_search($server, escapeDN($suffix), "objectClass=sambaDomain", $attr, 0, 0, 0, LDAP_DEREF_NEVER);
-	if ($sr) {
-		$units = ldap_get_entries($server, $sr);
-		// delete count entry
-		unset($units['count']);
-		// extract attributes
-		for ($i = 0; $i < sizeof($units); $i++) {
-			$ret[$i] = new samba3domain();
-			$ret[$i]->dn = $units[$i]['dn'];
-			$ret[$i]->name = $units[$i]['sambadomainname'][0];
-			$ret[$i]->SID = $units[$i]['sambasid'][0];
-			if (isset($units[$i]['sambanextrid'][0])) $ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
-			if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
-			if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
-			if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
-			if (isset($units[$i]['sambaminpwdage'][0])) $ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
-			if (isset($units[$i]['sambamaxpwdage'][0])) $ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
-		}
-		// sort array by domain name
-		usort($ret, "cmp_domain");
+	$units = searchLDAPByAttribute(null, null, 'sambaDomain', $attr, array('smbDomain'));
+	// extract attributes
+	for ($i = 0; $i < sizeof($units); $i++) {
+		$ret[$i] = new samba3domain();
+		$ret[$i]->dn = $units[$i]['dn'];
+		$ret[$i]->name = $units[$i]['sambadomainname'][0];
+		$ret[$i]->SID = $units[$i]['sambasid'][0];
+		if (isset($units[$i]['sambanextrid'][0])) $ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
+		if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
+		if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
+		if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
+		if (isset($units[$i]['sambaminpwdage'][0])) $ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
+		if (isset($units[$i]['sambamaxpwdage'][0])) $ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
 	}
 	return $ret;
 }
-
-/**
-* Helper function to sort the domains
-*
-* @param string $a first argument to compare
-* @param string $b second argument to compare
-* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
-*/
-function cmp_domain($a, $b) {
-	if ($a->name == $b->name) return 0;
-	elseif ($a->name == max($a->name, $b->name)) return 1;
-	else return -1;
-}
-
 
 /**
 * Represents a Samba 3 domain entry
@@ -547,7 +526,7 @@ function escapeDN($dn) {
  * @param String $value attribute value
  * @param String $objectClass object class (may be null)
  * @param array $attributes list of attributes to return
- * @param array $scope account types
+ * @param array $scopes account types
  * @return array list of found entries
  */
 function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes) {
@@ -569,7 +548,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	}
 	for ($s = 0; $s < sizeof($scopes); $s++) {
 		// search LDAP
-		$sr = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_Suffix($scopes[$s]), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
@@ -580,6 +559,30 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	}
 	return $return;
 }
+
+/**
+ * This will search the given LDAP suffix for all entries which match the given filter.
+ *
+ * @param String $filter
+ * @param array $attributes list of attributes to return
+ * @param array $scopes account types
+ */
+function searchLDAPByFilter($filter, $attributes, $scopes) {
+	$return = array();
+	for ($s = 0; $s < sizeof($scopes); $s++) {
+		// search LDAP
+		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			if ($entries) {
+				$return = array_merge($return, cleanLDAPResult($entries));
+			}
+			@ldap_free_result($sr);
+		}
+	}
+	return $return;
+}
+
 
 /**
  * Cleans the result of an LDAP search.

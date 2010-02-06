@@ -239,18 +239,9 @@ class lamGroupList extends lamList {
 		for ($i = 0; $i < sizeof($this->entries); $i++) {
 			$gid = $this->entries[$i]['gidnumber'][0];
 			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
-			$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($module_suffix), $filter, $attrs, 0, 0, 0, LDAP_DEREF_NEVER);
-			if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
-				StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See the manual for instructions to solve this problem."));
-				$this->refresh_primary = true;
-			}
-			if ($sr) {
-				$members = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
-				ldap_free_result($sr);
-				$members = cleanLDAPResult($members);
-				for ($j = 0; $j < sizeof($members); $j++) {
-					$this->primary_hash[$gid][$j] = $members[$j]['uid'][0];
-				}
+			$entries = searchLDAPByFilter($filter, $attrs, array($scope));
+			for ($j = 0; $j < sizeof($entries); $j++) {
+				$this->primary_hash[$gid][$j] = $entries[$j]['uid'][0];
 			}
 		}
 	}
