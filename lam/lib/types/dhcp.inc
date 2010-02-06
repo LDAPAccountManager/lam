@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2008  Thomas Manninger
-                2009  Roland Gruber
+  Copyright (C) 2008         Thomas Manninger
+                2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -138,9 +138,7 @@ class lamDHCPList extends lamList {
         if ($attribute=="fixed_ips") {
         	// find all fixed addresses:
         	$ldap = $_SESSION['ldap'];
-        	$suffix = $_SESSION['config']->get_Suffix('dhcp');
-        	
-        	$sr = @ldap_search($ldap->server(),"cn=".$entry['cn'][0].",".$suffix,"objectClass=dhcpHost", array(), 0, 0, 0, LDAP_DEREF_NEVER);
+        	$sr = @ldap_search($ldap->server(),$entry['dn'],"objectClass=dhcpHost", array('dhcpstatements', 'dhcphwaddress', 'cn'), 0, 0, 0, LDAP_DEREF_NEVER);
         	if ($sr) {
 	        	$get = ldap_get_entries($ldap->server(),$sr);
 	        	
