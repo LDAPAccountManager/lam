@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
 if (!isset($passwd) && !isset($_SESSION['conf_isAuthenticated'])) {
 	$_SESSION['conf_message'] = _("No password was entered!");
 	/** go back to login if password is empty */
-	require('conflogin.php');
+	metaRefresh('conflogin.php');
 	exit;
 }
 
@@ -71,7 +71,7 @@ if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthentica
 	}
 	$_SESSION['conf_message'] = _("The password is invalid! Please try again.");
 	/** go back to login if password is invalid */
-	require('conflogin.php');
+	metaRefresh('conflogin.php');
 	exit;
 }
 $_SESSION['conf_isAuthenticated'] = $conf->getName();

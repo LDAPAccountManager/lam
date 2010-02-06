@@ -44,7 +44,7 @@ function startSecureSession() {
 	// start session
 	if (isset($_SESSION)) unset($_SESSION);
 	if (strtolower(session_module_name()) == 'files') {
-		$sessionDir = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/sess";
+		$sessionDir = dirname(__FILE__) . "/../sess";
 		session_save_path($sessionDir);
 	}
 	@session_start();

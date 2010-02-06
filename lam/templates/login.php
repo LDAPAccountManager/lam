@@ -45,14 +45,49 @@ include_once("../lib/config.inc"); // Include config.inc which provides Config c
 
 // set session save path
 if (strtolower(session_module_name()) == 'files') {
-	session_save_path("../sess");
+	session_save_path(dirname(__FILE__) . '/../sess');
 }
-session_start(); // Start LDAP Account Manager session
+
+// start empty session and change ID for security reasons
+session_start();
+session_destroy();
+session_start();
+session_regenerate_id(true);
 
 // save last selected login profile
 if(isset($_POST['profile'])) {
 	setcookie("lam_default_profile", $_POST['profile'], time() + 365*60*60*24);
 }
+
+// init some session variables
+$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
+
+$default_Config = new LAMCfgMain();
+$_SESSION["cfgMain"] = $default_Config;
+$default_Profile = $default_Config->default;
+if(isset($_COOKIE["lam_default_profile"])) {
+	$default_Profile = $_COOKIE["lam_default_profile"];
+}
+// Reload loginpage after a profile change
+if(isset($_POST['profileChange'])) {
+	logNewMessage(LOG_DEBUG, "Change server profile to " . $_POST['profile']);
+	$_SESSION['config'] = new LAMConfig($_POST['profile']); // Recreate the config object with the submited
+}
+// Load login page
+else {
+	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
+}
+
+$_SESSION['language'] = $_SESSION["config"]->get_defaultLanguage();
+if (isset($_POST['language'])) {
+	$_SESSION['language'] = $_POST['language']; // Write selected language in session
+}
+$current_language = explode(":",$_SESSION['language']);
+$_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+$_SESSION['header'] .= "<html>\n<head>\n";
+$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
+$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
+
 
 /**
 * Displays the login window.
@@ -79,15 +114,6 @@ function display_LoginPage($config_object) {
 		setcookie("Key", base64_encode($key), 0, "/");
 		setcookie("IV", base64_encode($iv), 0, "/");
 	}
-
-	$_SESSION['language'] = $config_object->get_defaultLanguage();
-
-	$current_language = explode(":",$_SESSION['language']);
-	$_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
-	$_SESSION['header'] .= "<html>\n<head>\n";
-	$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
-	$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
-
 	// loading available languages from language.conf file
 	$languagefile = "../config/language";
 	if(is_file($languagefile) == True)
@@ -347,8 +373,6 @@ function display_LoginPage($config_object) {
 
 // checking if the submitted username/password is correct.
 if(!empty($_POST['checklogin'])) {
-	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
-
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
@@ -419,12 +443,6 @@ if(!empty($_POST['checklogin'])) {
 		$result = $_SESSION['ldap']->connect($username,$_POST['passwd']); // Connect to LDAP server for verifing username/password
 		if($result === 0) {// Username/password correct. Do some configuration and load main frame.
 			$_SESSION['loggedIn'] = true;
-			$_SESSION['language'] = $_POST['language']; // Write selected language in session
-			$current_language = explode(":",$_SESSION['language']);
-			$_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
-			$_SESSION['header'] .= "<html>\n<head>\n";
-			$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
-			$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
 			// set security settings for session
 			$_SESSION['sec_session_id'] = session_id();
 			$_SESSION['sec_client_ip'] = $_SERVER['REMOTE_ADDR'];
@@ -440,49 +458,28 @@ if(!empty($_POST['checklogin'])) {
 				// connection failed
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
-				display_LoginPage($_SESSION['config']);
-				exit();
 			}
 			elseif ($result == 81) {
 				// connection failed
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
-				display_LoginPage($_SESSION['config']);
-				exit();
 			}
 			elseif ($result == 49) {
 				// user name/password invalid. Return to login page.
 				$error_message = _("Wrong password/user name combination. Please try again.");
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' (' . $clientSource . ') failed to log in (wrong password).');
-				display_LoginPage($_SESSION['config']);
-				exit();
 			}
 			else {
 				// other errors
 				$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
 				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
-				display_LoginPage($_SESSION['config']);
-				exit();
 			}
+			display_LoginPage($_SESSION['config']);
+			exit();
 		}
 	}
 }
-// Reload loginpage after a profile change
-elseif(!empty($_POST['profileChange'])) {
-	logNewMessage(LOG_DEBUG, "Change server profile to " . $_POST['profile']);
-	$_SESSION['config'] = new LAMConfig($_POST['profile']); // Recreate the config object with the submited
-	display_LoginPage($_SESSION['config']); // Load login page
-}
-// Load login page
-else {
-	$default_Config = new LAMCfgMain();
-	$default_Profile = $default_Config->default;
-	if(isset($_COOKIE["lam_default_profile"])) {
-		$default_Profile = $_COOKIE["lam_default_profile"];
-	}
-	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
-	$_SESSION["cfgMain"] = $default_Config; // Create new CfgMain object
 
-	display_LoginPage($_SESSION["config"]); // Load Login page
-}
+display_LoginPage($_SESSION["config"]);
+
 ?>

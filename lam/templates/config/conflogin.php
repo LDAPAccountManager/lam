@@ -37,9 +37,10 @@ include_once('../../lib/status.inc');
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
-	session_save_path("../../sess");
+	session_save_path(dirname(__FILE__) . '/../../sess');
 }
-@session_start();
+session_start();
+session_regenerate_id(true);
 
 setlanguage();
 
