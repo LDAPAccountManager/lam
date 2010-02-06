@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -219,6 +219,9 @@ class LAMConfig {
 
 	/** LDAP cache timeout */
 	private $cachetimeout;
+	
+	/** LDAP search limit */
+	private $searchLimit = 0;
 
 	/** Active account types */
 	private $activeTypes = "user,group,host,smbDomain";
@@ -242,7 +245,7 @@ class LAMConfig {
 	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
-		'loginSearchFilter');
+		'loginSearchFilter', 'searchLimit');
 
 
 	/**
@@ -385,6 +388,7 @@ class LAMConfig {
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
+			if (!in_array("searchLimit", $saved)) array_push($file_array, "\n\n# LDAP search limit.\n" . "searchLimit: " . $this->searchLimit . "\n");
 			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
 			if (!in_array("accessLevel", $saved)) array_push($file_array, "\n\n# Access level for this profile.\n" . "accessLevel: " . $this->accessLevel . "\n");
 			if (!in_array("loginMethod", $saved)) array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
@@ -797,6 +801,29 @@ class LAMConfig {
 	public function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	/**
+	* Returns the LDAP search limit.
+	*
+	* @return integer search limit
+	*/
+	public function get_searchLimit() {
+		return $this->searchLimit;
+	}
+
+	/**
+	* Sets the LDAP search limit.
+	*
+	* @param integer $value new search limit
+	* @return boolean true if $value has correct format
+	*/
+	public function set_searchLimit($value) {
+		if (is_numeric($value) && ($value > -1)) {
+			$this->searchLimit = $value;
 		}
 		else return false;
 		return true;

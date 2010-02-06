@@ -34,6 +34,9 @@ scriptRights: 750
 # Number of minutes LAM caches LDAP searches.
 cachetimeout: 5
 
+# LDAP search limit.
+searchLimit: 0
+
 # Module settings
 
 modules: posixAccount_minUID: 10000

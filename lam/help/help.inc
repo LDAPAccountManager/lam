@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2009 Roland Gruber
+                2003 - 2010 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,6 +116,8 @@ $helpArray = array (
 					"Text" => _("The number of users who may login to LAM is restricted. This can be either a fixed list of DNs or LAM can search LDAP to find a DN which matches the given user name.")),
 				"221" => array ("Headline" => _("LDAP search"),
 					"Text" => _("Please enter the LDAP suffix where LAM should start to search for users. The LDAP filter needs to match the given user name to exactly one DN. The value \"%USER%\" will be replaced by the user name from the login page.")),
+				"222" => array ("Headline" => _("LDAP search limit"),
+					"Text" => _("Here you can set a limit for LDAP searches. This will restrict the number of results for LDAP searches. Please use this if LAM's LDAP queries produce too much load.")),
 				"230" => array ("Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("Headline" => _("Profile management") . " - " . _("Rename profile"),

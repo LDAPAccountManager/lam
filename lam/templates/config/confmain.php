@@ -285,6 +285,28 @@ echo "<td>";
 printHelpLink(getHelp('', '214'), '214');
 echo "</td></tr>\n";
 
+// LDAP search limit
+$searchLimitOptions = array(
+array(0, '-'), array(100, 100), array(500, 500),
+array(1000, 1000), array(5000, 5000), array(10000, 10000),
+array(50000, 50000), array(100000, 100000)
+);
+echo ("<tr><td align=\"right\"><b>".
+	_("LDAP search limit") . ": </b></td>".
+	"<td><select tabindex=\"$tabindex\" name=\"searchLimit\">\n");
+for ($i = 0; $i < sizeof($searchLimitOptions); $i++) {
+	$selected = "";
+	if ($searchLimitOptions[$i][0] == $conf->get_searchLimit()) {
+		$selected = "selected";
+	}
+	echo "<option value=\"" . $searchLimitOptions[$i][0] . "\" $selected>" . $searchLimitOptions[$i][1] . "</option>";
+}
+echo ("</select></td>\n");
+$tabindex++;
+echo "<td>";
+printHelpLink(getHelp('', '222'), '222');
+echo "</td></tr>\n";
+
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
 	// new line
@@ -540,6 +562,7 @@ function checkInput() {
 	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
 	}
+	$conf->set_searchLimit($_POST['searchLimit']);
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
 	}
