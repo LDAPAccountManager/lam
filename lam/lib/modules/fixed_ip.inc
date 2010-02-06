@@ -191,11 +191,8 @@ class fixed_ip extends baseModule {
 	 * @param array $attr list of attributes
 	 */
 	function load_attributes($attr) {
-	
 	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-	    
-		    $sr = @ldap_search($_SESSION['ldap']->server(),'cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),
-		    		'(objectClass=dhcpHost)', array(), 0, 0, 0, LDAP_DEREF_NEVER);
+		    $sr = @ldap_search($_SESSION['ldap']->server(),$this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', array(), 0, 0, 0, LDAP_DEREF_NEVER);
 		    if ($sr) {
 		        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		        if ($entries) {
@@ -352,9 +349,6 @@ class fixed_ip extends baseModule {
             $pcs = array();
 	        foreach($this->fixed_ip AS $id=>$arr) {
 				// pc name
-				$result = @ldap_search($_SESSION['ldap']->server(),"cn=".$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].",".$_SESSION['config']->get_Suffix('dhcp'),
-							'(cn='.$_POST['pc_'.$id].')', array(), 0, 0, 0, LDAP_DEREF_NEVER);
-	            $num = (@ldap_get_entries($_SESSION['ldap']->server(), $result)=="")?0:ldap_get_entries($_SESSION['ldap']->server(), $result);
 				$pcError = "";
 				if (!$this->processed) {
                 	$pcError = "";

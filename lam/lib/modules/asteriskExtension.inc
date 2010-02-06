@@ -261,35 +261,24 @@ class asteriskExtension extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function display_html_user() {
-		// load list with all users with objectClass AsteriskSIPUser
-		$searchroot = $_SESSION['config']->get_Suffix('user');
+		// load list with all potential owners
+		$searchScope = 'user';
 		if ($this->searchOwnersInTreeSuffix) {
-			$searchroot = $_SESSION['config']->get_Suffix('tree');
+			$searchScope = 'tree';
 		}
+		$searchClass = 'inetOrgPerson';
 		if ($this->filterOwnerForAsteriskAccounts) {
-			$filter = 'objectClass=AsteriskSIPUser';
+			$searchClass = 'AsteriskSIPUser';
 		}
-		else {
-			$filter = 'objectClass=inetOrgPerson';
-		}
-		$ldapc = $_SESSION['ldap']->server();
-		$attributes = array("DN", "cn");
-		$res = ldap_search($ldapc,$searchroot,$filter,$attributes,0,0,0,LDAP_DEREF_NEVER);
-		if (!$res) {
-			return array(array("ERROR", _("Unable to load LDAP entry:") . " " .$searchroot, ldap_error($_SESSION['ldap']->server())));
-		}
-		$count = ldap_count_entries($ldapc, $res);
-		$entry = ldap_first_entry($ldapc, $res);
+		$entries = searchLDAPByAttribute(null, null, $searchClass, array('dn'), array($searchScope));
 		$users_dn = array();
-		while ($entry) {
-		$dn = ldap_get_dn($ldapc, $entry);
-		if (isset($dn) && (!isset($this->attributes['member']) || !in_array($dn, $this->attributes['member']))) {
-			$users_dn[] = $dn;
-		}
-			$entry = ldap_next_entry($ldapc, $entry);
+		for ($i = 0; $i < sizeof($entries); $i++) {
+			$dn = $entries[$i]['dn'];
+			if (isset($dn) && (!isset($this->attributes['member']) || !in_array($dn, $this->attributes['member']))) {
+				$users_dn[] = $dn;
+			}
 		}
 		$members = $this->attributes['member'];
-
 		$return[] =	array(array('kind' => 'table', 'value' => array(
 			array(
 				array('kind' => 'table', 'value' => array(
@@ -392,18 +381,11 @@ class asteriskExtension extends baseModule {
 		}
 
 		if (!isset($this->orig['AstExtension']) || !isset($this->orig['AstPriority']) || ($this->orig['AstExtension'][0] != $this->attributes['AstExtension'][0])
-			|| ($this->orig['AstPriority'][0] != $this->attributes['AstPriority'][0])) {			
-			$searchroot = $_SESSION['config']->get_Suffix($this->get_scope());
+			|| ($this->orig['AstPriority'][0] != $this->attributes['AstPriority'][0])) {
 			$filter = '(& (objectClass=AsteriskExtension) (AstExtension=' . $this->attributes['AstExtension'][0] .') (AstPriority=' . $this->attributes['AstPriority'][0] .') )';
-			$ldapc = $_SESSION['ldap']->server();
-			$attributes = array("DN");
-			$res = ldap_search($ldapc,$searchroot,$filter,$attributes,0,0,0,LDAP_DEREF_NEVER);
-			if (!$res) {
-				return array(array("ERROR", _("Unable to load LDAP entry:") . " " .$searchroot, ldap_error($_SESSION['ldap']->server())));
-			}
-			$count = ldap_count_entries($ldapc, $res);
-			if($count > 0) {
-				$errors[] = $this->messages['AstExtensionAstPriority'][0];
+			$entries = searchLDAPByFilter($filter, array('dn'), array($this->get_scope()));
+			if (sizeof($entries) > 0) {
+				$errors[] = $this->messages['AstExtensionAstPriority'][0];	
 			}
 		}
 

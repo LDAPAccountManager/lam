@@ -218,16 +218,8 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			// check for duplicate caller ID
 			else if (!isset($this->orig['AstAccountCallerID'][0]) || (($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0]))) {
-				$searchroot =  $_SESSION['config']->get_Suffix('user');
-				$filter = '(& (objectClass=AsteriskSIPUser) (AstAccountCallerID=' . $this->attributes['AstAccountCallerID'][0] .'))';
-				$ldapc =  $_SESSION['ldap']->server();
-				$attributes = array("DN", "AstAccountCallerID");
-				$res = ldap_search($ldapc,$searchroot,$filter,$attributes,0,0,0,LDAP_DEREF_NEVER);
-				if (!$res) {
-					return array(array("ERROR", _("Unable to load LDAP entry:") . " " .$searchroot, ldap_error($_SESSION['ldap']->server())));
-				}
-				$count = ldap_count_entries($ldapc, $res);
-				if ($count > 0) {
+				$entries = searchLDAPByAttribute('AstAccountCallerID', $this->attributes['AstAccountCallerID'][0], 'AsteriskSIPUser', array('dn'), array('user'));
+				if (sizeof($entries) > 0) {
 					$errors[] = $this->messages['AstAccountCallerID'][2];
 				}
 			}
