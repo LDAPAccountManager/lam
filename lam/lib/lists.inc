@@ -811,21 +811,14 @@ class lamList {
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
 		$filter = "(&" . $module_filter  . ")";
 		$attrs = $this->attrArray;
-		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($this->suffix), $filter, $attrs, 0, 0, 0, LDAP_DEREF_NEVER);
-		if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
+		$entries = searchLDAP($this->suffix, $filter, $attrs);
+		if (getLastLDAPErrorNumber() == 4) {
 			StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See the manual for instructions to solve this problem."));
 		}
-		if ($sr) {
-			$info = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
-			$info = cleanLDAPResult($info);
-			ldap_free_result($sr);
-			// save results
-			$this->entries = $info;
+		elseif (getLastLDAPErrorNumber() > 0) {
+			StatusMessage("ERROR", _("LDAP search failed! Please check your preferences."), getLastLDAPErrorMessage());
 		}
-		else {
-			$this->entries = array();
-			StatusMessage("ERROR", _("LDAP search failed! Please check your preferences."));
-		}
+		$this->entries = $entries;
 		// generate list of possible suffixes
 		$this->possibleSuffixes = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($this->type));
 	}

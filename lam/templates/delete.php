@@ -244,14 +244,8 @@ if ($_POST['delete']) {
 * @return interger number of childs
 */
 function getChildCount($dn) {
-	$return = 0;
-	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($dn), 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
-	if ($sr) {
-		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		$entries = cleanLDAPResult($entries);
-		$return = sizeof($entries) - 1;
-	}
-	return $return;
+	$entries = searchLDAP(escapeDN($dn), 'objectClass=*', array('dn'));
+	return (sizeof($entries) - 1);
 }
 
 /**

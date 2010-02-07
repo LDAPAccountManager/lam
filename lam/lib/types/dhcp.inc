@@ -134,30 +134,21 @@ class lamDHCPList extends lamList {
 	 * @param string $attribute attribute name
 	 */
 	public function listPrintTableCellContent(&$entry, &$attribute) {
-	    // Fixed Ips
+	    // Fixed IPs
         if ($attribute=="fixed_ips") {
         	// find all fixed addresses:
-        	$ldap = $_SESSION['ldap'];
-        	$sr = @ldap_search($ldap->server(),$entry['dn'],"objectClass=dhcpHost", array('dhcpstatements', 'dhcphwaddress', 'cn'), 0, 0, 0, LDAP_DEREF_NEVER);
-        	if ($sr) {
-	        	$get = ldap_get_entries($ldap->server(),$sr);
-	        	
-	        	// Now list all fixed_ips:
+			$entries = searchLDAP($entry['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
+			if (sizeof($entries) > 0) {
 				echo "<table border=\"0\" width=\"100%\">";
-	        	$this->fixed_ips = array();
-	        	if (isset($get)) {
-		        	foreach($get AS $id=>$arr) {
-		        		if (is_numeric($id)) {
-		        				echo "<tr>";
-		        					echo "<td width=\"25%\">".array_pop(explode(" ",$get[$id]['dhcpstatements'][0]))."</td>";
-		        					echo "<td width=\"35%\">".array_pop(explode(" ",$get[$id]['dhcphwaddress'][0]))."</td>";
-		        					echo "<td width=\"40%\">".$get[$id]['cn'][0]."</td>";
-		        				echo "</tr>";
-		        		}
-		        	}
-	        	}
-	        	echo "</table>";
-        	}
+				for ($i = 0; $i < sizeof($entries); $i++) {
+					echo "<tr>";
+					echo "<td width=\"25%\">".array_pop(explode(" ",$entries[$i]['dhcpstatements'][0]))."</td>";
+					echo "<td width=\"35%\">".array_pop(explode(" ",$entries[$i]['dhcphwaddress'][0]))."</td>";
+					echo "<td width=\"40%\">".$entries[$i]['cn'][0]."</td>";
+					echo "</tr>";
+				}
+				echo "</table>";
+			}
         }
 		// fixed ip address
         elseif ($attribute=="dhcpstatements") {

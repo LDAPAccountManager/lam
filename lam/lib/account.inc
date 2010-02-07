@@ -548,7 +548,8 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	}
 	for ($s = 0; $s < sizeof($scopes); $s++) {
 		// search LDAP
-		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
+							$filter, $attributes, 0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
@@ -566,12 +567,14 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
  * @param String $filter
  * @param array $attributes list of attributes to return
  * @param array $scopes account types
+ * @return array list of found entries
  */
 function searchLDAPByFilter($filter, $attributes, $scopes) {
 	$return = array();
 	for ($s = 0; $s < sizeof($scopes); $s++) {
 		// search LDAP
-		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
+							$filter, $attributes, 0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
@@ -583,6 +586,45 @@ function searchLDAPByFilter($filter, $attributes, $scopes) {
 	return $return;
 }
 
+/**
+ * Runs an LDAP search.
+ *
+ * @param String $suffix LDAP suffix
+ * @param String $filter filter
+ * @param array $attributes list of attributes to return
+ * @return array list of found entries
+ */
+function searchLDAP($suffix, $filter, $attributes) {
+	$return = array();
+	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($suffix), $filter, $attributes,
+						0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+	if ($sr) {
+		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($entries) {
+			$return = cleanLDAPResult($entries);
+		}
+		@ldap_free_result($sr);
+	}
+	return $return;
+}
+
+/**
+ * Returns the error number of the last LDAP command.
+ *
+ * @return int error number (0 if all was ok)
+ */
+function getLastLDAPErrorNumber() {
+	return ldap_errno($_SESSION["ldap"]->server());
+}
+
+/**
+ * Returns the error message of the last LDAP command.
+ *
+ * @return String error message
+ */
+function getLastLDAPErrorMessage() {
+	return ldap_error($_SESSION["ldap"]->server());
+}
 
 /**
  * Cleans the result of an LDAP search.

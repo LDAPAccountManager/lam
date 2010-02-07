@@ -192,21 +192,16 @@ class fixed_ip extends baseModule {
 	 */
 	function load_attributes($attr) {
 	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-		    $sr = @ldap_search($_SESSION['ldap']->server(),$this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', array(), 0, 0, 0, LDAP_DEREF_NEVER);
-		    if ($sr) {
-		        $entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		        if ($entries) {
-					for ($i=0; $i < $entries["count"]; $i++) {
-						$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
-						$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-						$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
-		
-						$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
-						$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-						$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
-					}
-		        }
-		    }
+	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', array('cn', 'dhcphwaddress', 'dhcpstatements'));
+			for ($i=0; $i < sizeof($entries); $i++) {
+				$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
+				$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
+				$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+
+				$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
+				$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
+				$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+			}
 		}
 	}
 
