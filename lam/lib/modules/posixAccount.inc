@@ -1430,7 +1430,7 @@ class posixAccount extends baseModule implements passwordService {
 					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
-					$errMsg = str_replace('%', '%%', $this->messages['userPassword'][4]);
+					$errMsg = str_replace('%', '%%', $this->messages['userPassword'][4]); // double "%" because of later sprintf
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
