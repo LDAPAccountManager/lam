@@ -21,7 +21,7 @@
 
 AC_PREREQ(2.53)
 AC_INIT(ldap-account-manager, @@VERSION@@, lam-public@lists.sourceforge.net)
-AC_CONFIG_SRCDIR(INSTALL)
+AC_CONFIG_SRCDIR(README)
 AC_PREFIX_DEFAULT(/usr/local/lam)
 
 # work around those that want to build in srcdir
