@@ -24,11 +24,6 @@ AC_INIT(ldap-account-manager, @@VERSION@@, lam-public@lists.sourceforge.net)
 AC_CONFIG_SRCDIR(README)
 AC_PREFIX_DEFAULT(/usr/local/lam)
 
-# work around those that want to build in srcdir
-if test x$srcdir = "x." ; then
-	exec $0 --srcdir=`pwd` $*
-fi
-
 # Does make set variable $(MAKE)
 AC_PROG_MAKE_SET
 
