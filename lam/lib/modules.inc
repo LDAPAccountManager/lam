@@ -1253,12 +1253,13 @@ class accountContainer {
 		echo "<tr class=\"" . $this->type . "list\"><td colspan=4>\n";
 		echo "<table>\n";
 		echo "<tr><td>\n";
-			echo _('Password') . '</td><td><input type="password" name="newPassword1">';
+			echo _('Password') . '</td><td><input type="password" name="newPassword1" tabindex=1>';
 
 		echo '</td>';
 		echo '<td width=30 rowspan=2>&nbsp;</td>';
 		echo '<td rowspan=3 valign="top">';
 		echo '<table>';
+		$tabindex = 3;
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
 				echo '<tr><td>';
@@ -1266,26 +1267,37 @@ class accountContainer {
 				if ($buttonImage != null) {
 					$buttonImage = '<img src="../../graphics/' . $buttonImage . '" alt="' . getModuleAlias($name, $this->type) . '"></td><td>';
 				}
-				echo '<input type="checkbox" checked name="cb_' . $name . '"></td><td>' . $buttonImage . getModuleAlias($name, $this->type) . "<br>\n";
+				echo '<input type="checkbox" checked name="cb_' . $name . '" tabindex=' . $tabindex . '></td><td>' . $buttonImage . getModuleAlias($name, $this->type) . "<br>\n";
 				echo '</td></tr>';
+				$tabindex++;
 			}
 		}
 		echo '</table></td>';
 		echo "</tr>";
 		
 		echo "<tr><td>";
-			echo _('Repeat password') . '</td><td><input type="password" name="newPassword2">';
+			echo _('Repeat password') . '</td><td><input type="password" name="newPassword2" tabindex=2>';
 		echo "</td></tr>\n";
 		echo "<tr><td colspan=3 valign=\"top\"><br><br>";
-			echo '<input type="submit" name="setNewPasswordOk" value="'. _('Ok') . '">';
+			echo '<input type="submit" name="setNewPasswordOk" value="'. _('Ok') . "\" tabindex=$tabindex>";
+			$tabindex++;
 			echo '&nbsp;';
-			echo '<input type="submit" name="setNewPasswordCancel" value="'. _('Cancel') . '">';
+			echo '<input type="submit" name="setNewPasswordCancel" value="'. _('Cancel') . "\" tabindex=$tabindex>";
+			$tabindex++;
 			echo '&nbsp;&nbsp;&nbsp;';
-			echo '<input type="submit" name="setNewPasswordRandom" value="'. _('Set random password') . '">';
+			echo '<input type="submit" name="setNewPasswordRandom" value="'. _('Set random password') . "\" tabindex=$tabindex>";
+			$tabindex++;
 			echo "</td></tr>\n";
 		echo "</table>\n";
 		echo "</td></tr>\n";
 		echo "</table>\n";
+		// set focus on password field
+		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+		echo "<!--\n";
+		echo "myElement = document.getElementsByName('newPassword1')[0];\n";
+		echo "myElement.focus();\n";
+		echo "//-->\n";
+		echo "</script>\n";
 		$this->printPageFooter();
 	}
 	
