@@ -89,7 +89,11 @@ AC_ARG_WITH(httpd-group,
 )
 AC_SUBST(HTTPD_GROUP)
 
-WEB_ROOT=${prefix}
+if test ${prefix} = NONE; then
+	WEB_ROOT=${ac_default_prefix}
+else
+	WEB_ROOT=${prefix}
+fi
 AC_ARG_WITH(web-root,
     [  --with-web-root=PATH	Specify where the LAM files that the web server
 			uses should be installed.
