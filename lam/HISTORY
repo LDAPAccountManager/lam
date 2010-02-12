@@ -6,6 +6,7 @@ March 2010 3.0.0
    -> Multi-delete not working (2931458)
    -> Samba: can/must change password needs to be read from domain policy (2919236)
    -> DNs which include "#" are not editable/deletable (2931461)
+   -> fixed configure/Makefile
 
 16.12.2009 2.9.0
   - Asterisk support
