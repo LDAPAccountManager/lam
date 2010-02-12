@@ -64,7 +64,7 @@ autoconf
 rm configure.ac
 rm -r autom4te.cache
 cd ..
-tar cfz ldap-account-manager-$VERSION.tar.gz --owner=root --group=root ldap-account-manager-$VERSION
+tar cfz ldap-account-manager-$VERSION.tar.gz --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 
 # tar.gz of LAM Pro
 cd LAMPro
@@ -77,7 +77,7 @@ autoconf
 rm configure.ac
 rm -r autom4te.cache
 cd ..
-tar cfz ldap-account-manager-$VERSION.tar.gz --owner=root --group=root ldap-account-manager-$VERSION
+tar cfz ldap-account-manager-$VERSION.tar.gz --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 cd ..
 
 # Debian
