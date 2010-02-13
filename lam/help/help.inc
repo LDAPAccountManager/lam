@@ -145,7 +145,7 @@ $helpArray = array (
 				"242" => array ("Headline" => _("Password policy"),
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
 				"250" => array ("Headline" => _("Filter"),
-					"Text" => _("Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will filter case-insensitive.")),
+					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor, file upload

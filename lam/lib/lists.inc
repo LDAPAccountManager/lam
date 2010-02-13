@@ -78,6 +78,9 @@ class lamList {
 
 	/** filter string to include in URL */
 	protected $filterText;
+	
+	/** LDAP filter part which was entered by user via filter boxes */
+	protected $filterPart = '';
 
 	/** list of possible LDAP suffixes(organizational units) */
 	protected $possibleSuffixes;
@@ -149,30 +152,31 @@ class lamList {
 		// print HTML head
 		$this->listPrintHeader();
 		// refresh data if needed
-		if ($this->refresh) $this->listRefreshData();
-		// filter entries
-		$filteredEntries = $this->listFilterAccounts();
+		if ($this->refresh) {
+			$this->listBuildFilter();
+			$this->listRefreshData();
+		}
 		// sort rows by sort column
-		if ($filteredEntries) {
-			$filteredEntries = $this->listSort($filteredEntries);
+		if (isset($this->entries)) {
+			$this->entries = $this->listSort($this->entries);
 		}
 		// show form
 		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
 		// draw account list if accounts were found
-		if (sizeof($filteredEntries) > 0) {
+		if (sizeof($this->entries) > 0) {
 			// buttons
 			$this->listPrintButtons(false);
 			echo ("<br>\n");
 			// navigation bar
-			$this->listDrawNavigationBar(sizeof($filteredEntries));
+			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
 			// account table head
 			$this->listPrintTableHeader();
 			// account table body
-			$this->listPrintTableBody($filteredEntries);
+			$this->listPrintTableBody($this->entries);
 			echo ("<br>\n");
 			// navigation bar
-			$this->listDrawNavigationBar(sizeof($filteredEntries));
+			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
 			// buttons
 			$this->listPrintButtons(false);
@@ -183,7 +187,7 @@ class lamList {
 			$this->listPrintButtons(true);
 			echo ("<hr style=\"background-color: #999999;\">\n");
 			// navigation bar
-			$this->listDrawNavigationBar(sizeof($filteredEntries));
+			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
 			// account table head
 			$this->listPrintTableHeader();
@@ -194,12 +198,11 @@ class lamList {
 
 	/**
 	* Builds the regular expressions from the filter values.
-	*
-	* @return array filter data array($attribute => array('regex' => $reg, 'original' => $orig))
-	* $reg is the regular expression to use, $orig the user's unmodified input string
 	*/
 	protected function listBuildFilter() {
 		$filter = array();
+		$filterParam = "";
+		$LDAPFilterPart = "";
 		// build filter array
 		for ($i = 0; $i < sizeof($this->attrArray); $i++) {
 			$foundFilter = null;
@@ -210,68 +213,13 @@ class lamList {
 				$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 			}
 			if (isset($foundFilter) && preg_match('/^([\p{L}\p{N} _\\*\\$\\.-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
-				$filter[$this->attrArray[$i]]['original'] = $foundFilter;
-				$filter[$this->attrArray[$i]]['regex'] = $foundFilter;
-				// replace special characters
-				$filter[$this->attrArray[$i]]['regex'] = str_replace('.', '\\.', $filter[$this->attrArray[$i]]['regex']);
-				$filter[$this->attrArray[$i]]['regex'] = str_replace("*", "(.)*", $filter[$this->attrArray[$i]]['regex']);
-				$filter[$this->attrArray[$i]]['regex'] = str_replace('$', '[$]', $filter[$this->attrArray[$i]]['regex']);
-				// add string begin and end
-				$filter[$this->attrArray[$i]]['regex'] = "^" . $filter[$this->attrArray[$i]]['regex'] . "$";
+				$filterParam .= "&amp;filter" . $this->attrArray[$i] . '=' . $foundFilter;
+				$LDAPFilterPart .= '(' . $this->attrArray[$i] . '=' . $foundFilter . ')';
 			}
 		}
-		// save filter string
-		$filterAttributes = array_keys($filter);
-		$searchFilter = array();
-		for ($i = 0; $i < sizeof($filterAttributes); $i++) {
-			$searchFilter[] = "filter" . $filterAttributes[$i] . "=" . $filter[$filterAttributes[$i]]['original'];
-		}
-		if (sizeof($searchFilter) > 0) {
-			$searchFilter = "&amp;" . implode("&amp;", $searchFilter);
-		}
-		else {
-			$searchFilter = "";
-		}
-		$this->filterText = $searchFilter;
-		return $filter;
+		$this->filterText = $filterParam;
+		$this->filterPart = $LDAPFilterPart;
 	}
-
-
-	/**
-	* Removes all entries which do not fit to the filter.
-	*
-	* @return array filtered list of accounts
-	*/
-	protected function listFilterAccounts() {
-		$entries = array();
-		$filter = $this->listBuildFilter();
-		$attributes = array_keys($filter);
-		$attributeCount = sizeof($attributes);
-		$entryCount = sizeof($this->entries);
-		for ($r = 0; $r < $entryCount; $r++) {
-			$skip = false;
-			for ($a = 0; $a < $attributeCount; $a++) {
-				// check if filter fits
-				$found = false;
-				for ($i = 0; $i < sizeof($this->entries[$r][$attributes[$a]]); $i++) {
-					if (preg_match('/' . $filter[$attributes[$a]]['regex'] . '/i', $this->entries[$r][$attributes[$a]][$i])) {
-						$found = true;
-						break;
-					}
-				}
-				if (!$found) {
-					$skip = true;
-					break;
-				}
-			}
-			if (!$skip) {
-				$entries[] = &$this->entries[$r];
-			}
-		}
-		if (sizeof($entries) == 0) StatusMessage("WARN", $this->labels['error_noneFound']);
-		return $entries;
-	}
-
 
 	/**
 	* Sorts an account list by a given attribute
@@ -800,7 +748,9 @@ class lamList {
 		// check if LDAP data should be refreshed
 		$this->refresh = true;
 		if (isset($_GET['norefresh'])) $this->refresh = false;
-		if (isset($_POST['refresh'])) $this->refresh = true;
+		if (isset($_POST['refresh']) || isset($_POST['apply_filter'])) {
+			$this->refresh = true;
+		}
 	}
 
 	/**
@@ -809,7 +759,7 @@ class lamList {
 	protected function listRefreshData() {
 		// configure search filter
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
-		$filter = "(&" . $module_filter  . ")";
+		$filter = "(&" . $module_filter . $this->filterPart  . ")";
 		$attrs = $this->attrArray;
 		$entries = searchLDAP($this->suffix, $filter, $attrs);
 		if (getLastLDAPErrorNumber() == 4) {
