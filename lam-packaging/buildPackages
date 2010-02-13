@@ -8,6 +8,8 @@ echo -e "Usage: buildPackage <CVS tag>"
 exit
 fi
 
+set -e
+
 cd /daten/projekte/lam/pakete
 
 export CVS_TAG=$1
