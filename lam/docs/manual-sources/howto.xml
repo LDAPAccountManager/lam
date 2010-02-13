@@ -102,7 +102,7 @@ Have fun!
   <chapter>
     <title>Installation</title>
 
-    <section>
+    <section id="a_install">
       <title>New installation</title>
 
       <section>
@@ -286,8 +286,37 @@ Have fun!
             <title>With configure script</title>
 
             <para>Instead of manually copying files you can also use the
-            included configure script to install LAM. See "./configure --help"
-            for a list of install options.</para>
+            included configure script to install LAM. Just run these commands
+            in the extracted directory:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>./configure</para>
+              </listitem>
+
+              <listitem>
+                <para>make install</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>Options for "./configure":</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>--with-httpd-user=USER USER is the name of your Apache
+                user account (default httpd)</para>
+              </listitem>
+
+              <listitem>
+                <para>--with-httpd-group=GROUP GROUP is the name of your
+                Apache group (default httpd)</para>
+              </listitem>
+
+              <listitem>
+                <para>--with-web-root=DIRECTORY DIRECTORY is the name where
+                LAM should be installed (default /usr/local/lam)</para>
+              </listitem>
+            </itemizedlist>
           </section>
         </section>
 
@@ -454,10 +483,13 @@ Have fun!
     </section>
 
     <section>
-      <title>Upgrading LAM</title>
+      <title>Upgrading LAM or migrate from LAM to LAM Pro</title>
 
       <section>
         <title>Migrating configuration files</title>
+
+        <para>First, you need to make a backup of your existing configuration
+        files.</para>
 
         <para>LAM stores all configuration files in the "config" folder.
         Please backup the following files and copy them after the new version
@@ -481,11 +513,28 @@ Have fun!
           <member>config/passwordMailTemplate.txt</member>
         </simplelist>
 
-        <para>Please check also the version specific instructions. They might
-        include additional actions.</para>
+        <para>Second, <link linkend="a_uninstall">uninstall</link> your
+        current LAM (Pro) installation.</para>
+
+        <para>Third, <link linkend="a_install">install</link> the new LAM
+        (Pro) release. Skip the part about setting up LAM configuration
+        files.</para>
+
+        <para>Finally, restore your configuration files from the backup. Copy
+        all files from the backup folder to the config folder in your LAM Pro
+        installation. Do not simply replace the folder because the new LAM
+        (Pro) release might include additional files in this folder. Overwrite
+        any existing files with your backup files.</para>
+
+        <para>Now open your webbrowser and point it to the LAM login page. All
+        your settings should be migrated.</para>
+
+        <para>Please check also the <link linkend="a_versUpgrade">version
+        specific instructions</link>. They might include additional
+        actions.</para>
       </section>
 
-      <section>
+      <section id="a_versUpgrade">
         <title>Version specific upgrade instructions</title>
 
         <section>
@@ -502,6 +551,771 @@ Have fun!
           <para>No changes.</para>
         </section>
       </section>
+    </section>
+
+    <section id="a_uninstall">
+      <title>Unistalltion of LAM (Pro)</title>
+
+      <para>If you used the prepackaged installation packages then remove the
+      ldap-account-manager and ldap-account-manager-lamdaemon packages.</para>
+
+      <para>Otherwise, remove the folder where you installed LAM via configure
+      or by copying the files.</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Configuration</title>
+
+    <para>TODO</para>
+
+    <section>
+      <title>General settings</title>
+
+      <para>TODO</para>
+    </section>
+
+    <section>
+      <title>Server profiles</title>
+
+      <para>TODO<screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/lamProTypes.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Managing entries in your LDAP directory</title>
+
+    <para>This chapter will give you instructions how to manage the different
+    LDAP entries in your directory.</para>
+
+    <para>Please note that not all account types are manageable with the free
+    LAM release. LAM Pro provides some more account types and modules to
+    support additional LDAP object classes.</para>
+
+    <para><emphasis role="bold">Additional types:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Group of names</para>
+      </listitem>
+
+      <listitem>
+        <para>Aliases</para>
+      </listitem>
+
+      <listitem>
+        <para>NIS objects</para>
+      </listitem>
+    </itemizedlist>
+
+    <para><emphasis role="bold">Additional modules:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Group of names (groupOfNames)</para>
+      </listitem>
+
+      <listitem>
+        <para>Group of unique names (groupOfUniqueNames)</para>
+      </listitem>
+
+      <listitem>
+        <para>Unix (rfc2307bisPosixGroup)</para>
+      </listitem>
+
+      <listitem>
+        <para>Alias (aliasEntry)</para>
+      </listitem>
+
+      <listitem>
+        <para>User name (uidObject)</para>
+      </listitem>
+
+      <listitem>
+        <para>NIS object (nisObject)</para>
+      </listitem>
+
+      <listitem>
+        <para>Custom scripts (customScripts)</para>
+      </listitem>
+    </itemizedlist>
+
+    <section>
+      <title>Groups</title>
+
+      <para></para>
+
+      <section>
+        <title>Unix groups with rfc2307bis schema (LAM Pro only)</title>
+
+        <para>Some applications (e.g. Suse Linux) use the rfc2307bis schema
+        for Unix accounts instead of the nis schema. In this case group
+        accounts are based on the object class groupOf(Unique)Names. The
+        object class is auxiliary in this case.</para>
+
+        <para>LAM Pro supports these groups with a special account module:
+        <emphasis role="bold">rfc2307bisPosixGroup</emphasis></para>
+
+        <para>Use this module only if your system depends on the rfc2307bis
+        schema. The module can be selected in the LAM configuration.</para>
+
+        <para><screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/rfc2307bis.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Hosts</title>
+
+      <para></para>
+
+      <section>
+        <title>IP addresses (LAM Pro only)</title>
+
+        <para>You can manage the IP addresses of host accounts with the ipHost
+        module. It manages the following information:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>IP addresses (IPv4/IPv6)</para>
+          </listitem>
+
+          <listitem>
+            <para>location of the host</para>
+          </listitem>
+
+          <listitem>
+            <para>manager: the person who is responsible for the host</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You can activate this extension by adding the module ipHost to
+        the list of active host modules.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/ipHost.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+    </section>
+
+    <section>
+      <title>Group of (unique) names (LAM Pro only)</title>
+
+      <para>These classes can be used to represent group relations. Since they
+      allow DNs as members you can also use them to represent nested groups.
+      Activate the account type "Group of names" in your LAM server profile to
+      use these account modules.</para>
+
+      <para>Group of (unique) names have four basic attributes:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Name: a unique name for the group</para>
+        </listitem>
+
+        <listitem>
+          <para>Description: optional description</para>
+        </listitem>
+
+        <listitem>
+          <para>Owner: the account which owns this group (optional)</para>
+        </listitem>
+
+        <listitem>
+          <para>Members: the members of the group (at least one is
+          required)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can add any accounts as members. This includes other groups
+      which leads to nested groups.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/groupOfNames1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Aliases (LAM Pro only)</title>
+
+      <para>Some applications use the object class "alias" to link LDAP
+      entries to other parts of the LDAP tree. Activate the account type
+      "Aliases" in your LAM server profile to use this account type.</para>
+
+      <para>Currently, only user accounts can be aliased with the "uidObject"
+      object class.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/alias.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>NIS objects (LAM Pro only)</title>
+
+      <para>You can manage NIS objects with LAM Pro. This allows you define
+      network mount points in LDAP.</para>
+
+      <para>Add the NIS objects type to your LAM configuration and then the
+      NIS objects module. This will add the NIS objects tab to LAM.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisObject.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Custom scripts (LAM Pro only)</title>
+
+      <para>LAM Pro allows you to execute scripts whenever an account is
+      created, modified or deleted. This can be useful to automate processes
+      which needed manual work afterwards (e.g. sending your user a welcome
+      mail or register a mailbox). To activate this feature please add the
+      "Custom scripts" module to all needed account types on the configuration
+      pages.</para>
+
+      <para>You can specify multiple scripts for each action type (e.g.
+      modify) and account type (e.g. user). The scripts need to be located on
+      the filesystem of your webserver and will be executed in its user
+      environment. E.g. if you webserver runs as user www-data with the group
+      www-data then the custom scripts will be run under this user with his
+      rights. The output of the scripts will be shown in LAM.</para>
+
+      <para>You can specify the scripts on the LAM configuration pages.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customScripts.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Syntax:</emphasis></para>
+
+      <para>Please enter one script per line. Each line has the following
+      format: &lt;account type&gt; &lt;action&gt; &lt;script&gt;</para>
+
+      <para>E.g.: user preModify /usr/bin/myCustomScript -u $uid$</para>
+
+      <para><emphasis role="bold">Account types:</emphasis></para>
+
+      <para>You can setup scripts for all available account types (e.g. user,
+      group, host, ...). Please see the help on the configuration page about
+      your current active account types.</para>
+
+      <para><emphasis role="bold">Actions:</emphasis></para>
+
+      <table>
+        <title>Action types</title>
+
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><emphasis role="bold">Action name</emphasis></entry>
+
+              <entry><emphasis role="bold">Description</emphasis></entry>
+            </row>
+
+            <row>
+              <entry>preCreate</entry>
+
+              <entry>executed before creating a new account (cancels operation
+              if a script returns an exit code &gt; 0)</entry>
+            </row>
+
+            <row>
+              <entry>postCreate</entry>
+
+              <entry>executed after creating a new account</entry>
+            </row>
+
+            <row>
+              <entry>preModify</entry>
+
+              <entry>executed before the account is modified (cancels
+              operation if a script returns an exit code &gt; 0)</entry>
+            </row>
+
+            <row>
+              <entry>postModify</entry>
+
+              <entry>executed after an account was modified</entry>
+            </row>
+
+            <row>
+              <entry>preDelete</entry>
+
+              <entry>executed before an account was modified (cancels
+              operation if a script returns an exit code &gt; 0)</entry>
+            </row>
+
+            <row>
+              <entry>postDelete</entry>
+
+              <entry>executed after an account was modified</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para><emphasis role="bold">Script:</emphasis></para>
+
+      <para>You can execute any script which is located on the filesystem of
+      your webserver. The path may be absolute or relative to the
+      PATH-variable of the environment of your webserver process. It is also
+      possible to add commandline arguments to your scripts. Additionally, LAM
+      will resolve wildcards to LDAP attributes. If your script includes an
+      wildcard in the format $ATTRIBUTE$ then LAM will replace it with the
+      attribute value of the current LDAP entry. The values of multi-value
+      attributes are separated by commas. E.g. if you create an account with
+      the attribute "uid" and value "steve" then LAM will resolve "$uid$" to
+      "steve".</para>
+
+      <para><emphasis role="bold"></emphasis></para>
+
+      <para>You can see a preview of the commands which will be executed on
+      the "Custom scripts" tab.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customScripts2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Tree view</title>
+
+      <para>The tree view provides a raw view on your LDAP directory. This
+      feature is for people who are experienced with LDAP and need special
+      functionality which the LAM account modules not provide. E.g. if you
+      want to add a special object class to an account or edit attributes
+      ignoring LAM's syntax checks.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/tree1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>There are also some special functions available:</para>
+
+      <para><emphasis role="bold">Export:</emphasis> This allows you to export
+      entries to a file (e.g. LDIF or CSV format).</para>
+
+      <para><emphasis role="bold">Show internal attributes:</emphasis> Shows
+      internal attributes of the current entry. This includes information
+      about the creator and creation time of the entry.</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Access levels and password reset page (LAM Pro only)</title>
+
+    <para>You can define different access levels for each profile to allow or
+    disallow write access. The password reset page helps your deskside support
+    staff to reset user passwords.</para>
+
+    <section>
+      <title id="s_accessLevel">Access levels</title>
+
+      <para>There are three access levels:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">Write access (default)</emphasis></para>
+
+          <para>There are no restrictions. LAM admin users can manage account,
+          create profiles and set passwords.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Change passwords</emphasis></para>
+
+          <para>Similar to "Read only" except that the <link
+          linkend="s_pwdReset">password reset page</link> is available.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Read only</emphasis></para>
+
+          <para>No write access to the LDAP database is allowed. It is also
+          impossible to manage account and PDF profiles.</para>
+
+          <para>Accounts may be viewed but no changes can be saved.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The access level can be set on the server configuration
+      page:</para>
+
+      <para><screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accessLevel.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+    </section>
+
+    <section id="s_pwdReset">
+      <title>Password reset page</title>
+
+      <para>This special page allows your deskside support staff to reset the
+      Unix and Samba passwords of your users. If you set the <link
+      linkend="s_accessLevel">access level</link> to "Change passwords" then
+      LAM will not allow any changes to the LDAP database except password
+      changes via this page. The account pages will be still available in
+      read-only mode.</para>
+
+      <para>You can open the password reset page by clicking on the key symbol
+      on each user account:</para>
+
+      <para><screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordReset1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>There are three different options to set a new
+      password:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">set random password and display it on
+          screen</emphasis></para>
+
+          <para>This will set the user's password to a random value. The
+          password will be 11 characters long with a random combination of
+          letters, digits and ".-_".</para>
+
+          <para>You may want to use this method to tell users their new
+          passwords via phone.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">set random password and mail it to
+          user</emphasis></para>
+
+          <para>If the user account has set the mail attribute then LAM can
+          send your user a mail with the new password. You can change the mail
+          template to fit your needs. See the help link for further
+          details.</para>
+
+          <para>Using this method will prevent that your support staff knows
+          the new password.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">set specific password</emphasis></para>
+
+          <para>Here you can specify your own password.</para>
+        </listitem>
+      </itemizedlist>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/passwordReset2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>LAM will display contact information about the user like the
+      user's name, email address and telephone number. This will help your
+      deskside support to easily contact your users.</para>
+
+      <para><emphasis role="bold">Options:</emphasis></para>
+
+      <para>Depending on the account there may be additional options
+      available.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">Sync Samba NT/LM password with Unix
+          password:</emphasis> If a user account has Samba passwords set then
+          LAM will offer to synchronize the passwords.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Unlock Samba account:</emphasis> Locked
+          Samba accounts can be unlocked with the password change.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Update Samba password
+          timestamps:</emphasis> This will set the timestamps when the
+          password was changed (sambaPwdLastSet), may be changed again
+          (sambaPwdCanChange) and must be changed again (sambaPwdMustChange).
+          Only existing attributes are updated. No new attributes are
+          added.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Self service (LAM Pro only)</title>
+
+    <section>
+      <title>Preparations</title>
+
+      <section>
+        <title>OpenLDAP ACLs</title>
+
+        <para>By default only a few administrative users have write access to
+        the LDAP database. Before your users may change their settings you
+        must allow them to change their LDAP data.</para>
+
+        <para>This can be done by adding an ACL to your slapd.conf which looks
+        like this:</para>
+
+        <para><emphasis role="bold">access to</emphasis></para>
+
+        <para><emphasis role="bold">
+        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,password</emphasis></para>
+
+        <para><emphasis role="bold"> by self write</emphasis></para>
+
+        <para>If you do not want them to change all attributes then reduce the
+        list to fit your needs. Some modules may require additional LDAP
+        attributes.</para>
+
+        <para>Usually, the slapd.conf file is located in /etc/ldap or
+        /etc/openldap.</para>
+      </section>
+
+      <section>
+        <title>Other LDAP servers</title>
+
+        <para>There exist many LDAP implementations. If you do not use
+        OpenLDAP you need to write your own ACLs. Please check the manual of
+        your LDAP server for instructions.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Creating a self service profile</title>
+
+      <para>A self service profile defines what input fields your users see
+      and some other general settings like the login caption.</para>
+
+      <para>When you go to the LAM configuration page you will see the self
+      service link at the bottom. This will lead you to the self service
+      configuration pages</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf1.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now we need to create a new self service profile. Click on the
+      link to manage the self service profiles.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf2.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Specify a name for the new profile and enter you master
+      configuration password (default is "lam") to save the profile.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf3.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now go back to the profile login and enter your master
+      configuration password to edit your new profile.</para>
+    </section>
+
+    <section>
+      <title>Edit your new profile</title>
+
+      <para>On top of the page you see the link to the user login page. Copy
+      this link address and give it to your users.</para>
+
+      <para>Below the link you can specify several options.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf4.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <table>
+        <title>General options</title>
+
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry>Server address</entry>
+
+              <entry>The address of your LDAP server</entry>
+            </row>
+
+            <row>
+              <entry>LDAP suffix</entry>
+
+              <entry>The part of the LDAP tree where LAM should search for
+              users</entry>
+            </row>
+
+            <row>
+              <entry>LDAP user + password</entry>
+
+              <entry>The DN and password which is used to search for users in
+              the LDAP database. It is sufficient if this DN has only read
+              rights. If you leave these fields empty LAM will try to connect
+              anonymously.</entry>
+            </row>
+
+            <row>
+              <entry>LDAP search attribute</entry>
+
+              <entry>Here you can specify if your users can login with user
+              name + password, email + password or other attributes.</entry>
+            </row>
+
+            <row>
+              <entry>Login attribute label</entry>
+
+              <entry>This is the description for the LDAP search attribute.
+              Set it to something which your users are familiar with.</entry>
+            </row>
+
+            <row>
+              <entry>Login caption</entry>
+
+              <entry>This text is displayed at the login page. You can input
+              HTML, too.</entry>
+            </row>
+
+            <row>
+              <entry>Main page caption</entry>
+
+              <entry>This text is displayed at self service main page where
+              your users change their data. You can input HTML, too.</entry>
+            </row>
+
+            <row>
+              <entry>Page header</entry>
+
+              <entry>This HTML code will be placed on top of all self service
+              pages. E.g. you can use this to place your custom logo. Any HTML
+              code is permitted.</entry>
+            </row>
+
+            <row>
+              <entry>Additional CSS links</entry>
+
+              <entry>Here you can specify additional CSS links to change the
+              layout of the self service pages. This is useful to adapt them
+              to your corporate design. Please enter one link per
+              line.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>On the bottom you can specify what input fields your users can
+      see. It is also possible to group several input fields.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf5.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Adapt LAM Pro to your corporate design</title>
+
+    <para>LAM Pro allows you to integrate customs CSS style definitions and
+    design the header of all self service pages. This way you can integrate
+    you own logo and use your company's colors.</para>
+
+    <section>
+      <title>Custom header</title>
+
+      <para>The default LAM Pro header includes a logo and a horizontal line.
+      You can enter any HTML code here. It will be included in the self
+      services pages after the body tag.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configPageHeader.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>CSS files</title>
+
+      <para>Usually, companies have regulations about their corporate design
+      and use common CSS files. This assures a common appearance of all
+      intranet pages (e.g. colors and fonts). To include additional CSS files
+      just use the following setting for this task. The additional CSS links
+      will be added after LAM Pro's default CSS link. This way you can
+      overwrite LAM Pro's style.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configCSS.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
   </chapter>
 
