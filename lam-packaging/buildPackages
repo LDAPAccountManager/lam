@@ -32,12 +32,6 @@ cd ldap-account-manager-$VERSION/docs/manual-sources
 cd ../../..
 rm -r ldap-account-manager-$VERSION/docs/manual-sources
 
-# create LAM Pro documentation
-cd lamPro/docs/LAMProHowTo-sources
-./make.sh
-cd ../../..
-rm -r lamPro/docs/LAMProHowTo-sources
-
 # create LAM Pro build directory
 mkdir LAMPro
 cp -a ldap-account-manager-$VERSION LAMPro/ldap-account-manager-$VERSION
