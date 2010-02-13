@@ -167,7 +167,10 @@ if( $show_internal_attrs ) {
 		?>
 
         <tr>
-		<td class="val">
+        <td class="attr">
+        	<b><?php echo htmlspecialchars($attr); ?></b>
+        </td>
+		<td>
         <?php 
            if( is_attr_binary( $attr ) ) {
                $href = "download_binary_attr.php?dn=$encoded_dn&amp;attr=$attr";
