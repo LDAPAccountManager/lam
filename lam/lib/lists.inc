@@ -762,11 +762,9 @@ class lamList {
 		$filter = "(&" . $module_filter . $this->filterPart  . ")";
 		$attrs = $this->attrArray;
 		$entries = searchLDAP($this->suffix, $filter, $attrs);
-		if (getLastLDAPErrorNumber() == 4) {
-			StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See the manual for instructions to solve this problem."));
-		}
-		elseif (getLastLDAPErrorNumber() > 0) {
-			StatusMessage("ERROR", _("LDAP search failed! Please check your preferences."), getLastLDAPErrorMessage());
+		$lastError = getLastLDAPError();
+		if ($lastError != null) {
+			call_user_func_array('StatusMessage', $lastError);
 		}
 		$this->entries = $entries;
 		// generate list of possible suffixes

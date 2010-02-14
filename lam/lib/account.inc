@@ -609,21 +609,31 @@ function searchLDAP($suffix, $filter, $attributes) {
 }
 
 /**
- * Returns the error number of the last LDAP command.
+ * Returns the parameters for a StatusMessage of the last LDAP search.
  *
- * @return int error number (0 if all was ok)
+ * @return array parameters for StatusMessage or null if all was ok
  */
-function getLastLDAPErrorNumber() {
-	return ldap_errno($_SESSION["ldap"]->server());
-}
-
-/**
- * Returns the error message of the last LDAP command.
- *
- * @return String error message
- */
-function getLastLDAPErrorMessage() {
-	return ldap_error($_SESSION["ldap"]->server());
+function getLastLDAPError() {
+	$errorNumber = ldap_errno($_SESSION["ldap"]->server());
+	switch ($errorNumber) {
+		// all ok
+		case 0:
+			return null;
+			break;
+		// size limit exceeded
+		case 4:
+			$error = array("WARN", _("LDAP sizelimit exceeded, not all entries are shown."));
+			if ($_SESSION['config']->get_searchLimit() == 0) {
+				// server limit exceeded
+				$error[] = _("See the manual for instructions to solve this problem.");
+			}
+			return $error;
+			break;
+		// other errors
+		default:
+			return array("ERROR", _("LDAP search failed! Please check your preferences."), ldap_error($_SESSION["ldap"]->server()));
+		break;
+	}
 }
 
 /**
@@ -655,6 +665,5 @@ function cleanLDAPResult($entries) {
 	}
 	return $entries;
 }
-
 
 ?>
