@@ -614,7 +614,7 @@ class lamList {
 	protected function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
 			echo ("<b>" . _("Suffix") . ": </b>");
-			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "')\">\n");
+			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "', this)\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				if ($this->suffix == $this->possibleSuffixes[$i]) {
 					echo ("<option selected>" . $this->possibleSuffixes[$i] . "</option>\n");
@@ -622,7 +622,7 @@ class lamList {
 				else echo("<option>" . $this->possibleSuffixes[$i] . "</option>\n");
 			}
 			echo ("</select>\n");
-			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
+//			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
 		}
 	}
 
