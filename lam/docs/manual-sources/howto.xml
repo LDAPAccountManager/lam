@@ -79,7 +79,7 @@
 
       <member>Openldap (2.0 or greater)</member>
 
-      <member>A web browser that supports CSS</member>
+      <member>A web browser that supports CSS and JavaScript</member>
     </simplelist>
 
     <para>The default password to edit the configuration options is
@@ -97,6 +97,69 @@
     <literallayout>
 Have fun!
      The LAM development team</literallayout>
+  </preface>
+
+  <preface>
+    <title>Architecture</title>
+
+    <para>There are basically two groups of users for LAM:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">LDAP administrators and support
+        staff:</emphasis></para>
+
+        <para>These people administer LDAP entries like user accounts, groups,
+        ...</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Users:</emphasis></para>
+
+        <para>This includes all people who need to manage their own data
+        inside the LDAP directory. E.g. these people edit their contact
+        information with LAM self service (LAM Pro only).</para>
+      </listitem>
+    </itemizedlist>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/lam_architecture.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Therefore, LAM is split into two separate parts, LAM for admins and
+    for users. LAM for admins allows to manage various types of LDAP entries
+    (e.g. users, groups, hosts, ...). It also contains tools like batch
+    upload, account profiles, LDAP schema viewer and an LDAP browser. LAM for
+    users focuses on end users. It provides a self service for the users to
+    edit their personal data (e.g. contact information). The LAM administrator
+    is able to specify what data may be changed by the users. The design is
+    also adaptable to your corporate design.</para>
+
+    <para>LAM for admins/users is accessible via HTTP(S) by all major web
+    browsers (Firefox, IE, Opera, ...).</para>
+
+    <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
+
+    <para>LAM runs on PHP. Therefore, it is independant of CPU architecture
+    and operating system (OS). You can run LAM on any OS which supports Apache
+    or other PHP compatible web servers.</para>
+
+    <para><emphasis role="bold">Home directory server:</emphasis></para>
+
+    <para>You can manage user home directories and their quotas inside LAM.
+    The home directories may reside on the server where LAM is installed or
+    any remote server. The commands for home directory management are secured
+    by SSH. LAM will use the user name and password of the logged in LAM
+    administrator for authentication.</para>
+
+    <para><emphasis role="bold">LDAP directory:</emphasis></para>
+
+    <para>LAM connects to your LDAP server via standard LDAP protocol. It also
+    supports encrypted connections with SSL and TLS.</para>
   </preface>
 
   <chapter>
