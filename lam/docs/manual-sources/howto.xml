@@ -1274,48 +1274,48 @@ Have fun!
         </mediaobject>
       </screenshot>
     </section>
-  </chapter>
-
-  <chapter>
-    <title>Adapt LAM Pro to your corporate design</title>
-
-    <para>LAM Pro allows you to integrate customs CSS style definitions and
-    design the header of all self service pages. This way you can integrate
-    you own logo and use your company's colors.</para>
 
     <section>
-      <title>Custom header</title>
+      <title>Adapt the self service to your corporate design</title>
 
-      <para>The default LAM Pro header includes a logo and a horizontal line.
-      You can enter any HTML code here. It will be included in the self
-      services pages after the body tag.</para>
+      <para>LAM Pro allows you to integrate customs CSS style definitions and
+      design the header of all self service pages. This way you can integrate
+      you own logo and use your company's colors.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/configPageHeader.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-    </section>
+      <section>
+        <title>Custom header</title>
 
-    <section>
-      <title>CSS files</title>
+        <para>The default LAM Pro header includes a logo and a horizontal
+        line. You can enter any HTML code here. It will be included in the
+        self services pages after the body tag.</para>
 
-      <para>Usually, companies have regulations about their corporate design
-      and use common CSS files. This assures a common appearance of all
-      intranet pages (e.g. colors and fonts). To include additional CSS files
-      just use the following setting for this task. The additional CSS links
-      will be added after LAM Pro's default CSS link. This way you can
-      overwrite LAM Pro's style.</para>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configPageHeader.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/configCSS.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+      <section>
+        <title>CSS files</title>
+
+        <para>Usually, companies have regulations about their corporate design
+        and use common CSS files. This assures a common appearance of all
+        intranet pages (e.g. colors and fonts). To include additional CSS
+        files just use the following setting for this task. The additional CSS
+        links will be added after LAM Pro's default CSS link. This way you can
+        overwrite LAM Pro's style.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configCSS.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
   </chapter>
 
