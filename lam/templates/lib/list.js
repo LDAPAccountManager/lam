@@ -52,9 +52,14 @@ function list_click(list, box, scope) {
 	}
 }
 
-function listOUchanged(type) {
-	selectOU = document.getElementsByName('suffix')[0];
-	location.href='list.php?type=' + type + '&suffix=' + selectOU.options[selectOU.selectedIndex].value;
+/**
+ * The user changed the value in the OU selection box. This will reload the list view with the new suffix.
+ * 
+ * @param type account type
+ * @param element dropdown box
+ */
+function listOUchanged(type, element) {
+	location.href='list.php?type=' + type + '&suffix=' + element.options[element.selectedIndex].value;
 }
 
 function SubmitForm(id, e) {

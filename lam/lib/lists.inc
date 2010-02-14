@@ -622,7 +622,6 @@ class lamList {
 				else echo("<option>" . $this->possibleSuffixes[$i] . "</option>\n");
 			}
 			echo ("</select>\n");
-//			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
 		}
 	}
 
