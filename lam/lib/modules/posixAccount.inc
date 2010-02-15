@@ -132,7 +132,7 @@ class posixAccount extends baseModule implements passwordService {
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'userid' => 'uid');
 		// managed attributes
 		$return['attributes'] = array('cn', 'uid', 'uidNumber', 'gidNumber', 'homeDirectory',
-			'userPassword', 'loginShell', 'gecos', 'description');
+			'userPassword', 'loginShell', 'gecos');
 		if ($this->get_scope() == "user") {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
@@ -304,17 +304,6 @@ class posixAccount extends baseModule implements passwordService {
 				'example' => _('pc01,Room 2.34')
 			)
 			);
-		}
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-			if (!in_array('inetOrgPerson', $modules)) {
-				$return['upload_columns'][] =
-					array(
-						'name' => 'posixAccount_description',
-						'description' => _('Description'),
-						'help' => 'description'
-					);
-			}
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -1433,13 +1422,6 @@ class posixAccount extends baseModule implements passwordService {
 					$errMsg = str_replace('%', '%%', $this->messages['userPassword'][4]); // double "%" because of later sprintf
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
-				}
-				// description
-				$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-				if (!in_array('inetOrgPerson', $modules)) {
-					if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
-						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
-					}
 				}
 				// cn
 				if ($rawAccounts[$i][$ids['posixAccount_cn']] != "") {
