@@ -280,9 +280,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @param array $rawAccounts list of hash arrays (name => value) from user input
 	 * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	 * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	 * @param array $selectedModules list of selected account modules
 	 * @return array list of error messages if any
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 		// add object class

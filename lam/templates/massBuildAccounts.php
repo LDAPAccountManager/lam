@@ -86,11 +86,12 @@ if (isset($_GET['showldif'])) {
 include 'main_header.php';
 
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
+	$selectedModules = explode(',', $_POST['selectedModules']);
 	// check if input file is well formated
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules
-	$columns = getUploadColumns($_POST['scope']);
+	$columns = getUploadColumns($_POST['scope'], $selectedModules);
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
@@ -157,9 +158,9 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	
 	// let modules build accounts
 	else {
-		$accounts = buildUploadAccounts($_POST['scope'], $data, $ids);
+		$accounts = buildUploadAccounts($_POST['scope'], $data, $ids, $selectedModules);
 		if ($accounts != false) {
-			$rdnList = getRDNAttributes($_POST['scope']);
+			$rdnList = getRDNAttributes($_POST['scope'], $selectedModules);
 			$suffix = $_SESSION['config']->get_Suffix($_POST['scope']);
 			// set DN
 			for ($i = 0; $i < sizeof($accounts); $i++) {

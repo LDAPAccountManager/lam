@@ -105,12 +105,13 @@ objectClass which is added to all accounts.<br>
 &nbsp;&nbsp;&nbsp; * @param array $partialAccounts list of hash arrays
 (name =&gt; value) which are later added to LDAP<br>
 &nbsp;&nbsp;&nbsp; * @param array $ids list of IDs for column position
-(e.g. "posixAccount_uid" =&gt; 5)<br>
+(e.g. "posixAccount_uid" =&gt; 5)<br> 
+			  * @param array $selectedModules list of selected account modules<br>
 &nbsp;&nbsp;&nbsp; * @return array list of error messages if any<br>
 &nbsp;&nbsp;&nbsp; */<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
  style="color: rgb(255, 0, 0);">build_uploadAccounts</span>($rawAccounts,
-$ids, &amp;$partialAccounts) {<br>
+$ids, &amp;$partialAccounts, $selectedModules) {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $messages = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for ($i = 0; $i &lt;
 sizeof($rawAccounts); $i++) {<br>

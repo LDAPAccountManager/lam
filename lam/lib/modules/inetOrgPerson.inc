@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2009  Roland Gruber
+                2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -471,27 +471,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'help' => 'physicalDeliveryOfficeName',
 				'example' => _('YourCompany, Human Resources')
 			);
-		}
-		// cn and uid for upload (only if posixAccount is not loaded)
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-			if (!in_array('posixAccount', $modules)) {
-				$return['upload_columns'][] = array(
-					'name' => 'inetOrgPerson_cn',
-					'description' => _('Common name'),
-					'help' => 'cn',
-					'example' => _('Steve Miller'),
-					'default' => '<i>&lt;inetOrgPerson_firstName&gt; &lt;inetOrgPerson_lastName&gt;</i>'
-				);
-				$return['upload_columns'][] = array(
-					'name' => 'inetOrgPerson_userName',
-					'description' => _('User name'),
-					'help' => 'uid',
-					'example' => _('smiller'),
-					'unique' => true,
-					'required' => true
-				);
-			}
 		}
 		// Unix workstations for upload
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
@@ -1288,14 +1267,53 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
+	* Returns an array containing all input columns for the file upload.
+	*
+	* Syntax:
+	* <br> array(
+	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+	* <br>  string: description,  // short descriptive name
+	* <br>  string: help,  // help ID
+	* <br>  string: example,  // example value
+	* <br>  boolean: required  // true, if user must set a value for this column
+	* <br> )
+	*
+	* @param array $selectedModules list of selected account modules
+	* @return array column list
+	*/
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		// cn and uid for upload (only if posixAccount is not selected)
+		if (!in_array('posixAccount', $selectedModules)) {
+			$return[] = array(
+				'name' => 'inetOrgPerson_cn',
+				'description' => _('Common name'),
+				'help' => 'cn',
+				'example' => _('Steve Miller'),
+				'default' => '<i>&lt;inetOrgPerson_firstName&gt; &lt;inetOrgPerson_lastName&gt;</i>'
+			);
+			$return[] = array(
+				'name' => 'inetOrgPerson_userName',
+				'description' => _('User name'),
+				'help' => 'uid',
+				'example' => _('smiller'),
+				'unique' => true,
+				'required' => true
+			);
+		}
+		return $return;
+	}
+	
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
 	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
@@ -1504,8 +1522,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-			if (!in_array('posixAccount', $modules)) {
+			if (!in_array('posixAccount', $selectedModules)) {
 				// cn
 				if ($rawAccounts[$i][$ids['inetOrgPerson_cn']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_cn']], 'cn')) {

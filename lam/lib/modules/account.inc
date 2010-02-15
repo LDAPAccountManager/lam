@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2007  Roland Gruber
+                2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,30 +101,18 @@ class account extends baseModule {
 			)
 		);
 		// upload columns
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
-			if ($this->get_scope() == 'user') {
-				$return['upload_columns'][] = array(
-	                'name' => 'account_hosts',
-	                'description' => _('Host list'),
-	                'help' => 'host'
-				);
-			}
-			if (!in_array('posixAccount', $modules)) {
-				$return['upload_columns'][] = array(
-	                'name' => 'account_uid',
-	                'description' => _('User name'),
-	                'help' => 'uid',
-	                'required' => true
-				);
-				$return['upload_columns'] = array(
-					array(
-	                'name' => 'account_description',
-	                'description' => _('Description'),
-	                'help' => 'description'
-					)
-				);
-			}
+		if ($this->get_scope() == 'user') {
+			$return['upload_columns'][] = array(
+                'name' => 'account_hosts',
+                'description' => _('Host list'),
+                'help' => 'host'
+			);
 		}
+		$return['upload_columns'][] = array(
+               'name' => 'account_description',
+               'description' => _('Description'),
+               'help' => 'description'
+		);
 		return $return;
 	}
 
@@ -217,16 +205,17 @@ class account extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$return[] = array (
-				0 => array('kind' => 'text', 'text' => _("User name").'*'),
-				1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20',
+				array('kind' => 'text', 'text' => _("User name").'*'),
+				array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20',
 					'value' => $this->attributes['uid'][0]),
-				2 => array('kind' => 'help', 'value' => 'uid'));
+				array('kind' => 'help', 'value' => 'uid'));
 		}
 		// description
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
-			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
-			2 => array ('kind' => 'help', 'value' => 'description'));
+		$return[] = array(
+						array('kind' => 'text', 'text' => _('Description')),
+						array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
+							'maxlength' => '255', 'value' => $this->attributes['description'][0]),
+						array('kind' => 'help', 'value' => 'description'));
 		return $return;
 	}
 
@@ -243,27 +232,58 @@ class account extends baseModule {
 	}
 
 	/**
+	* Returns an array containing all input columns for the file upload.
+	*
+	* Syntax:
+	* <br> array(
+	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+	* <br>  string: description,  // short descriptive name
+	* <br>  string: help,  // help ID
+	* <br>  string: example,  // example value
+	* <br>  boolean: required  // true, if user must set a value for this column
+	* <br> )
+	*
+	* @param array $selectedModules list of selected account modules
+	* @return array column list
+	*/
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		if (!in_array('posixAccount', $selectedModules)) {
+			$return[] = array(
+                'name' => 'account_uid',
+                'description' => _('User name'),
+                'help' => 'uid',
+                'required' => true
+			);
+		}
+		return $return;
+	}
+	
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
 	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("account", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "account";
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-			if (!in_array('posixAccount', $modules)) {
-				// description
-				if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) {
-					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
-				}
-				else {
-					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_uid']];
-				}
+			// description
+			if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) {
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
+			}
+			elseif (isset($rawAccounts[$i][$ids['account_uid']])) {
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_uid']];
+			}
+			elseif (isset($partialAccounts[$i]['uid'])) {
+				$partialAccounts[$i]['description'] = $partialAccounts[$i]['uid'];
+			}
+			if (!in_array('posixAccount', $selectedModules)) {
 				// user name
 				if (get_preg($rawAccounts[$i][$ids['account_uid']], 'username')) {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['account_uid']];

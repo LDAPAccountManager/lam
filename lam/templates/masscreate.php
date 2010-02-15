@@ -72,51 +72,129 @@ $types = $_SESSION['config']->get_ActiveTypes();
 include 'main_header.php';
 
 // check if account specific page should be shown
-if (isset($_POST['type'])) showMainPage($_POST['type']);
+if (isset($_POST['type'])) {
+	// get selected type
+	$scope = $_POST['type'];
+	// get selected modules
+	$selectedModules = array();
+	$checkedBoxes = array_keys($_POST, 'on');
+	for ($i = 0; $i < sizeof($checkedBoxes); $i++) {
+		if (strpos($checkedBoxes[$i], $scope . '_') === 0) {
+			$selectedModules[] = substr($checkedBoxes[$i], strlen($scope) + 1);
+		}
+	}
+	$deps = getModulesDependencies($scope);
+	$depErrors = check_module_depends($selectedModules, $deps);
+	if (is_array($depErrors) && (sizeof($depErrors) > 0)) {
+		for ($i = 0; $i < sizeof($depErrors); $i++) {
+			StatusMessage('ERROR', _("Unsolved dependency:") . ' ' .
+							getModuleAlias($depErrors[$i][0], $scope) . " (" .
+							getModuleAlias($depErrors[$i][1], $scope) . ")");
+		}
+	}
+	else {
+		showMainPage($scope, $selectedModules);
+		exit;
+	}
+}
 
 // show start page
-else {
-	echo "<h1>" . _("Account creation via file upload") . "</h1>\n";
-	echo "<p>&nbsp;</p>\n";
-	
-	echo "<p>\n";
-		echo _("Here you can create multiple accounts by providing a CSV file.");
-	echo "</p>\n";
-	
-	echo "<p>&nbsp;</p>\n";
-	
-	echo "<p><b>\n";
-	echo _("Please select your account type:");
-	echo "</b></p>\n";
-	
-	echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
-	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellspacing=\"0\">\n";
-		echo "<tr><td>\n";
-		echo "<select class=\"user\" name=\"type\">\n";
-		for ($i = 0; $i < sizeof($types); $i++) {
-			echo "<option value=\"" . $types[$i] . "\">\n";
-				echo getTypeAlias($types[$i]);
-			echo "</option>\n";
+echo "<h1>" . _("Account creation via file upload") . "</h1>\n";
+echo "<p>&nbsp;</p>\n";
+
+echo "<p>\n";
+	echo _("Here you can create multiple accounts by providing a CSV file.");
+echo "</p>\n";
+
+echo "<p>&nbsp;</p>\n";
+
+echo '<script type="text/javascript">';
+echo 'function changeVisibleModules(element) {';
+echo 'jQuery(\'div.typeOptions\').toggle(false);';
+echo 'jQuery(\'div#\' + element.options[element.selectedIndex].value).toggle();';
+echo '}';
+echo '</script>';
+
+echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
+
+echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellspacing=\"0\">\n";
+	echo "<tr><td>\n";
+	echo '<b>' . _("Account type") . ':</b>';
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<select class=\"user\" name=\"type\" onChange=\"changeVisibleModules(this);\">\n";
+	for ($i = 0; $i < sizeof($types); $i++) {
+		$selected = '';
+		if (isset($_POST['type']) && ($_POST['type'] == $types[$i])) {
+			$selected = 'selected';
 		}
-		echo "</select>\n";
-		echo "</td>\n";
-		echo "<td>\n";
-			echo "<input class=\"user\" type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
-		echo "</td></tr>\n";
-	echo "</table>\n";
-	echo "</form>\n";
-	
-	echo "</body>\n";
-	echo "</html>\n";
-}
+		echo "<option value=\"" . $types[$i] . "\" $selected>\n";
+			echo getTypeAlias($types[$i]);
+		echo "</option>\n";
+	}
+	echo "</select>\n";
+	echo "</td></tr>\n";
+	echo "<tr><td valign=\"top\">\n";
+		echo '<b>' . _('Selected modules') . ':</b>';
+	echo "</td>\n";
+	echo "<td>\n";
+	// generate one DIV for each account type
+	for ($i = 0; $i < sizeof($types); $i++) {
+		$style = 'style="display:none;"';
+		if ((!isset($_POST['type']) && ($i == 0)) || ($_POST['type'] == $types[$i])) {
+			// show first account type or last selected one
+			$style = '';
+		}
+		echo "<div $style id=\"" . $types[$i] . "\" class=\"typeOptions\">\n";
+		echo "<table border=0>";
+		$modules = $_SESSION['config']->get_AccountModules($types[$i]);
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			if ($m%3 == 0) {
+				echo "<tr>\n";
+			}
+			echo "<td>";
+				$module = new $modules[$m]($types[$i]);
+				$iconImage = $module->getIcon();
+				echo '<img align="middle" src="../graphics/' . $iconImage . '" alt="' . $iconImage . '">';
+			echo "</td><td>\n";
+				if (is_base_module($modules[$m], $types[$i])) {
+					echo "<input type=\"hidden\" name=\"" . $types[$i] . '_' . $modules[$m] . "\" value=\"on\"><input type=\"checkbox\" checked disabled>";
+				}
+				else {
+					$checked = 'checked';
+					if (isset($_POST['submit']) && !isset($_POST[$types[$i] . '_' . $modules[$m]])) {
+						$checked = '';
+					}
+					echo "<input type=\"checkbox\" name=\"" . $types[$i] . '_' . $modules[$m] . "\" $checked>";
+				}
+				echo getModuleAlias($modules[$m], $types[$i]);
+			echo "</td>";
+			if (($m%3 == 2) && ($m != (sizeof($modules) - 1))) {
+				echo "</tr>\n";
+			}
+		}
+		echo "</tr>";
+		echo "</table>\n";
+		echo "</div>\n";
+	}
+	echo "</td></tr>\n";
+	echo "<tr><td>\n";
+		echo "<input class=\"user\" type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
+	echo "</td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</body>\n";
+echo "</html>\n";
 
 
 /**
 * Displays the acount type specific main page of the upload.
 *
 * @param string $scope account type
+* @param array $selectedModules list of selected account modules
 */
-function showMainPage($scope) {
+function showMainPage($scope, $selectedModules) {
 	echo "<h1>" . _("File upload") . "</h1>";
 	echo "<p>\n";
 		echo _("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.");
@@ -133,6 +211,7 @@ function showMainPage($scope) {
 	echo "<b>" . _("CSV file:") . "</b> <input class=\"$scope\" name=\"inputfile\" type=\"file\">&nbsp;&nbsp;";
 	echo "<input class=\"$scope\" name=\"submitfile\" type=\"submit\" value=\"" . _('Upload file and create accounts') . "\">\n";
 	echo "<input type=\"hidden\" name=\"scope\" value=\"$scope\">\n";
+	echo "<input type=\"hidden\" name=\"selectedModules\" value=\"" . implode(',', $selectedModules) . "\">\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -166,7 +245,7 @@ function showMainPage($scope) {
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
-					echo "<li><b>" . _("Possible values") . ":</b> " . implode(", ", getRDNAttributes($scope)) . "</li>\n";
+					echo "<li><b>" . _("Possible values") . ":</b> " . implode(", ", getRDNAttributes($scope, $selectedModules)) . "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
 		echo "</tr>\n";
@@ -174,12 +253,15 @@ function showMainPage($scope) {
 	echo "</fieldset><br>\n";
 	
 	// get input fields from modules
-	$columns = getUploadColumns($scope);
+	$columns = getUploadColumns($scope, $selectedModules);
 
 	// print input fields
 	$modules = array_keys($columns);
 	for ($m = 0; $m < sizeof($modules); $m++) {
-		if (sizeof($columns[$modules[$m]]) < 1) continue;
+		// skip modules without upload columns
+		if (sizeof($columns[$modules[$m]]) < 1) {
+			continue;
+		}
 		$icon = '';
 		$module = new $modules[$m]($scope);
 		$iconImage = $module->getIcon();
@@ -243,7 +325,7 @@ function showMainPage($scope) {
 			}
 		echo "</tr>\n";
 		echo "<tr>\n";
-			$RDNs = getRDNAttributes($scope);
+			$RDNs = getRDNAttributes($scope, $selectedModules);
 			// DN attributes
 			$sampleCSV_row[] = "\"" . $_SESSION['config']->get_Suffix($scope) . "\"";
 			$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";

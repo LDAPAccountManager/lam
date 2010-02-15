@@ -115,10 +115,14 @@ function get_ldap_filter($scope) {
 * The list is already sorted by the priority given by the nodules.
 *
 * @param string $scope account type (user, group, host)
+* @param array $selectedModules return only RDN attributes of these modules
 * @return array list of LDAP attributes
 */
-function getRDNAttributes($scope) {
+function getRDNAttributes($scope, $selectedModules=null) {
 	$mods = $_SESSION['config']->get_AccountModules($scope);
+	if ($selectedModules != null) {
+		$mods = $selectedModules;
+	}
 	$return = array();
 	$attrs_low = array();
 	$attrs_normal = array();
@@ -380,14 +384,14 @@ function getAvailablePDFFields($scope) {
 * <br> )
 *
 * @param string $scope account type
+* @param array $selectedModules selected account modules
 * @return array column list
 */
-function getUploadColumns($scope) {
-	$mods = $_SESSION['config']->get_AccountModules($scope);
+function getUploadColumns($scope, $selectedModules) {
 	$return = array();
-	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = new $mods[$i]($scope);
-		$return[$mods[$i]] = $module->get_uploadColumns();
+	for ($i = 0; $i < sizeof($selectedModules); $i++) {
+		$module = new $selectedModules[$i]($scope);
+		$return[$selectedModules[$i]] = $module->get_uploadColumns($selectedModules);
 	}
 	return $return;
 }
@@ -400,11 +404,12 @@ function getUploadColumns($scope) {
 * @param string $scope account type
 * @param array $data array containing one account in each element
 * @param array $ids array(<column_name> => <column number>)
+* @param array $selectedModules selected account modules
 * @return mixed array including accounts or false if there were errors
 */
-function buildUploadAccounts($scope, $data, $ids) {
+function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 	// build module order
-	$unOrdered = $_SESSION['config']->get_AccountModules($scope);
+	$unOrdered = $selectedModules;
 	$ordered = array();
 	$predepends = array();
 	// get dependencies
@@ -453,7 +458,7 @@ function buildUploadAccounts($scope, $data, $ids) {
 	for ($i = 0; $i < sizeof($data); $i++) $partialAccounts[$i]['objectClass'] = array();
 	for ($i = 0; $i < sizeof($ordered); $i++) {
 		$module = new $ordered[$i]($scope);
-		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts);
+		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules);
 		if (sizeof($errors) > 0) {
 			array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
 			$errors[] = array("ERROR", _("Upload was stopped after errors in %s module!"), "", array($module->get_alias()));

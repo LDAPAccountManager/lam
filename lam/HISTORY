@@ -1,5 +1,6 @@
 March 2010 3.0.0
   - support to remove extension from an existing account: shadowAccount, sambaSamAccount, eduPerson
+  - file upload: allow to select account modules for upload
   - removed frames
   - Unix: automatic user name generation from first and last name (2492675)
   - fixed bugs:

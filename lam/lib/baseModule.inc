@@ -824,11 +824,12 @@ abstract class baseModule {
 	* <br>  boolean: unique // true if all values of this column must be different values (optional, default: "false")
 	* <br> )
 	*
+	* @param array $selectedModules list of selected account modules
 	* @return array column list
 	* 
 	* @see baseModule::get_metaData()
 	*/
-	public function get_uploadColumns() {
+	public function get_uploadColumns($selectedModules) {
 		if (isset($this->meta['upload_columns'])) return $this->meta['upload_columns'];
 		else return array();
 	}
@@ -859,9 +860,10 @@ abstract class baseModule {
 	* @param array $rawAccounts the user input data, contains one subarray for each account.
 	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/
-	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		// must be implemented in sub modules
 		return array();
 	}

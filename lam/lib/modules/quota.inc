@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2009  Roland Gruber
+                2007 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -611,9 +611,10 @@ class quota extends baseModule {
 	* <br>  boolean: required  // true, if user must set a value for this column
 	* <br> )
 	*
+	* @param array $selectedModules list of selected account modules
 	* @return array column list
 	*/
-	function get_uploadColumns() {
+	function get_uploadColumns($selectedModules) {
 		$this->initQuotas();
 		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		$return = array();
