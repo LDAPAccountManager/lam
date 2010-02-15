@@ -101,6 +101,8 @@ class dhcp_settings extends baseModule {
 		$return["alias"] = _("DHCP settings");
 		// this is a base module
 		$return["is_base"] = true;
+		// icon
+		$return['icon'] = 'dhcpBig.png';
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
