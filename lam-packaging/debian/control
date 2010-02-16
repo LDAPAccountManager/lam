@@ -14,7 +14,7 @@ Description: webfrontend for managing accounts in an LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver. It manages user, group
  and host accounts. Currently LAM supports these account types:
  Samba 3, Unix, Kolab 2, address book entries, NIS mail
- aliases and MAC addresses. There is a tree viewer included to
+ aliases and MAC addresses. There is an integrated LDAP browser to
  allow access to the raw LDAP attributes. You can use templates
  for account creation and use multiple configuration profiles.
  Account information can be exported as PDF file. There is also
