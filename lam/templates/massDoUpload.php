@@ -94,7 +94,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	// do post upload actions
 	if ($_SESSION['mass_counter'] >= sizeof($accounts)) {
 		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
-		$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed']);
+		$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules']);
 		if ($return['status'] == 'finished') {
 			$_SESSION['mass_postActions']['finished'] = true;
 		}
@@ -106,7 +106,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		echo "</table>";
 		flush();
 		while (!isset($_SESSION['mass_postActions']['finished']) && (($startTime + $maxTime) > time())) {
-			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed']);
+			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules']);
 			if ($return['status'] == 'finished') {
 				$_SESSION['mass_postActions']['finished'] = true;
 			}

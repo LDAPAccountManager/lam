@@ -479,6 +479,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 * @param array $data array containing one account in each element
 * @param array $ids array(<column_name> => <column number>)
 * @param array $failed list of accounts which were not created successfully
+* @param array $selectedModules list of selected account modules
 * @return array current status
 * <br> array (
 * <br>  'status' => 'finished' | 'inProgress'
@@ -487,11 +488,11 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 * <br>  'errors' => array (<array of parameters for StatusMessage>)
 * <br> )
 */
-function doUploadPostActions($scope, $data, $ids, $failed) {
+function doUploadPostActions($scope, $data, $ids, $failed, $selectedModules) {
 	// check if function is called the first time
 	if (! isset($_SESSION['mass_postActions']['remainingModules'])) {
 		// make list of remaining modules
-		$moduleList = $_SESSION['config']->get_AccountModules($scope);
+		$moduleList = $selectedModules;
 		$_SESSION['mass_postActions']['remainingModules'] = $moduleList;
 	}
 	$activeModule = $_SESSION['mass_postActions']['remainingModules'][0];

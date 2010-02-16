@@ -189,6 +189,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$_SESSION['mass_data'] = $_SESSION['ldap']->encrypt(serialize($data));
 				$_SESSION['mass_ids'] = $ids;
 				$_SESSION['mass_scope'] = $_POST['scope'];
+				$_SESSION['mass_selectedModules'] = $selectedModules;
 				// show links for upload and LDIF export
 				echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
 				echo "<p>&nbsp;</p>\n";
@@ -205,6 +206,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 		}
 	}
+}
+else {
+	StatusMessage('ERROR', _('Please provide a file to upload.'));
+	echo '<br><a href="masscreate.php">' . _('Back') . '</a>';
 }
 
 echo "</body>\n";
