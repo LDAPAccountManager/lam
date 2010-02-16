@@ -52,7 +52,7 @@
       </listitem>
 
       <listitem>
-        <para>tree view</para>
+        <para>LDAP browser</para>
       </listitem>
 
       <listitem>
@@ -977,7 +977,7 @@ Have fun!
     </section>
 
     <section>
-      <title>Tree view</title>
+      <title>Tree view (LDAP browser)</title>
 
       <para>The tree view provides a raw view on your LDAP directory. This
       feature is for people who are experienced with LDAP and need special
