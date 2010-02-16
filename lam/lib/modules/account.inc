@@ -101,13 +101,6 @@ class account extends baseModule {
 			)
 		);
 		// upload columns
-		if ($this->get_scope() == 'user') {
-			$return['upload_columns'][] = array(
-                'name' => 'account_hosts',
-                'description' => _('Host list'),
-                'help' => 'host'
-			);
-		}
 		$return['upload_columns'][] = array(
                'name' => 'account_description',
                'description' => _('Description'),
