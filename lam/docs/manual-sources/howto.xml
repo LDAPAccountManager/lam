@@ -162,7 +162,7 @@ Have fun!
     supports encrypted connections with SSL and TLS.</para>
   </preface>
 
-  <chapter>
+  <chapter id="a_installation">
     <title>Installation</title>
 
     <section id="a_install">
@@ -392,13 +392,14 @@ Have fun!
 
           <itemizedlist>
             <listitem>
-              <para>Follow the link "LAM configuration" from the start page.
-              (The default passwords to edit all options is "lam")</para>
+              <para>Follow the link "LAM configuration" from the start page to
+              <link linkend="a_configuration">configure LAM</link>.</para>
             </listitem>
 
             <listitem>
               <para>Select "Edit general settings" to setup global settings
-              and to change the configuration master password.</para>
+              and to change the <link linkend="a_configPasswords">master
+              configuration password</link> (default is "lam").</para>
             </listitem>
 
             <listitem>
@@ -627,15 +628,120 @@ Have fun!
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="a_configuration">
     <title>Configuration</title>
 
-    <para>TODO</para>
+    <para>After you <link linkend="a_installation">installed</link> LAM you
+    can configure it to fit your needs. The complete configuration can be done
+    inside the application. There is no need to edit configuration
+    files.</para>
+
+    <para>Please point you browser to the location where you installed LAM.
+    E.g. for Debian/RPM this is http://yourServer/lam. If you installed LAM
+    via the tar.gz then this may vary. You should see the following
+    page:</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/login.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>If you see an error message then you might need to install an
+    additional PHP extension. Please follow the instructions and reload the
+    page afterwards.</para>
+
+    <para>Now you are ready to configure LAM. Click on the "LAM configuration"
+    link to proceed.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/configOverview.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Here you can change LAM's general settings, setup server profiles
+    for your LDAP server(s) and configure the self service (LAM Pro only). You
+    should start with the general settings and then setup a server
+    profile.</para>
 
     <section>
       <title>General settings</title>
 
-      <para>TODO</para>
+      <para>After selecting "Edit general settings" you will need to enter the
+      <link linkend="a_configPasswords">master configuration password</link>.
+      The default password for new installations is "lam". Now you can edit
+      the general settings.</para>
+
+      <section>
+        <title>Security settings</title>
+
+        <para>Here you can set a time period after which inactive sessions are
+        automatically invalidated. The selected value represents minutes of
+        inactivity.</para>
+
+        <para>You may also set a list of IP addresses which are allowed to
+        access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
+        or with the "*" wildcard (e.g. 123.123.123.*). Users which try to
+        access LAM via an untrusted IP only get blank pages.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Password policy</title>
+
+        <para>This allows you to specify a central password policy for LAM.
+        The policy is valid for all password fields inside LAM admin
+        (excluding tree view) and LAM self service. Configuration passwords do
+        not need to follow this policy.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can set the minimum password length and also the complexity
+        of the passwords.</para>
+      </section>
+
+      <section>
+        <title>Logging</title>
+
+        <para>LAM can log events (e.g. user logins). You can use system
+        logging (syslog for Unix, event viewer for Windows) or log to a
+        separate file. Please note that LAM may log sensitive data (e.g.
+        passwords) at log level "Debug". Production system should be set to
+        "Warning" or "Error".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Change master password</title>
+
+        <para>If you would like to change the master configuration password
+        then enter a new password here.</para>
+      </section>
     </section>
 
     <section>
@@ -1220,7 +1326,7 @@ Have fun!
         </mediaobject>
       </screenshot>
 
-      <para>Specify a name for the new profile and enter you master
+      <para>Specify a name for the new profile and enter your master
       configuration password (default is "lam") to save the profile.</para>
 
       <screenshot>
@@ -1708,6 +1814,35 @@ Have fun!
 
   <appendix id="a_security">
     <title>Security</title>
+
+    <section id="a_configPasswords">
+      <title>LAM configuration passwords</title>
+
+      <para>LAM supports a two level authorization system for its
+      configuration. Therefore, there are two types of configuration
+      passwords:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">master configuration
+          password:</emphasis> needed to change general settings,
+          create/delete server profiles and self service profiles</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">server profile password:</emphasis> used
+          to change the settings of a server profile (e.g. LDAP server and
+          account types to manage)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The master configuration password can be used to reset a server
+      profile password. Each server profile has its own profile
+      password.</para>
+
+      <para>Both password types are stored as hash values in the configuration
+      files for enhanced security.</para>
+    </section>
 
     <section>
       <title>Use of SSL</title>
