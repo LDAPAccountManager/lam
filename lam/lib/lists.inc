@@ -361,14 +361,8 @@ class lamList {
 				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
-			if (isset($_GET['selectall'])) {
-				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" checked name=\"" . $rowID . "\"></td>\n";
-			}
-			else {
-				echo " <td align=\"center\"><input onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
-			}
+			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
+				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
 			echo " <td align='center' style=\"white-space: nowrap;\">";
 				$this->listPrintToolLinks($info[$i], $rowID);
 			echo "</td>\n";
@@ -384,8 +378,7 @@ class lamList {
 		$colspan = sizeof($this->attrArray) + 1;
 		echo "<tr class=\"" . $this->type . "list\">\n";
 		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
-		echo "<td colspan=$colspan>&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=y&amp;page=" . $this->page .
-			"&amp;sort=" . $this->sortColumn . $this->filterText . "&amp;selectall=yes\">" .
+		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");

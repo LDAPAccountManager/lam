@@ -83,3 +83,19 @@ function addResizeHandler(item, min, max) {
 		}
 	);	
 }
+
+/**
+ * Selects/deselects all accounts on the page.
+ */
+function list_switchAccountSelection() {
+	// set checkbox selection
+	jQuery('.accountBoxUnchecked').attr('checked', 'checked');
+	jQuery('.accountBoxChecked').removeAttr('checked');
+	// switch CSS class
+	nowChecked = jQuery('.accountBoxUnchecked');
+	nowUnchecked = jQuery('.accountBoxChecked');
+	nowChecked.addClass('accountBoxChecked');
+	nowChecked.removeClass('accountBoxUnchecked');
+	nowUnchecked.addClass('accountBoxUnchecked');
+	nowUnchecked.removeClass('accountBoxChecked');
+}
