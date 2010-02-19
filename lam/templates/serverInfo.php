@@ -45,6 +45,7 @@ $supportedsaslmechanisms = '';
 $subschemasubentry = '';
 $vendorname = '';
 $vendorversion = '';
+$dynamicSubtrees = '';
 
 $result = @ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*', 'subschemasubentry'));
 if ($result) {
@@ -77,6 +78,9 @@ if ($result) {
 		if (isset($info['vendorversion'])) {
 			$vendorversion = $info['vendorversion'][0];
 		}
+		if (isset($info['dynamicsubtrees'])) {
+			$dynamicSubtrees = implode(', ', $info['dynamicsubtrees']);
+		}
 	}
 }
 
@@ -99,6 +103,11 @@ if ($configcontext != '') {
 
 echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Schema suffix") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $subschemasubentry . "</td></tr>";
+
+if ($dynamicSubtrees != '') {
+	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Dynamic subtrees") . "</b>&nbsp;&nbsp;</td>";
+	echo "<td style=\"padding:10px;\">" . $dynamicSubtrees . "</td></tr>";
+}
 
 echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("SASL mechanisms") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $supportedsaslmechanisms . "</td></tr>";
