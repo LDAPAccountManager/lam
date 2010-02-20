@@ -390,8 +390,8 @@ echo ("</fieldset>\n");
 
 echo ("<br>\n");
 
-// script settings
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/lamdaemon.png\" alt=\"lamdaemon.png\"> <b>" . _("Script settings") . "</b></legend><br>\n");
+// lamdaemon settings
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/lamdaemon.png\" alt=\"lamdaemon.png\"> <b>" . _("Lamdaemon settings") . "</b></legend><br>\n");
 echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"right\"><b>".
