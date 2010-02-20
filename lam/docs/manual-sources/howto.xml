@@ -747,13 +747,180 @@ Have fun!
     <section>
       <title>Server profiles</title>
 
-      <para>TODO<screenshot>
+      <para>The server profiles store information about your LDAP server (e.g.
+      host name) and what kind of accounts (e.g. users and groups) you would
+      like to manage. There is no limit on the number of server
+      profiles.</para>
+
+      <section>
+        <title>Manage server profiles</title>
+
+        <para>Select "Manage server profiles" to open the profile management
+        page.</para>
+
+        <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/lamProTypes.png" />
+              <imagedata fileref="images/configProfiles1.png" />
             </imageobject>
           </mediaobject>
-        </screenshot></para>
+        </screenshot>
+
+        <para>Here you can create, rename and delete server profiles. The
+        <link linkend="a_configPasswords">passwords</link> of your server
+        profiles can also be reset.</para>
+
+        <para>You may also specify the default server profile. This is the
+        server profile which is preselected at the login page. It also
+        specifies the language of the login and configuration pages.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can create a new server profile by simply entering its name
+        and password. After you created a new profile you can go back to the
+        profile login and edit your new server profile.</para>
+
+        <para>All operations on the profile management page require that you
+        authenticate yourself with the <link
+        linkend="a_configPasswords">configuration master
+        password</link>.</para>
+      </section>
+
+      <section>
+        <title>Editing a server profile</title>
+
+        <para>Please select you server profile and enter its password to edit
+        a server profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Each server profile contains the following information:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><emphasis role="bold">General settings:</emphasis> general
+            settings about your LDAP server (e.g. host name and security
+            settings)</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Account types:</emphasis> list of
+            account types (e.g. users and groups) that you would like to
+            manage and type specific settings (e.g. LDAP suffix)</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Modules:</emphasis> list of modules
+            which define what account aspects (e.g. Unix, Samba, Kolab) you
+            would like to manage</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Module settings:</emphasis> settings
+            which are specific for the selected account modules on the page
+            before</para>
+          </listitem>
+        </itemizedlist>
+
+        <section>
+          <title>General settings</title>
+
+          <para>Here you can specify the LDAP server and some security
+          settings.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configProfiles4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>The server address of your LDAP server can be a DNS name or an
+          IP address. Use ldap:// for unencrypted LDAP connections or TLS
+          encrypted connections. LDAP+SSL (LDAPS) encrypted connections are
+          specified with ldaps://. The port value is optional. TLS cannot be
+          combined with ldaps://.</para>
+
+          <para>LAM includes an LDAP browser which allows direct modification
+          of LDAP entries. If you would like to use it then enter the LDAP
+          suffix at "Tree suffix".</para>
+
+          <para>Some LDAP queries are internally cached by LAM. You can
+          specify how long LAM should use cached data. The search limit is
+          used to reduce the number of search results which are returned by
+          your LDAP server.</para>
+
+          <para>The access level specifies if LAM should allow to modify LDAP
+          entries. This feature is only available in LAM Pro. LAM non-Pro
+          releases use write access. See <link
+          linkend="a_accessLevelPasswordReset">this page</link> for details on
+          the different access levels.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configProfiles5.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM is translated to many different languages. Here you can
+          select the default language for this server profile. The language
+          setting may be overriden at the LAM login page.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configProfiles6.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM can manage user home directories and quotas with an
+          external script. You can specify the home directory server and where
+          the script is located. The default rights for new home directories
+          can be set, too.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configProfiles7.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM supports two methods for login. You may either specify a
+          fixed list of LDAP DNs or let LAM search for the DN in your
+          directory. E.g. if a user logs in with the user name "joe" then LAM
+          will do an LDAP search for this user name. When it finds a matching
+          DN then it will use this to authenticate the user. The wildcard
+          "%USER%" will be replaced by "joe" in this example. This way you can
+          provide login by user name, email address or other LDAP
+          attributes.</para>
+
+          <para>You may also change the password of this server
+          profile.</para>
+        </section>
+
+        <section>
+          <title>Account types</title>
+
+          <para></para>
+        </section>
+      </section>
     </section>
   </chapter>
 
@@ -1110,7 +1277,7 @@ Have fun!
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="a_accessLevelPasswordReset">
     <title>Access levels and password reset page (LAM Pro only)</title>
 
     <para>You can define different access levels for each profile to allow or
