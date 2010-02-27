@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2006  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,7 +94,15 @@ class baseType {
 	public function getListAttributeDescriptions() {
 		return array();
 	}
-
+	
+	/**
+	 * Returns if entries of this type may be created via file upload.
+	 *
+	 * @return boolean true, if file upload is supported
+	 */
+	public function supportsFileUpload() {
+		return true;
+	}
 
 }
 

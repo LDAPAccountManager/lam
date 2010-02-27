@@ -67,9 +67,17 @@ if (isset($_GET['getCSV'])) {
 	exit;
 }
 
-$types = $_SESSION['config']->get_ActiveTypes();
-
 include 'main_header.php';
+
+// get possible types and remove those which do not support file upload
+$types = $_SESSION['config']->get_ActiveTypes();
+for ($i = 0; $i < sizeof($types); $i++) {
+	$myType = new $types[$i]();
+	if (!$myType->supportsFileUpload()) {
+		unset($types[$i]);
+	}
+}
+$types = array_values($types);
 
 // check if account specific page should be shown
 if (isset($_POST['type'])) {
