@@ -1939,7 +1939,7 @@ Have fun!
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>These modules are only available in LAM Pro.</entry>
+            <entry>These account type is only available in LAM Pro.</entry>
           </row>
 
           <row>
@@ -1995,7 +1995,7 @@ Have fun!
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>These modules are only available in LAM Pro.</entry>
+            <entry>This account type is only available in LAM Pro.</entry>
           </row>
 
           <row>
@@ -2031,7 +2031,25 @@ Have fun!
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>This module is only available in LAM Pro.</entry>
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_ppolicy.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Password policies</entry>
+
+            <entry>pwdPolicy, device</entry>
+
+            <entry>ppolicy.schema, core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
           </row>
         </tbody>
       </tgroup>
