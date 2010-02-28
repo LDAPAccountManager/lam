@@ -118,7 +118,7 @@ Have fun!
 
         <para>This includes all people who need to manage their own data
         inside the LDAP directory. E.g. these people edit their contact
-        information with LAM self service (LAM Pro only).</para>
+        information with LAM self service (LAM Pro).</para>
       </listitem>
     </itemizedlist>
 
@@ -665,7 +665,7 @@ Have fun!
     </screenshot>
 
     <para>Here you can change LAM's general settings, setup server profiles
-    for your LDAP server(s) and configure the self service (LAM Pro only). You
+    for your LDAP server(s) and configure the self service (LAM Pro). You
     should start with the general settings and then setup a server
     profile.</para>
 
@@ -983,12 +983,45 @@ Have fun!
     </itemizedlist>
 
     <section>
+      <title>Users</title>
+
+      <para></para>
+
+      <section>
+        <title>Password policy (LAM Pro)</title>
+
+        <para>OpenLDAP supports the <ulink
+        url="http://linux.die.net/man/5/slapo-ppolicy">ppolicy</ulink> overlay
+        to manage password policies for LDAP entries. LAM Pro supports <link
+        linkend="a_ppolicy">managing the policies</link> and assigning them to
+        user accounts.</para>
+
+        <para>Please add the account type "Password policies" to your LAM
+        server profile and activate the "Password policy" module for the user
+        type.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/ppolicyUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can assign any password policy which is found in the LDAP
+        suffix of the "Password policies" type. When you set the policy to
+        "default" then OpenLDAP will use the default policy as defined in your
+        slapd.conf file.</para>
+      </section>
+    </section>
+
+    <section>
       <title>Groups</title>
 
       <para></para>
 
       <section>
-        <title>Unix groups with rfc2307bis schema (LAM Pro only)</title>
+        <title>Unix groups with rfc2307bis schema (LAM Pro)</title>
 
         <para>Some applications (e.g. Suse Linux) use the rfc2307bis schema
         for Unix accounts instead of the nis schema. In this case group
@@ -1017,7 +1050,7 @@ Have fun!
       <para></para>
 
       <section>
-        <title>IP addresses (LAM Pro only)</title>
+        <title>IP addresses (LAM Pro)</title>
 
         <para>You can manage the IP addresses of host accounts with the ipHost
         module. It manages the following information:</para>
@@ -1050,7 +1083,7 @@ Have fun!
     </section>
 
     <section>
-      <title>Group of (unique) names (LAM Pro only)</title>
+      <title>Group of (unique) names (LAM Pro)</title>
 
       <para>These classes can be used to represent group relations. Since they
       allow DNs as members you can also use them to represent nested groups.
@@ -1091,7 +1124,7 @@ Have fun!
     </section>
 
     <section>
-      <title>Aliases (LAM Pro only)</title>
+      <title>Aliases (LAM Pro)</title>
 
       <para>Some applications use the object class "alias" to link LDAP
       entries to other parts of the LDAP tree. Activate the account type
@@ -1110,7 +1143,7 @@ Have fun!
     </section>
 
     <section>
-      <title>NIS objects (LAM Pro only)</title>
+      <title>NIS objects (LAM Pro)</title>
 
       <para>You can manage NIS objects with LAM Pro. This allows you define
       network mount points in LDAP.</para>
@@ -1127,8 +1160,34 @@ Have fun!
       </screenshot>
     </section>
 
+    <section id="a_ppolicy">
+      <title>Password policies (LAM Pro)</title>
+
+      <para>OpenLDAP supports the <ulink
+      url="http://linux.die.net/man/5/slapo-ppolicy">ppolicy</ulink> overlay
+      to manage password policies for LDAP entries. This allows you to set
+      password policies which are independent from your applications. The
+      policies are managed internally by the LDAP server.</para>
+
+      <para>You can manage these policies with LAM Pro with the account type
+      "Password policies".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/ppolicy.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You will need to add the ppolicy schema to your OpenLDAP
+      configuration and activate the <ulink
+      url="http://linux.die.net/man/5/slapo-ppolicy">ppolicy</ulink> overlay
+      module in slapd.conf to use this feature.</para>
+    </section>
+
     <section>
-      <title>Custom scripts (LAM Pro only)</title>
+      <title>Custom scripts (LAM Pro)</title>
 
       <para>LAM Pro allows you to execute scripts whenever an account is
       created, modified or deleted. This can be useful to automate processes
@@ -1278,7 +1337,7 @@ Have fun!
   </chapter>
 
   <chapter id="a_accessLevelPasswordReset">
-    <title>Access levels and password reset page (LAM Pro only)</title>
+    <title>Access levels and password reset page (LAM Pro)</title>
 
     <para>You can define different access levels for each profile to allow or
     disallow write access. The password reset page helps your deskside support
@@ -1425,7 +1484,7 @@ Have fun!
   </chapter>
 
   <chapter>
-    <title>Self service (LAM Pro only)</title>
+    <title>Self service (LAM Pro)</title>
 
     <section>
       <title>Preparations</title>
