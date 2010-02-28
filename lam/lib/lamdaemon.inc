@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2009  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,6 +40,9 @@ $Id$
 *
 */
 function lamdaemon($commands, $server) {
+	if (!function_exists('ssh2_connect')) {
+		return array('ERROR,' . _('This module requires the PHP ssh2 extension.'));
+	}
 	$commands = implode("\n", $commands) . "\n";
 	// get username and password of the current lam-admin
 	$credentials = $_SESSION['ldap']->decrypt_login();
