@@ -1652,7 +1652,7 @@ class accountContainer {
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		$search = substr($dn, 0, strpos($dn, ','));
-		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), array(), 0, 0, 0, LDAP_DEREF_NEVER);
+		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), array('*', '+'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . $dn, ldap_error($_SESSION['ldap']->server())));
 		}
@@ -1893,6 +1893,7 @@ class accountContainer {
 		if (strtolower($this->finalDN) != strtolower($this->dn_orig)) {
 			// move existing DN
 			if ($this->dn_orig!='') {
+				logNewMessage(LOG_DEBUG, 'Rename ' . $this->dn_orig . ' to ' . $this->finalDN);
 				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), false);
 				if ($success) {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->finalDN);
@@ -1924,6 +1925,7 @@ class accountContainer {
 		$DNs = array_keys($attributes);
 		for ($i=0; $i<count($DNs); $i++) {
 			if (!$stopprocessing) {
+				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
 				// modify attributes
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
