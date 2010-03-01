@@ -665,9 +665,9 @@ Have fun!
     </screenshot>
 
     <para>Here you can change LAM's general settings, setup server profiles
-    for your LDAP server(s) and configure the self service (LAM Pro). You
-    should start with the general settings and then setup a server
-    profile.</para>
+    for your LDAP server(s) and configure the <link
+    linkend="a_selfService">self service</link> (LAM Pro). You should start
+    with the general settings and then setup a server profile.</para>
 
     <section>
       <title>General settings</title>
@@ -918,7 +918,88 @@ Have fun!
         <section>
           <title>Account types</title>
 
-          <para></para>
+          <para>LAM supports to manage various types of LDAP entries (e.g.
+          users, groups, DHCP entries, ...). On this page you can select which
+          types of entries you want to manage with LAM.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configTypes1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>The section at the top shows a list of possible types. You can
+          activate them by simply clicking on the plus sign next to it.</para>
+
+          <para>Each account type has the following options:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><emphasis role="bold">LDAP suffix:</emphasis> the LDAP
+              suffix where entries of this type should be managed</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis role="bold">List attributes:</emphasis> a list
+              of attributes which are shown in the account lists</para>
+            </listitem>
+          </itemizedlist>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configTypes2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>On the next page you can specify in detail what extensions
+          should be enabled for each account type.</para>
+        </section>
+
+        <section>
+          <title>Modules</title>
+
+          <para>The modules specify the active extensions for each account
+          type. E.g. here you can setup if your user entries should be address
+          book entries only or also support Unix or Samba.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configModules1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Each account type needs a so called "base module". This is the
+          basement for all LDAP entries of this type. Usually, it provides the
+          structural object class for the LDAP entries. There must be exactly
+          one active base module for each account type.</para>
+
+          <para>Furthermore, there may be any number of additional active
+          account modules. E.g. you may select "Personal" as base module and
+          Unix + Samba as additional modules.</para>
+        </section>
+
+        <section>
+          <title>Module settings</title>
+
+          <para>Depending on the activated account modules there may be
+          additional configuration options available. They can be found on the
+          "Module settings" tab. E.g. the Personal account module allows to
+          hide several input fields and the Unix module requires to specify
+          ranges for UID numbers.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configSettings1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
         </section>
       </section>
     </section>
@@ -1483,7 +1564,7 @@ Have fun!
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="a_selfService">
     <title>Self service (LAM Pro)</title>
 
     <section>
