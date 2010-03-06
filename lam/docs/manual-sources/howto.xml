@@ -1223,12 +1223,29 @@ Have fun!
       <para></para>
 
       <section>
+        <title>Unix</title>
+
+        <para>This module is used to manage Unix group entries. This is the
+        default module to manage Unix groups and uses the nis.schema. Suse
+        users who use the rfc2307bis.schema need to use LAM Pro.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Unix groups with rfc2307bis schema (LAM Pro)</title>
 
         <para>Some applications (e.g. Suse Linux) use the rfc2307bis schema
         for Unix accounts instead of the nis schema. In this case group
-        accounts are based on the object class groupOf(Unique)Names. The
-        object class is auxiliary in this case.</para>
+        accounts are based on the object class <link lang=""
+        linkend="a_groupOfNames">groupOf(Unique)Names</link>. The object class
+        is auxiliary in this case.</para>
 
         <para>LAM Pro supports these groups with a special account module:
         <emphasis role="bold">rfc2307bisPosixGroup</emphasis></para>
@@ -1242,14 +1259,57 @@ Have fun!
                 <imagedata fileref="images/rfc2307bis.png" />
               </imageobject>
             </mediaobject>
+          </screenshot><screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/mod_unixGroupLAMPro.png" />
+              </imageobject>
+            </mediaobject>
           </screenshot></para>
+      </section>
+
+      <section>
+        <title>Samba 3</title>
+
+        <para>LAM supports managing Samba 3 groups. You can set special group
+        types and also create Windows predefined groups like "Domain
+        admins".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_sambaGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
     </section>
 
     <section>
       <title>Hosts</title>
 
-      <para></para>
+      <section>
+        <title>Samba 3</title>
+
+        <para>You can manage Samba 3 host entries by adding the Unix and Samba
+        3 account modules.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_sambaHost1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_sambaHost2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
 
       <section>
         <title>IP addresses (LAM Pro)</title>
@@ -1284,7 +1344,7 @@ Have fun!
       </section>
     </section>
 
-    <section>
+    <section id="a_groupOfNames">
       <title>Group of (unique) names (LAM Pro)</title>
 
       <para>These classes can be used to represent group relations. Since they
