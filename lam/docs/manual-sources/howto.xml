@@ -1069,6 +1069,127 @@ Have fun!
       <para></para>
 
       <section>
+        <title>Personal</title>
+
+        <para>This module is the most common basis for user accounts in LAM.
+        You can use it stand-alone to manage address book entries or in
+        combination with Unix, Samba or other modules.</para>
+
+        <para>The Personal module provides support for managing various
+        personal data of your users including mail addresses and telephone
+        numbers. You can also add photos of your users. If you do not need to
+        manage all attributes then you can deactivate them in your server
+        profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_personal.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Unix</title>
+
+        <para>The Unix module manages Unix user accounts including group
+        memberships.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Samba 3</title>
+
+        <para>LAM supports full Samba 3 user management including logon hours
+        and terminal server options.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_samba3User1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_samba3User2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_samba3User3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Kolab</title>
+
+        <para>This module supports to manage Kolab accounts with LAM. E.g. you
+        can set the user's mail quota and define invitation policies.</para>
+
+        <para>Please enter an email address at the Personal page and set a
+        Unix password first. Both are required that Kolab accepts the
+        accounts.</para>
+
+        <para>Kolab users should not be directly deleted with LAM. You can
+        mark an account for deletion which then is done by the Kolab server
+        itself. This makes sure that the mailbox etc. is also deleted.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_kolab.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Asterisk</title>
+
+        <para>LAM supports Asterisk accounts, too. You can set the called ID,
+        host and account context for your users.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_asterisk.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>EDU person</title>
+
+        <para>EDU person accounts are mainly used in university networks. You
+        can specify the principal name, nick names and much more.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_eduPerson.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Password policy (LAM Pro)</title>
 
         <para>OpenLDAP supports the <ulink
@@ -1414,6 +1535,90 @@ Have fun!
       <para><emphasis role="bold">Show internal attributes:</emphasis> Shows
       internal attributes of the current entry. This includes information
       about the creator and creation time of the entry.</para>
+    </section>
+
+    <section>
+      <title>Typical usage scenarios</title>
+
+      <para>Here is a list of typical usage scenarios and what account types
+      and modules you need to configure.</para>
+
+      <para><emphasis role="bold">Address book entries:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Unix accounts:</emphasis></para>
+
+      <para>Account types: Users, Groups</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Unix)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix (posixGroup))</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Suse users may need to use Group (Group of names + Unix
+      (rfc2307bisPosixGroup)) because of Suse's special LDAP schema.</para>
+
+      <para><emphasis role="bold">Samba accounts:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + User + Samba 3)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix + Samba 3)</para>
+        </listitem>
+
+        <listitem>
+          <para>Hosts (Account + Unix + Samba 3)</para>
+        </listitem>
+
+        <listitem>
+          <para>Samba domains (Samba domain)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Asterisk:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Asterisk)</para>
+        </listitem>
+
+        <listitem>
+          <para>Asterisk extensions (Asterisk extension)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">phpGroupWare:</emphasis></para>
+
+      <para>Account modules:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Unix + phpGroupWare)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix + phpGroupWare)</para>
+        </listitem>
+      </itemizedlist>
     </section>
   </chapter>
 
