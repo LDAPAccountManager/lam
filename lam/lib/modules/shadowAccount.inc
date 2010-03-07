@@ -62,7 +62,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$this->messages['inactive'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expiration must be are natural number or -1.'));
 		$this->messages['shadowWarning'][0] = array('ERROR', _('Password warning'), _('Password warning must be are natural number.'));
 		$this->messages['shadowWarning'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_warning', _('Password warning must be are natural number.'));
-		$this->messages['shadow_cmp'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be bigger as password minimum age.'));
+		$this->messages['shadow_cmp'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be bigger than password minimum age.'));
 		$this->messages['shadow_cmp'][1] = array('ERROR',  _('Account %s:') . ' shadowAccount_min/maxAge', _('Password maximum age must be bigger as password minimum age.'));
 		$this->messages['shadow_expireDate'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_expireDate', _('The expiration date is invalid.'));
 	}

@@ -197,7 +197,7 @@ class sambaDomain extends baseModule {
 		$this->messages['nextGroupRID'][1] = array('ERROR', _('Account %s:') . ' sambaDomain_nextGroupRID', _('Next group RID is not a number!'));
 		$this->messages['RIDbase'][0] = array('ERROR', _('Algorithmic RID base is not a number!'));
 		$this->messages['RIDbase'][1] = array('ERROR', _('Account %s:') . ' sambaDomain_RIDbase', _('Algorithmic RID base is not a number!'));
-		$this->messages['pwdAge_cmp'][0] = array('ERROR',  _('Maximum password age'), _('Password maximum age must be bigger as password minimum age.'));
+		$this->messages['pwdAge_cmp'][0] = array('ERROR',  _('Maximum password age'), _('Password maximum age must be bigger than password minimum age.'));
 		$this->messages['pwdAgeMin'][0] = array('ERROR', _('Minimum password age'), _('Password minimum age must be are natural number.'));
 		$this->messages['pwdAgeMax'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be are natural number.'));
 		$this->messages['lockoutDuration'][0] = array('ERROR', _('Lockout duration'), _('Lockout duration must be are natural number.'));
