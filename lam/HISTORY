@@ -3,6 +3,9 @@
   - file upload: allow to select account modules for upload
   - removed frames
   - Unix: automatic user name generation from first and last name (2492675)
+  - LAM Pro:
+   -> support OpenLDAP password policies (ppolicy)
+   -> manage host IP addresses (ipHost)
   - fixed bugs:
    -> Multi-delete not working (2931458)
    -> Samba: can/must change password needs to be read from domain policy (2919236)
