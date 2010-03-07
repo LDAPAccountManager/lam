@@ -1,4 +1,4 @@
-March 2010 3.0.0
+24.03.2010 3.0.0
   - support to remove extension from an existing account: shadowAccount, sambaSamAccount, eduPerson
   - file upload: allow to select account modules for upload
   - removed frames
