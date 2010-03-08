@@ -57,7 +57,6 @@ cd ldap-account-manager-$VERSION
 touch install.sh
 perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
-rm configure.ac
 rm -r autom4te.cache
 cd ..
 tar cfz ldap-account-manager-$VERSION.tar.gz --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
@@ -70,7 +69,6 @@ cd ldap-account-manager-$VERSION
 touch install.sh
 perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
-rm configure.ac
 rm -r autom4te.cache
 cd ..
 tar cfz ldap-account-manager-$VERSION.tar.gz --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
