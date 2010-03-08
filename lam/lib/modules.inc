@@ -1098,7 +1098,7 @@ class accountContainer {
 			}
 			// create PDF file
 			if (isset($_POST['accountContainerCreatePDF'])) {
-				metaRefresh('../lists/list.php?printPDF=1&amp;type=' . $this->type . "&amp;dn=" . base64_encode($this->finalDN));
+				metaRefresh('../lists/list.php?printPDF=1&amp;type=' . $this->type . "&amp;PDFSessionID=" . $this->base);
 				exit;
 			}
 			// module actions

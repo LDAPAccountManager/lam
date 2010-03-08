@@ -519,6 +519,11 @@ class lamList {
 					exit;
 				}
 			}
+			elseif ($option == 'SESSION') {
+				createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
+				unset($_SESSION[$_GET['PDFSessionID']]);
+				exit;
+			}
 		}
 		// check if back from configuration page
 		if (sizeof($this->configOptions) > 0) {
@@ -542,6 +547,12 @@ class lamList {
 	 * @param String $id account ID
 	 */
 	private function showPDFPage($id) {
+		$sessionObject = null;
+		$PDFSessionID = null;
+		if (($id == null) && isset($_GET['PDFSessionID'])) {
+			$PDFSessionID = $_GET['PDFSessionID'];
+			$sessionObject = $_SESSION[$PDFSessionID];
+		}
 		// search for checkboxes
 		$selAccounts = array_keys($_POST, "on");
 		if (!in_array($id, $selAccounts)) {
@@ -573,11 +584,19 @@ class lamList {
 					echo _('Create for') . " ";
 				echo '</td>';
 				echo '<td>';
-					echo '<select name="createFor">';
-					echo '<option value="DN">' . base64_decode($id) . '</option>';
-					echo '<option value="SELECTED">' . sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) . '</option>';
-					echo '<option value="ALL">' . sprintf(_('All accounts (%s)'), sizeof($this->entries)) . '</option>';
-					echo '</select>';
+					// check if account object is already in session
+					if ($sessionObject != null) {
+						echo $sessionObject->finalDN;
+						echo "<input type=\"hidden\" name=\"createFor\" value=\"SESSION\">\n";
+						echo "<input type=\"hidden\" name=\"PDFSessionID\" value=\"$PDFSessionID\">\n";
+					}
+					else {
+						echo '<select name="createFor">';
+						echo '<option value="DN">' . base64_decode($id) . '</option>';
+						echo '<option value="SELECTED">' . sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) . '</option>';
+						echo '<option value="ALL">' . sprintf(_('All accounts (%s)'), sizeof($this->entries)) . '</option>';
+						echo '</select>';
+					}
 				echo '</td>';
 			echo '</tr>';
 			echo '<tr>';
@@ -705,7 +724,7 @@ class lamList {
 	protected function listGetParams() {
 		// check if only PDF should be shown
 		if (isset($_GET['printPDF'])) {
-			$this->showPDFPage($_GET['dn']);
+			$this->showPDFPage(null);
 			exit();
 		}
 		// get current page
