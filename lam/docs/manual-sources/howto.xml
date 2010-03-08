@@ -2236,6 +2236,24 @@ Have fun!
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_ipHost.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>IP addresses</entry>
+
+            <entry>ipHost</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_user.png" />
                 </imageobject>
               </inlinemediaobject></entry>
