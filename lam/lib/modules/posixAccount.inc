@@ -49,6 +49,7 @@ class posixAccount extends baseModule implements passwordService {
 	private $createhomedir;
 	private $lamdaemonServer;
 	private $groupCache = null;
+	private $clearTextPassword;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -315,7 +316,8 @@ class posixAccount extends baseModule implements passwordService {
 			'additionalGroups',
 			'homeDirectory',
 			'loginShell',
-			'cn'
+			'cn',
+			'userPassword'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -1183,6 +1185,9 @@ class posixAccount extends baseModule implements passwordService {
 			'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 			'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 		);
+		if (isset($this->clearTextPassword)) {
+			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
+		}
 		return $return;
 	}
 
@@ -1773,6 +1778,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		$this->clearTextPassword = $password;
 		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
