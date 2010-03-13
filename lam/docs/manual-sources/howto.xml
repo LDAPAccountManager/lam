@@ -1063,6 +1063,58 @@ Have fun!
       </listitem>
     </itemizedlist>
 
+    <para><emphasis role="bold">Basic page layout:</emphasis></para>
+
+    <para>After the login LAM will present you its main page. It consists of a
+    header part which is equal for all pages and the content area which covers
+    most the of the page.</para>
+
+    <para>The header part includes the links to manage all account types (e.g.
+    users and groups) and open the tree view (LDAP browser). There is also the
+    logout link and a tools entry.</para>
+
+    <para>When you login the you will see an account listing in the content
+    area. </para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/mainpage.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Here you can create, delete and modify accounts. Use the action
+    buttons at the left or double click on an entry to edit it.</para>
+
+    <para>The suffix selection box allows you to list only the accounts which
+    are located in a subtree of your LDAP directory.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/listConfig.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>You can change the number of shown entries per page with "Change
+    settings". Depending on the account type there may be additional settings.
+    E.g. the user list can convert group numbers to group names.</para>
+
+    <para>When you select to edit an entry then LAM will show all its data on
+    a tabbed view. There is one tab for each functional part of the account.
+    You can set default values by loading an <link
+    linkend="a_accountProfile">account profile</link>.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/editView.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
     <section>
       <title>Users</title>
 
@@ -1679,6 +1731,109 @@ Have fun!
           <para>Groups (Unix + phpGroupWare)</para>
         </listitem>
       </itemizedlist>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Tools</title>
+
+    <para></para>
+
+    <section id="a_accountProfile">
+      <title>Profile editor</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>File upload</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>OU editor</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>PDF editor</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Schema browser</title>
+
+      <para>Here you browse the schema of your LDAP server. You can view what
+      object classes, attributes, syntaxes and matching rules are available.
+      This is useful if you need to check if a certain object class is
+      available.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/schemaBrowser.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Server information</title>
+
+      <para>This shows some basic information about your LDAP server.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/serverInfo.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Tests</title>
+
+      <para>This allows you to check if your LDAP schema is compatible with
+      LAM and to find possible problems.</para>
+
+      <section>
+        <title>Lamdaemon test</title>
+
+        <para>LAM provides an external script to manage home directories and
+        quotas. You can test here if everything is setup correctly.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/lamdaemonTest.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Schema test</title>
+
+        <para>This will test if your LDAP schema supports all object classes
+        and attributes of the active LAM modules. If you get a message that
+        something is missing please check that you installed all <link
+        linkend="a_schema">required schemas</link>.</para>
+
+        <para>If you get error messages about object class violations then
+        this test can tell you what is missing.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/schemaTest.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
   </chapter>
 
