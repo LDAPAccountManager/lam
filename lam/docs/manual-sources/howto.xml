@@ -1074,7 +1074,7 @@ Have fun!
     logout link and a tools entry.</para>
 
     <para>When you login the you will see an account listing in the content
-    area. </para>
+    area.</para>
 
     <screenshot>
       <mediaobject>
@@ -1742,25 +1742,108 @@ Have fun!
     <section id="a_accountProfile">
       <title>Profile editor</title>
 
-      <para></para>
+      <para>The account profiles are templates for your accounts. Here you can
+      specify default values which can then be loaded when you create
+      accounts. You may also load a template for an existing account to reset
+      it to default values. When you create a new account then LAM will always
+      load the profile named <emphasis role="bold">"default"</emphasis>. This
+      account profile can include default values for all your accounts.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/profileEditor.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section>
       <title>File upload</title>
 
-      <para></para>
+      <para>When you need to create lots of accounts then you can use LAM's
+      file upload to create them. LAM will read a CSV formatted file and
+      create the related LDAP entries. Please check the data in you CSV file
+      carefully. LAM will do less checks for the file upload than for single
+      account creation.</para>
+
+      <para>At the first page please select the account type and what
+      extensions should be activated.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/fileUpload1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The next page shows all available options for the file upload. You
+      will also find a sample CSV file which can be used as template for your
+      CSV file. All red options are required columns in the file. You need to
+      specify a value for each account.</para>
+
+      <para>When you upload the CSV file then LAM first does some checks on
+      this file. This includes syntax checks and if all required data was
+      entered. No changes in the LDAP directory are done at this time.</para>
+
+      <para>If the checks were successful then LAM will ask again if you want
+      to create the accounts. You will also have the chance to check the
+      upload by viewing the changes in LDIF format.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/fileUpload2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section>
       <title>OU editor</title>
 
-      <para></para>
+      <para>This is a simple editor to add/delete organisational units in your
+      LDAP tree. This way you can structure the accounts.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/ouEditor.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section>
       <title>PDF editor</title>
 
-      <para></para>
+      <para>All accounts in LAM may be exported as PDF files. You can specify
+      the page structure and displayed information by editing the PDF
+      profiles.</para>
+
+      <para>When you export accounts to PDF then each account will get its own
+      page inside the PDF. There is a headline on each page where you can show
+      a page title. You may also add a logo to each page. To add more possible
+      logos simply copy the images to config/pdf/logos.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/pdfEditor.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The main part is structured into sections of information. Each
+      section has a title. This can either be static text or the value of an
+      attribute. You may also insert a static text block as section. Sections
+      can be moved by using the arrows next to the section title.</para>
+
+      <para>Each section can contain multiple fields which usually represent
+      LDAP attributes. You can simply add new fields by selecting the field
+      name and its position. Then use the arrows to move the field inside the
+      section.</para>
     </section>
 
     <section>
