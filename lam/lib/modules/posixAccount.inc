@@ -699,43 +699,7 @@ class posixAccount extends baseModule implements passwordService {
 			unset($this->attributes['userPassword']);
 		}
 		$this->attributes['uid'][0] = $_POST['uid'];
-		$setDefaultUserName = false;
-		if (($this->attributes['uid'][0] == '') && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
-			// fill default value for user ID with first/last name
-			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			if (isset($attrs['sn'][0])) {
-				if (isset($attrs['givenName'])) {
-					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
-					$setDefaultUserName = true;
-				}
-				else {
-					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['sn'][0]));
-					$setDefaultUserName = true;
-				}
-			}
-		}
 		$this->attributes['cn'][0] = $_POST['cn'];
-		if ($this->attributes['cn'][0] == '') {
-			// set a default value for common name
-			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
-				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
-			}
-			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-				if ($attrs['givenName'][0]) {
-					$this->attributes['cn'][0] = $attrs['givenName'][0] . " " . $attrs['sn'][0];
-				}
-				elseif ($attrs['sn'][0]) {
-					$this->attributes['cn'][0] = $attrs['sn'][0];
-				}
-				else {
-					$this->attributes['cn'][0] = $_POST['uid'];
-				}
-			}
-			else {
-				$this->attributes['cn'][0] = $_POST['uid'];
-			}
-		}
 		if (!get_preg($this->attributes['cn'][0], 'cn')) {
 			$errors[] = $this->messages['cn'][0];
 		}
@@ -859,8 +823,8 @@ class posixAccount extends baseModule implements passwordService {
 				}
 			}
 		}
-		// Show warning if lam has changed username
-		if (!$setDefaultUserName && ($this->attributes['uid'][0] != $_POST['uid'])) {
+		// Show warning if LAM has changed username
+		if ($this->attributes['uid'][0] != $_POST['uid']) {
 			if ($this->get_scope()=='user') $errors[] = $this->messages['uid'][5];
 			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
 		}
@@ -934,6 +898,41 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$shelllist = getshells(); // list of all valid shells
 
+		// set default values
+		if (($this->attributes['uid'][0] == '') && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
+			// fill default value for user ID with first/last name
+			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			if (isset($attrs['sn'][0])) {
+				if (isset($attrs['givenName'])) {
+					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
+				}
+				else {
+					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['sn'][0]));
+				}
+			}
+		}
+		if ($this->attributes['cn'][0] == '') {
+			// set a default value for common name
+			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
+				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
+			}
+			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+				if ($attrs['givenName'][0]) {
+					$this->attributes['cn'][0] = $attrs['givenName'][0] . " " . $attrs['sn'][0];
+				}
+				elseif ($attrs['sn'][0]) {
+					$this->attributes['cn'][0] = $attrs['sn'][0];
+				}
+				else {
+					$this->attributes['cn'][0] = $_POST['uid'];
+				}
+			}
+			else {
+				$this->attributes['cn'][0] = $_POST['uid'];
+			}
+		}
+		
 		$userName = '';
 		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
 		$return[] = array (
