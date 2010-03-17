@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009  Pavel Pozdnyak
-                2009  Roland Gruber
+  Copyright (C) 2009 - 2010  Pavel Pozdnyak
+                2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ $Id$
  * @package modules
  */
 class asteriskAccount extends baseModule implements passwordService {
+
+	private $asteriskDefaultRealm = "asterisk";
 
 	/**
 	* Creates a new asteriskAccount object.
@@ -89,7 +91,19 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Headline" => _("Password"),
 				"Text" => _("Please enter the password which you want to set for this account.")
 			),
-			);
+			'AsteriskRealm' => array(
+				"Headline" => _("Asterisk realm"),
+				"Text" => _("Authentication realm for asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
+			),
+		);
+		// config options	
+		$return['config_options']['user'] = array(
+			array(
+				array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Asterisk realm') . ": "),
+				array('kind' => 'input', 'name' => 'asteriskAccount_AsteriskRealm', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'AsteriskRealm')
+			)
+		);
 		// profile options
 		$return['profile_options'] = array(
 			array(
@@ -100,7 +114,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			array('kind' => 'text', 'text' => _('Account context') . ":"),
 			array('kind' => 'input', 'name' => 'asteriskAccount_AstAccountContext', 'type' => 'text', 'size' => '30'),
 			array('kind' => 'help', 'value' => 'AstAccountContext'))
-		);
+                        );
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'asteriskAccount_AstAccountHost' => 'AstAccountHost',
@@ -328,7 +342,8 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 
-	/**
+
+        /**
 	 * This method specifies if a module manages password attributes.
 	 * @see passwordService::managesPasswordAttributes
 	 *
@@ -352,7 +367,15 @@ class asteriskAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$this->attributes['AstAccountRealmedPassword'][0] = $this->hashPassword($password);
+		$astRealm = $this->asteriskDefaultRealm;
+		if ($this->get_scope()=='user') {
+			$asteriskRealmFromProfile = $this->moduleSettings['asteriskAccount_AsteriskRealm'][0];
+			if ($asteriskRealmFromProfile != ""){
+				$astRealm = $asteriskRealmFromProfile;
+			}
+		}
+		$password_con = $this->attributes['AstAccountCallerID'][0] . ":" . $astRealm . ":" . $password;
+		$this->attributes['AstAccountRealmedPassword'][0] = $this->hashPassword($password_con);
 		return array();
 	}
 	
@@ -363,7 +386,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return String hash
 	 */
 	private function hashPassword($password) {
-		return base64_encode(hex2bin(md5($password)));
+		return "{MD5}" . md5($password);
 	}
 
 }
