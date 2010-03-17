@@ -212,27 +212,27 @@ class asteriskExtension extends baseModule {
 
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Common name") . '*'),
-			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
+			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['cn'][0]),
 			array('kind' => 'help', 'value' => 'cn'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Account context") . '*'),
-			array('kind' => 'input', 'name' => 'AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstContext'][0]),
+			array('kind' => 'input', 'name' => 'AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstContext'][0]),
 			array('kind' => 'help', 'value' => 'AstContext'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Extension name") . '*'),
-			array('kind' => 'input', 'name' => 'AstExtension', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstExtension'][0]),
+			array('kind' => 'input', 'name' => 'AstExtension', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstExtension'][0]),
 			array('kind' => 'help', 'value' => 'AstExtension'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Priority") . '*'),
-			array('kind' => 'input', 'name' => 'AstPriority', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstPriority'][0]),
+			array('kind' => 'input', 'name' => 'AstPriority', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstPriority'][0]),
 			array('kind' => 'help', 'value' => 'AstPriority'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Application") . '*'),
-			array('kind' => 'input', 'name' => 'AstApplication', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstApplication'][0]),
+			array('kind' => 'input', 'name' => 'AstApplication', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstApplication'][0]),
 			array('kind' => 'help', 'value' => 'AstApplication'));
 		$return[] = array(
 			array('kind' => 'text', 'text' => _("Application data")),
-			array('kind' => 'input', 'name' => 'AstApplicationData', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['AstApplicationData'][0]),
+			array('kind' => 'input', 'name' => 'AstApplicationData', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstApplicationData'][0]),
 			array('kind' => 'help', 'value' => 'AstApplicationData'));
 		
 		$return[] = array(
