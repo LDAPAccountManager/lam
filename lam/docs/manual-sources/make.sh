@@ -13,4 +13,5 @@ xsltproc -o ../manual/ --stringparam html.stylesheet.type text/css --stringparam
 mkdir ../manual/images
 # cp images/*.jpg ../manual/images
 cp images/*.png ../manual/images
+cp images/*.jpg ../manual/images
 cp style.css ../manual
