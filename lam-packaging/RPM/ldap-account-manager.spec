@@ -5,7 +5,8 @@
 %define lam_distribution @@DISTRIBUTION@@
 %define is_suse %(test suse = %lam_distribution && echo 1 || echo 0)
 %define is_fedora %(test fedora = %lam_distribution && echo 1 || echo 0)
-
+%define _binary_payload w9.bzdio
+%define _source_payload w9.bzdio
 
 Name:         ldap-account-manager
 License:      GPL
