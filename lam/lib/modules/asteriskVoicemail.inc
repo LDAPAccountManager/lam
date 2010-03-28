@@ -93,15 +93,15 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			),
 			'AstVoicemailEmail' => array(
 				"Headline" => _("Email address"),
-				"Text" => _("Email for voicemail account.")
+				"Text" => _("Email address for this voicemail account.")
 			),
 			'AstVoicemailPager' => array(
 				"Headline" => _("Pager"),
-				"Text" => _("Pager number for asterisk voicemail.")
+				"Text" => _("Pager number for Asterisk voicemail.")
 			),
 			'AstVoicemailOptions' => array(
 				"Headline" => _("Options"),
-				"Text" => _("Options for asterisk voicemail account (e.g. sendvoicemail=yes).")
+				"Text" => _("Options for Asterisk voicemail account (e.g. sendvoicemail=yes).")
 			),
 			'AstVoicemailTimestamp' => array(
 				"Headline" => _("Timestamp"),
@@ -146,7 +146,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'asteriskVoicemail_AstContext',
-				'description' => _('Account Context'),
+				'description' => _('Account context'),
 				'help' => 'AstContext',
 				'example' => 'default',
 				'required' => true
@@ -209,22 +209,22 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	function load_Messages() {
 		//messages for voicemail
-		$this->messages['AstVoicemailMailbox'][0] = array('ERROR', _('Please enter a voicemail ID.'));
-		$this->messages['AstVoicemailMailbox'][1] = array('ERROR', _('The voicemail ID format is invalid.'));
-		$this->messages['AstVoicemailMailbox'][2] = array('ERROR', _('There is already another user with this voicemail ID.'));
+		$this->messages['AstVoicemailMailbox'][0] = array('ERROR', _('Please enter a mailbox.'));
+		$this->messages['AstVoicemailMailbox'][1] = array('ERROR', _('The mailbox format is invalid.'));
+		$this->messages['AstVoicemailMailbox'][2] = array('ERROR', _('There is already another user with this mailbox name.'));
 
-		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the Asterisk context for Voicemail.'));
-		$this->messages['AstContext'][1] = array('ERROR', _('The Asterisk context is invalid.'));
-		$this->messages['AstContext'][2] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstContext', _('The Asterisk context name is invalid.'));
+		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
+		$this->messages['AstContext'][1] = array('ERROR', _('The account context is invalid.'));
+		$this->messages['AstContext'][2] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstContext', _('The account context is invalid.'));
 
-		$this->messages['AstVoicemailFullname'][0] = array('ERROR', _('The voicemail fullname name is invalid.'));
-		$this->messages['AstVoicemailEmail'][01] = array('ERROR', _('The email for Asterisk voicemail is invalid.'));
+		$this->messages['AstVoicemailFullname'][0] = array('ERROR', _('The full name name is invalid.'));
+		$this->messages['AstVoicemailEmail'][01] = array('ERROR', _('The email address is invalid.'));
 		$this->messages['AstVoicemailPager'][0] = array('ERROR', _('The pager has bad format.'));
 		$this->messages['AstVoicemailOptions'][0] = array('ERROR', _('The options have bad format.'));
-		$this->messages['AstVoicemailOptions'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The voicemail options is invalid.'));
+		$this->messages['AstVoicemailOptions'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The options have bad format.'));
 		$this->messages['AstVoicemailTimestamp'][0] = array('ERROR', _('The timestamp is invalid.'));
-		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The Asterisk voicemail context name is invalid.'));
-		$this->messages['AstVoicemailContext'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailContext', _('The Asterisk voicemail context is invalid.'));
+		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The voicemail context name is invalid.'));
+		$this->messages['AstVoicemailContext'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailContext', _('The voicemail context name is invalid.'));
 		$this->messages['AstVoicemailPassword'][0] = array('INFO', _('Please set the voicemail password with "Set password" before saving.'));
 	}
 
@@ -254,7 +254,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 					array('kind' => 'input', 'name' => 'AstVoicemailFullname', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailFullname'][0]),
 					array('kind' => 'help', 'value' => 'AstVoicemailFullname'));
 			$return[] = array(
-					array('kind' => 'text', 'text' => _("Email")),
+					array('kind' => 'text', 'text' => _("Email address")),
 					array('kind' => 'input', 'name' => 'AstVoicemailEmail', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailEmail'][0]),
 					array('kind' => 'help', 'value' => 'AstVoicemailEmail'));
 			$return[] = array(
@@ -392,7 +392,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$return[get_class($this) . '_AstVoicemailContext'] = array('<block><key>' . _('Voicemail context') . '</key><value>' . $this->attributes['AstVoicemailContext'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailTimestamp'] = array('<block><key>' . _('Timestamp') . '</key><value>' . $this->attributes['AstVoicemailTimestamp'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailPager'] = array('<block><key>' . _('Pager') . '</key><value>' . $this->attributes['AstVoicemailPager'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailEmail'] = array('<block><key>' . _('Email') . '</key><value>' . $this->attributes['AstVoicemailEmail'][0] . '</value></block>');
+		$return[get_class($this) . '_AstVoicemailEmail'] = array('<block><key>' . _('Email address') . '</key><value>' . $this->attributes['AstVoicemailEmail'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailOptions'] = array('<block><key>' . _('Options') . '</key><value>' . $this->attributes['AstVoicemailOptions'][0] . '</value></block>');
 		return $return;
 	}
