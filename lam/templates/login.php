@@ -381,6 +381,7 @@ if(!empty($_POST['checklogin'])) {
 		logNewMessage(LOG_DEBUG, "Empty password for login");
 		$error_message = _("Empty password submitted. Please try again.");
 		display_LoginPage($_SESSION['config']); // Empty password submitted. Return to login page.
+		exit();
 	}
 	else {
 		$clientSource = $_SERVER['REMOTE_ADDR'] . '/' . $_SERVER['REMOTE_HOST'];
