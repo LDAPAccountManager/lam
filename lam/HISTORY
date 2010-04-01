@@ -1,3 +1,9 @@
+June 2010 3.1.0
+  - Asterisk voicemail support
+  - fixed bugs:
+   -> Asterisk password handling (patch 2979728)
+
+
 24.03.2010 3.0.0
   - support to remove extension from an existing account: shadowAccount, sambaSamAccount, eduPerson
   - file upload: allow to select account modules for upload

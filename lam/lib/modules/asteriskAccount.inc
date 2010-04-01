@@ -350,6 +350,9 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
+		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
+			return false;
+		}
 		return true;
 	}
 

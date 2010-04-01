@@ -69,8 +69,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		// managed attributes
 		$return['attributes'] = array('AstContext', 'AstVoicemailMailbox',
 				'AstVoicemailPassword', 'AstVoicemailFullname', 'AstVoicemailEmail',
-				'AstVoicemailPager', 'AstVoicemailOptions', 'AstVoicemailTimestamp',
-				'AstVoicemailContext');
+				'AstVoicemailPager', 'AstVoicemailOptions', 'AstVoicemailContext');
 		// icon
 		$return['icon'] = 'asterisk.png';
 		// help
@@ -103,10 +102,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				"Headline" => _("Options"),
 				"Text" => _("Options for Asterisk voicemail account (e.g. sendvoicemail=yes).")
 			),
-			'AstVoicemailTimestamp' => array(
-				"Headline" => _("Timestamp"),
-				"Text" => _("Asterisk voicemail timestamp.")
-			),
 			'AstVoicemailContext' => array(
 				"Headline" => _("Voicemail context"),
 				"Text" => _("Asterisk voicemail context.")
@@ -137,7 +132,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$return['PDF_fields'] = array(
 				'AstContext', 'AstVoicemailMailbox',
 				'AstVoicemailFullname', 'AstVoicemailEmail',
-				'AstVoicemailPager', 'AstVoicemailOptions', 'AstVoicemailTimestamp',
+				'AstVoicemailPager', 'AstVoicemailOptions',
 				'AstVoicemailContext'
 		);
 		// upload dependencies
@@ -190,11 +185,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				'example' => 'sendvoicemail=yes'
 			),
 			array(
-				'name' => 'asteriskVoicemail_AstVoicemailTimestamp',
-				'description' => _('Time stamp'),
-				'help' => 'AstVoicemailTimestamp'
-			),
-			array(
 				'name' => 'asteriskVoicemail_AstVoicemailContext',
 				'description' => _('Voicemail context'),
 				'help' => 'AstVoicemailContext',
@@ -222,7 +212,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$this->messages['AstVoicemailPager'][0] = array('ERROR', _('The pager has bad format.'));
 		$this->messages['AstVoicemailOptions'][0] = array('ERROR', _('The options have bad format.'));
 		$this->messages['AstVoicemailOptions'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The options have bad format.'));
-		$this->messages['AstVoicemailTimestamp'][0] = array('ERROR', _('The timestamp is invalid.'));
 		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The voicemail context name is invalid.'));
 		$this->messages['AstVoicemailContext'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailContext', _('The voicemail context name is invalid.'));
 		$this->messages['AstVoicemailPassword'][0] = array('INFO', _('Please set the voicemail password with "Set password" before saving.'));
@@ -265,10 +254,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 					array('kind' => 'text', 'text' => _("Options")),
 					array('kind' => 'input', 'name' => 'AstVoicemailOptions', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailOptions'][0]),
 					array('kind' => 'help', 'value' => 'AstVoicemailOptions'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Timestamp")),
-					array('kind' => 'input', 'name' => 'AstVoicemailTimestamp', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailTimestamp'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailTimestamp'));
 			$return[] = array(
 					array('kind' => 'text', 'text' => _("Voicemail context")),
 					array('kind' => 'input', 'name' => 'AstVoicemailContext', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailContext'][0]),
@@ -318,7 +303,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$this->attributes['AstVoicemailEmail'] = array();
 		$this->attributes['AstVoicemailPager'] = array();
 		$this->attributes['AstVoicemailOptions'] = array();
-		$this->attributes['AstVoicemailTimestamp'] = array();
 		$this->attributes['AstVoicemailContext'] = array();
 
 		if (isset($_POST['AstContext'])) {
@@ -369,9 +353,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		if (isset($_POST['AstVoicemailOptions'])) {
 			$this->attributes['AstVoicemailOptions'][0] = $_POST['AstVoicemailOptions'];
 		}
-		if (isset($_POST['AstVoicemailTimestamp'])) {
-			$this->attributes['AstVoicemailTimestamp'][0] = $_POST['AstVoicemailTimestamp'];
-		}
 		if (isset($_POST['AstVoicemailContext'])) {
 			$this->attributes['AstVoicemailContext'][0] = $_POST['AstVoicemailContext'];
 			if($this->attributes['AstVoicemailContext'][0] != '' && !get_preg($this->attributes['AstVoicemailContext'][0], 'realname')) {
@@ -390,7 +371,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstContext'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailFullname'] = array('<block><key>' . _('Full name') . '</key><value>' . $this->attributes['AstVoicemailFullname'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailContext'] = array('<block><key>' . _('Voicemail context') . '</key><value>' . $this->attributes['AstVoicemailContext'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailTimestamp'] = array('<block><key>' . _('Timestamp') . '</key><value>' . $this->attributes['AstVoicemailTimestamp'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailPager'] = array('<block><key>' . _('Pager') . '</key><value>' . $this->attributes['AstVoicemailPager'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailEmail'] = array('<block><key>' . _('Email address') . '</key><value>' . $this->attributes['AstVoicemailEmail'][0] . '</value></block>');
 		$return[get_class($this) . '_AstVoicemailOptions'] = array('<block><key>' . _('Options') . '</key><value>' . $this->attributes['AstVoicemailOptions'][0] . '</value></block>');
@@ -456,10 +436,6 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				$messages[] = $errMsg;
 			}
 
-			if ($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailTimestamp']]!= "") {
-				$partialAccounts[$i]['AstVoicemailTimestamp'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailTimestamp']];
-			}
-
 			if ($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailOptions']]!= "") {
 				$partialAccounts[$i]['AstVoicemailOptions'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailOptions']];
 			}
@@ -508,6 +484,9 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
+		if (!in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
+			return false;
+		}
 		return true;
 	}
 
