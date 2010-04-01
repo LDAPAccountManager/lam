@@ -1149,7 +1149,7 @@ function get_enc_type( $user_password )
 function draw_jpeg_photos( $dn, $attr_name='jpegPhoto', $draw_delete_buttons=false,
 				$draw_bytes_and_size=true, $table_html_attrs='align="left"', $img_html_attrs='' )
 {
-	$jpeg_temp_dir = $_SESSION['lampath'] . 'tmp';
+	$jpeg_temp_dir = dirname(__FILE__) . '/../tmp';
 
 	$conn = $_SESSION['ldap']->server();
 	$search_result = ldap_read( $conn, $dn, 'objectClass=*', array( $attr_name ) );

@@ -46,7 +46,7 @@ include_once("ldap.inc");
  */
 function getPDFStructureDefinitions($scope = "user") {
 	$return = array();
-	$path = $_SESSION['lampath'] . 'config/pdf/';
+	$path = dirname(__FILE__) . '/../config/pdf/';
 	if(is_dir($path)) {
 		$dirHandle = opendir($path);
 		while($file = readdir($dirHandle)) {
@@ -71,7 +71,7 @@ function getPDFStructureDefinitions($scope = "user") {
  */
 function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 	$parser = new xmlParser();
-	$file = $_SESSION['lampath'] . 'config/pdf/' . $pdf_structure . '.' . $scope . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $pdf_structure . '.' . $scope . '.xml';
 	$xml = $parser->parse($file);
 	$border = array();
 	$structure = array();
@@ -100,8 +100,8 @@ function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 function savePDFStructureDefinitions($scope,$definition) {
 	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return 'no perms';
 	if (!preg_match('/[a-zA-Z]+/',$scope)) return 'no perms';
-	$struct_file = ($_SESSION['lampath'] . 'config/pdf/' . $definition . '.' . $scope . '.xml');
-	if(!is_writable($_SESSION['lampath'] . 'config/pdf/')) {
+	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $definition . '.' . $scope . '.xml';
+	if(!is_writable(dirname(__FILE__) . '/../config/pdf/')) {
 		return 'no perms';
 	}
 	else {
@@ -158,7 +158,7 @@ function savePDFStructureDefinitions($scope,$definition) {
 function deletePDFStructureDefinition($scope, $definition) {
 	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return false;
 	if (!preg_match('/[a-zA-Z]+/',$scope)) return false;
-	$file = $_SESSION['lampath'] . 'config/pdf/' . $definition . '.' . $scope . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $definition . '.' . $scope . '.xml';
 	if(is_file($file) && is_writable($file)) {
 		return unlink($file);
 	}
@@ -175,7 +175,7 @@ function deletePDFStructureDefinition($scope, $definition) {
  */
 function getAvailableLogos() {
 	$return = array();
-	$dirPath = $_SESSION['lampath'] . '/config/pdf/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/logos/';
 	$dirHandle = opendir($dirPath);
 	while($file = readdir($dirHandle)) {
 		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/',$file)) {

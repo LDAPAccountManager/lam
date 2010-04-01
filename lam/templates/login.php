@@ -60,8 +60,6 @@ if(isset($_POST['profile'])) {
 }
 
 // init some session variables
-$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
-
 $default_Config = new LAMCfgMain();
 $_SESSION["cfgMain"] = $default_Config;
 $default_Profile = $default_Config->default;

@@ -186,23 +186,21 @@ class Ldap{
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
 		$this->rand = mt_rand();
-		// delete PDF files which are older than 10 min
-		if (isset($_SESSION['lampath'])) {
-			$relpath = $_SESSION['lampath'] . 'tmp/';
-			$time = time();
-			$dir = @opendir($relpath);
-			$file = @readdir($dir);
-			while ($file) {
-				if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg')) {
-					$path = $relpath . $file;
-					if ($time - filemtime($path) > 600) {
-						@unlink($path);
-					}
+		// delete PDF files and images which are older than 10 min
+		$tmpDir = dirname(__FILE__) . '/../tmp/';
+		$time = time();
+		$dir = @opendir($tmpDir);
+		$file = @readdir($dir);
+		while ($file) {
+			if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg')) {
+				$path = $tmpDir . $file;
+				if ($time - filemtime($path) > 600) {
+					@unlink($path);
 				}
-				$file = @readdir($dir);
 			}
-			@closedir($dir);
+			$file = @readdir($dir);
 		}
+		@closedir($dir);
 	}
 
 	/**

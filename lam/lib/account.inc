@@ -39,10 +39,10 @@ $Id$
 * @return array list of shell names
 */
 function getshells() {
-	if (!isset($_SESSION['lampath'])) return array();
+	$shellPath = dirname(__FILE__) . '/../config/shells';
 	// Load shells from file
-	if (file_exists($_SESSION['lampath'] . 'config/shells')) {
-		$shells = file($_SESSION['lampath'] . 'config/shells');
+	if (file_exists($shellPath)) {
+		$shells = file($shellPath);
 		$i = 0;
 		while (count($shells) > $i) {
 			// remove whitespaces

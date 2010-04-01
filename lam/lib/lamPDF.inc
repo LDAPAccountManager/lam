@@ -63,7 +63,7 @@ class lamPDF extends UFPDF {
 	 */
 	function __construct($page_definitions = array(),$fontName) {
 		$this->fontName = $fontName;
-		define('FPDF_FONTPATH', $_SESSION['lampath'] . "lib/" . 'font/');
+		define('FPDF_FONTPATH', dirname(__FILE__) . '/font/');
 		// Call constructor of superclass
 		$this->FPDF('P','mm','A4');
 		

@@ -142,12 +142,8 @@ function createModulePDF($accounts,$pdf_structure="default") {
 	
 	// Close PDF
 	$pdf->Close();
-	// Get relative url path
-	$fullpath = realpath('.');
-	$subdirs = explode('/', str_replace($_SESSION['lampath'], '', $fullpath));
-	for ($i=0; $i<count($subdirs); $i++ ) $filename .= '../';
 	// use timestamp and random number from ldap.inc as filename so it should be unique.
-	$filename .= 'tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
+	$filename .= '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
 	// Save PDF
 	$pdf->Output($filename);
 	// Output meta refresh to pdf-file

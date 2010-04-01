@@ -1152,7 +1152,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$noPhoto = true;
 		if (isset($this->attributes['jpegPhoto'][0])) {
 			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
-			$outjpeg = @fopen($_SESSION['lampath'] . 'tmp/' . $jpeg_filename, "wb");
+			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 			fclose ($outjpeg);
 			$photoFile = '../../tmp/' . $jpeg_filename;
