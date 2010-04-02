@@ -97,7 +97,7 @@ class user extends baseType {
 			"sn" => _("Last name"),
 			"homedirectory" => _("Home directory"),
 			"loginshell" => _("Login shell"),
-			"mail" => _("E-Mail"),
+			"mail" => _("Email"),
 			"gecos" => _("Description"),
 			"jpegphoto" => _('Photo')
 			);

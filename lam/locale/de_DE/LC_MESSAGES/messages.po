@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2010-03-06 16:38+0100\n"
+"PO-Revision-Date: 2010-04-02 13:36+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../lib/modules/posixAccount.inc:377
+#: ../lib/modules/posixAccount.inc:379
 msgid "$user and $group will be replaced with user name and primary group name."
 msgstr "$user und $group werden durch Benutzer- und Gruppenname ersetzt."
 
@@ -95,11 +95,12 @@ msgstr "(keine neuen Attribute verfügbar)"
 msgid "(no new binary attributes available for this entry)"
 msgstr "(keine neuen binären Attribute verfügbar)"
 
-#: ../lib/modules/posixAccount.inc:236
+#: ../lib/modules/posixAccount.inc:237
 msgid "/home/smiller"
 msgstr "/home/hmueller"
 
 #: ../lib/modules/inetOrgPerson.inc:392
+#: ../lib/modules/asteriskVoicemail.inc:179
 msgid "123-123-1234"
 msgstr "01234 123456"
 
@@ -201,22 +202,25 @@ msgstr "Account"
 #: ../lib/modules/inetOrgPerson.inc:100 ../lib/modules/inetOrgPerson.inc:101
 #: ../lib/modules/inetOrgPerson.inc:102 ../lib/modules/inetOrgPerson.inc:105
 #: ../lib/modules/ieee802device.inc:89 ../lib/modules/ipHost.inc:107
-#: ../lib/modules/ipHost.inc:108 ../lib/modules/sambaGroupMapping.inc:439
+#: ../lib/modules/ipHost.inc:108 ../lib/modules/asteriskVoicemail.inc:208
+#: ../lib/modules/asteriskVoicemail.inc:214
+#: ../lib/modules/asteriskVoicemail.inc:216
+#: ../lib/modules/sambaGroupMapping.inc:439
 #: ../lib/modules/sambaGroupMapping.inc:440 ../lib/modules/posixGroup.inc:473
 #: ../lib/modules/posixGroup.inc:477 ../lib/modules/posixGroup.inc:478
-#: ../lib/modules/posixAccount.inc:67 ../lib/modules/posixAccount.inc:72
-#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:84
-#: ../lib/modules/posixAccount.inc:85 ../lib/modules/posixAccount.inc:86
-#: ../lib/modules/posixAccount.inc:87 ../lib/modules/posixAccount.inc:88
-#: ../lib/modules/posixAccount.inc:89 ../lib/modules/posixAccount.inc:91
-#: ../lib/modules/posixAccount.inc:92 ../lib/modules/posixAccount.inc:93
-#: ../lib/modules/posixAccount.inc:95 ../lib/modules/kolabUser.inc:236
+#: ../lib/modules/posixAccount.inc:68 ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:85
+#: ../lib/modules/posixAccount.inc:86 ../lib/modules/posixAccount.inc:87
+#: ../lib/modules/posixAccount.inc:88 ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:90 ../lib/modules/posixAccount.inc:92
+#: ../lib/modules/posixAccount.inc:93 ../lib/modules/posixAccount.inc:94
+#: ../lib/modules/posixAccount.inc:96 ../lib/modules/kolabUser.inc:236
 #: ../lib/modules/kolabUser.inc:238 ../lib/modules/kolabUser.inc:240
 #: ../lib/modules/kolabUser.inc:242 ../lib/modules/kolabUser.inc:244
 #: ../lib/modules/kolabUser.inc:246 ../lib/modules/kolabUser.inc:248
-#: ../lib/modules/asteriskAccount.inc:155
-#: ../lib/modules/asteriskAccount.inc:158
-#: ../lib/modules/asteriskAccount.inc:161 ../lib/modules/nisObject.inc:114
+#: ../lib/modules/asteriskAccount.inc:169
+#: ../lib/modules/asteriskAccount.inc:172
+#: ../lib/modules/asteriskAccount.inc:175 ../lib/modules/nisObject.inc:114
 #: ../lib/modules/nisObject.inc:116 ../lib/modules/eduPerson.inc:211
 #: ../lib/modules/eduPerson.inc:213 ../lib/modules/eduPerson.inc:215
 #: ../lib/modules/eduPerson.inc:217 ../lib/modules/eduPerson.inc:218
@@ -251,16 +255,21 @@ msgstr "Account"
 msgid "Account %s:"
 msgstr "Account %s:"
 
+#: ../lib/modules/asteriskVoicemail.inc:78
+#: ../lib/modules/asteriskVoicemail.inc:121
+#: ../lib/modules/asteriskVoicemail.inc:144
+#: ../lib/modules/asteriskVoicemail.inc:235
+#: ../lib/modules/asteriskVoicemail.inc:371
 #: ../lib/modules/asteriskExtension.inc:82
 #: ../lib/modules/asteriskExtension.inc:113
 #: ../lib/modules/asteriskExtension.inc:173
 #: ../lib/modules/asteriskExtension.inc:218
 #: ../lib/modules/asteriskExtension.inc:457
-#: ../lib/modules/asteriskAccount.inc:85
-#: ../lib/modules/asteriskAccount.inc:100
-#: ../lib/modules/asteriskAccount.inc:126
-#: ../lib/modules/asteriskAccount.inc:186
-#: ../lib/modules/asteriskAccount.inc:272
+#: ../lib/modules/asteriskAccount.inc:87
+#: ../lib/modules/asteriskAccount.inc:114
+#: ../lib/modules/asteriskAccount.inc:140
+#: ../lib/modules/asteriskAccount.inc:200
+#: ../lib/modules/asteriskAccount.inc:286
 msgid "Account context"
 msgstr "Accountkontext"
 
@@ -268,7 +277,7 @@ msgstr "Accountkontext"
 msgid "Account creation via file upload"
 msgstr "Erstellung von Accounts mittels Dateiupload"
 
-#: ../lib/modules/posixAccount.inc:384
+#: ../lib/modules/posixAccount.inc:386
 msgid "Account deactivated"
 msgstr "Account deaktiviert"
 
@@ -394,7 +403,7 @@ msgstr ""
 "Wenn Sie dieses Kästchen aktivieren, dann der Client-Drucker als "
 "Standarddrucker verwendet."
 
-#: ../lib/modules/posixAccount.inc:356
+#: ../lib/modules/posixAccount.inc:358
 msgid "Activating this checkbox will remove the user's home directory."
 msgstr ""
 "Wenn Sie dieses Kästchen aktivieren, dann wird das Heimatverzeichnis des "
@@ -425,9 +434,13 @@ msgstr "Aktive Accounttypen"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: ../lib/modules/asteriskAccount.inc:192
+#: ../lib/modules/asteriskAccount.inc:206
 msgid "Add Asterisk account"
 msgstr "Asterisk-Account hinzufügen"
+
+#: ../lib/modules/asteriskVoicemail.inc:269
+msgid "Add Asterisk voicemail extension"
+msgstr "Asterisk Anrufbeantworter-Erweiterung hinzufügen"
 
 #: ../lib/modules/eduPerson.inc:402
 msgid "Add EDU person extension"
@@ -508,10 +521,10 @@ msgstr "Hinzufügen des Adressbereiches schlug fehl."
 msgid "Additional CSS links"
 msgstr "Zusätzliche CSS-Links"
 
-#: ../lib/modules/posixAccount.inc:228 ../lib/modules/posixAccount.inc:347
-#: ../lib/modules/posixAccount.inc:392 ../lib/modules/posixAccount.inc:966
-#: ../lib/modules/posixAccount.inc:1051 ../lib/modules/posixAccount.inc:1096
-#: ../lib/modules/posixAccount.inc:1182
+#: ../lib/modules/posixAccount.inc:229 ../lib/modules/posixAccount.inc:349
+#: ../lib/modules/posixAccount.inc:394 ../lib/modules/posixAccount.inc:967
+#: ../lib/modules/posixAccount.inc:1052 ../lib/modules/posixAccount.inc:1097
+#: ../lib/modules/posixAccount.inc:1183
 msgid "Additional groups"
 msgstr "Zusätzliche Gruppen"
 
@@ -584,7 +597,7 @@ msgstr "Aliasziel"
 msgid "Aliases"
 msgstr "Aliase"
 
-#: ../lib/lists.inc:579
+#: ../lib/lists.inc:597
 #, php-format
 msgid "All accounts (%s)"
 msgstr "Alle Accounts (%s)"
@@ -598,7 +611,7 @@ msgstr "Alle Änderungen waren erfolgreich."
 msgid "All following lines form the mail body."
 msgstr "Alle folgenden Zeilen formen den Mailtext."
 
-#: ../lib/lists.inc:578
+#: ../lib/lists.inc:596
 #, php-format
 msgid "All selected accounts (%s)"
 msgstr "Alle selektierten Accounts (%s)"
@@ -670,7 +683,7 @@ msgstr "Anwendungsdaten"
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "Soll dieses Objekt gelöscht werden?"
 
-#: ../lib/modules/asteriskAccount.inc:64
+#: ../lib/modules/asteriskAccount.inc:66
 msgid "Asterisk"
 msgstr "Asterisk"
 
@@ -685,6 +698,19 @@ msgstr "Asterisk-Erweiterungen"
 #: ../lib/types/asteriskExt.inc:62
 msgid "Asterisk extensions entries"
 msgstr "Asterisk-Erweiterungseinträge"
+
+#: ../lib/modules/asteriskAccount.inc:95
+#: ../lib/modules/asteriskAccount.inc:102
+msgid "Asterisk realm"
+msgstr "Asterisk -Bereich"
+
+#: ../lib/modules/asteriskVoicemail.inc:64
+msgid "Asterisk voicemail"
+msgstr "Asterisk Anrufbeantworter"
+
+#: ../lib/modules/asteriskVoicemail.inc:107
+msgid "Asterisk voicemail context."
+msgstr "Asterisk Anrufbeantworter-Kontext."
 
 #: ../lib/modules/sambaSamAccount.inc:535
 msgid "Atlantic time (Canada), Caracas"
@@ -706,6 +732,14 @@ msgstr "Attributtypen"
 msgid "Auckland, Fiji, Kamchatka"
 msgstr "Auckland, Fiji, Kamchatka"
 
+#: ../lib/modules/asteriskAccount.inc:96
+msgid ""
+"Authentication realm for Asterisk server (default: asterisk). This value set "
+"in sip.conf (option: \"realm\")."
+msgstr ""
+"Authentifizierungsbereich für den Asterisk-Server (default asterisk). Dieser "
+"Wert wird in der sip.conf-Datei (Option: \"realm\") definiert."
+
 #: ../lib/modules/eduPerson.inc:127 ../lib/modules/eduPerson.inc:133
 #: ../lib/modules/sambaSamAccount.inc:143
 #: ../lib/modules/sambaSamAccount.inc:373 ../lib/modules/shadowAccount.inc:99
@@ -722,7 +756,7 @@ msgstr "Verfügbare Accounttypen"
 msgid "Available actions"
 msgstr "Verfügbare Aktionen"
 
-#: ../lib/modules/nisnetgroup.inc:364 ../lib/modules/posixAccount.inc:1063
+#: ../lib/modules/nisnetgroup.inc:364 ../lib/modules/posixAccount.inc:1064
 msgid "Available groups"
 msgstr "Verfügbare Gruppen"
 
@@ -750,7 +784,7 @@ msgstr "B-Knoten (0x01)"
 #: ../templates/tree/update_confirm.php:255 ../lib/modules/nisnetgroup.inc:370
 #: ../lib/modules/inetOrgPerson.inc:1208 ../lib/modules/groupOfNames.inc:348
 #: ../lib/modules/posixGroup.inc:259 ../lib/modules/asteriskExtension.inc:318
-#: ../lib/modules/posixAccount.inc:1069
+#: ../lib/modules/posixAccount.inc:1070
 #: ../lib/modules/sambaSamAccount.inc:1300
 msgid "Back"
 msgstr "Zurück"
@@ -927,15 +961,15 @@ msgstr "Cache Zeitbegrenzung"
 msgid "Cache timeout is invalid!"
 msgstr "Cache Zeitbegrenzung ist ungültig!"
 
-#: ../lib/modules/asteriskAccount.inc:77
-#: ../lib/modules/asteriskAccount.inc:119
-#: ../lib/modules/asteriskAccount.inc:175
-#: ../lib/modules/asteriskAccount.inc:271
+#: ../lib/modules/asteriskAccount.inc:79
+#: ../lib/modules/asteriskAccount.inc:133
+#: ../lib/modules/asteriskAccount.inc:189
+#: ../lib/modules/asteriskAccount.inc:285
 msgid "Caller ID"
 msgstr "Anrufer-ID"
 
 #: ../lib/modules/sambaGroupMapping.inc:368
-#: ../lib/modules/posixAccount.inc:393 ../lib/modules/sambaSamAccount.inc:280
+#: ../lib/modules/posixAccount.inc:395 ../lib/modules/sambaSamAccount.inc:280
 #: ../lib/modules/sambaSamAccount.inc:283
 #: ../lib/modules/sambaSamAccount.inc:286
 #: ../lib/modules/sambaSamAccount.inc:292 ../lib/modules/shadowAccount.inc:174
@@ -962,14 +996,14 @@ msgstr "Kann leer bleiben."
 #: ../lib/modules/sambaSamAccount.inc:1526
 #: ../lib/modules/shadowAccount.inc:403
 #: ../lib/modules/phpGroupwareUser.inc:260 ../lib/modules/aliasEntry.inc:147
-#: ../lib/modules/aliasEntry.inc:167 ../lib/lists.inc:589 ../lib/lists.inc:805
+#: ../lib/modules/aliasEntry.inc:167 ../lib/lists.inc:608 ../lib/lists.inc:824
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: ../templates/selfService/selfServiceLogin.php:118
 #: ../templates/selfService/selfServiceLogin.php:122
-#: ../templates/selfService/selfServiceMain.php:163 ../templates/login.php:401
-#: ../templates/login.php:459 ../templates/login.php:464
+#: ../templates/selfService/selfServiceMain.php:163 ../templates/login.php:400
+#: ../templates/login.php:458 ../templates/login.php:463
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
 
@@ -1016,7 +1050,7 @@ msgstr "Ändere die GID-Nummern aller Benutzer auf den neuen Wert"
 msgid "Change default profile"
 msgstr "Standardprofil wechseln"
 
-#: ../lib/lists.inc:791
+#: ../lib/lists.inc:810
 msgid "Change list settings"
 msgstr "Listeneinstellungen ändern"
 
@@ -1035,15 +1069,15 @@ msgstr "Passwort ändern"
 msgid "Change passwords"
 msgstr "Passwörter ändern"
 
-#: ../templates/login.php:340
+#: ../templates/login.php:338
 msgid "Change profile"
 msgstr "Profil ändern"
 
-#: ../lib/lists.inc:642 ../lib/lists.inc:643
+#: ../lib/lists.inc:661 ../lib/lists.inc:662
 msgid "Change settings"
 msgstr "Einstellungen ändern"
 
-#: ../lib/modules/posixAccount.inc:872
+#: ../lib/modules/posixAccount.inc:838
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "Wert wurde geändert da nur ASCII-Zeichen erlaubt sind."
 
@@ -1071,7 +1105,7 @@ msgstr ""
 "Bitte prüfen Sie Ihre Eingaben sorgfältig. LAM wird nur einige grundlegende "
 "Prüfungen der Daten vornehmen."
 
-#: ../lib/modules/posixAccount.inc:96
+#: ../lib/modules/posixAccount.inc:97
 msgid "Choose a server for the home directory!"
 msgstr "Bitte wählen Sie einen Server für das Heimatverzeichnis!"
 
@@ -1123,10 +1157,10 @@ msgstr "Bestätigen"
 #: ../lib/modules/asteriskExtension.inc:102
 #: ../lib/modules/asteriskExtension.inc:153
 #: ../lib/modules/asteriskExtension.inc:214
-#: ../lib/modules/asteriskExtension.inc:475 ../lib/modules/posixAccount.inc:94
-#: ../lib/modules/posixAccount.inc:209 ../lib/modules/posixAccount.inc:396
-#: ../lib/modules/posixAccount.inc:418 ../lib/modules/posixAccount.inc:944
-#: ../lib/modules/posixAccount.inc:1177
+#: ../lib/modules/asteriskExtension.inc:475 ../lib/modules/posixAccount.inc:95
+#: ../lib/modules/posixAccount.inc:210 ../lib/modules/posixAccount.inc:398
+#: ../lib/modules/posixAccount.inc:420 ../lib/modules/posixAccount.inc:945
+#: ../lib/modules/posixAccount.inc:1178
 msgid "Common name"
 msgstr "Allgemeiner Name"
 
@@ -1207,7 +1241,7 @@ msgstr "Erstellen"
 msgid "Create Object"
 msgstr "Objekt erstellen"
 
-#: ../lib/modules.inc:1442 ../lib/lists.inc:405 ../lib/lists.inc:556
+#: ../lib/modules.inc:1442 ../lib/lists.inc:405 ../lib/lists.inc:567
 #: ../help/help.inc:162
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
@@ -1261,12 +1295,12 @@ msgstr "Weitere Richtlinie anlegen"
 msgid "Create another user"
 msgstr "Weiteren Benutzer anlegen"
 
-#: ../lib/lists.inc:573
+#: ../lib/lists.inc:584
 msgid "Create for"
 msgstr "Erstellen für"
 
-#: ../lib/modules/posixAccount.inc:241 ../lib/modules/posixAccount.inc:984
-#: ../lib/modules/posixAccount.inc:1113
+#: ../lib/modules/posixAccount.inc:242 ../lib/modules/posixAccount.inc:985
+#: ../lib/modules/posixAccount.inc:1114
 msgid "Create home directory"
 msgstr "Heimatverzeichnis anlegen"
 
@@ -1460,7 +1494,7 @@ msgstr "Lösche Erweiterung(en)"
 msgid "Delete group(s)"
 msgstr "Lösche Gruppe(n)"
 
-#: ../lib/modules/posixAccount.inc:1023
+#: ../lib/modules/posixAccount.inc:1024
 msgid "Delete home directory"
 msgstr "Heimatverzeichnis löschen"
 
@@ -1556,7 +1590,7 @@ msgstr "Unternehmensbereich(e)"
 #: ../lib/modules/groupOfNames.inc:440
 #: ../lib/modules/sambaGroupMapping.inc:390 ../lib/modules/posixGroup.inc:178
 #: ../lib/modules/posixGroup.inc:383 ../lib/modules/posixGroup.inc:449
-#: ../lib/modules/posixAccount.inc:414 ../lib/modules/nisObject.inc:66
+#: ../lib/modules/posixAccount.inc:416 ../lib/modules/nisObject.inc:66
 #: ../lib/modules/nisObject.inc:96 ../lib/modules/nisObject.inc:147
 #: ../lib/modules/nisObject.inc:222 ../lib/types/netgroup.inc:92
 #: ../lib/types/user.inc:101 ../lib/types/nisObjectType.inc:80
@@ -1737,38 +1771,9 @@ msgstr "Beispiel-CSV-Datei runterladen"
 msgid "Dynamic subtrees"
 msgstr "Dynamische Teilbäume"
 
-#: ../lib/types/user.inc:100
-msgid "E-Mail"
-msgstr "E-Mail"
-
 #: ../lib/modules/eduPerson.inc:64
 msgid "EDU person"
 msgstr "EDU-Person"
-
-#: ../lib/modules/kolabUser.inc:151
-msgid "EMail alias"
-msgstr "EMail-Alias"
-
-#: ../lib/modules/kolabUser.inc:152
-msgid "EMail alias for this account."
-msgstr "EMail-Alias für diesen Account."
-
-#: ../lib/modules/kolabUser.inc:237
-msgid "EMail alias is invalid!"
-msgstr "EMail-Alias ist ungültig!"
-
-#: ../lib/modules/kolabUser.inc:155
-msgid "EMail alias list"
-msgstr "EMail-Aliasliste"
-
-#: ../lib/modules/kolabUser.inc:238
-msgid "EMail alias list has invalid format!"
-msgstr "EMail-Aliasliste hat ungültiges Format!"
-
-#: ../lib/modules/kolabUser.inc:201 ../lib/modules/kolabUser.inc:360
-#: ../lib/modules/kolabUser.inc:791
-msgid "EMail aliases"
-msgstr "EMail-Aliase"
 
 #: ../lib/modules/sambaSamAccount.inc:549
 msgid "East Australian Standard, Guam"
@@ -1793,7 +1798,7 @@ msgstr "Editieren"
 msgid "Edit general settings"
 msgstr "Allgemeine Einstellungen ändern"
 
-#: ../lib/modules/posixAccount.inc:967
+#: ../lib/modules/posixAccount.inc:968
 msgid "Edit groups"
 msgstr "Gruppen ändern"
 
@@ -1817,6 +1822,52 @@ msgstr "Untergruppen ändern"
 msgid "Edit workstations"
 msgstr "Arbeitsstationen ändern"
 
+#: ../lib/types/user.inc:100
+msgid "Email"
+msgstr "EMail"
+
+#: ../templates/lists/changePassword.php:152
+#: ../lib/modules/inetOrgPerson.inc:85 ../lib/modules/inetOrgPerson.inc:149
+#: ../lib/modules/inetOrgPerson.inc:258 ../lib/modules/inetOrgPerson.inc:422
+#: ../lib/modules/inetOrgPerson.inc:615 ../lib/modules/inetOrgPerson.inc:616
+#: ../lib/modules/inetOrgPerson.inc:1066 ../lib/modules/inetOrgPerson.inc:1235
+#: ../lib/modules/inetOrgPerson.inc:1601
+#: ../lib/modules/asteriskVoicemail.inc:94
+#: ../lib/modules/asteriskVoicemail.inc:171
+#: ../lib/modules/asteriskVoicemail.inc:246
+#: ../lib/modules/asteriskVoicemail.inc:375
+msgid "Email address"
+msgstr "EMail-Adresse"
+
+#: ../lib/modules/asteriskVoicemail.inc:95
+msgid "Email address for this voicemail account."
+msgstr "EMail-Adresse für diesen Anrufbeantworter-Account."
+
+#: ../lib/modules/kolabUser.inc:151
+msgid "Email alias"
+msgstr "EMail-Alias"
+
+#: ../lib/modules/kolabUser.inc:152
+msgid "Email alias for this account."
+msgstr "EMail-Alias für diesen Account."
+
+#: ../lib/modules/kolabUser.inc:237
+msgid "Email alias is invalid!"
+msgstr "EMail-Alias ist ungültig!"
+
+#: ../lib/modules/kolabUser.inc:155
+msgid "Email alias list"
+msgstr "EMail-Aliasliste"
+
+#: ../lib/modules/kolabUser.inc:238
+msgid "Email alias list has invalid format!"
+msgstr "EMail-Aliasliste hat ungültiges Format!"
+
+#: ../lib/modules/kolabUser.inc:201 ../lib/modules/kolabUser.inc:360
+#: ../lib/modules/kolabUser.inc:791
+msgid "Email aliases"
+msgstr "EMail-Aliase"
+
 #: ../lib/modules/inetOrgPerson.inc:95 ../lib/modules/inetOrgPerson.inc:183
 #: ../lib/modules/inetOrgPerson.inc:268 ../lib/modules/inetOrgPerson.inc:334
 #: ../lib/modules/inetOrgPerson.inc:579 ../lib/modules/inetOrgPerson.inc:1096
@@ -1829,7 +1880,7 @@ msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
 msgstr "Angestelltentyp: Angestellter, Extern, Aushilfskraft, ..."
 
 #: ../templates/lists/changePassword.php:244
-#: ../templates/lists/changePassword.php:250 ../templates/login.php:382
+#: ../templates/lists/changePassword.php:250 ../templates/login.php:380
 msgid "Empty password submitted. Please try again."
 msgstr "Das Passwort war leer. Bitte erneut eingeben."
 
@@ -2062,8 +2113,16 @@ msgid "Friday"
 msgstr "Freitag"
 
 #: ../templates/lists/changePassword.php:143
+#: ../lib/modules/asteriskVoicemail.inc:90
+#: ../lib/modules/asteriskVoicemail.inc:165
+#: ../lib/modules/asteriskVoicemail.inc:242
+#: ../lib/modules/asteriskVoicemail.inc:372
 msgid "Full name"
 msgstr "Vollständiger Name"
+
+#: ../lib/modules/asteriskVoicemail.inc:91
+msgid "Full name for Asterisk voicemail mailbox."
+msgstr "Vollständiger Name für den Anrufbeantworter."
 
 #: ../lib/modules/inetOrgPerson.inc:368
 msgid "GB-12345"
@@ -2072,8 +2131,8 @@ msgstr "DE-12345"
 #: ../lib/modules/sambaGroupMapping.inc:386 ../lib/modules/posixGroup.inc:173
 #: ../lib/modules/posixGroup.inc:337 ../lib/modules/posixGroup.inc:379
 #: ../lib/modules/posixGroup.inc:399 ../lib/modules/posixGroup.inc:447
-#: ../lib/modules/posixGroup.inc:466 ../lib/modules/posixAccount.inc:90
-#: ../lib/modules/posixAccount.inc:1179 ../lib/types/group.inc:93
+#: ../lib/modules/posixGroup.inc:466 ../lib/modules/posixAccount.inc:91
+#: ../lib/modules/posixAccount.inc:1180 ../lib/types/group.inc:93
 #: ../lib/types/user.inc:93 ../lib/types/host.inc:96
 msgid "GID number"
 msgstr "GID Nummer"
@@ -2086,7 +2145,7 @@ msgstr ""
 "Die GID-Nummer wurde geändert. Bitte verwenden sie das Kontrollkästchen um "
 "die GID-Nummer von Benutzern und Hosts anzupassen."
 
-#: ../lib/modules/posixAccount.inc:90
+#: ../lib/modules/posixAccount.inc:91
 #, php-format
 msgid ""
 "GID number has changed. To keep file ownership you have to run the following "
@@ -2100,9 +2159,9 @@ msgstr ""
 msgid "GID number has to be a numeric value!"
 msgstr "GID-Nummer muss eine Zahl sein!"
 
-#: ../lib/modules/posixAccount.inc:270 ../lib/modules/posixAccount.inc:302
-#: ../lib/modules/posixAccount.inc:368 ../lib/modules/posixAccount.inc:406
-#: ../lib/modules/posixAccount.inc:956 ../lib/modules/posixAccount.inc:1180
+#: ../lib/modules/posixAccount.inc:271 ../lib/modules/posixAccount.inc:303
+#: ../lib/modules/posixAccount.inc:370 ../lib/modules/posixAccount.inc:408
+#: ../lib/modules/posixAccount.inc:957 ../lib/modules/posixAccount.inc:1181
 msgid "Gecos"
 msgstr "Gecos"
 
@@ -2317,7 +2376,7 @@ msgstr ""
 "Hier können Sie einen Filtertext eingeben. Es werden dann nur Einträge "
 "angezeigt, die diesen Wert enthalten."
 
-#: ../lib/modules/posixAccount.inc:348
+#: ../lib/modules/posixAccount.inc:350
 msgid ""
 "Here you can enter a list of additional group memberships. The group names "
 "are separated by commas."
@@ -2457,23 +2516,23 @@ msgstr ""
 "Tipp: Um ein Attribut zu löschen, leeren Sie das Eingabefeld und speichern "
 "die Änderung."
 
-#: ../lib/modules/posixAccount.inc:393
+#: ../lib/modules/posixAccount.inc:395
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr "Halten Sie Strg gedrückt um mehrere Gruppen zu markieren."
 
-#: ../lib/modules/posixAccount.inc:65 ../lib/modules/posixAccount.inc:66
-#: ../lib/modules/posixAccount.inc:68 ../lib/modules/posixAccount.inc:96
-#: ../lib/modules/posixAccount.inc:234 ../lib/modules/posixAccount.inc:351
-#: ../lib/modules/posixAccount.inc:355 ../lib/modules/posixAccount.inc:359
-#: ../lib/modules/posixAccount.inc:376 ../lib/modules/posixAccount.inc:800
-#: ../lib/modules/posixAccount.inc:970 ../lib/modules/posixAccount.inc:1102
-#: ../lib/modules/posixAccount.inc:1183 ../lib/modules/sambaSamAccount.inc:328
+#: ../lib/modules/posixAccount.inc:66 ../lib/modules/posixAccount.inc:67
+#: ../lib/modules/posixAccount.inc:69 ../lib/modules/posixAccount.inc:97
+#: ../lib/modules/posixAccount.inc:235 ../lib/modules/posixAccount.inc:353
+#: ../lib/modules/posixAccount.inc:357 ../lib/modules/posixAccount.inc:361
+#: ../lib/modules/posixAccount.inc:378 ../lib/modules/posixAccount.inc:766
+#: ../lib/modules/posixAccount.inc:971 ../lib/modules/posixAccount.inc:1103
+#: ../lib/modules/posixAccount.inc:1184 ../lib/modules/sambaSamAccount.inc:328
 #: ../lib/modules/sambaSamAccount.inc:1428
 #: ../lib/modules/sambaSamAccount.inc:1793 ../lib/types/user.inc:98
 msgid "Home directory"
 msgstr "Heimatverzeichnis"
 
-#: ../lib/modules/posixAccount.inc:68
+#: ../lib/modules/posixAccount.inc:69
 #, php-format
 msgid ""
 "Home directory changed. To keep home directory you have to run the following "
@@ -2482,7 +2541,7 @@ msgstr ""
 "Heimatverzeichnis wurde geändert. Sie müssen folgendes Kommando als root-"
 "Benutzer ausführen um das alte Verzeichnis zu ändern: 'mv %s %s'"
 
-#: ../lib/modules/posixAccount.inc:1123
+#: ../lib/modules/posixAccount.inc:1124
 msgid "Home directory server"
 msgstr "Heimatverzeichnis-Server"
 
@@ -2518,15 +2577,16 @@ msgstr "Heimatverzeichnis ist ungültig."
 msgid "Home telephone number"
 msgstr "Telefon privat"
 
-#: ../lib/modules/posixAccount.inc:65 ../lib/modules/posixAccount.inc:67
+#: ../lib/modules/posixAccount.inc:66 ../lib/modules/posixAccount.inc:68
 msgid "Homedirectory contains invalid characters."
 msgstr "Heimatverzeichnis enthält ungültige Zeichen."
 
 #: ../lib/modules/nisnetgroup.inc:203 ../lib/modules/nisnetgroup.inc:573
-#: ../lib/modules/asteriskAccount.inc:81 ../lib/modules/asteriskAccount.inc:96
-#: ../lib/modules/asteriskAccount.inc:133
-#: ../lib/modules/asteriskAccount.inc:179
-#: ../lib/modules/asteriskAccount.inc:273
+#: ../lib/modules/asteriskAccount.inc:83
+#: ../lib/modules/asteriskAccount.inc:110
+#: ../lib/modules/asteriskAccount.inc:147
+#: ../lib/modules/asteriskAccount.inc:193
+#: ../lib/modules/asteriskAccount.inc:287
 msgid "Host"
 msgstr "Host"
 
@@ -2538,25 +2598,25 @@ msgstr "Hostaccounts (z.B. Samba)"
 msgid "Host description"
 msgstr "Hostbeschreibung"
 
-#: ../lib/modules/account.inc:89 ../lib/modules/posixAccount.inc:407
-#: ../lib/modules/posixAccount.inc:415
+#: ../lib/modules/account.inc:89 ../lib/modules/posixAccount.inc:409
+#: ../lib/modules/posixAccount.inc:417
 msgid "Host description. If left empty host name will be used."
 msgstr "Hostbeschreibung. Falls leer wird der Hostname verwendet."
 
 #: ../lib/modules/nisnetgroup.inc:136 ../lib/modules/nisnetgroup.inc:453
-#: ../lib/modules/account.inc:84 ../lib/modules/posixAccount.inc:80
-#: ../lib/modules/posixAccount.inc:81 ../lib/modules/posixAccount.inc:83
-#: ../lib/modules/posixAccount.inc:281 ../lib/modules/posixAccount.inc:402
+#: ../lib/modules/account.inc:84 ../lib/modules/posixAccount.inc:81
+#: ../lib/modules/posixAccount.inc:82 ../lib/modules/posixAccount.inc:84
+#: ../lib/modules/posixAccount.inc:282 ../lib/modules/posixAccount.inc:404
 #: ../lib/types/host.inc:91 ../lib/types/host.inc:92
 msgid "Host name"
 msgstr "Hostname"
 
-#: ../lib/modules/posixAccount.inc:87
+#: ../lib/modules/posixAccount.inc:88
 msgid "Host name already exists!"
 msgstr "Host-Name besteht schon!"
 
-#: ../lib/modules/nisnetgroup.inc:136 ../lib/modules/posixAccount.inc:81
-#: ../lib/modules/posixAccount.inc:85
+#: ../lib/modules/nisnetgroup.inc:136 ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixAccount.inc:86
 msgid ""
 "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -2564,7 +2624,7 @@ msgstr ""
 "Hostname enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und .-_!"
 
-#: ../lib/modules/posixAccount.inc:83
+#: ../lib/modules/posixAccount.inc:84
 msgid "Host name in use. Selected next free host name."
 msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
 
@@ -2572,7 +2632,7 @@ msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgew�
 msgid "Host name must end with $!"
 msgstr "Der Hostname muss mit einem $ enden!"
 
-#: ../lib/modules/account.inc:85 ../lib/modules/posixAccount.inc:403
+#: ../lib/modules/account.inc:85 ../lib/modules/posixAccount.inc:405
 msgid ""
 "Host name of the host which should be created. Valid characters are: a-z,A-"
 "Z,0-9, .-_$. Host names are always ending with $. If last character is not $ "
@@ -2583,8 +2643,8 @@ msgstr ""
 "und .-_$. Hostnamen enden immer mit $. Sollte der Hostname schon in "
 "Verwendung sein wird eine Zahl angehängt."
 
-#: ../lib/modules/posixAccount.inc:60 ../lib/modules/posixAccount.inc:61
-#: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:170
+#: ../lib/modules/posixAccount.inc:61 ../lib/modules/posixAccount.inc:62
+#: ../lib/modules/posixAccount.inc:64 ../lib/modules/posixAccount.inc:171
 #: ../lib/types/host.inc:53
 msgid "Hosts"
 msgstr "Hosts"
@@ -2594,15 +2654,15 @@ msgid "I am sure"
 msgstr "Ich bin sicher"
 
 #: ../lib/modules/posixGroup.inc:469 ../lib/modules/posixGroup.inc:580
-#: ../lib/modules/posixAccount.inc:71 ../lib/modules/posixAccount.inc:781
+#: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:747
 msgid "ID is already in use"
 msgstr "ID wird bereits verwendet"
 
 #: ../lib/modules/posixGroup.inc:467 ../lib/modules/posixGroup.inc:468
 #: ../lib/modules/posixGroup.inc:469 ../lib/modules/posixGroup.inc:572
-#: ../lib/modules/posixGroup.inc:580 ../lib/modules/posixAccount.inc:69
-#: ../lib/modules/posixAccount.inc:70 ../lib/modules/posixAccount.inc:71
-#: ../lib/modules/posixAccount.inc:777 ../lib/modules/posixAccount.inc:781
+#: ../lib/modules/posixGroup.inc:580 ../lib/modules/posixAccount.inc:70
+#: ../lib/modules/posixAccount.inc:71 ../lib/modules/posixAccount.inc:72
+#: ../lib/modules/posixAccount.inc:743 ../lib/modules/posixAccount.inc:747
 msgid "ID-Number"
 msgstr "ID-Nummer"
 
@@ -2636,7 +2696,7 @@ msgstr "Zeitlimit für Leerlauf"
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
-#: ../lib/modules/posixAccount.inc:385
+#: ../lib/modules/posixAccount.inc:387
 msgid ""
 "If checked account will be deactivated by putting a \"!\" before the "
 "encrypted password."
@@ -2674,7 +2734,7 @@ msgstr ""
 "Falls leer wird die GID-Nummer automatisch auf Basis Ihrer "
 "Konfigurationseinstellungen generiert."
 
-#: ../lib/modules/posixAccount.inc:340
+#: ../lib/modules/posixAccount.inc:342
 msgid "If empty UID number will be generated automaticly."
 msgstr "Falls leer wird die UID-Nummer automatisch generiert."
 
@@ -2879,7 +2939,7 @@ msgstr "Islamabad, Karachi"
 msgid "It is not possible to delete all ranges."
 msgstr "Sie können nicht alle Adressbereiche löschen."
 
-#: ../lib/modules/posixGroup.inc:467 ../lib/modules/posixAccount.inc:70
+#: ../lib/modules/posixGroup.inc:467 ../lib/modules/posixAccount.inc:71
 msgid ""
 "It is possible that this ID-number is reused. This can cause several "
 "problems because files with old permissions might still exist. To avoid this "
@@ -2928,7 +2988,7 @@ msgstr ""
 "LAM kann diesen Eintrag rekursiv löschen. Es folgt eine Liste der zu "
 "löschenden Einträge. Wollen Sie alle diese Einträge löschen?"
 
-#: ../templates/login.php:177 ../templates/config/index.php:63
+#: ../templates/login.php:175 ../templates/config/index.php:63
 msgid "LAM configuration"
 msgstr "LAM-Einstellungen"
 
@@ -2937,7 +2997,7 @@ msgid "LAM has checked your input and is now ready to create the accounts."
 msgstr "LAM hat Ihre Eingaben überprüft und kann die Accounts nun erstellen."
 
 #: ../lib/modules/inetOrgPerson.inc:672 ../lib/modules/posixGroup.inc:404
-#: ../lib/modules/posixAccount.inc:336
+#: ../lib/modules/posixAccount.inc:338
 msgid ""
 "LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of "
 "passwords. SSHA and CRYPT are the most common but CRYPT does not support "
@@ -2966,11 +3026,11 @@ msgstr "LAM konnte keine Samba 3 Domäne mit diesem Namen finden!"
 msgid "LAM was unable to find a domain with this name!"
 msgstr "LAM konnte keine Domäne mit diesem Namen finden!"
 
-#: ../lib/modules/posixAccount.inc:88
+#: ../lib/modules/posixAccount.inc:89
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM konnte keine Gruppe mit diesem Namen finden!"
 
-#: ../lib/modules/posixAccount.inc:1579
+#: ../lib/modules/posixAccount.inc:1583
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM konnte die Gruppenzugehörigkeiten für Gruppe %s nicht ändern."
@@ -3005,7 +3065,7 @@ msgstr "LDAP Account Manager Einstellungen"
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP-Suffix ist ungültig!"
 
-#: ../templates/login.php:474
+#: ../templates/login.php:473
 msgid "LDAP error, server says:"
 msgstr "LDAP-Fehler, der Server meldet:"
 
@@ -3038,7 +3098,7 @@ msgstr "LDAP-Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen."
 msgid "LDAP search limit"
 msgstr "LDAP-Suchlimit"
 
-#: ../templates/login.php:314
+#: ../templates/login.php:312
 msgid "LDAP server"
 msgstr "LDAP-Server"
 
@@ -3117,7 +3177,7 @@ msgstr "Lamdaemon: NSS LDAP prüfen"
 msgid "Lamdaemon: read quotas"
 msgstr "Lamdaemon: Quotas lesen"
 
-#: ../templates/login.php:263
+#: ../templates/login.php:261
 msgid "Language"
 msgstr "Sprache"
 
@@ -3228,8 +3288,8 @@ msgstr "Lokale Gruppe"
 msgid "Location"
 msgstr "Ort"
 
-#: ../lib/modules/posixGroup.inc:188 ../lib/modules/posixAccount.inc:262
-#: ../lib/modules/posixAccount.inc:999
+#: ../lib/modules/posixGroup.inc:188 ../lib/modules/posixAccount.inc:263
+#: ../lib/modules/posixAccount.inc:1000
 msgid "Lock password"
 msgstr "Passwort deaktivieren"
 
@@ -3276,7 +3336,7 @@ msgstr "Logging"
 #: ../templates/selfService/adminMain.php:322
 #: ../templates/selfService/adminLogin.php:64
 #: ../templates/selfService/selfServiceLogin.php:136
-#: ../templates/login.php:289 ../templates/config/conflogin.php:62
+#: ../templates/login.php:287 ../templates/config/conflogin.php:62
 #: ../templates/config/mainlogin.php:70 ../help/help.inc:55
 msgid "Login"
 msgstr "Login"
@@ -3293,9 +3353,9 @@ msgstr "Login-Überschrift"
 msgid "Login method"
 msgstr "Login-Methode"
 
-#: ../lib/modules/posixAccount.inc:248 ../lib/modules/posixAccount.inc:388
-#: ../lib/modules/posixAccount.inc:993 ../lib/modules/posixAccount.inc:1107
-#: ../lib/modules/posixAccount.inc:1184 ../lib/types/user.inc:99
+#: ../lib/modules/posixAccount.inc:249 ../lib/modules/posixAccount.inc:390
+#: ../lib/modules/posixAccount.inc:994 ../lib/modules/posixAccount.inc:1108
+#: ../lib/modules/posixAccount.inc:1185 ../lib/types/user.inc:99
 msgid "Login shell"
 msgstr "Login Shell"
 
@@ -3392,6 +3452,13 @@ msgstr "Mailserver"
 #, php-format
 msgid "Mail successfully sent to %s."
 msgstr "Mail wurde erfolgreich an %s gesendet."
+
+#: ../lib/modules/asteriskVoicemail.inc:82
+#: ../lib/modules/asteriskVoicemail.inc:151
+#: ../lib/modules/asteriskVoicemail.inc:231
+#: ../lib/modules/asteriskVoicemail.inc:370
+msgid "Mailbox"
+msgstr "Mailbox"
 
 #: ../lib/modules/kolabUser.inc:163 ../lib/modules/kolabUser.inc:194
 #: ../lib/modules/kolabUser.inc:288 ../lib/modules/kolabUser.inc:294
@@ -3524,17 +3591,17 @@ msgstr "Maximale GID-Nummer ist ungültig oder leer!"
 msgid "Maximum GID number must be greater than minimum GID number!"
 msgstr "Die maximale GID-Nummer muss größer sein als die minimale GID-Nummer!"
 
-#: ../lib/modules/posixAccount.inc:59 ../lib/modules/posixAccount.inc:61
-#: ../lib/modules/posixAccount.inc:62 ../lib/modules/posixAccount.inc:63
-#: ../lib/modules/posixAccount.inc:164 ../lib/modules/posixAccount.inc:173
+#: ../lib/modules/posixAccount.inc:60 ../lib/modules/posixAccount.inc:62
+#: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:165 ../lib/modules/posixAccount.inc:174
 msgid "Maximum UID number"
 msgstr "Maximale UID-Nummer"
 
-#: ../lib/modules/posixAccount.inc:59 ../lib/modules/posixAccount.inc:61
+#: ../lib/modules/posixAccount.inc:60 ../lib/modules/posixAccount.inc:62
 msgid "Maximum UID number is invalid!"
 msgstr "Maximale UID-Nummer ist ungültig!"
 
-#: ../lib/modules/posixAccount.inc:62 ../lib/modules/posixAccount.inc:63
+#: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:64
 msgid "Maximum UID number must be greater than minimum UID number!"
 msgstr "Die maximale UID-Nummer muss größer sein als die minimale UID-Nummer!"
 
@@ -3559,7 +3626,7 @@ msgstr "Maximale Lease-Zeit"
 msgid "Maximum length"
 msgstr "Maximale Länge"
 
-#: ../lib/lists.inc:781 ../help/help.inc:92
+#: ../lib/lists.inc:800 ../help/help.inc:92
 msgid "Maximum list entries"
 msgstr "Maximale Listeneinträge"
 
@@ -3609,12 +3676,12 @@ msgstr "Minimale GID-Nummer"
 msgid "Minimum GID number is invalid or empty!"
 msgstr "Minimale GID-Nummer ist ungültig oder leer!"
 
-#: ../lib/modules/posixAccount.inc:58 ../lib/modules/posixAccount.inc:60
-#: ../lib/modules/posixAccount.inc:161 ../lib/modules/posixAccount.inc:170
+#: ../lib/modules/posixAccount.inc:59 ../lib/modules/posixAccount.inc:61
+#: ../lib/modules/posixAccount.inc:162 ../lib/modules/posixAccount.inc:171
 msgid "Minimum UID number"
 msgstr "Minimale UID-Nummer"
 
-#: ../lib/modules/posixAccount.inc:58 ../lib/modules/posixAccount.inc:60
+#: ../lib/modules/posixAccount.inc:59 ../lib/modules/posixAccount.inc:61
 msgid "Minimum UID number is invalid!"
 msgstr "Minimale UID-Nummer ist ungültig!"
 
@@ -3856,7 +3923,7 @@ msgstr "Neue Organizational Unit"
 msgid "New owner"
 msgstr "Neuer Besitzer"
 
-#: ../templates/config/confmain.php:517 ../lib/modules/posixAccount.inc:1706
+#: ../templates/config/confmain.php:517 ../lib/modules/posixAccount.inc:1710
 msgid "New password"
 msgstr "Neues Passwort"
 
@@ -3965,7 +4032,7 @@ msgstr "Keine NIS-Objekte gefunden!"
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "Keine Samba 3 Domänen gefunden, bitte erstellen Sie eine."
 
-#: ../lib/modules/posixAccount.inc:440 ../lib/modules/posixAccount.inc:930
+#: ../lib/modules/posixAccount.inc:442 ../lib/modules/posixAccount.inc:896
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "Keine Unix-Gruppen gefunden, bitte erstellen Sie eine."
 
@@ -3993,7 +4060,7 @@ msgstr "Keine Erweiterungen gefunden!"
 msgid "No file selected."
 msgstr "Keine Datei gewählt."
 
-#: ../lib/modules/posixGroup.inc:468 ../lib/modules/posixAccount.inc:69
+#: ../lib/modules/posixGroup.inc:468 ../lib/modules/posixAccount.inc:70
 msgid "No free ID-Number!"
 msgstr "Keine ID-Nummer mehr frei!"
 
@@ -4210,7 +4277,7 @@ msgstr "Büroname"
 #: ../lib/modules/groupOfNames.inc:234 ../lib/modules/groupOfNames.inc:255
 #: ../lib/modules/groupOfNames.inc:340 ../lib/modules/sambaSamAccount.inc:1364
 #: ../lib/modules/sambaSamAccount.inc:1525 ../lib/modules/aliasEntry.inc:146
-#: ../lib/modules/aliasEntry.inc:166 ../lib/lists.inc:588 ../lib/lists.inc:804
+#: ../lib/modules/aliasEntry.inc:166 ../lib/lists.inc:607 ../lib/lists.inc:823
 msgid "Ok"
 msgstr "Ok"
 
@@ -4248,9 +4315,18 @@ msgid "Optional binary attributes"
 msgstr "Optionale Binärattribute"
 
 #: ../templates/lists/changePassword.php:128
+#: ../lib/modules/asteriskVoicemail.inc:102
+#: ../lib/modules/asteriskVoicemail.inc:113
+#: ../lib/modules/asteriskVoicemail.inc:183
+#: ../lib/modules/asteriskVoicemail.inc:254
+#: ../lib/modules/asteriskVoicemail.inc:376
 #: ../lib/modules/asteriskExtension.inc:106
 msgid "Options"
 msgstr "Optionen"
+
+#: ../lib/modules/asteriskVoicemail.inc:103
+msgid "Options for Asterisk voicemail account (e.g. sendvoicemail=yes)."
+msgstr "Optionen für den Asterisk Anrufbeantworteraccount (z.B. sendvoicemail=yes)."
 
 #: ../templates/schema/schema.php:169
 msgid "Ordering"
@@ -4305,7 +4381,7 @@ msgstr "PC-Name"
 msgid "PDF editor"
 msgstr "PDF-Editor"
 
-#: ../lib/lists.inc:560
+#: ../lib/lists.inc:571
 msgid "PDF structure"
 msgstr "PDF-Struktur"
 
@@ -4334,18 +4410,31 @@ msgstr ""
 msgid "Page header"
 msgstr "Seitenkopf"
 
+#: ../lib/modules/asteriskVoicemail.inc:98
+#: ../lib/modules/asteriskVoicemail.inc:177
+#: ../lib/modules/asteriskVoicemail.inc:250
+#: ../lib/modules/asteriskVoicemail.inc:374
+msgid "Pager"
+msgstr "Pager"
+
+#: ../lib/modules/asteriskVoicemail.inc:99
+msgid "Pager number for Asterisk voicemail."
+msgstr "Pager-Nummer für den Asterisk Anrufbeantworter."
+
 #: ../templates/schema/schema.php:364
 msgid "Parent to"
 msgstr "Elter von"
 
 #: ../templates/selfService/selfServiceLogin.php:212
-#: ../templates/lists/changePassword.php:198 ../templates/login.php:253
-#: ../lib/modules.inc:1262 ../lib/modules/posixGroup.inc:195
-#: ../lib/modules/posixGroup.inc:465 ../lib/modules/posixAccount.inc:74
-#: ../lib/modules/posixAccount.inc:75 ../lib/modules/posixAccount.inc:140
-#: ../lib/modules/posixAccount.inc:256 ../lib/modules/posixAccount.inc:380
-#: ../lib/modules/posixAccount.inc:1005 ../lib/modules/asteriskAccount.inc:89
-#: ../lib/modules/asteriskAccount.inc:140
+#: ../templates/lists/changePassword.php:198 ../templates/login.php:251
+#: ../lib/modules.inc:1262 ../lib/modules/asteriskVoicemail.inc:86
+#: ../lib/modules/asteriskVoicemail.inc:158 ../lib/modules/posixGroup.inc:195
+#: ../lib/modules/posixGroup.inc:465 ../lib/modules/posixAccount.inc:75
+#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:141
+#: ../lib/modules/posixAccount.inc:257 ../lib/modules/posixAccount.inc:382
+#: ../lib/modules/posixAccount.inc:1006 ../lib/modules/posixAccount.inc:1188
+#: ../lib/modules/asteriskAccount.inc:91
+#: ../lib/modules/asteriskAccount.inc:154
 #: ../lib/modules/sambaSamAccount.inc:396 ../help/help.inc:164
 msgid "Password"
 msgstr "Passwort"
@@ -4360,8 +4449,8 @@ msgstr "Passwortänderung beim nächsten Login"
 msgid "Password change requires old password"
 msgstr "Passwortänderung benötigt altes Passwort"
 
-#: ../lib/modules/posixGroup.inc:465 ../lib/modules/posixAccount.inc:75
-#: ../lib/modules/posixAccount.inc:76 ../lib/modules/sambaSamAccount.inc:92
+#: ../lib/modules/posixGroup.inc:465 ../lib/modules/posixAccount.inc:76
+#: ../lib/modules/posixAccount.inc:77 ../lib/modules/sambaSamAccount.inc:92
 msgid ""
 "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and #*,.;:_-+!%&/|?{[()]}=@$ !"
@@ -4387,10 +4476,14 @@ msgstr "Passwortablauf"
 msgid "Password expiration must be are natural number or -1."
 msgstr "Passwortablauf muss eine natürliche Zahl oder -1 sein."
 
+#: ../lib/modules/asteriskVoicemail.inc:87
+msgid "Password for voicemail mailbox."
+msgstr "Passwort für den Anrufbeantworter."
+
 #: ../lib/modules/inetOrgPerson.inc:290 ../lib/modules/inetOrgPerson.inc:671
 #: ../lib/modules/posixGroup.inc:403 ../lib/modules/posixGroup.inc:426
-#: ../lib/modules/posixAccount.inc:144 ../lib/modules/posixAccount.inc:179
-#: ../lib/modules/posixAccount.inc:335
+#: ../lib/modules/posixAccount.inc:145 ../lib/modules/posixAccount.inc:180
+#: ../lib/modules/posixAccount.inc:337
 msgid "Password hash type"
 msgstr "Passwort-Hash"
 
@@ -4406,9 +4499,13 @@ msgstr "Passwort-Historienlänge"
 msgid "Password maximum age must be are natural number."
 msgstr "Maximales Passwortalter muss eine natürliche Zahl sein."
 
-#: ../lib/modules/ppolicy.inc:147 ../lib/modules/shadowAccount.inc:65
-#: ../lib/modules/shadowAccount.inc:66 ../lib/modules/sambaDomain.inc:200
+#: ../lib/modules/shadowAccount.inc:66
 msgid "Password maximum age must be bigger as password minimum age."
+msgstr "Maximales Passwortalter muss größer als minimales Passwortalter sein."
+
+#: ../lib/modules/ppolicy.inc:147 ../lib/modules/shadowAccount.inc:65
+#: ../lib/modules/sambaDomain.inc:200
+msgid "Password maximum age must be bigger than password minimum age."
 msgstr "Maximales Passwortalter muss größer als minimales Passwortalter sein."
 
 #: ../lib/modules/ppolicy.inc:145 ../lib/modules/shadowAccount.inc:57
@@ -4521,7 +4618,7 @@ msgstr "Bitte geben Sie \"active\" oder \"inactive\" ein."
 msgid "Please enter a RID number or the name of a special account!"
 msgstr "Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
 
-#: ../lib/modules/asteriskAccount.inc:152
+#: ../lib/modules/asteriskAccount.inc:166
 msgid "Please enter a caller ID."
 msgstr "Bitte geben Sie eine Anrufer-ID ein."
 
@@ -4546,6 +4643,10 @@ msgstr "Bitte geben Sie einen Namen ein."
 #: ../lib/modules/groupOfNames.inc:120
 msgid "Please enter a group name!"
 msgstr "Bitte geben Sie einen Gruppennamen ein!"
+
+#: ../lib/modules/asteriskVoicemail.inc:202
+msgid "Please enter a mailbox."
+msgstr "Bitte geben Sie eine Mailbox ein."
 
 #: ../lib/modules/ppolicy.inc:153
 msgid "Please enter a numeric value for the expire warning."
@@ -4592,7 +4693,7 @@ msgid "Please enter a valid business category!"
 msgstr "Bitte geben Sie eine gültige Abteilung ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:97 ../lib/modules/inetOrgPerson.inc:98
-#: ../lib/modules/posixAccount.inc:94 ../lib/modules/posixAccount.inc:95
+#: ../lib/modules/posixAccount.inc:95 ../lib/modules/posixAccount.inc:96
 msgid "Please enter a valid common name!"
 msgstr "Bitte geben Sie einen gültigen allgemeinen Namen ein!"
 
@@ -4609,8 +4710,8 @@ msgid "Please enter a valid drive letter."
 msgstr "Bitte geben Sie einen gültigen Laufwerksbuchstaben ein."
 
 #: ../lib/modules/inetOrgPerson.inc:85 ../lib/modules/inetOrgPerson.inc:86
-msgid "Please enter a valid eMail address!"
-msgstr "Bitte geben Sie eine gültige e-mail Adresse ein!"
+msgid "Please enter a valid email address!"
+msgstr "Bitte geben Sie eine gültige eMail Adresse ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:95 ../lib/modules/inetOrgPerson.inc:96
 msgid "Please enter a valid employee type!"
@@ -4665,7 +4766,7 @@ msgstr "Bitte geben Sie einen gültigen Straßennamen ein!"
 msgid "Please enter a valid telephone number!"
 msgstr "Bitte geben Sie eine gültige Telefonnummer ein!"
 
-#: ../lib/modules/posixGroup.inc:572 ../lib/modules/posixAccount.inc:777
+#: ../lib/modules/posixGroup.inc:572 ../lib/modules/posixAccount.inc:743
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "Bitte geben Sie einen Wert zwischen %s und %s ein!"
@@ -4688,6 +4789,10 @@ msgstr ""
 "Bitte geben Sie den LDAP-Suffix an, ab dem LAM nach Benutzern suchen soll. "
 "Der LDAP-Filter muss für einen Benutzer genau einen DN liefern. Der Wert \"%"
 "USER%\" wird durch den Benutzernamen auf der Loginseite ersetzt."
+
+#: ../lib/modules/asteriskVoicemail.inc:206
+msgid "Please enter the account context."
+msgstr "Bitte geben Sie den Accountkontext an."
 
 #: ../lib/modules.inc:1174
 msgid "Please enter the account information on the other pages first."
@@ -4712,7 +4817,7 @@ msgstr ""
 "Mal anmelden geben Sie \"lam\" ein."
 
 #: ../lib/modules/asteriskExtension.inc:198
-#: ../lib/modules/asteriskAccount.inc:156
+#: ../lib/modules/asteriskAccount.inc:170
 msgid "Please enter the extension context."
 msgstr "Bitte geben Sie den Erweiterungskontext an."
 
@@ -4720,7 +4825,7 @@ msgstr "Bitte geben Sie den Erweiterungskontext an."
 msgid "Please enter the extension name."
 msgstr "Bitte geben Sie den Erweiterungsnamen an."
 
-#: ../lib/modules/asteriskAccount.inc:159
+#: ../lib/modules/asteriskAccount.inc:173
 msgid "Please enter the host name."
 msgstr "Bitte geben Sie den Hostnamen an."
 
@@ -4784,7 +4889,7 @@ msgstr ""
 "Bitte geben Sie den neuen Namen des Profils an. Profilnamen dürfen "
 "Buchstaben, Zahlen und -/_ enthalten."
 
-#: ../lib/modules/posixAccount.inc:381 ../lib/modules/asteriskAccount.inc:90
+#: ../lib/modules/posixAccount.inc:383 ../lib/modules/asteriskAccount.inc:92
 msgid "Please enter the password which you want to set for this account."
 msgstr "Bitte geben Sie das Passwort für diesen Account ein."
 
@@ -4798,7 +4903,7 @@ msgstr ""
 "Zufallspasswort (12 Zeichen) erzeugen, das dann auf dem Bildschirm angezeigt "
 "wird."
 
-#: ../lib/modules/posixAccount.inc:352
+#: ../lib/modules/posixAccount.inc:354
 msgid "Please enter the path to the user's home directory."
 msgstr "Bitte geben Sie den Pfad zum Heimatverzeichnis des Benutzers an."
 
@@ -4816,7 +4921,7 @@ msgstr ""
 "{hartes Inode-Limit}"
 
 #: ../templates/lists/changePassword.php:254
-#: ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:75
 msgid "Please enter the same password in both password fields."
 msgstr "Bitte geben Sie das selbe Passwort in beide Felder ein."
 
@@ -4876,9 +4981,15 @@ msgstr ""
 "Bitte wählen Sie den gewünschten Log-Level. Meldungen mit niedrigerem Level "
 "werden nicht aufgezeichnet."
 
-#: ../templates/login.php:223
+#: ../templates/login.php:221
 msgid "Please select your user name and enter your password to log in."
 msgstr "Bitte wählen Sie Ihren Benutzernamen und geben Ihr Passwort ein."
+
+#: ../lib/modules/asteriskVoicemail.inc:217
+msgid "Please set the voicemail password with \"Set password\" before saving."
+msgstr ""
+"Bitte geben Sie das Anrufbeantworterpasswort über \"Passwort setzen\" ein "
+"bevor Sie speichern."
 
 #: ../lib/modules.inc:1129
 #, php-format
@@ -4955,11 +5066,11 @@ msgstr "Präsident"
 msgid "Primary affiliation"
 msgstr "Primäre Zugehörigkeit"
 
-#: ../lib/modules/posixGroup.inc:479 ../lib/modules/posixAccount.inc:221
-#: ../lib/modules/posixAccount.inc:295 ../lib/modules/posixAccount.inc:343
-#: ../lib/modules/posixAccount.inc:372 ../lib/modules/posixAccount.inc:410
-#: ../lib/modules/posixAccount.inc:960 ../lib/modules/posixAccount.inc:1091
-#: ../lib/modules/posixAccount.inc:1131 ../lib/modules/posixAccount.inc:1181
+#: ../lib/modules/posixGroup.inc:479 ../lib/modules/posixAccount.inc:222
+#: ../lib/modules/posixAccount.inc:296 ../lib/modules/posixAccount.inc:345
+#: ../lib/modules/posixAccount.inc:374 ../lib/modules/posixAccount.inc:412
+#: ../lib/modules/posixAccount.inc:961 ../lib/modules/posixAccount.inc:1092
+#: ../lib/modules/posixAccount.inc:1132 ../lib/modules/posixAccount.inc:1182
 msgid "Primary group"
 msgstr "Primäre Gruppe"
 
@@ -5137,7 +5248,7 @@ msgstr "Fortschritt des Löschvorgangs"
 msgid "Reenter new master password"
 msgstr "Neues Hauptpasswort erneut eingeben"
 
-#: ../templates/config/confmain.php:525 ../lib/modules/posixAccount.inc:1708
+#: ../templates/config/confmain.php:525 ../lib/modules/posixAccount.inc:1712
 msgid "Reenter password"
 msgstr "Passwort nochmal eingeben"
 
@@ -5172,6 +5283,10 @@ msgstr "Relativer eindeutiger Name"
 msgid "Remove"
 msgstr "Löschen"
 
+#: ../lib/modules/asteriskVoicemail.inc:263
+msgid "Remove Asterisk voicemail extension"
+msgstr "Asterisk Anrufbeantworter-Erweiterung entfernen"
+
 #: ../lib/modules/eduPerson.inc:396
 msgid "Remove EDU person extension"
 msgstr "EDU-Person-Erweiterung entfernen"
@@ -5188,7 +5303,7 @@ msgstr "Samba 3-Erweiterung entfernen"
 msgid "Remove Shadow account extension"
 msgstr "Shadow-Erweiterung entfernen"
 
-#: ../lib/modules/posixGroup.inc:199 ../lib/modules/posixAccount.inc:1009
+#: ../lib/modules/posixGroup.inc:199 ../lib/modules/posixAccount.inc:1010
 msgid "Remove password"
 msgstr "Passwort entfernen"
 
@@ -5223,7 +5338,7 @@ msgstr "Profil umbenannt."
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
 
-#: ../lib/modules/posixAccount.inc:66 ../lib/modules/posixAccount.inc:800
+#: ../lib/modules/posixAccount.inc:67 ../lib/modules/posixAccount.inc:766
 msgid "Replaced $user or $group in homedir."
 msgstr "$user und $group wurden im Heimatverzeichnis ersetzt."
 
@@ -5485,7 +5600,7 @@ msgstr "Host wählen"
 msgid "Select user"
 msgstr "Benutzer wählen"
 
-#: ../lib/modules/nisnetgroup.inc:354 ../lib/modules/posixAccount.inc:1053
+#: ../lib/modules/nisnetgroup.inc:354 ../lib/modules/posixAccount.inc:1054
 msgid "Selected groups"
 msgstr "Gewählte Gruppen"
 
@@ -5527,7 +5642,7 @@ msgstr "Serverinformationen"
 msgid "Server list"
 msgstr "Serverliste"
 
-#: ../templates/login.php:322
+#: ../templates/login.php:320
 msgid "Server profile"
 msgstr "Serverprofil"
 
@@ -5548,7 +5663,7 @@ msgstr "Setzen"
 msgid "Set password"
 msgstr "Passwort setzen"
 
-#: ../lib/modules/posixAccount.inc:187 ../lib/modules/posixAccount.inc:323
+#: ../lib/modules/posixAccount.inc:188 ../lib/modules/posixAccount.inc:325
 msgid "Set primary group as memberUid"
 msgstr "Setze primäre Gruppe als memberUid"
 
@@ -5682,7 +5797,9 @@ msgstr "Bestimmt die minimale Passwortlänge."
 msgid ""
 "Specifies the number of consecutive failed login attempts after which the "
 "password may not be used to login."
-msgstr "Dies ist die Anzahl von fehlerhaften Anmeldeversuchen in Folge nach der das Passwort gesperrt wird."
+msgstr ""
+"Dies ist die Anzahl von fehlerhaften Anmeldeversuchen in Folge nach der das "
+"Passwort gesperrt wird."
 
 #: ../lib/modules/ppolicy.inc:85
 msgid ""
@@ -5707,7 +5824,9 @@ msgstr ""
 msgid ""
 "Specifies the number of seconds during which the password cannot be used to "
 "login due to too many consecutive failed bind attempts."
-msgstr "Legt die Dauer in Sekunden fest, für die ein Passwort aufgrund zu vieler fehlerhafter Anmeldeversuche gesperrt wird."
+msgstr ""
+"Legt die Dauer in Sekunden fest, für die ein Passwort aufgrund zu vieler "
+"fehlerhafter Anmeldeversuche gesperrt wird."
 
 #: ../lib/modules/eduPerson.inc:83
 msgid ""
@@ -5738,7 +5857,10 @@ msgid ""
 "Specifies whether the user's existing password must be sent along with their "
 "new password when changing a password. Attention, LAM does not support "
 "password changes which require the old password."
-msgstr "Legt fest, ob bei Passwortänderungen das alte Passwort mitgesendet werden muss. Achtung, LAM unterstützt keine Passwortänderungen, die das alte Passwort voraussetzen."
+msgstr ""
+"Legt fest, ob bei Passwortänderungen das alte Passwort mitgesendet werden "
+"muss. Achtung, LAM unterstützt keine Passwortänderungen, die das alte "
+"Passwort voraussetzen."
 
 #: ../lib/modules/inetOrgPerson.inc:153 ../lib/modules/inetOrgPerson.inc:171
 #: ../lib/modules/inetOrgPerson.inc:231 ../lib/modules/inetOrgPerson.inc:454
@@ -5763,12 +5885,13 @@ msgstr "Schritt 2 von 2: Attribute und Werte"
 msgid "Steve"
 msgstr "Hans"
 
-#: ../lib/modules/inetOrgPerson.inc:1292 ../lib/modules/posixAccount.inc:211
-#: ../lib/modules/sambaSamAccount.inc:392
+#: ../lib/modules/inetOrgPerson.inc:1292
+#: ../lib/modules/asteriskVoicemail.inc:167
+#: ../lib/modules/posixAccount.inc:212 ../lib/modules/sambaSamAccount.inc:392
 msgid "Steve Miller"
 msgstr "Hans Müller"
 
-#: ../lib/modules/posixAccount.inc:272
+#: ../lib/modules/posixAccount.inc:273
 msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 msgstr "Hans Müller,Raum 2.14,123-123-1234,123-123-1234"
 
@@ -5822,7 +5945,7 @@ msgstr "Erfolg"
 msgid "Sudo is not setup correctly!"
 msgstr "Sudo ist nicht korrekt eingerichtet!"
 
-#: ../lib/modules.inc:1530 ../lib/lists.inc:609
+#: ../lib/modules.inc:1530 ../lib/lists.inc:628
 msgid "Suffix"
 msgstr "Suffix"
 
@@ -6013,7 +6136,7 @@ msgstr "Der PC-Name muss mindestens zwei Zeichen lang sein."
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "Die Domänen-SID des Samba-Servers. Auszulesen mit \"net getlocalsid\"."
 
-#: ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:65
 msgid ""
 "The UID ranges for users and hosts overlap! This is a problem because LAM "
 "uses the highest UID in use + 1 for new accounts. Please set the minimum UID "
@@ -6024,8 +6147,14 @@ msgstr ""
 "setzen Sie die minimalen UID-Nummern auf den selben Wert oder verwenden Sie "
 "unabhängige Bereiche."
 
+#: ../lib/modules/asteriskVoicemail.inc:207
+#: ../lib/modules/asteriskVoicemail.inc:208
+msgid "The account context is invalid."
+msgstr "Der Accountkontext ist ungültig."
+
+#: ../lib/modules/asteriskVoicemail.inc:79
 #: ../lib/modules/asteriskExtension.inc:83
-#: ../lib/modules/asteriskAccount.inc:86
+#: ../lib/modules/asteriskAccount.inc:88
 msgid "The account context stores information about the dial plan."
 msgstr "Der Account-Kontext speichert Informationen über den Wählplan."
 
@@ -6042,8 +6171,8 @@ msgstr ""
 "Das Attribut %s wird von Ihrem LDAP-Server nicht für die Objektklasse(n) %s "
 "unterstützt."
 
-#: ../lib/modules/asteriskAccount.inc:153
-#: ../lib/modules/asteriskAccount.inc:155
+#: ../lib/modules/asteriskAccount.inc:167
+#: ../lib/modules/asteriskAccount.inc:169
 msgid "The caller ID format is invalid."
 msgstr "Die Anrufer-ID ist ungültig."
 
@@ -6080,6 +6209,10 @@ msgstr "Der Domänenname muss mindestens drei Zeichen lang sein."
 msgid "The domain name of the subnet."
 msgstr "Der Domänenname des Subnetzes."
 
+#: ../lib/modules/asteriskVoicemail.inc:211
+msgid "The email address is invalid."
+msgstr "Die eMail-Adresse ist ungültig."
+
 #: ../lib/modules/range.inc:82
 msgid "The ending IP address of the range."
 msgstr "Die letzte IP-Adresse des Adressbereichs."
@@ -6092,8 +6225,8 @@ msgstr "Der angegebene Netbios-Knotentyp existiert nicht."
 msgid "The expiration date is invalid."
 msgstr "Das Ablaufdatum ist ungültig."
 
-#: ../lib/modules/asteriskAccount.inc:157
-#: ../lib/modules/asteriskAccount.inc:158
+#: ../lib/modules/asteriskAccount.inc:171
+#: ../lib/modules/asteriskAccount.inc:172
 msgid "The extension context is invalid."
 msgstr "Der Erweiterungskontext ist ungültig."
 
@@ -6114,7 +6247,11 @@ msgstr "Das Format der Anmeldezeiten ist ungültig!"
 msgid "The format of this custom script setting is invalid."
 msgstr "Das Format dieses Skriptes ist ungültig!"
 
-#: ../templates/login.php:415
+#: ../lib/modules/asteriskVoicemail.inc:210
+msgid "The full name name is invalid."
+msgstr "Der Wert für den vollständigen Namen ist ungültig."
+
+#: ../templates/login.php:414
 msgid "The given user name matches multiple LDAP entries."
 msgstr "Der angegebene Benutzername passt auf mehrere LDAP-Einträge."
 
@@ -6122,7 +6259,9 @@ msgstr "Der angegebene Benutzername passt auf mehrere LDAP-Einträge."
 msgid ""
 "The grace authentication limit specifies the number of times that an expired "
 "password may be used to login."
-msgstr "Das Aufschublimit legt fest, wie oft ein bereits abgelaufenes Passwort noch verwendet werden darf."
+msgstr ""
+"Das Aufschublimit legt fest, wie oft ein bereits abgelaufenes Passwort noch "
+"verwendet werden darf."
 
 #: ../templates/pdfedit/pdfpage.php:121
 msgid "The headline for a new section must contain at least one character."
@@ -6134,8 +6273,8 @@ msgstr ""
 msgid "The home directory will be connected under this drive letter."
 msgstr "Das Heimatverzeichnis wird unter diesem Buchstaben verbunden."
 
-#: ../lib/modules/asteriskAccount.inc:160
-#: ../lib/modules/asteriskAccount.inc:161
+#: ../lib/modules/asteriskAccount.inc:174
+#: ../lib/modules/asteriskAccount.inc:175
 msgid "The host name is invalid."
 msgstr "Der Hostname ist ungültig."
 
@@ -6166,6 +6305,10 @@ msgid ""
 msgstr ""
 "Der Name der Log-Datei ist leer oder enthält ungültige Zeichen! Gültige "
 "Zeichen sind: a-z, A-Z, 0-9, /, \\, ., :, _ und -."
+
+#: ../lib/modules/asteriskVoicemail.inc:203
+msgid "The mailbox format is invalid."
+msgstr "Der Wert für die Mailbox ist ungültig."
 
 #: ../lib/modules/dhcp_settings.inc:313 ../lib/modules/dhcp_settings.inc:314
 msgid "The maximum lease time is invalid."
@@ -6258,9 +6401,18 @@ msgstr "Der Büroname des Benutzers (z.B. IhreFirma, Personalabteilung)."
 msgid "The operation was stopped because of the above errors."
 msgstr "Die Operation wurde aufgrund obiger Fehler gestoppt."
 
+#: ../lib/modules/asteriskVoicemail.inc:213
+#: ../lib/modules/asteriskVoicemail.inc:214
+msgid "The options have bad format."
+msgstr "Die Optionen sind falsch formatiert."
+
 #: ../lib/modules/groupOfNames.inc:69
 msgid "The owner of this group."
 msgstr "Der Besitzer dieser Gruppe."
+
+#: ../lib/modules/asteriskVoicemail.inc:212
+msgid "The pager number has bad format."
+msgstr "DIe Pager-Nummer ist ungültig."
 
 #: ../templates/selfService/adminLogin.php:54
 #: ../templates/config/confmain.php:72 ../templates/config/confsave.php:71
@@ -6320,7 +6472,7 @@ msgstr "Das Passwort wurde auf folgenden Wert gesetzt:"
 msgid "The password(s) were set to:"
 msgstr "Das Passwort/die Passwörter wurde(n) auf folgenden Wert gesetzt:"
 
-#: ../lib/modules/posixAccount.inc:344
+#: ../lib/modules/posixAccount.inc:346
 msgid ""
 "The primary group for this account. You can insert a GID number or a group "
 "name."
@@ -6328,11 +6480,11 @@ msgstr ""
 "Die primäre Gruppe dieses Accounts. Sie können eine GID-Nummer oder einen "
 "Gruppennamen angeben."
 
-#: ../lib/modules/posixAccount.inc:411
+#: ../lib/modules/posixAccount.inc:413
 msgid "The primary group the host should be member of."
 msgstr "Die primäre Gruppe des Hosts."
 
-#: ../lib/modules/posixAccount.inc:373
+#: ../lib/modules/posixAccount.inc:375
 msgid "The primary group the user should be member of."
 msgstr "Die primäre Gruppe des Benutzers."
 
@@ -6408,6 +6560,11 @@ msgstr ""
 "Der Wert für das Samba 3 -Feld \"Benutzer kann/muss Passwort ändern\" muss "
 "eine Zahl sein."
 
+#: ../lib/modules/asteriskVoicemail.inc:215
+#: ../lib/modules/asteriskVoicemail.inc:216
+msgid "The voicemail context name is invalid."
+msgstr "Der Anrufbeantworterkontext ist ungültig."
+
 #: ../help/help.inc:196
 msgid "The wildcard for the new password is @@newPassword@@."
 msgstr "Der Platzhalter für das neue Passwort ist @@newPassword@@."
@@ -6424,9 +6581,13 @@ msgstr "Es gibt noch Benutzer, deren primäre Gruppe diese Gruppe ist."
 msgid "There can be only one group of this type."
 msgstr "Es kann nur eine Gruppe diesen Typs geben."
 
-#: ../lib/modules/asteriskAccount.inc:154
+#: ../lib/modules/asteriskAccount.inc:168
 msgid "There is already another user with this caller ID."
 msgstr "Es gibt bereits einen anderen Benutzer mit dieser Anrufer-ID."
+
+#: ../lib/modules/asteriskVoicemail.inc:204
+msgid "There is already another user with this mailbox name."
+msgstr "Es gibt bereits einen anderen Benutzer mit diesem Mailbox-Namen."
 
 #: ../templates/massDoUpload.php:128
 msgid "There were errors while uploading:"
@@ -6442,7 +6603,7 @@ msgstr ""
 "Gruppen erstellt werden. Neue Gruppen bekommen die immer die höchste "
 "verwendete Zahl plus 1."
 
-#: ../lib/modules/posixAccount.inc:332
+#: ../lib/modules/posixAccount.inc:334
 msgid ""
 "These are the minimum and maximum numbers to use for machine IDs when "
 "creating new accounts for hosts. The range should be different from that of "
@@ -6452,7 +6613,7 @@ msgstr ""
 "erstellt werden. Der Bereich sollte sich von dem der Benutzer unterscheiden. "
 "Neue Hosts bekommen die immer die höchste verwendete Zahl plus 1."
 
-#: ../lib/modules/posixAccount.inc:328
+#: ../lib/modules/posixAccount.inc:330
 msgid ""
 "These are the minimum and maximum numbers to use for user IDs when creating "
 "new user accounts. The range should be different from that of machines. New "
@@ -6477,9 +6638,13 @@ msgid ""
 "These options change the list of potential extension owners below. You can "
 "select to show Asterisk accounts or all users. It is also possible to search "
 "the tree suffix if you have users which are not in the standard user suffix."
-msgstr "Diese Optionen ändern die untige Liste potentieller Erweiterungsbesitzer. Sie können nur Asterisk-Benutzer oder alle Benutzer anzeigen. Ferner kann im Suffix der Baumansicht gesucht werden falls nicht alle Benutzer nicht im Standardsuffix sind."
+msgstr ""
+"Diese Optionen ändern die untige Liste potentieller Erweiterungsbesitzer. "
+"Sie können nur Asterisk-Benutzer oder alle Benutzer anzeigen. Ferner kann im "
+"Suffix der Baumansicht gesucht werden falls nicht alle Benutzer nicht im "
+"Standardsuffix sind."
 
-#: ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:90
 msgid "This GID number is invalid! Please provide either a number or a group name."
 msgstr ""
 "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen "
@@ -6573,7 +6738,7 @@ msgstr "Der Eintrag hat keine Attribute"
 msgid "This entry is the root of a sub-tree containing %s entries."
 msgstr "Dieser Eintrag enthält einen Unterbaum mit %s Einträgen."
 
-#: ../lib/modules/posixAccount.inc:91
+#: ../lib/modules/posixAccount.inc:92
 msgid "This gecos value is invalid!"
 msgstr "Dieser Gecos-Wert ist ungültig!"
 
@@ -6700,7 +6865,7 @@ msgstr "Das ist eine der öffentlichen Email-Adressen des Benutzers."
 msgid "This is one recipient for this alias."
 msgstr "Dies ist ein Empfänger für diesen Alias."
 
-#: ../lib/modules/asteriskAccount.inc:78
+#: ../lib/modules/asteriskAccount.inc:80
 msgid ""
 "This is the ID of the user in the Asterisk database. It may contain digits "
 "and letters (e.g. user1 or 200134)."
@@ -6786,7 +6951,7 @@ msgstr ""
 "\"#Wert:Beschreibung\" sein. Mehrere Werte werden durch Strichpunkte "
 "getrennt."
 
-#: ../lib/modules/asteriskAccount.inc:82
+#: ../lib/modules/asteriskAccount.inc:84
 msgid ""
 "This is the machine id (e.g. IP address or host name) from which the user "
 "can call/receive calls."
@@ -6802,7 +6967,7 @@ msgstr "Dies ist der Mailserver des Benutzers."
 msgid "This is the name of this group."
 msgstr "Das ist der Name dieser Gruppe."
 
-#: ../lib/modules/posixAccount.inc:419
+#: ../lib/modules/posixAccount.inc:421
 msgid "This is the natural name of the host. If empty, the host name will be used."
 msgstr "Dies ist der übliche Name des Hosts, falls leer wird der Hostname verwendet."
 
@@ -6814,7 +6979,7 @@ msgstr ""
 "Dies ist der übliche Name des Benutzers, falls leer wird Vor- und Nachname "
 "verwendet."
 
-#: ../lib/modules/posixAccount.inc:397
+#: ../lib/modules/posixAccount.inc:399
 msgid ""
 "This is the natural name of the user. If empty, the first and last name or "
 "user name is used."
@@ -6957,7 +7122,7 @@ msgstr ""
 msgid "This is the user's primary Windows group."
 msgstr "Das ist die primäre Windows-Gruppe des Benutzers."
 
-#: ../lib/modules/posixAccount.inc:92
+#: ../lib/modules/posixAccount.inc:93
 msgid "This login shell is invalid!"
 msgstr "Login-Shell ist ungültig!"
 
@@ -7050,7 +7215,7 @@ msgstr "Dieser Benutzer wurde nicht gefunden!"
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"!"
 msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein!"
 
-#: ../lib/modules/posixAccount.inc:93
+#: ../lib/modules/posixAccount.inc:94
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"."
 msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 
@@ -7062,7 +7227,7 @@ msgstr "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, se
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
-#: ../lib/modules/posixAccount.inc:360
+#: ../lib/modules/posixAccount.inc:362
 msgid "This will create the user's home directory on the specified server."
 msgstr ""
 "Wenn Sie dieses Kästchen aktivieren, dann wird das Heimatverzeichnis des "
@@ -7079,7 +7244,9 @@ msgstr "Dies löscht das markierte Profil."
 #: ../lib/modules/eduPerson.inc:128 ../lib/modules/sambaSamAccount.inc:374
 #: ../lib/modules/shadowAccount.inc:194 ../lib/modules/phpGroupwareUser.inc:87
 msgid "This will enable the extension automatically if this profile is loaded."
-msgstr "Damit können Sie die Erweiterung automatisch beim Laden des Profils aktivieren."
+msgstr ""
+"Damit können Sie die Erweiterung automatisch beim Laden des Profils "
+"aktivieren."
 
 #: ../lib/modules/sambaSamAccount.inc:239
 msgid "This will reset the host's password to a default value."
@@ -7124,7 +7291,7 @@ msgstr ""
 "Während der Ausführung der Lamdaemon-Kommandos wurde die maximale "
 "Ausführungszeit überschritten!"
 
-#: ../lib/modules/posixAccount.inc:389
+#: ../lib/modules/posixAccount.inc:391
 msgid ""
 "To disable login use /bin/false. The list of shells is read from lam/config/"
 "shells"
@@ -7169,15 +7336,15 @@ msgstr "Dienstag"
 msgid "Type"
 msgstr "Typ"
 
-#: ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:78
 msgid "UID"
 msgstr "Benutzer ID"
 
-#: ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:78
 msgid "UID has changed. Do you want to change home directory?"
 msgstr "UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
 
-#: ../lib/modules/posixAccount.inc:72
+#: ../lib/modules/posixAccount.inc:73
 msgid ""
 "UID must be a number. It has to be inside the UID range which is defined in "
 "your configuration profile."
@@ -7185,15 +7352,15 @@ msgstr ""
 "UID muss eine Zahl sein. Sie muss sich innerhalb des Bereiches befinden der "
 "in Ihrem Konfigurationsprofil festgelegt ist."
 
-#: ../lib/modules/posixAccount.inc:73 ../lib/modules/posixAccount.inc:215
-#: ../lib/modules/posixAccount.inc:289 ../lib/modules/posixAccount.inc:327
-#: ../lib/modules/posixAccount.inc:331 ../lib/modules/posixAccount.inc:339
-#: ../lib/modules/posixAccount.inc:950 ../lib/modules/posixAccount.inc:1178
+#: ../lib/modules/posixAccount.inc:74 ../lib/modules/posixAccount.inc:216
+#: ../lib/modules/posixAccount.inc:290 ../lib/modules/posixAccount.inc:329
+#: ../lib/modules/posixAccount.inc:333 ../lib/modules/posixAccount.inc:341
+#: ../lib/modules/posixAccount.inc:951 ../lib/modules/posixAccount.inc:1179
 #: ../lib/types/user.inc:92 ../lib/types/host.inc:95
 msgid "UID number"
 msgstr "UID Nummer"
 
-#: ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/posixAccount.inc:74
 #, php-format
 msgid ""
 "UID number has changed. To keep file ownership you have to run the following "
@@ -7203,7 +7370,7 @@ msgstr ""
 "ausführen um die existierenden Dateirechte zu ändern: 'find / -uid %s -exec "
 "chown %s {} \\;'"
 
-#: ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:65
 msgid "UID ranges for Unix accounts"
 msgstr "UID-Bereiche für Unix-Accounts"
 
@@ -7258,12 +7425,12 @@ msgstr "Kann die PDF-Struktur nicht löschen!"
 msgid "Unable to delete profile!"
 msgstr "Kann das Profil nicht löschen!"
 
-#: ../lib/modules/nisnetgroup.inc:526 ../lib/modules/posixAccount.inc:1362
-#: ../lib/modules/posixAccount.inc:1596
+#: ../lib/modules/nisnetgroup.inc:526 ../lib/modules/posixAccount.inc:1366
+#: ../lib/modules/posixAccount.inc:1600
 msgid "Unable to find group in LDAP."
 msgstr "Kann Gruppe nicht im LDAP-Baum finden."
 
-#: ../templates/login.php:423 ../templates/login.php:429
+#: ../templates/login.php:422 ../templates/login.php:428
 msgid "Unable to find the user name in LDAP."
 msgstr "Kann den Benutzernamen nicht in LDAP finden."
 
@@ -7313,7 +7480,7 @@ msgstr ""
 "Die Zeit wann der Benutzer sein Passwort ändern kann/muss konnte nicht "
 "angepasst werden, da keine Domäne gefunden wurde."
 
-#: ../lib/modules/posixGroup.inc:283 ../lib/modules/posixAccount.inc:126
+#: ../lib/modules/posixGroup.inc:283 ../lib/modules/posixAccount.inc:127
 msgid "Unix"
 msgstr "Unix"
 
@@ -7339,7 +7506,7 @@ msgstr "Unbekannter Fehler"
 msgid "Unlock Samba account"
 msgstr "Samba 3-Account entsperren"
 
-#: ../lib/modules/posixGroup.inc:191 ../lib/modules/posixAccount.inc:1002
+#: ../lib/modules/posixGroup.inc:191 ../lib/modules/posixAccount.inc:1003
 msgid "Unlock password"
 msgstr "Passwort reaktivieren"
 
@@ -7438,7 +7605,7 @@ msgstr "Benutzeraccounts (z.B. Unix, Samba und Kolab)"
 msgid "User can change password"
 msgstr "Benutzer kann Passwort ändern"
 
-#: ../lib/modules/posixAccount.inc:369
+#: ../lib/modules/posixAccount.inc:371
 msgid "User description. If left empty first and last name will be used."
 msgstr "Benutzerbeschreibung, falls leer wird Vor- und Nachname verwendet."
 
@@ -7459,7 +7626,7 @@ msgstr "Vom Benutzer änderbar"
 msgid "User must change password"
 msgstr "Benutzer muss Passwort ändern"
 
-#: ../templates/lists/changePassword.php:134 ../templates/login.php:229
+#: ../templates/lists/changePassword.php:134 ../templates/login.php:227
 #: ../lib/modules/nisnetgroup.inc:135 ../lib/modules/nisnetgroup.inc:454
 #: ../lib/modules/account.inc:94 ../lib/modules/account.inc:116
 #: ../lib/modules/account.inc:118 ../lib/modules/account.inc:119
@@ -7469,23 +7636,23 @@ msgstr "Benutzer muss Passwort ändern"
 #: ../lib/modules/inetOrgPerson.inc:1239 ../lib/modules/inetOrgPerson.inc:1297
 #: ../lib/modules/uidObject.inc:38 ../lib/modules/uidObject.inc:60
 #: ../lib/modules/uidObject.inc:78 ../lib/modules/uidObject.inc:92
-#: ../lib/modules/uidObject.inc:154 ../lib/modules/posixAccount.inc:78
-#: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:82
-#: ../lib/modules/posixAccount.inc:201 ../lib/modules/posixAccount.inc:364
-#: ../lib/modules/posixAccount.inc:938 ../lib/modules/posixAccount.inc:1176
+#: ../lib/modules/uidObject.inc:154 ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/posixAccount.inc:80 ../lib/modules/posixAccount.inc:83
+#: ../lib/modules/posixAccount.inc:202 ../lib/modules/posixAccount.inc:366
+#: ../lib/modules/posixAccount.inc:939 ../lib/modules/posixAccount.inc:1177
 #: ../lib/types/user.inc:94 ../lib/types/alias.inc:91
 msgid "User name"
 msgstr "Benutzername"
 
-#: ../lib/modules/inetOrgPerson.inc:101 ../lib/modules/posixAccount.inc:86
+#: ../lib/modules/inetOrgPerson.inc:101 ../lib/modules/posixAccount.inc:87
 msgid "User name already exists!"
 msgstr "Benutzername besteht schon!"
 
 #: ../lib/modules/nisnetgroup.inc:135 ../lib/modules/account.inc:116
 #: ../lib/modules/account.inc:117 ../lib/modules/account.inc:119
 #: ../lib/modules/inetOrgPerson.inc:99 ../lib/modules/inetOrgPerson.inc:100
-#: ../lib/modules/uidObject.inc:78 ../lib/modules/posixAccount.inc:79
-#: ../lib/modules/posixAccount.inc:84
+#: ../lib/modules/uidObject.inc:78 ../lib/modules/posixAccount.inc:80
+#: ../lib/modules/posixAccount.inc:85
 msgid ""
 "User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -7493,14 +7660,14 @@ msgstr ""
 "Benutzername enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und .-_ !"
 
-#: ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixAccount.inc:83
 msgid "User name in use. Selected next free user name."
 msgstr ""
 "Der Benutzername ist bereits vorhanden, der nächste freie Name wurde "
 "ausgewählt."
 
 #: ../lib/modules/account.inc:95 ../lib/modules/inetOrgPerson.inc:624
-#: ../lib/modules/posixAccount.inc:365
+#: ../lib/modules/posixAccount.inc:367
 msgid ""
 "User name of the user who should be created. Valid characters are: a-z,A-Z,0-"
 "9, .-_. If user name is already used user name will be expanded with a "
@@ -7514,9 +7681,9 @@ msgstr ""
 "Sie können sich bei Windows nicht anmelden wenn Sie mehr als 16 Zeichen "
 "verwenden."
 
-#: ../lib/modules/posixAccount.inc:58 ../lib/modules/posixAccount.inc:59
-#: ../lib/modules/posixAccount.inc:62 ../lib/modules/posixAccount.inc:161
-#: ../lib/types/user.inc:53
+#: ../lib/modules/posixAccount.inc:59 ../lib/modules/posixAccount.inc:60
+#: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:162
+#: ../lib/modules/asteriskAccount.inc:102 ../lib/types/user.inc:53
 msgid "Users"
 msgstr "Benutzer"
 
@@ -7550,7 +7717,7 @@ msgstr "Für die Verbindung zum Remote-Server wird %s verwendet."
 msgid "Using template:"
 msgstr "Verwendete Vorlage:"
 
-#: ../lib/modules/posixAccount.inc:324
+#: ../lib/modules/posixAccount.inc:326
 msgid ""
 "Usually, users are not added to groups as memberUid if they have this group "
 "as primary group. If your application ignores primary groups then you can "
@@ -7573,7 +7740,19 @@ msgstr "Herstellername"
 msgid "Vendor version"
 msgstr "Herstellerversion"
 
-#: ../templates/login.php:182
+#: ../lib/modules/asteriskVoicemail.inc:106
+#: ../lib/modules/asteriskVoicemail.inc:117
+#: ../lib/modules/asteriskVoicemail.inc:189
+#: ../lib/modules/asteriskVoicemail.inc:258
+#: ../lib/modules/asteriskVoicemail.inc:373
+msgid "Voicemail context"
+msgstr "Anrufbeantworterkontext"
+
+#: ../lib/modules/asteriskVoicemail.inc:83
+msgid "Voicemail mailbox for this account."
+msgstr "Anrufbeantwortermailbox für diesen Account."
+
+#: ../templates/login.php:180
 msgid "Want more features? Get LAM Pro!"
 msgstr "Sie möchten mehr Funktionen? Bestellen Sie LAM Pro!"
 
@@ -7702,7 +7881,7 @@ msgstr "Schreibzugriff"
 
 #: ../templates/selfService/selfServiceLogin.php:96
 #: ../templates/selfService/selfServiceLogin.php:114
-#: ../templates/login.php:411 ../templates/login.php:469
+#: ../templates/login.php:410 ../templates/login.php:468
 msgid "Wrong password/user name combination. Please try again."
 msgstr "Falsche Benutzername/Passwort-Kombination. Bitte erneut eingeben."
 
@@ -7719,8 +7898,8 @@ msgstr ""
 "Sie verwenden Großbuchstaben, das kann Probleme verursachen, da Windows "
 "Groß-/Kleinschreibung nicht unterscheidet."
 
-#: ../lib/modules/account.inc:118 ../lib/modules/posixAccount.inc:78
-#: ../lib/modules/posixAccount.inc:80
+#: ../lib/modules/account.inc:118 ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/posixAccount.inc:81
 msgid ""
 "You are using a capital letters. This can cause problems because windows "
 "isn't case-sensitive."
@@ -7826,7 +8005,7 @@ msgstr ""
 "Ihre Sitzung ist abgelaufen, klicken Sie hier, um zur Anmeldeseite "
 "zurückzukehren."
 
-#: ../templates/login.php:208
+#: ../templates/login.php:206
 msgid "Your session expired, please log in again."
 msgstr "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an."
 
@@ -7917,15 +8096,6 @@ msgstr "auf dem Bildschirm anzeigen"
 msgid "download value"
 msgstr "Wert downloaden"
 
-#: ../templates/lists/changePassword.php:152
-#: ../lib/modules/inetOrgPerson.inc:85 ../lib/modules/inetOrgPerson.inc:149
-#: ../lib/modules/inetOrgPerson.inc:258 ../lib/modules/inetOrgPerson.inc:422
-#: ../lib/modules/inetOrgPerson.inc:615 ../lib/modules/inetOrgPerson.inc:616
-#: ../lib/modules/inetOrgPerson.inc:1066 ../lib/modules/inetOrgPerson.inc:1235
-#: ../lib/modules/inetOrgPerson.inc:1601
-msgid "eMail address"
-msgstr "E-Mail Adresse"
-
 #: ../templates/tree/edit.php:394
 msgid "false"
 msgstr "falsch"
@@ -7944,7 +8114,7 @@ msgstr "von jedem Client"
 msgid "from previous client only"
 msgstr "nur vom letzten Client"
 
-#: ../lib/modules/nisnetgroup.inc:113 ../lib/modules/posixAccount.inc:230
+#: ../lib/modules/nisnetgroup.inc:113 ../lib/modules/posixAccount.inc:231
 msgid "group01,group02"
 msgstr "gruppe01,gruppe02"
 
@@ -7995,7 +8165,7 @@ msgstr ""
 "ldaps://ldap.domain.com baut eine verschlüsselte Verbindung zu ldap.domain."
 "com auf."
 
-#: ../lib/modules/posixAccount.inc:297
+#: ../lib/modules/posixAccount.inc:298
 msgid "machines"
 msgstr "Hosts"
 
@@ -8060,11 +8230,11 @@ msgstr ""
 msgid "ou=accounts,dc=yourdomain,dc=org"
 msgstr "ou=accounts,dc=ihreFirma,dc=de"
 
-#: ../lib/modules/posixAccount.inc:283
+#: ../lib/modules/posixAccount.inc:284
 msgid "pc01$"
 msgstr "pc01$"
 
-#: ../lib/modules/posixAccount.inc:304
+#: ../lib/modules/posixAccount.inc:305
 msgid "pc01,Room 2.34"
 msgstr "pc01,Raum 2.34"
 
@@ -8082,8 +8252,8 @@ msgstr "erforderlich"
 msgid "reset"
 msgstr "zurücksetzen"
 
-#: ../lib/modules/posixGroup.inc:351 ../lib/modules/posixAccount.inc:258
-#: ../lib/modules/asteriskAccount.inc:142
+#: ../lib/modules/asteriskVoicemail.inc:160 ../lib/modules/posixGroup.inc:351
+#: ../lib/modules/posixAccount.inc:259 ../lib/modules/asteriskAccount.inc:156
 #: ../lib/modules/sambaSamAccount.inc:398
 msgid "secret"
 msgstr "geheim"
@@ -8093,7 +8263,7 @@ msgid "send via mail"
 msgstr "per mail senden"
 
 #: ../lib/modules/nisMailAlias.inc:91 ../lib/modules/inetOrgPerson.inc:1299
-#: ../lib/modules/uidObject.inc:62 ../lib/modules/posixAccount.inc:203
+#: ../lib/modules/uidObject.inc:62 ../lib/modules/posixAccount.inc:204
 msgid "smiller"
 msgstr "hmueller"
 
@@ -8134,11 +8304,12 @@ msgstr "uid=hmueller,ou=People,dc=ihreFirma,dc=de"
 msgid "user01,user02,user03"
 msgstr "benutzer01,benutzer02,benutzer03"
 
-#: ../lib/modules/inetOrgPerson.inc:424 ../lib/modules/eduPerson.inc:143
+#: ../lib/modules/inetOrgPerson.inc:424
+#: ../lib/modules/asteriskVoicemail.inc:173 ../lib/modules/eduPerson.inc:143
 msgid "user@company.com"
 msgstr "benutzer@firma.de"
 
-#: ../lib/modules/posixAccount.inc:223
+#: ../lib/modules/posixAccount.inc:224
 msgid "users"
 msgstr "Benutzer"
 

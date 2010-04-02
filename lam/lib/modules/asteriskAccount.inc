@@ -93,7 +93,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			),
 			'AsteriskRealm' => array(
 				"Headline" => _("Asterisk realm"),
-				"Text" => _("Authentication realm for asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
+				"Text" => _("Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
 			),
 		);
 		// config options	

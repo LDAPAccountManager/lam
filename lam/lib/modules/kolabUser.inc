@@ -148,11 +148,11 @@ class kolabUser extends baseModule {
 				"Text" => _("This is a comma separated list of delegates.")
 			),
 			'alias' => array(
-				"Headline" => _("EMail alias"),
-				"Text" => _("EMail alias for this account.")
+				"Headline" => _("Email alias"),
+				"Text" => _("Email alias for this account.")
 			),
 			'aliasList' => array(
-				"Headline" => _("EMail alias list"),
+				"Headline" => _("Email alias list"),
 				"Text" => _("This is a comma separated list of eMail aliases.")
 			),
 			'country' => array(
@@ -198,7 +198,7 @@ class kolabUser extends baseModule {
 			),
 			array(
 				'name' => 'kolabUser_aliases',
-				'description' => _('EMail aliases'),
+				'description' => _('Email aliases'),
 				'help' => 'aliasList',
 				'example' => 'user@domain,user2@domain'
 			),
@@ -234,8 +234,8 @@ class kolabUser extends baseModule {
 	function load_Messages() {
 		$this->messages['invPol'][0] = array('ERROR', _('Target of invitation policy is invalid!'));  // third array value is set dynamically
 		$this->messages['invPol'][1] = array('ERROR', _('Account %s:') . ' kolabUser_invPol', _('Policy list has invalid format!'));
-		$this->messages['alias'][0] = array('ERROR', _('EMail alias is invalid!'));  // third array value is set dynamically
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' kolabUser_aliases', _('EMail alias list has invalid format!'));
+		$this->messages['alias'][0] = array('ERROR', _('Email alias is invalid!'));  // third array value is set dynamically
+		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' kolabUser_aliases', _('Email alias list has invalid format!'));
 		$this->messages['country'][0] = array('ERROR', _('Country name is invalid!'));  // third array value is set dynamically
 		$this->messages['country'][1] = array('ERROR', _('Account %s:') . ' kolabUser_country', _('Country name is invalid!'));
 		$this->messages['homeServer'][0] = array('ERROR', _('Mailbox home server name is invalid!'));  // third array value is set dynamically
@@ -357,7 +357,7 @@ class kolabUser extends baseModule {
 				array('kind' => 'input', 'type' => 'submit', 'name' => 'addAlias', 'value' => _("Add")),
 				array('kind' => 'help', 'value' => 'alias'));
 			$returnAliases = array(
-					array('kind' => 'fieldset', 'legend' => _('EMail aliases'), 'value' => $returnAliases, 'td' => array('colspan' => 3))
+					array('kind' => 'fieldset', 'legend' => _('Email aliases'), 'value' => $returnAliases, 'td' => array('colspan' => 3))
 				);
 			$return[] = $returnAliases;
 			// delegates
@@ -788,7 +788,7 @@ class kolabUser extends baseModule {
 		}
 		// email aliases
 		if (sizeof($this->attributes['alias']) > 0) {
-			$return['kolabUser_aliases'][0] = '<block><key>' . _('EMail aliases') . '</key><value>' . implode(", ", $this->attributes['alias']) . '</value></block>';
+			$return['kolabUser_aliases'][0] = '<block><key>' . _('Email aliases') . '</key><value>' . implode(", ", $this->attributes['alias']) . '</value></block>';
 		}
 		// delegates
 		if (sizeof($this->attributes['kolabDelegate']) > 0) {

@@ -82,8 +82,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['mobileTelephone'][1] = array('ERROR', _('Account %s:') . " inetOrgPerson_mobile", _('Please enter a valid mobile number!'));
 		$this->messages['facsimileNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		$this->messages['facsimileNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_fax', _('Please enter a valid fax number!'));
-		$this->messages['email'][0] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-		$this->messages['email'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_email', _('Please enter a valid eMail address!'));
+		$this->messages['email'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
+		$this->messages['email'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_email', _('Please enter a valid email address!'));
 		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		$this->messages['street'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_street', _('Please enter a valid street name!'));
 		$this->messages['postalAddress'][0] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
@@ -146,7 +146,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array('firstName' => _('First name'), 'lastName' => _('Last name'),
-			'mail' => _('eMail address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
+			'mail' => _('Email address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
 			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'),
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
@@ -255,7 +255,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 						array('kind' => 'text', 'text' => _('Fax number')),
 						array('kind' => 'text', 'text' => '&nbsp;'),
 						array('kind' => 'input', 'name' => 'inetOrgPerson_hideEMailAddress', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('eMail address')),
+						array('kind' => 'text', 'text' => _('Email address')),
 						array('kind' => 'text', 'text' => '&nbsp;'),
 						array('kind' => 'input', 'name' => 'inetOrgPerson_hideJobTitle', 'type' => 'checkbox'),
 						array('kind' => 'text', 'text' => _('Job title')),
@@ -419,7 +419,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_email',
-				'description' => _('eMail address'),
+				'description' => _('Email address'),
 				'help' => 'mail',
 				'example' => _('user@company.com')
 			);
@@ -612,8 +612,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Text" => _("Fax number")
 			),
 			'mail' => array (
-				"Headline" => _("eMail address"),
-				"Text" => _("eMail address")
+				"Headline" => _("Email address"),
+				"Text" => _("Email address")
 			),
 			'cn' => array (
 				"Headline" => _("Common name"),
@@ -1063,7 +1063,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$email = '';
 			if (isset($this->attributes['mail'][0])) $email = $this->attributes['mail'][0];
 			$return[] = array(
-				array('kind' => 'text', 'text' => _('eMail address')),
+				array('kind' => 'text', 'text' => _('Email address')),
 				array('kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $email),
 				array('kind' => 'help', 'value' => 'mail'));
@@ -1232,7 +1232,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			get_class($this) . '_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $this->attributes['homePhone'][0] . '</value></block>'),
 			get_class($this) . '_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobile'][0] . '</value></block>'),
 			get_class($this) . '_facimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
-			get_class($this) . '_mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
+			get_class($this) . '_mail' => array('<block><key>' . _('Email address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
 			get_class($this) . '_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 			get_class($this) . '_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $this->attributes['roomNumber'][0] . '</value></block>'),
 			get_class($this) . '_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $this->attributes['businessCategory'][0] . '</value></block>'),
@@ -1598,7 +1598,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$mail = '';
 			if (isset($attributes['mail'][0])) $mail = $attributes['mail'][0];
 			$return['mail'] = array(
-				array('kind' => 'text', 'text' => _('eMail address')),
+				array('kind' => 'text', 'text' => _('Email address')),
 				array('kind' => 'input', 'name' => 'inetOrgPerson_mail', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $mail));
 		}

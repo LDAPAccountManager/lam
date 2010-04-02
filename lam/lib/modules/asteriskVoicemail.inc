@@ -209,7 +209,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 
 		$this->messages['AstVoicemailFullname'][0] = array('ERROR', _('The full name name is invalid.'));
 		$this->messages['AstVoicemailEmail'][01] = array('ERROR', _('The email address is invalid.'));
-		$this->messages['AstVoicemailPager'][0] = array('ERROR', _('The pager has bad format.'));
+		$this->messages['AstVoicemailPager'][0] = array('ERROR', _('The pager number has bad format.'));
 		$this->messages['AstVoicemailOptions'][0] = array('ERROR', _('The options have bad format.'));
 		$this->messages['AstVoicemailOptions'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The options have bad format.'));
 		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The voicemail context name is invalid.'));
