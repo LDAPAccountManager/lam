@@ -102,10 +102,10 @@ class nisMailAlias extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['alias'][0] = array('ERROR', 'Alias is empty or invalid!');  // third array value is set dynamically
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_alias', 'Alias is empty or invalid!');
-		$this->messages['recipient'][0] = array('ERROR', 'Recipient is invalid!');  // third array value is set dynamically
-		$this->messages['recipient'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_recipient', 'Recipient is invalid!');
+		$this->messages['alias'][0] = array('ERROR', _('Alias is empty or invalid!'));  // third array value is set dynamically
+		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_alias', _('Alias is empty or invalid!'));
+		$this->messages['recipient'][0] = array('ERROR', _('Recipient is invalid!'));  // third array value is set dynamically
+		$this->messages['recipient'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_recipient', _('Recipient is invalid!'));
 	}
 
 	/**
