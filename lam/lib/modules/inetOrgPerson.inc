@@ -37,39 +37,10 @@ $Id$
 */
 class inetOrgPerson extends baseModule implements passwordService {
 	
-	private static $unix_hosts_supported = 'unknown';
-	
-	/**
-	 * Returns if the host attribute is supported by the schema.
-	 *
-	 * @return boolean true if supported
-	 */
-	private function supportUnixHosts() {
-		if (inetOrgPerson::$unix_hosts_supported === 'unknown') {
-			inetOrgPerson::$unix_hosts_supported = 'no';
-			get_schema_objectclasses();
-			$classes = get_cached_schema('objectclasses');
-			if (isset($classes['inetorgperson'])) {
-				$mayAttrs = $classes['inetorgperson']->getMayAttrs();
-				if (is_array($mayAttrs)) {
-					for ($i = 0; $i < sizeof($mayAttrs); $i++) {
-						if ($mayAttrs[$i]->getName() === 'host') {
-							inetOrgPerson::$unix_hosts_supported = 'yes';
-							break;
-						}
-					}
-				}
-			}
-		}
-		return (inetOrgPerson::$unix_hosts_supported === 'yes');
-	}
-
 	/**
 	* This function fills the message array.
 	**/
 	function load_Messages() {
-		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations are invalid!'));
-		$this->messages['host'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_hosts', _('Unix workstations are invalid!'));
 		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
 		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('First name contains invalid characters!'));
 		$this->messages['lastname'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters or is empty!'));
@@ -139,9 +110,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
 			'carLicense', 'departmentNumber');
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true) && $this->supportUnixHosts()) {
-			$return['attributes'][] = 'host';
-		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
 		// self service field settings
@@ -472,20 +440,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'example' => _('YourCompany, Human Resources')
 			);
 		}
-		// Unix workstations for upload
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
-			if ($this->supportUnixHosts()) {
-				$return['upload_columns'][] = array(
-					'name' => 'inetOrgPerson_hosts',
-					'description' => _('Unix workstations'),
-					'help' => 'workstations',
-					'example' => _('pc01,pc02')
-					);
-			}
-		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'host',
 			'givenName',
 			'sn'
 		);
@@ -622,10 +578,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'uid' => array(
 				"Headline" => _("User name"),
 				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
-			),
-			'workstations' => array (
-				"Headline" => _("Unix workstations"),
-				"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. If you enable host restrictions for your servers then \"*\" means every host and an empty field means no host.")
 			),
 			'photoUpload' => array(
 				"Headline" => _("Add photo"),
@@ -878,20 +830,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 
-		// handle host-attribute in on epice because it's not set by default
-		if ($this->supportUnixHosts()) {
-			$host = $_POST['host'];
-			if (!get_preg($host,'unixhost')) {
-				$errors[] = $this->messages['host'][0];
-			}
-			$hosts = explode(",", $host);
-			$this->attributes['host'] = array();
-			for ($i = 0; $i < sizeof($hosts); $i++) {
-				if ($hosts[$i] != "") {
-					$this->attributes['host'][] = $hosts[$i];
-				}
-			}
-		}
 		if (isset($_POST['delPhoto'])) {
 			$this->attributes['jpegPhoto'] = array();
 		}
@@ -1116,17 +1054,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 					'maxlength' => '255', 'value' => $departmentNumber),
 				array('kind' => 'help', 'value' => 'departmentNumber'));
 		}
-		if ($this->supportUnixHosts()) {
-			$hostvalue = "";
-			if (isset($this->attributes['host']) && is_array($this->attributes['host'])) {
-				$hostvalue .= implode(",", $this->attributes['host']);
-			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Unix workstations')),
-				array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $hostvalue ),
-				array('kind' => 'help', 'value' => 'workstations'));
-		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			// get list of existing users for manager attribute
 			$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
@@ -1218,7 +1145,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 	function get_pdfEntries() {
 		$return = array(
 			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
-			get_class($this) . '_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
 			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
 			get_class($this) . '_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
 			get_class($this) . '_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
@@ -1507,17 +1433,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				else {
 					$errMsg = $this->messages['email'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
-			// Unix workstations
-			if ($rawAccounts[$i][$ids['inetOrgPerson_hosts']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_hosts']], 'unixhost')) {
-					$partialAccounts[$i]['host'] = explode(",", $rawAccounts[$i][$ids['inetOrgPerson_hosts']]);
-				}
-				else {
-					$errMsg = $this->messages['host'][1];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}

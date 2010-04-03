@@ -602,6 +602,20 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>3.0.0 -&gt; 3.1.0</title>
+
+          <para>LAM supported to set a list of valid workstations on the
+          "Personal" page. This required to change the LDAP schema. Since
+          3.1.0 this is replaced by the new "Hosts" module for users.</para>
+        </section>
+
+        <section>
+          <title>2.3.0 -&gt; 3.0.0</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
           <title>2.2.0 -&gt; 2.3.0</title>
 
           <para><emphasis role="bold">LAM Pro:</emphasis> There is now a
@@ -1152,6 +1166,26 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_unixUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Hosts</title>
+
+        <para>You can specify a list of valid host names where the user may
+        login. If you add the value "*" then the user may login to any host.
+        This can be further restricted by adding explicit deny entries which
+        are prefixed with "!" (e.g. "!hr_server").</para>
+
+        <para>Please note that your PAM settings need to support host
+        restrictions.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/hostObject.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -2335,11 +2369,13 @@ Have fun!
 
             <entry>Unix accounts</entry>
 
-            <entry>posixAccount, shadowAccount, posixGroup</entry>
+            <entry>posixAccount, shadowAccount, hostObject, posixGroup</entry>
 
-            <entry>nis.schema, rfc2307bis.schema</entry>
+            <entry>nis.schema, rfc2307bis.schema, ldapns.schema
+            (hostObject)</entry>
 
-            <entry>Part of OpenLDAP installation</entry>
+            <entry>Part of OpenLDAP installation, part of libpam-ldap
+            (ldapns.schema)</entry>
 
             <entry>The rfc2307bis.schema is only supported by LAM Pro. Use the
             nis.schema if you do not want to upgrade to LAM Pro.</entry>
@@ -3088,35 +3124,5 @@ Have fun!
       is the root directory for Apache. The PHP installation already includes
       all required packages.</para>
     </section>
-  </appendix>
-
-  <appendix>
-    <title>InetOrgPerson and the host attribute</title>
-
-    <para>The attribute "host" is only in objectclass account. Unfortunatly
-    "account" conflicts with "inetorgperson". so there's no perfect way to use
-    both.</para>
-
-    <para>In order to get attribute host working you have to modify
-    schema/inetorgperson and include host:</para>
-
-    <literallayout># inetOrgPerson
-# The inetOrgPerson represents people who are associated with an
-# organization in some way.  It is a structural class and is derived
-# from the organizationalPerson which is defined in X.521 [X521].
-objectclass     ( 2.16.840.1.113730.3.2.2
-    NAME 'inetOrgPerson'
-        DESC 'RFC2798: Internet Organizational Person'
-    SUP organizationalPerson
-    STRUCTURAL
-        MAY (
-                audio $ businessCategory $ carLicense $ departmentNumber $
-                displayName $ employeeNumber $ employeeType $ givenName $
-                homePhone $ homePostalAddress $ initials $ jpegPhoto $
-                labeledURI $ mail $ manager $ mobile $ o $ pager $
-                photo $ roomNumber $ secretary $ uid $ userCertificate $
-                x500uniqueIdentifier $ preferredLanguage $
-                userSMIMECertificate $ userPKCS12 $ host )
-        )</literallayout>
   </appendix>
 </book>
