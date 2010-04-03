@@ -386,6 +386,9 @@ function get_preg($argument, $regexp) {
 		case 'hostname':	
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_\\$-])+$/u';
 					break;
+		case 'hostObject':
+				$pregexpr = '/^[!]?([[:alnum:]@\\.\\ \\_\\$\\*-])+$/u';
+				break;
 		case 'usernameList':	// comma separated list of user names
 		case 'groupnameList':	// comma separated list of group names
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+(,([[:alnum:]@\\.\\ \\_-])+)*$/u';
