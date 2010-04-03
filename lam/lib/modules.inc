@@ -1473,12 +1473,6 @@ class accountContainer {
 	 * Prints the HTML code of the module tabs.
 	 */
 	private function printModuleTabs() {
-		// calculate button width
-		$buttonWidth = 0;
-		for ($b = 0; $b < sizeof($this->order); $b++) {
-			$tempWidth = round(0.8 * strlen(utf8_decode($this->module[$this->order[$b]]->get_alias()))) + 2;
-			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
-		}
 		// $x is used to count up tabindex
 		$x=0;
 		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
@@ -1490,7 +1484,7 @@ class accountContainer {
 			if ($buttonStatus == 'hidden') continue;
 			$class = $this->type . "list-head";
 			if ($this->order[$this->current_page] == $this->order[$i]) $class = $this->type . "list-edit";
-			echo "<td class=\"settingsTab\" width=\"$buttonWidth\">\n";
+			echo "<td class=\"settingsTab\">\n";
 			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
 			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
 				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:5px;\">\n";
@@ -1502,7 +1496,7 @@ class accountContainer {
 				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;height:32px;';
 				$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			}
-			$buttonStyle = $buttonImageStyle . 'background-color:transparent;width:' . $buttonWidth . 'em;border:0px solid;';
+			$buttonStyle = $buttonImageStyle . 'background-color:transparent;;border:0px solid;';
 			echo "<input style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $buttonSpace . $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
