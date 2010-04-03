@@ -1,5 +1,6 @@
 June 2010 3.1.0
   - Asterisk voicemail support
+  - new hosts module for user accounts to define valid login workstations (replaces inetOrgPerson schema hack) (2951116)
   - fixed bugs:
    -> Asterisk password handling (patch 2979728)
 
