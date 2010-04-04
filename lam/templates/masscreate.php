@@ -131,14 +131,17 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<select class=\"user\" name=\"type\" onChange=\"changeVisibleModules(this);\">\n";
+	$sortedTypes = array();
 	for ($i = 0; $i < sizeof($types); $i++) {
+		$sortedTypes[$types[$i]] = getTypeAlias($types[$i]);
+	}
+	natcasesort($sortedTypes);
+	foreach ($sortedTypes as $key => $value) {
 		$selected = '';
-		if (isset($_POST['type']) && ($_POST['type'] == $types[$i])) {
+		if (isset($_POST['type']) && ($_POST['type'] == $key)) {
 			$selected = 'selected';
 		}
-		echo "<option value=\"" . $types[$i] . "\" $selected>\n";
-			echo getTypeAlias($types[$i]);
-		echo "</option>\n";
+		echo "<option value=\"" . $key . "\" $selected>" . $value . "</option>\n";
 	}
 	echo "</select>\n";
 	echo "</td></tr>\n";
@@ -147,35 +150,36 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	echo "</td>\n";
 	echo "<td>\n";
 	// generate one DIV for each account type
-	for ($i = 0; $i < sizeof($types); $i++) {
+	$counter = 0;
+	foreach ($sortedTypes as $type => $label) {
 		$style = 'style="display:none;"';
-		if ((!isset($_POST['type']) && ($i == 0)) || ($_POST['type'] == $types[$i])) {
+		if ((!isset($_POST['type']) && ($counter == 0)) || ($_POST['type'] == $type)) {
 			// show first account type or last selected one
 			$style = '';
 		}
-		echo "<div $style id=\"" . $types[$i] . "\" class=\"typeOptions\">\n";
+		echo "<div $style id=\"" . $type . "\" class=\"typeOptions\">\n";
 		echo "<table border=0>";
-		$modules = $_SESSION['config']->get_AccountModules($types[$i]);
+		$modules = $_SESSION['config']->get_AccountModules($type);
 		for ($m = 0; $m < sizeof($modules); $m++) {
 			if ($m%3 == 0) {
 				echo "<tr>\n";
 			}
 			echo "<td>";
-				$module = new $modules[$m]($types[$i]);
+				$module = new $modules[$m]($type);
 				$iconImage = $module->getIcon();
 				echo '<img align="middle" src="../graphics/' . $iconImage . '" alt="' . $iconImage . '">';
 			echo "</td><td>\n";
-				if (is_base_module($modules[$m], $types[$i])) {
-					echo "<input type=\"hidden\" name=\"" . $types[$i] . '_' . $modules[$m] . "\" value=\"on\"><input type=\"checkbox\" checked disabled>";
+				if (is_base_module($modules[$m], $type)) {
+					echo "<input type=\"hidden\" name=\"" . $type . '_' . $modules[$m] . "\" value=\"on\"><input type=\"checkbox\" checked disabled>";
 				}
 				else {
 					$checked = 'checked';
-					if (isset($_POST['submit']) && !isset($_POST[$types[$i] . '_' . $modules[$m]])) {
+					if (isset($_POST['submit']) && !isset($_POST[$type . '_' . $modules[$m]])) {
 						$checked = '';
 					}
-					echo "<input type=\"checkbox\" name=\"" . $types[$i] . '_' . $modules[$m] . "\" $checked>";
+					echo "<input type=\"checkbox\" name=\"" . $type . '_' . $modules[$m] . "\" $checked>";
 				}
-				echo getModuleAlias($modules[$m], $types[$i]);
+				echo getModuleAlias($modules[$m], $type);
 			echo "</td>";
 			if (($m%3 == 2) && ($m != (sizeof($modules) - 1))) {
 				echo "</tr>\n";
@@ -184,6 +188,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 		echo "</tr>";
 		echo "</table>\n";
 		echo "</div>\n";
+		$counter++;
 	}
 	echo "</td></tr>\n";
 	echo "<tr><td>\n";
