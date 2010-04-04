@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2009  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,8 +104,11 @@ $allTypes = getTypes();
 $activeTypes = $conf->get_ActiveTypes();
 $availableTypes = array();
 for ($i = 0; $i < sizeof($allTypes); $i++) {
-	if (!in_array($allTypes[$i], $activeTypes)) $availableTypes[] = $allTypes[$i];
+	if (!in_array($allTypes[$i], $activeTypes)) {
+		$availableTypes[$allTypes[$i]] = getTypeAlias($allTypes[$i]);
+	}
 }
+natcasesort($availableTypes);
 
 echo $_SESSION['header'];
 
@@ -210,12 +213,12 @@ echo "<tr><td><br><br>\n";
 if (sizeof($availableTypes) > 0) {
 	echo "<fieldset><legend><b>" . _("Available account types") . "</b></legend>\n";
 	echo "<table>\n";
-	for ($i = 0; $i < sizeof($availableTypes); $i++) {
-		$icon = '<img alt="' . $availableTypes[$i] . '" src="../../graphics/' . $availableTypes[$i] . '.png">&nbsp;';
+	foreach ($availableTypes as $key => $value) {
+		$icon = '<img alt="' . $value . '" src="../../graphics/' . $key . '.png">&nbsp;';
 		echo "<tr>\n";
-			echo "<td>$icon<b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
-			echo "<td>" . getTypeDescription($availableTypes[$i]) . "</td>\n";
-			echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" title=\"" . _("Add") . "\" value=\" \"" .
+			echo "<td>$icon<b>" . $value . ": </b></td>\n";
+			echo "<td>" . getTypeDescription($key) . "</td>\n";
+			echo "<td><input type=\"submit\" name=\"add_" . $key ."\" title=\"" . _("Add") . "\" value=\" \"" .
 				" style=\"background-image: url(../../graphics/add.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\"></td>\n";
 		echo "</tr>\n";
 	}
