@@ -236,6 +236,11 @@ function config_showAccountModules($scope, $title) {
 	else {
 		$selected = array();
 	}
+	$sortedAvailable = array();
+	for ($i = 0; $i < sizeof($available); $i++) {
+		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $scope);
+	}
+	natcasesort($sortedAvailable);
 
 	// show account modules
 	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp;';
@@ -278,16 +283,16 @@ function config_showAccountModules($scope, $title) {
 				echo "<fieldset class=\"" . $scope . "edit\">\n";
 					echo "<legend>" . _("Available modules") . "</legend><br>\n";
 					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_available[]\" size=5 multiple>\n";
-						for ($i = 0; $i < sizeof($available); $i++) {
-							if (! in_array($available[$i], $selected)) {  // display non-selected modules
-								if (is_base_module($available[$i], $scope)) {  // mark base modules
-									echo "<option value=\"" . $available[$i] . "\">";
-									echo getModuleAlias($available[$i], $scope) . " (" . $available[$i] .  ")(*)";
+						foreach ($sortedAvailable as $key => $value) {
+							if (! in_array($key, $selected)) {  // display non-selected modules
+								if (is_base_module($key, $scope)) {  // mark base modules
+									echo "<option value=\"" . $key . "\">";
+									echo $value . " (" . $key .  ")(*)";
 									echo "</option>\n";
 								}
 								else {
-									echo "<option value=\"" . $available[$i] . "\">";
-									echo getModuleAlias($available[$i], $scope) . " (" . $available[$i] .  ")";
+									echo "<option value=\"" . $key . "\">";
+									echo $value . " (" . $key .  ")";
 									echo "</option>\n";
 								}
 							}
