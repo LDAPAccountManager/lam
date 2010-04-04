@@ -1642,7 +1642,15 @@ Have fun!
       the attribute "uid" and value "steve" then LAM will resolve "$uid$" to
       "steve".</para>
 
-      <para><emphasis role="bold"></emphasis></para>
+      <para><emphasis role="bold">Output may contain HTML:</emphasis> If your scripts
+      generate HTML output then activate this option.</para>
+
+      <para><emphasis role="bold">Hide command in messages:</emphasis> You may want to
+      prevent that your users see the executed commands. In this case
+      activating this option will only show the command output but not the
+      command itself.</para>
+
+      <para></para>
 
       <para>You can see a preview of the commands which will be executed on
       the "Custom scripts" tab.</para>
