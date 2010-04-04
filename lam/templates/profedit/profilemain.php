@@ -86,9 +86,10 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 // get list of profiles for each account type
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$profileList = getAccountProfiles($profileClasses[$i]['scope']);
+	natcasesort($profileList);
 	$profiles = "";
-	for ($l = 0; $l < sizeof($profileList); $l++) {
-		$profiles = $profiles . "<option>" . $profileList[$l] . "</option>\n";
+	foreach ($profileList as $p) {
+		$profiles = $profiles . "<option>" . $p . "</option>\n";
 	}
 	$profileClasses[$i]['profiles'] = $profiles;
 }
@@ -108,8 +109,13 @@ echo "</legend>\n";
 echo "<br><table border=0>\n";
 	echo "<tr><td>\n";
 		echo "<select class=\"user\" name=\"createProfile\">\n";
+			$sortedTypes = array();
 			for ($i = 0; $i < sizeof($profileClasses); $i++) {
-				echo "<option value=\"" . $profileClasses[$i]['scope'] . "\">" . $profileClasses[$i]['title'] . "</option>\n";
+				$sortedTypes[$profileClasses[$i]['scope']] = $profileClasses[$i]['title'];
+			}
+			natcasesort($sortedTypes);
+			foreach ($sortedTypes as $key => $value) {
+				echo "<option value=\"" . $key . "\">" . $value . "</option>\n";
 			}
 		echo "</select>\n";
 	echo "</td>\n";
