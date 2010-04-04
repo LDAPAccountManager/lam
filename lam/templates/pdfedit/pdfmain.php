@@ -69,16 +69,21 @@ if(isset($_POST['createNewTemplate'])) {
 }
 
 $scopes = $_SESSION['config']->get_ActiveTypes();
+$sortedScopes = array();
+for ($i = 0; $i < sizeof($scopes); $i++) {
+	$sortedScopes[$scopes[$i]] = getTypeAlias($scopes[$i]);
+}
+natcasesort($sortedScopes);
 
 // get list of account types
 $availableScopes = '';
 $templateClasses = array();
-for ($i = 0; $i < sizeof($scopes); $i++) {
+foreach ($sortedScopes as $scope => $title) {
 	$templateClasses[] = array(
-		'scope' => $scopes[$i],
-		'title' => getTypeAlias($scopes[$i]),
+		'scope' => $scope,
+		'title' => $title,
 		'templates' => "");
-	$availableScopes .= '<option value="' . $scopes[$i] . '">' . getTypeAlias($scopes[$i]) . "</option>\n";
+	$availableScopes .= '<option value="' . $scope . '">' . $title . "</option>\n";
 }
 // get list of templates for each account type
 for ($i = 0; $i < sizeof($templateClasses); $i++) {
