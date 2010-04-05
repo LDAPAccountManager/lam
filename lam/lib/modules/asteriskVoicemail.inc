@@ -119,12 +119,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				array('kind' => 'help', 'value' => 'AstContext')),
 			array(
 				array('kind' => 'text', 'text' => _('Account context') . ":"),
-				array('kind' => 'input', 'name' => 'asteriskAccount_AstAccountContext', 'type' => 'text', 'size' => '30'),
+				array('kind' => 'input', 'name' => 'asteriskVoicemail_AstContext', 'type' => 'text', 'size' => '30'),
 				array('kind' => 'help', 'value' => 'AstContext'))
 		);
 		// profile mappings
 		$return['profile_mappings'] = array(
-				'asteriskAccount_AstAccountContext' => 'AstContext',
+				'asteriskVoicemail_AstContext' => 'AstContext',
 				'asteriskVoicemail_AstVoicemailContext' => 'AstVoicemailContext',
 				'asteriskVoicemail_AstVoicemailOptions' => 'AstVoicemailOptions'
 		);
