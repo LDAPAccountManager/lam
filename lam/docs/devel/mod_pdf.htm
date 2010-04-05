@@ -1,11 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <title>Module HowTo - PDF output</title>
+<html><head><title>Module HowTo - PDF output</title>
+
+
+  
   <link rel="stylesheet" type="text/css" href="style/layout.css">
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-</head>
-<body>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
 <div style="text-align: center;">
 <h1>Module HowTo - PDF output<br>
 </h1>
@@ -21,15 +20,13 @@ not be able to select values from your module.<br>
 The PDF values are specified with <span style="font-weight: bold;">get_pdfFields()</span>
 or <span style="font-weight: bold;">meta['PDF_fields']</span>.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">ieee802Device</span>
 module has only one attribute and therefore one PDF value: the MAC
 address.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -44,11 +41,9 @@ get_metaData() {<br>
 [...]<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // available PDF fields<br>
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; $return['PDF_fields'] = array(</span><br
- style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; $return['PDF_fields'] = array(</span><br style="color: rgb(255, 0, 0);">
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'macAddress'</span><br
- style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'macAddress' =&gt; _('MAC address')</span><br style="color: rgb(255, 0, 0);">
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; );</span><br style="color: rgb(255, 0, 0);">
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
@@ -67,14 +62,12 @@ you module is asked for data to put into the PDF file.<br>
 <br>
 This is done with <span style="font-weight: bold;">get_pdfEntries()</span>.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">ieee802Device</span>
 module will return the MAC address list of the account.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp; &nbsp; /**<br>
@@ -103,5 +96,4 @@ $this-&gt;attributes['macAddress']) . '&lt;/value&gt;&lt;/block&gt;';<br>
 <h2><span style="font-weight: bold;"></span></h2>
 </div>
 </div>
-</body>
-</html>
+</body></html>

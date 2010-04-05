@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2009  Roland Gruber
+  Copyright (C) 2007 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -162,10 +162,10 @@ class shadowAccount extends baseModule implements passwordService {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'shadowLastChange',
-			'shadowWarning',
-			'shadowInactive',
-			'shadowExpire'
+			'shadowLastChange' => _('Last password change'),
+			'shadowWarning' => _('Password warning'),
+			'shadowInactive' => _('Account inactive'),
+			'shadowExpire' => _('Password expiration')
 		);
 		// help Entries
 		$return['help'] = array (
@@ -415,8 +415,8 @@ class shadowAccount extends baseModule implements passwordService {
 	function get_pdfEntries() {
 		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
-			'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-			'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'));
+			'shadowAccount_shadowInactive' => array('<block><key>' . _('Password expiration') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
+			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'));
 	}
 
 	/**

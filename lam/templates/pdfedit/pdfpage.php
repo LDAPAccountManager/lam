@@ -353,12 +353,30 @@ if(!isset($_SESSION['availablePDFFields'])) {
 $modules = array();
 $section_items_array = array();
 $section_items = '';
-foreach($_SESSION['availablePDFFields'] as $module => $values) {
-	$modules[] = $module;
-	foreach($values as $attribute) {
-		$section_items_array[] = $module . '_' . $attribute;
-		$section_items .= "<option>" . $module . '_' . $attribute . "</option>\n";
+$sortedModules = array();
+foreach($_SESSION['availablePDFFields'] as $module => $fields) {
+	if ($module != 'main') {
+		$title = getModuleAlias($module, $_GET['type']);
 	}
+	else {
+		$title = _('Main');
+	}
+	$sortedModules[$module] = $title;
+}
+natcasesort($sortedModules);
+foreach($sortedModules as $module => $title) {
+	$values = $_SESSION['availablePDFFields'][$module];
+	if (!is_array($values) || (sizeof($values) < 1)) {
+		continue;
+	}
+	$modules[] = $module;
+	$section_items .= "<optgroup label=\"" . $title . "\"\n>";
+	natcasesort($values);
+	foreach($values as $attribute => $attributeLabel) {
+		$section_items_array[] = $module . '_' . $attribute;
+		$section_items .= "<option value=\"" . $module . '_' . $attribute . "\">" . $attributeLabel . "</option>\n";
+	}
+	$section_items .= "</optgroup>\n";
 }
 $modules = join(',',$modules);
 
@@ -435,7 +453,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 			<?php
 			foreach($section_items_array as $item) {
 				?>
-											<option value="_<?php echo $item;?>"<?php echo ((substr($name,1) == $item) ? ' selected' : '');?>><?php echo $item;?></option>
+											<option value="_<?php echo $item;?>"<?php echo ((substr($name,1) == $item) ? ' selected' : '');?>><?php echo translateFieldIDToName($item);?></option>
 				<?php
 			}
 			?>
@@ -517,7 +535,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 									<td width="20">
 									</td>
 									<td>
-										<?php echo $name;?>
+										<?php echo translateFieldIDToName($name, $_GET['type']);?>
 									</td>
 									<td width="20">
 									</td>
@@ -624,19 +642,14 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 								</legend><BR>
 								<select name="new_field">
 								<?php
-									foreach($_SESSION['availablePDFFields'] as $module => $fields) {
+									foreach($sortedModules as $module => $title) {
+										$fields = $_SESSION['availablePDFFields'][$module];
 										if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
-											sort($fields);
-											if ($module != 'main') {
-												$title = getModuleAlias($module, $_GET['type']);
-											}
-											else {
-												$title = _('Main');
-											}
+											natcasesort($fields);
 											echo "<optgroup label=\"$title\">\n";
-												foreach ($fields as $field) {
-													echo "<option value=\"" . $module . "_" . $field . "\" label=\"$field\">$field</option>\n";
-												}
+											foreach ($fields as $field => $fieldLabel) {
+												echo "<option value=\"" . $module . "_" . $field . "\" label=\"$fieldLabel\">$fieldLabel</option>\n";
+											}
 											echo "</optgroup>\n";
 										}
 									}
@@ -707,8 +720,37 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 			</table>
 		<input type="hidden" name="modules" value="<?php echo $modules;?>">
 		<input type="hidden" name="type" value="<?php echo $_GET['type'];?>">
+		<br><br><br>
 	</form>
 	</body>
 </html>
+
 <?php
+
+/**
+ * Translates a given field ID (e.g. inetOrgPerson_givenName) to its descriptive name.
+ *
+ * @param String $id field ID
+ * @param String $scope account type
+ */
+function translateFieldIDToName($id, $scope) {
+	foreach ($_SESSION['availablePDFFields'] as $module => $fields) {
+		if (!(strpos($id, $module . '_') === 0)) {
+			continue;
+		}
+		foreach ($fields as $name => $label) {
+			if ($id == $module . '_' . $name) {
+				if ($module == 'main') {
+					return _('Main') . ': ' . $label;
+				}
+				else  {
+					return getModuleAlias($module, $scope) . ': ' . $label;
+				}
+			}
+		}
+		
+	}
+	return $id;
+}
+
 ?>

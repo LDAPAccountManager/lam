@@ -358,14 +358,26 @@ function getHelp($module,$helpID,$scope='') {
 * Returns a list of available PDF entries.
 *
 * @param string $scope account type (user, group, host)
-* @return array PDF entries
+* @return array PDF entries (field ID => field label)
 */
 function getAvailablePDFFields($scope) {
 	$mods = $_SESSION['config']->get_AccountModules($scope);
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = new $mods[$i]($scope);
-		$return[$mods[$i]] = $module->get_pdfFields();
+		$fields = $module->get_pdfFields();
+		$return[$mods[$i]] = array();
+		if (is_array($fields)) {
+			foreach ($fields as $fieldID => $fieldLabel) {
+				if (is_integer($fieldID)) {
+					// support old PDF field list which did not contain a label
+					$return[$mods[$i]][$fieldLabel] = $fieldLabel;
+				}
+				else {
+					$return[$mods[$i]][$fieldID] = $fieldLabel;
+				}
+			}
+		}
 	}
 	$return['main'] = array('dn');
 	return $return;
