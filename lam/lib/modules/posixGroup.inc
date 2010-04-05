@@ -4,7 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2009  Roland Gruber
+              2007 - 2010  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -321,14 +321,14 @@ class posixGroup extends baseModule implements passwordService {
 			'error_message' => $this->messages['gidNumber'][7]);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'gidNumber',
-			'memberUid'
+			'gidNumber' => _('GID number'),
+			'memberUid' => _('Group members')
 		);
 		if ($this->manageCnAttribute) {
-			array_unshift($return['PDF_fields'], 'cn');
+			$return['PDF_fields']['cn'] = _('Group name');
 		}
 		if ($this->manageDescriptionAttribute) {
-			$return['PDF_fields'][] = 'description';
+			$return['PDF_fields']['description'] = _('Description');
 		}
 		// upload fields
 		$return['upload_columns'] = array(

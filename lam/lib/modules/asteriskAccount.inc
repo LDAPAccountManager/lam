@@ -122,7 +122,9 @@ class asteriskAccount extends baseModule implements passwordService {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'AstAccountCallerID', 'AstAccountContext', 'AstAccountHost',
+			'AstAccountCallerID' => _('Caller ID'),
+			'AstAccountContext' => _('Account context'),
+			'AstAccountHost' => _('Host'),
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');

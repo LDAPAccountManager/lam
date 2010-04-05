@@ -88,7 +88,7 @@ class hostObject extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'hosts'
+			'hosts' => _('Host list')
 		);
 		$return['profile_options'] = array(
 			array(

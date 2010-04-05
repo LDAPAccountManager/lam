@@ -379,7 +379,7 @@ function getAvailablePDFFields($scope) {
 			}
 		}
 	}
-	$return['main'] = array('dn');
+	$return['main'] = array('dn' => _('DN'));
 	return $return;
 }
 

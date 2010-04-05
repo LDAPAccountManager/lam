@@ -129,8 +129,13 @@ class asteriskExtension extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'AstApplicationData', 'AstContext', 'AstExtension',
-			'AstPriority', 'AstApplication', 'member', 'cn'
+			'AstApplicationData' => _('Application data'),
+			'AstContext' => _('Account context'),
+			'AstExtension' => _('Extension name'),
+			'AstPriority' => _('Priority'),
+			'AstApplication' => _('Application'),
+			'member' => _('Extension owners'),
+			'cn' => _('Common name')
 		);
 		// upload fields
 		$return['upload_columns'] = array(

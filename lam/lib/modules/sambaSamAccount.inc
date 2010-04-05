@@ -186,40 +186,42 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'displayName', 'sambaDomainName', 'sambaPrimaryGroupSID'
+			'displayName' => _('Display name'),
+			'sambaDomainName' => _('Domain'),
+			'sambaPrimaryGroupSID' => _('Windows group')
 		);
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
-			$return['PDF_fields'][] = 'sambaHomeDrive';
+			$return['PDF_fields']['sambaHomeDrive'] = _('Home drive');
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
-			$return['PDF_fields'][] = 'sambaHomePath';
+			$return['PDF_fields']['sambaHomePath'] = _('Home path');
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
-			$return['PDF_fields'][] = 'sambaProfilePath';
+			$return['PDF_fields']['sambaProfilePath'] = _('Profile path');
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
-			$return['PDF_fields'][] = 'sambaLogonScript';
+			$return['PDF_fields']['sambaLogonScript'] = _('Logon script');
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
-			$return['PDF_fields'][] = 'sambaUserWorkstations';
+			$return['PDF_fields']['sambaUserWorkstations'] = _('Samba workstations');
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideTerminalServer')) {
-			$return['PDF_fields'][] = 'tsAllowLogin';
-			$return['PDF_fields'][] = 'tsHomeDir';
-			$return['PDF_fields'][] = 'tsHomeDrive';
-			$return['PDF_fields'][] = 'tsProfilePath';
-			$return['PDF_fields'][] = 'tsInherit';
-			$return['PDF_fields'][] = 'tsInitialProgram';
-			$return['PDF_fields'][] = 'tsWorkDirectory';
-			$return['PDF_fields'][] = 'tsConnectionLimit';
-			$return['PDF_fields'][] = 'tsDisconnectionLimit';
-			$return['PDF_fields'][] = 'tsIdleLimit';
-			$return['PDF_fields'][] = 'tsConnectDrives';
-			$return['PDF_fields'][] = 'tsConnectPrinters';
-			$return['PDF_fields'][] = 'tsClientPrinterDefault';
-			$return['PDF_fields'][] = 'tsShadowing';
-			$return['PDF_fields'][] = 'tsBrokenConn';
-			$return['PDF_fields'][] = 'tsReconnect';
+			$return['PDF_fields']['tsAllowLogin'] = _('Allow terminal server login');
+			$return['PDF_fields']['tsHomeDir'] = _('Home directory') . ' (TS)';
+			$return['PDF_fields']['tsHomeDrive'] = _('Home drive') . ' (TS)';
+			$return['PDF_fields']['tsProfilePath'] = _('Profile path') . ' (TS)';
+			$return['PDF_fields']['tsInherit'] = _('Inherit client startup configuration') . ' (TS)';
+			$return['PDF_fields']['tsInitialProgram'] = _('Initial program') . ' (TS)';
+			$return['PDF_fields']['tsWorkDirectory'] = _('Working directory') . ' (TS)';
+			$return['PDF_fields']['tsConnectionLimit'] = _('Connection time limit') . ' (TS)';
+			$return['PDF_fields']['tsDisconnectionLimit'] = _('Disconnection time limit') . ' (TS)';
+			$return['PDF_fields']['tsIdleLimit'] = _('Idle time limit') . ' (TS)';
+			$return['PDF_fields']['tsConnectDrives'] = _('Connect client drives') . ' (TS)';
+			$return['PDF_fields']['tsConnectPrinters'] = _('Connect client printers') . ' (TS)';
+			$return['PDF_fields']['tsClientPrinterDefault'] = _('Client printer is default') . ' (TS)';
+			$return['PDF_fields']['tsShadowing'] = _('Shadowing') . ' (TS)';
+			$return['PDF_fields']['tsBrokenConn'] = _('On broken or timed out connection') . ' (TS)';
+			$return['PDF_fields']['tsReconnect'] = _('Reconnect if disconnected') . ' (TS)';
 		}
 		$return['selfServiceFieldSettings'] = array(
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
@@ -1361,8 +1363,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;', 'td' => array('colspan' => 8)));
 		$return[] = array(
-			0 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Ok'), 'td' => array('align' => 'right')),
-			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Cancel'), 'td' => array('align' => 'left'))
+			array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Ok'), 'td' => array('align' => 'right')),
+			array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Cancel'), 'td' => array('align' => 'left'))
 		);
 		return $return;
 	}
@@ -1790,34 +1792,34 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$tsAllowLogin = _('no');
 			}
 			$return['sambaSamAccount_tsAllowLogin'] = array('<block><key>' . _('Allow terminal server login') . '</key><value>' . $tsAllowLogin . '</value></block>');
-			$return['sambaSamAccount_tsHomeDir'] = array('<block><key>' . _('Home directory') . '</key><value>' . $mDial->ctx['CtxWFHomeDir'] . '</value></block>');
-			$return['sambaSamAccount_tsHomeDrive'] = array('<block><key>' . _('Home drive') . '</key><value>' . $mDial->ctx['CtxWFHomeDirDrive'] . '</value></block>');
-			$return['sambaSamAccount_tsProfilePath'] = array('<block><key>' . _('Profile path') . '</key><value>' . $mDial->ctx['CtxWFProfilePath'] . '</value></block>');
+			$return['sambaSamAccount_tsHomeDir'] = array('<block><key>' . _('Home directory') . ' (TS)</key><value>' . $mDial->ctx['CtxWFHomeDir'] . '</value></block>');
+			$return['sambaSamAccount_tsHomeDrive'] = array('<block><key>' . _('Home drive') . ' (TS)</key><value>' . $mDial->ctx['CtxWFHomeDirDrive'] . '</value></block>');
+			$return['sambaSamAccount_tsProfilePath'] = array('<block><key>' . _('Profile path') . ' (TS)</key><value>' . $mDial->ctx['CtxWFProfilePath'] . '</value></block>');
 			$tsInherit = _('yes');
 			if (!$mDial->getInheritMode()) {
 				$tsInherit = _('no');
 			}
-			$return['sambaSamAccount_tsInherit'] = array('<block><key>' . _('Inherit client startup configuration') . '</key><value>' . $tsInherit . '</value></block>');
-			$return['sambaSamAccount_tsInitialProgram'] = array('<block><key>' . _('Initial program') . '</key><value>' . $mDial->ctx['CtxInitialProgram'] . '</value></block>');
-			$return['sambaSamAccount_tsWorkDirectory'] = array('<block><key>' . _('Working directory') . '</key><value>' . $mDial->ctx['CtxWorkDirectory'] . '</value></block>');
-			$return['sambaSamAccount_tsConnectionLimit'] = array('<block><key>' . _('Connection time limit') . '</key><value>' . $mDial->ctx['CtxMaxConnectionTime'] . '</value></block>');
-			$return['sambaSamAccount_tsDisconnectionLimit'] = array('<block><key>' . _('Disconnection time limit') . '</key><value>' . $mDial->ctx['CtxMaxDisconnectionTime'] . '</value></block>');
-			$return['sambaSamAccount_tsIdleLimit'] = array('<block><key>' . _('Idle time limit') . '</key><value>' . $mDial->ctx['CtxMaxIdleTime'] . '</value></block>');
+			$return['sambaSamAccount_tsInherit'] = array('<block><key>' . _('Inherit client startup configuration') . ' (TS)</key><value>' . $tsInherit . '</value></block>');
+			$return['sambaSamAccount_tsInitialProgram'] = array('<block><key>' . _('Initial program') . ' (TS)</key><value>' . $mDial->ctx['CtxInitialProgram'] . '</value></block>');
+			$return['sambaSamAccount_tsWorkDirectory'] = array('<block><key>' . _('Working directory') . ' (TS)</key><value>' . $mDial->ctx['CtxWorkDirectory'] . '</value></block>');
+			$return['sambaSamAccount_tsConnectionLimit'] = array('<block><key>' . _('Connection time limit') . ' (TS)</key><value>' . $mDial->ctx['CtxMaxConnectionTime'] . '</value></block>');
+			$return['sambaSamAccount_tsDisconnectionLimit'] = array('<block><key>' . _('Disconnection time limit') . ' (TS)</key><value>' . $mDial->ctx['CtxMaxDisconnectionTime'] . '</value></block>');
+			$return['sambaSamAccount_tsIdleLimit'] = array('<block><key>' . _('Idle time limit') . ' (TS)</key><value>' . $mDial->ctx['CtxMaxIdleTime'] . '</value></block>');
 			$tsConnectDrives = _('yes');
 			if (!$mDial->getConnectClientDrives()) {
 				$tsConnectDrives = _('no');
 			}
-			$return['sambaSamAccount_tsConnectDrives'] = array('<block><key>' . _('Connect client drives') . '</key><value>' . $tsConnectDrives . '</value></block>');
+			$return['sambaSamAccount_tsConnectDrives'] = array('<block><key>' . _('Connect client drives') . ' (TS)</key><value>' . $tsConnectDrives . '</value></block>');
 			$tsConnectPrinters = _('yes');
 			if (!$mDial->getConnectClientPrinters()) {
 				$tsConnectPrinters = _('no');
 			}
-			$return['sambaSamAccount_tsConnectPrinters'] = array('<block><key>' . _('Connect client printers') . '</key><value>' . $tsConnectPrinters . '</value></block>');
+			$return['sambaSamAccount_tsConnectPrinters'] = array('<block><key>' . _('Connect client printers') . ' (TS)</key><value>' . $tsConnectPrinters . '</value></block>');
 			$tsClientPrinterDefault = _('yes');
 			if (!$mDial->getDefaultPrinter()) {
 				$tsClientPrinterDefault = _('no');
 			}
-			$return['sambaSamAccount_tsClientPrinterDefault'] = array('<block><key>' . _('Client printer is default') . '</key><value>' . $tsClientPrinterDefault . '</value></block>');
+			$return['sambaSamAccount_tsClientPrinterDefault'] = array('<block><key>' . _('Client printer is default') . ' (TS)</key><value>' . $tsClientPrinterDefault . '</value></block>');
 			$shadowOptions = array(
 				'0' => _("disabled"),
 				'1' => _("input on, notify on"),
@@ -1828,7 +1830,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (($mDial->getShadow() != null) && is_numeric($mDial->getShadow())) {
 				$tsShadowing = $shadowOptions[$mDial->getShadow()];
 			}
-			$return['sambaSamAccount_tsShadowing'] = array('<block><key>' . _('Shadowing') . '</key><value>' . $tsShadowing . '</value></block>');
+			$return['sambaSamAccount_tsShadowing'] = array('<block><key>' . _('Shadowing') . ' (TS)</key><value>' . $tsShadowing . '</value></block>');
 			$brokenConnOptions = array(
 				'0' => _("disconnect"),
 				'1' => _("reset"));
@@ -1836,7 +1838,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (($mDial->getBrokenConn() != null) && is_numeric($mDial->getBrokenConn())) {
 				$tsBrokenConn = $brokenConnOptions[$mDial->getBrokenConn()];
 			}
-			$return['sambaSamAccount_tsBrokenConn'] = array('<block><key>' . _('On broken or timed out connection') . '</key><value>' . $tsBrokenConn . '</value></block>');
+			$return['sambaSamAccount_tsBrokenConn'] = array('<block><key>' . _('On broken or timed out connection') . ' (TS)</key><value>' . $tsBrokenConn . '</value></block>');
 			$reconnectOptions = array(
 				'0' => _("from any client"),
 				'1' => _("from previous client only"));
@@ -1844,7 +1846,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (($mDial->getReConn() != null) && is_numeric($mDial->getReConn())) {
 				$tsReconnect = $reconnectOptions[$mDial->getReConn()];
 			}
-			$return['sambaSamAccount_tsReconnect'] = array('<block><key>' . _('Reconnect if disconnected') . '</key><value>' . $tsReconnect . '</value></block>');
+			$return['sambaSamAccount_tsReconnect'] = array('<block><key>' . _('Reconnect if disconnected') . ' (TS)</key><value>' . $tsReconnect . '</value></block>');
 		}
 		return $return;
 	}

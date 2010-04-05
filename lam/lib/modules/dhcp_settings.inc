@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 -2010  Roland Gruber
+                2008 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -163,17 +163,17 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			) );
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'subnet',
-			'domainName',
-			'leaseTime',
-			'maxLeaseTime',
-			'DNSserver',
-			'gateway',
-			'netbiosServer',
-			'netbiosType',
-			'subnetMask',
-			'netMask',
-			'description'
+			'subnet' => _('Subnet'),
+			'domainName' => _('Domain name'),
+			'leaseTime' => _('Lease time'),
+			'maxLeaseTime' => _('Maximum lease time'),
+			'DNSserver' => _('DNS'),
+			'gateway' => _('Default gateway'),
+			'netbiosServer' => _('Netbios name servers'),
+			'netbiosType' => _('Netbios node type'),
+			'subnetMask' => _('Subnet mask'),
+			'netMask' => _('Net mask'),
+			'description' => _('Description')
 		);
 		// profile elements
 		$return['profile_options'] = array(

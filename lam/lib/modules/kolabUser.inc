@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2008  Roland Gruber
+  Copyright (C) 2004 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -223,7 +223,13 @@ class kolabUser extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'invPol', 'country', 'homeServer', 'aliases', 'delegate', 'freeBusy', 'quota'
+			'invPol' => _('Invitation policy'),
+			'country' => _('Country'),
+			'homeServer' => _('Mailbox home server'),
+			'aliases' => _('Email aliases'),
+			'delegate' => _('Delegates'),
+			'freeBusy' => _('Free/Busy interval'),
+			'quota' => _('Mail quota')
 		);
 		return $return;
 	}

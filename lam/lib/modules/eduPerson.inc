@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009  Roland Gruber
+  Copyright (C) 2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -196,9 +196,15 @@ class eduPerson extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'affiliation', 'nickname', 'orgDN', 'orgUnitDN',
-			'primaryAffiliation', 'principalName', 'entitlement',
-			'primaryOrgUnitDN', 'scopedAffiliation'
+			'affiliation' => _('Affiliations'),
+			'nickname' => _('Nick names'),
+			'orgDN' => _('Organization'),
+			'orgUnitDN' => _('Organizational units'),
+			'primaryAffiliation' => _('Primary affiliation'),
+			'principalName' => _('Principal name'),
+			'entitlement' => _('Entitlements'),
+			'primaryOrgUnitDN' => _('Primary organizational unit'),
+			'scopedAffiliation' => _('Scoped affiliation')
 		);
 		return $return;
 	}

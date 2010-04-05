@@ -88,7 +88,7 @@ class fixed_ip extends baseModule {
 				"Text" => _("The IP address of the PC.")
 			) );
 		// available PDF fields
-		$return['PDF_fields'] = array('IPlist');
+		$return['PDF_fields'] = array('IPlist' => _('IP list'));
 		return $return;
 	}
 	

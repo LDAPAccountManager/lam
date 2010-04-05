@@ -442,75 +442,75 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'givenName',
-			'sn'
+			'givenName' => _('First name'),
+			'sn' => _('Last name')
 		);
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$return['PDF_fields'][] = 'description';
+			$return['PDF_fields']['description'] = _('Description');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
-			$return['PDF_fields'][] = 'street';
+			$return['PDF_fields']['street'] = _('Street');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
-			$return['PDF_fields'][] = 'postOfficeBox';
+			$return['PDF_fields']['postOfficeBox'] = _('Post office box');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
-			$return['PDF_fields'][] = 'postalCode';
+			$return['PDF_fields']['postalCode'] = _('Postal code');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$return['PDF_fields'][] = 'location';
+			$return['PDF_fields']['location'] = _('Location');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$return['PDF_fields'][] = 'state';
+			$return['PDF_fields']['state'] = _('State');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$return['PDF_fields'][] = 'postalAddress';
+			$return['PDF_fields']['postalAddress'] = _('Postal address');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$return['PDF_fields'][] = 'officeName';
+			$return['PDF_fields']['officeName'] = _('Office name');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
-			$return['PDF_fields'][] = 'roomNumber';
+			$return['PDF_fields']['roomNumber'] = _('Room number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
-			$return['PDF_fields'][] = 'telephoneNumber';
+			$return['PDF_fields']['telephoneNumber'] = _('Telephone number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
-			$return['PDF_fields'][] = 'homePhone';
+			$return['PDF_fields']['homePhone'] = _('Home telephone number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
-			$return['PDF_fields'][] = 'mobileTelephoneNumber';
+			$return['PDF_fields']['mobileTelephoneNumber'] = _('Mobile number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$return['PDF_fields'][] = 'facimilieTelephoneNumber';
+			$return['PDF_fields']['facimilieTelephoneNumber'] = _('Fax number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
-			$return['PDF_fields'][] = 'mail';
+			$return['PDF_fields']['mail'] = _('Email address');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$return['PDF_fields'][] = 'title';
+			$return['PDF_fields']['title'] = _('Job title');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
-			$return['PDF_fields'][] = 'carLicense';
+			$return['PDF_fields']['carLicense'] = _('Car license');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
-			$return['PDF_fields'][] = 'employeeType';
+			$return['PDF_fields']['employeeType'] = _('Employee type');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-			$return['PDF_fields'][] = 'businessCategory';
+			$return['PDF_fields']['businessCategory'] = _('Business category');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$return['PDF_fields'][] = 'departmentNumber';
+			$return['PDF_fields']['departmentNumber'] = _('Department(s)');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
-			$return['PDF_fields'][] = 'manager';
+			$return['PDF_fields']['manager'] = _('Manager');
 		}
 		
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
-				$return['PDF_fields'][] = 'uid';
-				$return['PDF_fields'][] = 'cn';
+				$return['PDF_fields']['uid'] = _('User name');
+				$return['PDF_fields']['cn'] = _('Common name');
 			}
 		}
 		// help Entries

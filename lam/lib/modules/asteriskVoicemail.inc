@@ -130,10 +130,13 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-				'AstContext', 'AstVoicemailMailbox',
-				'AstVoicemailFullname', 'AstVoicemailEmail',
-				'AstVoicemailPager', 'AstVoicemailOptions',
-				'AstVoicemailContext'
+				'AstContext' => _('Account context'),
+				'AstVoicemailMailbox' => _('Mailbox'),
+				'AstVoicemailFullname' => _('Full name'),
+				'AstVoicemailEmail' => _('Email address'),
+				'AstVoicemailPager' => _('Pager'),
+				'AstVoicemailOptions' => _('Options'),
+				'AstVoicemailContext' => _('Voicemail context')
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');

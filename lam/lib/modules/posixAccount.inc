@@ -308,16 +308,16 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'uid',
-			'uidNumber',
-			'gidNumber',
-			'gecos',
-			'primaryGroup',
-			'additionalGroups',
-			'homeDirectory',
-			'loginShell',
-			'cn',
-			'userPassword'
+			'uid' => _('User name'),
+			'uidNumber' => _('UID number'),
+			'gidNumber' => _('GID number'),
+			'gecos' => _('Gecos'),
+			'primaryGroup' => _('Primary group'),
+			'additionalGroups' => _('Additional groups'),
+			'homeDirectory' => _('Home directory'),
+			'loginShell' => _('Login shell'),
+			'cn' => _('Common name'),
+			'userPassword' => _('Password')
 		);
 		// help Entries
 		$return['help'] = array(

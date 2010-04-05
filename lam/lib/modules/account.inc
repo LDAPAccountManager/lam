@@ -72,10 +72,10 @@ class account extends baseModule {
 		$return['attributes'] = array('uid', 'description');
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'description'
+			'description' => _('Description')
 		);
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true) && !in_array('posixAccount', $modules)) {
-			$return['PDF_fields'][] = 'uid';
+			$return['PDF_fields']['uid'] = _('User name');
 		}
 		// help Entries
 		$return['help'] = array (

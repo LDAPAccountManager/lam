@@ -104,9 +104,9 @@ class ddns extends baseModule {
 			) ,);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'DNSserver',
-			'zone',
-			'reverseZone',
+			'DNSserver' => _('IP address of the DNS server'),
+			'zone' => _('Zone names'),
+			'reverseZone' => _('Reverse zone names'),
 		);
 		// upload fields
 		if (isset($_SESSION['loggedIn']) && $this->check_if_ddns_is_enable()) {

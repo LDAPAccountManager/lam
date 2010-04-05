@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2007  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -174,10 +174,23 @@ class sambaDomain extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'domainName', 'domainSID', 'nextRID', 'nextUserRID', 'nextGroupRID', 'RIDbase',
-			'minPwdLength', 'pwdHistoryLength', 'logonToChgPwd', 'forceLogoff',
-			'refuseMachinePwdChange', 'lockoutThreshold', 'minPwdAge', 'maxPwdAge',
-			'lockoutDuration', 'lockoutObservationWindow');
+			'domainName' => _('Domain name'),
+			'domainSID' => _('Domain SID'),
+			'nextRID' => _('Next RID'),
+			'nextUserRID' => _('Next user RID'),
+			'nextGroupRID' => _('Next group RID'),
+			'RIDbase' => _('RID base'),
+			'minPwdLength' => _('Minimal password length'),
+			'pwdHistoryLength' => _('Password history length'),
+			'logonToChgPwd' => _('Logon for password change'),
+			'forceLogoff' => _('Disconnect users outside logon hours'),
+			'refuseMachinePwdChange' => _('Allow machine password changes'),
+			'lockoutThreshold' => _('Lockout users after bad logon attempts'),
+			'minPwdAge' => _('Minimum password age'),
+			'maxPwdAge' => _('Maximum password age'),
+			'lockoutDuration' => _('Lockout duration'),
+			'lockoutObservationWindow' => _('Reset time after lockout')
+		);
 		return $return;
 	}
 

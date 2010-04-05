@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2008 - 2009  Roland Gruber
+  Copyright (C) 2008 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -96,8 +96,10 @@ class phpGroupwareUser extends baseModule implements passwordService {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'phpgwAccountStatus', 'phpgwAccountExpires',
-			'phpgwLastLoginFrom', 'phpgwLastLogin'
+			'phpgwAccountStatus' => _('Account status'),
+			'phpgwAccountExpires' => _('Account expiration date'),
+			'phpgwLastLoginFrom' => _('Last login from'),
+			'phpgwLastLogin' => _('Last login')
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount');

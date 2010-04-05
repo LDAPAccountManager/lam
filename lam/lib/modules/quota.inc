@@ -89,7 +89,7 @@ class quota extends baseModule {
 		$return['attributes'] = array('uid', 'cn');
 		// available PDF fields
 		$return['PDF_fields'] =  array(
-			'quotas'
+			'quotas' => _('Quota')
 		);
 		// help entries
 		$return['help'] = array(

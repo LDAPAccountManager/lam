@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2008  Roland Gruber
+                2007 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -306,11 +306,11 @@ class sambaGroupMapping extends baseModule {
 		$return['attributes'] = array('gidNumber', 'sambaSID', 'sambaGroupType', 'displayName', 'sambaSIDList', 'description');
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'gidNumber',
-			'sambaSID',
-			'displayName',
-			'sambaGroupType',
-			'description'
+			'gidNumber' => _('GID number'),
+			'sambaSID' => _('Windows group'),
+			'displayName' => _('Display name'),
+			'sambaGroupType' => _('Samba group type'),
+			'description' => _('Description')
 		);
 		// upload fields
 		// search existing Samba 3 domains

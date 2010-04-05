@@ -89,7 +89,7 @@ class range extends baseModule {
 			) );
 			
 		// available PDF fields
-		$return['PDF_fields'] = array('ranges');
+		$return['PDF_fields'] = array('ranges' => _('Ranges'));
 		return $return;
 	}
 	

@@ -76,7 +76,7 @@ class ieee802Device extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'macAddress'
+			'macAddress' => _('MAC address(es)')
 		);
 		return $return;
 	}
