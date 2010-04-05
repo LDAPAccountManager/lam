@@ -19,7 +19,6 @@
 		<entry name="posixAccount_homeDirectory" />
 		<entry name="posixAccount_loginShell" />
 		<entry name="shadowAccount_shadowExpire" />
-		<entry name="inetOrgPerson_host" />
 	</section>
 	<section name="Windows settings">
 		<entry name="sambaSamAccount_displayName" />
