@@ -39,7 +39,7 @@ $Id$
  */
 class asteriskAccount extends baseModule implements passwordService {
 
-	private $asteriskDefaultRealm = "asterisk";
+	const ASTERISK_DEFAULT_REALM = "asterisk";
 
 	/**
 	* Creates a new asteriskAccount object.
@@ -337,7 +337,9 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			//add password
 			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']] != "") {
-				$partialAccounts[$i]['AstAccountRealmedPassword'] = $this->hashPassword($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
+				$attributes = array('AstAccountCallerID' => array($partialAccounts[$i]['AstAccountCallerID'])); // fake attribute list for password building
+				$pwdString = asteriskAccount::buildPasswordString($attributes, $this->moduleSettings, $rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
+				$partialAccounts[$i]['AstAccountRealmedPassword'] = $pwdString;
 			}
 		}
 		return $messages;
@@ -372,16 +374,17 @@ class asteriskAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$astRealm = $this->asteriskDefaultRealm;
-		if ($this->get_scope()=='user') {
-			$asteriskRealmFromProfile = $this->moduleSettings['asteriskAccount_AsteriskRealm'][0];
-			if ($asteriskRealmFromProfile != ""){
-				$astRealm = $asteriskRealmFromProfile;
-			}
-		}
-		$password_con = $this->attributes['AstAccountCallerID'][0] . ":" . $astRealm . ":" . $password;
-		$this->attributes['AstAccountRealmedPassword'][0] = $this->hashPassword($password_con);
+		$this->attributes['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($this->attributes, $this->moduleSettings, $password);
 		return array();
+	}
+	
+	public static function buildPasswordString(&$attributes, &$moduleSettings, $password) {
+		$astRealm = asteriskAccount::ASTERISK_DEFAULT_REALM;
+		$asteriskRealmFromProfile = $moduleSettings['asteriskAccount_AsteriskRealm'][0];
+		if ($asteriskRealmFromProfile != ""){
+			$astRealm = $asteriskRealmFromProfile;
+		}
+		return asteriskAccount::hashPassword($attributes['AstAccountCallerID'][0] . ":" . $astRealm . ":" . $password);
 	}
 	
 	/**
@@ -390,7 +393,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @param String $password password
 	 * @return String hash
 	 */
-	private function hashPassword($password) {
+	private static function hashPassword($password) {
 		return "{MD5}" . md5($password);
 	}
 
