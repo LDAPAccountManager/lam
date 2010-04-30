@@ -6,6 +6,7 @@ June 2010 3.1.0
    -> custom scripts: new options to hide executed commands and define if output is HTML or plain text
   - fixed bugs:
    -> Asterisk password handling (patch 2979728)
+   -> Samba domain SID check (2994528)
 
 
 24.03.2010 3.0.0
