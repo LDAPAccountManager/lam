@@ -409,6 +409,7 @@ class sambaDomain extends baseModule {
 		$errors = array();
 		if ($this->getAccountContainer()->isNewAccount) {
 			// domain SID
+			$this->attributes['sambaSID'][0] = $_POST['domainSID'];
 			if (!get_preg($_POST['domainSID'], 'domainSID')) {
 				$errors[] = $this->messages['domainSID'][0];
 			}
