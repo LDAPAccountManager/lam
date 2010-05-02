@@ -407,7 +407,8 @@ class lamList {
 			echo "</a>\n ";
 		}
 		// pdf image
-		echo "<input type=\"image\" style=\"background:transparent;\" name=\"createPDF_" . $id . "\" src=\"../../graphics/pdf.png\" title=\"" . _('Create PDF file') . "\">\n ";
+		$pdfButtonStyle = "background-image: url(../../graphics/pdf.png);background-position: -1px -1px;background-repeat: no-repeat;width:20px;height:20px;background-color:transparent;border-style:none;";
+		echo "<input type=\"submit\" style=\"$pdfButtonStyle\" name=\"createPDF_" . $id . "\" value=\" \" title=\"" . _('Create PDF file') . "\">\n ";
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
@@ -470,7 +471,7 @@ class lamList {
 		foreach ($_POST as $key => $value) {
 			if (strpos($key, 'createPDF_') > -1) {
 				$parts = explode("_", $key);
-				if (sizeof($parts) == 3) {
+				if (sizeof($parts) == 2) {
 					$this->showPDFPage($parts[1]);
 					exit;
 				}
