@@ -435,19 +435,20 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
-		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
-			$section_headline = substr($name,1);
+		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
+			$section_headline = translateFieldIDToName(substr($name,1));
 		}
 		else {
 			$section_headline = $name;
 		}
 		$nonTextSections .= '<option value="' . $key . '">' . $section_headline . "</option>\n";
+		$sections .= '<option value="' . ($key) . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
 									<td nowrap colspan="2">
 		<?php
 		// Section headline is a value entry
-		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
+		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
 			?>
 										<select name="section_<?php echo $key;?>">
 			<?php
@@ -476,15 +477,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	}
 	// We have a section to end
 	elseif($entry['tag'] == "SECTION" && $entry['type'] == "close") {
-		if(preg_match("/^_[a-zA-Z_]+/",$name)) {
-			$section_headline = substr($name,1);
-		}
-		else {
-			$section_headline = $name;
-		}
-		// Add current section for dropdown box needed for the position when inserting a new
-		// section or static text entry
-		$sections .= '<option value="' . ($key + 1) . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
 									<td colspan="7">
