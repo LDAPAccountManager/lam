@@ -47,8 +47,8 @@ if (!checkIfWriteAccessIsAllowed()) {
 setlanguage();
 
 // check if user already pressed button
-if ($_POST['add_suff'] || $_POST['cancel']) {
-	if ($_POST['add_suff']) {
+if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
+	if (isset($_POST['add_suff'])) {
 		$fail = array();
 		$errors = array();
 		$new_suff = $_POST['new_suff'];
@@ -144,7 +144,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 	}
 	include 'main_header.php';
 	// print error/success messages
-	if ($_POST['add_suff']) {
+	if (isset($_POST['add_suff'])) {
 		if (sizeof($fail) > 0) {
 			// print error messages
 			for ($i = 0; $i < sizeof($fail); $i++) {

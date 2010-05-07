@@ -382,7 +382,10 @@ if(!empty($_POST['checklogin'])) {
 		exit();
 	}
 	else {
-		$clientSource = $_SERVER['REMOTE_ADDR'] . '/' . $_SERVER['REMOTE_HOST'];
+		$clientSource = $_SERVER['REMOTE_ADDR'];
+		if (isset($_SERVER['REMOTE_HOST'])) {
+			$clientSource .= '/' . $_SERVER['REMOTE_HOST'];
+		}
 		if (get_magic_quotes_gpc() == 1) {
 			$_POST['passwd'] = stripslashes($_POST['passwd']);
 		}
