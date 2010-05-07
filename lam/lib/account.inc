@@ -474,6 +474,9 @@ function get_preg($argument, $regexp) {
 		case 'ip': // IP address
 					$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
 					break;
+		case 'ascii': // ASCII
+					$pregexpr = '/^[' . chr(1) . '-' . chr(128) . ']*$/';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
