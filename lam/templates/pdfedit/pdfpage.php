@@ -436,7 +436,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
 		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
-			$section_headline = translateFieldIDToName(substr($name,1));
+			$section_headline = translateFieldIDToName(substr($name,1), $_GET['type']);
 		}
 		else {
 			$section_headline = $name;
@@ -454,7 +454,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 			<?php
 			foreach($section_items_array as $item) {
 				?>
-											<option value="_<?php echo $item;?>"<?php echo ((substr($name,1) == $item) ? ' selected' : '');?>><?php echo translateFieldIDToName($item);?></option>
+											<option value="_<?php echo $item;?>"<?php echo ((substr($name,1) == $item) ? ' selected' : '');?>><?php echo translateFieldIDToName($item, $_GET['type']);?></option>
 				<?php
 			}
 			?>
@@ -740,7 +740,6 @@ function translateFieldIDToName($id, $scope) {
 				}
 			}
 		}
-		
 	}
 	return $id;
 }
