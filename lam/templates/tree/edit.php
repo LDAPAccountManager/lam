@@ -94,11 +94,8 @@ echo "</head>\n";
 <table class="tree_edit_dn_menu">
 
 <tr>
-	<?php  $time = gettimeofday(); $random_junk = md5( strtotime( 'now' ) . $time['usec'] ); ?>
 	<td class="icon"><img src="../../graphics/refresh.png" /></td>
-	<td><a href="edit.php?dn=<?php echo $encoded_dn; ?>&amp;random=<?php
-			echo $random_junk; ?>"
-	       title="<?php echo _('Refresh'); ?>"><?php echo _('Refresh'); ?></a></td>
+	<td><a href="edit.php?dn=<?php echo $encoded_dn; ?>" title="<?php echo _('Refresh'); ?>"><?php echo _('Refresh'); ?></a></td>
 <?php if( $show_internal_attrs ) { ?>
     <td class="icon"><img src="../../graphics/tools-no.png" /></td>
     <td><a href="edit.php?dn=<?php echo $encoded_dn; ?>"><?php echo _('Hide internal attributes'); ?></a></td>

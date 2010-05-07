@@ -66,11 +66,5 @@ initialize_session_tree();
 if( array_key_exists( $dn, $_SESSION['tree'] ) )
 	unset( $_SESSION['tree'][$dn] );
 
-// This is for Opera. By putting "random junk" in the query string, it thinks
-// that it does not have a cached version of the page, and will thus
-// fetch the page rather than display the cached version
-$time = gettimeofday();
-$random_junk = md5( strtotime( 'now' ) . $time['usec'] );
-
-header( "Location:tree.php?foo=$random_junk#{$encoded_dn}" );
+header( "Location:tree.php" );
 ?>
