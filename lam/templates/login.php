@@ -125,7 +125,7 @@ function display_LoginPage($config_object) {
 			$value = explode(":", $line);
 			$languages[$i]["link"] = $value[0] . ":" . $value[1];
 			$languages[$i]["descr"] = $value[2];
-			if(rtrim($line) == $_SESSION["language"])
+			if(trim($line) == trim($_SESSION["language"]))
 			{
 				$languages[$i]["default"] = "YES";
 			}

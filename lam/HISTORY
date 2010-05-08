@@ -7,6 +7,7 @@ June 2010 3.1.0
   - fixed bugs:
    -> Asterisk password handling (patch 2979728)
    -> Samba domain SID check (2994528)
+   -> language selection at login (2996335)
 
 
 24.03.2010 3.0.0
