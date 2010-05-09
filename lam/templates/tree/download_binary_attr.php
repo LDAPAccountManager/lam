@@ -74,7 +74,7 @@ if( ! $search ) {
 }
 $entry =  ldap_first_entry(     $ds, $search );
 $attrs =  ldap_get_attributes(  $ds, $entry );
-$attr =   ldap_first_attribute( $ds, $entry, $attrs );
+$attr =   ldap_first_attribute( $ds, $entry );
 $values = ldap_get_values_len(  $ds, $entry, $attr );
 $count = $values['count'];
 

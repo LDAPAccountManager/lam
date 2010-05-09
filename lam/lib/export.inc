@@ -8,7 +8,7 @@ $Id$
   Copyright (C) 2004  David Smith and phpLDAPadmin developers
   
   The original code was modified to fit for LDAP Account Manager by Roland Gruber.
-  Copyright (C) 2005 - 2006  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -343,7 +343,7 @@ class PlaLdapExporter extends PlaAbstractExporter{
       
       //get the attributes of the entry
       $attrs = @ldap_get_attributes($this->ds,$this->entry_id);
-      if( $attr = @ldap_first_attribute( $this->ds,$this->entry_id,$attrs ) ){
+      if( $attr = @ldap_first_attribute( $this->ds,$this->entry_id ) ){
 	
 	//iterate over the attributes
 	while( $attr ){
@@ -354,7 +354,7 @@ class PlaLdapExporter extends PlaAbstractExporter{
 	    $this->entry_array[$attr] = @ldap_get_values( $this->ds,$this->entry_id,$attr );
 	  }
 	  unset( $this->entry_array[$attr]['count'] );
-	  $attr = @ldap_next_attribute( $this->ds,$this->entry_id,$attrs );
+	  $attr = @ldap_next_attribute( $this->ds,$this->entry_id );
 	}// end while attr
 	
 	if(!$this->entry_id = @ldap_next_entry( $this->ds,$this->entry_id ) ){

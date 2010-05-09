@@ -8,7 +8,7 @@ $Id$
   Copyright (C) 2004  David Smith and phpLDAPadmin developers
   
   The original code was modified to fit for LDAP Account Manager by Roland Gruber.
-  Copyright (C) 2005 - 2006  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1284,7 +1284,7 @@ function pla_ldap_search( $filter, $base_dn=null, $attrs=array(), $scope='sub', 
 			$return[$dn]['dn'] = $dn;
 
 			//get the first attribute of the entry
-			if($attr = ldap_first_attribute($ds,$entry_id,$attrs))
+			if($attr = ldap_first_attribute($ds,$entry_id))
 
 				//iterate over the attributes
 				while($attr){
@@ -1301,7 +1301,7 @@ function pla_ldap_search( $filter, $base_dn=null, $attrs=array(), $scope='sub', 
 					else
 						$return[$dn][$attr] = $values;
 
-					$attr = ldap_next_attribute($ds,$entry_id,$attrs);
+					$attr = ldap_next_attribute($ds,$entry_id);
 				}// end while attr
 
 			$entry_id = ldap_next_entry($ds,$entry_id);
