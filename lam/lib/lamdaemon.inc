@@ -34,16 +34,16 @@ $Id$
 /**
 * Sends commands to lamdaemon script.
 *
-* @param array $commands List of command lines
+* @param array $command command to execute
 * @param string $server remote server
 * @return array Output of lamdaemon
 *
 */
-function lamdaemon($commands, $server) {
+function lamdaemon($command, $server) {
 	if (!function_exists('ssh2_connect')) {
 		return array('ERROR,' . _('This module requires the PHP ssh2 extension.'));
 	}
-	$commands = implode("\n", $commands) . "\n";
+	$command = $command . "\n";
 	// get username and password of the current lam-admin
 	$credentials = $_SESSION['ldap']->decrypt_login();
 	$serverNameParts = explode(",", $server);
@@ -54,7 +54,7 @@ function lamdaemon($commands, $server) {
 		$handle = @ssh2_connect($server);
 	}
 	if ($handle) {
-		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
+		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$sr) {
 			$return = array("ERROR," . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . ",");
 			return $return;
@@ -67,10 +67,10 @@ function lamdaemon($commands, $server) {
 		$userName = $entry[0]['uid'][0];
 		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
 			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
-			fwrite($shell, $commands);
+			fwrite($shell, $command);
 			$return = array();
-			$time = time() + (sizeof($commands) * 30);
-			while (sizeof($return) < sizeof($commands)) {
+			$time = time() + 30;
+			while (sizeof($return) < 1) {
 				if ($time < time()) {
 					$return = array("ERROR," . _("Timeout while executing lamdaemon commands!") . ",");
 					return $return;

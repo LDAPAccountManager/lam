@@ -176,7 +176,7 @@ class quota extends baseModule {
 			$temp = explode(":", $lamdaemonServers[$s]);
 			$server = $temp[0];
 			// get quotas
-			$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope()))), $server);
+			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())), $server);
 			$allQuotas = explode(":", $quotas[0]);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
@@ -261,7 +261,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
 					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
 			}
-			lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n"))), $server);
+			lamdaemon(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")), $server);
 		}
 	}
 
@@ -300,7 +300,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 				}
-			lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n"))), $server);
+			lamdaemon(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")), $server);
 		}
 		return true;
 	}
@@ -458,7 +458,7 @@ class quota extends baseModule {
 			if (isset($temp[1])) $description = $temp[1];
 
 			// Get quotas
-			$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope()))), $server);
+			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -512,7 +512,7 @@ class quota extends baseModule {
 			$server = $temp[0];
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
-			$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope()))), $server);
+			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -625,7 +625,7 @@ class quota extends baseModule {
 				$temp = explode(":", $lamdaemonServers[$s]);
 				$server = $temp[0];
 				// Get quotas
-				$quotas = lamdaemon(array(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope()))), $server);
+				$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
 				$dirs = explode(":", $quotas[0]);
 				array_pop($dirs); // remove empty element at the end
 				for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -745,7 +745,7 @@ class quota extends baseModule {
 				$dir = $mpParts[1];
 				$quotaString = implode(quota::$SPLIT_DELIMITER, array($name, "quota", "set", $this->get_scope(), $dir . ',' .
 					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"));
-				$result = lamdaemon(array($quotaString), $server);
+				$result = lamdaemon($quotaString, $server);
 				if (is_array($result)) {
 					for ($i = 0; $i < sizeof($result); $i++) {
 						$parts = explode(",", $result);
