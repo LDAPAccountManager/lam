@@ -105,34 +105,30 @@ if ($< != 0 ) {
 
 # Drop root privileges
 ($<, $>) = ($>, $<);
-# loop for every transmitted user
-while (1) {
-	my $input = <STDIN>;
-	chop($input);
-	$return = "";
-	@vals = split ($SPLIT_DELIMITER, $input);
-	# Get user information
-	if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
-	else { @user = getgrnam($vals[0]); }
-	if ($vals[1] eq '') {
-		# empty line, nothing to do
-	}
-	elsif (($vals[1] eq 'test')) {
-		# run tests
-		runTest();
-	}
-	elsif ($vals[1] eq 'home') {
-		manageHomedirs();
-	}
-	elsif ($vals[1] eq 'quota') {
-		manageQuotas();
-	}
-	else {
-		$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
-		logMessage(LOG_ERR, "Unknown command $vals[1].");
-	}
-	print "$return\n";
+my $input = $ARGV[0];
+$return = "";
+@vals = split ($SPLIT_DELIMITER, $input);
+# Get user information
+if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
+else { @user = getgrnam($vals[0]); }
+if ($vals[1] eq '') {
+	# empty line, nothing to do
 }
+elsif (($vals[1] eq 'test')) {
+	# run tests
+	runTest();
+}
+elsif ($vals[1] eq 'home') {
+	manageHomedirs();
+}
+elsif ($vals[1] eq 'quota') {
+	manageQuotas();
+}
+else {
+	$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
+	logMessage(LOG_ERR, "Unknown command $vals[1].");
+}
+print "$return\n";
 
 #
 # Runs tests to check the environment

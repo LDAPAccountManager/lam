@@ -128,7 +128,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$lamdaemonOk = false;
-		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
+		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
 		if (!$shell) {
 			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>\n";
@@ -137,9 +137,8 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 			return true;
 		}
 		$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
-		fwrite($shell, $command);
 		$return = array();
-		$time = time() + 20;
+		$time = time() + 30;
 		while (sizeof($return) < 1) {
 			if ($time < time()) {
 				$lamdaemonOk = false;
@@ -291,17 +290,17 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 
 	flush();
 	
-	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic\n", $stopTest, $handle, _("Execute lamdaemon"));
+	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"));
 	$handle = lamTestConnectSSH($serverName);
 	@ssh2_auth_password($handle, $userName, $credentials[1]);
-	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName\n", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"));
+	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"));
 	if ($testQuota) {
 		$handle = lamTestConnectSSH($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
 		$handle = lamTestConnectSSH($serverName);
 		@ssh2_auth_password($handle, $userName, $credentials[1]);
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $handle, _("Lamdaemon: read quotas"));
 	}
 
 	echo "</table><br>\n";

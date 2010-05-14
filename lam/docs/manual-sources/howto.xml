@@ -2941,7 +2941,7 @@ Have fun!
       sudo. Edit /etc/sudoers on host where homedirs or quotas should be used
       and add the following line:</para>
 
-      <para>$admin All= NOPASSWD: $path_to_lamdaemon</para>
+      <para>$admin All= NOPASSWD: $path_to_lamdaemon *</para>
 
       <para><emphasis condition="">$admin</emphasis> is the admin user from
       LAM (must be a valid Unix account) and
@@ -2950,7 +2950,8 @@ Have fun!
 
       <para><emphasis role="bold">Example:</emphasis></para>
 
-      <para>myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl</para>
+      <para>myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl
+      *</para>
 
       <para>You might need to run the sudo command once manually to init sudo.
       The command "sudo -l" will show all possible sudo commands of the

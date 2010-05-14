@@ -43,7 +43,6 @@ function lamdaemon($command, $server) {
 	if (!function_exists('ssh2_connect')) {
 		return array('ERROR,' . _('This module requires the PHP ssh2 extension.'));
 	}
-	$command = $command . "\n";
 	// get username and password of the current lam-admin
 	$credentials = $_SESSION['ldap']->decrypt_login();
 	$serverNameParts = explode(",", $server);
@@ -66,8 +65,7 @@ function lamdaemon($command, $server) {
 		}
 		$userName = $entry[0]['uid'][0];
 		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
-			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath());
-			fwrite($shell, $command);
+			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
 			$return = array();
 			$time = time() + 30;
 			while (sizeof($return) < 1) {
