@@ -40,6 +40,8 @@ $Id$
 class quota extends baseModule {
 	
 	private static $SPLIT_DELIMITER = "###x##y##x###";
+	
+	private static $QUOTA_PREFIX = 'QUOTA_ENTRY ';
 
 	/** this functin fills the error message array with messages
 	**/
@@ -83,8 +85,6 @@ class quota extends baseModule {
 			// module dependencies
 			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		}
-		// PHP extensions
-		$return['extensions'] = array('ssh2');
 		// managed attributes
 		$return['attributes'] = array('uid', 'cn');
 		// available PDF fields
@@ -157,7 +157,6 @@ class quota extends baseModule {
 	 *
 	 */
 	function initQuotas() {
-		if (!extension_loaded('ssh2')) return;
 		if (isset($this->quota)) return;
 		$userName = '+';
 		if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
@@ -180,6 +179,8 @@ class quota extends baseModule {
 			$allQuotas = explode(":", $quotas[0]);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
+				if (strpos($allQuotas[$i], quota::$QUOTA_PREFIX) !== 0) continue;
+				$allQuotas[$i] = substr($allQuotas[$i], strlen(quota::$QUOTA_PREFIX));
 				$singleQuota = explode(",", $allQuotas[$i]);
 				$this->quota[$server][$i] = $singleQuota;
 				if ($this->quota[$server][$i][4] < time()) $this->quota[$server][$i][4] = '';
@@ -359,11 +360,6 @@ class quota extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		if (!extension_loaded('ssh2')) {
-			return array(
-				array(array('kind' => 'text', 'text' => _('This module requires the PHP ssh2 extension.'))
-			));
-		}
 		$return = array();
 		$this->initQuotas();
 		if (!is_array($this->quota)) return $return;
@@ -462,9 +458,16 @@ class quota extends baseModule {
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
+				if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
+					unset($dirs[$i]);
+					$i--;
+					continue;
+				}
+				$dirs[$i] = substr($dirs[$i], strlen(quota::$QUOTA_PREFIX));
 				$dirs[$i] = explode(",", $dirs[$i]);
 				$dirs[$i] = $dirs[$i][0];
 			}
+			$dirs = array_values($dirs);
 			if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
 			$fieldContent = array();
 			$fieldContent[] = array (
@@ -516,9 +519,16 @@ class quota extends baseModule {
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
+				if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
+					unset($dirs[$i]);
+					$i--;
+					continue;
+				}
+				$dirs[$i] = substr($dirs[$i], strlen(quota::$QUOTA_PREFIX));
 				$dirs[$i] = explode(",", $dirs[$i]);
 				$dirs[$i] = $dirs[$i][0];
 			}
+			$dirs = array_values($dirs);
 			for ($i = 0; $i < sizeof($dirs); $i++) {
 				if (!get_preg($options["quota_softblock_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softblock'][0];
 				if (!get_preg($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
@@ -629,9 +639,16 @@ class quota extends baseModule {
 				$dirs = explode(":", $quotas[0]);
 				array_pop($dirs); // remove empty element at the end
 				for ($i = 0; $i < sizeof($dirs); $i++) {
+					if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
+						unset($dirs[$i]);
+						$i--;
+						continue;
+					}
+					$dirs[$i] = substr($dirs[$i], strlen(quota::$QUOTA_PREFIX));
 					$dirs[$i] = explode(",", $dirs[$i]);
 					$dirs[$i] = $dirs[$i][0];
 				}
+				$dirs = array_values($dirs);
 				for ($i = 0; $i < sizeof($dirs); $i++) {
 					$return[] = array(
 						'name' => 'quota_' . $server . ':' . $dirs[$i],

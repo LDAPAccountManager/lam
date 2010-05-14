@@ -340,12 +340,12 @@ sub getQuotas {
 						logMessage(LOG_ERR, "Unable to read quota for $user[0].");
 					}
 				else {
-					$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
+					$return = "QUOTA_ENTRY $quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 					}
 				}
-			else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+			else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 			}
-		else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+		else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 		$i++;
 		}
 	($<, $>) = ($>, $<); # Give up root previleges

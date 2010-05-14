@@ -572,13 +572,12 @@ class posixAccount extends baseModule implements passwordService {
 			$result = lamdaemon(implode(posixAccount::$SPLIT_DELIMITER, array($this->attributes['uid'][0], "home", "add", "0".$_SESSION['config']->get_scriptRights())), $server);
 			// lamdaemon results
 			if (is_array($result)) {
-				foreach ($result as $singleresult) {
-					$singleresult = explode(",", $singleresult);
-					if (is_array($singleresult)) {
-						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
-							call_user_func_array('StatusMessage', $singleresult);
-						}
-					}
+				$singleresult = explode(",", $result[0]);
+				if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+					call_user_func_array('StatusMessage', $singleresult);
+				}
+				else {
+					StatusMessage('ERROR', $result[0]);
 				}
 			}
 		}
@@ -972,8 +971,7 @@ class posixAccount extends baseModule implements passwordService {
 				array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				array('kind' => 'help', 'value' => 'homeDirectory'));
 			if ($this->getAccountContainer()->isNewAccount && ($_SESSION['config']->get_scriptPath() != null) 
-				&& ($_SESSION['config']->get_scriptPath() != '')
-				&& extension_loaded('ssh2')) {
+				&& ($_SESSION['config']->get_scriptPath() != '')) {
 				// get list of lamdaemon servers
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -1019,7 +1017,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @return meta HTML code
 	*/
 	function display_html_delete() {
-		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null) && extension_loaded('ssh2')) {
+		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
 			$return[] = array (
 				array('kind' => 'text', 'text' => _('Delete home directory')),
 				array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
@@ -1109,7 +1107,7 @@ class posixAccount extends baseModule implements passwordService {
 				array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
 				array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
 			// lamdaemon settings
-			if (($_SESSION['config']->get_scriptPath() != null) && extension_loaded('ssh2')) {
+			if (($_SESSION['config']->get_scriptPath() != null)) {
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Create home directory') . ": "),
 				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'posixAccount_createHomedir'),
