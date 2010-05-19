@@ -536,7 +536,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removePassword'])) {
 			unset($this->attributes['userPassword']);
 		}
-		if ($_POST['changegids']) $this->changegids=true;
+		if (isset($_POST['changegids'])) $this->changegids=true;
 		else $this->changegids=false;
 		if (($this->attributes['gidNumber'][0] != $_POST['gidNumber']) || !isset($this->attributes['gidNumber'][0])) {
 			// Check if GID is valid. If none value was entered, the next useable value will be inserted

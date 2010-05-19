@@ -117,8 +117,8 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	include 'main_header.php';
 	// display messages
 	if ($error || $message || $text) {
-		if ($text) echo $text;
-		elseif ($error) {
+		if (isset($text)) echo $text;
+		elseif (isset($error)) {
 			StatusMessage("ERROR", "", $error);
 			echo ("<br><a href=\"ou_edit.php\">" . _("Back to OU-Editor") . "</a>\n");
 		}
@@ -138,17 +138,22 @@ display_main();
  * Displays the main page of the OU editor
  */
 function display_main() {
-	$types = $_SESSION['config']->get_ActiveTypes();
 	// display main page
 	include 'main_header.php';
 	echo "<h1>" . _("OU editor") . "</h1>";
 	echo ("<br>\n");
 	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
 	
+	$types = array();
+	$typeList = $_SESSION['config']->get_ActiveTypes();
+	for ($i = 0; $i < sizeof($typeList); $i++) {
+		$types[$typeList[$i]] = getTypeAlias($typeList[$i]);
+	}
+	natcasesort($types);
 	$options = "";
-	for ($i = 0; $i < sizeof($types); $i++) {
-		$options .= "<optgroup label=\"" . getTypeAlias($types[$i]) . "\">\n";
-		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($types[$i]));
+	foreach ($types as $name => $title) {
+		$options .= "<optgroup label=\"" . $title . "\">\n";
+		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($name));
 		for ($u = 0; $u < sizeof($units); $u++) {
 			$options .= "<option>" . $units[$u] . "</option>\n";
 		}

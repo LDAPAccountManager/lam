@@ -431,6 +431,9 @@ class eduPerson extends baseModule {
 			}
 			return array();
 		}
+		if (!in_array('eduPerson', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$errors = array();
 		// primary affiliation
 		$this->attributes['eduPersonPrimaryAffiliation'][0] = $_POST['primaryAffiliation'];

@@ -1605,7 +1605,7 @@ class accountContainer {
 			// find new attributes
 			if (isset($attributes[$name]) && is_array($attributes[$name])) {
 				foreach ($attributes[$name] as $j => $value) {
-					if (is_array($orig[$name])) {
+					if (isset($orig[$name]) && is_array($orig[$name])) {
 						if (!in_array($value, $orig[$name]))
 							if ($value != '') {
 								$toadd[$name][] = $value;
@@ -1615,7 +1615,7 @@ class accountContainer {
 				}
 			}
 			// find unchanged attributes
-			if (is_array($orig[$name]) && is_array($attributes[$name])) {
+			if (isset($orig[$name]) && is_array($orig[$name]) && is_array($attributes[$name])) {
 				foreach ($attributes[$name] as $j => $value) {
 					if (($value != '') && in_array($value, $orig[$name])) {
 						$notchanged[$name][] = $value;
@@ -1913,9 +1913,15 @@ class accountContainer {
 			// create complete new dn
 			else {
 				$attr = array();
-				if (is_array($attributes[$this->finalDN]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->finalDN]['add']);
-				if (is_array($attributes[$this->finalDN]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->finalDN]['notchanged']);
-				if (is_array($attributes[$this->finalDN]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->finalDN]['modify']);
+				if (isset($attributes[$this->finalDN]['add']) && is_array($attributes[$this->finalDN]['add'])) {
+					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['add']);
+				}
+				if (isset($attributes[$this->finalDN]['notchanged']) && is_array($attributes[$this->finalDN]['notchanged'])) {
+					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['notchanged']);
+				}
+				if (isset($attributes[$this->finalDN]['modify']) && is_array($attributes[$this->finalDN]['modify'])) {
+					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['modify']);
+				}
 				$success = ldap_add($_SESSION['ldap']->server(), $this->finalDN, $attr);
 				if (!$success) {
 					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $this->finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');

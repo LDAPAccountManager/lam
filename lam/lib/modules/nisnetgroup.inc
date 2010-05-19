@@ -178,9 +178,11 @@ class nisnetgroup extends baseModule {
 			array('kind' => 'text', 'text' => _("Group name").'*'),
 			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $groupName),
 			array('kind' => 'help', 'value' => 'cn'));
+		$description = '';
+		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('Description')),
-			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
+			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $description),
 			array ('kind' => 'help', 'value' => 'description'));
 		$subgroups = array();
 		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {

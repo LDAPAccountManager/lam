@@ -107,12 +107,7 @@ if (isset($_POST['save'])) {
 	// print error messages if any
 	if (sizeof($errors) > 0) {
 		for ($i = 0; $i < sizeof($errors); $i++) {
-			if (sizeof($errors[$i]) > 3) {  // messages with additional variables
-				StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2], $errors[$i][3]);
-			}
-			else {
-				StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
-			}
+			call_user_func_array('StatusMessage', $errors[$i]);
 		}
 		echo "<br>\n";
 	}
@@ -246,7 +241,11 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 // profile name and submit/abort buttons
 echo ("<b>" . _("Profile name") . ":</b> \n");
 $tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $_GET['edit'] . "\">\n");
+$profName = '';
+if (isset($_GET['edit'])) {
+	$profName = $_GET['edit'];
+}
+echo ("<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $profName . "\">\n");
 printHelpLink(getHelp('', '360'), '360');
 echo "<br><br>\n";
 $tabindex++;

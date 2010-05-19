@@ -90,13 +90,17 @@ class ldapPublicKey extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = array();
+		$keyCount = 0;
 		// list current keys
-		for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('SSH public key')),
-				array('kind' => 'input', 'name' => 'sshPublicKey' . $i, 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => $this->attributes['sshPublicKey'][$i]),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'delKey' . $i, 'value' => _("Remove")),
-				array('kind' => 'help', 'value' => 'key'));
+		if (isset($this->attributes['sshPublicKey'])) {
+			$keyCount = sizeof($this->attributes['sshPublicKey']);
+			for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
+				$return[] = array(
+					array('kind' => 'text', 'text' => _('SSH public key')),
+					array('kind' => 'input', 'name' => 'sshPublicKey' . $i, 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => $this->attributes['sshPublicKey'][$i]),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'delKey' . $i, 'value' => _("Remove")),
+					array('kind' => 'help', 'value' => 'key'));
+			}
 		}
 		// input box for new key
 		$return[] = array(
@@ -104,7 +108,7 @@ class ldapPublicKey extends baseModule {
 			array('kind' => 'input', 'name' => 'sshPublicKey', 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => ''),
 			array('kind' => 'input', 'type' => 'submit', 'name' => 'addKey', 'value' => _("Add")),
 			array('kind' => 'help', 'value' => 'key'),
-			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['sshPublicKey']), 'name' => 'key_number'));
+			array('kind' => 'input', 'type' => 'hidden', 'value' => $keyCount, 'name' => 'key_number'));
 		return $return;
 	}
 

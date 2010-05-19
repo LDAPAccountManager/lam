@@ -153,7 +153,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	$counter = 0;
 	foreach ($sortedTypes as $type => $label) {
 		$style = 'style="display:none;"';
-		if ((!isset($_POST['type']) && ($counter == 0)) || ($_POST['type'] == $type)) {
+		if ((!isset($_POST['type']) && ($counter == 0)) || (isset($_POST['type']) && ($_POST['type'] == $type))) {
 			// show first account type or last selected one
 			$style = '';
 		}

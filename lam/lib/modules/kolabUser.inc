@@ -422,7 +422,7 @@ class kolabUser extends baseModule {
 			$this->attributes['objectClass'][] = 'kolabInetOrgPerson';
 		}
 		else {
-			if ($_POST['form_subpage_kolabUser_deleteUser_open'])  return array();
+			if (isset($_POST['form_subpage_kolabUser_deleteUser_open']))  return array();
 			$this->attributes['kolabInvitationPolicy'] = array();
 			// country
 			if (isset($_POST['country'])) {

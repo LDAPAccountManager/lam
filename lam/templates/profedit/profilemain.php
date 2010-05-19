@@ -47,13 +47,19 @@ setlanguage();
 
 $types = $_SESSION['config']->get_ActiveTypes();
 $profileClasses = array();
+$profileClassesTemp = array();
 for ($i = 0; $i < sizeof($types); $i++) {
-	$profileClasses[] = array(
+	$profileClassesTemp[getTypeAlias($types[$i])] = array(
 		'scope' => $types[$i],
 		'title' => getTypeAlias($types[$i]),
 		'profiles' => "");
 }
-
+$profileClassesKeys = array_keys($profileClassesTemp);
+natcasesort($profileClassesKeys);
+$profileClassesKeys = array_values($profileClassesKeys);
+for ($i = 0; $i < sizeof($profileClassesKeys); $i++) {
+	$profileClasses[] = $profileClassesTemp[$profileClassesKeys[$i]];
+}
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
