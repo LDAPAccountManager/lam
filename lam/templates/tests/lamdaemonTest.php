@@ -128,40 +128,8 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$lamdaemonOk = false;
-		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
-		if (!$shell) {
-			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
-			echo "<td>\n";
-			StatusMessage("ERROR", _("Unable to connect to remote server!"));
-			echo "</td>\n";
-			return true;
-		}
-		$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
-		$return = array();
-		$time = time() + 30;
-		while (sizeof($return) < 1) {
-			if ($time < time()) {
-				$lamdaemonOk = false;
-				$return[] = "ERROR," . _("Timeout while executing lamdaemon commands!");
-				break;
-			}
-			usleep(100);
-			$read = explode("\n", trim(fread($shell, 100000)));
-			if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
-			for ($i = 0; $i < sizeof($read); $i++) {
-				$return[] = $read[$i];
-			}
-		}
-		$errOut = @fread($stderr, 100000);
-		if ((strpos(strtolower($errOut), "sudoers") !== false) || (strpos(strtolower($errOut), "sorry") !== false)) {
-			$return[] = "ERROR," . _("Sudo is not setup correctly!") . "," . htmlspecialchars(str_replace(",", " ", $errOut));
-		}
-		elseif (strlen($errOut) > 0) {
-			$return[] = "ERROR," . _("Unknown error") . "," . htmlspecialchars(str_replace(",", " ", $errOut));
-		}
-		@fclose($shell);
-		@fclose($stderr);
-		if ((sizeof($return) == 1) && (strpos(strtolower($return[0]), "error") === false)) {
+		$output = $handle->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
+		if ((stripos(strtolower($output), "error") === false) && ((strpos($output, 'INFO,') === 0) || (strpos($output, 'QUOTA_ENTRY') === 0))) {
 			$lamdaemonOk = true;
 		}
 		if ($lamdaemonOk) {
@@ -171,8 +139,13 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 		else {
 			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>\n";
-			for ($i = 0; $i < sizeof($return); $i++) {
-				call_user_func_array('StatusMessage', explode(",", $return[$i]));
+			if (!(strpos($output, 'ERROR,') === 0) && !(strpos($output, 'WARN,') === 0)) {
+				// error messages from console (e.g. sudo)
+				StatusMessage('ERROR', $output);
+			}
+			else {
+				// error messages from lamdaemon
+				call_user_func_array('StatusMessage', explode(",", $output));
 			}
 			echo "</td>\n";
 			$stopTest = true;
@@ -248,23 +221,6 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 
 	flush();
 
-	// check SSH2 function
-	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH2 module") . "&nbsp;&nbsp;</td>\n";
-		if (function_exists("ssh2_connect")) {
-			echo "<td>" . $okImage . "</td>";
-			echo "<td>" . _("SSH2 module is installed.") . "</td>";
-		}
-		else {
-			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
-			echo "<td>" . _("Please install the SSH2 module for PHP and activate it in your php.ini!") . "</td>";
-			$stopTest = true;
-		}
-		echo "</tr>\n";
-	}
-
-	flush();
-
 	// check SSH login
 	if (!$stopTest) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
@@ -272,7 +228,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 		$sshOk = false;
 		$handle = lamTestConnectSSH($serverName);
 		if ($handle) {
-			if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
+			if ($handle->login($userName, $credentials[1])) {
 				$sshOk = true;
 			}
 		}
@@ -292,14 +248,14 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	
 	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"));
 	$handle = lamTestConnectSSH($serverName);
-	@ssh2_auth_password($handle, $userName, $credentials[1]);
+	@$handle->login($userName, $credentials[1]);
 	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"));
 	if ($testQuota) {
 		$handle = lamTestConnectSSH($serverName);
-		@ssh2_auth_password($handle, $userName, $credentials[1]);
+		@$handle->login($userName, $credentials[1]);
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
 		$handle = lamTestConnectSSH($serverName);
-		@ssh2_auth_password($handle, $userName, $credentials[1]);
+		@$handle->login($userName, $credentials[1]);
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $handle, _("Lamdaemon: read quotas"));
 	}
 
@@ -315,12 +271,15 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
  * @return object handle
  */
 function lamTestConnectSSH($server) {
+	// add phpseclib to include path
+	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../../lib/3rdParty/phpseclib');
+	include_once('Net/SSH2.php');
 	$serverNameParts = explode(",", $server);
 	if (sizeof($serverNameParts) > 1) {
-		return @ssh2_connect($serverNameParts[0], $serverNameParts[1]);
+		return @new Net_SSH2($serverNameParts[0], $serverNameParts[1]);
 	}
 	else {
-		return @ssh2_connect($server);
+		return @new Net_SSH2($server);
 	}
 }
 
