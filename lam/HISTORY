@@ -7,6 +7,7 @@ June 2010 3.1.0
    -> replaced PHP SSH2 with phpseclib
   - LAM Pro
    -> custom scripts: new options to hide executed commands and define if output is HTML or plain text
+   -> support sudo entry management (object class sudoRole)
   - fixed bugs:
    -> Asterisk password handling (patch 2979728)
    -> Samba domain SID check (2994528)
