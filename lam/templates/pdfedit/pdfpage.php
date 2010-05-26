@@ -84,23 +84,21 @@ if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDe
 
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
+$saveErrors = array();
 if(isset($_GET['submit'])) {
-	include '../main_header.php';
 	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_]+/',$_GET['pdfname'])) {
-		StatusMessage('ERROR', _('PDF-structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
+		$saveErrors[] = array('ERROR', _('PDF structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 	}
 	else {
 		$return = savePDFStructureDefinitions($_GET['type'],$_GET['pdfname']);
 		if($return == 'ok') {
-			StatusMessage('INFO', _("PDF structure was successfully saved."), $_GET['pdfname']);
+			metaRefresh('pdfmain.php?savedSuccessfully=' . $_GET['pdfname']);
+			exit;
 		} 
 		elseif($return == 'no perms'){
-			StatusMessage('ERROR', _("Could not save PDF profile, access denied."), $_GET['pdfname']);
+			$saveErrors[] = array('ERROR', _("Could not save PDF structure, access denied."), $_GET['pdfname']);
 		}
 	}
-	echo ("<br><a href=\"pdfmain.php\">" . _("Back to PDF Editor") . "</a>");
-	echo "</body></html>";
-	exit;
 }
 // add a new text field
 elseif(isset($_GET['add_text'])) {
@@ -388,7 +386,15 @@ foreach($logoFiles as $logoFile) {
 
 // print header
 include '../main_header.php';
-// TODO Change enctype of form
+
+// print error messages if any
+if (sizeof($saveErrors) > 0) {
+	for ($i = 0; $i < sizeof($saveErrors); $i++) {
+		call_user_func_array('StatusMessage', $saveErrors[$i]);
+	}
+	echo "<br>\n";
+}
+
 ?>
 		<br>
 		<form action="pdfpage.php" method="post">
@@ -662,50 +668,24 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 							<legend>
 								<b><?php echo _("Save"); ?></b>
 							</legend><BR>
-							<table border="0" align="left">
-							<?php
-							if(!isset($_GET['pdfname']) || ($_GET['pdfname'] == '')) {
-							?>
-								<tr>
-									<td>
-										<b><?php echo _("Structure name"); ?>:</b>
-									</td>
-									<td>
-										<input type="text" name="pdfname" value="<?php if (isset($_GET['edit'])) echo $_GET['edit'];?>">
-									</td>
-									<td>
-									<?php
-										printHelpLink(getHelp('', '360'), '360');
-									?>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3">
-										&nbsp;
-									</td>
-								</tr>
-							<?php
-							}
-							?>
-								<tr>
-									<td>
-									<?php
-									if(isset($_GET['pdfname'])) {
-									?>
-										<input type="hidden" name="pdfname" value="<?php if (isset($_GET['pdfname'])) echo $_GET['pdfname']; ?>">
-									<?php
+								<b><?php echo _("Structure name"); ?>:</b>
+								<?php
+									$structureName = '';
+									if (isset($_GET['edit'])) {
+										$structureName = $_GET['edit'];
 									}
-									?>
-										<input type="submit" name="submit" value="<?php echo _("Save");?>">
-									</td>
-									<td>
-										<input type="submit" name="abort" value="<?php echo _("Cancel");?>">
-									</td>
-									<td>
-										&nbsp;
-									</td>
-								</tr>
-							</table>
+									else if (isset($_POST['pdfname'])) {
+										$structureName = $_POST['pdfname'];
+									}
+								?>
+								<input type="text" name="pdfname" value="<?php echo $structureName;?>">
+								<?php
+									printHelpLink(getHelp('', '360'), '360');
+								?>
+								<br><br>
+								<input type="submit" name="submit" value="<?php echo _("Save");?>">
+								&nbsp;
+								<input type="submit" name="abort" value="<?php echo _("Cancel");?>">
 						</fieldset>
 					</td>
 				</tr>

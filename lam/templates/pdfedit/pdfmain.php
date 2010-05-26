@@ -113,6 +113,13 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 include '../main_header.php';
 ?>
 	<h1><?php echo _('PDF editor'); ?></h1>
+	
+	<?php
+		if (isset($_GET['savedSuccessfully'])) {
+			StatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
+		}
+	?>
+	
 	<br>
 		<form action="pdfmain.php" method="post">
 		
