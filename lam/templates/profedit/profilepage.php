@@ -66,8 +66,7 @@ if (isset($_POST['abort'])) {
 	exit;
 }
 
-// print header
-include '../main_header.php';
+$errors = array();
 
 // save button was presed
 if (isset($_POST['save'])) {
@@ -104,25 +103,29 @@ if (isset($_POST['save'])) {
 	
 	// check options
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
-	// print error messages if any
-	if (sizeof($errors) > 0) {
-		for ($i = 0; $i < sizeof($errors); $i++) {
-			call_user_func_array('StatusMessage', $errors[$i]);
-		}
-		echo "<br>\n";
-	}
-	else {  // input data is valid, save profile
+	if (sizeof($errors) == 0) {  // input data is valid, save profile
 		// save profile
 		if (saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'])) {
-			echo StatusMessage("INFO", _("Profile was saved."), $_POST['profname']);
-			echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
-			echo "</body></html>";
+			metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
 			exit();
 		}
-		else StatusMessage("ERROR", _("Unable to save profile!"), $_POST['profname']);
+		else {
+			$errors[] = array("ERROR", _("Unable to save profile!"), $_POST['profname']);
+		}
 	}
 }
 
+// print header
+include '../main_header.php';
+
+// print error messages if any
+if (sizeof($errors) > 0) {
+	for ($i = 0; $i < sizeof($errors); $i++) {
+		call_user_func_array('StatusMessage', $errors[$i]);
+	}
+	echo "<br>\n";
+}
+	
 // empty list of attribute types
 $_SESSION['profile_types'] = array();
 

@@ -103,8 +103,12 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 include '../main_header.php';
 
 echo "<h1>" . _('Profile editor') . "</h1>\n";
-echo "<br>\n";
 
+if (isset($_GET['savedSuccessfully'])) {
+	StatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
+}
+
+echo "<br>\n";
 echo "<form action=\"profilemain.php\" method=\"post\">\n";
 
 // new profile
