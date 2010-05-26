@@ -51,29 +51,28 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-// print standard header
-include '../main_header.php';
-echo ("<p><br></p>\n");
-
 // check if admin has submited delete operation
 if ($_POST['submit']) {
 	// delete profile
 	if (!delAccountProfile($_POST['del'], $_POST['type'])) {
-		StatusMessage("ERROR", _("Unable to delete profile!"), $_POST['del'] . "." . $_POST['type']);
+		metaRefresh('profilemain.php?deleteScope=' . $_POST['type'] . '&amp;deleteFailed=' . $_POST['del']);
+		exit();
 	}
-	else StatusMessage("INFO", _("Deleted profile:"), $_POST['del'] . "." . $_POST['type']);
-	echo ("<br><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a>");
-	echo ("</body></html>\n");
-	exit;
+	else {
+		metaRefresh('profilemain.php?deleteScope=' . $_POST['type'] . '&amp;deleteSucceeded=' . $_POST['del']);
+		exit();
+	}
 }
 
 // check if admin has aborted delete operation
 if ($_POST['abort']) {
-	StatusMessage("INFO", "", _("Delete operation canceled."));
-	echo ("<br><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a>");
-	echo ("</body></html>\n");
+	metaRefresh('profilemain.php');
 	exit;
 }
+
+// print standard header
+include '../main_header.php';
+echo ("<p><br></p>\n");
 
 $type = $_GET['type'];
 echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");

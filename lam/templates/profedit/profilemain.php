@@ -107,6 +107,12 @@ echo "<h1>" . _('Profile editor') . "</h1>\n";
 if (isset($_GET['savedSuccessfully'])) {
 	StatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
 }
+if (isset($_GET['deleteFailed'])) {
+	StatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
+}
+if (isset($_GET['deleteSucceeded'])) {
+	StatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
+}
 
 echo "<br>\n";
 echo "<form action=\"profilemain.php\" method=\"post\">\n";
