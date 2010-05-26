@@ -53,6 +53,9 @@ if (isset($_POST['abort'])) {
 	exit;
 }
 
+$error = null;
+$message = null;
+
 // check if submit button was pressed
 if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	// new ou
@@ -97,7 +100,9 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
 		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($sr && $info['count'] == 0) {
-			$text = "<br>\n" .
+			// print header
+			include 'main_header.php';
+			echo "<br>\n" .
 				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
 				"<br>\n<p>" . $_POST['deleteableOU'] . "</p>\n" .
 				"<br>\n" .
@@ -107,40 +112,33 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				"<input type=\"submit\" name=\"sure\" value=\"" . _("Delete") . "\">\n" .
 				"<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n" .
 				"</form>";
+			echo "</body></html>\n";
+			exit();
 		}
 		else {
 			$error = _("OU is not empty or invalid!");
 		}
 	}
-		
-	// print header
-	include 'main_header.php';
-	// display messages
-	if ($error || $message || $text) {
-		if (isset($text)) echo $text;
-		elseif (isset($error)) {
-			StatusMessage("ERROR", "", $error);
-			echo ("<br><a href=\"ou_edit.php\">" . _("Back to OU-Editor") . "</a>\n");
-		}
-		else {
-			StatusMessage("INFO", "", $message);
-			echo ("<br><a href=\"ou_edit.php\">" . _("Back to OU-Editor") . "</a>\n");
-		}
-	}
-
-echo ("</body></html>\n");
-exit;
 }
 
-display_main();
+display_main($message, $error);
 
 /**
  * Displays the main page of the OU editor
+ * 
+ * @param String $message info message
+ * @param String $error error message
  */
-function display_main() {
+function display_main($message, $error) {
 	// display main page
 	include 'main_header.php';
 	echo "<h1>" . _("OU editor") . "</h1>";
+	if (isset($error)) {
+		StatusMessage("ERROR", "", $error);
+	}
+	elseif (isset($message)) {
+		StatusMessage("INFO", "", $message);
+	}
 	echo ("<br>\n");
 	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
 	
