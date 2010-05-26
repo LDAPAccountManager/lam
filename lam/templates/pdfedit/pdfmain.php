@@ -118,6 +118,12 @@ include '../main_header.php';
 		if (isset($_GET['savedSuccessfully'])) {
 			StatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
 		}
+		if (isset($_GET['deleteFailed'])) {
+			StatusMessage('ERROR', _('Unable to delete PDF structure!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
+		}
+		if (isset($_GET['deleteSucceeded'])) {
+			StatusMessage('INFO', _('Deleted PDF structure.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
+		}
 	?>
 	
 	<br>

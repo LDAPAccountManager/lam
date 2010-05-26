@@ -49,31 +49,28 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-// print standard header
-include '../main_header.php';
-echo ("<p><br></p>\n");
-
 // check if admin has submited delete operation
 if ($_POST['submit']) {
 	// delete user profile
 	if(!deletePDFStructureDefinition($_POST['type'],$_POST['delete'])) {
-		StatusMessage('ERROR', '', _('Unable to delete PDF structure!') . ' ' . _('Scope') . ': ' . $_POST['type'] . ' ' . _('Name') . ': ' . $_POST['delete']);
+		metaRefresh('pdfmain.php?deleteScope=' . $_POST['type'] . '&amp;deleteFailed=' . $_POST['delete']);
+		exit();
 	}
 	else {
-		StatusMessage('INFO', '', _('Deleted PDF structure:') . ' ' . _('Scope') . ': ' . $_POST['type'] . ' ' . _('Name') . ': ' . $_POST['delete']);
+		metaRefresh('pdfmain.php?deleteScope=' . $_POST['type'] . '&amp;deleteSucceeded=' . $_POST['delete']);
+		exit();
 	}
-	echo ("<br><a href=\"pdfmain.php\">" . _("Back to PDF Editor") . "</a>");
-	echo ("</body></html>\n");
-	exit;
 }
 
 // check if admin has aborted delete operation
 if ($_POST['abort']) {
-	StatusMessage("INFO", "", _("Delete operation canceled."));
-	echo ("<br><a href=\"pdfmain.php\">" . _("Back to PDF Editor") . "</a>");
-	echo ("</body></html>\n");
+	metaRefresh('pdfmain.php');
 	exit;
 }
+
+// print standard header
+include '../main_header.php';
+echo ("<p><br></p>\n");
 
 // check if right type was given
 $type = $_GET['type'];
