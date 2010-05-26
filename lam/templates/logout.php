@@ -54,27 +54,10 @@ logNewMessage(LOG_NOTICE, 'User ' . $ldapUser[0] . ' logged off.');
 
 setlanguage();
 
-echo $_SESSION['header'];
-
 // destroy session
 session_destroy();
 unset($_SESSION);
 
-// print logout message
+// redirect to login page
+metaRefresh('login.php');
 ?>
-
-	<title>
-		<?php echo _("Logout"); ?>
-	</title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	</head>
-	<body>
-	<p align="center"><a href="http://www.ldap-account-manager.org/" target="new_window">
-		<img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
-	</p>
-	<hr>
-	<br>
-	<p align="center"><big><b><?php echo _("You have been logged off from LDAP Account Manager."); ?></b></big></p>
-	<br><br><br><br><br><a href="../templates/login.php" target="_top"> <?php echo _("Back to Login") ?> </a>
-	</body>
-</html>
