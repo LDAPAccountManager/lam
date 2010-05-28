@@ -3,7 +3,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2009  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -150,44 +150,38 @@ div.statusError {
 h2.statusInfo {
   font-size:13pt;
   font-family:Arial,sans-serif;
-  margin-left:15px;
-  margin-right:15px;
+  margin:5px 5px 5px 15px;
 }
 
 h2.statusWarn {
   font-size:13pt;
   font-family:Arial,sans-serif;
-  margin-left:15px;
-  margin-right:15px;
+  margin:5px 5px 5px 15px;
 }
 
 h2.statusError {
   font-size:13pt;
   font-family:Arial,sans-serif;
-  margin-left:15px;
-  margin-right:15px;
+  margin:5px 5px 5px 15px;
 }
 
 /* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
 p.statusInfo {
   font-size:11pt;
   font-family:Times,serif;
-  margin-left:25px;
-  margin-right:25px;
+  margin:5px 5px 5px 25px;
 }
 
 p.statusWarn {
   font-size:11pt;
   font-family:Times,serif;
-  margin-left:25px;
-  margin-right:25px;
+  margin:5px 5px 5px 25px;
 }
 
 p.statusError {
   font-size:11pt;
   font-family:Times,serif;
-  margin-left:25px;
-  margin-right:25px;
+  margin:5px 5px 5px 25px;
 }
 
 input.smallImageButton {
