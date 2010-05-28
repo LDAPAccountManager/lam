@@ -211,6 +211,15 @@ function display_LoginPage($config_object) {
 			StatusMessage("INFO", _("Your settings were successfully saved."));
 			echo "<br>";
 		}
+		// check if a server profile was saved
+		if (isset($_GET['configSaveOk'])) {
+			StatusMessage("INFO", _("Your settings were successfully saved."), htmlspecialchars($_GET['configSaveFile']));
+			echo "<br>";
+		}
+		elseif (isset($_GET['configSaveFailed'])) {
+			StatusMessage("ERROR", _("Cannot open config file!"), htmlspecialchars($_GET['configSaveFile']));
+			echo "<br>";
+		}
 		?>
 		<div style="position:relative; z-index:5;">
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">

@@ -168,6 +168,10 @@ class LAMConfig {
 	const ACCESS_PASSWORD_CHANGE = 20;
 	const ACCESS_READ_ONLY = 0;
 	
+	/* return codes for saving configuration file */
+	const SAVE_OK = 0;
+	const SAVE_FAIL = 1;
+	
 	/* login method: predefined list or LDAP search */
 	const LOGIN_LIST = 'list';
 	const LOGIN_SEARCH = 'search';
@@ -413,10 +417,10 @@ class LAMConfig {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 				fclose($file);
 				@chmod ($conffile, 0600);
-				StatusMessage("INFO", _("Your settings were successfully saved.") , " (" . $conffile . ")");
+				return LAMConfig::SAVE_OK;
 			}
 			else {
-				StatusMessage("ERROR", _("Cannot open config file!") . " (" . $conffile . ")");
+				return LAMConfig::SAVE_FAIL;
 			}
 		}
 	}
@@ -444,7 +448,7 @@ class LAMConfig {
 	 *
 	 * @return string path on filesystem
 	 */
-	private function getPath() {
+	public function getPath() {
 		return substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 	}
 

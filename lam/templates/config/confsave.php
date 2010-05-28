@@ -76,22 +76,19 @@ if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthentica
 $_SESSION['conf_isAuthenticated'] = $conf->getName();
 
 
-// page head
-echo $_SESSION['header'];
-echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
-echo "</head><body>\n";
-echo ("<p align=\"center\"><a href=\"http://www.ldap-account-manager.org/\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
-$conf->save();
-echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
-echo("</body></html>");
+$result = $conf->save();
+
 // remove settings from session
 $sessionKeys = array_keys($_SESSION);
 for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 	if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
 }
-exit();
+
+if ($result === LAMConfig::SAVE_OK) {
+	metaRefresh('../login.php?configSaveOk=1&amp;configSaveFile=' . $conf->getPath());
+}
+else {
+	metaRefresh('../login.php?configSaveFailed=1&amp;configSaveFile=' . $conf->getPath());
+}
 
 ?>
