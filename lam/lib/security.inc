@@ -46,6 +46,10 @@ function startSecureSession() {
 	if (strtolower(session_module_name()) == 'files') {
 		$sessionDir = dirname(__FILE__) . "/../sess";
 		session_save_path($sessionDir);
+		// enable garbage collection (fix for Debian based systems)
+		if (@ini_get("session.gc_probability") == 0) {
+			@ini_set("session.gc_probability", 1);
+		}
 	}
 	@session_start();
 	// check session id
