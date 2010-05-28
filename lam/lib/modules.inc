@@ -1542,14 +1542,14 @@ class accountContainer {
 				// loop through all suffixes
 				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-					echo "<option ";
+					echo '<option value="' . $suffix . '" ';
 					if ($this->dn == $suffix) {
 						echo 'selected';
 					}
-					echo ">" . $suffix . "</option>\n";
+					echo ">" . getAbstractDN($suffix) . "</option>\n";
 				}
 				if (!($this->dn == '') && !in_array($this->dn, $_SESSION['ldap']->search_units($rootsuffix))) {
-					echo "<option selected>" . $this->dn . "</option>\n";;
+					echo '<option value="' . $this->dn . '" selected>' . getAbstractDN($this->dn) . "</option>\n";;
 				}
 			echo "</select>\n";
 			echo '&nbsp;&nbsp;&nbsp;&nbsp;';

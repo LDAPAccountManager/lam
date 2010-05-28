@@ -673,4 +673,25 @@ function cleanLDAPResult($entries) {
 	return $entries;
 }
 
+/**
+ * Transforms a DN into a more user friendly format.
+ * E.g. "dc=company,dc=de" is transformed to "company > de".
+ *
+ * @param String $dn DN
+ * @return String transformed DN
+ */
+function getAbstractDN($dn) {
+	if ($dn == '') {
+		return '';	
+	}
+	$parts = explode(',', $dn);
+	for ($i = 0; $i < sizeof($parts); $i++) {
+		$subparts = explode('=', $parts[$i]);
+		if (sizeof($subparts) == 2) {
+			$parts[$i] = $subparts[1];
+		}
+	}
+	return implode(' > ', $parts);
+}
+
 ?>

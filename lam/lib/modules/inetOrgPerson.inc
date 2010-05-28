@@ -1061,6 +1061,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$dnUsers = array_keys($dnUsers);
 			usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
 			array_unshift($dnUsers, '-');
+			for ($i = 0; $i < sizeof($dnUsers); $i++) {
+				$dnUsers[$i] = array($dnUsers[$i], getAbstractDN($dnUsers[$i]));
+			}
 			$optionsSelected = array();
 			if (isset($this->attributes['manager'][0])) {
 				$optionsSelected[] = $this->attributes['manager'][0];
@@ -1070,7 +1073,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Manager')),
-				array('kind' => 'select', 'name' => 'manager', 'size' => '1',
+				array('kind' => 'select', 'name' => 'manager', 'size' => '1', 'descriptiveOptions' => true,
 					'options' => $dnUsers, 'options_selected' => $optionsSelected),
 				array('kind' => 'help', 'value' => 'manager'));
 		}

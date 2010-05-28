@@ -244,12 +244,10 @@ class asteriskExtension extends baseModule {
 			array('kind' => 'text', 'text' => _("Extension owners") . '*'),
 			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_open', 'type' => 'submit', 'value' => _('Change')),
 			array('kind' => 'help', 'value' => 'member'));
-		for ($i = 0; $i < sizeof($this->attributes['member']); $i++) {
-		}
 		$memberPart = array();
 		if (isset($this->attributes['member'])) {
 			for ($i = 0; $i < sizeof($this->attributes['member']); $i++) {
-				$memberPart[] = array(array('kind' => 'text', 'text' => $this->attributes['member'][$i]));
+				$memberPart[] = array(array('kind' => 'text', 'text' => getAbstractDN($this->attributes['member'][$i])));
 			}
 		}
 		$return[] = array(
@@ -280,10 +278,13 @@ class asteriskExtension extends baseModule {
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$dn = $entries[$i]['dn'];
 			if (isset($dn) && (!isset($this->attributes['member']) || !in_array($dn, $this->attributes['member']))) {
-				$users_dn[] = $dn;
+				$users_dn[] = array($dn, getAbstractDN($dn));
 			}
 		}
 		$members = $this->attributes['member'];
+		for ($i = 0; $i < sizeof($members); $i++) {
+			$members[$i] = array($members[$i], getAbstractDN($members[$i]));
+		}
 		$return[] =	array(array('kind' => 'table', 'value' => array(
 			array(
 				array('kind' => 'table', 'value' => array(
@@ -306,7 +307,7 @@ class asteriskExtension extends baseModule {
 			array('kind' => 'fieldset', 'legend' => _("Extension owners"), 'value' => array(
 				array(
 					array('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' => array (
-						array(array('kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $members)))
+						array(array('kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $members, 'descriptiveOptions' => true)))
 					),
 					array('kind' => 'table', 'value' => array(
 						array(array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
@@ -314,7 +315,7 @@ class asteriskExtension extends baseModule {
 						array(array('kind' => 'help', 'value' => 'member', 'td' => array('align' => 'center')))
 					)),
 					array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
-						array(array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users_dn)))
+						array(array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users_dn, 'descriptiveOptions' => true)))
 					)
 				)
 			))

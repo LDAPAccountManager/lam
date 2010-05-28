@@ -635,9 +635,9 @@ class lamList {
 			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "', this)\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				if ($this->suffix == $this->possibleSuffixes[$i]) {
-					echo ("<option selected>" . $this->possibleSuffixes[$i] . "</option>\n");
+					echo ("<option value=\"" . $this->possibleSuffixes[$i] . "\" selected>" . getAbstractDN($this->possibleSuffixes[$i]) . "</option>\n");
 				}
-				else echo("<option>" . $this->possibleSuffixes[$i] . "</option>\n");
+				else echo("<option value=\"" . $this->possibleSuffixes[$i] . "\">" . getAbstractDN($this->possibleSuffixes[$i]) . "</option>\n");
 			}
 			echo ("</select>\n");
 		}
