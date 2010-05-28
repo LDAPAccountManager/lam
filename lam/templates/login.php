@@ -206,6 +206,11 @@ function display_LoginPage($config_object) {
 			StatusMessage("ERROR", _("Your session expired, please log in again."));
 			echo "<br>";
 		}
+		// check if main config was saved
+		if (isset($_GET['confMainSavedOk'])) {
+			StatusMessage("INFO", _("Your settings were successfully saved."));
+			echo "<br>";
+		}
 		?>
 		<div style="position:relative; z-index:5;">
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">

@@ -51,33 +51,13 @@ if (!isset($_SESSION["mainconf_password"]) || (!$cfg->checkPassword($_SESSION["m
 	exit();
 }
 
-echo $_SESSION['header'];
-
-?>
-
-		<title>
-			<?php
-				echo _("Edit general settings");
-			?>
-		</title>
-		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
-		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
-	</head>
-	<body>
-		<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank">
-			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
-		</p>
-		<hr><br>
-
-<?php
-// include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
+if (isset($_POST['cancel'])) {
+	// back to login
+	metaRefresh('../login.php');
+	exit();
 }
 
+$errors = array();
 // check if submit button was pressed
 if (isset($_POST['submit'])) {
 	// remove double slashes if magic quotes are on
@@ -87,7 +67,6 @@ if (isset($_POST['submit'])) {
 			if (is_string($_POST[$postKeys[$i]])) $_POST[$postKeys[$i]] = stripslashes($_POST[$postKeys[$i]]);
 		}
 	}
-	$errors = array();
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
@@ -140,16 +119,42 @@ if (isset($_POST['submit'])) {
 	$cfg->passwordMinClasses = $_POST['passwordMinClasses'];
 	// save settings
 	$cfg->save();
-	// print messages
-	if (sizeof($errors) > 0) {
-		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i]);
-	}
-	else {
-		StatusMessage("INFO", _("Your settings were successfully saved."));
-		// back to login page
-		echo "<p><a href=\"../login.php\">" . _("Back to login") . "</a></p>";
+	if (sizeof($errors) == 0) {
+		metaRefresh('../login.php?confMainSavedOk=1');
 		exit();
 	}
+}
+
+echo $_SESSION['header'];
+
+?>
+
+		<title>
+			<?php
+				echo _("Edit general settings");
+			?>
+		</title>
+		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
+		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
+	</head>
+	<body>
+		<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank">
+			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
+		</p>
+		<hr><br>
+
+<?php
+// include all JavaScript files
+$jsDirName = dirname(__FILE__) . '/../lib';
+$jsDir = dir($jsDirName);
+while ($jsEntry = $jsDir->read()) {
+	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
+}
+
+// print messages
+for ($i = 0; $i < sizeof($errors); $i++) {
+	StatusMessage("ERROR", $errors[$i]);
 }
 
 // check if config file is writable
@@ -370,17 +375,13 @@ if (!$cfg->isWritable()) {
 					<?php if ($cfg->isWritable()) { ?>
 					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
 					<?php } ?>
+					<input type="submit" name="cancel" value=" <?php echo _("Cancel"); ?> ">
 				</TD>
 			</TR>
 			</table>
 
 		</form>
 		<p><br></p>
-
-		<!-- back to login page -->
-		<p>
-			<a href="../login.php"> <?php echo _("Back to login"); ?> </a>
-		</p>
 
 	</body>
 </html>
