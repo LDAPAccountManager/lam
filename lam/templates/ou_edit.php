@@ -104,7 +104,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			include 'main_header.php';
 			echo "<br>\n" .
 				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
-				"<br>\n<p>" . $_POST['deleteableOU'] . "</p>\n" .
+				"<br>\n<p>" . getAbstractDN($_POST['deleteableOU']) . "</p>\n" .
 				"<br>\n" .
 				"<form action=\"ou_edit.php\" method=\"post\">\n" .
 				"<input type=\"hidden\" name=\"deleteOU\" value=\"submit\">\n" .
@@ -153,7 +153,7 @@ function display_main($message, $error) {
 		$options .= "<optgroup label=\"" . $title . "\">\n";
 		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($name));
 		for ($u = 0; $u < sizeof($units); $u++) {
-			$options .= "<option>" . $units[$u] . "</option>\n";
+			$options .= "<option value=\"" . $units[$u] . "\">" . getAbstractDN($units[$u]) . "</option>\n";
 		}
 		$options .= "</optgroup>\n";
 	}
