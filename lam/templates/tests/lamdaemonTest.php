@@ -121,8 +121,8 @@ echo "</html>\n";
  * @return boolean true, if errors occured
  */
 function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
-	$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
-	$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
+	$okImage = "<img width=16 height=16 src=\"../../graphics/pass.png\" alt=\"\">\n";
+	$failImage = "<img width=16 height=16 src=\"../../graphics/fail.png\" alt=\"\">\n";
 	// run lamdaemon and get user quotas
 	if (!$stopTest) {
 		echo "<tr class=\"userlist\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
@@ -165,8 +165,8 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
  */
 function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	$SPLIT_DELIMITER = "###x##y##x###";
-	$okImage = "<img src=\"../../graphics/pass.png\" alt=\"\">\n";
-	$failImage = "<img src=\"../../graphics/fail.png\" alt=\"\">\n";
+	$okImage = "<img width=16 height=16 src=\"../../graphics/pass.png\" alt=\"\">\n";
+	$failImage = "<img width=16 height=16 src=\"../../graphics/fail.png\" alt=\"\">\n";
 	
 	echo "<table class=\"userlist\" rules=\"none\" width=\"750\">\n";
 

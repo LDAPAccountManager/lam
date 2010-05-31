@@ -76,7 +76,7 @@ for ($t = 0; $t < sizeof($types); $t++) {
 		echo "<tr class=\"" . $types[$t] . "list\">\n";
 		echo "<td style=\"padding-left:10px;\" nowrap>" . getModuleAlias($modules[$m], $types[$t]) . "</td>\n";
 		// icon
-		echo "<td style=\"padding-left:10px;padding-right:10px;\"><img alt=\"\" src=\"" . $icon . "\"></td>\n";
+		echo "<td style=\"padding-left:10px;padding-right:10px;\"><img width=16 height=16 alt=\"\" src=\"" . $icon . "\"></td>\n";
 		// text
 		echo "<td width=\"100%\">" . $message . "</td>\n";
 		echo "</tr>\n";
