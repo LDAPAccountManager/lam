@@ -181,10 +181,10 @@ echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo
 	echo "<select name=\"ldap_suffix\" tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($suffixes); $i++) {
 		if (isset($old_options['ldap_suffix']) && ($old_options['ldap_suffix'][0] == $suffixes[$i])) {
-			echo "<option selected>" . $suffixes[$i] . "</option>\n";
+			echo "<option selected value=\"" .$suffixes[$i] . "\">" . getAbstractDN($suffixes[$i]) . "</option>\n";
 		}
 		else {
-			echo "<option>" . $suffixes[$i] . "</option>\n";
+			echo "<option value=\"" .$suffixes[$i] . "\">" . getAbstractDN($suffixes[$i]) . "</option>\n";
 		}
 	}
 	echo "</select>\n";
