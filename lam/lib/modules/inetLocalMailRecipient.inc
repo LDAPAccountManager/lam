@@ -159,14 +159,14 @@ class inetLocalMailRecipient extends baseModule {
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Local address')),
 				array('kind' => 'input', 'name' => 'localAdr' . $i, 'type' => 'text', 'size' => '20', 'value' => $localAdresses[$i]),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'delAdr' . $i, 'value' => _("Remove")),
+				array('kind' => 'input', 'type' => 'submit', 'name' => 'delAdr' . $i, 'title' => _("Remove"), 'value' => ' ', 'image' => 'del.png'),
 				array('kind' => 'help', 'value' => 'localAdr'));
 		}
 		// input box for new local addresses
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('New local address')),
 			array('kind' => 'input', 'name' => 'localAdr', 'type' => 'text', 'size' => '20', 'value' => ''),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'addAdr', 'value' => _("Add")),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addAdr', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
 			array('kind' => 'help', 'value' => 'localAdr'),
 			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($localAdresses), 'name' => 'adr_number'));
 		return $return;
