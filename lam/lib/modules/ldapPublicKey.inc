@@ -98,7 +98,7 @@ class ldapPublicKey extends baseModule {
 				$return[] = array(
 					array('kind' => 'text', 'text' => _('SSH public key')),
 					array('kind' => 'input', 'name' => 'sshPublicKey' . $i, 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => $this->attributes['sshPublicKey'][$i]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'delKey' . $i, 'value' => _("Remove")),
+					array('kind' => 'input', 'type' => 'submit', 'name' => 'delKey' . $i, 'title' => _("Remove"), 'value' => ' ', 'image' => 'del.png'),
 					array('kind' => 'help', 'value' => 'key'));
 			}
 		}
@@ -106,7 +106,7 @@ class ldapPublicKey extends baseModule {
 		$return[] = array(
 			array('kind' => 'text', 'text' => _('New SSH public key')),
 			array('kind' => 'input', 'name' => 'sshPublicKey', 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => ''),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'addKey', 'value' => _("Add")),
+			array('kind' => 'input', 'type' => 'submit', 'name' => 'addKey', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
 			array('kind' => 'help', 'value' => 'key'),
 			array('kind' => 'input', 'type' => 'hidden', 'value' => $keyCount, 'name' => 'key_number'));
 		return $return;
