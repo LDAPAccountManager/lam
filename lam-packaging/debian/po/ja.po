@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 2.7.0-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-09-07 07:05+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -38,8 +38,8 @@ msgid ""
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "LDAP Account Manager は PHP5 をサポートする全てのウェブサーバーに対応してます"
-"が、この自動構成は Apache2 にのみ対応しています。もしも Apache(2) の構成を選択"
-"した場合は、LAMは http(s)://localhost/lam でアクセスできます。"
+"が、この自動構成は Apache2 にのみ対応しています。もしも Apache(2) の構成を選"
+"択した場合は、LAMは http(s)://localhost/lam でアクセスできます。"
 
 #. Type: string
 #. Description
@@ -57,34 +57,26 @@ msgstr ""
 "LAM は http(s)://localhost/lam として LAM にアクセスできるように、httpd.conf "
 "にエイリアス名を追加します。\"lam\" 以外のエイリアス名も選べます。"
 
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "マスター構成パスワード (クリアテキスト):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"構成プロファイルはマスターパスワードで保護されています。マスターパスワード"
-"は、プロファイルの作成／削除の際に必要となります。マスターパスワードはデフォ"
-"ルトでは \"lam\" が設定され、LAM にて直接変更が可能です。"
-
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "今すぐウェブサーバを再起動しますか?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "変更を適用するためにウェブサーバを再起動する必要があります。"
 
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "マスター構成パスワード (クリアテキスト):"
 
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "構成プロファイルはマスターパスワードで保護されています。マスターパスワード"
+#~ "は、プロファイルの作成／削除の際に必要となります。マスターパスワードはデ"
+#~ "フォルトでは \"lam\" が設定され、LAM にて直接変更が可能です。"

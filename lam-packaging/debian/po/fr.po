@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager_1.0.2-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2006-05-26 11:45+0100\n"
 "Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -31,9 +31,9 @@ msgid ""
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "LDAP Account Manager s'occupe de tous les serveurs web qui gérent PHP5, mais "
-"ce processus de configuration ne fonctionne qu'avec Apache2. Si "
-"vous choisissez de configurer Apache2, vous pourrez accéder à LAM via "
-"l'adresse http(s)://localhost/lam."
+"ce processus de configuration ne fonctionne qu'avec Apache2. Si vous "
+"choisissez de configurer Apache2, vous pourrez accéder à LAM via l'adresse "
+"http(s)://localhost/lam."
 
 #. Type: string
 #. Description
@@ -52,37 +52,31 @@ msgstr ""
 "l'adresse http(s)://localhost/lam. Si vous désirez un alias différent de "
 "« lam », veuillez l'indiquer ici."
 
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Mot de passe principal (en clair) :"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"Les profils de configuration sont protégés par un mot de passe principal. "
-"Vous en aurez besoin pour créer et effacer des profils. Sa valeur par défaut "
-"est « lam » et vous pourrez le modifier directement dans LAM."
-
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Faut-il redémarrer le(s) serveur(s) web maintenant ?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 "Le(s) serveur(s) web doivent être redémarrés afin que les changements soient "
 "appliqués."
+
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Mot de passe principal (en clair) :"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Les profils de configuration sont protégés par un mot de passe principal. "
+#~ "Vous en aurez besoin pour créer et effacer des profils. Sa valeur par "
+#~ "défaut est « lam » et vous pourrez le modifier directement dans LAM."
 
 #~ msgid "Upgrade from pre-0.5.0 versions"
 #~ msgstr "Mise à niveau depuis les versions pre-0.5.0"

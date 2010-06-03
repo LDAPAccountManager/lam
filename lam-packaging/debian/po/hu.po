@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LAM 0.4.2\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2005-08-25 23:12+0100\n"
 "Last-Translator: Kakasy Gergely <kakasy@citromail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -28,17 +28,23 @@ msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid "Web server configuration:"
 msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
+#, fuzzy
+#| msgid ""
+#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
+#| "automatic configuration process only supports Apache and Apache2. If you "
+#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
+#| "lam"
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP4, but this "
-"automatic configuration process only supports Apache and Apache2. If you "
-"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "Az LDAP Account Manager bármely olyan webszervert támogat, ameiyik a PHP4-et "
 "támogatja, de ez az automatikus beállítási művelet csak az Apache-ot és az "
@@ -47,13 +53,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Alias name:"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 #, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
@@ -63,73 +69,50 @@ msgstr ""
 "elérhesse a LAM-ot a http(s)://localhost/lam címen. Ha a \"lam\"-on kívül "
 "más alias-t is szeretne, kérem, itt adja meg."
 
-#. Type: string
-#. Description
-#: ../templates:21
-#, fuzzy
-msgid "Master configuration password (clear text):"
-msgstr "Adja meg a mester beállításokat védő jelszót (clear text):"
-
-#. Type: string
-#. Description
-#: ../templates:21
-#, fuzzy
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"A beállítási profilokat mesterjelszó védi. Ezt a profilok létrehozásához és "
-"törléséhez létre kell hoznia. Alapértelmezés szerint a jelszó \"lam\", és a "
-"LAM-on belül közvetlenül megváltoztatható. De itt is megváltoztathatja."
-
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Szeretné a webszerver(eket) most újraindítani?"
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 
-#. Type: note
-#. Description
-#: ../templates:34
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr ""
-
-#. Type: note
-#. Description
-#: ../templates:34
-msgid ""
-"Please note that this version uses new file formats for configuration and "
-"account profiles. You will have to update your configuration and create new "
-"account profiles."
-msgstr ""
-"Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
-"beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait és "
-"új témaszámokat kell létrehoznia."
-
-#. Type: note
-#. Description
-#: ../templates:41
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr ""
-
-#. Type: note
-#. Description
-#: ../templates:41
 #, fuzzy
-msgid ""
-"Please note that this version uses new file formats for the configuration "
-"profiles. Please edit your configuration files and save the new settings."
-msgstr ""
-"Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
-"beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait és "
-"új témaszámokat kell létrehoznia."
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Adja meg a mester beállításokat védő jelszót (clear text):"
+
+#, fuzzy
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "A beállítási profilokat mesterjelszó védi. Ezt a profilok létrehozásához "
+#~ "és törléséhez létre kell hoznia. Alapértelmezés szerint a jelszó \"lam\", "
+#~ "és a LAM-on belül közvetlenül megváltoztatható. De itt is "
+#~ "megváltoztathatja."
+
+#~ msgid ""
+#~ "Please note that this version uses new file formats for configuration and "
+#~ "account profiles. You will have to update your configuration and create "
+#~ "new account profiles."
+#~ msgstr ""
+#~ "Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
+#~ "beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait "
+#~ "és új témaszámokat kell létrehoznia."
+
+#, fuzzy
+#~ msgid ""
+#~ "Please note that this version uses new file formats for the configuration "
+#~ "profiles. Please edit your configuration files and save the new settings."
+#~ msgstr ""
+#~ "Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
+#~ "beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait "
+#~ "és új témaszámokat kell létrehoznia."
 
 #~ msgid "Enter alias:"
 #~ msgstr "Adja meg az alias-t:"

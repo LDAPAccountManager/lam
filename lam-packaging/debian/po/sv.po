@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 0.5.1-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-07-29 21:15+0100\n"
 "Last-Translator: Martin Bagge <brother@bsnet.se>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
@@ -27,11 +27,6 @@ msgstr "Webbserverkonfiguration:"
 #. Type: multiselect
 #. Description
 #: ../templates:1001
-#| msgid ""
-#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
-#| "automatic configuration process only supports Apache and Apache2. If you "
-#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
-#| "lam"
 msgid ""
 "LDAP Account Manager supports any webserver that supports PHP5, but this "
 "automatic configuration process only supports Apache2. If you choose to "
@@ -57,35 +52,29 @@ msgstr ""
 "LAM kommer att lägga till ett alias till din httpd.conf som låter dig komma "
 "åt LAM på http(s)://localhost/lam. Du kan välja ett annat alias än \"lam\"."
 
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Lösenord för huvudkonfigurationen (klartext):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"Konfigurationsprofilerna skyddas av ett huvudlösenord. Du kommer att behöva "
-"det för att skapa och ta bort profiler. Som standard är det inställt till "
-"\"lam\" och kan ändras direkt i LAM."
-
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Vill du starta om din webbserver nu?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "Din webbserver behöver startas om för att ändringarna ska bli aktiva."
+
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Lösenord för huvudkonfigurationen (klartext):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Konfigurationsprofilerna skyddas av ett huvudlösenord. Du kommer att "
+#~ "behöva det för att skapa och ta bort profiler. Som standard är det "
+#~ "inställt till \"lam\" och kan ändras direkt i LAM."
 
 #~ msgid "Upgrade from pre-0.5.0 versions"
 #~ msgstr "Uppgradera från versioner före 0.5.0"

@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 2.7.0.RC1-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-07-30 08:37+0100\n"
 "Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
 "Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
@@ -49,13 +49,15 @@ msgstr "Configuración del servidor web:"
 #. Type: multiselect
 #. Description
 #: ../templates:1001
-#| msgid ""
-#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
-#| "automatic configuration process only supports Apache and Apache2. If you "
-#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
-#| "lam"
-msgid "LDAP Account Manager supports any webserver that supports PHP5, but this automatic configuration process only supports Apache2. If you choose to configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
-msgstr "El gestor de cuentas LDAP es compatible con cualquier servidor web que permita usar PHP5, pero este proceso automático de configuración sólo es compatible con Apache2. Si escoge configurar Apache2, podrá acceder a LAM desde «http(s)://localhost/lam»."
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"El gestor de cuentas LDAP es compatible con cualquier servidor web que "
+"permita usar PHP5, pero este proceso automático de configuración sólo es "
+"compatible con Apache2. Si escoge configurar Apache2, podrá acceder a LAM "
+"desde «http(s)://localhost/lam»."
 
 #. Type: string
 #. Description
@@ -66,35 +68,42 @@ msgstr "Alias:"
 #. Type: string
 #. Description
 #: ../templates:2001
-msgid "LAM will add an alias to your httpd.conf which allows you to access LAM at http(s)://localhost/lam. You may select an alias other than \"lam\"."
-msgstr "LAM añadirá un alias a su archivo «httpd.conf», que le permitirá acceder a LAM desde «http(s)://localhost/lam». Puede elegir un alias distinto a «lam»."
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Contraseña maestra de la configuración (texto en claro):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "The configuration profiles are secured by a master password. You will need it to create and delete profiles. As default it is set to \"lam\" and can be changed directly in LAM."
-msgstr "Los perfiles de configuración se protegen con una contraseña maestra. La necesitará para crear y borrar perfiles. Por omisión se establece a «lam» y puede cambiarse directamente en LAM."
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
+msgstr ""
+"LAM añadirá un alias a su archivo «httpd.conf», que le permitirá acceder a "
+"LAM desde «http(s)://localhost/lam». Puede elegir un alias distinto a «lam»."
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "¿Desea reiniciar ahora su(s) servidor(es) web?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Su(s) servidor(es) web necesitan reiniciarse para que se apliquen los cambios."
+msgstr ""
+"Su(s) servidor(es) web necesitan reiniciarse para que se apliquen los "
+"cambios."
+
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Contraseña maestra de la configuración (texto en claro):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Los perfiles de configuración se protegen con una contraseña maestra. La "
+#~ "necesitará para crear y borrar perfiles. Por omisión se establece a «lam» "
+#~ "y puede cambiarse directamente en LAM."
 
 #~ msgid "Upgrade from pre-0.5.0 versions"
 #~ msgstr "Actualizar desde versiones anteriores a la 0.5.0"
+
 #~ msgid ""
 #~ "Please note that this version uses new file formats for configuration and "
 #~ "account profiles. You will have to update your configuration and create "
@@ -103,8 +112,10 @@ msgstr "Su(s) servidor(es) web necesitan reiniciarse para que se apliquen los ca
 #~ "Por favor, tenga en cuenta que esta versión usa formatos nuevos de "
 #~ "archivo para la configuración y los perfiles de usuario. Tendrá que "
 #~ "actualizar su configuración y crear nuevos perfiles de usuario."
+
 #~ msgid "Upgrade from pre-1.0.0 versions"
 #~ msgstr "Actualizar desde versiones anteriores a la 1.0.0"
+
 #~ msgid ""
 #~ "Please note that this version uses new file formats for the configuration "
 #~ "profiles. Please edit your configuration files and save the new settings."
@@ -112,4 +123,3 @@ msgstr "Su(s) servidor(es) web necesitan reiniciarse para que se apliquen los ca
 #~ "Por favor, tenga en cuenta que esta versión usa formatos nuevos de "
 #~ "archivo para los perfiles de configuración. Edite sus archivos de "
 #~ "configuración y guarde los cambios."
-

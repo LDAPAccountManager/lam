@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2007-01-22 21:47+0100\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2007-04-17 18:21+0100\n"
 "Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
 "Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
@@ -25,8 +25,21 @@ msgstr "Webserverconfiguratie:"
 #. Type: multiselect
 #. Description
 #: ../templates:1001
-msgid "LDAP Account Manager supports any webserver that supports PHP4, but this automatic configuration process only supports Apache and Apache2. If you choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
-msgstr "LDAP Account Manager ondersteund alle webservers die PHP4 ondersteunen, dit automatische configuratieproces ondersteund echter enkel Apache en Apache2.  Als u ervoor kiest om de automatische configuratie uit te voeren wordt LAM toegankelijk via http(s)://localhost/lam"
+#, fuzzy
+#| msgid ""
+#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
+#| "automatic configuration process only supports Apache and Apache2. If you "
+#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
+#| "lam"
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"LDAP Account Manager ondersteund alle webservers die PHP4 ondersteunen, dit "
+"automatische configuratieproces ondersteund echter enkel Apache en Apache2.  "
+"Als u ervoor kiest om de automatische configuratie uit te voeren wordt LAM "
+"toegankelijk via http(s)://localhost/lam"
 
 #. Type: string
 #. Description
@@ -37,54 +50,57 @@ msgstr "Aliasnaam:"
 #. Type: string
 #. Description
 #: ../templates:2001
-msgid "LAM will add an alias to your httpd.conf which allows you to access LAM at http(s)://localhost/lam. You may select an alias other than \"lam\"."
-msgstr "LAM voegt een alias toe aan uw httpd.conf, waardoor LAM toegankelijk wordt via http(s)://localhost/lam. U kunt ook een ander alias dan 'lam' kiezen."
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Meester-configuratiewachtwoord (niet versleuteld):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "The configuration profiles are secured by a master password. You will need it to create and delete profiles. As default it is set to \"lam\" and can be changed directly in LAM."
-msgstr "De configuratieprofielen worden beveiligd met een meestwachtwoord. U heeft dit wachtwoord nodig om profielen aan te maken en te verwijderen. De standaardwaarde is 'lam' en kan rechtstreeks in LAM veranderd worden."
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
+msgstr ""
+"LAM voegt een alias toe aan uw httpd.conf, waardoor LAM toegankelijk wordt "
+"via http(s)://localhost/lam. U kunt ook een ander alias dan 'lam' kiezen."
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Wilt u uw webserver(s) nu herstarten?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Uw webserver(s) dienen herstart te worden om de veranderingen te doen ingaan."
+msgstr ""
+"Uw webserver(s) dienen herstart te worden om de veranderingen te doen ingaan."
 
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Opwaardering van pre-0.50 versies"
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Meester-configuratiewachtwoord (niet versleuteld):"
 
-#. Type: note
-#. Description
-#: ../templates:5001
-msgid "Please note that this version uses new file formats for configuration and account profiles. You will have to update your configuration and create new account profiles."
-msgstr "Opgelet: deze versie gebruikt nieuwe bestandsformaten voor configuratie en account-profielen. U zult uw configuratie moeten bijwerken en nieuwe account-profielen moeten aanmaken."
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "De configuratieprofielen worden beveiligd met een meestwachtwoord. U "
+#~ "heeft dit wachtwoord nodig om profielen aan te maken en te verwijderen. "
+#~ "De standaardwaarde is 'lam' en kan rechtstreeks in LAM veranderd worden."
 
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Opwaardering van pre-1.0.0 versies"
+#~ msgid "Upgrade from pre-0.5.0 versions"
+#~ msgstr "Opwaardering van pre-0.50 versies"
 
-#. Type: note
-#. Description
-#: ../templates:6001
-msgid "Please note that this version uses new file formats for the configuration profiles. Please edit your configuration files and save the new settings."
-msgstr "Opgelet: deze versie gebruikt nieuwe bestandsformaten voor configuratie en account-profielen. Gelieve uw configuratiebestanden aan te passen en de veranderingen op te slaan."
+#~ msgid ""
+#~ "Please note that this version uses new file formats for configuration and "
+#~ "account profiles. You will have to update your configuration and create "
+#~ "new account profiles."
+#~ msgstr ""
+#~ "Opgelet: deze versie gebruikt nieuwe bestandsformaten voor configuratie "
+#~ "en account-profielen. U zult uw configuratie moeten bijwerken en nieuwe "
+#~ "account-profielen moeten aanmaken."
 
+#~ msgid "Upgrade from pre-1.0.0 versions"
+#~ msgstr "Opwaardering van pre-1.0.0 versies"
+
+#~ msgid ""
+#~ "Please note that this version uses new file formats for the configuration "
+#~ "profiles. Please edit your configuration files and save the new settings."
+#~ msgstr ""
+#~ "Opgelet: deze versie gebruikt nieuwe bestandsformaten voor configuratie "
+#~ "en account-profielen. Gelieve uw configuratiebestanden aan te passen en "
+#~ "de veranderingen op te slaan."

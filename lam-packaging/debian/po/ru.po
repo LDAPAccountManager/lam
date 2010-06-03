@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 2.7.0-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-08-07 21:45+0400\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: multiselect
 #. Description
@@ -33,8 +34,8 @@ msgid ""
 msgstr ""
 "LDAP Account Manager работает с любым веб-сервером, поддерживающим PHP5, "
 "однако автоматическая настройка может быть выполнена только для Apache2. "
-"Если выбрать настройку Apache2, то LAM будет доступен по "
-"адресу: http(s)://localhost/lam"
+"Если выбрать настройку Apache2, то LAM будет доступен по адресу: http(s)://"
+"localhost/lam"
 
 #. Type: string
 #. Description
@@ -52,33 +53,26 @@ msgstr ""
 "Для доступа к LAM по адресу: http(s)://localhost/lam в httpd.conf будет "
 "добавлен псевдоним. Вы можете выбрать другой псевдоним вместо \"lam\"."
 
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Главный пароль настройки (открытым текстом):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"Настроечные профили защищены главным паролем. Он понадобится "
-"при создании и удалении профилей. По умолчанию его значение равно "
-"\"lam\" и может быть изменено из интерфейса LAM."
-
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Перезапустить веб-сервер(ы) прямо сейчас?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "Чтобы активировать новые настройки, нужно перезапустить веб-сервер(ы)."
 
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Главный пароль настройки (открытым текстом):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Настроечные профили защищены главным паролем. Он понадобится при создании "
+#~ "и удалении профилей. По умолчанию его значение равно \"lam\" и может быть "
+#~ "изменено из интерфейса LAM."

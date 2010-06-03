@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-07-29 20:43+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
@@ -41,9 +41,8 @@ msgid ""
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "LDAP Account Manager unterstützt alle Webserver mit PHP5-Unterstützung, aber "
-"diese automatische Konfiguration funktioniert nur mit Apache2. "
-"Nach der Auswahl von Apache2 kann LAM unter http(s)://localhost/lam "
-"erreicht werden."
+"diese automatische Konfiguration funktioniert nur mit Apache2. Nach der "
+"Auswahl von Apache2 kann LAM unter http(s)://localhost/lam erreicht werden."
 
 #. Type: string
 #. Description
@@ -62,33 +61,27 @@ msgstr ""
 "(s)://localhost/lam zu erreichen. Wenn Sie einen anderen Alias als \"lam\" "
 "wünschen, können Sie ihn hier angeben."
 
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Hauptpasswort für die Konfiguration (im Klartext):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"Die Konfigurationsprofile werden über ein Hauptpasswort gesichert. Es wird "
-"benötigt um Profile anzulegen und zu löschen. Der Standardwert dafür ist "
-"\"lam\" und kann innerhalb von LAM geändert werden."
-
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Soll(en) der/die Webserver jetzt neugestartet werden?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Sie müssen ihre(n) Webserver neustarten um die Änderungen zu übernehmen."
+msgstr ""
+"Sie müssen ihre(n) Webserver neustarten um die Änderungen zu übernehmen."
 
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Hauptpasswort für die Konfiguration (im Klartext):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Die Konfigurationsprofile werden über ein Hauptpasswort gesichert. Es "
+#~ "wird benötigt um Profile anzulegen und zu löschen. Der Standardwert dafür "
+#~ "ist \"lam\" und kann innerhalb von LAM geändert werden."

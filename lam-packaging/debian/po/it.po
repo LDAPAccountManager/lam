@@ -2,13 +2,12 @@
 # Copyright (C) 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the ldap-account-manager package.
 # Luca Monducci <luca.mo@tiscali.it>, 2007 - 2009.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: lam 2.7.0.RC1-1  italian debconf "
-"templates\n"
+"Project-Id-Version: lam 2.7.0.RC1-1  italian debconf templates\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-08-01 15:48+0200\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
@@ -51,32 +50,26 @@ msgstr ""
 "LAM aggiunge un alias in httpd.conf che permette di accedere a LAM da http"
 "(s)://localhost/lam. È possibile scegliere un alias diverso da \"lam\"."
 
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid "Master configuration password (clear text):"
-msgstr "Password di configurazione (in chiaro):"
-
-#. Type: string
-#. Description
-#: ../templates:3001
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"I profili di configurazione sono sicuri grazie a una password, questa "
-"password è necessaria per creare e rimuovere i profili. La password "
-"predefinita è \"lam\" e può essere cambiata direttamente da LAM."
-
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Si vuole riavviare il/i server web adesso?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "Per applicare le modifiche è necessario riavviare il/i server web."
+
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Password di configurazione (in chiaro):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "I profili di configurazione sono sicuri grazie a una password, questa "
+#~ "password è necessaria per creare e rimuovere i profili. La password "
+#~ "predefinita è \"lam\" e può essere cambiata direttamente da LAM."

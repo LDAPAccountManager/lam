@@ -58,9 +58,6 @@ if [ "$1" = "configure" ]; then
     alias="$RET"
 	 perl -pi -e "s/Alias \/.* \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
         /etc/ldap-account-manager/apache.conf
-    db_get "ldap-account-manager/passwd"
-    passwd="$RET"
-	 perl -pi -e "s/password: .*/password: $passwd/g" /etc/ldap-account-manager/config.cfg
     db_get "ldap-account-manager/config-webserver"
     webservers="$RET"
     restart=""

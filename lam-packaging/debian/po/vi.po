@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 2.7.0.RC1-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2009-07-27 22:08+0200\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
 "PO-Revision-Date: 2009-09-23 18:33+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -16,71 +16,63 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: LocFactoryEditor 1.8\n"
 
-#: ../templates:1001
 #. Type: multiselect
 #. Description
+#: ../templates:1001
 msgid "Web server configuration:"
 msgstr "Cấu hình phục vụ Web:"
 
-#: ../templates:1001
 #. Type: multiselect
 #. Description
-#| msgid ""
-#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
-#| "automatic configuration process only supports Apache and Apache2. If you "
-#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
-#| "lam"
+#: ../templates:1001
 msgid ""
 "LDAP Account Manager supports any webserver that supports PHP5, but this "
 "automatic configuration process only supports Apache2. If you choose to "
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"Bộ Quản lý Tài khoản LDAP hỗ trợ cùng những trình phục vụ Web cũng hỗ trợ PHP5, nhưng mà tiến trình tự động cấu hình này chỉ hỗ trợ Apache2. Nếu bạn chọn cấu hình Apache2 thì Bộ Quản lý Tài khoản LDAP có thể được truy cập ở địa chỉ « http(s)://localhost/lam »."
+"Bộ Quản lý Tài khoản LDAP hỗ trợ cùng những trình phục vụ Web cũng hỗ trợ "
+"PHP5, nhưng mà tiến trình tự động cấu hình này chỉ hỗ trợ Apache2. Nếu bạn "
+"chọn cấu hình Apache2 thì Bộ Quản lý Tài khoản LDAP có thể được truy cập ở "
+"địa chỉ « http(s)://localhost/lam »."
 
-#: ../templates:2001
 #. Type: string
 #. Description
+#: ../templates:2001
 msgid "Alias name:"
 msgstr "Tên bí danh:"
 
-#: ../templates:2001
 #. Type: string
 #. Description
+#: ../templates:2001
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"BQT sẽ thêm một bí danh vào tập tin cấu hình « httpd.conf » của bạn, để cho phép "
-"bạn truy cập đến BQT ở địa chỉ « http(s)://localhost/lam ». Bạn cũng có thể chọn bí danh "
-"khác với « lam » (v.d. « bqt »)."
+"BQT sẽ thêm một bí danh vào tập tin cấu hình « httpd.conf » của bạn, để cho "
+"phép bạn truy cập đến BQT ở địa chỉ « http(s)://localhost/lam ». Bạn cũng có "
+"thể chọn bí danh khác với « lam » (v.d. « bqt »)."
 
-#: ../templates:3001
-#. Type: string
-#. Description
-msgid "Master configuration password (clear text):"
-msgstr "Mật khẩu cấu hình chủ (chữ rõ):"
-
-#: ../templates:3001
-#. Type: string
-#. Description
-msgid ""
-"The configuration profiles are secured by a master password. You will need "
-"it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM."
-msgstr ""
-"Những hồ sơ cấu hình đựơc bảo mật bằng một mật khẩu chủ. Bạn cần thiết nó để tạo "
-"hay xoá hồ sơ. Mật khẩu mặc định là « lam » mà có thể được thay đổi trực tiếp "
-"trong BQT."
-
-#: ../templates:4001
 #. Type: boolean
 #. Description
+#: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Vậy bạn có muốn khởi chạy (các) trình phục vụ Web ngay bây giờ không?"
 
-#: ../templates:4001
 #. Type: boolean
 #. Description
+#: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 "Cần phải khởi chạy lại (các) trình phục vụ Web, để áp dụng các thay đổi."
+
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Mật khẩu cấu hình chủ (chữ rõ):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Những hồ sơ cấu hình đựơc bảo mật bằng một mật khẩu chủ. Bạn cần thiết nó "
+#~ "để tạo hay xoá hồ sơ. Mật khẩu mặc định là « lam » mà có thể được thay đổi "
+#~ "trực tiếp trong BQT."

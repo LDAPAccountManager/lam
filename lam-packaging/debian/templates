@@ -15,14 +15,6 @@ _Description: Alias name:
  access LAM at http(s)://localhost/lam. You may select an alias other than
  "lam".
 
-Template: ldap-account-manager/passwd
-Type: string
-Default: lam
-_Description: Master configuration password (clear text):
- The configuration profiles are secured by a master password.
- You will need it to create and delete profiles. As default it is
- set to "lam" and can be changed directly in LAM.
-
 Template: ldap-account-manager/restart-webserver
 Type: boolean
 Default: true

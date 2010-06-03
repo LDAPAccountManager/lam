@@ -9,8 +9,6 @@ db_input medium "ldap-account-manager/config-webserver" || true
 db_go
 db_input low "ldap-account-manager/alias" || true
 db_go
-db_input low "ldap-account-manager/passwd" || true
-db_go
 db_input medium "ldap-account-manager/restart-webserver" || true
 db_go
 
