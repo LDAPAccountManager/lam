@@ -43,6 +43,8 @@ include_once("ldap.inc");
 include_once("lamdaemon.inc");
 /** security functions */
 include_once("security.inc");
+/** meta HTML classes */
+include_once("html.inc");
 
 /**
 * This includes all module files.
@@ -701,9 +703,8 @@ function getRequiredExtensions() {
 * @return array List of input field names and their type (name => type)
 */
 function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
-	include_once("html.inc");
 	if ($input instanceof htmlElement) {
-		return $input->generateHTML($module, $values, $restricted, $tabindex, $scope);
+		return $input->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 	$ret = array();
 	if (is_array($input)) {
