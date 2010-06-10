@@ -183,9 +183,13 @@ class cache {
 	* @return array list of variables to save
 	*/
 	function __sleep() {
-		$this->ldapcache = $_SESSION['ldap']->encrypt(serialize($this->ldapcache));
+		$attrs = array("attributes", "time");
+		if (isset($this->ldapcache)) {
+			$this->ldapcache = $_SESSION['ldap']->encrypt(serialize($this->ldapcache));
+			$attrs[] = 'ldapcache';
+		}
 		// define which attributes to save
-		return array("ldapcache", "attributes", "time");
+		return $attrs;
 	}
 	
 	/**
