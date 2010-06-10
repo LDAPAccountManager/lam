@@ -207,6 +207,7 @@ $old_options = $conf->get_moduleSettings();
 
 
 // display module boxes
+$tabindex = 0;
 $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
