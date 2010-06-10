@@ -707,7 +707,15 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 		return $input->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 	$ret = array();
-	if (is_array($input)) {
+	if (is_array($input) && (sizeof($input) > 0)) {
+		// check for array of metaHTML objects
+		if ($input[0] instanceof htmlElement) {
+			$return = array();
+			for ($i = 0; $i < sizeof($input); $i++) {
+				$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+			}
+			return $return;
+		}
 		echo "<table>\n";
 		for ($i=0; $i<count($input); $i++) {	// $i = row number
 			// Draw column
@@ -783,7 +791,9 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 							echo htmlspecialchars(implode("\r\n", $values[$input[$i][$j]['name']]), ENT_QUOTES, "UTF-8");
 						}
 						else {
-							echo htmlspecialchars($input[$i][$j]['value'], ENT_QUOTES, "UTF-8");
+							if (isset($input[$i][$j]['value'])) {
+								echo htmlspecialchars($input[$i][$j]['value'], ENT_QUOTES, "UTF-8");
+							}
 						}
 						echo "</textarea>";
 						$ret[$input[$i][$j]['name']] = 'textarea';	// save type
@@ -1246,7 +1256,6 @@ class accountContainer {
 		$y = 5000;
 		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
 		// Display rest of html-page
-		echo "<br>*" . _('required');
 		echo "</td></tr></table>\n";
 		$this->printPageFooter();
 	}
