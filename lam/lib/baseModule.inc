@@ -648,9 +648,23 @@ abstract class baseModule {
 	public function get_configOptions($scopes, $allScopes) {
 		$return = array();
 		for ($i = 0; $i < sizeof($scopes); $i++) {
-			if (isset($this->meta['config_options'][$scopes[$i]])) $return = array_merge($return, $this->meta['config_options'][$scopes[$i]]);
+			if (isset($this->meta['config_options'][$scopes[$i]])) {
+				if (is_array($this->meta['config_options'][$scopes[$i]])) {
+					$return = array_merge($return, $this->meta['config_options'][$scopes[$i]]);
+				}
+				else {
+					$return[] = $this->meta['config_options'][$scopes[$i]];
+				}
+			}
 		}
-		if (isset($this->meta['config_options']['all'])) $return = array_merge($return, $this->meta['config_options']['all']);
+		if (isset($this->meta['config_options']['all'])) {
+			if (is_array($this->meta['config_options']['all'])) {
+				$return = array_merge($return, $this->meta['config_options']['all']);
+			}
+			else {
+				$return[] = $this->meta['config_options']['all'];
+			}
+		}
 		return $return;
 	}
 
@@ -1247,8 +1261,12 @@ abstract class baseModule {
 	 * @see parseHtml()
 	 */
 	public function getSelfServiceSettings() {
-		if (isset($this->meta['selfServiceSettings']) && is_array($this->meta['selfServiceSettings'])) return $this->meta['selfServiceSettings'];
-		else return array();
+		if (isset($this->meta['selfServiceSettings'])) {
+			return $this->meta['selfServiceSettings'];
+		}
+		else {
+			return array();
+		}
 	}
 
 	/**
