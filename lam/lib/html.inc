@@ -392,7 +392,7 @@ class htmlSelect implements htmlElement {
 	 * @param array $selectedElements list of selected elements
 	 * @param int $size size (optional, default = 1)
 	 */
-	function __construct($name, $elements, $selectedElements, $size=1) {
+	function __construct($name, $elements, $selectedElements, $size = 1) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
 		$this->selectedElements = $selectedElements;
@@ -488,6 +488,61 @@ class htmlSelect implements htmlElement {
 		$this->sortElements = $sortElements;
 	}
 
+}
+
+/**
+ * Select with label and help link.
+ * 
+ * @package metaHTML
+ */
+class htmlTableExtendedSelect extends htmlSelect {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $name element name
+	 * @param array $elements list of elememts
+	 * @param array $selectedElements list of selected elements
+	 * @param String $label descriptive label
+	 * @param String $helpID help ID (optional, default none)
+	 * @param int $size size (optional, default = 1)
+	 */
+	function __construct($name, $elements, $selectedElements, $label, $helpID = null, $size = 1) {
+		parent::__construct($name, $elements, $selectedElements, $size);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo $this->label;
+		echo "\n</td>\n<td>\n";
+		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		echo "\n</td>\n<td>\n";
+		// print help link
+		if ($this->helpID != null) {
+			echo "\n</td>\n<td>\n";
+			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		return $return;
+	}
+	
 }
 
 /**
@@ -602,7 +657,9 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	private $label;
 	/** help ID */
 	private $helpID;
-
+	/** specifies if label is printed before the checkbox */
+	private $labelFirst;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -611,10 +668,11 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
 	 */
-	function __construct($name, $checked, $label, $helpID) {
+	function __construct($name, $checked, $label, $helpID = null, $labelFirst = true) {
 		parent::__construct($name, $checked);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
+		$this->labelFirst = $labelFirst;
 	}
 
 	/**
@@ -629,9 +687,16 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo $this->label;
-		echo "\n</td>\n<td>\n";
-		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		if ($this->labelFirst) {
+			echo $this->label;
+			echo "\n</td>\n<td>\n";
+			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		else {
+			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+			echo "\n</td>\n<td>\n";
+			echo $this->label;
+		}
 		echo "\n</td>\n<td>\n";
 		// print help link
 		if ($this->helpID != null) {
@@ -765,6 +830,65 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	 */
 	public function setRequired($required) {
 		$this->required = $required;
+	}
+
+}
+
+/**
+ * Prints the HTML code for an image.
+ * 
+ * @package metaHTML
+ */
+class htmlImage implements htmlElement {
+	
+	/** path to image */
+	private $path;
+	/** width */
+	private $width;
+	/** height */
+	private $height;
+	/** alt text */
+	private $alt;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $path image location
+	 * @param int $width image width (optional, default original size) 
+	 * @param int $height image height (optional, default original size)
+	 * @param String $alt alt text (optional)
+	 */
+	function __construct($path, $width = null, $height = null, $alt = ' ') {
+		$this->path = htmlspecialchars($path);
+		$this->width = $width;
+		$this->height = $height;
+		$this->alt = htmlspecialchars($alt);
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$path = ' src="' . $this->path . '"';
+		$width = '';
+		if ($this->width != null) {
+			$width = ' width="' . $this->width . '"';
+		}
+		$height = '';
+		if ($this->height != null) {
+			$height = ' height="' . $this->height . '"';
+		}
+		$alt = ' alt="' . $this->alt . '"';
+		echo '<img' . $path . $width . $height . $alt . ">\n";
+		return array();
 	}
 
 }
