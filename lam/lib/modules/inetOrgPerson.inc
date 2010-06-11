@@ -174,86 +174,57 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['profile_mappings']['inetOrgPerson_st'] = 'st';
 		}
 		// configuration settings
-		$return['config_options']['all'] = array(
-			array(
-				array('kind' => 'text', 'text' => '<b>' . _('Hidden options') . ":</b> ", 'td' => array('valign' => 'top')),
-				array('kind' => 'table', 'value' => array(
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideDescription', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Description')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideStreet', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Street')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hidePostOfficeBox', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Post office box')),
-					),
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hidePostalCode', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Postal code')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideLocation', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Location')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideState', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('State')),
-					),
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hidePostalAddress', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Postal address')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideOfficeName', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Office name')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideRoomNumber', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Room number')),
-					),
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideTelephoneNumber', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Telephone number')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideHomeTelephoneNumber', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Home telephone number')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideMobileNumber', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Mobile number')),
-					),
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideFaxNumber', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Fax number')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideEMailAddress', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Email address')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideJobTitle', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Job title')),
-					),
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideCarLicense', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Car license')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideEmployeeType', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Employee type')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideBusinessCategory', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Business category')),
-					),
-					array(
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideDepartments', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Department(s)')),
-						array('kind' => 'text', 'text' => '&nbsp;'),
-						array('kind' => 'input', 'name' => 'inetOrgPerson_hideManager', 'type' => 'checkbox'),
-						array('kind' => 'text', 'text' => _('Manager')),
-					),
-				)),
-				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'help', 'value' => 'hiddenOptions'),
-			)
-		);
+		$configContainer = new htmlTable();
+		$configContainerHead = new htmlTable();
+		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
+		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainerOptions = new htmlTable();
+		$configContainer->addElement($configContainerHead, true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDescription', false, _('Description'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideStreet', false, _('Street'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostOfficeBox', false, _('Post office box'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalCode', false, _('Postal code'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLocation', false, _('Location'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideState', false, _('State'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalAddress', false, _('Postal address'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideOfficeName', false, _('Office name'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRoomNumber', false, _('Room number'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideTelephoneNumber', false, _('Telephone number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideHomeTelephoneNumber', false, _('Home telephone number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideMobileNumber', false, _('Mobile number'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideFaxNumber', false, _('Fax number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEMailAddress', false, _('Email address'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideJobTitle', false, _('Job title'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideCarLicense', false, _('Car license'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeType', false, _('Employee type'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideBusinessCategory', false, _('Business category'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDepartments', false, _('Department(s)'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideManager', false, _('Manager'), null, false));
+		$configContainer->addElement($configContainerOptions);
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
 			$confActiveUserModules = $_SESSION['conf_config']->get_AccountModules('user');
 			if (!in_array('posixAccount', $confActiveUserModules)) {
+				
 				$return['config_options']['all'][] = array(
 					array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
 					array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
@@ -264,6 +235,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 					array('kind' => 'help', 'value' => 'pwdHash'));
 			}
 		}
+		$return['config_options']['all'] = $configContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
