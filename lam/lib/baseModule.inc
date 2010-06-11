@@ -503,15 +503,15 @@ abstract class baseModule {
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
-	* The return value is an array that contains meta HTML code.<br>
-	* The type "fieldset" is not allowed here. The name attributes are used as keywords to load
+	* The return value is an object implementing htmlElement.<br>
+	* The field name are used as keywords to load
 	* and save profiles. We recommend to use the module name as prefix for them
 	* (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	* 
-	* @return array meta HTML code
+	* @return htmlElement meta HTML object
 	* 
 	* @see baseModule::get_metaData()
-	* @see parseHtml()
+	* @see htmlElement
 	*/
 	public function get_profileOptions() {
 		if (isset($this->meta['profile_options'])) return $this->meta['profile_options'];
@@ -635,15 +635,15 @@ abstract class baseModule {
 	* 
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
-	* The type "fieldset" is not allowed here. The attribute names are used as keywords to load and save settings.
+	* The field names are used as keywords to load and save settings.
 	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	*
 	* @param array $scopes account types (user, group, host)
 	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return array meta HTML code
+	* @return mixed htmlElement or array of htmlElement
 	* 
 	* @see baseModule::get_metaData()
-	* @see parseHtml()
+	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
 		$return = array();
@@ -1091,8 +1091,8 @@ abstract class baseModule {
 	* This can be used to interact with the user, e.g. should the home directory be deleted? The output
 	* of all modules is displayed on a single page.
 	*
-	* @return meta HTML code
-	* @see parseHtml()
+	* @return htmlElement meta HTML object
+	* @see htmlElement
 	*/
 	public function display_html_delete() {
 		return 0;
@@ -1116,9 +1116,9 @@ abstract class baseModule {
 	 * 
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 * 
-	 * @return meta HTML
+	 * @return htmlElement meta HTML object
 	 *
-	 * @see parseHtml()
+	 * @see htmlElement
 	 */
 	public abstract function display_html_attributes();
 
@@ -1218,14 +1218,13 @@ abstract class baseModule {
 	 * 
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
-	 * <b>Format:</b> array(<field1> => array(<META HTML>), ...)<br>
 	 * It is not possible to display help links.
 	 *
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
-	 * @return array meta HTML
+	 * @return htmlElement meta HTML object
 	 * 
-	 * @see parseHtml()
+	 * @see htmlElement
 	 */
 	public function getSelfServiceOptions($fields, $attributes) {
 		// this function must be overwritten by subclasses.
@@ -1251,14 +1250,14 @@ abstract class baseModule {
 	 * 
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
-	 * The type "fieldset" is not allowed here. The name attributes are used as keywords to load
+	 * The name attributes are used as keywords to load
 	 * and save settings. We recommend to use the module name as prefix for them
 	 * (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	 *
-	 * @return array meta HTML code
+	 * @return htmlElement meta HTML object
 	 * 
 	 * @see baseModule::get_metaData()
-	 * @see parseHtml()
+	 * @see htmlElement
 	 */
 	public function getSelfServiceSettings() {
 		if (isset($this->meta['selfServiceSettings'])) {
