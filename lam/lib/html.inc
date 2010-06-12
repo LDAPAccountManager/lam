@@ -414,12 +414,13 @@ class htmlSelect implements htmlElement {
 		if (isset($values[$this->name])) {
 			$this->selectedElements = $values[$this->name];
 		}
-		$name = ' name="' . $this->name . '"';
-		$size = ' size="' . $this->size . '"';
 		$multi = '';
 		if ($this->multiSelect) {
 			$multi = ' multiple';
+			$this->name = $this->name . '[]';
 		}
+		$name = ' name="' . $this->name . '"';
+		$size = ' size="' . $this->size . '"';
 		echo '<select' . $name . $size . $multi . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		// sorting
