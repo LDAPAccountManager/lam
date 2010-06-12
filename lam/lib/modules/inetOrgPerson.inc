@@ -121,36 +121,31 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
 			'departmentNumber' => _('Department(s)'));
 		// profile elements
-		$return['profile_options'] = array();
+		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$return['profile_options'][] = array(
-				array('kind' => 'text', 'text' => _('Location') . ":"),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_l', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'l'));
+			$profileElements[] = new htmlTableExtendedInputField(_('Location'), 'inetOrgPerson_l', null, 'l');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$return['profile_options'][] = array(
-				array('kind' => 'text', 'text' => _('Department(s)') . ":"),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_departmentNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'departmentNumber'));
+			$profileElements[] = new htmlTableExtendedInputField(_('Department(s)'), 'inetOrgPerson_departmentNumber', null, 'departmentNumber');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$return['profile_options'][] = array(
-				array('kind' => 'text', 'text' => _('State') . ":"),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_st', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'st'));
+			$profileElements[] = new htmlTableExtendedInputField(_('State'), 'inetOrgPerson_st', null, 'st');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$return['profile_options'][] = array(
-				array('kind' => 'text', 'text' => _('Job title') . ":"),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'title'));
+			$profileElements[] = new htmlTableExtendedInputField(_('Job title'), 'inetOrgPerson_title', null, 'title');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
-			$return['profile_options'][] = array(
-				array('kind' => 'text', 'text' => _('Employee type') . ":"),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'employeeType'));
+			$profileElements[] = new htmlTableExtendedInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType');
+		}
+		if (sizeof($profileElements) > 0) {
+			$profileContainer = new htmlTable();
+			for ($i = 0; $i < sizeof($profileElements); $i++) {
+				$profileContainer->addElement($profileElements[$i]);
+				if ($i != (sizeof($profileElements) - 1)) {
+					$profileContainer->addNewLine();
+				}
+			}
+			$return['profile_options'] = $profileContainer;
 		}
 		// profile checks
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
@@ -219,20 +214,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDepartments', false, _('Department(s)'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideManager', false, _('Manager'), null, false));
-		$configContainer->addElement($configContainerOptions);
+		$configContainer->addElement($configContainerOptions, true);
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
-			$confActiveUserModules = $_SESSION['conf_config']->get_AccountModules('user');
-			if (!in_array('posixAccount', $confActiveUserModules)) {
-				
-				$return['config_options']['all'][] = array(
-					array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-					array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
-						'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-					array('kind' => 'text', 'value' => '&nbsp;'),
-					array('kind' => 'text', 'value' => '&nbsp;'),
-					array('kind' => 'text', 'value' => '&nbsp;'),
-					array('kind' => 'help', 'value' => 'pwdHash'));
+			$confActiveUnixModules = array_merge($_SESSION['conf_config']->get_AccountModules('user'), $_SESSION['conf_config']->get_AccountModules('host'), $_SESSION['conf_config']->get_AccountModules('group'));
+			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
+				$options = array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN");
+				$optionsSelected = array('SSHA');
+				$hashOption = new htmlTable();
+				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', $options, $optionsSelected, _("Password hash type"), 'pwdHash'));
+				$configContainer->addElement($hashOption);
 			}
 		}
 		$return['config_options']['all'] = $configContainer;
@@ -815,216 +806,135 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
+		$container = new htmlTable();
+		$fieldContainer = new htmlTable();
+		$imageContainer = new htmlTable();
+		$container->addElement($fieldContainer);
+		$container->addElement($imageContainer);
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
-			$return[] = array(array('kind' => 'text', 'text' => _('User name')),
-				array('kind' => 'input', 'name' => 'userName', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $uid),
-				array('kind' => 'help', 'value' => 'uid'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('User name'), 'userName', $uid, 'uid'), true);
 		}
 		$firstName = '';
 		if (isset($this->attributes['givenName'][0])) $firstName = $this->attributes['givenName'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('First name')),
-			array('kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $firstName),
-			array('kind' => 'help', 'value' => 'givenName'));
+		$fieldContainer->addElement(new htmlTableExtendedInputField(_('First name'), 'givenName', $firstName, 'givenName'), true);
 		$lastName = '';
 		if (isset($this->attributes['sn'][0])) $lastName = $this->attributes['sn'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Last name').'*'),
-			array('kind' => 'input', 'name' => 'sn', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $lastName),
-			array ('kind' => 'help', 'value' => 'sn'));
+		$lastNameElement = new htmlTableExtendedInputField(_('Last name'), 'sn', $lastName, 'sn');
+		$lastNameElement->setRequired(true);
+		$fieldContainer->addElement($lastNameElement, true);
 		if (!in_array('posixAccount', $modules)) {
 			$cn = '';
 			if (isset($this->attributes['cn'][0])) $cn = $this->attributes['cn'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Common name') . '*'),
-				array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $cn),
-				array('kind' => 'help', 'value' => 'cn'));
+			$cnElement = new htmlTableExtendedInputField(_('Common name'), 'cn', $cn, 'cn');
+			$cnElement->setRequired(true);
+			$fieldContainer->addElement($cnElement, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$description = '';
 			if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
-			$return[] = array (
-				array('kind' => 'text', 'text' => _('Description')),
-				array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $description),
-				array('kind' => 'help', 'value' => 'description'));
-	
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		}
-		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
+
+		$fieldContainer->addElement(new htmlOutputText(''), true);
+
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$street = '';
 			if (isset($this->attributes['street'][0])) $street = $this->attributes['street'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Street')),
-				array('kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $street),
-				array('kind' => 'help', 'value' => 'street'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Street'), 'street', $street, 'street'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
 			$postOffice = '';
 			if (isset($this->attributes['postOfficeBox'][0])) $postOffice = $this->attributes['postOfficeBox'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Post office box')),
-				array('kind' => 'input', 'name' => 'postOfficeBox', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $postOffice),
-				array('kind' => 'help', 'value' => 'postOfficeBox'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Post office box'), 'postOfficeBox', $postOffice, 'postOfficeBox'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
 			$postalCode = '';
 			if (isset($this->attributes['postalCode'][0])) $postalCode = $this->attributes['postalCode'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Postal code')),
-				array('kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $postalCode),
-				array('kind' => 'help', 'value' => 'postalCode'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Postal code'), 'postalCode', $postalCode, 'postalCode'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$l = '';
 			if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Location')),
-				array('kind' => 'input', 'name' => 'l', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $l),
-				array('kind' => 'help', 'value' => 'l'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Location'), 'l', $l, 'l'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$st = '';
 			if (isset($this->attributes['st'][0])) $st = $this->attributes['st'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('State')),
-				array('kind' => 'input', 'name' => 'st', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $st),
-				array('kind' => 'help', 'value' => 'st'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('State'), 'st', $st, 'st'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$postalAddress = '';
 			if (isset($this->attributes['postalAddress'][0])) $postalAddress = $this->attributes['postalAddress'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Postal address')),
-				array('kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $postalAddress),
-				array('kind' => 'help', 'value' => 'postalAddress'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Postal address'), 'postalAddress', $postalAddress, 'postalAddress'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$physicalDeliveryOfficeName = '';
 			if (isset($this->attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Office name')),
-				array('kind' => 'input', 'name' => 'physicalDeliveryOfficeName', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $physicalDeliveryOfficeName),
-				array('kind' => 'help', 'value' => 'physicalDeliveryOfficeName'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Office name'), 'physicalDeliveryOfficeName', $physicalDeliveryOfficeName, 'physicalDeliveryOfficeName'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$roomNumber = '';
 			if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Room number')),
-				array('kind' => 'input', 'name' => 'roomNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $roomNumber),
-				array('kind' => 'help', 'value' => 'roomNumber'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Room number'), 'roomNumber', $roomNumber, 'roomNumber'), true);
 		}
 
-		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-
+		$fieldContainer->addElement(new htmlOutputText(''), true);
+		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephone = '';
 			if (isset($this->attributes['telephoneNumber'][0])) $telephone = $this->attributes['telephoneNumber'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Telephone number')),
-				array('kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $telephone),
-				array('kind' => 'help', 'value' => 'telephoneNumber'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Telephone number'), 'telephoneNumber', $telephone, 'telephoneNumber'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
 			$homePhone = '';
 			if (isset($this->attributes['homePhone'][0])) $homePhone = $this->attributes['homePhone'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Home telephone number')),
-				array('kind' => 'input', 'name' => 'homePhone', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $homePhone),
-				array('kind' => 'help', 'value' => 'homePhone'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Home telephone number'), 'homePhone', $homePhone, 'homePhone'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
 			$mobile = '';
 			if (isset($this->attributes['mobile'][0])) $mobile = $this->attributes['mobile'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Mobile number')),
-				array('kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $mobile),
-				array('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Mobile number'), 'mobileTelephoneNumber', $mobile, 'mobileTelephoneNumber'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$fax = '';
 			if (isset($this->attributes['facsimileTelephoneNumber'][0])) $fax = $this->attributes['facsimileTelephoneNumber'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Fax number')),
-				array('kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $fax),
-				array('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Fax number'), 'facsimileTelephoneNumber', $fax, 'facsimileTelephoneNumber'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$email = '';
 			if (isset($this->attributes['mail'][0])) $email = $this->attributes['mail'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Email address')),
-				array('kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $email),
-				array('kind' => 'help', 'value' => 'mail'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Email address'), 'mail', $email, 'mail'), true);
 		}
 
-		$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-
+		$fieldContainer->addElement(new htmlOutputText(''), true);
+		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$title = '';
 			if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Job title')),
-				array('kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
-					'value' => $title),
-				array('kind' => 'help', 'value' => 'title'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Job title'), 'title', $title, 'title'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$carLicense = '';
 			if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Car license')),
-				array('kind' => 'input', 'name' => 'carLicense', 'type' => 'text', 'size' => '30',
-					'value' => $carLicense),
-				array('kind' => 'help', 'value' => 'carLicense'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Car license'), 'carLicense', $carLicense, 'carLicense'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$employeeType = '';
 			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Employee type')),
-				array('kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $employeeType),
-				array('kind' => 'help', 'value' => 'employeeType'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee type'), 'employeeType', $employeeType, 'employeeType'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$businessCategory = '';
 			if (isset($this->attributes['businessCategory'][0])) $businessCategory = $this->attributes['businessCategory'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Business category')),
-				array('kind' => 'input', 'name' => 'businessCategory', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $businessCategory),
-				array('kind' => 'help', 'value' => 'businessCategory'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Business category'), 'businessCategory', $businessCategory, 'businessCategory'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$departmentNumber = '';
 			if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Department(s)')),
-				array('kind' => 'input', 'name' => 'departmentNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $departmentNumber),
-				array('kind' => 'help', 'value' => 'departmentNumber'));
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Department(s)'), 'departmentNumber', $departmentNumber, 'departmentNumber'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			// get list of existing users for manager attribute
@@ -1033,8 +943,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$dnUsers = array_keys($dnUsers);
 			usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
 			array_unshift($dnUsers, '-');
+			$options = array();
 			for ($i = 0; $i < sizeof($dnUsers); $i++) {
-				$dnUsers[$i] = array($dnUsers[$i], getAbstractDN($dnUsers[$i]));
+				$options[getAbstractDN($dnUsers[$i])] = $dnUsers[$i];
 			}
 			$optionsSelected = array();
 			if (isset($this->attributes['manager'][0])) {
@@ -1043,11 +954,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			else {
 				$optionsSelected[] = '-';
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Manager')),
-				array('kind' => 'select', 'name' => 'manager', 'size' => '1', 'descriptiveOptions' => true,
-					'options' => $dnUsers, 'options_selected' => $optionsSelected),
-				array('kind' => 'help', 'value' => 'manager'));
+			$managerElement = new htmlTableExtendedSelect('manager', $options, $optionsSelected, _('Manager'), 'manager');
+			$managerElement->setHasDescriptiveElements(true);
+			$fieldContainer->addElement($managerElement, true);
 		}
 		// photo
 		$photoFile = '../../graphics/userDefault.png';
@@ -1060,19 +969,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$photoFile = '../../tmp/' . $jpeg_filename;
 			$noPhoto = false;
 		}
-		$photo = array(array(
-			array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile, 'td' => array('align' => 'center'))));
+		$imageContainer->addElement(new htmlImage($photoFile), true);
 		if ($noPhoto) {
-			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_' . get_class($this) . '_photo_open', 'value' => _('Add photo')));
+			$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
 		}
 		else {
-			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'delPhoto', 'value' => _('Delete photo')));
+			$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
 		}
-		$return = array(array(
-			array('kind' => 'table', 'value' => $return, 'td' => array('width' => '100%')),
-			array('kind' => 'table', 'value' => $photo, 'td' => array('valign' => 'top', 'align' => 'right','width' => '100%'))
-			));
-		return $return;
+		return $container; 
 	}
 
 	/**
