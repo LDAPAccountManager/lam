@@ -53,7 +53,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns meta data that is interpreted by parent class
+	 * Returns meta data that is interpreted by parent class.
 	 *
 	 * @return array array with meta data
 	 */
@@ -378,6 +378,14 @@ class asteriskAccount extends baseModule implements passwordService {
 		return array();
 	}
 	
+	/**
+	 * Builds the password string for the password attribute.
+	 *
+	 * @param array $attributes LDAP attributes
+	 * @param array $moduleSettings module configuration settings
+	 * @param String $password password
+	 * @return String value for password attribute
+	 */
 	public static function buildPasswordString(&$attributes, &$moduleSettings, $password) {
 		$astRealm = asteriskAccount::ASTERISK_DEFAULT_REALM;
 		$asteriskRealmFromProfile = $moduleSettings['asteriskAccount_AsteriskRealm'][0];

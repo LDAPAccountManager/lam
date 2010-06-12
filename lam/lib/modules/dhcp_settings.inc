@@ -93,6 +93,11 @@ class dhcp_settings extends baseModule {
 		parent::__construct($scope);
 	}
 
+	/**
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 */
 	public function get_metaData() {
 		$return = array();
 		// manages host accounts
@@ -324,7 +329,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 	}
 	
-	/* This function returns an array with 4 entries:
+	/** This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
 	* e.g. create a new user and add him to some groups via attribute memberUid
@@ -524,10 +529,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		return $num;
 	}
 	
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	public function display_html_attributes() {
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {

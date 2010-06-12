@@ -56,8 +56,12 @@ class ddns extends baseModule {
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 	}
 
+	/**
+	 * Returns meta data that is interpreted by parent class.
+	 *
+	 * @return array array with meta data
+	 */
 	public function get_metaData() {
-
 		$return = array();
 		// manages host accounts
 		$return["account_types"] = array("dhcp");

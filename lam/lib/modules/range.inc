@@ -52,6 +52,13 @@ class range extends baseModule {
 	// For check, if IPs overlaped.
 	public $overlaped;
 
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	* 
+	* @see baseModule::get_metaData()
+	*/
 	public function get_metaData() {
 		$return = array();
 		// manages dhcp accounts
@@ -93,6 +100,9 @@ class range extends baseModule {
 		return $return;
 	}
 	
+	/**
+	 *  This function fills the error message array with messages.
+	 */
 	public function load_Messages() {
 		$this->messages['range_errors'][0] = array('ERROR', _('One or more errors occured. The invalid fields are marked.'), '');
 		$this->messages['add_range'][0] = array('ERROR', _('New range'), _('Adding the range failed because errors occured.'));
@@ -373,10 +383,11 @@ class range extends baseModule {
 		return $errors;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
-	*/
+	/**
+	 * Returns the HTML meta data for the main account page.
+	 * 
+	 * @return array HTML meta data
+	 */
 	public function display_html_attributes() {
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
             echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
@@ -443,14 +454,15 @@ class range extends baseModule {
 		return $return;
 	}
 
-	/* This function returns an array with 4 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
-	*/
+	/**
+	 * This function returns an array with 4 entries:
+	 * array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
+	 * DN is the DN to change. It may be possible to change several DNs,
+	 * e.g. create a new user and add him to some groups via attribute memberUid
+	 * add are attributes which have to be added to ldap entry
+	 * remove are attributes which have to be removed from ldap entry
+	 * lamdaemon are lamdaemon commands to modify homedir, quotas, ...
+	 */
 	public function save_attributes() {
 		$return = array();
 		// Get easy attributes
