@@ -67,6 +67,8 @@ class htmlTable implements htmlElement {
 	const header = "<table>\n<tr>\n";
 	/** table footer */
 	const footer = "</tr>\n</table>\n";
+	/** new line */
+	const newLine = "</tr><tr>\n";
 	
 	private $elements = array();
 
@@ -94,7 +96,7 @@ class htmlTable implements htmlElement {
 	 * Adds another line to the table.
 	 */
 	public function addNewLine() {
-		$this->elements[] = "</tr><tr>\n";
+		$this->elements[] = htmlTable::newLine;
 	}
 	
 	/**
@@ -120,7 +122,9 @@ class htmlTable implements htmlElement {
 			}
 			// print simple Strings
 			else {
-				echo $this->elements[$i];
+				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == htmlTable::newLine) ) {
+					echo $this->elements[$i];
+				}
 			}
 		}
 		echo htmlTable::footer;
@@ -534,7 +538,6 @@ class htmlTableExtendedSelect extends htmlSelect {
 		echo $this->label;
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		echo "\n</td>\n<td>\n";
 		// print help link
 		if ($this->helpID != null) {
 			echo "\n</td>\n<td>\n";
@@ -698,7 +701,6 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 			echo "\n</td>\n<td>\n";
 			echo $this->label;
 		}
-		echo "\n</td>\n<td>\n";
 		// print help link
 		if ($this->helpID != null) {
 			echo "\n</td>\n<td>\n";
@@ -814,7 +816,6 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 		}
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		echo "\n</td>\n<td>\n";
 		// print help link
 		if ($this->helpID != null) {
 			echo "\n</td>\n<td>\n";
