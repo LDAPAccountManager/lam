@@ -333,7 +333,7 @@ class htmlButton implements htmlElement {
 			}
 		}
 		echo '<input type="submit"' . $name . $value . $style . $class . '>';
-		return array($this->name, 'submit');
+		return array($this->name => 'submit');
 	}
 	
 }
@@ -455,10 +455,10 @@ class htmlSelect implements htmlElement {
 		}
 		echo "</select>\n";
 		if ($this->multiSelect) {
-			return array($this->name, 'multiselect');
+			return array($this->name => 'multiselect');
 		}
 		else {
-			return array($this->name, 'select');
+			return array($this->name => 'select');
 		}
 	}
 	
