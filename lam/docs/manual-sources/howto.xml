@@ -2487,6 +2487,24 @@ Have fun!
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_hostObject.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Hosts</entry>
+
+            <entry>hostObject</entry>
+
+            <entry></entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_mailAlias.png" />
                 </imageobject>
               </inlinemediaobject></entry>
@@ -2699,6 +2717,24 @@ Have fun!
             <entry>ppolicy.schema, core.schema</entry>
 
             <entry>Part of OpenLDAP installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_sudo.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Sudo roles</entry>
+
+            <entry>sudoRole</entry>
+
+            <entry>sudo.schema</entry>
+
+            <entry>Part of sudo-ldap installation</entry>
 
             <entry>This account type is only available in LAM Pro.</entry>
           </row>
