@@ -53,6 +53,9 @@ function resizeIframe() {
 };
 document.getElementById('treeframe').onload = resizeIframe;
 window.onresize = resizeIframe;
+
+jQuery('#tab_tree').addClass('ui-tabs-selected');
+jQuery('#tab_tree').addClass('ui-state-active');
 </script>
 
 

@@ -677,6 +677,10 @@ class lamList {
 	 */
 	protected function listPrintHeader() {
 		include '../main_header.php';
+		echo '<script type="text/javascript">';
+		echo "jQuery('#tab_$this->type').addClass('ui-tabs-selected');";
+		echo "jQuery('#tab_$this->type').addClass('ui-state-active');";
+		echo '</script>';
 	}
 	
 	/**

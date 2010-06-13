@@ -70,17 +70,27 @@ while ($jsEntry = $jsDir->read()) {
 	<td width="200" align="right" height=20><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 </table>
-	<p align="center">
-		<?php
-			$linkList = array();
-			if ($_SESSION['config']->get_Suffix('tree') != "") {
-				$linkList[] = '<a href="' . $headerPrefix . 'tree/treeViewContainer.php"><img alt="tree view" src="' . $headerPrefix . '../graphics/process.png">&nbsp;<big>' . _("Tree view") . '</big></a>' . "\n";
-			}
-			for ($i = 0; $i < sizeof($types); $i++) {
-					$linkList[] = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] . '">' .
-					'<img alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
-					'<big>' . getTypeAlias($types[$i]) . '</big></a>';
-			}
-			echo implode("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n", $linkList);
-		?>
-	</p><hr><br>
+<br>
+<div id="headerTabs" class="ui-tabs">
+<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">
+	<?php
+		$linkList = array();
+		if ($_SESSION['config']->get_Suffix('tree') != "") {
+			$link = '<a href="' . $headerPrefix . 'tree/treeViewContainer.php"><img alt="tree view" src="' . $headerPrefix . '../graphics/process.png">&nbsp;<big>' . _("Tree view") . '</big></a>' . "\n";
+			echo '<li id="tab_tree" class="ui-state-default ui-corner-top">';
+			echo $link;
+			echo "</li>\n";
+		}
+		for ($i = 0; $i < sizeof($types); $i++) {
+			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] . '">' .
+				'<img alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
+				getTypeAlias($types[$i]) . '</a>';
+			echo '<li id="tab_' . $types[$i] . '" class="ui-state-default ui-corner-top">';
+			echo $link;
+			echo "</li>\n";
+		}
+	?>
+</ul>
+</div>
+		
+<br>
