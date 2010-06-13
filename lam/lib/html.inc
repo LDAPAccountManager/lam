@@ -34,12 +34,16 @@ $Id$
  * 
  * @package metaHTML
  */
-interface htmlElement {
+abstract class htmlElement {
+	
+	const OPTION_ALIGN = 0;
 	
 	const ALIGN_TOP = 0;
 	const ALIGN_LEFT = 1;
 	const ALIGN_RIGHT = 2;
 	const ALIGN_BOTTOM = 3;
+	
+	public $alignment = null;
 
 	/**
 	 * Prints the HTML code for this element.
@@ -52,7 +56,7 @@ interface htmlElement {
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope);
+	abstract function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope);
 
 }
 
@@ -61,7 +65,7 @@ interface htmlElement {
  *
  * @package metaHTML
  */
-class htmlTable implements htmlElement {
+class htmlTable extends htmlElement {
 
 	/** table header */
 	const header = "<table>\n<tr>\n";
@@ -70,6 +74,7 @@ class htmlTable implements htmlElement {
 	/** new line */
 	const newLine = "</tr><tr>\n";
 	
+	/** list of subelements */
 	private $elements = array();
 
 	/**
@@ -77,10 +82,29 @@ class htmlTable implements htmlElement {
 	 *
 	 * @param mixed $element htmlElement object or a simple String
 	 * @param boolean $newLine adds a new line after the element (optional, default false)
+	 * @param array $options list of options (e.g. htmlElement::OPTION_ALIGN => htmlElement::ALIGN_TOP)
 	 */
 	public function addElement($element, $newLine = false) {
 		if ($element instanceof htmlElement) {
-			$this->elements[] = "<td>\n";
+			// check if alignment option was given
+			$align = '';
+			if ($element->alignment !== null) {
+				switch ($element->alignment) {
+					case htmlElement::ALIGN_BOTTOM:
+						$align = 'valign="bottom"';
+					break;
+					case htmlElement::ALIGN_TOP:
+						$align = 'valign="top"';
+					break;
+					case htmlElement::ALIGN_LEFT:
+						$align = 'align="left"';
+					break;
+					case htmlElement::ALIGN_RIGHT:
+						$align = 'align="right"';
+					break;
+				}
+			}
+			$this->elements[] = "<td $align>\n";
 			$this->elements[] = $element;
 			$this->elements[] = "</td>\n";
 			if ($newLine) {
@@ -138,7 +162,7 @@ class htmlTable implements htmlElement {
  * 
  * @package metaHTML
  */
-class htmlTableExtendedInputField implements htmlElement {
+class htmlTableExtendedInputField extends htmlElement {
 
 	/** Descriptive label */
 	private $label;
@@ -248,7 +272,7 @@ class htmlTableExtendedInputField implements htmlElement {
  * 
  * @package metaHTML
  */
-class htmlHelpLink implements htmlElement {
+class htmlHelpLink extends htmlElement {
 	
 	/** help ID */
 	private $helpID;
@@ -286,7 +310,7 @@ class htmlHelpLink implements htmlElement {
  *
  * @package metaHTML
  */
-class htmlButton implements htmlElement {
+class htmlButton extends htmlElement {
 	
 	/** button name */
 	protected $name;
@@ -347,7 +371,7 @@ class htmlButton implements htmlElement {
  *
  * @package metaHTML
  */
-class htmlAccountPageButton extends htmlButton implements htmlElement {
+class htmlAccountPageButton extends htmlButton {
 	
 	/**
 	 * Constructor
@@ -371,7 +395,7 @@ class htmlAccountPageButton extends htmlButton implements htmlElement {
  *
  * @package metaHTML
  */
-class htmlSelect implements htmlElement {
+class htmlSelect extends htmlElement {
 	
 	/** name of select field */
 	private $name;
@@ -554,7 +578,7 @@ class htmlTableExtendedSelect extends htmlSelect {
  * 
  * @package metaHTML
  */
-class htmlOutputText implements htmlElement {
+class htmlOutputText extends htmlElement {
 
 	/** the text to print */
 	private $string;
@@ -600,7 +624,7 @@ class htmlOutputText implements htmlElement {
  * 
  * @package metaHTML
  */
-class htmlInputCheckbox implements htmlElement {
+class htmlInputCheckbox extends htmlElement {
 	
 	/** unique name of input element */
 	private $name;
@@ -717,7 +741,7 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
  * 
  * @package metaHTML
  */
-class htmlInputTextarea implements htmlElement {
+class htmlInputTextarea extends htmlElement {
 	
 	/** unique name of input element */
 	private $name;
@@ -841,7 +865,7 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
  * 
  * @package metaHTML
  */
-class htmlImage implements htmlElement {
+class htmlImage extends htmlElement {
 	
 	/** path to image */
 	private $path;
@@ -893,6 +917,53 @@ class htmlImage implements htmlElement {
 		return array();
 	}
 
+}
+
+/**
+ * Adds an empty space with given width and height.
+ *
+ * @package metaHTML
+ */
+class htmlSpacer extends htmlElement {
+	
+	private $width;
+	private $height;
+	
+	/**
+	 * Constructor.
+	 *
+	 * @param String $width width (e.g. 10px)
+	 * @param String $height height (e.g. 10px)
+	 */
+	function __construct($width, $height) {
+		$this->width = htmlspecialchars($width);
+		$this->height = htmlspecialchars($height);
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$width = '';
+		if ($this->width != null) {
+			$width = 'width: ' . $this->width . ';';
+		}
+		$height = '';
+		if ($this->height != null) {
+			$height = 'height: ' . $this->height . ';';
+		}
+		echo "<div style=\"$width $height\"></div>\n";
+		return array();
+	}
+	
 }
 
 ?>
