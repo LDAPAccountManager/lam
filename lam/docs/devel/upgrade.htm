@@ -6,6 +6,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -23,12 +24,12 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
-<h2>3.0.0 -&gt; 3.1.0</h2>There is a new object-oriented library to
+<h2>3.0.0 -&gt; 3.1.0</h2><span style="font-weight: bold;">Module interface:</span> There is a new object-oriented library to
 generate HTML for the account modules (e.g. used for
 display_html_attributes()). This will allow additional functionality
 like client side validation. Please see lib/html.inc or package
 metaHTML in the phpdoc documentation.<br>
-<span style="color: red; font-weight: bold;">Attention: The old array-based meta HTML elements will only be supported until Q2/2011!</span><br>
+<span style="color: red; font-weight: bold;">Attention: </span><span style="color: red; font-weight: bold;">The getSelfServiceOptions() function no longer supports the old meta HTML. </span><span style="color: red; font-weight: bold;">The other functions will support the old array-based meta HTML elements only until Q2/2011! </span><br>
 <br>
 The PDF editor now supports descriptive PDF
 fields. You can use this by returning an associative array for the PDF
