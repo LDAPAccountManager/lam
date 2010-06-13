@@ -138,5 +138,5 @@ main license and authors:
 lib/fpdf.php                   A  2003  Olivier Plathey
 lib/font/Vera*                 B  2003  Bitstream, Inc.
 templates/lib/wz_tooltip.js    C        Walter Zorn
-templates/lib/jquery*.js       D  2009  John Resig
+templates/lib/jquery*.js       D  2010  John Resig, 2010 Paul Bakaus
 lib/3rdParty/phpseclib         C        Jim Wigginton
