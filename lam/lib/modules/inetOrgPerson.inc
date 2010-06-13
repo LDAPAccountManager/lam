@@ -809,8 +809,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container = new htmlTable();
 		$fieldContainer = new htmlTable();
 		$imageContainer = new htmlTable();
+		$imageContainer->alignment = htmlElement::ALIGN_TOP;
 		$container->addElement($fieldContainer);
-		$container->addElement($imageContainer);
+		$container->addElement(new htmlSpacer('50px', null));
+		$container->addElement($imageContainer, false);
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$uid = '';
