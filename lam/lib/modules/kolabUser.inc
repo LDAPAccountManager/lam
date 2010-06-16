@@ -1014,16 +1014,20 @@ class kolabUser extends baseModule {
 				$return['add'][$attrName] = $attributesNew[$attrName];
 			}
 			else {
-				for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
-					if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
-						$return['mod'][$attrName] = $attributesNew[$attrName];
-						break;
+				if (isset($attributes[$attrName])) {
+					for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
+						if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
+							$return['mod'][$attrName] = $attributesNew[$attrName];
+							break;
+						}
 					}
 				}
-				for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
-					if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
-						$return['mod'][$attrName] = $attributesNew[$attrName];
-						break;
+				if (isset($attributesNew[$attrName])) {
+					for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
+						if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
+							$return['mod'][$attrName] = $attributesNew[$attrName];
+							break;
+						}
 					}
 				}
 			}
