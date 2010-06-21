@@ -6915,7 +6915,7 @@ msgid "The format of this custom script setting is invalid."
 msgstr "El format del paràmetre d'aquest script personal és invàlid."
 
 #: ../lib/modules/asteriskVoicemail.inc:213
-msgid "The full name name is invalid."
+msgid "The full name is invalid."
 msgstr "El nom complet és incorrecte."
 
 #: ../templates/login.php:431
