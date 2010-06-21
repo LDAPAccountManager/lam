@@ -68,14 +68,16 @@ abstract class htmlElement {
 class htmlTable extends htmlElement {
 
 	/** table header */
-	const header = "<table>\n<tr>\n";
+	const header = "<table>\n";
 	/** table footer */
-	const footer = "</tr>\n</table>\n";
+	const footer = "</table>\n";
 	/** new line */
 	const newLine = "</tr><tr>\n";
 	
 	/** list of subelements */
 	private $elements = array();
+	/** specifies if currently a row is open */
+	private $rowOpen = false;
 
 	/**
 	 * Adds an element to the table. The element may be a htmlElement object or a simple String.
@@ -85,7 +87,22 @@ class htmlTable extends htmlElement {
 	 * @param array $options list of options (e.g. htmlElement::OPTION_ALIGN => htmlElement::ALIGN_TOP)
 	 */
 	public function addElement($element, $newLine = false) {
-		if ($element instanceof htmlElement) {
+		// add row element
+		if ($element instanceof htmlTableRow) {
+			// check if a row needs to be closed
+			if ($this->rowOpen) {
+				$this->elements[] = "</tr>\n";
+				$this->rowOpen = false;
+			}
+			$this->elements[] = $element;
+		}
+		// add cell element
+		elseif ($element instanceof htmlElement) {
+			// check if a row needs to be opened
+			if (!$this->rowOpen) {
+				$this->elements[] = "<tr>\n";
+				$this->rowOpen = true;
+			}
 			// check if alignment option was given
 			$align = '';
 			if ($element->alignment !== null) {
@@ -120,7 +137,12 @@ class htmlTable extends htmlElement {
 	 * Adds another line to the table.
 	 */
 	public function addNewLine() {
-		$this->elements[] = htmlTable::newLine;
+		if (!$this->rowOpen) {
+			$this->elements[] = "<tr>\n";
+		}
+		else {
+			$this->elements[] = htmlTable::newLine;
+		}
 	}
 	
 	/**
@@ -151,8 +173,56 @@ class htmlTable extends htmlElement {
 				}
 			}
 		}
+		if ($this->rowOpen) {
+			echo "</tr>\n";
+		}
 		echo htmlTable::footer;
 		return $return;
+	}
+
+}
+
+/**
+ * A row inside a htmlTable.
+ * 
+ * @see htmlTable
+ * @package metaHTML
+ */
+class htmlTableRow extends htmlElement {
+
+	private $cells;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param array $cells list of htmlElements
+	 * @see htmlElement
+	 */
+	function __construct($cells) {
+		$this->cells = $cells;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$types = array();
+		echo "<tr>\n";
+			for ($i = 0; $i < sizeof($this->cells); $i++) {
+				echo "<td>\n";
+				$types = array_merge($types, $this->cells[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+				echo "</td>\n";
+			}
+		echo "</tr>";
+		return $types;
 	}
 
 }
@@ -695,6 +765,7 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 * @param boolean $checked checked 
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
+	 * @param boolean $labelFirst specifies if the label is at the beginning or at the end (optional, default beginning)
 	 */
 	function __construct($name, $checked, $label, $helpID = null, $labelFirst = true) {
 		parent::__construct($name, $checked);
@@ -725,6 +796,96 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 			echo "\n</td>\n<td>\n";
 			echo $this->label;
 		}
+		// print help link
+		if ($this->helpID != null) {
+			echo "\n</td>\n<td>\n";
+			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		return $return;
+	}
+	
+}
+
+/**
+ * Prints the HTML code for a file upload field.
+ * 
+ * @package metaHTML
+ */
+class htmlInputFileUpload extends htmlElement {
+	
+	/** unique name of input element */
+	private $name;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $name unique name
+	 */
+	function __construct($name) {
+		$this->name = htmlspecialchars($name);
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$tabindexValue = ' tabindex="' . $tabindex . '"';
+		$tabindex++;
+		echo '<input type="file" name="' . $this->name . '"' . $tabindexValue . '>';
+		return array($this->name => 'file');
+	}
+
+}
+
+/**
+ * File upload with descriptive label and help link.
+ * 
+ * @package metaHTML
+ */
+class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $name unique name
+	 * @param String $label descriptive label
+	 * @param String $helpID help ID
+	 */
+	function __construct($name, $label, $helpID = null) {
+		parent::__construct($name);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo $this->label;
+		echo "\n</td>\n<td>\n";
+		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
 		if ($this->helpID != null) {
 			echo "\n</td>\n<td>\n";

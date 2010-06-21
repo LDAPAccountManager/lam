@@ -1005,17 +1005,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	function display_html_photo() {
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Photo file (JPG format)') ),
-			array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file'),
-			array('kind' => 'help', 'value' => 'photoUpload'));
-		$return[] = array(
-			array('kind' => 'table', 'value' => array(
-				array(
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Add photo'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_submit'),
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_' . get_class($this) . '_attributes_back'),
-					array('kind' => 'text')))));
-		return $return;
+		$container = new htmlTable();
+		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Photo file (JPG format)'), 'photoUpload'), true);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Add photo')));
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$container->addElement($buttonContainer);
+		return $container;
 	}
 
 	/**
@@ -1377,10 +1373,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (in_array('firstName', $fields)) {
 			$firstName = '';
 			if (isset($attributes['givenName'][0])) $firstName = $attributes['givenName'][0];
-			$return['firstName'] = array(
-				array('kind' => 'text', 'text' => _('First name')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_firstName', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $firstName));
+			$return['firstName'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('First name'), 'inetOrgPerson_firstName', $firstName)
+			));
 		}
 		if (in_array('lastName', $fields)) {
 			$lastName = '';

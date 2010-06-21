@@ -90,7 +90,7 @@ function getSelfServiceFieldSettings($scope) {
  * @param string $scope account type
  * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
  * @param array $attributes LDAP attributes (attribute names in lower case)
- * @return array meta HTML code (array(<moduleName> => array(<field1> => array(<meta HTML>))))
+ * @return array meta HTML code (array(<moduleName> => htmlTableRow))
  */
 function getSelfServiceOptions($scope, $fields, $attributes) {
 	$return = array();
