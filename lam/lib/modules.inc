@@ -1500,26 +1500,25 @@ class accountContainer {
 	 */
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
-		$x=0;
-		echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
-		echo "<tr>\n";
-		// Loop for module
+		$x=1;		
+		echo '<div id="headerTabs" class="ui-tabs">';
+		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">';
+		// Loop for each module
 		for ($i=0; $i<count($this->order); $i++ ) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
 			// skip hidden buttons
 			if ($buttonStatus == 'hidden') continue;
-			$class = $this->type . "list-head";
-			if ($this->order[$this->current_page] == $this->order[$i]) $class = $this->type . "list-edit";
-			echo "<td class=\"settingsTab\">\n";
-			echo "<table width=\"100%\" style=\"border-collapse: collapse;\">\n";
-			echo "<tr class=\"" . $class . "\"><td onclick=\"document.getElementsByName('form_main_".$this->order[$i]."')[0].click();\"";
-				echo " align=\"center\" style=\"border: 1px solid;border-bottom: 0px solid;padding:5px;\">\n";
-			// print normal button
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
+			$activatedClass = '';
+			if ($this->order[$this->current_page] == $this->order[$i]) {
+				$activatedClass = ' ui-tabs-selected ui-state-active';
+			}
+			// print button
+			echo '<li class="ui-state-default ui-corner-top' . $activatedClass . '">';
 			$buttonImageStyle = '';
 			$buttonSpace = '';
 			if ($buttonImage != null) {
-				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;height:32px;';
+				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;height:32px;margin: 5px;';
 				$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			}
 			$buttonStyle = $buttonImageStyle . 'background-color:transparent;;border:0px solid;';
@@ -1528,11 +1527,10 @@ class accountContainer {
 			echo "\" tabindex=$x";
 			if ($buttonStatus == 'disabled') echo " disabled";
 			echo ">\n";
-			echo "</td></tr></table>\n";
-			echo '</td>';
+			echo "</li>\n";
 			$x++;
 		}
-		echo "<td width=\"100%\">&nbsp;</td></tr></table>\n";		
+		echo '</ul></div>';
 	}
 	
 	/**
