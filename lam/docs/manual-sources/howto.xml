@@ -1670,6 +1670,28 @@ Have fun!
     </section>
 
     <section>
+      <title>Sudo roles (LAM Pro)</title>
+
+      <para>You can manage your sudo roles in LDAP if you have installed the
+      sudo-ldap package or <ulink
+      url="http://www.sudo.ws/sudo/readme_ldap.html">compiled sudo with LDAP
+      support</ulink>. To activate sudo management in LAM Pro edit your server
+      profile and add the type "Sudo roles".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/sudoRole.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The sudo roles in LDAP work similar to those in /etc/sudoers. You
+      can specify who may run which commands as which user. It is also
+      possible to specify options like NOPASSWD.</para>
+    </section>
+
+    <section>
       <title>Tree view (LDAP browser)</title>
 
       <para>The tree view provides a raw view on your LDAP directory. This
