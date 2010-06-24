@@ -1048,6 +1048,10 @@ Have fun!
       <listitem>
         <para>NIS objects</para>
       </listitem>
+
+      <listitem>
+        <para>Sudo roles</para>
+      </listitem>
     </itemizedlist>
 
     <para><emphasis role="bold">Additional modules:</emphasis></para>
@@ -1079,6 +1083,10 @@ Have fun!
 
       <listitem>
         <para>Custom scripts (customScripts)</para>
+      </listitem>
+
+      <listitem>
+        <para>Sudo role (sudoRole)</para>
       </listitem>
     </itemizedlist>
 
@@ -1253,16 +1261,8 @@ Have fun!
       <section>
         <title>Asterisk</title>
 
-        <para>LAM supports Asterisk accounts, too. You can set the called ID,
-        host and account context for your users.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/mod_asterisk.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+        <para>LAM supports Asterisk accounts, too. See the <link
+        linkend="type_asterisk">Asterisk</link> section for details.</para>
       </section>
 
       <section>
@@ -1305,6 +1305,41 @@ Have fun!
         suffix of the "Password policies" type. When you set the policy to
         "default" then OpenLDAP will use the default policy as defined in your
         slapd.conf file.</para>
+      </section>
+
+      <section>
+        <title>Mail routing</title>
+
+        <para>LAM supports to manage mail routing for user accounts. You can
+        specify a routing address, the mail server and a number of local
+        addresses to route. This feature can be activated by adding the "Mail
+        routing" module to the user account type in your server
+        profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mailRouting.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>SSH keys</title>
+
+        <para>You can manage your public keys for SSH in LAM if you installed
+        the <ulink url="http://code.google.com/p/openssh-lpk/">LPK patch for
+        SSH</ulink>. Activate the "SSH public key" module for users in the
+        server profile and you can add keys to your user entries.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/ldapPublicKey.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
     </section>
 
@@ -1433,6 +1468,22 @@ Have fun!
           </mediaobject>
         </screenshot>
       </section>
+
+      <section>
+        <title>MAC addressese</title>
+
+        <para>Hosts can have an unlimited number of MAC addresses. To enable
+        this feature just add the "MAC address" module to the host account
+        type.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/macAddress.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section id="a_groupOfNames">
@@ -1476,6 +1527,107 @@ Have fun!
       </screenshot>
     </section>
 
+    <section id="type_asterisk">
+      <title>Asterisk</title>
+
+      <para>LAM includes large support for Asterisk. You can add Asterisk
+      extensions (including voicemail) to your users and also manage Asterisk
+      extensions.</para>
+
+      <para>The Asterisk support for users can be added by selecting the
+      Asterisk and Asterisk voicemail modules for users in your LAM server
+      profile. This will add the following tabs to your user accounts. </para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/asterisk.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/asteriskVoicemail.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>If you also want to manage Asterisk extensions then simply add the
+      account type "Asterisk extensions" and its module to your server
+      profile.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/asteriskExtension.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>DHCP</title>
+
+      <para>You can mange your DHCP server with LAM. It supports to manage
+      subnets, fixed IP entries, IP ranges and DDNS. The DHCP can be activated
+      by adding the account type DHCP to your server profile. Please also add
+      the DHCP modules. LAM requires that you use an LDAP entry with the
+      object class "dhcpServer" as suffix for this account type.</para>
+
+      <para>You can also change the settings of your DHCP server entry:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/dhcpMainSettings.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You can easily create new subnet entries.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/dhcpSettings.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>It is also possible to specify a list of fixed IPs.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/fixedIP.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>IP ranges may be specified.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/ranges.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>If you activated DDNS in the server entry then you may also
+      specify the DDNS settings for this subnet.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/ddns.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
     <section>
       <title>Aliases (LAM Pro)</title>
 
@@ -1490,6 +1642,27 @@ Have fun!
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/alias.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>NIS net groups</title>
+
+      <para>LAM supports to define NIS netgroups. You can use them e.g. to
+      restrict SSH access to your machines.</para>
+
+      <para>Add the NIS net group account type and its module to your server
+      profile. Then you can manage net groups in LAM. Net groups may contain
+      other net groups as child groups. You can either insert the host/user
+      names manually or print the search buttons next to the input fields to
+      find existing entries in your directory.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisNetgroup.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
