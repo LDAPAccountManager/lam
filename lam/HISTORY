@@ -1,4 +1,4 @@
-June 2010 3.1.0
+25.06.2010 3.1.0
   - usability improvements
   - Asterisk voicemail support
   - new hosts module for user accounts to define valid login workstations (replaces inetOrgPerson schema hack) (2951116)
@@ -29,6 +29,7 @@ June 2010 3.1.0
    -> DNs which include "#" are not editable/deletable (2931461)
    -> fixed configure/Makefile
    -> Asterisk input fields and authentication realm (patch 2971792)
+
 
 16.12.2009 2.9.0
   - Asterisk support
