@@ -650,6 +650,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				return false;			
 			}
 		}
+		if (!isset($this->attributes['sambaSID']) || ($this->attributes['sambaSID'] == '')) {
+			return false;
+		}
 		return true;
 	}
 
