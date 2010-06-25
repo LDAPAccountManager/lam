@@ -612,6 +612,9 @@ Have fun!
           <para>LAM supported to set a list of valid workstations on the
           "Personal" page. This required to change the LDAP schema. Since
           3.1.0 this is replaced by the new "Hosts" module for users.</para>
+
+          <para>Lamdaemon: The sudo entry needs to be changed to
+          ".../lamdaemon.pl *".</para>
         </section>
 
         <section>
@@ -1536,7 +1539,7 @@ Have fun!
 
       <para>The Asterisk support for users can be added by selecting the
       Asterisk and Asterisk voicemail modules for users in your LAM server
-      profile. This will add the following tabs to your user accounts. </para>
+      profile. This will add the following tabs to your user accounts.</para>
 
       <screenshot>
         <mediaobject>
@@ -3210,42 +3213,6 @@ Have fun!
     </section>
 
     <section>
-      <title>Install libssh2</title>
-
-      <para>The libssh2 library is needed to connect to the homedir/quota
-      server via SSH.</para>
-
-      <section>
-        <title>Install libssh2</title>
-
-        <para>You can get libssh2 here: <ulink
-        url="http://www.libssh2.org">http://www.libssh2.org</ulink> Unpack the
-        package and install it by executing the commands "./configure", "make"
-        and "make install" in the extracted directory. Several Linux
-        distributions already include a package for libssh2.</para>
-      </section>
-
-      <section>
-        <title>Install SSH2 for PHP</title>
-
-        <para>Several Linux distributions already include a package (e.g.
-        libssh2-php).</para>
-
-        <para>Otherwise, run "pecl install ssh2-beta". If you have no pecl
-        command then install the PHP Pear package (e.g. php-pear or php5-pear)
-        for your distribution.</para>
-
-        <para>If you want to compile it yourself, get the sources here: <ulink
-        url="http://pecl.php.net/package/ssh2">http://pecl.php.net/package/ssh2</ulink></para>
-
-        <para>After installing the PHP module please add this line to your
-        php.ini:</para>
-
-        <para>extension=ssh2.so</para>
-      </section>
-    </section>
-
-    <section>
       <title>Set up SSH</title>
 
       <para>Your SSH daemon must offer the password authentication method. To
@@ -3265,18 +3232,6 @@ Have fun!
         <listitem>
           <para>There is a test page for lamdaemon: Login to LAM and open
           Tools -&gt; Tests -&gt; Lamdaemon test</para>
-        </listitem>
-
-        <listitem>
-          <para>If you get garbage characters at the test page then PHP and
-          your php5-ssh2 library may not fit together. Try recompiling the
-          library and libssh2.</para>
-
-          <para>This combination was tested successfully: libssh2 0.13 with
-          php5-ssh2 0.10</para>
-
-          <para>php5-ssh2 0.11 should have no problems with recent libssh2
-          releases.</para>
         </listitem>
 
         <listitem>
