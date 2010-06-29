@@ -191,25 +191,33 @@ class account extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
+		$container = new htmlTable();
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
-			$return[] = array (
-				array('kind' => 'text', 'text' => _("User name").'*'),
-				array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20',
-					'value' => $this->attributes['uid'][0]),
-				array('kind' => 'help', 'value' => 'uid'));
+			$uid = null;
+			if (isset($this->attributes['uid'][0])) {
+				$uid = $this->attributes['uid'][0];
+			}
+			$title = _('User name');
+			if ($this->get_scope()=='host') {
+				$title = _('Host name');
+			}
+			$uidElement = new htmlTableExtendedInputField($title, 'uid', $uid, 'uid');
+			$uidElement->setRequired(true);
+			$uidElement->setFieldMaxLength(20);
+			$container->addElement($uidElement, true);
 		}
 		// description
-		$return[] = array(
-						array('kind' => 'text', 'text' => _('Description')),
-						array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
-							'maxlength' => '255', 'value' => $this->attributes['description'][0]),
-						array('kind' => 'help', 'value' => 'description'));
-		return $return;
+		$description = '';
+		if (isset($this->attributes['description'][0])) {
+			$description = $this->attributes['description'][0];
+		}
+		$container->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'));
+		return $container;
 	}
 
 	/**
