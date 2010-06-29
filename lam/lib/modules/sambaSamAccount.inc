@@ -798,7 +798,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// host attributes
 		if ($this->get_scope()=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain computers')];
-			if ($_POST['ResetSambaPassword'] || !$this->attributes['sambaNTPassword'][0]) {
+			if (isset($_POST['ResetSambaPassword']) || !isset($this->attributes['sambaNTPassword'][0])) {
 				$hostname = $attrs['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
 				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
@@ -883,7 +883,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 		}
 		else {  // host
-			if (!$this->attributes['sambaSID'][0]) {
+			if (!isset($this->attributes['sambaSID'][0])) {
 				$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 			}
 		}
@@ -1673,38 +1673,38 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if ($profile['sambaSamAccount_addExt'][0] == "true") {
+		if (isset($profile['sambaSamAccount_addExt'][0]) && ($profile['sambaSamAccount_addExt'][0] == "true")) {
 			if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'sambaSamAccount';
 			}
 		}
 		// use no password
-		if ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "true") {
+		if (isset($profile['sambaSamAccount_sambaAcctFlagsN'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "true")) {
 			$this->nopwd = true;
 		}
-		elseif ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "false") {
+		elseif (isset($profile['sambaSamAccount_sambaAcctFlagsN'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "false")) {
 			$this->nopwd = false;
 		}
 		// password expiration
-		if ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "true") {
+		if (isset($profile['sambaSamAccount_sambaAcctFlagsX'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "true")) {
 			$this->noexpire = true;
 		}
-		elseif ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "false") {
+		elseif (isset($profile['sambaSamAccount_sambaAcctFlagsX'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "false")) {
 			$this->noexpire = false;
 		}
 		// use no password
-		if ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "true") {
+		if (isset($profile['sambaSamAccount_sambaAcctFlagsD'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "true")) {
 			$this->deactivated = true;
 		}
-		elseif ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "false") {
+		elseif (isset($profile['sambaSamAccount_sambaAcctFlagsD'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "false")) {
 			$this->deactivated = false;
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 			// home drive
-			if ($profile['sambaSamAccount_sambaHomeDrive'][0] == "-") {
+			if (isset($profile['sambaSamAccount_sambaHomeDrive'][0]) && ($profile['sambaSamAccount_sambaHomeDrive'][0] == "-")) {
 				$this->attributes['sambaHomeDrive'][0] = '';
 			}
-			elseif ($profile['sambaSamAccount_sambaHomeDrive'][0]) {
+			elseif (isset($profile['sambaSamAccount_sambaHomeDrive'][0])) {
 				$this->attributes['sambaHomeDrive'][0] = $profile['sambaSamAccount_sambaHomeDrive'][0];
 			}
 		}
