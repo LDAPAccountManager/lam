@@ -217,7 +217,25 @@ class htmlTableRow extends htmlElement {
 		$types = array();
 		echo "<tr>\n";
 			for ($i = 0; $i < sizeof($this->cells); $i++) {
-				echo "<td>\n";
+				// check if alignment option was given
+				$align = '';
+				if ($this->cells[$i]->alignment !== null) {
+					switch ($this->cells[$i]->alignment) {
+						case htmlElement::ALIGN_BOTTOM:
+							$align = 'valign="bottom"';
+						break;
+						case htmlElement::ALIGN_TOP:
+							$align = 'valign="top"';
+						break;
+						case htmlElement::ALIGN_LEFT:
+							$align = 'align="left"';
+						break;
+						case htmlElement::ALIGN_RIGHT:
+							$align = 'align="right"';
+						break;
+					}
+				}
+				echo "<td $align>\n";
 				$types = array_merge($types, $this->cells[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 				echo "</td>\n";
 			}
@@ -228,14 +246,12 @@ class htmlTableRow extends htmlElement {
 }
 
 /**
- * An extended input field that combines label, input field and help.
+ * A standard input field.
  * 
  * @package metaHTML
  */
-class htmlTableExtendedInputField extends htmlElement {
+class htmlInputField extends htmlElement {
 
-	/** Descriptive label */
-	private $label;
 	/** unique field name */
 	private $fieldName;
 	/** field value */
@@ -244,24 +260,16 @@ class htmlTableExtendedInputField extends htmlElement {
 	private $fieldSize = 30;
 	/** field max length (default 255) */
 	private $fieldMaxLength = 255;
-	/** help ID */
-	private $helpID;
-	/** required field */
-	private $required = false;
 	
 	/**
 	 * Constructor
 	 *
-	 * @param String $label descriptive label
 	 * @param String $fieldName unique field name
 	 * @param String $fieldValue value of input field (optional)
-	 * @param String $helpID help ID (optional)
 	 */
-	function __construct($label, $fieldName, $fieldValue = null, $helpID = null) {
-		$this->label = htmlspecialchars($label);
+	function __construct($fieldName, $fieldValue = null) {
 		$this->fieldName = htmlspecialchars($fieldName);
 		$this->fieldValue = htmlspecialchars($fieldValue);
-		$this->helpID = $helpID;
 	}
 	
 	/**
@@ -279,12 +287,6 @@ class htmlTableExtendedInputField extends htmlElement {
 		if (isset($values[$this->fieldName])) {
 			$this->fieldValue = $values[$this->fieldName][0];
 		}
-		// print label text
-		echo $this->label;
-		if ($this->required) {
-			echo '*';
-		}
-		echo "\n</td>\n<td>\n";
 		// print input field
 		$name = ' name="' . $this->fieldName . '"';
 		$value = '';
@@ -299,13 +301,84 @@ class htmlTableExtendedInputField extends htmlElement {
 		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
 		echo '<input type="text"' . $name . $value . $maxLength . $size . $fieldTabIndex . '>';
+		return array($this->fieldName => 'text');
+	}
+
+	/**
+	 * Sets the maximum field length.
+	 * 
+	 * @param int $fieldMaxLength length
+	 */
+	public function setFieldMaxLength($fieldMaxLength) {
+		$this->fieldMaxLength = $fieldMaxLength;
+	}
+	
+	/**
+	 * Sets the field size.
+	 * 
+	 * @param int $fieldSize size
+	 */
+	public function setFieldSize($fieldSize) {
+		$this->fieldSize = $fieldSize;
+	}
+	
+}
+
+/**
+ * An extended input field that combines label, input field and help.
+ * 
+ * @package metaHTML
+ */
+class htmlTableExtendedInputField extends htmlInputField {
+
+	/** Descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** required field */
+	private $required = false;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param String $label descriptive label
+	 * @param String $fieldName unique field name
+	 * @param String $fieldValue value of input field (optional)
+	 * @param String $helpID help ID (optional)
+	 */
+	function __construct($label, $fieldName, $fieldValue = null, $helpID = null) {
+		parent::__construct($fieldName, $fieldValue);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		// print label text
+		echo $this->label;
+		if ($this->required) {
+			echo '*';
+		}
+		echo "\n</td>\n<td>\n";
+		// print input field
+		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
 		if ($this->helpID != null) {
 			echo "\n</td>\n<td>\n";
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
-		return array($this->fieldName => 'text');
+		return $return;
 	}
 
 	/**
