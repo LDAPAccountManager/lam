@@ -1380,130 +1380,114 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (in_array('lastName', $fields)) {
 			$lastName = '';
 			if (isset($attributes['sn'][0])) $lastName = $attributes['sn'][0];
-			$return['lastName'] = array(
-				array('kind' => 'text', 'text' => _('Last name')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_lastName', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $lastName));
+			$return['lastName'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Last name'), 'inetOrgPerson_lastName', $lastName)
+			));
 		}
 		if (in_array('mail', $fields)) {
 			$mail = '';
 			if (isset($attributes['mail'][0])) $mail = $attributes['mail'][0];
-			$return['mail'] = array(
-				array('kind' => 'text', 'text' => _('Email address')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_mail', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $mail));
+			$return['mail'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Email address'), 'inetOrgPerson_mail', $mail)
+			));
 		}
 		if (in_array('telephoneNumber', $fields)) {
 			$telephoneNumber = '';
 			if (isset($attributes['telephoneNumber'][0])) $telephoneNumber = $attributes['telephoneNumber'][0];
-			$return['telephoneNumber'] = array(
-				array('kind' => 'text', 'text' => _('Telephone number')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_telephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $telephoneNumber));
+			$return['telephoneNumber'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Telephone number'), 'inetOrgPerson_telephoneNumber', $telephoneNumber)
+			));
 		}
 		if (in_array('homePhone', $fields)) {
 			$homePhone = '';
 			if (isset($attributes['homePhone'][0])) $homePhone = $attributes['homePhone'][0];
-			$return['homePhone'] = array(
-				array('kind' => 'text', 'text' => _('Home telephone number')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_homePhone', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $homePhone));
+			$return['homePhone'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Home telephone number'), 'inetOrgPerson_homePhone', $homePhone)
+			));
 		}
 		if (in_array('mobile', $fields)) {
 			$mobile = '';
 			if (isset($attributes['mobile'][0])) $mobile = $attributes['mobile'][0];
-			$return['mobile'] = array(
-				array('kind' => 'text', 'text' => _('Mobile telephone number')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_mobile', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $mobile));
+			$return['mobile'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Mobile telephone number'), 'inetOrgPerson_mobile', $mobile)
+			));
 		}
 		if (in_array('faxNumber', $fields)) {
 			$faxNumber = '';
 			if (isset($attributes['facsimileTelephoneNumber'][0])) $faxNumber = $attributes['facsimileTelephoneNumber'][0];
-			$return['faxNumber'] = array(
-				array('kind' => 'text', 'text' => _('Fax number')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_faxNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $faxNumber));
+			$return['faxNumber'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Fax number'), 'inetOrgPerson_faxNumber', $faxNumber)
+			));
 		}
 		if (in_array('street', $fields)) {
 			$street = '';
 			if (isset($attributes['street'][0])) $street = $attributes['street'][0];
-			$return['street'] = array(
-				array('kind' => 'text', 'text' => _('Street')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_street', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $street));
+			$return['street'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Street'), 'inetOrgPerson_street', $street)
+			));
 		}
 		if (in_array('postalAddress', $fields)) {
 			$postalAddress = '';
 			if (isset($attributes['postalAddress'][0])) $postalAddress = $attributes['postalAddress'][0];
-			$return['postalAddress'] = array(
-				array('kind' => 'text', 'text' => _('Postal address')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_postalAddress', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $postalAddress));
+			$return['postalAddress'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Postal address'), 'inetOrgPerson_postalAddress', $postalAddress)
+			));
 		}
 		if (in_array('postalCode', $fields)) {
 			$postalCode = '';
 			if (isset($attributes['postalCode'][0])) $postalCode = $attributes['postalCode'][0];
-			$return['postalCode'] = array(
-				array('kind' => 'text', 'text' => _('Postal code')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_postalCode', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $postalCode));
+			$return['postalCode'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Postal code'), 'inetOrgPerson_postalCode', $postalCode)
+			));
 		}
 		if (in_array('postOfficeBox', $fields)) {
 			$postOfficeBox = '';
 			if (isset($attributes['postOfficeBox'][0])) $postOfficeBox = $attributes['postOfficeBox'][0];
-			$return['postOfficeBox'] = array(
-				array('kind' => 'text', 'text' => _('Post office box')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_postOfficeBox', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $postOfficeBox));
+			$return['postOfficeBox'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Post office box'), 'inetOrgPerson_postOfficeBox', $postOfficeBox)
+			));
 		}
 		if (in_array('roomNumber', $fields)) {
 			$roomNumber = '';
 			if (isset($attributes['roomNumber'][0])) $roomNumber = $attributes['roomNumber'][0];
-			$return['roomNumber'] = array(
-				array('kind' => 'text', 'text' => _('Room number')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_roomNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $roomNumber));
+			$return['roomNumber'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Room number'), 'inetOrgPerson_roomNumber', $roomNumber)
+			));
 		}
 		if (in_array('location', $fields)) {
 			$l = '';
 			if (isset($attributes['l'][0])) $l = $attributes['l'][0];
-			$return['location'] = array(
-				array('kind' => 'text', 'text' => _('Location')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_location', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $l));
+			$return['location'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Location'), 'inetOrgPerson_location', $l)
+			));
 		}
 		if (in_array('state', $fields)) {
 			$st = '';
 			if (isset($attributes['st'][0])) $st = $attributes['st'][0];
-			$return['state'] = array(
-				array('kind' => 'text', 'text' => _('State')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_state', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $st));
+			$return['state'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('State'), 'inetOrgPerson_state', $st)
+			));
 		}
 		if (in_array('carLicense', $fields)) {
 			$carLicense = '';
 			if (isset($attributes['carLicense'][0])) $carLicense = $attributes['carLicense'][0];
-			$return['carLicense'] = array(
-				array('kind' => 'text', 'text' => _('Car license')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_carLicense', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $carLicense));
+			$return['carLicense'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Car license'), 'inetOrgPerson_carLicense', $carLicense)
+			));
 		}
 		if (in_array('officeName', $fields)) {
 			$physicalDeliveryOfficeName = '';
 			if (isset($attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $attributes['physicalDeliveryOfficeName'][0];
-			$return['officeName'] = array(
-				array('kind' => 'text', 'text' => _('Office name')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_officeName', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $physicalDeliveryOfficeName));
+			$return['officeName'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Office name'), 'inetOrgPerson_officeName', $physicalDeliveryOfficeName)
+			));
 		}
 		if (in_array('businessCategory', $fields)) {
 			$businessCategory = '';
 			if (isset($attributes['businessCategory'][0])) $businessCategory = $attributes['businessCategory'][0];
-			$return['businessCategory'] = array(
-				array('kind' => 'text', 'text' => _('Business category')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_businessCategory', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $businessCategory));
+			$return['businessCategory'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Business category'), 'inetOrgPerson_businessCategory', $businessCategory)
+			));
 		}
 		if (in_array('jpegPhoto', $fields)) {
 			if (isset($attributes['jpegPhoto'][0])) {
@@ -1512,39 +1496,30 @@ class inetOrgPerson extends baseModule implements passwordService {
 				fwrite($outjpeg, $attributes['jpegPhoto'][0]);
 				fclose ($outjpeg);
 				$photoFile = '../../tmp/' . $jpeg_filename;
-				$return['jpegPhoto'] = array(
-					array('kind' => 'text', 'text' => _('Photo')),
-					array('kind' => 'table', 'value' => array(
-						array(
-							array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile)
-						),
-						array(
-							array('kind' => 'table', 'value' => array(array(
-								array('kind' => 'input', 'type' => 'checkbox', 'name' => 'removeReplacePhoto'),
-								array('kind' => 'text', 'text' => _('Remove/replace photo')),
-								array('kind' => 'input', 'name' => 'replacePhotoFile', 'type' => 'file')
-							))),
-						)
-					))
-				);
+				$photoSub = new htmlTable();
+				$photoSub->addElement(new htmlImage($photoFile), true);
+				$photoSubSub = new htmlTable();
+				$photoSubSub->addElement(new htmlTableExtendedInputCheckbox('removeReplacePhoto', false, _('Remove/replace photo'), null, false));
+				$photoSubSub->addElement(new htmlInputFileUpload('replacePhotoFile'));
+				$photoSub->addElement($photoSubSub);
+				$photoRowCells = array(new htmlOutputText(_('Photo')), $photoSub);
+				$photoRow = new htmlTableRow($photoRowCells);
+				$return['jpegPhoto'] = $photoRow;
 			}
 			else {
-				$return['jpegPhoto'] = array(
-					array('kind' => 'text', 'text' => _('Photo')),
-					array('kind' => 'table', 'value' => array(array(
-						array('kind' => 'text', 'text' => _('Add photo')),
-						array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file')
-					)))
-				);	
+				$photoSub = new htmlTable();
+				$photoSub->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Add photo')));
+				$photoRowCells = array(new htmlOutputText(_('Photo')), $photoSub);
+				$photoRow = new htmlTableRow($photoRowCells);
+				$return['jpegPhoto'] = $photoRow;
 			}
 		}
 		if (in_array('departmentNumber', $fields)) {
 			$departmentNumber = '';
 			if (isset($attributes['departmentNumber'][0])) $departmentNumber = implode(';', $attributes['departmentNumber']);
-			$return['departmentNumber'] = array(
-				array('kind' => 'text', 'text' => _('Department(s)')),
-				array('kind' => 'input', 'name' => 'inetOrgPerson_departmentNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $departmentNumber));
+			$return['departmentNumber'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Department(s)'), 'inetOrgPerson_departmentNumber', $departmentNumber)
+			));
 		}
 		return $return;
 	}
@@ -1716,7 +1691,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// photo
 		if (in_array('jpegPhoto', $fields)) {
-			if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+			if (isset($_FILES['photoFile']) && ($_FILES['photoFile']['size'] > 0)) {
 				$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 				$data = fread($handle, 1000000);
 				fclose($handle);

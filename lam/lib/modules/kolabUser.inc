@@ -284,9 +284,13 @@ class kolabUser extends baseModule {
 				return $return;
 			}
 			// country
+			$country = '';
+			if (isset($this->attributes['c'][0])) {
+				$country = $this->attributes['c'][0];
+			}
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Country')),
-				array('kind' => 'input', 'name' => 'country', 'type' => 'text', 'value' => $this->attributes['c'][0]),
+				array('kind' => 'input', 'name' => 'country', 'type' => 'text', 'value' => $country),
 				array('kind' => 'help', 'value' => 'country'));
 			// mailbox server
 			if (!isset($this->orig['kolabHomeServer'][0])) {  // value currently not set
@@ -302,14 +306,22 @@ class kolabUser extends baseModule {
 					array('kind' => 'help', 'value' => 'homeServer'));
 			}
 			// Cyrus mail quota
+			$userquota = '';
+			if (isset($this->attributes['cyrus-userquota'][0])) {
+				$userquota = $this->attributes['cyrus-userquota'][0];
+			}
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Mail quota')),
-				array('kind' => 'input', 'name' => 'quota', 'type' => 'text', 'value' => $this->attributes['cyrus-userquota'][0]),
+				array('kind' => 'input', 'name' => 'quota', 'type' => 'text', 'value' => $userquota),
 				array('kind' => 'help', 'value' => 'quota'));
 			// free/busy future
+			$freebusyfuture = '';
+			if (isset($this->attributes['kolabFreeBusyFuture'][0])) {
+				$freebusyfuture = $this->attributes['kolabFreeBusyFuture'][0];
+			}
 			$return[] = array(
 				array('kind' => 'text', 'text' => _('Free/Busy interval')),
-				array('kind' => 'input', 'name' => 'freeBusy', 'type' => 'text', 'value' => $this->attributes['kolabFreeBusyFuture'][0]),
+				array('kind' => 'input', 'name' => 'freeBusy', 'type' => 'text', 'value' => $freebusyfuture),
 				array('kind' => 'help', 'value' => 'freeBusy'));
 			// invitation policies
 			$returnPol = array();
@@ -351,11 +363,13 @@ class kolabUser extends baseModule {
 			$return[] = $returnPol;
 			// mail aliases
 			$returnAliases = array();
-			for ($i = 0; $i < sizeof($this->attributes['alias']); $i++) {
-				$returnAliases[] = array(
-					array('kind' => 'input', 'name' => 'alias' . $i, 'type' => 'text', 'value' => $this->attributes['alias'][$i]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'delAlias' . $i, 'value' => _("Remove")),
-					array('kind' => 'help', 'value' => 'alias'));
+			if (isset($this->attributes['alias'])) {
+				for ($i = 0; $i < sizeof($this->attributes['alias']); $i++) {
+					$returnAliases[] = array(
+						array('kind' => 'input', 'name' => 'alias' . $i, 'type' => 'text', 'value' => $this->attributes['alias'][$i]),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'delAlias' . $i, 'value' => _("Remove")),
+						array('kind' => 'help', 'value' => 'alias'));
+				}
 			}
 			// input box for new mail alias
 			$returnAliases[] = array(
@@ -377,11 +391,13 @@ class kolabUser extends baseModule {
 				sort($delegates);
 			}
 			$returnDelegates = array();
-			for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
-				$returnDelegates[] = array(
-					array('kind' => 'select', 'name' => 'delegate' . $i, 'options' => $delegates, 'options_selected' => array($this->attributes['kolabDelegate'][$i])),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'delDelegate' . $i, 'value' => _("Remove")),
-					array('kind' => 'help', 'value' => 'delegate'));
+			if (isset($this->attributes['kolabDelegate'])) {
+				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
+					$returnDelegates[] = array(
+						array('kind' => 'select', 'name' => 'delegate' . $i, 'options' => $delegates, 'options_selected' => array($this->attributes['kolabDelegate'][$i])),
+						array('kind' => 'input', 'type' => 'submit', 'name' => 'delDelegate' . $i, 'value' => _("Remove")),
+						array('kind' => 'help', 'value' => 'delegate'));
+				}
 			}
 			// input box for new delegate
 			$returnDelegates[] = array(
@@ -823,10 +839,9 @@ class kolabUser extends baseModule {
 			if (isset($attributes['kolabFreeBusyFuture'][0])) {
 				$kolabFreeBusyFuture = $attributes['kolabFreeBusyFuture'][0];
 			}
-			$return['kolabFreeBusyFuture'] = array(
-				array('kind' => 'text', 'text' => _('Free/Busy interval')),
-				array('kind' => 'input', 'name' => 'kolabUser_kolabFreeBusyFuture', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $kolabFreeBusyFuture));
+			$return['kolabFreeBusyFuture'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Free/Busy interval'), 'kolabUser_kolabFreeBusyFuture', $kolabFreeBusyFuture)
+			));
 		}
 		// delegates
 		if (in_array('kolabDelegate', $fields)) {
@@ -856,25 +871,22 @@ class kolabUser extends baseModule {
 			sort($kolabDelegate);
 			$_SESSION['kolabUser_kolabDelegate'] = $kolabDelegate;
 			$delegateFields = array();
+			$delegateContainer = new htmlTable();
 			for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
-				$delegateFields[] = array(
-					array('kind' => 'text', 'text' => $kolabDelegate[$i]),
-					array('kind' => 'input', 'type' => 'checkbox', 'name' => 'delDelegate_' . $i),
-					array('kind' => 'text', 'text' => _('Delete'))
-				);
+				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, $kolabDelegate[$i]));
+				$delegateContainer->addElement(new htmlOutputText(_('Delete')), true);
 			}
-			$delegateFields[] = array(
-				array('kind' => 'select', 'name' => 'new_delegate_value', 'options' => $delegates),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'new_delegate'),
-				array('kind' => 'text', 'text' => _("Add"))
-			);
-			$return['kolabDelegate'] = array(
-				array('kind' => 'fieldset', 'value' => $delegateFields, 'legend' => _('Delegates'), 'td' => array('colspan' => 2))
-			);
+			$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates, null));
+			$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
+			$delegateLabel = new htmlOutputText(_('Delegates'));
+			$delegateLabel->alignment = htmlElement::ALIGN_TOP;
+			$return['kolabDelegate'] = new htmlTableRow(array(
+				$delegateLabel, $delegateContainer
+			));
 		}
 		// invitation policies
 		if (in_array('kolabInvitationPolicy', $fields)) {
-			$returnPol = array();
+			$invitationContainer = new htmlTable();
 			// default invitation policy
 			$defaultInvPol = $this->invitationPolicies['ACT_MANUAL'];
 			for ($i = 0; $i < sizeof($attributes['kolabInvitationPolicy']); $i++) {
@@ -886,19 +898,14 @@ class kolabUser extends baseModule {
 					break;
 				}
 			}
-			$returnPol[] = array(
-				array('kind' => 'text', 'text' => _('Anyone')),
-				array('kind' => 'select', 'name' => 'defaultInvPol', 'options' => array_values($this->invitationPolicies), 'options_selected' => $defaultInvPol),
-				array('kind' => 'text', 'text' => ''));
+			$invitationContainer->addElement(new htmlTableExtendedSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol), _('Anyone')), true);
 			// other invitation policies
 			for ($i = 0; $i < sizeof($attributes['kolabInvitationPolicy']); $i++) {
 				$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
-					$returnPol[] = array(
-						array('kind' => 'input', 'name' => 'invPol1' . $i, 'type' => 'text', 'value' => $parts[0]),
-						array('kind' => 'select', 'name' => 'invPol2' . $i, 'options' => array_values($this->invitationPolicies), 'options_selected' => $this->invitationPolicies[$parts[1]]),
-						array('kind' => 'input', 'type' => 'checkbox', 'name' => 'delInvPol' . $i),
-						array('kind' => 'text', 'text' => _("Remove")));
+					$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
+					$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
+					$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('delInvPol' . $i, false, _("Remove"), null, false), true);
 				}
 			}
 			// input box for new invitation policy
@@ -907,10 +914,11 @@ class kolabUser extends baseModule {
 				array('kind' => 'select', 'name' => 'invPol2', 'options' => array_values($this->invitationPolicies)),
 				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'addInvPol'),
 				array('kind' => 'text', 'text' => _("Add")));
-			$returnPol = array(
-					array('kind' => 'fieldset', 'legend' => _('Invitation policy'), 'value' => $returnPol, 'td' => array('colspan' => 3))
-				);
-			$return['kolabInvitationPolicy'] = $returnPol;
+			$invitationLabel = new htmlOutputText(_('Invitation policy'));
+			$invitationLabel->alignment = htmlElement::ALIGN_TOP;
+			$return['kolabInvitationPolicy'] = new htmlTableRow(array(
+				$invitationLabel, $invitationContainer
+			));
 		}
 		return $return;
 	}

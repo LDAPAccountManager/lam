@@ -1704,12 +1704,11 @@ class posixAccount extends baseModule implements passwordService {
 	function getSelfServiceOptions($fields, $attributes) {
 		$return = array();
 		if (in_array('password', $fields)) {
-			$return['password'] = array(
-				array('kind' => 'text', 'text' => _('New password')),
-				array('kind' => 'input', 'name' => 'posixAccount_password', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'text', 'text' => _('Reenter password')),
-				array('kind' => 'input', 'name' => 'posixAccount_password2', 'type' => 'password', 'size' => '30', 'maxlength' => '255')
-				);
+			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'posixAccount_password');
+			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'posixAccount_password2');
+			$return['password'] = new htmlTableRow(array(
+				$pwd1, $pwd2
+			));
 		}
 		return $return;
 	}
