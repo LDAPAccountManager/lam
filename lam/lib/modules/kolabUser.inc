@@ -876,7 +876,7 @@ class kolabUser extends baseModule {
 				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, $kolabDelegate[$i]));
 				$delegateContainer->addElement(new htmlOutputText(_('Delete')), true);
 			}
-			$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates, null));
+			$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates));
 			$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
 			$delegateLabel = new htmlOutputText(_('Delegates'));
 			$delegateLabel->alignment = htmlElement::ALIGN_TOP;
@@ -909,11 +909,9 @@ class kolabUser extends baseModule {
 				}
 			}
 			// input box for new invitation policy
-			$returnPol[] = array(
-				array('kind' => 'input', 'name' => 'invPol1', 'type' => 'text', 'value' => ''),
-				array('kind' => 'select', 'name' => 'invPol2', 'options' => array_values($this->invitationPolicies)),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'addInvPol'),
-				array('kind' => 'text', 'text' => _("Add")));
+			$invitationContainer->addElement(new htmlInputField('invPol1', ''));
+			$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
+			$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('addInvPol', false, _("Add"), null, false), true);
 			$invitationLabel = new htmlOutputText(_('Invitation policy'));
 			$invitationLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['kolabInvitationPolicy'] = new htmlTableRow(array(

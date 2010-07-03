@@ -1705,7 +1705,9 @@ class posixAccount extends baseModule implements passwordService {
 		$return = array();
 		if (in_array('password', $fields)) {
 			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'posixAccount_password');
+			$pwd1->setIsPassword(true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'posixAccount_password2');
+			$pwd2->setIsPassword(true);
 			$return['password'] = new htmlTableRow(array(
 				$pwd1, $pwd2
 			));
