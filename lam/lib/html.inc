@@ -260,6 +260,8 @@ class htmlInputField extends htmlElement {
 	private $fieldSize = 30;
 	/** field max length (default 255) */
 	private $fieldMaxLength = 255;
+	/** password field */
+	private $isPassword = false;
 	
 	/**
 	 * Constructor
@@ -300,7 +302,11 @@ class htmlInputField extends htmlElement {
 		$size = ' size="' . $this->fieldSize . '"';
 		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
-		echo '<input type="text"' . $name . $value . $maxLength . $size . $fieldTabIndex . '>';
+		$inputType = 'text';
+		if ($this->isPassword) {
+			$inputType = 'password';
+		}
+		echo '<input type="' . $inputType . '"' . $name . $value . $maxLength . $size . $fieldTabIndex . '>';
 		return array($this->fieldName => 'text');
 	}
 
@@ -321,7 +327,16 @@ class htmlInputField extends htmlElement {
 	public function setFieldSize($fieldSize) {
 		$this->fieldSize = $fieldSize;
 	}
-	
+
+	/**
+	 * Specifies if this is a password field.
+	 * 
+	 * @param boolean $isPassword password field
+	 */
+	public function setIsPassword($isPassword) {
+		$this->isPassword = $isPassword;
+	}
+
 }
 
 /**
@@ -560,10 +575,10 @@ class htmlSelect extends htmlElement {
 	 *
 	 * @param String $name element name
 	 * @param array $elements list of elememts
-	 * @param array $selectedElements list of selected elements
+	 * @param array $selectedElements list of selected elements (optional, default none)
 	 * @param int $size size (optional, default = 1)
 	 */
-	function __construct($name, $elements, $selectedElements, $size = 1) {
+	function __construct($name, $elements, $selectedElements = array(), $size = 1) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
 		$this->selectedElements = $selectedElements;
