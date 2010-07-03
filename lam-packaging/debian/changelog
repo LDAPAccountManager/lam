@@ -1,3 +1,9 @@
+ldap-account-manager (3.1.1-1) unstable; urgency=low
+
+  * fixed LAM Pro self service
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Jul 2010 15:26:15 +0200
+
 ldap-account-manager (3.1.0-1) unstable; urgency=low
 
   * new upstream release
