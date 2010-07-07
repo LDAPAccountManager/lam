@@ -2,7 +2,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005-2006  Roland Gruber
+  Copyright (C) 2005-2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -46,20 +46,14 @@ table.userlist input, table.userlist select, table.userlist button {
   background-color:#fff2a3;
 }
 
-/* color of entry rows */
-tr.userlist {
-  background-color:#fffde2;
+/* color of bright rows */
+tr.userlist-bright {
+	background-color:#fffde2;
 }
 
-/* color of head row */
-tr.userlist-head {
-  background-color:#fff2a3;
-  font-weight:bold;
-}
-
-/* color of rows on mouseOver */
-tr.userlist-over {
-  background-color:#fff2a3;
+/* color of dark rows */
+tr.userlist-dark {
+	background-color:#fff2a3;
 }
 
 /* color of checked rows */

@@ -90,35 +90,35 @@ echo "<h1>" . _("Server information") . "</h1>\n";
 
 echo "<table class=\"userlist\" rules=\"none\">\n";
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Managed suffixes") . "</b>&nbsp;&nbsp;</td>";
+echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Managed suffixes") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $namingContexts . "</td></tr>";
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("LDAP version") . "</b>&nbsp;&nbsp;</td>";
+echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("LDAP version") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $supportedldapversion . "</td></tr>";
 
 if ($configcontext != '') {
-	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Config suffix") . "</b>&nbsp;&nbsp;</td>";
+	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Config suffix") . "</b>&nbsp;&nbsp;</td>";
 	echo "<td style=\"padding:10px;\">" . $configcontext . "</td></tr>";
 }
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Schema suffix") . "</b>&nbsp;&nbsp;</td>";
+echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Schema suffix") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $subschemasubentry . "</td></tr>";
 
 if ($dynamicSubtrees != '') {
-	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Dynamic subtrees") . "</b>&nbsp;&nbsp;</td>";
+	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Dynamic subtrees") . "</b>&nbsp;&nbsp;</td>";
 	echo "<td style=\"padding:10px;\">" . $dynamicSubtrees . "</td></tr>";
 }
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("SASL mechanisms") . "</b>&nbsp;&nbsp;</td>";
+echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("SASL mechanisms") . "</b>&nbsp;&nbsp;</td>";
 echo "<td style=\"padding:10px;\">" . $supportedsaslmechanisms . "</td></tr>";
 
 if ($vendorname != '') {
-	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Vendor name") . "</b>&nbsp;&nbsp;</td>";
+	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Vendor name") . "</b>&nbsp;&nbsp;</td>";
 	echo "<td style=\"padding:10px;\">" . $vendorname . "</td></tr>";
 }
 
 if ($vendorversion != '') {
-	echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><b>" . _("Vendor version") . "</b>&nbsp;&nbsp;</td>";
+	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Vendor version") . "</b>&nbsp;&nbsp;</td>";
 	echo "<td style=\"padding:10px;\">" . $vendorversion . "</td></tr>";
 }
 

@@ -70,7 +70,7 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 		continue;
 	}
 	// print tool
-	echo "<tr class=\"userlist\">\n";
+	echo "<tr class=\"userlist-bright\">\n";
 		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td><br>";
 			echo "<a href=\"" . $tools[$i]->getLink() . "\">";

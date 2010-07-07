@@ -2,7 +2,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005-2006  Roland Gruber
+  Copyright (C) 2005-2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,24 +68,19 @@ table.grouplist input, table.grouplist select, table.grouplist button {
   background-color:#a8c3ff;
 }
 
-/* color of entry rows */
-tr.grouplist {
+/* color of bright rows */
+tr.grouplist-bright {
   background-color:#d6e3ff;
 }
 
-/* color of head row */
-tr.grouplist-head {
+/* color of dark rows */
+tr.grouplist-dark {
   background-color:#a8c3ff;
 }
 
 /* color of sorted column in head row */
 th.grouplist-sort {
   background-color:#d6e3ff;
-}
-
-/* color of rows on mouseOver */
-tr.grouplist-over {
-  background-color:#a8c3ff;
 }
 
 /* color of checked rows */

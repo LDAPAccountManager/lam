@@ -47,10 +47,10 @@ echo "<h1>" . _("LAM tests") . "</h1>\n";
 
 echo "<table class=\"userlist\" rules=\"none\">\n";
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><a href=\"lamdaemonTest.php\"><b>" . _("Lamdaemon test") . "</b>&nbsp;&nbsp;</a></td>";
+echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><a href=\"lamdaemonTest.php\"><b>" . _("Lamdaemon test") . "</b>&nbsp;&nbsp;</a></td>";
 echo "<td style=\"padding:10px;\">" . _("Check if quotas and homedirectories can be managed.") . "</td></tr>";
 
-echo "<tr class=\"userlist\"><td style=\"padding:10px;\"><a href=\"schemaTest.php\"><b>" . _("Schema test") . "</b>&nbsp;&nbsp;</a></td>";
+echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><a href=\"schemaTest.php\"><b>" . _("Schema test") . "</b>&nbsp;&nbsp;</a></td>";
 echo "<td style=\"padding:10px;\">" . _("Check if the LDAP schema fits the requirements of the selected account modules.") . "</td></tr>";
 
 echo "</table>\n";

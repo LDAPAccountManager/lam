@@ -3,6 +3,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008  Thomas Manninger
+                2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,24 +69,19 @@ table.dhcplist input, table.dhcplist select, table.dhcplist button {
   background-color:#bde178;
 }
 
-/* color of entry rows */
-tr.dhcplist {
+/* color of bright rows */
+tr.dhcplist-bright {
   background-color:#d4f19b;
 }
 
-/* color of head row */
-tr.dhcplist-head {
+/* color of dark rows */
+tr.dhcplist-dark {
   background-color:#9fc653;
 }
 
 /* color of sorted column in head row */
 th.dhcplist-sort {
   background-color:#bce077;
-}
-
-/* color of rows on mouseOver */
-tr.dhcplist-over {
-  background-color:#f3ffdc;
 }
 
 /* color of checked rows */

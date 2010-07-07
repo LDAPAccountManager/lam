@@ -125,7 +125,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 	$failImage = "<img width=16 height=16 src=\"../../graphics/fail.png\" alt=\"\">\n";
 	// run lamdaemon and get user quotas
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist-bright\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$lamdaemonOk = false;
 		$output = $handle->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
@@ -173,10 +173,10 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	flush();
 	$stopTest = false;
 
-	echo "<tr class=\"userlist\">\n<td colspan=\"3\" align=\"center\"><b>$serverTitle</b>\n</td>\n</tr>";
+	echo "<tr class=\"userlist-bright\">\n<td colspan=\"3\" align=\"center\"><b>$serverTitle</b>\n</td>\n</tr>";
 
 	// check script server and path
-	echo "<tr class=\"userlist\">\n<td nowrap>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
+	echo "<tr class=\"userlist-bright\">\n<td nowrap>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
 	if (!isset($serverName) || (strlen($serverName) < 3)) {
 		echo "<td>" . $failImage . "</td>\n";
 		echo "<td>" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
@@ -196,7 +196,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 
 	// check Unix account of LAM admin
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td nowrap>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist-bright\">\n<td nowrap>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
 		$credentials = $_SESSION['ldap']->decrypt_login();
 		$unixOk = false;
 		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
@@ -223,7 +223,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 
 	// check SSH login
 	if (!$stopTest) {
-		echo "<tr class=\"userlist\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
+		echo "<tr class=\"userlist-bright\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
 		flush();
 		$sshOk = false;
 		$handle = lamTestConnectSSH($serverName);

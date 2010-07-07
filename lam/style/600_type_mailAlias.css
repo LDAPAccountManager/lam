@@ -2,7 +2,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005-2006  Roland Gruber
+  Copyright (C) 2005-2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,24 +68,19 @@ table.mailAliaslist input, table.mailAliaslist select, table.mailAliaslist butto
   background-color:#ffe27f;
 }
 
-/* color of entry rows */
-tr.mailAliaslist {
+/* color of bright rows */
+tr.mailAliaslist-bright {
   background-color:#fff3c8;
 }
 
-/* color of head row */
-tr.mailAliaslist-head {
+/* color of dark rows */
+tr.mailAliaslist-dark {
   background-color:#ffe27f;
 }
 
 /* color of sorted column in head row */
 th.mailAliaslist-sort {
   background-color:#fff3c8;
-}
-
-/* color of rows on mouseOver */
-tr.mailAliaslist-over {
-  background-color:#ffe27f;
 }
 
 /* color of checked rows */

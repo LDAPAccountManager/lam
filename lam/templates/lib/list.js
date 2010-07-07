@@ -23,32 +23,20 @@ $Id$
 
 
 function list_over(list, box, scope) {
-	cbox = document.getElementsByName(box)[0];
-	if (cbox.checked == false) {
-		list.setAttribute('className', scope + 'list-over', 0);
-		list.setAttribute('class', scope + 'list-over', 0);
-	}
+	jQuery(list).addClass('highlight');
 }
 
 function list_out(list, box, scope) {
-	cbox = document.getElementsByName(box)[0];
-	if (cbox.checked == false) {
-		list.setAttribute('className', scope + 'list', 0);
-		list.setAttribute('class', scope + 'list', 0);
-	}
+	jQuery(list).removeClass('highlight');
 }
 
 function list_click(list, box, scope) {
 	cbox = document.getElementsByName(box)[0];
 	if (cbox.checked == true) {
 		cbox.checked = false;
-		list.setAttribute('className', scope + 'list-over', 0);
-		list.setAttribute('class', scope + 'list-over', 0);
 	}
 	else {
 		cbox.checked = true;
-		list.setAttribute('className', scope + 'list-checked', 0);
-		list.setAttribute('class', scope + 'list-checked', 0);
 	}
 }
 

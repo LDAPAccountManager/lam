@@ -307,8 +307,8 @@ class lamList {
 	*/
 	protected function listPrintTableHeader() {
 		// print table header
-		echo "<table rules=\"all\" class=\"" . $this->type . "list\" width=\"100%\">\n";
-		echo "<tr class=\"" . $this->type . "list-head\">\n<th width=22 height=34></th>\n<th></th>\n";
+		echo "<table frame=\"box\" rules=\"none\" class=\"" . $this->type . "list\" width=\"100%\">\n";
+		echo "<tr class=\"" . $this->type . "list-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
 		// table header
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {
 			if (strtolower($this->attrArray[$k]) == $this->sortColumn) {
@@ -326,7 +326,7 @@ class lamList {
 		echo "</tr>\n";
 
 		// print filter row
-		echo "<tr align=\"center\" class=\"" . $this->type . "list\">\n";
+		echo "<tr align=\"center\" class=\"" . $this->type . "list-bright\">\n";
 		echo "<td width=22 height=34>";
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
@@ -362,7 +362,13 @@ class lamList {
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
 			$rowID = base64_encode($info[$i]['dn']);
-			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
+			if ((($i - $table_begin) % 2) == 1) {
+				$classes = ' ' . $this->type . 'list-bright';
+			}
+			else {
+				$classes = ' ' . $this->type . 'list-dark';
+			}
+			echo("<tr class=\"$classes\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
 				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
@@ -381,7 +387,7 @@ class lamList {
 		}
 		// display select all link
 		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type . "list\">\n";
+		echo "<tr class=\"" . $this->type . "list-bright\">\n";
 		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";

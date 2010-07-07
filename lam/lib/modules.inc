@@ -1237,18 +1237,18 @@ class accountContainer {
 		}
 		echo "<br>\n";
 		// create module menu
-		echo "<table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"".$this->type."list\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
+		echo "<table class=\"".$this->type."list-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<tr class=\"".$this->type."list-bright\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
 		// tab menu
 		$this->printModuleTabs();
 		echo "</td></tr>\n";
 		// content header
-		echo "<tr class=\"" . $this->type . "list\">\n";
+		echo "<tr class=\"" . $this->type . "list-bright\">\n";
 			echo "<td style=\"padding:10px;\">\n";
 				$this->printContentHeader();
 			echo "</td>\n";
 		echo "</tr>\n";
-		echo "<tr class=\"" . $this->type . "list\">\n";
+		echo "<tr class=\"" . $this->type . "list-bright\">\n";
 		// content area
 		echo "<td width=\"100%\" style=\"padding:10px;\">";
 		// display html-code from modules
@@ -1273,16 +1273,16 @@ class accountContainer {
 		}
 		// create module menu
 		echo "<br><table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $this->type . "list\">";
+		echo "<tr class=\"" . $this->type . "list-bright\">";
 		echo "<td nowrap>&nbsp;<img alt=\"key.png\" src=\"../../graphics/key.png\">&nbsp;</td> \n";
 		echo "<td nowrap>" . _("Set password") . "&nbsp;&nbsp;&nbsp;</td>";
 		echo "<td>\n";
 		printHelpLink(getHelp(null, 404), 404);
 		echo "</td><td width=\"100%\">&nbsp;</td>\n";
-		echo "<tr class=\"" . $this->type . "list\"><td colspan=4>\n";
+		echo "<tr class=\"" . $this->type . "list-bright\"><td colspan=4>\n";
 		echo "<hr class=\"modulePage\" noshade>\n";
 		echo "</td></tr>\n";
-		echo "<tr class=\"" . $this->type . "list\"><td colspan=4>\n";
+		echo "<tr class=\"" . $this->type . "list-bright\"><td colspan=4>\n";
 		echo "<table>\n";
 		echo "<tr><td>\n";
 			echo _('Password') . '</td><td><input type="password" name="newPassword1" tabindex=1>';

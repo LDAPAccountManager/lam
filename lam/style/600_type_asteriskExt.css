@@ -2,7 +2,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009  Roland Gruber
+  Copyright (C) 2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,24 +68,19 @@ table.asteriskExtlist input, table.asteriskExtlist select, table.asteriskExtlist
   background-color:#ffe27f;
 }
 
-/* color of entry rows */
-tr.asteriskExtlist {
+/* color of bright rows */
+tr.asteriskExtlist-bright {
   background-color:#fff3c8;
 }
 
-/* color of head row */
-tr.asteriskExtlist-head {
+/* color of dark rows */
+tr.asteriskExtlist-dark {
   background-color:#ffe27f;
 }
 
 /* color of sorted column in head row */
 th.asteriskExtlist-sort {
   background-color:#fff3c8;
-}
-
-/* color of rows on mouseOver */
-tr.asteriskExtlist-over {
-  background-color:#ffe27f;
 }
 
 /* color of checked rows */
