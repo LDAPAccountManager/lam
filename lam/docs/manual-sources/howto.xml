@@ -224,16 +224,54 @@ Have fun!
                     </inlinemediaobject></entry>
 
                   <entry>LAM is part of the official Debian repository. New
-                  releases are uploaded to unstable and will available
+                  releases are uploaded to unstable and will be available
                   automatically in testing and the stable releases. You can
                   run<literal> </literal><para><emphasis role="bold">apt-get
                   install ldap-account-manager</emphasis></para>to install LAM
-                  on your server. Additionally, you may download the LAM
-                  Debian packages from the <ulink type=""
+                  on your server. Additionally, you may download the latest
+                  LAM Debian packages from the <ulink type=""
                   url="http://www.ldap-account-manager.org/">LAM
                   homepage</ulink> or the <ulink
                   url="http://packages.debian.org/search?keywords=ldap-account-manager">Debian
-                  package homepage</ulink>.</entry>
+                  package homepage</ulink>.<para><emphasis
+                  role="bold">Installation of the latest packages on Debian
+                  Lenny</emphasis></para><orderedlist>
+                      <listitem>
+                        <para>apt-get install javascript-common</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>Download the jquery and jquery-ui packages from
+                        here:</para>
+
+                        <para><ulink
+                        url="http://packages.debian.org/squeeze/all/libjs-jquery/download">http://packages.debian.org/squeeze/all/libjs-jquery/download</ulink></para>
+
+                        <para><ulink
+                        url="???">http://packages.debian.org/squeeze/all/libjs-jquery-ui/download</ulink></para>
+                      </listitem>
+
+                      <listitem>
+                        <para>Install first jquery and then jquery-ui:</para>
+
+                        <para>dpkg -i libjs-jquery_*.deb</para>
+
+                        <para>dpkg -i libjs-jquery-ui_*.deb</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>Install the LAM package</para>
+
+                        <para>dpkg -i ldap-account-manager_*.deb</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>Install the lamdaemon package (optional)</para>
+
+                        <para>dpkg -i
+                        ldap-account-manager-lamdaemon_*.deb</para>
+                      </listitem>
+                    </orderedlist></entry>
                 </row>
               </tbody>
             </tgroup>
