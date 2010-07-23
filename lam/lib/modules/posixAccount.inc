@@ -649,10 +649,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
-		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0]) {
+		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($_POST['uid'] != $this->attributes['uid'][0])) {
 			$errors[] = $this->messages['uid'][0];
 		}
-		if (($this->orig['gidNumber'][0] != '') && ($_POST['gidNumber'] != $this->attributes['gidNumber'][0])) {
+		if (isset($this->orig['gidNumber'][0]) && ($this->orig['gidNumber'][0] != '') && ($_POST['gidNumber'] != $this->attributes['gidNumber'][0])) {
 			$errorMessage = $this->messages['gidNumber'][2];
 			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
 			$errors[] = $errorMessage;
@@ -662,7 +662,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
 			$errors[] = $errorMessage;
 		}
-		if (isset($_POST['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $_POST['homeDirectory']!=$this->attributes['homeDirectory'][0]) {
+		if (isset($_POST['homeDirectory']) && isset($this->orig['homeDirectory'][0]) && ($this->orig['homeDirectory'][0] != '') && ($_POST['homeDirectory'] != $this->attributes['homeDirectory'][0])) {
 			$errorMessage = $this->messages['homeDirectory'][3];
 			$errorMessage[] = array($this->orig['homeDirectory'][0], $_POST['homeDirectory']);
 			$errors[] = $errorMessage;
@@ -898,7 +898,7 @@ class posixAccount extends baseModule implements passwordService {
 		$shelllist = getshells(); // list of all valid shells
 
 		// set default values
-		if (($this->attributes['uid'][0] == '') && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
+		if (!isset($this->attributes['uid'][0]) && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
 			// fill default value for user ID with first/last name
 			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 			if (isset($attrs['sn'][0])) {
@@ -994,7 +994,7 @@ class posixAccount extends baseModule implements passwordService {
 					array('kind' => 'help', 'value' => 'loginShell'));
 			}
 		}
-		if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+		if (isset($this->attributes['userPassword'][0]) && pwd_is_enabled($this->attributes['userPassword'][0])) {
 			$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
 		}
 		else {
