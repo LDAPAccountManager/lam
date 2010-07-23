@@ -82,18 +82,26 @@ if ($_POST['submit']) {
 		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['addprofile']) && !in_array($_POST['addprofile'], getConfigProfiles())) {
 			// check profile password
 			if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
-				// create new profile file
-				@copy("../../config/lam.conf_sample", "../../config/" . $_POST['addprofile'] . ".conf");
-				@chmod ("../../config/" . $_POST['addprofile'] . ".conf", 0600);
-				$file = is_file("../../config/" . $_POST['addprofile'] . ".conf");
-				if ($file) {
-					// load as config and write new password
-					$conf = new LAMConfig($_POST['addprofile']);
-					$conf->set_Passwd($_POST['addpassword']);
-					$conf->save();
-					$msg = _("Created new profile.");
+				// check if lam.conf_sample exists
+				if (!is_file("../../config/lam.conf_sample")) {
+					$error = _("The file config/lam.conf_sample was not found. Please restore it.");				
 				}
-				else $error = _("Unable to create new profile!");
+				else {
+					// create new profile file
+					@copy("../../config/lam.conf_sample", "../../config/" . $_POST['addprofile'] . ".conf");
+					@chmod ("../../config/" . $_POST['addprofile'] . ".conf", 0600);
+					$file = is_file("../../config/" . $_POST['addprofile'] . ".conf");
+					if ($file) {
+						// load as config and write new password
+						$conf = new LAMConfig($_POST['addprofile']);
+						$conf->set_Passwd($_POST['addpassword']);
+						$conf->save();
+						$msg = _("Created new profile.");
+					}
+					else {
+						$error = _("Unable to create new profile!");
+					}
+				}
 			}
 			else $error = _("Profile passwords are different or empty!");
 		}
