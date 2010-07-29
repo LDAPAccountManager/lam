@@ -809,8 +809,9 @@ Have fun!
 
       <para>The server profiles store information about your LDAP server (e.g.
       host name) and what kind of accounts (e.g. users and groups) you would
-      like to manage. There is no limit on the number of server
-      profiles.</para>
+      like to manage. There is no limit on the number of server profiles. See
+      the <link linkend="confTypicalScenarios">typical scenarios</link> about
+      how to structure your server profiles.</para>
 
       <section>
         <title>Manage server profiles</title>
@@ -1060,6 +1061,108 @@ Have fun!
               </imageobject>
             </mediaobject>
           </screenshot>
+        </section>
+      </section>
+
+      <section id="confTypicalScenarios">
+        <title>Typical scenarios</title>
+
+        <para>This is a list of typical scenarios how your LDAP environment
+        may look like and how to structure the server profiles for it.</para>
+
+        <section>
+          <title>Simple: One LDAP directory managed by a small group of
+          admins</title>
+
+          <para>This is the easiest and most common scenario. You want to
+          manage a single LDAP server and there is only one or a few admins.
+          In this case just create one server profile and you are done. The
+          admins may be either specified as a fixed list or by using an LDAP
+          search at login time.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/LDAPStructuresSimple.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Advanced: One LDAP server which is managed by different admin
+          groups</title>
+
+          <para>Large organisations may have one big LDAP directory for all
+          user/group accounts. But the users are managed by different groups
+          of admins (e.g. departments, locations, subsidiaries, ...). The
+          users are typically divided into organisational units in the LDAP
+          tree. Admins may only manage the users in their part of the
+          tree.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/LDAPStructuresAdvanced.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>In this situation it is recommended to create one server
+          profile for each admin group (e.g. department). Setup the LDAP
+          suffixes in the server profiles to point to the needed
+          organisational units. E.g. use
+          ou=people,ou=department1,dc=company,dc=com or
+          ou=department1,ou=people,dc=company,dc=com as LDAP suffix for users.
+          Do the same for groups, hosts, ... This way each admin group will
+          only see its own users. You may want to use LDAP search for the LAM
+          login in this scenario. This will prevent that you need to update a
+          server profile if the number of admins changes.</para>
+
+          <para><emphasis role="bold">Attention:</emphasis> LAM's feature to
+          automatically find free UIDs/GIDs for new users/groups will not work
+          in this case. LAM uses the user/group suffix to search for already
+          assigned UIDs/GIDs. As an alternative you can specify different
+          UID/GID ranges for each department. Then the UIDs/GIDs will stay
+          unique for the whole directory.</para>
+        </section>
+
+        <section>
+          <title>Multiple LDAP servers</title>
+
+          <para>You can manage as many LDAP servers with LAM as you wish. This
+          scenario is similar to the advanced scenario above. Just create one
+          server profile for each LDAP server.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/LDAPStructuresMultiServer.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Single LDAP directory with lots of users (&gt;10 000)</title>
+
+          <para>LAM was tested to work with 10 000 users. If you have a lot
+          more users then you have basically two options.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Divide your LDAP tree in organisational units: This is
+              usually the best performing option. Put your accounts in several
+              organisational units and setup LAM as in the advanced scenario
+              above.</para>
+            </listitem>
+
+            <listitem>
+              <para>Increase memory limit: Increase the memory_limit parameter
+              in your php.ini. This will allow LAM to read more entries. But
+              this will slow down the response times of LAM.</para>
+            </listitem>
+          </itemizedlist>
         </section>
       </section>
     </section>
