@@ -64,6 +64,11 @@ a img {
 	border: 0px;
 }
 
+a.lamHeader {
+color:black;
+text-decoration:none;
+}
+
 fieldset {
 background-color:#fff3c8;
 border:1px solid #af8800;
@@ -72,6 +77,16 @@ padding:0px 15px 15px 15px;
 
 legend {
 color:blue;
+}
+
+img.align-middle {
+	vertical-align: middle;
+}
+
+table.lamHeader {
+  background-image: url(lam-images/headerLine.png);
+  padding: 0px;
+  margin: 0px;
 }
 
 tr.highlight {
