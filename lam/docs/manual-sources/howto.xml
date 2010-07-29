@@ -678,7 +678,7 @@ Have fun!
     </section>
 
     <section id="a_uninstall">
-      <title>Unistalltion of LAM (Pro)</title>
+      <title>Uninstalltion of LAM (Pro)</title>
 
       <para>If you used the prepackaged installation packages then remove the
       ldap-account-manager and ldap-account-manager-lamdaemon packages.</para>
