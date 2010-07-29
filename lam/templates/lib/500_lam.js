@@ -87,3 +87,30 @@ function list_switchAccountSelection() {
 	nowUnchecked.addClass('accountBoxUnchecked');
 	nowUnchecked.removeClass('accountBoxChecked');
 }
+
+/**
+ * The user changed the value in the profile selection box. This will reload the login page with the new profile.
+ * 
+ * @param element dropdown box
+ */
+function loginProfileChanged(element) {
+	location.href='login.php?useProfile=' + element.options[element.selectedIndex].value;
+}
+
+/**
+ * Hides/unhides input fields for the login method.
+ */
+function configLoginMethodChanged() {
+	selectLoginMethod = document.getElementsByName('loginMethod')[0];
+	if ( selectLoginMethod.options[selectLoginMethod.selectedIndex].value == 'list' ) {
+		 document.getElementById('trAdminList').style.display = '';
+		 document.getElementById('trLoginSearchSuffix').style.display = 'none';
+		 document.getElementById('trLoginSearchFilter').style.display = 'none';
+	}
+	else {
+		 document.getElementById('trAdminList').style.display = 'none';
+		 document.getElementById('trLoginSearchSuffix').style.display = '';
+		 document.getElementById('trLoginSearchFilter').style.display = '';
+	}
+}
+
