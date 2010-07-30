@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -54,10 +54,16 @@ echo $_SESSION['header'];
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
 	<body>
-		<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank">
-			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
-		</p>
-		<hr>
+		<table border=0 width="100%" class="lamHeader">
+			<tr>
+				<td align="left" height="30">
+					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
+				</td>
+				<td align="right" height=20>
+					<a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a>
+				</td>
+			</tr>
+		</table>
 		<br><br>
 		<fieldset>
 			<legend><b> <?php echo _("LAM configuration"); ?> </b></legend>
@@ -108,11 +114,7 @@ echo $_SESSION['header'];
 		?>
 		</TABLE>
 		</fieldset>
-		<p><br><br><br><br><br></p>
+		<p><br><br></p>
 
-		<!-- back to login page -->
-		<p>
-			<a href="../login.php"> <?php echo _("Back to Login"); ?> </a>
-		</p>
 	</body>
 </html>

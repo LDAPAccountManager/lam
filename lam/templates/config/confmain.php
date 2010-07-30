@@ -131,8 +131,16 @@ while ($jsEntry = $jsDir->read()) {
 	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
 	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 }
-echo ("<p align=\"center\"><a href=\"http://www.ldap-account-manager.org/\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p>&nbsp;</p>\n");
+?>
+		<table border=0 width="100%" class="lamHeader">
+			<tr>
+				<td align="left" height="30">
+					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
+				</td>
+			</tr>
+		</table>
+		<br>
+<?php
 
 if (!$conf->isWritable()) {
 	StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');

@@ -59,24 +59,27 @@ while ($jsEntry = $jsDir->read()) {
 
 ?>
 
-<table border=0 width="100%">
+<table border=0 width="100%" class="lamHeader">
 	<tr>
-		<td width="200">
-			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
+		<td align="left" height="30">
+			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
 		</td>
-		<td align="center">
-			<a href="http://www.ldap-account-manager.org/" target="new_window"><img src="<?php echo $headerPrefix; ?>../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
-		</td>
-	<td width="200" align="right" height=20><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
+	<td align="right" height=20>
+		<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+		&nbsp;&nbsp;&nbsp;
+		<a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a>
+		&nbsp;
+	</td>
 	</tr>
 </table>
+
 <br>
 <div id="headerTabs" class="ui-tabs">
 <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">
 	<?php
 		$linkList = array();
 		if ($_SESSION['config']->get_Suffix('tree') != "") {
-			$link = '<a href="' . $headerPrefix . 'tree/treeViewContainer.php"><img alt="tree view" src="' . $headerPrefix . '../graphics/process.png">&nbsp;<big>' . _("Tree view") . '</big></a>' . "\n";
+			$link = '<a href="' . $headerPrefix . 'tree/treeViewContainer.php"><img alt="tree view" src="' . $headerPrefix . '../graphics/process.png">&nbsp;' . _("Tree view") . '</a>' . "\n";
 			echo '<li id="tab_tree" class="ui-state-default ui-corner-top">';
 			echo $link;
 			echo "</li>\n";
@@ -92,5 +95,4 @@ while ($jsEntry = $jsDir->read()) {
 	?>
 </ul>
 </div>
-		
-<br>
+

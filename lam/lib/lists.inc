@@ -162,6 +162,7 @@ class lamList {
 		}
 		// show form
 		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
+		echo "<div class=\"ui-tabs-nav\">";
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
 			// buttons
@@ -267,30 +268,34 @@ class lamList {
 	* @param integer $count number of account entries
 	*/
 	protected function listDrawNavigationBar($count) {
-
 		echo("<table class=\"" . $this->type . "nav\" width=\"100%\" border=\"0\">\n");
 		echo("<tr>\n");
-		echo("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
-		if ($this->page != 1) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 1) .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-				"<img style=\"vertical-align: middle;\" src=\"../../graphics/back.gif\" alt=\"back\"></a>\n");
-		}
-
-		if ($this->page < ($count / $this->maxPageEntries)) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 1) .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-				"<img style=\"vertical-align: middle;\" src=\"../../graphics/forward.gif\" alt=\"forward\"></a>\n");
-		}
+		echo("<td width=\"33%\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
 		echo("</td>");
 
-		echo("<td class=\"" . $this->type . "nav-text\">");
+		echo("<td width=\"33%\" align=\"center\" class=\"" . $this->type . "nav-text\">");
 		echo"&nbsp;";
 		printf($this->labels['nav'], $count);
 		echo("</td>");
 
-		echo("<td class=\"" . $this->type . "nav-activepage\" align=\"right\">");
-		for ($i = 0; $i < ($count / $this->maxPageEntries); $i++) {
+		echo("<td width=\"33%\" class=\"" . $this->type . "nav-activepage\" align=\"right\">");
+		if ($this->page != 1) {
+			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
+		}
+		if ($this->page > 10) {
+			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
+		}
+		for ($i = $this->page - 5; $i < ($this->page + 4); $i++) {
+			if ($i >= ($count / $this->maxPageEntries)) {
+				break;
+			}
+			elseif ($i < 0) {
+				continue;
+			}
 			if ($i == $this->page - 1) {
 				echo("&nbsp;" . ($i + 1));
 			}
@@ -298,6 +303,16 @@ class lamList {
 				echo("&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n");
 			}
+		}
+		if ($this->page < (($count / $this->maxPageEntries) - 10)) {
+			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
+		}
+		if ($this->page < ($count / $this->maxPageEntries)) {
+			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($count / $this->maxPageEntries) .
+				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 		}
 		echo("</td></tr></table>\n");
 	}
@@ -390,7 +405,7 @@ class lamList {
 		echo "<tr class=\"" . $this->type . "list-bright\">\n";
 		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
-			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
+			"<font color=\"black\">" . _("Select all") . "</font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
 	}
@@ -575,7 +590,8 @@ class lamList {
 
 		echo "<br>\n";
 		echo "<form target=\"_blank\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
-
+		echo "<div class=\"ui-tabs-nav\">";
+		
 		echo '<fieldset class="' . $this->type . 'edit"><legend>' . _('Create PDF file') . '</legend><br>';
 		echo '<table class="' . $this->type . 'edit">';
 			echo '<tr>';
@@ -617,7 +633,7 @@ class lamList {
 			echo '<tr>';
 				echo '<td colspan=2>';
 					echo '<input type="submit" name="createPDFok" value="' . _('Ok') . '"> ';
-					echo '<input type="submit" name="createPDFcancel" value="' . _('Cancel') . '">';
+					echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;norefresh=true">' . _('Cancel') . '</a>';
 				echo '</td>';
 			echo '</tr>';
 		echo '</table>';
@@ -693,7 +709,7 @@ class lamList {
 	 * Prints the HTML footer.
 	 */
 	protected function listPrintFooter() {	
-		echo ("</form>\n");
+		echo ("</div></form>\n");
 		echo "</body></html>\n";		
 	}
 
@@ -826,6 +842,7 @@ class lamList {
 		echo '<h1 align="center">' . _('Change list settings') . "</h1>\n";
 		
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		echo "<div class=\"ui-tabs-nav\">";
 		echo '<fieldset class="' . $this->type . 'edit"><br>';
 		echo "<table class=\"" . $this->type . "edit\" width=\"100%\">\n";
 		echo "<tr class=\"" . $this->type . "list\"><td>\n";

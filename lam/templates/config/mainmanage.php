@@ -138,10 +138,17 @@ echo $_SESSION['header'];
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
 	<body>
-		<p align="center"><a href="http://www.ldap-account-manager.org/" target="_blank">
-			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
-		</p>
-		<hr><br>
+		<table border=0 width="100%" class="lamHeader">
+			<tr>
+				<td align="left" height="30">
+					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
+				</td>
+				<td align="right" height=20>
+					<a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a>
+				</td>
+			</tr>
+		</table>
+		<br>
 
 <?php
 // include all JavaScript files

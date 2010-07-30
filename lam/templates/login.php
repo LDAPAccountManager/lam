@@ -55,8 +55,13 @@ session_start();
 session_regenerate_id(true);
 
 // save last selected login profile
-if(isset($_POST['profile'])) {
-	setcookie("lam_default_profile", $_POST['profile'], time() + 365*60*60*24);
+if(isset($_GET['useProfile'])) {
+	if (in_array($_GET['useProfile'], getConfigProfiles())) {
+		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24);
+	}
+	else {
+		unset($_GET['useProfile']);
+	}
 }
 
 // init some session variables
@@ -67,9 +72,9 @@ if(isset($_COOKIE["lam_default_profile"])) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
 }
 // Reload loginpage after a profile change
-if(isset($_POST['profileChange'])) {
-	logNewMessage(LOG_DEBUG, "Change server profile to " . $_POST['profile']);
-	$_SESSION['config'] = new LAMConfig($_POST['profile']); // Recreate the config object with the submited
+if(isset($_GET['useProfile'])) {
+	logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
+	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submited
 }
 // Load login page
 else {
@@ -150,7 +155,15 @@ function display_LoginPage($config_object) {
 	</head>
 	<body onload="focusLogin()">
 	<?php
-		// set focus on password field
+	// include all JavaScript files
+	$jsDirName = dirname(__FILE__) . '/lib';
+	$jsDir = dir($jsDirName);
+	while ($jsEntry = $jsDir->read()) {
+		if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
+	}
+
+	// set focus on password field
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
 		echo "function focusLogin() {\n";
@@ -166,24 +179,20 @@ function display_LoginPage($config_object) {
 		echo "//-->\n";
 		echo "</script>\n";
 	?>
-		<p align="center">
-			<a href="http://www.ldap-account-manager.org/" target="_blank"><img src="../graphics/banner.jpg" border="1" alt="LDAP Account Manager"></a>
-		</p>
-		<table width="100%" border="0">
+
+		<table border=0 width="100%" class="lamHeader">
 			<tr>
-				<td width="50%" align="left">
-					<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<?php echo _("LAM configuration") ?></a>
+				<td align="left" height="30">
+					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
 				</td>
-				<TD width="50%" align="right">
-					<?PHP
-						if (!isLAMProVersion()) {
-							echo "<a href=\"http://www.ldap-account-manager.org/lamcms/lamPro\">" . _("Want more features? Get LAM Pro!") . "</a>";
-						}
-					?>
-				</TD>
+			<td align="right" height=20>
+				<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<?php echo _("LAM configuration") ?></a>
+			</td>
 			</tr>
 		</table>
-		<hr><br><br>
+		
+		<br><br><br><br>
+
 		<?php
 		// check extensions
 		$extList = getRequiredExtensions();
@@ -231,8 +240,7 @@ function display_LoginPage($config_object) {
 					<form action="login.php" method="post">
 						<table width="580">
 							<tr>
-								<td style="border-style:none" height="70" colspan="2" align="center">
-									<font color="#000080"><b><big><?php echo _("Please select your user name and enter your password to log in."); ?></big></b></font>
+								<td style="border-style:none" height="30" colspan="2" align="center">
 								</td>
 							</tr>
 							<tr>
@@ -319,41 +327,44 @@ function display_LoginPage($config_object) {
 					<form action="login.php" method="post">
 						<table width="580">
 							<tr>
-								<td style="border-style:none" height="30" colspan="2">
-									<hr>
+								<td height="30" colspan=2>
+								<hr>
+								</td>
+							</tr>
+							<tr>
+								<td height="30" style="white-space: nowrap">
 									<b>
 									<?php
 									echo _("LDAP server") . ": ";
 									?></b>
+								</td>
+								<td width="100%" height="30">
 									<?php echo $config_object->get_ServerURL(); ?>
 								</td>
 							</tr>
 							<tr>
-							<td style="border-style:none" height="30"><b>
+							<td height="30" style="white-space: nowrap">
+								<b>
 								<?php
 								echo _("Server profile") . ": ";
-								if(empty($_POST['profileChange'])) {
-									$_POST['profile'] = $_SESSION['config']->getName();
-								}
 								?></b>
-								<?php echo $_POST['profile']; ?>
 							</td>
-							<td style="border-style:none" height="30" align="right">
-								<select name="profile" size="1" tabindex="5">
+							<td height="30">
+								<select name="profile" size="1" tabindex="5" onchange="loginProfileChanged(this)">
 								<?php
 								for($i=0;$i<count($profiles);$i++) {
-									?>
-									<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
-									<?php
+									$selected = '';
+									if ($profiles[$i] == $_SESSION['config']->getName()) {
+										$selected = ' selected';
+									}
+									echo '<option value="' . $profiles[$i] . '"' . $selected . '>' . $profiles[$i] . '</option>';
 								}
 								?>
 								</select>
-								<input name="profileChange" type="hidden" value="profileChange">
-								<input name="submit" type="submit" value="<?php echo _("Change profile"); ?>" tabindex="6">
 							</td>
 							</tr>
 							<tr>
-								<td style="border-style:none" height="10" colspan="2"></td>
+								<td height="10" colspan="2"></td>
 							</tr>
 						</table>
 					</form>
@@ -363,7 +374,16 @@ function display_LoginPage($config_object) {
 		</div>
 		<br><br>
 			<TABLE style="position:absolute; bottom:10px;" border="0" width="99%">
-				<TR><TD align="right"><HR>
+				<tr><td colspan=2><HR></td></tr>
+				<TR>
+				<td align="left">
+					<?PHP
+						if (!isLAMProVersion()) {
+							echo "<a href=\"http://www.ldap-account-manager.org/lamcms/lamPro\">" . _("Want more features? Get LAM Pro!") . "</a>";
+						}
+					?>
+				</td>
+				<TD align="right">
 					<SMALL>
 					<?php
 						if (isLAMProVersion()) {
