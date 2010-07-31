@@ -413,7 +413,7 @@ class shadowAccount extends baseModule implements passwordService {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
+		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . date('d. m. Y',$this->attributes['shadowLastChange'][0]*24*3600) . '</value></block>'),
 			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 			'shadowAccount_shadowInactive' => array('<block><key>' . _('Password expiration') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
 			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'));
