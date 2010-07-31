@@ -574,7 +574,7 @@ class htmlSelect extends htmlElement {
 	 * Constructor.
 	 *
 	 * @param String $name element name
-	 * @param array $elements list of elememts
+	 * @param array $elements list of elememts (label => value)
 	 * @param array $selectedElements list of selected elements (optional, default none)
 	 * @param int $size size (optional, default = 1)
 	 */
