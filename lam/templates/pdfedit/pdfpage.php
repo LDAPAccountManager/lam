@@ -674,6 +674,9 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 									if (isset($_GET['edit'])) {
 										$structureName = $_GET['edit'];
 									}
+									elseif (isset($_GET['pdfname'])) {
+										$structureName = $_GET['pdfname'];
+									}
 									else if (isset($_POST['pdfname'])) {
 										$structureName = $_POST['pdfname'];
 									}
