@@ -43,7 +43,12 @@ abstract class htmlElement {
 	const ALIGN_RIGHT = 2;
 	const ALIGN_BOTTOM = 3;
 	
+	/** alignment when inside a table */
 	public $alignment = null;
+	/** colspan if inside a table */
+	public $colspan = null;
+	/** rowspan if inside a table */
+	public $rowspan = null;
 
 	/**
 	 * Prints the HTML code for this element.
@@ -57,6 +62,56 @@ abstract class htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	abstract function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope);
+	
+	/**
+	 * Returns the HTML attributes for the alignment.
+	 * 
+	 * @return String alignment HTML attributes (e.g. align="right" valign="top")
+	 */
+	public function getAlignmentString() {
+		$align = '';
+		if ($this->alignment !== null) {
+			switch ($this->alignment) {
+				case htmlElement::ALIGN_BOTTOM:
+					$align = 'valign="bottom"';
+				break;
+				case htmlElement::ALIGN_TOP:
+					$align = 'valign="top"';
+				break;
+				case htmlElement::ALIGN_LEFT:
+					$align = 'align="left"';
+				break;
+				case htmlElement::ALIGN_RIGHT:
+					$align = 'align="right"';
+				break;
+			}
+		}
+		return $align;
+	}
+
+	/**
+	 * Returns the HTML attribute for the colspan.
+	 * 
+	 * @return String colspan HTML attribute (e.g. colspan=3)
+	 */
+	public function getColspanString() {
+		if ($this->colspan == null) {
+			return '';
+		}
+		else return 'colspan="' . $this->colspan . '"';
+	}
+	
+	/**
+	 * Returns the HTML attribute for the rowspan.
+	 * 
+	 * @return String rowspan HTML attribute (e.g. rowspan=3)
+	 */
+	public function getRowspanString() {
+		if ($this->rowspan == null) {
+			return '';
+		}
+		else return 'rowspan="' . $this->rowspan . '"';
+	}
 
 }
 
@@ -104,24 +159,10 @@ class htmlTable extends htmlElement {
 				$this->rowOpen = true;
 			}
 			// check if alignment option was given
-			$align = '';
-			if ($element->alignment !== null) {
-				switch ($element->alignment) {
-					case htmlElement::ALIGN_BOTTOM:
-						$align = 'valign="bottom"';
-					break;
-					case htmlElement::ALIGN_TOP:
-						$align = 'valign="top"';
-					break;
-					case htmlElement::ALIGN_LEFT:
-						$align = 'align="left"';
-					break;
-					case htmlElement::ALIGN_RIGHT:
-						$align = 'align="right"';
-					break;
-				}
-			}
-			$this->elements[] = "<td $align>\n";
+			$align = $element->getAlignmentString();
+			$colspan = $element->getColspanString();
+			$rowspan = $element->getRowspanString();
+			$this->elements[] = "<td $align $colspan $rowspan>\n";
 			$this->elements[] = $element;
 			$this->elements[] = "</td>\n";
 			if ($newLine) {
@@ -218,24 +259,10 @@ class htmlTableRow extends htmlElement {
 		echo "<tr>\n";
 			for ($i = 0; $i < sizeof($this->cells); $i++) {
 				// check if alignment option was given
-				$align = '';
-				if ($this->cells[$i]->alignment !== null) {
-					switch ($this->cells[$i]->alignment) {
-						case htmlElement::ALIGN_BOTTOM:
-							$align = 'valign="bottom"';
-						break;
-						case htmlElement::ALIGN_TOP:
-							$align = 'valign="top"';
-						break;
-						case htmlElement::ALIGN_LEFT:
-							$align = 'align="left"';
-						break;
-						case htmlElement::ALIGN_RIGHT:
-							$align = 'align="right"';
-						break;
-					}
-				}
-				echo "<td $align>\n";
+				$align = $this->cells[$i]->getAlignmentString();
+				$colspan = $this->cells[$i]->getColspanString();
+				$rowspan = $this->cells[$i]->getRowspanString();
+				echo "<td $align $colspan $rowspan>\n";
 				$types = array_merge($types, $this->cells[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 				echo "</td>\n";
 			}
@@ -396,24 +423,6 @@ class htmlTableExtendedInputField extends htmlInputField {
 		return $return;
 	}
 
-	/**
-	 * Sets the maximum field length.
-	 * 
-	 * @param int $fieldMaxLength length
-	 */
-	public function setFieldMaxLength($fieldMaxLength) {
-		$this->fieldMaxLength = $fieldMaxLength;
-	}
-	
-	/**
-	 * Sets the field size.
-	 * 
-	 * @param int $fieldSize size
-	 */
-	public function setFieldSize($fieldSize) {
-		$this->fieldSize = $fieldSize;
-	}
-	
 	/**
 	 * Specifies if this input field must be filled.
 	 * 
