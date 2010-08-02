@@ -94,43 +94,38 @@ class shadowAccount extends baseModule implements passwordService {
 		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
-				array('kind' => 'input', 'name' => 'shadowAccount_addExt', 'type' => 'checkbox'),
-				array('kind' => 'help', 'value' => 'autoAdd')),
-			// password warning
-			array(
-				array('kind' => 'text', 'text' => _('Password warning')),
-				array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
-				array('kind' => 'help', 'value' => 'shadowWarning')),
-			// password expiration
-			array(
-				array('kind' => 'text', 'text' => _('Password expiration')),
-				array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
-				array('kind' => 'help', 'value' => 'shadowInactive')),
-			// minimum password age
-			array(
-				array('kind' => 'text', 'text' => _('Minimum password age')),
-				array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-				array('kind' => 'help', 'value' => 'shadowMin')),
-			// maximum password age
-			array(
-				array('kind' => 'text', 'text' => _('Maximum password age')),
-				array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-				array('kind' => 'help', 'value' => 'shadowMax')),
-			// expiration date
-			array(
-				array('kind' => 'text', 'text' => _('Account expiration date')),
-				array('kind' => 'table', 'value' => array(
-					array (
-						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day', 'options' => $day, 'options_selected' => array('1')),
-						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon', 'options' => $mon, 'options_selected' => array('1')),
-						array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year, 'options_selected' => array('2030'))
-					)
-				)),
-				array('kind' => 'help', 'value' => 'shadowExpire')),
-		);
+		$profileOptionsTable = new htmlTable();
+		// auto add extension
+		$profileOptionsTable->addElement(new htmlTableExtendedInputCheckbox('shadowAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		// password warning
+		$profilePwdWarning = new htmlTableExtendedInputField(_('Password warning'), 'shadowAccount_shadowWarning', null, 'shadowWarning');
+		$profilePwdWarning->setFieldSize(5);
+		$profilePwdWarning->setFieldMaxLength(4);
+		$profileOptionsTable->addElement($profilePwdWarning, true);
+		// password expiration
+		$profilePwdExpiration = new htmlTableExtendedInputField(_('Password expiration'), 'shadowAccount_shadowInactive', null, 'shadowInactive');
+		$profilePwdExpiration->setFieldSize(5);
+		$profilePwdExpiration->setFieldMaxLength(4);
+		$profileOptionsTable->addElement($profilePwdExpiration, true);
+		// minimum password age
+		$profilePwdMinAge = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowAccount_shadowMin', null, 'shadowMin');
+		$profilePwdMinAge->setFieldSize(5);
+		$profilePwdMinAge->setFieldMaxLength(5);
+		$profileOptionsTable->addElement($profilePwdMinAge, true);
+		// maximum password age
+		$profilePwdMinAge = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowAccount_shadowMax', null, 'shadowMax');
+		$profilePwdMinAge->setFieldSize(5);
+		$profilePwdMinAge->setFieldMaxLength(5);
+		$profileOptionsTable->addElement($profilePwdMinAge, true);
+		// expiration date
+		$profileOptionsTable->addElement(new htmlOutputText(_('Account expiration date')));
+		$profileOptionsExpire = new htmlTable();
+		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_day', $day, array('1')));
+		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, array('1')));
+		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_yea', $year, array('2030')));
+		$profileOptionsTable->addElement($profileOptionsExpire);
+		$profileOptionsTable->addElement(new htmlHelpLink('shadowExpire'));
+		$return['profile_options'] = $profileOptionsTable;
 		// profile checks
 		$return['profile_checks']['shadowAccount_shadowMin'] = array(
 			'type' => 'ext_preg',
@@ -293,61 +288,53 @@ class shadowAccount extends baseModule implements passwordService {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'shadowAccount';
 		}
-		$return = array();
+		$return = new htmlTable();
 		if (in_array('shadowAccount', $this->attributes['objectClass'])) {
 			$shWarning = '';
 			if (isset($this->attributes['shadowWarning'][0])) {
 				$shWarning = $this->attributes['shadowWarning'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password warning')),
-				array('kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
-				array('kind' => 'help', 'value' => 'shadowWarning'));
+			$pwdWarnInput = new htmlTableExtendedInputField(_('Password warning'), 'shadowWarning', $shWarning, 'shadowWarning');
+			$pwdWarnInput->setFieldMaxLength(4);
+			$pwdWarnInput->setFieldSize(5);
+			$return->addElement($pwdWarnInput, true);
 			$shPwdExpiration = '';
 			if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password expiration')),
-				array('kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shPwdExpiration),
-				array('kind' => 'help', 'value' => 'shadowInactive'));
+			$pwdExpInput = new htmlTableExtendedInputField(_('Password expiration'), 'shadowInactive', $shPwdExpiration, 'shadowInactive');
+			$pwdExpInput->setFieldMaxLength(4);
+			$pwdExpInput->setFieldSize(5);
+			$return->addElement($pwdExpInput, true);
 			$shMinAge = '';
 			if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Minimum password age')),
-				array('kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMinAge),
-				array('kind' => 'help', 'value' => 'shadowMin'));
+			$minAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowMin', $shMinAge, 'shadowMin');
+			$minAgeInput->setFieldMaxLength(5);
+			$minAgeInput->setFieldSize(5);
+			$return->addElement($minAgeInput, true);
 			$shMaxAge = '';
 			if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Maximum password age')),
-				array('kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
-				array('kind' => 'help', 'value' => 'shadowMax'));
-	
+			$maxAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowMax', $shMaxAge, 'shadowMax');
+			$maxAgeInput->setFieldMaxLength(5);
+			$maxAgeInput->setFieldSize(5);
+			$return->addElement($maxAgeInput, true);
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowExpire'][0])) {
 				$shAccExpirationDate = $this->attributes['shadowExpire'][0];
 				$date = getdate($shAccExpirationDate*3600*24);
 				$expirationDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Account expiration date')),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => $expirationDate),
-					array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_expire_open', 'type' => 'submit', 'value' => _('Change'))
-				))),
-				array('kind' => 'help', 'value' => 'shadowExpire' ));
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;')
-			);
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_shadowAccount_attributes_remObjectClass',
-					'value' => _('Remove Shadow account extension'), 'td' => array('colspan' => '4'))
-			);
+			$return->addElement(new htmlOutputText(_('Account expiration date')));
+			$expireTable = new htmlTable();
+			$expireTable->addElement(new htmlOutputText($expirationDate, false));
+			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', _('Change')));
+			$return->addElement($expireTable);
+			$return->addElement(new htmlHelpLink('shadowExpire'), true);
+			$return->addElement(new htmlOutputText(''), true);
+			$remButton = new htmlAccountPageButton('shadowAccount', 'attributes', 'remObjectClass', _('Remove Shadow account extension'));
+			$remButton->colspan = 4;
+			$return->addElement($remButton);
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_shadowAccount_attributes_addObjectClass', 'value' => _('Add Shadow account extension'))
-			);
+			$return->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'addObjectClass', _('Add Shadow account extension')));
 		}
 		return $return;
 	}
@@ -378,7 +365,7 @@ class shadowAccount extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	function display_html_expire() {
-		$return = array();
+		$return = new htmlTable();
 		$shAccExpirationDate = 0;
 		if (isset($this->attributes['shadowExpire'][0])) {
 			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
@@ -387,24 +374,22 @@ class shadowAccount extends baseModule implements passwordService {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Account expiration date')),
-			array('kind' => 'table', 'value' => array(
-				array(
-					array('kind' => 'select', 'name' => 'shadowExpire_day', 'options' => $mday, 'options_selected' => $date['mday']),
-					array('kind' => 'select', 'name' => 'shadowExpire_mon', 'options' => $mon, 'options_selected' => $date['mon']),
-					array('kind' => 'select', 'name' => 'shadowExpire_yea', 'options' => $year, 'options_selected' => $date['year'])))),
-			array('kind' => 'help', 'value' => 'shadowExpire'));
-		$buttons = array();
-		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_change', 'type' => 'submit', 'value' => _('Change'));
+		$return->addElement(new htmlOutputText(_('Account expiration date')));
+		$expTable = new htmlTable();
+		$expTable->addElement(new htmlSelect('shadowExpire_day', $mday, array($date['mday'])));
+		$expTable->addElement(new htmlSelect('shadowExpire_mon', $mon, array($date['mon'])));
+		$expTable->addElement(new htmlSelect('shadowExpire_yea', $year, array($date['year'])));
+		$return->addElement($expTable);
+		$return->addElement(new htmlHelpLink('shadowExpire'), true);
+		$buttonTable = new htmlTable();
+		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'change', _('Change')));
 		if (isset($this->attributes['shadowExpire'][0])) {
-			$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_del', 'type' => 'submit', 'value' => _('Remove'));
+			$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'del', _('Remove')));
 		}
-		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_back', 'type' => 'submit', 'value' => _('Cancel'));
-		$return[] = array(
-			array('kind' => 'table', 'td' => array('colspan' => 3), 'value' => array($buttons))
-		);
-		return $return;	
+		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'back', _('Cancel')));
+		$buttonTable->colspan=3;
+		$return->addElement($buttonTable);
+		return $return;
 	}
 
 	/**
