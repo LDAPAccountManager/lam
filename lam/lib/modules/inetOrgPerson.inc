@@ -940,9 +940,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			// get list of existing users for manager attribute
-			$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
-			if (!is_array($dnUsers)) $dnUsers = array();
-			$dnUsers = array_keys($dnUsers);
+			$dnUsers = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('dn'), array('user'));
+			for ($i = 0; $i < sizeof($dnUsers); $i++) {
+				$dnUsers[$i] = $dnUsers[$i]['dn'];
+			}
 			usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
 			array_unshift($dnUsers, '-');
 			$options = array();

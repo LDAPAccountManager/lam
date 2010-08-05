@@ -227,14 +227,9 @@ class inetLocalMailRecipient extends baseModule {
 			// check if address has correct format
 			if (get_preg($_POST['localAdr'], 'mailLocalAddress')) {
 				// check if new address is not already in database
-				$data = $_SESSION['cache']->get_cache('mailLocalAddress', 'inetLocalMailRecipient', 'user');
-				$keys = array_keys($data);
-				for ($i = 0; $i < sizeof($keys); $i++) {
-					$adrList = $data[$keys[$i]];
-					if (in_array_ignore_case($_POST['localAdr'], $adrList)) {
-						$errors[] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $keys[$i]);
-						break;
-					}
+				$data = searchLDAPByAttribute('mailLocalAddress', $_POST['localAdr'], 'inetLocalMailRecipient', array('dn'), array('user'));
+				if (sizeof($data) > 0) {
+					$errors[] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $data[0]['dn']);
 				}
 				$this->attributes['mailLocalAddress'][] = $_POST['localAdr'];
 			}
