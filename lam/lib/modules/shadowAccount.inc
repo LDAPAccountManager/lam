@@ -187,6 +187,10 @@ class shadowAccount extends baseModule implements passwordService {
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
+			),
+			'shadowLastChange' => array(
+				"Headline" => _("Last password change"),
+				"Text" => _("This is the date when the user changed his password. If you specify a maximum password age then you can force a password change here.")
 			)
 		);
 		// upload fields
@@ -276,6 +280,9 @@ class shadowAccount extends baseModule implements passwordService {
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors[] = $this->messages['shadow_cmp'][0];
 		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors[] = $this->messages['inactive'][0];
 		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors[] = $this->messages['shadowWarning'][0];
+		if (isset($_POST['form_subpage_shadowAccount_attributes_expirePassword']) && isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != 0)) {
+			$this->attributes['shadowLastChange'][0] = intval(time()/3600/24) - $this->attributes['shadowMax'][0] - 1;
+		}
 		return $errors;
 	}
 
@@ -298,24 +305,28 @@ class shadowAccount extends baseModule implements passwordService {
 			$pwdWarnInput->setFieldMaxLength(4);
 			$pwdWarnInput->setFieldSize(5);
 			$return->addElement($pwdWarnInput, true);
+			
 			$shPwdExpiration = '';
 			if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
 			$pwdExpInput = new htmlTableExtendedInputField(_('Password expiration'), 'shadowInactive', $shPwdExpiration, 'shadowInactive');
 			$pwdExpInput->setFieldMaxLength(4);
 			$pwdExpInput->setFieldSize(5);
 			$return->addElement($pwdExpInput, true);
+			
 			$shMinAge = '';
 			if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
 			$minAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowMin', $shMinAge, 'shadowMin');
 			$minAgeInput->setFieldMaxLength(5);
 			$minAgeInput->setFieldSize(5);
 			$return->addElement($minAgeInput, true);
+			
 			$shMaxAge = '';
 			if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
 			$maxAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowMax', $shMaxAge, 'shadowMax');
 			$maxAgeInput->setFieldMaxLength(5);
 			$maxAgeInput->setFieldSize(5);
 			$return->addElement($maxAgeInput, true);
+			
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowExpire'][0])) {
 				$shAccExpirationDate = $this->attributes['shadowExpire'][0];
@@ -328,6 +339,22 @@ class shadowAccount extends baseModule implements passwordService {
 			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', _('Change')));
 			$return->addElement($expireTable);
 			$return->addElement(new htmlHelpLink('shadowExpire'), true);
+			
+				$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				if (isset($this->attributes['shadowLastChange'][0])) {
+					$shPwdChangeDate = $this->attributes['shadowLastChange'][0];
+					$date = getdate($shPwdChangeDate*3600*24);
+					$pwdChangeDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				}
+				$return->addElement(new htmlOutputText(_('Last password change')));
+				$pwdChangeTable = new htmlTable();
+				$pwdChangeTable->addElement(new htmlOutputText($pwdChangeDate, false));
+				if (isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != '')) {
+					$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'expirePassword', _('Force password change')));
+				}
+				$return->addElement($pwdChangeTable);
+				$return->addElement(new htmlHelpLink('shadowLastChange'), true);
+			
 			$return->addElement(new htmlOutputText(''), true);
 			$remButton = new htmlAccountPageButton('shadowAccount', 'attributes', 'remObjectClass', _('Remove Shadow account extension'));
 			$remButton->colspan = 4;
@@ -401,7 +428,10 @@ class shadowAccount extends baseModule implements passwordService {
 		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . date('d. m. Y',$this->attributes['shadowLastChange'][0]*24*3600) . '</value></block>'),
 			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 			'shadowAccount_shadowInactive' => array('<block><key>' . _('Password expiration') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'));
+			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'),
+			'shadowAccount_shadowMinAge' => array('<block><key>' . _('Minimum password age') . '</key><value>' . $this->attributes['shadowMin'][0] . '</value><block>'),
+			'shadowAccount_shadowMaxAge' => array('<block><key>' . _('Maximum password age') . '</key><value>' . $this->attributes['shadowMax'][0] . '</value><block>'),
+		);
 	}
 
 	/**
