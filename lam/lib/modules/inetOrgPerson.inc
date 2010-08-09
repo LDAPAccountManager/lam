@@ -1119,6 +1119,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
+		// get list of existing users
+		$existingUsers = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('uid'), array('user'));
+		for ($e = 0; $e < sizeof($existingUsers); $e++) {
+			$existingUsers[$e] = $existingUsers[$e]['uid'][0];
+		}
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
 			// last name
@@ -1336,12 +1341,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 				}
 				// uid
-				// get list of existing users
-				$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
-				$existingUsers = array();
-				foreach ($dnUsers as $dn) {
-					$existingUsers[] = $dn[0];
-				}
 				if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
 					$errMsg = $this->messages['uid'][3];
 					array_push($errMsg, array($i));

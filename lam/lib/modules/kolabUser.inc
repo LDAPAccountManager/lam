@@ -247,7 +247,7 @@ class kolabUser extends baseModule {
 		$this->messages['homeServer'][0] = array('ERROR', _('Mailbox home server name is invalid!'));  // third array value is set dynamically
 		$this->messages['homeServer'][1] = array('ERROR', _('Account %s:') . ' kolabUser_homeServer', _('Mailbox home server name is invalid!'));
 		$this->messages['homeServer'][2] = array('ERROR', _('Mailbox home server name is empty!'), '');
-		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegate', _('Delegates has invalid format!'));
+		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegate', _('Unknown delegate address: %s'));
 		$this->messages['freeBusy'][0] = array('ERROR', _('Free/Busy interval must be a number!'));  // third array value is set dynamically
 		$this->messages['freeBusy'][1] = array('ERROR', _('Account %s:') . ' kolabUser_freeBusy', _('Free/Busy interval must be a number!'));
 		$this->messages['quota'][0] = array('ERROR', _('Mail quota must be a number!'));  // third array value is set dynamically
@@ -381,15 +381,11 @@ class kolabUser extends baseModule {
 				);
 			$return[] = $returnAliases;
 			// delegates
-			$delegates = array();
-			$delegatesTemp = $_SESSION['cache']->get_cache('mail', 'inetOrgPerson', 'user');
-			if (is_array($delegatesTemp)) {
-				$DNs = array_keys($delegatesTemp);
-				foreach ($DNs as $DN) {
-					$delegates[] = $delegatesTemp[$DN][0];
-				}
-				sort($delegates);
+			$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('mail'), array('user'));
+			for ($i = 0; $i < sizeof($delegates); $i++) {
+				$delegates[$i] = $delegates[$i]['mail'][0];
 			}
+			sort($delegates);
 			$returnDelegates = array();
 			if (isset($this->attributes['kolabDelegate'])) {
 				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
@@ -636,6 +632,10 @@ class kolabUser extends baseModule {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$messages = array();
+		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('mail'), array('user'));
+		for ($d = 0; $d < sizeof($delegates); $d++) {
+			$delegates[$d] = $delegates[$d]['mail'][0];
+		}
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("kolabInetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "kolabInetOrgPerson";
@@ -718,15 +718,6 @@ class kolabUser extends baseModule {
 			}
 			// add delegates
 			if ($rawAccounts[$i][$ids['kolabUser_delegates']] != "") {
-				$delegates = array();
-				$delegatesTemp = $_SESSION['cache']->get_cache('mail', 'inetOrgPerson', 'user');
-				if (is_array($delegatesTemp)) {
-					$DNs = array_keys($delegatesTemp);
-					foreach ($DNs as $DN) {
-						$delegates[] = $delegatesTemp[$DN][0];
-					}
-					sort($delegates);
-				}
 				$newDelegates = explode(',', $rawAccounts[$i][$ids['kolabUser_delegates']]);
 				// check format
 				for ($d = 0; $d < sizeof($newDelegates); $d++) {
@@ -736,7 +727,7 @@ class kolabUser extends baseModule {
 					// invalid format
 					else {
 						$errMsg = $this->messages['delegate'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, array($i, $newDelegates[$d]));
 						$messages[] = $errMsg;
 					}
 				}
