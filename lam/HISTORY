@@ -1,7 +1,7 @@
 October 2010 3.2.0
   - fixed bugs:
-   -> fixed email check (3033605)
-
+   -> email check did not include "+" (3033605)
+   -> tab index on login page (3042622)
 
 
 04.07.2010 3.1.1
