@@ -1,4 +1,8 @@
 October 2010 3.2.0
+  - usability enhancements
+  - Shadow: allow to force password change when maximum password age is set
+  - LAM Pro:
+   -> Password policy: allow to force password change (RFE 3026940)
   - fixed bugs:
    -> email check did not include "+" (3033605)
    -> tab index on login page (3042622)
