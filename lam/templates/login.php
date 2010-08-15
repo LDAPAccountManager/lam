@@ -252,7 +252,7 @@ function display_LoginPage($config_object) {
 								<td style="border-style:none" height="35" align="left">
 									<?php
 									if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
-										echo '<select name="username" size="1" tabindex="0">';
+										echo '<select name="username" size="1" tabindex="1">';
 										$admins = $config_object->get_Admins();
 										for($i = 0; $i < count($admins); $i++) {
 											$text = explode(",", $admins[$i]);
