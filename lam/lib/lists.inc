@@ -280,12 +280,12 @@ class lamList {
 
 		echo("<td width=\"33%\" class=\"" . $this->type . "nav-activepage\" align=\"right\">");
 		if ($this->page != 1) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
+			echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
 		}
 		if ($this->page > 10) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
+			echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 		}
@@ -305,12 +305,12 @@ class lamList {
 			}
 		}
 		if ($this->page < (($count / $this->maxPageEntries) - 10)) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
+			echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 		}
 		if ($this->page < ($count / $this->maxPageEntries)) {
-			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($count / $this->maxPageEntries) .
+			echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($count / $this->maxPageEntries) .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 		}
