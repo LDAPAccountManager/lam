@@ -26,7 +26,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 	
 	set +e
 	db_get "ldap-account-manager/restart-webserver"
-	if [ $? -eq 0 && "$RET" = "true" ]; then
+	if [ $? -eq 0 ] && [ "$RET" = "true" ]; then
 		set -e
 		for server in $restart; do
 				server=${server%,}
@@ -40,7 +40,8 @@ if [ -f /usr/share/debconf/confmodule ]; then
 	
 	set -e
 	if [ "$1" = "purge" ]; then
-		rm -r -f /usr/share/ldap-account-manager; rm -r -f /var/lib/ldap-account-manager; fi
+		rm -r -f /usr/share/ldap-account-manager
+		rm -r -f /var/lib/ldap-account-manager
 		db_purge
 	fi
 	
