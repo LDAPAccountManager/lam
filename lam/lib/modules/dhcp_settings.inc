@@ -321,10 +321,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['subnet'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_subnetMask', _('The subnet mask is invalid.'));
 		$this->messages['ranges_reload'][0] = array('INFO', _('The DHCP ranges were changed to fit for the new subnet.'));
 		$this->messages['ips_reload'][0] = array('INFO', 'The fixed IP addresses were changed to fit for the new subnet.');
-		$this->messages['domainname'][0] = array('ERROR', _('The domain name needs to be shorter than 15 characters.'));
 		$this->messages['domainname'][1] = array('ERROR', _('The domain name needs to have at least 3 characters.'));
 		$this->messages['domainname'][2] = array('ERROR', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
-		$this->messages['domainname'][3] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to be shorter than 15 characters.'));
 		$this->messages['domainname'][4] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name needs to have at least 3 characters.'));
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 	}
@@ -393,10 +391,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// Check domainname:
 		if (!empty($_POST['domainname'])) $_POST['domainname'] = trim($_POST['domainname']);
 		if (!empty($_POST['domainname'])) {
-		    if (strlen($_POST['domainname'])>15) {
-		        $errors[] = $this->messages['domainname'][0];
-			}
-			elseif (strlen($_POST['domainname'])<3) {
+		    if (strlen($_POST['domainname'])<3) {
 			    $errors[] = $this->messages['domainname'][1];
 			}
 			elseif (!preg_match("/^[A-Za-z0-9\._-]*$/", $_POST['domainname'])) {
@@ -827,12 +822,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			// domain name
 			if ($rawAccounts[$i][$ids['dhcp_settings_domainName']] != "") {
-				if (strlen($rawAccounts[$i][$ids['dhcp_settings_domainName']])>15) {
-					$error = $this->messages['domainname'][3];
-					array_push($error, $i);
-					$messages[] = $error;
-				}
-				elseif (strlen($rawAccounts[$i][$ids['dhcp_settings_domainName']])<3) {
+				if (strlen($rawAccounts[$i][$ids['dhcp_settings_domainName']])<3) {
 					$error = $this->messages['domainname'][4];
 					array_push($error, $i);
 					$messages[] = $error;
