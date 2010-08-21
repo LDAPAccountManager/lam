@@ -303,7 +303,7 @@ class lamList {
 				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 		}
 		if ($this->page < ($count / $this->maxPageEntries)) {
-			echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($count / $this->maxPageEntries) .
+			echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . round(($count / $this->maxPageEntries)) .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 		}
