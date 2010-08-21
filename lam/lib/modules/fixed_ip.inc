@@ -66,7 +66,7 @@ class fixed_ip extends baseModule {
 		// manages host accounts
 		$return["account_types"] = array("dhcp");
 		// alias name
-		$return["alias"] = _("Fixed IP");
+		$return["alias"] = _("Hosts");
 		// this is a base module
 		$return["is_base"] = false;
 		// icon
@@ -259,15 +259,11 @@ class fixed_ip extends baseModule {
 					if (!empty($_POST['ip_'.$id])) {
 						$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
 					}
-					if (!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id]) || get_preg($_POST['ip_'.$id], 'DNSname'))) {
+					if (!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id]))) {
 						$error = true;
 						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 					}
-					elseif (empty($_POST['ip_'.$id])) {
-						$error = true;
-						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
-					}
-					elseif (!$this->overlapd_ip($_POST['ip_'.$id])) {
+					elseif (!empty($_POST['ip_'.$id]) && !$this->overlapd_ip($_POST['ip_'.$id])) {
 						$error = true;
 						$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 					}
@@ -276,7 +272,7 @@ class fixed_ip extends baseModule {
 					}
 
 					// Is ip correct with subnet:
-					if (check_ip($_POST['ip_'.$id]) && !range::check_subnet_range($_POST['ip_'.$id],
+					if (!empty($_POST['ip_'.$id]) && check_ip($_POST['ip_'.$id]) && !range::check_subnet_range($_POST['ip_'.$id],
 																				 $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
 																				 $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 					    $error = true;
@@ -341,7 +337,7 @@ class fixed_ip extends baseModule {
 					array('kind' => 'help', 'value' => 'mac'),
 				))),
 				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => _('IP address') . "*"),
+					array('kind' => 'text', 'text' => _('IP address')),
 					array('kind' => 'help', 'value' => 'ip'),
 				))),
 				array('kind' => 'text', 'text' => ''),
@@ -385,10 +381,10 @@ class fixed_ip extends baseModule {
                     
 				// fixed ip
 				$ipError = "";
-				if (!$this->processed) {
+				if (!$this->processed || ($this->fixed_ip[$id]['ip'] == '')) {
                 	$ipError = "";
 				}
-				elseif (($this->fixed_ip[$id]['ip'] == '') || !check_ip($this->fixed_ip[$id]['ip'])) {
+				elseif (!check_ip($this->fixed_ip[$id]['ip'])) {
 					$ipError = _("The IP address is invalid.");
 				}
 				elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'], 
@@ -510,7 +506,9 @@ class fixed_ip extends baseModule {
 				$attr['objectClass'][0] = 'top';
 				$attr['objectClass'][1] = 'dhcpHost';
 				$attr['dhcpHWAddress'] = 'ethernet ' . $add[$id]['mac'];
-				$attr['dhcpStatements'] = 'fixed-address '.$add[$id]['ip'];
+				if ($add[$id]['ip'] != '') {
+					$attr['dhcpStatements'] = 'fixed-address '.$add[$id]['ip'];
+				}
 				$attr['dhcpOption'] = 'host-name "' . $add[$id]['cn'] . '"';
 				if ($attr['cn'] != "")
 					ldap_add($_SESSION['ldap']->server(),'cn='.$add[$id]['cn'].',cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),$attr);

@@ -1,6 +1,7 @@
 October 2010 3.2.0
   - usability enhancements
   - Shadow: allow to force password change when maximum password age is set
+  - DHCP: renamed module "Fixed IPs" to "Hosts", IP is now optional (3038797)
   - LAM Pro:
    -> Password policy: allow to force password change (RFE 3026940)
   - fixed bugs:
