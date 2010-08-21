@@ -106,9 +106,7 @@ else {
 }
 
 
-echo "</body>\n";
-echo "</html>\n";
-
+include '../main_footer.php';
 
 
 /**
@@ -133,11 +131,11 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 			$lamdaemonOk = true;
 		}
 		if ($lamdaemonOk) {
-			echo "<td>" . $okImage . "</td>";
+			echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>";
 			echo "<td>" . _("Lamdaemon successfully run.") . "</td>";
 		}
 		else {
-			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>\n";
 			if (!(strpos($output, 'ERROR,') === 0) && !(strpos($output, 'WARN,') === 0)) {
 				// error messages from console (e.g. sudo)
@@ -168,7 +166,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 	$okImage = "<img width=16 height=16 src=\"../../graphics/pass.png\" alt=\"\">\n";
 	$failImage = "<img width=16 height=16 src=\"../../graphics/fail.png\" alt=\"\">\n";
 	
-	echo "<table class=\"userlist\" rules=\"none\" width=\"750\">\n";
+	echo "<table class=\"userlist\" rules=\"none\">\n";
 
 	flush();
 	$stopTest = false;
@@ -182,12 +180,12 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 		echo "<td>" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
 	}
 	elseif (($_SESSION['config']->get_scriptPath() == null) || (strlen($_SESSION['config']->get_scriptPath()) < 10)) {
-		echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+		echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
 		echo "<td>" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
 		$stopTest = true;
 	}
 	else {
-		echo "<td>" . $okImage . "&nbsp;&nbsp;</td>\n";
+		echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>\n";
 		echo "<td>" . sprintf(_("Using %s as lamdaemon remote server."), $serverName) . "</td>";
 	}
 	echo "</tr>\n";
@@ -208,11 +206,11 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 			}
 		}
 		if ($unixOk) {
-			echo "<td>" . $okImage . "</td>\n";
+			echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
 		}
 		else {
-			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
 			$stopTest = true;
 		}
@@ -233,11 +231,11 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 			}
 		}
 		if ($sshOk) {
-			echo "<td>" . $okImage . "</td>";
+			echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>";
 			echo "<td>" . _("SSH connection could be established.") . "</td>";
 		}
 		else {
-			echo "<td>" . $failImage . "&nbsp;&nbsp;</td>\n";
+			echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
 			echo "<td>" . _("Unable to connect to remote server!") . "</td>";
 			$stopTest = true;
 		}

@@ -83,4 +83,5 @@ echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n");
 echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n");
 echo ("<input type=\"hidden\" name=\"type\" value=\"$type\">");
 echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-echo ("</p></form></body></html>\n");
+echo ("</p></form>\n");
+include '../main_footer.php';

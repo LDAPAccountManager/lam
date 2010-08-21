@@ -112,7 +112,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				"<input type=\"submit\" name=\"sure\" value=\"" . _("Delete") . "\">\n" .
 				"<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n" .
 				"</form>";
-			echo "</body></html>\n";
+			include 'main_footer.php';
 			exit();
 		}
 		else {
@@ -196,5 +196,5 @@ function display_main($message, $error) {
 	echo ("<br>\n");
 	
 	echo ("</form>\n");
-	echo ("</body></html>\n");
+	include 'main_footer.php';
 }

@@ -910,8 +910,8 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
 			}
 			echo "</tr>\n";
 		}
+		echo "</table>\n";
 	}
-	echo "</table>\n";
 	return $ret;
 }
 
@@ -1227,8 +1227,7 @@ class accountContainer {
 				call_user_func_array("StatusMessage", $result[$i]);
 			}
 			if ($stopProcessing) {
-				echo "</body>\n";
-				echo "</html>\n";
+				$this->printPageFooter();
 				return;
 			}
 		}
@@ -1439,8 +1438,7 @@ class accountContainer {
 	 */
 	private function printPageFooter() {
 		echo "</form>\n";
-		echo "</body>\n";
-		echo "</html>\n";		
+		include '../main_footer.php';
 	}
 	
 	/**
@@ -1501,7 +1499,7 @@ class accountContainer {
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
 		$x=1;		
-		echo '<div id="headerTabs" class="ui-tabs">';
+		echo '<div class="ui-tabs">';
 		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">';
 		// Loop for each module
 		for ($i=0; $i<count($this->order); $i++ ) {

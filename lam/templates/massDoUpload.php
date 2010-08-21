@@ -117,12 +117,11 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	echo "<script type=\"text/javascript\">\n";
 	echo "top.location.href = \"massDoUpload.php\";\n";
 	echo "</script>\n";
-	echo "</body></html>";
+	include 'main_footer.php';
 }
 // all accounts have been created
 else {
 	$_SESSION['cache']->refresh_cache(true);
-	echo "</head>\n<body>\n";
 	echo "<h1>" . _("LDAP upload has finished") . "</h1>\n";
 	if (sizeof($_SESSION['mass_errors']) > 0) {
 		echo "<h2>" . _("There were errors while uploading:") . "</h2>\n";
@@ -130,7 +129,7 @@ else {
 			call_user_func_array('StatusMessage', $_SESSION['mass_errors'][$i]);
 		}
 	}
-	echo "</body></html>";
+	include 'main_footer.php';
 }
 
 

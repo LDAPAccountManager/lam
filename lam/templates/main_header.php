@@ -74,7 +74,7 @@ while ($jsEntry = $jsDir->read()) {
 </table>
 
 <br>
-<div id="headerTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 	<?php
 		$linkList = array();

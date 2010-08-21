@@ -193,7 +193,6 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				// show links for upload and LDIF export
 				echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
 				echo "<p>&nbsp;</p>\n";
-				echo "<p align=\"center\">\n";
 				echo "<table align=\"center\" width=\"80%\"><tr>\n";
 					echo "<td align=\"center\" width=\"50%\">\n";
 					echo "<a href=\"massDoUpload.php\"><b>" . _("Upload accounts to LDAP") . "</b></a>";
@@ -202,7 +201,6 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					echo "<a href=\"massBuildAccounts.php?showldif=true\"><b>" . _("Show LDIF file") . "</b></a>";
 					echo "</td>\n";
 				echo "</tr></table>\n";
-				echo "</p>\n";
 			}
 		}
 	}
@@ -212,8 +210,6 @@ else {
 	echo '<br><a href="masscreate.php">' . _('Back') . '</a>';
 }
 
-echo "</body>\n";
-echo "</html>\n";
-
+include 'main_footer.php';
 
 ?>

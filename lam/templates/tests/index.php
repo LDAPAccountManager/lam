@@ -56,8 +56,6 @@ echo "<td style=\"padding:10px;\">" . _("Check if the LDAP schema fits the requi
 echo "</table>\n";
 
 
-
-echo "</body>\n";
-echo "</html>\n";
+include '../main_footer.php';
 
 ?>

@@ -697,10 +697,10 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		<input type="hidden" name="type" value="<?php echo $_GET['type'];?>">
 		<br><br><br>
 	</form>
-	</body>
-</html>
 
 <?php
+include '../main_footer.php';
+
 
 /**
  * Translates a given field ID (e.g. inetOrgPerson_givenName) to its descriptive name.

@@ -89,7 +89,6 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 echo "</table>\n";
 
 
-echo "</body>\n";
-echo "</html>\n";
+include 'main_footer.php';
 
 ?>

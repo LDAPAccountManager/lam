@@ -161,8 +161,8 @@ class lamList {
 			$this->entries = $this->listSort($this->entries);
 		}
 		// show form
-		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
+		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
 			// buttons
@@ -701,9 +701,9 @@ class lamList {
 	/**
 	 * Prints the HTML footer.
 	 */
-	protected function listPrintFooter() {	
-		echo ("</div></form></div>\n");
-		echo "</body></html>\n";		
+	protected function listPrintFooter() {
+		echo ("</form></div>\n");
+		include '../main_footer.php';
 	}
 
 	/**

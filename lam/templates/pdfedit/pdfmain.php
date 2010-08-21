@@ -185,5 +185,6 @@ include '../main_header.php';
 		<br>
 		
 		</form>
-	</body>
-</html>
+<?php
+	include '../main_footer.php';
+?>

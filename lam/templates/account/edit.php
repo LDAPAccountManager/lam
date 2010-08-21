@@ -68,8 +68,7 @@ if (isset($_GET['DN'])) {
 		for ($i=0; $i<sizeof($result); $i++) {
 			call_user_func_array("StatusMessage", $result[$i]);
 		}
-		echo "</body>\n";
-		echo "</html>\n";
+		include '../main_footer.php';
 		die();
 	}
 }

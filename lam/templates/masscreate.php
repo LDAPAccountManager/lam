@@ -197,9 +197,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 echo "</table>\n";
 echo "</form>\n";
 
-echo "</body>\n";
-echo "</html>\n";
-
+include 'main_footer.php';
 
 /**
 * Displays the acount type specific main page of the upload.
@@ -369,8 +367,7 @@ function showMainPage($scope, $selectedModules) {
 	echo "<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
 	echo "<br><br>\n";
 
-	echo "</body>\n";
-	echo "</html>\n";
+	include 'main_footer.php';
 	die;
 }
 

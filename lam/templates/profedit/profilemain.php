@@ -176,7 +176,6 @@ echo "</fieldset>\n";
 echo "<br>\n";
 
 echo "</form>\n";
-echo "</body>\n";
-echo "</html>\n";
+include '../main_footer.php';
 
 ?>

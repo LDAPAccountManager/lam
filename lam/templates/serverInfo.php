@@ -125,8 +125,6 @@ if ($vendorversion != '') {
 echo "</table>\n";
 
 
-
-echo "</body>\n";
-echo "</html>\n";
+include 'main_footer.php';
 
 ?>

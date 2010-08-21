@@ -77,6 +77,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
 	// Show HTML Page
 	include 'main_header.php';
+	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
 	echo _('Please confirm:');
@@ -112,8 +113,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<input name=\"cancel\" type=\"submit\" value=\"" . _('Cancel') . "\">\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
-	echo "</body>\n";
-	echo "</html>\n";
+	include 'main_footer.php';
 }
 
 if ($_POST['cancel']) {
@@ -124,6 +124,7 @@ if ($_POST['cancel']) {
 if ($_POST['delete']) {
 	// Show HTML Page
 	include 'main_header.php';
+	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
 	echo "<fieldset class=\"".$_POST['type']."edit\"><legend><b>";
@@ -232,8 +233,7 @@ if ($_POST['delete']) {
 	echo "<br><input name=\"cancel\" type=\"submit\" value=\"" . _('Back to list') . "\">\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
-	echo "</body>\n";
-	echo "</html>\n";
+	include 'main_footer.php';
 
 }
 

@@ -150,18 +150,18 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			for ($i = 0; $i < sizeof($fail); $i++) {
 				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . $error[$i], $fail[$i]);
 			}
-			echo "</body></html>\n";
+			include 'main_footer.php';
 		}
 		else {
 			// print success message
 			StatusMessage("INFO", "", _("All changes were successful."));
-			echo "</body></html>\n";
+			include 'main_footer.php';
 		}
 	}
 	else {
 		// no suffixes were created
 		StatusMessage("INFO", "", _("No changes were made."));
-		echo "</body></html>\n";
+		include 'main_footer.php';
 	}
 	exit;
 }
@@ -174,17 +174,17 @@ $new_suff = explode(";", $new_suff);
 
 include 'main_header.php';
 	echo "<p>&nbsp;</p>\n";
-	echo "<p><font color=\"red\"><b>" . _("The following suffix(es) are missing in LDAP. LAM can create them for you.") . "</b></font></p>\n";
+	echo "<p>" . _("The following suffix(es) are missing in LDAP. LAM can create them for you.") . "</p>\n";
 	echo "<p>&nbsp;</p>\n";
 	// print missing suffixes
 	for ($i = 0; $i < sizeof($new_suff); $i++) {
-		echo "<p><b>" . $new_suff[$i] . "</b></p>\n";
+		echo "<p>" . $new_suff[$i] . "</p>\n";
 	}
 	echo "<p>&nbsp;</p>\n";
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	echo "<input type=\"hidden\" name=\"new_suff\" value=\"" . implode(";", $new_suff) . "\">\n";
 	echo "<input type=\"submit\" name=\"add_suff\" value=\"" . _("Create") . "\">";
 	echo "<input type=\"submit\" name=\"cancel\" value=\"" . _("Cancel") . "\">";
-	echo "</form>\n";
-echo "</body></html>\n";
+	echo "</form><br>\n";
+include 'main_footer.php';
 ?>

@@ -431,10 +431,10 @@ if( $view == 'syntaxes' ) {
 	<?php }  } /* End foreach objectClass */ ?>
 <?php } /* End else (displaying objectClasses */ ?>
 
-<?php if( ! is_null( $viewvalue ) && ! $viewed )
+<?php
+if( ! is_null( $viewvalue ) && ! $viewed ) {
     StatusMessage("ERROR",  sprintf( _('No such schema item: "%s"'), htmlspecialchars( $viewvalue ) ) );
+}
+
+include '../main_footer.php';
 ?>
-
-</body>
-
-</html>

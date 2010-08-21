@@ -58,6 +58,8 @@ jQuery('#tab_tree').addClass('ui-tabs-selected');
 jQuery('#tab_tree').addClass('ui-state-active');
 </script>
 
-</div></div>
-</body>
-</html>
+</div>
+
+<?php
+include '../main_footer.php';
+?>

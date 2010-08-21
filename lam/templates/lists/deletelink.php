@@ -58,7 +58,7 @@ else {
 	// print error message if arguments are missing
 	include '../main_header.php';
 	StatusMessage("ERROR", "No account or type given.");
-	echo ("</body></html>\n");
+	include '../main_footer.php';
 }
 
 ?>

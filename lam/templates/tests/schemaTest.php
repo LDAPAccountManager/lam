@@ -54,7 +54,7 @@ $classes = get_cached_schema('objectclasses');
 
 if (!is_array($classes)) {
 	StatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.'));
-	echo "</body></html>\n";
+	include '../main_footer.php';
 	die();
 }
 
@@ -85,8 +85,7 @@ for ($t = 0; $t < sizeof($types); $t++) {
 	echo "</table>\n<br>";
 }
 
-echo "</body>\n";
-echo "</html>\n";
+include '../main_footer.php';
 
 /**
  * Checks if the object classes and attributes for this module are available.

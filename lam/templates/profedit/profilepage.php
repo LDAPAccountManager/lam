@@ -117,6 +117,7 @@ if (isset($_POST['save'])) {
 
 // print header
 include '../main_header.php';
+echo "<br>\n";
 
 // print error messages if any
 if (sizeof($errors) > 0) {
@@ -260,6 +261,7 @@ echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . 
 echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
 echo "<br><br><br><br>\n";
 
-echo ("</form></body></html>\n");
+echo ("</form>\n");
+include '../main_footer.php';
 
 ?>
