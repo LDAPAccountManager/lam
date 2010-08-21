@@ -42,13 +42,13 @@ setlanguage();
 include '../main_header.php';
 
 ?>
-
+<div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 <iframe id="treeframe" style="width: 100%; height: 800px;" src="tree_view.php" frameborder="0"></iframe>
 <script type="text/javascript">
 function resizeIframe() {
     var height = document.documentElement.clientHeight;
     height -= document.getElementById('treeframe').offsetTop;
-    height -= 30;
+    height -= 90
     document.getElementById('treeframe').style.height = height +"px";
 };
 document.getElementById('treeframe').onload = resizeIframe;
@@ -58,9 +58,6 @@ jQuery('#tab_tree').addClass('ui-tabs-selected');
 jQuery('#tab_tree').addClass('ui-state-active');
 </script>
 
-
-<?php
-echo "</body>\n";
-echo "</html>\n";
-
-?>
+</div></div>
+</body>
+</html>

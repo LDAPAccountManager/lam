@@ -162,7 +162,7 @@ class lamList {
 		}
 		// show form
 		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
-		echo "<div class=\"ui-tabs-nav\">";
+		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
 			// buttons
@@ -175,13 +175,6 @@ class lamList {
 			$this->listPrintTableHeader();
 			// account table body
 			$this->listPrintTableBody($this->entries);
-			echo ("<br>\n");
-			// navigation bar
-			$this->listDrawNavigationBar(sizeof($this->entries));
-			echo ("<br>\n");
-			// buttons
-			$this->listPrintButtons(false);
-			echo ("<br>\n");
 		}
 		else {
 			// buttons
@@ -709,7 +702,7 @@ class lamList {
 	 * Prints the HTML footer.
 	 */
 	protected function listPrintFooter() {	
-		echo ("</div></form>\n");
+		echo ("</div></form></div>\n");
 		echo "</body></html>\n";		
 	}
 

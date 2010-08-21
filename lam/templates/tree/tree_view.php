@@ -72,7 +72,7 @@ echo "<meta http-equiv=\"pragma\" content=\"no-cache\">";
 echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">";
 echo "<title>LDAP Account Manager</title>";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\"></head>";
-echo "<frameset cols=\"320,*\">";
+echo "<frameset cols=\"320,*\" style=\"border-width: 0;\">";
 echo "<frame src=\"./tree.php\" name=\"left_frame\" frameborder=\"0\" scrolling=\"yes\" noresize>";
 echo "<frame src=\"./edit.php?dn=$dn\" name=\"right_frame\" frameborder=\"0\" scrolling=\"yes\">";
 echo "<noframes>";
