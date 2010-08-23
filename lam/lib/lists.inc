@@ -162,6 +162,7 @@ class lamList {
 		}
 		// show form
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
+		echo "<div id=\"listTabContentArea\">\n";
 		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
@@ -171,10 +172,12 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
+			echo "<div id=\"listScrollArea\" style=\"overflow: auto; padding: 1px;\">";
 			// account table head
 			$this->listPrintTableHeader();
 			// account table body
 			$this->listPrintTableBody($this->entries);
+			echo "</div>";
 		}
 		else {
 			// buttons
@@ -315,7 +318,7 @@ class lamList {
 	*/
 	protected function listPrintTableHeader() {
 		// print table header
-		echo "<table frame=\"box\" rules=\"none\" class=\"" . $this->type . "list\" width=\"100%\">\n";
+		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "list\" width=\"100%\"><thead>\n";
 		echo "<tr class=\"" . $this->type . "list-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
 		// table header
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {
@@ -354,7 +357,7 @@ class lamList {
 			echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event)\">");
 			echo "</td>\n";
 		}
-		echo "</tr>\n";
+		echo "</tr></thead>\n";
 	}
 
 	/**
@@ -363,6 +366,7 @@ class lamList {
 	* @param array $info entries
 	*/
 	protected function listPrintTableBody(&$info) {
+		echo "<tbody>\n";
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
 		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
@@ -396,11 +400,12 @@ class lamList {
 		// display select all link
 		$colspan = sizeof($this->attrArray) + 1;
 		echo "<tr class=\"" . $this->type . "list-bright\">\n";
-		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
+		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\">" . _("Select all") . "</font></a></td>\n";
 		echo "</tr>\n";
-		echo ("</table>");
+		echo "</tbody>\n";
+		echo "</table>\n";
 	}
 	
 	/**
@@ -692,17 +697,19 @@ class lamList {
 	 */
 	protected function listPrintHeader() {
 		include '../main_header.php';
-		echo '<script type="text/javascript">';
-		echo "jQuery('#tab_$this->type').addClass('ui-tabs-selected');";
-		echo "jQuery('#tab_$this->type').addClass('ui-state-active');";
-		echo '</script>';
 	}
 	
 	/**
 	 * Prints the HTML footer.
 	 */
 	protected function listPrintFooter() {
-		echo ("</form></div>\n");
+		echo ("</form></div></div>\n");
+		echo '<script type="text/javascript">';
+		echo "jQuery('#tab_$this->type').addClass('ui-tabs-selected');";
+		echo "jQuery('#tab_$this->type').addClass('ui-state-active');";
+		echo "window.onload = listResizeITabContentDiv;";
+		echo "window.onresize = listResizeITabContentDiv;";
+		echo '</script>';
 		include '../main_footer.php';
 	}
 

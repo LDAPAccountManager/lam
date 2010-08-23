@@ -50,6 +50,23 @@ function listOUchanged(type, element) {
 	location.href='list.php?type=' + type + '&suffix=' + element.options[element.selectedIndex].value;
 }
 
+/**
+ * Resizes the content area of the account lists to fit the window size.
+ * This prevents that the whole page is scrolled in the browser. Only the account table has scroll bars.
+ */
+function listResizeITabContentDiv() {
+	var myDiv = document.getElementById("listTabContentArea");
+    var height = document.documentElement.clientHeight;
+    height -= myDiv.offsetTop;
+    height -= 90
+    myDiv.style.height = height +"px";
+
+    var myDivScroll = document.getElementById("listScrollArea");
+	var top = myDivScroll.offsetTop;
+	var scrollHeight = height - (top - myDiv.offsetTop);
+	myDivScroll.style.height = scrollHeight + "px";
+};
+
 function SubmitForm(id, e) {
 	if (e.keyCode == 13) {
 		document.getElementsByName(id)[0].click();
