@@ -303,6 +303,9 @@ class asteriskExtension extends baseModule {
 				array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_changeFilter' ,'type' => 'submit', 'value' => _('Refresh') ),
 			)
 		)));
+		
+		// !!! setRightToLeftText -> true for select
+		
 		$return[] = array(
 			array('kind' => 'fieldset', 'legend' => _("Extension owners"), 'value' => array(
 				array(

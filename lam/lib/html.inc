@@ -578,6 +578,8 @@ class htmlSelect extends htmlElement {
 	private $hasDescriptiveElements = false;
 	/** sorting enabled */
 	private $sortElements = true;
+	/** right to left text direction */
+	private $rightToLeftTextDirection = false;
 	
 	/**
 	 * Constructor.
@@ -616,7 +618,11 @@ class htmlSelect extends htmlElement {
 		}
 		$name = ' name="' . $this->name . '"';
 		$size = ' size="' . $this->size . '"';
-		echo '<select' . $name . $size . $multi . ' tabindex="' . $tabindex . "\">\n";
+		$class = '';
+		if ($this->rightToLeftTextDirection) {
+			$class = ' class="rightToLeftText"';
+		}
+		echo '<select' . $class . $name . $size . $multi . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		// sorting
 		if ($this->sortElements) {
@@ -684,6 +690,15 @@ class htmlSelect extends htmlElement {
 		$this->sortElements = $sortElements;
 	}
 
+	/**
+	 * Specifies if the text direction should be set to right to left.
+	 * 
+	 * @param boolean $rightToLeftTextDirection if true use right to left direction
+	 */
+	public function setRightToLeftTextDirection($rightToLeftTextDirection) {
+		$this->rightToLeftTextDirection = $rightToLeftTextDirection;
+	}
+	
 }
 
 /**

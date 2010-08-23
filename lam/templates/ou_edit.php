@@ -164,7 +164,7 @@ function display_main($message, $error) {
 	echo ("<tr>\n");
 	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=\"parentOU\">");
+	echo ("<td><select class=\"rightToLeftText\" size=1 name=\"parentOU\">");
 		echo $options;
 	echo ("</select><td>\n");
 	echo ("<td><input type=text name=\"newOU\"></td>\n");
@@ -180,7 +180,7 @@ function display_main($message, $error) {
 	echo ("<tr>\n");
 	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=\"deleteableOU\">");
+	echo ("<td><select class=\"rightToLeftText\" size=1 name=\"deleteableOU\">");
 		echo $options;
 	echo ("</select><td>\n");
 	echo ("<td>&nbsp;</td>\n");

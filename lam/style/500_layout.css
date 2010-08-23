@@ -95,6 +95,10 @@ tr.highlight {
 	border-width: 1px 0px 1px 0px;
 }
 
+.rightToLeftText {
+	text-align: right;
+}
+
 table.settingsTab {
   border-width:0px;
   border-style:solid;

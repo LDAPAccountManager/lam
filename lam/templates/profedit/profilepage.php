@@ -179,7 +179,7 @@ echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo
 	// LDAP suffix
 	echo _("LDAP suffix") . ":";
 	echo "</td><td>";
-	echo "<select name=\"ldap_suffix\" tabindex=\"1\">";
+	echo "<select class=\"rightToLeftText\" name=\"ldap_suffix\" tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($suffixes); $i++) {
 		if (isset($old_options['ldap_suffix']) && ($old_options['ldap_suffix'][0] == $suffixes[$i])) {
 			echo "<option selected value=\"" .$suffixes[$i] . "\">" . getAbstractDN($suffixes[$i]) . "</option>\n";
