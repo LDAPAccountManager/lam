@@ -130,7 +130,7 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='J',$fill=0,$link='')
       $this->ws=0;
       $this->_out('0 Tw');
     }
-    $this->AddPage($this->CurOrientation);
+    $this->AddPage($this->CurOrientation, $this->CurPageFormat);
     $this->x=$x;
     if($ws>0)
     {
@@ -532,13 +532,13 @@ function _putpages()
 	}
 	if($this->DefOrientation=='P')
 	{
-		$wPt=$this->fwPt;
-		$hPt=$this->fhPt;
+		$wPt=$this->DefPageFormat[0]*$this->k;
+		$hPt=$this->DefPageFormat[1]*$this->k;
 	}
 	else
 	{
-		$wPt=$this->fhPt;
-		$hPt=$this->fwPt;
+		$wPt=$this->DefPageFormat[1]*$this->k;
+		$hPt=$this->DefPageFormat[0]*$this->k;
 	}
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
 	for($n=1;$n<=$nb;$n++)
@@ -547,8 +547,8 @@ function _putpages()
 		$this->_newobj();
 		$this->_out('<</Type /Page');
 		$this->_out('/Parent 1 0 R');
-		if(isset($this->OrientationChanges[$n]))
-			$this->_out(sprintf('/MediaBox [0 0 %.2f %.2f]',$hPt,$wPt));
+		if(isset($this->PageSizes[$n]))
+			$this->_out(sprintf('/MediaBox [0 0 %.2F %.2F]',$this->PageSizes[$n][0],$this->PageSizes[$n][1]));
 		$this->_out('/Resources 2 0 R');
 		if(isset($this->PageLinks[$n]))
 		{
@@ -563,8 +563,8 @@ function _putpages()
 				else
 				{
 					$l=$this->links[$pl[4]];
-					$h=isset($this->OrientationChanges[$l[0]]) ? $wPt : $hPt;
-					$annots.=sprintf('/Dest [%d 0 R /XYZ 0 %.2f null]>>',1+2*$l[0],$h-$l[1]*$this->k);
+					$h=isset($this->PageSizes[$l[0]]) ? $this->PageSizes[$l[0]][1] : $hPt;
+					$annots.=sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>',1+2*$l[0],$h-$l[1]*$this->k);
 				}
 			}
 			$this->_out($annots.']');

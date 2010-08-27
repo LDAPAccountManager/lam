@@ -41,12 +41,17 @@ The complete license can be found in the file COPYING.
 
 Some parts of this package have other, compatible licences. These are:
 
-A: Freeware
+A:
 
-  You may use, modify and redistribute this software as you wish.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software to use, copy, modify, distribute, sublicense, and/or sell
+  copies of the software, and to permit persons to whom the software is furnished
+  to do so.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
 
-B: 
+B:
 
    Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream
    Vera is a trademark of Bitstream, Inc.
@@ -135,7 +140,7 @@ D:
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/fpdf.php                   A  2003  Olivier Plathey
+lib/fpdf.php                   A  2008  Olivier Plathey
 lib/font/Vera*                 B  2003  Bitstream, Inc.
 templates/lib/wz_tooltip.js    C        Walter Zorn
 templates/lib/jquery*.js       D  2010  John Resig, 2010 Paul Bakaus
