@@ -234,6 +234,11 @@ function display_LoginPage($config_object) {
 			StatusMessage("ERROR", _("Cannot open config file!"), htmlspecialchars($_GET['configSaveFile']));
 			echo "<br>";
 		}
+		// check if self service was saved
+		if (isset($_GET['selfserviceSaveOk'])) {
+			StatusMessage("INFO", _("Your settings were successfully saved."), $_GET['selfserviceSaveOk']);
+			echo "<br>";
+		}
 		?>
 		<div style="position:relative; z-index:5;">
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">
