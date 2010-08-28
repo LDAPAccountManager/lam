@@ -149,7 +149,7 @@ function display_LoginPage($config_object) {
 
 	echo $_SESSION["header"];
 	?>
-		<title>LDAP Account Manager -Login-</title>
+		<title>LDAP Account Manager</title>
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
 		<link rel="shortcut icon" type="image/x-icon" href="../graphics/favicon.ico">
 	</head>
@@ -158,11 +158,16 @@ function display_LoginPage($config_object) {
 	// include all JavaScript files
 	$jsDirName = dirname(__FILE__) . '/lib';
 	$jsDir = dir($jsDirName);
+	$jsFiles = array();
 	while ($jsEntry = $jsDir->read()) {
 		if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+		$jsFiles[] = $jsEntry;
+	}
+	sort($jsFiles);
+	foreach ($jsFiles as $jsEntry) {
 		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
 	}
-
+	
 	// set focus on password field
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
