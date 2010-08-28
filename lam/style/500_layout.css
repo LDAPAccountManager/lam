@@ -99,6 +99,14 @@ tr.highlight {
 	text-align: right;
 }
 
+.saveButton {
+	background-image: url(../graphics/save.png) !important;
+}
+
+.cancelButton {
+	background-image: url(../graphics/del.png) !important;
+}
+
 table.settingsTab {
   border-width:0px;
   border-style:solid;

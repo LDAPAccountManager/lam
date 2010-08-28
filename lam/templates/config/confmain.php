@@ -120,7 +120,15 @@ $tabindex = 1;
 echo $_SESSION['header'];
 
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
-echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n");
+
+// include all CSS files
+$cssDirName = dirname(__FILE__) . '/../../style';
+$cssDir = dir($cssDirName);
+while ($cssEntry = $cssDir->read()) {
+	if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $headerPrefix . "../../style/" . $cssEntry . "\">\n";
+}
+
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 echo ("</head>\n");
 echo ("<body onload=\"configLoginMethodChanged()\">\n");
@@ -157,80 +165,66 @@ if (sizeof($errorsToDisplay) > 0) {
 
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
-echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-echo "<tr valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
-// show tabs
-echo "<table width=\"100%\" border=0 style=\"border-collapse: collapse;\">";
-echo "<tr>\n";
-	$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	// general settings
-	echo "<td class=\"settingsTab\">\n";
-	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td class=\"settingsActiveTab\" onclick=\"document.getElementsByName('generalSettingsButton')[0].click();\"";
-	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/bigTools.png);';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"generalSettingsButton\" type=\"submit\" value=\"" . $buttonSpace . _('General settings') . "\"";
-	echo ">\n";
-	echo "</td></tr></table>\n";
-	echo '</td>';
-	// account types
-	echo "<td class=\"settingsTab\">\n";
-	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('edittypes')[0].click();\"";
-	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/gear.png);';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"edittypes\" type=\"submit\" value=\"" . $buttonSpace . _('Account types') . "\"";
-	echo ">\n";
-	echo "</td></tr></table>\n";
-	echo '</td>';
-	// module selection
-	echo "<td class=\"settingsTab\">\n";
-	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('editmodules')[0].click();\"";
-	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/modules.png);';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"editmodules\" type=\"submit\" value=\"" . $buttonSpace . _('Modules') . "\"";
-	echo ">\n";
-	echo "</td></tr></table>\n";
-	echo '</td>';
-	// module settings
-	echo "<td class=\"settingsTab\">\n";
-	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('moduleSettings')[0].click();\"";
-	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/moduleSettings.png);';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"moduleSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Module settings') . "\"";
-	echo ">\n";
-	echo "</td></tr></table>\n";
-	echo '</td>';
-	echo "<td width=\"100%\">&nbsp;</td>";
-	// spacer
-	echo "<td width=\"100%\">&nbsp;</td>";
-	// save button
-	echo "<td class=\"settingsTab\">\n";
-	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('saveSettings')[0].click();\"";
-	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/pass.png);';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"saveSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Save') . "\"";
-	echo ">\n";
-	echo "</td></tr></table>\n";
-	echo '</td>';
-	// cancel button
-	echo "<td class=\"settingsTab\">\n";
-	echo "<table class=\"settingsTab\" width=\"100%\">\n";
-	echo "<tr><td onclick=\"document.getElementsByName('cancelSettings')[0].click();\"";
-	echo " align=\"center\">\n";
-	$buttonStyle = 'background-image: url(../../graphics/fail.png);';
-	echo "<input style=\"" . $buttonStyle . "\" name=\"cancelSettings\" type=\"submit\" value=\"" . $buttonSpace . _('Cancel') . "\"";
-	echo ">\n";
-	echo "</td></tr></table>\n";
-	echo '</td>';
-	echo "</tr></table>\n";		
-// end tabs
-echo "</td></tr>\n";
 
-echo "<tr><td><br><br>\n";
+echo '<div style="text-align: right;">';
+echo "<button id=\"saveButton\" name=\"saveSettings\" type=\"submit\">" . _('Save') . "</button>";
+echo "&nbsp;";
+echo "<button id=\"cancelButton\" name=\"cancelSettings\" type=\"submit\">" . _('Cancel') . "</button>";
+echo "<br><br>\n";
+echo '</div>';
+
+// hidden submit buttons which are clicked by tabs
+echo "<div style=\"display: none;\">\n";
+	echo "<input name=\"generalSettingsButton\" type=\"submit\" value=\" \">";
+	echo "<input name=\"edittypes\" type=\"submit\" value=\" \">";
+	echo "<input name=\"editmodules\" type=\"submit\" value=\" \">";
+	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
+echo "</div>\n";
+	
+// tabs
+echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
+
+echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
+echo '<li id="generalSettingsButton" class="ui-state-default ui-corner-top">';
+	echo '<a href="#" onclick="document.getElementsByName(\'generalSettingsButton\')[0].click();"><img src="../../graphics/tools.png" alt=""> ';
+	echo _('General settings') . '</a>';
+echo '</li>';
+echo '<li id="edittypes" class="ui-state-default ui-corner-top">';
+	echo '<a href="#" onclick="document.getElementsByName(\'edittypes\')[0].click();"><img src="../../graphics/gear.png" alt=""> ';
+	echo _('Account types') . '</a>';
+echo '</li>';
+echo '<li id="editmodules" class="ui-state-default ui-corner-top">';
+	echo '<a href="#" onclick="document.getElementsByName(\'editmodules\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
+	echo _('Modules') . '</a>';
+echo '</li>';
+echo '<li id="moduleSettings" class="ui-state-default ui-corner-top">';
+	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
+	echo _('Module settings') . '</a>';
+echo '</li>';
+echo '</ul>';
+
+?>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery('#generalSettingsButton').addClass('ui-tabs-selected');
+	jQuery('#generalSettingsButton').addClass('ui-state-active');
+	jQuery('#saveButton').button({
+        icons: {
+      	  primary: 'saveButton'
+    	}
+	});
+	jQuery('#cancelButton').button({
+        icons: {
+    	  primary: 'cancelButton'
+  	}
+	});
+});
+</script>
+
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<?php
+
 echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> <b>" . _("Server settings") . "</b></legend><br>\n");
 echo ("<table border=0>");
 // serverURL
@@ -537,10 +531,8 @@ echo ("</table>\n");
 echo ("</fieldset>\n");
 
 echo ("<p>* = ". _("required") . "</p>");
-echo ("<p>&nbsp;</p>\n");
 
-echo '</td></tr></table>';
-echo ("</form>\n");
+echo ("</div></div></form>\n");
 echo ("</body>\n");
 echo ("</html>\n");
 
