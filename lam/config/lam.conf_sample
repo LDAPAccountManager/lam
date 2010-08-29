@@ -68,3 +68,9 @@ types: suffix_smbDomain: dc=my-domain,dc=com
 types: attr_smbDomain: sambaDomainName:Domain name;sambaSID:Domain SID
 types: modules_smbDomain: sambaDomain
 
+# Password mail subject
+lamProMailSubject: Your password was reset
+
+# Password mail text
+lamProMailText: Dear @@givenName@@ @@sn@@,+::++::+your password was reset to: @@newPassword@@+::++::++::+Best regards+::++::+deskside support+::+
+

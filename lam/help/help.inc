@@ -45,10 +45,7 @@ for ($i = 0; $i < sizeof($types); $i++) {
 }
 
 $helpArray = array (
-				// 0 - 99
-				// any developer
 				// 200 - 299
-				// Roland Gruber
 				// configuration wizard
 				// configuration login
 				// config profile management
@@ -147,7 +144,6 @@ $helpArray = array (
 				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
 				// 300 - 399
-				// Roland Gruber
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
 					"Text" => _("This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\").")),
@@ -164,7 +160,6 @@ $helpArray = array (
 				"404" => array ("Headline" => _("Password"),
 					"Text" => _("Please enter the password which you want to set for this account. You may also generate a random password (12 characters) which will be displayed on your screen.")),
 				// 500 - 599
-				// Roland Gruber
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),
 					"Text" => _("LAM will search for accounts in this part of the LDAP tree.")),				
@@ -194,8 +189,16 @@ $helpArray = array (
 						'<li>' . _('All following lines form the mail body.') . '</li>' .
 						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
 						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
+				"550" => array ("Headline" => _("From address"),
+					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
+				"551" => array ("Headline" => _("Subject"),
+					"Text" => _('The subject of all password mails. If empty the first line of "config/passwordMailTemplate.txt" will be used.')),
+				"552" => array ("Headline" => _("Text"),
+					"Text" => _('The mail text of all password mails. If empty the content of "config/passwordMailTemplate.txt" starting at the second line will be used.') .
+						'<br><br><b>' . _('Format') . ': </b><ul>' .
+						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
+						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
 				// 600 - 699
-				// Roland Gruber
 				// OU-editor, domain page
 				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organizational unit"),
 					"Text" => _("This will create a new organizational unit under the selected one.")),

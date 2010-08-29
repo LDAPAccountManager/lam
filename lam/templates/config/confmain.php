@@ -230,10 +230,10 @@ jQuery(document).ready(function() {
 <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 <?php
 
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> <b>" . _("Server settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> " . _("Server settings") . "</legend><br>\n");
 echo ("<table border=0>");
 // serverURL
-echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
+echo ("<tr><td align=\"right\">" . _("Server address") . " * </td>".
 	"<td align=\"left\">".
 	"<input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
@@ -242,7 +242,7 @@ printHelpLink(getHelp('', '201'), '201');
 echo "</td></tr>\n";
 $tabindex++;
 // use TLS
-echo "<tr><td align=\"right\"><b>" . _("Activate TLS") . ": </b></td>\n";
+echo "<tr><td align=\"right\">" . _("Activate TLS") . " </td>\n";
 echo "<td align=\"left\">\n";
 echo "<select tabindex=\"$tabindex\" size=1 name=\"useTLS\">";
 $useTLS = $conf->getUseTLS();
@@ -265,8 +265,8 @@ $tabindex++;
 echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 
 // tree suffix
-echo ("<tr><td align=\"right\"><b>".
-	_("Tree suffix") . ": </b></td>".
+echo ("<tr><td align=\"right\">".
+	_("Tree suffix") . " </td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"sufftree\" value=\"" . $conf->get_Suffix('tree') . "\"></td>\n");
 echo "<td>";
 printHelpLink(getHelp('', '203'), '203');
@@ -277,8 +277,8 @@ $tabindex++;
 echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 
 // LDAP cache timeout
-echo ("<tr><td align=\"right\"><b>".
-	_("Cache timeout") . ": </b></td>".
+echo ("<tr><td align=\"right\">".
+	_("Cache timeout") . " </td>".
 	"<td><select tabindex=\"$tabindex\" name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
 if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
 if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
@@ -298,8 +298,8 @@ array(0, '-'), array(100, 100), array(500, 500),
 array(1000, 1000), array(5000, 5000), array(10000, 10000),
 array(50000, 50000), array(100000, 100000)
 );
-echo ("<tr><td align=\"right\"><b>".
-	_("LDAP search limit") . ": </b></td>".
+echo ("<tr><td align=\"right\">".
+	_("LDAP search limit") . " </td>".
 	"<td><select tabindex=\"$tabindex\" name=\"searchLimit\">\n");
 for ($i = 0; $i < sizeof($searchLimitOptions); $i++) {
 	$selected = "";
@@ -320,8 +320,8 @@ if (isLAMProVersion()) {
 	echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 	
 	// access level
-	echo ("<tr><td align=\"right\"><b>".
-		_("Access level") . ": </b></td>".
+	echo ("<tr><td align=\"right\">".
+		_("Access level") . " </td>".
 		"<td><select tabindex=\"$tabindex\" name=\"accessLevel\">\n");
 	if ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL) {
 		echo("<option selected value=" . LAMConfig::ACCESS_ALL . ">" . _('Write access') . "</option>\n");
@@ -353,12 +353,12 @@ echo ("</fieldset>");
 
 echo ("<br>");
 
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/language.png\" alt=\"language.png\"> <b>" . _("Language settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/language.png\" alt=\"language.png\"> " . _("Language settings") . "</legend><br>\n");
 echo ("<table border=0>\n");
 
 // language
 echo ("<tr>");
-echo ("<td><b>" . _("Default language") . ":</b></td><td>\n");
+echo ("<td>" . _("Default language") . "</td><td>\n");
 // read available languages
 $languagefile = "../../config/language";
 if(is_file($languagefile))
@@ -398,24 +398,24 @@ echo ("</fieldset>\n");
 echo ("<br>\n");
 
 // lamdaemon settings
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/lamdaemon.png\" alt=\"lamdaemon.png\"> <b>" . _("Lamdaemon settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/lamdaemon.png\" alt=\"lamdaemon.png\"> " . _("Lamdaemon settings") . "</legend><br>\n");
 echo ("<table border=0>\n");
 
-echo ("<tr><td align=\"right\"><b>".
-	_("Server list") . ": </b></td>".
+echo ("<tr><td align=\"right\">".
+	_("Server list") . " </td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptservers\" value=\"" . $conf->get_scriptServers(false) . "\"></td>\n");
 $tabindex++;
 echo "<td>";
 printHelpLink(getHelp('', '218'), '218');
 echo "</td></tr>\n";
-echo ("<tr><td align=\"right\"><b>".
-	_("Path to external script") . ": </b></td>".
+echo ("<tr><td align=\"right\">".
+	_("Path to external script") . " </td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
 $tabindex++;
 echo "<td>";
 printHelpLink(getHelp('', '210'), '210');
 echo "</td></tr>\n";
-echo "<tr><td align=\"right\"><b>". _("Rights for the home directory") . ": </b></td>\n";
+echo "<tr><td align=\"right\">". _("Rights for the home directory") . " </td>\n";
 $owr = "";
 $oww = "";
 $owe = "";
@@ -464,12 +464,32 @@ echo ("</fieldset>\n");
 
 echo ("<br>\n");
 
+// LAM Pro settings
+if (isLAMProVersion()) {
+
+	$pwdMailContent = new htmlTable();
+	
+	$pwdMailFrom = new htmlTableExtendedInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
+	$pwdMailContent->addElement($pwdMailFrom, true);
+	
+	$pwdMailSubject = new htmlTableExtendedInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
+	$pwdMailContent->addElement($pwdMailSubject, true);
+	
+	$pwdMailBody = new htmlTableExtendedInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
+	$pwdMailContent->addElement($pwdMailBody, true);
+	
+	$pwdMailFieldset = new htmlFieldset($pwdMailContent, _("Password mail settings"), '../../graphics/mailBig.png');
+	parseHtml(null, $pwdMailFieldset, array(), true, $tabindex, 'config');
+
+	echo ("<br>\n");
+}
+
 // security setings
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/security.png\" alt=\"security.png\"> <b>" . _("Security settings") . "</b></legend><br>\n");
+echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/security.png\" alt=\"security.png\"> " . _("Security settings") . "</legend><br>\n");
 echo ("<table border=0>\n");
 // login method
-echo ("<tr><td align=\"right\"><b>".
-	_("Login method") . ": </b></td>".
+echo ("<tr><td align=\"right\">".
+	_("Login method") . " </td>".
 	"<td><select tabindex=\"$tabindex\" name=\"loginMethod\" onchange=\"configLoginMethodChanged()\">\n");
 if ($conf->getLoginMethod() == LAMConfig::LOGIN_LIST) {
 	echo("<option selected value=" . LAMConfig::LOGIN_LIST . ">" . _('Fixed list') . "</option>\n");
@@ -491,8 +511,7 @@ echo "</td></tr>\n";
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
 echo "<tr id=\"trAdminList\"><td align=\"right\">\n";
-echo "<b>".
-	_("List of valid users") . " *: </b></td>".
+echo _("List of valid users") . " * </td>".
 	"<td><textarea tabindex=\"$tabindex\" name=\"admins\" cols=75 rows=3>" . $adminText . "</textarea></td>\n";
 echo "<td>";
 printHelpLink(getHelp('', '207'), '207');
@@ -500,8 +519,7 @@ echo "</td></tr>\n";
 $tabindex++;
 // login search suffix
 echo "<tr id=\"trLoginSearchSuffix\"><td align=\"right\">\n";
-echo "<b>".
-	_("LDAP suffix") . " *: </b></td>".
+echo _("LDAP suffix") . " * </td>".
 	"<td><input type=\"text\" tabindex=\"$tabindex\" name=\"loginSearchSuffix\" value=\"" . $conf->getLoginSearchSuffix() . "\"  size=50></td>\n";
 echo "<td>";
 printHelpLink(getHelp('', '221'), '221');
@@ -509,8 +527,7 @@ echo "</td></tr>\n";
 $tabindex++;
 // login search filter
 echo "<tr id=\"trLoginSearchFilter\"><td align=\"right\">\n";
-echo "<b>".
-	_("LDAP filter") . " *: </b></td>".
+echo _("LDAP filter") . " * </td>".
 	"<td><input type=\"text\" tabindex=\"$tabindex\" name=\"loginSearchFilter\" value=\"" . $conf->getLoginSearchFilter() . "\"  size=50></td>\n";
 echo "<td>";
 printHelpLink(getHelp('', '221'), '221');
@@ -520,16 +537,16 @@ $tabindex++;
 echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
 
 // new password
-echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
-	_("New password") . ": </b></font></td>".
+echo ("<tr><td align=\"right\"><font color=\"red\">".
+	_("New password") . " </font></td>".
 	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd1\"></td>\n");
 $tabindex++;
 echo "<td rowspan=2>";
 printHelpLink(getHelp('', '212'), '212');
 echo "</td></tr>\n";
 // reenter password
-echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
-	_("Reenter password") . ": </b></font></td>".
+echo ("<tr><td align=\"right\"><font color=\"red\">".
+	_("Reenter password") . " </font></td>".
 	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd2\"></td></tr>\n");
 $tabindex++;
 echo ("</table>\n");
@@ -570,6 +587,11 @@ function checkInput() {
 	$conf->set_searchLimit($_POST['searchLimit']);
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
+		if (!$conf->setLamProMailFrom($_POST['pwdResetMail_from'])) {
+			$errors[] = array("ERROR", _("From address for password mails is invalid."), $_POST['pwdResetMail_from']);
+		}
+		$conf->setLamProMailSubject($_POST['pwdResetMail_subject']);
+		$conf->setLamProMailText($_POST['pwdResetMail_body']);
 	}
 	$adminText = $_POST['admins'];
 	$adminText = explode("\n", $adminText);

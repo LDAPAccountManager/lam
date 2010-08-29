@@ -175,6 +175,9 @@ class LAMConfig {
 	/* login method: predefined list or LDAP search */
 	const LOGIN_LIST = 'list';
 	const LOGIN_SEARCH = 'search';
+	
+	/** line separator */
+	const LINE_SEPARATOR = '+::+';
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
@@ -244,12 +247,21 @@ class LAMConfig {
 	
 	/** search filter for login */
 	private $loginSearchFilter = 'uid=%USER%';
+	
+	/** email address for sender of password reset mails */
+	private $lamProMailFrom = '';
+	
+	/** subject for password reset mails */
+	private $lamProMailSubject = '';
+	
+	/** mail body for password reset mails */
+	private $lamProMailText = '';
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
-		'loginSearchFilter', 'searchLimit');
+		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailSubject', 'lamProMailText');
 
 
 	/**
@@ -290,7 +302,7 @@ class LAMConfig {
 						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
-							$this->moduleSettings[substr($option, 0, $pos)] = explode("+::+", substr($option, $pos + 2));
+							$this->moduleSettings[substr($option, 0, $pos)] = explode(LAMConfig::LINE_SEPARATOR, substr($option, $pos + 2));
 						}
 						// type settings
 						elseif (strtolower(substr($line, 0, $keylen + 2)) == "types: ") {
@@ -357,7 +369,7 @@ class LAMConfig {
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
 							if (!isset($this->moduleSettings[$name])) continue;
-							$file_array[$i] = "modules: " . $name . ": " . implode("+::+", $this->moduleSettings[$name]) . "\n";
+							$file_array[$i] = "modules: " . $name . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->moduleSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
 						// type settings
@@ -398,11 +410,14 @@ class LAMConfig {
 			if (!in_array("loginMethod", $saved)) array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
 			if (!in_array("loginSearchSuffix", $saved)) array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
 			if (!in_array("loginSearchFilter", $saved)) array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
+			if (!in_array("lamProMailFrom", $saved)) array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
+			if (!in_array("lamProMailSubject", $saved)) array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
+			if (!in_array("lamProMailText", $saved)) array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
 				if (!in_array($m_settings[$i], $mod_saved)) {
-					array_push($file_array, "modules: " . $m_settings[$i] . ": " . implode("+::+", $this->moduleSettings[$m_settings[$i]]) . "\n");
+					array_push($file_array, "modules: " . $m_settings[$i] . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->moduleSettings[$m_settings[$i]]) . "\n");
 				}
 			}
 			// check if all type settings were added
@@ -1002,6 +1017,65 @@ class LAMConfig {
 	 */
 	public function setLoginSearchSuffix($loginSearchSuffix) {
 		$this->loginSearchSuffix = $loginSearchSuffix;
+	}
+	
+	/**
+	 * Returns the sender address for password reset mails.
+	 * 
+	 * @return String mail address
+	 */
+	public function getLamProMailFrom() {
+		return $this->lamProMailFrom;
+	}
+	
+	/**
+	 * Sets the sender address for password reset mails.
+	 * 
+	 * @param String $lamProMailFrom mail address
+	 * @return boolean true if address is valid
+	 */
+	public function setLamProMailFrom($lamProMailFrom) {
+		$this->lamProMailFrom = $lamProMailFrom;
+		if (($lamProMailFrom != '') && !get_preg($lamProMailFrom, 'email')) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns the subject for password reset mails.
+	 * 
+	 * @return String subject
+	 */
+	public function getLamProMailSubject() {
+		return $this->lamProMailSubject;
+	}
+	
+	/**
+	 * Sets the subject for password reset mails.
+	 * 
+	 * @param String $lamProMailSubject subject
+	 */
+	public function setLamProMailSubject($lamProMailSubject) {
+		$this->lamProMailSubject = $lamProMailSubject;
+	}
+	
+	/**
+	 * Returns the mail body for password reset mails.
+	 * 
+	 * @return String body
+	 */
+	public function getLamProMailText() {
+		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->lamProMailText));
+	}
+	
+	/**
+	 * Sets the mail body for password reset mails.
+	 * 
+	 * @param String $lamProMailText body
+	 */
+	public function setLamProMailText($lamProMailText) {
+		$this->lamProMailText = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $lamProMailText));
 	}
 
 }
