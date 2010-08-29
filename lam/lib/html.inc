@@ -1278,6 +1278,64 @@ class htmlStatusMessage extends htmlElement {
 		StatusMessage($this->type, $this->title, $this->text);
 		return array();
 	}
+
+}
+	
+/**
+ * Text area with label and help link.
+ * 
+ * @package metaHTML
+ */
+class htmlFieldset extends htmlElement {
+
+	/** fieldset content */
+	private $content;
+	/** descriptive label */
+	private $label = null;
+	/** label image */
+	private $labelImage = null;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param htmlElement $content content to display inside fieldset
+	 * @param String $label label
+	 * @param String $labelImage image to put before label 
+	 */
+	function __construct($content, $label = null, $labelImage = null) {
+		$this->content = $content;
+		$this->label = htmlspecialchars($label);
+		$this->labelImage = htmlspecialchars($labelImage);
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo "<fieldset>\n";
+		// generate legend
+		if (($this->label != null) || ($this->labelImage != null)) {
+			echo "<legend>";
+			if ($this->labelImage != null) {
+				echo "<img align=\"middle\" src=\"" . $this->labelImage . "\" alt=\"\"> ";
+			}
+			if ($this->label != null) {
+				echo $this->label;
+			}
+			echo "</legend>\n";
+		}
+		$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		echo "</fieldset>\n";
+		return $return;
+	}
 	
 }
 
