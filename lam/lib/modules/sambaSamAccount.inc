@@ -523,7 +523,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// configuration options
 		$return['config_options']['user'] = array(
 		array(
-			array('kind' => 'text', 'text' => '<b>' . _("Time zone") . ': &nbsp;</b>'),
+			array('kind' => 'text', 'text' => _("Time zone") . ' &nbsp;'),
 			array('kind' => 'select', 'name' => 'sambaSamAccount_timeZone', 'size' => '1',
 				'options' => array(
 					array('-12', "GMT-12: " . _("Eniwetok, Kwajalein")),
@@ -556,7 +556,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 					'descriptiveOptions' => true),
 			array('kind' => 'help', 'value' => 'timeZone')),
 		array(
-			array('kind' => 'text', 'text' => '<b>' . _("Disable LM hashes") . ': &nbsp;</b>'),
+			array('kind' => 'text', 'text' => _("Disable LM hashes") . ' &nbsp;'),
 			array('kind' => 'select', 'name' => 'sambaSamAccount_lmHash', 'size' => '1',
 				'options' => array(
 					array('yes', _('yes')),
@@ -567,7 +567,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			array('kind' => 'help', 'value' => 'lmHash')
 		),
 		array(
-			array('kind' => 'text', 'text' => '<b>' . _('Hidden options') . ":</b> ", 'td' => array('valign' => 'top')),
+			array('kind' => 'text', 'text' => _('Hidden options'), 'td' => array('valign' => 'top')),
 			array('kind' => 'table', 'value' => array(
 				array(
 					array('kind' => 'input', 'name' => 'sambaSamAccount_hideHomeDrive', 'type' => 'checkbox'),

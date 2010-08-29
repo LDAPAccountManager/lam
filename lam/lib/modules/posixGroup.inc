@@ -294,10 +294,10 @@ class posixGroup extends baseModule implements passwordService {
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Groups") . ': &nbsp;</b>' . _('Minimum GID number') . " *: "),
+				array('kind' => 'text', 'text' => '<b>' . _("Groups") . ': &nbsp;</b>' . _('Minimum GID number') . "* "),
 				array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'text' => _('Maximum GID number') . " *: "),
+				array('kind' => 'text', 'text' => _('Maximum GID number') . "* "),
 				array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'minMaxGID'))
 		);

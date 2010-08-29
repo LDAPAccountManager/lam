@@ -99,7 +99,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		// config options	
 		$return['config_options']['user'] = array(
 			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Asterisk realm') . ": "),
+				array('kind' => 'text', 'text' => _('Asterisk realm')),
 				array('kind' => 'input', 'name' => 'asteriskAccount_AsteriskRealm', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'AsteriskRealm')
 			)

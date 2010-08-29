@@ -159,25 +159,25 @@ class posixAccount extends baseModule implements passwordService {
 		// configuration options
 		$return['config_options']['user'] = array(
 			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
+				array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "* "),
 				array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
+				array('kind' => 'text', 'text' => _('Maximum UID number') . "* "),
 				array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				array('kind' => 'help', 'value' => 'minMaxUser'))
 		);
 		$return['config_options']['host'] = array(
 		array(
-			array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
+			array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . "* "),
 			array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
+			array('kind' => 'text', 'text' => _('Maximum UID number') . "* "),
 			array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 			array('kind' => 'help', 'value' => 'minMaxHost'))
 		);
 		$return['config_options']['all'] = array(
 			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+				array('kind' => 'text', 'text' => _("Password hash type") . ' &nbsp;'),
 				array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
 					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
 				array('kind' => 'text', 'value' => '&nbsp;'),
@@ -185,7 +185,7 @@ class posixAccount extends baseModule implements passwordService {
 				array('kind' => 'text', 'value' => '&nbsp;'),
 				array('kind' => 'help', 'value' => 'pwdHash')),
 			array(
-				array('kind' => 'text', 'text' => '<b>' . _('Set primary group as memberUid') . ":</b> "),
+				array('kind' => 'text', 'text' => _('Set primary group as memberUid')),
 				array('kind' => 'input', 'name' => 'posixAccount_primaryGroupAsSecondary', 'type' => 'checkbox'),
 				array('kind' => 'text', 'value' => '&nbsp;'),
 				array('kind' => 'text', 'value' => '&nbsp;'),
