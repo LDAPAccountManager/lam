@@ -1,9 +1,10 @@
 October 2010 3.2.0
-  - usability enhancements
+  - large usability enhancements
   - Shadow: allow to force password change when maximum password age is set
   - DHCP: renamed module "Fixed IPs" to "Hosts", IP is now optional (3038797)
   - LAM Pro:
    -> Password policy: allow to force password change (RFE 3026940)
+   -> password reset page: mail subject, text and from address can be set in server profile
   - fixed bugs:
    -> email check did not include "+" (3033605)
    -> tab index on login page (3042622)
