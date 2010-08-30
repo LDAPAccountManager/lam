@@ -569,7 +569,19 @@ class posixAccount extends baseModule implements passwordService {
 					break;
 				}
 			}
-			$result = lamdaemon(implode(posixAccount::$SPLIT_DELIMITER, array($this->attributes['uid'][0], "home", "add", "0".$_SESSION['config']->get_scriptRights())), $server);
+			$result = lamdaemon(
+				implode(
+					posixAccount::$SPLIT_DELIMITER,
+					array(
+						$this->attributes['uid'][0],
+						"home",
+						"add",
+						$this->attributes['homeDirectory'][0],
+						"0".$_SESSION['config']->get_scriptRights(),
+						$this->attributes['uidNumber'][0],
+						$this->attributes['gidNumber'][0])
+					),
+				$server);
 			// lamdaemon results
 			if (is_array($result)) {
 				$singleresult = explode(",", $result[0]);
@@ -617,7 +629,18 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			// try to delete directory on all servers
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$result = lamdaemon(implode(posixAccount::$SPLIT_DELIMITER, array($this->attributes['uid'][0], "home", "rem")), $lamdaemonServers[$i]);
+				$result = lamdaemon(
+					implode(
+						posixAccount::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"home",
+							"rem",
+							$this->attributes['homeDirectory'][0],
+							$this->attributes['uidNumber'][0]
+						)
+					),
+					$lamdaemonServers[$i]);
 				// lamdaemon results
 				if (is_array($result)) {
 					foreach ($result as $singleresult) {

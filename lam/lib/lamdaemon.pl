@@ -4,7 +4,7 @@
 #
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2009  Roland Gruber
+#  Copyright (C) 2006 - 2010  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -188,10 +188,10 @@ sub manageHomedirs {
 # Creates the homedirectory of the user
 #
 sub createHomedir {
-	my $homedir = $user[7];
+	my $homedir = $vals[3];
 	if ($homedir eq '') {
-		$return = "ERROR,Lamdaemon ($hostname),Unable to determine home directory path. Please check if NSS LDAP is correctly configured.";
-		logMessage(LOG_ERR, "Unable to determine home directory path. Please check if NSS LDAP is correctly configured.");
+		$return = "ERROR,Lamdaemon ($hostname),No home directory specified.";
+		logMessage(LOG_ERR, "No home directory specified.");
 		return;
 	}
 	my $path = $homedir;
@@ -202,14 +202,14 @@ sub createHomedir {
 		system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
 	}
 	if (! -e $homedir) {
-		system 'mkdir', '-m', $vals[3], $homedir; # Create homedir itself
+		system 'mkdir', '-m', $vals[4], $homedir; # Create homedir itself
 		system ("(cd /etc/skel && tar cf - .) | (cd $homedir && tar xmf -)"); # Copy /etc/sekl into homedir
-		system 'chown', '-hR', "$user[2]:$user[3]" , $homedir; # Change owner to new user
+		system 'chown', '-hR', "$vals[5]:$vals[6]" , $homedir; # Change owner to new user
 		if (-e '/usr/sbin/useradd.local') {
-			system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
-			system 'chmod', '-R', $vals[3], $homedir;     # Edit chmod rights
+			system '/usr/sbin/useradd.local', $vals[0]; # run useradd-script
+			system 'chmod', '-R', $vals[4], $homedir;     # Edit chmod rights
 		}
-		system 'chmod', $vals[3], $homedir;     # Edit chmod rights
+		system 'chmod', $vals[4], $homedir;     # Edit chmod rights
 		$return = "INFO,Lamdaemon ($hostname),Home directory created (" . $homedir . ").";
 		logMessage(LOG_INFO, "Home directory created (" . $homedir . ")");
 	}
@@ -224,24 +224,24 @@ sub createHomedir {
 # Removes the homedirectory of the user
 #
 sub removeHomedir {
-	if ($user[7] eq '') {
+	if ($vals[3] eq '') {
 		$return = "ERROR,Lamdaemon ($hostname),Home directory path is empty.";
 		logMessage(LOG_ERR, "Home directory path is empty.");
 		return;
 	}
 	($<, $>) = ($>, $<); # Get root previliges
-	if (-d $user[7] && $user[7] ne '/') {
-		if ((stat($user[7]))[4] eq $user[2]) {
-			system 'rm', '-R', $user[7]; # Delete Homedirectory
+	if (-d $vals[3] && $vals[3] ne '/') {
+		if ((stat($vals[3]))[4] eq $vals[4]) {
+			system 'rm', '-R', $vals[3]; # Delete Homedirectory
 			if (-e '/usr/sbin/userdel.local') {
-				system '/usr/sbin/userdel.local', $user[0];
+				system '/usr/sbin/userdel.local', $vals[0];
 			}
 			$return = "Ok";
-			logMessage(LOG_INFO, "Home directory removed (" . $user[7] . ")");
+			logMessage(LOG_INFO, "Home directory removed (" . $vals[3] . ")");
 		}
 		else {
-			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $user[2].";
-			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $user[7] . ")");
+			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $vals[3].";
+			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $vals[3] . ")");
 		}
 	}
 	else {
