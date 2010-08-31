@@ -189,6 +189,11 @@ function display_LoginPage($config_object) {
 			echo "myElement.focus();\n";
 		}
 		echo "}\n";
+		?>
+			jQuery(document).ready(function() {
+				jQuery('#loginButton').button();
+			});
+		<?php
 		echo "//-->\n";
 		echo "</script>\n";
 	?>
@@ -324,7 +329,7 @@ function display_LoginPage($config_object) {
 							<tr>
 								<td style="border-style:none" height="50" colspan="2" align="center">
 									<input name="checklogin" type="hidden" value="checklogin">
-									<input name="submit" type="submit" value="<?php echo _("Login"); ?>" tabindex="4">
+									<button id="loginButton" class="smallPadding" name="submit" tabindex="4"><?php echo _("Login"); ?></button>
 								</td>
 							</tr>
 							<tr>
