@@ -342,7 +342,7 @@ class lamList {
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
 		echo "<td>";
-		echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
+		echo "<button class=\"smallPadding\" id=\"filterButton\" name=\"apply_filter\">" . _("Filter") . "</button>";
 		echo "</td>\n";
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
@@ -386,9 +386,7 @@ class lamList {
 				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
 			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
 				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
-			echo " <td align='center' style=\"white-space: nowrap;\">";
-				$this->listPrintToolLinks($info[$i], $rowID);
-			echo "</td>\n";
+			$this->listPrintToolLinks($info[$i], $rowID);
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
 				$attrName = strtolower($this->attrArray[$k]);
@@ -415,26 +413,36 @@ class lamList {
 	 * @param String $id account ID
 	 */
 	private function listPrintToolLinks($account, $id) {
+		$output = '';
+		$toolCount = 0;
 		// edit image
-		echo "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-		echo "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
-		echo "</a>\n ";
+		$output .= "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
+		$output .= "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
+		$output .= "</a>\n ";
+		$toolCount++;
 		// delete image
 		if (checkIfWriteAccessIsAllowed()) {
-			echo "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			echo "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
-			echo "</a>\n ";
+			$output .= "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
+			$output .= "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
+			$output .= "</a>\n ";
+			$toolCount++;
 		}
 		// pdf image
 		$pdfButtonStyle = "background-image: url(../../graphics/pdf.png);background-position: -1px -1px;background-repeat: no-repeat;width:20px;height:20px;background-color:transparent;border-style:none;";
-		echo "<input type=\"submit\" style=\"$pdfButtonStyle\" name=\"createPDF_" . $id . "\" value=\" \" title=\"" . _('Create PDF file') . "\">\n ";
+		$output .= "<input type=\"submit\" style=\"$pdfButtonStyle\" name=\"createPDF_" . $id . "\" value=\" \" title=\"" . _('Create PDF file') . "\">\n ";
+		$toolCount++;
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
-			echo "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			echo "<img src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
-			echo "</a>\n ";
+			$output .= "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
+			$output .= "<img src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
+			$output .= "</a>\n ";
+			$toolCount++;
 		}
+		$width = ($toolCount * 20) + 20;
+		echo "<td align='center' style=\"white-space: nowrap; width: ${width}px\">";
+		echo $output;
+		echo "</td>\n";
 	}
 	
 	/**
@@ -703,13 +711,18 @@ class lamList {
 	 * Prints the HTML footer.
 	 */
 	protected function listPrintFooter() {
-		echo ("</form></div></div>\n");
-		echo '<script type="text/javascript">';
-		echo "jQuery('#tab_$this->type').addClass('ui-tabs-selected');";
-		echo "jQuery('#tab_$this->type').addClass('ui-state-active');";
-		echo "window.onload = listResizeITabContentDiv;";
-		echo "window.onresize = listResizeITabContentDiv;";
-		echo '</script>';
+		?>
+			</form></div></div>
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-tabs-selected');
+					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-state-active');
+					window.onload = listResizeITabContentDiv;
+					window.onresize = listResizeITabContentDiv;
+					jQuery('#filterButton').button();
+				});
+			</script>
+		<?php
 		include '../main_footer.php';
 	}
 
