@@ -87,6 +87,7 @@ table.lamHeader {
   background-image: url(lam-images/headerLine.png);
   padding: 0px;
   margin: 0px;
+  height: 35px;
 }
 
 tr.highlight {
@@ -105,6 +106,10 @@ tr.highlight {
 
 .cancelButton {
 	background-image: url(../graphics/del.png) !important;
+}
+
+.smallPadding span {
+	padding: 0.1em 0.4em !important;
 }
 
 table.settingsTab {
