@@ -123,7 +123,7 @@ foreach ($jsFiles as $jsEntry) {
 }
 
 ?>
-		<table border=0 width="100%" class="lamHeader">
+		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
 					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>

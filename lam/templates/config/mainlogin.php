@@ -70,7 +70,15 @@ echo $_SESSION['header'];
 				echo _("Login");
 			?>
 		</title>
-		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
+	<?php 
+		// include all CSS files
+		$cssDirName = dirname(__FILE__) . '/../../style';
+		$cssDir = dir($cssDirName);
+		while ($cssEntry = $cssDir->read()) {
+			if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
+			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
+		}
+	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
 	<body>
@@ -97,7 +105,7 @@ echo $_SESSION['header'];
 				echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 			}
 		?>
-		<table border=0 width="100%" class="lamHeader">
+		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
 					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
