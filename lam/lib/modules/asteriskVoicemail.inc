@@ -72,6 +72,10 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				'AstVoicemailPager', 'AstVoicemailOptions', 'AstVoicemailContext');
 		// icon
 		$return['icon'] = 'asterisk.png';
+		// self service
+		$return['selfServiceFieldSettings'] = array(
+			'syncAsteriskVoicemailPassword' => _('Sync Asterisk password with Unix password'),
+		);
 		// help
 		$return['help'] = array(
 			'AstContext' => array(
@@ -511,6 +515,37 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		return array();
 	}
 	
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		if (!in_array_ignore_case('AsteriskVoiceMail', $attributes['objectClass'])) {
+			return $return;
+		}
+		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
+			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+				return $return;
+			}
+			else {
+				if (!get_preg($_POST['posixAccount_password'], 'password')) {
+					return $return;
+				}
+				else {
+					// sync password
+					if (in_array('syncAsteriskVoicemailPassword', $fields)) {
+						$return['mod']['AstVoicemailPassword'][0] = $_POST['posixAccount_password'];
+					}
+				}
+			}
+		}
+		return $return;
+	}
+
 }
 
 ?>

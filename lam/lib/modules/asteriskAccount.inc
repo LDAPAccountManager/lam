@@ -73,6 +73,10 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountRealmedPassword', 'AstAccountContext');
 		// icon
 		$return['icon'] = 'asterisk.png';
+		// self service
+		$return['selfServiceFieldSettings'] = array(
+			'syncAsteriskPassword' => _('Sync Asterisk password with Unix password'),
+		);
 		// help
 		$return['help'] = array(
 			'AstAccountCallerID' => array(
@@ -98,6 +102,14 @@ class asteriskAccount extends baseModule implements passwordService {
 		);
 		// config options	
 		$return['config_options']['user'] = array(
+			array(
+				array('kind' => 'text', 'text' => _('Asterisk realm')),
+				array('kind' => 'input', 'name' => 'asteriskAccount_AsteriskRealm', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				array('kind' => 'help', 'value' => 'AsteriskRealm')
+			)
+		);
+		// self service options	
+		$return['selfServiceSettings'] = array(
 			array(
 				array('kind' => 'text', 'text' => _('Asterisk realm')),
 				array('kind' => 'input', 'name' => 'asteriskAccount_AsteriskRealm', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
@@ -403,6 +415,37 @@ class asteriskAccount extends baseModule implements passwordService {
 	 */
 	private static function hashPassword($password) {
 		return "{MD5}" . md5($password);
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		if (!in_array_ignore_case('AsteriskSIPUser', $attributes['objectClass'])) {
+			return $return;
+		}
+		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
+			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+				return $return;
+			}
+			else {
+				if (!get_preg($_POST['posixAccount_password'], 'password')) {
+					return $return;
+				}
+				else {
+					// sync password
+					if (in_array('syncAsteriskPassword', $fields)) {
+						$return['mod']['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($attributes, $this->selfServiceSettings->moduleSettings, $_POST['posixAccount_password']);
+					}
+				}
+			}
+		}
+		return $return;
 	}
 
 }
