@@ -5,6 +5,7 @@ October 2010 3.2.0
   - LAM Pro:
    -> Password policy: allow to force password change (RFE 3026940)
    -> password reset page: mail subject, text and from address can be set in server profile
+   -> Self service: Asterisk (voicemail) password synchronisation
   - fixed bugs:
    -> email check did not include "+" (3033605)
    -> tab index on login page (3042622)
