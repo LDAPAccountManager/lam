@@ -114,41 +114,12 @@ tr.highlight {
 	background-image: url(../graphics/del.png) !important;
 }
 
+.logoutButton {
+	background-image: url(../graphics/exit.png) !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
-}
-
-table.settingsTab {
-  border-width:0px;
-  border-style:solid;
-  border-color:#9b8523;
-  border-collapse:collapse;
-  background-color:#ffe27f;
-}
-
-td.settingsActiveTab {
-  background-color:#fff3c8;
-}
-
-table.settingsTab td {
-  border: 1px solid;
-  border-bottom: 0px solid;
-  padding:5px;
-}
-
-table.settingsTab input {
-  background-position: 2px center;
-  background-repeat: no-repeat;
-  height:32px;
-  background-color:transparent;
-  border:0px solid;
-}
-
-td.settingsTab {
-	padding-bottom:0px;
-	padding-right:5px;
-	padding-left:5px;
-	padding-top:10px;
 }
 
 /**
