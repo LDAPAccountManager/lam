@@ -404,7 +404,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
 					break;
 		case "mailLocalAddress":
-					$pregexpr = '/^([0-9a-zA-Z\\._-])+([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
+					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
 					break;
 		case "postalAddress":	// Allow all but \, <, >, =, $, ?
 		case "postalCode":
