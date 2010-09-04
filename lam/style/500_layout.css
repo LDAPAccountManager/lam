@@ -237,6 +237,8 @@ input.smallImageButton {
 hr.modulePage {
   width: 100%;
   height: 2px;
+  margin-bottom: 20px;
+  margin-top: 3px;
 }
 
 
