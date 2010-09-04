@@ -223,6 +223,7 @@ function showMainPage($scope, $selectedModules) {
 	echo "<input class=\"$scope\" name=\"submitfile\" type=\"submit\" value=\"" . _('Upload file and create accounts') . "\">\n";
 	echo "<input type=\"hidden\" name=\"scope\" value=\"$scope\">\n";
 	echo "<input type=\"hidden\" name=\"selectedModules\" value=\"" . implode(',', $selectedModules) . "\">\n";
+	echo "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -306,67 +307,33 @@ function showMainPage($scope, $selectedModules) {
 		echo "</fieldset><br>";
 	}
 
-	echo "<p>&nbsp;</p>\n";
-
-	// print table example and build sample CSV
+	// build sample CSV
 	$sampleCSV_head = array();
 	$sampleCSV_row = array();
-	echo "<big><b>" . _("This is an example how it would look in your spreadsheet program before you convert to CSV:") . "</b></big><br><br>\n";
-
-	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
-		echo "<tr>\n";
-			// DN attributes
-			$sampleCSV_head[] = "\"dn_suffix\"";
-			$sampleCSV_head[] = "\"dn_rdn\"";
-			echo "<td>\n";
-				echo "dn_suffix";
-			echo "</td>\n";
-			echo "<td>\n";
-				echo "dn_rdn";
-			echo "</td>\n";
-			// module attributes
-			for ($m = 0; $m < sizeof($modules); $m++) {
-				if (sizeof($columns[$modules[$m]]) < 1) continue;
-				for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-					$sampleCSV_head[] = "\"" . $columns[$modules[$m]][$i]['name'] . "\"";
-					echo "<td>\n";
-						echo $columns[$modules[$m]][$i]['name'];
-					echo "</td>\n";
-				}
+		// DN attributes
+		$sampleCSV_head[] = "\"dn_suffix\"";
+		$sampleCSV_head[] = "\"dn_rdn\"";
+		// module attributes
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			if (sizeof($columns[$modules[$m]]) < 1) continue;
+			for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
+				$sampleCSV_head[] = "\"" . $columns[$modules[$m]][$i]['name'] . "\"";
 			}
-		echo "</tr>\n";
-		echo "<tr>\n";
-			$RDNs = getRDNAttributes($scope, $selectedModules);
-			// DN attributes
-			$sampleCSV_row[] = "\"" . $_SESSION['config']->get_Suffix($scope) . "\"";
-			$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
-			echo "<td>\n";
-				echo $_SESSION['config']->get_Suffix($scope);
-			echo "</td>\n";
-			echo "<td>\n";
-				echo $RDNs[0];
-			echo "</td>\n";
-			// module attributes
-			for ($m = 0; $m < sizeof($modules); $m++) {
-				if (sizeof($columns[$modules[$m]]) < 1) continue;
-				for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-					$sampleCSV_row[] = "\"" . $columns[$modules[$m]][$i]['example'] . "\"";
-					echo "<td>\n";
-						echo $columns[$modules[$m]][$i]['example'];
-					echo "</td>\n";
-				}
+		}
+		$RDNs = getRDNAttributes($scope, $selectedModules);
+		// DN attributes
+		$sampleCSV_row[] = "\"" . $_SESSION['config']->get_Suffix($scope) . "\"";
+		$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
+		// module attributes
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			if (sizeof($columns[$modules[$m]]) < 1) continue;
+			for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
+				$sampleCSV_row[] = "\"" . $columns[$modules[$m]][$i]['example'] . "\"";
 			}
-		echo "</tr>\n";
-	echo "</table>\n";
+		}
 	$sampleCSV = implode(",", $sampleCSV_head) . "\n" . implode(",", $sampleCSV_row) . "\n";
 	$_SESSION['mass_csv'] = $sampleCSV;
 	
-	// link to CSV sample
-	echo "<p>\n";
-	echo "<br><br>\n";
-	echo "<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
-	echo "<br><br>\n";
-
 	include 'main_footer.php';
 	die;
 }
