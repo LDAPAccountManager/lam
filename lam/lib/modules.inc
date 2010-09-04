@@ -1231,31 +1231,30 @@ class accountContainer {
 				return;
 			}
 		}
-		if (checkIfWriteAccessIsAllowed()) {
-			$this->printCommonControls();
-		}
-		echo "<br>\n";
-		// create module menu
 		echo "<table class=\"".$this->type."list-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"".$this->type."list-bright\" valign=\"top\"><td style=\"border-bottom: 1px solid;padding:0px;\" colspan=2>";
+		if (checkIfWriteAccessIsAllowed()) {
+			echo "<tr class=\"".$this->type."list-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
+			$this->printCommonControls();
+			echo "</td></tr>\n";
+		}
+		// create module menu
+		echo "<tr class=\"".$this->type."list-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
+		echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
 		// tab menu
 		$this->printModuleTabs();
-		echo "</td></tr>\n";
+		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
 		// content header
-		echo "<tr class=\"" . $this->type . "list-bright\">\n";
-			echo "<td style=\"padding:10px;\">\n";
-				$this->printContentHeader();
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr class=\"" . $this->type . "list-bright\">\n";
+		$this->printContentHeader();
 		// content area
-		echo "<td width=\"100%\" style=\"padding:10px;\">";
 		// display html-code from modules
 		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
 		$y = 5000;
 		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
+		echo "</div>\n";
+		echo "</div>\n";
+		echo "</td></tr>\n";
 		// Display rest of html-page
-		echo "</td></tr></table>\n";
+		echo "</table>\n";
 		$this->printPageFooter();
 	}
 
@@ -1377,17 +1376,17 @@ class accountContainer {
 	 * Prints common controls like the save button and the ou selection.
 	 */
 	private function printCommonControls() {
-		echo "<table class=\"".$this->type."list\" style=\"border-width:0px;\" width=\"100%\"><tr>";
+		echo "<table style=\"border-width:0px;\" width=\"100%\"><tr>";
 		echo "<td align=\"left\">";
 		// save button
-		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/save.png);\" name=\"accountContainerSaveAccount\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Save') . "\"> \n";
+		echo "<button id=\"modSaveButton\" name=\"accountContainerSaveAccount\">" . _('Save') . "</button> \n";
 		// reset button
 		if ($this->dn_orig!='') {
-			echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/undo.png);\" name=\"accountContainerReset\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Reset changes') . "\">\n";
+			echo "<button id=\"modResetButton\" name=\"accountContainerReset\">" . _('Reset changes') . "</button>\n";
 		}
 		if ($this->showSetPasswordButton()) {
 			echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/key.png);\" name=\"accountContainerSetPassword\" type=\"submit\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Set password') . "\"> \n";
+			echo "<button id=\"modPasswordButton\" name=\"accountContainerSetPassword\">" . _('Set password') . "</button> \n";
 		}
 		echo "</td>";
 		echo "<td align=\"right\">";
@@ -1404,11 +1403,37 @@ class accountContainer {
 					echo "<option $selected>" . $profilelist[$i] . "</option>\n";
 				}
 			echo "</select> \n";
-			echo "<input style=\"background-image: url(../../graphics/loadProfile.png);background-position: 2px center;background-repeat: no-repeat;height:24px;\" type=\"submit\" name=\"accountContainerLoadProfile\" value=\"&nbsp;&nbsp;&nbsp;&nbsp;" . _('Load profile') . "\"> &nbsp;\n";
+			echo "<button id=\"modLoadProfileButton\" name=\"accountContainerLoadProfile\">" . _('Load profile') . "</button>&nbsp;\n";
 			printHelpLink(getHelp('', '401'), '401');
 		}
 		echo "</td>";
-		echo "</tr></table>";		
+		echo "</tr></table>";
+		?>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#modSaveButton').button({
+			        icons: {
+			      	  primary: 'saveButton'
+			    	}
+				});
+				jQuery('#modResetButton').button({
+			        icons: {
+			      	  primary: 'undoButton'
+			    	}
+				});
+				jQuery('#modPasswordButton').button({
+			        icons: {
+			      	  primary: 'passwordButton'
+			    	}
+				});
+				jQuery('#modLoadProfileButton').button({
+			        icons: {
+			      	  primary: 'loadProfileButton'
+			    	}
+				});
+			});
+		</script>
+		<?php
 	}
 	
 	/**
@@ -1499,8 +1524,7 @@ class accountContainer {
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
 		$x=1;		
-		echo '<div class="ui-tabs">';
-		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">';
+		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
 		// Loop for each module
 		for ($i=0; $i<count($this->order); $i++ ) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
@@ -1509,7 +1533,7 @@ class accountContainer {
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$activatedClass = '';
 			if ($this->order[$this->current_page] == $this->order[$i]) {
-				$activatedClass = ' ui-tabs-selected ui-state-active';
+				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type . 'list-bright';
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-top' . $activatedClass . '">';
@@ -1528,7 +1552,7 @@ class accountContainer {
 			echo "</li>\n";
 			$x++;
 		}
-		echo '</ul></div>';
+		echo '</ul>';
 	}
 	
 	/**
@@ -1539,12 +1563,12 @@ class accountContainer {
 		echo "<td align=\"left\">\n";
 			// display DN
 			if (isset($this->dn_orig) && ($this->dn_orig != '')) {
-				echo _("DN") . ": <b>" . htmlspecialchars($this->dn_orig) . "</b>";
+				echo _("DN") . ": " . htmlspecialchars($this->dn_orig);
 			}
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
 			echo _('Suffix') . ": ";
-			echo "<select name=\"accountContainerSuffix\" size=1>\n";
+			echo "<select class=\"rightToLeftText\" name=\"accountContainerSuffix\" size=1>\n";
 				// loop through all suffixes
 				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
