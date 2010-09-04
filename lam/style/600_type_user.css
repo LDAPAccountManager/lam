@@ -47,23 +47,18 @@ table.userlist input, table.userlist select, table.userlist button {
 }
 
 /* color of bright rows */
-tr.userlist-bright {
-	background-color:#fffde2;
+.userlist-bright {
+	background: #fffde2 !important;
 }
 
 /* color of dark rows */
-tr.userlist-dark {
-	background-color:#fff2a3;
-}
-
-/* color of checked rows */
-tr.userlist-checked {
-  background-color:#f27c71;
+.userlist-dark {
+	background-color:#fff2a3 !important;
 }
 
 /* color of sorted column */
-th.userlist-sort {
-  background-color:#fffde2;
+.userlist-sort {
+  background-color:#fffde2 !important;
 }
 
 

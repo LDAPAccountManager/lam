@@ -69,25 +69,19 @@ table.smbDomainlist input, table.smbDomainlist select, table.smbDomainlist butto
 }
 
 /* color of bright rows */
-tr.smbDomainlist-bright {
-  background-color:#c9ddd2;
+.smbDomainlist-bright {
+  background-color:#c9ddd2 !important;
 }
 
 /* color of dark rows */
-tr.smbDomainlist-dark {
-  background-color:#a8ddbf;
+.smbDomainlist-dark {
+  background-color:#a8ddbf !important;
 }
 
 /* color of sorted column in head row */
-th.smbDomainlist-sort {
-  background-color:#c9ddd2;
+.smbDomainlist-sort {
+  background-color:#c9ddd2 !important;
 }
-
-/* color of checked rows */
-tr.smbDomainlist-checked {
-  background-color:#f27c71;
-}
-
 
 fieldset.smbDomainedit {
   background-color:#c9ddd2;

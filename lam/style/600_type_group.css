@@ -69,23 +69,18 @@ table.grouplist input, table.grouplist select, table.grouplist button {
 }
 
 /* color of bright rows */
-tr.grouplist-bright {
-  background-color:#d6e3ff;
+.grouplist-bright {
+  background-color:#d6e3ff !important;
 }
 
 /* color of dark rows */
-tr.grouplist-dark {
-  background-color:#a8c3ff;
+.grouplist-dark {
+  background-color:#a8c3ff !important;
 }
 
 /* color of sorted column in head row */
-th.grouplist-sort {
-  background-color:#d6e3ff;
-}
-
-/* color of checked rows */
-tr.grouplist-checked {
-  background-color:#f27c71;
+.grouplist-sort {
+  background-color:#d6e3ff !important;
 }
 
 fieldset.groupedit {

@@ -69,23 +69,18 @@ table.asteriskExtlist input, table.asteriskExtlist select, table.asteriskExtlist
 }
 
 /* color of bright rows */
-tr.asteriskExtlist-bright {
-  background-color:#fff3c8;
+.asteriskExtlist-bright {
+  background-color:#fff3c8 !important;
 }
 
 /* color of dark rows */
-tr.asteriskExtlist-dark {
-  background-color:#ffe27f;
+.asteriskExtlist-dark {
+  background-color:#ffe27f !important;
 }
 
 /* color of sorted column in head row */
-th.asteriskExtlist-sort {
-  background-color:#fff3c8;
-}
-
-/* color of checked rows */
-tr.asteriskExtlist-checked {
-  background-color:#f27c71;
+.asteriskExtlist-sort {
+  background-color:#fff3c8 !important;
 }
 
 fieldset.asteriskExtedit {

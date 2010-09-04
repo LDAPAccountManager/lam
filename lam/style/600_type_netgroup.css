@@ -69,23 +69,18 @@ table.netgrouplist input, table.netgrouplist select, table.netgrouplist button {
 }
 
 /* color of bright rows */
-tr.netgrouplist-bright {
-  background-color:#d6e3ff;
+.netgrouplist-bright {
+  background-color:#d6e3ff !important;
 }
 
 /* color of dark rows */
-tr.netgrouplist-dark {
-  background-color:#a8c3ff;
+.netgrouplist-dark {
+  background-color:#a8c3ff !important;
 }
 
 /* color of sorted column in head row */
-th.netgrouplist-sort {
-  background-color:#d6e3ff;
-}
-
-/* color of checked rows */
-tr.netgrouplist-checked {
-  background-color:#f27c71;
+.netgrouplist-sort {
+  background-color:#d6e3ff !important;
 }
 
 fieldset.netgroupedit {

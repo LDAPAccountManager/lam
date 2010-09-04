@@ -69,23 +69,18 @@ table.hostlist input, table.hostlist select, table.hostlist button {
 }
 
 /* color of bright rows */
-tr.hostlist-bright {
-  background-color:#ffe2dd;
+.hostlist-bright {
+  background-color:#ffe2dd !important;
 }
 
 /* color of dark rows */
-tr.hostlist-dark {
-  background-color:#ffc4ba;
+.hostlist-dark {
+  background-color:#ffc4ba !important;
 }
 
 /* color of sorted column in head row */
-th.hostlist-sort {
-  background-color:#ffe2dd;
-}
-
-/* color of checked rows */
-tr.hostlist-checked {
-  background-color:#f27c71;
+.hostlist-sort {
+  background-color:#ffe2dd !important;
 }
 
 fieldset.hostedit {

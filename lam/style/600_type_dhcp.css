@@ -70,23 +70,18 @@ table.dhcplist input, table.dhcplist select, table.dhcplist button {
 }
 
 /* color of bright rows */
-tr.dhcplist-bright {
-  background-color:#d4f19b;
+.dhcplist-bright {
+  background-color:#d4f19b !important;
 }
 
 /* color of dark rows */
-tr.dhcplist-dark {
-  background-color:#9fc653;
+.dhcplist-dark {
+  background-color:#9fc653 !important;
 }
 
 /* color of sorted column in head row */
-th.dhcplist-sort {
-  background-color:#bce077;
-}
-
-/* color of checked rows */
-tr.dhcplist-checked {
-  background-color:#a2bf6b;
+.dhcplist-sort {
+  background-color:#bce077 !important;
 }
 
 fieldset.dhcpedit {
