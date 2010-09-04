@@ -106,6 +106,7 @@ tr.highlight {
 	text-align: right;
 }
 
+/** buttons */
 .saveButton {
 	background-image: url(../graphics/save.png) !important;
 }
@@ -118,8 +119,33 @@ tr.highlight {
 	background-image: url(../graphics/exit.png) !important;
 }
 
+.undoButton {
+	background-image: url(../graphics/undo.png) !important;
+}
+
+.passwordButton {
+	background-image: url(../graphics/key.png) !important;
+}
+
+.loadProfileButton {
+	background-image: url(../graphics/loadProfile.png) !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
+}
+
+/** subtitles */
+div.subTitle {
+	margin: 20px 0px 15px 0px;
+}
+
+div.subTitleText {
+	margin: 0px 0px 0px 10px;
+}
+
+div.subTitle hr {
+	margin: 3px 0px 0px 0px;
 }
 
 /**
@@ -203,6 +229,9 @@ input.smallImageButton {
   background-position: 2px center;
   background-repeat: no-repeat;
   height:24px;
+  border: 0px;
+  background-color: transparent;
+  cursor:pointer;
 }
 
 hr.modulePage {
