@@ -485,6 +485,8 @@ class htmlButton extends htmlElement {
 	protected $value;
 	/** image button or text button */
 	protected $isImageButton;
+	/** title */
+	private $title = null;
 	
 	/**
 	 * Constructor.
@@ -514,6 +516,7 @@ class htmlButton extends htmlElement {
 		$value = '';
 		$style = '';
 		$class = '';
+		$title = '';
 		$name = ' name="' . $this->name . '"';
 		// image button
 		if ($this->isImageButton) {
@@ -527,10 +530,22 @@ class htmlButton extends htmlElement {
 				$value = ' value="' . $this->value . '"';
 			}
 		}
-		echo '<input type="submit"' . $name . $value . $style . $class . '>';
+		if ($this->title != null) {
+			$title = ' title="' . $this->title . '"';
+		}
+		echo '<input type="submit"' . $name . $value . $style . $class . $title . '>';
 		return array($this->name => 'submit');
 	}
 	
+	/**
+	 * Sets the button title (tooltip).
+	 * 
+	 * @param String $title title
+	 */
+	public function setTitle($title) {
+		$this->title = htmlspecialchars($title);
+	}
+
 }
 
 /**
