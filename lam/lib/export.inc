@@ -343,7 +343,8 @@ class PlaLdapExporter extends PlaAbstractExporter{
       
       //get the attributes of the entry
       $attrs = @ldap_get_attributes($this->ds,$this->entry_id);
-      if( $attr = @ldap_first_attribute( $this->ds,$this->entry_id ) ){
+      $attr = @ldap_first_attribute( $this->ds,$this->entry_id );
+      if(($attr !== false) && ($attr !== null)) {
 	
 	//iterate over the attributes
 	while( $attr ){
