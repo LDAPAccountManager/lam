@@ -415,6 +415,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
 					break;
 		case "homeDirectory":		// Homapath, /path/......
+		case "filePath":
 					$pregexpr = '/^([\/]([[:alnum:]@\\$\\.\\ \\_-])+)+(\/)?$/u';
 					break;
 		case "digit":		// Normal number
