@@ -126,7 +126,7 @@ $cssDirName = dirname(__FILE__) . '/../../style';
 $cssDir = dir($cssDirName);
 while ($cssEntry = $cssDir->read()) {
 	if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $headerPrefix . "../../style/" . $cssEntry . "\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
 }
 
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
