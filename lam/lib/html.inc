@@ -289,6 +289,8 @@ class htmlInputField extends htmlElement {
 	private $fieldMaxLength = 255;
 	/** password field */
 	private $isPassword = false;
+	/** enabled or disabled */
+	private $isEnabled = true;
 	
 	/**
 	 * Constructor
@@ -333,7 +335,11 @@ class htmlInputField extends htmlElement {
 		if ($this->isPassword) {
 			$inputType = 'password';
 		}
-		echo '<input type="' . $inputType . '"' . $name . $value . $maxLength . $size . $fieldTabIndex . '>';
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<input type="' . $inputType . '"' . $name . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
 		return array($this->fieldName => 'text');
 	}
 
@@ -362,6 +368,15 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setIsPassword($isPassword) {
 		$this->isPassword = $isPassword;
+	}
+
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
 	}
 
 }
@@ -487,6 +502,8 @@ class htmlButton extends htmlElement {
 	protected $isImageButton;
 	/** title */
 	private $title = null;
+	/** enabled or disabled */
+	private $isEnabled = true;
 	
 	/**
 	 * Constructor.
@@ -533,7 +550,11 @@ class htmlButton extends htmlElement {
 		if ($this->title != null) {
 			$title = ' title="' . $this->title . '"';
 		}
-		echo '<input type="submit"' . $name . $value . $style . $class . $title . '>';
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<input type="submit"' . $name . $value . $style . $class . $title . $disabled . '>';
 		return array($this->name => 'submit');
 	}
 	
@@ -544,6 +565,15 @@ class htmlButton extends htmlElement {
 	 */
 	public function setTitle($title) {
 		$this->title = htmlspecialchars($title);
+	}
+
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
 	}
 
 }
@@ -595,6 +625,8 @@ class htmlSelect extends htmlElement {
 	private $sortElements = true;
 	/** right to left text direction */
 	private $rightToLeftTextDirection = false;
+	/** enabled or disabled */
+	private $isEnabled = true;
 	
 	/**
 	 * Constructor.
@@ -637,7 +669,11 @@ class htmlSelect extends htmlElement {
 		if ($this->rightToLeftTextDirection) {
 			$class = ' class="rightToLeftText"';
 		}
-		echo '<select' . $class . $name . $size . $multi . ' tabindex="' . $tabindex . "\">\n";
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<select' . $class . $name . $size . $multi . $disabled . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		// sorting
 		if ($this->sortElements) {
@@ -714,6 +750,15 @@ class htmlSelect extends htmlElement {
 		$this->rightToLeftTextDirection = $rightToLeftTextDirection;
 	}
 	
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
+	}
+
 }
 
 /**
@@ -827,6 +872,8 @@ class htmlInputCheckbox extends htmlElement {
 	private $name;
 	/** value */
 	private $checked;
+	/** enabled or disabled */
+	private $isEnabled = true;
 	
 	/**
 	 * Constructor.
@@ -865,8 +912,21 @@ class htmlInputCheckbox extends htmlElement {
 		}
 		$tabindexValue = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
-		echo '<input type="checkbox" name="' . $this->name . '"' . $tabindexValue . $checked . '>';
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<input type="checkbox" name="' . $this->name . '"' . $tabindexValue . $checked . $disabled . '>';
 		return array($this->name => 'checkbox');
+	}
+
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
 	}
 
 }
@@ -943,6 +1003,8 @@ class htmlInputFileUpload extends htmlElement {
 	
 	/** unique name of input element */
 	private $name;
+	/** enabled or disabled */
+	private $isEnabled = true;
 	
 	/**
 	 * Constructor.
@@ -967,8 +1029,21 @@ class htmlInputFileUpload extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$tabindexValue = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
-		echo '<input type="file" name="' . $this->name . '"' . $tabindexValue . '>';
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<input type="file" name="' . $this->name . '"' . $tabindexValue . $disabled . '>';
 		return array($this->name => 'file');
+	}
+
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
 	}
 
 }
@@ -1039,6 +1114,8 @@ class htmlInputTextarea extends htmlElement {
 	private $colCount;
 	/** row count */
 	private $rowCount;
+	/** enabled or disabled */
+	private $isEnabled = true;
 	
 	/**
 	 * Constructor.
@@ -1074,8 +1151,21 @@ class htmlInputTextarea extends htmlElement {
 		$rowCount = ' rows="' . $this->rowCount . '"';
 		$tabindexValue = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
-		echo '<textarea name="' . $this->name . '"' . $tabindexValue . $colCount . $rowCount . '>' . $this->value . '</textarea>';
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<textarea name="' . $this->name . '"' . $tabindexValue . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
+	}
+
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
 	}
 
 }
