@@ -259,6 +259,7 @@ class PlaLdapExporter extends PlaAbstractExporter{
   var $queryFilter;
   var $hasNext;
   var $attributes;
+  var $ds;
   /**
    * Create a PlaLdapExporter object.
    * @param String $queryFilter the queryFilter for the export
