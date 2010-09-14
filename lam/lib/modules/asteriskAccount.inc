@@ -100,33 +100,19 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Text" => _("Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
 			),
 		);
-		// config options	
-		$return['config_options']['user'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Asterisk realm')),
-				array('kind' => 'input', 'name' => 'asteriskAccount_AsteriskRealm', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'AsteriskRealm')
-			)
-		);
+		// config options
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'));
+		$return['config_options']['user'] = $configContainer;
 		// self service options	
-		$return['selfServiceSettings'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Asterisk realm')),
-				array('kind' => 'input', 'name' => 'asteriskAccount_AsteriskRealm', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'AsteriskRealm')
-			)
-		);
+		$selfServiceContainer = new htmlTable();
+		$selfServiceContainer->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'));
+		$return['selfServiceSettings'] = $selfServiceContainer;
 		// profile options
-		$return['profile_options'] = array(
-			array(
-			array('kind' => 'text', 'text' => _('Host') . ":"),
-			array('kind' => 'input', 'name' => 'asteriskAccount_AstAccountHost', 'type' => 'text', 'size' => '30'),
-			array('kind' => 'help', 'value' => 'AstAccountHost')),
-			array(
-			array('kind' => 'text', 'text' => _('Account context') . ":"),
-			array('kind' => 'input', 'name' => 'asteriskAccount_AstAccountContext', 'type' => 'text', 'size' => '30'),
-			array('kind' => 'help', 'value' => 'AstAccountContext'))
-                        );
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Host'), 'asteriskAccount_AstAccountHost', null, 'AstAccountHost'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'asteriskAccount_AstAccountContext', null, 'AstAccountContext'), true);
+		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'asteriskAccount_AstAccountHost' => 'AstAccountHost',
@@ -193,32 +179,39 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * This function will create the meta HTML code to show a page with all attributes.
 	 */
 	function display_html_attributes() {
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'AsteriskSIPUser';
 		}
 
-		$return = array();
+		$return = new htmlTable();
 		if (in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _("Caller ID").'*'),
-				array('kind' => 'input', 'name' => 'AstAccountCallerID', 'type' => 'text', 'size' => '30',  'value' => $this->attributes['AstAccountCallerID'][0]),
-				array('kind' => 'help', 'value' => 'AstAccountCallerID'));
-			$return[] = array(
-				array('kind' => 'text', 'text' => _("Host").'*'),
-				array('kind' => 'input', 'name' => 'AstAccountHost', 'type' => 'text', 'size' => '30',  'value' => $this->attributes['AstAccountHost'][0]),
-				array('kind' => 'help', 'value' => 'AstAccountHost'));
-
-			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-
-			$return[] = array(
-				array('kind' => 'text', 'text' => _("Account context").'*'),
-				array('kind' => 'input', 'name' => 'AstAccountContext', 'type' => 'text', 'size' => '30',  'value' => $this->attributes['AstAccountContext'][0]),
-				array('kind' => 'help', 'value' => 'AstAccountContext'));
-		}else {
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_' . get_class($this) . '_attributes_addObjectClass', 'value' => _('Add Asterisk account'))
-			);
+			// caller ID
+			$callerId = '';
+			if (isset($this->attributes['AstAccountCallerID'][0])) {
+				$callerId = $this->attributes['AstAccountCallerID'][0];
+			}
+			$callerIdInput = new htmlTableExtendedInputField(_("Caller ID"), 'AstAccountCallerID', $callerId, 'AstAccountCallerID');
+			$callerIdInput->setRequired(true);
+			$return->addElement($callerIdInput, true);
+			// host
+			$host = '';
+			if (isset($this->attributes['AstAccountHost'][0])) {
+				$host = $this->attributes['AstAccountHost'][0];
+			}
+			$hostInput = new htmlTableExtendedInputField(_("Host"), 'AstAccountHost', $host, 'AstAccountHost');
+			$hostInput->setRequired(true);
+			$return->addElement($hostInput, true);
+			// context
+			$context = '';
+			if (isset($this->attributes['AstAccountContext'][0])) {
+				$context = $this->attributes['AstAccountContext'][0];
+			}
+			$contextInput = new htmlTableExtendedInputField(_("Account context"), 'AstAccountContext', $context, 'AstAccountContext');
+			$contextInput->setRequired(true);
+			$return->addElement($contextInput, true);
+		}
+		else {
+			$return->addElement(new htmlButton('addObjectClass', _('Add Asterisk account')));
 		}
 		return $return;
 	}
