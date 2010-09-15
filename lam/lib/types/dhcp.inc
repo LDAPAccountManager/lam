@@ -93,7 +93,7 @@ class dhcp extends baseType {
 		return array (
 			"cn" => _("Subnet"),
 			"dhcprange" => _("Ranges"),
-			"fixed_ips" => _("Fixed IP address / MAC address / description")
+			"fixed_ips" => _("IP address") . ' / ' . _('MAC address') . ' / ' . _("Description")
 			);
 	}
 
