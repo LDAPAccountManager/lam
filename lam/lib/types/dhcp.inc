@@ -91,9 +91,9 @@ class dhcp extends baseType {
 	*/
 	public function getListAttributeDescriptions() {
 		return array (
-			"cn" => ("Subnet"),
-			"dhcprange" => ("IP range"),
-			"fixed_ips" => ("Fixed IP address / MAC address / description")
+			"cn" => _("Subnet"),
+			"dhcprange" => _("Ranges"),
+			"fixed_ips" => _("Fixed IP address / MAC address / description")
 			);
 	}
 
@@ -142,8 +142,13 @@ class lamDHCPList extends lamList {
 				echo "<table border=\"0\" width=\"100%\">";
 				for ($i = 0; $i < sizeof($entries); $i++) {
 					echo "<tr>";
-					echo "<td width=\"25%\">".array_pop(explode(" ",$entries[$i]['dhcpstatements'][0]))."</td>";
-					echo "<td width=\"35%\">".array_pop(explode(" ",$entries[$i]['dhcphwaddress'][0]))."</td>";
+					$dhcpstatements = array('');
+					if (isset($entries[$i]['dhcpstatements'][0])) {
+						$dhcpstatements = explode(" ",$entries[$i]['dhcpstatements'][0]);
+					}
+					echo "<td width=\"25%\">".array_pop($dhcpstatements)."</td>";
+					$dhcphwaddress = explode(" ",$entries[$i]['dhcphwaddress'][0]);
+					echo "<td width=\"35%\">".array_pop($dhcphwaddress)."</td>";
 					echo "<td width=\"40%\">".$entries[$i]['cn'][0]."</td>";
 					echo "</tr>";
 				}
@@ -164,7 +169,7 @@ class lamDHCPList extends lamList {
 			}
         }
         elseif ($attribute=="dhcprange") { // DHCP Range
-            if (is_array($entry['dhcprange'])) {
+            if (isset($entry['dhcprange'])) {
                 echo"<table cellspacing=\"0\">";
 				foreach($entry['dhcprange'] AS $id=>$value) {
 					if (!is_numeric($value)) {
