@@ -75,7 +75,7 @@
     <para><emphasis role="bold">Requirements:</emphasis></para>
 
     <simplelist>
-      <member>PHP5 (&gt;= 5.1)</member>
+      <member>PHP5 (&gt;= 5.2.4)</member>
 
       <member>Openldap (2.0 or greater)</member>
 
@@ -176,7 +176,7 @@ Have fun!
         <itemizedlist>
           <listitem>
             <para>Apache webserver (SSL recommended) with PHP module (PHP 5
-            (&gt;= 5.1) with ldap, gettext, xml and optional mcrypt)</para>
+            (&gt;= 5.2.4) with ldap, gettext, xml and optional mcrypt)</para>
           </listitem>
 
           <listitem>
@@ -456,7 +456,7 @@ Have fun!
         <section>
           <title>PHP</title>
 
-          <para>LAM runs with PHP5 (&gt;= 5.1). Needed changes in your
+          <para>LAM runs with PHP5 (&gt;= 5.2.4). Needed changes in your
           php.ini:</para>
 
           <para>memory_limit = 64M</para>
