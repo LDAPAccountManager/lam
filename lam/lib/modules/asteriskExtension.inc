@@ -108,20 +108,11 @@ class asteriskExtension extends baseModule {
 			)
 		);
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Account context') . ":"),
-				array('kind' => 'input', 'name' => 'AsteriskExtension_AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'AstContext')),
-			array(
-				array('kind' => 'text', 'text' => _('Priority') . ":"),
-				array('kind' => 'input', 'name' => 'AsteriskExtension_AstPriority', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'AstPriority')),
-			array(
-				array('kind' => 'text', 'text' => _('Application') . ":"),
-				array('kind' => 'input', 'name' => 'AsteriskExtension_AstApplication', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'AstApplication'))
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'AsteriskExtension_AstContext', null, 'AstContext'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Priority'), 'AsteriskExtension_AstPriority', null, 'AstPriority'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Application'), 'AsteriskExtension_AstApplication', null, 'AstApplication'), true);
+		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings'] = array(
 			'AsteriskExtension_AstContext' => 'AstContext',
 			'AsteriskExtension_AstPriority' => 'AstPriority',
@@ -213,48 +204,66 @@ class asteriskExtension extends baseModule {
 	 * @param array $_POST HTTP-POST values
 	 */
 	function display_html_attributes() {
-		$return = array();
-
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Common name") . '*'),
-			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['cn'][0]),
-			array('kind' => 'help', 'value' => 'cn'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Account context") . '*'),
-			array('kind' => 'input', 'name' => 'AstContext', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstContext'][0]),
-			array('kind' => 'help', 'value' => 'AstContext'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Extension name") . '*'),
-			array('kind' => 'input', 'name' => 'AstExtension', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstExtension'][0]),
-			array('kind' => 'help', 'value' => 'AstExtension'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Priority") . '*'),
-			array('kind' => 'input', 'name' => 'AstPriority', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstPriority'][0]),
-			array('kind' => 'help', 'value' => 'AstPriority'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Application") . '*'),
-			array('kind' => 'input', 'name' => 'AstApplication', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstApplication'][0]),
-			array('kind' => 'help', 'value' => 'AstApplication'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Application data")),
-			array('kind' => 'input', 'name' => 'AstApplicationData', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['AstApplicationData'][0]),
-			array('kind' => 'help', 'value' => 'AstApplicationData'));
-		
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Extension owners") . '*'),
-			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_open', 'type' => 'submit', 'value' => _('Change')),
-			array('kind' => 'help', 'value' => 'member'));
-		$memberPart = array();
+		$return = new htmlTable();
+		// cn
+		$cn = '';
+		if (isset($this->attributes['cn'][0])) {
+			$cn = $this->attributes['cn'][0];
+		}
+		$cnInput = new htmlTableExtendedInputField(_("Common name"), 'cn', $cn, 'cn');
+		$cnInput->setRequired(true);
+		$return->addElement($cnInput, true);
+		// account context
+		$accountContext = '';
+		if (isset($this->attributes['AstContext'][0])) {
+			$accountContext = $this->attributes['AstContext'][0];
+		}
+		$accountContextInput = new htmlTableExtendedInputField(_("Account context"), 'AstContext', $accountContext, 'AstContext');
+		$accountContextInput->setRequired(true);
+		$return->addElement($accountContextInput, true);
+		// extension name
+		$extName = '';
+		if (isset($this->attributes['AstExtension'][0])) {
+			$extName = $this->attributes['AstExtension'][0];
+		}
+		$extNameInput = new htmlTableExtendedInputField(_("Extension name"), 'AstExtension', $extName, 'AstExtension');
+		$extNameInput->setRequired(true);
+		$return->addElement($extNameInput, true);
+		// priority
+		$priority = '';
+		if (isset($this->attributes['AstPriority'][0])) {
+			$priority = $this->attributes['AstPriority'][0];
+		}
+		$priorityInput = new htmlTableExtendedInputField(_("Priority"), 'AstPriority', $priority, 'AstPriority');
+		$priorityInput->setRequired(true);
+		$return->addElement($priorityInput, true);
+		// application
+		$application = '';
+		if (isset($this->attributes['AstApplication'][0])) {
+			$application = $this->attributes['AstApplication'][0];
+		}
+		$applicationInput = new htmlTableExtendedInputField(_("Application"), 'AstApplication', $application, 'AstApplication');
+		$applicationInput->setRequired(true);
+		$return->addElement($applicationInput, true);
+		// application data
+		$applicationData = '';
+		if (isset($this->attributes['AstApplicationData'][0])) {
+			$applicationData = $this->attributes['AstApplicationData'][0];
+		}
+		$return->addElement(new htmlTableExtendedInputField(_("Application data"), 'AstApplicationData', $applicationData, 'AstApplicationData'), true);
+		// owners
+		$return->addElement(new htmlOutputText(_("Extension owners") . '*'));
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Change')));
+		$return->addElement(new htmlHelpLink('member'));
+		$return->addNewLine();
+		$return->addElement(new htmlOutputText(''));
+		$ownerList = new htmlTable();
 		if (isset($this->attributes['member'])) {
 			for ($i = 0; $i < sizeof($this->attributes['member']); $i++) {
-				$memberPart[] = array(array('kind' => 'text', 'text' => getAbstractDN($this->attributes['member'][$i])));
+				$ownerList->addElement(new htmlOutputText(getAbstractDN($this->attributes['member'][$i])), true);
 			}
 		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => ''),
-			array('kind' => 'table', 'value' => $memberPart),
-			array('kind' => 'text', 'text' => ''),
-		);
+		$return->addElement($ownerList);
 		return $return;
 	}
 
@@ -264,6 +273,7 @@ class asteriskExtension extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function display_html_user() {
+		$return = new htmlTable();
 		// load list with all potential owners
 		$searchScope = 'user';
 		if ($this->searchOwnersInTreeSuffix) {
@@ -278,55 +288,46 @@ class asteriskExtension extends baseModule {
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$dn = $entries[$i]['dn'];
 			if (isset($dn) && (!isset($this->attributes['member']) || !in_array($dn, $this->attributes['member']))) {
-				$users_dn[] = array($dn, getAbstractDN($dn));
+				$users_dn[getAbstractDN($dn)] = $dn;
 			}
 		}
-		$members = $this->attributes['member'];
-		for ($i = 0; $i < sizeof($members); $i++) {
-			$members[$i] = array($members[$i], getAbstractDN($members[$i]));
+		$memberList = $this->attributes['member'];
+		$members = array();
+		for ($i = 0; $i < sizeof($memberList); $i++) {
+			$members[getAbstractDN($memberList[$i])] = $memberList[$i];
 		}
-		$return[] =	array(array('kind' => 'table', 'value' => array(
-			array(
-				array('kind' => 'table', 'value' => array(
-					array(
-						array('kind' => 'input', 'type' => 'checkbox', 'name' => 'filterAsteriskUsers', 'checked' => $this->filterOwnerForAsteriskAccounts),
-						array('kind' => 'text', 'text' => _('Show only Asterisk accounts')),
-						array('kind' => 'help', 'value' => 'ownerOptions')
-					),
-					array(
-						array('kind' => 'input', 'type' => 'checkbox', 'name' => 'useTreeSuffix', 'checked' => $this->searchOwnersInTreeSuffix),
-						array('kind' => 'text', 'text' => _('Search tree suffix for users')),
-						array('kind' => 'help', 'value' => 'ownerOptions')
-					)
-				)),
-				array('kind' => 'text', 'text' => '&nbsp;&nbsp;&nbsp;'),
-				array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_changeFilter' ,'type' => 'submit', 'value' => _('Refresh') ),
-			)
-		)));
-		
-		// !!! setRightToLeftText -> true for select
-		
-		$return[] = array(
-			array('kind' => 'fieldset', 'legend' => _("Extension owners"), 'value' => array(
-				array(
-					array('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' => array (
-						array(array('kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $members, 'descriptiveOptions' => true)))
-					),
-					array('kind' => 'table', 'value' => array(
-						array(array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
-						array(array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-						array(array('kind' => 'help', 'value' => 'member', 'td' => array('align' => 'center')))
-					)),
-					array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
-						array(array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users_dn, 'descriptiveOptions' => true)))
-					)
-				)
-			))
-		);
-		$return[] = array(
-			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
-			array('kind' => 'text'),
-			array('kind' => 'text'));
+		// options
+		$return->addElement(new htmlTableExtendedInputCheckbox('filterAsteriskUsers', $this->filterOwnerForAsteriskAccounts, _('Show only Asterisk accounts'), 'ownerOptions', false));
+		$refreshButton = new htmlButton('changeFilter', _('Refresh'));
+		$refreshButton->rowspan = 2;
+		$return->addElement($refreshButton, true);
+		$return->addElement(new htmlTableExtendedInputCheckbox('useTreeSuffix', $this->searchOwnersInTreeSuffix, _('Search tree suffix for users'), 'ownerOptions', false), true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		// owners
+		$ownerContent = new htmlTable();
+		$ownerContent->addElement(new htmlOutputText(_("Selected users")));
+		$ownerContent->addElement(new htmlOutputText(""));
+		$ownerContent->addElement(new htmlOutputText(_("Available users")));
+		$ownerContent->addNewLine();
+		$selectedList = new htmlSelect('removeusers', $members, null, 15);
+		$selectedList->setHasDescriptiveElements(true);
+		$selectedList->setMultiSelect(true);
+		$selectedList->setRightToLeftTextDirection(true);
+		$ownerContent->addElement($selectedList);
+		$ownerButtons = new htmlTable();
+		$ownerButtons->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
+		$ownerButtons->addElement(new htmlButton('removeusers_button', 'forward.gif', true));
+		$ownerContent->addElement($ownerButtons);
+		$availableList = new htmlSelect('addusers', $users_dn, null, 15);
+		$availableList->setHasDescriptiveElements(true);
+		$availableList->setMultiSelect(true);
+		$availableList->setRightToLeftTextDirection(true);
+		$ownerContent->addElement($availableList);
+		$ownerContent->colspan = 4;
+		$return->addElement(new htmlSubTitle(_("Extension owners")), true);
+		$return->addElement($ownerContent, true);
+		// back button
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok')));
 		return $return;
 	}
 
@@ -338,7 +339,7 @@ class asteriskExtension extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function process_user() {
-		if (isset($_POST['form_subpage_' . get_class($this) . '_user_changeFilter'])) {
+		if (isset($_POST['changeFilter'])) {
 			// update filter value
 			$this->filterOwnerForAsteriskAccounts = ($_POST['filterAsteriskUsers'] == 'on');
 			// update search suffix
