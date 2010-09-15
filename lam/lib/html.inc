@@ -530,6 +530,11 @@ class htmlButton extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($restricted) {
+			// no buttons in restricted mode
+			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
+			return array();
+		}
 		$value = '';
 		$style = '';
 		$class = '';
