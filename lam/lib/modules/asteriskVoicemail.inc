@@ -112,20 +112,11 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			),
 		);
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Options') . ":"),
-				array('kind' => 'input', 'name' => 'asteriskVoicemail_AstVoicemailOptions', 'type' => 'text', 'size' => '30'),
-				array('kind' => 'help', 'value' => 'AstVoicemailOptions')),
-			array(
-				array('kind' => 'text', 'text' => _('Voicemail context') . ":"),
-				array('kind' => 'input', 'name' => 'asteriskVoicemail_AstVoicemailContext', 'type' => 'text', 'size' => '30'),
-				array('kind' => 'help', 'value' => 'AstContext')),
-			array(
-				array('kind' => 'text', 'text' => _('Account context') . ":"),
-				array('kind' => 'input', 'name' => 'asteriskVoicemail_AstContext', 'type' => 'text', 'size' => '30'),
-				array('kind' => 'help', 'value' => 'AstContext'))
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Options'), 'asteriskVoicemail_AstVoicemailOptions', null, 'AstVoicemailOptions'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Voicemail context'), 'asteriskVoicemail_AstVoicemailContext', null, 'AstVoicemailContext'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'asteriskVoicemail_AstContext', null, 'AstContext'), true);
+		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(
 				'asteriskVoicemail_AstContext' => 'AstContext',
@@ -228,53 +219,71 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * This function will create the meta HTML code to show a page with all attributes.
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		if (in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
 			if (!isset($this->attributes['AstVoicemailPassword'])) {
-				call_user_func_array('StatusMessage', $this->messages['AstVoicemailPassword'][0]);
-				$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
+				$message = new htmlStatusMessage($this->messages['AstVoicemailPassword'][0][0], $this->messages['AstVoicemailPassword'][0][1]);
+				$message->colspan = 3;
+				$return->addElement($message, true);
 			}
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Mailbox").'*'),
-					array('kind' => 'input', 'name' => 'AstVoicemailMailbox', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailMailbox'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailMailbox'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Account context").'*'),
-					array('kind' => 'input', 'name' => 'AstContext', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstContext'][0]),
-					array('kind' => 'help', 'value' => 'AstContext'));
+			// mailbox
+			$mailbox = '';
+			if (isset($this->attributes['AstVoicemailMailbox'][0])) {
+				$mailbox = $this->attributes['AstVoicemailMailbox'][0];
+			}
+			$mailboxInput = new htmlTableExtendedInputField(_("Mailbox"), 'AstVoicemailMailbox', $mailbox, 'AstVoicemailMailbox');
+			$mailboxInput->setRequired(true);
+			$return->addElement($mailboxInput, true);
+			// account context
+			$acctContext = '';
+			if (isset($this->attributes['AstContext'][0])) {
+				$acctContext = $this->attributes['AstContext'][0];
+			}
+			$acctContextInput = new htmlTableExtendedInputField(_("Account context"), 'AstContext', $acctContext, 'AstContext');
+			$acctContextInput->setRequired(true);
+			$return->addElement($acctContextInput, true);
+			
+			$return->addElement(new htmlSpacer(null, '10px'), true);
 
-			$return[] = array(array('kind' => 'text', 'td' => array('colspan' => 3)));
-
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Full name")),
-					array('kind' => 'input', 'name' => 'AstVoicemailFullname', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailFullname'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailFullname'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Email address")),
-					array('kind' => 'input', 'name' => 'AstVoicemailEmail', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailEmail'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailEmail'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Pager")),
-					array('kind' => 'input', 'name' => 'AstVoicemailPager', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailPager'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailPager'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Options")),
-					array('kind' => 'input', 'name' => 'AstVoicemailOptions', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailOptions'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailOptions'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => _("Voicemail context")),
-					array('kind' => 'input', 'name' => 'AstVoicemailContext', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['AstVoicemailContext'][0]),
-					array('kind' => 'help', 'value' => 'AstVoicemailContext'));
-			$return[] = array(
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_' . get_class($this) . '_attributes_remVoicemailObjectClass', 'value' => _('Remove Asterisk voicemail extension'))
-			);
+			// full name
+			$name = '';
+			if (isset($this->attributes['AstVoicemailFullname'][0])) {
+				$name = $this->attributes['AstVoicemailFullname'][0];
+			}
+			$return->addElement(new htmlTableExtendedInputField(_("Full name"), 'AstVoicemailFullname', $name, 'AstVoicemailFullname'), true);
+			// email
+			$email = '';
+			if (isset($this->attributes['AstVoicemailEmail'][0])) {
+				$email = $this->attributes['AstVoicemailEmail'][0];
+			}
+			$return->addElement(new htmlTableExtendedInputField(_("Email address"), 'AstVoicemailEmail', $email, 'AstVoicemailEmail'), true);
+			// pager
+			$pager = '';
+			if (isset($this->attributes['AstVoicemailPager'][0])) {
+				$pager = $this->attributes['AstVoicemailPager'][0];
+			}
+			$return->addElement(new htmlTableExtendedInputField(_("Pager"), 'AstVoicemailPager', $pager, 'AstVoicemailPager'), true);
+			// options
+			$options = '';
+			if (isset($this->attributes['AstVoicemailOptions'][0])) {
+				$options = $this->attributes['AstVoicemailOptions'][0];
+			}
+			$return->addElement(new htmlTableExtendedInputField(_("Options"), 'AstVoicemailOptions', $options, 'AstVoicemailOptions'), true);
+			// voicemail context
+			$voiceContext = '';
+			if (isset($this->attributes['AstVoicemailContext'][0])) {
+				$voiceContext = $this->attributes['AstVoicemailContext'][0];
+			}
+			$return->addElement(new htmlTableExtendedInputField(_("Voicemail context"), 'AstVoicemailContext', $voiceContext, 'AstVoicemailContext'), true);
+			// remove button
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$remButton = new htmlButton('remVoicemailObjectClass', _('Remove Asterisk voicemail extension'));
+			$remButton->colspan = 2;
+			$return->addElement($remButton);
 		}
 		else {
-			$return[] = array(
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_' . get_class($this) . '_attributes_addVoicemailObjectClass', 'value' => _('Add Asterisk voicemail extension'))
-			);
+			// add button
+			$return->addElement(new htmlButton('addVoicemailObjectClass', _('Add Asterisk voicemail extension')));
 		}
 		return $return;
 	}
@@ -283,12 +292,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * Write variables into object and do some regex checks
 	 */
 	function process_attributes() {
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addVoicemailObjectClass'])) {
+		if (isset($_POST['addVoicemailObjectClass'])) {
 			$this->attributes['objectClass'][] = 'AsteriskVoiceMail';
 			return array();
 		}
 		// remove extension
-		elseif (isset($_POST['form_subpage_' . get_class($this) . '_attributes_remVoicemailObjectClass'])) {
+		elseif (isset($_POST['remVoicemailObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('AsteriskVoiceMail'), $this->attributes['objectClass']);
 			$attrKeys = array_keys($this->attributes);
 			for ($k = 0; $k < sizeof($attrKeys); $k++) {

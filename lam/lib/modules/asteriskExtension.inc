@@ -327,7 +327,9 @@ class asteriskExtension extends baseModule {
 		$return->addElement(new htmlSubTitle(_("Extension owners")), true);
 		$return->addElement($ownerContent, true);
 		// back button
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok')));
+		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok'));
+		$backButton->colspan = 3;
+		$return->addElement($backButton);
 		return $return;
 	}
 
