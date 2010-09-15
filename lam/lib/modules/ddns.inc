@@ -329,46 +329,33 @@ class ddns extends baseModule {
 	 * @return array HTML meta data
 	 */
 	public function display_html_attributes() {
+		$return = new htmlTable();
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
 			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				StatusMessage("ERROR", _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".'));
-				return array();
+				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".')));
+				return $return;
 			}
 		}
-		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->getAccountContainer()->dn_orig == $_SESSION['config']->get_suffix('dhcp')) {
 			// DHCP main settings
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Activate DynDNS') . ":* "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'active',  'checked' => $this->isDynDNSActivated()),
-				array('kind' => 'help', 'value' => 'active', 'scope' => 'user'));
-				
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Add fix IP addresses to DNS') . ":* "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'insert_fixed',  'checked' => $this->addFixIPs()),
-				array('kind' => 'help', 'value' => 'fixed_ips', 'scope' => 'user'));
-
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Disable client updates') . ":* "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'client_insert',  'checked' => $this->isIgnoreClientUpdates()),
-				array('kind' => 'help', 'value' => 'client_insert', 'scope' => 'user'));
-		
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Path to key for DNS updates') . ":* "),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'key_path', 'value' => $this->getUpdateKey()),
-				array('kind' => 'help', 'value' => 'keypath', 'scope' => 'user'));
+			$return->addElement(new htmlTableExtendedInputCheckbox('active', $this->isDynDNSActivated(), _('Activate DynDNS'), 'active'), true);
+			$return->addElement(new htmlTableExtendedInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'), true);
+			$return->addElement(new htmlTableExtendedInputCheckbox('client_insert', $this->isIgnoreClientUpdates(), _('Disable client updates'), 'client_insert'), true);
+			$keyInput = new htmlTableExtendedInputField(_('Path to key for DNS updates'), 'key_path', $this->getUpdateKey(), 'keypath');
+			$keyInput->setRequired(true);
+			$return->addElement($keyInput);
 		}
 		else {
 			// Account edit 
 			if (!$this->check_if_ddns_is_enable()) {
-				echo _("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).") . "<br/><br/>";
+				$return->addElement(new htmlOutputText(_("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).")));
 			}
-			else {		
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('IP address of the DNS server') . ":* "),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'ip', 'value' => $this->getDNSServer()),
-					array('kind' => 'help', 'value' => 'dns', 'scope' => 'user'));
-				
+			else {
+				// DNS server
+				$serverInput = new htmlTableExtendedInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
+				$serverInput->setRequired(true);
+				$return->addElement($serverInput, true);
 					
 				$zones = $this->getZoneNames();
 				$zone = '';
@@ -379,19 +366,16 @@ class ddns extends baseModule {
 				if (isset($zones[1])) {
 					$revzone = $zones[1];
 				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Zone names') . ":* "),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'zone', 'value' => $zone),
-					array('kind' => 'help', 'value' => 'zone', 'scope' => 'user'));
-					
-		        $return[] = array(
-		        	array('kind' => 'text', 'text' => _('Reverse zone names') . ":* "),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'zone_reverse', 'value' => $revzone),
-					array('kind' => 'help', 'value' => 'zone_reverse', 'scope' => 'user'));
+				// zone names
+				$zoneInput = new htmlTableExtendedInputField(_('Zone names'), 'zone', $zone, 'zone');
+				$zoneInput->setRequired(true);
+				$return->addElement($zoneInput, true);
+				// reverse zone names
+				$revZoneInput = new htmlTableExtendedInputField(_('Reverse zone names'), 'zone_reverse', $revzone, 'zone_reverse');
+				$revZoneInput->setRequired(true);
+				$return->addElement($revZoneInput);
 			}
 		}
-		
-		echo _("Attention: The DHCP service needs to be restarted after changes in DDNS.") . "<br />";
 		
 		return $return;
 	}
@@ -428,7 +412,10 @@ class ddns extends baseModule {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
-					return array_shift(explode(";",array_pop(explode(". { primary ", $this->attributes['dhcpStatements'][$i]))));
+					$parts = explode(". { primary ", $this->attributes['dhcpStatements'][$i]);
+					$temp = array_pop($parts);
+					$temp = explode(";", $temp);
+					return array_shift($temp);
 				}
 			}
 		}
@@ -445,7 +432,8 @@ class ddns extends baseModule {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
-					$return[] = substr(array_shift(explode(" ",substr($this->attributes['dhcpStatements'][$i],5))),0,-1);
+					$parts = explode(" ",substr($this->attributes['dhcpStatements'][$i],5));
+					$return[] = substr(array_shift($parts),0,-1);
 				}
 			}
 		}
