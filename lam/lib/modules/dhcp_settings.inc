@@ -161,7 +161,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				"Text" => _("The subnet mask of the network.")
 			) , 'netmask' => array(
 				"Headline" => _("Net mask"),
-				"Text" => _("The net mask is derived from the subnet mask. If you leave this field empty then LAM will calculate it for you.")
+				"Text" => _("The net mask is derived from the subnet mask. LAM will calculate it automatically.")
 			), 'description' => array(
 				"Headline" => _("Description"),
 				"Text" => _("Here you can enter a description for this DHCP entry.")
@@ -181,53 +181,20 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'description' => _('Description')
 		);
 		// profile elements
-		$return['profile_options'] = array(
-			// Subnet name
-	        array(
-	        	array('kind' => 'text', 'text' => _('Subnet') . ": "),
-				array('kind' => 'input', 'name' => 'cn', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'subnet')),
-			// Domainname
-	        array(
-	        	array('kind' => 'text', 'text' => _('Domain name') . ": "),
-				array('kind' => 'input', 'name' => 'domainname', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'domainname')),
-			// Lease Time
-	        array(
-	        	array('kind' => 'text', 'text' => _('Lease time') . ": "),
-				array('kind' => 'input', 'name' => 'lease_time', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'leasetime')),
-			// Max lease Time
-	        array(
-	        	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
-				array('kind' => 'input', 'name' => 'max_lease_time', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'max_leasetime')),
-			// DNS
-	        array(
-	        	array('kind' => 'text', 'text' => _('DNS') . ": "),
-				array('kind' => 'input', 'name' => 'dns', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'dns')),
-			// Gateway
-	        array(
-	        	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
-				array('kind' => 'input', 'name' => 'routers', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'gateway')),
-			// Netbios Name Servers
-	        array(
-	        	array('kind' => 'text', 'text' => _('Netbios name servers') . ": "),
-				array('kind' => 'input', 'name' => 'netbios', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'netbios')),
-			// Netbios Node Type
-	        array(
-	        	array('kind' => 'text', 'text' => _('Netbios node type') . ": "),
-				array('kind' => 'select', 'name' => 'netbios_node_type', 'options' => $this->all_netbios_node_types),
-				array('kind' => 'help', 'value' => 'netbios_type')),
-			// subnetmask
-	        array(
-	        	array('kind' => 'text', 'text' => _('Subnet mask') . ": "),
-				array('kind' => 'input', 'name' => 'subnet', 'type'=>'text'),
-				array('kind' => 'help', 'value' => 'subnetmask'))
-			);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Subnet'), 'cn', null, 'subnet'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Domain name'), 'domainname', null, 'domainname'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Lease time'), 'lease_time', null, 'leasetime'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Maximum lease time'), 'max_lease_time', null, 'max_leasetime'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('DNS'), 'dns', null, 'dns'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Default gateway'), 'routers', null, 'gateway'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Netbios name servers'), 'netbios', null, 'netbios'), true);
+		$nodeList = array_flip($this->all_netbios_node_types);
+		$profileNodeSelect = new htmlTableExtendedSelect('netbios_node_type', $nodeList, null, _('Netbios node type'), 'netbios_type');
+		$profileNodeSelect->setHasDescriptiveElements(true);
+		$profileContainer->addElement($profileNodeSelect, true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'), true);
+		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -533,90 +500,64 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
 			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				StatusMessage("ERROR", _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".'));
-				return array();
+				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".')));
+				return $return;
 			}
 		}
-
+		$return = new htmlTable();
 		// Subnet name
 		if ($_SESSION['config']->get_suffix('dhcp') != $this->getAccountContainer()->dn_orig) {
-			$return[] = array(
-	        	array('kind' => 'text', 'text' => _('Subnet') . ":* "),
-				array('kind' => 'input', 'name' => 'cn', 'value' => $this->attributes['cn'][0]),
-				array('kind' => 'help', 'value' => 'subnet'),
-				array('kind' => 'text', 'text' => "&nbsp;&nbsp;&nbsp;" . _('Example') . ": 192.168.10.<b>0</b>") );
+			$cn = '';
+			if (isset($this->attributes['cn'][0])) {
+				$cn = $this->attributes['cn'][0];
+			}
+			$subnetInput = new htmlTableExtendedInputField(_('Subnet'), 'cn', $cn, 'subnet');
+			$subnetInput->setRequired(true);
+			$return->addElement($subnetInput);
+			$return->addElement(new htmlOutputText(_('Example') . ": 192.168.10.0"), true);
 		}
-
-		// Domainname
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Domain name') . ": "),
-			array('kind' => 'input', 'name' => 'domainname', 'value' => $this->getDHCPOption('domain-name')),
-			array('kind' => 'help', 'value' => 'domainname'));
-			
-		// Lease Time
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Lease time') . ": "),
-			array('kind' => 'input', 'name' => 'lease_time', 'value' => $this->getDefaultLeaseTime()),
-			array('kind' => 'help', 'value' => 'leasetime'));
-			
-		// Max lease Time
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Maximum lease time') . ": "),
-			array('kind' => 'input', 'name' => 'max_lease_time', 'value' => $this->getMaxLeaseTime()),
-			array('kind' => 'help', 'value' => 'max_leasetime'));
-
+		// domain name
+		$return->addElement(new htmlTableExtendedInputField(_('Domain name'), 'domainname', $this->getDHCPOption('domain-name'), 'domainname'), true);
+		// lease Time
+		$return->addElement(new htmlTableExtendedInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime'), true);
+		// max lease time
+		$return->addElement(new htmlTableExtendedInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime'), true);
 		// DNS
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('DNS') . ": "),
-			array('kind' => 'input', 'name' => 'dns', 'value' => $this->getDHCPOption('domain-name-servers')),
-			array('kind' => 'help', 'value' => 'dns'));
-
-		// Gateway
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Default gateway') . ": "),
-			array('kind' => 'input', 'name' => 'routers', 'value' => $this->getDHCPOption('routers')),
-			array('kind' => 'help', 'value' => 'gateway'));
-			
-		// Netbios Name Servers
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Netbios name servers') . ": "),
-			array('kind' => 'input', 'name' => 'netbios', 'value' => $this->getDHCPOption('netbios-name-servers')),
-			array('kind' => 'help', 'value' => 'netbios'));
-
-		// Netbios Node Type
+		$return->addElement(new htmlTableExtendedInputField(_('DNS'), 'dns', $this->getDHCPOption('domain-name-servers'), 'dns'), true);
+		// gateway
+		$return->addElement(new htmlTableExtendedInputField(_('Default gateway'), 'routers', $this->getDHCPOption('routers'), 'gateway'), true);
+		// netbios name servers
+		$return->addElement(new htmlTableExtendedInputField(_('Netbios name servers'), 'netbios', $this->getDHCPOption('netbios-name-servers'), 'netbios'), true);
+		// netbios node type
 		$nodeType = $this->getDHCPOption('netbios-node-type');
 		if ($nodeType == '') {
 			$nodeType = 8;
 		}
 		$nodeOptions = array();
 		foreach ($this->all_netbios_node_types as $key => $value) {
-			$nodeOptions[] = array($key, $value);
+			$nodeOptions[$value] = $key;
 		}
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Netbios node type') . ": "),
-			array('kind' => 'select', 'name' => 'netbios_node_type', 'descriptiveOptions' => true, 'options' => $nodeOptions, 'options_selected' => array($nodeType)),
-			array('kind' => 'help', 'value' => 'netbios_type'));
+		$nodeSelect = new htmlTableExtendedSelect('netbios_node_type', $nodeOptions, array($nodeType), _('Netbios node type'), 'netbios_type');
+		$nodeSelect->setHasDescriptiveElements(true);
+		$return->addElement($nodeSelect, true);
 
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			// subnetmask
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Subnet mask') . ":* "),
-				array('kind' => 'input', 'name' => 'subnet', 'value' => $this->getDHCPOption('subnet-mask')),
-				array('kind' => 'help', 'value' => 'subnetmask'));
-
-			// Netmask
-	        $return[] = array(
-	        	array('kind' => 'text', 'text' => _('Net mask') . ":* "),
-				array('kind' => 'text', 'text' => $this->attributes['dhcpNetMask'][0]),
-				array('kind' => 'help', 'value' => 'netmask'));
+			$subnetMaskInput = new htmlTableExtendedInputField(_('Subnet mask'), 'subnet', $this->getDHCPOption('subnet-mask'), 'subnetmask');
+			$subnetMaskInput->setRequired(true);
+			$return->addElement($subnetMaskInput, true);
+			// netmask
+			$return->addElement(new htmlOutputText(_('Net mask')));
+			$return->addElement(new htmlOutputText($this->attributes['dhcpNetMask'][0]));
+			$return->addElement(new htmlHelpLink('netmask'), true);
 		}
-		
-		// description
-        $return[] = array(
-        	array('kind' => 'text', 'text' => _('Description') . ": "),
-			array('kind' => 'input', 'name' => 'description', 'value' => $this->attributes['dhcpComments'][0]),
-			array('kind' => 'help', 'value' => 'description'));
 
+		// description
+		$description = '';
+		if (isset($this->attributes['dhcpComments'][0])) {
+			$description = $this->attributes['dhcpComments'][0];
+		}
+		$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		return $return;
 	}
 	
