@@ -128,12 +128,9 @@ class eduPerson extends baseModule {
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			));
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
-				array('kind' => 'input', 'name' => 'eduPerson_addExt', 'type' => 'checkbox'),
-				array('kind' => 'help', 'value' => 'autoAdd')),
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('eduPerson_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -232,28 +229,20 @@ class eduPerson extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		if (in_array('eduPerson', $this->attributes['objectClass'])) {
 			// principal name
 			$principal = '';
 			if (isset($this->attributes['eduPersonPrincipalName'][0])) {
 				$principal = $this->attributes['eduPersonPrincipalName'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Principal name')),
-				array('kind' => 'input', 'type' => 'text', 'name' => 'principalName', 'value' => $principal),
-				array('kind' => 'help', 'value' => 'principalName')
-			);
+			$return->addElement(new htmlTableExtendedInputField(_('Principal name'), 'principalName', $principal, 'principalName'), true);
 			// primary affiliation
 			$primaryAffiliation = array();
 			if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
 				$primaryAffiliation = array($this->attributes['eduPersonPrimaryAffiliation'][0]);
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Primary affiliation')),
-				array('kind' => 'select', 'name' => 'primaryAffiliation', 'options' => $this->affiliationTypes, 'options_selected' => $primaryAffiliation),
-				array('kind' => 'help', 'value' => 'primaryAffiliation')
-			);
+			$return->addElement(new htmlTableExtendedSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'), true);
 			// scoped affiliation
 			$scopedAffiliation = '';
 			$scopedAffiliationPrefix = array();
@@ -262,151 +251,137 @@ class eduPerson extends baseModule {
 				$scopedAffiliationPrefix = array($parts[0]);
 				$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][0], strlen($parts[0]) + 1);
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Scoped affiliation')),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'select', 'name' => 'scopedAffiliationPrefix', 'options' => $this->affiliationTypes, 'options_selected' => $scopedAffiliationPrefix),
-					array('kind' => 'text', 'text' => '@'),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'scopedAffiliation', 'value' => $scopedAffiliation)
-				))),
-				array('kind' => 'help', 'value' => 'scopedAffiliation')
-			);
+			$return->addElement(new htmlOutputText(_('Scoped affiliation')));
+			$scopedAffiliationContainer = new htmlTable();
+			$scopedAffiliationContainer->addElement(new htmlSelect('scopedAffiliationPrefix', $this->affiliationTypes, $scopedAffiliationPrefix));
+			$scopedAffiliationContainer->addElement(new htmlOutputText('@'));
+			$scopedAffiliationContainer->addElement(new htmlInputField('scopedAffiliation', $scopedAffiliation));
+			$return->addElement($scopedAffiliationContainer);
+			$return->addElement(new htmlHelpLink('scopedAffiliation'), true);
 			// affiliations
-			$affiliations = array();
+			$affiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonAffiliation']); $i++) {
-					$affiliations[] = array(
-						array('kind' => 'select', 'name' => 'affiliation' . $i, 'options' => $this->affiliationTypes, 'options_selected' => array($this->attributes['eduPersonAffiliation'][$i])),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delAffiliation' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
-					);
+					$affiliations->addElement(new htmlSelect('affiliation' . $i, $this->affiliationTypes, array($this->attributes['eduPersonAffiliation'][$i])));
+					$affiliationButton = new htmlButton('delAffiliation' . $i, 'del.png', true);
+					$affiliations->addElement($affiliationButton, true);
 				}
 			}
 			else {
-				$affiliations = array(array(array('kind' => 'text', 'text' => '-')));
+				$affiliations->addElement(new htmlOutputText('-'), true);
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Affiliations'), 'td' => array('valign' => 'top')),
-				array('kind' => 'table', 'value' => $affiliations),
-				array('kind' => 'help', 'value' => 'affiliation', 'td' => array('valign' => 'top'))
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => ' '),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'select', 'name' => 'affiliation', 'options' => $this->affiliationTypes),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'newAffiliation', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
-				))),
-				array('kind' => 'text', 'text' => ' '));
+			$affiliationLabel = new htmlOutputText(_('Affiliations'));
+			$affiliationLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($affiliationLabel);
+			$return->addElement($affiliations);
+			$affiliationHelp = new htmlHelpLink('affiliation');
+			$affiliationHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($affiliationHelp, true);
+			$return->addElement(new htmlOutputText(''));
+			$newAffiliationContainer = new htmlTable();
+			$newAffiliationContainer->addElement(new htmlSelect('affiliation', $this->affiliationTypes));
+			$newAffiliationContainer->addElement(new htmlButton('newAffiliation', 'add.png', true));
+			$return->addElement($newAffiliationContainer);
+			$return->addElement(new htmlOutputText(''), true);
 			// nick names
-			$nicks = array();
+			$nicks = new htmlTable();
 			if (isset($this->attributes['eduPersonNickname'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonNickname']); $i++) {
-					$nicks[] = array(
-						array('kind' => 'input', 'name' => 'nickName' . $i, 'type' => 'text', 'value' => $this->attributes['eduPersonNickname'][$i]),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delNickName' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
-					);
+					$nicks->addElement(new htmlInputField('nickName' . $i, $this->attributes['eduPersonNickname'][$i]));
+					$nicks->addElement(new htmlButton('delNickName' . $i, 'del.png', true), true);
 				}
 			}
 			else {
-				$nicks = array(array(array('kind' => 'text', 'text' => '-')));
+				$nicks->addElement(new htmlOutputText('-'), true);
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Nick names'), 'td' => array('valign' => 'top')),
-				array('kind' => 'table', 'value' => $nicks),
-				array('kind' => 'help', 'value' => 'nickName', 'td' => array('valign' => 'top'))
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => ' '),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'input', 'name' => 'nickName', 'type' => 'text', 'value' => ''),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'newNickName', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
-				))),
-				array('kind' => 'text', 'text' => ' ')
-			);
+			$nickLabel = new htmlOutputText(_('Nick names'));
+			$nickLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($nickLabel);
+			$return->addElement($nicks);
+			$nickHelp = new htmlHelpLink('nickName');
+			$nickHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($nickHelp, true);
+			$return->addElement(new htmlOutputText(''));
+			$newNickContainer = new htmlTable();
+			$newNickContainer->addElement(new htmlInputField('nickName', ''));
+			$newNickContainer->addElement(new htmlButton('newNickName', 'add.png', true));
+			$return->addElement($newNickContainer);
+			$return->addElement(new htmlOutputText(''), true);
 			// entitlements
-			$entitlements = array();
+			$entitlements = new htmlTable();
 			if (isset($this->attributes['eduPersonEntitlement'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonEntitlement']); $i++) {
-					$entitlements[] = array(
-						array('kind' => 'input', 'name' => 'entitlement' . $i, 'type' => 'text', 'value' => $this->attributes['eduPersonEntitlement'][$i]),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delEntitlement' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
-					);
+					$entitlements->addElement(new htmlInputField('entitlement' . $i, $this->attributes['eduPersonEntitlement'][$i]));
+					$entitlements->addElement(new htmlButton('delEntitlement' . $i, 'del.png', true), true);
 				}
 			}
 			else {
-				$entitlements = array(array(array('kind' => 'text', 'text' => '-')));
+				$entitlements->addElement(new htmlOutputText('-'));
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Entitlements'), 'td' => array('valign' => 'top')),
-				array('kind' => 'table', 'value' => $entitlements),
-				array('kind' => 'help', 'value' => 'entitlement', 'td' => array('valign' => 'top'))
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => ' '),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'input', 'name' => 'entitlement', 'type' => 'text', 'value' => ''),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'newEntitlement', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
-				))),
-				array('kind' => 'text', 'text' => ' ')
-			);
+			$entitlementLabel = new htmlOutputText(_('Entitlements'));
+			$entitlementLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($entitlementLabel);
+			$return->addElement($entitlements);
+			$entitlementHelp = new htmlHelpLink('entitlement');
+			$entitlementHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($entitlementHelp, true);
+			$return->addElement(new htmlOutputText(''));
+			$newEntitlementContainer = new htmlTable();
+			$newEntitlementContainer->addElement(new htmlInputField('entitlement', ''));
+			$newEntitlementContainer->addElement(new htmlButton('newEntitlement', 'add.png', true));
+			$return->addElement($newEntitlementContainer);
+			$return->addElement(new htmlOutputText(''), true);
 			// org DN
 			$orgDN = '';
 			if (isset($this->attributes['eduPersonOrgDN'][0])) {
 				$orgDN = $this->attributes['eduPersonOrgDN'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Organization')),
-				array('kind' => 'input', 'type' => 'text', 'size' => '40', 'name' => 'orgDN', 'value' => $orgDN),
-				array('kind' => 'help', 'value' => 'orgDN')
-			);
+			$orgDNInput = new htmlTableExtendedInputField(_('Organization'), 'orgDN', $orgDN, 'orgDN');
+			$orgDNInput->setFieldSize(40);
+			$return->addElement($orgDNInput, true);
 			// primare OU DN
 			$primaryOrgUnitDN = '';
 			if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
 				$primaryOrgUnitDN = $this->attributes['eduPersonPrimaryOrgUnitDN'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Primary organizational unit')),
-				array('kind' => 'input', 'type' => 'text', 'size' => '40', 'name' => 'primaryOrgUnitDN', 'value' => $primaryOrgUnitDN),
-				array('kind' => 'help', 'value' => 'primaryOrgUnitDN')
-			);
+			$primaryOUInput = new htmlTableExtendedInputField(_('Primary organizational unit'), 'primaryOrgUnitDN', $primaryOrgUnitDN, 'primaryOrgUnitDN');
+			$primaryOUInput->setFieldSize(40);
+			$return->addElement($primaryOUInput, true);
 			// OUs
-			$orgUnitDN = array();
+			$orgUnitDN = new htmlTable();
 			if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonOrgUnitDN']); $i++) {
-					$orgUnitDN[] = array(
-						array('kind' => 'input', 'name' => 'orgUnitDN' . $i, 'type' => 'text', 'value' => $this->attributes['eduPersonOrgUnitDN'][$i], 'size' => '40'),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delOrgUnitDN' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
-					);
+					$orgUnitDNInput = new htmlInputField('orgUnitDN' . $i, $this->attributes['eduPersonOrgUnitDN'][$i]);
+					$orgUnitDNInput->setFieldSize(40);
+					$orgUnitDN->addElement($orgUnitDNInput);
+					$orgUnitDN->addElement(new htmlButton('delOrgUnitDN' . $i, 'del.png', true), true);
 				}
 			}
 			else {
-				$orgUnitDN = array(array(array('kind' => 'text', 'text' => '-')));
+				$orgUnitDN->addElement(new htmlOutputText('-'));
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Organizational units'), 'td' => array('valign' => 'top')),
-				array('kind' => 'table', 'value' => $orgUnitDN),
-				array('kind' => 'help', 'value' => 'orgUnitDN', 'td' => array('valign' => 'top'))
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => ' '),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'input', 'name' => 'orgUnitDN', 'type' => 'text', 'value' => '', 'size' => '40'),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'newOrgUnitDN', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
-				))),
-				array('kind' => 'text', 'text' => ' ')
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;')
-			);
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_eduPerson_attributes_remObjectClass',
-						'value' => _('Remove EDU person extension'), 'td' => array('colspan' => '3'))
-			);
+			$orgUnitDNLabel = new htmlOutputText(_('Organizational units'));
+			$orgUnitDNLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($orgUnitDNLabel);
+			$return->addElement($orgUnitDN);
+			$orgUnitDNHelp = new htmlHelpLink('orgUnitDN');
+			$orgUnitDNHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($orgUnitDNHelp, true);
+			$return->addElement(new htmlOutputText(''));
+			$newOrgUnitDN = new htmlTable();
+			$newOrgUnitDNInput = new htmlInputField('orgUnitDN', '');
+			$newOrgUnitDNInput->setFieldSize(40);
+			$newOrgUnitDN->addElement($newOrgUnitDNInput);
+			$newOrgUnitDN->addElement(new htmlButton('newOrgUnitDN', 'add.png', true));
+			$return->addElement($newOrgUnitDN);
+			$return->addElement(new htmlOutputText(''), true);
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$addButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
+			$addButton->colspan = 3;
+			$return->addElement($addButton);
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_eduPerson_attributes_addObjectClass', 'value' => _('Add EDU person extension'))
-			);
+			$return->addElement(new htmlButton('addObjectClass', _('Add EDU person extension')));
 		}
 		return $return;
 	}
@@ -418,11 +393,11 @@ class eduPerson extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		if (isset($_POST['form_subpage_eduPerson_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'eduPerson';
 			return array();
 		}
-		elseif (isset($_POST['form_subpage_eduPerson_attributes_remObjectClass'])) {
+		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('eduPerson'), $this->attributes['objectClass']);
 			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
