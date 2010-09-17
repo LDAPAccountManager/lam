@@ -535,23 +535,18 @@ class htmlButton extends htmlElement {
 			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
 			return array();
 		}
-		$value = '';
 		$style = '';
 		$class = '';
 		$title = '';
 		$name = ' name="' . $this->name . '"';
 		// image button
 		if ($this->isImageButton) {
-			$value = ' value=" "';
 			$class = ' class="smallImageButton"';
 			$style = ' style="background-image: url(../../graphics/' . $this->value . ');"';
 		}
 		// text button
 		else {
 			$class = ' class="smallPadding"';
-			if ($this->value != null) {
-				$value = ' value="' . $this->value . '"';
-			}
 		}
 		if ($this->title != null) {
 			$title = ' title="' . $this->title . '"';
@@ -560,8 +555,11 @@ class htmlButton extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="submit" id="btn_' . $this->name . '"' . $name . $value . $style . $class . $title . $disabled . '>';
-		if (!$this->isImageButton) {
+		if ($this->isImageButton) {
+			echo '<input type="submit" id="btn_' . $this->name . '" value=" "' . $name . $style . $class . $title . $disabled . '>';
+		}
+		else {
+			echo '<button id="btn_' . $this->name . '"' . $name . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
