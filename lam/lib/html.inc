@@ -548,6 +548,7 @@ class htmlButton extends htmlElement {
 		}
 		// text button
 		else {
+			$class = ' class="smallPadding"';
 			if ($this->value != null) {
 				$value = ' value="' . $this->value . '"';
 			}
@@ -559,7 +560,15 @@ class htmlButton extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="submit"' . $name . $value . $style . $class . $title . $disabled . '>';
+		echo '<input type="submit" id="btn_' . $this->name . '"' . $name . $value . $style . $class . $title . $disabled . '>';
+		if (!$this->isImageButton) {
+			// text buttons get JQuery style
+			echo '<script type="text/javascript">';
+			echo ' jQuery(document).ready(function() {';
+			echo "jQuery('#btn_" . $this->name . "').button();";
+			echo '});';
+			echo '</script>';
+		}
 		return array($this->name => 'submit');
 	}
 	
