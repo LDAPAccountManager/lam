@@ -74,12 +74,9 @@ class inetLocalMailRecipient extends baseModule {
 				"Text" => _("This is the mail server for the user.")
 			));
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Mail server') . ":"),
-				array('kind' => 'input', 'name' => 'inetLocalMailRecipient_host', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'host'))
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'host'));
+		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['inetLocalMailRecipient_host'] = array(
 			'type' => 'ext_preg',
@@ -134,41 +131,33 @@ class inetLocalMailRecipient extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		// mail routing address
 		$routingAddress = '';
 		if (isset($this->attributes['mailRoutingAddress'][0])) $routingAddress = $this->attributes['mailRoutingAddress'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Routing address')),
-			array('kind' => 'input', 'name' => 'routingAdr', 'type' => 'text', 'size' => '20', 'value' => $routingAddress),
-			array('kind' => 'help', 'value' => 'routingAdr'));
+		$return->addElement(new htmlTableExtendedInputField(_('Routing address'), 'routingAdr', $routingAddress, 'routingAdr'), true);
 		// mail server
 		$mailServer = '';
 		if (isset($this->attributes['mailHost'][0])) $mailServer = $this->attributes['mailHost'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Mail server')),
-			array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20', 'value' => $mailServer),
-			array('kind' => 'help', 'value' => 'host'));
+		$return->addElement(new htmlTableExtendedInputField(_('Mail server'), 'host', $mailServer, 'host'), true);
 		// list current local addresses
 		$localAdresses = array();
 		if (isset($this->attributes['mailLocalAddress'])) $localAdresses = $this->attributes['mailLocalAddress'];
 		for ($i = 0; $i < sizeof($localAdresses); $i++) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Local address')),
-				array('kind' => 'input', 'name' => 'localAdr' . $i, 'type' => 'text', 'size' => '20', 'value' => $localAdresses[$i]),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'delAdr' . $i, 'title' => _("Remove"), 'value' => ' ', 'image' => 'del.png'),
-				array('kind' => 'help', 'value' => 'localAdr'));
+			$return->addElement(new htmlOutputText(_('Local address')));
+			$return->addElement(new htmlInputField('localAdr' . $i, $localAdresses[$i]));
+			$return->addElement(new htmlButton('delAdr' . $i, 'del.png', true));
+			$return->addElement(new htmlHelpLink('localAdr'), true);
 		}
 		// input box for new local addresses
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('New local address')),
-			array('kind' => 'input', 'name' => 'localAdr', 'type' => 'text', 'size' => '20', 'value' => ''),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'addAdr', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
-			array('kind' => 'help', 'value' => 'localAdr'),
-			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($localAdresses), 'name' => 'adr_number'));
+		$return->addElement(new htmlOutputText(_('New local address')));
+		$return->addElement(new htmlInputField('localAdr', ''));
+		$return->addElement(new htmlButton('addAdr', 'add.png', true));
+		$return->addElement(new htmlHelpLink('localAdr'));
+		$return->addElement(new htmlHiddenInput('adr_number', sizeof($localAdresses)));
 		return $return;
 	}
 
