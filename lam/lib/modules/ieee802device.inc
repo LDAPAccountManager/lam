@@ -92,25 +92,33 @@ class ieee802Device extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
+		$macCount = 0;
 		// list current MACs
-		for ($i = 0; $i < sizeof($this->attributes['macAddress']); $i++) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('MAC address')),
-				array('kind' => 'input', 'name' => 'macAddress' . $i, 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => $this->attributes['macAddress'][$i]),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'delMAC' . $i, 'value' => ' ', 'title' => _("Remove"), 'image' => 'del.png'),
-				array('kind' => 'help', 'value' => 'mac'));
+		if (isset($this->attributes['macAddress'])) {
+			$macCount = sizeof($this->attributes['macAddress']);
+			for ($i = 0; $i < sizeof($this->attributes['macAddress']); $i++) {
+				$return->addElement(new htmlOutputText(_('MAC address')));
+				$macInput = new htmlInputField('macAddress' . $i, $this->attributes['macAddress'][$i]);
+				$macInput->setFieldSize(17);
+				$macInput->setFieldMaxLength(17);
+				$return->addElement($macInput);
+				$return->addElement(new htmlButton('delMAC' . $i, 'del.png', true));
+				$return->addElement(new htmlHelpLink('mac'), true);
+			}
 		}
 		// input box for new MAC
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('New MAC address')),
-			array('kind' => 'input', 'name' => 'macAddress', 'type' => 'text', 'size' => '17', 'maxlength' => '17', 'value' => ''),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'addMAC', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
-			array('kind' => 'help', 'value' => 'mac'),
-			array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['macAddress']), 'name' => 'mac_number'));
+		$return->addElement(new htmlOutputText(_('New MAC address')));
+		$newMacInput = new htmlInputField('macAddress', '');
+		$newMacInput->setFieldSize(17);
+		$newMacInput->setFieldMaxLength(17);
+		$return->addElement($newMacInput);
+		$return->addElement(new htmlButton('addMAC', 'add.png', true));
+		$return->addElement(new htmlHelpLink('mac'));
+		$return->addElement(new htmlHiddenInput('mac_number', $macCount));
 		return $return;
 	}
 

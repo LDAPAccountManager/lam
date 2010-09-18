@@ -201,7 +201,7 @@ class asteriskExtension extends baseModule {
 	/**
 	 * This function will create the meta HTML code to show a page with all attributes.
 	 *
-	 * @param array $_POST HTTP-POST values
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
@@ -270,7 +270,7 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Displays a list of possible owners of this extension.
 	 *
-	 * @return array list of info/error messages
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_user() {
 		$return = new htmlTable();

@@ -494,7 +494,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
 		// check if DHCP main settings and valid DHCP entry

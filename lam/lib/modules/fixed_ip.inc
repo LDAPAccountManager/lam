@@ -250,9 +250,6 @@ class fixed_ip extends baseModule {
 					if ($invalid) {
 					    $error = true;
 					}
-					else {
-					    $this->attributes['dhcpHWAddress'][0] = "ethernet ". $_POST['mac'];
-					}
 					$this->fixed_ip[$id]['mac'] = $_POST['mac_'.$id];
 
 					// Ip address
@@ -319,29 +316,28 @@ class fixed_ip extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
+		$return = new htmlTable();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
-            echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
+			$return->addElement(new htmlStatusMessage('ERROR', _("Please fill out the DHCP settings first.")), true);
+			return $return;
         }
         else {
         	// caption
-			$return[] = array(
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => _('PC name') . "*"),
-					array('kind' => 'help', 'value' => 'pc'),
-				))),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => _('MAC address') . "*"),
-					array('kind' => 'help', 'value' => 'mac'),
-				))),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => _('IP address')),
-					array('kind' => 'help', 'value' => 'ip'),
-				))),
-				array('kind' => 'text', 'text' => ''),
-			);
+        	$pcContainer = new htmlTable();
+        	$pcContainer->addElement(new htmlOutputText(_('PC name') . "*"));
+        	$pcContainer->addElement(new htmlHelpLink('pc'));
+        	$return->addElement($pcContainer);
+        	$macContainer = new htmlTable();
+        	$macContainer->addElement(new htmlOutputText(_('MAC address') . "*"));
+        	$macContainer->addElement(new htmlHelpLink('mac'));
+        	$return->addElement($macContainer);
+        	$ipContainer = new htmlTable();
+        	$ipContainer->addElement(new htmlOutputText(_('IP address')));
+        	$ipContainer->addElement(new htmlHelpLink('ip'));
+        	$return->addElement($ipContainer, true);
         	// Reset oberlaped ips
 			$this->reset_overlapd_ip();
 
@@ -365,7 +361,7 @@ class fixed_ip extends baseModule {
 				elseif (in_array($this->fixed_ip[$id]['cn'], $pcs) ) {
 				    $pcError = _("This PC name already exists.");
 				}
-				elseif (!preg_match("/^[A-Za-z0-9\._-]*$/",$_POST['pc_'.$id])) {
+				elseif (isset($_POST['pc_'.$id]) && !preg_match("/^[A-Za-z0-9\._-]*$/", $_POST['pc_'.$id])) {
 					$pcError = _("The PC name may only contain A-Z, a-z and 0-9.");
 				}
 				$pcs[] = $this->fixed_ip[$id]['cn'];
@@ -405,29 +401,19 @@ class fixed_ip extends baseModule {
 				if ($ipError != '') {
 					$error .= ' ' . $ipError;
 				}
-				if ($error != '') {
-					$error = '&nbsp;&laquo; ' . $error;
-				}
-				$return[] = array(
-					array('kind' => 'input', 'name' => 'pc_'.$id, 'value' => $this->fixed_ip[$id]['cn']),
-					array('kind' => 'input', 'name' => 'mac_'.$id, 'value' => $this->fixed_ip[$id]['mac']),
-					array('kind' => 'input', 'name' => 'ip_'.$id, 'value' => $this->fixed_ip[$id]['ip']),
-					array('kind' => 'input', 'name' => 'drop_ip_'.$id, 'type' => 'submit', 'value' => ' ', 'image' => 'del.png'),
-					array('kind' => 'text', 'text'=>$error),
-				);
+				$return->addElement(new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn']));
+				$return->addElement(new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac']));
+				$return->addElement(new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip']));
+				$return->addElement(new htmlButton('drop_ip_'.$id, 'del.png', true));
+				$return->addElement(new htmlOutputText($error), true);
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => ''),
-			);
+			$return->addElement(new htmlSpacer(null, '10px'), true);
 			// add fixed ip:
-			$return[] = array(
-				array('kind' => 'input', 'name' => 'pc_add', 'value' => ''),
-				array('kind' => 'input', 'name' => 'mac_add', 'value' => ''),
-				array('kind' => 'input', 'name' => 'ip_add', 'value' => ''),
-				array('kind' => 'input', 'name' => 'add_ip', 'type' => 'submit', 'value' => ' ', 'image' => 'add.png'),
-			);
+			$return->addElement(new htmlInputField('pc_add', ''));
+			$return->addElement(new htmlInputField('mac_add', ''));
+			$return->addElement(new htmlInputField('ip_add', ''));
+			$return->addElement(new htmlButton('add_ip', 'add.png', true));
 		}
-		
 		return $return;
 	}
 	

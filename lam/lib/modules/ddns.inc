@@ -326,7 +326,7 @@ class ddns extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
 		$return = new htmlTable();

@@ -90,12 +90,9 @@ class hostObject extends baseModule {
 		$return['PDF_fields'] = array(
 			'hosts' => _('Host list')
 		);
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
-				array('kind' => 'input', 'name' => 'hostObject_addExt', 'type' => 'checkbox'),
-				array('kind' => 'help', 'value' => 'autoAdd')),
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('hostObject_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$return['profile_options'] = $profileContainer;
 		return $return;
 	}
 
@@ -129,42 +126,39 @@ class hostObject extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		if (isset($_POST['form_subpage_hostObject_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'hostObject';
 		}
-		$return = array();
+		$return = new htmlTable();
 		if (in_array('hostObject', $this->attributes['objectClass'])) {
+			$hostCount = 0;
 			// list current hosts
-			for ($i = 0; $i < sizeof($this->attributes['host']); $i++) {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Host')),
-					array('kind' => 'input', 'name' => 'host' . $i, 'type' => 'text', 'size' => '20', 'value' => $this->attributes['host'][$i]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'delHost' . $i, 'title' => _("Remove"), 'value' => ' ', 'image' => 'del.png'),
-					array('kind' => 'help', 'value' => 'host'));
+			if (isset($this->attributes['host'])) {
+				$hostCount = sizeof($this->attributes['host']);
+				for ($i = 0; $i < sizeof($this->attributes['host']); $i++) {
+					$return->addElement(new htmlOutputText(_('Host')));
+					$return->addElement(new htmlInputField('host' . $i, $this->attributes['host'][$i]));
+					$return->addElement(new htmlButton('delHost' . $i, 'del.png', true));
+					$return->addElement(new htmlHelpLink('host'), true);
+				}
 			}
 			// input box for new host
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('New host')),
-				array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20', 'value' => ''),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'addHost', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
-				array('kind' => 'help', 'value' => 'host'),
-				array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['host']), 'name' => 'host_number'));
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;')
-			);
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_hostObject_attributes_remObjectClass',
-					'value' => _('Remove host extension'), 'td' => array('colspan' => '4'))
-			);
+			$return->addElement(new htmlOutputText(_('New host')));
+			$return->addElement(new htmlInputField('host', ''));
+			$return->addElement(new htmlButton('addHost', 'add.png', true));
+			$return->addElement(new htmlHelpLink('host'));
+			$return->addElement(new htmlHiddenInput('host_number', $hostCount), true);
+
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$remButton = new htmlButton('remObjectClass', _('Remove host extension'));
+			$remButton->colspan = 4;
+			$return->addElement($remButton);
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_hostObject_attributes_addObjectClass', 'value' => _('Add host extension'))
-			);
+			$return->addElement(new htmlButton('addObjectClass', _('Add host extension')));
 		}
 		return $return;
 	}
@@ -176,7 +170,7 @@ class hostObject extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		if (isset($_POST['form_subpage_hostObject_attributes_remObjectClass'])) {
+		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('hostObject'), $this->attributes['objectClass']);
 			if (isset($this->attributes['host'])) unset($this->attributes['host']);
 			return array();
