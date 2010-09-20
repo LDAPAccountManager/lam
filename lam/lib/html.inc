@@ -1366,6 +1366,7 @@ class htmlStatusMessage extends htmlElement {
 	private $type;
 	private $title;
 	private $text;
+	private $params;
 	
 	/**
 	 * Constructor.
@@ -1374,10 +1375,11 @@ class htmlStatusMessage extends htmlElement {
 	 * @param String $title message title
 	 * @param String $text message (optional)
 	 */
-	function __construct($type, $title, $text = null) {
+	function __construct($type, $title, $text = null, $params = null) {
 		$this->type = $type;
 		$this->title = $title;
 		$this->text = $text;
+		$this->params = $params;
 	}
 	
 	/**
@@ -1392,7 +1394,7 @@ class htmlStatusMessage extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		StatusMessage($this->type, $this->title, $this->text);
+		StatusMessage($this->type, $this->title, $this->text, $this->params);
 		return array();
 	}
 
