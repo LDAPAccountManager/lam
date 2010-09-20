@@ -81,24 +81,12 @@ class kolabUser extends baseModule {
 		$return['attributes'] = array('c', 'alias', 'kolabHomeServer', 'kolabHomeMTA', 'kolabDelegate',
 			'cyrus-userquota', 'kolabInvitationPolicy', 'kolabFreeBusyFuture', 'kolabDeleteflag');
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Mail server') . ":"),
-				array('kind' => 'input', 'name' => 'kolab_homeServer', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'homeServer')),
-			array(
-				array('kind' => 'text', 'text' => _('Country') . ":"),
-				array('kind' => 'input', 'name' => 'kolab_country', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'country')),
-			array(
-				array('kind' => 'text', 'text' => _('Free/Busy interval') . ":"),
-				array('kind' => 'input', 'name' => 'kolab_freeBusy', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'freeBusy')),
-			array(
-				array('kind' => 'text', 'text' => _('Mail quota') . ":"),
-				array('kind' => 'input', 'name' => 'kolab_quota', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'quota'))
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_homeServer', null, 'homeServer'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Country'), 'kolab_country', null, 'country'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Free/Busy interval'), 'kolab_freeBusy', null, 'freeBusy'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail quota'), 'kolab_quota', null, 'quota'), true);
+		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['kolab_homeServer'] = array(
 			'type' => 'ext_preg',
@@ -257,167 +245,153 @@ class kolabUser extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		if (isset($this->attributes['objectClass']) && in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
 			$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 			if ($this->getAccountContainer()->isNewAccount) {
 				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					if (!isset($attrsP['userPassword'][0]) || ($attrsP['userPassword'][0] == '')) {
-						StatusMessage('ERROR', _("Please enter a user password."));
+						$message = new htmlStatusMessage('ERROR', _("Please enter a user password."));
+						$message->colspan = 5;
+						$return->addElement($message, true);
 					}
 				}
 				elseif (!isset($attrsI['userPassword'][0]) || ($attrsI['userPassword'][0] == '')) {
-					StatusMessage('ERROR', _("Please enter a user password."));
+					$message = new htmlStatusMessage('ERROR', _("Please enter a user password."));
+					$message->colspan = 5;
+					$return->addElement($message, true);
 				}
 			}
 			if (!$attrsI['mail'][0]) {
-				StatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
+				$message = new htmlStatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
+				$message->colspan = 5;
+				$return->addElement($message, true);
 			}
 			// check if account is marked for deletion
 			if (isset($this->attributes['kolabDeleteflag'])) {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('This account is marked for deletion.')));
+				$return->addElement(new htmlOutputText(_('This account is marked for deletion.')));
 				return $return;
 			}
+			$basicPartContainer = new htmlTable();
 			// country
 			$country = '';
 			if (isset($this->attributes['c'][0])) {
 				$country = $this->attributes['c'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Country')),
-				array('kind' => 'input', 'name' => 'country', 'type' => 'text', 'value' => $country),
-				array('kind' => 'help', 'value' => 'country'));
+			$basicPartContainer->addElement(new htmlTableExtendedInputField(_('Country'), 'country', $country, 'country'), true);
 			// mailbox server
 			if (!isset($this->orig['kolabHomeServer'][0])) {  // value currently not set
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Mailbox home server') . "*"),
-					array('kind' => 'input', 'name' => 'homeServer', 'type' => 'text', 'value' => $this->attributes['kolabHomeServer'][0]),
-					array('kind' => 'help', 'value' => 'homeServer'));
+				$homeServer = '';
+				if (isset($this->attributes['kolabHomeServer'][0])) {
+					$homeServer = $this->attributes['kolabHomeServer'][0];
+				}
+				$serverInput = new htmlTableExtendedInputField(_('Mailbox home server'), 'homeServer', $homeServer, 'homeServer');
+				$serverInput->setRequired(true);
+				$basicPartContainer->addElement($serverInput, true);
 			}
 			else {  // input is unchangable when set
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Mailbox home server')),
-					array('kind' => 'text', 'text' => $this->orig['kolabHomeServer'][0]),
-					array('kind' => 'help', 'value' => 'homeServer'));
+				$basicPartContainer->addElement(new htmlOutputText(_('Mailbox home server')));
+				$basicPartContainer->addElement(new htmlOutputText($this->orig['kolabHomeServer'][0]));
+				$basicPartContainer->addElement(new htmlHelpLink('homeServer'), true);
 			}
 			// Cyrus mail quota
 			$userquota = '';
 			if (isset($this->attributes['cyrus-userquota'][0])) {
 				$userquota = $this->attributes['cyrus-userquota'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Mail quota')),
-				array('kind' => 'input', 'name' => 'quota', 'type' => 'text', 'value' => $userquota),
-				array('kind' => 'help', 'value' => 'quota'));
+			$basicPartContainer->addElement(new htmlTableExtendedInputField(_('Mail quota'), 'quota', $userquota, 'quota'), true);
 			// free/busy future
 			$freebusyfuture = '';
 			if (isset($this->attributes['kolabFreeBusyFuture'][0])) {
 				$freebusyfuture = $this->attributes['kolabFreeBusyFuture'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Free/Busy interval')),
-				array('kind' => 'input', 'name' => 'freeBusy', 'type' => 'text', 'value' => $freebusyfuture),
-				array('kind' => 'help', 'value' => 'freeBusy'));
+			$basicPartContainer->addElement(new htmlTableExtendedInputField(_('Free/Busy interval'), 'freeBusy', $freebusyfuture, 'freeBusy'), true);
+			$return->addElement($basicPartContainer, true);
 			// invitation policies
-			$returnPol = array();
+			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);
+			$invitationContainer = new htmlTable();
 			// default invitation policy
 			$defaultInvPol = $this->invitationPolicies['ACT_MANUAL'];
-			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
-				$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
-				if (sizeof($parts) == 1) {
-					$defaultInvPol = $this->invitationPolicies[$this->attributes['kolabInvitationPolicy'][$i]];
-					unset($this->attributes['kolabInvitationPolicy'][$i]);
-					$this->attributes['kolabInvitationPolicy'] = array_values($this->attributes['kolabInvitationPolicy']);
-					break;
+			if (isset($this->attributes['kolabInvitationPolicy'])) {
+				for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
+					$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
+					if (sizeof($parts) == 1) {
+						$defaultInvPol = $this->invitationPolicies[$this->attributes['kolabInvitationPolicy'][$i]];
+						unset($this->attributes['kolabInvitationPolicy'][$i]);
+						$this->attributes['kolabInvitationPolicy'] = array_values($this->attributes['kolabInvitationPolicy']);
+						break;
+					}
 				}
 			}
-			$returnPol[] = array(
-				array('kind' => 'text', 'text' => _('Anyone')),
-				array('kind' => 'select', 'name' => 'defaultInvPol', 'options' => array_values($this->invitationPolicies), 'options_selected' => $defaultInvPol),
-				array('kind' => 'help', 'value' => 'invPol'));
+			$invitationContainer->addElement(new htmlTableExtendedSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol), _('Anyone'), 'invPol'), true);
 			// other invitation policies
-			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
-				$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
-				if (sizeof($parts) == 2) {
-					$returnPol[] = array(
-						array('kind' => 'input', 'name' => 'invPol1' . $i, 'type' => 'text', 'value' => $parts[0]),
-						array('kind' => 'select', 'name' => 'invPol2' . $i, 'options' => array_values($this->invitationPolicies), 'options_selected' => $this->invitationPolicies[$parts[1]]),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delInvPol' . $i, 'value' => _("Remove")),
-						array('kind' => 'help', 'value' => 'invPol'));
+			if (isset($this->attributes['kolabInvitationPolicy'])) {
+				for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
+					$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
+					if (sizeof($parts) == 2) {
+						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
+						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
+						$invitationContainer->addElement(new htmlButton('delInvPol' . $i, 'del.png', true));
+						$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
+					}
 				}
 			}
 			// input box for new invitation policy
-			$returnPol[] = array(
-				array('kind' => 'input', 'name' => 'invPol1', 'type' => 'text', 'value' => ''),
-				array('kind' => 'select', 'name' => 'invPol2', 'options' => array_values($this->invitationPolicies)),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'addInvPol', 'value' => _("Add")),
-				array('kind' => 'help', 'value' => 'invPol'));
-			$returnPol = array(
-					array('kind' => 'fieldset', 'legend' => _('Invitation policy'), 'value' => $returnPol, 'td' => array('colspan' => 3))
-				);
-			$return[] = $returnPol;
+			$invitationContainer->addElement(new htmlInputField('invPol1', ''));
+			$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
+			$invitationContainer->addElement(new htmlButton('addInvPol', 'add.png', true));
+			$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
+			$return->addElement($invitationContainer, true);
 			// mail aliases
-			$returnAliases = array();
+			$return->addElement(new htmlSubTitle(_('Email aliases')), true);
+			$mailAliasContainer = new htmlTable();
 			if (isset($this->attributes['alias'])) {
 				for ($i = 0; $i < sizeof($this->attributes['alias']); $i++) {
-					$returnAliases[] = array(
-						array('kind' => 'input', 'name' => 'alias' . $i, 'type' => 'text', 'value' => $this->attributes['alias'][$i]),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delAlias' . $i, 'value' => _("Remove")),
-						array('kind' => 'help', 'value' => 'alias'));
+					$mailAliasContainer->addElement(new htmlInputField('alias' . $i, $this->attributes['alias'][$i]));
+					$mailAliasContainer->addElement(new htmlButton('delAlias' . $i, 'del.png', true));
+					$mailAliasContainer->addElement(new htmlHelpLink('alias'), true);
 				}
 			}
 			// input box for new mail alias
-			$returnAliases[] = array(
-				array('kind' => 'input', 'name' => 'alias', 'type' => 'text', 'value' => ''),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'addAlias', 'value' => _("Add")),
-				array('kind' => 'help', 'value' => 'alias'));
-			$returnAliases = array(
-					array('kind' => 'fieldset', 'legend' => _('Email aliases'), 'value' => $returnAliases, 'td' => array('colspan' => 3))
-				);
-			$return[] = $returnAliases;
+			$mailAliasContainer->addElement(new htmlInputField('alias'));
+			$mailAliasContainer->addElement(new htmlButton('addAlias', 'add.png', true));
+			$mailAliasContainer->addElement(new htmlHelpLink('alias'), true);
+			$return->addElement($mailAliasContainer, true);
 			// delegates
-			$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('mail'), array('user'));
+			$delegates = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('mail'), array('user'));
 			for ($i = 0; $i < sizeof($delegates); $i++) {
 				$delegates[$i] = $delegates[$i]['mail'][0];
 			}
 			sort($delegates);
-			$returnDelegates = array();
+			$return->addElement(new htmlSubTitle(_('Delegates')), true);
+			$delegatesContainer = new htmlTable();
 			if (isset($this->attributes['kolabDelegate'])) {
 				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
-					$returnDelegates[] = array(
-						array('kind' => 'select', 'name' => 'delegate' . $i, 'options' => $delegates, 'options_selected' => array($this->attributes['kolabDelegate'][$i])),
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'delDelegate' . $i, 'value' => _("Remove")),
-						array('kind' => 'help', 'value' => 'delegate'));
+					$delegatesContainer->addElement(new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i])));
+					$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.png', true));
+					$delegatesContainer->addElement(new htmlHelpLink('delegate'), true);
 				}
 			}
 			// input box for new delegate
-			$returnDelegates[] = array(
-				array('kind' => 'select', 'name' => 'delegate', 'options' => $delegates),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'addDelegate', 'value' => _("Add")),
-				array('kind' => 'help', 'value' => 'delegate'));
-			$returnDelegates = array(
-					array('kind' => 'fieldset', 'legend' => _('Delegates'), 'value' => $returnDelegates, 'td' => array('colspan' => 3))
-				);
-			$return[] = $returnDelegates;
+			$delegatesContainer->addElement(new htmlSelect('delegate', $delegates));
+			$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.png', true));
+			$delegatesContainer->addElement(new htmlHelpLink('delegate'), true);
+			$return->addElement($delegatesContainer, true);
 			// delete flag
 			if (!$this->getAccountContainer()->isNewAccount) {
-				$returnDelete = array(
-					array('kind' => 'input', 'type' => 'submit', 'value' => _('Mark account for deletion'), 'name' => 'form_subpage_kolabUser_deleteUser_open'),
-					array('kind' => 'help', 'value' => 'deleteFlag'));
-				$return[] = array(
-					array('kind' => 'fieldset', 'legend' => _('Delete Kolab account'), 'value' => array($returnDelete), 'td' => array('colspan' => 3))
-				);
+				$deleteContainer = new htmlTable();
+				$deleteContainer->addElement(new htmlSpacer(null, '20px'), true);
+				$deleteContainer->addElement(new htmlAccountPageButton(get_class($this), 'deleteUser', 'open', _('Mark account for deletion')));
+				$deleteContainer->addElement(new htmlHelpLink('deleteFlag'));
+				$return->addElement($deleteContainer);
 			}
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_kolabUser_attributes_addObjectClass', 'value' => _('Add Kolab extension'))
-			);			
+			$return->addElement(new htmlButton('addObjectClass', _('Add Kolab extension')));
 		}
 		return $return;
 	}
@@ -430,7 +404,7 @@ class kolabUser extends baseModule {
 	*/
 	function process_attributes() {
 		$errors = array();
-		if (isset($_POST['form_subpage_kolabUser_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'kolabInetOrgPerson';
 		}
 		else {
@@ -575,17 +549,18 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to delete accounts.
+	* This function will create the meta HTML code to show a page to mark an account for deletion.
+	* 
+	* @return htmlElement HTML meta data
 	*/
 	function display_html_deleteUser() {
-		$return = array();
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Do you really want to mark this account for deletion?'), 'td' => array('colspan' => 2)));
-		$return[] = array(
-			array('kind' => 'text', 'text' => ' ', 'td' => array('colspan' => 2)));
-		$return[] = array(
-			array('kind' => 'input', 'type' => 'submit', 'value' => _('Mark account for deletion'), 'name' => 'form_subpage_kolabUser_attributes_confirm'),
-			array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_kolabUser_attributes_cancel'));
+		$return = new htmlTable();
+		$message = new htmlOutputText(_('Do you really want to mark this account for deletion?'));
+		$message->colspan = 2;
+		$return->addElement($message, true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'confirm', _('Mark account for deletion')));
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
 		return $return;
 	}
 
@@ -593,7 +568,7 @@ class kolabUser extends baseModule {
 	* Write variables into object and do some regex checks
 	*/
 	function process_deleteUser() {
-		if ($_POST['form_subpage_kolabUser_attributes_confirm']) {
+		if (isset($_POST['form_subpage_kolabUser_attributes_confirm'])) {
 			// set delete flag
 			$this->attributes['kolabDeleteflag'][0] = $this->attributes['kolabHomeServer'][0];
 		}

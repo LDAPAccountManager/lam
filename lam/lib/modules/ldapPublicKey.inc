@@ -86,29 +86,33 @@ class ldapPublicKey extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		$keyCount = 0;
 		// list current keys
 		if (isset($this->attributes['sshPublicKey'])) {
 			$keyCount = sizeof($this->attributes['sshPublicKey']);
 			for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('SSH public key')),
-					array('kind' => 'input', 'name' => 'sshPublicKey' . $i, 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => $this->attributes['sshPublicKey'][$i]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'delKey' . $i, 'title' => _("Remove"), 'value' => ' ', 'image' => 'del.png'),
-					array('kind' => 'help', 'value' => 'key'));
+				$return->addElement(new htmlOutputText(_('SSH public key')));
+				$sshInput = new htmlInputField('sshPublicKey' . $i, $this->attributes['sshPublicKey'][$i]);
+				$sshInput->setFieldSize(50);
+				$sshInput->setFieldMaxLength(4096);
+				$return->addElement($sshInput);
+				$return->addElement(new htmlButton('delKey' . $i, 'del.png', true));
+				$return->addElement(new htmlHelpLink('key'), true);
 			}
 		}
 		// input box for new key
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('New SSH public key')),
-			array('kind' => 'input', 'name' => 'sshPublicKey', 'type' => 'text', 'size' => '50', 'maxlength' => '2048', 'value' => ''),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'addKey', 'title' => _("Add"), 'value' => ' ', 'image' => 'add.png'),
-			array('kind' => 'help', 'value' => 'key'),
-			array('kind' => 'input', 'type' => 'hidden', 'value' => $keyCount, 'name' => 'key_number'));
+		$return->addElement(new htmlOutputText(_('New SSH public key')));
+		$sshNewKey = new htmlInputField('sshPublicKey');
+		$sshNewKey->setFieldSize(50);
+		$sshNewKey->setFieldMaxLength(4096);
+		$return->addElement($sshNewKey);
+		$return->addElement(new htmlButton('addKey', 'add.png', true));
+		$return->addElement(new htmlHelpLink('key'));
+		$return->addElement(new htmlHiddenInput('key_number', $keyCount));
 		return $return;
 	}
 
