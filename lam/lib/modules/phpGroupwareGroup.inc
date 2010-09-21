@@ -92,19 +92,15 @@ class phpGroupwareGroup extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		if (isset($this->attributes['objectClass']) && in_array('phpgwGroup', $this->attributes['objectClass'])) {
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareGroup_attributes_remObjectClass', 'value' => _('Remove phpGroupWare extension'))
-			);
+			$return->addElement(new htmlButton('remObjectClass', _('Remove phpGroupWare extension')));
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareGroup_attributes_addObjectClass', 'value' => _('Add phpGroupWare extension'))
-			);			
+			$return->addElement(new htmlButton('addObjectClass', _('Add phpGroupWare extension')));
 		}
 		return $return;
 	}
@@ -116,10 +112,10 @@ class phpGroupwareGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		if (isset($_POST['form_subpage_phpGroupwareGroup_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'phpgwGroup';
 		}
-		elseif (isset($_POST['form_subpage_phpGroupwareGroup_attributes_remObjectClass'])) {
+		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('phpgwGroup'), $this->attributes['objectClass']);
 			if (isset($this->attributes['phpgwGroupID'])) unset($this->attributes['phpgwGroupID']);
 		}

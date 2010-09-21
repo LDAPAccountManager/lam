@@ -88,12 +88,9 @@ class phpGroupwareUser extends baseModule implements passwordService {
 			)
 		);
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
-				array('kind' => 'input', 'name' => 'phpGroupwareUser_addExt', 'type' => 'checkbox'),
-				array('kind' => 'help', 'value' => 'autoAdd')),
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('phpGroupwareUser_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$return['profile_options'] = $profileContainer;
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'phpgwAccountStatus' => _('Account status'),
@@ -141,60 +138,57 @@ class phpGroupwareUser extends baseModule implements passwordService {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		if (isset($this->attributes['objectClass']) && in_array('phpgwAccount', $this->attributes['objectClass'])) {
-			$phpgwAccountExpires = '';
+			// expiration date
+			$phpgwAccountExpires = '-';
 			if (isset($this->attributes['phpgwAccountExpires'][0]) && ($this->attributes['phpgwAccountExpires'][0] != "-1")) {
 				$date = getdate($this->attributes['phpgwAccountExpires'][0]);
 				$phpgwAccountExpires = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Account expiration date')),
-				array('kind' => 'table', 'value' => array(array(
-					array('kind' => 'text', 'text' => $phpgwAccountExpires),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareUser_time_phpgwAccountExpires', 'value' => _('Change'))
-				)))
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Account status')),
-				array('kind' => 'select', 'submit', 'name' => 'phpgwAccountStatus',
-					'options' => array(array('A', _('active')), array('I', _('inactive'))),
-					'options_selected' => array($this->attributes['phpgwAccountStatus'][0]), 'descriptiveOptions' => true)
-			);
-			$phpgwLastLogin = '';
+			$return->addElement(new htmlOutputText(_('Account expiration date')));
+			$return->addElement(new htmlOutputText($phpgwAccountExpires));
+			$return->addElement(new htmlAccountPageButton(get_class($this), 'time', 'phpgwAccountExpires', _('Change')));
+			$return->addElement(new htmlHelpLink('phpgwAccountExpires'), true);
+			// account status
+			$accountStatus = 'A';
+			if (isset($this->attributes['phpgwAccountStatus'][0])) {
+				$accountStatus = $this->attributes['phpgwAccountStatus'][0];
+			}
+			$return->addElement(new htmlOutputText(_('Account status')));
+			$statusOptions = array(_('active') => 'A', _('inactive') => 'I');
+			$statusSelect = new htmlSelect('phpgwAccountStatus', $statusOptions, array($accountStatus));
+			$statusSelect->setHasDescriptiveElements(true);
+			$return->addElement($statusSelect);
+			$return->addElement(new htmlOutputText(''));
+			$return->addElement(new htmlHelpLink('phpgwAccountStatus'), true);
+			// last login
+			$phpgwLastLogin = '-';
 			if (isset($this->attributes['phpgwLastLogin'][0])) {
 				$date = getdate($this->attributes['phpgwLastLogin'][0]);
 				$phpgwLastLogin = $date['mday'] . '.' . $date['mon'] . '.' . $date['year'];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Last login')),
-				array('kind' => 'text', 'text' => $phpgwLastLogin)
-			);
-			$phpgwLastLoginFrom = '';
+			$return->addElement(new htmlOutputText(_('Last login')));
+			$return->addElement(new htmlOutputText($phpgwLastLogin), true);
+			// last login from
+			$phpgwLastLoginFrom = '-';
 			if (isset($this->attributes['phpgwLastLoginFrom'][0])) {
 				$phpgwLastLoginFrom = $this->attributes['phpgwLastLoginFrom'][0];
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Last login from')),
-				array('kind' => 'text', 'text' => $phpgwLastLoginFrom)
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => '')
-			);
-			$return[] = array(
-				array('kind' => 'text', 'text' => '')
-			);
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareUser_attributes_remObjectClass', 'value' => _('Remove phpGroupWare extension'))
-			);
+			$return->addElement(new htmlOutputText(_('Last login from')));
+			$return->addElement(new htmlOutputText($phpgwLastLoginFrom), true);
+			
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			
+			$remButton = new htmlButton('remObjectClass', _('Remove phpGroupWare extension'));
+			$remButton->colspan = 4;
+			$return->addElement($remButton);
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_phpGroupwareUser_attributes_addObjectClass', 'value' => _('Add phpGroupWare extension'))
-			);			
+			$return->addElement(new htmlButton('addObjectClass', _('Add phpGroupWare extension')));
 		}
 		return $return;
 	}
@@ -209,12 +203,12 @@ class phpGroupwareUser extends baseModule implements passwordService {
 		if (isset($this->attributes['objectClass']) && in_array('phpgwAccount', $this->attributes['objectClass'])) {
 			$this->attributes['phpgwAccountStatus'][0] = $_POST['phpgwAccountStatus'];
 		}
-		if (isset($_POST['form_subpage_phpGroupwareUser_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'phpgwAccount';
 			$this->attributes['phpgwAccountExpires'][0] = "-1";
 			$this->attributes['phpgwLastPasswordChange'][0] = time();
 		}
-		elseif (isset($_POST['form_subpage_phpGroupwareUser_attributes_remObjectClass'])) {
+		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('phpgwAccount'), $this->attributes['objectClass']);
 			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
@@ -229,10 +223,10 @@ class phpGroupwareUser extends baseModule implements passwordService {
 	/**
 	* This function will create the meta HTML code to show a page to change time values.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_time() {
-		$return = array();
+		$return = new htmlTable();
 		// determine attribute
 		if (isset($_POST['form_subpage_phpGroupwareUser_time_phpgwAccountExpires'])) {
 			$attr = 'phpgwAccountExpires';
@@ -247,23 +241,27 @@ class phpGroupwareUser extends baseModule implements passwordService {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array(
-			array('kind' => 'text', 'text' => $text),
-			array('kind' => 'table', 'value' => array(array(
-				array('kind' => 'select', 'name' => 'expire_day', 'options' => $mday, 'options_selected' => $date['mday']),
-				array('kind' => 'select', 'name' => 'expire_mon', 'options' => $mon, 'options_selected' => $date['mon']),
-				array('kind' => 'select', 'name' => 'expire_yea', 'options' => $year, 'options_selected' => $date['year'])))),
-			array('kind' => 'help', 'value' => $help));
+		$return->addElement(new htmlOutputText($text));
+		$dateContainer = new htmlTable();
+		$dateContainer->addElement(new htmlSelect('expire_day', $mday, array($date['mday'])));
+		$dateContainer->addElement(new htmlSelect('expire_mon', $mon,  array($date['mon'])));
+		$dateContainer->addElement(new htmlSelect('expire_yea', $year,  array($date['year'])));
+		$return->addElement($dateContainer);
+		$return->addElement(new htmlHelpLink($help), true);
+		
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		
+		// buttons
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
 		$buttons = array();
-		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_phpGroupwareUser_attributes_change' . $attr, 'type' => 'submit', 'value' => _('Change'));
 		if (isset($this->attributes[$attr][0])) {
-			$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_phpGroupwareUser_attributes_del' . $attr, 'type' => 'submit', 'value' => _('Remove'));
+			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
 		}
-		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_phpGroupwareUser_attributes_back' . $attr, 'type' => 'submit', 'value' => _('Cancel'));
-		$return[] = array(
-			array('kind' => 'table', 'td' => array('colspan' => 3), 'value' => array($buttons))
-		);
-		return $return;	
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
+		$buttonContainer->colspan = 3;
+		$return->addElement($buttonContainer);
+		return $return;
 	}
 
 	/**
