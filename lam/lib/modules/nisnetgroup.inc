@@ -167,48 +167,46 @@ class nisnetgroup extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		// user name
 		$groupName = '';
 		if (isset($this->attributes['cn'][0])) $groupName = $this->attributes['cn'][0];
-		$return[] = array (
-			array('kind' => 'text', 'text' => _("Group name").'*'),
-			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $groupName),
-			array('kind' => 'help', 'value' => 'cn'));
+		$nameInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $groupName, 'cn');
+		$nameInput->setRequired(true);
+		$nameInput->setFieldMaxLength(20);
+		$return->addElement($nameInput, true);
 		$description = '';
 		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Description')),
-			array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $description),
-			array ('kind' => 'help', 'value' => 'description'));
-		$subgroups = array();
+		$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
+		$subgroupsContainer = new htmlTable();
 		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {
 			$membergroups = $this->attributes['memberNisNetgroup'];
 			while (sizeof($membergroups) > 0) {
 				$parts = array_splice($membergroups, 0, 8);
-				$subgroups[] = array(array('kind' => 'text', 'text' => implode(', ', $parts)));
+				$subgroupsContainer->addElement(new htmlOutputText(implode(', ', $parts)), true);
 			}
 		}
-		$subgroups[] = array(array('kind' => 'input', 'name' => 'form_subpage_nisnetgroup_group_open', 'type' => 'submit', 'value' => _('Edit subgroups'))); 	
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Subgroups'), 'td' => array('valign' => 'top')),
-			array('kind' => 'table', 'value' => $subgroups),
-			array('kind' => 'help', 'value' => 'memberNisNetgroup'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => '&nbsp;'),
-			array('kind' => 'text', 'text' => '&nbsp;'),
-			array('kind' => 'text', 'text' => '&nbsp;'),
-		);
+		$subgroupsContainer->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit subgroups')));
+		$subgroupsLabel = new htmlOutputText(_('Subgroups'));
+		$subgroupsLabel->alignment = htmlElement::ALIGN_TOP;
+		$return->addElement($subgroupsLabel);
+		$return->addElement($subgroupsContainer);
+		$return->addElement(new htmlHelpLink('memberNisNetgroup'), true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
 		// members
-		$memberTable = array(array(
-			array('kind' => 'text', 'text' => _('Host'), 'td' => array('colspan' => 2)),
-			array('kind' => 'text', 'text' => _('User'), 'td' => array('colspan' => 2)),
-			array('kind' => 'text', 'text' => _('Domain'),
-			),
-		));
+		$memberTable = new htmlTable();
+		$hostLabel = new htmlOutputText(_('Host'));
+		$hostLabel->colspan = 2;
+		$memberTable->addElement($hostLabel);
+		$userLabel = new htmlOutputText(_('User'));
+		$userLabel->colspan = 2;
+		$memberTable->addElement($userLabel);
+		$memberTable->addElement(new htmlOutputText(_('Domain')));
+		$memberTable->addElement(new htmlSpacer('5px', null));
+		$memberTable->addElement(new htmlHelpLink('members'), true);
 		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
@@ -219,41 +217,60 @@ class nisnetgroup extends baseModule {
 				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'user') && ($_POST['position'] == $i)) {
 					$triple[1] = $_POST['selectBox'];
 				}
-				$memberTable[] = array(
-					array('kind' => 'input', 'type' => 'text', 'name' => 'host_' . $i, 'value' => $triple[0]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_host' . $i, 'image' => 'host.png', 'value' => ' ', 'title' => _('Select host')),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'user_' . $i, 'value' => $triple[1]),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_user' . $i, 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'domain_' . $i, 'value' => $triple[2]),
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'type' => 'submit', 'name' => 'del_' . $i, 'image' => 'del.png', 'value' => ' ', 'title' => _('Delete'))
-				);
+				$hostField = new htmlInputField('host_' . $i, $triple[0]);
+				$hostField->setFieldSize(20);
+				$memberTable->addElement($hostField);
+				$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'host' . $i, 'host.png', true);
+				$hostButton->setTitle(_('Select host'));
+				$memberTable->addElement($hostButton);
+				$userField = new htmlInputField('user_' . $i, $triple[1]);
+				$userField->setFieldSize(20);
+				$memberTable->addElement($userField);
+				$userButton = new htmlAccountPageButton(get_class($this), 'select', 'user' . $i, 'user.png', true);
+				$userButton->setTitle(_('Select user'));
+				$memberTable->addElement($userButton);
+				$domainField = new htmlInputField('domain_' . $i, $triple[2]);
+				$domainField->setFieldSize(20);
+				$memberTable->addElement($domainField);
+				$memberTable->addElement(new htmlSpacer('5px', null));
+				$delButton = new htmlButton('del_' . $i, 'del.png', true);
+				$delButton->setTitle(_('Delete'));
+				$memberTable->addElement($delButton);
+				$memberTable->addNewLine();
 			}
 		}
-		$memberTable[] = array(
-			array('kind' => 'text', 'text' => '&nbsp;'),
-			array('kind' => 'text', 'text' => '&nbsp;'),
-			array('kind' => 'text', 'text' => '&nbsp;'),
-		);
+		$memberTable->addElement(new htmlSpacer(null, '10px'), true);
 		$hostNew = '';
 		$userNew = '';
 		$domainNew = '';
 		if (isset($_POST['host_new'])) $hostNew = $_POST['host_new'];
 		if (isset($_POST['user_new'])) $userNew = $_POST['user_new'];
 		if (isset($_POST['domain_new'])) $domainNew = $_POST['domain_new'];
-		$memberTable[] = array(
-			array('kind' => 'input', 'type' => 'text', 'name' => 'host_new', 'value' => $hostNew),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_hostNew', 'image' => 'host.png', 'value' => ' ', 'title' => _('Select host')),
-			array('kind' => 'input', 'type' => 'text', 'name' => 'user_new', 'value' => $userNew),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_nisnetgroup_select_userNew', 'image' => 'user.png', 'value' => ' ', 'title' => _('Select user')),
-			array('kind' => 'input', 'type' => 'text', 'name' => 'domain_new', 'value' => $domainNew),
-			array('kind' => 'text', 'text' => '&nbsp;'),
-			array('kind' => 'input', 'type' => 'submit', 'name' => 'add_new', 'image' => 'add.png', 'value' => ' ', 'title' => _('Add'))
-		);
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Members'), 'td' => array('valign' => 'top')),
-			array('kind' => 'table', 'value' => $memberTable),
-			array('kind' => 'help', 'value' => 'members', 'td' => array('valign' => 'top')));
+		$hostField = new htmlInputField('host_new', $hostNew);
+		$hostField->setFieldSize(20);
+		$memberTable->addElement($hostField);
+		$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'hostNew', 'host.png', true);
+		$hostButton->setTitle(_('Select host'));
+		$memberTable->addElement($hostButton);
+		$userField = new htmlInputField('user_new', $userNew);
+		$userField->setFieldSize(20);
+		$memberTable->addElement($userField);
+		$userButton = new htmlAccountPageButton(get_class($this), 'select', 'userNew', 'user.png', true);
+		$userButton->setTitle(_('Select user'));
+		$memberTable->addElement($userButton);
+		$domainField = new htmlInputField('domain_new', $domainNew);
+		$domainField->setFieldSize(20);
+		$memberTable->addElement($domainField);
+		$memberTable->addElement(new htmlSpacer('5px', null));
+		$addButton = new htmlButton('add_new', 'add.png', true);
+		$addButton->setTitle(_('Add'));
+		$memberTable->addElement($addButton);
+		$memberTable->colspan = 2;
+		
+		$membersLabel = new htmlOutputText(_('Members'));
+		$membersLabel->alignment = htmlElement::ALIGN_TOP;
+		$return->addElement($membersLabel);
+		$return->addElement($memberTable);
 		return $return;
 	}
 
@@ -332,7 +349,7 @@ class nisnetgroup extends baseModule {
 	/**
 	* Displays the group selection.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_group() {
 		// load list with all groups
@@ -351,29 +368,27 @@ class nisnetgroup extends baseModule {
 			$subgroups = $this->attributes['memberNisNetgroup'];
 			$allGroups = array_delete($subgroups, $allGroups);
 		}
-		
-		$return[] = array(
-			array('kind' => 'fieldset', 'legend' => _("Subgroups"), 'value' => array(
-				array(
-					array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Selected groups"), 'value' => array(
-						array (
-							array('kind' => 'select', 'name' => 'removegroups', 'size' => '15', 'multiple' => true, 'options' => $subgroups)))),
-						array('kind' => 'table', 'value' => array(
-							array(
-								array('kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button', 'value' => '<=', 'td' => array('align' => 'center'))),
-							array(
-								array('kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-							array(
-								array('kind' => 'help', 'value' => 'memberNisNetgroup', 'td' => array('align' => 'center'))))),
-						array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available groups"), 'value' => array(
-							array(
-								array('kind' => 'select', 'name' => 'addgroups', 'size' => '15', 'multiple' => true, 'options' => $allGroups))))
-		))));
-
-		$return[] = array(
-			array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_nisnetgroup_attributes_back'),
-			array('kind' => 'text'),
-			array('kind' => 'text'));
+		$return = new htmlTable();
+		$return->addElement(new htmlSubTitle(_("Subgroups")), true);
+		$return->addElement(new htmlOutputText(_("Selected groups")));
+		$return->addElement(new htmlOutputText(''));
+		$return->addElement(new htmlOutputText(_("Available groups")));
+		$return->addNewLine();
+		$selGroupSelect = new htmlSelect('removegroups', $subgroups, array(), 15);
+		$selGroupSelect->setMultiSelect(true);
+		$return->addElement($selGroupSelect);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
+		$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+		$buttonContainer->addElement(new htmlHelpLink('memberNisNetgroup'));
+		$return->addElement($buttonContainer);
+		$availGroupSelect = new htmlSelect('addgroups', $allGroups, array(), 15);
+		$availGroupSelect->setMultiSelect(true);
+		$return->addElement($availGroupSelect);
+		$return->addNewLine();
+		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backButton->colspan = 3;
+		$return->addElement($backButton);
 		return $return;
 	}
 
@@ -400,10 +415,10 @@ class nisnetgroup extends baseModule {
 	/**
 	* Displays the host/user selection.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_select() {
-		$return = array();
+		$return = new htmlTable();
 		$selectHost = true;
 		$postKeys = array_keys($_POST);
 		$position = 'New';
@@ -448,34 +463,27 @@ class nisnetgroup extends baseModule {
 				}
 			}
 		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Filter')),
-			array('kind' => 'input', 'type' => 'text', 'name' => 'filter', 'value' => $filter),
-			array('kind' => 'input', 'type' => 'submit', 'name' => $filterButtonName, 'value' => _('Ok')),
-			array('kind' => 'help', 'value' => 'filter')
-		);
+		$return->addElement(new htmlOutputText(_('Filter')));
+		$return->addElement(new htmlInputField('filter', $filter));
+		$return->addElement(new htmlButton($filterButtonName, _('Ok')));
+		$return->addElement(new htmlHelpLink('filter'), true);
 		$title = _('Host name');
 		if (!$selectHost) $title = _('User name');
-		$return[] = array(
-			array('kind' => 'text', 'text' => $title),
-			array('kind' => 'select', 'name' => 'selectBox', 'options' => $options)
-		);
-		$return[] = array(
-			array('kind' => 'text', 'text' => '&nbsp;')
-		);
+		$return->addElement(new htmlOutputText($title));
+		$return->addElement(new htmlSelect('selectBox', $options), true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$type = 'host';
 		if (!$selectHost) $type = 'user';
-		$return[] = array(
-			array('kind' => 'table', 'td' => array('colspan' => 2), 'value' => array(array(
-				array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_nisnetgroup_attributes_select'),
-				array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_nisnetgroup_attributes_back'),
-			))),
-			array('kind' => 'input', 'type' => 'hidden', 'name' => 'host_new', 'value' => $_POST['host_new']),
-			array('kind' => 'input', 'type' => 'hidden', 'name' => 'user_new', 'value' => $_POST['user_new']),
-			array('kind' => 'input', 'type' => 'hidden', 'name' => 'domain_new', 'value' => $_POST['domain_new']),
-			array('kind' => 'input', 'type' => 'hidden', 'name' => 'type', 'value' => $type),
-			array('kind' => 'input', 'type' => 'hidden', 'name' => 'position', 'value' => $position),
-			);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'select', _('Ok')));
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel')));
+		$buttonContainer->colspan = 4;
+		$return->addElement($buttonContainer, true);
+		$return->addElement(new htmlHiddenInput('host_new', $_POST['host_new']));
+		$return->addElement(new htmlHiddenInput('user_new', $_POST['user_new']));
+		$return->addElement(new htmlHiddenInput('domain_new', $_POST['domain_new']));
+		$return->addElement(new htmlHiddenInput('type', $type));
+		$return->addElement(new htmlHiddenInput('position', $position));
 		return $return;
 	}
 	
