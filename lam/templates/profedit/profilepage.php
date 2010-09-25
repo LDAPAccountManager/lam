@@ -161,6 +161,47 @@ elseif (isset($_GET['edit'])) {
 // display formular
 echo ("<form action=\"profilepage.php?type=$type\" method=\"post\">\n");
 
+$tabindex = 1;
+
+// profile name and submit/abort buttons
+echo "<table width=\"100%\"><tr><td align=\"left\">";
+echo _("Profile name");
+$profName = '';
+if (isset($_GET['edit'])) {
+	$profName = $_GET['edit'];
+}
+echo ("&nbsp;<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $profName . "\">\n");
+$tabindex++;
+printHelpLink(getHelp('', '360'), '360');
+echo "</td><td align=\"right\">";
+echo "<button tabindex=\"$tabindex\" id=\"saveButton\" name=\"save\" type=\"submit\">" . _('Save') . "</button>";
+$tabindex++;
+echo "&nbsp;";
+echo "<button tabindex=\"$tabindex\" id=\"cancelButton\" name=\"abort\" type=\"submit\">" . _('Cancel') . "</button>";
+$tabindex++;
+echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
+echo "</td></tr></table>";
+echo "<br><br>\n";
+
+?>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery('#saveButton').button({
+        icons: {
+      	  primary: 'saveButton'
+    	}
+	});
+	jQuery('#cancelButton').button({
+        icons: {
+    	  primary: 'cancelButton'
+  	}
+	});
+});
+</script>
+
+<?php
+
 // suffix box
 // get root suffix
 $rootsuffix = $_SESSION['config']->get_Suffix($type);
@@ -177,9 +218,10 @@ echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo
 	echo "<table border=0>";
 	echo "<tr><td>";
 	// LDAP suffix
-	echo _("LDAP suffix") . ":";
+	echo _("LDAP suffix");
 	echo "</td><td>";
-	echo "<select class=\"rightToLeftText\" name=\"ldap_suffix\" tabindex=\"1\">";
+	echo "<select class=\"rightToLeftText\" name=\"ldap_suffix\" tabindex=\"$tabindex\">";
+	$tabindex++;
 	for ($i = 0; $i < sizeof($suffixes); $i++) {
 		if (isset($old_options['ldap_suffix']) && ($old_options['ldap_suffix'][0] == $suffixes[$i])) {
 			echo "<option selected value=\"" .$suffixes[$i] . "\">" . getAbstractDN($suffixes[$i]) . "</option>\n";
@@ -197,9 +239,10 @@ echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo
 	echo "</td></tr>";
 	// LDAP RDN
 	echo "<tr><td>";
-	echo _("RDN identifier") . ":";
+	echo _("RDN identifier");
 	echo "</td><td>";
-	echo "<select name=\"ldap_rdn\" tabindex=\"1\">";
+	echo "<select name=\"ldap_rdn\" tabindex=\"$tabindex\">";
+	$tabindex++;
 	for ($i = 0; $i < sizeof($rdns); $i++) {
 		if (isset($old_options['ldap_rdn']) && ($old_options['ldap_rdn'][0] == $rdns[$i])) {
 			echo "<option selected>" . $rdns[$i] . "</option>\n";
@@ -220,9 +263,6 @@ echo "</fieldset>\n<br>\n";
 $_SESSION['profile_types']['ldap_suffix'] = 'select';
 $_SESSION['profile_types']['ldap_rdn'] = 'select';
 
-// index for tab order (1 is LDAP suffix)
-$tabindex = 2;
-
 // display module options
 $modules = array_keys($options);
 for ($m = 0; $m < sizeof($modules); $m++) {
@@ -241,25 +281,6 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	echo "</fieldset>\n";
 	echo "<br>";
 }
-
-// profile name and submit/abort buttons
-echo ("<b>" . _("Profile name") . ":</b> \n");
-$tabindex++;
-$profName = '';
-if (isset($_GET['edit'])) {
-	$profName = $_GET['edit'];
-}
-echo ("<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $profName . "\">\n");
-printHelpLink(getHelp('', '360'), '360');
-echo "<br><br>\n";
-$tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"save\" value=\"" . _("Save") . "\">\n");
-$tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"reset\" name=\"reset\" value=\"" . _("Reset") . "\">\n");
-$tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n");
-echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
-echo "<br><br><br><br>\n";
 
 echo ("</form>\n");
 include '../main_footer.php';
