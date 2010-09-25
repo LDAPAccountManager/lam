@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -652,6 +652,9 @@ abstract class baseModule {
 				if (is_array($this->meta['config_options'][$scopes[$i]])) {
 					$return = array_merge($return, $this->meta['config_options'][$scopes[$i]]);
 				}
+				elseif (isset($return[0]) && ($return[0] instanceof htmlTable) && ($this->meta['config_options'][$scopes[$i]] instanceof htmlTable)) {
+					$return[0]->mergeTableElements($this->meta['config_options'][$scopes[$i]]);
+				}
 				else {
 					$return[] = $this->meta['config_options'][$scopes[$i]];
 				}
@@ -660,6 +663,9 @@ abstract class baseModule {
 		if (isset($this->meta['config_options']['all'])) {
 			if (is_array($this->meta['config_options']['all'])) {
 				$return = array_merge($return, $this->meta['config_options']['all']);
+			}
+			elseif (isset($return[0]) && ($return[0] instanceof htmlTable) && ($this->meta['config_options']['all'] instanceof htmlTable)) {
+				$return[0]->mergeTableElements($this->meta['config_options']['all']);
 			}
 			else {
 				$return[] = $this->meta['config_options']['all'];

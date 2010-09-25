@@ -197,7 +197,7 @@ class htmlTable extends htmlElement {
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
 		echo htmlTable::header;
 		// print all contained elements
@@ -219,6 +219,18 @@ class htmlTable extends htmlElement {
 		}
 		echo htmlTable::footer;
 		return $return;
+	}
+	
+	/**
+	 * Merges the content of another htmlTable object into this table.
+	 * 
+	 * @param $table table to get elements
+	 */
+	public function mergeTableElements($table) {
+		if (is_null($table) || !($table instanceof htmlTable)) {
+			return;
+		}
+		$this->elements = array_merge($this->elements, $table->elements);
 	}
 
 }
