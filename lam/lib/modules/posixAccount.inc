@@ -140,13 +140,10 @@ class posixAccount extends baseModule implements passwordService {
 			// self service field settings
 			$return['selfServiceFieldSettings'] = array('password' => _('Password'));
 			// self service configuration settings
-			$return['selfServiceSettings'] = array(
-			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-				array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
-					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-				array('kind' => 'help', 'value' => 'pwdHash'))
-			);
+			$selfServiceContainer = new htmlTable();
+			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
+				array('SSHA'), _("Password hash type"), 'pwdHash'));
+			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
@@ -157,41 +154,30 @@ class posixAccount extends baseModule implements passwordService {
 			'posixAccount_loginShell' => 'loginShell'
 		);
 		// configuration options
-		$return['config_options']['user'] = array(
-			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "* "),
-				array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'text' => _('Maximum UID number') . "* "),
-				array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'minMaxUser'))
-		);
-		$return['config_options']['host'] = array(
-		array(
-			array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . "* "),
-			array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'text' => _('Maximum UID number') . "* "),
-			array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-			array('kind' => 'help', 'value' => 'minMaxHost'))
-		);
-		$return['config_options']['all'] = array(
-			array(
-				array('kind' => 'text', 'text' => _("Password hash type") . ' &nbsp;'),
-				array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
-					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'help', 'value' => 'pwdHash')),
-			array(
-				array('kind' => 'text', 'text' => _('Set primary group as memberUid')),
-				array('kind' => 'input', 'name' => 'posixAccount_primaryGroupAsSecondary', 'type' => 'checkbox'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'help', 'value' => 'primaryGroupAsSecondary'))
-		);
+		$configUserContainer = new htmlTable();
+		$configUserContainer->addElement(new htmlSubTitle(_("Users")), true);
+		$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minUID', null, 'minMaxUser');
+		$minUid->setRequired(true);
+		$configUserContainer->addElement($minUid, true);
+		$maxUid = new htmlTableExtendedInputField(_('Maximum UID number'), 'posixAccount_maxUID', null, 'minMaxUser');
+		$maxUid->setRequired(true);
+		$configUserContainer->addElement($maxUid);
+		$return['config_options']['user'] = $configUserContainer;
+		$configHostContainer = new htmlTable();
+		$configHostContainer->addElement(new htmlSubTitle(_("Hosts")), true);
+		$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minMachine', null, 'minMaxHost');
+		$minUid->setRequired(true);
+		$configHostContainer->addElement($minUid, true);
+		$maxUid = new htmlTableExtendedInputField(_('Maximum UID number'), 'posixAccount_maxMachine', null, 'minMaxHost');
+		$maxUid->setRequired(true);
+		$configHostContainer->addElement($maxUid);
+		$return['config_options']['host'] = $configHostContainer;
+		$configOptionsContainer = new htmlTable();
+		$configOptionsContainer->addElement(new htmlSubTitle(_('Options')), true);
+		$configOptionsContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
+			array('SSHA'), _("Password hash type"), 'pwdHash'), true);
+		$configOptionsContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'));
+		$return['config_options']['all'] = $configOptionsContainer;
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
 		// user specific upload options
@@ -711,13 +697,13 @@ class posixAccount extends baseModule implements passwordService {
 		else $this->createhomedir = false;
 		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
 		// Load attributes
-		if (isset($_POST['form_subpage_posixAccount_attributes_lockPassword'])) {
+		if (isset($_POST['lockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
 		}
-		if (isset($_POST['form_subpage_posixAccount_attributes_unlockPassword'])) {
+		if (isset($_POST['unlockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
 		}
-		if (isset($_POST['form_subpage_posixAccount_attributes_removePassword'])) {
+		if (isset($_POST['removePassword'])) {
 			unset($this->attributes['userPassword']);
 		}
 		$this->attributes['uid'][0] = $_POST['uid'];
@@ -913,10 +899,15 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		$groups = $this->findGroups(); // list of all group names
+		$return = new htmlTable();
+		$groupList = $this->findGroups(); // list of all group names
+		$groups = array();
+		for ($i = 0; $i < sizeof($groupList); $i++) {
+			$groups[$groupList[$i][1]] = $groupList[$i][0];
+		}
 		if (count($groups)==0) {
-			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
-			return array();
+			$return->addElement(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')));
+			return $return;
 		}
 		$shelllist = getshells(); // list of all valid shells
 
@@ -925,7 +916,7 @@ class posixAccount extends baseModule implements passwordService {
 			// fill default value for user ID with first/last name
 			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 			if (isset($attrs['sn'][0])) {
-				if (isset($attrs['givenName'])) {
+				if (isset($attrs['givenName'][0]) && ($attrs['givenName'][0] != '')) {
 					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
 				}
 				else {
@@ -933,7 +924,7 @@ class posixAccount extends baseModule implements passwordService {
 				}
 			}
 		}
-		if ($this->attributes['cn'][0] == '') {
+		if (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == '')) {
 			// set a default value for common name
 			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
@@ -957,42 +948,41 @@ class posixAccount extends baseModule implements passwordService {
 		
 		$userName = '';
 		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
-		$return[] = array (
-			array('kind' => 'text', 'text' => _("User name").'*'),
-			array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $userName),
-			array('kind' => 'help', 'value' => 'uid'));
+		$uidInput = new htmlTableExtendedInputField(_("User name"), 'uid', $userName, 'uid');
+		$uidInput->setRequired(true);
+		$uidInput->setFieldMaxLength(20);
+		$return->addElement($uidInput, true);
 		$commonName = '';
 		if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
-		$return[] = array (
-			array('kind' => 'text', 'text' => _("Common name").'*'),
-			array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'value' => $commonName),
-			array('kind' => 'help', 'value' => 'cn'));
+		$cnInput = new htmlTableExtendedInputField(_("Common name"), 'cn', $commonName, 'cn');
+		$cnInput->setRequired(true);
+		$return->addElement($cnInput, true);
 		$uidNumber = '';
 		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('UID number').'*'),
-			array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $uidNumber),
-			array('kind' => 'help', 'value' => 'uidNumber'));
+		$uidNumberInput = new htmlTableExtendedInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
+		$uidNumberInput->setRequired(true);
+		$uidNumberInput->setFieldMaxLength(20);
+		$return->addElement($uidNumberInput, true);
 		$gecos = '';
 		if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Gecos')),
-			array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $gecos),
-			array('kind' => 'help', 'value' => 'gecos'));
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Primary group').'*' ),
-			array('kind' => 'select', 'name' => 'gidNumber', 'descriptiveOptions' => true, 'options' => $groups, 'options_selected' => array($this->attributes['gidNumber'][0])),
-			array('kind' => 'help', 'value' => 'gidNumber'));
+		$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
+		$primaryGroup = array();
+		if (isset($this->attributes['gidNumber'][0])) {
+			$primaryGroup[] = $this->attributes['gidNumber'][0];
+		}
+		$gidNumberSelect = new htmlTableExtendedSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
+		$gidNumberSelect->setHasDescriptiveElements(true);
+		$return->addElement($gidNumberSelect, true);
 
 		if ($this->get_scope()=='user') {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Additional groups')),
-				array('kind' => 'input', 'name' => 'form_subpage_posixAccount_group_open', 'type' => 'submit', 'value' => _('Edit groups')),
-				array('kind' => 'help', 'value' => 'addgroup'));
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Home directory').'*'),
-				array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
-				array('kind' => 'help', 'value' => 'homeDirectory'));
+			// additional groups
+			$return->addElement(new htmlOutputText(_('Additional groups')));
+			$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
+			$return->addElement(new htmlHelpLink('addgroup'), true);
+			// home directory
+			$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $this->attributes['homeDirectory'][0], 'homeDirectory');
+			$homedirInput->setRequired(true);
+			$return->addElement($homedirInput, true);
 			if ($this->getAccountContainer()->isNewAccount && ($_SESSION['config']->get_scriptPath() != null) 
 				&& ($_SESSION['config']->get_scriptPath() != '')) {
 				// get list of lamdaemon servers
@@ -1002,35 +992,28 @@ class posixAccount extends baseModule implements passwordService {
 					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
 					else $lamdaemonServers[$i] = $temp[0];
 				}
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Create home directory')),
-					array('kind' => 'table', 'value' => array(array(
-						array('kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
-						array('kind' => 'select', 'name' => 'createhomediron', 'options' => $lamdaemonServers, 'options_selected' => $this->lamdaemonServer),
-					))),
-					array('kind' => 'help', 'value' => 'createhomedir'));
+				$return->addElement(new htmlOutputText(_('Create home directory')));
+				$homeServerContainer = new htmlTable();
+				$homeServerContainer->addElement(new htmlInputCheckbox('createhomedir', $this->createhomedir));
+				$homeServerContainer->addElement(new htmlSelect('createhomediron', $lamdaemonServers, $this->lamdaemonServer));
+				$return->addElement($homeServerContainer);
+				$return->addElement(new htmlHelpLink('createhomedir'), true);
 			}
-			if (count($shelllist)!=0) {
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Login shell').'*'),
-					array('kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' => array ($this->attributes['loginShell'][0])),
-					array('kind' => 'help', 'value' => 'loginShell'));
+			$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, array($this->attributes['loginShell'][0]), _('Login shell'), 'loginShell'), true);
+		}
+		// password buttons
+		if (isset($this->attributes['userPassword'][0])) {
+			$return->addElement(new htmlOutputText(_('Password')));
+			$pwdContainer = new htmlTable();
+			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 			}
+			else {
+				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
+			}
+			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
+			$return->addElement($pwdContainer);
 		}
-		if (isset($this->attributes['userPassword'][0]) && pwd_is_enabled($this->attributes['userPassword'][0])) {
-			$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
-		}
-		else {
-			$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
-		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Password') ),
-			array('kind' => 'table', 'value' => array(
-				array($lockOption),
-				array(
-					array('kind' => 'input', 'name' => 'form_subpage_posixAccount_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
-				)
-			)));
 	return $return;
 	}
 
@@ -1040,11 +1023,10 @@ class posixAccount extends baseModule implements passwordService {
 	* @return meta HTML code
 	*/
 	function display_html_delete() {
+		$return = null;
 		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
-			$return[] = array (
-				array('kind' => 'text', 'text' => _('Delete home directory')),
-				array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
-				array('kind' => 'help', 'value' => 'deletehomedir'));
+			$return = new htmlTable();
+			$return->addElement(new htmlTableExtendedInputCheckbox('deletehomedir', false, _('Delete home directory'), 'deletehomedir'));
 		}
 		return $return;
 	}
@@ -1055,6 +1037,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	function display_html_group() {
+		$return = new htmlTable();
 		// load list with all groups
 		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
@@ -1069,28 +1052,29 @@ class posixAccount extends baseModule implements passwordService {
 		unset ($groups[$group]);
 		$groups = array_flip($groups);
 
-		$return[] = array(
-			array('kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' => array(
-				array(
-					array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Selected groups"), 'value' => array(
-						array (
-							array('kind' => 'select', 'name' => 'removegroups', 'size' => '15', 'multiple' => true, 'options' => $this->groups)))),
-						array('kind' => 'table', 'value' => array(
-							array(
-								array('kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button', 'value' => '<=', 'td' => array('align' => 'center'))),
-							array(
-								array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-							array(
-								array ( 'kind' => 'help', 'value' => 'addgroup', 'td' => array('align' => 'center'))))),
-						array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available groups"), 'value' => array(
-							array(
-								array('kind' => 'select', 'name' => 'addgroups', 'size' => '15', 'multiple' => true, 'options' => $groups))))
-		))));
-
-		$return[] = array(
-			array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
-			array('kind' => 'text'),
-			array('kind' => 'text'));
+		$return->addElement(new htmlSubTitle(_("Additional groups")), true);
+		$return->addElement(new htmlOutputText(_("Selected groups")));
+		$return->addElement(new htmlOutputText(''));
+		$return->addElement(new htmlOutputText(_("Available groups")));
+		$return->addNewLine();
+		
+		$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
+		$remSelect->setMultiSelect(true);
+		$return->addElement($remSelect);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
+		$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+		$buttonContainer->addElement(new htmlHelpLink('addgroup'));
+		$return->addElement($buttonContainer);
+		$addSelect = new htmlSelect('addgroups', $groups, null, 15);
+		$addSelect->setMultiSelect(true);
+		$return->addElement($addSelect);
+		$return->addNewLine();
+		
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		
+		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$return->addElement($backButton);
 		return $return;
 	}
 
@@ -1100,7 +1084,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @return profile elements
 	*/
 	function get_profileOptions() {
-		$return = array();
+		$return = new htmlTable();
 		$groupList = $this->findGroups();
 		$groups = array();
 		for ($i = 0; $i < sizeof($groupList); $i++) {
@@ -1109,50 +1093,30 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->get_scope() == 'user') {
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Primary group') . ": "),
-				array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
-				array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'user'));
+			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, null, _('Primary group'), 'gidNumber'), true);
 			// additional group memberships
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Additional groups') . ": "),
-				array('kind' => 'select', 'name' => 'posixAccount_additionalGroup', 'options' => $groups,
-					'options_selected' => array(), 'size' => 10, 'multiple' => true),
-				array('kind' => 'help', 'value' => 'addgroup', 'scope' => 'user'));
+			$addGroupSelect = new htmlTableExtendedSelect('posixAccount_additionalGroup', $groups, null, _('Additional groups'), 'addgroup', 10);
+			$addGroupSelect->setMultiSelect(true);
+			$return->addElement($addGroupSelect, true);
 			// home directory
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Home directory') . ": "),
-				array('kind' => 'input', 'name' => 'posixAccount_homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => '/home/$user'),
-				array('kind' => 'help', 'value' => 'homeDirectory', 'scope' => 'user'));
+			$return->addElement(new htmlTableExtendedInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), true);
 			// login shell
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Login shell') . ": "),
-				array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
-				array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
+			$return->addElement(new htmlTableExtendedSelect('posixAccount_loginShell', $shelllist, array("/bin/bash"), _('Login shell'), 'loginShell'), true);
 			// lamdaemon settings
 			if (($_SESSION['config']->get_scriptPath() != null)) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Create home directory') . ": "),
-				array('kind' => 'input', 'type' => 'checkbox', 'name' => 'posixAccount_createHomedir'),
-				array('kind' => 'help', 'value' => 'createhomedir', 'scope' => 'user'));				
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$temp = explode(":", $lamdaemonServers[$i]);
-				if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-				else $lamdaemonServers[$i] = $temp[0];
-			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Home directory server') . ": "),
-				array('kind' => 'select', 'name' => 'posixAccount_homedirServer', 'options' => $lamdaemonServers),
-				array('kind' => 'help', 'value' => 'createhomedir', 'scope' => 'user'));
+				$return->addElement(new htmlTableExtendedInputCheckbox('posixAccount_createHomedir', false, _('Create home directory'), 'createhomedir'), true);
+				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+					$temp = explode(":", $lamdaemonServers[$i]);
+					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+					else $lamdaemonServers[$i] = $temp[0];
+				}
+				$return->addElement(new htmlTableExtendedSelect('posixAccount_homedirServer', $lamdaemonServers, null, _('Home directory server'), 'createhomedir'), true);
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
 			// primary Unix group
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Primary group') . ": "),
-				array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
-				array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'host'));
+			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'));
 		}
 		return $return;
 	}
