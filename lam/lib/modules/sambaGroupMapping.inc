@@ -205,13 +205,13 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		if (isset($_POST['form_subpage_sambaGroupMapping_attributes_addObjectClass'])) {
+		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'sambaGroupMapping';
 		}
-		$return = array();
+		$return = new htmlTable();
 		if (in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
 			$sambaDomains = search_domains();
 			if (sizeof($sambaDomains) == 0) {
@@ -230,13 +230,14 @@ class sambaGroupMapping extends baseModule {
 					$sel_domain = $sambaDomains[$i]->name;
 				}
 			}
+			// display name
 			$displayName = '';
 			if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
-			$return[] = array (
-				array('kind' => 'text', 'text' => _('Display name') ),
-				array('kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $displayName),
-				array('kind' => 'help', 'value' => 'displayName' ));
-	
+			$displayNameInput = new htmlTableExtendedInputField(_('Display name'), 'displayName', $displayName, 'displayName');
+			$displayNameInput->setFieldMaxLength(50);
+			$return->addElement($displayNameInput, true);
+			// Windows group
+			$selected = array();
 			$names = array_keys($this->rids);
 			$wrid=false;
 			for ($i=0; $i<count($names); $i++) {
@@ -244,7 +245,7 @@ class sambaGroupMapping extends baseModule {
 					$selected[] = $names[$i];
 					$wrid=true;
 				}
-				else $options[] = $names[$i];
+				$options[] = $names[$i];
 			}
 			if ($wrid) {
 				$options[] = $this->getCn();
@@ -252,33 +253,22 @@ class sambaGroupMapping extends baseModule {
 			else {
 				$selected[] = $this->getCn();
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Windows group') ),
-				array('kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
-				array('kind' => 'help', 'value' => 'sambaSID' ));
-	
+			$return->addElement(new htmlTableExtendedSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'), true);
+			// group type	
 			$names = array_keys($this->sambaGroupTypes);
 			$selected = array( _('Domain group') );
 			for ($i=0; $i<count($names); $i++) {
 				if (!isset($this->attributes['sambaGroupType'][0])) break;
 				if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Group type') ),
-				array('kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
-				array('kind' => 'help', 'value' => 'type' ));
+			$return->addElement(new htmlTableExtendedSelect('sambaGroupType', $names, $selected, _('Group type'), 'type'), true);
+			// domain
 			$selectedDomain = array();
 			if (isset($sel_domain)) $selectedDomain = array($sel_domain);
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Domain') ),
-				array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
-				array('kind' => 'help', 'value' => 'sambaDomainName' ));
+			$return->addElement(new htmlTableExtendedSelect('sambaDomainName', $sambaDomainNames, $selectedDomain, _('Domain'), 'sambaDomainName'), true);
 		}
 		else {
-			$return[] = array(
-				array('kind' => 'text', 'text' => '&nbsp;'),
-				array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaGroupMapping_attributes_addObjectClass', 'value' => _('Add Samba 3 extension'))
-			);
+			$return->addElement(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
 		}
 		return $return;
 	}
@@ -394,10 +384,10 @@ class sambaGroupMapping extends baseModule {
 	/**
 	* Returns a list of elements for the account profiles.
 	*
-	* @return profile elements
+	* @return htmlElement profile elements
 	*/
 	function get_profileOptions() {
-		$return = array();
+		$return = new htmlTable();
 		// get list of domains
 		$sambaDomains = search_domains();
 		$sambaDomainNames = array();
@@ -406,10 +396,7 @@ class sambaGroupMapping extends baseModule {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 		}
 		// domain
-		$return[] = array (
-			array('kind' => 'text', 'text' => _('Domain')),
-			array('kind' => 'select', 'name' => 'sambaGroupMapping_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ()),
-			array('kind' => 'help', 'value' => 'sambaDomainName' ));
+		$return->addElement(new htmlTableExtendedSelect('sambaGroupMapping_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'sambaDomainName'));
 		return $return;
 	}
 
