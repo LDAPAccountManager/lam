@@ -230,6 +230,24 @@ class htmlTable extends htmlElement {
 		if (is_null($table) || !($table instanceof htmlTable)) {
 			return;
 		}
+		// remove obsolete new lines at the end
+		if ($table->elements[sizeof($table->elements) - 1] == htmlTable::newLine) {
+			unset($table->elements[sizeof($table->elements) - 1]);
+		}
+		// close last row of other table if needed
+		if ($table->rowOpen) {
+			$table->elements[] = "</tr>\n";
+		}
+		// close last own row if needed
+		if ($this->rowOpen) {
+			if ($this->elements[sizeof($this->elements) - 1] == htmlTable::newLine) {
+				unset($this->elements[sizeof($this->elements) - 1]);
+			}
+			else {
+				$this->elements[] = "</tr>\n";
+			}
+			$this->rowOpen = false;
+		}
 		$this->elements = array_merge($this->elements, $table->elements);
 	}
 
