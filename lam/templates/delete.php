@@ -116,12 +116,12 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	include 'main_footer.php';
 }
 
-if ($_POST['cancel']) {
+if (isset($_POST['cancel'])) {
 	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
 	metaRefresh("lists/list.php?type=" . $_POST['type']);
 }
 
-if ($_POST['delete']) {
+if (isset($_POST['delete'])) {
 	// Show HTML Page
 	include 'main_header.php';
 	echo "<br>\n";
