@@ -843,6 +843,7 @@ class lamList {
 	 */
 	protected function listGetAllConfigOptions() {
 		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), array(10, 20, 30, 50, 75, 100), self::LIST_SIZE_OPTION_NAME);
+		$listSizeOption->setHelpID('208');
 		return array($listSizeOption);
 	}
 
@@ -852,25 +853,30 @@ class lamList {
 	protected function listPrintConfigurationPage() {
 		$this->listPrintHeader();
 		
-		echo '<h1 align="center">' . _('Change list settings') . "</h1>\n";
-		
+		echo "<div>\n";
+		echo "<div>\n";
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
-		echo "<div class=\"ui-tabs-nav\">";
-		echo '<fieldset class="' . $this->type . 'edit"><br>';
-		echo "<table class=\"" . $this->type . "edit\" width=\"100%\">\n";
-		echo "<tr class=\"" . $this->type . "list\"><td>\n";
-
-		$tabindex = 0;
-		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-			parseHtml('', $this->configOptions[$i]->getMetaHTML(), array(), true, $tabindex, $this->type);
-		}
-
-		echo "<br>";
-		echo "<input type=\"submit\" name=\"saveConfigOptions\" value=\"" . _('Ok') . "\">\n";
-		echo "<input type=\"submit\" name=\"cancelConfigOptions\" value=\"" . _('Cancel') . "\">\n";
-		echo "</td></tr></table>\n";
-		echo "</fieldset>\n";
+		echo "<table class=\"" . $this->type . "list-bright\" width=\"100%\">\n";
+		echo "<tr class=\"" . $this->type . "list-bright\"><td>\n";
 		
+		$tabindex = 0;
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlSubTitle(_('Change list settings')), true);
+		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
+		}
+		
+		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
+		
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlButton('saveConfigOptions', _('Ok')));
+		$buttonContainer->addElement(new htmlButton('cancelConfigOptions', _('Cancel')));
+		$buttonContainer->colspan = 2;
+		$configContainer->addElement($buttonContainer);
+		
+		parseHtml('', $configContainer, array(), false, $tabindex, $this->type);
+
+		echo "</td></tr></table>\n";
 		$this->listPrintFooter();		
 	}
 	
@@ -1021,7 +1027,7 @@ abstract class lamListOption {
 	/**
 	 * Returns the meta HTML data to display this option.
 	 * 
-	 * @return array meta HTML
+	 * @return htmlTable meta HTML
 	 */
 	public abstract function getMetaHTML();
 	
@@ -1075,14 +1081,11 @@ class lamBooleanListOption extends lamListOption {
 	/**
 	 * Returns the meta HTML data to display this option.
 	 * 
-	 * @return array meta HTML
+	 * @return htmlTable meta HTML
 	 */
 	public function getMetaHTML() {
-		$return = array();
-		$return[] = array(
-			array('kind' => 'input', 'name' => $this->getID(), 'type' => 'checkbox', 'checked' => $this->isSelected()),
-			array('kind' => 'text', 'text' => $this->name)
-		);
+		$return = new htmlTable();
+		$return->addElement(new htmlTableExtendedInputCheckbox($this->getID(), $this->isSelected(), $this->name));
 		return $return;
 	}
 
@@ -1140,15 +1143,11 @@ class lamSelectListOption extends lamListOption {
 	/**
 	 * Returns the meta HTML data to display this option.
 	 * 
-	 * @return array meta HTML
+	 * @return htmlTable meta HTML
 	 */
 	public function getMetaHTML() {
-		$return = array();
-		$return[] = array(
-			array('kind' => 'text', 'text' => $this->name),
-			array('kind' => 'select', 'name' => $this->getID(), 'options' => $this->options, 'options_selected' => array($this->getValue())),
-			array('kind' => 'help', 'value' => '208')
-		);
+		$return = new htmlTable();
+		$return->addElement(new htmlTableExtendedSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID));
 		return $return;
 	}
 
