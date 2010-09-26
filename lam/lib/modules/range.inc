@@ -386,11 +386,12 @@ class range extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
+		$return = new htmlTable();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
-            echo "<b>" . _("Please fill out the DHCP settings first.") . "</b>";
+			$return->addElement(new htmlStatusMessage('INFO', _("Please fill out the DHCP settings first.")));
         }
         else {
         
@@ -404,51 +405,46 @@ class range extends baseModule {
 
 				// Range start
 				if ($this->processed && !check_ip($this->ranges[$id]['range_start'])) {
-				    $error = "&laquo;&laquo; " . _("The IP address is invalid.");
+				    $error = _("The IP address is invalid.");
 				} elseif($this->processed && !$this->check_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end'])) {
-                    $error = "&laquo;&laquo; " . _("The range end needs to be greater than the range start.");
+                    $error = _("The range end needs to be greater than the range start.");
 				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
-					$error = "&laquo;&laquo; " . _("The IP does not match the subnet.");
+					$error = _("The IP does not match the subnet.");
 				} elseif ($this->processed && !$this->overlaped_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
-					$error = "&laquo;&laquo; " . _("The range conflicts with another range.");
+					$error = _("The range conflicts with another range.");
 				} else {
 				    $error = "";
 				}
-		        $return[] = array(
-		        	array('kind' => 'text', 'text' => _('Range from') . ":* "),
-					array('kind' => 'input', 'name' => 'range_start_'.$id.'', 'value' => $this->ranges[$id]['range_start']),
-					array('kind' => 'help', 'value' => 'range_from', 'scope' => 'user'),
-					array('kind' => 'text', 'text'=>$error));
-
+				$fromInput = new htmlTableExtendedInputField(_('Range from'), 'range_start_'.$id, $this->ranges[$id]['range_start'], 'range_from');
+				$fromInput->setRequired(true);
+				$return->addElement($fromInput);
+				$return->addElement(new htmlOutputText($error), true);
 				// Range end
 				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
-				    $error = "&laquo;&laquo; " . _("The IP address is invalid.");
+				    $error = _("The IP address is invalid.");
 				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
-					$error = "&laquo;&laquo; " . _("The IP does not match the subnet.");
+					$error = _("The IP does not match the subnet.");
 				} else {
 				    $error = "";
 				}
-		        $return[] = array(
-		        	array('kind' => 'text', 'text' => _('Range to') . ":* "),
-					array('kind' => 'input', 'name' => 'range_end_'.$id.'', 'value' => $this->ranges[$id]['range_end']),
-					array('kind' => 'help', 'value' => 'range_to', 'scope' => 'user'),
-					array('kind' => 'text', 'text'=>$error));
-
+				$toInput = new htmlTableExtendedInputField(_('Range to'), 'range_end_'.$id, $this->ranges[$id]['range_end'], 'range_to');
+				$toInput->setRequired(true);
+				$return->addElement($toInput);
+				$return->addElement(new htmlOutputText($error), true);
 				// Drop range:
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Delete range') . ':'),
-					array('kind' => 'input', 'name' => 'drop_range_'.$id, 'type' => 'submit', 'value' => _('Delete range')),
-					array('kind' => 'help', 'value' => 'drop_range'));
+				$dropButton = new htmlButton('drop_range_'.$id, _('Delete range'));
+				$dropButton->colspan = 2;
+				$return->addElement($dropButton);
+				$return->addElement(new htmlHelpLink('drop_range'), true);
 
-				// Space Line
-		        $return[] = array(0 => array('kind' => 'text', 'text' => '<br />'));
+				$return->addElement(new htmlSpacer(null, '10px'), true);
 			}
 			
-			// Range hinzufügen:
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('New range') . ':'),
-				array('kind' => 'input', 'name' => 'add_range', 'type' => 'submit', 'value' => _('New range')),
-				array('kind' => 'help', 'value' => 'add_range'));
+			// add new range
+			$addButton = new htmlButton('add_range', _('New range'));
+			$addButton->colspan = 2;
+			$return->addElement($addButton);
+			$return->addElement(new htmlHelpLink('add_range'));
 		}
 		
 		return $return;
