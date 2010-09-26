@@ -163,48 +163,55 @@ class posixGroup extends baseModule implements passwordService {
 	 * @see baseModule::get_metaData()
 	 */
 	function display_html_attributes() {
+		$return = new htmlTable();
+		// group name
 		if ($this->manageCnAttribute) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _("Group name").'*'),
-				array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'maxlength' => '30', 'value' => $this->attributes['cn'][0]),
-				array('kind' => 'help', 'value' => 'cn'));
+			$cn = '';
+			if (isset($this->attributes['cn'][0])) {
+				$cn = $this->attributes['cn'][0];
+			}
+			$cnInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $cn, 'cn');
+			$cnInput->setRequired(true);
+			$cnInput->setFieldMaxLength(30);
+			$return->addElement($cnInput, true);
 		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('GID number').'*'),
-			array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['gidNumber'][0]),
-			array('kind' => 'help', 'value' => 'gidNumber'));
+		// GID number
+		$gidNumber = '';
+		if (isset($this->attributes['gidNumber'][0])) {
+			$gidNumber = $this->attributes['gidNumber'][0];
+		}
+		$gidNumberInput = new htmlTableExtendedInputField(_('GID number'), 'gidNumber', $gidNumber, 'gidNumber');
+		$gidNumberInput->setFieldMaxLength(20);
+		$return->addElement($gidNumberInput, true);
+		// description
+		$description = '';
+		if (isset($this->attributes['description'][0])) {
+			$description = $this->attributes['description'][0];
+		}
 		if ($this->manageDescriptionAttribute) {
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Description')),
-				array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
-				array ('kind' => 'help', 'value' => 'description'));
+			$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		}
-		$return[] = array(
-			array('kind' => 'text', 'text' => _("Group members")),
-			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_user_open', 'type' => 'submit', 'value' => _('Edit members')),
-			array ('kind' => 'help', 'value' => 'members'));
+		// group members
+		$return->addElement(new htmlOutputText(_("Group members")));
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+		$return->addElement(new htmlHelpLink('members'), true);
+		// password buttons
 		if (isset($this->attributes['userPassword'][0])) {
+			$return->addElement(new htmlOutputText(_('Password')));
+			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
-				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
+				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 			}
 			else {
-				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
+				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 			}
-			$return[] = array(array('kind' => 'text', 'text' => ""));
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password') ),
-				array('kind' => 'table', 'value' => array(
-					array($lockOption),
-					array(
-						array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
-					)
-				)));
+			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
+			$pwdContainer->colspan = 2;
+			$return->addElement($pwdContainer, true);
 		}
-		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='')
-		$return[] = array(
-			array('kind' => 'text', 'text' => _('Change GID number of users and hosts')),
-			array('kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids, 'value' => true),
-			array('kind' => 'help', 'value' => 'changegids'));
+		if (isset($this->orig['gidNumber'][0]) && $this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0]) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'));
+		}
 		return $return;
 	}
 
@@ -215,7 +222,8 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array meta HTML output
 	*/
 	function display_html_user() {
-	// load list with all users
+		$return = new htmlTable();
+		// load list with all users
 		$dn_users = $_SESSION['cache']->get_cache(array('uid', 'gidNumber'), 'posixAccount', 'user');
 		$users = array();
 		if (is_array($dn_users)) {
@@ -237,29 +245,35 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 	}
-	$return[] = array(
-		array('kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>	array (
-			array(
-				array('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' => array (
-					array(
-						array ( 'kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $this->attributes['memberUid'])))),
-				array('kind' => 'table', 'value' => array(
-					array(
-						array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
-						array(
-							array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
-						array(
-							array('kind' => 'help', 'value' => 'members', 'td' => array('align' => 'center'))))),
-				array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
-					array(
-						array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users))))
-		))));
+	$return->addElement(new htmlSubTitle(_("Group members")), true);
+	
+	$return->addElement(new htmlOutputText(_("Selected users")));
+	$return->addElement(new htmlOutputText(''));
+	$return->addElement(new htmlOutputText(_("Available users")));
+	$return->addNewLine();
+	
+	$remGroups = array();
+	if (isset($this->attributes['memberUid'])) {
+		$remGroups = $this->attributes['memberUid'];
+	}
+	$remSelect = new htmlSelect('removeusers', $remGroups, null, 15);
+	$remSelect->setMultiSelect(true);
+	$return->addElement($remSelect);
+	$buttonContainer = new htmlTable();
+	$buttonContainer->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
+	$buttonContainer->addElement(new htmlButton('removeusers_button', 'forward.gif', true), true);
+	$buttonContainer->addElement(new htmlHelpLink('members'));
+	$return->addElement($buttonContainer);
+	$addSelect = new htmlSelect('addusers', $users, null, 15);
+	$addSelect->setMultiSelect(true);
+	$return->addElement($addSelect);
+	$return->addNewLine();
 
-		$return[] = array(
-			array('kind' => 'input', 'name' => 'form_subpage_' . get_class($this) . '_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
-			array('kind' => 'text'),
-			array('kind' => 'text'));
-		return $return;
+	// back button
+	$return->addElement(new htmlSpacer(null, '10px'), true);
+	$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+	
+	return $return;
 	}
 
 	/**
@@ -292,15 +306,15 @@ class posixGroup extends baseModule implements passwordService {
 		// managed attributes
 		$return['attributes'] = array('cn', 'gidNumber', 'userPassword', 'memberUid', 'description');
 		// configuration options
-		$return['config_options']['group'] = array(
-			array(
-				array('kind' => 'text', 'text' => '<b>' . _("Groups") . ': &nbsp;</b>' . _('Minimum GID number') . "* "),
-				array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				array('kind' => 'text', 'value' => '&nbsp;'),
-				array('kind' => 'text', 'text' => _('Maximum GID number') . "* "),
-				array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				array('kind' => 'help', 'value' => 'minMaxGID'))
-		);
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
+		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
+		$minGidInput->setRequired(true);
+		$configContainer->addElement($minGidInput, true);
+		$maxGidInput = new htmlTableExtendedInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
+		$maxGidInput->setRequired(true);
+		$configContainer->addElement($maxGidInput, true);
+		$return['config_options']['group'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['group']['posixGroup_minGID'] = array (
 			'type' => 'ext_preg',
@@ -422,17 +436,10 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function get_configOptions($scopes, $allScopes) {
 		$return = parent::get_configOptions($scopes, $allScopes);
-		$pwdHash = array(
-			array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-			array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
-				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'text', 'value' => '&nbsp;'),
-			array('kind' => 'help', 'value' => 'pwdHash')
-			);
 		// display password hash option only if posixAccount module is not used
-		if (!isset($allScopes['posixAccount'])) $return[] = $pwdHash;
+		if (!isset($allScopes['posixAccount'])) {
+			$return[0]->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), array('SSHA'), _("Password hash type"), 'pwdHash'));
+		}
 		return $return;
 	}
 
@@ -532,13 +539,13 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->manageDescriptionAttribute) {
 			$this->attributes['description'][0] = $_POST['description'];
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_lockPassword'])) {
+		if (isset($_POST['lockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_unlockPassword'])) {
+		if (isset($_POST['unlockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removePassword'])) {
+		if (isset($_POST['removePassword'])) {
 			unset($this->attributes['userPassword']);
 		}
 		if (isset($_POST['changegids'])) $this->changegids=true;

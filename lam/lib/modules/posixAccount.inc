@@ -896,7 +896,7 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
@@ -1012,6 +1012,7 @@ class posixAccount extends baseModule implements passwordService {
 				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 			}
 			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
+			$pwdContainer->colspan = 2;
 			$return->addElement($pwdContainer);
 		}
 	return $return;
@@ -1020,7 +1021,7 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	* Displays the delete homedir option for the delete page.
 	*
-	* @return meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_delete() {
 		$return = null;
@@ -1034,7 +1035,7 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	* Displays the group selection.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_group() {
 		$return = new htmlTable();
