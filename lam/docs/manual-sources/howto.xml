@@ -2834,9 +2834,9 @@ Have fun!
 
             <entry>hostObject</entry>
 
-            <entry></entry>
+            <entry>ldapns.schema</entry>
 
-            <entry>Part of OpenLDAP installation</entry>
+            <entry>Part of libpam-ldap installation</entry>
 
             <entry></entry>
           </row>
