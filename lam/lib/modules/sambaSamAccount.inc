@@ -138,12 +138,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// PHP extensions
 		$return['extensions'] = array('hash', 'iconv');
 		// profile options
-		$return['profile_options'] = array(
-			array(
-				array('kind' => 'text', 'text' => _('Automatically add this extension') . ":"),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_addExt', 'type' => 'checkbox'),
-				array('kind' => 'help', 'value' => 'autoAdd')),
-		);
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
 			'type' => 'ext_preg',
@@ -521,83 +518,57 @@ class sambaSamAccount extends baseModule implements passwordService {
 			);
 		}
 		// configuration options
-		$return['config_options']['user'] = array(
-		array(
-			array('kind' => 'text', 'text' => _("Time zone") . ' &nbsp;'),
-			array('kind' => 'select', 'name' => 'sambaSamAccount_timeZone', 'size' => '1',
-				'options' => array(
-					array('-12', "GMT-12: " . _("Eniwetok, Kwajalein")),
-					array('-11', "GMT-11: " . _("Midway Island, Samoa")),
-					array('-10', "GMT-10: " . _("Hawaii")),
-					array('-9', "GMT-09: " . _("Alaska")),
-					array('-8', "GMT-08: " . _("Pacific Time (US & Canada)")),
-					array('-7', "GMT-07: " . _("Mountain Time (US & Canada)")),
-					array('-6', "GMT-06: " . _("Central Time (US & Canada), Mexico City")),
-					array('-5', "GMT-05: " . _("Eastern Time (US & Canada), Bogota")),
-					array('-4', "GMT-04: " . _("Atlantic time (Canada), Caracas")),
-					array('-3', "GMT-03: " . _("Brazil, Buenos Aires")),
-					array('-2', "GMT-02: " . _("Mid-Atlantic")),
-					array('-1', "GMT-01: " . _("Azores, Cape Verde Islands")),
-					array('0', 'GMT: ' . _("Western Europe Time, London, Lisbon")),
-					array('1', "GMT+01: " . _("Central Europe Time, Paris, Berlin")),
-					array('2', "GMT+02: " . _("Eastern Europe Time, South Africa")),
-					array('3', "GMT+03: " . _("Baghdad, Riyadh, Moscow")),
-					array('4', "GMT+04: " . _("Abu Dhabi, Muscat, Baku")),
-					array('5', "GMT+05: " . _("Islamabad, Karachi")),
-					array('6', "GMT+06: " . _("Almaty, Dhaka, Colombo")),
-					array('7', "GMT+07: " . _("Bangkok, Hanoi, Jakarta")),
-					array('8', "GMT+08: " . _("Beijing, Perth, Singapore")),
-					array('9', "GMT+09: " . _("Tokyo, Seoul, Osaka, Yakutsk")),
-					array('10', "GMT+10: " . _("East Australian Standard, Guam")),
-					array('11', "GMT+11: " . _("Magadan, Solomon Islands")),
-					array('12', "GMT+12: " . _("Auckland, Fiji, Kamchatka")),
-					),
-					'options_selected' => array('0'),
-					'descriptiveOptions' => true),
-			array('kind' => 'help', 'value' => 'timeZone')),
-		array(
-			array('kind' => 'text', 'text' => _("Disable LM hashes") . ' &nbsp;'),
-			array('kind' => 'select', 'name' => 'sambaSamAccount_lmHash', 'size' => '1',
-				'options' => array(
-					array('yes', _('yes')),
-					array('no', _('no'))
-					),
-				'options_selected' => array('yes'),
-				'descriptiveOptions' => true),
-			array('kind' => 'help', 'value' => 'lmHash')
-		),
-		array(
-			array('kind' => 'text', 'text' => _('Hidden options'), 'td' => array('valign' => 'top')),
-			array('kind' => 'table', 'value' => array(
-				array(
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideHomeDrive', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Home drive')),
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideHomePath', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Home path')),
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideProfilePath', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Profile path')),
-				),
-				array(
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideLogonScript', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Logon script')),
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideWorkstations', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Samba workstations')),
-					array('kind' => 'text', 'text' => '&nbsp;'),
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideLogonHours', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Logon hours')),
-				),
-				array(
-					array('kind' => 'input', 'name' => 'sambaSamAccount_hideTerminalServer', 'type' => 'checkbox'),
-					array('kind' => 'text', 'text' => _('Terminal server options')),
-				),
-			)),
-			array('kind' => 'text', 'text' => '&nbsp;'),
-			array('kind' => 'help', 'value' => 'hiddenOptions'),
-		)
+		$timezones = array(
+					"GMT-12: " . _("Eniwetok, Kwajalein") => '-12',
+					"GMT-11: " . _("Midway Island, Samoa") => '-11',
+					"GMT-10: " . _("Hawaii") => '-10',
+					"GMT-09: " . _("Alaska") => '-9',
+					"GMT-08: " . _("Pacific Time (US & Canada)") => '-8',
+					"GMT-07: " . _("Mountain Time (US & Canada)") => '-7',
+					"GMT-06: " . _("Central Time (US & Canada), Mexico City") => '-6',
+					"GMT-05: " . _("Eastern Time (US & Canada), Bogota") => '-5',
+					"GMT-04: " . _("Atlantic time (Canada), Caracas") => '-4',
+					"GMT-03: " . _("Brazil, Buenos Aires") => '-3',
+					"GMT-02: " . _("Mid-Atlantic") => '-2',
+					"GMT-01: " . _("Azores, Cape Verde Islands") => '-1',
+					'GMT: ' . _("Western Europe Time, London, Lisbon") => '0',
+					"GMT+01: " . _("Central Europe Time, Paris, Berlin") => '1',
+					"GMT+02: " . _("Eastern Europe Time, South Africa") => '2',
+					"GMT+03: " . _("Baghdad, Riyadh, Moscow") => '3',
+					"GMT+04: " . _("Abu Dhabi, Muscat, Baku") => '4',
+					"GMT+05: " . _("Islamabad, Karachi") => '5',
+					"GMT+06: " . _("Almaty, Dhaka, Colombo") => '6',
+					"GMT+07: " . _("Bangkok, Hanoi, Jakarta") => '7',
+					"GMT+08: " . _("Beijing, Perth, Singapore") => '8',
+					"GMT+09: " . _("Tokyo, Seoul, Osaka, Yakutsk") => '9',
+					"GMT+10: " . _("East Australian Standard, Guam") => '10',
+					"GMT+11: " . _("Magadan, Solomon Islands") => '11',
+					"GMT+12: " . _("Auckland, Fiji, Kamchatka") => '12',
 		);
+		$configContainer = new htmlTable();
+		$timezoneSelect = new htmlTableExtendedSelect('sambaSamAccount_timeZone', $timezones, array('0'), _("Time zone"), 'timeZone');
+		$timezoneSelect->setHasDescriptiveElements(true);
+		$configContainer->addElement($timezoneSelect, true);
+		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
+		$yesNoSelect = new htmlTableExtendedSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
+		$yesNoSelect->setHasDescriptiveElements(true);
+		$configContainer->addElement($yesNoSelect, true);
+		$hiddenLabel = new htmlOutputText(_('Hidden options'));
+		$hiddenLabel->alignment = htmlElement::ALIGN_TOP;
+		$configContainer->addElement($hiddenLabel);
+		$hiddenContainer = new htmlTable();
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomeDrive', false, _('Home drive'), null, false));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomePath', false, _('Home path'), null, false));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideProfilePath', false, _('Profile path'), null, false));
+		$hiddenContainer->addNewLine();
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonScript', false, _('Logon script'), null, false));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideWorkstations', false, _('Samba workstations'), null, false));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonHours', false, _('Logon hours'), null, false));
+		$hiddenContainer->addNewLine();
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideTerminalServer', false, _('Terminal server options'), null, false));
+		$configContainer->addElement($hiddenContainer);
+		$configContainer->addElement(new htmlHelpLink('hiddenOptions'), true);
+		$return['config_options']['user'] = $configContainer;
 		return $return;
 	}
 
@@ -1536,7 +1507,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/**
 	* Returns a list of elements for the account profiles.
 	*
-	* @return profile elements
+	* @return htmlElement profile elements
 	*/
 	function get_profileOptions() {
 		$return = parent::get_profileOptions();
@@ -1547,75 +1518,40 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
 			// use no password at all
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Use no password') . ': '),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => false),
-				array('kind' => 'help', 'value' => 'noPassword')
-				);
+			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsN', false, _('Use no password'), 'noPassword'), true);
 			// account deactivation
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Account is deactivated') . ': '),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => false),
-				array('kind' => 'help', 'value' => 'deactivated')
-				);
+			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsD', false, _('Account is deactivated'), 'deactivated'), true);
 			// password never expires
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Password does not expire') . ': '),
-				array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => true),
-				array('kind' => 'help', 'value' => 'noExpire')
-				);
+			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsX', false, _('Password does not expire'), 'noExpire'), true);
 			// expiration date
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Account expiration date')),
-				array('kind' => 'table', 'value' => array(
-					array (
-						array('kind' => 'select', 'name' => 'sambaSamAccount_expire_day', 'options' => $day, 'options_selected' => array('1')),
-						array('kind' => 'select', 'name' => 'sambaSamAccount_expire_mon', 'options' => $mon, 'options_selected' => array('1')),
-						array('kind' => 'select', 'name' => 'sambaSamAccount_expire_yea', 'options' => $year, 'options_selected' => array('2030'))
-					)
-				)),
-				array('kind' => 'help', 'value' => 'expireDate'));
+			$return->addElement(new htmlOutputText(_('Account expiration date')));
+			$expireContainer = new htmlTable();
+			$expireContainer->addElement(new htmlSelect('sambaSamAccount_expire_day', $day, array('1')));
+			$expireContainer->addElement(new htmlSelect('sambaSamAccount_expire_mon', $mon, array('1')));
+			$expireContainer->addElement(new htmlSelect('sambaSamAccount_expire_yea', $year, array('2030')));
+			$return->addElement($expireContainer);
+			$return->addElement(new htmlHelpLink('expireDate'), true);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 				// letter of home drive
 				$drives = array('-');
 				for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Home drive') . ': '),
-					array('kind' => 'select', 'name' => 'sambaSamAccount_sambaHomeDrive', 'options' => $drives, 'options_selected' => array('-')),
-					array('kind' => 'help', 'value' => 'homeDrive')
-					);
+				$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaHomeDrive', $drives, array('-'), _('Home drive'), 'homeDrive'), true);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				// path to home directory
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Home path') . ': '),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_smbhome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-					array('kind' => 'help', 'value' => 'homePath')
-					);
+				$return->addElement(new htmlTableExtendedInputField(_('Home path'), 'sambaSamAccount_smbhome', '', 'homePath'), true);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
 				// profile path
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Profile path') . ': '),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-					array('kind' => 'help', 'value' => 'profilePath')
-					);
+				$return->addElement(new htmlTableExtendedInputField(_('Profile path'), 'sambaSamAccount_profilePath', '', 'profilePath'), true);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
 				// logon script
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Logon script') . ': '),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonScript', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-					array('kind' => 'help', 'value' => 'scriptPath')
-					);
+				$return->addElement(new htmlTableExtendedInputField(_('Logon script'), 'sambaSamAccount_logonScript', '', 'scriptPath'), true);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
 				// allowed workstations
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_userWorkstations', 'value' => ''),
-					array('kind' => 'help', 'value' => 'workstations')
-					);
+				$return->addElement(new htmlTableExtendedInputField(_('Samba workstations'), 'sambaSamAccount_userWorkstations', '', 'workstations'), true);
 			}
 			// domains
 			$sambaDomains = search_domains();
@@ -1623,29 +1559,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Domain') . ': '),
-				array('kind' => 'select', 'name' => 'sambaSamAccount_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array()),
-				array('kind' => 'help', 'value' => 'domain')
-				);
+			$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), true);
 			// Windows group
 			$groups = array();
 			foreach ($this->rids as $key => $value) {
-				$groups[] = array($value, $key);
+				$groups[$key] = $value;
 			}
-			$groups[] = array("-", "-");
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Windows group') . ': '),
-				array('kind' => 'select', 'name' => 'sambaSamAccount_group', 'options' => $groups, 'options_selected' => array('513'), 'descriptiveOptions' => true),
-				array('kind' => 'help', 'value' => 'group')
-				);
+			$groups["-"] = "-";
+			$groupSelect = new htmlTableExtendedSelect('sambaSamAccount_group', $groups, array('513'), _('Windows group'), 'group');
+			$groupSelect->setHasDescriptiveElements(true);
+			$return->addElement($groupSelect, true);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
 				// logon hours
-				$return[] = array(
-					array('kind' => 'text', 'text' => _('Logon hours') . ': '),
-					array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonHours', 'value' => ''),
-					array('kind' => 'help', 'value' => 'logonHoursUpload')
-					);
+				$return->addElement(new htmlTableExtendedInputField(_('Logon hours'), 'sambaSamAccount_logonHours', '', 'logonHoursUpload'), true);
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
@@ -1655,11 +1581,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 			}
-			$return[] = array(
-				array('kind' => 'text', 'text' => _('Domain') . ': '),
-				array('kind' => 'select', 'name' => 'sambaSamAccount_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array()),
-				array('kind' => 'help', 'value' => 'domain')
-				);
+			$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), true);
 		}
 		return $return;
 	}
