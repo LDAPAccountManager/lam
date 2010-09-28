@@ -548,6 +548,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$configContainer = new htmlTable();
 		$timezoneSelect = new htmlTableExtendedSelect('sambaSamAccount_timeZone', $timezones, array('0'), _("Time zone"), 'timeZone');
 		$timezoneSelect->setHasDescriptiveElements(true);
+		$timezoneSelect->setSortElements(false);
 		$configContainer->addElement($timezoneSelect, true);
 		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
 		$yesNoSelect = new htmlTableExtendedSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
@@ -877,12 +878,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// Load attributes
 		if ($this->get_scope()=='user') {
 			if (isset($_POST['availableSambaUserWorkstations']) && isset($_POST['sambaUserWorkstations_add'])) { // Add workstations to list
-				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++) {
-					if ($workstations[$i]=='') unset($workstations[$i]);
+				$workstations = array();
+				if (isset($this->attributes['sambaUserWorkstations'][0])) {
+					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+					$workstations = explode (',', $temp);
+					for ($i=0; $i<count($workstations); $i++) {
+						if ($workstations[$i]=='') unset($workstations[$i]);
+					}
+					$workstations = array_values($workstations);
 				}
-				$workstations = array_values($workstations);
 				// Add new // Add workstations
 				$workstations = array_merge($workstations, $_POST['availableSambaUserWorkstations']);
 				// remove doubles
@@ -908,9 +912,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// Remove unwanted workstations from array
 				$workstations = array_delete($_POST['sambaUserWorkstations'], $workstations);
 				// Recreate workstation string
-				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
-					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+				unset($this->attributes['sambaUserWorkstations'][0]);
+				if (sizeof($workstations) > 0) {
+					$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
+					for ($i=1; $i<count($workstations); $i++) {
+						$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+					}
 				}
 			}
 		}
@@ -1249,33 +1256,48 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/**
 	* This function will create the HTML page to edit the allowed workstations.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_sambaUserWorkstations() {
+		$return = new htmlTable();
 		if ($this->get_scope()=='user') {
 			// Get list of all hosts.
+			$userWorkstations = array();
+			$availableUserWorkstations = array();
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaSamAccount', 'host');
 			if (is_array($result)) {
 				foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
 				sort($availableUserWorkstations, SORT_STRING);
-				$result = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-				$userWorkstations = explode (',', $result);
+				if (isset($this->attributes['sambaUserWorkstations'][0])) {
+					$result = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+					$userWorkstations = explode (',', $result);
+				}
 				$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 				}
 
-			$return[] = array( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Allowed workstations"), 'value' =>
-				array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Allowed workstations"), 'value' =>
-					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaUserWorkstations', 'size' => '15', 'multiple' => true, 'options' => $userWorkstations)))),
-				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations_add',
-					'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations_remove', 'value' => '=>' )),
-					2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'sambaUserWorkstations' )))),
-				2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available workstations"), 'value' =>
-					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableSambaUserWorkstations', 'size' => '15', 'multiple' => true, 'options' => $availableUserWorkstations))))
-					))));
-
-			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_back', 'type' => 'submit', 'value' => _('Back') ),
-				1 => array ( 'kind' => 'text'),
-				2 => array ('kind' => 'text'));
+			$return->addElement(new htmlSubTitle(_("Allowed workstations")), true);
+			$return->addElement(new htmlOutputText(_("Allowed workstations")));
+			$return->addElement(new htmlOutputText(''));
+			$return->addElement(new htmlOutputText(_("Available workstations")));
+			$return->addNewLine();
+			$wsSelect = new htmlSelect('sambaUserWorkstations', $userWorkstations, array(), 15);
+			$wsSelect->setMultiSelect(true);
+			$return->addElement($wsSelect);
+			$buttonContainer = new htmlTable();
+			$buttonContainer->addElement(new htmlButton('sambaUserWorkstations_add', 'back.gif', true), true);
+			$buttonContainer->addElement(new htmlButton('sambaUserWorkstations_remove', 'forward.gif', true), true);
+			$buttonContainer->addElement(new htmlHelpLink('userWorkstations'));
+			$return->addElement($buttonContainer);
+			$wsAvailSelect = new htmlSelect('availableSambaUserWorkstations', $availableUserWorkstations, array(), 15);
+			$wsAvailSelect->setMultiSelect(true);
+			$return->addElement($wsAvailSelect);
+			$return->addNewLine();
+			
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			
+			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+			$backButton->colspan = 3;
+			$return->addElement($backButton);
 			}
 		return $return;
 	}
@@ -1283,16 +1305,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/**
 	* This function will create the HTML page to edit logon hours.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_logonHours() {
+		$return = new htmlTable();
 		$timeZone = 0;
 		if (isset($this->moduleSettings['sambaSamAccount_timeZone']) && is_array($this->moduleSettings['sambaSamAccount_timeZone'])) {
 			$timeZone = $this->moduleSettings['sambaSamAccount_timeZone'][0];
 		}
 		$days = array(1 => _('Monday'), 2 => _('Tuesday'), 3 => _('Wednesday'), 4 => _('Thursday'),
 			5 => _('Friday'), 6 => _('Saturday'), 0 => _('Sunday'));
-		if (!$this->attributes['sambaLogonHours'][0]) {
+		if (!isset($this->attributes['sambaLogonHours'][0]) || ($this->attributes['sambaLogonHours'][0] == '')) {
 			$this->attributes['sambaLogonHours'][0] = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
 		}
 		// convert existing logonHours string to bit array
@@ -1312,6 +1335,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$hour[$i] = substr($logonHours, $i, 1);
 		}
 		// display input
+		$return->addElement(new htmlOutputText(_('Time')));
+		for ($i = 0; $i < sizeof($days); $i++) {
+			$return->addElement(new htmlOutputText('&nbsp;' . $days[$i] . '&nbsp;', false));
+		}
+		$return->addNewLine();
+		$boxes = array();
+		// dynamically place boxes depending on time zone
 		for ($i = 0; $i < 24*7; $i++) {
 			$hr = $i + $timeZone;
 			if ($hr < 0) {
@@ -1320,33 +1350,35 @@ class sambaSamAccount extends baseModule implements passwordService {
 			elseif ($hr >= 24*7) {
 				$hr = $hr - 24*7;
 			}
-			if ($i % 7 == 0) {
-				$return[0][floor($i / 24)+1] = array('kind' => 'text',
-					'text' => '<b>' . $days[floor($i / 24)] . '</b>',
-					'td' => array('width' => "11%", 'align' => 'center'));
-			}
-			$return[$i % 24 + 1][floor($i/24) + 1] = array('kind' => 'input',
-				'name' => 'lh_' . $hr,
-				'type' => 'checkbox',
-				'checked' => $hour[$hr] ? true : false,
-				'td' => array('align' => 'center'));
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr] ? true : false);
+			$checkbox->alignment = htmlTable::ALIGN_CENTER;
+			$boxes[$i % 24][floor($i/24)] = $checkbox;
 		}
-		$return[0][0] = array('kind' => 'text', 'text' => '<b>' . _('Time') . '</b>', 'td' => array('width' => "12.5%"));
 		for ($h = 0; $h < 24; $h++) {
-			$return[1 + $h][0] = array('kind' => 'text', 'text' => "$h:00 - $h:59");
+			$hour = $h;
+			if ($h < 10) {
+				$hour = '0' . $h;
+			}
+			$return->addElement(new htmlOutputText("$hour:00 - $hour:59"));
+			for ($d = 0; $d < 7; $d++) {
+				$return->addElement($boxes[$h][$d]);				
+			}
+			$return->addNewLine();
 		}
-		$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;', 'td' => array('colspan' => 8)));
-		$return[] = array(
-			array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Ok'), 'td' => array('align' => 'right')),
-			array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Cancel'), 'td' => array('align' => 'left'))
-		);
+		
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->colspan = 5;
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
+		$return->addElement($buttonContainer);
 		return $return;
 	}
 
 	/**
 	* This function will create the meta HTML code to show a page to change time values.
 	*
-	* @return array meta HTML code
+	* @return htmlElement meta HTML code
 	*/
 	function display_html_time() {
 		$return = array();
