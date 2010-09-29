@@ -927,7 +927,7 @@ msgstr "Binärwert"
 
 #: ../lib/modules/quota.inc:52
 msgid "Block hard quota"
-msgstr "hartes Block-Quota"
+msgstr "Hartes Block-Quota"
 
 #: ../lib/modules/quota.inc:52 ../lib/modules/quota.inc:53
 msgid ""
@@ -943,7 +943,7 @@ msgstr "Block-Quota"
 
 #: ../lib/modules/quota.inc:50
 msgid "Block soft quota"
-msgstr "weiches Block-Quota"
+msgstr "Weiches Block-Quota"
 
 #: ../lib/modules/quota.inc:50 ../lib/modules/quota.inc:51
 msgid ""
@@ -2389,25 +2389,25 @@ msgstr "H-Knoten (0x08)"
 
 #: ../lib/modules/quota.inc:592
 msgid "Hard block"
-msgstr "hartes Block-Limit"
+msgstr "Hartes Block-Limit"
 
 #: ../lib/modules/quota.inc:111 ../lib/modules/quota.inc:112
 #: ../lib/modules/quota.inc:384 ../lib/modules/quota.inc:476
 msgid "Hard block limit"
-msgstr "hartes Block-Limit"
+msgstr "Hartes Block-Limit"
 
 #: ../lib/modules/quota.inc:594
 msgid "Hard inode"
-msgstr "hartes Inode-Limit"
+msgstr "Hartes Inode-Limit"
 
 #: ../lib/modules/quota.inc:134
 msgid "Hard inode (files) limit"
-msgstr "Hartes Inode-Limit (Datein)"
+msgstr "Hartes Inode-Limit (Dateien)"
 
 #: ../lib/modules/quota.inc:133 ../lib/modules/quota.inc:388
 #: ../lib/modules/quota.inc:478
 msgid "Hard inode limit"
-msgstr "hartes Inode-Limit"
+msgstr "Hartes Inode-Limit"
 
 #: ../lib/modules/sambaSamAccount.inc:531
 msgid "Hawaii"
@@ -2992,7 +2992,7 @@ msgstr "Startprogramm"
 
 #: ../lib/modules/quota.inc:56
 msgid "Inode hard quota"
-msgstr "hartes Inode-Quota"
+msgstr "Hartes Inode-Quota"
 
 #: ../lib/modules/quota.inc:56 ../lib/modules/quota.inc:57
 msgid ""
@@ -3008,7 +3008,7 @@ msgstr "Inode-Quota"
 
 #: ../lib/modules/quota.inc:54
 msgid "Inode soft quota"
-msgstr "weiches Inode-Quota"
+msgstr "Weiches Inode-Quota"
 
 #: ../lib/modules/quota.inc:54 ../lib/modules/quota.inc:55
 msgid ""
@@ -5986,20 +5986,20 @@ msgstr "Einzelwert"
 
 #: ../lib/modules/quota.inc:591
 msgid "Soft block"
-msgstr "weiches Block-Limit"
+msgstr "Weiches Block-Limit"
 
 #: ../lib/modules/quota.inc:105 ../lib/modules/quota.inc:383
 #: ../lib/modules/quota.inc:475
 msgid "Soft block limit"
-msgstr "weiches Block-Limit"
+msgstr "Weiches Block-Limit"
 
 #: ../lib/modules/quota.inc:106
 msgid "Soft block limit."
-msgstr "weiches Block-Limit"
+msgstr "Weiches Block-Limit"
 
 #: ../lib/modules/quota.inc:593
 msgid "Soft inode"
-msgstr "weiches Inode-Limit"
+msgstr "Weiches Inode-Limit"
 
 #: ../lib/modules/quota.inc:128
 msgid "Soft inode (files) limit."
@@ -6008,7 +6008,7 @@ msgstr "Weiches Inode-Limit (Dateien)."
 #: ../lib/modules/quota.inc:127 ../lib/modules/quota.inc:387
 #: ../lib/modules/quota.inc:477
 msgid "Soft inode limit"
-msgstr "weiches Inode-Limit"
+msgstr "Weiches Inode-Limit"
 
 #: ../templates/tree/edit.php:138
 #, php-format
@@ -8098,7 +8098,7 @@ msgstr "Konnte DN nicht umbenennen: %s."
 
 #: ../lib/modules/sambaSamAccount.inc:1319
 msgid "Wednesday"
-msgstr "Donnerstag"
+msgstr "Mittwoch"
 
 #: ../lib/modules/sambaSamAccount.inc:541
 msgid "Western Europe Time, London, Lisbon"
