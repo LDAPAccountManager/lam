@@ -42,6 +42,7 @@ abstract class htmlElement {
 	const ALIGN_LEFT = 1;
 	const ALIGN_RIGHT = 2;
 	const ALIGN_BOTTOM = 3;
+	const ALIGN_CENTER = 4;
 	
 	/** alignment when inside a table */
 	public $alignment = null;
@@ -83,6 +84,9 @@ abstract class htmlElement {
 				break;
 				case htmlElement::ALIGN_RIGHT:
 					$align = 'align="right"';
+				break;
+				case htmlElement::ALIGN_CENTER:
+					$align = 'align="center"';
 				break;
 			}
 		}
