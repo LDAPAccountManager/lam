@@ -357,10 +357,10 @@ class quota extends baseModule {
 	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
-	 * @return array HTML meta data
+	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = array();
+		$return = new htmlTable();
 		$this->initQuotas();
 		if (!is_array($this->quota)) return $return;
 		// get list of lamdaemon servers
@@ -376,52 +376,59 @@ class quota extends baseModule {
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
 			$id = $this->replaceSpecialChars($server);
-			$fieldContent = array();
-			$fieldContent[] = array(
-					array('kind' => 'text', 'text' => _('Mountpoint')),
-					array('kind' => 'text', 'text' => _('Used blocks')),
-					array('kind' => 'text', 'text' => _('Soft block limit')),
-					array('kind' => 'text', 'text' => _('Hard block limit')),
-					array('kind' => 'text', 'text' => _('Grace block period')),
-					array('kind' => 'text', 'text' => _('Used inodes')),
-					array('kind' => 'text', 'text' => _('Soft inode limit')),
-					array('kind' => 'text', 'text' => _('Hard inode limit')),
-					array('kind' => 'text', 'text' => _('Grace inode period')));
-	
-			$fieldContent[] = array(
-					array('kind' => 'help', 'value' => 'Mountpoint'),
-					array('kind' => 'help', 'value' => 'UsedBlocks'),
-					array('kind' => 'help', 'value' => 'SoftBlockLimit'),
-					array('kind' => 'help', 'value' => 'HardBlockLimit'),
-					array('kind' => 'help', 'value' => 'GraceBlockPeriod'),
-					array('kind' => 'help', 'value' => 'UsedInodes'),
-					array('kind' => 'help', 'value' => 'SoftInodeLimit'),
-					array('kind' => 'help', 'value' => 'HardInodeLimit'),
-					array('kind' => 'help', 'value' => 'GraceInodePeriod')
-				);
+			$title = $server;
+			if (isset($serverDescriptions[$server])) {
+				$title = $serverDescriptions[$server] . " (" . $server . ")";
+			}
+			$return->addElement(new htmlSubTitle($title), true);
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Used blocks') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard block limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Grace block period') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Used inodes') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft inode limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard inode limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Grace inode period') . '&nbsp;', false));
+			$return->addNewLine();
+			$return->addElement(new htmlHelpLink('Mountpoint'));
+			$return->addElement(new htmlHelpLink('UsedBlocks'));
+			$return->addElement(new htmlHelpLink('SoftBlockLimit'));
+			$return->addElement(new htmlHelpLink('HardBlockLimit'));
+			$return->addElement(new htmlHelpLink('GraceBlockPeriod'));
+			$return->addElement(new htmlHelpLink('UsedInodes'));
+			$return->addElement(new htmlHelpLink('SoftInodeLimit'));
+			$return->addElement(new htmlHelpLink('HardInodeLimit'));
+			$return->addElement(new htmlHelpLink('GraceInodePeriod'));
+			$return->addNewLine();
 	
 			$i=0;
 			// loop for every mointpoint with enabled quotas
 			while (isset($this->quota[$server][$i][0])) {
-				$fieldContent[] = array(
-					array('kind' => 'text', 'text' => $this->quota[$server][$i][0]),
-					array('kind' => 'text', 'text' => $this->quota[$server][$i][1]),
-					array('kind' => 'input', 'name' => $i . '_2_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][2]),
-					array('kind' => 'input', 'name' => $i . '_3_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][3]),
-					array('kind' => 'text', 'text' => $this->quota[$server][$i][4]),
-					array('kind' => 'text', 'text' => $this->quota[$server][$i][5]),
-					array('kind' => 'input', 'name' => $i . '_6_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][6]),
-					array('kind' => 'input', 'name' => $i . '_7_' . $id, 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$server][$i][7]),
-					array('kind' => 'text', 'text' => $this->quota[$server][$i][8]));
+				$return->addElement(new htmlOutputText($this->quota[$server][$i][0]));
+				$return->addElement(new htmlOutputText($this->quota[$server][$i][1]));
+				$sbLimitInput = new htmlInputField($i . '_2_' . $id, $this->quota[$server][$i][2]);
+				$sbLimitInput->setFieldSize(12);
+				$sbLimitInput->setFieldMaxLength(20);
+				$return->addElement($sbLimitInput);
+				$hbLimit = new htmlInputField($i . '_3_' . $id, $this->quota[$server][$i][3]);
+				$hbLimit->setFieldSize(12);
+				$hbLimit->setFieldMaxLength(20);
+				$return->addElement($hbLimit);
+				$return->addElement(new htmlOutputText($this->quota[$server][$i][4]));
+				$return->addElement(new htmlOutputText($this->quota[$server][$i][5]));
+				$siLimit = new htmlInputField($i . '_6_' . $id, $this->quota[$server][$i][6]);
+				$siLimit->setFieldMaxLength(20);
+				$siLimit->setFieldSize(12);
+				$return->addElement($siLimit);
+				$hiLimit = new htmlInputField($i . '_7_' . $id, $this->quota[$server][$i][7]);
+				$hiLimit->setFieldMaxLength(20);
+				$hiLimit->setFieldSize(12);
+				$return->addElement($hiLimit);
+				$return->addElement(new htmlOutputText($this->quota[$server][$i][8]));
+				$return->addNewLine();
 				$i++;
 			}
-			$legend = $server;
-			if (isset($serverDescriptions[$server])) {
-				$legend = $serverDescriptions[$server] . " (" . $server . ")";
-			}
-			$return[] = array(
-				array('kind' => 'fieldset', 'legend' => $legend, 'value' => $fieldContent)
-			);
 		}
 		return $return;
 	}
@@ -440,10 +447,10 @@ class quota extends baseModule {
 	/**
 	* Returns a list of elements for the account profiles.
 	*
-	* @return profile elements
+	* @return htmlElement profile elements
 	*/
 	function get_profileOptions() {
-		$return = array();
+		$return = new htmlTable();
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
@@ -451,8 +458,9 @@ class quota extends baseModule {
 			$server = $temp[0];
 			$id = $this->replaceSpecialChars($server);
 			$description = $temp[0];
-			if (isset($temp[1])) $description = $temp[1];
-
+			if (isset($temp[1])) {
+				$description = $temp[1] . ' (' . $temp[0] . ')';
+			}
 			// Get quotas
 			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
 			$dirs = explode(":", $quotas[0]);
@@ -469,33 +477,40 @@ class quota extends baseModule {
 			}
 			$dirs = array_values($dirs);
 			if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
-			$fieldContent = array();
-			$fieldContent[] = array (
-				array('kind' => 'text', 'text' => '<b>' . _('Mountpoint') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-				array('kind' => 'text', 'text' => '<b>' . _('Soft block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-				array('kind' => 'text', 'text' => '<b>' . _('Hard block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-				array('kind' => 'text', 'text' => '<b>' . _('Soft inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-				array('kind' => 'text', 'text' => '<b>' . _('Hard inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
-			);
-			$fieldContent[] = array (
-				array('kind' => 'help', 'value' => 'Mountpoint', 'align' => 'center'),
-				array('kind' => 'help', 'value' => 'SoftBlockLimit', 'align' => 'center'),
-				array('kind' => 'help', 'value' => 'HardBlockLimit', 'align' => 'center'),
-				array('kind' => 'help', 'value' => 'SoftInodeLimit', 'align' => 'center'),
-				array('kind' => 'help', 'value' => 'HardInodeLimit', 'align' => 'center'),
-			);
+			$return->addElement(new htmlSubTitle($description), true);
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard block limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft inode limit') . '&nbsp;', false));
+			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard inode limit') . '&nbsp;', false));
+			$return->addNewLine();
+			$return->addElement(new htmlHelpLink('Mountpoint'));
+			$return->addElement(new htmlHelpLink('SoftBlockLimit'));
+			$return->addElement(new htmlHelpLink('HardBlockLimit'));
+			$return->addElement(new htmlHelpLink('SoftInodeLimit'));
+			$return->addElement(new htmlHelpLink('HardInodeLimit'));
+			$return->addNewLine();
+			
 			for ($i = 0; $i < sizeof($dirs); $i++) {
-				$fieldContent[] = array(
-					array('kind' => 'text', 'text' => $dirs[$i], 'align' => 'left'),
-					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_" . $id . "_" . $dirs[$i]),
-					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardblock_" . $id . "_" . $dirs[$i]),
-					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softinode_" . $id . "_" . $dirs[$i]),
-					array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardinode_" . $id . "_" . $dirs[$i]),
-				);
+				$return->addElement(new htmlOutputText($dirs[$i]));
+				$sbLimit = new htmlInputField("quota_softblock_" . $id . "_" . $dirs[$i]);
+				$sbLimit->setFieldSize(12);
+				$sbLimit->setFieldMaxLength(20);
+				$return->addElement($sbLimit);
+				$hbLimit = new htmlInputField("quota_hardblock_" . $id . "_" . $dirs[$i]);
+				$hbLimit->setFieldSize(12);
+				$hbLimit->setFieldMaxLength(20);
+				$return->addElement($hbLimit);
+				$siLimit = new htmlInputField("quota_softinode_" . $id . "_" . $dirs[$i]);
+				$siLimit->setFieldSize(12);
+				$siLimit->setFieldMaxLength(20);
+				$return->addElement($siLimit);
+				$hiLimit = new htmlInputField("quota_hardinode_" . $id . "_" . $dirs[$i]);
+				$hiLimit->setFieldSize(12);
+				$hiLimit->setFieldMaxLength(20);
+				$return->addElement($hiLimit);
+				$return->addNewLine();
 			}
-			$return[] = array(
-				array('kind' => 'fieldset', 'legend' => $description . " (" . $server . ")", 'value' => $fieldContent)
-			);
 		}
 		return $return;
 	}
