@@ -104,7 +104,7 @@ class quota extends baseModule {
 			"SoftBlockLimit" => array(
 				"Headline" => _("Soft block limit"),
 				"Text" => _("Soft block limit."), "SeeAlso" => array(
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4"',
+					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
 					'text' => 'Quota How-To')
 			),
 			"HardBlockLimit" => array(
