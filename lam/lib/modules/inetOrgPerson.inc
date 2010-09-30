@@ -141,9 +141,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$profileContainer = new htmlTable();
 			for ($i = 0; $i < sizeof($profileElements); $i++) {
 				$profileContainer->addElement($profileElements[$i]);
-				if ($i != (sizeof($profileElements) - 1)) {
-					$profileContainer->addNewLine();
-				}
+				$profileContainer->addNewLine();
 			}
 			$return['profile_options'] = $profileContainer;
 		}
