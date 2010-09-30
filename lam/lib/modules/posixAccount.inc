@@ -1094,9 +1094,9 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->get_scope() == 'user') {
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
-			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, null, _('Primary group'), 'gidNumber'), true);
+			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'), true);
 			// additional group memberships
-			$addGroupSelect = new htmlTableExtendedSelect('posixAccount_additionalGroup', $groups, null, _('Additional groups'), 'addgroup', 10);
+			$addGroupSelect = new htmlTableExtendedSelect('posixAccount_additionalGroup', $groups, array(), _('Additional groups'), 'addgroup', 10);
 			$addGroupSelect->setMultiSelect(true);
 			$return->addElement($addGroupSelect, true);
 			// home directory
@@ -1112,7 +1112,7 @@ class posixAccount extends baseModule implements passwordService {
 					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
 					else $lamdaemonServers[$i] = $temp[0];
 				}
-				$return->addElement(new htmlTableExtendedSelect('posixAccount_homedirServer', $lamdaemonServers, null, _('Home directory server'), 'createhomedir'), true);
+				$return->addElement(new htmlTableExtendedSelect('posixAccount_homedirServer', $lamdaemonServers, array(), _('Home directory server'), 'createhomedir'), true);
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
