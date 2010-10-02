@@ -211,10 +211,10 @@ class nisnetgroup extends baseModule {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
 				$triple = explode(',', $triple);
-				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'host') && ($_POST['position'] == $i)) {
+				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'host') && ($_POST['position'] == strval($i))) {
 					$triple[0] = $_POST['selectBox'];
 				}
-				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'user') && ($_POST['position'] == $i)) {
+				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'user') && ($_POST['position'] == strval($i))) {
 					$triple[1] = $_POST['selectBox'];
 				}
 				$hostField = new htmlInputField('host_' . $i, $triple[0]);
