@@ -597,6 +597,25 @@ class kolabUser extends baseModule {
 	}
 
 	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
+	*/
+	function save_attributes() {
+		if (!in_array('kolabInetOrgPerson', $this->attributes['objectClass']) && !in_array('kolabInetOrgPerson', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
+			return array();
+		}
+		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
