@@ -946,6 +946,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	$message = $entry['Text'];
 	// replace special characters
 	$message = str_replace(array("'", '"', "\n"), array("\\'", '&quot;', ''), $message);
+	$title = str_replace(array("'", '"', "\n"), array("\\'", '&quot;', ''), $title);
 	echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\" ";
 		echo "onmouseover=\"Tip('" . $message . "', TITLE, '" . $title . "')\" onmouseout=\"UnTip()\">";
