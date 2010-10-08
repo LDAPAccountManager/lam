@@ -440,7 +440,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
 					break;
 		case 'gecos':
-					$pregexpr = '/^[a-zA-z0-9 \\._-]+([,][a-zA-z0-9 \\._-]+)*$/';
+					$pregexpr = '/^[[:alnum:] \\._-]+([,][[:alnum:] \\._-]+)*$/u';
 					break;
 		case 'macAddress':
 					$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
