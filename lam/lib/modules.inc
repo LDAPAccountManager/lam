@@ -1538,18 +1538,16 @@ class accountContainer {
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-top' . $activatedClass . '">';
-			$buttonImageStyle = '';
-			$buttonSpace = '';
-			if ($buttonImage != null) {
-				$buttonImageStyle = 'background-image: url(../../graphics/' . $buttonImage . ');background-position: 2px center;background-repeat: no-repeat;height:32px;margin: 5px;';
-				$buttonSpace = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-			}
-			$buttonStyle = $buttonImageStyle . 'background-color:transparent;;border:0px solid;';
-			echo "<input style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-			echo $buttonSpace . $this->module[$this->order[$i]]->get_alias();
-			echo "\" tabindex=$x";
+			$buttonStyle = 'background-color:transparent;;border:0px solid;';
+			echo "<button style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\"";
+			echo " tabindex=$x";
 			if ($buttonStatus == 'disabled') echo " disabled";
-			echo ">\n";
+			echo ">";
+			if ($buttonImage != null) {
+				echo "<img class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"../../graphics/$buttonImage\">&nbsp;";
+			}
+			echo $this->module[$this->order[$i]]->get_alias();
+			echo "&nbsp;</button>\n";
 			echo "</li>\n";
 			$x++;
 		}
