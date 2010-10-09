@@ -4,6 +4,7 @@ October 2010 3.2.0
   - DHCP: renamed module "Fixed IPs" to "Hosts", IP is now optional (3038797)
   - PHP version 5.2.4 or higher required
   - LAM Pro:
+   -> Zarafa support (user, group, server)
    -> Password policy: allow to force password change (RFE 3026940)
    -> password reset page: mail subject, text and from address can be set in server profile
    -> Self service: Asterisk (voicemail) password synchronisation
