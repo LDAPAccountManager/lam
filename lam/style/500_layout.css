@@ -139,6 +139,10 @@ tr.highlight {
 	background-image: url(../graphics/add.png) !important;
 }
 
+.settingsButton {
+	background-image: url(../graphics/tools.png) !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
