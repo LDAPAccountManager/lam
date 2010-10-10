@@ -104,6 +104,9 @@ function lamdaemon($command, $server) {
 *
 */
 function lamdaemonSeclib($command, $server) {
+	if ($server == '') {
+		return array();
+	}
 	// add phpseclib to include path
 	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/3rdParty/phpseclib');
 	include_once('Net/SSH2.php');

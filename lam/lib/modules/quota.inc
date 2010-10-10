@@ -176,6 +176,9 @@ class quota extends baseModule {
 			$server = $temp[0];
 			// get quotas
 			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())), $server);
+			if (sizeof($quotas) == 0) {
+				continue;
+			}
 			$allQuotas = explode(":", $quotas[0]);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
@@ -463,6 +466,9 @@ class quota extends baseModule {
 			}
 			// Get quotas
 			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
+			if (sizeof($quotas) == 0) {
+				continue;
+			}
 			$dirs = explode(":", $quotas[0]);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
