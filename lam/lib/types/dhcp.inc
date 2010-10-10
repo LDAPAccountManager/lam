@@ -196,15 +196,34 @@ class lamDHCPList extends lamList {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td align=\"left\">\n";
-		// add/delete/PDF buttons
-		echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
-		if (!$createOnly) {
-			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
+		if (checkIfWriteAccessIsAllowed()) {
+			// add/delete buttons
+			echo ("<button id=\"newButton\" name=\"new\">" . $this->labels['newEntry'] . "</button>\n");
+			if (!$createOnly) {
+				echo ("<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n");
+			}
+			echo "&nbsp;&nbsp;";
+			echo ("<button id=\"dhcpDefaultsButton\" name=\"dhcpDefaults\">" . $this->labels['dhcpDefaults'] . "</button>\n");
+			echo "&nbsp;&nbsp;&nbsp;";
+			?>
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery('#dhcpDefaultsButton').button({
+					        icons: {
+					      	  primary: 'settingsButton'
+					    	}
+						});
+					});
+				</script>
+			<?php
 		}
-		echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"dhcpDefaults\" value=\"" . $this->labels['dhcpDefaults'] . "\">\n");
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
-			$this->listShowOUSelection();
+		$this->listShowOUSelection();
+		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
+		echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
+			echo '<img src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
+		echo '</a>';
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";

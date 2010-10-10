@@ -42,7 +42,7 @@ table.dhcpnav input {
 
 /* color for active page digit */
 td.dhcpnav-activepage {
- color:#CCFF33;
+ color: red;
 }
 
 /* table preferences */
