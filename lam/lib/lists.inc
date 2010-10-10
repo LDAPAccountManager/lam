@@ -182,7 +182,7 @@ class lamList {
 		else {
 			// buttons
 			$this->listPrintButtons(true);
-			echo ("<hr style=\"background-color: #999999;\">\n");
+			echo ("<br>\n");
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
@@ -264,17 +264,13 @@ class lamList {
 	* @param integer $count number of account entries
 	*/
 	protected function listDrawNavigationBar($count) {
-		echo("<table class=\"" . $this->type . "nav\" width=\"100%\" border=\"0\">\n");
+		echo("<table width=\"100%\" border=\"0\">\n");
 		echo("<tr>\n");
-		echo("<td width=\"33%\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
-		echo("</td>");
-
-		echo("<td width=\"33%\" align=\"center\" class=\"" . $this->type . "nav-text\">");
-		echo"&nbsp;";
+		echo("<td align=\"left\">");
 		printf($this->labels['nav'], $count);
 		echo("</td>");
 
-		echo("<td width=\"33%\" class=\"" . $this->type . "nav-activepage\" align=\"right\">");
+		echo("<td class=\"" . $this->type . "nav-activepage\" align=\"right\">");
 		if ($this->page != 1) {
 			echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
 				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
@@ -659,15 +655,14 @@ class lamList {
 	*/
 	protected function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
-			echo ("<b>" . _("Suffix") . ": </b>");
-			echo ("<select class=\"" . $this->type . " rightToLeftText\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "', this)\">\n");
+			echo ("<select title=\"" . _("Suffix") . "\" class=\"" . $this->type . " rightToLeftText\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "', this)\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				if ($this->suffix == $this->possibleSuffixes[$i]) {
 					echo ("<option value=\"" . $this->possibleSuffixes[$i] . "\" selected>" . getAbstractDN($this->possibleSuffixes[$i]) . "</option>\n");
 				}
 				else echo("<option value=\"" . $this->possibleSuffixes[$i] . "\">" . getAbstractDN($this->possibleSuffixes[$i]) . "</option>\n");
 			}
-			echo ("</select>\n");
+			echo ("</select>&nbsp;&nbsp;&nbsp;\n");
 		}
 	}
 
@@ -682,18 +677,18 @@ class lamList {
 		echo "<td align=\"left\">\n";
 		if (checkIfWriteAccessIsAllowed()) {
 			// add/delete buttons
-			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
+			echo ("<button id=\"newButton\" name=\"new\">" . $this->labels['newEntry'] . "</button>\n");
 			if (!$createOnly) {
-				echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
+				echo ("<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n");
 			}
 			echo "&nbsp;&nbsp;&nbsp;";
 		}
-		$this->listShowOUSelection();
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
-		echo '<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
+		$this->listShowOUSelection();
+		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
+		echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
 			echo '<img src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
-			echo '&nbsp;' . _('Change settings');
 		echo '</a>';
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -720,6 +715,16 @@ class lamList {
 					window.onload = listResizeITabContentDiv;
 					window.onresize = listResizeITabContentDiv;
 					jQuery('#filterButton').button();
+					jQuery('#newButton').button({
+				        icons: {
+				      	  primary: 'createButton'
+				    	}
+					});
+					jQuery('#delButton').button({
+				        icons: {
+				      	  primary: 'deleteButton'
+				    	}
+					});
 				});
 			</script>
 		<?php
