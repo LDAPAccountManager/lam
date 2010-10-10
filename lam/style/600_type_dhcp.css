@@ -40,13 +40,6 @@ table.dhcpnav input {
   background-color:#bde178;
 }
 
-/* text in navigation bar */
-td.dhcpnav-text {
-  color:black;
-  font-family:Verdana,sans-serif;
-  font-size:12px;
-}
-
 /* color for active page digit */
 td.dhcpnav-activepage {
  color:#CCFF33;

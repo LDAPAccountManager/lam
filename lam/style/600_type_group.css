@@ -39,13 +39,6 @@ table.groupnav input {
   background-color:#a8c3ff;
 }
 
-/* text in navigation bar */
-td.groupnav-text {
-  color:green;
-  font-family:Verdana,sans-serif;
-  font-size:12px;
-}
-
 /* color for active page digit */
 td.groupnav-activepage {
  color:red;

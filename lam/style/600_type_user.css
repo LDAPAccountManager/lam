@@ -77,13 +77,6 @@ table.usernav input {
   background-color:#fff2a3;
 }
 
-/* text area in the center, e.g. "100 object(s) found" */
-td.usernav-text {
-  color:green;
-  font-family:Verdana,sans-serif;
-  font-size:12px;
-}
-
 /* color for active page number */
 td.usernav-activepage {
  color:red;

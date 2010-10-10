@@ -39,13 +39,6 @@ table.smbDomainnav input {
   background-color:#a8ddbf;
 }
 
-/* text in navigation bar */
-td.smbDomainnav-text {
-  color:green;
-  font-family:Verdana,sans-serif;
-  font-size:12px;
-}
-
 /* color for active page digit */
 td.smbDomainnav-activepage {
  color:red;

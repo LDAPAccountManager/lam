@@ -39,13 +39,6 @@ table.hostnav input {
   background-color:#ffc4ba;
 }
 
-/* text in navigation bar */
-td.hostnav-text {
-  color:green;
-  font-family:Verdana,sans-serif;
-  font-size:12px;
-}
-
 /* color for active page digit */
 td.hostnav-activepage {
  color:red;

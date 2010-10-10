@@ -39,13 +39,6 @@ table.netgroupnav input {
   background-color:#a8c3ff;
 }
 
-/* text in navigation bar */
-td.netgroupnav-text {
-  color:green;
-  font-family:Verdana,sans-serif;
-  font-size:12px;
-}
-
 /* color for active page digit */
 td.netgroupnav-activepage {
  color:red;
