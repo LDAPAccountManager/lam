@@ -131,6 +131,14 @@ tr.highlight {
 	background-image: url(../graphics/loadProfile.png) !important;
 }
 
+.deleteButton {
+	background-image: url(../graphics/del.png) !important;
+}
+
+.createButton {
+	background-image: url(../graphics/add.png) !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
