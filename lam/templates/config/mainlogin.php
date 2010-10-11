@@ -152,9 +152,14 @@ echo $_SESSION['header'];
 				<td style="border-style:none" rowspan="3" width="20"></td>
 				<td style="border-style:none" align="center">
 					<input type="password" name="passwd">
-					<input type="submit" name="submit" value="<?php echo _("Ok"); ?>">
+					<button id="submitButton" class="smallPadding" name="submit"><?php echo _("Ok"); ?></button>
 					&nbsp;
 					<?php printHelpLink(getHelp('', '236'), '236'); ?>
+					<script type="text/javascript" language="javascript">
+					jQuery(document).ready(function() {
+						jQuery('#submitButton').button();
+					});
+					</script>
 				</td>
 				<td style="border-style:none" rowspan="3" width="20"></td>
 			</tr>

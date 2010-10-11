@@ -88,15 +88,18 @@ echo $_SESSION['header'];
 				echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 			}
 			// set focus on password field
-			echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-			echo "<!--\n";
-			echo "window.onload = function() {\n";
-				echo "loginField = document.getElementsByName('passwd')[0];\n";
-				echo "loginField.focus();\n";
-			echo "}\n";
-			echo "//-->\n";
-			echo "</script>\n";
-		?>
+			?>
+			<script type="text/javascript" language="javascript">
+			<!--
+			window.onload = function() {
+				loginField = document.getElementsByName('passwd')[0];
+				loginField.focus();
+			}
+			jQuery(document).ready(function() {
+				jQuery('#submitButton').button();
+			});
+			//-->
+			</script>
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
@@ -152,8 +155,8 @@ echo $_SESSION['header'];
 						else echo "<select disabled size=1 name=\"filename\">\n<option></option>\n</select>\n";
 						if (sizeof($files) > 0) echo "<input type=\"password\" name=\"passwd\">\n";
 						else echo "<input disabled type=\"password\" name=\"passwd\">\n";
-						if (sizeof($files) > 0) echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
-						else echo "<input disabled type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">&nbsp;\n";
+						if (sizeof($files) > 0) echo "<button id=\"submitButton\" class=\"smallPadding\" name=\"submit\">" . _("Ok") . "</button>\n";
+						else echo "<button id=\"submitButton\" class=\"smallPadding\" name=\"submit\" disabled>" . _("Ok") . "</button>&nbsp;\n";
 						// help link
 						printHelpLink(getHelp('', '200'), '200');
 					?>

@@ -92,7 +92,7 @@ foreach ($jsFiles as $jsEntry) {
 
 $cfg = new LAMCfgMain();
 // check if submit button was pressed
-if ($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	// check master password
 	if (!$cfg->checkPassword($_POST['passwd'])) {
 		$error = _("Master password is wrong!");
@@ -379,11 +379,16 @@ if (!isset($cfg->default)) {
 			&nbsp;
 			<input type="password" name="passwd">
 			&nbsp;
-			<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
+			<button id="submitButton" name="submit" class="smallPadding"><?php echo _("Ok"); ?></button>
 			&nbsp;
 			<?PHP
 				printHelpLink(getHelp('', '236'), '236');
 			?>
+			<script type="text/javascript" language="javascript">
+			jQuery(document).ready(function() {
+				jQuery('#submitButton').button();
+			});
+			</script>
 
 		</form>
 		<p><br></p>

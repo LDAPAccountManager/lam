@@ -189,7 +189,7 @@ if (!$cfg->isWritable()) {
 		<table border="0" align="center">
 		<tr><td>
 		<fieldset>
-			<legend><b> <?php echo _("Security settings"); ?> </b></legend>
+			<legend> <?php echo _("Security settings"); ?> </legend>
 			<br>
 			<table cellspacing="0" border="0">
 				<!-- session timeout -->
@@ -236,7 +236,7 @@ if (!$cfg->isWritable()) {
 		</fieldset>
 		<BR>
 		<fieldset>
-			<legend><b> <?php echo _("Password policy"); ?> </b></legend>
+			<legend> <?php echo _("Password policy"); ?> </legend>
 			<br>
 			<table cellspacing="0" border="0">
 			<?php
@@ -275,7 +275,7 @@ if (!$cfg->isWritable()) {
 		</fieldset>
 		<BR>
 		<fieldset>
-			<legend><b> <?php echo _("Logging"); ?> </b></legend>
+			<legend> <?php echo _("Logging"); ?> </legend>
 			<br>
 			<table cellspacing="0" border="0">
 				<!-- log level -->
@@ -359,7 +359,7 @@ if (!$cfg->isWritable()) {
 		</fieldset>
 		<BR>
 		<fieldset>
-			<legend><b> <?php echo _("Change master password"); ?> </b></legend>
+			<legend> <?php echo _("Change master password"); ?> </legend>
 			<br>
 			<table cellspacing="0" border="0">
 				<!-- set master password -->
@@ -393,9 +393,15 @@ if (!$cfg->isWritable()) {
 				<TD>
 					<BR>
 					<?php if ($cfg->isWritable()) { ?>
-					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
+					<button id="submitButton" name="submit" class="smallPadding"><?php echo _("Ok"); ?></button>
 					<?php } ?>
-					<input type="submit" name="cancel" value=" <?php echo _("Cancel"); ?> ">
+					<button id="cancelButton" name="cancel" class="smallPadding"><?php echo _("Cancel"); ?></button>
+					<script type="text/javascript" language="javascript">
+					jQuery(document).ready(function() {
+						jQuery('#submitButton').button();
+						jQuery('#cancelButton').button();
+					});
+					</script>
 				</TD>
 			</TR>
 			</table>
