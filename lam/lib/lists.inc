@@ -590,9 +590,9 @@ class lamList {
 
 		$this->listPrintHeader();
 
-		echo "<br>\n";
-		echo "<form target=\"_blank\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		echo "<br><div>\n";
 		echo "<div class=\"ui-tabs-nav\">";
+		echo "<form target=\"_blank\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		
 		echo '<fieldset class="' . $this->type . 'edit"><legend>' . _('Create PDF file') . '</legend><br>';
 		echo '<table class="' . $this->type . 'edit">';
