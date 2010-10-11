@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
 			if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
 				// check if lam.conf_sample exists
 				if (!is_file("../../config/lam.conf_sample")) {
-					$error = _("The file config/lam.conf_sample was not found. Please restore it.");				
+					$error = "The file config/lam.conf_sample was not found. Please restore it.";				
 				}
 				else {
 					// create new profile file
