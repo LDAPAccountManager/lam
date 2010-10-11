@@ -1266,62 +1266,63 @@ class accountContainer {
 	 */
 	private function printPasswordPromt($errors) {
 		$this->printPageHeader();
-		// print error messages
+		echo "<div class=\"" . $this->type . "list-bright\">\n";
+		$container = new htmlTable();
+		// title
+		$container->addElement(new htmlSpacer(null, '5px'), true);
+		$titleContainer = new htmlTable();
+		$titleContainer->colspan = 3;
+		$titleContainer->addElement(new htmlSpacer('5px', null));
+		$titleContainer->addElement(new htmlOutputText(_("Set password")));
+		$titleContainer->addElement(new htmlHelpLink('404'), true);
+		$container->addElement($titleContainer, true);
+		$container->addElement(new htmlSpacer(null, '20px'), true);
+		// error messages
 		for ($i = 0; $i < sizeof($errors); $i++) {
-			call_user_func_array('StatusMessage', $errors[$i]);
+			$text = '';
+			if (isset($errors[$i][2])) $text = $errors[$i][2];
+			$params = array();
+			if (isset($errors[$i][3])) $params = $errors[$i][3];
+			$message = new htmlStatusMessage($errors[$i][0], $errors[$i][1], $text, $params);
+			$message->colspan = 3;
+			$container->addElement($message, true);
 		}
-		// create module menu
-		echo "<br><table class=\"".$this->type."list\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		echo "<tr class=\"" . $this->type . "list-bright\">";
-		echo "<td nowrap>&nbsp;<img alt=\"key.png\" src=\"../../graphics/key.png\">&nbsp;</td> \n";
-		echo "<td nowrap>" . _("Set password") . "&nbsp;&nbsp;&nbsp;</td>";
-		echo "<td>\n";
-		printHelpLink(getHelp(null, 404), 404);
-		echo "</td><td width=\"100%\">&nbsp;</td>\n";
-		echo "<tr class=\"" . $this->type . "list-bright\"><td colspan=4>\n";
-		echo "<hr class=\"modulePage\" noshade>\n";
-		echo "</td></tr>\n";
-		echo "<tr class=\"" . $this->type . "list-bright\"><td colspan=4>\n";
-		echo "<table>\n";
-		echo "<tr><td>\n";
-			echo _('Password') . '</td><td><input type="password" name="newPassword1" tabindex=1>';
-
-		echo '</td>';
-		echo '<td width=30 rowspan=2>&nbsp;</td>';
-		echo '<td rowspan=3 valign="top">';
-		echo '<table>';
-		$tabindex = 3;
+		// password modules
+		$moduleContainer = new htmlTable();
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
-				echo '<tr><td>';
+				$moduleContainer->addElement(new htmlInputCheckbox('cb_' . $name, true));
 				$buttonImage = $module->getIcon();
 				if ($buttonImage != null) {
-					$buttonImage = '<img src="../../graphics/' . $buttonImage . '" alt="' . getModuleAlias($name, $this->type) . '"></td><td>';
+					$moduleContainer->addElement(new htmlImage('../../graphics/' . $buttonImage, null, null, getModuleAlias($name, $this->type)));
 				}
-				echo '<input type="checkbox" checked name="cb_' . $name . '" tabindex=' . $tabindex . '></td><td>' . $buttonImage . getModuleAlias($name, $this->type) . "<br>\n";
-				echo '</td></tr>';
-				$tabindex++;
+				$moduleContainer->addElement(new htmlOutputText(getModuleAlias($name, $this->type)));
+				$moduleContainer->addElement(new htmlSpacer('10px', null));
 			}
 		}
-		echo '</table></td>';
-		echo "</tr>";
-		
-		echo "<tr><td>";
-			echo _('Repeat password') . '</td><td><input type="password" name="newPassword2" tabindex=2>';
-		echo "</td></tr>\n";
-		echo "<tr><td colspan=3 valign=\"top\"><br><br>";
-			echo '<input type="submit" name="setNewPasswordOk" value="'. _('Ok') . "\" tabindex=$tabindex>";
-			$tabindex++;
-			echo '&nbsp;';
-			echo '<input type="submit" name="setNewPasswordCancel" value="'. _('Cancel') . "\" tabindex=$tabindex>";
-			$tabindex++;
-			echo '&nbsp;&nbsp;&nbsp;';
-			echo '<input type="submit" name="setNewPasswordRandom" value="'. _('Set random password') . "\" tabindex=$tabindex>";
-			$tabindex++;
-			echo "</td></tr>\n";
-		echo "</table>\n";
-		echo "</td></tr>\n";
-		echo "</table>\n";
+		$moduleContainer->colspan = 5;
+		$container->addElement($moduleContainer, true);
+		$container->addElement(new htmlSpacer(null, '10px'), true);
+		// password fields
+		$container->addElement(new htmlOutputText(_('Password')));
+		$pwdInput1 = new htmlInputField('newPassword1');
+		$pwdInput1->setIsPassword(true);
+		$container->addElement($pwdInput1, true);
+		$container->addElement(new htmlOutputText(_('Repeat password')));
+		$pwdInput2 = new htmlInputField('newPassword2');
+		$pwdInput2->setIsPassword(true);
+		$container->addElement($pwdInput2, true);
+		$container->addElement(new htmlSpacer(null, '10px'), true);
+		// buttons
+		$buttonContainer = new htmlTable();
+		$buttonContainer->colspan = 3;
+		$buttonContainer->addElement(new htmlButton('setNewPasswordOk', _('Ok')));
+		$buttonContainer->addElement(new htmlButton('setNewPasswordCancel', _('Cancel')));
+		$buttonContainer->addElement(new htmlButton('setNewPasswordRandom', _('Set random password')));
+		$container->addElement($buttonContainer);
+		// generate HTML
+		$tabindex = 1;
+		parseHtml(null, $container, array(), false, $tabindex, $this->type);
 		// set focus on password field
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
@@ -1329,6 +1330,7 @@ class accountContainer {
 		echo "myElement.focus();\n";
 		echo "//-->\n";
 		echo "</script>\n";
+		echo "</div>\n";
 		$this->printPageFooter();
 	}
 	
