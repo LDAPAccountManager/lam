@@ -85,46 +85,55 @@ if ($result) {
 }
 
 include 'main_header.php';
+echo '<div class="userlist-bright smallPaddingContent">';
+$tabindex = 1;
+$container = new htmlTable();
 
-echo "<h1>" . _("Server information") . "</h1>\n";
+$container->addElement(new htmlSubTitle(_("Server information")), true);
 
-echo "<table class=\"userlist\" rules=\"none\">\n";
+$container->addElement(new htmlOutputText('<b>' . _("Managed suffixes") . '</b>', false));
+$container->addElement(new htmlSpacer('20px', null));
+$container->addElement(new htmlOutputText($namingContexts), true);
 
-echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Managed suffixes") . "</b>&nbsp;&nbsp;</td>";
-echo "<td style=\"padding:10px;\">" . $namingContexts . "</td></tr>";
-
-echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("LDAP version") . "</b>&nbsp;&nbsp;</td>";
-echo "<td style=\"padding:10px;\">" . $supportedldapversion . "</td></tr>";
+$container->addElement(new htmlOutputText('<b>' . _("LDAP version") . '</b>', false));
+$container->addElement(new htmlSpacer('20px', null));
+$container->addElement(new htmlOutputText($supportedldapversion), true);
 
 if ($configcontext != '') {
-	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Config suffix") . "</b>&nbsp;&nbsp;</td>";
-	echo "<td style=\"padding:10px;\">" . $configcontext . "</td></tr>";
+	$container->addElement(new htmlOutputText('<b>' . _("Config suffix") . '</b>', false));
+	$container->addElement(new htmlSpacer('20px', null));
+	$container->addElement(new htmlOutputText($configcontext), true);
 }
 
-echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Schema suffix") . "</b>&nbsp;&nbsp;</td>";
-echo "<td style=\"padding:10px;\">" . $subschemasubentry . "</td></tr>";
+$container->addElement(new htmlOutputText('<b>' . _("Schema suffix") . '</b>', false));
+$container->addElement(new htmlSpacer('20px', null));
+$container->addElement(new htmlOutputText($subschemasubentry), true);
 
 if ($dynamicSubtrees != '') {
-	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Dynamic subtrees") . "</b>&nbsp;&nbsp;</td>";
-	echo "<td style=\"padding:10px;\">" . $dynamicSubtrees . "</td></tr>";
+	$container->addElement(new htmlOutputText('<b>' . _("Dynamic subtrees") . '</b>', false));
+	$container->addElement(new htmlSpacer('20px', null));
+	$container->addElement(new htmlOutputText($dynamicSubtrees), true);
 }
 
-echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("SASL mechanisms") . "</b>&nbsp;&nbsp;</td>";
-echo "<td style=\"padding:10px;\">" . $supportedsaslmechanisms . "</td></tr>";
+$container->addElement(new htmlOutputText('<b>' . _("SASL mechanisms") . '</b>', false));
+$container->addElement(new htmlSpacer('20px', null));
+$container->addElement(new htmlOutputText($supportedsaslmechanisms), true);
 
 if ($vendorname != '') {
-	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Vendor name") . "</b>&nbsp;&nbsp;</td>";
-	echo "<td style=\"padding:10px;\">" . $vendorname . "</td></tr>";
+	$container->addElement(new htmlOutputText('<b>' . _("Vendor name") . '</b>', false));
+	$container->addElement(new htmlSpacer('20px', null));
+	$container->addElement(new htmlOutputText($vendorname), true);
 }
 
 if ($vendorversion != '') {
-	echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><b>" . _("Vendor version") . "</b>&nbsp;&nbsp;</td>";
-	echo "<td style=\"padding:10px;\">" . $vendorversion . "</td></tr>";
+	$container->addElement(new htmlOutputText('<b>' . _("Vendor version") . '</b>', false));
+	$container->addElement(new htmlSpacer('20px', null));
+	$container->addElement(new htmlOutputText($vendorversion), true);
 }
 
-echo "</table>\n";
+parseHtml(null, $container, array(), true, $tabindex, 'user');
 
-
+echo '</div>';
 include 'main_footer.php';
 
 ?>

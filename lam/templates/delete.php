@@ -77,11 +77,9 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
 	// Show HTML Page
 	include 'main_header.php';
+	echo "<div class=\"".$_GET['type']."list-bright smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
-	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
-	echo _('Please confirm:');
-	echo "</b></legend><br>\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
@@ -109,10 +107,18 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	}
 	echo "</table>\n";
 	echo "<br>\n";
-	echo "<input name=\"delete\" type=\"submit\" value=\"" . _('Delete') . "\">&nbsp;\n";
-	echo "<input name=\"cancel\" type=\"submit\" value=\"" . _('Cancel') . "\">\n";
-	echo "</fieldset>\n";
+	echo "<button class=\"smallPadding\" name=\"delete\" id=\"submitButton\">" . _('Delete') . "</button>&nbsp;\n";
+	echo "<button class=\"smallPadding\" name=\"cancel\" id=\"cancelButton\">" . _('Cancel') . "</button>\n";
 	echo "</form>\n";
+	echo "</div>\n";
+	?>
+	<script type="text/javascript" language="javascript">
+	jQuery(document).ready(function() {
+		jQuery('#submitButton').button();
+		jQuery('#cancelButton').button();
+	});
+	</script>
+	<?php
 	include 'main_footer.php';
 }
 
@@ -124,13 +130,11 @@ if (isset($_POST['cancel'])) {
 if (isset($_POST['delete'])) {
 	// Show HTML Page
 	include 'main_header.php';
-	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
-	echo "<fieldset class=\"".$_POST['type']."edit\"><legend><b>";
-	echo _('Deleting. Please stand by ...');
-	echo "</b></legend><br>\n";
-
+	echo "<div class=\"".$_POST['type']."list-bright smallPaddingContent\"><br>\n";
+	echo "<br>\n";
+	
 	// Delete dns
 	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {
 		// Set to true if an real error has happened
@@ -221,6 +225,7 @@ if (isset($_POST['delete'])) {
 			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
 			foreach ($errors as $error) StatusMessage($error[0], $error[1], $error[2]);
 			echo "<br>\n";
+			flush();
 		}
 		else {
 			echo sprintf(_('Error while deleting DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
@@ -230,9 +235,16 @@ if (isset($_POST['delete'])) {
 	}
 	$_SESSION['cache']->refresh_cache(true);
 	echo "<br>\n";
-	echo "<br><input name=\"cancel\" type=\"submit\" value=\"" . _('Back to list') . "\">\n";
-	echo "</fieldset>\n";
+	echo "<br><button class=\"smallPadding\" name=\"cancel\" id=\"backButton\">" . _('Back to list') . "</button>\n";
+	echo "</div>\n";
 	echo "</form>\n";
+	?>
+	<script type="text/javascript" language="javascript">
+	jQuery(document).ready(function() {
+		jQuery('#backButton').button();
+	});
+	</script>
+	<?php
 	include 'main_footer.php';
 
 }
@@ -268,6 +280,7 @@ function deleteDN($dn) {
 	}
 	else {
 		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
+		return $errors;
 	}
 	// delete parent DN
 	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);

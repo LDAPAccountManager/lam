@@ -49,7 +49,7 @@ $types = $_SESSION['config']->get_ActiveTypes();
 
 // check if deletion was canceled
 if (isset($_POST['abort'])) {
-	display_main();
+	display_main(null, null);
 	exit;
 }
 
@@ -102,16 +102,25 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		if ($sr && $info['count'] == 0) {
 			// print header
 			include 'main_header.php';
-			echo "<br>\n" .
-				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
-				"<br>\n<p>" . getAbstractDN($_POST['deleteableOU']) . "</p>\n" .
-				"<br>\n" .
-				"<form action=\"ou_edit.php\" method=\"post\">\n" .
-				"<input type=\"hidden\" name=\"deleteOU\" value=\"submit\">\n" .
-				"<input type=\"hidden\" name=\"deletename\" value=\"" . $_POST['deleteableOU'] . "\">\n" .
-				"<input type=\"submit\" name=\"sure\" value=\"" . _("Delete") . "\">\n" .
-				"<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n" .
-				"</form>";
+			echo '<div class="userlist-bright smallPaddingContent">';
+			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
+			$tabindex = 1;
+			$container = new htmlTable();
+			$label = new htmlOutputText(_("Do you really want to delete this OU?"));
+			$label->colspan = 5;
+			$container->addElement($label, true);
+			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$dnLabel = new htmlOutputText(getAbstractDN($_POST['deleteableOU']));
+			$dnLabel->colspan = 5;
+			$container->addElement($dnLabel, true);
+			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$container->addElement(new htmlButton('sure', _("Delete")));			
+			$container->addElement(new htmlButton('abort', _("Cancel")));
+			$container->addElement(new htmlHiddenInput('deleteOU', 'submit'));		
+			$container->addElement(new htmlHiddenInput('deletename', $_POST['deleteableOU']));		
+			parseHtml(null, $container, array(), false, $tabindex, 'user');
+			echo "</form>";
+			echo '</div>';
 			include 'main_footer.php';
 			exit();
 		}
@@ -132,15 +141,22 @@ display_main($message, $error);
 function display_main($message, $error) {
 	// display main page
 	include 'main_header.php';
-	echo "<h1>" . _("OU editor") . "</h1>";
+	echo '<div class="userlist-bright smallPaddingContent">';
+	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
+
+	$tabindex = 1;
+	$container = new htmlTable();
+	$container->addElement(new htmlSubTitle(_("OU editor")), true);
 	if (isset($error)) {
-		StatusMessage("ERROR", "", $error);
+		$msg = new htmlStatusMessage("ERROR", "", $error);
+		$msg->colspan = 5;
+		$container->addElement($msg, true);
 	}
 	elseif (isset($message)) {
-		StatusMessage("INFO", "", $message);
+		$msg = new htmlStatusMessage("INFO", "", $message);
+		$msg->colspan = 5;
+		$container->addElement($msg, true);
 	}
-	echo ("<br>\n");
-	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
 	
 	$types = array();
 	$typeList = $_SESSION['config']->get_ActiveTypes();
@@ -148,53 +164,43 @@ function display_main($message, $error) {
 		$types[$typeList[$i]] = getTypeAlias($typeList[$i]);
 	}
 	natcasesort($types);
-	$options = "";
+	$options = array();
 	foreach ($types as $name => $title) {
-		$options .= "<optgroup label=\"" . $title . "\">\n";
+		$elements = array();
 		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($name));
 		for ($u = 0; $u < sizeof($units); $u++) {
-			$options .= "<option value=\"" . $units[$u] . "\">" . getAbstractDN($units[$u]) . "</option>\n";
+			$elements[getAbstractDN($units[$u])] = $units[$u];
 		}
-		$options .= "</optgroup>\n";
+		$options[$title] = $elements;
 	}
-	
-	echo ("<fieldset class=\"useredit\"><legend><b>" . _("OU editor") . "</b></legend><br>\n");
-	echo ("<table border=0>\n");
 	// new OU
-	echo ("<tr>\n");
-	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select class=\"rightToLeftText\" size=1 name=\"parentOU\">");
-		echo $options;
-	echo ("</select><td>\n");
-	echo ("<td><input type=text name=\"newOU\"></td>\n");
-	echo "<td>";
-		echo "<input type=\"submit\" name=\"createOU\" value=\"" . _("Ok") . "\">&nbsp;";
-	echo "</td>";
-	echo "<td>";
-		printHelpLink(getHelp('', '601'), '601');
-	echo "</td>\n";
-	echo ("</tr>\n");
-	echo "<tr><td colspan=5>&nbsp;</td></tr>\n";
-	// delete OU
-	echo ("<tr>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select class=\"rightToLeftText\" size=1 name=\"deleteableOU\">");
-		echo $options;
-	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo "<td>";
-		echo "<input type=\"submit\" name=\"deleteOU\" value=\"" . _("Ok") . "\">&nbsp;";
-	echo "</td>";
-	echo "<td>";
-		printHelpLink(getHelp('', '602'), '602');
-	echo "</td>\n";
-	echo ("</tr>\n");
-	echo ("</table>\n");
-	echo ("</fieldset>\n");
-	echo ("<br>\n");
+	$container->addElement(new htmlOutputText(_("New organizational unit")));
+	$parentOUSelect = new htmlSelect('parentOU', $options, array());
+	$parentOUSelect->setContainsOptgroups(true);
+	$parentOUSelect->setHasDescriptiveElements(true);
+	$parentOUSelect->setRightToLeftTextDirection(true);
+	$parentOUSelect->setSortElements(false);
+	$container->addElement($parentOUSelect);
+	$container->addElement(new htmlInputField('newOU'));
+	$container->addElement(new htmlButton('createOU', _("Ok")));
+	$container->addElement(new htmlHelpLink('601'), true);
 	
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+
+	// delete OU
+	$container->addElement(new htmlOutputText(_("Delete organizational unit")));
+	$deleteableOUSelect = new htmlSelect('deleteableOU', $options, array());
+	$deleteableOUSelect->setContainsOptgroups(true);
+	$deleteableOUSelect->setHasDescriptiveElements(true);
+	$deleteableOUSelect->setRightToLeftTextDirection(true);
+	$deleteableOUSelect->setSortElements(false);
+	$container->addElement($deleteableOUSelect);
+	$container->addElement(new htmlOutputText(''));
+	$container->addElement(new htmlButton('deleteOU', _("Ok")));
+	$container->addElement(new htmlHelpLink('602'), true);
+	
+	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
+	echo '</div>';
 	include 'main_footer.php';
 }

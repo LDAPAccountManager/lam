@@ -147,6 +147,10 @@ tr.highlight {
 	padding: 0.1em 0.4em !important;
 }
 
+.smallPaddingContent {
+	padding: 0.5em;
+}
+
 /** subtitles */
 div.subTitle {
 	margin: 20px 0px 15px 0px;
