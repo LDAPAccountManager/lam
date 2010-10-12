@@ -958,6 +958,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$managerElement = new htmlTableExtendedSelect('manager', $options, $optionsSelected, _('Manager'), 'manager');
 			$managerElement->setHasDescriptiveElements(true);
 			$managerElement->setRightToLeftTextDirection(true);
+			$managerElement->setSortElements(false);
 			$fieldContainer->addElement($managerElement, true);
 		}
 		// photo
