@@ -667,6 +667,8 @@ class htmlSelect extends htmlElement {
 	private $selectedElements;
 	/** descriptive elements */
 	private $hasDescriptiveElements = false;
+	/** contains optgroups */
+	private $containsOptgroups = false;
 	/** sorting enabled */
 	private $sortElements = true;
 	/** right to left text direction */
@@ -676,9 +678,20 @@ class htmlSelect extends htmlElement {
 	
 	/**
 	 * Constructor.
-	 *
+	 * 
+	 * <br>Examples:
+	 * <br>
+	 * <br>$select = new htmlSelect('myName', array('value1', 'value2'), array('value1'));
+	 * <br>
+	 * <br>$select = new htmlSelect('myName', array('label1' => 'value1', 'label2' => 'value2'), array('value1'));
+	 * <br>$select->setHasDescriptiveElements(true);
+	 * <br>
+	 * <br>$select = new htmlSelect('myName', array('optgroupLabel' => array('value1', 'value2')), array('value1'));
+	 * <br>$select->setHasDescriptiveElements(true);
+	 * <br>$select->setContainsOptgroups(true);
+	 * 
 	 * @param String $name element name
-	 * @param array $elements list of elememts (label => value)
+	 * @param array $elements list of elements array(label => value) or array(value1, value2) or array('optgroup' => array(...))
 	 * @param array $selectedElements list of selected elements (optional, default none)
 	 * @param int $size size (optional, default = 1)
 	 */
@@ -721,22 +734,49 @@ class htmlSelect extends htmlElement {
 		}
 		echo '<select' . $class . $name . $size . $multi . $disabled . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
+		if ($this->containsOptgroups) {
+			foreach ($this->elements as $label => $elements) {
+				if (sizeof($elements) > 0) {
+					echo '<optgroup label="' . $label . '">';
+					$this->printOptionsHTML($elements);
+					echo '</optgroup>';
+				}
+			}
+		}
+		else {
+			$this->printOptionsHTML($this->elements);
+		}
+		echo "</select>\n";
+		if ($this->multiSelect) {
+			return array($this->name => 'multiselect');
+		}
+		else {
+			return array($this->name => 'select');
+		}
+	}
+	
+	/**
+	 * Prints the HTML code of the option tags.
+	 *
+	 * @param array $elements list of options
+	 */
+	private function printOptionsHTML($elements) {
 		// sorting
 		if ($this->sortElements) {
 			if ($this->hasDescriptiveElements) {
-				$labels = array_keys($this->elements);
+				$labels = array_keys($elements);
 				natcasesort($labels);
 				$newElements = array();
 				foreach ($labels as $label) {
-					$newElements[$label] = $this->elements[$label];
+					$newElements[$label] = $elements[$label];
 				}
-				$this->elements = $newElements;
+				$elements = $newElements;
 			}
 			else {
-				natcasesort($this->elements);
+				natcasesort($elements);
 			}
 		}
-		foreach ($this->elements as $key => $value) {
+		foreach ($elements as $key => $value) {
 			$selected = '';
 			if ($this->hasDescriptiveElements) {
 				if (in_array($value, $this->selectedElements)) {
@@ -751,13 +791,6 @@ class htmlSelect extends htmlElement {
 				echo "<option$selected>" . htmlspecialchars($value) . "</option>\n";
 			}
 		}
-		echo "</select>\n";
-		if ($this->multiSelect) {
-			return array($this->name => 'multiselect');
-		}
-		else {
-			return array($this->name => 'select');
-		}
 	}
 	
 	/**
@@ -767,6 +800,15 @@ class htmlSelect extends htmlElement {
 	 */
 	public function setHasDescriptiveElements($hasDescriptiveElements) {
 		$this->hasDescriptiveElements = $hasDescriptiveElements;
+	}
+	
+	/**
+	 * Specifies if the elements are divided into optgroups. 
+	 * 
+	 * @param boolean $containsOptgroups activates optgroups
+	 */
+	public function setContainsOptgroups($containsOptgroups) {
+		$this->containsOptgroups = $containsOptgroups;
 	}
 	
 	/**
