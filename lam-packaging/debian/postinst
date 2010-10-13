@@ -35,8 +35,12 @@ for file in $files; do
 done
 if [ ! -h /usr/share/ldap-account-manager/lib/fpdf.php ]; then\
   ln -s /usr/share/fpdf/fpdf.php /usr/share/ldap-account-manager/lib/fpdf.php; fi
-if [ ! -h /usr/share/ldap-account-manager/templates/lib/jquery.js ]; then\
-  ln -s /usr/share/javascript/jquery/jquery.min.js /usr/share/ldap-account-manager/templates/lib/jquery.js; fi
+if [ -h /usr/share/ldap-account-manager/templates/lib/jquery.js ]; then\
+  mv /usr/share/ldap-account-manager/templates/lib/jquery.js /usr/share/ldap-account-manager/templates/lib/jquery-core.js
+else
+  if [ ! -h /usr/share/ldap-account-manager/templates/lib/jquery-core.js ]; then\
+    ln -s /usr/share/javascript/jquery/jquery.min.js /usr/share/ldap-account-manager/templates/lib/jquery-core.js; fi
+fi
 if [ ! -h /usr/share/ldap-account-manager/templates/lib/jquery-ui.js ]; then\
   ln -s /usr/share/javascript/jquery-ui/jquery-ui.min.js /usr/share/ldap-account-manager/templates/lib/jquery-ui.js; fi
 if [ ! -h /usr/share/ldap-account-manager/config ]; then\
