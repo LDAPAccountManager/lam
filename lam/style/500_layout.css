@@ -41,23 +41,28 @@ body {
 
 /* links */
 a {
-color:blue;
-text-decoration:none;
+color: blue;
+text-decoration: none;
+}
+
+a:link {
+color: blue;
+text-decoration: none;
 }
 
 a:visited {
-color:blue;
-text-decoration:none;
+color: blue;
+text-decoration: none;
 }
 
 a:hover {
-color:red;
-text-decoration:none;
+color: red;
+text-decoration: none;
 }
 
 a:active {
-color:red;
-text-decoration:none;
+color: red;
+text-decoration: none;
 }
 
 a img {
