@@ -6,11 +6,11 @@
   - LAM Pro:
    -> Zarafa support (user, group, server)
    -> Password policy: allow to force password change (RFE 3026940)
-   -> password reset page: mail subject, text and from address can be set in server profile
+   -> Password reset page: mail subject, text and from address can be set in server profile
    -> Self service: Asterisk (voicemail) password synchronisation
-  - fixed bugs:
-   -> email check did not include "+" (3033605)
-   -> tab index on login page (3042622)
+  - Fixed bugs:
+   -> Email check did not include "+" (3033605)
+   -> Tab index on login page (3042622)
 
 
 04.07.2010 3.1.1
