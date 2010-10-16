@@ -56,10 +56,11 @@ foreach ($toSort as $key => $value) {
 	$tools[] = new $key();
 }
 
-echo "<p>&nbsp;</p>\n";
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 
 // print tools table
-echo "<table class=\"userlist\" rules=\"none\">\n";
+$container = new htmlTable();
+$container->addElement(new htmlSubTitle(_('Tools')), true);
 
 for ($i = 0; $i < sizeof($tools); $i++) {
 	// check access level
@@ -69,25 +70,17 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 	if ($tools[$i]->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
 		continue;
 	}
-	// print tool
-	echo "<tr class=\"userlist-bright\">\n";
-		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
-		echo "<td><br>";
-			echo "<a href=\"" . $tools[$i]->getLink() . "\">";
-				echo "<img src=\"../graphics/" . $tools[$i]->getImageLink() . "\" alt=\"" . $tools[$i]->getName() . "\">";
-				echo " &nbsp;<b>" . $tools[$i]->getName() . "</b>";
-			echo "</a>\n";
-		echo "<br><br></td>\n";
-		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
-		echo "<td>";
-			echo $tools[$i]->getDescription();
-		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
-	echo "</tr>\n";
+	// add tool
+	$container->addElement(new htmlLink($tools[$i]->getName(), $tools[$i]->getLink(), '../graphics/' . $tools[$i]->getImageLink()));
+	$container->addElement(new htmlSpacer('10px', null));
+	$container->addElement(new htmlOutputText($tools[$i]->getDescription()), true);
+	$container->addElement(new htmlSpacer(null, '20px'), true);
 }
 
-echo "</table>\n";
+$tabindex = 1;
+parseHtml(null, $container, array(), true, $tabindex, 'user');
 
+echo "</div>";
 
 include 'main_footer.php';
 
