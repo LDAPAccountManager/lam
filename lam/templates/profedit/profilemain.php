@@ -93,89 +93,75 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$profileList = getAccountProfiles($profileClasses[$i]['scope']);
 	natcasesort($profileList);
-	$profiles = "";
-	foreach ($profileList as $p) {
-		$profiles = $profiles . "<option>" . $p . "</option>\n";
-	}
-	$profileClasses[$i]['profiles'] = $profiles;
+	$profileClasses[$i]['profiles'] = $profileList;
 }
 
 include '../main_header.php';
-
-echo "<h1>" . _('Profile editor') . "</h1>\n";
-
-if (isset($_GET['savedSuccessfully'])) {
-	StatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
-}
-if (isset($_GET['deleteFailed'])) {
-	StatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
-}
-if (isset($_GET['deleteSucceeded'])) {
-	StatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
-}
-
-echo "<br>\n";
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 echo "<form action=\"profilemain.php\" method=\"post\">\n";
 
+$container = new htmlTable();
+
+if (isset($_GET['savedSuccessfully'])) {
+	$message = new htmlStatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
+	$message->colspan = 10;
+	$container->addElement($message, true);
+}
+if (isset($_GET['deleteFailed'])) {
+	$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
+	$message->colspan = 10;
+	$container->addElement($message, true);
+}
+if (isset($_GET['deleteSucceeded'])) {
+	$message = new htmlStatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
+	$message->colspan = 10;
+	$container->addElement($message, true);
+}
+
 // new profile
-echo "<fieldset class=\"useredit\">\n";
-echo "<legend>\n";
-echo "<b>" . _('Create a new profile') . "</b>\n";
-echo "</legend>\n";
-echo "<br><table border=0>\n";
-	echo "<tr><td>\n";
-		echo "<select class=\"user\" name=\"createProfile\">\n";
-			$sortedTypes = array();
-			for ($i = 0; $i < sizeof($profileClasses); $i++) {
-				$sortedTypes[$profileClasses[$i]['scope']] = $profileClasses[$i]['title'];
-			}
-			natcasesort($sortedTypes);
-			foreach ($sortedTypes as $key => $value) {
-				echo "<option value=\"" . $key . "\">" . $value . "</option>\n";
-			}
-		echo "</select>\n";
-	echo "</td>\n";
-	echo "<td>\n";
-		echo "<input type=\"submit\" name=\"createProfileButton\" value=\"" . _('Create') . "\">";
-	echo "</td></tr>\n";
-echo "</table>\n";
-echo "</fieldset>\n";
-echo "<br>\n";
+$container->addElement(new htmlSubTitle(_('Create a new profile')), true);
+$sortedTypes = array();
+for ($i = 0; $i < sizeof($profileClasses); $i++) {
+	$sortedTypes[$profileClasses[$i]['title']] = $profileClasses[$i]['scope'];
+}
+natcasesort($sortedTypes);
+$newProfileSelect = new htmlSelect('createProfile', $sortedTypes);
+$newProfileSelect->setHasDescriptiveElements(true);
+$container->addElement($newProfileSelect);
+$container->addElement(new htmlButton('createProfileButton', _('Create')), true);
+
+$container->addElement(new htmlSpacer(null, '10px'), true);
 
 // existing profiles
-echo "<fieldset class=\"useredit\">\n";
-echo "<legend>\n";
-echo "<b>" . _('Manage existing profiles') . "</b>\n";
-echo "</legend>\n";
-echo "<br><table border=0>\n";
+$container->addElement(new htmlSubTitle(_('Manage existing profiles')), true);
+$existingContainer = new htmlTable();
+$existingContainer->colspan = 5;
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	if ($i > 0) {
-		echo "<tr><td colspan=3>&nbsp;</td></tr>\n";
+		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 	}
-	echo "<tr>\n";
-		echo "<td>";
-			echo "<img alt=\"" . $profileClasses[$i]['title'] . "\" src=\"../../graphics/" . $profileClasses[$i]['scope'] . ".png\">&nbsp;\n";
-			echo $profileClasses[$i]['title'];
-		echo "</td>\n";
-		echo "<td>&nbsp;";
-			echo "<select class=\"user\" style=\"width: 20em;\" name=\"profile_" . $profileClasses[$i]['scope'] . "\">\n";
-				echo $profileClasses[$i]['profiles'];
-			echo "</select>\n";
-		echo "</td>\n";
-		echo "<td>&nbsp;";
-			echo "<input type=\"image\" src=\"../../graphics/edit.png\" name=\"editProfile_" . $profileClasses[$i]['scope'] . "\" " .
-			 "alt=\"" . _('Edit') . "\" title=\"" . _('Edit') . "\">";
-			echo "&nbsp;";
-			echo "<input type=\"image\" src=\"../../graphics/delete.png\" name=\"deleteProfile_" . $profileClasses[$i]['scope'] . "\" " .
-			"alt=\"" . _('Delete') . "\" title=\"" . _('Delete') . "\">";
-		echo "</td>\n";
-	echo "</tr>\n";
+	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['scope']));
+	$existingContainer->addElement(new htmlSpacer('3px', null));
+	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
+	$existingContainer->addElement(new htmlSpacer('3px', null));
+	$existingContainer->addElement(new htmlSelect('profile_' . $profileClasses[$i]['scope'], $profileClasses[$i]['profiles']));
+	$existingContainer->addElement(new htmlSpacer('3px', null));
+	$editButton = new htmlButton('editProfile_' . $profileClasses[$i]['scope'], 'edit.png', true);
+	$editButton->setTitle(_('Edit'));
+	$existingContainer->addElement($editButton);
+	$deleteButton = new htmlButton('deleteProfile_' . $profileClasses[$i]['scope'], 'delete.png', true);
+	$deleteButton->setTitle(_('Delete'));
+	$existingContainer->addElement($deleteButton);
+	$existingContainer->addNewLine();
 }
-echo "</table>\n";
-echo "</fieldset>\n";
-echo "<br>\n";
+$container->addElement($existingContainer);
+
+// generate content
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo "</form>\n";
+echo "</div>\n";
 include '../main_footer.php';
 
 ?>
