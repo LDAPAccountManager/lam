@@ -1482,17 +1482,24 @@ class accountContainer {
 		else {
 			$text = _("Account was modified successfully.");
 		}
-		StatusMessage('INFO', _('LDAP operation successful.'), $text);
+		echo "<div class=\"".$this->type."list-bright smallPaddingContent\">";
 		
-		echo "<br>\n";
-		echo "<table class=\"".$this->type."list\" width=\"100%\" style=\"border-width:0px;\"><tr><td>\n";
+		$container = new htmlTable();
+		$message = new htmlStatusMessage('INFO', _('LDAP operation successful.'), $text);
+		$message->colspan = 5;
+		$container->addElement($message, true);
+		$container->addElement(new htmlSpacer(null, '20px'), true);
 		
 		$type = new $this->type();
-		echo "<input name=\"accountContainerCreateAgain\" type=\"submit\" value=\"" . $type->LABEL_CREATE_ANOTHER_ACCOUNT . "\"> \n";
-		echo "<input name=\"accountContainerBackToList\" type=\"submit\" value=\"" . $type->LABEL_BACK_TO_ACCOUNT_LIST . "\"> \n";
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-		echo "<input name=\"accountContainerCreatePDF\" type=\"submit\" value=\"" . _('Create PDF file') . "\">\n";
-		echo "</td></tr></table>\n";
+		$container->addElement(new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT));
+		$container->addElement(new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST));
+		$container->addElement(new htmlSpacer('10px', null));
+		$container->addElement(new htmlButton('accountContainerCreatePDF', _('Create PDF file')));
+		
+		$tabindex = 1;
+		parseHtml(null, $container, array(), false, $tabindex, $this->type);
+
+		echo "</div>\n";
 		$this->printPageFooter();
 	}
 	
