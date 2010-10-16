@@ -196,7 +196,7 @@ class posixGroup extends baseModule implements passwordService {
 		$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
 		$return->addElement(new htmlHelpLink('members'), true);
 		// password buttons
-		if (isset($this->attributes['userPassword'][0])) {
+		if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
 			$return->addElement(new htmlOutputText(_('Password')));
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {

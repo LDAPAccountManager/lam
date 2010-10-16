@@ -1002,7 +1002,7 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, array($this->attributes['loginShell'][0]), _('Login shell'), 'loginShell'), true);
 		}
 		// password buttons
-		if (isset($this->attributes['userPassword'][0])) {
+		if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
 			$return->addElement(new htmlOutputText(_('Password')));
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
