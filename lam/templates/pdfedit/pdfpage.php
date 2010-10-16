@@ -399,7 +399,47 @@ if (sizeof($saveErrors) > 0) {
 		<br>
 		<form action="pdfpage.php" method="post">
 			<table>
-				<tr>
+				<tr><td>
+			<table width="100%">
+				<tr><td align="left">
+					<?php echo _("Structure name"); ?>:
+					<?php
+						$structureName = '';
+						if (isset($_GET['edit'])) {
+							$structureName = $_GET['edit'];
+						}
+						elseif (isset($_GET['pdfname'])) {
+							$structureName = $_GET['pdfname'];
+						}
+						else if (isset($_POST['pdfname'])) {
+							$structureName = $_POST['pdfname'];
+						}
+					?>
+					<input type="text" name="pdfname" value="<?php echo $structureName;?>">
+					<?php
+						printHelpLink(getHelp('', '360'), '360');
+					?>
+					</td><td align="right">
+					<button id="saveButton" name="submit"><?php echo _("Save");?></button>
+					&nbsp;
+					<button id="cancelButton" name="abort"><?php echo _("Cancel");?></button>
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							jQuery('#saveButton').button({
+						        icons: {
+						      	  primary: 'saveButton'
+						    	}
+							});
+							jQuery('#cancelButton').button({
+						        icons: {
+						    	  primary: 'cancelButton'
+						  	}
+							});
+						});
+					</script>
+				</td></tr>
+			</table>
+			</td></tr><tr>
 					<!-- print current structure -->
 					<td align="left" valign="top">
 						<fieldset class="<?php echo $_GET['type']; ?>edit">
@@ -659,43 +699,11 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 								</select>
 								<input type="submit" name="add_new_field" value="<?php echo _('Add');?>">
 							</fieldset>
-						<p>&nbsp;</p>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3">
-						<fieldset class="<?php echo $_GET['type']; ?>edit">
-							<legend>
-								<b><?php echo _("Save"); ?></b>
-							</legend><BR>
-								<b><?php echo _("Structure name"); ?>:</b>
-								<?php
-									$structureName = '';
-									if (isset($_GET['edit'])) {
-										$structureName = $_GET['edit'];
-									}
-									elseif (isset($_GET['pdfname'])) {
-										$structureName = $_GET['pdfname'];
-									}
-									else if (isset($_POST['pdfname'])) {
-										$structureName = $_POST['pdfname'];
-									}
-								?>
-								<input type="text" name="pdfname" value="<?php echo $structureName;?>">
-								<?php
-									printHelpLink(getHelp('', '360'), '360');
-								?>
-								<br><br>
-								<input type="submit" name="submit" value="<?php echo _("Save");?>">
-								&nbsp;
-								<input type="submit" name="abort" value="<?php echo _("Cancel");?>">
-						</fieldset>
 					</td>
 				</tr>
 			</table>
 		<input type="hidden" name="modules" value="<?php echo $modules;?>">
 		<input type="hidden" name="type" value="<?php echo $_GET['type'];?>">
-		<br><br><br>
 	</form>
 
 <?php
