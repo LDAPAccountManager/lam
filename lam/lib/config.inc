@@ -746,7 +746,7 @@ class LAMConfig {
 			 		$ip = $arr_value;
 					$servername = "";
 				}
-				if (isset($ip) && is_string($ip) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*$/i", $ip)) {
+				if (isset($ip) && is_string($ip) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $ip)) {
 					// Check if the IP has a server name
 					if (!empty($servername)) {
 						$valid_ips[] = $servername.":".$ip;
@@ -754,6 +754,10 @@ class LAMConfig {
 					else {
 						$valid_ips[] = $ip;
 					}
+				}
+				else {
+					// wrong format
+					return false;
 				}
 			}
 			// Check that the array is not empty
