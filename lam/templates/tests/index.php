@@ -42,20 +42,25 @@ if (!checkIfWriteAccessIsAllowed()) die();
 setlanguage();
 
 include '../main_header.php';
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 
-echo "<h1>" . _("LAM tests") . "</h1>\n";
+$container = new htmlTable();
+$container->addElement(new htmlSubTitle(_("LAM tests")), true);
 
-echo "<table class=\"userlist\" rules=\"none\">\n";
+$container->addElement(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php'));
+$container->addElement(new htmlSpacer('20px', null));
+$container->addElement(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), true);
 
-echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><a href=\"lamdaemonTest.php\"><b>" . _("Lamdaemon test") . "</b>&nbsp;&nbsp;</a></td>";
-echo "<td style=\"padding:10px;\">" . _("Check if quotas and homedirectories can be managed.") . "</td></tr>";
+$container->addElement(new htmlSpacer(null, '20px'), true);
 
-echo "<tr class=\"userlist-bright\"><td style=\"padding:10px;\"><a href=\"schemaTest.php\"><b>" . _("Schema test") . "</b>&nbsp;&nbsp;</a></td>";
-echo "<td style=\"padding:10px;\">" . _("Check if the LDAP schema fits the requirements of the selected account modules.") . "</td></tr>";
+$container->addElement(new htmlLink(_("Schema test"), 'schemaTest.php'));
+$container->addElement(new htmlSpacer('20px', null));
+$container->addElement(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), true);
 
-echo "</table>\n";
+$tabindex = 1;
+parseHtml(null, $container, array(), true, $tabindex, 'user');
 
-
+echo "</div>\n";
 include '../main_footer.php';
 
 ?>

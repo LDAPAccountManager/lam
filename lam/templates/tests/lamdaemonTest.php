@@ -43,8 +43,11 @@ if (!checkIfWriteAccessIsAllowed()) die();
 setlanguage();
 
 include '../main_header.php';
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 
-echo "<h1>" . _("Lamdaemon test") . "</h1>\n";
+$container = new htmlTable();
+$container->addElement(new htmlTitle(_("Lamdaemon test")), true);
 
 $servers = explode(";", $_SESSION['config']->get_scriptServers());
 $serverIDs = array();
@@ -61,51 +64,42 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 }
 
 if (isset($_POST['runTest'])) {
-	lamRunLamdaemonTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']));
+	lamRunLamdaemonTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']), $container);
 }
 else if ((sizeof($servers) > 0) && isset($servers[0]) && ($servers[0] != '')) {
-	echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
-	echo "<fieldset class=\"useredit\"><legend><b>" . _("Lamdaemon test") . "</b></legend><br>\n";
-	echo "<table>\n";
-	echo "<tr>\n";
-		echo "<td>\n";
-			echo _("Server");
-		echo "</td>\n";
-		echo "<td>\n";
-			echo "<select name=\"server\">\n";
-				for ($i = 0; $i < sizeof($servers); $i++) {
-					$servers[$i] = explode(":", $servers[$i]);
-					$serverName = $servers[$i][0];
-					$title = $serverName;
-					if (isset($servers[$i][1])) {
-						$title = $servers[$i][1] . " (" . $serverName . ")";
-					}
-					echo "<option value=\"$serverName\">$title</option>\n";
-				}
-			echo "</select>\n";
-		echo "</td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-		echo "<td>\n";
-			echo _("Check quotas");
-		echo "</td>\n";
-		echo "<td>\n";
-			echo "<input type=\"checkbox\" name=\"checkQuotas\">\n";
-		echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
+	$container->addElement(new htmlOutputText(_("Server")));
+	$serverOptions = array();
+	for ($i = 0; $i < sizeof($servers); $i++) {
+		$servers[$i] = explode(":", $servers[$i]);
+		$serverName = $servers[$i][0];
+		$title = $serverName;
+		if (isset($servers[$i][1])) {
+			$title = $servers[$i][1] . " (" . $serverName . ")";
+		}
+		$serverOptions[$title] = $serverName;
+	}
+	$serverSelect = new htmlSelect('server', $serverOptions);
+	$serverSelect->setHasDescriptiveElements(true);
+	$container->addElement($serverSelect, true);
 	
-	echo "<br>";
+	$container->addElement(new htmlOutputText(_("Check quotas")));
+	$container->addElement(new htmlInputCheckbox('checkQuotas', false), true);
 	
-	echo "<input type=\"submit\" name=\"runTest\" value=\"" . _("Ok") . "\">\n";
-	echo "</fieldset>\n";
-	echo "</form>\n";
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	
+	$okButton = new htmlButton('runTest', _("Ok"));
+	$okButton->colspan = 2;
+	$container->addElement($okButton);
 }
 else {
-	StatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.'));
+	$container->addElement(new htmlStatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.')));
 }
 
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
+echo "</form>\n";
+echo "</div>\n";
 include '../main_footer.php';
 
 
@@ -116,14 +110,17 @@ include '../main_footer.php';
  * @param boolean $stopTest specifies if test should be run
  * @param connection $handle SSH connection
  * @param string $testText describing text
+ * @param htmlTable $container container for HTML output
  * @return boolean true, if errors occured
  */
-function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
-	$okImage = "<img width=16 height=16 src=\"../../graphics/pass.png\" alt=\"\">\n";
-	$failImage = "<img width=16 height=16 src=\"../../graphics/fail.png\" alt=\"\">\n";
+function lamTestLamdaemon($command, $stopTest, $handle, $testText, $container) {
+	$okImage = "../../graphics/pass.png";
+	$failImage = "../../graphics/fail.png";
+	$spacer = new htmlSpacer('10px', null);
 	// run lamdaemon and get user quotas
 	if (!$stopTest) {
-		echo "<tr class=\"userlist-bright\">\n<td nowrap>" . $testText . "&nbsp;&nbsp;</td>\n";
+		$container->addElement(new htmlOutputText($testText));
+		$container->addElement($spacer);
 		flush();
 		$lamdaemonOk = false;
 		$output = $handle->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
@@ -131,24 +128,32 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 			$lamdaemonOk = true;
 		}
 		if ($lamdaemonOk) {
-			echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>";
-			echo "<td>" . _("Lamdaemon successfully run.") . "</td>";
+			$container->addElement(new htmlImage($okImage));
+			$container->addElement($spacer);
+			$container->addElement(new htmlOutputText(_("Lamdaemon successfully run.")), true);
 		}
 		else {
-			echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
-			echo "<td>\n";
+			$container->addElement(new htmlImage($failImage));
+			$container->addElement($spacer);
 			if (!(strpos($output, 'ERROR,') === 0) && !(strpos($output, 'WARN,') === 0)) {
 				// error messages from console (e.g. sudo)
-				StatusMessage('ERROR', $output);
+				$container->addElement(new htmlStatusMessage('ERROR', $output), true);
 			}
 			else {
 				// error messages from lamdaemon
-				call_user_func_array('StatusMessage', explode(",", $output));
+				$parts = explode(",", $output);
+				if (sizeof($parts) == 2) {
+					$container->addElement(new htmlStatusMessage($parts[0], $parts[1]), true);
+				}
+				elseif (sizeof($parts) == 3) {
+					$container->addElement(new htmlStatusMessage($parts[0], $parts[1], $parts[2]), true);
+				}
+				else {
+					$container->addElement(new htmlOutputText($output), true);
+				}
 			}
-			echo "</td>\n";
 			$stopTest = true;
 		}
-		echo "</tr>\n";
 	}
 	flush();
 	return $stopTest;
@@ -160,41 +165,45 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
  * @param String $serverName server ID
  * @param String $serverTitle server name
  * @param boolean $testQuota true, if Quotas should be checked
+ * @param htmlTable $container container for HTML output
  */
-function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
+function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$SPLIT_DELIMITER = "###x##y##x###";
-	$okImage = "<img width=16 height=16 src=\"../../graphics/pass.png\" alt=\"\">\n";
-	$failImage = "<img width=16 height=16 src=\"../../graphics/fail.png\" alt=\"\">\n";
+	$okImage = "../../graphics/pass.png";
+	$failImage = "../../graphics/fail.png";
 	
-	echo "<table class=\"userlist\" rules=\"none\">\n";
-
 	flush();
 	$stopTest = false;
+	$spacer = new htmlSpacer('10px', null);
 
-	echo "<tr class=\"userlist-bright\">\n<td colspan=\"3\" align=\"center\"><b>$serverTitle</b>\n</td>\n</tr>";
+	$container->addElement(new htmlSubTitle($serverTitle), true);
 
 	// check script server and path
-	echo "<tr class=\"userlist-bright\">\n<td nowrap>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
+	$container->addElement(new htmlOutputText(_("Lamdaemon server and path")));
+	$container->addElement(new htmlSpacer('10px', null));
 	if (!isset($serverName) || (strlen($serverName) < 3)) {
-		echo "<td>" . $failImage . "</td>\n";
-		echo "<td>" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
+		$container->addElement(new htmlImage($failImage));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(_("No lamdaemon server set, please update your LAM configuration settings.")), true);
 	}
 	elseif (($_SESSION['config']->get_scriptPath() == null) || (strlen($_SESSION['config']->get_scriptPath()) < 10)) {
-		echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
-		echo "<td>" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
+		$container->addElement(new htmlImage($failImage));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(_("No lamdaemon path set, please update your LAM configuration settings.")), true);
 		$stopTest = true;
 	}
 	else {
-		echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>\n";
-		echo "<td>" . sprintf(_("Using %s as lamdaemon remote server."), $serverName) . "</td>";
+		$container->addElement(new htmlImage($okImage));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(sprintf(_("Using %s as lamdaemon remote server."), $serverName)), true);
 	}
-	echo "</tr>\n";
 
 	flush();
 
 	// check Unix account of LAM admin
 	if (!$stopTest) {
-		echo "<tr class=\"userlist-bright\">\n<td nowrap>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
+		$container->addElement(new htmlOutputText(_("Unix account")));
+		$container->addElement($spacer);
 		$credentials = $_SESSION['ldap']->decrypt_login();
 		$unixOk = false;
 		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
@@ -206,22 +215,24 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 			}
 		}
 		if ($unixOk) {
-			echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>\n";
-			echo "<td>" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
+			$container->addElement(new htmlImage($okImage));
+			$container->addElement($spacer);
+			$container->addElement(new htmlOutputText(sprintf(_("Using %s to connect to remote server."), $userName)), true);
 		}
 		else {
-			echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
-			echo "<td>" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
+			$container->addElement(new htmlImage($failImage));
+			$container->addElement($spacer);
+			$container->addElement(new htmlOutputText(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0])), true);
 			$stopTest = true;
 		}
-		echo "</tr>\n";
 	}
 
 	flush();
 
 	// check SSH login
 	if (!$stopTest) {
-		echo "<tr class=\"userlist-bright\">\n<td nowrap>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
+		$container->addElement(new htmlOutputText(_("SSH connection")));
+		$container->addElement($spacer);
 		flush();
 		$sshOk = false;
 		$handle = lamTestConnectSSH($serverName);
@@ -231,35 +242,42 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota) {
 			}
 		}
 		if ($sshOk) {
-			echo "<td nowrap>" . $okImage . "&nbsp;&nbsp;</td>";
-			echo "<td>" . _("SSH connection could be established.") . "</td>";
+			$container->addElement(new htmlImage($okImage));
+			$container->addElement($spacer);
+			$container->addElement(new htmlOutputText(_("SSH connection could be established.")), true);
 		}
 		else {
-			echo "<td nowrap>" . $failImage . "&nbsp;&nbsp;</td>\n";
-			echo "<td>" . _("Unable to connect to remote server!") . "</td>";
+			$container->addElement(new htmlImage($failImage));
+			$container->addElement($spacer);
+			$container->addElement(new htmlOutputText(_("Unable to connect to remote server!")), true);
 			$stopTest = true;
 		}
-		echo "</tr>\n";
 	}
 
 	flush();
 	
-	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"));
-	$handle = lamTestConnectSSH($serverName);
-	@$handle->login($userName, $credentials[1]);
-	$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"));
-	if ($testQuota) {
+	if (!$stopTest) {
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"), $container);
+	}
+	
+	if (!$stopTest) {
 		$handle = lamTestConnectSSH($serverName);
 		@$handle->login($userName, $credentials[1]);
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
-		$handle = lamTestConnectSSH($serverName);
-		@$handle->login($userName, $credentials[1]);
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $handle, _("Lamdaemon: read quotas"));
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"), $container);
+		if (!$stopTest && $testQuota) {
+			$handle = lamTestConnectSSH($serverName);
+			@$handle->login($userName, $credentials[1]);
+			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $handle, _("Lamdaemon: Quota module installed"), $container);
+			$handle = lamTestConnectSSH($serverName);
+			@$handle->login($userName, $credentials[1]);
+			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $handle, _("Lamdaemon: read quotas"), $container);
+		}
 	}
 
-	echo "</table><br>\n";
-	
-	echo "<h2>" . _("Lamdaemon test finished.") . "</h2>\n";
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$endMessage = new htmlOutputText(_("Lamdaemon test finished."));
+	$endMessage->colspan = 5;
+	$container->addElement($endMessage);
 }
 
 /**

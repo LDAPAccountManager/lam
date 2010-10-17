@@ -46,45 +46,47 @@ if (!checkIfWriteAccessIsAllowed()) die();
 setlanguage();
 
 include '../main_header.php';
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 
-echo "<h1>" . _("Schema test") . "</h1>\n";
+$container = new htmlTable();
+
+$container->addElement(new htmlTitle(_("Schema test")), true);
 
 get_schema_objectclasses();
 $classes = get_cached_schema('objectclasses');
 
 if (!is_array($classes)) {
-	StatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.'));
-	include '../main_footer.php';
-	die();
+	$container->addElement(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')));	
 }
-
-// loop for active account types
-for ($t = 0; $t < sizeof($types); $t++) {
-	$modules = $_SESSION['config']->get_AccountModules($types[$t]);
-	echo "<h2>" . getTypeAlias($types[$t]) . "</h2>\n";
-	echo "<table width=\"100%\" class=\"" . $types[$t] . "list\">\n";
-
-	for ($m = 0; $m < sizeof($modules); $m++) {
-		$error = checkSchemaForModule($modules[$m], $types[$t]);
-		$message = _("No problems found.");
-		$icon = '../../graphics/pass.png';
-		if ($error != null) {
-			$icon = '../../graphics/fail.png';
-			$message = $error;
+else {
+	// loop for active account types
+	for ($t = 0; $t < sizeof($types); $t++) {
+		$modules = $_SESSION['config']->get_AccountModules($types[$t]);
+		$container->addElement(new htmlSubTitle(getTypeAlias($types[$t])), true);
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			$error = checkSchemaForModule($modules[$m], $types[$t]);
+			$message = _("No problems found.");
+			$icon = '../../graphics/pass.png';
+			if ($error != null) {
+				$icon = '../../graphics/fail.png';
+				$message = $error;
+			}
+			// module name
+			$container->addElement(new htmlOutputText(getModuleAlias($modules[$m], $types[$t])));
+			$container->addElement(new htmlSpacer('10px', null));
+			// icon
+			$container->addElement(new htmlImage($icon));
+			$container->addElement(new htmlSpacer('10px', null));
+			// text
+			$container->addElement(new htmlOutputText($message), true);
 		}
-		// module name
-		echo "<tr class=\"" . $types[$t] . "list\">\n";
-		echo "<td style=\"padding-left:10px;\" nowrap>" . getModuleAlias($modules[$m], $types[$t]) . "</td>\n";
-		// icon
-		echo "<td style=\"padding-left:10px;padding-right:10px;\"><img width=16 height=16 alt=\"\" src=\"" . $icon . "\"></td>\n";
-		// text
-		echo "<td width=\"100%\">" . $message . "</td>\n";
-		echo "</tr>\n";
 	}
-	
-	echo "</table>\n<br>";
 }
 
+$tabindex = 1;
+parseHtml(null, $container, array(), true, $tabindex, 'user');
+
+echo "</div>\n";
 include '../main_footer.php';
 
 /**
