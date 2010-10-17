@@ -1535,6 +1535,49 @@ class htmlFieldset extends htmlElement {
 }
 
 /**
+ * Generates a title line. This is used for page titles.
+ * 
+ * @package metaHTML
+ */
+class htmlTitle extends htmlElement {
+
+	/** descriptive label */
+	private $label = null;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $label label
+	 */
+	function __construct($label) {
+		$this->label = htmlspecialchars($label);
+		// the title should not end at a table cell
+		$this->colspan = 100;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo "<div class=\"title\">\n";
+		echo "<h2 class=\"titleText\">\n";
+		echo $this->label;
+		echo "</h2>\n";
+		echo "</div>\n";
+		return array();
+	}
+	
+}
+
+/**
  * Generates a subtitle line. This is used to group multiple fields.
  * 
  * @package metaHTML
@@ -1568,10 +1611,10 @@ class htmlSubTitle extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		echo "<div class=\"subTitle\">\n";
-		echo "<div class=\"subTitleText\">\n";
+		echo "<h4 class=\"subTitleText\">\n";
 		echo $this->label;
+		echo "</h4>\n";
 		echo "</div>\n";
-		echo "<hr></div>\n";
 		return array();
 	}
 	

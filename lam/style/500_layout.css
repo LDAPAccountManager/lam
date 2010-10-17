@@ -156,17 +156,20 @@ tr.highlight {
 	padding: 0.5em;
 }
 
+/** titles */
+.titleText {
+	color: black;
+}
+
 /** subtitles */
-div.subTitle {
+.subTitle {
 	margin: 20px 0px 15px 0px;
+	border-bottom: 2px dotted black;
 }
 
-div.subTitleText {
+.subTitleText {
 	margin: 0px 0px 0px 10px;
-}
-
-div.subTitle hr {
-	margin: 3px 0px 0px 0px;
+	color: black;
 }
 
 /**
