@@ -675,6 +675,8 @@ class htmlSelect extends htmlElement {
 	private $rightToLeftTextDirection = false;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** width of input element */
+	private $width = '';
 	
 	/**
 	 * Constructor.
@@ -732,7 +734,11 @@ class htmlSelect extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<select' . $class . $name . $size . $multi . $disabled . ' tabindex="' . $tabindex . "\">\n";
+		$style = '';
+		if ($this->width != '') {
+			$style = ' style="width: ' . $this->width . '"';
+		}
+		echo '<select' . $class . $style . $name . $size . $multi . $disabled . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
@@ -845,6 +851,15 @@ class htmlSelect extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+
+	/**
+	 * Specifies the width of this selection box.
+	 * 
+	 * @param String $width width (e.g. 20em)
+	 */
+	public function setWidth($width) {
+		$this->width = htmlspecialchars($width);
 	}
 
 }
