@@ -83,16 +83,11 @@ foreach ($sortedScopes as $scope => $title) {
 		'scope' => $scope,
 		'title' => $title,
 		'templates' => "");
-	$availableScopes .= '<option value="' . $scope . '">' . $title . "</option>\n";
+	$availableScopes[$title] = $scope;
 }
 // get list of templates for each account type
 for ($i = 0; $i < sizeof($templateClasses); $i++) {
-	$templateList = getPDFStructureDefinitions($templateClasses[$i]['scope']);
-	$templates = "";
-	for ($l = 0; $l < sizeof($templateList); $l++) {
-		$templates = $templates . "<option>" . $templateList[$l] . "</option>\n";
-	}
-	$templateClasses[$i]['templates'] = $templates;
+	$templateClasses[$i]['templates'] = getPDFStructureDefinitions($templateClasses[$i]['scope']);
 }
 
 // check if a template should be edited
@@ -110,81 +105,70 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 	}
 }
 
+$container = new htmlTable();
+
 include '../main_header.php';
 ?>
-	<h1><?php echo _('PDF editor'); ?></h1>
-	
+<div class="userlist-bright smallPaddingContent">
+<form action="pdfmain.php" method="post">
 	<?php
+		$container->addElement(new htmlTitle(_('PDF editor')), true);
+	
 		if (isset($_GET['savedSuccessfully'])) {
-			StatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
+			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
+			$message->colspan = 10;
+			$container->addElement($message, true);
 		}
 		if (isset($_GET['deleteFailed'])) {
-			StatusMessage('ERROR', _('Unable to delete PDF structure!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
+			$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
+			$message->colspan = 10;
+			$container->addElement($message, true);
 		}
 		if (isset($_GET['deleteSucceeded'])) {
-			StatusMessage('INFO', _('Deleted PDF structure.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
+			$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
+			$message->colspan = 10;
+			$container->addElement($message, true);
 		}
-	?>
-	
-	<br>
-		<form action="pdfmain.php" method="post">
 		
-		<!-- new template -->		
-		<fieldset class="useredit">
-		<legend>
-		<b><?php echo _('Create a new PDF structure'); ?></b>
-		</legend>
-		<br><table border=0>
-			<tr><td>
-				<select class="user" name="scope">
-					<?php echo $availableScopes; ?>
-				</select>
-			</td>
-			<td>
-				<input type="submit" name="createNewTemplate" value="<?php echo _('Create'); ?>">
-			</td></tr>
-		</table>
-		</fieldset>
+		// new template
+		$container->addElement(new htmlSubTitle(_('Create a new PDF structure')), true);
+		$newPDFContainer = new htmlTable();
+		$newScopeSelect = new htmlSelect('scope', $availableScopes);
+		$newScopeSelect->setHasDescriptiveElements(true);
+		$newScopeSelect->setWidth('15em');
+		$newPDFContainer->addElement($newScopeSelect);
+		$newPDFContainer->addElement(new htmlSpacer('10px', null));
+		$newPDFContainer->addElement(new htmlButton('createNewTemplate', _('Create')));
+		$container->addElement($newPDFContainer, true);
+		$container->addElement(new htmlSpacer(null, '10px'), true);
 		
-		<br>
-
-
-		<!-- existing templates -->
-		<fieldset class="useredit">
-		<legend>
-			<b><?php echo _("Manage existing PDF structures"); ?></b>
-		</legend>
-		<br><table border=0>
-		<?php
+		// existing templates
+		$container->addElement(new htmlSubTitle(_("Manage existing PDF structures")), true);
+		$existingContainer = new htmlTable();
 		for ($i = 0; $i < sizeof($templateClasses); $i++) {
-			if ($i > 0) {
-				echo "<tr><td colspan=3>&nbsp;</td></tr>\n";
-			}
-			echo "<tr>\n";
-				echo "<td>";
-					echo "<img alt=\"" . $templateClasses[$i]['title'] . "\" src=\"../../graphics/" . $templateClasses[$i]['scope'] . ".png\">&nbsp;\n";
-					echo $templateClasses[$i]['title'];
-				echo "</td>\n";
-				echo "<td>&nbsp;";
-					echo "<select class=\"user\" style=\"width: 20em;\" name=\"template_" . $templateClasses[$i]['scope'] . "\">\n";
-						echo $templateClasses[$i]['templates'];
-					echo "</select>\n";
-				echo "</td>\n";
-				echo "<td>&nbsp;";
-					echo "<input type=\"image\" src=\"../../graphics/edit.png\" name=\"editTemplate_" . $templateClasses[$i]['scope'] . "\" " .
-					 "alt=\"" . _('Edit') . "\" title=\"" . _('Edit') . "\">";
-					echo "&nbsp;";
-					echo "<input type=\"image\" src=\"../../graphics/delete.png\" name=\"deleteTemplate_" . $templateClasses[$i]['scope'] . "\" " .
-					"alt=\"" . _('Delete') . "\" title=\"" . _('Delete') . "\">";
-				echo "</td>\n";
-			echo "</tr>\n";
+			$existingContainer->addElement(new htmlImage('../../graphics/' . $templateClasses[$i]['scope'] . '.png'));
+			$existingContainer->addElement(new htmlSpacer('3px', null));
+			$existingContainer->addElement(new htmlOutputText($templateClasses[$i]['title']));
+			$existingContainer->addElement(new htmlSpacer('3px', null));
+			$select = new htmlSelect('template_' . $templateClasses[$i]['scope'], $templateClasses[$i]['templates']);
+			$select->setWidth('15em');
+			$existingContainer->addElement($select);
+			$existingContainer->addElement(new htmlSpacer('3px', null));
+			$exEditButton = new htmlButton('editTemplate_' . $templateClasses[$i]['scope'], 'edit.png', true);
+			$exEditButton->setTitle(_('Edit'));
+			$existingContainer->addElement($exEditButton);
+			$exDelButton = new htmlButton('deleteTemplate_' . $templateClasses[$i]['scope'], 'delete.png', true);
+			$exDelButton->setTitle(_('Delete'));
+			$existingContainer->addElement($exDelButton, true);
+			$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 		}
-		?>
-		</table>
-		</fieldset>
-		<br>
+		$container->addElement($existingContainer, true);
 		
-		</form>
+		$tabindex = 1;
+		parseHtml(null, $container, array(), false, $tabindex, 'user');
+	?>
+</form>
+</div>
 <?php
 	include '../main_footer.php';
 ?>

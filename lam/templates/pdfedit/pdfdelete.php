@@ -50,7 +50,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // check if admin has submited delete operation
-if ($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	// delete user profile
 	if(!deletePDFStructureDefinition($_POST['type'],$_POST['delete'])) {
 		metaRefresh('pdfmain.php?deleteScope=' . $_POST['type'] . '&amp;deleteFailed=' . $_POST['delete']);
@@ -63,34 +63,44 @@ if ($_POST['submit']) {
 }
 
 // check if admin has aborted delete operation
-if ($_POST['abort']) {
+if (isset($_POST['abort'])) {
 	metaRefresh('pdfmain.php');
 	exit;
 }
 
 // print standard header
 include '../main_header.php';
-echo ("<p><br></p>\n");
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<form action=\"pdfdelete.php\" method=\"post\">\n";
 
 // check if right type was given
 $type = $_GET['type'];
-echo ("<p align=\"center\"><big>" . _("Do you really want to delete this PDF structure?") . "</big>");
-echo "<br>\n";
-echo "<br></p>\n";
-echo "<table align=\"center\">\n";
-	echo "<tr><td>\n";
-		echo "<b>" . _('Account type') . ': </b>' . getTypeAlias($_GET['type']);
-	echo "</td></tr>\n";
-	echo "<tr><td>\n";
-		echo "<b>" . _('Name') . ': </b>' . $_GET['delete'] . "<br>\n";
-	echo "</td></tr>\n";
-echo "</table>\n";
-echo "<br>\n";
-echo ("<form action=\"pdfdelete.php\" method=\"post\">\n");
-echo ("<p align=\"center\">\n");
-echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Delete") . "\">\n");
-echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n");
-echo ("<input type=\"hidden\" name=\"type\" value=\"" . $_GET['type'] . "\">");
-echo ("<input type=\"hidden\" name=\"delete\" value=\"" . $_GET['delete'] . "\">");
-echo ("</p></form>\n");
+
+$container = new htmlTable();
+
+$container->addElement(new htmlOutputText(_("Do you really want to delete this PDF structure?")), true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
+$templateContainer = new htmlTable();
+$templateContainer->addElement(new htmlOutputText(_('Account type')));
+$templateContainer->addElement(new htmlSpacer('10px', null));
+$templateContainer->addElement(new htmlOutputText(getTypeAlias($_GET['type'])), true);
+$templateContainer->addElement(new htmlOutputText(_('Name')));
+$templateContainer->addElement(new htmlSpacer('10px', null));
+$templateContainer->addElement(new htmlOutputText($_GET['delete']), true);
+$container->addElement($templateContainer, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
+$buttonContainer = new htmlTable();
+$buttonContainer->addElement(new htmlButton('submit', _("Delete")));
+$buttonContainer->addElement(new htmlButton('abort', _("Cancel")));
+$buttonContainer->addElement(new htmlHiddenInput('type', $_GET['type']));
+$buttonContainer->addElement(new htmlHiddenInput('delete', $_GET['delete']));
+$container->addElement($buttonContainer);
+
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+echo "</form>\n";
+echo '</div>';
 include '../main_footer.php';
