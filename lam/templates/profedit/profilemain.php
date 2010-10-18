@@ -125,10 +125,14 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$sortedTypes[$profileClasses[$i]['title']] = $profileClasses[$i]['scope'];
 }
 natcasesort($sortedTypes);
+$newContainer = new htmlTable();
 $newProfileSelect = new htmlSelect('createProfile', $sortedTypes);
 $newProfileSelect->setHasDescriptiveElements(true);
-$container->addElement($newProfileSelect);
-$container->addElement(new htmlButton('createProfileButton', _('Create')), true);
+$newProfileSelect->setWidth('15em');
+$newContainer->addElement($newProfileSelect);
+$newContainer->addElement(new htmlSpacer('10px', null));
+$newContainer->addElement(new htmlButton('createProfileButton', _('Create')), true);
+$container->addElement($newContainer, true);
 
 $container->addElement(new htmlSpacer(null, '10px'), true);
 
@@ -144,7 +148,9 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$existingContainer->addElement(new htmlSpacer('3px', null));
 	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
-	$existingContainer->addElement(new htmlSelect('profile_' . $profileClasses[$i]['scope'], $profileClasses[$i]['profiles']));
+	$select = new htmlSelect('profile_' . $profileClasses[$i]['scope'], $profileClasses[$i]['profiles']);
+	$select->setWidth('15em');
+	$existingContainer->addElement($select);
 	$existingContainer->addElement(new htmlSpacer('3px', null));
 	$editButton = new htmlButton('editProfile_' . $profileClasses[$i]['scope'], 'edit.png', true);
 	$editButton->setTitle(_('Edit'));
