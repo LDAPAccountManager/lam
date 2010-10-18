@@ -68,6 +68,7 @@ if (isset($_GET['getCSV'])) {
 }
 
 include 'main_header.php';
+echo '<div class="smallPaddingContent">';
 
 // get possible types and remove those which do not support file upload
 $types = $_SESSION['config']->get_ActiveTypes();
@@ -192,11 +193,19 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	}
 	echo "</td></tr>\n";
 	echo "<tr><td>\n";
-		echo "<input class=\"user\" type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
+		echo "<button id=\"okButton\" class=\"smallPadding\" name=\"submit\">". _("Ok") . "</button>\n";
+		?>
+		<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('#okButton').button();
+		});
+		</script>
+		<?php
 	echo "</td></tr>\n";
 echo "</table>\n";
 echo "</form>\n";
 
+echo '</div>';
 include 'main_footer.php';
 
 /**
@@ -220,13 +229,21 @@ function showMainPage($scope, $selectedModules) {
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
 	echo "<p>\n";
 	echo "<b>" . _("CSV file:") . "</b> <input class=\"$scope\" name=\"inputfile\" type=\"file\">&nbsp;&nbsp;";
-	echo "<input class=\"$scope\" name=\"submitfile\" type=\"submit\" value=\"" . _('Upload file and create accounts') . "\">\n";
+	echo "<button class=\"smallPadding\" name=\"submitfile\" id=\"okButton\">" . _('Upload file and create accounts') . "</button>\n";
 	echo "<input type=\"hidden\" name=\"scope\" value=\"$scope\">\n";
 	echo "<input type=\"hidden\" name=\"selectedModules\" value=\"" . implode(',', $selectedModules) . "\">\n";
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
+	?>
+	<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('#okButton').button();
+	});
+	</script>
+	<?php
+	
 	echo "<p>&nbsp;</p>\n";
 	
 	echo _("Here is a list of possible columns. The red columns must be included in the CSV file and filled with data for all accounts.");
@@ -334,6 +351,7 @@ function showMainPage($scope, $selectedModules) {
 	$sampleCSV = implode(",", $sampleCSV_head) . "\n" . implode(",", $sampleCSV_row) . "\n";
 	$_SESSION['mass_csv'] = $sampleCSV;
 	
+	echo '</div>';
 	include 'main_footer.php';
 	die;
 }
