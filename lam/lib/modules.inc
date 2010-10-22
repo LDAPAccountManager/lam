@@ -1266,17 +1266,10 @@ class accountContainer {
 	 */
 	private function printPasswordPromt($errors) {
 		$this->printPageHeader();
-		echo "<div class=\"" . $this->type . "list-bright\">\n";
+		echo "<div class=\"" . $this->type . "list-bright smallPaddingContent\">\n";
 		$container = new htmlTable();
 		// title
-		$container->addElement(new htmlSpacer(null, '5px'), true);
-		$titleContainer = new htmlTable();
-		$titleContainer->colspan = 3;
-		$titleContainer->addElement(new htmlSpacer('5px', null));
-		$titleContainer->addElement(new htmlOutputText(_("Set password")));
-		$titleContainer->addElement(new htmlHelpLink('404'), true);
-		$container->addElement($titleContainer, true);
-		$container->addElement(new htmlSpacer(null, '20px'), true);
+		$container->addElement(new htmlSubTitle(_("Set password")), true);
 		// error messages
 		for ($i = 0; $i < sizeof($errors); $i++) {
 			$text = '';
@@ -1287,6 +1280,17 @@ class accountContainer {
 			$message->colspan = 3;
 			$container->addElement($message, true);
 		}
+		// password fields
+		$container->addElement(new htmlOutputText(_('Password')));
+		$pwdInput1 = new htmlInputField('newPassword1');
+		$pwdInput1->setIsPassword(true);
+		$container->addElement($pwdInput1);
+		$container->addElement(new htmlHelpLink('404'), true);
+		$container->addElement(new htmlOutputText(_('Repeat password')));
+		$pwdInput2 = new htmlInputField('newPassword2');
+		$pwdInput2->setIsPassword(true);
+		$container->addElement($pwdInput2, true);
+		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// password modules
 		$moduleContainer = new htmlTable();
 		foreach ($this->module as $name => $module) {
@@ -1302,16 +1306,6 @@ class accountContainer {
 		}
 		$moduleContainer->colspan = 5;
 		$container->addElement($moduleContainer, true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
-		// password fields
-		$container->addElement(new htmlOutputText(_('Password')));
-		$pwdInput1 = new htmlInputField('newPassword1');
-		$pwdInput1->setIsPassword(true);
-		$container->addElement($pwdInput1, true);
-		$container->addElement(new htmlOutputText(_('Repeat password')));
-		$pwdInput2 = new htmlInputField('newPassword2');
-		$pwdInput2->setIsPassword(true);
-		$container->addElement($pwdInput2, true);
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// buttons
 		$buttonContainer = new htmlTable();
