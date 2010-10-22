@@ -78,21 +78,6 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
-	* Initializes the module after it became part of an accountContainer
-	*
-	* @param string $base the name of the accountContainer object ($_SESSION[$base])
-	*/
-	function init($base) {
-		// call parent init
-		parent::init($base);
-		$sambaDomains = search_domains();
-		if (sizeof($sambaDomains) == 0) {
-			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-			return;
-		}
-	}
-
-	/**
 	 * Gets the GID number from the Unix group module.
 	 *
 	 * @return String GID number
@@ -441,6 +426,22 @@ class sambaGroupMapping extends baseModule {
 		return true;
 	}
 
+	/**
+	* This function is used to check if all settings for this module have been made.
+	* 
+	* @see baseModule::module_complete
+	*
+	* @return boolean true, if settings are complete
+	*/
+	public function module_complete() {
+		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
+			return true;
+		}
+		if (!isset($this->attributes['sambaSID']) || ($this->attributes['sambaSID'] == '')) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	* Processes user input of the primary module page.
@@ -455,7 +456,7 @@ class sambaGroupMapping extends baseModule {
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
-			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
+			return array();
 		}
 		// Save attributes
 		$this->attributes['displayName'][0] = $_POST['displayName'];

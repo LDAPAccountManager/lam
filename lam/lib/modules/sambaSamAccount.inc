@@ -584,11 +584,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->noexpire = true;
 		$this->nopwd = false;
 		$this->deactivated = false;
-		$sambaDomains = search_domains();
-		if (sizeof($sambaDomains) == 0) {
-			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-			return;
-		}
 	}
 
 	/**
@@ -715,7 +710,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
-			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
+			return array();
 		}
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		// Save attributes
