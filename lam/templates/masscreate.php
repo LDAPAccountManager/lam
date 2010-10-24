@@ -68,7 +68,7 @@ if (isset($_GET['getCSV'])) {
 }
 
 include 'main_header.php';
-echo '<div class="smallPaddingContent">';
+echo '<div class="userlist-bright smallPaddingContent">';
 
 // get possible types and remove those which do not support file upload
 $types = $_SESSION['config']->get_ActiveTypes();
@@ -108,7 +108,9 @@ if (isset($_POST['type'])) {
 }
 
 // show start page
-echo "<h1>" . _("Account creation via file upload") . "</h1>\n";
+echo "<div class=\"title\">\n";
+echo "<h2 class=\"titleText\">" . _("Account creation via file upload") . "</h2>\n";
+echo "</div>";
 echo "<p>&nbsp;</p>\n";
 
 echo "<p>\n";
@@ -116,13 +118,6 @@ echo "<p>\n";
 echo "</p>\n";
 
 echo "<p>&nbsp;</p>\n";
-
-echo '<script type="text/javascript">';
-echo 'function changeVisibleModules(element) {';
-echo 'jQuery(\'div.typeOptions\').toggle(false);';
-echo 'jQuery(\'div#\' + element.options[element.selectedIndex].value).toggle();';
-echo '}';
-echo '</script>';
 
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
@@ -199,6 +194,10 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 		jQuery(document).ready(function() {
 			jQuery('#okButton').button();
 		});
+		function changeVisibleModules(element) {
+			jQuery('div.typeOptions').toggle(false);
+			jQuery('div#' + element.options[element.selectedIndex].value).toggle();
+		}
 		</script>
 		<?php
 	echo "</td></tr>\n";

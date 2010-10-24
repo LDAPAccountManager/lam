@@ -58,6 +58,7 @@ if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 setlanguage();
 
 include 'main_header.php';
+echo '<div class="userlist-bright smallPaddingContent">';
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
@@ -67,7 +68,9 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	if ($maxTime > 60) $maxTime = 60;
 	if ($maxTime <= 0) $maxTime = 60;
 	$refreshTime = $maxTime + 7;
-	echo "<h1>" . _("LDAP upload in progress. Please wait.") . "</h1>\n";
+	echo "<div class=\"title\">\n";
+	echo "<h2 class=\"titleText\">" . _("LDAP upload in progress. Please wait.") . "</h2>\n";
+	echo "</div>";
 	echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
 	echo "<tr><td bgcolor=\"blue\" width=\"" . ($_SESSION['mass_counter'] * 100) / sizeof($accounts) . "%\">&nbsp;</td>";
 	echo "<td bgcolor=\"grey\" width=\"" . (100 - (($_SESSION['mass_counter'] * 100) / sizeof($accounts))) . "%\">&nbsp;</td></tr>\n";
@@ -117,20 +120,25 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	echo "<script type=\"text/javascript\">\n";
 	echo "top.location.href = \"massDoUpload.php\";\n";
 	echo "</script>\n";
-	include 'main_footer.php';
 }
 // all accounts have been created
 else {
 	$_SESSION['cache']->refresh_cache(true);
-	echo "<h1>" . _("LDAP upload has finished") . "</h1>\n";
+	echo "<div class=\"title\">\n";
+	echo "<h2  class=\"titleText\">" . _("LDAP upload has finished") . "</h2>\n";
+	echo "</div>";
 	if (sizeof($_SESSION['mass_errors']) > 0) {
-		echo "<h2>" . _("There were errors while uploading:") . "</h2>\n";
+		echo "<div class=\"subTitle\">\n";
+		echo "<h4  class=\"subTitleText\">" . _("There were errors while uploading:") . "</h4>\n";
+		echo "</div>";
 		for ($i = 0; $i < sizeof($_SESSION['mass_errors']); $i++) {
 			call_user_func_array('StatusMessage', $_SESSION['mass_errors'][$i]);
+			echo "<br>";
 		}
 	}
-	include 'main_footer.php';
 }
+echo '</div>';
+include 'main_footer.php';
 
 
 ?>

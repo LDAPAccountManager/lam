@@ -173,18 +173,27 @@ $new_suff = str_replace("'", "", $new_suff);
 $new_suff = explode(";", $new_suff);
 
 include 'main_header.php';
-	echo "<p>&nbsp;</p>\n";
-	echo "<p>" . _("The following suffix(es) are missing in LDAP. LAM can create them for you.") . "</p>\n";
-	echo "<p>&nbsp;</p>\n";
+	echo '<div class="userlist-bright smallPaddingContent">';
+	echo "<form action=\"initsuff.php\" method=\"post\">\n";
+	$container = new htmlTable();
+	$container->addElement(new htmlOutputText(_("The following suffix(es) are missing in LDAP. LAM can create them for you.")), true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
 	// print missing suffixes
 	for ($i = 0; $i < sizeof($new_suff); $i++) {
-		echo "<p>" . $new_suff[$i] . "</p>\n";
+		$container->addElement(new htmlOutputText($new_suff[$i]), true);
 	}
-	echo "<p>&nbsp;</p>\n";
-	echo "<form action=\"initsuff.php\" method=\"post\">\n";
-	echo "<input type=\"hidden\" name=\"new_suff\" value=\"" . implode(";", $new_suff) . "\">\n";
-	echo "<input type=\"submit\" name=\"add_suff\" value=\"" . _("Create") . "\">";
-	echo "<input type=\"submit\" name=\"cancel\" value=\"" . _("Cancel") . "\">";
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+
+	$buttonContainer = new htmlTable();
+	$buttonContainer->addElement(new htmlButton('add_suff', _("Create")));
+	$buttonContainer->addElement(new htmlButton('cancel', _("Cancel")));
+	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $new_suff)));
+	$container->addElement($buttonContainer);
+	
+	$tabindex = 1;
+	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	
 	echo "</form><br>\n";
+	echo "</div>\n";
 include 'main_footer.php';
 ?>

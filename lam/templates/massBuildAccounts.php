@@ -84,6 +84,7 @@ if (isset($_GET['showldif'])) {
 }
 
 include 'main_header.php';
+echo '<div class="userlist-bright smallPaddingContent">';
 
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$selectedModules = explode(',', $_POST['selectedModules']);
@@ -191,16 +192,13 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$_SESSION['mass_scope'] = $_POST['scope'];
 				$_SESSION['mass_selectedModules'] = $selectedModules;
 				// show links for upload and LDIF export
-				echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
+				echo "<div class=\"title\">\n";
+				echo "<h2 class=\"titleText\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h2>\n";
+				echo "</div>";
 				echo "<p>&nbsp;</p>\n";
-				echo "<table align=\"center\" width=\"80%\"><tr>\n";
-					echo "<td align=\"center\" width=\"50%\">\n";
-					echo "<a href=\"massDoUpload.php\"><b>" . _("Upload accounts to LDAP") . "</b></a>";
-					echo "</td>\n";
-					echo "<td align=\"center\" width=\"50%\">\n";
-					echo "<a href=\"massBuildAccounts.php?showldif=true\"><b>" . _("Show LDIF file") . "</b></a>";
-					echo "</td>\n";
-				echo "</tr></table>\n";
+					echo "<a href=\"massDoUpload.php\">" . _("Upload accounts to LDAP") . "</a>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+					echo "<a href=\"massBuildAccounts.php?showldif=true\">" . _("Show LDIF file") . "</a>";
 			}
 		}
 	}
@@ -210,6 +208,7 @@ else {
 	echo '<br><a href="masscreate.php">' . _('Back') . '</a>';
 }
 
+echo '</div>';
 include 'main_footer.php';
 
 ?>
