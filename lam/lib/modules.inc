@@ -695,7 +695,7 @@ function getRequiredExtensions() {
 * 
 *
 * @param string $module Name of account module
-* @param array $input List of meta-HTML elements
+* @param mixed $input htmlElement or array of htmlElement elements
 * @param array $values List of values which override the defaults in $input (name => value)
 * @param boolean $restricted If true then no buttons will be displayed
 * @param integer $tabindex Start value of tabulator index for input fields
