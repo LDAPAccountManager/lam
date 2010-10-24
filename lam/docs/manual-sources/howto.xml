@@ -2939,13 +2939,14 @@ Have fun!
 
             <entry>Hosts</entry>
 
-            <entry>hostObject</entry>
+            <entry>hostObject, device</entry>
 
             <entry>ldapns.schema</entry>
 
             <entry>Part of libpam-ldap installation</entry>
 
-            <entry></entry>
+            <entry>The device object class is only available in LAM
+            Pro.</entry>
           </row>
 
           <row>
@@ -3181,6 +3182,24 @@ Have fun!
             <entry>sudo.schema</entry>
 
             <entry>Part of sudo-ldap installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_zarafa.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Zarafa</entry>
+
+            <entry>zarafa-user, zarafa-group, zarafa-server</entry>
+
+            <entry>zarafa.schema</entry>
+
+            <entry>Part of Zarafa installation</entry>
 
             <entry>This account type is only available in LAM Pro.</entry>
           </row>
