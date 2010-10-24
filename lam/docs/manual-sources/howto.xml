@@ -1559,6 +1559,23 @@ Have fun!
       <title>Hosts</title>
 
       <section>
+        <title>Device (LAM Pro)</title>
+
+        <para>The device object class allows to manage general information
+        about all sorts of devices (e.g. computers, network hardware, ...).
+        You can enter the serial number, location and a describing text. It is
+        also possible to specify the owner of the device.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/device.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Samba 3</title>
 
         <para>You can manage Samba 3 host entries by adding the Unix and Samba
@@ -1614,7 +1631,7 @@ Have fun!
       </section>
 
       <section>
-        <title>MAC addressese</title>
+        <title>MAC addresses</title>
 
         <para>Hosts can have an unlimited number of MAC addresses. To enable
         this feature just add the "MAC address" module to the host account
@@ -1706,6 +1723,78 @@ Have fun!
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/asteriskExtension.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Zarafa (LAM Pro)</title>
+
+      <para>Zarafa is an OpenSource collaboration software. LAM pro provides
+      support to manage Zarafa server entries, users and groups. LAM covers
+      all settings for these types including resource and quota
+      settings.</para>
+
+      <para>To enable Zarafa support in LAM Pro please activate the Zarafa
+      modules for the Users, Groups and Hosts account types in you server
+      profile:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/zarafa1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You can configure which parts of the Zarafa user options should be
+      enabled. E.g. if you do not want to manage quotas per user then you can
+      hide these options on the tab "Module settings".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/zarafa2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>This is an example of the user edit page with all possible
+      settings. This includes email settings, quotas and some options (e.g.
+      hide from address book). You can also set the resource type and capacity
+      for meeting rooms and equipment. The Zarafa extension can be added and
+      removed at any time for every user.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/zarafa3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>This is the edit page for groups. You can enter an email address
+      and additional aliases for your groups. It is also possible to specify
+      options (e.g. hide from address book). The extension can be
+      added/removed dynamically.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/zarafa4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The Zarafa extension for host accounts allows to set the
+      connection ports and file path. You can add/remove the extension at any
+      time.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/zarafa5.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -2053,7 +2142,7 @@ Have fun!
 
       <para><emphasis role="bold">Unix accounts:</emphasis></para>
 
-      <para>Account types: Users, Groups</para>
+      <para>Account types:</para>
 
       <itemizedlist>
         <listitem>
@@ -2106,7 +2195,7 @@ Have fun!
 
       <para><emphasis role="bold">phpGroupWare:</emphasis></para>
 
-      <para>Account modules:</para>
+      <para>Account types:</para>
 
       <itemizedlist>
         <listitem>
@@ -2115,6 +2204,24 @@ Have fun!
 
         <listitem>
           <para>Groups (Unix + phpGroupWare)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Zarafa:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Unix + Zarafa)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix + Zarafa)</para>
+        </listitem>
+
+        <listitem>
+          <para>Hosts (Device + Zarafa + IP Address)</para>
         </listitem>
       </itemizedlist>
     </section>
