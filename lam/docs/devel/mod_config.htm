@@ -1,11 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><title>Module HowTo - Configuration options</title>
+
   
   <link rel="stylesheet" type="text/css" href="style/layout.css">
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-</head>
-
-<body>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
 <h1>Module HowTo - Configuration options<br>
 </h1>
 <div style="text-align: left;"><br>
@@ -31,9 +29,7 @@ or <span style="font-weight: bold;">meta['config_options']</span>.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
-The <span style="font-style: italic;">posixGroup</span> module offers
-three configuration options. The min/maximum values for GIDs and the
-password hash type.<br>
+The <span style="font-style: italic;">posixGroup</span> module offers several configuration options including the min/maximum values for GIDs.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -48,60 +44,26 @@ class<br>
 get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // configuration options<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return[<span style="color: rgb(255, 0, 0);">'config_options'</span>][<span style="color: rgb(255, 0, 0);">'group'</span>] = array(<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;array(<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'text' =&gt;
-'&lt;b&gt;' .
-_('Minimum GID number') . " *: &lt;/b&gt;"),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'name' =&gt;
-'posixGroup_minGID', 'type' =&gt; 'text', 'size' =&gt; '10',
-'maxlength' =&gt; '255'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'value' =&gt;
-'&amp;nbsp;'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'text' =&gt;
-'&lt;b&gt;' .
-_('Maximum GID number') . " *: &lt;/b&gt;"),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'input', 'name' =&gt;
-'posixGroup_maxGID', 'type' =&gt; 'text', 'size' =&gt; '10',
-'maxlength' =&gt; '255'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'help', 'value' =&gt;
-'minMaxGID')),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;array(<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'text' =&gt;
-'&lt;b&gt;' .
-_("Password hash type") . ': &amp;nbsp;&lt;/b&gt;'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'select', 'name' =&gt;
-'posixGroup_pwdHash', 'size' =&gt; '1', 'options' =&gt; array("CRYPT", "SHA", "SSHA", "MD5", "SMD5",
-"PLAIN"), 'options_selected' =&gt; array('SSHA')),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'value' =&gt;
-'&amp;nbsp;'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'value' =&gt;
-'&amp;nbsp;'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'text', 'value' =&gt;
-'&amp;nbsp;'),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; array('kind' =&gt; 'help', 'value' =&gt; 'pwdHash'))<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $configContainer = new htmlTable();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $configContainer-&gt;addElement(new htmlSubTitle(_("Groups")), true);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $minGidInput = new
+htmlTableExtendedInputField(_('Minimum GID number'),
+'posixGroup_minGID', null, 'minMaxGID');<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $minGidInput-&gt;setRequired(true);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $configContainer-&gt;addElement($minGidInput, true);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $maxGidInput = new
+htmlTableExtendedInputField(_('Maximum GID number'),
+'posixGroup_maxGID', null, 'minMaxGID');<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $maxGidInput-&gt;setRequired(true);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $configContainer-&gt;addElement($maxGidInput, true);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return[<span style="color: red;">'config_options'</span>][<span style="color: red;">'group'</span>] = $configContainer;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
-The min/maximum GID numbers are defined with simple text boxes. The
-password hash is selected with a drop down box and SSHA as default
-value.<br>
-You should make sure that the column count (here: 6) is the same for
-each row. Otherwise the configuration page might be badly rendered by
-the browser.<br>
-<br>
+The min/maximum GID numbers are defined with simple text boxes.<br><br>
 <h2>2. Checking user input</h2>
 Probably you also want to check if the input data is syntactically
 correct.<br>

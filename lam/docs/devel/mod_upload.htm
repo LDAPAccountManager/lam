@@ -1,11 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <title>Module HowTo - File upload</title>
+<html><head><title>Module HowTo - File upload</title>
+
+
+  
   <link rel="stylesheet" type="text/css" href="style/layout.css">
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-</head>
-<body>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
 <div style="text-align: center;">
 <h1>Module HowTo - File upload<br>
 </h1>
@@ -22,14 +21,12 @@ and several other values.<br>
 The upload columns are specified with <span style="font-weight: bold;">get_uploadColumns()</span>
 or <span style="font-weight: bold;">meta['upload_columns']</span>.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">ieee802Device</span>
 module has only one attribute and therefore one column: the MAC address.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -46,11 +43,9 @@ get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; $return["account_types"] = array("host");<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // upload fields<br>
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; $return['upload_columns'] = array(</span><br
- style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; $return['upload_columns'] = array(</span><br style="color: rgb(255, 0, 0);">
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;array(</span><br
- style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;array(</span><br style="color: rgb(255, 0, 0);">
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'name' =&gt;
 'ieee802Device_mac',</span><br style="color: rgb(255, 0, 0);">
@@ -64,8 +59,7 @@ get_metaData() {<br>
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'example'
 =&gt; '00:01:02:DE:EF:18'</span><br style="color: rgb(255, 0, 0);">
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; )</span><br
- style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; )</span><br style="color: rgb(255, 0, 0);">
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp; &nbsp;
 &nbsp;&nbsp; );</span><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
@@ -85,16 +79,14 @@ This is done with <span style="font-weight: bold;">build_uploadAccounts()</span>
 The function gets the input data and a list of LDAP accounts as
 parameter.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">ieee802Device</span>
 module has only one LDAP attribute - <span style="font-style: italic;">'macAddress'</span>
 - and the <span style="font-style: italic;">'ieee802Device'</span>
 objectClass which is added to all accounts.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -105,12 +97,10 @@ objectClass which is added to all accounts.<br>
 &nbsp;&nbsp;&nbsp; * @param array $partialAccounts list of hash arrays
 (name =&gt; value) which are later added to LDAP<br>
 &nbsp;&nbsp;&nbsp; * @param array $ids list of IDs for column position
-(e.g. "posixAccount_uid" =&gt; 5)<br> 
-			  * @param array $selectedModules list of selected account modules<br>
+(e.g. "posixAccount_uid" =&gt; 5)<br>&nbsp; &nbsp; * @param array $selectedModules list of selected account modules<br>
 &nbsp;&nbsp;&nbsp; * @return array list of error messages if any<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">build_uploadAccounts</span>($rawAccounts,
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">build_uploadAccounts</span>($rawAccounts,
 $ids, &amp;$partialAccounts, $selectedModules) {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $messages = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for ($i = 0; $i &lt;
@@ -169,5 +159,4 @@ $errMsg;<br>
 <h2><span style="font-weight: bold;"></span></h2>
 </div>
 </div>
-</body>
-</html>
+</body></html>
