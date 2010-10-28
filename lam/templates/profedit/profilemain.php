@@ -144,7 +144,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	if ($i > 0) {
 		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 	}
-	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['scope']));
+	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['scope'] . '.png'));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
 	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
