@@ -1,5 +1,0 @@
-# password to add/delete/rename configuration profiles
-password: lam
-
-# default profile, without ".conf"
-default: lam
