@@ -41,7 +41,7 @@ install:
 	cp -r lib/3rdParty debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r locale debian/ldap-account-manager/usr/share/ldap-account-manager/
 	install -D --mode=644 sess/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/sess/.htaccess
-	install -D --mode=644 style/*.css debian/ldap-account-manager/usr/share/ldap-account-manager/style
+	cp -r style debian/ldap-account-manager/usr/share/ldap-account-manager/style
 	cp -r templates debian/ldap-account-manager/usr/share/ldap-account-manager/
 	rm debian/ldap-account-manager/usr/share/ldap-account-manager/templates/lib/jquery*
 
