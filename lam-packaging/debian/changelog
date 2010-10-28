@@ -1,9 +1,9 @@
-ldap-account-manager (3.2.0.RC1-1) unstable; urgency=low
+ldap-account-manager (3.2.0-1) unstable; urgency=low
 
   * new upstream release
   * updated to Debian policy 3.9.1
 
- -- Roland Gruber <post@rolandgruber.de>  Wed, 13 Oct 2010 19:48:57 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 28 Oct 2010 19:34:13 +0200
 
 ldap-account-manager (3.1.1-1) unstable; urgency=low
 
