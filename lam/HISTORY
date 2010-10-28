@@ -1,4 +1,4 @@
-27.10.2010 3.2.0
+28.10.2010 3.2.0
   - large usability enhancements
   - Shadow: allow to force password change when maximum password age is set
   - DHCP: renamed module "Fixed IPs" to "Hosts", IP is now optional (3038797)
