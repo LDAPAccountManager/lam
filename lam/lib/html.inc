@@ -664,7 +664,7 @@ class htmlSelect extends htmlElement {
 	/** elements */
 	private $elements;
 	/** selected elements */
-	private $selectedElements;
+	private $selectedElements = array();
 	/** descriptive elements */
 	private $hasDescriptiveElements = false;
 	/** contains optgroups */
@@ -700,7 +700,9 @@ class htmlSelect extends htmlElement {
 	function __construct($name, $elements, $selectedElements = array(), $size = 1) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
-		$this->selectedElements = $selectedElements;
+		if ($selectedElements != null) {
+			$this->selectedElements = $selectedElements;
+		}
 		$this->size = htmlspecialchars($size);
 	}
 	
