@@ -148,6 +148,10 @@ tr.highlight {
 	background-image: url(../graphics/tools.png) !important;
 }
 
+.upButton {
+	background-image: url(../graphics/up.gif) !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
@@ -170,6 +174,10 @@ tr.highlight {
 .subTitleText {
 	margin: 0px 0px 0px 10px;
 	color: black;
+}
+
+.hidden {
+	display: none;
 }
 
 /**

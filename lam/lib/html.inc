@@ -740,6 +740,11 @@ class htmlSelect extends htmlElement {
 		if ($this->width != '') {
 			$style = ' style="width: ' . $this->width . '"';
 		}
+		// hide select boxes that contain less than 2 elements
+		if (sizeof($this->elements) < 2) {
+			echo '<div class="hidden">';
+		}
+		// print select box
 		echo '<select' . $class . $style . $name . $size . $multi . $disabled . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		if ($this->containsOptgroups) {
@@ -755,6 +760,20 @@ class htmlSelect extends htmlElement {
 			$this->printOptionsHTML($this->elements);
 		}
 		echo "</select>\n";
+		// if select box has only one element then show it as text
+		if (sizeof($this->elements) == 1) {
+			echo '</div>';
+			if ($this->hasDescriptiveElements) {
+				$keys = array_keys($this->elements);
+				echo $keys[0];
+			}
+			else {
+				echo $this->elements[0];
+			}
+		}
+		else if (sizeof($this->elements) == 0) {
+			echo '</div>';
+		}
 		if ($this->multiSelect) {
 			return array($this->name => 'multiselect');
 		}
