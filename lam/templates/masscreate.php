@@ -134,7 +134,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	natcasesort($sortedTypes);
 	foreach ($sortedTypes as $key => $value) {
 		$selected = '';
-		if (isset($_POST['type']) && ($_POST['type'] == $key)) {
+		if (isset($_REQUEST['type']) && ($_REQUEST['type'] == $key)) {
 			$selected = 'selected';
 		}
 		echo "<option value=\"" . $key . "\" $selected>" . $value . "</option>\n";
@@ -149,7 +149,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	$counter = 0;
 	foreach ($sortedTypes as $type => $label) {
 		$style = 'style="display:none;"';
-		if ((!isset($_POST['type']) && ($counter == 0)) || (isset($_POST['type']) && ($_POST['type'] == $type))) {
+		if ((!isset($_REQUEST['type']) && ($counter == 0)) || (isset($_REQUEST['type']) && ($_REQUEST['type'] == $type))) {
 			// show first account type or last selected one
 			$style = '';
 		}
@@ -176,7 +176,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 					echo "<input type=\"checkbox\" name=\"" . $type . '_' . $modules[$m] . "\" $checked>";
 				}
 				echo getModuleAlias($modules[$m], $type);
-			echo "</td>";
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 			if (($m%3 == 2) && ($m != (sizeof($modules) - 1))) {
 				echo "</tr>\n";
 			}

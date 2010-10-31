@@ -202,12 +202,29 @@ class lamDHCPList extends lamList {
 			if (!$createOnly) {
 				echo ("<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n");
 			}
-			echo "&nbsp;&nbsp;";
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+			echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			echo ("<button id=\"dhcpDefaultsButton\" name=\"dhcpDefaults\">" . $this->labels['dhcpDefaults'] . "</button>\n");
 			echo "&nbsp;&nbsp;&nbsp;";
 			?>
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
+						jQuery('#newButton').button({
+					        icons: {
+					      	  primary: 'createButton'
+					    	}
+						});
+						jQuery('#delButton').button({
+					        icons: {
+					      	  primary: 'deleteButton'
+					    	}
+						});
+						jQuery('#fileUploadButton').button({
+					        icons: {
+					      	  primary: 'upButton'
+					    	}
+						});
 						jQuery('#dhcpDefaultsButton').button({
 					        icons: {
 					      	  primary: 'settingsButton'

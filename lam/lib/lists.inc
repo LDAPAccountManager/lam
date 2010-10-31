@@ -465,8 +465,8 @@ class lamList {
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*/
 	protected function listDoPost() {
-		// check if button was pressed and if we have to add/delete an account
-		if (isset($_POST['new']) || isset($_POST['del'])){
+		// check if button was pressed and if we have to add/delete an account or call file upload
+		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['fileUpload'])){
 			if (!checkIfWriteAccessIsAllowed()) {
 				die();
 			}
@@ -488,6 +488,11 @@ class lamList {
 					metaRefresh("../delete.php?type=" . $this->type);
 					exit;
 				}
+			}
+			// file upload
+			elseif (isset($_POST['fileUpload'])){
+				metaRefresh("../masscreate.php?type=" . $this->type);
+				exit;
 			}
 		}
 		// PDF button
@@ -677,11 +682,37 @@ class lamList {
 		echo "<td align=\"left\">\n";
 		if (checkIfWriteAccessIsAllowed()) {
 			// add/delete buttons
-			echo ("<button id=\"newButton\" name=\"new\">" . $this->labels['newEntry'] . "</button>\n");
+			echo "<button id=\"newButton\" name=\"new\">" . $this->labels['newEntry'] . "</button>\n";
 			if (!$createOnly) {
-				echo ("<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n");
+				echo "<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n";
 			}
-			echo "&nbsp;&nbsp;&nbsp;";
+			$type = new $this->type();
+			if ($type->supportsFileUpload()) {
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+				echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
+			}
+			?>
+			&nbsp;&nbsp;&nbsp;
+			<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#newButton').button({
+			        icons: {
+			      	  primary: 'createButton'
+			    	}
+				});
+				jQuery('#delButton').button({
+			        icons: {
+			      	  primary: 'deleteButton'
+			    	}
+				});
+				jQuery('#fileUploadButton').button({
+			        icons: {
+			      	  primary: 'upButton'
+			    	}
+				});
+			});
+			</script>
+			<?php
 		}
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
@@ -715,16 +746,6 @@ class lamList {
 					window.onload = listResizeITabContentDiv;
 					window.onresize = listResizeITabContentDiv;
 					jQuery('#filterButton').button();
-					jQuery('#newButton').button({
-				        icons: {
-				      	  primary: 'createButton'
-				    	}
-					});
-					jQuery('#delButton').button({
-				        icons: {
-				      	  primary: 'deleteButton'
-				    	}
-					});
 				});
 			</script>
 		<?php
