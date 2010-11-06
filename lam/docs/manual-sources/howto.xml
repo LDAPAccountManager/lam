@@ -645,6 +645,20 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>3.2.0 -&gt; 3.3.0</title>
+
+          <para>If you use custom images for the PDF export then these images
+          need to be 5 times bigger than before (e.g. 250x250px instead of
+          50x50px). This allows to use images with higher resolution.</para>
+        </section>
+
+        <section>
+          <title>3.1.0 -&gt; 3.2.0</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
           <title>3.0.0 -&gt; 3.1.0</title>
 
           <para>LAM supported to set a list of valid workstations on the

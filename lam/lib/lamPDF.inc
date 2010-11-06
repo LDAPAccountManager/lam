@@ -88,29 +88,16 @@ class lamPDF extends UFPDF {
 	function header() {
 		if($this->page_definitions['filename'] != 'none') {
 			$imageFile = substr(__FILE__,0,strlen(__FILE__)- 14) . "config/pdf/logos/" . $this->page_definitions['filename'];
-			$width = $this->page_definitions['logo-width'];
-			$height = $this->page_definitions['logo-height'];
-			if($this->page_definitions['logo-max'] == true) {
-				if(($width / $height) <= 2.5) {
-					$factor = 20 / $height;
-					$width = $factor * $width;
-					$height = 20;
-				}
-				else {
-					$factor = 50 / $width;
-					$height = $factor * $height;
-					$width = 50;
-				}
-			}
-			$this->Image($imageFile,10,10,$width,$height,"JPG");
+			$imgProperties = getimagesize($imageFile);
+			$this->Image($imageFile,10,15,($imgProperties[0] / $this->k) / 5, ($imgProperties[1] / $this->k) / 5,0,"JPG");
 		}
-		$this->SetY(18);
+		$this->SetY(23);
 		$this->SetFont($this->fontName,"B",18);
 		$this->Cell(170,5,$this->page_definitions['headline'],0,1,"R",0);
 		$this->Ln(3);
 		$this->SetLineWidth(0.4);
+		$this->Line(10,38,200,38);
 		$this->Line(10,40,200,40);
-		$this->Line(10,42,200,42);
 		$this->SetY(50);
 	}
 
