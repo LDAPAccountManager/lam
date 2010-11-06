@@ -940,6 +940,84 @@ class htmlTableExtendedSelect extends htmlSelect {
 }
 
 /**
+ * Represents a radio selection.
+ *
+ * @package metaHTML
+ */
+class htmlRadio extends htmlElement {
+	
+	/** name of select field */
+	private $name;
+	/** elements */
+	private $elements;
+	/** selected element */
+	private $selectedElement = null;
+	/** enabled or disabled */
+	private $isEnabled = true;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * <br>Examples:
+	 * <br>
+	 * <br>$radio = new htmlRadio('myName', array('label1' => 'value1', 'label2' => 'value2'), array('value1'));
+	 * 
+	 * @param String $name element name
+	 * @param array $elements list of elements array(label => value)
+	 * @param array $selectedElement value of selected element (optional, default none)
+	 */
+	function __construct($name, $elements, $selectedElement = null) {
+		$this->name = htmlspecialchars($name);
+		$this->elements = $elements;
+		if ($selectedElement != null) {
+			$this->selectedElement = $selectedElement;
+		}
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if (isset($values[$this->name][0])) {
+			$this->selectedElement = $values[$this->name][0];
+		}
+		$name = ' name="' . $this->name . '"';
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		// print radio list
+		foreach ($this->elements as $label => $value) {
+			$selected = '';
+			if ($value == $this->selectedElement) {
+				$selected = ' checked';
+			}
+			echo '<input type="radio"' . $name . $disabled . $selected . ' value="' . $value . '" tabindex="' . $tabindex . '"> ' . $label . '<br>';
+			$tabindex++;
+		}
+		return array($this->name => 'select');
+	}
+	
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 * 
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
+	}
+
+}
+
+/**
  * Prints the text and escapes contained HTML code by default.
  * 
  * @package metaHTML
