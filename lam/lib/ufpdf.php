@@ -104,7 +104,7 @@ function Text($x,$y,$txt)
   //Output a string
   $s=sprintf('BT %.2f %.2f Td %s Tj ET',$x*$this->k,($this->h-$y)*$this->k,$this->_escapetext($txt));
   if($this->underline and $txt!='')
-    $s.=' '.$this->_dounderline($x,$y,$this->GetStringWidth($txt),$txt);
+    $s.=' '.$this->_dounderlineU($x,$y,$this->GetStringWidth($txt),$txt);
   if($this->ColorFlag)
     $s='q '.$this->TextColor.' '.$s.' Q';
   $this->_out($s);
@@ -176,7 +176,7 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='J',$fill=0,$link='')
     $txtstring=$this->_escapetext($txt);
     $s.=sprintf('BT %.2f %.2f Td %s Tj ET',($this->x+$dx)*$k,($this->h-($this->y+.5*$h+.3*$this->FontSize))*$k,$txtstring);
     if($this->underline)
-      $s.=' '.$this->_dounderline($this->x+$dx,$this->y+.5*$h+.3*$this->FontSize,$width,$txt);
+      $s.=' '.$this->_dounderlineU($this->x+$dx,$this->y+.5*$h+.3*$this->FontSize,$width,$txt);
     if($this->ColorFlag)
       $s.=' Q';
     if($link)
@@ -478,7 +478,7 @@ function _puttruetypeunicode($font) {
   $this->_out('endobj');
 }
 
-function _dounderline($x,$y,$width,$txt)
+function _dounderlineU($x,$y,$width,$txt)
 {
   //Underline text
   $up=$this->CurrentFont['up'];
@@ -708,6 +708,7 @@ function strlen($s) {
 
 function utf8_substr($str,$start)
 {
+  $rs = '';
   if( func_num_args() >= 3 ) {
     $end = func_get_arg( 2 ); 
     for ($i=$start; $i < ($start+$end); $i++)
