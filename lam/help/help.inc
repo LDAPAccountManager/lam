@@ -98,8 +98,6 @@ $helpArray = array (
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
 				"215" => array ("Headline" => _("Access level"),
 					"Text" => _("You can specify if LAM allows full write access, password changes or only read access.")),
-				"216" => array ("Headline" => _("Text for user PDF"),
-					"Text" => _("This text will appear on top of every user PDF file.")),
 				"217" => array ("Headline" => _("Account types and modules"),
 					"Text" => _("Here you can select which plugins you want to use for account management.") . "<br><br>"
 						. _("Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited.")),
@@ -159,6 +157,8 @@ $helpArray = array (
 					"Text" => _("Here you can select a PDF structure and export the account to a PDF file.")),
 				"404" => array ("Headline" => _("Password"),
 					"Text" => _("Please enter the password which you want to set for this account. You may also generate a random password (12 characters) which will be displayed on your screen.")),
+				"405" => array ("Headline" => _("PDF structure"),
+					"Text" => _("The PDF structure defines what information is exported as PDF file and how the pages are structured. You can manage the PDF structures in the PDF editor (under \"Tools\").")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),

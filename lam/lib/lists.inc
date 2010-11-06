@@ -615,7 +615,7 @@ class lamList {
 		$container = new htmlTable();
 		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
 		
-		$container->addElement(new htmlTableExtendedSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure')), true);
+		$container->addElement(new htmlTableExtendedSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), true);
 		
 		$container->addElement(new htmlSpacer(null, '5px'), true);
 		$container->addElement(new htmlOutputText(_('Create for')));
@@ -636,7 +636,7 @@ class lamList {
 		
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		$buttonContainer = new htmlTable();
-		$buttonContainer->colspan = 2;
+		$buttonContainer->colspan = 3;
 		$buttonContainer->addElement(new htmlButton('createPDFok', _('Ok')));
 		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
 		$container->addElement($buttonContainer);
