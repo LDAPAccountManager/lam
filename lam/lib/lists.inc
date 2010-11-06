@@ -146,7 +146,7 @@ class lamList {
 			return;
 		}
 		// do POST actions
-		$this->listDoPost();
+		$postFragment = $this->listDoPost();
 		// get some parameters
 		$this->listGetParams();
 		// print HTML head
@@ -160,6 +160,8 @@ class lamList {
 		if (isset($this->entries)) {
 			$this->entries = $this->listSort($this->entries);
 		}
+		// insert HTML fragment from listDoPost
+		echo $postFragment;
 		// show form
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
 		echo "<div id=\"listTabContentArea\">\n";
@@ -463,6 +465,8 @@ class lamList {
 
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
+	* 
+	* @return String HTML fragment to insert into beginning of account list
 	*/
 	protected function listDoPost() {
 		// check if button was pressed and if we have to add/delete an account or call file upload
@@ -509,13 +513,13 @@ class lamList {
 		if (isset($_POST['createPDFok'])) {
 			$pdfStruct = $_POST['pdf_structure'];
 			$option = $_POST['createFor'];
+			$filename = '';
 			// create for clicked account
 			if ($option == 'DN') {
 				$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
 				$_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
-				createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
+				$filename = createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
 				unset($_SESSION["accountPDF"]);
-				exit;
 			}
 			// create for all selected accounts
 			elseif ($option == 'SELECTED') {
@@ -529,11 +533,10 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					createModulePDF($list,$pdfStruct);
+					$filename = createModulePDF($list,$pdfStruct);
 					for ($i = 0; $i < sizeof($accounts); $i++) {
 						unset($_SESSION["accountPDF-$i"]);
 					}
-					exit;
 				}
 			}
 			// create for all accounts
@@ -545,18 +548,19 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					createModulePDF($list,$pdfStruct);
+					$filename = createModulePDF($list,$pdfStruct);
 					for ($i = 0; $i < sizeof($this->entries); $i++) {
 						// clean session
 						unset($_SESSION["accountPDF-$i"]);
 					}
-					exit;
 				}
 			}
 			elseif ($option == 'SESSION') {
-				createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
+				$filename = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
 				unset($_SESSION[$_GET['PDFSessionID']]);
-				exit;
+			}
+			if ($filename != '') {
+				return "<script type=\"text/javascript\">window.open('" . $filename . "', '_blank');</script>";
 			}
 		}
 		// check if back from configuration page
@@ -573,6 +577,7 @@ class lamList {
 				$this->listConfigurationChanged();
 			}
 		}
+		return '';
 	}
 	
 	/**
@@ -592,65 +597,52 @@ class lamList {
 		if (!in_array($id, $selAccounts)) {
 			$selAccounts[] = $id;
 		}
-
+		// get possible PDF structures
+		$pdf_structures = getPDFStructureDefinitions($this->type);
+		
 		$this->listPrintHeader();
 
-		echo "<br><div>\n";
-		echo "<div class=\"ui-tabs-nav\">";
-		echo "<form target=\"_blank\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
-		
-		echo '<fieldset class="' . $this->type . 'edit"><legend>' . _('Create PDF file') . '</legend><br>';
-		echo '<table class="' . $this->type . 'edit">';
-			echo '<tr>';
-				echo '<td>';
-					echo _('PDF structure') . " ";
-				echo '</td>';
-				echo '<td>';
-					echo "<select name=\"pdf_structure\">\n";
-					$pdf_structures = getPDFStructureDefinitions($this->type);
-					foreach($pdf_structures as $pdf_structure) {
-						echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
-					}
-					echo "</select>\n";
-				echo '</td>';
-			echo '</tr>';
-			echo '<tr>';
-				echo '<td>';
-					echo _('Create for') . " ";
-				echo '</td>';
-				echo '<td>';
-					// check if account object is already in session
-					if ($sessionObject != null) {
-						echo $sessionObject->finalDN;
-						echo "<input type=\"hidden\" name=\"createFor\" value=\"SESSION\">\n";
-						echo "<input type=\"hidden\" name=\"PDFSessionID\" value=\"$PDFSessionID\">\n";
-					}
-					else {
-						echo '<select name="createFor">';
-						echo '<option value="DN">' . base64_decode($id) . '</option>';
-						echo '<option value="SELECTED">' . sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) . '</option>';
-						echo '<option value="ALL">' . sprintf(_('All accounts (%s)'), sizeof($this->entries)) . '</option>';
-						echo '</select>';
-					}
-				echo '</td>';
-			echo '</tr>';
-			echo '<tr>';
-				echo '<td colspan=2>&nbsp;</td>';
-			echo '</tr>';
-			echo '<tr>';
-				echo '<td colspan=2>';
-					echo '<input type="submit" name="createPDFok" value="' . _('Ok') . '"> ';
-					echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;norefresh=true">' . _('Cancel') . '</a>';
-				echo '</td>';
-			echo '</tr>';
-		echo '</table>';
-		echo '</fieldset>';
+		echo "<div class=\"ui-tabs-nav " . $this->type . "list-bright\">";
+		echo "<div class=\"smallPaddingContent\">\n";
+		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		
 		// hiden inputs for selected accounts
 		for ($i = 0; $i < sizeof($selAccounts); $i++) {
 			echo '<input type="hidden" name="' . $selAccounts[$i] . '" value="on">';
 		}
 		echo '<input type="hidden" name="clickedAccount" value="' . $id . '">';
+		
+		$container = new htmlTable();
+		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
+		
+		$container->addElement(new htmlTableExtendedSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure')), true);
+		
+		$container->addElement(new htmlSpacer(null, '5px'), true);
+		$container->addElement(new htmlOutputText(_('Create for')));
+		// check if account object is already in session
+		if ($sessionObject != null) {
+			$container->addElement(new htmlOutputText($sessionObject->finalDN));
+			$container->addElement(new htmlHiddenInput('createFor', 'SESSION'));
+			$container->addElement(new htmlHiddenInput('PDFSessionID', $PDFSessionID), true);
+		}
+		else {
+			$radioOptions = array(
+				base64_decode($id) => 'DN',
+				sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) => 'SELECTED',
+				sprintf(_('All accounts (%s)'), sizeof($this->entries)) => 'ALL'
+			);
+			$container->addElement(new htmlRadio('createFor', $radioOptions, 'DN'), true);
+		}
+		
+		$container->addElement(new htmlSpacer(null, '10px'), true);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->colspan = 2;
+		$buttonContainer->addElement(new htmlButton('createPDFok', _('Ok')));
+		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
+		$container->addElement($buttonContainer);
+		
+		$tabindex = 1;
+		parseHtml(null, $container, array(), false, $tabindex, $this->type);
 		
 		$this->listPrintFooter();
 	}

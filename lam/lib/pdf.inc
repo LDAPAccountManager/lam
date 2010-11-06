@@ -42,16 +42,14 @@ $key = false;
 $line_width = LAMPDF_LINEWIDTH;
 
 /**
- * This function creates the PDF output of one or more accounts. At the moment
- * this function can create a PDF page for user, group and host accounts. But
- * this is not limited by the function itself but by the account types that are
- * allowed in LAM and the exsisting PDF structure definitions. 
+ * This function creates the PDF output of one or more accounts.
  * 
  * @param array $accounts A numbered array containing all accounts the PDF page should
  * be created for. The entries of the array must be AccountContainer objects.
  * @param string $pdf_structure The filename of the structure definition that should be used
  * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
+ * @return String PDF file name
  */
 function createModulePDF($accounts,$pdf_structure="default") {
 	
@@ -143,12 +141,10 @@ function createModulePDF($accounts,$pdf_structure="default") {
 	// Close PDF
 	$pdf->Close();
 	// use timestamp and random number from ldap.inc as filename so it should be unique.
-	$filename .= '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
+	$filename = '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
 	// Save PDF
 	$pdf->Output($filename);
-	// Output meta refresh to pdf-file
-	metaRefresh($filename);
-	// Return relative path of pdf-file
+	// return PDF file name
 	return $filename;
 }
 
