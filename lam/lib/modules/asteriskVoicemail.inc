@@ -385,13 +385,33 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	function get_pdfEntries() {
 		$return = array();
-		$return[get_class($this) . '_AstVoicemailMailbox'] = array('<block><key>' . _('Mailbox') . '</key><value>' . $this->attributes['AstVoicemailMailbox'][0] . '</value></block>');
-		$return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstContext'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailFullname'] = array('<block><key>' . _('Full name') . '</key><value>' . $this->attributes['AstVoicemailFullname'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailContext'] = array('<block><key>' . _('Voicemail context') . '</key><value>' . $this->attributes['AstVoicemailContext'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailPager'] = array('<block><key>' . _('Pager') . '</key><value>' . $this->attributes['AstVoicemailPager'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailEmail'] = array('<block><key>' . _('Email address') . '</key><value>' . $this->attributes['AstVoicemailEmail'][0] . '</value></block>');
-		$return[get_class($this) . '_AstVoicemailOptions'] = array('<block><key>' . _('Options') . '</key><value>' . $this->attributes['AstVoicemailOptions'][0] . '</value></block>');
+		$AstVoicemailMailbox = '';
+		if (isset($this->attributes['AstVoicemailMailbox'][0])) $AstVoicemailMailbox = $this->attributes['AstVoicemailMailbox'][0];
+		$return[get_class($this) . '_AstVoicemailMailbox'] = array('<block><key>' . _('Mailbox') . '</key><value>' . $AstVoicemailMailbox . '</value></block>');
+		
+		$AstContext = '';
+		if (isset($this->attributes['AstContext'][0])) $AstContext = $this->attributes['AstContext'][0];
+		$return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $AstContext . '</value></block>');
+
+		$AstVoicemailFullname = '';
+		if (isset($this->attributes['AstVoicemailFullname'][0])) $AstVoicemailFullname = $this->attributes['AstVoicemailFullname'][0];
+		$return[get_class($this) . '_AstVoicemailFullname'] = array('<block><key>' . _('Full name') . '</key><value>' . $AstVoicemailFullname . '</value></block>');
+
+		$AstVoicemailContext = '';
+		if (isset($this->attributes['AstVoicemailContext'][0])) $AstVoicemailContext = $this->attributes['AstVoicemailContext'][0];
+		$return[get_class($this) . '_AstVoicemailContext'] = array('<block><key>' . _('Voicemail context') . '</key><value>' . $AstVoicemailContext . '</value></block>');
+
+		$AstVoicemailPager = '';
+		if (isset($this->attributes['AstVoicemailPager'][0])) $AstVoicemailPager = $this->attributes['AstVoicemailPager'][0];
+		$return[get_class($this) . '_AstVoicemailPager'] = array('<block><key>' . _('Pager') . '</key><value>' . $AstVoicemailPager . '</value></block>');
+		
+		$AstVoicemailEmail = '';
+		if (isset($this->attributes['AstVoicemailEmail'][0])) $AstVoicemailEmail = $this->attributes['AstVoicemailEmail'][0];
+		$return[get_class($this) . '_AstVoicemailEmail'] = array('<block><key>' . _('Email address') . '</key><value>' . $AstVoicemailEmail . '</value></block>');
+		
+		$AstVoicemailOptions = '';
+		if (isset($this->attributes['AstVoicemailOptions'][0])) $AstVoicemailOptions = $this->attributes['AstVoicemailOptions'][0];
+		$return[get_class($this) . '_AstVoicemailOptions'] = array('<block><key>' . _('Options') . '</key><value>' . $AstVoicemailOptions . '</value></block>');
 		return $return;
 	}
 

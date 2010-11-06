@@ -1021,12 +1021,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
+		$description = '';
+		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
+		$title = '';
+		if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
+		$givenName = '';
+		if (isset($this->attributes['givenName'][0])) $givenName = $this->attributes['givenName'][0];
+		$employeeType = '';
+		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
+		$l = '';
+		if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
+		
 		$return = array(
-			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
-			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
-			get_class($this) . '_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
+			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>'),
+			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $title . '</value></block>'),
+			get_class($this) . '_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $givenName . '</value></block>'),
 			get_class($this) . '_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
-			get_class($this) . '_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $this->attributes['employeeType'][0] . '</value></block>'),
+			get_class($this) . '_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $employeeType . '</value></block>'),
 			get_class($this) . '_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $this->attributes['manager'][0] . '</value></block>'),
 			get_class($this) . '_street' => array('<block><key>' . _('Street') . '</key><value>' . $this->attributes['street'][0] . '</value></block>'),
 			get_class($this) . '_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $this->attributes['postOfficeBox'][0] . '</value></block>'),
@@ -1042,7 +1053,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			get_class($this) . '_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $this->attributes['businessCategory'][0] . '</value></block>'),
 			get_class($this) . '_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 			get_class($this) . '_carLicense' => array('<block><key>' . _('Car license') . '</key><value>' . $this->attributes['carLicense'][0] . '</value></block>'),
-			get_class($this) . '_location' => array('<block><key>' . _('Location') . '</key><value>' . $this->attributes['l'][0] . '</value></block>'),
+			get_class($this) . '_location' => array('<block><key>' . _('Location') . '</key><value>' . $l . '</value></block>'),
 			get_class($this) . '_state' => array('<block><key>' . _('State') . '</key><value>' . $this->attributes['st'][0] . '</value></block>'),
 			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $this->attributes['physicalDeliveryOfficeName'][0] . '</value></block>')
 		);
