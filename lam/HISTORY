@@ -1,6 +1,8 @@
 December 2010 3.3.0
   - additional usability enhancements
   - PDF export: higher resolution for logos
+  - fixed bugs:
+   -> ignore comment lines in shells file (3107124)
   
 
 28.10.2010 3.2.0

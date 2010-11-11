@@ -39,24 +39,23 @@ $Id$
 * @return array list of shell names
 */
 function getshells() {
+	$return = array();
 	$shellPath = dirname(__FILE__) . '/../config/shells';
-	// Load shells from file
+	// load shells from file
 	if (file_exists($shellPath)) {
 		$shells = file($shellPath);
-		$i = 0;
-		while (count($shells) > $i) {
-			// remove whitespaces
-			trim($shells[$i]);
-			// remove lineend
-			$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], "\n"));
+		for ($i = 0; $i < sizeof($shells); $i++) {
+			// remove whitespaces and line end
+			$shells[$i] = trim($shells[$i]);
 			// remove comments
-			if ($shells[$i]{0}=='#') unset ($shells[$i]);
-			 else $i++;
+			if ((strlen($shells[$i]) == 0) || $shells[$i]{0}=='#') {
+				continue;
+			}
+			$return[] = $shells[$i];
 		}
-		// $shells is array with all valid shells
-		return $shells;
+		return $return;
 	}
-	else return array();
+	return $return;
 }
 
 
