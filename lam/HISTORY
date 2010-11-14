@@ -1,5 +1,6 @@
 December 2010 3.3.0
   - additional usability enhancements
+  - new IMAP module ("Mailbox (imapAccess)") allows to create/delete user mailboxes
   - PDF export: higher resolution for logos
   - fixed bugs:
    -> ignore comment lines in shells file (3107124)
