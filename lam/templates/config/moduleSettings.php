@@ -180,6 +180,7 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#moduleSettings').addClass('ui-tabs-selected');
 	jQuery('#moduleSettings').addClass('ui-state-active');
+	jQuery('#moduleSettings').addClass('userlist-bright');
 	jQuery('#saveButton').button({
         icons: {
       	  primary: 'saveButton'
@@ -193,7 +194,7 @@ jQuery(document).ready(function() {
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
 <?php
 
 

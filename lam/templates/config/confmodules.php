@@ -181,6 +181,7 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#editmodules').addClass('ui-tabs-selected');
 	jQuery('#editmodules').addClass('ui-state-active');
+	jQuery('#editmodules').addClass('userlist-bright');
 	jQuery('#saveButton').button({
         icons: {
       	  primary: 'saveButton'
@@ -191,10 +192,17 @@ jQuery(document).ready(function() {
     	  primary: 'cancelButton'
   	}
 	});
+	// set common width for select boxes
+	var maxWidth = 0;
+	jQuery("select").each(function(){
+		if (jQuery(this).width() > maxWidth)
+		maxWidth = jQuery(this).width();   
+	});
+	jQuery("select").width(maxWidth);
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
 <?php
 
 
@@ -203,9 +211,12 @@ for ($i = 0; $i < sizeof($types); $i++) {
 	$account_list[] = array($types[$i], getTypeAlias($types[$i]));
 }
 
+$container = new htmlTable();
 for ($i = 0; $i < sizeof($account_list); $i++) {
-	config_showAccountModules($account_list[$i][0], $account_list[$i][1]);
+	config_showAccountModules($account_list[$i][0], $account_list[$i][1], $container);
 }
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 
 echo "<p>\n";
@@ -227,8 +238,9 @@ echo "</html>\n";
 *
 * @param string $scope account type
 * @param string $title title for module selection (e.g. "User modules")
+* @param htmlTable $container meta HTML container
 */
-function config_showAccountModules($scope, $title) {
+function config_showAccountModules($scope, $title, &$container) {
 	$conf = &$_SESSION['conf_config'];
 	$typeSettings = $conf->get_typeSettings();
 	// account modules
@@ -246,71 +258,70 @@ function config_showAccountModules($scope, $title) {
 	}
 	natcasesort($sortedAvailable);
 
-	// show account modules
-	$icon = '<img alt="' . $scope . '" src="../../graphics/' . $scope . '.png">&nbsp;';
-	echo "<fieldset class=\"" . $scope . "edit\"><legend>$icon<b>" . $title . "</b></legend><br>\n";
-	echo "<table border=0 width=\"100%\">\n";
-		// select boxes
-		echo "<tr>\n";
-			echo "<td width=\"5%\"></td>\n";
-			echo "<td width=\"40%\">\n";
-				echo "<fieldset class=\"" . $scope . "edit\">\n";
-					echo "<legend>" . _("Selected modules") . "</legend><br>\n";
-					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_selected[]\" size=5 multiple>\n";
-						for ($i = 0; $i < sizeof($selected); $i++) {
-							if (in_array($selected[$i], $available)) {  // selected modules must be available
-								if (is_base_module($selected[$i], $scope)) {  // mark base modules
-									echo "<option value=\"" . $selected[$i] . "\">";
-									echo getModuleAlias($selected[$i], $scope) . " (" . $selected[$i] .  ")(*)";
-									echo "</option>\n";
-								}
-								else {
-									echo "<option value=\"" . $selected[$i] . "\">";
-									echo getModuleAlias($selected[$i], $scope) . " (" . $selected[$i] .  ")";
-									echo "</option>\n";
-								}
-							}
-						}
-					echo "</select>\n";
-				echo "</fieldset>\n";
-			echo "</td>\n";
-			echo "<td width=\"10%\" align=\"center\">\n";
-				echo "<p>";
-					echo "<input type=submit title=\"" . _('Add') . "\" value=\" \" name=\"" . $scope . "_add\"" .
-					"style=\"background-image: url(../../graphics/back.gif);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">";
-					echo "<br>";
-					echo "<input type=submit title=\"" . _('Remove') . "\" value=\" \" name=\"" . $scope . "_remove\"" .
-					"style=\"background-image: url(../../graphics/forward.gif);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">";
-				echo "</p>\n";
-			echo "</td>\n";
-			echo "<td width=\"40%\">\n";
-				echo "<fieldset class=\"" . $scope . "edit\">\n";
-					echo "<legend>" . _("Available modules") . "</legend><br>\n";
-					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_available[]\" size=5 multiple>\n";
-						foreach ($sortedAvailable as $key => $value) {
-							if (! in_array($key, $selected)) {  // display non-selected modules
-								if (is_base_module($key, $scope)) {  // mark base modules
-									echo "<option value=\"" . $key . "\">";
-									echo $value . " (" . $key .  ")(*)";
-									echo "</option>\n";
-								}
-								else {
-									echo "<option value=\"" . $key . "\">";
-									echo $value . " (" . $key .  ")";
-									echo "</option>\n";
-								}
-							}
-						}
-					echo "</select>\n";
-				echo "</fieldset>\n";
-			echo "</td>\n";
-			echo "<td width=\"5%\"></td>\n";
-		echo "</tr>\n";
-	echo "</table>\n";
+	// build options for selected and available modules
+	$selOptions = array();
+	for ($i = 0; $i < sizeof($selected); $i++) {
+		if (in_array($selected[$i], $available)) {  // selected modules must be available
+			if (is_base_module($selected[$i], $scope)) {  // mark base modules
+				$selOptions[getModuleAlias($selected[$i], $scope) . " (" . $selected[$i] .  ")(*)"] = $selected[$i];
+			}
+			else {
+				$selOptions[getModuleAlias($selected[$i], $scope) . " (" . $selected[$i] .  ")"] = $selected[$i];
+			}
+		}
+	}
+	$availOptions = array();
+	foreach ($sortedAvailable as $key => $value) {
+		if (! in_array($key, $selected)) {  // display non-selected modules
+			if (is_base_module($key, $scope)) {  // mark base modules
+				$availOptions[$value . " (" . $key .  ")(*)"] = $key;
+			}
+			else {
+				$availOptions[$value . " (" . $key .  ")"] = $key;
+			}
+		}
+	}
 	
-	echo "</fieldset>\n";
-	
-	echo "<br>\n";
+	// add account module selection
+	$container->addElement(new htmlSubTitle($title, '../../graphics/' . $scope . '.png'), true);
+	$container->addElement(new htmlOutputText(_("Selected modules")));
+	// add/remove buttons
+	$buttonContainer = new htmlTable();
+	$buttonContainer->rowspan = 2;
+	if (sizeof($availOptions) > 0) {
+		$addButton = new htmlButton($scope . "_add", 'back.gif', true);
+		$addButton->setTitle(_('Add'));
+		$buttonContainer->addElement($addButton, true);
+	}
+	if (sizeof($selOptions) > 0) {
+		$remButton = new htmlButton($scope . "_remove", 'forward.gif', true);
+		$remButton->setTitle(_('Remove'));
+		$buttonContainer->addElement($remButton, true);
+	}
+	$container->addElement($buttonContainer);
+	$container->addElement(new htmlOutputText(_("Available modules")), true);
+	// selected modules
+	if (sizeof($selOptions) > 0) {
+		$selSelect = new htmlSelect($scope . '_selected', $selOptions, array(), 5);
+		$selSelect->setTransformSingleSelect(false);
+		$selSelect->setMultiSelect(true);
+		$selSelect->setHasDescriptiveElements(true);
+		$selSelect->setSortElements(false);
+		$container->addElement($selSelect);
+	}
+	else {
+		$container->addElement(new htmlOutputText(''));
+	}
+	// available modules
+	if (sizeof($availOptions) > 0) {
+		$availSelect = new htmlSelect($scope . "_available", $availOptions, array(), 5);
+		$availSelect->setTransformSingleSelect(false);
+		$availSelect->setHasDescriptiveElements(true);
+		$availSelect->setMultiSelect(true);
+		$container->addElement($availSelect, true);
+	}
+	// spacer to next account type
+	$container->addElement(new htmlSpacer(null, '30px'), true);
 }
 
 /**

@@ -538,6 +538,8 @@ class htmlButton extends htmlElement {
 	private $title = null;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** icon class (CSS) for buttons with icon + text */
+	private $iconClass = null;
 	
 	/**
 	 * Constructor.
@@ -579,7 +581,7 @@ class htmlButton extends htmlElement {
 			$style = ' style="background-image: url(../../graphics/' . $this->value . ');"';
 		}
 		// text button
-		else {
+		elseif ($this->iconClass == null) {
 			$class = ' class="smallPadding"';
 		}
 		if ($this->title != null) {
@@ -595,9 +597,13 @@ class htmlButton extends htmlElement {
 		else {
 			echo '<button id="btn_' . $this->name . '"' . $name . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
+			$icon = '';
+			if ($this->iconClass != null) {
+				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
+			}
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
-			echo "jQuery('#btn_" . $this->name . "').button();";
+			echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
 			echo '});';
 			echo '</script>';
 		}
@@ -620,6 +626,16 @@ class htmlButton extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+
+	/**
+	 * Sets an additional icon for a text button.
+	 * The icon class is a CSS class that specifies the icon image (e.g. "deleteButton" in layout.css).
+	 * 
+	 * @param String $iconClass icon class
+	 */
+	public function setIconClass($iconClass) {
+		$this->iconClass = htmlspecialchars($iconClass);
 	}
 
 }
@@ -677,6 +693,8 @@ class htmlSelect extends htmlElement {
 	private $isEnabled = true;
 	/** width of input element */
 	private $width = '';
+	/** transform select boxes with one element to text */
+	private $transformSingleSelect = true;
 	
 	/**
 	 * Constructor.
@@ -741,7 +759,7 @@ class htmlSelect extends htmlElement {
 			$style = ' style="width: ' . $this->width . '"';
 		}
 		// hide select boxes that contain less than 2 elements
-		if (sizeof($this->elements) < 2) {
+		if ((sizeof($this->elements) < 2) && $this->transformSingleSelect) {
 			echo '<div class="hidden">';
 		}
 		// print select box
@@ -761,7 +779,7 @@ class htmlSelect extends htmlElement {
 		}
 		echo "</select>\n";
 		// if select box has only one element then show it as text
-		if (sizeof($this->elements) == 1) {
+		if ((sizeof($this->elements) == 1) && $this->transformSingleSelect) {
 			echo '</div>';
 			if ($this->hasDescriptiveElements) {
 				$keys = array_keys($this->elements);
@@ -771,7 +789,7 @@ class htmlSelect extends htmlElement {
 				echo $this->elements[0];
 			}
 		}
-		else if (sizeof($this->elements) == 0) {
+		elseif (sizeof($this->elements) == 0) {
 			echo '</div>';
 		}
 		if ($this->multiSelect) {
@@ -881,6 +899,15 @@ class htmlSelect extends htmlElement {
 	 */
 	public function setWidth($width) {
 		$this->width = htmlspecialchars($width);
+	}
+
+	/**
+	 * Specifies if select boxes that contain only a single element should be transformed to a simple text field.
+	 * 
+	 * @param boolean $transformSingleSelect transform single options to text
+	 */
+	public function setTransformSingleSelect($transformSingleSelect) {
+		$this->transformSingleSelect = $transformSingleSelect;
 	}
 
 }
@@ -1028,6 +1055,8 @@ class htmlOutputText extends htmlElement {
 	private $string;
 	/** specifies if HTML code should be escaped */
 	private $escapeHTML;
+	/** bold text */
+	private $isBold = false;
 
 	/**
 	 * Constructor.
@@ -1052,13 +1081,28 @@ class htmlOutputText extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->isBold) {
+			echo "<b>";
+		}
 		if ($this->escapeHTML) {
 			echo htmlspecialchars($this->string);
 		}
 		else {
 			echo $this->string;
 		}
+		if ($this->isBold) {
+			echo "</b>";
+		}
 		return array();
+	}
+
+	/**
+	 * Specifies if the whole text should be printed in bold.
+	 * 
+	 * @param boolean $isBold bold text
+	 */
+	public function setIsBold($isBold) {
+		$this->isBold = $isBold;
 	}
 
 }
@@ -1700,14 +1744,17 @@ class htmlSubTitle extends htmlElement {
 
 	/** descriptive label */
 	private $label = null;
+	/** optional image */
+	private $image = null;
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @param String $label label
 	 */
-	function __construct($label) {
+	function __construct($label, $image = null) {
 		$this->label = htmlspecialchars($label);
+		$this->image = htmlspecialchars($image);
 		// the title should not end at a table cell
 		$this->colspan = 100;
 	}
@@ -1726,6 +1773,9 @@ class htmlSubTitle extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		echo "<div class=\"subTitle\">\n";
 		echo "<h4 class=\"subTitleText\">\n";
+		if ($this->image != null) {
+			echo '<img src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
+		}
 		echo $this->label;
 		echo "</h4>\n";
 		echo "</div>\n";

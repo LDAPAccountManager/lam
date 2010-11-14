@@ -157,9 +157,9 @@ for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMe
 echo ("<form action=\"conftypes.php\" method=\"post\">\n");
 
 echo '<div style="text-align: right;">';
-echo "<button id=\"saveButton\" name=\"saveSettings\" type=\"submit\">" . _('Save') . "</button>";
+echo "<button id=\"saveButton\" name=\"saveSettings\">" . _('Save') . "</button>";
 echo "&nbsp;";
-echo "<button id=\"cancelButton\" name=\"cancelSettings\" type=\"submit\">" . _('Cancel') . "</button>";
+echo "<button id=\"cancelButton\" name=\"cancelSettings\">" . _('Cancel') . "</button>";
 echo "<br><br>\n";
 echo '</div>';
 
@@ -199,6 +199,7 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#edittypes').addClass('ui-tabs-selected');
 	jQuery('#edittypes').addClass('ui-state-active');
+	jQuery('#edittypes').addClass('userlist-bright');
 	jQuery('#saveButton').button({
         icons: {
       	  primary: 'saveButton'
@@ -212,49 +213,49 @@ jQuery(document).ready(function() {
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
 <?php
 
+$container = new htmlTable();
 
 // show available types
 if (sizeof($availableTypes) > 0) {
-	echo "<fieldset><legend><b>" . _("Available account types") . "</b></legend>\n";
-	echo "<table>\n";
+	$container->addElement(new htmlSubTitle(_("Available account types")), true);
+	$availableContainer = new htmlTable();
 	foreach ($availableTypes as $key => $value) {
-		$icon = '<img alt="' . $value . '" src="../../graphics/' . $key . '.png">&nbsp;';
-		echo "<tr>\n";
-			echo "<td>$icon<b>" . $value . ": </b></td>\n";
-			echo "<td>" . getTypeDescription($key) . "</td>\n";
-			echo "<td><input type=\"submit\" name=\"add_" . $key ."\" title=\"" . _("Add") . "\" value=\" \"" .
-				" style=\"background-image: url(../../graphics/add.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\"></td>\n";
-		echo "</tr>\n";
+		$availableContainer->addElement(new htmlImage('../../graphics/' . $key . '.png'));
+		$availableContainer->addElement(new htmlOutputText($value));
+		$availableContainer->addElement(new htmlSpacer('10px', null));
+		$availableContainer->addElement(new htmlOutputText(getTypeDescription($key)));
+		$button = new htmlButton('add_' . $key, 'add.png', true);
+		$button->setTitle(_("Add"));
+		$availableContainer->addElement($button, true);
 	}
-	echo "</table>\n";
-	echo "</fieldset>\n";
-	
-	echo "<p><br><br></p>";
+	$availableContainer->addElement(new htmlSpacer(null, '20px'), true);
+	$container->addElement($availableContainer, true);
 }
 
 // show active types
 if (sizeof($activeTypes) > 0) {
-	echo "<fieldset><legend><b>" . _("Active account types") . "</b></legend><br>\n";
+	$container->addElement(new htmlSubTitle(_("Active account types")), true);
+	$activeContainer = new htmlTable();
 	for ($i = 0; $i < sizeof($activeTypes); $i++) {
-		echo "<fieldset class=\"" . $activeTypes[$i] . "edit\">\n";
-		$icon = '<img alt="' . $activeTypes[$i] . '" src="../../graphics/' . $activeTypes[$i] . '.png">&nbsp;';
-		echo "<legend>" . $icon . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . " " .
-			"<input type=\"submit\" name=\"rem_" . $activeTypes[$i] . "\" value=\" \" title=\"" . _("Remove this account type") . "\" " .
-			"style=\"background-image: url(../../graphics/del.png);background-position: 2px center;background-repeat: no-repeat;width:24px;height:24px;background-color:transparent\">" .
-			"</legend>";
-		echo "<br>\n";
-		echo "<table>\n";
+		// title
+		$activeContainer->addElement(new htmlImage('../../graphics/' . $activeTypes[$i] . '.png'));
+		$titleText = new htmlOutputText(getTypeAlias($activeTypes[$i]));
+		$titleText->setIsBold(true);
+		$activeContainer->addElement($titleText);
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$activeContainer->addElement(new htmlOutputText(getTypeDescription($activeTypes[$i])), true);
 		// LDAP suffix
-		echo "<tr>\n";
-			echo "<td>" . _("LDAP suffix") . "</td>\n";
-			echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $typeSettings['suffix_' . $activeTypes[$i]] . "\"></td>\n";
-			echo "<td>";
-			printHelpLink(getHelp('', '202'), '202');
-			echo "</td>\n";
-		echo "</tr>\n";
+		$suffixText = new htmlOutputText(_("LDAP suffix"));
+		$suffixText->colspan = 2;
+		$activeContainer->addElement($suffixText);
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$suffixInput = new htmlInputField('suffix_' . $activeTypes[$i], $typeSettings['suffix_' . $activeTypes[$i]]);
+		$suffixInput->setFieldSize(40);
+		$activeContainer->addElement($suffixInput);
+		$activeContainer->addElement(new htmlHelpLink('202'), true);
 		// list attributes
 		if (isset($typeSettings['attr_' . $activeTypes[$i]])) {
 			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
@@ -262,18 +263,27 @@ if (sizeof($activeTypes) > 0) {
 		else {
 			$attributes = getDefaultListAttributes($activeTypes[$i]);
 		}
-		echo "<tr>\n";
-			echo "<td>" . _("List attributes") . "</td>\n";
-			echo "<td><input type=\"text\" size=\"40\" name=\"attr_" . $activeTypes[$i] . "\" value=\"" . $attributes . "\"></td>\n";
-			echo "<td>";
-			printHelpLink(getHelp('', '206'), '206');
-			echo "</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		echo "</fieldset><br>\n";
+		$attrsText = new htmlOutputText(_("List attributes"));
+		$attrsText->colspan = 2;
+		$activeContainer->addElement($attrsText);
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$attrsInput = new htmlInputField('attr_' . $activeTypes[$i], $attributes);
+		$attrsInput->setFieldSize(40);
+		$activeContainer->addElement($attrsInput);
+		$activeContainer->addElement(new htmlHelpLink('206'), true);
+		// delete button
+		$delButton = new htmlButton('rem_'. $activeTypes[$i], _("Remove this account type"));
+		$delButton->colspan = 5;
+		$delButton->setIconClass('deleteButton');
+		$activeContainer->addElement($delButton, true); //del.png
+		
+		$activeContainer->addElement(new htmlSpacer(null, '40px'), true);
 	}
-	echo "</fieldset>\n";
+	$container->addElement($activeContainer, true);
 }
+
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 

@@ -214,6 +214,7 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#generalSettingsButton').addClass('ui-tabs-selected');
 	jQuery('#generalSettingsButton').addClass('ui-state-active');
+	jQuery('#generalSettingsButton').addClass('userlist-bright');
 	jQuery('#saveButton').button({
         icons: {
       	  primary: 'saveButton'
@@ -227,7 +228,7 @@ jQuery(document).ready(function() {
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
 <?php
 
 echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> " . _("Server settings") . "</legend><br>\n");
