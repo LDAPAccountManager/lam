@@ -25,6 +25,10 @@
 
 use Sys::Syslog;
 
+# Defines the protocol version of the lamdaemon script.
+# This will only be changed when additional commands are added etc.
+my $LAMDAEMON_PROTOCOL_VERSION = 1;
+
 my $SPLIT_DELIMITER = "###x##y##x###";
 
 # set a known path
@@ -134,8 +138,17 @@ print "$return\n";
 # Runs tests to check the environment
 #
 sub runTest {
+	# protocol version check
+	if ($vals[2] eq 'version') {
+		if ($vals[3] eq $LAMDAEMON_PROTOCOL_VERSION) {
+			$return = "INFO,Version check ok";
+		}
+		else {
+			$return = "ERROR,Version check failed. Please upgrade the lamdaemon script to the same version as your main LAM installation.";
+		}
+	}
 	# basic test
-	if ($vals[2] eq 'basic') {
+	elsif ($vals[2] eq 'basic') {
 		$return = "INFO,Basic test ok";
 	}
 	# quota test
@@ -164,6 +177,9 @@ sub runTest {
 				$return = "INFO,NSS test ok";
 			}
 		}
+	}
+	else {
+		$return = "ERROR,Unknown test: $vals[2]";
 	}
 }
 

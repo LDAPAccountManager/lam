@@ -169,6 +169,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText, $container) {
  */
 function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$SPLIT_DELIMITER = "###x##y##x###";
+	$LAMDAEMON_PROTOCOL_VERSION = '1';
 	$okImage = "../../graphics/pass.png";
 	$failImage = "../../graphics/fail.png";
 	
@@ -258,6 +259,10 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	
 	if (!$stopTest) {
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"), $container);
+	}
+	
+	if (!$stopTest) {
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "version" . $SPLIT_DELIMITER . $LAMDAEMON_PROTOCOL_VERSION, $stopTest, $handle, _("Lamdaemon version"), $container);
 	}
 	
 	if (!$stopTest) {
