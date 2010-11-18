@@ -92,7 +92,7 @@ if (isset($_POST['submit'])) {
 			// check each line
 			$ipRegex = '/^[0-9\\.\\*]+$/';
 			if (!preg_match($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 15)) {
-				$errors[] = sprintf(_("The IP address %s is invalid!"), $allowedHostsList[$i]);
+				$errors[] = sprintf(_("The IP address %s is invalid!"), str_replace('%', '%%', $allowedHostsList[$i]));
 			}
 		}
 		$allowedHosts = implode(",", $allowedHostsList);
@@ -157,6 +157,8 @@ echo $_SESSION['header'];
 			</tr>
 		</table>
 		<br>
+		<!-- form for adding/renaming/deleting profiles -->
+		<form action="mainmanage.php" method="post">
 
 <?php
 // include all JavaScript files
@@ -172,239 +174,89 @@ foreach ($jsFiles as $jsEntry) {
 	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 }
 
+$container = new htmlTable();
+
 // print messages
 for ($i = 0; $i < sizeof($errors); $i++) {
-	StatusMessage("ERROR", $errors[$i]);
+	$container->addElement(new htmlStatusMessage("ERROR", $errors[$i]), true);
 }
 
 // check if config file is writable
 if (!$cfg->isWritable()) {
-	StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
+	$container->addElement(new htmlStatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.'), true);
 }
+$container->addElement(new htmlSpacer(null, '20px'), true);
+
+// security settings
+$securityTable = new htmlTable();
+$options = array(5, 10, 20, 30, 60);
+$securityTable->addElement(new htmlTableExtendedSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), true);
+$securityTable->addElement(new htmlTableExtendedInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'), true);
+$securityField = new htmlFieldset($securityTable, _("Security settings"));
+$container->addElement($securityField, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
+// password policy
+$policyTable = new htmlTable();
+$options20 = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
+$options4 = array(0, 1, 2, 3, 4);
+$policyTable->addElement(new htmlTableExtendedSelect('passwordMinLength', $options20, array($cfg->passwordMinLength), _('Minimum password length'), '242'), true);
+$policyTable->addElement(new htmlTableExtendedSelect('passwordMinLower', $options20, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), true);
+$policyTable->addElement(new htmlTableExtendedSelect('passwordMinUpper', $options20, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), true);
+$policyTable->addElement(new htmlTableExtendedSelect('passwordMinNumeric', $options20, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), true);
+$policyTable->addElement(new htmlTableExtendedSelect('passwordMinSymbol', $options20, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), true);
+$policyTable->addElement(new htmlTableExtendedSelect('passwordMinClasses', $options4, array($cfg->passwordMinClasses), _('Minimum character classes'), '242'), true);
+$policyField = new htmlFieldset($policyTable, _("Password policy"));
+$container->addElement($policyField, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
+// logging
+$loggingTable = new htmlTable();
+$levelOptions = array(_("Debug") => LOG_DEBUG, _("Notice") => LOG_NOTICE, _("Warning") => LOG_WARNING, _("Error") => LOG_ERR);
+$levelSelect = new htmlTableExtendedSelect('logLevel', $levelOptions, array($cfg->logLevel), _("Log level"), '239');
+$levelSelect->setHasDescriptiveElements(true);
+$loggingTable->addElement($levelSelect, true);
+$destinationOptions = array(_("No logging") => "none", _("System logging") => "syslog", _("File") => 'file');
+$destinationSelected = 'file';
+$destinationPath = $cfg->logDestination;
+if ($cfg->logDestination == 'NONE') {
+	$destinationSelected = 'none';
+	$destinationPath = '';
+}
+elseif ($cfg->logDestination == 'SYSLOG') {
+	$destinationSelected = 'syslog';
+	$destinationPath = '';
+}
+$loggingTable->addElement(new htmlTableExtendedRadio(_("Log destination"), 'logDestination', $destinationOptions, $destinationSelected, '240'), true);
+$loggingTable->addElement(new htmlOutputText(''));
+$loggingTable->addElement(new htmlInputField('logFile', $destinationPath), true);
+$loggingField = new htmlFieldset($loggingTable, _("Logging"));
+$container->addElement($loggingField, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
+// change master password
+$passwordTable = new htmlTable();
+$pwd1 = new htmlTableExtendedInputField(_("New master password"), 'masterpassword', '', '235');
+$pwd1->setIsPassword(true);
+$passwordTable->addElement($pwd1, true);
+$pwd2 = new htmlTableExtendedInputField(_("Reenter new master password"), 'masterpassword2', '');
+$pwd2->setIsPassword(true);
+$passwordTable->addElement($pwd2, true);
+$passwordField = new htmlFieldset($passwordTable, _("Change master password"));
+$container->addElement($passwordField, true);
+$container->addElement(new htmlSpacer(null, '20px'), true);
+
+// buttons
+if ($cfg->isWritable()) {
+	$buttonTable = new htmlTable();
+	$buttonTable->addElement(new htmlButton('submit', _("Ok")));
+	$buttonTable->addElement(new htmlButton('cancel', _("Cancel")));
+	$container->addElement($buttonTable);
+}
+
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 ?>
-
-		<br>
-		<!-- form for adding/renaming/deleting profiles -->
-		<form action="mainmanage.php" method="post">
-		<table border="0" align="center">
-		<tr><td>
-		<fieldset>
-			<legend> <?php echo _("Security settings"); ?> </legend>
-			<br>
-			<table cellspacing="0" border="0">
-				<!-- session timeout -->
-				<tr>
-					<td align="left">
-						<?php echo _("Session timeout"); ?>
-					</td>
-					<td>
-						<SELECT name="sessionTimeout">
-						<?php
-						$options = array(5, 10, 20, 30, 60);
-						for ($i = 0; $i < sizeof($options); $i++) {
-							if ($cfg->sessionTimeout == $options[$i]) {
-								echo "<option selected>" . $cfg->sessionTimeout . "</option>";
-							}
-							else {
-								echo "<option>" . $options[$i] . "</option>";
-							}
-						}
-						?>
-						</SELECT>
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '238'), '238');
-					?>
-					</td>
-				</tr>
-				<!-- allowed hosts -->
-				<tr>
-					<td align="left">
-						<?php echo _("Allowed hosts"); ?>
-					</td>
-					<td>
-						<TEXTAREA cols="30" rows="7" name="allowedHosts"><?php echo implode("\n", explode(",", $cfg->allowedHosts)); ?></TEXTAREA>
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '241'), '241');
-					?>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		<BR>
-		<fieldset>
-			<legend> <?php echo _("Password policy"); ?> </legend>
-			<br>
-			<table cellspacing="0" border="0">
-			<?php
-				$options = array(
-					array('passwordMinLength', _('Minimum password length'), 20),
-					array('passwordMinLower', _('Minimum lowercase characters'), 20),
-					array('passwordMinUpper', _('Minimum uppercase characters'), 20),
-					array('passwordMinNumeric', _('Minimum numeric characters'), 20),
-					array('passwordMinSymbol', _('Minimum symbolic characters'), 20),
-					array('passwordMinClasses', _('Minimum character classes'), 4)
-				);
-				for ($i = 0; $i < sizeof($options); $i++) {
-					echo "<tr>\n";
-						echo "<td>\n";
-							echo $options[$i][1] . "&nbsp;&nbsp;";
-						echo "</td>\n";
-						echo "<td>\n";
-							echo "<select name=\"" . $options[$i][0] . "\">\n";
-								for ($o = 0; $o <= $options[$i][2]; $o++) {
-									$selected = '';
-									if ($cfg->$options[$i][0] == $o) {
-										$selected = ' selected';
-									}
-									echo "<option" . $selected . ">" . $o . "</option>\n";
-								}
-							echo "</select>\n";
-						echo "</td>\n";
-						echo "<td>\n";
-							printHelpLink(getHelp('', '242'), '242');
-						echo "</td>\n";
-					echo "</tr>\n";
-				}
-			?>
-			</table>
-			<br>
-		</fieldset>
-		<BR>
-		<fieldset>
-			<legend> <?php echo _("Logging"); ?> </legend>
-			<br>
-			<table cellspacing="0" border="0">
-				<!-- log level -->
-				<tr>
-					<td>
-						<?php echo _("Log level"); ?>
-						<SELECT name="logLevel">
-						<?php
-						$options = array(_("Debug") => LOG_DEBUG, _("Notice") => LOG_NOTICE, _("Warning") => LOG_WARNING, _("Error") => LOG_ERR);
-						foreach ($options as $key => $value) {
-							if ($cfg->logLevel == $value) {
-								echo "<option selected value=\"" . $value . "\">" . $key . "</option>";
-							}
-							else {
-								echo "<option value=\"" . $value . "\">" . $key . "</option>";
-							}
-						}
-						?>
-						</SELECT>
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '239'), '239');
-					?>
-					</td>
-				</tr>
-				<TR><TD colspan="2">&nbsp;</TD></TR>
-				<TR>
-					<TD>
-						<?PHP
-							echo _("Log destination") . ":";
-						?>
-					</TD>
-					<TD>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '240'), '240');
-					?>
-					</TD>
-				</TR>
-				<TR>
-					<TD colspan="2">
-					<?PHP
-						$noLogChecked = false;
-						if ($cfg->logDestination == "NONE") $noLogChecked = true;
-						echo "<input type=\"radio\" name=\"logDestination\" value=\"none\"";
-						if ($noLogChecked) echo " checked";
-						echo ">" . _("No logging") . "\n";
-					?>
-					</TD>
-				</TR>
-				<TR>
-					<TD colspan="2">
-					<?PHP
-						$syslogChecked = false;
-						if ($cfg->logDestination == "SYSLOG") {
-							$syslogChecked = true;
-						}
-						echo "<input type=\"radio\" name=\"logDestination\" value=\"syslog\"";
-						if ($syslogChecked) echo " checked";
-						echo ">" . _("System logging") . "\n";
-					?>
-					</TD>
-				</TR>
-				<TR>
-					<TD colspan="2">
-					<?PHP
-						$logFile = "";
-						$logFileChecked = false;
-						if (($cfg->logDestination != "NONE") && ($cfg->logDestination != "SYSLOG")) {
-							$logFile = $cfg->logDestination;
-							$logFileChecked = true;
-						}
-						echo "<input type=\"radio\" name=\"logDestination\" value=\"file\"";
-						if ($logFileChecked) echo " checked";
-						echo ">" . _("File") . "\n";
-						echo "<input type=\"text\" name=\"logFile\" value=\"" . $logFile . "\">\n";
-					?>
-					</TD>
-				</TR>
-			</table>
-		</fieldset>
-		<BR>
-		<fieldset>
-			<legend> <?php echo _("Change master password"); ?> </legend>
-			<br>
-			<table cellspacing="0" border="0">
-				<!-- set master password -->
-				<tr>
-					<td align="right">
-						<FONT color="Red"><B>
-						<?php echo _("New master password"); ?>
-						</B></FONT>
-						<input type="password" name="masterpassword">
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '235'), '235');
-					?>
-					</td>
-				</tr>
-				<tr>
-					<td align="right">
-						<FONT color="Red"><B>
-						<?php echo _("Reenter new master password"); ?>
-						</B></FONT>
-						<input type="password" name="masterpassword2">
-					</td>
-					<td>&nbsp;</td>
-				</tr>
-
-			</table>
-			</fieldset>
-			</td></tr>
-			<TR>
-				<TD>
-					<BR>
-					<?php if ($cfg->isWritable()) { ?>
-					<button id="submitButton" name="submit" class="smallPadding"><?php echo _("Ok"); ?></button>
-					<?php } ?>
-					<button id="cancelButton" name="cancel" class="smallPadding"><?php echo _("Cancel"); ?></button>
-					<script type="text/javascript" language="javascript">
-					jQuery(document).ready(function() {
-						jQuery('#submitButton').button();
-						jQuery('#cancelButton').button();
-					});
-					</script>
-				</TD>
-			</TR>
-			</table>
 
 		</form>
 		<p><br></p>
