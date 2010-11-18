@@ -1045,6 +1045,59 @@ class htmlRadio extends htmlElement {
 }
 
 /**
+ * Radio list with descriptive label and help link.
+ * 
+ * @package metaHTML
+ */
+class htmlTableExtendedRadio extends htmlRadio {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $label descriptive label
+	 * @param String $name element name
+	 * @param array $elements list of elements array(label => value)
+	 * @param array $selectedElement value of selected element (optional, default none)
+	 * @param String $helpID help ID
+	 */
+	function __construct($label, $name, $elements, $selectedElement = null, $helpID = null) {
+		parent::__construct($name, $elements, $selectedElement);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo $this->label;
+		echo "\n</td>\n<td>\n";
+		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		// print help link
+		if ($this->helpID != null) {
+			echo "\n</td>\n<td>\n";
+			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		return $return;
+	}
+	
+}
+
+/**
  * Prints the text and escapes contained HTML code by default.
  * 
  * @package metaHTML
