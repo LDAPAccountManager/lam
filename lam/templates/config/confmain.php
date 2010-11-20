@@ -278,7 +278,7 @@ $tabindex++;
 echo ("<tr><td colspan=3>&nbsp;</td></tr>");
 
 // LDAP cache timeout
-echo ("<tr><td align=\"right\">".
+/*echo ("<tr><td align=\"right\">".
 	_("Cache timeout") . " </td>".
 	"<td><select tabindex=\"$tabindex\" name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
 if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
@@ -291,7 +291,7 @@ echo ("</select></td>\n");
 $tabindex++;
 echo "<td>";
 printHelpLink(getHelp('', '214'), '214');
-echo "</td></tr>\n";
+echo "</td></tr>\n";*/
 
 // LDAP search limit
 $searchLimitOptions = array(
@@ -582,9 +582,9 @@ function checkInput() {
 		$errors[] = array("ERROR", _("Server address is invalid!"));
 	}
 	$conf->setUseTLS($_POST['useTLS']);
-	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
+/*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
-	}
+	}*/
 	$conf->set_searchLimit($_POST['searchLimit']);
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
