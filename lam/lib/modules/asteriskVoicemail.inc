@@ -431,12 +431,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
 			
 			//add context
-			if ($rawAccounts[$i][$ids['asteriskAccount_AstContext']] == "") {
+			if ($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']] == "") {
 				// default value
 				$partialAccounts[$i]['AstContext'] = 'default';
 			}
 			elseif (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']], 'realname')) {
-				$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstContext']];
+				$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstContext']];
 			}
 			else {
 				$errMsg = $this->messages['AstContext'][2];
