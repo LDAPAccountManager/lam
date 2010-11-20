@@ -35,6 +35,11 @@ $Id$
 */
 class nisnetgroup extends baseModule {
 	
+	/* caches to reduce LDAP queries */
+	private $cachedUserList = null;
+	private $cachedHostList = null;
+	private $cachedGroupList = null;
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -353,12 +358,7 @@ class nisnetgroup extends baseModule {
 	*/
 	function display_html_group() {
 		// load list with all groups
-		$dn_groups = $_SESSION['cache']->get_cache('cn', 'nisNetgroup', 'netgroup');
-		$DNs = array_keys($dn_groups);
-		$allGroups = array();
-		foreach ($DNs as $DN) {
-			$allGroups[] = $dn_groups[$DN][0];
-		}
+		$allGroups = $this->getGroupList();
 		// remove own entry
 		if (!$this->getAccountContainer()->isNewAccount) {
 			$allGroups = array_delete($this->attributes['cn'][0], $allGroups);
@@ -443,25 +443,25 @@ class nisnetgroup extends baseModule {
 		$options = array();
 		if ($selectHost) {
 			// load list with all hosts
-			$dn_hosts = $_SESSION['cache']->get_cache('uid', 'account', 'host');
-			$DNs = array_keys($dn_hosts);
-			foreach ($DNs as $DN) {
-				if (get_preg($dn_hosts[$DN][0], 'DNSname')) {
-					if (($filter == '') || !(strpos($dn_hosts[$DN][0], $filter) === false)) {
-						$options[] = $dn_hosts[$DN][0];
-					}
+			$options = $this->getHostList();
+			$count = sizeof($options);
+			for ($i = 0; $i < $count; $i++) {
+				if (!get_preg($options[$i], 'DNSname') || (($filter != '') && (strpos($options[$i], $filter) === false))) {
+					unset($options[$i]);
 				}
 			}
+			$options = array_values($options);
 		}
 		else {
 			// load list with all users
-			$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
-			$DNs = array_keys($dn_users);
-			foreach ($DNs as $DN) {
-				if (($filter == '') || !(strpos($dn_users[$DN][0], $filter) === false)) {
-					$options[] = $dn_users[$DN][0];
+			$options = $this->getUserList();
+			$count = sizeof($options);
+			for ($i = 0; $i < $count; $i++) {
+				if (($filter != '') && (strpos($options[$i], $filter) === false)) {
+					unset($options[$i]);
 				}
 			}
+			$options = array_values($options);
 		}
 		$return->addElement(new htmlOutputText(_('Filter')));
 		$return->addElement(new htmlInputField('filter', $filter));
@@ -515,11 +515,7 @@ class nisnetgroup extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$messages = array();
 		// get list of existing groups
-		$dnGroups = $_SESSION['cache']->get_cache('cn', 'nisNetgroup', 'netgroup');
-		$existingGroups = array();
-		foreach ($dnGroups as $dn) {
-			$existingGroups[] = $dn[0];
-		}
+		$existingGroups = $this->getGroupList();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('nisNetgroup', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'nisNetgroup';
@@ -598,6 +594,54 @@ class nisnetgroup extends baseModule {
 			$return[get_class($this) . '_members'][] = '<block><tr><td width="80%"> </td></tr></block>';
 		}
 		return $return;
+	}
+	
+	/**
+	 * Returns a list of existing NIS net groups.
+	 *
+	 * @return array group names
+	 */
+	private function getGroupList() {
+		if ($this->cachedGroupList != null) {
+			return $this->cachedGroupList;
+		}
+		$this->cachedGroupList = searchLDAPByAttribute('cn', '*', 'nisNetgroup', array('cn'), array('netgroup'));
+		for ($i = 0; $i < sizeof($this->cachedGroupList); $i++) {
+			$this->cachedGroupList[$i] = $this->cachedGroupList[$i]['cn'][0];
+		}
+		return $this->cachedGroupList;
+	}
+
+	/**
+	 * Returns a list of existing users.
+	 *
+	 * @return array user names
+	 */
+	private function getUserList() {
+		if ($this->cachedUserList != null) {
+			return $this->cachedUserList;
+		}
+		$this->cachedUserList = searchLDAPByAttribute('uid', '*', 'posixAccount', array('uid'), array('user'));
+		for ($i = 0; $i < sizeof($this->cachedUserList); $i++) {
+			$this->cachedUserList[$i] = $this->cachedUserList[$i]['uid'][0];
+		}
+		return $this->cachedUserList;
+	}
+
+	/**
+	 * Returns a list of existing hosts.
+	 *
+	 * @return array host names
+	 */
+	private function getHostList() {
+		if ($this->cachedHostList != null) {
+			return $this->cachedHostList;
+		}
+		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'account', array('uid'), array('host'));
+		for ($i = 0; $i < sizeof($this->cachedHostList); $i++) {
+			$this->cachedHostList[$i] = $this->cachedHostList[$i]['uid'][0];
+		}
+		return $this->cachedHostList;
 	}
 
 }
