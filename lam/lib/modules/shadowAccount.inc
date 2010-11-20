@@ -202,7 +202,7 @@ class shadowAccount extends baseModule implements passwordService {
 				'example' => '14'
 			),
 			array(
-				'name' => 'shadowAccount_expiration',
+				'name' => 'shadowAccount_ignoreExpire',
 				'description' => _('Password expiration'),
 				'help' => 'shadowInactive',
 				'example' => '7'
@@ -503,9 +503,9 @@ class shadowAccount extends baseModule implements passwordService {
 				$messages[] = $errMsg;
 			}
 			// expiration date
-			if ($rawAccounts[$i][$ids['shadowAccount_expireDay']] != '') {
-				if (get_preg($rawAccounts[$i][$ids['shadowAccount_expireDay']], 'date')) {
-					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_expireDay']]);
+			if ($rawAccounts[$i][$ids['shadowAccount_expireDate']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_expireDate']], 'date')) {
+					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_expireDate']]);
 					$partialAccounts[$i]['shadowExpire'][] = intval(mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]))/3600/24);
 				}
 				else {

@@ -628,7 +628,9 @@ class kolabUser extends baseModule {
 		$messages = array();
 		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('mail'), array('user'));
 		for ($d = 0; $d < sizeof($delegates); $d++) {
-			$delegates[$d] = $delegates[$d]['mail'][0];
+			if (isset($delegates[$d]['mail'][0])) {
+				$delegates[$d] = $delegates[$d]['mail'][0];
+			}
 		}
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class

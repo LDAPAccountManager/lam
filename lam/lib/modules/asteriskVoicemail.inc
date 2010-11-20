@@ -430,20 +430,18 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			// add object class
 			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
 			
-			if (!in_array('asteriskAccount', $selectedModules)) {
-				//add context
-				if ($rawAccounts[$i][$ids['asteriskAccount_AstContext']] == "") {
-					// default value
-					$partialAccounts[$i]['AstContext'] = 'default';
-				}
-				elseif (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']], 'realname')) {
-					$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstContext']];
-				}
-				else {
-					$errMsg = $this->messages['AstContext'][2];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
+			//add context
+			if ($rawAccounts[$i][$ids['asteriskAccount_AstContext']] == "") {
+				// default value
+				$partialAccounts[$i]['AstContext'] = 'default';
+			}
+			elseif (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']], 'realname')) {
+				$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstContext']];
+			}
+			else {
+				$errMsg = $this->messages['AstContext'][2];
+				array_push($errMsg, array($i));
+				$messages[] = $errMsg;
 			}
 			
 			// add account caller id
