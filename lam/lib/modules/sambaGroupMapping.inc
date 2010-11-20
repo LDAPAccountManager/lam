@@ -222,21 +222,16 @@ class sambaGroupMapping extends baseModule {
 			$displayNameInput->setFieldMaxLength(50);
 			$return->addElement($displayNameInput, true);
 			// Windows group
-			$selected = array();
+			$options = array($this->getCn());
+			$selected = array($this->getCn());
 			$names = array_keys($this->rids);
 			$wrid=false;
 			for ($i=0; $i<count($names); $i++) {
 				if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]])) {
-					$selected[] = $names[$i];
+					$selected = array($names[$i]);
 					$wrid=true;
 				}
 				$options[] = $names[$i];
-			}
-			if ($wrid) {
-				$options[] = $this->getCn();
-			}
-			else {
-				$selected[] = $this->getCn();
 			}
 			$return->addElement(new htmlTableExtendedSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'), true);
 			// group type	
