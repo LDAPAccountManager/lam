@@ -862,6 +862,7 @@ class lamList {
 	protected function listGetAllConfigOptions() {
 		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), array(10, 20, 30, 50, 75, 100), self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
+		$listSizeOption->setValue($this->maxPageEntries);
 		return array($listSizeOption);
 	}
 
