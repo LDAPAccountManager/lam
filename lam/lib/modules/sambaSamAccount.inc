@@ -59,6 +59,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/* cache to reduce LDAP queries */
 	private $cachedHostList = null;
 	private $cachedGroupSIDList = null;
+	/** cache for domain list */
+	private $cachedDomainList = null;
 	
 
 	/**
@@ -711,7 +713,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 		}
 		$errors = array();
-		$sambaDomains = search_domains();
+		$sambaDomains = $this->getDomains();
 		if (sizeof($sambaDomains) == 0) {
 			return array();
 		}
@@ -1025,7 +1027,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 			}
 			// Get Domain SID from user SID
-			$sambaDomains = search_domains();
+			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
 				$return->addElement(new htmlStatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.')), true);
 				return $return;
@@ -1497,7 +1499,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedInputField(_('Samba workstations'), 'sambaSamAccount_userWorkstations', '', 'workstations'), true);
 			}
 			// domains
-			$sambaDomains = search_domains();
+			$sambaDomains = $this->getDomains();
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -1519,7 +1521,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		elseif ($this->get_scope() == 'host') {
 			// domains
-			$sambaDomains = search_domains();
+			$sambaDomains = $this->getDomains();
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -1582,7 +1584,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// domain -> change SID
 		if (isset($this->attributes['sambaSID'][0])) {
 			if (isset($profile['sambaSamAccount_sambaDomainName'][0]) && ($profile['sambaSamAccount_sambaDomainName'][0] != "")) {
-				$domains = search_domains();
+				$domains = $this->getDomains();
 				$domSID = '';
 				// find domain SID
 				for ($i = 0; $i < sizeof($domains); $i++) {
@@ -1602,7 +1604,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		// primary group
 		if (isset($profile['sambaSamAccount_sambaDomainName'][0])) {
-			$domains = search_domains();
+			$domains = $this->getDomains();
 			$domSID = '';
 			// find domain SID
 			for ($i = 0; $i < sizeof($domains); $i++) {
@@ -1731,7 +1733,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
 		// get list of Samba 3 domains
-		$domains = search_domains();
+		$domains = $this->getDomains();
 		// get list of Unix groups and their sambaSID + gidNumber
 		$groupList = searchLDAPByFilter('objectClass=posixGroup', array('cn', 'sambaSID', 'gidNumber'), array('group'));
 		$groups_cn = array();
@@ -2220,6 +2222,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 		}
 		return $this->cachedGroupSIDList;
+	}
+
+	/**
+	 * Returns a list of existing Samba 3 domains.
+	 *
+	 * @return array list of samba3domain objects
+	 */
+	private function getDomains() {
+		if ($this->cachedDomainList != null) {
+			return $this->cachedDomainList;
+		}
+		$this->cachedDomainList = search_domains();
+		return $this->cachedDomainList;
 	}
 
 }

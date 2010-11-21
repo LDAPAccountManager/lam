@@ -44,6 +44,8 @@ class sambaGroupMapping extends baseModule {
 	private $rids;
 	/** Array of sambaGroupTypes */
 	private $sambaGroupTypes;
+	/** cache for domain list */
+	private $cachedDomainList = null;
 
 	/**
 	* Creates a new module for Samba 3 groups.
@@ -114,6 +116,46 @@ class sambaGroupMapping extends baseModule {
 	}
 	
 	/**
+	* Returns an array containing all input columns for the file upload.
+	*
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* This funtion returns an array which contains subarrays which represent an upload column.
+	* <b>Syntax of column arrays:</b>
+	* <br>
+	* <br> array(
+	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+	* <br>  string: description,  // short descriptive name
+	* <br>  string: help,  // help ID
+	* <br>  string: example,  // example value
+	* <br>  string: values, // possible input values (optional)
+	* <br>  string: default, // default value (optional)
+	* <br>  boolean: required  // true, if user must set a value for this column
+	* <br>  boolean: unique // true if all values of this column must be different values (optional, default: "false")
+	* <br> )
+	*
+	* @param array $selectedModules list of selected account modules
+	* @return array column list
+	* 
+	* @see baseModule::get_metaData()
+	*/
+	public function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		$domains = $this->getDomains();
+		$domainNames = array();
+		for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
+		$return[] = array(
+			'name' => 'sambaGroupMapping_domain',
+			'description' => _('Samba domain name'),
+			'help' => 'sambaDomainName',
+			'example' => $domainNames[0],
+			'values' => implode(", ", $domainNames),
+			'required' => true
+		);
+		return $return;
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -124,7 +166,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		// search existing Samba 3 domains
-		$domains = search_domains();
+		$domains = $this->getDomains();
 		$nameToSID = array();
 		// get domain SIDs
 		for ($i = 0; $i < sizeof($domains); $i++) {
@@ -198,7 +240,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		$return = new htmlTable();
 		if (in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
-			$sambaDomains = search_domains();
+			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
 				StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 				return array();
@@ -285,18 +327,7 @@ class sambaGroupMapping extends baseModule {
 		// upload fields
 		// search existing Samba 3 domains
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
-			$domains = search_domains();
-			$domainNames = array();
-			for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
 			$return['upload_columns'] = array(
-				array(
-					'name' => 'sambaGroupMapping_domain',
-					'description' => _('Samba domain name'),
-					'help' => 'sambaDomainName',
-					'example' => $domainNames[0],
-					'values' => implode(", ", $domainNames),
-					'required' => true
-				),
 				array(
 					'name' => 'sambaGroupMapping_name',
 					'description' => _('Samba display name'),
@@ -373,7 +404,7 @@ class sambaGroupMapping extends baseModule {
 	function get_profileOptions() {
 		$return = new htmlTable();
 		// get list of domains
-		$sambaDomains = search_domains();
+		$sambaDomains = $this->getDomains();
 		$sambaDomainNames = array();
 		for ($i = 0; $i < count($sambaDomains); $i++ ) {
 			// extract names
@@ -393,7 +424,7 @@ class sambaGroupMapping extends baseModule {
 	function load_profile($profile) {
 		if (isset($profile['sambaGroupMapping_sambaDomainName'][0])) {
 			// get list of domains
-			$sambaDomains = search_domains();
+			$sambaDomains = $this->getDomains();
 			for ($i = 0; $i < sizeof($sambaDomains); $i++) {
 				if ($sambaDomains[$i]->name == $profile['sambaGroupMapping_sambaDomainName'][0]) {
 					$this->attributes['sambaSID'][0] = $sambaDomains[$i]->SID . "-0";
@@ -453,7 +484,7 @@ class sambaGroupMapping extends baseModule {
 			return array();
 		}
 		$errors = array();
-		$sambaDomains = search_domains();
+		$sambaDomains = $this->getDomains();
 		if (sizeof($sambaDomains) == 0) {
 			return array();
 		}
@@ -513,6 +544,19 @@ class sambaGroupMapping extends baseModule {
 			return array();
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+	}
+	
+	/**
+	 * Returns a list of existing Samba 3 domains.
+	 *
+	 * @return array list of samba3domain objects
+	 */
+	private function getDomains() {
+		if ($this->cachedDomainList != null) {
+			return $this->cachedDomainList;
+		}
+		$this->cachedDomainList = search_domains();
+		return $this->cachedDomainList;
 	}
 
 }
