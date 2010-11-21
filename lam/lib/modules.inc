@@ -1030,7 +1030,11 @@ class accountContainer {
 	/** True if this is a newly created account */
 	public $isNewAccount;
 	
+	/** name of last loaded account profile */
 	private $lastLoadedProfile = '';
+	
+	/** cache for existing OUs */
+	private $cachedOUs = null;
 
 	/**
 	 * Returns the account module with the given class name
@@ -1573,14 +1577,14 @@ class accountContainer {
 			echo "<select class=\"rightToLeftText\" name=\"accountContainerSuffix\" size=1>\n";
 				// loop through all suffixes
 				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
-				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+				foreach ($this->getOUs() as $suffix) {
 					echo '<option value="' . $suffix . '" ';
 					if ($this->dn == $suffix) {
 						echo 'selected';
 					}
 					echo ">" . getAbstractDN($suffix) . "</option>\n";
 				}
-				if (!($this->dn == '') && !in_array($this->dn, $_SESSION['ldap']->search_units($rootsuffix))) {
+				if (!($this->dn == '') && !in_array($this->dn, $this->getOUs())) {
 					echo '<option value="' . $this->dn . '" selected>' . getAbstractDN($this->dn) . "</option>\n";;
 				}
 			echo "</select>\n";
@@ -2135,6 +2139,20 @@ class accountContainer {
 		if (($dn == "") || ($dn == null)) return "";
 		$parent = substr($dn, strpos($dn, ",") + 1);
 		return $parent;		
+	}
+	
+	/**
+	 * Returns a list of OUs that exist for this account type.
+	 *
+	 * @return array OU list
+	 */
+	private function getOUs() {
+		if ($this->cachedOUs != null) {
+			return $this->cachedOUs;
+		}
+		$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
+		$this->cachedOUs = $_SESSION['ldap']->search_units($rootsuffix);
+		return $this->cachedOUs;
 	}
 
 	/**
