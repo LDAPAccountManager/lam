@@ -37,6 +37,9 @@ $Id$
 */
 class inetOrgPerson extends baseModule implements passwordService {
 	
+	/** caches the list of possible managers */
+	private $cachedManagers = null;
+	
 	/**
 	* This function fills the message array.
 	**/
@@ -937,17 +940,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Department(s)'), 'departmentNumber', $departmentNumber, 'departmentNumber'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
-			// get list of existing users for manager attribute
-			$dnUsers = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('dn'), array('user'));
-			for ($i = 0; $i < sizeof($dnUsers); $i++) {
-				$dnUsers[$i] = $dnUsers[$i]['dn'];
-			}
-			usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
-			array_unshift($dnUsers, '-');
-			$options = array();
-			for ($i = 0; $i < sizeof($dnUsers); $i++) {
-				$options[getAbstractDN($dnUsers[$i])] = $dnUsers[$i];
-			}
 			$optionsSelected = array();
 			if (isset($this->attributes['manager'][0])) {
 				$optionsSelected[] = $this->attributes['manager'][0];
@@ -955,7 +947,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			else {
 				$optionsSelected[] = '-';
 			}
-			$managerElement = new htmlTableExtendedSelect('manager', $options, $optionsSelected, _('Manager'), 'manager');
+			$managerElement = new htmlTableExtendedSelect('manager', $this->getManagers(), $optionsSelected, _('Manager'), 'manager');
 			$managerElement->setHasDescriptiveElements(true);
 			$managerElement->setRightToLeftTextDirection(true);
 			$managerElement->setSortElements(false);
@@ -1787,6 +1779,28 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
+	}
+	
+	/**
+	 * Returns a list of possible managers.
+	 *
+	 * @return array list of format array(abstract DN => DN)
+	 */
+	private function getManagers() {
+		if ($this->cachedManagers != null) {
+			return $this->cachedManagers;
+		}
+		$dnUsers = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('dn'), array('user'));
+		for ($i = 0; $i < sizeof($dnUsers); $i++) {
+			$dnUsers[$i] = $dnUsers[$i]['dn'];
+		}
+		usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
+		array_unshift($dnUsers, '-');
+		$this->cachedManagers = array();
+		for ($i = 0; $i < sizeof($dnUsers); $i++) {
+			$this->cachedManagers[getAbstractDN($dnUsers[$i])] = $dnUsers[$i];
+		}
+		return $this->cachedManagers;		
 	}
 
 }
