@@ -56,7 +56,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
 	/** specifies if the password should be expired */
 	private $expirePassword = false;
-
+	/* cache to reduce LDAP queries */
+	private $cachedHostList = null;
+	private $cachedGroupSIDList = null;
+	
 
 	/**
 	* Creates a new sambaSamAccount object.
@@ -821,15 +824,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			if (!$wrid) {
 				$gidnumber = $attrs['gidNumber'][0];
-				$groups = $_SESSION['cache']->get_cache(array('gidNumber', 'sambaSID'), 'sambaGroupMapping', 'group');
-				$groupKeys = array_keys($groups);
-				for ($i = 0; $i < sizeof($groupKeys); $i++) {
-					if ($groups[$groupKeys[$i]]['gidNumber'][0] == $gidnumber) {
-						if (isset($groups[$groupKeys[$i]]['sambaSID'][0])) {
-							$this->attributes['sambaPrimaryGroupSID'][0] = $groups[$groupKeys[$i]]['sambaSID'][0];
-						}
-						break;
-					}
+				$groups = $this->getGroupSIDList();
+				if (isset($groups[$gidnumber]) && ($groups[$gidnumber] != '')) {
+					$this->attributes['sambaPrimaryGroupSID'][0] = $groups[$gidnumber];
 				}
 			}
 
@@ -1223,16 +1220,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 			// Get list of all hosts.
 			$userWorkstations = array();
 			$availableUserWorkstations = array();
-			$result = $_SESSION['cache']->get_cache('uid', 'sambaSamAccount', 'host');
-			if (is_array($result)) {
-				foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
-				sort($availableUserWorkstations, SORT_STRING);
-				if (isset($this->attributes['sambaUserWorkstations'][0])) {
-					$result = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-					$userWorkstations = explode (',', $result);
-				}
-				$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
-				}
+			
+			$result = $this->getHostList();
+			foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host);
+			sort($availableUserWorkstations, SORT_STRING);
+			if (isset($this->attributes['sambaUserWorkstations'][0])) {
+				$wsAttr = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+				$userWorkstations = explode (',', $wsAttr);
+			}
+			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 
 			$return->addElement(new htmlSubTitle(_("Allowed workstations")), true);
 			$return->addElement(new htmlOutputText(_("Allowed workstations")));
@@ -1737,15 +1733,14 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// get list of Samba 3 domains
 		$domains = search_domains();
 		// get list of Unix groups and their sambaSID + gidNumber
-		$groups = $_SESSION['cache']->get_cache(array('cn', 'sambaSID', 'gidNumber'), 'posixGroup', 'group');
-		$groups_k = array_keys($groups);
+		$groupList = searchLDAPByFilter('objectClass=posixGroup', array('cn', 'sambaSID', 'gidNumber'), array('group'));
 		$groups_cn = array();
-		for ($i = 0; $i < sizeof($groups_k); $i++) {
-			if (isset($groups[$groups_k[$i]]['sambaSID'][0])) {
-				$groups_cn[$groups[$groups_k[$i]]['cn'][0]]['SID'] = $groups[$groups_k[$i]]['sambaSID'][0];
+		for ($i = 0; $i < sizeof($groupList); $i++) {
+			if (isset($groupList[$i]['sambasid'][0])) {
+				$groups_cn[$groupList[$i]['cn'][0]]['SID'] = $groupList[$i]['sambasid'][0];
 			}
-			if (isset($groups[$groups_k[$i]]['gidNumber'][0])) {
-				$groups_cn[$groups[$groups_k[$i]]['cn'][0]]['gid'] = $groups[$groups_k[$i]]['gidNumber'][0];
+			if (isset($groupList[$i]['gidnumber'][0])) {
+				$groups_cn[$groupList[$i]['cn'][0]]['gid'] = $groupList[$i]['gidnumber'][0];
 			}
 		}
 		if ($this->get_scope() == 'user') {
@@ -2192,6 +2187,41 @@ class sambaSamAccount extends baseModule implements passwordService {
 		return $return;
 	}
 	
+	/**
+	 * Returns a list of existing hosts.
+	 *
+	 * @return array host names
+	 */
+	private function getHostList() {
+		if ($this->cachedHostList != null) {
+			return $this->cachedHostList;
+		}
+		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'sambaSamAccount', array('uid'), array('host'));
+		for ($i = 0; $i < sizeof($this->cachedHostList); $i++) {
+			$this->cachedHostList[$i] = $this->cachedHostList[$i]['uid'][0];
+		}
+		return $this->cachedHostList;
+	}
+
+	/**
+	 * Returns a list of existing hosts.
+	 *
+	 * @return array host names
+	 */
+	private function getGroupSIDList() {
+		if ($this->cachedGroupSIDList != null) {
+			return $this->cachedGroupSIDList;
+		}
+		$this->cachedGroupSIDList = array();
+		$result = searchLDAPByAttribute('sambaSID', '*', 'sambaGroupMapping', array('gidNumber', 'sambaSID'), array('group'));
+		for ($i = 0; $i < sizeof($result); $i++) {
+			if (isset($result[$i]['gidnumber'][0])) {
+				$this->cachedGroupSIDList[$result[$i]['gidnumber'][0]] = $result[$i]['sambasid'][0];
+			}
+		}
+		return $this->cachedGroupSIDList;
+	}
+
 }
 
 ?>
