@@ -41,13 +41,15 @@ class posixGroup extends baseModule implements passwordService {
 
 	/** change GIDs of users and hosts? */
 	private $changegids;
-	
 	/** specifies if the cn attribute should be managed by this module */
 	protected $manageCnAttribute = true;
 	/** specifies if the description attribute should be managed by this module */
 	protected $manageDescriptionAttribute = true;
+	/** cache for existing GID numbers */
+	private $cachedGIDList = null;
+	/** cache for existing users and their GIDs */
+	private $cachedUserToGIDList = null;
 	
-
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -132,28 +134,19 @@ class posixGroup extends baseModule implements passwordService {
 		return $error_messages;
 	}
 
-
 	/**
 	* Checks if the group which should be deleted is still used as primary group.
 	*
 	* @return List of LDAP operations, same as for save_attributes()
 	*/
 	function delete_attributes() {
-		$data = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
-		$DNs = array_keys($data);
-		$found = false;
-		for ($i = 0; $i < sizeof($DNs); $i++) {
-			if ($data[$DNs[$i]][0] == $this->attributes['gidNumber'][0]) {
-				$found = true;
-				break;
-			}
-		}
-		if ($found) {
+		$return = array();
+		$result = searchLDAPByFilter('gidNumber=' . $this->attributes['gidNumber'][0], array('dn'), array('user', 'host'));
+		if (sizeof($result) > 0) {
 			$return[$this->getAccountContainer()->dn]['errors'][] = $this->messages['primaryGroup'][0];
 		}
 		return $return;
 	}
-
 
 	/**
 	 * Returns the HTML meta data for the main account page.
@@ -223,25 +216,22 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function display_html_user() {
 		$return = new htmlTable();
+		if (!isset($this->attributes['memberUid'])) {
+			$this->attributes['memberUid'] = array();
+		}
 		// load list with all users
-		$dn_users = $_SESSION['cache']->get_cache(array('uid', 'gidNumber'), 'posixAccount', 'user');
+		$userAndGIDs = $this->getUserAndGIDs();
 		$users = array();
-		if (is_array($dn_users)) {
-			$DNs = array_keys($dn_users);
-			for ($i = 0; $i < sizeof($DNs); $i++) {
-				// users who can be added have a uid and gidNumber
-				if (isset($dn_users[$DNs[$i]]['uid'][0]) && isset($dn_users[$DNs[$i]]['gidNumber'][0]) &&
-				// are not already member
-				(!isset($this->attributes['memberUid']) || !in_array($dn_users[$DNs[$i]]['uid'][0], $this->attributes['memberUid']))) {
-					if ($this->attributes['gidNumber'][0] == $dn_users[$DNs[$i]]['gidNumber'][0]) {
-						if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
-							&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
-							$users[] = $dn_users[$DNs[$i]]['uid'][0];
-						}
-				}
-				else {
-					$users[] = $dn_users[$DNs[$i]]['uid'][0];
-				}
+		foreach ($userAndGIDs as $user => $GID) {
+			if (!in_array($user, $this->attributes['memberUid'])) {
+				if ($this->attributes['gidNumber'][0] == $GID) {
+					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
+						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
+						$users[] = $user;
+					}
+			}
+			else {
+				$users[] = $user;
 			}
 		}
 	}
@@ -258,6 +248,7 @@ class posixGroup extends baseModule implements passwordService {
 	}
 	$remSelect = new htmlSelect('removeusers', $remGroups, null, 15);
 	$remSelect->setMultiSelect(true);
+	$remSelect->setTransformSingleSelect(false);
 	$return->addElement($remSelect);
 	$buttonContainer = new htmlTable();
 	$buttonContainer->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
@@ -266,6 +257,7 @@ class posixGroup extends baseModule implements passwordService {
 	$return->addElement($buttonContainer);
 	$addSelect = new htmlSelect('addusers', $users, null, 15);
 	$addSelect->setMultiSelect(true);
+	$addSelect->setTransformSingleSelect(false);
 	$return->addElement($addSelect);
 	$return->addNewLine();
 
@@ -420,6 +412,10 @@ class posixGroup extends baseModule implements passwordService {
 			'cn' => array(
 				"Headline" => _("Group name"),
 				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . If group name is already used group name will be expanded with a number. The next free number will be used.")
+			),
+			'changegids' => array(
+				"Headline" => _("Change GID number of users and hosts"),
+				"Text" => _("The ID of this group was changed. You can update all user and host entries to the new group ID.")
 			)
 		);
 
@@ -550,21 +546,15 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		if (isset($_POST['changegids'])) $this->changegids=true;
 		else $this->changegids=false;
-		if (($this->attributes['gidNumber'][0] != $_POST['gidNumber']) || !isset($this->attributes['gidNumber'][0])) {
+		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] != $_POST['gidNumber'])) {
 			// Check if GID is valid. If none value was entered, the next useable value will be inserted
 			// load min and max GID number
 			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 			$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
-			$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
-			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-			if(is_array($dn_gids) && (sizeof($dn_gids) > 0)) {
-				foreach ($dn_gids as $gid) $gids[] = $gid[0];
-				sort ($gids, SORT_NUMERIC);
-			}
 			$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
 			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
-				if ($this->orig['gidNumber'][0]=='') {
+				if (!isset($this->orig['gidNumber'][0])) {
 					$newGID = $this->getNextGIDs(1, $errors);
 					if (is_array($newGID)) {
 						$this->attributes['gidNumber'][0] = $newGID[0];
@@ -577,6 +567,7 @@ class posixGroup extends baseModule implements passwordService {
 				// old account -> return id-number which has been used
 			}
 			else {
+				$gids = $this->getGIDs();
 				// Check manual ID
 				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 					// check range
@@ -589,7 +580,7 @@ class posixGroup extends baseModule implements passwordService {
 					if (is_array($gids)) {
 						// id-number is in use and account is a new account
 						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {
-							$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+							$errors[] = $this->messages['gidNumber'][4];
 							unset($this->attributes['gidNumber'][0]);
 						}
 						// id-number is in use, account is existing account and id-number is not used by itself
@@ -698,14 +689,11 @@ class posixGroup extends baseModule implements passwordService {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Change gids of users and hosts?
 		if ($this->changegids) {
-			// get gidNumber
-			$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', array('user', 'host'));
-			if (is_array($result)) {
-				$DNs = array_keys($result);
-				for ($i=0; $i<count($DNs); $i++) {
-					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]) {
-						$return[$DNs[$i]]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
-					}
+			// find all accounts to change
+			$result = searchLDAPByFilter('(&(objectClass=posixAccount)(gidNumber=' . $this->orig['gidNumber'][0] . '))', array('dn'), array('user', 'host'));
+			if (sizeof($result) > 0) {
+				for ($i = 0; $i < sizeof($result); $i++) {
+					$return[$result[$i]['dn']]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
 				}
 			}
 		}
@@ -724,14 +712,10 @@ class posixGroup extends baseModule implements passwordService {
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
-		$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
-		// get_cache will return an array ( dn1 => array(gidnumber1), dn2 => array(gidnumber2), ... )
+		$gidList = $this->getGIDs();
 		$gids = array();
-		if(is_array($dn_gids)) {
-			foreach ($dn_gids as $gid) {
-				if (($gid[0] <= $maxID) && ($gid[0] >= $minID)) $gids[] = $gid[0];  // ignore GIDs > maxID and GIDs < minID
-			}
-			sort ($gids, SORT_NUMERIC);
+		foreach ($gidList as $gid) {
+			if (($gid <= $maxID) && ($gid >= $minID)) $gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
 		}
 		for ($i = 0; $i < $count; $i++) {
 			if (count($gids) != 0) {
@@ -798,7 +782,42 @@ class posixGroup extends baseModule implements passwordService {
 		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
-		
+	
+	/**
+	 * Returns a list of existing GID numbers.
+	 *
+	 * @return array list of GID numbers
+	 */
+	private function getGIDs() {
+		if ($this->cachedGIDList != null) {
+			return $this->cachedGIDList;
+		}
+		$result = searchLDAPByAttribute('gidNumber', '*', 'posixGroup', array('gidNumber'), array('group'));
+		$this->cachedGIDList = array();
+		for ($i = 0; $i < sizeof($result); $i++) {
+			$this->cachedGIDList[] = $result[$i]['gidnumber'][0];
+		}
+		sort($this->cachedGIDList, SORT_NUMERIC);
+		return $this->cachedGIDList;
+	}
+	
+	/**
+	 * Returns a list of existing users and their GID numbers.
+	 *
+	 * @return array list in format array(uid => gidNumber)
+	 */
+	private function getUserAndGIDs() {
+		if ($this->cachedUserToGIDList != null) {
+			return $this->cachedUserToGIDList;
+		}
+		$result = searchLDAPByAttribute('gidNumber', '*', 'posixAccount', array('uid', 'gidNumber'), array('user'));
+		$this->cachedUserToGIDList = array();
+		for ($i = 0; $i < sizeof($result); $i++) {
+			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = $result[$i]['gidnumber'][0];
+		}
+		return $this->cachedUserToGIDList;
+	}
+	
 }
 
 ?>
