@@ -62,9 +62,6 @@ if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 // Set correct language, codepages, ....
 setlanguage();
 
-if (!isset($_SESSION['cache'])) {
-	$_SESSION['cache'] = new cache();
-}
 if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	// Create account list
 	foreach ($_SESSION['delete_dn'] as $dn) {
@@ -233,7 +230,6 @@ if (isset($_POST['delete'])) {
 			echo "<br>\n";
 		}
 	}
-	$_SESSION['cache']->refresh_cache(true);
 	echo "<br>\n";
 	echo "<br><button class=\"smallPadding\" name=\"cancel\" id=\"backButton\">" . _('Back to list') . "</button>\n";
 	echo "</div>\n";

@@ -31,8 +31,6 @@ $Id$
 * @author Roland Gruber
 */
 
-/** LDAP caches */
-include_once("cache.inc");
 /** some helper functions */
 include_once("account.inc");
 /** parent class of account modules */
@@ -2023,7 +2021,6 @@ class accountContainer {
 				$this->module[$singlemodule]->postModifyActions($this->isNewAccount, $currentAccountAttributes);
 			}
 		}
-		$_SESSION['cache']->refresh_cache(true);
 		return $errors;
 	}
 

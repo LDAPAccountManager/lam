@@ -933,10 +933,8 @@ Have fun!
           of LDAP entries. If you would like to use it then enter the LDAP
           suffix at "Tree suffix".</para>
 
-          <para>Some LDAP queries are internally cached by LAM. You can
-          specify how long LAM should use cached data. The search limit is
-          used to reduce the number of search results which are returned by
-          your LDAP server.</para>
+          <para>The search limit is used to reduce the number of search
+          results which are returned by your LDAP server.</para>
 
           <para>The access level specifies if LAM should allow to modify LDAP
           entries. This feature is only available in LAM Pro. LAM non-Pro
