@@ -50,6 +50,8 @@ class posixAccount extends baseModule implements passwordService {
 	private $lamdaemonServer;
 	private $groupCache = null;
 	private $clearTextPassword;
+	/** caches the list of known UIDs */
+	private $cachedUIDList = null;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -453,14 +455,9 @@ class posixAccount extends baseModule implements passwordService {
 		parent::load_attributes($attr);
 		// get additional group memberships
 		if (!isset($attr['uid'][0])) return;
-		$dn_groups = $_SESSION['cache']->get_cache(array('memberUid', 'cn'), 'posixGroup', 'group');
-		if (is_array($dn_groups)) {
-			$DNs = array_keys($dn_groups);
-			for ($i = 0; $i < sizeof($DNs); $i++) {
-				if (isset($dn_groups[$DNs[$i]]['memberUid'][0])) {
-					if (in_array($attr['uid'][0], $dn_groups[$DNs[$i]]['memberUid'])) $this->groups[] = $dn_groups[$DNs[$i]]['cn'][0];
-				}
-			}
+		$groupList = searchLDAPByAttribute('memberUid', $attr['uid'][0], 'posixGroup', array('cn'), array('group'));
+		for ($i = 0; $i < sizeof($groupList); $i++) {
+			$this->groups[] = $groupList[$i]['cn'][0];
 		}
 		$this->groups_orig = $this->groups;
 	}
@@ -496,35 +493,31 @@ class posixAccount extends baseModule implements passwordService {
 
 		// Set additional group memberships
 		if ($this->orig['uid'][0]!='' && $this->attributes['uid'][0]!=$this->orig['uid'][0]) {
-			// remove old memberships
-			$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
-			$DNs = array_keys($dn_groups);
-			foreach ($DNs as $DN) {
-				if (in_array($this->orig['uid'][0], $dn_groups[$DN])) {
-					$return[$DN]['remove']['memberUid'][0] = $this->orig['uid'][0];
-				}
-			}
-			// Add new memberships
-			if (is_array($this->groups)) {
-				foreach ($this->groups as $group) {
-					$dn = $this->getGroupDN($group);
-					$return[$dn]['add']['memberUid'][0] = $this->attributes['uid'][0];
-				}
+			// find affected groups
+			$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', array('dn'), array('group'));
+			for ($i = 0; $i < sizeof($groupList); $i++) {
+				// replace old user name with new one
+				$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
+				$return[$groupList[$i]['dn']]['add']['memberUid'][] = $this->attributes['uid'][0];
 			}
 		}
 		else {
 			// update groups.
 			$add = array_delete($this->groups_orig, $this->groups);
 			$remove = array_delete($this->groups, $this->groups_orig);
-			$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-			// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
-			$DNs = array_keys($dn_cns);
-			foreach ($DNs as $DN) {
-				if (is_array($add)) {
-					if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'][] = $this->attributes['uid'][0];
+			$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', array('cn', 'dn'), array('group'));
+			$dn2cn = array();
+			for ($i = 0; $i < sizeof($groupList); $i++) {
+				$cn2dn[$groupList[$i]['cn'][0]] = $groupList[$i]['dn'];
+			}
+			for ($i = 0; $i < sizeof($add); $i++) {
+				if (isset($cn2dn[$add[$i]])) {
+					$return[$cn2dn[$add[$i]]]['add']['memberUid'][] = $this->attributes['uid'][0];
 				}
-				if (is_array($remove)) {
-					if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'][0];
+			}
+			for ($i = 0; $i < sizeof($remove); $i++) {
+				if (isset($cn2dn[$remove[$i]])) {
+					$return[$cn2dn[$remove[$i]]]['remove']['memberUid'][] = $this->attributes['uid'][0];
 				}
 			}
 		}
@@ -589,11 +582,9 @@ class posixAccount extends baseModule implements passwordService {
 	function delete_attributes() {
 		$return = array();
 		// remove memberUids if set
-		$groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
-		if (!is_array($groups)) return $return;
-		$DNs = array_keys($groups);
-		for ($i=0; $i<count($DNs); $i++) {
-			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'][] = $this->attributes['uid'][0];
+		$groups = searchLDAPByAttribute('memberUid', $this->attributes['uid'][0], 'posixGroup', array('dn'), array('group'));
+		for ($i = 0; $i < sizeof($groups); $i++) {
+			$return[$groups[$i]['dn']]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
 		return $return;
 	}
@@ -723,12 +714,7 @@ class posixAccount extends baseModule implements passwordService {
 			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 		}
-		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', array('user', 'host'));
-		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-		if(is_array($dn_uids)) {
-			foreach ($dn_uids as $uid) $uids[] = $uid[0];
-			if (sizeof($uids) > 0) sort($uids, SORT_NUMERIC);
-		}
+		$uids = $this->getUIDs();
 		if ($this->attributes['uidNumber'][0]=='') {
 			// No id-number given
 			if ($this->orig['uidNumber'][0]=='') {
@@ -749,15 +735,12 @@ class posixAccount extends baseModule implements passwordService {
 			if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
 				// check range
 				if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-				// $uids is always an array but not if no entries were found
-				if (is_array($uids)) {
-					// id-number is in use and account is a new account
-					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-					// id-number is in use, account is existing account and id-number is not used by itself
-					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-						$errors[] = $this->messages['uidNumber'][3];
-						$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
-					}
+				// id-number is in use and account is a new account
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+				// id-number is in use, account is existing account and id-number is not used by itself
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+					$errors[] = $this->messages['uidNumber'][3];
+					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 				}
 			}
 		}
@@ -1040,10 +1023,9 @@ class posixAccount extends baseModule implements passwordService {
 	function display_html_group() {
 		$return = new htmlTable();
 		// load list with all groups
-		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-		$DNs = array_keys($dn_groups);
-		foreach ($DNs as $DN) {
-			$groups[] = $dn_groups[$DN][0];
+		$groups = $this->findGroups();
+		for ($i = 0; $i < sizeof($groups); $i++) {
+			$groups[$i] = $groups[$i][1];
 		}
 		// remove groups the user is member of from grouplist
 		$groups = array_delete($this->groups, $groups);
@@ -1247,10 +1229,9 @@ class posixAccount extends baseModule implements passwordService {
 		$errors = array();
 		$needAutoUID = array();
 		// get list of existing users
-		$dnUsers = $_SESSION['cache']->get_cache('uid', 'posixAccount', array('user', 'host'));
-		$existingUsers = array();
-		foreach ($dnUsers as $dn) {
-			$existingUsers[] = $dn[0];
+		$existingUsers = searchLDAPByAttribute('uid', '*', 'posixAccount', array('uid'), array('user', 'host'));
+		for ($i = 0; $i < sizeof($existingUsers); $i++) {
+			$existingUsers[$i] = $existingUsers[$i]['uid'][0];
 		}
 		// get list of existing groups
 		$groupList = $this->findGroups();
@@ -1547,10 +1528,9 @@ class posixAccount extends baseModule implements passwordService {
 		// get DNs of groups
 		elseif (!isset($temp['dn'])) {
 			$temp['dn'] = array();
-			$result = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-			$keys = array_keys($result);
-			for ($i = 0; $i < sizeof($result); $i++) {
-				$temp['dn'][$result[$keys[$i]][0]] = $keys[$i];
+			$ldapEntries = searchLDAPByAttribute('cn', '*', 'posixGroup', array('dn', 'cn'), array('group'));
+			for ($i = 0; $i < sizeof($ldapEntries); $i++) {
+				$temp['dn'][$ldapEntries[$i]['cn'][0]] = $ldapEntries[$i]['dn'];
 			}
 			return array(
 				'status' => 'inProgress',
@@ -1633,14 +1613,10 @@ class posixAccount extends baseModule implements passwordService {
 			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 		}
-		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', array('user', 'host'));
-		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		$uidList = $this->getUIDs();
 		$uids = array();
-		if(is_array($dn_uids)) {
-			foreach ($dn_uids as $uid) {
-				if (($uid[0] <= $maxID) && ($uid[0] >= $minID)) $uids[] = $uid[0];  // ignore UIDs > maxID and UIDs < minID
-			}
-			sort ($uids, SORT_NUMERIC);
+		for ($i = 0; $i < sizeof($uidList); $i++) {
+			if (($uidList[$i] <= $maxID) && ($uidList[$i] >= $minID)) $uids[] = $uidList[$i];  // ignore UIDs > maxID and UIDs < minID
 		}
 		for ($i = 0; $i < $count; $i++) {
 			if (count($uids) != 0) {
@@ -1814,7 +1790,7 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Finds all existing LDAP groups.
 	 *
-	 * @return array groups array(array(cn, gidnumber), array(cn, gidnumber), ...)
+	 * @return array groups array(array(gidnumber, cn), array(gidnumber, cn), ...)
 	 */
 	private function findGroups() {
 		if ($this->groupCache != null) {
@@ -1829,6 +1805,24 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$this->groupCache = $return;
 		return $return;
+	}
+	
+	/**
+	 * Returns a list of existing UID numbers.
+	 *
+	 * @return array list of UID numbers
+	 */
+	private function getUIDs() {
+		if ($this->cachedUIDList != null) {
+			return $this->cachedUIDList;
+		}
+		$result = searchLDAPByAttribute('uidNumber', '*', 'posixAccount', array('uidNumber'), array('user', 'host'));
+		$this->cachedUIDList = array();
+		for ($i = 0; $i < sizeof($result); $i++) {
+			$this->cachedUIDList[] = $result[$i]['uidnumber'][0];
+		}
+		sort($this->cachedUIDList, SORT_NUMERIC);
+		return $this->cachedUIDList;
 	}
 	
 }
