@@ -591,12 +591,11 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Allows the module to run commands before the LDAP entry is deleted.
-	 * An error message should be printed if the function returns false.
 	 * 
-	 * @return true, if no problems occured
+	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	function preDeleteActions() {
-		$return = true;
+		$return = array();
 		if (isset($_POST['deletehomedir'])) {
 			// get list of lamdaemon servers
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -624,7 +623,7 @@ class posixAccount extends baseModule implements passwordService {
 						$singleresult = explode(",", $singleresult);
 						if (is_array($singleresult)) {
 							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-								call_user_func_array('StatusMessage', $singleresult);
+								$return[] = $singleresult;
 							}
 						}
 					}

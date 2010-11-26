@@ -123,6 +123,10 @@ if (isset($_POST['cancel'])) {
 	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
 	metaRefresh("lists/list.php?type=" . $_POST['type']);
 }
+elseif (isset($_POST['cancelAllOk'])) {
+	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
+	metaRefresh("lists/list.php?type=" . $_POST['type'] . '&amp;deleteAllOk=1');
+}
 
 if (isset($_POST['delete'])) {
 	// Show HTML Page
@@ -133,6 +137,7 @@ if (isset($_POST['delete'])) {
 	echo "<br>\n";
 	
 	// Delete dns
+	$allOk = true;
 	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {
 		// Set to true if an real error has happened
 		$stopprocessing = false;
@@ -146,7 +151,18 @@ if (isset($_POST['delete'])) {
 		// predelete actions
 		if (!$stopprocessing) {
 			foreach ($moduleNames as $singlemodule) {
-				$success = $modules[$singlemodule]->preDeleteActions();
+				$success = true;
+				$messages = $modules[$singlemodule]->preDeleteActions();
+				for ($i = 0; $i < sizeof($messages); $i++) {
+					$errors[] = $messages[$i];
+					if ($messages[$i][0] == 'ERROR') {
+						$success = false;
+						$allOk = false;
+					}
+					elseif ($messages[$i][0] == 'WARN') {
+						$allOk = false;
+					}
+				}
 				if (!$success) {
 					$stopprocessing = true;
 					break;
@@ -177,7 +193,10 @@ if (isset($_POST['delete'])) {
 				if (isset($attributes[$DNs[$i]]['errors'])) {
 					foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
 						$errors[] = $singleerror;
-						if ($singleerror[0] == 'ERROR') $stopprocessing = true;
+						if ($singleerror[0] == 'ERROR') {
+							$stopprocessing = true;
+							$allOk = false;
+						}
 					}
 				}
 				if (!$stopprocessing) {
@@ -187,6 +206,7 @@ if (isset($_POST['delete'])) {
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
+							$allOk = false;
 						}
 					}
 					// add attributes
@@ -195,6 +215,7 @@ if (isset($_POST['delete'])) {
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
+							$allOk = false;
 						}
 					}
 					// removce attributes
@@ -203,6 +224,7 @@ if (isset($_POST['delete'])) {
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
+							$allOk = false;
 						}
 					}
 				}
@@ -210,34 +232,53 @@ if (isset($_POST['delete'])) {
 		}
 		if (!$stopprocessing) {
 			$errors = deleteDN($_SESSION['delete_dn'][$m]);
-			if (sizeof($errors) > 0) $stopprocessing = true;
+			if (sizeof($errors) > 0) {
+				$stopprocessing = true;
+				$allOk = false;
+			}
 		}
 		// post delete actions
 		if (!$stopprocessing) {
 			foreach ($moduleNames as $singlemodule) {
-				$modules[$singlemodule]->postDeleteActions();
+				$messages = $modules[$singlemodule]->postDeleteActions();
+				for ($i = 0; $i < sizeof($messages); $i++) {
+					$errors[] = $messages[$i];
+					if (($messages[$i][0] == 'ERROR') || ($messages[$i][0] == 'WARN')) {
+						$allOk = false;
+					}
+				}
 			}
 		}		
 		if (!$stopprocessing) {
 			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
-			foreach ($errors as $error) StatusMessage($error[0], $error[1], $error[2]);
+			foreach ($errors as $error) {
+				call_user_func_array('StatusMessage', $error);
+			}
 			echo "<br>\n";
 			flush();
 		}
 		else {
 			echo sprintf(_('Error while deleting DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
-			foreach ($errors as $error) StatusMessage($error[0], $error[1], $error[2]);
+			foreach ($errors as $error) {
+				call_user_func_array('StatusMessage', $error);
+			}
 			echo "<br>\n";
 		}
 	}
 	echo "<br>\n";
 	echo "<br><button class=\"smallPadding\" name=\"cancel\" id=\"backButton\">" . _('Back to list') . "</button>\n";
+	echo "<br><button class=\"hidden\" name=\"cancelAllOk\" id=\"backButtonAllOk\"> </button>\n";
 	echo "</div>\n";
 	echo "</form>\n";
 	?>
 	<script type="text/javascript" language="javascript">
 	jQuery(document).ready(function() {
 		jQuery('#backButton').button();
+		<?php
+		if ($allOk) {
+			echo "jQuery('#backButtonAllOk').click();";
+		}
+		?>
 	});
 	</script>
 	<?php

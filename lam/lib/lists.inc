@@ -151,6 +151,8 @@ class lamList {
 		$this->listGetParams();
 		// print HTML head
 		$this->listPrintHeader();
+		// print messages when redirected from other pages
+		$this->listPrintRedirectMessages();
 		// refresh data if needed
 		if ($this->refresh) {
 			$this->listBuildFilter();
@@ -924,6 +926,15 @@ class lamList {
 		return;
 	}
 
+	/**
+	 * Prints messages when another page (e.g. delete/upload) redirects to the list view.
+	 */
+	protected function listPrintRedirectMessages() {
+		if (isset($_GET['deleteAllOk'])) {
+			StatusMessage('INFO', _('Deletion was successful.'));
+		}
+	}
+
 }
 
 /**
@@ -1169,7 +1180,7 @@ class lamSelectListOption extends lamListOption {
 		$return->addElement(new htmlTableExtendedSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID));
 		return $return;
 	}
-
+	
 }
 
 ?>

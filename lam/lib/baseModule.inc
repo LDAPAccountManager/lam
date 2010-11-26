@@ -1058,22 +1058,22 @@ abstract class baseModule {
 	 * Allows the module to run commands before the LDAP entry is deleted.
 	 * 
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	 * <br>
-	 * An error message should be printed if the function returns false.
 	 * 
-	 * @return boolean true, if no problems occured
+	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function preDeleteActions() {
-		return true;
+		return array();
 	}
 	
 	/**
 	 * Allows the module to run commands after the LDAP entry is deleted.
 	 * 
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
+	 * 
+	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postDeleteActions() {
-		return;
+		return array();
 	}
 	
 	/**

@@ -271,9 +271,8 @@ class quota extends baseModule {
 
 	/**
 	 * Allows the module to run commands before the LDAP entry is deleted.
-	 * An error message should be printed if the function returns false.
 	 * 
-	 * @return true, if no problems occured
+	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	function preDeleteActions() {
 		$this->initQuotas();
@@ -306,7 +305,7 @@ class quota extends baseModule {
 				}
 			lamdaemon(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")), $server);
 		}
-		return true;
+		return array();
 	}
 
 	/**
