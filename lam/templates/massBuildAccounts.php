@@ -86,8 +86,8 @@ if (isset($_GET['showldif'])) {
 include 'main_header.php';
 echo '<div class="userlist-bright smallPaddingContent">';
 
+$selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
-	$selectedModules = explode(',', $_POST['selectedModules']);
 	// check if input file is well formated
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
@@ -201,14 +201,37 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					echo "<a href=\"massBuildAccounts.php?showldif=true\">" . _("Show LDIF file") . "</a>";
 			}
 		}
+		else {
+			massPrintBackButton($_POST['scope'], $selectedModules);
+		}
 	}
 }
 else {
 	StatusMessage('ERROR', _('Please provide a file to upload.'));
-	echo '<br><a href="masscreate.php">' . _('Back') . '</a>';
+	massPrintBackButton($_POST['scope'], $selectedModules);
 }
 
 echo '</div>';
 include 'main_footer.php';
+
+/**
+ * Prints a back button to the page where the user enters a file to upload.
+ *
+ * @param String $scope account type (e.g. user)
+ * @param array $selectedModules selected modules for upload
+ */
+function massPrintBackButton($scope, $selectedModules) {
+	echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
+	$container = new htmlTable();
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$container->addElement(new htmlButton('submit', _('Back')));
+	$container->addElement(new htmlHiddenInput('type', $scope));
+	for ($i = 0; $i < sizeof($selectedModules); $i++) {
+		$container->addElement(new htmlHiddenInput($scope . '_' . $selectedModules[$i], 'on'));
+	}
+	$tabindex = 1;
+	parseHtml(null, $container, array(), false, $tabindex, $scope);
+	echo '</form>';
+}
 
 ?>
