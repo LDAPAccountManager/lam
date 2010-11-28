@@ -106,8 +106,23 @@ class imapAccess extends baseModule {
 		$configPasswordType->setHasDescriptiveElements(true);
 		$configContainer->addElement($configPasswordType, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Mail domain(s)'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain'), true);
+		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domain(s)'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
+		$mailDomainsInput->setRequired(true);
+		$configContainer->addElement($mailDomainsInput, true);
 		$return['config_options']['all'] = $configContainer;
+		// configuration checks
+		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
+			'type' => 'ext_preg',
+			'regex' => 'DNSname',
+			'required' => true,
+			'required_message' => $this->messages['config'][0],
+			'error_message' => $this->messages['config'][0]);
+		$return['config_checks']['all']['ImapAccess_ImapDomain'] = array (
+			'type' => 'regex_i',
+			'regex' => '[a-z0-9\\._-]+(,[a-z0-9\\._-]+)*',
+			'required' => true,
+			'required_message' => $this->messages['config'][1],
+			'error_message' => $this->messages['config'][1]);
 		return $return;
 	}
 
@@ -115,6 +130,8 @@ class imapAccess extends baseModule {
 	 * This function fills the error message array with messages
 	 */
 	function load_Messages() {
+		$this->messages['config'][0] = array('ERROR', _('Please enter a valid server name where the mailboxes reside.'));
+		$this->messages['config'][1] = array('ERROR', _('Please enter a correct list of valid mail domains.'));
 		$this->messages['managemailbox'][0] = array('ERROR', _('Unable to change ACL on IMAP server for mailbox deletion.'));
 		$this->messages['managemailbox'][1] = array('ERROR', _('Unable to delete mailbox from IMAP server.'));
 		$this->messages['managemailbox'][2] = array('ERROR', _('Unable to create mailbox on IMAP server.'));
