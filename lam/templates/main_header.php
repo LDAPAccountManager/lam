@@ -70,8 +70,16 @@ foreach ($jsFiles as $jsEntry) {
 			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
 		</td>
 	<td align="right" height=20>
-		<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+		<?php
+		if ($_SESSION['config']->get_Suffix('tree') != "") {
+		?>
+		<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
 		&nbsp;&nbsp;&nbsp;
+		<?php
+		}
+		?>
+		<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a>
 		&nbsp;
 	</td>
@@ -83,12 +91,6 @@ foreach ($jsFiles as $jsEntry) {
 <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 	<?php
 		$linkList = array();
-		if ($_SESSION['config']->get_Suffix('tree') != "") {
-			$link = '<a href="' . $headerPrefix . 'tree/treeViewContainer.php"><img alt="tree view" src="' . $headerPrefix . '../graphics/process.png">&nbsp;' . _("Tree view") . '</a>' . "\n";
-			echo '<li id="tab_tree" class="ui-state-default ui-corner-top">';
-			echo $link;
-			echo "</li>\n";
-		}
 		for ($i = 0; $i < sizeof($types); $i++) {
 			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] . '">' .
 				'<img alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
