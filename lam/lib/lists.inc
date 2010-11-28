@@ -933,6 +933,15 @@ class lamList {
 		if (isset($_GET['deleteAllOk'])) {
 			StatusMessage('INFO', _('Deletion was successful.'));
 		}
+		elseif (isset($_GET['uploadAllOk'])) {
+			StatusMessage('INFO', _("Upload has finished"));
+		}
+		elseif (isset($_SESSION['listRedirectMessages'])) {
+			for ($i = 0; $i < sizeof($_SESSION['listRedirectMessages']); $i++) {
+				call_user_func_array('StatusMessage', $_SESSION['listRedirectMessages'][$i]);
+			}
+			unset($_SESSION['listRedirectMessages']);
+		}
 	}
 
 }
