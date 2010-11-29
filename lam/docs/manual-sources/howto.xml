@@ -1497,6 +1497,65 @@ Have fun!
           </mediaobject>
         </screenshot>
       </section>
+
+      <section>
+        <title>IMAP mailboxes</title>
+
+        <para>LAM may create and delete mailboxes on an IMAP server for your
+        user accounts. You will need an IMAP server that supports either SSL
+        or TLS for this feature.</para>
+
+        <para>To activate the mailbox management module please add the
+        "Mailbox (imapAccess)" module for the type user in your LAM server
+        profile:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/imapAccess1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now configure the module on the tab "Module settings". Here you
+        can specify the IMAP server name, encryption options, the
+        authentication for the IMAP connection and the valid mail domains. LAM
+        can use either your LAM login password for the IMAP connection or
+        display a dialog where you need to enter the password. The mail
+        domains specify for which accounts mailboxes may be created/deleted.
+        E.g. if you enter "lam-demo.org" then mailboxes can be managed for
+        "user@lam-demo.org" but not for "user@example.com".</para>
+
+        <para>You need to install the SSL certificate of the CA that signed
+        your server certificate. This is usually done by installing the
+        certificate in /etc/ssl/certs. Different Linux distributions may offer
+        different ways to do this. For Debian please copy the certificate in
+        "/usr/local/share/ca-certificates" and run "update-ca-certificates" as
+        root.</para>
+
+        <para>It is not recommended to disable the validation of IMAP server
+        certificates.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/imapAccess2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>When you edit an user account then you will now see the tab
+        "Mailbox". Here you can create/delete the mailbox for this
+        user.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/imapAccess3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section>
@@ -3214,6 +3273,24 @@ Have fun!
             <entry>Part of Zarafa installation</entry>
 
             <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>IMAP mailboxes</entry>
+
+            <entry>-</entry>
+
+            <entry>-</entry>
+
+            <entry>-</entry>
+
+            <entry>Does not require any schema.</entry>
           </row>
         </tbody>
       </tgroup>
