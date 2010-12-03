@@ -95,7 +95,7 @@ foreach ($toSort as $key => $value) {
 	<ul id="foo" class="dropmenu">
 		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
 		<li>
-			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?>&nbsp;&nbsp;&nbsp;</a>
 				<ul>
 				<?php
 					for ($i = 0; $i < sizeof($tools); $i++) {
