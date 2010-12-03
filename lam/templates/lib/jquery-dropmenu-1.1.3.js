@@ -127,7 +127,7 @@
 					if ($.data(subnav, 'subsub')) {
 						var distance  = $(listit).outerWidth(),
 							itemWidth = $(listit).offset().left + distance - menuX,
-							position  = (opts.maxWidth < itemWidth) ? "right" : "left";
+							position  = "right";
 						
 						subcss[position] = distance;						
 					}
