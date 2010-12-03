@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009  Roland Gruber
+  Copyright (C) 2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -118,6 +118,32 @@ interface LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition();
+	
+	/**
+	 * Returns a list of sub tools or an empty array.
+	 * 
+	 * @return array list of subtools (LAMTool)
+	 */
+	function getSubTools();
+	
+}
+
+/**
+ * Represents a subtool.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
+class LAMSubTool {
+	
+	/** visible tool name */
+	public $name;
+	/** tool description */
+	public $description;
+	/** tool link (relative to templates/) */
+	public $link;
+	/** image URL (relative to graphics/) */
+	public $image;
 	
 }
 

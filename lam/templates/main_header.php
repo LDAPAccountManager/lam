@@ -35,6 +35,9 @@ $headerPrefix = "";
 if (is_file("../login.php")) $headerPrefix = "../";
 elseif (is_file("../../login.php")) $headerPrefix = "../../";
 
+/** tool definitions */
+include_once($headerPrefix . "../lib/tools.inc");
+
 // HTML header and title
 echo $_SESSION['header'];
 echo "<title>LDAP Account Manager</title>\n";
@@ -62,6 +65,25 @@ foreach ($jsFiles as $jsEntry) {
 	echo "<script type=\"text/javascript\" src=\"" . $headerPrefix . "lib/" . $jsEntry . "\"></script>\n";
 }
 
+// get tool list
+$availableTools = getTools();
+// sort tools
+$toSort = array();
+for ($i = 0; $i < sizeof($availableTools); $i++) {
+	$myTool = new $availableTools[$i]();
+	if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
+		continue;
+	}
+	if ($myTool->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
+		continue;
+	}
+	$toSort[$availableTools[$i]] = $myTool->getPosition();
+}
+asort($toSort);
+$tools = array();
+foreach ($toSort as $key => $value) {
+	$tools[] = new $key();
+}
 ?>
 
 <table border=0 width="100%" class="lamHeader ui-corner-all">
@@ -69,22 +91,62 @@ foreach ($jsFiles as $jsEntry) {
 		<td align="left" height="30">
 			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
 		</td>
-	<td align="right" height=20>
+	<td align="right" height=30>
+	<ul id="foo" class="dropmenu">
+		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
+		<li>
+			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+				<ul>
+				<?php
+					for ($i = 0; $i < sizeof($tools); $i++) {
+						$subTools = $tools[$i]->getSubTools();
+						echo '<li title="' . $tools[$i]->getDescription() . '">';
+						$link = $headerPrefix . $tools[$i]->getLink();
+						echo '<a href="' . $link . "\">\n";
+						echo '<img alt="" src="' . $headerPrefix . '../graphics/' . $tools[$i]->getImageLink() . '"> ' . $tools[$i]->getName();
+						echo "</a>\n";
+						if (sizeof($subTools) > 0) {
+							echo "<ul>\n";
+							for ($s = 0; $s < sizeof($subTools); $s++) {
+								echo "<li title=\"" . $subTools[$s]->description . "\">\n";
+								echo "<a href=\"" . $headerPrefix . $subTools[$s]->link . "\">\n";
+								echo '<img width=16 height=16 alt="" src="' . $headerPrefix . '../graphics/' . $subTools[$s]->image . '"> ' . $subTools[$s]->name;
+								echo "</a>\n";
+								echo "</li>\n";
+							}
+							echo "</ul>\n";
+						}
+						echo "</li>\n";
+					}
+				?>
+			</ul>
+		</li>
 		<?php
 		if ($_SESSION['config']->get_Suffix('tree') != "") {
 		?>
-		<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
-		&nbsp;&nbsp;&nbsp;
+	    <li>
+			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
+		</li>
 		<?php
 		}
 		?>
-		<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a>
-		&nbsp;
+	</ul>
 	</td>
 	</tr>
 </table>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	        $('#foo').dropmenu(
+	            {
+	            	effect  : 'slide',
+	            	nbsp    : true,
+	            	timeout : 350,
+	            	speed   : 'fast'
+	            }
+	        );
+	    });
+</script>
 
 <br>
 <div class="ui-tabs ui-widget ui-widget-content ui-corner-all">

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009  Roland Gruber
+  Copyright (C) 2009 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,6 +97,28 @@ class toolTests implements LAMTool {
 	 */
 	function getPosition() {
 		return 1000;
+	}
+	
+	/**
+	 * Returns a list of sub tools or an empty array.
+	 * 
+	 * @return array list of subtools (LAMTool)
+	 */
+	function getSubTools() {
+		$return = array();
+		$lamdaemonTest = new LAMSubTool();
+		$lamdaemonTest->name = _("Lamdaemon test");
+		$lamdaemonTest->link = 'tests/lamdaemonTest.php';
+		$lamdaemonTest->description = _("Check if quotas and homedirectories can be managed.");
+		$lamdaemonTest->image = 'lamdaemonSmall.png';
+		$return[] = $lamdaemonTest;
+		$schemaTest = new LAMSubTool();
+		$schemaTest->name = _("Schema test");
+		$schemaTest->link = 'tests/schemaTest.php';
+		$schemaTest->description = _("Check if the LDAP schema fits the requirements of the selected account modules.");
+		$schemaTest->image = 'schemaTest.png';
+		$return[] = $schemaTest;
+		return $return;
 	}
 	
 }

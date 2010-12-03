@@ -47,13 +47,13 @@ echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 $container = new htmlTable();
 $container->addElement(new htmlSubTitle(_("LAM tests")), true);
 
-$container->addElement(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php'));
+$container->addElement(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/lamdaemonSmall.png'));
 $container->addElement(new htmlSpacer('20px', null));
 $container->addElement(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), true);
 
 $container->addElement(new htmlSpacer(null, '20px'), true);
 
-$container->addElement(new htmlLink(_("Schema test"), 'schemaTest.php'));
+$container->addElement(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/schemaTest.png'));
 $container->addElement(new htmlSpacer('20px', null));
 $container->addElement(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), true);
 

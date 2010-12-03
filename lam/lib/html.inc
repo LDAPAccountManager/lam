@@ -1896,7 +1896,9 @@ class htmlLink extends htmlElement {
 	/**
 	 * Constructor.
 	 * 
-	 * @param String $label label
+	 * @param String $text label
+	 * @param String $target target URL
+	 * @param String $image URL of optional image
 	 */
 	function __construct($text, $target, $image = null) {
 		$this->text = htmlspecialchars($text);
