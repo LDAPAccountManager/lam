@@ -68,7 +68,6 @@ if (isset($_GET['getCSV'])) {
 }
 
 include 'main_header.php';
-echo '<div class="userlist-bright smallPaddingContent">';
 
 // get possible types and remove those which do not support file upload
 $types = $_SESSION['config']->get_ActiveTypes();
@@ -108,6 +107,11 @@ if (isset($_POST['type'])) {
 }
 
 // show start page
+$divClass = 'user';
+if (isset($_REQUEST['type'])) {
+	$divClass = $_REQUEST['type'];
+}
+echo '<div class="' . $divClass . 'list-bright smallPaddingContent">';
 echo "<div class=\"title\">\n";
 echo "<h2 class=\"titleText\">" . _("Account creation via file upload") . "</h2>\n";
 echo "</div>";
@@ -126,7 +130,7 @@ echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellsp
 	echo '<b>' . _("Account type") . ':</b>';
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<select class=\"user\" name=\"type\" onChange=\"changeVisibleModules(this);\">\n";
+	echo "<select class=\"$divClass\" name=\"type\" onChange=\"changeVisibleModules(this);\">\n";
 	$sortedTypes = array();
 	for ($i = 0; $i < sizeof($types); $i++) {
 		$sortedTypes[$types[$i]] = getTypeAlias($types[$i]);
@@ -214,77 +218,98 @@ include 'main_footer.php';
 * @param array $selectedModules list of selected account modules
 */
 function showMainPage($scope, $selectedModules) {
-	echo "<h1>" . _("File upload") . "</h1>";
-	echo "<p>\n";
-		echo _("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.");
-		echo "<br>";
-		echo _("Check your input carefully. LAM will only do some basic checks on the upload data.");
-		echo "<br><br>";
-		echo _("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.");
-	echo "</p>\n";
-	
-	echo "<p>&nbsp;</p>\n";
-
-	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
-	echo "<p>\n";
-	echo "<b>" . _("CSV file:") . "</b> <input class=\"$scope\" name=\"inputfile\" type=\"file\">&nbsp;&nbsp;";
-	echo "<button class=\"smallPadding\" name=\"submitfile\" id=\"okButton\">" . _('Upload file and create accounts') . "</button>\n";
-	echo "<input type=\"hidden\" name=\"scope\" value=\"$scope\">\n";
-	echo "<input type=\"hidden\" name=\"selectedModules\" value=\"" . implode(',', $selectedModules) . "\">\n";
-	echo "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
-	echo "</p>\n";
-	echo "</form>\n";
-
-	?>
-	<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#okButton').button();
-	});
-	</script>
-	<?php
-	
-	echo "<p>&nbsp;</p>\n";
-	
-	echo _("Here is a list of possible columns. The red columns must be included in the CSV file and filled with data for all accounts.");
-
-	echo "<p><big><b>" . _("Columns:") . "</b></big></p>\n";
-
-	// DN options
-	echo "<fieldset class=\"" . $scope . "edit\">\n<legend><b>" . _("DN settings") . "</b></legend><br>\n";
-	echo "<table width=\"100%\">\n";
-		echo "<tr valign=\"top\">\n";
-			echo "<td width=\"50%\">\n";
-			echo "<b>" . _("DN suffix") . "</b>\n";
-			// help link
-			echo "&nbsp;";
-			printHelpLink(getHelp('', '361'), '361');
-			echo "<br>\n";
-				echo "<ul>\n";
-					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
-					echo "<li><b>" . _("Example value") . ":</b> " . _("ou=accounts,dc=yourdomain,dc=org") . "</li>\n";
-					echo "<li><b>" . _("Default value") . ":</b> " . $_SESSION['config']->get_Suffix($scope) . "</li>\n";
-				echo "</ul>\n";
-			echo "</td>\n";
-			echo "<td width=\"50%\">\n";
-			echo "<b><font color=\"red\">" . _("RDN identifier") . "</font></b>\n";
-			// help link
-			echo "&nbsp;";
-			printHelpLink(getHelp('', '301'), '301');
-			echo "<br>\n";
-				echo "<ul>\n";
-					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
-					echo "<li><b>" . _("Possible values") . ":</b> " . implode(", ", getRDNAttributes($scope, $selectedModules)) . "</li>\n";
-				echo "</ul>\n";
-			echo "</td>\n";
-		echo "</tr>\n";
-	echo "</table>\n";
-	echo "</fieldset><br>\n";
-	
+	echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
 	// get input fields from modules
 	$columns = getUploadColumns($scope, $selectedModules);
-
-	// print input fields
 	$modules = array_keys($columns);
+	
+	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
+	$container = new htmlTable();
+	// title
+	$container->addElement(new htmlTitle(_("File upload")), true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	// instructions
+	$container->addElement(new htmlOutputText(_("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")), true);
+	$container->addElement(new htmlOutputText(_("Check your input carefully. LAM will only do some basic checks on the upload data.")), true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$container->addElement(new htmlOutputText(_("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.")), true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	// upload elements
+	$inputContainer = new htmlTable();
+	$inputContainer->addElement(new htmlOutputText(_("CSV file")));
+	$inputContainer->addElement(new htmlInputFileUpload('inputfile'));
+	$inputContainer->addElement(new htmlButton('submitfile', _('Upload file and create accounts')));
+	$inputContainer->addElement(new htmlSpacer('10px', null));
+	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1'));
+	$inputContainer->addElement(new htmlHiddenInput('scope', $scope));
+	$inputContainer->addElement(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), true);
+	$container->addElement($inputContainer, true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	// column list
+	$columnSpacer = new htmlSpacer('10px', null);
+	$container->addElement(new htmlTitle(_("Columns")), true);
+	$columnContainer = new htmlTable();
+	$columnContainer->setCSSClasses($scope . 'list');
+	$columnContainer->addElement($columnSpacer);
+	$columnContainer->addElement(new htmlOutputText(''));
+	$columnContainer->addElement($columnSpacer);
+	$columnContainer->addElement(new htmlOutputText(''));
+	$columnContainer->addElement($columnSpacer);
+	$header1 = new htmlOutputText(_("Identifier"));
+	$header1->alignment = htmlElement::ALIGN_LEFT;
+	$columnContainer->addElement($header1, false, true);
+	$columnContainer->addElement($columnSpacer);
+	$header2 = new htmlOutputText(_("Example value"));
+	$header2->alignment = htmlElement::ALIGN_LEFT;
+	$columnContainer->addElement($header2, false, true);
+	$columnContainer->addElement($columnSpacer);
+	$header3 = new htmlOutputText(_("Default value"));
+	$header3->alignment = htmlElement::ALIGN_LEFT;
+	$columnContainer->addElement($header3, false, true);
+	$columnContainer->addElement($columnSpacer);
+	$header4 = new htmlOutputText(_("Possible values"));
+	$header4->alignment = htmlElement::ALIGN_LEFT;
+	$columnContainer->addElement($header4, true, true);
+	// DN options
+	$dnTitle = new htmlSubTitle(_("DN settings"), '../graphics/logo32.png');
+	$dnTitle->colspan = 20;
+	$columnContainer->addElement($dnTitle);
+	$dnSuffixRowCells = array();
+	$dnSuffixRowCells[] = $columnSpacer;
+	$dnSuffixRowCells[] = new htmlHelpLink('361');
+	$dnSuffixRowCells[] = $columnSpacer;
+	$dnSuffixRowCells[] = new htmlOutputText(_("DN suffix"));
+	$dnSuffixRowCells[] = $columnSpacer;
+	$dnSuffixRowCells[] = new htmlOutputText('dn_suffix');
+	$dnSuffixRowCells[] = $columnSpacer;
+	$dnSuffixRowCells[] = new htmlOutputText($_SESSION['config']->get_Suffix($scope));
+	$dnSuffixRowCells[] = $columnSpacer;
+	$dnSuffixRowCells[] = new htmlOutputText($_SESSION['config']->get_Suffix($scope));
+	$dnSuffixRowCells[] = $columnSpacer;
+	$dnSuffixRowCells[] = new htmlOutputText('');
+	$dnSuffixRowCells[] = new htmlSpacer(null, '25px');
+	$dnSuffixRow = new htmlTableRow($dnSuffixRowCells);
+	$dnSuffixRow->setCSSClasses($scope . 'list-dark');
+	$columnContainer->addElement($dnSuffixRow);
+	$dnRDNRowCells = array();
+	$dnRDNRowCells[] = $columnSpacer;
+	$dnRDNRowCells[] = new htmlHelpLink('301');
+	$dnRDNRowCells[] = $columnSpacer;
+	$dnRDNRowCells[] = new htmlOutputText(_("RDN identifier") . '*');
+	$dnRDNRowCells[] = $columnSpacer;
+	$dnRDNRowCells[] = new htmlOutputText('dn_rdn');
+	$dnRDNRowCells[] = $columnSpacer;
+	$rdnAttributes = getRDNAttributes($scope, $selectedModules);
+	$dnRDNRowCells[] = new htmlOutputText($rdnAttributes[0]);
+	$dnRDNRowCells[] = $columnSpacer;
+	$dnRDNRowCells[] = new htmlOutputText('');
+	$dnRDNRowCells[] = $columnSpacer;
+	$dnRDNRowCells[] = new htmlOutputText(implode(", ", $rdnAttributes));
+	$dnRDNRowCells[] = new htmlSpacer(null, '25px');
+	$dnRDNRow = new htmlTableRow($dnRDNRowCells);
+	$dnRDNRow->setCSSClasses($scope . 'list-bright');
+	$columnContainer->addElement($dnRDNRow);
+	// module options
 	for ($m = 0; $m < sizeof($modules); $m++) {
 		// skip modules without upload columns
 		if (sizeof($columns[$modules[$m]]) < 1) {
@@ -294,34 +319,58 @@ function showMainPage($scope, $selectedModules) {
 		$module = new $modules[$m]($scope);
 		$iconImage = $module->getIcon();
 		if ($iconImage != null) {
-			$icon = '<img align="middle" src="../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+			$icon = '../graphics/' . $iconImage;
 		}
-		echo "<fieldset class=\"" . $scope . "edit\">\n<legend>$icon<b>" . getModuleAlias($modules[$m], $scope) . "</b></legend><br>\n";
-		echo "<table width=\"100%\">\n";
+		$moduleTitle = new htmlSubTitle(getModuleAlias($modules[$m], $scope), $icon);
+		$moduleTitle->colspan = 20;
+		$columnContainer->addElement($moduleTitle);
+		$odd = true;
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-			echo "<tr valign=\"top\">\n";
-				echo "<td width=\"33%\">\n";
-					showColumnData($modules[$m], $columns[$modules[$m]][$i], $scope);
-				echo "</td>\n";
-				$i++;
-				if ($i < sizeof($columns[$modules[$m]])) {
-					echo "<td width=\"33%\">\n";
-						showColumnData($modules[$m], $columns[$modules[$m]][$i], $scope);
-					echo "</td>\n";
-					$i++;
-					if ($i < sizeof($columns[$modules[$m]])) {
-						echo "<td width=\"33%\">\n";
-							showColumnData($modules[$m], $columns[$modules[$m]][$i], $scope);
-						echo "</td>\n";
-					}
-					else echo "<td width=\"33%\"></td>"; // empty cell if no more fields
-				}
-				else echo "<td width=\"33%\"></td><td width=\"33%\"></td>"; // empty cell if no more fields
-			echo "</tr>\n";
+			$required = '';
+			if (isset($columns[$modules[$m]][$i]['required']) && ($columns[$modules[$m]][$i]['required'] == true)) {
+				$required = '*';
+			}
+			$rowCells = array();
+			$rowCells[] = $columnSpacer;
+			$rowCells[] = new htmlHelpLink($columns[$modules[$m]][$i]['help'], $modules[$m], $scope);
+			$rowCells[] = $columnSpacer;
+			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['description'] . $required);
+			$rowCells[] = $columnSpacer;
+			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['name']);
+			$rowCells[] = $columnSpacer;
+			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['example']);
+			$rowCells[] = $columnSpacer;
+			if (isset($columns[$modules[$m]][$i]['default'])) {
+				$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['default']);
+			}
+			else {
+				$rowCells[] = new htmlOutputText('');
+			}
+			$rowCells[] = $columnSpacer;
+			if (isset($columns[$modules[$m]][$i]['values'])) {
+				$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['values']);
+			}
+			else {
+				$rowCells[] = new htmlOutputText('');
+			}
+			$rowCells[] = new htmlSpacer(null, '25px');
+			$row = new htmlTableRow($rowCells);
+			if ($odd) {
+				$row->setCSSClasses($scope . 'list-dark');
+			}
+			else {
+				$row->setCSSClasses($scope . 'list-bright');
+			}
+			$odd = !$odd;
+			$columnContainer->addElement($row);
 		}
-		echo "</table>\n";
-		echo "</fieldset><br>";
 	}
+	$container->addElement($columnContainer, true);
+	
+	$tabindex = 1;
+	parseHtml(null, $container, array(), false, $tabindex, $scope);
+	
+	echo "</form>\n";
 
 	// build sample CSV
 	$sampleCSV_head = array();
@@ -353,49 +402,6 @@ function showMainPage($scope, $selectedModules) {
 	echo '</div>';
 	include 'main_footer.php';
 	die;
-}
-
-/**
-* Prints the properties of one input field.
-*
-* @param string $module account module name
-* @param array $data field data from modules
-* @param string $scope account type
-*/
-function showColumnData($module, $data, $scope) {
-	if (isset($data['required']) && ($data['required'] == true)) {
-		echo "<font color=\"red\"><b>\n";
-			echo $data['description'];
-		echo "</b></font>\n";
-	}
-	else {
-		echo "<b>\n";
-			echo $data['description'];
-		echo "</b>\n";
-	}
-	// help link
-	echo "&nbsp;";
-	printHelpLink(getHelp($module, $data['help'], $scope), $data['help'], $module, $scope);
-	echo "<br>\n";
-	echo "<ul>\n";
-		echo "<li>\n";
-			echo "<b>" . _("Identifier") . ":</b> " . $data['name'] . "\n";
-		echo "</li>\n";
-		if (isset($data['values'])) {
-			echo "<li>\n";
-				echo "<b>" . _("Possible values") . ":</b> " . $data['values'] . "\n";
-			echo "</li>\n";
-		}
-		echo "<li>\n";
-			echo "<b>" . _("Example value") . ":</b> " . $data['example'] . "\n";
-		echo "</li>\n";
-		if (isset($data['default'])) {
-			echo "<li>\n";
-				echo "<b>" . _("Default value") . ":</b> " . $data['default'] . "\n";
-			echo "</li>\n";
-		}
-
-	echo "</ul>\n";
 }
 
 ?>
