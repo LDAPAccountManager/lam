@@ -126,8 +126,6 @@ abstract class htmlElement {
  */
 class htmlTable extends htmlElement {
 
-	/** table header */
-	const header = "<table>\n";
 	/** table footer */
 	const footer = "</table>\n";
 	/** new line */
@@ -137,15 +135,17 @@ class htmlTable extends htmlElement {
 	private $elements = array();
 	/** specifies if currently a row is open */
 	private $rowOpen = false;
+	/** additional CSS classes */
+	private $CSSClasses = '';
 
 	/**
 	 * Adds an element to the table. The element may be a htmlElement object or a simple String.
 	 *
 	 * @param mixed $element htmlElement object or a simple String
 	 * @param boolean $newLine adds a new line after the element (optional, default false)
-	 * @param array $options list of options (e.g. htmlElement::OPTION_ALIGN => htmlElement::ALIGN_TOP)
+	 * @param boolean $isTableHeadElement specifies if this is a head or body element (default: body)
 	 */
-	public function addElement($element, $newLine = false) {
+	public function addElement($element, $newLine = false, $isTableHeadElement = false) {
 		// add row element
 		if ($element instanceof htmlTableRow) {
 			// check if a row needs to be closed
@@ -166,9 +166,13 @@ class htmlTable extends htmlElement {
 			$align = $element->getAlignmentString();
 			$colspan = $element->getColspanString();
 			$rowspan = $element->getRowspanString();
-			$this->elements[] = "<td $align $colspan $rowspan>\n";
+			$tagName = 'td';
+			if ($isTableHeadElement) {
+				$tagName = 'th';
+			}
+			$this->elements[] = "<$tagName $align $colspan $rowspan>\n";
 			$this->elements[] = $element;
-			$this->elements[] = "</td>\n";
+			$this->elements[] = "</$tagName>\n";
 			if ($newLine) {
 				$this->addNewLine();
 			}
@@ -203,7 +207,7 @@ class htmlTable extends htmlElement {
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
-		echo htmlTable::header;
+		echo "<table $this->CSSClasses>\n";
 		// print all contained elements
 		for ($i = 0; $i < sizeof($this->elements); $i++) {
 			// print htmlElement objects
@@ -255,6 +259,15 @@ class htmlTable extends htmlElement {
 		$this->elements = array_merge($this->elements, $table->elements);
 	}
 
+	/**
+	 * Sets the CSS classes for the table. 
+	 * 
+	 * @param String $CSSClasses CSS class names (e.g. "userlist smallPadding")
+	 */
+	public function setCSSClasses($CSSClasses) {
+		$this->CSSClasses = 'class="' . htmlspecialchars($CSSClasses) . '"';
+	}
+
 }
 
 /**
@@ -266,6 +279,8 @@ class htmlTable extends htmlElement {
 class htmlTableRow extends htmlElement {
 
 	private $cells;
+	/** additional CSS classes */
+	private $CSSClasses = '';
 	
 	/**
 	 * Constructor
@@ -290,7 +305,7 @@ class htmlTableRow extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$types = array();
-		echo "<tr>\n";
+		echo "<tr  $this->CSSClasses>\n";
 			for ($i = 0; $i < sizeof($this->cells); $i++) {
 				// check if alignment option was given
 				$align = $this->cells[$i]->getAlignmentString();
@@ -302,6 +317,15 @@ class htmlTableRow extends htmlElement {
 			}
 		echo "</tr>";
 		return $types;
+	}
+
+	/**
+	 * Sets the CSS classes for the table. 
+	 * 
+	 * @param String $CSSClasses CSS class names (e.g. "userlist smallPadding")
+	 */
+	public function setCSSClasses($CSSClasses) {
+		$this->CSSClasses = 'class="' . htmlspecialchars($CSSClasses) . '"';
 	}
 
 }
@@ -492,14 +516,22 @@ class htmlHelpLink extends htmlElement {
 	
 	/** help ID */
 	private $helpID;
+	/** module name if it should be forced */
+	private $module;
+	/** account type if it should be forced */
+	private $scope;
 	
 	/**
 	 * Constructor
 	 *
 	 * @param String $helpID help ID
+	 * @param String $module module name (optional, only if value from generateHTML() should be overwritten)
+	 * @param String $scope account type (e.g. user) (optional, only if value from generateHTML() should be overwritten)
 	 */
-	function __construct($helpID) {
+	function __construct($helpID, $module = null, $scope = null) {
 		$this->helpID = $helpID;
+		$this->module = $module;
+		$this->scope = $scope;
 	}
 	
 	/**
@@ -514,6 +546,14 @@ class htmlHelpLink extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		// overwrite module and scop if needed
+		if ($this->module != null) {
+			$module = $this->module;
+		}
+		if ($this->scope != null) {
+			$scope = $this->scope;
+		}
+		// print link
 		$helpEntry = getHelp($module, $this->helpID, $scope);
 		printHelpLink($helpEntry, $this->helpID, $module, $scope);
 		return array();
@@ -1804,6 +1844,7 @@ class htmlSubTitle extends htmlElement {
 	 * Constructor.
 	 * 
 	 * @param String $label label
+	 * @param String $image optional image
 	 */
 	function __construct($label, $image = null) {
 		$this->label = htmlspecialchars($label);
