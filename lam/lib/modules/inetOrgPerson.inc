@@ -1097,7 +1097,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'description' => _('Common name'),
 				'help' => 'cn',
 				'example' => _('Steve Miller'),
-				'default' => '<i>&lt;inetOrgPerson_firstName&gt; &lt;inetOrgPerson_lastName&gt;</i>'
+				'default' => '{inetOrgPerson_firstName} {inetOrgPerson_lastName}'
 			);
 			$return[] = array(
 				'name' => 'inetOrgPerson_userName',

@@ -223,7 +223,7 @@ class posixAccount extends baseModule implements passwordService {
 				'description' => _('Home directory'),
 				'help' => 'homeDirectory_upload',
 				'example' => _('/home/smiller'),
-				'default' => '/home/<i>&lt;posixAccount_userName&gt;</i>'
+				'default' => '/home/{posixAccount_userName}'
 			),
 			array(
 				'name' => 'posixAccount_createHomeDir',

@@ -104,7 +104,8 @@ class account extends baseModule {
 		$return['upload_columns'][] = array(
                'name' => 'account_description',
                'description' => _('Description'),
-               'help' => 'description'
+               'help' => 'description',
+               'example' => ''
 		);
 		return $return;
 	}

@@ -452,7 +452,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 					'description' => _('Samba RID'),
 					'help' => 'ridUpload',
 					'example' => '1235',
-					'default' => '&lt;uidNumber&gt;*2 + &lt;sambaAlgorithmicRidBase&gt;'
+					'default' => '{uidNumber}*2 + {sambaAlgorithmicRidBase}'
 				),
 			);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
@@ -518,7 +518,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 					'description' => _('Samba RID'),
 					'help' => 'ridUploadHost',
 					'example' => '1235',
-					'default' => '&lt;uidNumber&gt;*2 + &lt;sambaAlgorithmicRidBase&gt;'
+					'default' => '{uidNumber}*2 + {sambaAlgorithmicRidBase}'
 				)
 			);
 		}
