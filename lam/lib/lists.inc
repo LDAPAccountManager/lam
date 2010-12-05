@@ -327,7 +327,7 @@ class lamList {
 				if ($this->sortDirection < 0) {
 					$sortImage = "sort_desc.png";
 				}
-				echo "<th class=\"" . $this->type . "list-sort\"><a href=\"list.php?type=" . $this->type . "&amp;".
+				echo "<th><a href=\"list.php?type=" . $this->type . "&amp;".
 					"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
 					"&nbsp;<img style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
 			}

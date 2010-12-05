@@ -71,11 +71,6 @@ table.netgrouplist input, table.netgrouplist select, table.netgrouplist button {
   background-color:#a8c3ff !important;
 }
 
-/* color of sorted column in head row */
-.netgrouplist-sort {
-  background-color:#d6e3ff !important;
-}
-
 fieldset.netgroupedit {
   background-color:#d6e3ff;
   border:1px solid #7167bf;

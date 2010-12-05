@@ -71,11 +71,6 @@ table.hostlist input, table.hostlist select, table.hostlist button {
   background-color:#ffc4ba !important;
 }
 
-/* color of sorted column in head row */
-.hostlist-sort {
-  background-color:#ffe2dd !important;
-}
-
 fieldset.hostedit {
   background-color:#ffe2dd;
   border:1px solid #911a1a;

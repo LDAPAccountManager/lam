@@ -72,11 +72,6 @@ table.dhcplist input, table.dhcplist select, table.dhcplist button {
   background-color:#9fc653 !important;
 }
 
-/* color of sorted column in head row */
-.dhcplist-sort {
-  background-color:#bce077 !important;
-}
-
 fieldset.dhcpedit {
   background-color:#d4f19b;
   border:1px solid #527510;

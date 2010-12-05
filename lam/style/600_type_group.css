@@ -71,11 +71,6 @@ table.grouplist input, table.grouplist select, table.grouplist button {
   background-color:#a8c3ff !important;
 }
 
-/* color of sorted column in head row */
-.grouplist-sort {
-  background-color:#d6e3ff !important;
-}
-
 fieldset.groupedit {
   background-color:#d6e3ff;
   border:1px solid #7167bf;

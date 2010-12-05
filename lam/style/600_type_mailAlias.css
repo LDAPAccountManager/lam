@@ -71,11 +71,6 @@ table.mailAliaslist input, table.mailAliaslist select, table.mailAliaslist butto
   background-color:#ffe27f !important;
 }
 
-/* color of sorted column in head row */
-.mailAliaslist-sort {
-  background-color:#fff3c8 !important;
-}
-
 fieldset.mailAliasedit {
   background-color:#fff3c8;
   border:1px solid #af8800;

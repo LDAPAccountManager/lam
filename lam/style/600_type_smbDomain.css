@@ -71,11 +71,6 @@ table.smbDomainlist input, table.smbDomainlist select, table.smbDomainlist butto
   background-color:#a8ddbf !important;
 }
 
-/* color of sorted column in head row */
-.smbDomainlist-sort {
-  background-color:#c9ddd2 !important;
-}
-
 fieldset.smbDomainedit {
   background-color:#c9ddd2;
   border:1px solid #1d993e;

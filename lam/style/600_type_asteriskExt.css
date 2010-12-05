@@ -71,11 +71,6 @@ table.asteriskExtlist input, table.asteriskExtlist select, table.asteriskExtlist
   background-color:#ffe27f !important;
 }
 
-/* color of sorted column in head row */
-.asteriskExtlist-sort {
-  background-color:#fff3c8 !important;
-}
-
 fieldset.asteriskExtedit {
   background-color:#fff3c8;
   border:1px solid #af8800;

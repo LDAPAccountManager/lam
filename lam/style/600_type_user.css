@@ -56,14 +56,6 @@ table.userlist input, table.userlist select, table.userlist button {
 	background-color:#fff2a3 !important;
 }
 
-/* color of sorted column */
-.userlist-sort {
-  background-color:#fffde2 !important;
-}
-
-
-
-
 /* style of navigation bar */
 table.usernav {
   background-color:#fffde2;
