@@ -103,6 +103,66 @@ class user extends baseType {
 			);
 	}
 
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return _("New user");
+		}
+		// check if first and last name can be shown
+		if (isset($attributes['sn'][0]) && isset($attributes['givenName'][0])) {
+			return htmlspecialchars($attributes['givenName'][0] . ' ' . $attributes['sn'][0]);
+		}
+		// check if a display name is set
+		if (isset($attributes['displayName'][0])) {
+			return htmlspecialchars($attributes['displayName'][0]);
+		}
+		// check if a common name is set
+		if (isset($attributes['cn'][0])) {
+			return htmlspecialchars($attributes['cn'][0]);
+		}
+		// check if a user name is set
+		if (isset($attributes['uid'][0])) {
+			return htmlspecialchars($attributes['uid'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($attributes);
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarSubtitle($attributes) {
+		if ($attributes == null) {
+			return null;
+		}
+		$subtitle = '';
+		$spacer = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		// check if an email address can be shown
+		if (isset($attributes['mail'][0])) {
+			$subtitle .= '<a href="mailto:' . htmlspecialchars($attributes['mail'][0]) . '">' . htmlspecialchars($attributes['mail'][0]) . '</a>' . $spacer;
+		}
+		// check if an telephone number can be shown
+		if (isset($attributes['telephoneNumber'][0])) {
+			$subtitle .= _('Telephone number') . ' ' . htmlspecialchars($attributes['telephoneNumber'][0]) . $spacer;
+		}
+		// check if an mobile number can be shown
+		if (isset($attributes['mobile'][0])) {
+			$subtitle .= _('Mobile number') . ' ' . htmlspecialchars($attributes['mobile'][0]);
+		}
+		if ($subtitle == '') {
+			return null;
+		}
+		return $subtitle;
+	}
+
 }
 
 /**

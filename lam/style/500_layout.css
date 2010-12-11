@@ -197,6 +197,62 @@ tr.account {
   background-color:#FFFFEE;
 }
 
+/* --- workaround for vertical tabs --- */
+
+#lamVerticalTabs .ui-tabs-nav li {
+	margin: 0 -1px .2em 0;
+	clear: left;
+	width: 100%;
+	border-bottom-width: 1px !important;
+	border-right-width: 0 !important;
+}
+
+#lamVerticalTabs .ui-tabs-nav li.ui-tabs-selected {
+	border-right-width: 1px;
+	border-right-width: 1px;
+	padding-bottom: 0;
+	padding-right: .1em;
+}
+
+#lamVerticalTabs .ui-tabs-nav {
+	float: left;
+	padding: .2em .1em .2em .2em !IMPORTANT;
+}
+
+#lamVerticalTabs .ui-tabs-panel {
+	padding: 1em;
+	float: left;
+}
+
+#lamVerticalTabs .ui-widget-header { 
+	background: #CCCCCC;
+}
+
+#lamVerticalTabs .ui-tabs-nav li button  {
+	width: 100%;
+	text-align: left;
+	display:block;
+}
+
+/* --- end of workaround for vertical tabs --- */
+
+/* title bar */
+.titleBar {
+	background: #AAAAAA url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) repeat-x scroll 50% 50%;
+	border-top: 1px solid #AAAAAA;
+	border-left: 1px solid #AAAAAA;
+	border-right: 1px solid #AAAAAA;
+	padding: 5px 5px 5px 15px;
+}
+
+.titleBarTitle {
+	font: bold 1em Arial,Tahoma,Verdana,sans-serif;
+}
+
+.titleBarSubtitle {
+/*	font-style: italic;*/
+	padding: 0px 5px 0px 10px;
+}
 
 /**
  * Color and font definitions for templates/status.php

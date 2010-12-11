@@ -1033,6 +1033,11 @@ class accountContainer {
 	
 	/** cache for existing OUs */
 	private $cachedOUs = null;
+	
+	/** main title in title bar */
+	private $titleBarTitle = null;
+	/** subtitle in title bar */
+	private $titleBarSubtitle = null;
 
 	/**
 	 * Returns the account module with the given class name
@@ -1224,7 +1229,7 @@ class accountContainer {
 	 */
 	private function printModuleContent($result, $stopProcessing) {
 		$this->printPageHeader();
-		// Display error-messages
+		// display error messages
 		if (is_array($result)) {
 			for ($i=0; $i<sizeof($result); $i++) {
 				call_user_func_array("StatusMessage", $result[$i]);
@@ -1240,14 +1245,55 @@ class accountContainer {
 			$this->printCommonControls();
 			echo "</td></tr>\n";
 		}
-		// create module menu
 		echo "<tr class=\"".$this->type."list-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
-		echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
+		// print title bar
+		echo '<div class="titleBar ui-corner-top">';
+		echo '<table width="100%"><tr>';
+		echo '<td><div class="titleBarTitle">';
+		echo $this->titleBarTitle;
+		echo '</div></td>';
+		echo '<td align="right">';
+			echo _('Suffix');
+			echo " <select class=\"rightToLeftText\" name=\"accountContainerSuffix\" size=1>\n";
+				// loop through all suffixes
+				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
+				foreach ($this->getOUs() as $suffix) {
+					echo '<option value="' . $suffix . '" ';
+					if ($this->dn == $suffix) {
+						echo 'selected';
+					}
+					echo ">" . getAbstractDN($suffix) . "</option>\n";
+				}
+				if (!($this->dn == '') && !in_array($this->dn, $this->getOUs())) {
+					echo '<option value="' . $this->dn . '" selected>' . getAbstractDN($this->dn) . "</option>\n";;
+				}
+			echo "</select>\n";
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;';
+			// RDN selection
+			$rdnlist = getRDNAttributes($this->type);
+			echo _('RDN identifier');
+			echo " <select name=\"accountContainerRDN\" size=1>\n";
+				for ($i = 0; $i < sizeof($rdnlist); $i++) {
+					echo "<option ";
+					if ($this->rdn === $rdnlist[$i]) {
+						echo 'selected';
+					}
+					echo ">" . $rdnlist[$i] . "</option>\n";
+				}
+			echo "</select>\n";
+			printHelpLink(getHelp('', '301'), '301');
+		echo '</td>';
+		echo '</tr></table>';
+		if ($this->titleBarSubtitle != null) {
+			echo '<div class="titleBarSubtitle">';
+			echo $this->titleBarSubtitle;
+			echo '</div>';
+		}
+		echo '</div>';
+		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
 		// tab menu
 		$this->printModuleTabs();
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
-		// content header
-		$this->printContentHeader();
 		// content area
 		// display html-code from modules
 		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
@@ -1542,7 +1588,7 @@ class accountContainer {
 				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type . 'list-bright';
 			}
 			// print button
-			echo '<li class="ui-state-default ui-corner-top' . $activatedClass . '">';
+			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';
 			$buttonStyle = 'background-color:transparent;;border:0px solid;';
 			echo "<button style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\"";
 			echo " tabindex=$x";
@@ -1559,53 +1605,6 @@ class accountContainer {
 		echo '</ul>';
 	}
 	
-	/**
-	 * Prints the head part of the content area.
-	 */
-	private function printContentHeader() {
-		echo "<table width=\"100%\" border=0><tr>\n";
-		echo "<td align=\"left\">\n";
-			// display DN
-			if (isset($this->dn_orig) && ($this->dn_orig != '')) {
-				echo _("DN") . ": " . htmlspecialchars($this->dn_orig);
-			}
-		echo "</td>\n";
-		echo "<td align=\"right\">\n";
-			echo _('Suffix') . ": ";
-			echo "<select class=\"rightToLeftText\" name=\"accountContainerSuffix\" size=1>\n";
-				// loop through all suffixes
-				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
-				foreach ($this->getOUs() as $suffix) {
-					echo '<option value="' . $suffix . '" ';
-					if ($this->dn == $suffix) {
-						echo 'selected';
-					}
-					echo ">" . getAbstractDN($suffix) . "</option>\n";
-				}
-				if (!($this->dn == '') && !in_array($this->dn, $this->getOUs())) {
-					echo '<option value="' . $this->dn . '" selected>' . getAbstractDN($this->dn) . "</option>\n";;
-				}
-			echo "</select>\n";
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-			// RDN selection
-			$rdnlist = getRDNAttributes($this->type);
-			echo _('RDN identifier') . ": ";
-			echo "<select name=\"accountContainerRDN\" size=1>\n";
-				for ($i = 0; $i < sizeof($rdnlist); $i++) {
-					echo "<option ";
-					if ($this->rdn === $rdnlist[$i]) {
-						echo 'selected';
-					}
-					echo ">" . $rdnlist[$i] . "</option>\n";
-				}
-			echo "</select>\n";
-			printHelpLink(getHelp('', '301'), '301');
-		echo "</td>\n";
-		echo "</tr></table>\n";
-		// separator line
-		echo '<hr class="modulePage" noshade>';
-	}
-
 	/**
 	* This function checks which LDAP attributes have changed while the account was edited.
 	*
@@ -1736,6 +1735,10 @@ class accountContainer {
 
 		// sort module buttons
 		$this->sortModules();
+		// get titles
+		$typeObject = new $this->type();
+		$this->titleBarTitle = $typeObject->getTitleBarTitle($this->attributes_orig);
+		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this->attributes_orig);
 		return array();
 	}
 
@@ -1842,8 +1845,12 @@ class accountContainer {
 		if (isset($profile['ldap_suffix'][0])) {
 			$this->dn = $profile['ldap_suffix'][0];
 		}
+		// get titles
+		$typeObject = new $this->type();
+		$this->titleBarTitle = $typeObject->getTitleBarTitle(null);
+		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle(null);
 		return 0;
-		}
+	}
 
 	/**
 	* This function will save an account to the LDAP database.

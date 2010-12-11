@@ -103,6 +103,32 @@ class baseType {
 	public function supportsFileUpload() {
 		return true;
 	}
+	
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return null;
+		}
+		if (isset($attributes['entryDN'][0])) {
+			return $attributes['entryDN'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarSubtitle($attributes) {
+		return null;
+	}
 
 }
 
