@@ -1293,7 +1293,7 @@ class accountContainer {
 		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
 		// tab menu
 		$this->printModuleTabs();
-		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
+		echo "<div class=\"lamEqualHeightTabContent ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
 		// content area
 		// display html-code from modules
 		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
@@ -1476,6 +1476,15 @@ class accountContainer {
 			      	  primary: 'loadProfileButton'
 			    	}
 				});
+				var maxHeight = 0;
+				jQuery('.lamEqualHeightTabContent').each(function() {
+					if (jQuery(this).height() > maxHeight) {
+						maxHeight = jQuery(this).height();
+					};
+				});
+				jQuery('.lamEqualHeightTabContent').each(function() {
+					jQuery(this).css({'height': maxHeight});
+				});
 			});
 		</script>
 		<?php
@@ -1576,7 +1585,7 @@ class accountContainer {
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
 		$x=1;		
-		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
+		echo '<ul class="lamEqualHeightTabContent ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
 		// Loop for each module
 		for ($i=0; $i<count($this->order); $i++ ) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
