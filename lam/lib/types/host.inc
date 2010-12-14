@@ -97,6 +97,46 @@ class host extends baseType {
 			);
 	}
 
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return _("New host");
+		}
+		// check if a user name is set
+		if (isset($attributes['uid'][0])) {
+			return htmlspecialchars($attributes['uid'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($attributes);
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarSubtitle($attributes) {
+		if ($attributes == null) {
+			return null;
+		}
+		// check if a common name is set
+		if (isset($attributes['cn'][0])) {
+			return htmlspecialchars($attributes['cn'][0]);
+		}
+		// check if a display name is set
+		if (isset($attributes['displayName'][0])) {
+			return htmlspecialchars($attributes['displayName'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarSubtitle($attributes);
+	}
+
 }
 
 

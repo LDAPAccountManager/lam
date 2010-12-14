@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2009  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -91,6 +91,45 @@ class smbDomain extends baseType {
 			"sambasid" => _("Domain SID"),
 			"sambadomainname" => _("Domain name")
 			);
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return _("New domain");
+		}
+		// check if a domain name is set
+		if (isset($attributes['sambaDomainName'][0])) {
+			return htmlspecialchars($attributes['sambaDomainName'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($attributes);
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarSubtitle($attributes) {
+		if ($attributes == null) {
+			return null;
+		}
+		$subtitle = '';
+		// check if a SID can be shown
+		if (isset($attributes['sambaSID'][0])) {
+			$subtitle .= htmlspecialchars($attributes['sambaSID'][0]);
+		}
+		if ($subtitle == '') {
+			return null;
+		}
+		return $subtitle;
 	}
 
 }

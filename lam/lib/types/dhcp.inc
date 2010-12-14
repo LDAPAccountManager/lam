@@ -97,6 +97,45 @@ class dhcp extends baseType {
 			);
 	}
 
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return _("New DHCP");
+		}
+		// check if a common name is set
+		if (isset($attributes['cn'][0])) {
+			return htmlspecialchars($attributes['cn'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($attributes);
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarSubtitle($attributes) {
+		if ($attributes == null) {
+			return null;
+		}
+		$subtitle = '';
+		// check if an description can be shown
+		if (isset($attributes['dhcpComments'][0])) {
+			$subtitle .= htmlspecialchars($attributes['dhcpComments'][0]);
+		}
+		if ($subtitle == '') {
+			return null;
+		}
+		return $subtitle;
+	}
+
 }
 
 /**

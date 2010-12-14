@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009  Pozdnyak Pavel
+                2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -93,6 +94,24 @@ class asteriskExt extends baseType {
                         "astpriority" => _("Priority")
                         );
         }
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return _("New extension");
+		}
+		// check if a common name is set
+		if (isset($attributes['cn'][0])) {
+			return htmlspecialchars($attributes['cn'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($attributes);
+	}
 
 }
 

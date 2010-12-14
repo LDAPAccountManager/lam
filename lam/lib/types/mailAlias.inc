@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2009  Roland Gruber
+  Copyright (C) 2005 - 2010  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -91,6 +91,24 @@ class mailAlias extends baseType {
 			"cn" => _("Alias name"),
 			"rfc822mailmember" => _("Recipient list")
 			);
+	}
+
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @return String title text
+	 */
+	public function getTitleBarTitle($attributes) {
+		if ($attributes == null) {
+			return _("New alias");
+		}
+		// check if a common name is set
+		if (isset($attributes['cn'][0])) {
+			return htmlspecialchars($attributes['cn'][0]);
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($attributes);
 	}
 
 }
