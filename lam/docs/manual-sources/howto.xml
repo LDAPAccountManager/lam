@@ -2650,7 +2650,7 @@ Have fun!
         <para><emphasis role="bold">access to</emphasis></para>
 
         <para><emphasis role="bold">
-        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,password</emphasis></para>
+        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,userPassword,shadowLastChange</emphasis></para>
 
         <para><emphasis role="bold"> by self write</emphasis></para>
 
