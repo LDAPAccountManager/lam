@@ -492,6 +492,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 * @param array $ids array(<column_name> => <column number>)
 * @param array $failed list of accounts which were not created successfully
 * @param array $selectedModules list of selected account modules
+* @param array $accounts list of LDAP entries
 * @return array current status
 * <br> array (
 * <br>  'status' => 'finished' | 'inProgress'
@@ -500,7 +501,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 * <br>  'errors' => array (<array of parameters for StatusMessage>)
 * <br> )
 */
-function doUploadPostActions($scope, $data, $ids, $failed, $selectedModules) {
+function doUploadPostActions($scope, &$data, $ids, $failed, $selectedModules, &$accounts) {
 	// check if function is called the first time
 	if (! isset($_SESSION['mass_postActions']['remainingModules'])) {
 		// make list of remaining modules
@@ -514,7 +515,7 @@ function doUploadPostActions($scope, $data, $ids, $failed, $selectedModules) {
 	}
 	// let first module do one post action
 	$module = new $activeModule($scope);
-	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule]);
+	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts);
 	// remove active module from list if already finished
 	if ($return['status'] == 'finished') {
 		unset($_SESSION['mass_postActions']['remainingModules'][0]);

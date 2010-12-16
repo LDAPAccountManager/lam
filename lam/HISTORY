@@ -1,10 +1,11 @@
-December 2010 3.3.0
+January 2011 3.3.0
   - additional usability enhancements
   - new IMAP module ("Mailbox (imapAccess)") allows to create/delete user mailboxes
   - PDF export: higher resolution for logos
   - reduced number of LDAP queries
   - fixed bugs:
    -> ignore comment lines in shells file (3107124)
+   -> home directory creation on file upload
   
 
 28.10.2010 3.2.0

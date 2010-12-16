@@ -688,6 +688,7 @@ class quota extends baseModule {
 	* @param array $ids array(<column_name> => <column number>)
 	* @param array $failed list of accounts which were not created successfully
 	* @param array $temp variable to store temporary data between two post actions
+	* @param array $accounts list of LDAP entries
 	* @return array current status
 	* <br> array (
 	* <br>  'status' => 'finished' | 'inProgress'
@@ -695,7 +696,7 @@ class quota extends baseModule {
 	* <br>  'errors' => array (<array of parameters for StatusMessage>)
 	* <br> )
 	*/
-	function doUploadPostActions($data, $ids, $failed, &$temp) {
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
 		$errors = array();
 		// first call, get list of user names and quota values
 		if (!isset($temp['counter'])) {

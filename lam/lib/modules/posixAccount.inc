@@ -1468,6 +1468,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @param array $ids array(<column_name> => <column number>)
 	* @param array $failed list of accounts which were not created successfully
 	* @param array $temp variable to store temporary data between two post actions
+	* @param array $accounts list of LDAP entries
 	* @return array current status
 	* <br> array (
 	* <br>  'status' => 'finished' | 'inProgress'
@@ -1475,7 +1476,7 @@ class posixAccount extends baseModule implements passwordService {
 	* <br>  'errors' => array (<array of parameters for StatusMessage>)
 	* <br> )
 	*/
-	function doUploadPostActions($data, $ids, $failed, &$temp) {
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
 		if (!checkIfWriteAccessIsAllowed()) {
 			die();
 		}
@@ -1569,7 +1570,19 @@ class posixAccount extends baseModule implements passwordService {
 		// create home directories
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
-			$result = lamdaemon(implode(posixAccount::$SPLIT_DELIMITER, array($data[$pos][$ids['posixAccount_userName']], "home", "add", "0".$_SESSION['config']->get_scriptRights())),
+			$result = lamdaemon(
+				implode(
+					posixAccount::$SPLIT_DELIMITER,
+					array(
+						$data[$pos][$ids['posixAccount_userName']],
+						"home",
+						"add",
+						$accounts[$pos]['homeDirectory'],
+						"0".$_SESSION['config']->get_scriptRights(),
+						$accounts[$pos]['uidNumber'],
+						$accounts[$pos]['gidNumber'],
+					)
+				),
 				$data[$pos][$ids['posixAccount_createHomeDir']]);
 			$errors = array();
 			if (($result != false) && (sizeof($result) == 1)) {
