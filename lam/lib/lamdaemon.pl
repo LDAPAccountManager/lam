@@ -256,8 +256,8 @@ sub removeHomedir {
 			logMessage(LOG_INFO, "Home directory removed (" . $vals[3] . ")");
 		}
 		else {
-			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $vals[3].";
-			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $vals[3] . ")");
+			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $vals[4].";
+			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $vals[4] . ")");
 		}
 	}
 	else {
