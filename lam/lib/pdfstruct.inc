@@ -180,7 +180,7 @@ function getAvailableLogos() {
 	while($file = readdir($dirHandle)) {
 		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/',$file)) {
 			$infos = getimagesize($dirPath . $file);
-			if($infos[0] <= 400 && $infos[1] <= 60) {
+			if($infos[0] <= 2000 && $infos[1] <= 300) {
 				array_push($return, array('filename' => $file, 'infos' => $infos));
 			}
 		}
