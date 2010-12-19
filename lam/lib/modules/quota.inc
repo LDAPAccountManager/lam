@@ -453,6 +453,7 @@ class quota extends baseModule {
 	*/
 	function get_profileOptions() {
 		$return = new htmlTable();
+		$optionsAvailable = false;
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
@@ -482,6 +483,7 @@ class quota extends baseModule {
 			}
 			$dirs = array_values($dirs);
 			if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
+			$optionsAvailable = true;
 			$return->addElement(new htmlSubTitle($description), true);
 			$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
 			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
@@ -516,6 +518,9 @@ class quota extends baseModule {
 				$return->addElement($hiLimit);
 				$return->addNewLine();
 			}
+		}
+		if (!$optionsAvailable) {
+			return null;
 		}
 		return $return;
 	}
