@@ -60,7 +60,7 @@ echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 
 // print tools table
 $container = new htmlTable();
-$container->addElement(new htmlSubTitle(_('Tools')), true);
+$container->addElement(new htmlTitle(_('Tools')), true);
 
 for ($i = 0; $i < sizeof($tools); $i++) {
 	// check access level

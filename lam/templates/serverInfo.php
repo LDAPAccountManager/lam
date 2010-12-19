@@ -89,7 +89,7 @@ echo '<div class="userlist-bright smallPaddingContent">';
 $tabindex = 1;
 $container = new htmlTable();
 
-$container->addElement(new htmlSubTitle(_("Server information")), true);
+$container->addElement(new htmlTitle(_("Server information")), true);
 
 $container->addElement(new htmlOutputText('<b>' . _("Managed suffixes") . '</b>', false));
 $container->addElement(new htmlSpacer('20px', null));
