@@ -536,7 +536,7 @@ abstract class baseModule {
 	*/
 	public function check_profileOptions($options) {
 		$messages = array();
-		if (is_array($this->meta['profile_checks'])) {
+		if (isset($this->meta['profile_checks'])) {
 			$identifiers = array_keys($this->meta['profile_checks']);
 			for ($i = 0; $i < sizeof($identifiers); $i++) {
 				// empty input
