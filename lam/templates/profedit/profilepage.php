@@ -117,14 +117,13 @@ if (isset($_POST['save'])) {
 
 // print header
 include '../main_header.php';
-echo "<br>\n";
 
 // print error messages if any
 if (sizeof($errors) > 0) {
+	echo "<br>\n";
 	for ($i = 0; $i < sizeof($errors); $i++) {
 		call_user_func_array('StatusMessage', $errors[$i]);
 	}
-	echo "<br>\n";
 }
 	
 // empty list of attribute types
@@ -161,127 +160,93 @@ elseif (isset($_GET['edit'])) {
 // display formular
 echo ("<form action=\"profilepage.php?type=$type\" method=\"post\">\n");
 
-$tabindex = 1;
-
-// profile name and submit/abort buttons
-echo "<table width=\"100%\"><tr><td align=\"left\">";
-echo _("Profile name");
 $profName = '';
 if (isset($_GET['edit'])) {
 	$profName = $_GET['edit'];
 }
-echo ("&nbsp;<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $profName . "\">\n");
-$tabindex++;
-printHelpLink(getHelp('', '360'), '360');
-echo "</td><td align=\"right\">";
-echo "<button tabindex=\"$tabindex\" id=\"saveButton\" name=\"save\" type=\"submit\">" . _('Save') . "</button>";
-$tabindex++;
-echo "&nbsp;";
-echo "<button tabindex=\"$tabindex\" id=\"cancelButton\" name=\"abort\" type=\"submit\">" . _('Cancel') . "</button>";
-$tabindex++;
-echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
-echo "</td></tr></table>";
-echo "<br><br>\n";
 
-?>
+$tabindex = 1;
 
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#saveButton').button({
-        icons: {
-      	  primary: 'saveButton'
-    	}
-	});
-	jQuery('#cancelButton').button({
-        icons: {
-    	  primary: 'cancelButton'
-  	}
-	});
-});
-</script>
+$container = new htmlTable();
+$container->addElement(new htmlTitle(_("Profile editor")), true);
 
-<?php
-
+// general options
+$dnContent = new htmlTable();
+$dnContent->addElement(new htmlTableExtendedInputField(_("Profile name") . '*', 'profname', $profName, '360'), true);
+$dnContent->addElement(new htmlSpacer(null, '10px'), true);
 // suffix box
 // get root suffix
 $rootsuffix = $_SESSION['config']->get_Suffix($type);
 // get subsuffixes
 $suffixes = array();
 foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-	$suffixes[] = $suffix;
+	$suffixes[getAbstractDN($suffix)] = $suffix;
 }
-// get RDNs
+$selectedSuffix = array();
+if (isset($old_options['ldap_suffix'][0])) {
+	$selectedSuffix[] = $old_options['ldap_suffix'][0];
+}
+$suffixSelect = new htmlTableExtendedSelect('ldap_suffix', $suffixes, $selectedSuffix, _("LDAP suffix"), '361');
+$suffixSelect->setHasDescriptiveElements(true);
+$suffixSelect->setSortElements(false);
+$suffixSelect->setRightToLeftTextDirection(true);
+$dnContent->addElement($suffixSelect, true);
+// RDNs
 $rdns = getRDNAttributes($type);
+$selectedRDN = array();
+if (isset($old_options['ldap_rdn'][0])) {
+	$selectedRDN[] = $old_options['ldap_rdn'][0];
+}
+$dnContent->addElement(new htmlTableExtendedSelect('ldap_rdn', $rdns, $selectedRDN, _("RDN identifier"), '301'), true);
 
-echo "<fieldset class=\"" . $type . "edit\">\n";
-echo "<legend><img align=\"middle\" src=\"../../graphics/logo32.png\" alt=\"logo32.png\"> <b>" . _("LDAP") . "</b></legend>\n";
-	echo "<table border=0>";
-	echo "<tr><td>";
-	// LDAP suffix
-	echo _("LDAP suffix");
-	echo "</td><td>";
-	echo "<select class=\"rightToLeftText\" name=\"ldap_suffix\" tabindex=\"$tabindex\">";
-	$tabindex++;
-	for ($i = 0; $i < sizeof($suffixes); $i++) {
-		if (isset($old_options['ldap_suffix']) && ($old_options['ldap_suffix'][0] == $suffixes[$i])) {
-			echo "<option selected value=\"" .$suffixes[$i] . "\">" . getAbstractDN($suffixes[$i]) . "</option>\n";
-		}
-		else {
-			echo "<option value=\"" .$suffixes[$i] . "\">" . getAbstractDN($suffixes[$i]) . "</option>\n";
-		}
-	}
-	echo "</select>\n";
-	echo "</td><td>";
-	// help link
-	echo "&nbsp;";
-	printHelpLink(getHelp('', '361'), '361');
-	echo "<br>\n";
-	echo "</td></tr>";
-	// LDAP RDN
-	echo "<tr><td>";
-	echo _("RDN identifier");
-	echo "</td><td>";
-	echo "<select name=\"ldap_rdn\" tabindex=\"$tabindex\">";
-	$tabindex++;
-	for ($i = 0; $i < sizeof($rdns); $i++) {
-		if (isset($old_options['ldap_rdn']) && ($old_options['ldap_rdn'][0] == $rdns[$i])) {
-			echo "<option selected>" . $rdns[$i] . "</option>\n";
-		}
-		else {
-			echo "<option>" . $rdns[$i] . "</option>\n";
-		}
-	}
-	echo "</select>\n";
-	echo "</td><td>";
-	// help link
-	echo "&nbsp;";
-	printHelpLink(getHelp('', '301'), '301');
-	echo "<br>\n";
-	echo "</td></tr>";
-	echo "</table>";
-echo "</fieldset>\n<br>\n";
-$_SESSION['profile_types']['ldap_suffix'] = 'select';
-$_SESSION['profile_types']['ldap_rdn'] = 'select';
+$container->addElement(new htmlFieldset($dnContent, _("General settings"), '../../graphics/logo32.png'), true);
+$container->addElement(new htmlSpacer(null, '15px'), true);
+
+$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $tabindex, $type);
 
 // display module options
 $modules = array_keys($options);
 for ($m = 0; $m < sizeof($modules); $m++) {
 	// ignore modules without options
 	if (sizeof($options[$modules[$m]]) < 1) continue;
-	echo "<fieldset class=\"" . $type . "edit\">\n";
-	$icon = '';
 	$module = new $modules[$m]($type);
-	$iconImage = $module->getIcon();
-	if ($iconImage != null) {
-		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+	$icon = $module->getIcon();
+	if ($icon != null) {
+		$icon = '../../graphics/' . $icon;
 	}
-	echo "<legend>$icon<b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
-	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $type);
-	$_SESSION['profile_types'] = array_merge($profileTypes, $_SESSION['profile_types']);
-	echo "</fieldset>\n";
-	echo "<br>";
+	$container = new htmlTable();
+	$container->addElement(new htmlFieldset($options[$modules[$m]], getModuleAlias($modules[$m], $type), $icon), true);
+	$container->addElement(new htmlSpacer(null, '15px'), true);
+	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($modules[$m], $container, $old_options, false, $tabindex, $type));
 }
 
+// profile name and submit/abort buttons
+$buttonTable = new htmlTable();
+$saveButton = new htmlButton('save', _('Save'));
+$saveButton->setIconClass('saveButton');
+$buttonTable->addElement($saveButton);
+$cancelButton = new htmlButton('abort', _('Cancel'));
+$cancelButton->setIconClass('cancelButton');
+$buttonTable->addElement($cancelButton);
+$buttonTable->addElement(new htmlHiddenInput('accounttype', $type));
+
+$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $tabindex, $type));
+
+?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		var maxWidth = 0;
+		jQuery('fieldset').each(function() {
+			if (jQuery(this).width() > maxWidth) {
+				maxWidth = jQuery(this).width();
+			};
+		});
+		jQuery('fieldset').each(function() {
+			jQuery(this).css({'width': maxWidth});
+		});
+	});
+</script>
+<?php
 echo ("</form>\n");
 include '../main_footer.php';
 
