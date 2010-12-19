@@ -101,6 +101,7 @@ echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 echo "<form action=\"profilemain.php\" method=\"post\">\n";
 
 $container = new htmlTable();
+$container->addElement(new htmlTitle(_("Profile editor")), true);
 
 if (isset($_GET['savedSuccessfully'])) {
 	$message = new htmlStatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
