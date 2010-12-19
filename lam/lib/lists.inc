@@ -274,43 +274,46 @@ class lamList {
 		printf($this->labels['nav'], $count);
 		echo("</td>");
 
-		echo("<td class=\"" . $this->type . "nav-activepage\" align=\"right\">");
-		if ($this->page != 1) {
-			echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
-		}
-		if ($this->page > 10) {
-			echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
-		}
-		for ($i = $this->page - 5; $i < ($this->page + 4); $i++) {
-			if ($i >= ($count / $this->maxPageEntries)) {
-				break;
+		if ($count > $this->maxPageEntries) {
+			echo("<td class=\"" . $this->type . "nav-activepage\" align=\"right\">");
+			if ($this->page != 1) {
+				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
 			}
-			elseif ($i < 0) {
-				continue;
+			if ($this->page > 10) {
+				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 			}
-			if ($i == $this->page - 1) {
-				echo("&nbsp;" . ($i + 1));
+			for ($i = $this->page - 5; $i < ($this->page + 4); $i++) {
+				if ($i >= ($count / $this->maxPageEntries)) {
+					break;
+				}
+				elseif ($i < 0) {
+					continue;
+				}
+				if ($i == $this->page - 1) {
+					echo("&nbsp;" . ($i + 1));
+				}
+				else {
+					echo("&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n");
+				}
 			}
-			else {
-				echo("&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n");
+			if ($this->page < (($count / $this->maxPageEntries) - 10)) {
+				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 			}
+			if ($this->page < ($count / $this->maxPageEntries)) {
+				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . round(($count / $this->maxPageEntries)) .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
+			}
+			echo "</td>";
 		}
-		if ($this->page < (($count / $this->maxPageEntries) - 10)) {
-			echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
-		}
-		if ($this->page < ($count / $this->maxPageEntries)) {
-			echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . round(($count / $this->maxPageEntries)) .
-				"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-				"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
-		}
-		echo("</td></tr></table>\n");
+		echo "</tr></table>\n";
 	}
 
 	/**
