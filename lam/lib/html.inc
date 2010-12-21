@@ -1766,7 +1766,11 @@ class htmlFieldset extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo "<fieldset class=\"ui-corner-all\">\n";
+		$class = 'ui-corner-all';
+		if ($scope != null) {
+			$class .= ' ' . $scope . 'edit';
+		}
+		echo "<fieldset class=\"$class\">\n";
 		// generate legend
 		if (($this->label != null) || ($this->labelImage != null)) {
 			echo "<legend>";
@@ -1933,6 +1937,8 @@ class htmlLink extends htmlElement {
 	private $target = null;
 	/** optional image */
 	private $image = null;
+	/** title */
+	private $title = null;
 	
 	/**
 	 * Constructor.
@@ -1963,10 +1969,65 @@ class htmlLink extends htmlElement {
 		if ($this->image != null) {
 			$image = '<img src="' . $this->image . '" alt="' . $this->text . '">&nbsp;';
 		}
-		echo '<a href="' . $this->target . '">' . $image . $this->text . '</a>';
+		$title = '';
+		if ($this->title != null) {
+			$title = ' title="' . $this->title . '"';
+		}
+		echo '<a href="' . $this->target . '"' . $title . '>' . $image . $this->text . '</a>';
 		return array();
 	}
+
+	/**
+	 * Sets the link title.
+	 * 
+	 * @param String $title title
+	 */
+	public function setTitle($title) {
+		$this->title = htmlspecialchars($title);
+	}
+
+}
+
+/**
+ * Groups multiple htmlElements.
+ * This is useful if multiple elements should be included in a single table cell.
+ * The HTML code of the subelements is printed in the order they were added. No additional code is added.
+ * 
+ * @package metaHTML
+ */
+class htmlGroup extends htmlElement {
+
+	/** link text */
+	private $subelements = array();
 	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		for ($i = 0; $i < sizeof($this->subelements); $i++) {
+			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));	
+		}
+		return $return;
+	}
+
+	/**
+	 * Adds a subelement.
+	 * 
+	 * @param htmlElement $sub subelement
+	 */
+	public function addElement($sub) {
+		$this->subelements[] = $sub;
+	}
+
 }
 
 ?>
