@@ -429,8 +429,7 @@ if (isset($_SESSION['currentPageDefinitions']['filename'])) {
 }
 
 ?>
-		<br>
-		<form action="pdfpage.php" method="post">
+	<form action="pdfpage.php" method="post">
 <?php
 $sectionElements = array(_('Beginning') => 0);
 $nonTextSectionElements = array();
