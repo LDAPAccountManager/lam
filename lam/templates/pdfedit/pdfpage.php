@@ -153,15 +153,6 @@ elseif(isset($_GET['add_new_field'])) {
 	// Insert new entry before closing section tag
 	array_splice($_SESSION['currentPDFStructure'],$pos,0,array($field));
 }
-// Change section headline
-elseif(isset($_GET['change'])) {
-	$alter = explode('_',$_GET['change']);
-	$newvalue = $_GET['section_' . $alter[0]];
-	if (isset($alter[1]) && ($alter[1] == 'item') && ($newvalue[0] != '_')) {
-		$newvalue = '_' . $newvalue;
-	}
-	$_SESSION['currentPDFStructure'][$alter[0]]['attributes']['NAME'] = $newvalue;
-}
 // Remove section, static text or value entry from structure
 elseif(isset($_GET['remove'])) {
 	$start = 0;
@@ -324,6 +315,15 @@ elseif(isset($_GET['down'])) {
 	}
 }
 
+// Change section headline
+foreach ($_GET as $key => $value) {
+	if(strpos($key, 'change_') === 0) {
+		$alter = explode('_', $key);
+		$newvalue = $_GET['section_' . $alter[1]];
+		$_SESSION['currentPDFStructure'][$alter[1]]['attributes']['NAME'] = $newvalue;
+	}
+}
+
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
@@ -378,12 +378,6 @@ foreach($sortedModules as $module => $title) {
 }
 $modules = join(',',$modules);
 
-$logoFiles = getAvailableLogos();
-$logos = '<option value="none"' . (($_SESSION['currentPageDefinitions']['filename'] == 'none') ? ' selected="selected"' : '') . '>' . _('No logo') . "</option>\n";
-foreach($logoFiles as $logoFile) {
-	$logos .= "<option value=\"" . $logoFile['filename'] . "\"" .(($_SESSION['currentPageDefinitions']['filename'] == $logoFile['filename'] || (!isset($_SESSION['currentPageDefinitions']['filename']) && $logoFile['filename'] == 'printLogo.jpg')) ? ' selected="selected"' : '') . '>' . $logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")</option>\n";  
-}
-
 // print header
 include '../main_header.php';
 
@@ -395,89 +389,77 @@ if (sizeof($saveErrors) > 0) {
 	echo "<br>\n";
 }
 
+$newFieldFieldElements = array();
+foreach($sortedModules as $module => $title) {
+	$fields = $_SESSION['availablePDFFields'][$module];
+	if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
+		$moduleFields = array();
+		foreach ($fields as $field => $fieldLabel) {
+			$moduleFields[$fieldLabel] = $module . "_" . $field;
+		}
+		$newFieldFieldElements[$title] = $moduleFields;
+	}
+}
+
+// structure name
+$structureName = '';
+if (isset($_GET['edit'])) {
+	$structureName = $_GET['edit'];
+}
+elseif (isset($_GET['pdfname'])) {
+	$structureName = $_GET['pdfname'];
+}
+else if (isset($_POST['pdfname'])) {
+	$structureName = $_POST['pdfname'];
+}
+// headline
+$headline = 'LDAP Account Manager';
+if (isset($_SESSION['currentPageDefinitions']['headline'])) {
+	$headline = $_SESSION['currentPageDefinitions']['headline'];
+}
+// logo
+$logoFiles = getAvailableLogos();
+$logos = array(_('No logo') => 'none');
+foreach($logoFiles as $logoFile) {
+	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];  
+}
+$selectedLogo = array('printLogo.jpg');
+if (isset($_SESSION['currentPageDefinitions']['filename'])) {
+	$selectedLogo = array($_SESSION['currentPageDefinitions']['filename']);
+}
+
 ?>
 		<br>
 		<form action="pdfpage.php" method="post">
-			<table>
-				<tr><td>
-			<table width="100%">
-				<tr><td align="left">
-					<?php echo _("Structure name"); ?>:
-					<?php
-						$structureName = '';
-						if (isset($_GET['edit'])) {
-							$structureName = $_GET['edit'];
-						}
-						elseif (isset($_GET['pdfname'])) {
-							$structureName = $_GET['pdfname'];
-						}
-						else if (isset($_POST['pdfname'])) {
-							$structureName = $_POST['pdfname'];
-						}
-					?>
-					<input type="text" name="pdfname" value="<?php echo $structureName;?>">
-					<?php
-						printHelpLink(getHelp('', '360'), '360');
-					?>
-					</td><td align="right">
-					<button id="saveButton" name="submit"><?php echo _("Save");?></button>
-					&nbsp;
-					<button id="cancelButton" name="abort"><?php echo _("Cancel");?></button>
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#saveButton').button({
-						        icons: {
-						      	  primary: 'saveButton'
-						    	}
-							});
-							jQuery('#cancelButton').button({
-						        icons: {
-						    	  primary: 'cancelButton'
-						  	}
-							});
-						});
-					</script>
-				</td></tr>
-			</table>
-			</td></tr><tr>
-					<!-- print current structure -->
-					<td align="left" valign="top">
-						<fieldset class="<?php echo $_GET['type']; ?>edit">
-							<legend>
-								<b><?php if (isset($_GET['pdfname'])) echo $_GET['pdfname']; ?></b>
-							</legend>
-							<BR>
-							<b><?php echo _('Headline'); ?>:</b>
-							<input type="text" name="headline" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['headline'])) ? $_SESSION['currentPageDefinitions']['headline'] : 'LDAP Account Manager'); ?>">
-							&nbsp;&nbsp;&nbsp;&nbsp;
-							<b><?php echo _('Logo'); ?>:</b>
-							<select name="logoFile" size="1">
-								<?php echo $logos; ?>
-							</select>
-							<BR><HR><BR>
-							<table width="100%">
 <?php
-$sections = '<option value="0">' . _('Beginning') . "</option>\n";
-$nonTextSections = '';
-// Print every entry in the current structure
+$sectionElements = array(_('Beginning') => 0);
+$nonTextSectionElements = array();
+
+$container = new htmlTable();
+$container->addElement(new htmlTitle(_('PDF editor')), true);
+
+// main content
+$mainContent = new htmlTable();
+$structureNameInput = new htmlTableExtendedInputField(_("Structure name"), 'pdfname', $structureName, '360');
+$structureNameInput->setRequired(true);
+$mainContent->addElement($structureNameInput, true);
+$mainContent->addElement(new htmlTableExtendedInputField(_('Headline'), 'headline', $headline), true);
+$logoSelect = new htmlTableExtendedSelect('logoFile', $logos, $selectedLogo, _('Logo'));
+$logoSelect->setHasDescriptiveElements(true);
+$mainContent->addElement($logoSelect, true);
+$mainContent->addElement(new htmlSpacer(null, '30px'), true);
+// PDF structure
+// print every entry in the current structure
+$structureContent = new htmlTable();
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
-	// Create the up/down/remove links
-	$links = "<td width=18>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key .
-			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
-			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
-			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
-		"<img src=\"../../graphics/up.gif\" alt=\"" . _("Up") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td width=18>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key .
-			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
-			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
-			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
-		"<img src=\"../../graphics/down.gif\" alt=\"" . _("Down") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td width=18>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key .
-			(isset($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
-			(isset($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
-			(isset($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
-		"<img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n</td>\n" .
-		"<td width=\"100%\">&nbsp;</td>";
+	// create the up/down/remove links
+	$linkBase = 'pdfpage.php?type=' . $_GET['type'] . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0];
+	$linkUp = new htmlLink(null, $linkBase . '&up=' . $key, '../../graphics/up.gif');
+	$linkUp->setTitle(_("Up"));
+	$linkDown = new htmlLink(null, $linkBase . '&down=' . $key, '../../graphics/down.gif');
+	$linkDown->setTitle(_("Down"));
+	$linkRemove = new htmlLink(null, $linkBase . '&remove=' . $key, '../../graphics/delete.gif');
+	$linkRemove->setTitle(_("Remove"));
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
@@ -487,226 +469,133 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		else {
 			$section_headline = $name;
 		}
-		$nonTextSections .= '<option value="' . $key . '">' . $section_headline . "</option>\n";
-		$sections .= '<option value="' . ($key) . '">' . $section_headline . "</option>\n";
-		?>
-								<tr>
-									<td nowrap colspan="2">
-		<?php
+		$nonTextSectionElements[$section_headline] = $key;
+		$sectionElements[$section_headline] = $key;
+		$structureContent->addElement(new htmlSpacer(null, '15px'), true);
 		// Section headline is a value entry
 		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
-			?>
-										<select name="section_<?php echo $key;?>">
-			<?php
+			$headlineElements = array();
 			foreach($section_items_array as $item) {
-				?>
-											<option value="_<?php echo $item;?>"<?php echo ((substr($name,1) == $item) ? ' selected' : '');?>><?php echo translateFieldIDToName($item, $_GET['type']);?></option>
-				<?php
+				$headlineElements[translateFieldIDToName($item, $_GET['type'])] = '_' . $item;
 			}
-			?>
-										</select>
-										<button type="submit" name="change" value="<?php echo $key;?>_item"><?php echo _('Change');?></button> 
-			<?php
+			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, array($name));
+			$sectionHeadlineSelect->setHasDescriptiveElements(true);
+			$sectionHeadlineGroup = new htmlGroup();
+			$sectionHeadlineGroup->addElement($sectionHeadlineSelect);
+			$sectionHeadlineGroup->addElement(new htmlButton('change_' . $key, _('Change')));
+			$sectionHeadlineGroup->colspan = 2;
+			$structureContent->addElement($sectionHeadlineGroup);
 		}
 		// Section headline is a user text
 		else {
-			?>
-										<input type="text" name="section_<?php echo $key;?>" value="<?php echo $section_headline;?>">&nbsp;&nbsp;<button type="submit" name="change" value="<?php echo $key;?>"><?php echo _('Change');?></button>
-			<?php
+			$sectionHeadlineInput = new htmlInputField('section_' . $key, $section_headline);
+			$sectionHeadlineGroup = new htmlGroup();
+			$sectionHeadlineGroup->addElement($sectionHeadlineInput);
+			$sectionHeadlineGroup->addElement(new htmlButton('change_' . $key, _('Change')));
+			$sectionHeadlineGroup->colspan = 2;
+			$structureContent->addElement($sectionHeadlineGroup);
 		}
-		?>
-									</td>
-									<td width="20">&nbsp;</td>
-									<?php echo $links;?>
-								</tr>
-		<?php
-	}
-	// We have a section to end
-	elseif($entry['tag'] == "SECTION" && $entry['type'] == "close") {
-		?>
-								<tr>
-									<td colspan="7">
-										<br>
-									</td>
-								</tr>
-		<?php
+		$structureContent->addElement($linkUp);
+		$structureContent->addElement($linkDown);
+		$structureContent->addElement($linkRemove, true);
 	}
 	// We have to include a static text.
 	elseif($entry['tag'] == "TEXT") {
 		// Add current satic text for dropdown box needed for the position when inserting a new
 		// section or static text entry
-		$sections .= '<option value="' . ($key + 1) . '">' . _('Static text') . "</option>\n";
-		?>
-								<tr>
-									<td nowrap colspan="2" width="400">
-										<b><?php echo _('Static text');?></b>
-									</td>
-									<td width="20">
-									</td>
-									<?php echo $links;?>
-								</tr>
-								<tr>
-									<td colspan="7">
-										<br>
-									</td>
-								</tr>
-								<tr>
-									<td>
-									</td>
-									<td  colspan="6">
-										<?php echo $entry['value'];?>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="7">
-										<br>
-									</td>
-								</tr>
-		<?php
+		$sectionElements[_('Static text')] = $key + 1;
+		$structureContent->addElement(new htmlSpacer(null, '15px'), true);
+		$sectionHeadlineOutput = new htmlOutputText(_('Static text'));
+		$sectionHeadlineOutput->colspan = 2;
+		$structureContent->addElement($sectionHeadlineOutput);
+		$structureContent->addElement($linkUp);
+		$structureContent->addElement($linkDown);
+		$structureContent->addElement($linkRemove, true);
+		$structureContent->addElement(new htmlSpacer('10px', null));
+		$staticTextOutput = new htmlOutputText($entry['value']);
+		$structureContent->addElement($staticTextOutput, true);
 	}
 	// We have to include an entry from the account
 	elseif($entry['tag'] == "ENTRY") {
 		// Get name of current entry
 		$name = $entry['attributes']['NAME'];
-		?>
-								<tr>
-									<td width="20">
-									</td>
-									<td>
-										<?php echo translateFieldIDToName($name, $_GET['type']);?>
-									</td>
-									<td width="20">
-									</td>
-									<?php echo $links;?>
-								</tr>
-		<?php
+		$structureContent->addElement(new htmlSpacer('10px', null));
+		$fieldOutput = new htmlOutputText(translateFieldIDToName($name, $_GET['type']));
+		$structureContent->addElement($fieldOutput);
+		$structureContent->addElement($linkUp);
+		$structureContent->addElement($linkDown);
+		$structureContent->addElement($linkRemove, true);
 	}
 }
-// Print the boxes for adding new sections and static text entries
-// Print save and abort buttons
-?>
-							</table>
-						</fieldset>
-						<p>&nbsp;</p>
-					</td>
-					
-				</tr>
-				<tr>
-					<td colspan="3">
-							<fieldset class="<?php echo $_GET['type']; ?>edit">
-								<legend>
-									<b><?php echo _('New section');?></b>
-								</legend><BR>
-								<table>
-									<tr>
-										<td>
-											<fieldset class="<?php echo $_GET['type']; ?>edit">
-												<legend>
-													<b><?php echo _("Section"); ?></b>
-												</legend>
- 												<table align="left" width="100%"> 
-													<tr>
-														<td>
-															<?php echo _("Headline"); ?>: <input type="text" name="section_text">&nbsp;&nbsp;&nbsp;
-														</td>
-														<td>
-															<B><?php echo _('Position');?>: </B>
-															<select name="add_sectionText_position">
-																<?php echo $sections;?>
-															</select>
-														</td>
-														<td>
-															<input type="submit" name="add_sectionText" value="<?php echo _('Add');?>">
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<?php echo _("Headline"); ?>: 
-															<select name="section_item">
-																<?php echo $section_items;?>
-															</select>&nbsp;&nbsp;&nbsp;
-														</td>
-														<td>
-															<B><?php echo _('Position');?>: </B>
-															<select name="add_section_position">
-																<?php echo $sections;?>
-															</select>
-														</td>
-														<td>
-															<input type="submit" name="add_section" value="<?php echo _('Add');?>">
-														</td>
-													</tr>
-												</table>
-											</fieldset>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">&nbsp;</td>
-									</tr>
-									<tr>
-										<td>
-											<fieldset class="<?php echo $_GET['type']; ?>edit">
-												<legend>
-													<b><?php echo _("Text field"); ?></b>
-												</legend>
-												<table width="100%">
-													<tr>
-														<td>
-															<textarea name="text_text" rows="3" cols="40"></textarea>&nbsp;&nbsp;&nbsp;
-														</td>
-														<td>
-															<B><?php echo _('Position');?>: </B>
-															<select name="add_text_position">
-																<?php echo $sections;?>
-															</select>
-														</td>
-														<td>
-															<input type="submit" name="add_text" value="<?php echo _('Add');?>">
-														</td>
-													</tr>
-												</table>
-											</fieldset>
-										</td>
-									</tr>
-								</table>
-							</fieldset>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3">
-							<fieldset class="<?php echo $_GET['type']; ?>edit">
-								<legend>
-									<b><?php echo _('New field');?></b>
-								</legend><BR>
-								<select name="new_field">
-								<?php
-									foreach($sortedModules as $module => $title) {
-										$fields = $_SESSION['availablePDFFields'][$module];
-										if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
-											natcasesort($fields);
-											echo "<optgroup label=\"$title\">\n";
-											foreach ($fields as $field => $fieldLabel) {
-												echo "<option value=\"" . $module . "_" . $field . "\" label=\"$fieldLabel\">$fieldLabel</option>\n";
-											}
-											echo "</optgroup>\n";
-										}
-									}
-								?>
-								</select>
-								<B><?php echo _('Position');?>: </B>
-								<select name="add_field_position">
-									<?php echo $nonTextSections;?>
-								</select>
-								<input type="submit" name="add_new_field" value="<?php echo _('Add');?>">
-							</fieldset>
-					</td>
-				</tr>
-			</table>
-		<input type="hidden" name="modules" value="<?php echo $modules;?>">
-		<input type="hidden" name="type" value="<?php echo $_GET['type'];?>">
-	</form>
+$structureContent->colspan = 3;
+$mainContent->addElement($structureContent);
+$container->addElement(new htmlFieldset($mainContent), true);
+$container->addElement(new htmlSpacer(null, '15px'), true);
 
-<?php
+// new section
+$container->addElement(new htmlSubTitle(_('New section')), true);
+$newSectionContent = new htmlTable();
+// add new section with text title
+$newSectionContent->addElement(new htmlTableExtendedInputField(_("Headline"), 'section_text'));
+$newSectionPositionSelect1 = new htmlTableExtendedSelect('add_sectionText_position', $sectionElements, array(), _('Position'));
+$newSectionPositionSelect1->setHasDescriptiveElements(true);
+$newSectionPositionSelect1->setSortElements(false);
+$newSectionContent->addElement($newSectionPositionSelect1);
+$newSectionContent->addElement(new htmlButton('add_sectionText', _('Add')), true);
+// add new section with field title
+$newSectionFieldSelect = new htmlTableExtendedSelect('section_item', $newFieldFieldElements, array(), _("Headline"));
+$newSectionFieldSelect->setHasDescriptiveElements(true);
+$newSectionFieldSelect->setContainsOptgroups(true);
+$newSectionContent->addElement($newSectionFieldSelect);
+$newSectionPositionSelect2 = new htmlTableExtendedSelect('add_section_position', $sectionElements, array(), _('Position'));
+$newSectionPositionSelect2->setHasDescriptiveElements(true);
+$newSectionPositionSelect2->setSortElements(false);
+$newSectionContent->addElement($newSectionPositionSelect2);
+$newSectionContent->addElement(new htmlButton('add_section', _('Add')));
+
+$container->addElement(new htmlFieldset($newSectionContent, _("Section")), true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+$newTextFieldContent = new htmlTable();
+$newTextFieldContent->addElement(new htmlInputTextarea('text_text', '', 40, 3));
+$newTextFieldPositionSelect = new htmlTableExtendedSelect('add_text_position', $sectionElements, array(), _('Position'));
+$newTextFieldPositionSelect->setHasDescriptiveElements(true);
+$newTextFieldPositionSelect->setSortElements(false);
+$newTextFieldContent->addElement($newTextFieldPositionSelect);
+$newTextFieldContent->addElement(new htmlButton('add_text', _('Add')));
+$container->addElement(new htmlFieldset($newTextFieldContent, _("Text field")), true);
+
+// new field
+$container->addElement(new htmlSubTitle(_('New field')), true);
+$newFieldContainer = new htmlTable();
+$newFieldFieldSelect = new htmlSelect('new_field', $newFieldFieldElements);
+$newFieldFieldSelect->setHasDescriptiveElements(true);
+$newFieldFieldSelect->setContainsOptgroups(true);
+$newFieldContainer->addElement($newFieldFieldSelect);
+$newFieldContainer->addElement(new htmlSpacer('10px', null));
+$newFieldSectionSelect = new htmlTableExtendedSelect('add_field_position', $nonTextSectionElements, array(), _('Position'));
+$newFieldSectionSelect->setHasDescriptiveElements(true);
+$newFieldContainer->addElement($newFieldSectionSelect);
+$newFieldContainer->addElement(new htmlButton('add_new_field', _('Add')));
+$container->addElement(new htmlFieldset($newFieldContainer), true);
+$container->addElement(new htmlSpacer(null, '20px'), true);
+
+// buttons
+$buttonContainer = new htmlTable();
+$saveButton = new htmlButton('submit', _("Save"));
+$saveButton->setIconClass('saveButton');
+$cancelButton = new htmlButton('abort', _("Cancel"));
+$cancelButton->setIconClass('cancelButton');
+$buttonContainer->addElement($saveButton);
+$buttonContainer->addElement($cancelButton);
+$buttonContainer->addElement(new htmlHiddenInput('modules', $modules));
+$buttonContainer->addElement(new htmlHiddenInput('type', $_GET['type']));
+
+$container->addElement($buttonContainer, true);
+
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, $_GET['type']);
+
+echo '</form>';
 include '../main_footer.php';
 
 
