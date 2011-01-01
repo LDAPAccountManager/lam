@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -171,12 +171,15 @@ if (sizeof($errorsToDisplay) > 0) {
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
-echo '<div style="text-align: right;">';
-echo "<button id=\"saveButton\" name=\"saveSettings\" type=\"submit\">" . _('Save') . "</button>";
-echo "&nbsp;";
-echo "<button id=\"cancelButton\" name=\"cancelSettings\" type=\"submit\">" . _('Cancel') . "</button>";
-echo "<br><br>\n";
-echo '</div>';
+$buttonContainer = new htmlTable();
+$saveButton = new htmlButton('saveSettings', _('Save'));
+$saveButton->setIconClass('saveButton');
+$buttonContainer->addElement($saveButton);
+$cancelButton = new htmlButton('cancelSettings', _('Cancel'));
+$cancelButton->setIconClass('cancelButton');
+$buttonContainer->addElement($cancelButton, true);
+$buttonContainer->addElement(new htmlSpacer(null, '10px'));
+parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
@@ -215,255 +218,106 @@ jQuery(document).ready(function() {
 	jQuery('#generalSettingsButton').addClass('ui-tabs-selected');
 	jQuery('#generalSettingsButton').addClass('ui-state-active');
 	jQuery('#generalSettingsButton').addClass('userlist-bright');
-	jQuery('#saveButton').button({
-        icons: {
-      	  primary: 'saveButton'
-    	}
-	});
-	jQuery('#cancelButton').button({
-        icons: {
-    	  primary: 'cancelButton'
-  	}
-	});
 });
 </script>
 
 <div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
 <?php
 
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/profiles.png\" alt=\"profiles.png\"> " . _("Server settings") . "</legend><br>\n");
-echo ("<table border=0>");
-// serverURL
-echo ("<tr><td align=\"right\">" . _("Server address") . " * </td>".
-	"<td align=\"left\">".
-	"<input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
-	"</td>\n");
-echo "<td>";
-printHelpLink(getHelp('', '201'), '201');
-echo "</td></tr>\n";
-$tabindex++;
+$container = new htmlTable();
+
+$serverSettingsContent = new htmlTable();
+// server URL
+$urlInput = new htmlTableExtendedInputField(_("Server address"), 'serverurl', $conf->get_ServerURL(), '201');
+$urlInput->setRequired(true);
+$serverSettingsContent->addElement($urlInput, true);
 // use TLS
-echo "<tr><td align=\"right\">" . _("Activate TLS") . " </td>\n";
-echo "<td align=\"left\">\n";
-echo "<select tabindex=\"$tabindex\" size=1 name=\"useTLS\">";
-$useTLS = $conf->getUseTLS();
-if (isset($useTLS) && ($useTLS == 'yes')) {
-	echo "<option value=\"yes\" selected>" . _("yes") . "</option>";
-	echo "<option value=\"no\">" . _("no") . "</option>";
-}
-else {
-	echo "<option value=\"yes\">" . _("yes") . "</option>";
-	echo "<option value=\"no\" selected>" . _("no") . "</option>";
-}
-echo "</select>\n";
-echo "</td>\n";
-echo "<td>";
-printHelpLink(getHelp('', '201'), '201');
-echo "</td></tr>\n";
-$tabindex++;
-
-// new line
-echo ("<tr><td colspan=3>&nbsp;</td></tr>");
-
+$tlsOptions = array(_("yes") => 'yes', _("no") => 'no');
+$tlsSelect = new htmlTableExtendedSelect('useTLS', $tlsOptions, array($conf->getUseTLS()), _("Activate TLS"), '201');
+$tlsSelect->setHasDescriptiveElements(true);
+$serverSettingsContent->addElement($tlsSelect, true);
 // tree suffix
-echo ("<tr><td align=\"right\">".
-	_("Tree suffix") . " </td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"sufftree\" value=\"" . $conf->get_Suffix('tree') . "\"></td>\n");
-echo "<td>";
-printHelpLink(getHelp('', '203'), '203');
-echo "</td></tr>\n";
-$tabindex++;
-
-// new line
-echo ("<tr><td colspan=3>&nbsp;</td></tr>");
-
-// LDAP cache timeout
-/*echo ("<tr><td align=\"right\">".
-	_("Cache timeout") . " </td>".
-	"<td><select tabindex=\"$tabindex\" name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
-if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
-if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
-if ($conf->get_cacheTimeout() != 2) echo("<option>2</option>\n");
-if ($conf->get_cacheTimeout() != 5) echo("<option>5</option>\n");
-if ($conf->get_cacheTimeout() != 10) echo("<option>10</option>\n");
-if ($conf->get_cacheTimeout() != 15) echo("<option>15</option>\n");
-echo ("</select></td>\n");
-$tabindex++;
-echo "<td>";
-printHelpLink(getHelp('', '214'), '214');
-echo "</td></tr>\n";*/
-
+$serverSettingsContent->addElement(new htmlTableExtendedInputField(_("Tree suffix"), 'sufftree', $conf->get_Suffix('tree'), '203'), true);
 // LDAP search limit
 $searchLimitOptions = array(
-array(0, '-'), array(100, 100), array(500, 500),
-array(1000, 1000), array(5000, 5000), array(10000, 10000),
-array(50000, 50000), array(100000, 100000)
-);
-echo ("<tr><td align=\"right\">".
-	_("LDAP search limit") . " </td>".
-	"<td><select tabindex=\"$tabindex\" name=\"searchLimit\">\n");
-for ($i = 0; $i < sizeof($searchLimitOptions); $i++) {
-	$selected = "";
-	if ($searchLimitOptions[$i][0] == $conf->get_searchLimit()) {
-		$selected = "selected";
-	}
-	echo "<option value=\"" . $searchLimitOptions[$i][0] . "\" $selected>" . $searchLimitOptions[$i][1] . "</option>";
-}
-echo ("</select></td>\n");
-$tabindex++;
-echo "<td>";
-printHelpLink(getHelp('', '222'), '222');
-echo "</td></tr>\n";
-
+'-' => 0,		100 => 100,		500 => 500,
+1000 => 1000,	5000 => 5000,	10000 => 10000,
+50000 => 50000,	100000 => 100000);
+$limitSelect = new htmlTableExtendedSelect('searchLimit', $searchLimitOptions, array($conf->get_searchLimit()), _("LDAP search limit"), '222');
+$limitSelect->setHasDescriptiveElements(true);
+$serverSettingsContent->addElement($limitSelect, true);
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
-	// new line
-	echo ("<tr><td colspan=3>&nbsp;</td></tr>");
-	
-	// access level
-	echo ("<tr><td align=\"right\">".
-		_("Access level") . " </td>".
-		"<td><select tabindex=\"$tabindex\" name=\"accessLevel\">\n");
-	if ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL) {
-		echo("<option selected value=" . LAMConfig::ACCESS_ALL . ">" . _('Write access') . "</option>\n");
-	}
-	else {
-		echo("<option value=" . LAMConfig::ACCESS_ALL . ">" . _('Write access') . "</option>\n");
-	}
-	if ($conf->getAccessLevel() == LAMConfig::ACCESS_PASSWORD_CHANGE) {
-		echo("<option selected value=" . LAMConfig::ACCESS_PASSWORD_CHANGE . ">" . _('Change passwords') . "</option>\n");
-	}
-	else {
-		echo("<option value=" . LAMConfig::ACCESS_PASSWORD_CHANGE . ">" . _('Change passwords') . "</option>\n");
-	}
-	if ($conf->getAccessLevel() == LAMConfig::ACCESS_READ_ONLY) {
-		echo("<option selected value=" . LAMConfig::ACCESS_READ_ONLY . ">" . _('Read only') . "</option>\n");
-	}
-	else {
-		echo("<option value=" . LAMConfig::ACCESS_READ_ONLY . ">" . _('Read only') . "</option>\n");
-	}
-	echo ("</select></td>\n");
-	$tabindex++;
-	echo "<td>";
-	printHelpLink(getHelp('', '215'), '215');
-	echo "</td></tr>\n";
+	$accessOptions = array(
+		_('Write access') => LAMConfig::ACCESS_ALL,
+		_('Change passwords') => LAMConfig::ACCESS_PASSWORD_CHANGE,
+		_('Read only') => LAMConfig::ACCESS_READ_ONLY
+	);
+	$accessSelect = new htmlTableExtendedSelect('accessLevel', $accessOptions, array($conf->getAccessLevel()), _("Access level"), '215');
+	$accessSelect->setHasDescriptiveElements(true);
+	$serverSettingsContent->addElement($accessSelect, true);
 }
-
-echo ("</table>");
-echo ("</fieldset>");
-
-echo ("<br>");
-
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/language.png\" alt=\"language.png\"> " . _("Language settings") . "</legend><br>\n");
-echo ("<table border=0>\n");
+$serverSettings = new htmlFieldset($serverSettingsContent, _("Server settings"), '../../graphics/profiles.png');
+$container->addElement($serverSettings, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
 
 // language
-echo ("<tr>");
-echo ("<td>" . _("Default language") . "</td><td>\n");
+$languageSettingsContent = new htmlTable();
 // read available languages
 $languagefile = "../../config/language";
-if(is_file($languagefile))
-{
+if(is_file($languagefile)) {
 	$file = fopen($languagefile, "r");
-	$i = 0;
-	while(!feof($file))
-	{
+	while(!feof($file)) {
 		$line = fgets($file, 1024);
 		if($line == "\n" || $line[0] == "#" || $line == "") continue; // ignore comment and empty lines
-		$languages[$i] = chop($line);
-		$i++;
+		$line = chop($line);
+		$entry = explode(":", $line);
+		$languages[$entry[2]] = $line;
 	}
 	fclose($file);
-// generate language list
-echo ("<select tabindex=\"$tabindex\" name=\"lang\">");
-for ($i = 0; $i < sizeof($languages); $i++) {
-	$entry = explode(":", $languages[$i]);
-	if ($conf->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
-	else echo("<option selected value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
+	$languageSelect = new htmlTableExtendedSelect('lang', $languages, array($conf->get_defaultLanguage()), _("Default language"), '209');
+	$languageSelect->setHasDescriptiveElements(true);
+	$languageSettingsContent->addElement($languageSelect, true);
 }
-echo ("</select>\n");
-$tabindex++;
+else {
+	$languageSettingsContent->addElement(new htmlStatusMessage('ERROR', "Unable to load available languages. Setting English as default language."));
 }
-else
-{
-	echo _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
-}
-echo ("</td>\n");
-echo "<td>";
-printHelpLink(getHelp('', '209'), '209');
-echo "</td></tr>\n";
-
-echo ("</table>\n");
-echo ("</fieldset>\n");
-
-echo ("<br>\n");
+$languageSettings = new htmlFieldset($languageSettingsContent, _("Language settings"), '../../graphics/language.png');
+$container->addElement($languageSettings, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
 
 // lamdaemon settings
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/lamdaemon.png\" alt=\"lamdaemon.png\"> " . _("Lamdaemon settings") . "</legend><br>\n");
-echo ("<table border=0>\n");
-
-echo ("<tr><td align=\"right\">".
-	_("Server list") . " </td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptservers\" value=\"" . $conf->get_scriptServers(false) . "\"></td>\n");
-$tabindex++;
-echo "<td>";
-printHelpLink(getHelp('', '218'), '218');
-echo "</td></tr>\n";
-echo ("<tr><td align=\"right\">".
-	_("Path to external script") . " </td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
-$tabindex++;
-echo "<td>";
-printHelpLink(getHelp('', '210'), '210');
-echo "</td></tr>\n";
-echo "<tr><td align=\"right\">". _("Rights for the home directory") . " </td>\n";
-$owr = "";
-$oww = "";
-$owe = "";
-$grr = "";
-$grw = "";
-$gre = "";
-$otr = "";
-$otw = "";
-$ote = "";
+$lamdaemonSettingsContent = new htmlTable();
+$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), true);
+$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), true);
+$lamdaemonSettingsContent->addElement(new htmlSpacer(null, '5px'), true);
+$lamdaemonSettingsContent->addElement(new htmlOutputText(_("Rights for the home directory")));
 $chmod = $conf->get_scriptRights();
-if (checkChmod("read","owner", $chmod)) $owr = 'checked';
-if (checkChmod("write","owner", $chmod)) $oww = 'checked';
-if (checkChmod("execute","owner", $chmod)) $owe = 'checked';
-if (checkChmod("read","group", $chmod)) $grr = 'checked';
-if (checkChmod("write","group", $chmod)) $grw = 'checked';
-if (checkChmod("execute","group", $chmod)) $gre = 'checked';
-if (checkChmod("read","other", $chmod)) $otr = 'checked';
-if (checkChmod("write","other", $chmod)) $otw = 'checked';
-if (checkChmod("execute","other", $chmod)) $ote = 'checked';
+$rightsTable = new htmlTable();
+$rightsTable->addElement(new htmlOutputText(''));
+$rightsTable->addElement(new htmlOutputText(_("Read")));
+$rightsTable->addElement(new htmlOutputText(_("Write")));
+$rightsTable->addElement(new htmlOutputText(_("Execute")), true);
+$rightsTable->addElement(new htmlOutputText(_("Owner")));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_owr', checkChmod("read","owner", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_oww', checkChmod("write","owner", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_owe', checkChmod("execute","owner", $chmod)), true);
+$rightsTable->addElement(new htmlOutputText(_("Group")));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_grr', checkChmod("read","group", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_grw', checkChmod("write","group", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_gre', checkChmod("execute","group", $chmod)), true);
+$rightsTable->addElement(new htmlOutputText(_("Other")));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read","other", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write","other", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute","other", $chmod)), true);
+$lamdaemonSettingsContent->addElement($rightsTable);
+$lamdaemonSettingsContent->addElement(new htmlHelpLink('219'));
+$lamdaemonSettings = new htmlFieldset($lamdaemonSettingsContent, _("Lamdaemon settings"), '../../graphics/lamdaemon.png');
+$container->addElement($lamdaemonSettings, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
 
-echo "<td align=\"center\">\n";
-	echo "<table width=\"280\"><tr align=\"center\">\n";
-	echo "<td width=\"70\"></td><th width=\"70\">" . _("Read") . "</th>\n";
-	echo "<th width=\"70\">" . _("Write") . "</th>\n";
-	echo "<th width=\"70\">"._("Execute")."</th></tr>\n";
-	echo "<tr align=\"center\"><th align=\"left\">"._("Owner")."</th>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_owr\" " . $owr . "></td>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_oww\" " . $oww . "></td>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_owe\" " . $owe . "></td></tr>\n";
-	echo "<tr align=\"center\"><th align=\"left\">"._("Group")."</th>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_grr\" " . $grr . "></td>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_grw\" " . $grw . "></td>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_gre\" " . $gre . "></td></tr>\n";
-	echo "<tr align=\"center\"><th align=\"left\">"._("Other")."</th>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_otr\" " . $otr . "></td>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_otw\" " . $otw . "></td>\n";
-	echo "<td><input type=\"checkbox\" name=\"chmod_ote\" " . $ote . "></td>\n";
-	echo "</tr></table>";
-	$tabindex++;
-echo "<td>";
-printHelpLink(getHelp('', '219'), '219');
-echo "</td></tr>\n";
 
-echo ("</table>\n");
-echo ("</fieldset>\n");
-
-echo ("<br>\n");
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 // LAM Pro settings
 if (isLAMProVersion()) {

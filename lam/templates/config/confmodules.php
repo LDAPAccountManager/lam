@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -138,12 +138,15 @@ for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMe
 
 echo ("<form action=\"confmodules.php\" method=\"post\">\n");
 
-echo '<div style="text-align: right;">';
-echo "<button id=\"saveButton\" name=\"saveSettings\" type=\"submit\">" . _('Save') . "</button>";
-echo "&nbsp;";
-echo "<button id=\"cancelButton\" name=\"cancelSettings\" type=\"submit\">" . _('Cancel') . "</button>";
-echo "<br><br>\n";
-echo '</div>';
+$buttonContainer = new htmlTable();
+$saveButton = new htmlButton('saveSettings', _('Save'));
+$saveButton->setIconClass('saveButton');
+$buttonContainer->addElement($saveButton);
+$cancelButton = new htmlButton('cancelSettings', _('Cancel'));
+$cancelButton->setIconClass('cancelButton');
+$buttonContainer->addElement($cancelButton, true);
+$buttonContainer->addElement(new htmlSpacer(null, '10px'));
+parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
@@ -182,16 +185,6 @@ jQuery(document).ready(function() {
 	jQuery('#editmodules').addClass('ui-tabs-selected');
 	jQuery('#editmodules').addClass('ui-state-active');
 	jQuery('#editmodules').addClass('userlist-bright');
-	jQuery('#saveButton').button({
-        icons: {
-      	  primary: 'saveButton'
-    	}
-	});
-	jQuery('#cancelButton').button({
-        icons: {
-    	  primary: 'cancelButton'
-  	}
-	});
 	// set common width for select boxes
 	var maxWidth = 0;
 	jQuery("select").each(function(){
@@ -215,18 +208,16 @@ $container = new htmlTable();
 for ($i = 0; $i < sizeof($account_list); $i++) {
 	config_showAccountModules($account_list[$i][0], $account_list[$i][1], $container);
 }
+
+$legendContainer = new htmlTable();
+$legendContainer->addElement(new htmlSpacer(null, '10px'), true);
+$legendContainer->addElement(new htmlOutputText("(*) " . _("Base module")));
+$legendContainer->addElement(new htmlHelpLink('237'));
+$container->addElement($legendContainer);
+$container->addElement(new htmlHiddenInput('postAvailable', 'yes'));
+
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, 'user');
-
-
-echo "<p>\n";
-echo "(*) " . _("Base module");
-// help link
-echo "&nbsp;";
-printHelpLink(getHelp('', '237'), '237');
-echo "<br></p>\n";
-
-echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 
 echo ("</div></div></form>\n");
 echo "</body>\n";

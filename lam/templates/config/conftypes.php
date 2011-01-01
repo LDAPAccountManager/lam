@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -156,12 +156,15 @@ for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMe
 
 echo ("<form action=\"conftypes.php\" method=\"post\">\n");
 
-echo '<div style="text-align: right;">';
-echo "<button id=\"saveButton\" name=\"saveSettings\">" . _('Save') . "</button>";
-echo "&nbsp;";
-echo "<button id=\"cancelButton\" name=\"cancelSettings\">" . _('Cancel') . "</button>";
-echo "<br><br>\n";
-echo '</div>';
+$buttonContainer = new htmlTable();
+$saveButton = new htmlButton('saveSettings', _('Save'));
+$saveButton->setIconClass('saveButton');
+$buttonContainer->addElement($saveButton);
+$cancelButton = new htmlButton('cancelSettings', _('Cancel'));
+$cancelButton->setIconClass('cancelButton');
+$buttonContainer->addElement($cancelButton, true);
+$buttonContainer->addElement(new htmlSpacer(null, '10px'));
+parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
@@ -200,16 +203,6 @@ jQuery(document).ready(function() {
 	jQuery('#edittypes').addClass('ui-tabs-selected');
 	jQuery('#edittypes').addClass('ui-state-active');
 	jQuery('#edittypes').addClass('userlist-bright');
-	jQuery('#saveButton').button({
-        icons: {
-      	  primary: 'saveButton'
-    	}
-	});
-	jQuery('#cancelButton').button({
-        icons: {
-    	  primary: 'cancelButton'
-  	}
-	});
 });
 </script>
 
