@@ -85,7 +85,7 @@ $helpArray = array (
 					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. Please enter one DN per line.") .
 						"<br><br><b>" .
 						_("Example") .
-						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
+						": </b><br>cn=admin,dc=yourdomain,dc=org<br>cn=manager,dc=yourdomain,dc=org"),
 				"208" => array ("Headline" => _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the account list. If more entries are found the list will be split into several pages.")),
 				"209" => array ("Headline" => _("Default language"),
