@@ -735,6 +735,8 @@ class htmlSelect extends htmlElement {
 	private $width = '';
 	/** transform select boxes with one element to text */
 	private $transformSingleSelect = true;
+	/** onchange event */
+	private $onchangeEvent = null;
 	
 	/**
 	 * Constructor.
@@ -798,12 +800,16 @@ class htmlSelect extends htmlElement {
 		if ($this->width != '') {
 			$style = ' style="width: ' . $this->width . '"';
 		}
+		$onchange = '';
+		if ($this->onchangeEvent != null) {
+			$onchange = ' onchange="' . $this->onchangeEvent . '"';
+		}
 		// hide select boxes that contain less than 2 elements
 		if ((sizeof($this->elements) < 2) && $this->transformSingleSelect) {
 			echo '<div class="hidden">';
 		}
 		// print select box
-		echo '<select' . $class . $style . $name . $size . $multi . $disabled . ' tabindex="' . $tabindex . "\">\n";
+		echo '<select' . $class . $style . $name . $size . $multi . $disabled . $onchange . ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
@@ -948,6 +954,15 @@ class htmlSelect extends htmlElement {
 	 */
 	public function setTransformSingleSelect($transformSingleSelect) {
 		$this->transformSingleSelect = $transformSingleSelect;
+	}
+
+	/**
+	 * Sets the JavaScript code for the onchange event.
+	 * 
+	 * @param String $onchangeEvent onchange event code (e.g. myfunction();)
+	 */
+	public function setOnchangeEvent($onchangeEvent) {
+		$this->onchangeEvent = htmlspecialchars($onchangeEvent);
 	}
 
 }
