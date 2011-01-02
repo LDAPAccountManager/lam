@@ -213,7 +213,7 @@ $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
-	echo "<fieldset>\n";
+	echo "<fieldset class=\"ui-corner-all useredit\">\n";
 	$icon = '';
 	$module = new $modules[$i]('none');
 	$iconImage = $module->getIcon();
@@ -221,7 +221,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend><br>\n";
-	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, 'config');
+	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, 'user');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
 	echo "<br>";

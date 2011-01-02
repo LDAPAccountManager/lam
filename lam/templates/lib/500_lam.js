@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -120,14 +120,14 @@ function loginProfileChanged(element) {
 function configLoginMethodChanged() {
 	selectLoginMethod = document.getElementsByName('loginMethod')[0];
 	if ( selectLoginMethod.options[selectLoginMethod.selectedIndex].value == 'list' ) {
-		 document.getElementById('trAdminList').style.display = '';
-		 document.getElementById('trLoginSearchSuffix').style.display = 'none';
-		 document.getElementById('trLoginSearchFilter').style.display = 'none';
+		jQuery('textarea[name=admins]').parent().parent().show();
+		jQuery('input[name=loginSearchSuffix]').parent().parent().hide();
+		jQuery('input[name=loginSearchFilter]').parent().parent().hide();
 	}
 	else {
-		 document.getElementById('trAdminList').style.display = 'none';
-		 document.getElementById('trLoginSearchSuffix').style.display = '';
-		 document.getElementById('trLoginSearchFilter').style.display = '';
+		jQuery('textarea[name=admins]').parent().parent().hide();
+		jQuery('input[name=loginSearchSuffix]').parent().parent().show();
+		jQuery('input[name=loginSearchFilter]').parent().parent().show();
 	}
 }
 

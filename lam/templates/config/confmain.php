@@ -317,11 +317,8 @@ $container->addElement($lamdaemonSettings, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);
 
 
-parseHtml(null, $container, array(), false, $tabindex, 'user');
-
 // LAM Pro settings
 if (isLAMProVersion()) {
-
 	$pwdMailContent = new htmlTable();
 	
 	$pwdMailFrom = new htmlTableExtendedInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
@@ -334,80 +331,49 @@ if (isLAMProVersion()) {
 	$pwdMailContent->addElement($pwdMailBody, true);
 	
 	$pwdMailFieldset = new htmlFieldset($pwdMailContent, _("Password mail settings"), '../../graphics/mailBig.png');
-	parseHtml(null, $pwdMailFieldset, array(), true, $tabindex, 'config');
-
-	echo ("<br>\n");
+	$container->addElement($pwdMailFieldset, true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
 }
 
 // security setings
-echo ("<fieldset><legend><img align=\"middle\" src=\"../../graphics/security.png\" alt=\"security.png\"> " . _("Security settings") . "</legend><br>\n");
-echo ("<table border=0>\n");
+$securitySettingsContent = new htmlTable();
 // login method
-echo ("<tr><td align=\"right\">".
-	_("Login method") . " </td>".
-	"<td><select tabindex=\"$tabindex\" name=\"loginMethod\" onchange=\"configLoginMethodChanged()\">\n");
-if ($conf->getLoginMethod() == LAMConfig::LOGIN_LIST) {
-	echo("<option selected value=" . LAMConfig::LOGIN_LIST . ">" . _('Fixed list') . "</option>\n");
-}
-else {
-	echo("<option value=" . LAMConfig::LOGIN_LIST . ">" . _('Fixed list') . "</option>\n");
-}
-if ($conf->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
-	echo("<option selected value=" . LAMConfig::LOGIN_SEARCH . ">" . _('LDAP search') . "</option>\n");
-}
-else {
-	echo("<option value=" . LAMConfig::LOGIN_SEARCH . ">" . _('LDAP search') . "</option>\n");
-}
-echo ("</select></td>\n");
-$tabindex++;
-echo "<td>";
-printHelpLink(getHelp('', '220'), '220');
-echo "</td></tr>\n";
+$loginOptions = array(
+	_('Fixed list') => LAMConfig::LOGIN_LIST,
+	_('LDAP search') => LAMConfig::LOGIN_SEARCH
+);
+$loginSelect = new htmlTableExtendedSelect('loginMethod', $loginOptions, array($conf->getLoginMethod()), _("Login method"), '220');
+$loginSelect->setHasDescriptiveElements(true);
+$loginSelect->setOnchangeEvent('configLoginMethodChanged()');
+$securitySettingsContent->addElement($loginSelect, true);
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
-echo "<tr id=\"trAdminList\"><td align=\"right\">\n";
-echo _("List of valid users") . " * </td>".
-	"<td><textarea tabindex=\"$tabindex\" name=\"admins\" cols=75 rows=3>" . $adminText . "</textarea></td>\n";
-echo "<td>";
-printHelpLink(getHelp('', '207'), '207');
-echo "</td></tr>\n";
-$tabindex++;
-// login search suffix
-echo "<tr id=\"trLoginSearchSuffix\"><td align=\"right\">\n";
-echo _("LDAP suffix") . " * </td>".
-	"<td><input type=\"text\" tabindex=\"$tabindex\" name=\"loginSearchSuffix\" value=\"" . $conf->getLoginSearchSuffix() . "\"  size=50></td>\n";
-echo "<td>";
-printHelpLink(getHelp('', '221'), '221');
-echo "</td></tr>\n";
-$tabindex++;
+$adminTextInput = new htmlTableExtendedInputTextarea('admins', $adminText, '50', '3', _("List of valid users"), '207');
+$adminTextInput->setRequired(true);
+$securitySettingsContent->addElement($adminTextInput, true);
+// search suffix
+$searchSuffixInput = new htmlTableExtendedInputField(_("LDAP suffix"), 'loginSearchSuffix', $conf->getLoginSearchSuffix(), '221');
+$searchSuffixInput->setRequired(true);
+$securitySettingsContent->addElement($searchSuffixInput, true);
 // login search filter
-echo "<tr id=\"trLoginSearchFilter\"><td align=\"right\">\n";
-echo _("LDAP filter") . " * </td>".
-	"<td><input type=\"text\" tabindex=\"$tabindex\" name=\"loginSearchFilter\" value=\"" . $conf->getLoginSearchFilter() . "\"  size=50></td>\n";
-echo "<td>";
-printHelpLink(getHelp('', '221'), '221');
-echo "</td></tr>\n";
-$tabindex++;
-
-echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
-
+$searchFilterInput = new htmlTableExtendedInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
+$searchFilterInput->setRequired(true);
+$securitySettingsContent->addElement($searchFilterInput, true);
+$securitySettingsContent->addElement(new htmlSpacer(null, '10px'), true);
 // new password
-echo ("<tr><td align=\"right\"><font color=\"red\">".
-	_("New password") . " </font></td>".
-	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd1\"></td>\n");
-$tabindex++;
-echo "<td rowspan=2>";
-printHelpLink(getHelp('', '212'), '212');
-echo "</td></tr>\n";
-// reenter password
-echo ("<tr><td align=\"right\"><font color=\"red\">".
-	_("Reenter password") . " </font></td>".
-	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd2\"></td></tr>\n");
-$tabindex++;
-echo ("</table>\n");
-echo ("</fieldset>\n");
+$password1 = new htmlTableExtendedInputField(_("New password"), 'passwd1', null, '212');
+$password1->setIsPassword(true);
+$password2 = new htmlTableExtendedInputField(_("Reenter password"), 'passwd2');
+$password2->setIsPassword(true);
+$securitySettingsContent->addElement($password1, true);
+$securitySettingsContent->addElement($password2, true);
+$securitySettings = new htmlFieldset($securitySettingsContent, _("Security settings"), '../../graphics/security.png');
+$container->addElement($securitySettings, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
 
-echo ("<p>* = ". _("required") . "</p>");
+$container->addElement(new htmlOutputText('*=' . _("required")), true);
+
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo ("</div></div></form>\n");
 echo ("</body>\n");
