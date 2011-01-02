@@ -1515,6 +1515,22 @@ Have fun!
       </section>
 
       <section>
+        <title>Shadow</title>
+
+        <para>LAM supports the management of the LDAP substitution of
+        /etc/shadow. Here you can setup password policies for your Unix
+        accounts and also view the last password change of a user.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_shadow.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Hosts</title>
 
         <para>You can specify a list of valid host names where the user may
@@ -1566,6 +1582,23 @@ Have fun!
       </section>
 
       <section>
+        <title>Quota</title>
+
+        <para>You can manage file system quotas with LAM. This requires to
+        setup <link linkend="a_lamdaemon">lamdaemon</link>. File system quotas
+        are not stored inside LAM but managed directly on the specified
+        servers.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_quotaUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Kolab</title>
 
         <para>This module supports to manage Kolab accounts with LAM. E.g. you
@@ -1583,6 +1616,24 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_kolab.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>phpGroupWare</title>
+
+        <para>You may manage several attributes of <ulink
+        url="http://www.phpgroupware.org/">phpGroupWare</ulink> users inside
+        LAM. This includes the expiration date and account status. You may
+        also check when the user logged in the last time and from
+        where.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_phpGroupWareUser.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -1730,6 +1781,27 @@ Have fun!
           </mediaobject>
         </screenshot>
       </section>
+
+      <section id="s_account">
+        <title>Account</title>
+
+        <para>This is a very simple module to manage accounts based on the
+        object class "account". Usually, this is used for host accounts only.
+        Please pay attention that users based on the "account" object class
+        cannot have contact information (e.g. telephone number) as with
+        "inetOrgPerson".</para>
+
+        <para>You can enter a user/host name and a description for your
+        accounts.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_account.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section>
@@ -1798,10 +1870,50 @@ Have fun!
           </mediaobject>
         </screenshot>
       </section>
+
+      <section>
+        <title>phpGroupWare</title>
+
+        <para>LAM can add and remove the phpGroupWare extension for group
+        accounts. There are no additional attributes that may be
+        managed.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_phpGroupWareGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Quota</title>
+
+        <para>You can manage file system quotas with LAM. This requires to
+        setup <link linkend="a_lamdaemon">lamdaemon</link>. File system quotas
+        are not stored inside LAM but managed directly on the specified
+        servers.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_quotaGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section>
       <title>Hosts</title>
+
+      <section>
+        <title>Account</title>
+
+        <para>Please see the description <link
+        linkend="s_account">here</link>.</para>
+      </section>
 
       <section>
         <title>Device (LAM Pro)</title>
@@ -1890,6 +2002,43 @@ Have fun!
           </mediaobject>
         </screenshot>
       </section>
+    </section>
+
+    <section>
+      <title>Samba 3 domains</title>
+
+      <para>Samba 3 stores information about its domain settings inside LDAP.
+      This includes the domain name, its SID and some policies. You can manage
+      all these attributes with LAM.</para>
+
+      <para>Please activate the account type "Samba domains" in your LAM
+      server profile. Please notice that Samba by default uses the LDAP root
+      for domain objects (e.g. dc=example,dc=com).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/sambaDomains1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>This will add a new tab to LAM where you can manage domain
+      information.</para>
+
+      <para>The domain name, SID and RID base can only be specified for new
+      domains and are not changeable via LAM at a later time. You may setup
+      several password policies for your Samba domains and also some RID
+      options that influence the creation of SIDs for
+      users/groups/hosts.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/sambaDomains2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section id="a_groupOfNames">
@@ -2120,6 +2269,36 @@ Have fun!
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/alias.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Mail aliases</title>
+
+      <para>You can manage mail aliases (e.g. for NIS) inside LAM. This can be
+      used to replace local /etc/aliases files with LDAP.</para>
+
+      <para>All accounts of this type are based on the "nisMailAlias" object
+      class and may have "cn" and "rfc822MailMember" attributes. To activate
+      this type please add "Mail aliases" in your LAM server profile:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisMailAlias1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The mail aliases will appear as separate tab inside LAM. You may
+      then manage the aliases with their names and recipient addresses.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisMailAlias2.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -3664,7 +3843,7 @@ Have fun!
     </simplelist>
   </appendix>
 
-  <appendix>
+  <appendix id="a_lamdaemon">
     <title>Setup for home directory and quota management</title>
 
     <para>Lamdaemon.pl is used to modify quota and home directories on a
