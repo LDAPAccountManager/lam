@@ -22,7 +22,7 @@
     <para><ulink
     url="http://www.ldap-account-manager.org/">http://www.ldap-account-manager.org/</ulink></para>
 
-    <para>Copyright (C) 2003 - 2010</para>
+    <para>Copyright (C) 2003 - 2011</para>
 
     <simplelist>
       <member>Michael Duergner &lt;michael@duergner.com&gt;</member>
@@ -1323,6 +1323,180 @@ Have fun!
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para></para>
+
+        <table>
+          <title>LDAP attribute mappings</title>
+
+          <tgroup cols="2">
+            <thead>
+              <row>
+                <entry align="center">Attribute name</entry>
+
+                <entry align="center">Name inside LAM</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>businessCategory</entry>
+
+                <entry>Business category</entry>
+              </row>
+
+              <row>
+                <entry>carLicense</entry>
+
+                <entry>Car license</entry>
+              </row>
+
+              <row>
+                <entry>cn/commonName</entry>
+
+                <entry>Common name</entry>
+              </row>
+
+              <row>
+                <entry>departmentNumber</entry>
+
+                <entry>Department(s)</entry>
+              </row>
+
+              <row>
+                <entry>description</entry>
+
+                <entry>Description</entry>
+              </row>
+
+              <row>
+                <entry>employeeType</entry>
+
+                <entry>Employee type</entry>
+              </row>
+
+              <row>
+                <entry>facsimileTelephoneNumber/fax</entry>
+
+                <entry>Fax number</entry>
+              </row>
+
+              <row>
+                <entry>givenName/gn</entry>
+
+                <entry>First name</entry>
+              </row>
+
+              <row>
+                <entry>homePhone</entry>
+
+                <entry>Home telephone number</entry>
+              </row>
+
+              <row>
+                <entry>jpegPhoto</entry>
+
+                <entry>Photo</entry>
+              </row>
+
+              <row>
+                <entry>l</entry>
+
+                <entry>Location</entry>
+              </row>
+
+              <row>
+                <entry>mail/rfc822Mailbox</entry>
+
+                <entry>Email address</entry>
+              </row>
+
+              <row>
+                <entry>manager</entry>
+
+                <entry>Manager</entry>
+              </row>
+
+              <row>
+                <entry>mobile/mobileTelephoneNumber</entry>
+
+                <entry>Mobile number</entry>
+              </row>
+
+              <row>
+                <entry>physicalDeliveryOfficeName</entry>
+
+                <entry>Office name</entry>
+              </row>
+
+              <row>
+                <entry>postalAddress</entry>
+
+                <entry>Postal address</entry>
+              </row>
+
+              <row>
+                <entry>postalCode</entry>
+
+                <entry>Postal code</entry>
+              </row>
+
+              <row>
+                <entry>postOfficeBox</entry>
+
+                <entry>Post office box</entry>
+              </row>
+
+              <row>
+                <entry>roomNumber</entry>
+
+                <entry>Room number</entry>
+              </row>
+
+              <row>
+                <entry>sn/surname</entry>
+
+                <entry>Last name</entry>
+              </row>
+
+              <row>
+                <entry>st</entry>
+
+                <entry>State</entry>
+              </row>
+
+              <row>
+                <entry>street/streetAddress</entry>
+
+                <entry>Street</entry>
+              </row>
+
+              <row>
+                <entry>telephoneNumber</entry>
+
+                <entry>Telephone number</entry>
+              </row>
+
+              <row>
+                <entry>title</entry>
+
+                <entry>Job title</entry>
+              </row>
+
+              <row>
+                <entry>uid/userid</entry>
+
+                <entry>User name</entry>
+              </row>
+
+              <row>
+                <entry>userPassword</entry>
+
+                <entry>Password</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
       </section>
 
       <section>
