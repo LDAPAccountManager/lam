@@ -154,7 +154,7 @@ class imapAccess extends baseModule {
 		$email = $attrs['mail'][0];
 		
 		if ($email == '') {
-			$return->addElement(new htmlStatusMessage('INFO', _('Email address is not set. Please set it on tab "Personal".')));
+			$return->addElement(new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias())));
 			return $return;
 		}
 		$imap_admin_password = $this->getAdminPassword(); //Check for password for fall back mechanism
