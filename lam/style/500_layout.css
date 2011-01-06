@@ -3,7 +3,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2010  Roland Gruber
+  Copyright (C) 2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -226,7 +226,6 @@ tr.account {
 }
 
 #lamVerticalTabs .ui-widget-header { 
-/*	background: #CCCCCC;*/
 	background: #CCCCCC url(images/ui-bg_highlight-soft_75_cccccc_1x150-vertical.png) repeat-y;
 }
 
@@ -237,6 +236,10 @@ tr.account {
 }
 
 /* --- end of workaround for vertical tabs --- */
+
+.tabs-hover {
+	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+}
 
 /* title bar */
 .titleBar {

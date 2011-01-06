@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ foreach ($toSort as $key => $value) {
 			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
 		</td>
 	<td align="right" height=30>
-	<ul id="foo" class="dropmenu">
+	<ul id="dropmenu" class="dropmenu">
 		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
 		<li>
 			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?>&nbsp;&nbsp;&nbsp;</a>
@@ -136,16 +136,14 @@ foreach ($toSort as $key => $value) {
 </table>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	        $('#foo').dropmenu(
-	            {
-	            	effect  : 'slide',
-	            	nbsp    : true,
-	            	timeout : 350,
-	            	speed   : 'fast'
-	            }
-	        );
-	    });
+jQuery(document).ready(function() {
+	jQuery('#dropmenu').dropmenu({
+		effect  : 'slide',
+		nbsp    : true,
+		timeout : 350,
+		speed   : 'fast'
+	});
+});
 </script>
 
 <br>
@@ -154,7 +152,8 @@ $(document).ready(function() {
 	<?php
 		$linkList = array();
 		for ($i = 0; $i < sizeof($types); $i++) {
-			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] . '">' .
+			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] .
+				'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
 				'<img alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
 				getTypeAlias($types[$i]) . '</a>';
 			echo '<li id="tab_' . $types[$i] . '" class="ui-state-default ui-corner-top">';

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1603,7 +1603,7 @@ class accountContainer {
 			echo "<button style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\"";
 			echo " tabindex=$x";
 			if ($buttonStatus == 'disabled') echo " disabled";
-			echo ">";
+			echo ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 			if ($buttonImage != null) {
 				echo "<img class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"../../graphics/$buttonImage\">&nbsp;";
 			}
