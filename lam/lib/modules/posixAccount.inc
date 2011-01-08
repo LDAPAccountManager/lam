@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2010  Roland Gruber
+    Copyright (C) 2005 - 2011  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -1680,12 +1680,15 @@ class posixAccount extends baseModule implements passwordService {
 	function getSelfServiceOptions($fields, $attributes) {
 		$return = array();
 		if (in_array('password', $fields)) {
+			$pwdTable = new htmlTable();
 			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'posixAccount_password');
 			$pwd1->setIsPassword(true);
+			$pwdTable->addElement($pwd1, true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'posixAccount_password2');
 			$pwd2->setIsPassword(true);
+			$pwdTable->addElement($pwd2);
 			$return['password'] = new htmlTableRow(array(
-				$pwd1, $pwd2
+				$pwdTable
 			));
 		}
 		return $return;
