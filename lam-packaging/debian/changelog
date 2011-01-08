@@ -1,3 +1,9 @@
+ldap-account-manager (3.3.0.RC1-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 08 Jan 2011 19:43:01 +0100
+
 ldap-account-manager (3.2.0-1) unstable; urgency=low
 
   * new upstream release
@@ -14,7 +20,7 @@ ldap-account-manager (3.1.1-1) unstable; urgency=low
 
  -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Jul 2010 15:26:15 +0200
 
-ldap-account-manager (3.1.0-2) unstable; urgency=high
+ldap-account-manager (3.1.0-2) testing-proposed-updates; urgency=high
 
   * updated to Debian policy 3.9.1
   * Backported fix to be compatible with php-fpdf again from 3.2.0-1
