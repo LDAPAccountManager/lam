@@ -171,16 +171,6 @@ if (sizeof($errorsToDisplay) > 0) {
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
-$buttonContainer = new htmlTable();
-$saveButton = new htmlButton('saveSettings', _('Save'));
-$saveButton->setIconClass('saveButton');
-$buttonContainer->addElement($saveButton);
-$cancelButton = new htmlButton('cancelSettings', _('Cancel'));
-$cancelButton->setIconClass('cancelButton');
-$buttonContainer->addElement($cancelButton, true);
-$buttonContainer->addElement(new htmlSpacer(null, '10px'));
-parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
-
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
 	echo "<input name=\"generalSettingsButton\" type=\"submit\" value=\" \">";
@@ -197,15 +187,15 @@ echo '<li id="generalSettingsButton" class="ui-state-default ui-corner-top">';
 	echo '<a href="#" onclick="document.getElementsByName(\'generalSettingsButton\')[0].click();"><img src="../../graphics/tools.png" alt=""> ';
 	echo _('General settings') . '</a>';
 echo '</li>';
-echo '<li id="edittypes" class="ui-state-default ui-corner-top">';
+echo '<li id="edittypes" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 	echo '<a href="#" onclick="document.getElementsByName(\'edittypes\')[0].click();"><img src="../../graphics/gear.png" alt=""> ';
 	echo _('Account types') . '</a>';
 echo '</li>';
-echo '<li id="editmodules" class="ui-state-default ui-corner-top">';
+echo '<li id="editmodules" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 	echo '<a href="#" onclick="document.getElementsByName(\'editmodules\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
 	echo _('Modules') . '</a>';
 echo '</li>';
-echo '<li id="moduleSettings" class="ui-state-default ui-corner-top">';
+echo '<li id="moduleSettings" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
 	echo _('Module settings') . '</a>';
 echo '</li>';
@@ -375,9 +365,22 @@ $container->addElement(new htmlOutputText('*=' . _("required")), true);
 
 parseHtml(null, $container, array(), false, $tabindex, 'user');
 
-echo ("</div></div></form>\n");
-echo ("</body>\n");
-echo ("</html>\n");
+echo "</div></div>";
+
+$buttonContainer = new htmlTable();
+$buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
+$saveButton = new htmlButton('saveSettings', _('Save'));
+$saveButton->setIconClass('saveButton');
+$buttonContainer->addElement($saveButton);
+$cancelButton = new htmlButton('cancelSettings', _('Cancel'));
+$cancelButton->setIconClass('cancelButton');
+$buttonContainer->addElement($cancelButton, true);
+$buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
+parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
+
+echo "</form>\n";
+echo "</body>\n";
+echo "</html>\n";
 
 
 /**

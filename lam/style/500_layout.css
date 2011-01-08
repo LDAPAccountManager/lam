@@ -238,7 +238,7 @@ tr.account {
 /* --- end of workaround for vertical tabs --- */
 
 .tabs-hover {
-	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x !important;
 }
 
 /* title bar */
