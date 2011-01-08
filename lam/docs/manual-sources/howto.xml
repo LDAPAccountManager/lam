@@ -74,13 +74,35 @@
 
     <para><emphasis role="bold">Requirements:</emphasis></para>
 
-    <simplelist>
-      <member>PHP5 (&gt;= 5.2.4)</member>
+    <itemizedlist>
+      <listitem>
+        <para>PHP5 (&gt;= 5.2.4)</para>
+      </listitem>
 
-      <member>Openldap (2.0 or greater)</member>
+      <listitem>
+        <para>Openldap (2.0 or greater)</para>
+      </listitem>
 
-      <member>A web browser that supports CSS and JavaScript</member>
-    </simplelist>
+      <listitem>
+        <para>A recent web browser that supports CSS2 and JavaScript, at
+        minimum:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Firefox 3</para>
+          </listitem>
+
+          <listitem>
+            <para>Internet Explorer 8<emphasis role="bold"> (compatibility
+            mode turned off)</emphasis></para>
+          </listitem>
+
+          <listitem>
+            <para>Opera 10</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
 
     <para>The default password to edit the configuration options is
     "lam".</para>
