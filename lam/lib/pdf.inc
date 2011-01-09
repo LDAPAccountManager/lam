@@ -117,19 +117,21 @@ function createModulePDF($accounts,$pdf_structure="default") {
 			elseif($entry['tag'] == "ENTRY") {
 				// Get name of current entry
 				$name = $entry['attributes']['NAME'];
-				
-				// Get current entry
-				$value_entry = $entries[$name];
-				
-				// Print entry only when module sumitted values for it
-				if(is_array($value_entry)) {
-					// Loop over all rows of this entry (most of the time this will be just one)
-					foreach($value_entry as $line) {
-						// Substitue XML syntax with valid FPDF methods
-						$methods = processLine($line,true,$fontName);
-						// Call every method
-						foreach($methods as $method) {
-							call_user_func_array(array(&$pdf,$method[0]),$method[1]);
+				// skip non-existent entries
+				if (isset($entries[$name])) {
+					// Get current entry
+					$value_entry = $entries[$name];
+					
+					// Print entry only when module sumitted values for it
+					if(is_array($value_entry)) {
+						// Loop over all rows of this entry (most of the time this will be just one)
+						foreach($value_entry as $line) {
+							// Substitue XML syntax with valid FPDF methods
+							$methods = processLine($line,true,$fontName);
+							// Call every method
+							foreach($methods as $method) {
+								call_user_func_array(array(&$pdf,$method[0]),$method[1]);
+							}
 						}
 					}
 				}
