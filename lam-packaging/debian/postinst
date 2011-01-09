@@ -22,9 +22,7 @@ done
 cd /usr/share/ldap-account-manager/config-samples/pdf/logos
 files=`ls -a *.jpg`
 for file in $files; do
-	if [ ! -f /var/lib/ldap-account-manager/config/pdf/logos/$file ]; then
-		cp $file /var/lib/ldap-account-manager/config/pdf/logos/$file
-	fi
+	cp $file /var/lib/ldap-account-manager/config/pdf/logos/$file
 done
 cd /usr/share/ldap-account-manager/config-samples/selfService
 files=`ls -a default.*`
