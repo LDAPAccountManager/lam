@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2010  Roland Gruber
+                2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -446,7 +446,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['PDF_fields']['mobileTelephoneNumber'] = _('Mobile number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$return['PDF_fields']['facimilieTelephoneNumber'] = _('Fax number');
+			$return['PDF_fields']['facsimileTelephoneNumber'] = _('Fax number');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$return['PDF_fields']['mail'] = _('Email address');
@@ -1019,6 +1019,78 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
 		$givenName = '';
 		if (isset($this->attributes['givenName'][0])) $givenName = $this->attributes['givenName'][0];
+		$lastName = '';
+		if (isset($this->attributes['sn'][0])) {
+			$lastName = $this->attributes['sn'][0];
+		}
+		$manager = '';
+		if (isset($this->attributes['manager'][0])) {
+			$manager = $this->attributes['manager'][0];
+		}
+		$street = '';
+		if (isset($this->attributes['street'][0])) {
+			$street = $this->attributes['street'][0];
+		}
+		$postOfficeBox = '';
+		if (isset($this->attributes['postOfficeBox'][0])) {
+			$postOfficeBox = $this->attributes['postOfficeBox'][0];
+		}
+		$postalCode = '';
+		if (isset($this->attributes['postalCode'][0])) {
+			$postalCode = $this->attributes['postalCode'][0];
+		}
+		$postalAddress = '';
+		if (isset($this->attributes['postalAddress'][0])) {
+			$postalAddress = $this->attributes['postalAddress'][0];
+		}
+		$telephoneNumber = '';
+		if (isset($this->attributes['telephoneNumber'][0])) {
+			$telephoneNumber = $this->attributes['telephoneNumber'][0];
+		}
+		$homePhone = '';
+		if (isset($this->attributes['homePhone'][0])) {
+			$homePhone = $this->attributes['homePhone'][0];
+		}
+		$mobile = '';
+		if (isset($this->attributes['mobile'][0])) {
+			$mobile = $this->attributes['mobile'][0];
+		}
+		$mail = '';
+		if (isset($this->attributes['mail'][0])) {
+			$mail = $this->attributes['mail'][0];
+		}
+		$cn = '';
+		if (isset($this->attributes['cn'][0])) {
+			$cn = $this->attributes['cn'][0];
+		}
+		$roomNumber = '';
+		if (isset($this->attributes['roomNumber'][0])) {
+			$roomNumber = $this->attributes['roomNumber'][0];
+		}
+		$facsimileTelephoneNumber = '';
+		if (isset($this->attributes['facsimileTelephoneNumber'][0])) {
+			$facsimileTelephoneNumber = $this->attributes['facsimileTelephoneNumber'][0];
+		}
+		$businessCategory = '';
+		if (isset($this->attributes['businessCategory'][0])) {
+			$businessCategory = $this->attributes['businessCategory'][0];
+		}
+		$uid = '';
+		if (isset($this->attributes['uid'][0])) {
+			$uid = $this->attributes['uid'][0];
+		}
+		$carLicense = '';
+		if (isset($this->attributes['carLicense'][0])) {
+			$carLicense = $this->attributes['carLicense'][0];
+		}
+		$st = '';
+		if (isset($this->attributes['st'][0])) {
+			$st = $this->attributes['st'][0];
+		}
+		$physicalDeliveryOfficeName = '';
+		if (isset($this->attributes['physicalDeliveryOfficeName'][0])) {
+			$physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
+		}
 		$employeeType = '';
 		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
 		$l = '';
@@ -1028,26 +1100,26 @@ class inetOrgPerson extends baseModule implements passwordService {
 			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>'),
 			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $title . '</value></block>'),
 			get_class($this) . '_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $givenName . '</value></block>'),
-			get_class($this) . '_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
+			get_class($this) . '_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $lastName . '</value></block>'),
 			get_class($this) . '_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $employeeType . '</value></block>'),
-			get_class($this) . '_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $this->attributes['manager'][0] . '</value></block>'),
-			get_class($this) . '_street' => array('<block><key>' . _('Street') . '</key><value>' . $this->attributes['street'][0] . '</value></block>'),
-			get_class($this) . '_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $this->attributes['postOfficeBox'][0] . '</value></block>'),
-			get_class($this) . '_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
-			get_class($this) . '_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
-			get_class($this) . '_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
-			get_class($this) . '_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $this->attributes['homePhone'][0] . '</value></block>'),
-			get_class($this) . '_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobile'][0] . '</value></block>'),
-			get_class($this) . '_facimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
-			get_class($this) . '_mail' => array('<block><key>' . _('Email address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
-			get_class($this) . '_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
-			get_class($this) . '_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $this->attributes['roomNumber'][0] . '</value></block>'),
-			get_class($this) . '_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $this->attributes['businessCategory'][0] . '</value></block>'),
-			get_class($this) . '_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
-			get_class($this) . '_carLicense' => array('<block><key>' . _('Car license') . '</key><value>' . $this->attributes['carLicense'][0] . '</value></block>'),
+			get_class($this) . '_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $manager . '</value></block>'),
+			get_class($this) . '_street' => array('<block><key>' . _('Street') . '</key><value>' . $street . '</value></block>'),
+			get_class($this) . '_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $postOfficeBox . '</value></block>'),
+			get_class($this) . '_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $postalCode . '</value></block>'),
+			get_class($this) . '_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $postalAddress . '</value></block>'),
+			get_class($this) . '_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $telephoneNumber . '</value></block>'),
+			get_class($this) . '_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $homePhone . '</value></block>'),
+			get_class($this) . '_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $mobile . '</value></block>'),
+			get_class($this) . '_facsimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $facsimileTelephoneNumber . '</value></block>'),
+			get_class($this) . '_mail' => array('<block><key>' . _('Email address') . '</key><value>' . $mail . '</value></block>'),
+			get_class($this) . '_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $cn . '</value></block>'),
+			get_class($this) . '_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $roomNumber . '</value></block>'),
+			get_class($this) . '_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $businessCategory . '</value></block>'),
+			get_class($this) . '_uid' => array('<block><key>' . _('User name') . '</key><value>' . $uid . '</value></block>'),
+			get_class($this) . '_carLicense' => array('<block><key>' . _('Car license') . '</key><value>' . $carLicense . '</value></block>'),
 			get_class($this) . '_location' => array('<block><key>' . _('Location') . '</key><value>' . $l . '</value></block>'),
-			get_class($this) . '_state' => array('<block><key>' . _('State') . '</key><value>' . $this->attributes['st'][0] . '</value></block>'),
-			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $this->attributes['physicalDeliveryOfficeName'][0] . '</value></block>')
+			get_class($this) . '_state' => array('<block><key>' . _('State') . '</key><value>' . $st . '</value></block>'),
+			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $physicalDeliveryOfficeName . '</value></block>')
 		);
 		if (isset($this->attributes['departmentNumber'])) {
 			$return[get_class($this) . '_departmentNumber'] = array('<block><key>' . _('Department(s)') . '</key><value>' . implode(', ', $this->attributes['departmentNumber']) . '</value></block>');

@@ -251,7 +251,7 @@ class hostObject extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (sizeof($this->attributes['host']) > 0) {
+		if (isset($this->attributes['host'][0])) {
 			$return['hostObject_hosts'][0] = '<block><key>' . _('Host list') . '</key><value>' . implode(', ', $this->attributes['host']) . '</value></block>';
 		}
 		return $return;

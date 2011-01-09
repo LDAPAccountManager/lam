@@ -425,12 +425,36 @@ class shadowAccount extends baseModule implements passwordService {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . date('d. m. Y',$this->attributes['shadowLastChange'][0]*24*3600) . '</value></block>'),
-			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
-			'shadowAccount_shadowInactive' => array('<block><key>' . _('Password expiration') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'),
-			'shadowAccount_shadowMinAge' => array('<block><key>' . _('Minimum password age') . '</key><value>' . $this->attributes['shadowMin'][0] . '</value><block>'),
-			'shadowAccount_shadowMaxAge' => array('<block><key>' . _('Maximum password age') . '</key><value>' . $this->attributes['shadowMax'][0] . '</value><block>'),
+		$shadowLastChange = '';
+		if (isset($this->attributes['shadowLastChange'][0])) {
+			$shadowLastChange = date('d. m. Y',$this->attributes['shadowLastChange'][0]*24*3600);
+		}
+		$shadowWarn = '';
+		if (isset($this->attributes['shadowWarn'][0])) {
+			$shadowWarn = $this->attributes['shadowWarn'][0];
+		}
+		$shadowInactive = '';
+		if (isset($this->attributes['shadowInactive'][0])) {
+			$shadowInactive = $this->attributes['shadowInactive'][0];
+		}
+		$shadowExpire = '';
+		if (isset($this->attributes['shadowExpire'][0])) {
+			$shadowExpire = date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600);
+		}
+		$shadowMin = '';
+		if (isset($this->attributes['shadowMin'][0])) {
+			$shadowMin = $this->attributes['shadowMin'][0];
+		}
+		$shadowMax = '';
+		if (isset($this->attributes['shadowMax'][0])) {
+			$shadowMax = $this->attributes['shadowMax'][0];
+		}
+		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $shadowLastChange . '</value></block>'),
+			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $shadowWarn . '</value><block>'),
+			'shadowAccount_shadowInactive' => array('<block><key>' . _('Password expiration') . '</key><value>' . $shadowInactive . '</value></block>'),
+			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . $shadowExpire . '</value></block>'),
+			'shadowAccount_shadowMinAge' => array('<block><key>' . _('Minimum password age') . '</key><value>' . $shadowMin . '</value><block>'),
+			'shadowAccount_shadowMaxAge' => array('<block><key>' . _('Maximum password age') . '</key><value>' . $shadowMax . '</value><block>'),
 		);
 	}
 

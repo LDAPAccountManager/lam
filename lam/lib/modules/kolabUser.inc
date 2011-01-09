@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -762,23 +762,23 @@ class kolabUser extends baseModule {
 	function get_pdfEntries() {
 		$return = array();
 		// country
-		if (sizeof($this->attributes['c']) > 0) {
+		if (isset($this->attributes['c'][0])) {
 			$return['kolabUser_country'][0] = '<block><key>' . _('Country') . '</key><value>' . $this->attributes['c'][0] . '</value></block>';
 		}
 		// mail server
-		if (sizeof($this->attributes['kolabHomeServer']) > 0) {
+		if (isset($this->attributes['kolabHomeServer'][0])) {
 			$return['kolabUser_homeServer'][0] = '<block><key>' . _('Mailbox home server') . '</key><value>' . $this->attributes['kolabHomeServer'][0] . '</value></block>';
 		}
 		// mail quota
-		if (sizeof($this->attributes['cyrus-userquota']) > 0) {
+		if (isset($this->attributes['cyrus-userquota'][0])) {
 			$return['kolabUser_quota'][0] = '<block><key>' . _('Mail quota') . '</key><value>' . $this->attributes['cyrus-userquota'][0] . '</value></block>';
 		}
 		// free/busy
-		if (sizeof($this->attributes['kolabFreeBusyFuture']) > 0) {
+		if (isset($this->attributes['kolabFreeBusyFuture'][0])) {
 			$return['kolabUser_freeBusy'][0] = '<block><key>' . _('Free/Busy interval') . '</key><value>' . $this->attributes['kolabFreeBusyFuture'][0] . '</value></block>';
 		}
 		// invitation policies
-		if (sizeof($this->attributes['kolabInvitationPolicy']) > 0) {
+		if (isset($this->attributes['kolabInvitationPolicy'][0])) {
 			// find default policy
 			$default = "";
 			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
@@ -796,11 +796,11 @@ class kolabUser extends baseModule {
 			}
 		}
 		// email aliases
-		if (sizeof($this->attributes['alias']) > 0) {
+		if (isset($this->attributes['alias'][0])) {
 			$return['kolabUser_aliases'][0] = '<block><key>' . _('Email aliases') . '</key><value>' . implode(", ", $this->attributes['alias']) . '</value></block>';
 		}
 		// delegates
-		if (sizeof($this->attributes['kolabDelegate']) > 0) {
+		if (isset($this->attributes['kolabDelegate'][0])) {
 			$return['kolabUser_delegate'][0] = '<block><key>' . _('Delegates') . '</key><value>' . implode(", ", $this->attributes['kolabDelegate']) . '</value></block>';
 		}
 		return $return;

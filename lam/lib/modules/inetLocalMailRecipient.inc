@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -299,7 +299,7 @@ class inetLocalMailRecipient extends baseModule {
 		if (isset($this->attributes['mailRoutingAddress'][0])) {
 			$return['inetLocalMailRecipient_routingAdr'][0] = '<block><key>' . _('Routing address') . '</key><value>' . $this->attributes['mailRoutingAddress'][0] . '</value></block>';
 		}
-		if (sizeof($this->attributes['mailLocalAddress']) > 0) {
+		if (isset($this->attributes['mailLocalAddress'][0])) {
 			$return['inetLocalMailRecipient_localAdr'][0] = '<block><key>' . _('Local address list') . '</key><value>' . implode(', ', $this->attributes['mailLocalAddress']) . '</value></block>';
 		}
 		if (isset($this->attributes['mailHost'][0])) {
