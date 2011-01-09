@@ -6,8 +6,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 	. /usr/share/debconf/confmodule
 	db_version 2.0 || [ $? -lt 30 ]
 
-  rm -f /usr/share/ldap-account-manager/templates/lib/jquery-1*.js;
-  rm -f /usr/share/ldap-account-manager/templates/lib/jquery-ui-1*.js;
+  rm -f /usr/share/ldap-account-manager/templates/lib/jquery-*.js;
   rm -f /usr/share/ldap-account-manager/lib/fpdf.php
   rm -f /usr/share/ldap-account-manager/sess
   rm -f /usr/share/ldap-account-manager/tmp
