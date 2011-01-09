@@ -656,7 +656,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
 			$errors[] = $errorMessage;
 		}
-		if ($this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0]) {
+		if (isset($this->orig['uidNumber'][0]) && $this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0]) {
 			$errorMessage = $this->messages['uidNumber'][5];
 			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
 			$errors[] = $errorMessage;
@@ -716,7 +716,7 @@ class posixAccount extends baseModule implements passwordService {
 		$uids = $this->getUIDs();
 		if ($this->attributes['uidNumber'][0]=='') {
 			// No id-number given
-			if ($this->orig['uidNumber'][0]=='') {
+			if (!isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] == '')) {
 				// new account -> we have to find a free id-number
 				$newUID = $this->getNextUIDs(1, $errors);
 				if (is_array($newUID)) {
@@ -981,7 +981,11 @@ class posixAccount extends baseModule implements passwordService {
 				$return->addElement($homeServerContainer);
 				$return->addElement(new htmlHelpLink('createhomedir'), true);
 			}
-			$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, array($this->attributes['loginShell'][0]), _('Login shell'), 'loginShell'), true);
+			$selectedShell = array();
+			if (isset($this->attributes['loginShell'][0])) {
+				$selectedShell = array($this->attributes['loginShell'][0]);
+			}
+			$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
 		}
 		// password buttons
 		if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
