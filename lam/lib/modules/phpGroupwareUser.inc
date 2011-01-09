@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2008 - 2010  Roland Gruber
+  Copyright (C) 2008 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -360,7 +360,7 @@ class phpGroupwareUser extends baseModule implements passwordService {
 	function load_profile($profile) {
 		parent::load_profile($profile);
 		// add extension
-		if ($profile['phpGroupwareUser_addExt'][0] == "true") {
+		if (isset($profile['phpGroupwareUser_addExt'][0]) && ($profile['phpGroupwareUser_addExt'][0] == "true")) {
 			if (!in_array('phpgwAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'phpgwAccount';
 			}

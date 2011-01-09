@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2010  Roland Gruber
+  Copyright (C) 2007 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -527,7 +527,7 @@ class shadowAccount extends baseModule implements passwordService {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if ($profile['shadowAccount_addExt'][0] == "true") {
+		if (isset($profile['shadowAccount_addExt'][0]) && ($profile['shadowAccount_addExt'][0] == "true")) {
 			if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'shadowAccount';
 			}

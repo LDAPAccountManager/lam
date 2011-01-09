@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010  Roland Gruber
+  Copyright (C) 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ class hostObject extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if ($profile['hostObject_addExt'][0] == "true") {
+		if (isset($profile['hostObject_addExt'][0]) && ($profile['hostObject_addExt'][0] == "true")) {
 			if (!in_array('hostObject', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'hostObject';
 			}
