@@ -1926,14 +1926,14 @@ class accountContainer {
 		// pre modify actions
 		$currentAccountAttributes = array();
 		if (isset($attributes[$this->finalDN]) && is_array($attributes[$this->finalDN])) {
+			if (isset($attributes[$this->finalDN]['notchanged'])) {
+				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['notchanged']);
+			}
 			if (isset($attributes[$this->finalDN]['modify'])) {
 				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['modify']);
 			}
 			if (isset($attributes[$this->finalDN]['add'])) {
 				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['add']);
-			}
-			if (isset($attributes[$this->finalDN]['notchanged'])) {
-				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['notchanged']);
 			}
 		}
 		$currentAccountAttributes['dn'][0] = $this->finalDN;
