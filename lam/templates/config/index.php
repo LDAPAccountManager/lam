@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ echo $_SESSION['header'];
 			</tr>
 		</table>
 		<br><br>
-		<fieldset>
+		<fieldset class="ui-corner-all">
 			<legend><b> <?php echo _("LAM configuration"); ?> </b></legend>
 		<TABLE border="0">
 		<?php

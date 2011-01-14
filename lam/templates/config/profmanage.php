@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -191,7 +191,7 @@ if (!isset($cfg->default)) {
 		<form action="profmanage.php" method="post">
 		<table>
 		<tr><td>
-		<fieldset>
+		<fieldset class="ui-corner-all">
 			<legend><b> <?php echo _("Profile management"); ?> </b></legend>
 			<br>
 			<table cellspacing=0 border=0>
