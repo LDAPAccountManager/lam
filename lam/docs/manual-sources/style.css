@@ -91,8 +91,6 @@ div.nogrid table {
  border-collapse:collapse;
 }
 
-table { border-color:#253aa3; border-style:solid; }
-
 div.noborder table { 
  border-width:0px;
  border-collapse:collapse;
