@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -632,7 +632,7 @@ class lamList {
 		}
 		else {
 			$radioOptions = array(
-				base64_decode($id) => 'DN',
+				getAbstractDN(base64_decode($id)) => 'DN',
 				sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) => 'SELECTED',
 				sprintf(_('All accounts (%s)'), sizeof($this->entries)) => 'ALL'
 			);
