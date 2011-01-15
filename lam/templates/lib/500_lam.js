@@ -58,7 +58,7 @@ function listResizeITabContentDiv() {
 	var myDiv = document.getElementById("listTabContentArea");
     var height = document.documentElement.clientHeight;
     height -= myDiv.offsetTop;
-    height -= 90
+    height -= 105
     myDiv.style.height = height +"px";
 
     var myDivScroll = document.getElementById("listScrollArea");
