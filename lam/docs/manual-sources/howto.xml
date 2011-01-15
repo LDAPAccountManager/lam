@@ -2152,68 +2152,117 @@ Have fun!
       all settings for these types including resource and quota
       settings.</para>
 
-      <para>To enable Zarafa support in LAM Pro please activate the Zarafa
-      modules for the Users, Groups and Hosts account types in you server
-      profile:</para>
+      <section>
+        <title>Configuration</title>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/zarafa1.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <para>To enable Zarafa support in LAM Pro please activate the Zarafa
+        modules for the Users, Groups and Hosts account types in you server
+        profile:</para>
 
-      <para>You can configure which parts of the Zarafa user options should be
-      enabled. E.g. if you do not want to manage quotas per user then you can
-      hide these options on the tab "Module settings".</para>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/zarafa1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/zarafa2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <para>You can configure which parts of the Zarafa user options should
+        be enabled. E.g. if you do not want to manage quotas per user then you
+        can hide these options on the tab "Module settings".</para>
 
-      <para>This is an example of the user edit page with all possible
-      settings. This includes email settings, quotas and some options (e.g.
-      hide from address book). You can also set the resource type and capacity
-      for meeting rooms and equipment. The Zarafa extension can be added and
-      removed at any time for every user.</para>
+        <literallayout>
+</literallayout>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/zarafa3.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <para><emphasis role="bold">"Send as" attribute:</emphasis> Here you
+        can specify how "Send as" privileges should be managed. LAM supports
+        "uid" and "dn".</para>
 
-      <para>This is the edit page for groups. You can enter an email address
-      and additional aliases for your groups. It is also possible to specify
-      options (e.g. hide from address book). The extension can be
-      added/removed dynamically.</para>
+        <para>If you select "uid" the LAM will store user names in the
+        zarafaSendAsPrivilege attribute. This way you are restricted to
+        specify user accounts as "Send as" allowed.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/zarafa4.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <para>You can also set this option to "dn" and LAM will store DNs in
+        the zarafaSendAsPrivilege attribute. In this case you may specify
+        users and groups as "Send as" allowed.</para>
 
-      <para>The Zarafa extension for host accounts allows to set the
-      connection ports and file path. You can add/remove the extension at any
-      time.</para>
+        <literallayout>
+</literallayout>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/zarafa5.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <para>Examples for your Zarafa ldap.cfg:</para>
+
+        <para>"Send as" attribute: <emphasis role="bold">dn</emphasis></para>
+
+        <para>ldap_user_sendas_attribute_type = dn</para>
+
+        <literallayout>
+</literallayout>
+
+        <para>"Send as" attribute: <emphasis role="bold">uid</emphasis></para>
+
+        <para>ldap_user_sendas_attribute_type = text</para>
+
+        <para>ldap_user_sendas_relation_attribute = uid</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/zarafa2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <section>
+          <title>Users</title>
+
+          <para>This is an example of the user edit page with all possible
+          settings. This includes email settings, quotas and some options
+          (e.g. hide from address book). You can also set the resource type
+          and capacity for meeting rooms and equipment. The Zarafa extension
+          can be added and removed at any time for every user.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/zarafa3.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Groups</title>
+
+          <para>This is the edit page for groups. You can enter an email
+          address and additional aliases for your groups. It is also possible
+          to specify options (e.g. hide from address book). The extension can
+          be added/removed dynamically.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/zarafa4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Servers</title>
+
+          <para>The Zarafa extension for host accounts allows to set the
+          connection ports and file path. You can add/remove the extension at
+          any time.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/zarafa5.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+      </section>
     </section>
 
     <section>
