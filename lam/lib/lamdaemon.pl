@@ -80,14 +80,14 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 	Quota::endmntent();
 	my $j=0; my $k=0; $i=0;
 	while ($args[$i][0]) {
-		if ( $args[$i][3] =~ m/usrquota/ ) {
+		if ( $args[$i][3] =~ m/usr[j]?quota/ ) {
 			$quota_usr[$j][0] = $args[$i][0];
 			$quota_usr[$j][1] = $args[$i][1];
 			$quota_usr[$j][2] = $args[$i][2];
 			$quota_usr[$j][3] = $args[$i][3];
 			$j++;
 			}
-		if ( $args[$i][3] =~ m/grpquota/ ) {
+		if ( $args[$i][3] =~ m/grp[j]?quota/ ) {
 			$quota_grp[$k][0] = $args[$i][0];
 			$quota_grp[$k][1] = $args[$i][1];
 			$quota_grp[$k][2] = $args[$i][2];
@@ -349,7 +349,9 @@ sub getQuotas {
 	while ($quota_usr[$i][0]) {
 		if ($vals[0]ne'+') {
 			$dev = Quota::getqcarg($quota_usr[$i][1]);
+			logMessage(LOG_ERR, "QDEV: " . $dev);
 			@temp = Quota::query($dev,$user[2],$group);
+			logMessage(LOG_ERR, "QUOTA_ENTRY $user[2] $group $dev $quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]");
 			if ($temp[0]ne'') {
 				if ($temp == -1) {
 						$return = "ERROR,Lamdaemon ($hostname),Unable to read quota!";
@@ -359,9 +361,9 @@ sub getQuotas {
 					$return = "QUOTA_ENTRY $quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 					}
 				}
-			else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+			else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; logMessage(LOG_ERR, "Unable1 to read quota for $user[0].");}
 			}
-		else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+		else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; logMessage(LOG_ERR, "Unable2 to read quota for $user[0].");}
 		$i++;
 		}
 	($<, $>) = ($>, $<); # Give up root previleges

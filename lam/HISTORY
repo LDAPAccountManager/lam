@@ -4,6 +4,7 @@
   - LAM Pro: enhanced Zarafa to support users and groups for "Send as" (new configuration option)
   - PDF export: higher resolution for logos
   - reduced number of LDAP queries
+  - lamdaemon: support journaled quotas
   - fixed bugs:
    -> ignore comment lines in shells file (3107124)
    -> home directory creation on file upload
