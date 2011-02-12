@@ -4,7 +4,7 @@
 #
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2010  Roland Gruber
+#  Copyright (C) 2006 - 2011  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -349,9 +349,7 @@ sub getQuotas {
 	while ($quota_usr[$i][0]) {
 		if ($vals[0]ne'+') {
 			$dev = Quota::getqcarg($quota_usr[$i][1]);
-			logMessage(LOG_ERR, "QDEV: " . $dev);
 			@temp = Quota::query($dev,$user[2],$group);
-			logMessage(LOG_ERR, "QUOTA_ENTRY $user[2] $group $dev $quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]");
 			if ($temp[0]ne'') {
 				if ($temp == -1) {
 						$return = "ERROR,Lamdaemon ($hostname),Unable to read quota!";
@@ -361,9 +359,9 @@ sub getQuotas {
 					$return = "QUOTA_ENTRY $quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 					}
 				}
-			else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; logMessage(LOG_ERR, "Unable1 to read quota for $user[0].");}
+			else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 			}
-		else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; logMessage(LOG_ERR, "Unable2 to read quota for $user[0].");}
+		else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 		$i++;
 		}
 	($<, $>) = ($>, $<); # Give up root previleges
