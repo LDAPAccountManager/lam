@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -146,6 +146,8 @@ class nisMailAlias extends baseModule {
 		// list current recipients
 		$recipientCount = 0;
 		if (isset($this->attributes['rfc822MailMember'])) {
+			natcasesort($this->attributes['rfc822MailMember']);
+			$this->attributes['rfc822MailMember'] = array_values($this->attributes['rfc822MailMember']);
 			$recipientCount = sizeof($this->attributes['rfc822MailMember']);
 			for ($i = 0; $i < sizeof($this->attributes['rfc822MailMember']); $i++) {
 				$return->addElement(new htmlOutputText(_('Recipient')));
