@@ -22,15 +22,7 @@
     <para><ulink
     url="http://www.ldap-account-manager.org/">http://www.ldap-account-manager.org/</ulink></para>
 
-    <para>Copyright (C) 2003 - 2011</para>
-
-    <simplelist>
-      <member>Michael Duergner &lt;michael@duergner.com&gt;</member>
-
-      <member>Roland Gruber &lt;post@rolandgruber.de&gt;</member>
-
-      <member>Tilo Lutz &lt;tilolutz@gmx.de&gt;</member>
-    </simplelist>
+    <para>Copyright (C) 2003 - 2011 Roland Gruber &lt;post@rolandgruber.de&gt;</para>
 
     <para><emphasis role="bold">Key features:</emphasis></para>
 
