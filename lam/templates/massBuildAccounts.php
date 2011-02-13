@@ -84,7 +84,7 @@ if (isset($_GET['showldif'])) {
 }
 
 include 'main_header.php';
-echo '<div class="userlist-bright smallPaddingContent">';
+echo '<div class="' . $_POST['scope'] . 'list-bright smallPaddingContent">';
 
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {

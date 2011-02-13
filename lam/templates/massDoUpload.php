@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 setlanguage();
 
 include 'main_header.php';
-echo '<div class="userlist-bright smallPaddingContent">';
+echo '<div class="' . $_SESSION['mass_scope'] . 'list-bright smallPaddingContent">';
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
