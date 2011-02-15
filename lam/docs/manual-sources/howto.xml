@@ -22,7 +22,8 @@
     <para><ulink
     url="http://www.ldap-account-manager.org/">http://www.ldap-account-manager.org/</ulink></para>
 
-    <para>Copyright (C) 2003 - 2011 Roland Gruber &lt;post@rolandgruber.de&gt;</para>
+    <para>Copyright (C) 2003 - 2011 Roland Gruber
+    &lt;post@rolandgruber.de&gt;</para>
 
     <para><emphasis role="bold">Key features:</emphasis></para>
 
@@ -2406,6 +2407,50 @@ Have fun!
       </screenshot>
     </section>
 
+    <section>
+      <title>Automount objects (LAM Pro)</title>
+
+      <para>LAM Pro allows you to manage automount entries. Please activate
+      the account type "Automount objects" in your LAM Pro server
+      profile:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/automount1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>This will add a new tab to LAM Pro's main screen which includes a
+      list of all automount entries. Here you can easily create new
+      entries.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/automount2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Please see the following external HowTos for more information on
+      automounting and LDAP:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><ulink
+          url="https://help.ubuntu.com/community/AutofsLDAP">AutofsLDAP</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink type=""
+          url="http://www.pro-linux.de/artikel/2/760/automount-ueber-ldap.html">Automount
+          über LDAP (German)</ulink></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
     <section id="a_ppolicy">
       <title>Password policies (LAM Pro)</title>
 
@@ -3633,6 +3678,24 @@ Have fun!
             <entry>nis.schema</entry>
 
             <entry>Part of OpenLDAP installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_nisObject.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Automount objects</entry>
+
+            <entry>automount</entry>
+
+            <entry>autofs.schema</entry>
+
+            <entry>Autofs LDAP</entry>
 
             <entry>This account type is only available in LAM Pro.</entry>
           </row>
