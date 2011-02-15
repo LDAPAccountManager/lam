@@ -275,6 +275,13 @@ Have fun!
                       </listitem>
 
                       <listitem>
+                        <para>Install php-fpdf 1.6.dfsg-1 from here:</para>
+
+                        <para><ulink
+                        url="http://packages.debian.org/stable/all/php-fpdf/download">http://packages.debian.org/stable/all/php-fpdf/download</ulink></para>
+                      </listitem>
+
+                      <listitem>
                         <para>Install the LAM package</para>
 
                         <para>dpkg -i ldap-account-manager_*.deb</para>
