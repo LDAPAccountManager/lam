@@ -1,3 +1,10 @@
+April 2011 3.4.0
+  - Mail aliases: sort receipients (RFE 3170336)
+  - LAM Pro:
+   -> support automount entries
+   -> Zarafa groups: allow combination with group of names
+
+
 12.02.2011 3.3.0
   - additional usability enhancements
   - new IMAP module ("Mailbox (imapAccess)") allows to create/delete user mailboxes
