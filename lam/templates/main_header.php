@@ -133,7 +133,14 @@ foreach ($toSort as $key => $value) {
 		if ($_SESSION['config']->get_Suffix('tree') != "") {
 		?>
 	    <li>
-			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
+			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img alt="tree" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
+		</li>
+		<?php
+		}
+		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
+		?>
+	    <li>
+			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?></a>
 		</li>
 		<?php
 		}
