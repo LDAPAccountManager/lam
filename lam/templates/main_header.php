@@ -106,13 +106,13 @@ foreach ($toSort as $key => $value) {
 		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
 		?>
 	    <li>
-			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;</a>
+			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 		</li>
 		<?php
 		}
 		?>
 		<li>
-			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
 				<ul>
 				<?php
 					for ($i = 0; $i < sizeof($tools); $i++) {
