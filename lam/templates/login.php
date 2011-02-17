@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2010  Roland Gruber
+                2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -410,11 +410,11 @@ function display_LoginPage($config_object) {
 					<SMALL>
 					<?php
 						if (isLAMProVersion()) {
-							echo "LDAP Account Manager <b>Pro</b>: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+							echo "LDAP Account Manager Pro - " . LAMVersion() . "&nbsp;&nbsp;&nbsp;";
 							logNewMessage(LOG_DEBUG, "LAM Pro " . LAMVersion());
 						}
 						else {
-							echo "LDAP Account Manager: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+							echo "LDAP Account Manager - " . LAMVersion() . "&nbsp;&nbsp;&nbsp;";
 							logNewMessage(LOG_DEBUG, "LAM " . LAMVersion());
 						}
 					?>

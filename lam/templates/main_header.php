@@ -89,7 +89,15 @@ foreach ($toSort as $key => $value) {
 <table border=0 width="100%" class="lamHeader ui-corner-all">
 	<tr>
 		<td align="left" height="30">
-			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
+			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">
+				&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager
+				<?php
+				if (isLAMProVersion()) {
+					echo " Pro";
+				}
+				echo " - " . LAMVersion();
+				?>
+			</a>
 		</td>
 	<td align="right" height=30>
 	<ul id="dropmenu" class="dropmenu">
