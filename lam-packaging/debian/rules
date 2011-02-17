@@ -45,6 +45,7 @@ install:
 	cp -r templates debian/ldap-account-manager/usr/share/ldap-account-manager/
 	rm debian/ldap-account-manager/usr/share/ldap-account-manager/templates/lib/jquery-1*
 	rm debian/ldap-account-manager/usr/share/ldap-account-manager/templates/lib/jquery-ui-1*
+	dh_link /usr/share/doc/ldap-account-manager/docs debian/ldap-account-manager/usr/share/ldap-account-manager/docs
 
 	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager-lamdaemon/usr/share/ldap-account-manager/lib/lamdaemon.pl
 	install -D --mode=755 debian/README-lamdaemon.Debian debian/ldap-account-manager-lamdaemon/usr/share/doc/ldap-account-manager-lamdaemon/README.Debian
