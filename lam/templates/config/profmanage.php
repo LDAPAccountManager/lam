@@ -129,12 +129,16 @@ if (isset($_POST['submit'])) {
 	}
 	// rename profile
 	elseif ($_POST['action'] == "rename") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['renfilename']) && !in_array($_POST['renfilename'], getConfigProfiles())) {
-			if (rename("../../config/" . $_POST['oldfilename'] . ".conf",
-				"../../config/" . $_POST['renfilename'] . ".conf")) {
+		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['oldfilename']) && preg_match("/^[a-z0-9_-]+$/i", $_POST['renfilename']) && !in_array($_POST['renfilename'], getConfigProfiles())) {
+			if (rename("../../config/" . $_POST['oldfilename'] . ".conf", "../../config/" . $_POST['renfilename'] . ".conf")) {
 				$msg = _("Renamed profile.");
 			}
 			else $error = _("Could not rename file!");
+			// update default profile setting if needed
+			if ($cfg->default == $_POST['oldfilename']) {
+				$cfg->default = $_POST['renfilename'];
+				$cfg->save();
+			}
 		}
 		else $error = _("Profile name is invalid!");
 	}

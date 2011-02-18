@@ -68,7 +68,7 @@ if(isset($_GET['useProfile'])) {
 $default_Config = new LAMCfgMain();
 $_SESSION["cfgMain"] = $default_Config;
 $default_Profile = $default_Config->default;
-if(isset($_COOKIE["lam_default_profile"])) {
+if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], getConfigProfiles())) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
 }
 // Reload loginpage after a profile change
