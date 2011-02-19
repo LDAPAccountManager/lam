@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010  Pavel Pozdniak
-                2010  Roland Gruber
+  Copyright (C) 2010 - 2011  Pavel Pozdniak
+                2010 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ $Id$
  *
  * @package modules
  * @author Pavel Pozdniak
+ * @author Roland Gruber
  */
 class imapAccess extends baseModule {
 	
@@ -86,6 +87,9 @@ class imapAccess extends baseModule {
 			'ImapMailDomain' => array(
 				"Headline" => _("Mail domain(s)"),
 				"Text" => _("Please enter a comma separated list of domain names (e.g. \"company.com,example.com\"). LAM will only manage mailboxes from these domains.")),
+			'ImapUserNameAttr' => array(
+				"Headline" => _("User name attribute"),
+				"Text" => _("Please choose the attribute to get the IMAP user name. The default is mail but you can also use uid.")),
 			'MailAddress' => array(
 				"Headline" => _("Mailbox"),
 				"Text" => _("This mailbox will be created/deleted."))
@@ -109,6 +113,8 @@ class imapAccess extends baseModule {
 		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domain(s)'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
 		$mailDomainsInput->setRequired(true);
 		$configContainer->addElement($mailDomainsInput, true);
+		$configUserName =  new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array(_('mail') => 'mail', _('uid') => 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
+		$configContainer->addElement($configUserName);
 		$return['config_options']['all'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
@@ -119,7 +125,7 @@ class imapAccess extends baseModule {
 			'error_message' => $this->messages['config'][0]);
 		$return['config_checks']['all']['ImapAccess_ImapDomain'] = array (
 			'type' => 'regex_i',
-			'regex' => '[a-z0-9\\._-]+(,[a-z0-9\\._-]+)*',
+			'regex' => '[\\*a-z0-9\\._-]+(,[a-z0-9\\._-]+)*',
 			'required' => true,
 			'required_message' => $this->messages['config'][1],
 			'error_message' => $this->messages['config'][1]);
@@ -138,6 +144,7 @@ class imapAccess extends baseModule {
 		$this->messages['managemailbox'][3] = array('ERROR', _('Unable to locate mailbox on IMAP.'));
 		$this->messages['managemailbox'][4] = array('ERROR', _('Your IMAP domain(s) and email address domain do not match.'));
 		$this->messages['managemailbox'][5] = array('ERROR', _('Invalid password for IMAP admin or other problem occured.'));
+		$this->messages['managemailbox'][6] = array('WARN', _('Your LAM login password was not accepted by the IMAP server.'));
 	}
 
 	/**
@@ -150,15 +157,31 @@ class imapAccess extends baseModule {
 		$prefix = $this->getMailboxPrefix();
 		
 		$email = '';
-		$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-		$email = $attrs['mail'][0];
+		$attrsPersonal = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+		$email = $attrsPersonal['mail'][0];
 		
 		if ($email == '') {
 			$return->addElement(new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias())));
 			return $return;
 		}
-		$imap_admin_password = $this->getAdminPassword(); //Check for password for fall back mechanism
-		if ((strcasecmp($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0], "ask_pass") == 0 && !isset($_SESSION['imapAdmPass'])) || (!$imap_admin_password)) {
+		$email_domain = substr(strstr($email, '@'), 1);
+		// extract user name from email address
+		if (!isset($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
+			$email_parts = explode('@', $email, 2);
+			$email_username = array_shift($email_parts);
+		}
+		// extract user name from Unix user name (might be in inetOrgPerson or posixAccount module)
+		else {
+			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+				$attrsUnix = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+				$email_username = $attrsUnix['uid'][0];
+			}
+			else {
+				$email_username = $attrsPersonal['uid'][0];
+			}
+		}
+		$imap_admin_password = $this->getAdminPassword(); // check for password for fall back mechanism
+		if (!isset($_SESSION['imapAdmPass']) && !isset($imap_admin_password)) {
 			return $this->display_html_password();
 		}
 		
@@ -168,12 +191,11 @@ class imapAccess extends baseModule {
 		$imap_server_address = $this->getServerAddress();
 		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
 		$imap_admin_password = $this->getAdminPassword();
-		$mbox = imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN) or die("can't connect: " . imap_last_error());
+		$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
+		if (!$mbox) {
+			return $this->display_html_password();
+		}
 		
-		$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-		$email_domain = substr(strstr($email, '@'), 1);
-		$email_parts = explode('@', $email, 2);
-		$email_username = array_shift($email_parts);
 		$return->addElement(new htmlOutputText(_('Mailbox')));
 		$return->addElement(new htmlOutputText($prefix . "." . $email_username));
 		$return->addElement(new htmlHelpLink('MailAddress'), true);
@@ -213,6 +235,13 @@ class imapAccess extends baseModule {
 	 */
 	function display_html_password() {
 		$return = new htmlTable();
+		if($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass"){
+			$message =  $this->messages['managemailbox'][6];
+			$messageElement = new htmlStatusMessage($message[0], $message[1]);
+			$messageElement->colspan = 3;
+			$return->addElement($messageElement);
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+		}
 		$passwordInput = new htmlTableExtendedInputField(_("Password of IMAP admin user"), 'ImapAdminPassword', '', 'ImapAdminPassword_Sess');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setRequired(true);
@@ -241,15 +270,27 @@ class imapAccess extends baseModule {
 		
 		$imap_admin_password = $this->getAdminPassword();
 		if ($imap_admin_password) {
-			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN);
+			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 		}
 		if ($mbox) {
-			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			$email = $attrs['mail'][0];
-			
+			$attrsPersonal = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			$email = $attrsPersonal['mail'][0];
 			$email_domain = substr(strstr($email, '@'), 1);
-			$email_parts = explode('@', $email, 2);
-			$email_username = array_shift($email_parts);
+			// extract user name from email address
+			if (!isset($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
+				$email_parts = explode('@', $email, 2);
+				$email_username = array_shift($email_parts);
+			}
+			// extract user name from Unix user name (might be in inetOrgPerson or posixAccount module)
+			else {
+				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+					$attrsUnix = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+					$email_username = $attrsUnix['uid'][0];
+				}
+				else {
+					$email_username = $attrsPersonal['uid'][0];
+				}
+			}
 			
 			if (isset($_POST['deleteMailbox'])) {
 				if ($this->isWrongDomain($email_domain)) {
@@ -299,16 +340,14 @@ class imapAccess extends baseModule {
 	 * @return String password
 	 */
 	function getAdminPassword() {
-		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
 		//perform admin password
 		$imap_admin_password = null; //default value is null, it can be changed during the work
-
-		if (isset($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass")) {
+		if (isset($_SESSION['imapAdmPass'])) {
+			$imap_admin_password = $_SESSION['ldap']->decrypt($_SESSION['imapAdmPass']);
+		}
+		elseif (isset($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass")) {
 			$credentials = $_SESSION['ldap']->decrypt_login();
 			$imap_admin_password = $credentials[1];
-		}
-		elseif (strcasecmp($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0], "ask_pass") == 0 && isset($_SESSION['imapAdmPass'])) {
-			$imap_admin_password = $_SESSION['ldap']->decrypt($_SESSION['imapAdmPass']);
 		}
 		return $imap_admin_password;
 	}
@@ -324,7 +363,7 @@ class imapAccess extends baseModule {
 		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
 			$imap_admin_password = $_POST['ImapAdminPassword'];
-			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN);
+			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 			if ($mbox) {
 				$_SESSION['imapAdmPass'] = $_SESSION['ldap']->encrypt($_POST['ImapAdminPassword']);
 				@imap_close($mbox);
@@ -390,18 +429,20 @@ class imapAccess extends baseModule {
 	 * @return boolean true if domains match
 	 */
 	function isWrongDomain($email_domain) {
-		$ret_result = true;
 		if (isset($this->moduleSettings['ImapAccess_ImapDomain'][0])) {
 			$domain_list_string = $this->moduleSettings['ImapAccess_ImapDomain'][0];
+			if ($domain_list_string == '*') {
+				return false;
+			}
 			$domains_array = explode(",", $domain_list_string);
-			if (in_array($email_domain, $domains_array)) {
-				$ret_result = false;
+			if ((sizeof($domains_array) == 0) || in_array($email_domain, $domains_array)) {
+				return false;
 			}
 		}
 		else {
-			$ret_result = false;
+			return false;
 		}
-		return $ret_result;
+		return true;
 	}
 
 }

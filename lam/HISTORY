@@ -1,4 +1,5 @@
 April 2011 3.4.0
+  - IMAP mailboxes: support to read user name from uid attribute
   - Mail aliases: sort receipients (RFE 3170336)
   - LAM Pro:
    -> support automount entries
