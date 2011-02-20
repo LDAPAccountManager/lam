@@ -52,6 +52,8 @@ class posixAccount extends baseModule implements passwordService {
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
 	private $cachedUIDList = null;
+	/** if set to true the suggested user name for John Doe will be john.doe instead of jdoe */
+	private $SUGGEST_LONG_USER_NAME = false;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -897,14 +899,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (!isset($this->attributes['uid'][0]) && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
 			// fill default value for user ID with first/last name
 			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			if (isset($attrs['sn'][0])) {
-				if (isset($attrs['givenName'][0]) && ($attrs['givenName'][0] != '')) {
-					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
-				}
-				else {
-					$this->attributes['uid'][0] = preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['sn'][0]));
-				}
-			}
+			$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
 		}
 		if (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == '')) {
 			// set a default value for common name
@@ -1842,6 +1837,30 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		sort($this->cachedUIDList, SORT_NUMERIC);
 		return $this->cachedUIDList;
+	}
+	
+	/**
+	 * Returns a suggestion for the user name.
+	 * By deafult this wil be the first character of the first name plus the last name.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return String user name
+	 */
+	private function getUserNameSuggestion($attrs) {
+		if (isset($attrs['sn'][0])) {
+			if (isset($attrs['givenName'][0]) && ($attrs['givenName'][0] != '')) {
+				if ($this->SUGGEST_LONG_USER_NAME) {
+					return preg_replace('/[^a-z0-9_\\.-]/', '', strtolower($attrs['givenName'][0] . '.' . $attrs['sn'][0]));
+				}
+				else {
+					return preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
+				}
+			}
+			else {
+				return preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['sn'][0]));
+			}
+		}
+		return null;
 	}
 	
 }
