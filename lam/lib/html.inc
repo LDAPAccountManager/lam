@@ -782,11 +782,11 @@ class htmlSelect extends htmlElement {
 			$this->selectedElements = $values[$this->name];
 		}
 		$multi = '';
+		$name = ' name="' . $this->name . '"';
 		if ($this->multiSelect) {
 			$multi = ' multiple';
-			$this->name = $this->name . '[]';
+			$name = ' name="' . $this->name . '[]"';
 		}
-		$name = ' name="' . $this->name . '"';
 		$size = ' size="' . $this->size . '"';
 		$class = '';
 		if ($this->rightToLeftTextDirection) {
