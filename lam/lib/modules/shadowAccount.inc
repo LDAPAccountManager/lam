@@ -376,12 +376,19 @@ class shadowAccount extends baseModule implements passwordService {
 		$errors = array();
 		// set expiration date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_change'])) {
-		$this->attributes['shadowExpire'][0] = intval(gmmktime(0, 0, 0, intval($_POST['shadowExpire_mon']), intval($_POST['shadowExpire_day']),
-			intval($_POST['shadowExpire_yea']))/3600/24);
+			$this->setExpirationDate($_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
+			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
+					$_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
+			}
 		}
 		// remove expiration date
 		elseif (isset($_POST['form_subpage_shadowAccount_attributes_del'])) {
 			unset($this->attributes['shadowExpire']);
+			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
+					null, null, null);
+			}
 		}
 		return $errors;		
 	}
@@ -400,7 +407,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$date = getdate($shAccExpirationDate*3600*24);
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
 		$return->addElement(new htmlOutputText(_('Account expiration date')));
 		$expTable = new htmlTable();
 		$expTable->addElement(new htmlSelect('shadowExpire_day', $mday, array($date['mday'])));
@@ -408,6 +415,10 @@ class shadowAccount extends baseModule implements passwordService {
 		$expTable->addElement(new htmlSelect('shadowExpire_yea', $year, array($date['year'])));
 		$return->addElement($expTable);
 		$return->addElement(new htmlHelpLink('shadowExpire'), true);
+		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncSamba', false, _('Set also for Samba 3')), true);
+		}
+		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$buttonTable = new htmlTable();
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'change', _('Change')));
 		if (isset($this->attributes['shadowExpire'][0])) {
@@ -595,6 +606,23 @@ class shadowAccount extends baseModule implements passwordService {
 			$this->attributes['shadowLastChange'][0] = intval(time()/3600/24);
 		}
 		return array();
+	}
+
+	/**
+	 * Sets the expiration date of this account.
+	 * If all parameters are null the expiration date will be removed.
+	 *
+	 * @param String $year year (e.g. 2040)
+	 * @param String $month month (e.g. 8)
+	 * @param String $day day (e.g. 27)
+	 */
+	public function setExpirationDate($year, $month, $day) {
+		if (($year == null) && ($month == null) && ($day == null)) {
+			unset($this->attributes['shadowExpire']);
+			return;
+		}
+		$this->attributes['shadowExpire'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
+			intval($year))/3600/24);
 	}
 		
 }

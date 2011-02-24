@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2010  Roland Gruber
+                2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -970,12 +970,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
 			// set new time
-			$this->attributes[$attr][0] = gmmktime(0, 0, 0, intval($_POST['expire_mon']), intval($_POST['expire_day']),
-				intval($_POST['expire_yea']));
+			$this->setExpirationDate($_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
 			// remove attribute value
 			unset($this->attributes[$attr]);
+			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
+					null, null, null);
+			}
 		}
 		return $return;
 	}
@@ -1352,12 +1359,16 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$date = getdate($time);
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
 		$return->addElement(new htmlOutputText($text));
 		$return->addElement(new htmlSelect('expire_day', $mday, array($date['mday'])));
 		$return->addElement(new htmlSelect('expire_mon', $mon, array($date['mon'])));
 		$return->addElement(new htmlSelect('expire_yea', $year, array($date['year'])));
 		$return->addElement(new htmlHelpLink($help), true);
+		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncShadow', false, _('Set also for Shadow')), true);
+		}
+		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$buttons = new htmlTable();
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
 		if (isset($this->attributes[$attr][0])) {
@@ -2237,6 +2248,23 @@ class sambaSamAccount extends baseModule implements passwordService {
 		return $this->cachedDomainList;
 	}
 
+	/**
+	 * Sets the expiration date of this account.
+	 * If all parameters are null the expiration date will be removed.
+	 *
+	 * @param String $year year (e.g. 2040)
+	 * @param String $month month (e.g. 8)
+	 * @param String $day day (e.g. 27)
+	 */
+	public function setExpirationDate($year, $month, $day) {
+		if (($year == null) && ($month == null) && ($day == null)) {
+			unset($this->attributes['sambaKickoffTime']);
+			return;
+		}
+		$this->attributes['sambaKickoffTime'][0] = gmmktime(0, 0, 0, intval($month), intval($day),
+			intval($year));
+	}
+		
 }
 
 ?>
