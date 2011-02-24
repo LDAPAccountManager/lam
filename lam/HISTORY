@@ -2,6 +2,7 @@ April 2011 3.4.0
   - IMAP mailboxes: support to read user name from uid attribute
   - Personal: added additional options for account profiles
   - Mail aliases: sort receipients (RFE 3170336)
+  - Asterisk: support AstAccountType attribute
   - LAM Pro:
    -> support automount entries
    -> Zarafa groups: allow combination with group of names

@@ -70,7 +70,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		$return['objectClasses'] = array('AsteriskSIPUser');
 		// managed attributes
 		$return['attributes'] = array('AstAccountCallerID', 'AstAccountHost',
-			'AstAccountRealmedPassword', 'AstAccountContext');
+			'AstAccountRealmedPassword', 'AstAccountContext', 'AstAccountType');
 		// icon
 		$return['icon'] = 'asterisk.png';
 		// self service
@@ -95,6 +95,10 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Headline" => _("Password"),
 				"Text" => _("Please enter the password which you want to set for this account.")
 			),
+			'AstAccountType' => array(
+				"Headline" => _("Account type"),
+				"Text" => _("Please enter the account's type (e.g. \"friend\").")
+			),
 			'AsteriskRealm' => array(
 				"Headline" => _("Asterisk realm"),
 				"Text" => _("Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
@@ -112,17 +116,20 @@ class asteriskAccount extends baseModule implements passwordService {
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Host'), 'asteriskAccount_AstAccountHost', null, 'AstAccountHost'), true);
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'asteriskAccount_AstAccountContext', null, 'AstAccountContext'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account type'), 'asteriskAccount_AstAccountType', null, 'AstAccountType'), true);
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'asteriskAccount_AstAccountHost' => 'AstAccountHost',
-			'asteriskAccount_AstAccountContext' => 'AstAccountContext'
+			'asteriskAccount_AstAccountContext' => 'AstAccountContext',
+			'asteriskAccount_AstAccountType' => 'AstAccountType',
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'AstAccountCallerID' => _('Caller ID'),
 			'AstAccountContext' => _('Account context'),
 			'AstAccountHost' => _('Host'),
+			'AstAccountType' => _('Account type'),
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -155,6 +162,13 @@ class asteriskAccount extends baseModule implements passwordService {
 				'help' => 'AstAccountRealmedPassword',
 				'example' => _('secret'),
 			),
+			array(
+				'name' => 'asteriskAccount_AstAccountType',
+				'description' => _('Account type'),
+				'help' => 'AstAccountType',
+				'example' => 'friend',
+				'required' => true
+			),
 		);
 		return $return;
 	}
@@ -173,6 +187,9 @@ class asteriskAccount extends baseModule implements passwordService {
 		$this->messages['AstAccountHost'][0] = array('ERROR', _('Please enter the host name.'));
 		$this->messages['AstAccountHost'][1] = array('ERROR', _('The host name is invalid.'));
 		$this->messages['AstAccountHost'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountHost', _('The host name is invalid.'));
+		$this->messages['AstAccountType'][0] = array('ERROR', _('Please enter the account type.'));
+		$this->messages['AstAccountType'][1] = array('ERROR', _('The account type is invalid.'));
+		$this->messages['AstAccountType'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountType', _('The account type is invalid.'));
 	}
 
 	/**
@@ -211,6 +228,14 @@ class asteriskAccount extends baseModule implements passwordService {
 			$contextInput = new htmlTableExtendedInputField(_("Account context"), 'AstAccountContext', $context, 'AstAccountContext');
 			$contextInput->setRequired(true);
 			$return->addElement($contextInput, true);
+			// account type
+			$accountType = '';
+			if (isset($this->attributes['AstAccountType'][0])) {
+				$accountType = $this->attributes['AstAccountType'][0];
+			}
+			$accountTypeInput = new htmlTableExtendedInputField(_("Account type"), 'AstAccountType', $accountType, 'AstAccountType');
+			$accountTypeInput->setRequired(true);
+			$return->addElement($accountTypeInput, true);
 		}
 		else {
 			$return->addElement(new htmlButton('addObjectClass', _('Add Asterisk account')));
@@ -229,6 +254,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		$this->attributes['AstAccountCallerID'] = array();
 		$this->attributes['AstAccountHost'] = array();
 		$this->attributes['AstAccountContext'] = array();
+		$this->attributes['AstAccountType'] = array();
 		if (isset($_POST['AstAccountCallerID'])) {
 			$this->attributes['AstAccountCallerID'][0] = $_POST['AstAccountCallerID'];
 			// check if caller ID is empty
@@ -265,6 +291,15 @@ class asteriskAccount extends baseModule implements passwordService {
 				$errors[] = $this->messages['AstAccountContext'][1];
 			}
 		}
+		if (isset($_POST['AstAccountType'])) {
+			$this->attributes['AstAccountType'][0] = $_POST['AstAccountType'];
+			if($this->attributes['AstAccountType'][0] == '') {
+				$errors[] = $this->messages['AstAccountType'][0];
+			}
+			elseif (!get_preg($this->attributes['AstAccountType'][0], 'username')) {
+				$errors[] = $this->messages['AstAccountType'][1];
+			}
+		}
 		return $errors;
 	}
 
@@ -294,6 +329,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		$return[get_class($this) . '_AstAccountCallerID'] = array('<block><key>' . _('Caller ID') . '</key><value>' . $this->attributes['AstAccountCallerID'][0] . '</value></block>');
 		$return[get_class($this) . '_AstAccountContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstAccountContext'][0] . '</value></block>');
 		$return[get_class($this) . '_AstAccountHost'] = array('<block><key>' . _('Host') . '</key><value>' . $this->attributes['AstAccountHost'][0] . '</value></block>');
+		$return[get_class($this) . '_AstAccountType'] = array('<block><key>' . _('Account type') . '</key><value>' . $this->attributes['AstAccountType'][0] . '</value></block>');
 		return $return;
 	}
 
@@ -339,6 +375,15 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			else {
 				$errMsg = $this->messages['AstAccountContext'][2];
+				array_push($errMsg, array($i));
+				$messages[] = $errMsg;
+			}
+			//add account type
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountType']] != "") && (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountType']], 'username')) ) {
+				$partialAccounts[$i]['AstAccountType'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountType']];
+			}
+			else {
+				$errMsg = $this->messages['AstAccountType'][2];
 				array_push($errMsg, array($i));
 				$messages[] = $errMsg;
 			}
