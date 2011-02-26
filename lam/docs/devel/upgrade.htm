@@ -11,6 +11,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -28,7 +29,14 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
-<h2>3.2.0 -&gt; 3.3.0</h2>The cache class was removed. Please use local caching and the functions searchLDAP... instead of get_cache().<br>
+<h2>3.3.0 -&gt; 3.4.0</h2>Module interface:<br>
+<ul>
+  <li><span style="font-weight: bold;">save_attributes():</span> can now contain a return value 'info' =&gt; array() with values for pre/postModify actions</li>
+  <li><span style="font-weight: bold;">checkSelfServiceOptions():</span> can now contain a return value 'info' =&gt; array() with values for pre/postModify actions</li>
+</ul>
+<br>
+<h2>3.2.0 -&gt; 3.3.0</h2>
+The cache class was removed. Please use local caching and the functions searchLDAP... instead of get_cache().<br>
 The return values for baseModule::pre/postDeleteActions() were changed to an array of StatusMessage parameters.
 <br>CSS class TYPElist-sort removed without replacement.<br>
 <br>

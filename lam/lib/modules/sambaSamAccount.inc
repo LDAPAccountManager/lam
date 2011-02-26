@@ -659,6 +659,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* <br>"add" are attributes which have to be added to LDAP entry
 	* <br>"remove" are attributes which have to be removed from LDAP entry
 	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
 		if (!in_array('sambaSamAccount', $this->attributes['objectClass']) && !in_array('sambaSamAccount', $this->orig['objectClass'])) {
@@ -2051,14 +2052,22 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
+	 * <br>Return values:
+	 * <br>messages: array of parameters to create status messages
+	 * <br>add: array of attributes to add
+	 * <br>del: array of attributes to remove
+	 * <br>mod: array of attributes to modify
+	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
+	 * 
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
-	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
 	function checkSelfServiceOptions($fields, $attributes) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if (!in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
 			return $return;
 		}

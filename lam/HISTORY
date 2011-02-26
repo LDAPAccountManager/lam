@@ -7,6 +7,7 @@ April 2011 3.4.0
   - LAM Pro:
    -> support automount entries
    -> Zarafa groups: allow combination with group of names
+   -> enhanced wildcards for custom scripts
   - fixed bugs:
    -> renaming of default profile (3183920)
 

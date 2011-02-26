@@ -1623,6 +1623,7 @@ class accountContainer {
 	* @return array an array which can be passed to $this->saveAccount()
 	*/
 	function save_module_attributes($attributes, $orig) {
+		$return = array();
 		$toadd = array();
 		$tomodify = array();
 		$torem = array();
@@ -1924,22 +1925,39 @@ class accountContainer {
 			$this->finalDN = $this->dn_orig;
 		}
 		// pre modify actions
-		$currentAccountAttributes = array();
+		$prePostModifyAttributes = array();
 		if (isset($attributes[$this->finalDN]) && is_array($attributes[$this->finalDN])) {
 			if (isset($attributes[$this->finalDN]['notchanged'])) {
-				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['notchanged']);
+				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['notchanged']);
 			}
 			if (isset($attributes[$this->finalDN]['modify'])) {
-				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['modify']);
+				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['modify']);
+				foreach ($attributes[$this->finalDN]['modify'] as $key => $value) {
+					$prePostModifyAttributes['MOD.' . $key] = $value;
+				}
 			}
 			if (isset($attributes[$this->finalDN]['add'])) {
-				$currentAccountAttributes = array_merge($currentAccountAttributes, $attributes[$this->finalDN]['add']);
+				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['add']);
+				foreach ($attributes[$this->finalDN]['add'] as $key => $value) {
+					$prePostModifyAttributes['NEW.' . $key] = $value;
+				}
+			}
+			if (isset($attributes[$this->finalDN]['remove'])) {
+				foreach ($attributes[$this->finalDN]['remove'] as $key => $value) {
+					$prePostModifyAttributes['DEL.' . $key] = $value;
+				}
+			}
+			if (isset($attributes[$this->finalDN]['info'])) {
+				foreach ($attributes[$this->finalDN]['info'] as $key => $value) {
+					$prePostModifyAttributes['INFO.' . $key] = $value;
+				}
 			}
 		}
-		$currentAccountAttributes['dn'][0] = $this->finalDN;
+		$prePostModifyAttributes['dn'][0] = $this->finalDN;
+		logNewMessage(LOG_DEBUG, 'Edit page pre/postModify attributes: ' . print_r($prePostModifyAttributes, true));
 		$preModifyOk = true;
 		foreach ($module as $singlemodule) {
-			$result = $this->module[$singlemodule]->preModifyActions($this->isNewAccount, $currentAccountAttributes);
+			$result = $this->module[$singlemodule]->preModifyActions($this->isNewAccount, $prePostModifyAttributes);
 			if (!$result) {
 				$preModifyOk = false;
 				break;
@@ -2035,7 +2053,7 @@ class accountContainer {
 		if (!$stopprocessing) {
 			// post modify actions
 			foreach ($module as $singlemodule) {
-				$this->module[$singlemodule]->postModifyActions($this->isNewAccount, $currentAccountAttributes);
+				$this->module[$singlemodule]->postModifyActions($this->isNewAccount, $prePostModifyAttributes);
 			}
 		}
 		return $errors;

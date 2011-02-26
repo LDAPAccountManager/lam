@@ -114,6 +114,7 @@ class hostObject extends baseModule {
 	* <br>"add" are attributes which have to be added to LDAP entry
 	* <br>"remove" are attributes which have to be removed from LDAP entry
 	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
 		if (!in_array('hostObject', $this->attributes['objectClass']) && !in_array('hostObject', $this->orig['objectClass'])) {

@@ -2592,6 +2592,44 @@ Have fun!
       the attribute "uid" and value "steve" then LAM will resolve "$uid$" to
       "steve".</para>
 
+      <para>You can switch LAM's logging to debug mode if you are unsure which
+      attributes with which values are available.</para>
+
+      <para>The following special wildcards are available:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">$INFO.userPasswordClearText$:</emphasis>
+          cleartext password when Unix password is changed (e.g. useful for
+          external password synchronisation) for new/modified accounts</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis
+          role="bold">$INFO.userPasswordStatusChange$:</emphasis> provides
+          additional information if the password locking status was changed,
+          possible values: locked, unlocked, unchanged</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">$NEW.&lt;attribute&gt;$:</emphasis> the
+          value of a new attribute (e.g. $NEW.telephoneNumber$) for modified
+          accounts</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">$DEL.&lt;attribute&gt;$:</emphasis> the
+          value of a deleted attribute (e.g. $DEL.telephoneNumber$) for
+          modified accounts</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">$MOD.&lt;attribute&gt;$:</emphasis> the
+          new value of a modified attribute (e.g. $MOD.telephoneNumber$) for
+          modified accounts</para>
+        </listitem>
+      </itemizedlist>
+
       <para><emphasis role="bold">Output may contain HTML:</emphasis> If your
       scripts generate HTML output then activate this option.</para>
 

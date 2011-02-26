@@ -474,9 +474,24 @@ class posixAccount extends baseModule implements passwordService {
 	* <br>"add" are attributes which have to be added to LDAP entry
 	* <br>"remove" are attributes which have to be removed from LDAP entry
 	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+		// add information about clear text password and password status change
+		$return[$this->getAccountContainer()->dn]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
+		if (isset($this->orig['userPassword'][0]) && isset($this->attributes['userPassword'][0])) {
+			if ((pwd_is_enabled($this->orig['userPassword'][0]) && pwd_is_enabled($this->attributes['userPassword'][0]))
+				|| (!pwd_is_enabled($this->orig['userPassword'][0]) && !pwd_is_enabled($this->attributes['userPassword'][0]))) {
+				$return[$this->getAccountContainer()->dn]['info']['userPasswordStatusChange'][0] = 'unchanged'; 
+			}
+			elseif (pwd_is_enabled($this->orig['userPassword'][0])) {
+				$return[$this->getAccountContainer()->dn]['info']['userPasswordStatusChange'][0] = 'locked';
+			}
+			else {
+				$return[$this->getAccountContainer()->dn]['info']['userPasswordStatusChange'][0] = 'unlocked';
+			}
+		}
 		// Remove primary group from additional groups
 		if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 			|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
@@ -1694,14 +1709,22 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
+	 * <br>Return values:
+	 * <br>messages: array of parameters to create status messages
+	 * <br>add: array of attributes to add
+	 * <br>del: array of attributes to remove
+	 * <br>mod: array of attributes to modify
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 * 
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
-	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
 	function checkSelfServiceOptions($fields, $attributes) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if (in_array('password', $fields)) {
 			if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
 				if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
@@ -1715,6 +1738,7 @@ class posixAccount extends baseModule implements passwordService {
 						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password']);
 						if ($pwdPolicyResult === true) {
 							$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
 							if (isset($attributes['shadowLastChange'][0])) {
 								$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
 							}

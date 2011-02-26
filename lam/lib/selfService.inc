@@ -114,7 +114,7 @@ function getSelfServiceOptions($scope, $fields, $attributes) {
  * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
  */
 function checkSelfServiceOptions($scope, $fields, $attributes) {
-	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
@@ -124,6 +124,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes) {
 		if (sizeof($result['add']) > 0) $return['add'] = array_merge($result['add'], $return['add']);
 		if (sizeof($result['del']) > 0) $return['del'] = array_merge($result['del'], $return['del']);
 		if (sizeof($result['mod']) > 0) $return['mod'] = array_merge($result['mod'], $return['mod']);
+		if (sizeof($result['info']) > 0) $return['info'] = array_merge($result['info'], $return['info']);
 	}
 	return $return;
 }

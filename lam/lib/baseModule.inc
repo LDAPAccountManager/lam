@@ -1019,6 +1019,7 @@ abstract class baseModule {
 	* <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
 	* <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
 	* <br><b>"notchanged"</b> are attributes which stay unchanged
+	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
 	* <br>
 	* <br>This builds the required comands from $this-attributes and $this->orig.
 	* 
@@ -1240,15 +1241,21 @@ abstract class baseModule {
 
 	/**
 	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
+	 * <br>Return values:
+	 * <br>messages: array of parameters to create status messages
+	 * <br>add: array of attributes to add
+	 * <br>del: array of attributes to remove
+	 * <br>mod: array of attributes to modify
+	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
 	 * 
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array()))
+	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		return $return;
 	}
 
