@@ -116,7 +116,7 @@ class imapAccess extends baseModule {
 		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domain(s)'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
 		$mailDomainsInput->setRequired(true);
 		$configContainer->addElement($mailDomainsInput, true);
-		$configUserName =  new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array(_('mail') => 'mail', _('uid') => 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
+		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
 		$configContainer->addElement($configUserName, true);
 		$return['config_options']['all'] = $configContainer;
 		// configuration checks
@@ -280,7 +280,7 @@ class imapAccess extends baseModule {
 		}
 		else {
 			$quotaLimit = "";
-			$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
+			$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
 			$htmlTable->addElement($quotaLimitInput, false);
 			$htmlTable->addElement(new htmlSpacer('10px', null), false);
 			$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
