@@ -269,9 +269,9 @@ class imapAccess extends baseModule {
 		imap_errors();
 		if (is_array($quota_values) && (sizeof($quota_values) > 0)) {
 			if (isset($quota_values['STORAGE']) && is_array($quota_values['STORAGE'])) {
-				$htmlTable->addElement(new htmlOutputText(_("Current usage (Kb)")));
+				$htmlTable->addElement(new htmlOutputText(_("Current usage (kB)")));
 				$htmlTable->addElement(new htmlOutputText($quota_values['STORAGE']['usage']), true);
-				$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (Kb)"), 'ImapUserQuotaLimit', $quota_values['STORAGE']['limit'], 'ImapUserQuotaLimit');
+				$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quota_values['STORAGE']['limit'], 'ImapUserQuotaLimit');
 				$htmlTable->addElement($quotaLimitInput, false);
 				$htmlTable->addElement(new htmlSpacer('10px', null), false);
 				$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
