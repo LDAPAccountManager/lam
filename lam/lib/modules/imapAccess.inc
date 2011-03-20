@@ -92,7 +92,10 @@ class imapAccess extends baseModule {
 				"Text" => _("Please choose the attribute to get the IMAP user name. The default is mail but you can also use uid.")),
 			'MailAddress' => array(
 				"Headline" => _("Mailbox"),
-				"Text" => _("This mailbox will be created/deleted."))
+				"Text" => _("This mailbox will be created/deleted.")),
+			'ImapUserQuotaLimit' => array(
+				"Headline" => _("Quota"),
+				"Text" => _("Please enter the quota limit of this mailbox in kilobytes.")),
 		);
 		// configuration settings
 		$configContainer = new htmlTable();
@@ -114,7 +117,7 @@ class imapAccess extends baseModule {
 		$mailDomainsInput->setRequired(true);
 		$configContainer->addElement($mailDomainsInput, true);
 		$configUserName =  new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array(_('mail') => 'mail', _('uid') => 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
-		$configContainer->addElement($configUserName);
+		$configContainer->addElement($configUserName, true);
 		$return['config_options']['all'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
@@ -145,6 +148,8 @@ class imapAccess extends baseModule {
 		$this->messages['managemailbox'][4] = array('ERROR', _('Your IMAP domain(s) and email address domain do not match.'));
 		$this->messages['managemailbox'][5] = array('ERROR', _('Invalid password for IMAP admin or other problem occured.'));
 		$this->messages['managemailbox'][6] = array('WARN', _('Your LAM login password was not accepted by the IMAP server.'));
+		$this->messages['managemailbox'][7] = array('ERROR', _('Cannot update quota.'));
+		$this->messages['managemailbox'][8] = array('ERROR', _('Wrong quota format. Quota must be numeric.'));
 	}
 
 	/**
@@ -204,6 +209,7 @@ class imapAccess extends baseModule {
 		$is_mailbox_exist = false; //default is false
 		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . "." . $email_username);
 		if (is_array($list) && sizeof($list) == 1) {
+			$this->renderQuotasForMailbox($return, $mbox, $prefix . "." . $email_username);
 			$mailboxMessage = new htmlOutputText(_("Mailbox already exists on IMAP server."));
 			$mailboxMessage->colspan = 3;
 			$return->addElement($mailboxMessage, true);
@@ -249,6 +255,38 @@ class imapAccess extends baseModule {
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$return->addElement(new htmlButton('enterPasswordButton', _('Ok')));
 		return $return;
+	}
+
+	/**
+	 * Display the mailbox quota.
+	 * 
+	 * @param htmlTable $htmlTable structure that contained information to be displayed
+	 * @param stream $mbox stream to open IMAP session
+	 * @return htmlTable table with added information about user quotas or controls to add quota
+	 */
+	function renderQuotasForMailbox($htmlTable, $mbox, $username) {
+		$quota_values = @imap_get_quota($mbox, $username);
+		imap_errors();
+		if (is_array($quota_values) && (sizeof($quota_values) > 0)) {
+			if (isset($quota_values['STORAGE']) && is_array($quota_values['STORAGE'])) {
+				$htmlTable->addElement(new htmlOutputText(_("Current usage (Kb)")));
+				$htmlTable->addElement(new htmlOutputText($quota_values['STORAGE']['usage']), true);
+				$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (Kb)"), 'ImapUserQuotaLimit', $quota_values['STORAGE']['limit'], 'ImapUserQuotaLimit');
+				$htmlTable->addElement($quotaLimitInput, false);
+				$htmlTable->addElement(new htmlSpacer('10px', null), false);
+				$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
+				$htmlTable->addElement(new htmlSpacer(null, '10px'), true);
+			}
+		}
+		else {
+			$quotaLimit = "";
+			$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
+			$htmlTable->addElement($quotaLimitInput, false);
+			$htmlTable->addElement(new htmlSpacer('10px', null), false);
+			$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
+			$htmlTable->addElement(new htmlSpacer(null, '10px'), true);
+		}
+		return $htmlTable;
 	}
 
 	/**
@@ -325,6 +363,30 @@ class imapAccess extends baseModule {
 					}
 					else {
 						$errors[] = $this->messages['managemailbox'][2];
+					}
+				}
+			}
+			if (isset($_POST['updateQuota'])) {
+				if ($this->isWrongDomain($email_domain)) {
+					$errors[] = $this->messages['managemailbox'][4];
+				}
+				else {
+					if (!isset($_POST['ImapUserQuotaLimit']) || ($_POST['ImapUserQuotaLimit'] == '')) {
+/*						if (!imap_set_quota($mbox, $prefix . "." . $email_username, -1)) {
+							$message = $this->messages['managemailbox'][7];
+							$message[] = imap_last_error();
+							$errors[] = $message;
+						}*/
+					}
+					elseif (isset($_POST['ImapUserQuotaLimit']) && ($_POST['ImapUserQuotaLimit'] != '') && get_preg($_POST['ImapUserQuotaLimit'], 'digit')){
+						if (!imap_set_quota($mbox, $prefix . "." . $email_username, $_POST['ImapUserQuotaLimit'])) {
+							$message = $this->messages['managemailbox'][7];
+							$message[] = imap_last_error();
+							$errors[] = $message;
+						}
+					}
+					else {
+						$errors[] = $this->messages['managemailbox'][8];
 					}
 				}
 			}
