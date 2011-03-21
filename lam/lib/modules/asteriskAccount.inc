@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009 - 2010  Pavel Pozdnyak
-                2009 - 2010  Roland Gruber
+  Copyright (C) 2009 - 2011  Pavel Pozdnyak
+                2009 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,7 +70,18 @@ class asteriskAccount extends baseModule implements passwordService {
 		$return['objectClasses'] = array('AsteriskSIPUser');
 		// managed attributes
 		$return['attributes'] = array('AstAccountCallerID', 'AstAccountHost',
-			'AstAccountRealmedPassword', 'AstAccountContext', 'AstAccountType');
+			'AstAccountRealmedPassword', 'AstAccountContext', 'AstAccountType',
+			'AstAccountUserAgent', 'AstAccountAMAFlags', 'AstAccountCallGroup',
+			'AstAccountDTMFMode', 'AstAccountFromUser', 'AstAccountFromDomain',
+			'AstAccountFullContact', 'AstAccountInsecure', 'AstAccountMailbox',
+			'AstAccountNAT', 'AstAccountDeny', 'AstAccountPermit',
+			'AstAccountPickupGroup', 'AstAccountPort', 'AstAccountQualify',
+			'AstAccountRestrictCID', 'AstAccountRTPTimeout', 'AstAccountRTPHoldTimeout',
+			'AstAccountDisallowedCodec', 'AstAccountAllowedCodec', 'AstAccountMusicOnHold',
+			'AstAccountExpirationTimestamp', 'AstAccountRegistrationContext',
+			'AstAccountRegistrationExten', 'AstAccountCanCallForward', 'AstAccountIPAddress',
+			'AstAccountDefaultUser', 'AstAccountRegistrationServer', 'AstAccountLastQualifyMilliseconds',
+		);
 		// icon
 		$return['icon'] = 'asterisk.png';
 		// self service
@@ -80,16 +91,16 @@ class asteriskAccount extends baseModule implements passwordService {
 		// help
 		$return['help'] = array(
 			'AstAccountCallerID' => array(
-			"Headline" => _("Caller ID"),
-			"Text" => _("This is the ID of the user in the Asterisk database. It may contain digits and letters (e.g. user1 or 200134).")
+				"Headline" => _("Caller ID"),
+				"Text" => _("This is the ID of the user in the Asterisk database. It may contain digits and letters (e.g. user1 or 200134).")
 			),
 			'AstAccountHost' => array(
-			"Headline" => _("Host"),
-			"Text" => _("This is the machine id (e.g. IP address or host name) from which the user can call/receive calls.")
+				"Headline" => _("Host"),
+				"Text" => _("This is the machine id (e.g. IP address or host name) from which the user can call/receive calls.")
 			),
 			'AstAccountContext' => array(
-			"Headline" => _("Account context"),
-			"Text" => _("The account context stores information about the dial plan.")
+				"Headline" => _("Account context"),
+				"Text" => _("The account context stores information about the dial plan.")
 			),
 			'AstAccountRealmedPassword' => array(
 				"Headline" => _("Password"),
@@ -103,6 +114,123 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Headline" => _("Asterisk realm"),
 				"Text" => _("Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
 			),
+			'AstAccountUserAgent' => array(
+				"Headline" => _("User agent"),
+				"Text" => _("SIP user agent identification.")
+			),
+			'AstAccountAMAFlags' => array(
+				"Headline" => _("AMA flags"),
+				"Text" => _("Asterisk AMA (Automated Message Accounting) flags.")
+			),
+			'AstAccountCallGroup' => array(
+				"Headline" => _("Call groups"),
+				"Text" => _("The user's call groups.")
+			),                    
+			'AstAccountDTMFMode' => array(
+				"Headline" => _("DTMF mode"),
+				"Text" => _("DTMF mode for SIP client configuration.")
+			),
+			'AstAccountFromUser' => array(
+				"Headline" => _("From user"),
+				"Text" => _("From user setting for this account.")
+			),
+			'AstAccountFromDomain' => array(
+				"Headline" => _("From domain"),
+				"Text" => _("From domain setting for this account.")
+			),
+			'AstAccountFullContact' => array(
+				"Headline" => _("Full contact"),
+				"Text" => _("SIP URI for a realtime peer.")
+			),
+			'AstAccountInsecure' => array(
+				"Headline" => _("Insecure"),
+				"Text" => _("This is typically used to allow incoming calls (e.g. from FWD) while having a type=friend entry defined with username and password.")
+			),
+			'AstAccountMailbox' => array(
+				"Headline" => _("Mailbox"),
+				"Text" => _("Defines the mailbox to check for message waiting indication (MWI) for this peer.")
+			),
+			'AstAccountNAT' => array(
+				"Headline" => _("NAT"),
+				"Text" => _("NAT setting for this account.")
+			),
+			'AstAccountDeny' => array(
+				"Headline" => _("Deny"),
+				"Text" => _("Used to limit SIP traffic to and from this peer to a certain IP or network.")
+			),
+			'AstAccountPermit' => array(
+				"Headline" => _("Permit"),
+				"Text" => _("Used to limit SIP traffic to and from this peer to a certain IP or network.")
+			),
+			'AstAccountPickupGroup' => array(
+				"Headline" => _("Pickup group"),
+				"Text" => _("Specifies the user's pickup group.")
+			),
+			'AstAccountPort' => array(
+				"Headline" => _("Port"),
+				"Text" => _("Port number.")
+			),
+			'AstAccountQualify' => array(
+				"Headline" => _("Qualify"),
+				"Text" => _("Used to regularly check that a device is still online.")
+			),
+			'AstAccountRestrictCID' => array(
+				"Headline" => _("Restrict caller ID"),
+				"Text" => _("Use this to hide the caller ID.")
+			),
+			'AstAccountRTPTimeout' => array(
+				"Headline" => _("RTP timeout"),
+				"Text" => _("Used to automatically hangup the call if no RTP traffic is received.")
+			),
+			'AstAccountRTPHoldTimeout' => array(
+				"Headline" => _("RTP hold timeout"),
+				"Text" => _("Maximum number of seconds of inactivity before terminating a call on hold.")
+			),
+			'AstAccountDisallowedCodec' => array(
+				"Headline" => _("Disallowed codec"),
+				"Text" => _("List of disallowed codecs. Multiple values are separated by semicolon.")
+			),
+			'AstAccountAllowedCodec' => array(
+				"Headline" => _("Allowed codec"),
+				"Text" => _("List of allowed codecs. Multiple values are separated by semicolon.")
+			),
+			'AstAccountMusicOnHold' => array(
+				"Headline" => _("Music on hold"),
+				"Text" => _("Music to play on hold.")
+			),
+			'AstAccountExpirationTimestamp' => array(
+				"Headline" => _("Expiration timestamp"),
+				"Text" => _("Expiration timestamp (\"regseconds\" option).")
+			),
+			'AstAccountRegistrationContext' => array(
+				"Headline" => _("Registration context"),
+				"Text" => _("If registration context is specified, Asterisk will dynamically create and destroy a NoOp priority 1 extension for a given peer who registers or unregisters with Asterisk.")
+			),
+			'AstAccountRegistrationExten' => array(
+				"Headline" => _("Registration extension"),
+				"Text" => _("Used for registration context.")
+			),
+			'AstAccountCanCallForward' => array(
+				"Headline" => _("Can call forward"),
+				"Text" => _("Specifies if the user can call forward.")
+			),
+			'AstAccountIPAddress' => array(
+				"Headline" => _("IP address"),
+				"Text" => _("IP address of the peer. Valid only for realtime peers.")
+			),
+			'AstAccountDefaultUser' => array(
+				"Headline" => _("Default user"),
+				"Text" => _("Authentication user for outbound proxies.")
+			),
+			'AstAccountRegistrationServer' => array(
+				"Headline" => _("Registration server"),
+				"Text" => _("IP address or domain name of the registration server.")
+			),
+			'AstAccountLastQualifyMilliseconds' => array(
+				"Headline" => _("Last qualify milliseconds"),
+				"Text" => _("The number of milliseconds for the last qualify.")
+			),
+                    
 		);
 		// config options
 		$configContainer = new htmlTable();
@@ -130,6 +258,35 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountContext' => _('Account context'),
 			'AstAccountHost' => _('Host'),
 			'AstAccountType' => _('Account type'),
+			'AstAccountUserAgent' => _('User agent'),
+			'AstAccountAMAFlags' => _('AMA flags'),
+			'AstAccountCallGroup' => _('Call groups'),
+			'AstAccountDTMFMode' => _('DTFM flags'),
+			'AstAccountFromUser' => _('From user'),
+			'AstAccountFromDomain' => _('From domain'),
+			'AstAccountFullContact'=> _('Full contact'),
+			'AstAccountInsecure' => _('Insecure'),
+			'AstAccountMailbox' => _('Mailbox'),
+			'AstAccountNAT' => _('NAT'),
+			'AstAccountDeny' => _('Deny'),
+			'AstAccountPermit' => _('Permit'),
+			'AstAccountPickupGroup' => _('Pickup group'),
+			'AstAccountPort' => _('Port'),
+			'AstAccountQualify' => _('Qualify'),
+			'AstAccountRestrictCID' => _('Restrict caller ID'),
+			'AstAccountRTPTimeout' => _('RTP timeout'),
+			'AstAccountRTPHoldTimeout' => _('RTP hold timeout'),
+			'AstAccountDisallowedCodec' => _('Disallowed codec'),
+			'AstAccountAllowedCodec' => _('Allowed codec'),
+			'AstAccountMusicOnHold' => _('Music on hold'),
+			'AstAccountExpirationTimestamp' => _('Expiration timestamp'),
+			'AstAccountRegistrationContext' => _('Registration context'),
+			'AstAccountRegistrationExten' => _('Registration extention'),
+			'AstAccountCanCallForward' => _('Can call forward'),
+			'AstAccountIPAddress' => _('IP address'),
+			'AstAccountDefaultUser' => _('Default user'),
+			'AstAccountRegistrationServer' => _('Registration server'),
+			'AstAccountLastQualifyMilliseconds' => _('Last qualify milliseconds'),
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -212,6 +369,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			$callerIdInput = new htmlTableExtendedInputField(_("Caller ID"), 'AstAccountCallerID', $callerId, 'AstAccountCallerID');
 			$callerIdInput->setRequired(true);
 			$return->addElement($callerIdInput, true);
+			
 			// host
 			$host = '';
 			if (isset($this->attributes['AstAccountHost'][0])) {
@@ -220,6 +378,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			$hostInput = new htmlTableExtendedInputField(_("Host"), 'AstAccountHost', $host, 'AstAccountHost');
 			$hostInput->setRequired(true);
 			$return->addElement($hostInput, true);
+			
 			// context
 			$context = '';
 			if (isset($this->attributes['AstAccountContext'][0])) {
@@ -228,6 +387,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			$contextInput = new htmlTableExtendedInputField(_("Account context"), 'AstAccountContext', $context, 'AstAccountContext');
 			$contextInput->setRequired(true);
 			$return->addElement($contextInput, true);
+			
 			// account type
 			$accountType = '';
 			if (isset($this->attributes['AstAccountType'][0])) {
@@ -331,6 +491,93 @@ class asteriskAccount extends baseModule implements passwordService {
 		$return[get_class($this) . '_AstAccountContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstAccountContext'][0] . '</value></block>');
 		$return[get_class($this) . '_AstAccountHost'] = array('<block><key>' . _('Host') . '</key><value>' . $this->attributes['AstAccountHost'][0] . '</value></block>');
 		$return[get_class($this) . '_AstAccountType'] = array('<block><key>' . _('Account type') . '</key><value>' . $this->attributes['AstAccountType'][0] . '</value></block>');
+		$AstAccountUserAgent = '';
+		if (isset($this->attributes['AstAccountUserAgent'][0])) $AstAccountUserAgent = $this->attributes['AstAccountUserAgent'][0];
+		$return[get_class($this) . '_AstAccountUserAgent'] = array('<block><key>' . _('User agent') . '</key><value>' . $AstAccountUserAgent . '</value></block>');
+		$AstAccountAMAFlags = '';
+		if (isset($this->attributes['AstAccountAMAFlags'][0])) $AstAccountAMAFlags = $this->attributes['AstAccountAMAFlags'][0];
+		$return[get_class($this) . '_AstAccountAMAFlags'] = array('<block><key>' . _('AMA flags') . '</key><value>' . $AstAccountAMAFlags . '</value></block>');
+		$AstAccountCallGroup = '';
+		if (isset($this->attributes['AstAccountCallGroup'][0])) $AstAccountCallGroup = $this->attributes['AstAccountCallGroup'][0];
+		$return[get_class($this) . '_AstAccountCallGroup'] = array('<block><key>' . _('Call groups') . '</key><value>' . $AstAccountCallGroup . '</value></block>');
+		$AstAccountDTMFMode = '';
+		if (isset($this->attributes['AstAccountDTMFMode'][0])) $AstAccountDTMFMode = $this->attributes['AstAccountDTMFMode'][0];
+		$return[get_class($this) . '_AstAccountDTMFMode'] = array('<block><key>' . _('DTMF mode') . '</key><value>' . $AstAccountDTMFMode . '</value></block>');
+		$AstAccountFromUser = '';
+		if (isset($this->attributes['AstAccountFromUser'][0])) $AstAccountFromUser = $this->attributes['AstAccountFromUser'][0];
+		$return[get_class($this) . '_AstAccountFromUser'] = array('<block><key>' . _('From user') . '</key><value>' . $AstAccountFromUser . '</value></block>');
+		$AstAccountFromDomain = '';
+		if (isset($this->attributes['AstAccountFromDomain'][0])) $AstAccountFromDomain = $this->attributes['AstAccountFromDomain'][0];
+		$return[get_class($this) . '_AstAccountFromDomain'] = array('<block><key>' . _('From domain') . '</key><value>' . $AstAccountFromDomain . '</value></block>');
+		$AstAccountFullContact = '';
+		if (isset($this->attributes['AstAccountFullContact'][0])) $AstAccountFullContact = $this->attributes['AstAccountFullContact'][0];
+		$return[get_class($this) . '_AstAccountFullContact'] = array('<block><key>' . _('Full contact') . '</key><value>' . $AstAccountFullContact . '</value></block>');
+		$AstAccountInsecure = '';
+		if (isset($this->attributes['AstAccountInsecure'][0])) $AstAccountInsecure = $this->attributes['AstAccountInsecure'][0];
+		$return[get_class($this) . '_AstAccountInsecure'] = array('<block><key>' . _('Insecure') . '</key><value>' . $AstAccountInsecure . '</value></block>');
+		$AstAccountMailbox = '';
+		if (isset($this->attributes['AstAccountMailbox'][0])) $AstAccountMailbox = $this->attributes['AstAccountMailbox'][0];
+		$return[get_class($this) . '_AstAccountMailbox'] = array('<block><key>' . _('Mailbox') . '</key><value>' . $AstAccountMailbox . '</value></block>');
+		$AstAccountNAT = '';
+		if (isset($this->attributes['AstAccountNAT'][0])) $AstAccountNAT = $this->attributes['AstAccountNAT'][0];
+		$return[get_class($this) . '_AstAccountNAT'] = array('<block><key>' . _('NAT') . '</key><value>' . $AstAccountNAT . '</value></block>');
+		$AstAccountDeny = '';
+		if (isset($this->attributes['AstAccountDeny'][0])) $AstAccountDeny = $this->attributes['AstAccountDeny'][0];
+		$return[get_class($this) . '_AstAccountDeny'] = array('<block><key>' . _('Deny') . '</key><value>' . $AstAccountDeny . '</value></block>');
+		$AstAccountPermit = '';
+		if (isset($this->attributes['AstAccountPermit'][0])) $AstAccountPermit = $this->attributes['AstAccountPermit'][0];
+		$return[get_class($this) . '_AstAccountPermit'] = array('<block><key>' . _('Permit') . '</key><value>' . $AstAccountPermit . '</value></block>');
+		$AstAccountPickupGroup = '';
+		if (isset($this->attributes['AstAccountPickupGroup'][0])) $AstAccountPickupGroup = $this->attributes['AstAccountPickupGroup'][0];
+		$return[get_class($this) . '_AstAccountPickupGroup'] = array('<block><key>' . _('Pickup group') . '</key><value>' . $AstAccountPickupGroup . '</value></block>');
+		$AstAccountPort = '';
+		if (isset($this->attributes['AstAccountPort'][0])) $AstAccountPort = $this->attributes['AstAccountPort'][0];
+		$return[get_class($this) . '_AstAccountPort'] = array('<block><key>' . _('Port') . '</key><value>' . $AstAccountPort . '</value></block>');
+		$AstAccountQualify = '';
+		if (isset($this->attributes['AstAccountQualify'][0])) $AstAccountQualify = $this->attributes['AstAccountQualify'][0];
+		$return[get_class($this) . '_AstAccountQualify'] = array('<block><key>' . _('Qualify') . '</key><value>' . $AstAccountQualify . '</value></block>');
+		$AstAccountRestrictCID = '';
+		if (isset($this->attributes['AstAccountRestrictCID'][0])) $AstAccountRestrictCID = $this->attributes['AstAccountRestrictCID'][0];
+		$return[get_class($this) . '_AstAccountRestrictCID'] = array('<block><key>' . _('Restrict caller ID') . '</key><value>' . $AstAccountRestrictCID . '</value></block>');
+		$AstAccountRTPTimeout = '';
+		if (isset($this->attributes['AstAccountRTPTimeout'][0])) $AstAccountRTPTimeout = $this->attributes['AstAccountRTPTimeout'][0];
+		$return[get_class($this) . '_AstAccountRTPTimeout'] = array('<block><key>' . _('RTP timeout') . '</key><value>' . $AstAccountRTPTimeout . '</value></block>');
+		$AstAccountRTPHoldTimeout = '';
+		if (isset($this->attributes['AstAccountRTPHoldTimeout'][0])) $AstAccountRTPHoldTimeout = $this->attributes['AstAccountRTPHoldTimeout'][0];
+		$return[get_class($this) . '_AstAccountRTPHoldTimeout'] = array('<block><key>' . _('RTP hold timeout') . '</key><value>' . $AstAccountRTPHoldTimeout . '</value></block>');
+		$AstAccountDisallowedCodec = '';
+		if (isset($this->attributes['AstAccountDisallowedCodec'][0])) $AstAccountDisallowedCodec = implode('; ', $this->attributes['AstAccountDisallowedCodec']);
+		$return[get_class($this) . '_AstAccountDisallowedCodec'] = array('<block><key>' . _('Disallowed codec') . '</key><value>' . $AstAccountDisallowedCodec . '</value></block>');
+		$AstAccountAllowedCodec = '';
+		if (isset($this->attributes['AstAccountAllowedCodec'][0])) $AstAccountAllowedCodec = implode('; ', $this->attributes['AstAccountAllowedCodec']);
+		$return[get_class($this) . '_AstAccountAllowedCodec'] = array('<block><key>' . _('Allowed codec') . '</key><value>' . $AstAccountAllowedCodec . '</value></block>');
+		$AstAccountMusicOnHold = '';
+		if (isset($this->attributes['AstAccountMusicOnHold'][0])) $AstAccountMusicOnHold = $this->attributes['AstAccountMusicOnHold'][0];
+		$return[get_class($this) . '_AstAccountMusicOnHold'] = array('<block><key>' . _('Music on hold') . '</key><value>' . $AstAccountMusicOnHold . '</value></block>');
+		$AstAccountExpirationTimestamp = '';
+		if (isset($this->attributes['AstAccountExpirationTimestamp'][0])) $AstAccountExpirationTimestamp = $this->attributes['AstAccountExpirationTimestamp'][0];
+		$return[get_class($this) . '_AstAccountExpirationTimestamp'] = array('<block><key>' . _('Expiration timestamp') . '</key><value>' . $AstAccountExpirationTimestamp . '</value></block>');
+		$AstAccountRegistrationContext = '';
+		if (isset($this->attributes['AstAccountRegistrationContext'][0])) $AstAccountRegistrationContext = $this->attributes['AstAccountRegistrationContext'][0];
+		$return[get_class($this) . '_AstAccountRegistrationContext'] = array('<block><key>' . _('Registration context') . '</key><value>' . $AstAccountRegistrationContext . '</value></block>');
+		$AstAccountRegistrationExten = '';
+		if (isset($this->attributes['AstAccountRegistrationExten'][0])) $AstAccountRegistrationExten = $this->attributes['AstAccountRegistrationExten'][0];
+		$return[get_class($this) . '_AstAccountRegistrationExten'] = array('<block><key>' . _('Registration extension') . '</key><value>' . $AstAccountRegistrationExten . '</value></block>');
+		$AstAccountCanCallForward = '';
+		if (isset($this->attributes['AstAccountCanCallForward'][0])) $AstAccountCanCallForward = $this->attributes['AstAccountCanCallForward'][0];
+		$return[get_class($this) . '_AstAccountCanCallForward'] = array('<block><key>' . _('Can call forward') . '</key><value>' . $AstAccountCanCallForward . '</value></block>');
+		$AstAccountIPAddress = '';
+		if (isset($this->attributes['AstAccountIPAddress'][0])) $AstAccountIPAddress = $this->attributes['AstAccountIPAddress'][0];
+		$return[get_class($this) . '_AstAccountIPAddress'] = array('<block><key>' . _('IP address') . '</key><value>' . $AstAccountIPAddress . '</value></block>');
+		$AstAccountDefaultUser = '';
+		if (isset($this->attributes['AstAccountDefaultUser'][0])) $AstAccountDefaultUser = $this->attributes['AstAccountDefaultUser'][0];
+		$return[get_class($this) . '_AstAccountDefaultUser'] = array('<block><key>' . _('Default user') . '</key><value>' . $AstAccountDefaultUser . '</value></block>');
+		$AstAccountRegistrationServer = '';
+		if (isset($this->attributes['AstAccountRegistrationServer'][0])) $AstAccountRegistrationServer = $this->attributes['AstAccountRegistrationServer'][0];
+		$return[get_class($this) . '_AstAccountRegistrationServer'] = array('<block><key>' . _('Registration server') . '</key><value>' . $AstAccountRegistrationServer . '</value></block>');
+		$AstAccountLastQualifyMilliseconds = '';
+		if (isset($this->attributes['AstAccountLastQualifyMilliseconds'][0])) $AstAccountLastQualifyMilliseconds = $this->attributes['AstAccountLastQualifyMilliseconds'][0];
+		$return[get_class($this) . '_AstAccountLastQualifyMilliseconds'] = array('<block><key>' . _('Last qualify milliseconds') . '</key><value>' . $AstAccountLastQualifyMilliseconds . '</value></block>');
 		return $return;
 	}
 
