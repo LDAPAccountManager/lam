@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -335,14 +335,16 @@ class LAMConfig {
 		for ($s = 0; $s < sizeof($scopes); $s++) {
 			$scope = $scopes[$s];
 			$moduleVar = "modules_" . $scope;
-			$modules = explode(",", $this->typeSettings[$moduleVar]);
-			$available = getAvailableModules($scope);
-			// only return available modules
-			$ret = array();
-			for ($i = 0; $i < sizeof($modules); $i++) {
-				if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+			if (isset($this->typeSettings[$moduleVar])){
+				$modules = explode(",", $this->typeSettings[$moduleVar]);
+				$available = getAvailableModules($scope);
+				// only return available modules
+				$ret = array();
+				for ($i = 0; $i < sizeof($modules); $i++) {
+					if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+				}
+				$this->$moduleVar = implode(",", $ret);
 			}
-			$this->$moduleVar = implode(",", $ret);
 		}
 		return true;
 	}
