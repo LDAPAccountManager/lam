@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010  Roland Gruber
+  Copyright (C) 2010 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1954,6 +1954,8 @@ class htmlLink extends htmlElement {
 	private $image = null;
 	/** title */
 	private $title = null;
+	/** target window */
+	private $targetWindow = null;
 	
 	/**
 	 * Constructor.
@@ -1988,7 +1990,11 @@ class htmlLink extends htmlElement {
 		if ($this->title != null) {
 			$title = ' title="' . $this->title . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $title . '>' . $image . $this->text . '</a>';
+		$targetWindow = '';
+		if ($this->targetWindow != null) {
+			$targetWindow = ' target="' . $this->targetWindow . '"';
+		}
+		echo '<a href="' . $this->target . '"' . $title . $targetWindow . '>' . $image . $this->text . '</a>';
 		return array();
 	}
 
@@ -1999,6 +2005,15 @@ class htmlLink extends htmlElement {
 	 */
 	public function setTitle($title) {
 		$this->title = htmlspecialchars($title);
+	}
+
+	/**
+	 * Sets the target window (e.g. _blank).
+	 * 
+	 * @param String $window target window (e.g. _blank)
+	 */
+	public function setTargetWindow($window) {
+		$this->targetWindow = htmlspecialchars($window);
 	}
 
 }
@@ -2041,6 +2056,32 @@ class htmlGroup extends htmlElement {
 	 */
 	public function addElement($sub) {
 		$this->subelements[] = $sub;
+	}
+
+}
+
+/**
+ * Prints a horizontal line.
+ * 
+ * @package metaHTML
+ */
+class htmlHorizontalLine extends htmlElement {
+
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		echo "<hr>";
+		return $return;
 	}
 
 }
