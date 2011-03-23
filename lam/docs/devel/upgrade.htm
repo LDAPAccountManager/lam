@@ -1,17 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head>
 
-
-
-
-
-
-
-
-
-
-
-
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -29,62 +18,103 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
-<h2>3.3.0 -&gt; 3.4.0</h2>Module interface:<br>
+<h2>3.3.0 -&gt; 3.4.0</h2>
+
+Module interface:<br>
+
 <ul>
-  <li><span style="font-weight: bold;">save_attributes():</span> can now contain a return value 'info' =&gt; array() with values for pre/postModify actions</li>
-  <li><span style="font-weight: bold;">checkSelfServiceOptions():</span> can now contain a return value 'info' =&gt; array() with values for pre/postModify actions</li>
+
+  <li><span style="font-weight: bold;">save_attributes():</span> Can
+now contain a return value 'info' =&gt; array() with values for
+pre/postModify actions</li>
+  <li><span style="font-weight: bold;">checkSelfServiceOptions():</span> Can now contain a return value 'info' =&gt; array() with values for
+pre/postModify actions</li>
+  <li><span style="font-weight: bold;">getSelfServiceOptions():</span> This function no longer supports the old meta HTML. Additionally, the module name must be specified for all help links.<br>
+</li>
 </ul>
+
 <br>
+
 <h2>3.2.0 -&gt; 3.3.0</h2>
-The cache class was removed. Please use local caching and the functions searchLDAP... instead of get_cache().<br>
-The return values for baseModule::pre/postDeleteActions() were changed to an array of StatusMessage parameters.
-<br>CSS class TYPElist-sort removed without replacement.<br>
+
+The cache class was removed. Please use local caching and the functions
+searchLDAP... instead of get_cache().<br>
+
+The return values for baseModule::pre/postDeleteActions() were changed
+to an array of StatusMessage parameters.
 <br>
+
+CSS class TYPElist-sort removed without replacement.<br>
+
+<br>
+
 <h2>3.1.0 -&gt; 3.2.0</h2>
-<span style="font-weight: bold;">Account types: </span>The CSS classes have changed.
+
+<span style="font-weight: bold;">Account types: </span>The CSS classes
+have changed.
 <ul>
 
-<li>tr.TYPElist-over: removed without replacement</li>
+  <li>tr.TYPElist-over: removed without replacement</li>
   <li>tr.TYPElist-checked: removed without replacement</li>
-<li>tr.TYPElist: renamed to .TYPElist-bright</li>
-<li>tr.TYPElist-head: renamed to .TYPElist-dark</li>
+  <li>tr.TYPElist: renamed to .TYPElist-bright</li>
+  <li>tr.TYPElist-head: renamed to .TYPElist-dark</li>
   <li>th.TYPElist-sort: renamed to .TYPElist-sort</li>
-  <li>td.TYPEnav-text: removed without replacement
-  </li>
-
+  <li>td.TYPEnav-text: removed without replacement </li>
 </ul>
+
 <br>
-<br><h2>3.0.0 -&gt; 3.1.0</h2><span style="font-weight: bold;">Module interface:</span> There is a new object-oriented library to
+
+<br>
+
+<h2>3.0.0 -&gt; 3.1.0</h2>
+
+<span style="font-weight: bold;">Module interface:</span> There is a
+new object-oriented library to
 generate HTML for the account modules (e.g. used for
 display_html_attributes()). This will allow additional functionality
 like client side validation. Please see lib/html.inc or package
 metaHTML in the phpdoc documentation.<br>
-<span style="color: red; font-weight: bold;">Attention: </span><span style="color: red; font-weight: bold;">The getSelfServiceOptions() function no longer supports the old meta HTML. </span><span style="color: red; font-weight: bold;">The other functions will support the old array-based meta HTML elements only until Q2/2011! </span><br>
+
+<span style="color: red; font-weight: bold;">Attention: </span><span style="color: red; font-weight: bold;">The getSelfServiceOptions()
+function no longer supports the old meta HTML. </span><span style="color: red; font-weight: bold;">The other functions will
+support the old array-based meta HTML elements only until Q2/2011! </span><br>
+
 <br>
+
 The PDF editor now supports descriptive PDF
 fields. You can use this by returning an associative array for the PDF
 fields (e.g. array('macAddress' =&gt; _('MAC address'))) in <span style="font-weight: bold;">get_pdfFields()</span> or the meta data.<br>
-The old format is still supported. LAM will continue to show the field name as label in this case.<br>
-<br>
-<br>
-<h2>2.9.0 -&gt; 3.0.0</h2>
 
+The old format is still supported. LAM will continue to show the field
+name as label in this case.<br>
+
+<br>
+
+<br>
+
+<h2>2.9.0 -&gt; 3.0.0</h2>
 
 You can now integrate JavaScript libraries by simply putting the files
 into templates/lib. All files with the name *.js are automatically
 included on all pages.<br>
+
 There is a new log level LOG_DEBUG available for logNewMessage().
 <br>
+
 <h3>Module interface:</h3>
+
 The function
 <span style="font-weight: bold;">build_uploadAccounts()</span>
 has a new parameter
 <span style="font-weight: bold;">$selectedModules</span>.<br>
+
 <h3>Type interface:</h3>
 
+The new function <span style="font-weight: bold;">supportsFileUpload()</span>
+specifies if file uploads are supported (default true).<br>
 
-The new function <span style="font-weight: bold;">supportsFileUpload()</span> specifies if file uploads are supported (default true).<br>
 <br>
+
 <br>
 
 <h2>2.8.0 -&gt; 2.9.0</h2>
@@ -93,6 +123,7 @@ Several functions of the <span style="font-weight: bold;">cache</span>
 class were removed.<br>
 
 <br>
+
 <br>
 
 <h2>2.5.0 -&gt; 2.6.0</h2>

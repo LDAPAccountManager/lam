@@ -146,7 +146,8 @@ class posixAccount extends baseModule implements passwordService {
 			// self service configuration settings
 			$selfServiceContainer = new htmlTable();
 			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
-				array('SSHA'), _("Password hash type"), 'pwdHash'));
+				array('SSHA'), _("Password hash type")));
+			$selfServiceContainer->addElement(new htmlHelpLink('pwdHash', get_class($this)));
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks

@@ -238,7 +238,8 @@ class asteriskAccount extends baseModule implements passwordService {
 		$return['config_options']['user'] = $configContainer;
 		// self service options	
 		$selfServiceContainer = new htmlTable();
-		$selfServiceContainer->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'));
+		$selfServiceContainer->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null));
+		$selfServiceContainer->addElement(new htmlHelpLink('AsteriskRealm', get_class($this)));
 		$return['selfServiceSettings'] = $selfServiceContainer;
 		// profile options
 		$profileContainer = new htmlTable();
