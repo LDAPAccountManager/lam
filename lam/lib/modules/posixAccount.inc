@@ -142,7 +142,7 @@ class posixAccount extends baseModule implements passwordService {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
 			// self service field settings
-			$return['selfServiceFieldSettings'] = array('password' => _('Password'));
+			$return['selfServiceFieldSettings'] = array('password' => _('Password'), 'cn' => _('Common name'));
 			// self service configuration settings
 			$selfServiceContainer = new htmlTable();
 			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
@@ -1706,6 +1706,13 @@ class posixAccount extends baseModule implements passwordService {
 				$pwdTable
 			));
 		}
+		if (in_array('cn', $fields)) {
+			$cn = '';
+			if (isset($attributes['cn'][0])) $cn = $attributes['cn'][0];
+			$return['cn'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Common name'), 'posixAccount_cn', $cn)
+			));
+		}
 		return $return;
 	}
 
@@ -1750,6 +1757,19 @@ class posixAccount extends baseModule implements passwordService {
 						}
 					}
 				}
+			}
+		}
+		if (in_array('cn', $fields)) {
+			if (isset($_POST['posixAccount_cn']) && ($_POST['posixAccount_cn'] != '')) {
+				if (!get_preg($_POST['posixAccount_cn'], 'cn')) {
+					$return['messages'][] = $this->messages['cn'][0];
+				}
+				else {
+					$return['mod']['cn'][0] = $_POST['posixAccount_cn'];
+				}
+			}
+			else {
+				$return['messages'][] = $this->messages['cn'][0];
 			}
 		}
 		return $return;
