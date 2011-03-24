@@ -23,13 +23,10 @@ Packager:     Roland Gruber <post@rolandgruber.de>
 BuildArchitectures: noarch
 AutoReqProv:  no
 %if %is_suse
-Requires:      mod_php_any
 Requires:      php5
-Requires:      php-gettext
-Requires:      php-session
-Requires:      php-ldap
-Requires:      php-hash
-Requires:      php-gd
+Requires:      php5-ldap
+Requires:      php5-hash
+Requires:      php5-gd
 Requires:      perl
 %endif
 %if %is_fedora
@@ -80,6 +77,9 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 %files
 %defattr(-, root, root)
 %doc COPYING HISTORY README docs/*
+%config(noreplace) %{httpd_rootdir}/%{lam_dir}/config/profiles/default.*
+%config(noreplace) %{httpd_rootdir}/%{lam_dir}/config/pdf/default.*
+%config(noreplace) %{httpd_rootdir}/%{lam_dir}/config/selfService/default.*
 %{httpd_rootdir}/%{lam_dir}
 
 %changelog
