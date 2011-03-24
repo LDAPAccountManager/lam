@@ -72,6 +72,8 @@ class eduPerson extends baseModule {
 								'eduPersonPrimaryAffiliation', 'eduPersonPrincipalName',
 								'eduPersonEntitlement', 'eduPersonPrimaryOrgUnitDN',
 								'eduPersonScopedAffiliation');
+		// RDN attribute
+		$return["RDN"] = array('eduPersonPrincipalName' => 'low');
 		// help Entries
 		$return['help'] = array(
 			'primaryAffiliation' => array(
