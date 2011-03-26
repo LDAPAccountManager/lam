@@ -226,6 +226,18 @@ class eduPerson extends baseModule {
 	}
 
 	/**
+	* This functions return true if all needed settings are done.
+	*
+	* @return boolean true, if all is ok
+	*/
+	function module_complete() {
+		if (($this->getAccountContainer()->rdn == 'eduPersonPrincipalName') && !isset($this->attributes['eduPersonPrincipalName'][0])) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
 	 * @return htmlElement HTML meta data

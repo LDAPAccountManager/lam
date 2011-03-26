@@ -668,6 +668,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		if (!isset($this->attributes['sn'][0]) || ($this->attributes['sn'][0] == '')) return false;
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (!in_array('posixAccount', $modules)) {
+			if (($this->getAccountContainer()->rdn == 'uid') && !isset($this->attributes['uid'][0])) {
+				return false;
+			}
+		}
 		return true;
 	}
 
