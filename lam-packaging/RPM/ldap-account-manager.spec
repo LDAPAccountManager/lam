@@ -27,6 +27,7 @@ Requires:      php5
 Requires:      php5-ldap
 Requires:      php5-hash
 Requires:      php5-gd
+Requires:      php5-gettext
 Requires:      perl
 %endif
 %if %is_fedora
