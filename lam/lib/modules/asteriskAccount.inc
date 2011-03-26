@@ -230,11 +230,81 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Headline" => _("Last qualify milliseconds"),
 				"Text" => _("The number of milliseconds for the last qualify.")
 			),
-                    
+			'hiddenOptions' => array(
+				"Headline" => _("Hidden options"),
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
+			),
 		);
 		// config options
 		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'));
+		$configRealmTable = new htmlTable();
+		$configRealmTable->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'));
+		$configContainer->addElement($configRealmTable, true);
+		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
+		$configHiddenHead = new htmlTable();
+		$configHiddenHead->addElement(new htmlOutputText(_('Hidden options')));
+		$configHiddenHead->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainerOptions = new htmlTable();
+		$configContainer->addElement($configHiddenHead, true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountUserAgent', true, _('User agent'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountAMAFlags', true, _('AMA flags'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountCallGroup', true, _('Call groups'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountDTMFMode', true, _('DTFM flags'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountFromUser', true, _('From user'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountFromDomain', true, _('From domain'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountFullContact', true, _('Full contact'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountInsecure', true, _('Insecure'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountMailbox', true, _('Mailbox'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountNAT', true, _('NAT'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountDeny', true, _('Deny'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountPermit', true, _('Permit'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountPickupGroup', true, _('Pickup group'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountPort', true, _('Port'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountQualify', true, _('Qualify'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountRestrictCID', true, _('Restrict caller ID'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountRTPTimeout', true, _('RTP timeout'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountRTPHoldTimeout', true, _('RTP hold timeout'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountDisallowedCodec', true, _('Disallowed codec'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountAllowedCodec', true, _('Allowed codec'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountMusicOnHold', true, _('Music on hold'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountExpirationTimestamp', true, _('Expiration timestamp'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountRegistrationContext', true, _('Registration context'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountRegistrationExten', true, _('Registration extention'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountCanCallForward', true, _('Can call forward'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountIPAddress', true, _('IP address'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountDefaultUser', true, _('Default user'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountRegistrationServer', true, _('Registration server'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_AstAccountLastQualifyMilliseconds', true, _('Last qualify milliseconds'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['user'] = $configContainer;
 		// self service options	
 		$selfServiceContainer = new htmlTable();
