@@ -809,6 +809,118 @@ class asteriskAccount extends baseModule implements passwordService {
 				$errors[] = $this->messages['AstAccountType'][1];
 			}
 		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountUserAgent')) {
+			$this->attributes['AstAccountUserAgent'][0] = $_POST['AstAccountUserAgent'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAMAFlags')) {
+			if (($_POST['AstAccountAMAFlags'] == '-') && isset($this->attributes['AstAccountAMAFlags'][0])) {
+				unset($this->attributes['AstAccountAMAFlags'][0]);
+			}
+			else {
+				$this->attributes['AstAccountAMAFlags'][0] = $_POST['AstAccountAMAFlags'];
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCallGroup')) {
+			$this->attributes['AstAccountCallGroup'][0] = $_POST['AstAccountCallGroup'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDTMFMode')) {
+			if (($_POST['AstAccountDTMFMode'] == '-') && isset($this->attributes['AstAccountDTMFMode'][0])) {
+				unset($this->attributes['AstAccountDTMFMode'][0]);
+			}
+			else {
+				$this->attributes['AstAccountDTMFMode'][0] = $_POST['AstAccountDTMFMode'];
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromUser')) {
+			$this->attributes['AstAccountFromUser'][0] = $_POST['AstAccountFromUser'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromDomain')) {
+			$this->attributes['AstAccountFromDomain'][0] = $_POST['AstAccountFromDomain'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFullContact')) {
+			$this->attributes['AstAccountFullContact'][0] = $_POST['AstAccountFullContact'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountInsecure')) {
+			if (($_POST['AstAccountInsecure'] == '-') && isset($this->attributes['AstAccountInsecure'][0])) {
+				unset($this->attributes['AstAccountInsecure'][0]);
+			}
+			else {
+				$this->attributes['AstAccountInsecure'][0] = $_POST['AstAccountInsecure'];
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMailbox')) {
+			$this->attributes['AstAccountMailbox'][0] = $_POST['AstAccountMailbox'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountNAT')) {
+			if (($_POST['AstAccountNAT'] == '-') && isset($this->attributes['AstAccountNAT'][0])) {
+				unset($this->attributes['AstAccountNAT'][0]);
+			}
+			else {
+				$this->attributes['AstAccountNAT'][0] = $_POST['AstAccountNAT'];
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDeny')) {
+			$this->attributes['AstAccountDeny'][0] = $_POST['AstAccountDeny'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPermit')) {
+			$this->attributes['AstAccountPermit'][0] = $_POST['AstAccountPermit'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPickupGroup')) {
+			$this->attributes['AstAccountPickupGroup'][0] = $_POST['AstAccountPickupGroup'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPort')) {
+			$this->attributes['AstAccountPort'][0] = $_POST['AstAccountPort'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountQualify')) {
+			$this->attributes['AstAccountQualify'][0] = $_POST['AstAccountQualify'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRestrictCID')) {
+			$this->attributes['AstAccountRestrictCID'][0] = $_POST['AstAccountRestrictCID'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPTimeout')) {
+			$this->attributes['AstAccountRTPTimeout'][0] = $_POST['AstAccountRTPTimeout'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPHoldTimeout')) {
+			$this->attributes['AstAccountRTPHoldTimeout'][0] = $_POST['AstAccountRTPHoldTimeout'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDisallowedCodec')) {
+			$this->attributes['AstAccountDisallowedCodec'][0] = $_POST['AstAccountDisallowedCodec'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAllowedCodec')) {
+			$this->attributes['AstAccountAllowedCodec'][0] = $_POST['AstAccountAllowedCodec'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMusicOnHold')) {
+			$this->attributes['AstAccountMusicOnHold'][0] = $_POST['AstAccountMusicOnHold'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountExpirationTimestamp')) {
+			$this->attributes['AstAccountExpirationTimestamp'][0] = $_POST['AstAccountExpirationTimestamp'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationContext')) {
+			$this->attributes['AstAccountRegistrationContext'][0] = $_POST['AstAccountRegistrationContext'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationExten')) {
+			$this->attributes['AstAccountRegistrationExten'][0] = $_POST['AstAccountRegistrationExten'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCanCallForward')) {
+			if (($_POST['AstAccountCanCallForward'] == '-') && isset($this->attributes['AstAccountCanCallForward'][0])) {
+				unset($this->attributes['AstAccountCanCallForward'][0]);
+			}
+			else {
+				$this->attributes['AstAccountCanCallForward'][0] = $_POST['AstAccountCanCallForward'];
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountIPAddress')) {
+			$this->attributes['AstAccountIPAddress'][0] = $_POST['AstAccountIPAddress'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDefaultUser')) {
+			$this->attributes['AstAccountDefaultUser'][0] = $_POST['AstAccountDefaultUser'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationServer')) {
+			$this->attributes['AstAccountRegistrationServer'][0] = $_POST['AstAccountRegistrationServer'];
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountLastQualifyMilliseconds')) {
+			$this->attributes['AstAccountLastQualifyMilliseconds'][0] = $_POST['AstAccountLastQualifyMilliseconds'];
+		}
 		return $errors;
 	}
 
