@@ -398,6 +398,13 @@ class asteriskAccount extends baseModule implements passwordService {
 				'required' => true
 			),
 		);
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountUserAgent')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountUserAgent',
+				'description' => _('User agent'),
+				'help' => 'AstAccountUserAgent',
+			);
+		}
 		return $return;
 	}
 
@@ -418,6 +425,16 @@ class asteriskAccount extends baseModule implements passwordService {
 		$this->messages['AstAccountType'][0] = array('ERROR', _('Please enter the account type.'));
 		$this->messages['AstAccountType'][1] = array('ERROR', _('The account type is invalid.'));
 		$this->messages['AstAccountType'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountType', _('The account type is invalid.'));
+		$this->messages['AstAccountFromUser'][0] = array('ERROR', _('Please enter a valid from user.'));
+		$this->messages['AstAccountFromUser'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountFromUser', _('Please enter a valid from user.'));
+		$this->messages['AstAccountFromDomain'][0] = array('ERROR', _('Please enter a valid from domain.'));
+		$this->messages['AstAccountFromDomain'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountFromDomain', _('Please enter a valid from domain.'));
+		$this->messages['AstAccountPort'][0] = array('ERROR', _('Please enter a valid port number.'));
+		$this->messages['AstAccountPort'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountPort', _('Please enter a valid port number.'));
+		$this->messages['AstAccountIPAddress'][0] = array('ERROR', _('The IP address is invalid.'));
+		$this->messages['AstAccountIPAddress'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountIPAddress', _('The IP address is invalid.'));
+		$this->messages['AstAccountDefaultUser'][0] = array('ERROR', _('Please enter a valid default user.'));
+		$this->messages['AstAccountDefaultUser'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountDefaultUser', _('Please enter a valid default user.'));
 	}
 
 	/**
@@ -833,9 +850,15 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromUser')) {
 			$this->attributes['AstAccountFromUser'][0] = $_POST['AstAccountFromUser'];
+			if (($_POST['AstAccountFromUser'] != '') && !get_preg($_POST['AstAccountFromUser'], 'username')) {
+				$errors[] = $this->messages['AstAccountFromUser'][0];
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromDomain')) {
 			$this->attributes['AstAccountFromDomain'][0] = $_POST['AstAccountFromDomain'];
+			if (($_POST['AstAccountFromDomain'] != '') && !get_preg($_POST['AstAccountFromDomain'], 'domainname')) {
+				$errors[] = $this->messages['AstAccountFromDomain'][0];
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFullContact')) {
 			$this->attributes['AstAccountFullContact'][0] = $_POST['AstAccountFullContact'];
@@ -870,6 +893,9 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPort')) {
 			$this->attributes['AstAccountPort'][0] = $_POST['AstAccountPort'];
+			if (($_POST['AstAccountPort'] != '') && !get_preg($_POST['AstAccountPort'], 'digit')) {
+				$errors[] = $this->messages['AstAccountPort'][0];
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountQualify')) {
 			$this->attributes['AstAccountQualify'][0] = $_POST['AstAccountQualify'];
@@ -911,9 +937,15 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountIPAddress')) {
 			$this->attributes['AstAccountIPAddress'][0] = $_POST['AstAccountIPAddress'];
+			if (($_POST['AstAccountIPAddress'] != '') && !get_preg($_POST['AstAccountIPAddress'], 'ip')) {
+				$errors[] = $this->messages['AstAccountIPAddress'][0];
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDefaultUser')) {
 			$this->attributes['AstAccountDefaultUser'][0] = $_POST['AstAccountDefaultUser'];
+			if (($_POST['AstAccountDefaultUser'] != '') && !get_preg($_POST['AstAccountDefaultUser'], 'username')) {
+				$errors[] = $this->messages['AstAccountDefaultUser'][0];
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationServer')) {
 			$this->attributes['AstAccountRegistrationServer'][0] = $_POST['AstAccountRegistrationServer'];
