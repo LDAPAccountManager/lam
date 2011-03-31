@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -338,7 +338,11 @@ function showMainPage($scope, $selectedModules) {
 			$rowCells[] = $columnSpacer;
 			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['name']);
 			$rowCells[] = $columnSpacer;
-			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['example']);
+			$example = '';
+			if (isset($columns[$modules[$m]][$i]['example'])) {
+				$example = $columns[$modules[$m]][$i]['example'];
+			}
+			$rowCells[] = new htmlOutputText($example);
 			$rowCells[] = $columnSpacer;
 			if (isset($columns[$modules[$m]][$i]['default'])) {
 				$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['default']);
@@ -393,7 +397,12 @@ function showMainPage($scope, $selectedModules) {
 		for ($m = 0; $m < sizeof($modules); $m++) {
 			if (sizeof($columns[$modules[$m]]) < 1) continue;
 			for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-				$sampleCSV_row[] = "\"" . $columns[$modules[$m]][$i]['example'] . "\"";
+				if (isset($columns[$modules[$m]][$i]['example'])) {
+					$sampleCSV_row[] = '"' . $columns[$modules[$m]][$i]['example'] . '"';
+				}
+				else {
+					$sampleCSV_row[] = '""';
+				}
 			}
 		}
 	$sampleCSV = implode(",", $sampleCSV_head) . "\n" . implode(",", $sampleCSV_row) . "\n";
