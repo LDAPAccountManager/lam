@@ -405,6 +405,210 @@ class asteriskAccount extends baseModule implements passwordService {
 				'help' => 'AstAccountUserAgent',
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAMAFlags')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountAMAFlags',
+				'description' => _('AMA flags'),
+				'help' => 'AstAccountAMAFlags',
+				'example' => 'billing',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCallGroup')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountCallGroup',
+				'description' => _('Call groups'),
+				'help' => 'AstAccountCallGroup',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDTMFMode')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountDTMFMode',
+				'description' => _('DTFM flags'),
+				'help' => 'AstAccountDTMFMode',
+				'example' => 'auto',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromUser')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountFromUser',
+				'description' => _('From user'),
+				'help' => 'AstAccountFromUser',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromDomain')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountFromDomain',
+				'description' => _('From domain'),
+				'help' => 'AstAccountFromDomain',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFullContact')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountFullContact',
+				'description' => _('Full contact'),
+				'help' => 'AstAccountFullContact',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountInsecure')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountInsecure',
+				'description' => _('Insecure'),
+				'help' => 'AstAccountInsecure',
+				'example' => 'invite',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMailbox')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountMailbox',
+				'description' => _('Mailbox'),
+				'help' => 'AstAccountMailbox',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountNAT')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountNAT',
+				'description' => _('NAT'),
+				'help' => 'AstAccountNAT',
+				'example' => 'never',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDeny')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountDeny',
+				'description' => _('Deny'),
+				'help' => 'AstAccountDeny',
+			);
+		}
+		
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPermit')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountPermit',
+				'description' => _('Permit'),
+				'help' => 'AstAccountPermit',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPickupGroup')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountPickupGroup',
+				'description' => _('Pickup group'),
+				'help' => 'AstAccountPickupGroup',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPort')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountPort',
+				'description' => _('Port'),
+				'help' => 'AstAccountPort',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountQualify')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountQualify',
+				'description' => _('Qualify'),
+				'help' => 'AstAccountQualify',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRestrictCID')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountRestrictCID',
+				'description' => _('Restrict caller ID'),
+				'help' => 'AstAccountRestrictCID',
+			);
+		}
+
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPTimeout')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountRTPTimeout',
+				'description' => _('RTP timeout'),
+				'help' => 'AstAccountRTPTimeout',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPHoldTimeout')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountRTPHoldTimeout',
+				'description' => _('RTP hold timeout'),
+				'help' => 'AstAccountRTPHoldTimeout',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDisallowedCodec')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountDisallowedCodec',
+				'description' => _('Disallowed codec'),
+				'help' => 'AstAccountDisallowedCodec',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAllowedCodec')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountAllowedCodec',
+				'description' => _('Allowed codec'),
+				'help' => 'AstAccountAllowedCodec',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMusicOnHold')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountMusicOnHold',
+				'description' => _('Music on hold'),
+				'help' => 'AstAccountMusicOnHold',
+			);
+		}
+		
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountExpirationTimestamp')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountExpirationTimestamp',
+				'description' => _('Expiration timestamp'),
+				'help' => 'AstAccountExpirationTimestamp',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationContext')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountRegistrationContext',
+				'description' => _('Registration context'),
+				'help' => 'AstAccountRegistrationContext',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationExten')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountRegistrationExten',
+				'description' => _('Registration extention'),
+				'help' => 'AstAccountRegistrationExten',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCanCallForward')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountCanCallForward',
+				'description' => _('Can call forward'),
+				'help' => 'AstAccountCanCallForward',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountIPAddress')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountIPAddress',
+				'description' => _('IP address'),
+				'help' => 'AstAccountIPAddress',
+			);
+		}
+		
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDefaultUser')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountDefaultUser',
+				'description' => _('Default user'),
+				'help' => 'AstAccountDefaultUser',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationServer')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountRegistrationServer',
+				'description' => _('Registration server'),
+				'help' => 'AstAccountRegistrationServer',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountLastQualifyMilliseconds')) {
+			$return['upload_columns'][] = array(
+				'name' => 'asteriskAccount_AstAccountLastQualifyMilliseconds',
+				'description' => _('Last qualify milliseconds'),
+				'help' => 'AstAccountLastQualifyMilliseconds',
+			);
+		}
 		return $return;
 	}
 
@@ -1133,6 +1337,157 @@ class asteriskAccount extends baseModule implements passwordService {
 				$attributes = array('AstAccountCallerID' => array($partialAccounts[$i]['AstAccountCallerID'])); // fake attribute list for password building
 				$pwdString = asteriskAccount::buildPasswordString($attributes, $this->moduleSettings, $rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
 				$partialAccounts[$i]['AstAccountRealmedPassword'] = $pwdString;
+			}
+			
+			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountUserAgent']] != "") {
+				$partialAccounts[$i]['AstAccountUserAgent'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountUserAgent']];
+			}
+						
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountAMAFlags']] != "")) {
+				$partialAccounts[$i]['AstAccountAMAFlags'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountAMAFlags']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountCallGroup']] != "")) {
+				$partialAccounts[$i]['AstAccountCallGroup'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountCallGroup']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDTMFMode']] != "")) {
+				$partialAccounts[$i]['AstAccountDTMFMode'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDTMFMode']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromUser']] != "")) {
+				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromUser']], 'username')) {
+					$partialAccounts[$i]['AstAccountFromUser'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountFromUser']];
+				}
+				else {
+					$errMsg = $this->messages['AstAccountFromUser'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromDomain']] != "")) {
+				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromDomain']], 'domainname')) {
+					$partialAccounts[$i]['AstAccountFromDomain'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountFromDomain']];
+				}
+				else {
+					$errMsg = $this->messages['AstAccountFromDomain'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountFullContact']] != "")) {
+				$partialAccounts[$i]['AstAccountFullContact'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountFullContact']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountInsecure']] != "")) {
+				$partialAccounts[$i]['AstAccountInsecure'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountInsecure']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountMailbox']] != "")) {
+				$partialAccounts[$i]['AstAccountMailbox'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountMailbox']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountNAT']] != "")) {
+				$partialAccounts[$i]['AstAccountNAT'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountNAT']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDeny']] != "")) {
+				$partialAccounts[$i]['AstAccountDeny'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDeny']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountPermit']] != "")) {
+				$partialAccounts[$i]['AstAccountPermit'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountPermit']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountPickupGroup']] != "")) {
+				$partialAccounts[$i]['AstAccountPickupGroup'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountPickupGroup']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountPort']] != "")) {
+				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountPort']], 'digit')) {
+					$partialAccounts[$i]['AstAccountPort'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountPort']];
+				}
+				else {
+					$errMsg = $this->messages['AstAccountPort'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountQualify']] != "")) {
+				$partialAccounts[$i]['AstAccountQualify'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountQualify']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRestrictCID']] != "")) {
+				$partialAccounts[$i]['AstAccountRestrictCID'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRestrictCID']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPTimeout']] != "")) {
+				$partialAccounts[$i]['AstAccountRTPTimeout'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPTimeout']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPHoldTimeout']] != "")) {
+				$partialAccounts[$i]['AstAccountRTPHoldTimeout'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPHoldTimeout']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDisallowedCodec']] != "")) {
+				$partialAccounts[$i]['AstAccountDisallowedCodec'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDisallowedCodec']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountAllowedCodec']] != "")) {
+				$partialAccounts[$i]['AstAccountAllowedCodec'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountAllowedCodec']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountMusicOnHold']] != "")) {
+				$partialAccounts[$i]['AstAccountMusicOnHold'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountMusicOnHold']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountExpirationTimestamp']] != "")) {
+				$partialAccounts[$i]['AstAccountExpirationTimestamp'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountExpirationTimestamp']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationContext']] != "")) {
+				$partialAccounts[$i]['AstAccountRegistrationContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationContext']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationExten']] != "")) {
+				$partialAccounts[$i]['AstAccountRegistrationExten'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationExten']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountCanCallForward']] != "")) {
+				$partialAccounts[$i]['AstAccountCanCallForward'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountCanCallForward']];
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountIPAddress']] != "")) {
+				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountIPAddress']], 'ip')) {
+					$partialAccounts[$i]['AstAccountIPAddress'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountIPAddress']];
+				}
+				else {
+					$errMsg = $this->messages['AstAccountIPAddress'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDefaultUser']] != "")) {
+				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountDefaultUser']], 'username')) {
+					$partialAccounts[$i]['AstAccountDefaultUser'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDefaultUser']];
+				}
+				else {
+					$errMsg = $this->messages['AstAccountDefaultUser'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationServer']] != "")) {
+				$partialAccounts[$i]['AstAccountRegistrationServer'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationServer']];
+			}
+
+			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountLastQualifyMilliseconds']] != "")) {
+				$partialAccounts[$i]['AstAccountLastQualifyMilliseconds'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountLastQualifyMilliseconds']];
 			}
 		}
 		return $messages;
