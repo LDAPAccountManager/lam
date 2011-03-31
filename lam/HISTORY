@@ -4,12 +4,13 @@ April 2011 3.4.0
    -> added quota management
   - Personal: added additional options for account profiles
   - Mail aliases: sort receipients (RFE 3170336)
-  - Asterisk: support AstAccountType attribute
+  - Asterisk: support all attributes (can be disabled in configuration)
   - Samba 3/Shadow: allow to sync expiration date (RFE 3147751)
   - LAM Pro:
    -> support automount entries
    -> Zarafa groups: allow combination with group of names
    -> enhanced wildcards for custom scripts
+   -> Group of (unique) names: allow members to be optional
   - fixed bugs:
    -> Renaming of default profile (3183920)
    -> Profile editor: fixed problems with multi select
