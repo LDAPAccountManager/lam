@@ -101,18 +101,18 @@ foreach ($toSort as $key => $value) {
 		</td>
 	<td align="right" height=30>
 	<ul id="dropmenu" class="dropmenu">
-		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
+		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
 		<?php
 		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
 		?>
 	    <li>
-			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img width="16" height="16" alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 		</li>
 		<?php
 		}
 		?>
 		<li>
-			<a href="<?php echo $headerPrefix; ?>tools.php"><img alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+			<a href="<?php echo $headerPrefix; ?>tools.php"><img height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
 				<ul>
 				<?php
 					for ($i = 0; $i < sizeof($tools); $i++) {
@@ -120,7 +120,7 @@ foreach ($toSort as $key => $value) {
 						echo '<li title="' . $tools[$i]->getDescription() . '">';
 						$link = $headerPrefix . $tools[$i]->getLink();
 						echo '<a href="' . $link . "\">\n";
-						echo '<img alt="" src="' . $headerPrefix . '../graphics/' . $tools[$i]->getImageLink() . '"> ' . $tools[$i]->getName();
+						echo '<img height="16" width="16" alt="" src="' . $headerPrefix . '../graphics/' . $tools[$i]->getImageLink() . '"> ' . $tools[$i]->getName();
 						echo "</a>\n";
 						if (sizeof($subTools) > 0) {
 							echo "<ul>\n";
@@ -142,7 +142,7 @@ foreach ($toSort as $key => $value) {
 		if ($_SESSION['config']->get_Suffix('tree') != "") {
 		?>
 	    <li>
-			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img alt="tree" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
+			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img height="16" width="16" alt="tree" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
 		</li>
 		<?php
 		}
@@ -171,7 +171,7 @@ jQuery(document).ready(function() {
 		for ($i = 0; $i < sizeof($types); $i++) {
 			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] .
 				'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
-				'<img alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
+				'<img height="16" width="16" alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
 				getTypeAlias($types[$i]) . '</a>';
 			echo '<li id="tab_' . $types[$i] . '" class="ui-state-default ui-corner-top">';
 			echo $link;

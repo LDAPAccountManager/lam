@@ -949,7 +949,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\" ";
 		echo "onmouseover=\"Tip('" . $message . "', TITLE, '" . $title . "')\" onmouseout=\"UnTip()\">";
-		echo "<img src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+		echo "<img width=16 height=16 src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 	echo "</a>";
 }
 
@@ -1605,7 +1605,7 @@ class accountContainer {
 			if ($buttonStatus == 'disabled') echo " disabled";
 			echo ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 			if ($buttonImage != null) {
-				echo "<img class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"../../graphics/$buttonImage\">&nbsp;";
+				echo "<img height=32 width=32 class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"../../graphics/$buttonImage\">&nbsp;";
 			}
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "&nbsp;</button>\n";

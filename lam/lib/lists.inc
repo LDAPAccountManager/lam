@@ -279,12 +279,12 @@ class lamList {
 			if ($this->page != 1) {
 				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
+					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
 			}
 			if ($this->page > 10) {
 				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
+					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 			}
 			for ($i = $this->page - 5; $i < ($this->page + 4); $i++) {
 				if ($i >= ($count / $this->maxPageEntries)) {
@@ -304,12 +304,12 @@ class lamList {
 			if ($this->page < (($count / $this->maxPageEntries) - 10)) {
 				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
+					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 			}
 			if ($this->page < ($count / $this->maxPageEntries)) {
 				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . round(($count / $this->maxPageEntries)) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
-					"<img class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
+					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 			}
 			echo "</td>";
 		}
@@ -332,7 +332,7 @@ class lamList {
 				}
 				echo "<th><a href=\"list.php?type=" . $this->type . "&amp;".
 					"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
-					"&nbsp;<img style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
+					"&nbsp;<img height=16 width=16 style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
 			}
 			else echo "<th><a href=\"list.php?type=" . $this->type . "&amp;".
 				"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
@@ -401,7 +401,7 @@ class lamList {
 		// display select all link
 		$colspan = sizeof($this->attrArray) + 1;
 		echo "<tr class=\"" . $this->type . "list-bright\">\n";
-		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
+		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\">" . _("Select all") . "</font></a></td>\n";
 		echo "</tr>\n";
@@ -420,13 +420,13 @@ class lamList {
 		$toolCount = 0;
 		// edit image
 		$output .= "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-		$output .= "<img src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
+		$output .= "<img height=16 width=16 src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
 		$output .= "</a>\n ";
 		$toolCount++;
 		// delete image
 		if (checkIfWriteAccessIsAllowed()) {
 			$output .= "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			$output .= "<img src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
+			$output .= "<img height=16 width=16 src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
 			$output .= "</a>\n ";
 			$toolCount++;
 		}
@@ -438,7 +438,7 @@ class lamList {
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$output .= "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			$output .= "<img src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
+			$output .= "<img height=16 width=16 src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
 			$output .= "</a>\n ";
 			$toolCount++;
 		}
@@ -716,7 +716,7 @@ class lamList {
 		$this->listShowOUSelection();
 		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
 		echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
-			echo '<img src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
+			echo '<img height=16 width=16 src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
 		echo '</a>';
 		echo "</td>\n";
 		echo "</tr>\n";

@@ -361,8 +361,6 @@ $securitySettings = new htmlFieldset($securitySettingsContent, _("Security setti
 $container->addElement($securitySettings, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);
 
-$container->addElement(new htmlOutputText('*=' . _("required")), true);
-
 parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo "</div></div>";

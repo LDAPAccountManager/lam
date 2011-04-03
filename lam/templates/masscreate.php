@@ -295,7 +295,9 @@ function showMainPage($scope, $selectedModules) {
 	$dnRDNRowCells[] = $columnSpacer;
 	$dnRDNRowCells[] = new htmlHelpLink('301');
 	$dnRDNRowCells[] = $columnSpacer;
-	$dnRDNRowCells[] = new htmlOutputText(_("RDN identifier") . '*');
+	$rdnText = new htmlOutputText(_("RDN identifier"));
+	$rdnText->setMarkAsRequired(true);
+	$dnRDNRowCells[] = $rdnText;
 	$dnRDNRowCells[] = $columnSpacer;
 	$dnRDNRowCells[] = new htmlOutputText('dn_rdn');
 	$dnRDNRowCells[] = $columnSpacer;
@@ -326,15 +328,17 @@ function showMainPage($scope, $selectedModules) {
 		$columnContainer->addElement($moduleTitle);
 		$odd = true;
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-			$required = '';
+			$required = false;
 			if (isset($columns[$modules[$m]][$i]['required']) && ($columns[$modules[$m]][$i]['required'] == true)) {
-				$required = '*';
+				$required = true;
 			}
 			$rowCells = array();
 			$rowCells[] = $columnSpacer;
 			$rowCells[] = new htmlHelpLink($columns[$modules[$m]][$i]['help'], $modules[$m], $scope);
 			$rowCells[] = $columnSpacer;
-			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['description'] . $required);
+			$descriptionText = new htmlOutputText($columns[$modules[$m]][$i]['description'] . $required);
+			$descriptionText->setMarkAsRequired($required);
+			$rowCells[] = $descriptionText;
 			$rowCells[] = $columnSpacer;
 			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['name']);
 			$rowCells[] = $columnSpacer;

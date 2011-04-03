@@ -482,7 +482,9 @@ class htmlTableExtendedInputField extends htmlInputField {
 		// print label text
 		echo $this->label;
 		if ($this->required) {
-			echo '*';
+			$graphicsPath = "../../graphics";
+			if (is_dir("../graphics")) $graphicsPath = "../graphics";
+			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
 		}
 		echo "\n</td>\n<td>\n";
 		// print input field
@@ -1165,6 +1167,8 @@ class htmlOutputText extends htmlElement {
 	private $escapeHTML;
 	/** bold text */
 	private $isBold = false;
+	/** mark as required */
+	private $markAsRequired = false;
 
 	/**
 	 * Constructor.
@@ -1198,6 +1202,11 @@ class htmlOutputText extends htmlElement {
 		else {
 			echo $this->string;
 		}
+		if ($this->markAsRequired) {
+			$graphicsPath = "../../graphics";
+			if (is_dir("../graphics")) $graphicsPath = "../graphics";
+			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
+		}
 		if ($this->isBold) {
 			echo "</b>";
 		}
@@ -1211,6 +1220,15 @@ class htmlOutputText extends htmlElement {
 	 */
 	public function setIsBold($isBold) {
 		$this->isBold = $isBold;
+	}
+
+	/**
+	 * Adds a marker that indicates a required field.
+	 * 
+	 * @param boolean $markAsRequired add marker
+	 */
+	public function setMarkAsRequired($markAsRequired) {
+		$this->markAsRequired = $markAsRequired;
 	}
 
 }
@@ -1568,7 +1586,9 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		echo $this->label;
 		if ($this->required) {
-			echo '*';
+			$graphicsPath = "../../graphics";
+			if (is_dir("../graphics")) $graphicsPath = "../graphics";
+			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
 		}
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
