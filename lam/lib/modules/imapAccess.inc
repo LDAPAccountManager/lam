@@ -38,6 +38,8 @@ $Id$
  */
 class imapAccess extends baseModule {
 	
+	private $profileQuotaLimit = null;
+	
 	/**
 	 * Returns meta data that is interpreted by parent class
 	 *
@@ -132,6 +134,14 @@ class imapAccess extends baseModule {
 			'required' => true,
 			'required_message' => $this->messages['config'][1],
 			'error_message' => $this->messages['config'][1]);
+		// profile options
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), true);		
+		$return['profile_options'] = $profileContainer;
+		$return['profile_checks']['ImapAccess_QuotaLimit'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'error_message' => $this->messages['managemailbox'][8]);
 		return $return;
 	}
 
@@ -265,13 +275,18 @@ class imapAccess extends baseModule {
 	 * @return htmlTable table with added information about user quotas or controls to add quota
 	 */
 	function renderQuotasForMailbox($htmlTable, $mbox, $username) {
+		if (($this->profileQuotaLimit != null) && ($this->profileQuotaLimit != '')) {
+			@imap_set_quota($mbox, $username, $this->profileQuotaLimit);
+			$this->profileQuotaLimit = null;
+		}
 		$quota_values = @imap_get_quota($mbox, $username);
 		imap_errors();
 		if (is_array($quota_values) && (sizeof($quota_values) > 0)) {
 			if (isset($quota_values['STORAGE']) && is_array($quota_values['STORAGE'])) {
+				$quotaLimit = $quota_values['STORAGE']['limit'];
 				$htmlTable->addElement(new htmlOutputText(_("Current usage (kB)")));
 				$htmlTable->addElement(new htmlOutputText($quota_values['STORAGE']['usage']), true);
-				$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quota_values['STORAGE']['limit'], 'ImapUserQuotaLimit');
+				$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
 				$htmlTable->addElement($quotaLimitInput, false);
 				$htmlTable->addElement(new htmlSpacer('10px', null), false);
 				$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
@@ -396,6 +411,19 @@ class imapAccess extends baseModule {
 		return $errors;
 	}
 
+	/**
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		if (isset($profile['ImapAccess_QuotaLimit'][0]) && $profile['ImapAccess_QuotaLimit'][0] != '') {
+			$this->profileQuotaLimit =  $profile['ImapAccess_QuotaLimit'][0];                
+		}            
+	}
+	
 	/**
 	 * Returns the admin password.
 	 *
