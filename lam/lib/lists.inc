@@ -330,11 +330,11 @@ class lamList {
 				if ($this->sortDirection < 0) {
 					$sortImage = "sort_desc.png";
 				}
-				echo "<th><a href=\"list.php?type=" . $this->type . "&amp;".
+				echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type . "&amp;".
 					"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
 					"&nbsp;<img height=16 width=16 style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
 			}
-			else echo "<th><a href=\"list.php?type=" . $this->type . "&amp;".
+			else echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type . "&amp;".
 				"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
 		}
 		echo "</tr>\n";
@@ -356,8 +356,8 @@ class lamList {
 			if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
 				$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
 			}
-			echo "<td>";
-			echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event)\">");
+			echo "<td align=\"left\">";
+			echo "<input style=\"margin-right: 10px;\" type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event)\">";
 			echo "</td>\n";
 		}
 		echo "</tr></thead>\n";
