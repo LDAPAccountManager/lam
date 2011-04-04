@@ -250,10 +250,16 @@ function showMainPage($scope, $selectedModules) {
 	$container->addElement(new htmlTitle(_("Columns")), true);
 	$columnContainer = new htmlTable();
 	$columnContainer->setCSSClasses($scope . 'list');
+	// DN options
+	$dnTitle = new htmlSubTitle(_("DN settings"), '../graphics/logo32.png');
+	$dnTitle->colspan = 20;
+	$columnContainer->addElement($dnTitle, true);
 	$columnContainer->addElement($columnSpacer);
 	$columnContainer->addElement(new htmlOutputText(''));
 	$columnContainer->addElement($columnSpacer);
-	$columnContainer->addElement(new htmlOutputText(''));
+	$header0 = new htmlOutputText(_('Name'));
+	$header0->alignment = htmlElement::ALIGN_LEFT;
+	$columnContainer->addElement($header0, false, true);
 	$columnContainer->addElement($columnSpacer);
 	$header1 = new htmlOutputText(_("Identifier"));
 	$header1->alignment = htmlElement::ALIGN_LEFT;
@@ -269,11 +275,7 @@ function showMainPage($scope, $selectedModules) {
 	$columnContainer->addElement($columnSpacer);
 	$header4 = new htmlOutputText(_("Possible values"));
 	$header4->alignment = htmlElement::ALIGN_LEFT;
-	$columnContainer->addElement($header4, true, true);
-	// DN options
-	$dnTitle = new htmlSubTitle(_("DN settings"), '../graphics/logo32.png');
-	$dnTitle->colspan = 20;
-	$columnContainer->addElement($dnTitle);
+	$columnContainer->addElement($header4, false, true);
 	$dnSuffixRowCells = array();
 	$dnSuffixRowCells[] = $columnSpacer;
 	$dnSuffixRowCells[] = new htmlHelpLink('361');
@@ -317,6 +319,7 @@ function showMainPage($scope, $selectedModules) {
 		if (sizeof($columns[$modules[$m]]) < 1) {
 			continue;
 		}
+		$columnContainer->addElement(new htmlSpacer(null, '10px'), true);
 		$icon = '';
 		$module = new $modules[$m]($scope);
 		$iconImage = $module->getIcon();
@@ -325,7 +328,29 @@ function showMainPage($scope, $selectedModules) {
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($modules[$m], $scope), $icon);
 		$moduleTitle->colspan = 20;
-		$columnContainer->addElement($moduleTitle);
+		$columnContainer->addElement($moduleTitle, true);
+		$columnContainer->addElement(new htmlOutputText(''));
+		$columnContainer->addElement(new htmlOutputText(''));
+		$columnContainer->addElement(new htmlOutputText(''));
+		$nameOut = new htmlOutputText(_('Name'));
+		$nameOut->alignment = htmlElement::ALIGN_LEFT;
+		$columnContainer->addElement($nameOut, false, true);
+		$columnContainer->addElement(new htmlOutputText(''));
+		$idOut = new htmlOutputText(_('Identifier'));
+		$idOut->alignment = htmlElement::ALIGN_LEFT;
+		$columnContainer->addElement($idOut, false, true);
+		$columnContainer->addElement(new htmlOutputText(''));
+		$exampleOut = new htmlOutputText(_('Example value'));
+		$exampleOut->alignment = htmlElement::ALIGN_LEFT;
+		$columnContainer->addElement($exampleOut, false, true);
+		$columnContainer->addElement(new htmlOutputText(''));
+		$defaultOut = new htmlOutputText(_('Default value'));
+		$defaultOut->alignment = htmlElement::ALIGN_LEFT;
+		$columnContainer->addElement($defaultOut, false, true);
+		$columnContainer->addElement(new htmlOutputText(''));
+		$possibleOut = new htmlOutputText(_('Possible values'));
+		$possibleOut->alignment = htmlElement::ALIGN_LEFT;
+		$columnContainer->addElement($possibleOut, false, true);
 		$odd = true;
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			$required = false;
