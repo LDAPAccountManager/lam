@@ -39,6 +39,10 @@ body {
   background-color:#F5F5F5;
 }
 
+.defaultBackground {
+  background-color:#F5F5F5;
+}
+
 /* links */
 a {
 color: blue;
@@ -178,6 +182,10 @@ tr.highlight {
 
 .hidden {
 	display: none;
+}
+
+.nowrap {
+	white-space: nowrap;
 }
 
 /**

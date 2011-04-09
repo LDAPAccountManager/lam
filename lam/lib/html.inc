@@ -480,12 +480,14 @@ class htmlTableExtendedInputField extends htmlInputField {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		// print label text
+		echo '<div class="nowrap">';
 		echo $this->label;
 		if ($this->required) {
 			$graphicsPath = "../../graphics";
 			if (is_dir("../graphics")) $graphicsPath = "../graphics";
 			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
 		}
+		echo '</div>';
 		echo "\n</td>\n<td>\n";
 		// print input field
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
@@ -1009,7 +1011,9 @@ class htmlTableExtendedSelect extends htmlSelect {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo '<div class="nowrap">';
 		echo $this->label;
+		echo '</div>';
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
@@ -1140,7 +1144,9 @@ class htmlTableExtendedRadio extends htmlRadio {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo '<div class="nowrap">';
 		echo $this->label;
+		echo '</div>';
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
@@ -1346,14 +1352,18 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		if ($this->labelFirst) {
+			echo '<div class="nowrap">';
 			echo $this->label;
+			echo '</div>';
 			echo "\n</td>\n<td>\n";
 			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
 		else {
 			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 			echo "\n</td>\n<td>\n";
+			echo '<div class="nowrap">';
 			echo $this->label;
+			echo '</div>';
 		}
 		// print help link
 		if ($this->helpID != null) {
@@ -1457,7 +1467,9 @@ class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo '<div class="nowrap">';
 		echo $this->label;
+		echo '</div>';
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
@@ -1584,12 +1596,14 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo '<div class="nowrap">';
 		echo $this->label;
 		if ($this->required) {
 			$graphicsPath = "../../graphics";
 			if (is_dir("../graphics")) $graphicsPath = "../graphics";
 			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
 		}
+		echo '</div>';
 		echo "\n</td>\n<td>\n";
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
