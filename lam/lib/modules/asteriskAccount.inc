@@ -292,7 +292,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRegistrationContext', false, _('Registration context'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRegistrationExten', false, _('Registration extention'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRegistrationExten', false, _('Registration extension'), null, false));
 		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountCanCallForward', false, _('Can call forward'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
@@ -352,7 +352,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountMusicOnHold' => _('Music on hold'),
 			'AstAccountExpirationTimestamp' => _('Expiration timestamp'),
 			'AstAccountRegistrationContext' => _('Registration context'),
-			'AstAccountRegistrationExten' => _('Registration extention'),
+			'AstAccountRegistrationExten' => _('Registration extension'),
 			'AstAccountCanCallForward' => _('Can call forward'),
 			'AstAccountIPAddress' => _('IP address'),
 			'AstAccountDefaultUser' => _('Default user'),
@@ -569,7 +569,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationExten')) {
 			$return['upload_columns'][] = array(
 				'name' => 'asteriskAccount_AstAccountRegistrationExten',
-				'description' => _('Registration extention'),
+				'description' => _('Registration extension'),
 				'help' => 'AstAccountRegistrationExten',
 			);
 		}
@@ -914,7 +914,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				if (isset($this->attributes['AstAccountRegistrationExten'][0])) {
 					$AstAccountRegistrationExten = $this->attributes['AstAccountRegistrationExten'][0];
 				}
-				$AstAccountRegistrationExtenInput = new htmlTableExtendedInputField(_("Registration extention"), 'AstAccountRegistrationExten', $AstAccountRegistrationExten, 'AstAccountRegistrationExten');
+				$AstAccountRegistrationExtenInput = new htmlTableExtendedInputField(_("Registration extension"), 'AstAccountRegistrationExten', $AstAccountRegistrationExten, 'AstAccountRegistrationExten');
 				$return->addElement($AstAccountRegistrationExtenInput, true);
 			}
 			// can call forward

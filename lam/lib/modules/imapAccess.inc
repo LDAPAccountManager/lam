@@ -91,7 +91,7 @@ class imapAccess extends baseModule {
 				"Text" => _("Please enter a comma separated list of domain names (e.g. \"company.com,example.com\"). LAM will only manage mailboxes from these domains.")),
 			'ImapUserNameAttr' => array(
 				"Headline" => _("User name attribute"),
-				"Text" => _("Please choose the attribute to get the IMAP user name. The default is mail but you can also use uid.")),
+				"Text" => _("Please choose the attribute to get the IMAP user name. The default is \"mail\" but you can also use \"uid\".")),
 			'MailAddress' => array(
 				"Headline" => _("Mailbox"),
 				"Text" => _("This mailbox will be created/deleted.")),
