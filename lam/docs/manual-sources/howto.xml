@@ -2123,6 +2123,21 @@ Have fun!
         </mediaobject>
       </screenshot>
 
+      <para>The Asterisk module allows to edit a large amount of attributes.
+      Therefore, you can hide unused fields. Please edit you server profile
+      (Module settings) to do so.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/asteriskConfig.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Of course, the voicemail part of Asterisk is also
+      supported.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
