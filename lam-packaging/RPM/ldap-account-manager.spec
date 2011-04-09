@@ -84,6 +84,9 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
 %{httpd_rootdir}/%{lam_dir}
 
 %changelog
+* Sat Apr 09 2011 - Roland Gruber post@rolandgruber.de
+- Do not overwrite config files
+
 * Sat Nov 07 2009 - Roland Gruber post@rolandgruber.de
 - Added LAM manuals
 
