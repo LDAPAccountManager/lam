@@ -141,10 +141,6 @@ class lamList {
 	 * Prints the HTML code to display the list view.
 	 */
 	public function showPage() {
-		if (isset($_GET['openConfig'])) {
-			$this->listPrintConfigurationPage();
-			return;
-		}
 		// do POST actions
 		$postFragment = $this->listDoPost();
 		// get some parameters
@@ -164,6 +160,8 @@ class lamList {
 		}
 		// insert HTML fragment from listDoPost
 		echo $postFragment;
+		// config dialog
+		$this->listPrintConfigurationPage();
 		// show form
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
 		echo "<div id=\"listTabContentArea\">\n";
@@ -383,9 +381,9 @@ class lamList {
 			else {
 				$classes = ' ' . $this->type . 'list-dark';
 			}
-			echo("<tr class=\"$classes\" onMouseOver=\"list_over(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
-				" onMouseOut=\"list_out(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
-				" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"\n" .
+			echo("<tr class=\"$classes\" onMouseOver=\"list_over(this)\"\n" .
+				" onMouseOut=\"list_out(this)\"\n" .
+				" onClick=\"list_click('" . $rowID . "')\"\n" .
 				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
 			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
 				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
@@ -715,7 +713,7 @@ class lamList {
 		echo "<td align=\"right\">\n";
 		$this->listShowOUSelection();
 		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
-		echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
+		echo '&nbsp;<a href="#" onclick="listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');">';
 			echo '<img height=16 width=16 src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
 		echo '</a>';
 		echo "</td>\n";
@@ -875,33 +873,22 @@ class lamList {
 	 * Prints the list configuration page.
 	 */
 	protected function listPrintConfigurationPage() {
-		$this->listPrintHeader();
-		
-		echo "<div>\n";
-		echo "<div>\n";
-		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
-		echo "<table class=\"" . $this->type . "list-bright\" width=\"100%\">\n";
-		echo "<tr class=\"" . $this->type . "list-bright\"><td>\n";
+		echo "<div id=\"settingsDialog\" style=\"display: none;\">\n";
+		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		echo '<table width="100%"><tr><td>';
 		
 		$tabindex = 0;
 		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlSubTitle(_('Change list settings')), true);
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
 			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
 		}
-		
-		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
-		
-		$buttonContainer = new htmlTable();
-		$buttonContainer->addElement(new htmlButton('saveConfigOptions', _('Ok')));
-		$buttonContainer->addElement(new htmlButton('cancelConfigOptions', _('Cancel')));
-		$buttonContainer->colspan = 2;
-		$configContainer->addElement($buttonContainer);
+		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));		
 		
 		parseHtml('', $configContainer, array(), false, $tabindex, $this->type);
 
 		echo "</td></tr></table>\n";
-		$this->listPrintFooter();		
+		echo '</form>';
+		echo "</div>\n";
 	}
 	
 	/**

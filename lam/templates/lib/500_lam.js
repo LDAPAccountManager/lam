@@ -21,16 +21,30 @@ $Id$
 
 */
 
-
-function list_over(list, box, scope) {
+/**
+ * Used to highlight the row under the mouse cursor.
+ * 
+ * @param list table row
+ */
+function list_over(list) {
 	jQuery(list).addClass('highlight');
 }
 
-function list_out(list, box, scope) {
+/**
+ * Used to unhighlight a row if the mouse cursor leaves it.
+ * 
+ * @param list table row
+ */
+function list_out(list) {
 	jQuery(list).removeClass('highlight');
 }
 
-function list_click(list, box, scope) {
+/**
+ * Called when user clicks on a table row. This toggles the checkbox in the row.
+ * 
+ * @param box checkbox name
+ */
+function list_click(box) {
 	cbox = document.getElementsByName(box)[0];
 	if (cbox.checked == true) {
 		cbox.checked = false;
@@ -66,6 +80,26 @@ function listResizeITabContentDiv() {
 	var scrollHeight = height - (top - myDiv.offsetTop);
 	myDivScroll.style.height = scrollHeight + "px";
 };
+
+/**
+ * Shows the dialog to change the list settings.
+ * 
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+function listShowSettingsDialog(title, okText, cancelText) {
+	var buttonList = {};
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	buttonList[okText] = function() { document.forms["settingsDialogForm"].submit(); };
+	jQuery('#settingsDialog').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
 
 function SubmitForm(id, e) {
 	if (e.keyCode == 13) {
