@@ -943,7 +943,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
 		$uidInput = new htmlTableExtendedInputField(_("User name"), 'uid', $userName, 'uid');
 		$uidInput->setRequired(true);
-		$uidInput->setFieldMaxLength(20);
+		$uidInput->setFieldMaxLength(50);
 		$return->addElement($uidInput, true);
 		$commonName = '';
 		if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
