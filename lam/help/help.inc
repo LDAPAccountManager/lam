@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2010 Roland Gruber
+                2003 - 2011 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -182,13 +182,7 @@ $helpArray = array (
 				"510" => array ("Headline" => _("Additional CSS links"),
 					"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line.")),
 				"520" => array ("Headline" => _("Generate random password"),
-					"Text" => _("This will set a random password and display it on the screen or send it the user via mail.") .
-						'<br><br>' . _('If you decide to send the password via mail then the mail template "config/passwordMailTemplate.txt" will be used.') .
-						'<br><br><b>' . _('Format') . ': </b><ul>' .
-						'<li>' . _('The first line is the subject.') . '</li>' .
-						'<li>' . _('All following lines form the mail body.') . '</li>' .
-						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
-						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
+					"Text" => _("This will set a random password and display it on the screen or send it the user via mail.")),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),
