@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2010  Roland Gruber
+  Copyright (C) 2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -99,7 +99,9 @@ class user extends baseType {
 			"loginshell" => _("Login shell"),
 			"mail" => _("Email"),
 			"gecos" => _("Description"),
-			"jpegphoto" => _('Photo')
+			"jpegphoto" => _('Photo'),
+			'shadowexpire' => _('Password expiration'),
+			'sambakickofftime' => _('Account expiration date')
 			);
 	}
 
