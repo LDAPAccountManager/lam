@@ -181,6 +181,7 @@ class nisMailAlias extends baseModule {
 			$this->attributes['cn'][] = $_POST['cn'];
 		}
 		else {
+				$this->attributes['cn'][] = $_POST['cn'];
 				$message = $this->messages['alias'][0];
 				$message[] = $_POST['cn'];
 				$errors[] = $message;
@@ -191,7 +192,7 @@ class nisMailAlias extends baseModule {
 				if (isset($_POST['delRec' . $i])) continue;
 				if (isset($_POST['rfc822MailMember' . $i]) && ($_POST['rfc822MailMember' . $i] != "")) {
 					// check if address has correct format
-					if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient')) {
+					if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient') && !get_preg($_POST['rfc822MailMember' . $i], 'email')) {
 						$message = $this->messages['recipient'][0];
 						$message[] = $_POST['rfc822MailMember' . $i];
 						$errors[] = $message;
@@ -203,7 +204,7 @@ class nisMailAlias extends baseModule {
 		// check new recipient
 		if (isset($_POST['rfc822MailMember']) && ($_POST['rfc822MailMember'] != "")) {
 			// check if address has correct format
-			if (get_preg($_POST['rfc822MailMember'], 'nis_recipient')) {
+			if (get_preg($_POST['rfc822MailMember'], 'nis_recipient') || get_preg($_POST['rfc822MailMember'], 'email')) {
 				$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember'];
 			}
 			else {
@@ -261,7 +262,7 @@ class nisMailAlias extends baseModule {
 				$aliases = explode(',', $rawAccounts[$i][$ids['nisMailAlias_recipients']]);
 				// check format
 				for ($a = 0; $a < sizeof($aliases); $a++) {
-					if (get_preg($aliases[$a], 'nis_recipient')) {
+					if (get_preg($aliases[$a], 'nis_recipient') || get_preg($aliases[$a], 'email')) {
 						$partialAccounts[$i]['rfc822MailMember'][] = $aliases[$a];
 					}
 					else {
