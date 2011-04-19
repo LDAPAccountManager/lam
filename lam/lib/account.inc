@@ -399,6 +399,7 @@ function get_preg($argument, $regexp) {
 		case "telephone":	// Allow letters, numbers, space, brackets, /-+.
 					$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';
 					break;
+		case 'nis_recipient':
 		case "email":
 					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
 					break;
@@ -457,9 +458,6 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
 					break;
 		case 'nis_alias':
-					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
-					break;
-		case 'nis_recipient':
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
 					break;
 		case 'country':	// Allow all letters and space
