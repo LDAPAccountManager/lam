@@ -1,4 +1,4 @@
-April 2011 3.4.0
+2011-04-27 3.4.0
   - IMAP mailboxes:
    -> support to read user name from uid attribute
    -> added quota management
@@ -11,7 +11,7 @@ April 2011 3.4.0
    -> Zarafa groups: allow combination with group of names
    -> enhanced wildcards for custom scripts
    -> Group of (unique) names: allow members to be optional
-  - fixed bugs:
+  - Fixed bugs:
    -> Renaming of default profile (3183920)
    -> Profile editor: fixed problems with multi select
 
