@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2010  Roland Gruber
+                2009 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -147,9 +147,6 @@ class dhcp extends baseType {
  */
 class lamDHCPList extends lamList {
 
-	// A array with all fixed ips, mac adresses and descriptions
-	var $fixed;
-	
 	/**
 	 * Constructor
 	 *
@@ -277,8 +274,8 @@ class lamDHCPList extends lamList {
 		echo "<td align=\"right\">\n";
 		$this->listShowOUSelection();
 		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
-		echo '&nbsp;<a href="list.php?type=' . $this->type . '&amp;openConfig=1">';
-			echo '<img src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
+		echo '&nbsp;<a href="#" onclick="listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');">';
+			echo '<img height=16 width=16 src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
 		echo '</a>';
 		echo "</td>\n";
 		echo "</tr>\n";
