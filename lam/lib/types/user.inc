@@ -293,6 +293,23 @@ class lamUserList extends lamList {
 				}
 			}
 		}
+		// expire dates
+		elseif ($attribute == 'shadowexpire') {
+			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
+				echo date('d. m. Y', $entry[$attribute][0] * 24 * 3600);
+			}
+		}
+		elseif ($attribute == 'sambakickofftime') {
+			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
+				if ($entry[$attribute][0] > 2147483648) {
+					echo "∞";
+				}
+				else {
+					$date = getdate($entry[$attribute][0]);
+					echo $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				}
+			}
+		}
 		// print all other attributes
 		else {
 			parent::listPrintTableCellContent($entry, $attribute);
