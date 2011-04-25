@@ -861,8 +861,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!get_preg($this->attributes['cn'][0], 'cn')) {
 				$errors[] = $this->messages['cn'][0];
 			}
+			if (isset($_POST['lockPassword'])) {
+				$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+			}
+			if (isset($_POST['unlockPassword'])) {
+				$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+			}
+			if (isset($_POST['removePassword'])) {
+				unset($this->attributes['userPassword']);
+			}
 		}
-
+		
 		if (isset($_POST['delPhoto'])) {
 			$this->attributes['jpegPhoto'] = array();
 		}
@@ -1021,6 +1030,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$managerElement->setRightToLeftTextDirection(true);
 			$managerElement->setSortElements(false);
 			$fieldContainer->addElement($managerElement, true);
+		}
+		// password buttons
+		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
+			$fieldContainer->addElement(new htmlOutputText(_('Password')));
+			$pwdContainer = new htmlTable();
+			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
+			}
+			else {
+				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
+			}
+			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
+			$pwdContainer->colspan = 2;
+			$fieldContainer->addElement($pwdContainer);
 		}
 		// photo
 		$photoFile = '../../graphics/userDefault.png';
@@ -1943,7 +1966,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($dnUsers); $i++) {
 			$dnUsers[$i] = $dnUsers[$i]['dn'];
 		}
-		usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
+		usort($dnUsers, 'compareDN');
 		array_unshift($dnUsers, '-');
 		$this->cachedManagers = array();
 		for ($i = 0; $i < sizeof($dnUsers); $i++) {
