@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2010  Roland Gruber
+                2009 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -616,6 +616,27 @@ function searchLDAP($suffix, $filter, $attributes) {
 }
 
 /**
+ * Returns the given DN.
+ * 
+ * @param String $dn DN
+ * @param array $attributes list of attributes to fetch
+ * @return array attributes or null if not found
+ */
+function ldapGetDN($dn, $attributes = array('dn')) {
+	$return = null;
+	$sr = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), 'objectClass=*', $attributes);
+	if ($sr) {
+		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($entries) {
+			$return = cleanLDAPResult($entries);
+			$return = $return[0];
+		}
+		@ldap_free_result($sr);
+	}
+	return $return;
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array parameters for StatusMessage or null if all was ok
@@ -692,6 +713,50 @@ function getAbstractDN($dn) {
 		}
 	}
 	return implode(' > ', $parts);
+}
+
+/**
+* Helper function to sort DNs.
+*
+* @param string $a first argument to compare
+* @param string $b second argument to compare
+* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+*/
+function compareDN($a, $b) {
+	// split DNs
+	$array_a = explode(",", $a);
+	$array_b = explode(",", $b);
+	$len_a = sizeof($array_a);
+	$len_b = sizeof($array_b);
+	// check how many parts to compare
+	$len = min($len_a, $len_b);
+	// compare from last part on
+	for ($i = 0; $i < $len; $i++) {
+		// get parts to compare
+		$part_a = strtolower($array_a[$len_a - $i - 1]);
+		$part_b = strtolower($array_b[$len_b - $i - 1]);
+		// compare parts
+		if ($part_a == $part_b) { // part is identical
+			if ($i == ($len - 1)) {
+				if ($len_a > $len_b) return 1;
+				elseif ($len_a < $len_b) return -1;
+				else return 0; // DNs are identical
+			}
+		}
+		elseif ($part_a == max($part_a, $part_b)) return 1;
+		else return -1;
+	}
+	return -1;
+}
+
+/**
+ * Formats an LDAP time string (e.g. from createTimestamp).
+ * 
+ * @return String formated time
+ */
+function formatLDAPTimestamp($time) {
+	return substr($time, 6, 2) . '.' . substr($time, 4, 2) . '.' . substr($time, 0, 4) .
+		' ' . substr($time, 8, 2) . ':' . substr($time, 10, 2) . ':' . substr($time, 12, 2) . ' GMT';
 }
 
 ?>
