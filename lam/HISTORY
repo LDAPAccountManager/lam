@@ -1,4 +1,4 @@
-2011-04-27 3.4.0
+2011-04-25 3.4.0
   - IMAP mailboxes:
    -> support to read user name from uid attribute
    -> added quota management
