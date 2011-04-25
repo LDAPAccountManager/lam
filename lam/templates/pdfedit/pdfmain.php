@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2010  Roland Gruber
+                2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,6 +75,23 @@ for ($i = 0; $i < sizeof($scopes); $i++) {
 }
 natcasesort($sortedScopes);
 
+$container = new htmlTable();
+$container->addElement(new htmlTitle(_('PDF editor')), true);
+
+if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
+	// delete structure
+	if (deletePDFStructureDefinition($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
+		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message->colspan = 10;
+		$container->addElement($message, true);
+	}
+	else {
+		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message->colspan = 10;
+		$container->addElement($message, true);
+	}
+}
+
 // get list of account types
 $availableScopes = '';
 $templateClasses = array();
@@ -97,35 +114,14 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 		exit;
 	}
 }
-// check if a profile should be deleted
-for ($i = 0; $i < sizeof($templateClasses); $i++) {
-	if (isset($_POST['deleteTemplate_' . $templateClasses[$i]['scope']]) || isset($_POST['deleteTemplate_' . $templateClasses[$i]['scope'] . '_x'])) {
-		metaRefresh('pdfdelete.php?type=' . $templateClasses[$i]['scope'] . '&delete=' . $_POST['template_' . $templateClasses[$i]['scope']]);
-		exit;
-	}
-}
-
-$container = new htmlTable();
 
 include '../main_header.php';
 ?>
 <div class="userlist-bright smallPaddingContent">
 <form action="pdfmain.php" method="post">
 	<?php
-		$container->addElement(new htmlTitle(_('PDF editor')), true);
-	
 		if (isset($_GET['savedSuccessfully'])) {
 			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
-			$message->colspan = 10;
-			$container->addElement($message, true);
-		}
-		if (isset($_GET['deleteFailed'])) {
-			$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
-			$message->colspan = 10;
-			$container->addElement($message, true);
-		}
-		if (isset($_GET['deleteSucceeded'])) {
-			$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
 			$message->colspan = 10;
 			$container->addElement($message, true);
 		}
@@ -157,9 +153,10 @@ include '../main_header.php';
 			$exEditButton = new htmlButton('editTemplate_' . $templateClasses[$i]['scope'], 'edit.png', true);
 			$exEditButton->setTitle(_('Edit'));
 			$existingContainer->addElement($exEditButton);
-			$exDelButton = new htmlButton('deleteTemplate_' . $templateClasses[$i]['scope'], 'delete.png', true);
-			$exDelButton->setTitle(_('Delete'));
-			$existingContainer->addElement($exDelButton, true);
+			$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
+			$deleteLink->setTitle(_('Delete'));
+			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $templateClasses[$i]['scope'] . "', '" . 'template_' . $templateClasses[$i]['scope'] . "');");
+			$existingContainer->addElement($deleteLink, true);
 			$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 		}
 		$container->addElement($existingContainer, true);
@@ -170,5 +167,15 @@ include '../main_header.php';
 </form>
 </div>
 <?php
-	include '../main_footer.php';
+// form for delete action
+echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" action="pdfmain.php" method="post">';
+	echo _("Do you really want to delete this PDF structure?");
+	echo '<br><br><div class="nowrap">';
+	echo _("Structure name") . ': <div id="deleteText" style="display: inline;"></div></div>';
+	echo '<input id="profileDeleteType" type="hidden" name="profileDeleteType" value="">';
+	echo '<input id="profileDeleteName" type="hidden" name="profileDeleteName" value="">';
+	echo '<input type="hidden" name="deleteProfile" value="true">';
+echo '</form></div>';
+
+include '../main_footer.php';
 ?>

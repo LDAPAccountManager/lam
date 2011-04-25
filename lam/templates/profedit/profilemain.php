@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,12 +80,25 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 		exit;
 	}
 }
-// check if a profile should be deleted
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	if (isset($_POST['deleteProfile_' . $profileClasses[$i]['scope']]) || isset($_POST['deleteProfile_' . $profileClasses[$i]['scope'] . '_x'])) {
-		metaRefresh("profiledelete.php?type=" . $profileClasses[$i]['scope'] .
-					"&amp;del=" . $_POST['profile_' . $profileClasses[$i]['scope']]);
-		exit;
+
+include '../main_header.php';
+echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<form action=\"profilemain.php\" method=\"post\">\n";
+
+$container = new htmlTable();
+$container->addElement(new htmlTitle(_("Profile editor")), true);
+
+if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
+	// delete profile
+	if (delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
+		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message->colspan = 10;
+		$container->addElement($message, true);
+	}
+	else {
+		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message->colspan = 10;
+		$container->addElement($message, true);
 	}
 }
 
@@ -96,25 +109,8 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$profileClasses[$i]['profiles'] = $profileList;
 }
 
-include '../main_header.php';
-echo "<div class=\"userlist-bright smallPaddingContent\">\n";
-echo "<form action=\"profilemain.php\" method=\"post\">\n";
-
-$container = new htmlTable();
-$container->addElement(new htmlTitle(_("Profile editor")), true);
-
 if (isset($_GET['savedSuccessfully'])) {
 	$message = new htmlStatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
-	$message->colspan = 10;
-	$container->addElement($message, true);
-}
-if (isset($_GET['deleteFailed'])) {
-	$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteFailed']));
-	$message->colspan = 10;
-	$container->addElement($message, true);
-}
-if (isset($_GET['deleteSucceeded'])) {
-	$message = new htmlStatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_GET['deleteScope']) . ': ' . htmlspecialchars($_GET['deleteSucceeded']));
 	$message->colspan = 10;
 	$container->addElement($message, true);
 }
@@ -156,9 +152,10 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$editButton = new htmlButton('editProfile_' . $profileClasses[$i]['scope'], 'edit.png', true);
 	$editButton->setTitle(_('Edit'));
 	$existingContainer->addElement($editButton);
-	$deleteButton = new htmlButton('deleteProfile_' . $profileClasses[$i]['scope'], 'delete.png', true);
-	$deleteButton->setTitle(_('Delete'));
-	$existingContainer->addElement($deleteButton);
+	$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
+	$deleteLink->setTitle(_('Delete'));
+	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', '" . 'profile_' . $profileClasses[$i]['scope'] . "');");
+	$existingContainer->addElement($deleteLink);
 	$existingContainer->addNewLine();
 }
 $container->addElement($existingContainer);
@@ -169,6 +166,17 @@ parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo "</form>\n";
 echo "</div>\n";
+
+// form for delete action
+echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" action="profilemain.php" method="post">';
+	echo _("Do you really want to delete this profile?");
+	echo '<br><br><div class="nowrap">';
+	echo _("Profile name") . ': <div id="deleteText" style="display: inline;"></div></div>';
+	echo '<input id="profileDeleteType" type="hidden" name="profileDeleteType" value="">';
+	echo '<input id="profileDeleteName" type="hidden" name="profileDeleteName" value="">';
+	echo '<input type="hidden" name="deleteProfile" value="true">';
+echo '</form></div>';
+
 include '../main_footer.php';
 
 ?>
