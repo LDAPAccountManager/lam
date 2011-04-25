@@ -179,7 +179,9 @@ $dnContent->addElement(new htmlSpacer(null, '10px'), true);
 $rootsuffix = $_SESSION['config']->get_Suffix($type);
 // get subsuffixes
 $suffixes = array();
-foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+$typeObj = new $type();
+$possibleSuffixes = $typeObj->getSuffixList();
+foreach ($possibleSuffixes as $suffix) {
 	$suffixes[getAbstractDN($suffix)] = $suffix;
 }
 $selectedSuffix = array();

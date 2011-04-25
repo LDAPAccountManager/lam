@@ -2183,7 +2183,8 @@ class accountContainer {
 			return $this->cachedOUs;
 		}
 		$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
-		$this->cachedOUs = $_SESSION['ldap']->search_units($rootsuffix);
+		$typeObj = new $this->type();
+		$this->cachedOUs = $typeObj->getSuffixList();
 		return $this->cachedOUs;
 	}
 

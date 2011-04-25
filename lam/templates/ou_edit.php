@@ -64,7 +64,8 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		if (preg_match("/^[a-z0-9 _\\-]+$/i", $_POST['newOU'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newOU'] . "," . $_POST['parentOU'];
-			if (!in_array($new_dn, $_SESSION['ldap']->search_units($_POST['parentOU']))) {
+			$found = ldapGetDN($new_dn);
+			if ($found == null) {
 				// add new ou
 				$ou = array();
 				$ou['objectClass'] = "organizationalunit";
@@ -167,9 +168,9 @@ function display_main($message, $error) {
 	$options = array();
 	foreach ($types as $name => $title) {
 		$elements = array();
-		$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($name));
+		$units = searchLDAPByAttribute(null, null, 'organizationalunit', array('dn'), array($name));
 		for ($u = 0; $u < sizeof($units); $u++) {
-			$elements[getAbstractDN($units[$u])] = $units[$u];
+			$elements[getAbstractDN($units[$u]['dn'])] = $units[$u]['dn'];
 		}
 		$options[$title] = $elements;
 	}

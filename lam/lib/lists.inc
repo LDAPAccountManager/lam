@@ -845,7 +845,8 @@ class lamList {
 		}
 		$this->entries = $entries;
 		// generate list of possible suffixes
-		$this->possibleSuffixes = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($this->type));
+		$typeObj = new $this->type();
+		$this->possibleSuffixes = $typeObj->getSuffixList();
 	}
 	
 	/**
@@ -873,7 +874,7 @@ class lamList {
 	 * Prints the list configuration page.
 	 */
 	protected function listPrintConfigurationPage() {
-		echo "<div id=\"settingsDialog\" style=\"display: none;\">\n";
+		echo "<div id=\"settingsDialog\" class=\"hidden\">\n";
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		echo '<table width="100%"><tr><td>';
 		

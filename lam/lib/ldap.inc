@@ -128,38 +128,6 @@ class Ldap{
 	}
 
 	/**
-	* Returns an array with all organizational units under the given suffix
-	*
-	* @param string $suffix search suffix
-	* @return array DNs of organizational units
-	*/
-	function search_units($suffix) {
-		$ret = array();
-		$sr = @ldap_search($this->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
-		if ($sr) {
-			$units = ldap_get_entries($this->server, $sr);
-			$units = cleanLDAPResult($units);
-			// extract Dns
-			for ($i = 0; $i < sizeof($units); $i++) {
-				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
-			}
-		}
-		// add root suffix if needed
-		$found = false;
-		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
-			if (strtolower($suffix) == strtolower($ret[$i])) {
-				$found = true;
-				break;
-			}
-		}
-		if (!$found) {
-			$ret[] = $suffix;
-		}
-		usort($ret, array($this,"cmp_array"));
-		return $ret;
-	}
-
-	/**
 	* Returns the LDAP connection handle
 	*
 	* @return object connection handle
@@ -300,41 +268,6 @@ class Ldap{
 		$this->close();
 		$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-	}
-
-
-	/**
-	* Helper function to sort the unit DNs
-	*
-	* @param string $a first argument to compare
-	* @param string $b second argument to compare
-	* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
-	*/
-	function cmp_array($a, $b) {
-		// split DNs
-		$array_a = explode(",", $a);
-		$array_b = explode(",", $b);
-		$len_a = sizeof($array_a);
-		$len_b = sizeof($array_b);
-		// check how many parts to compare
-		$len = min($len_a, $len_b);
-		// compare from last part on
-		for ($i = 0; $i < $len; $i++) {
-			// get parts to compare
-			$part_a = strtolower($array_a[$len_a - $i - 1]);
-			$part_b = strtolower($array_b[$len_b - $i - 1]);
-			// compare parts
-			if ($part_a == $part_b) { // part is identical
-				if ($i == ($len - 1)) {
-					if ($len_a > $len_b) return 1;
-					elseif ($len_a < $len_b) return -1;
-					else return 0; // DNs are identical
-				}
-			}
-			elseif ($part_a == max($part_a, $part_b)) return 1;
-			else return -1;
-		}
-		return -1;
 	}
 
 
