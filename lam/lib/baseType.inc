@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2010  Roland Gruber
+  Copyright (C) 2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -128,6 +128,38 @@ class baseType {
 	 */
 	public function getTitleBarSubtitle($attributes) {
 		return null;
+	}
+	
+	/**
+	 * Returns a list of LDAP suffixes for this type.
+	 * 
+	 * @return array sorted list of possible suffixes for this type.
+	 */
+	public function getSuffixList() {
+		$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
+		$ret = array();
+		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$units = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
+			$units = cleanLDAPResult($units);
+			// extract Dns
+			for ($i = 0; $i < sizeof($units); $i++) {
+				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
+			}
+		}
+		// add root suffix if needed
+		$found = false;
+		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
+			if (strtolower($suffix) == strtolower($ret[$i])) {
+				$found = true;
+				break;
+			}
+		}
+		if (!$found) {
+			$ret[] = $suffix;
+		}
+		usort($ret, 'compareDN');
+		return $ret;
 	}
 
 }
