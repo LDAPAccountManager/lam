@@ -1990,6 +1990,8 @@ class htmlLink extends htmlElement {
 	private $title = null;
 	/** target window */
 	private $targetWindow = null;
+	/** onClick event */
+	private $onClick = null;
 	
 	/**
 	 * Constructor.
@@ -2028,7 +2030,11 @@ class htmlLink extends htmlElement {
 		if ($this->targetWindow != null) {
 			$targetWindow = ' target="' . $this->targetWindow . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $title . $targetWindow . '>' . $image . $this->text . '</a>';
+		$onClick = '';
+		if ($this->onClick != null) {
+			$onClick = ' onclick="' . $this->onClick . '"';
+		}
+		echo '<a href="' . $this->target . '"' . $title . $targetWindow . $onClick . '>' . $image . $this->text . '</a>';
 		return array();
 	}
 
@@ -2048,6 +2054,15 @@ class htmlLink extends htmlElement {
 	 */
 	public function setTargetWindow($window) {
 		$this->targetWindow = htmlspecialchars($window);
+	}
+
+	/**
+	 * Sets the onClick event.
+	 * 
+	 * @param String $event JavaScript code
+	 */
+	public function setOnClick($event) {
+		$this->onClick = htmlspecialchars($event);
 	}
 
 }
