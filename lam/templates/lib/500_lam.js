@@ -165,3 +165,52 @@ function configLoginMethodChanged() {
 	}
 }
 
+/**
+ * Shows the dialog to delete a profile.
+ * 
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ * @param scope account type (e.g. user)
+ * @param selectFieldName name of select box with profile name
+ */
+function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldName) {
+	// get profile name
+	var profileName = jQuery('[name=' + selectFieldName + ']').val();
+	// update text
+	jQuery('#deleteText').text(profileName);
+	// update hidden input fields
+	jQuery('#profileDeleteType').val(scope);
+	jQuery('#profileDeleteName').val(profileName);
+	var buttonList = {};
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	buttonList[okText] = function() { document.forms["deleteProfileForm"].submit(); };
+	jQuery('#deleteProfileDialog').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+/**
+ * Shows the dialog to create an automount map.
+ * 
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+function automountShowNewMapDialog(title, okText, cancelText) {
+	var buttonList = {};
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	buttonList[okText] = function() { document.forms["newAutomountMapDialogForm"].submit(); };
+	jQuery('#newAutomountMapDialog').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
