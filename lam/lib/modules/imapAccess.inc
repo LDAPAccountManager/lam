@@ -169,6 +169,9 @@ class imapAccess extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
+		if (!checkIfWriteAccessIsAllowed()) {
+			return $return;
+		}
 		$prefix = $this->getMailboxPrefix();
 		
 		$email = '';
@@ -312,6 +315,9 @@ class imapAccess extends baseModule {
 	 */
 	function process_attributes() {
 		$errors = array();
+		if (!checkIfWriteAccessIsAllowed()) {
+			return $errors;
+		}
 		$prefix = $this->getMailboxPrefix();
 		
 		$imap_server_address = $this->getServerAddress();
