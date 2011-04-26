@@ -638,8 +638,6 @@ Have fun!
 
         <simplelist>
           <member>config/selfService/*.*</member>
-
-          <member>config/passwordMailTemplate.txt</member>
         </simplelist>
 
         <para>Second, <link linkend="a_uninstall">uninstall</link> your
@@ -665,6 +663,21 @@ Have fun!
 
       <section id="a_versUpgrade">
         <title>Version specific upgrade instructions</title>
+
+        <section>
+          <title>3.4.0 -&gt; 3.5.0</title>
+
+          <para><emphasis role="bold">LAM Pro:</emphasis> The global
+          config/passwordMailTemplate.txt is no longer supported. You can
+          setup the mail settings now for each LAM server profile which
+          provides more flexibility.</para>
+        </section>
+
+        <section>
+          <title>3.3.0 -&gt; 3.4.0</title>
+
+          <para>No changes.</para>
+        </section>
 
         <section>
           <title>3.2.0 -&gt; 3.3.0</title>
@@ -3114,8 +3127,8 @@ Have fun!
 
           <para>If the user account has set the mail attribute then LAM can
           send your user a mail with the new password. You can change the mail
-          template to fit your needs. See the help link for further
-          details.</para>
+          template to fit your needs. Please configure your LAM server profile
+          to setup the sender address, subject and mail body.</para>
 
           <para>Using this method will prevent that your support staff knows
           the new password.</para>

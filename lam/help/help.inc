@@ -182,13 +182,13 @@ $helpArray = array (
 				"510" => array ("Headline" => _("Additional CSS links"),
 					"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line.")),
 				"520" => array ("Headline" => _("Generate random password"),
-					"Text" => _("This will set a random password and display it on the screen or send it the user via mail.")),
+					"Text" => _("This will set a random password and display it on the screen or send it the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),
-					"Text" => _('The subject of all password mails. If empty the first line of "config/passwordMailTemplate.txt" will be used.')),
+					"Text" => _('The subject of all password mails.')),
 				"552" => array ("Headline" => _("Text"),
-					"Text" => _('The mail text of all password mails. If empty the content of "config/passwordMailTemplate.txt" starting at the second line will be used.') .
+					"Text" => _('The mail text of all password mails.') .
 						'<br><br><b>' . _('Format') . ': </b><ul>' .
 						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
 						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
