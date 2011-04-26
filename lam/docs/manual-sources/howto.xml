@@ -2690,6 +2690,25 @@ Have fun!
     </section>
 
     <section>
+      <title>General information</title>
+
+      <para>This module is available for all account types. It shows some
+      internal information about the LDAP entries like the creation time and
+      who modified the entry.</para>
+
+      <para>If you use the "memberOf" overlay in OpenLDAP then this will also
+      show group memberships done by the overlay.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_generalInformation.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
       <title>Tree view (LDAP browser)</title>
 
       <para>The tree view provides a raw view on your LDAP directory. This
