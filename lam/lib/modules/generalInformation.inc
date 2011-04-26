@@ -94,7 +94,7 @@ class generalInformation extends baseModule {
 			if ($this->attributes['hasSubordinates'][0] == 'TRUE') {
 				$hasChilds = _('yes');
 			}
-			$return->addElement(new htmlOutputText(_('Has children')));
+			$return->addElement(new htmlOutputText(_('Has subentries')));
 			$return->addElement(new htmlOutputText($hasChilds), true);
 			$return->addElement(new htmlSpacer(null, '5px'), true);
 		}
