@@ -3,6 +3,7 @@ August 2011 3.5.0
   - inetOrgPerson: New attributes
   - LAM Pro:
    -> Automount: allow to create automount maps
+   -> Password policy: allow to (un)lock accounts
 
 2011-04-25 3.4.0
   - IMAP mailboxes:
