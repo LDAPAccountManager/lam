@@ -919,7 +919,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		}
 
-		$fieldContainer->addElement(new htmlOutputText(''), true);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideState') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$fieldContainer->addElement(new htmlSubTitle(_('Address')), true);
+		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$street = '';
@@ -962,7 +967,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Room number'), 'roomNumber', $roomNumber, 'roomNumber'), true);
 		}
 
-		$fieldContainer->addElement(new htmlOutputText(''), true);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$fieldContainer->addElement(new htmlSubTitle(_('Contact data')), true);
+		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephone = '';
@@ -990,7 +999,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Email address'), 'mail', $email, 'mail'), true);
 		}
 
-		$fieldContainer->addElement(new htmlOutputText(''), true);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
+			$fieldContainer->addElement(new htmlSubTitle(_('Work details')), true);
+		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$title = '';
@@ -1033,7 +1046,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// password buttons
 		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
-			$fieldContainer->addElement(new htmlOutputText(_('Password')));
+			$fieldContainer->addElement(new htmlSubTitle(_('Password')), true);
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
 				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
