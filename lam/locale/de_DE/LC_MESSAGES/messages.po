@@ -55,7 +55,7 @@ msgstr "%s Alias(e) gefunden"
 #: ../lib/types/automountType.inc:143
 #, php-format
 msgid "%s automount entry(ies) found"
-msgstr "%s Automount-Eintrag/Einträge gefunden"
+msgstr "%s Automount-Einträge gefunden"
 
 #: ../lib/types/smbDomain.inc:156
 #, php-format
@@ -1732,7 +1732,7 @@ msgstr "Alle %s-Objekte löschen"
 
 #: ../lib/types/automountType.inc:146
 msgid "Delete automount entry(ies)"
-msgstr "Automount-Eintrag/Einträge löschen"
+msgstr "Automount-Einträge löschen"
 
 #: ../lib/types/smbDomain.inc:159
 msgid "Delete domain(s)"
