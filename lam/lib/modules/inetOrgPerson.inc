@@ -107,12 +107,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'surname' => 'sn', 'streetAddress' => 'street',
 			'fax' => 'facsimileTelephoneNumber', 'gn' => 'givenName', 'userid' => 'uid', 'rfc822Mailbox' => 'mail',
-			'mobileTelephoneNumber' => 'mobile');
+			'mobileTelephoneNumber' => 'mobile', 'organizationName' => 'o');
 		// managed attributes
 		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
-			'carLicense', 'departmentNumber');
+			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials');
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
 		// self service field settings
@@ -122,7 +122,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
-			'departmentNumber' => _('Department(s)'));
+			'departmentNumber' => _('Department(s)'), 'initials' => _('Initials'));
 		// profile elements
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
@@ -154,6 +154,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Department(s)'), 'inetOrgPerson_departmentNumber', null, 'departmentNumber');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Organisation'), 'inetOrgPerson_o', null, 'o');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Job title'), 'inetOrgPerson_title', null, 'title');
@@ -260,6 +263,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDepartments', false, _('Department(s)'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideManager', false, _('Manager'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideO', false, _('Organisation'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeNumber', false, _('Employee number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideInitials', false, _('Initials'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
@@ -289,6 +298,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'required' => true
 			)
 		);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_initials',
+				'description' => _('Initials'),
+				'help' => 'initials',
+				'example' => 'A.B.'
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_description',
@@ -303,6 +320,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'description' => _('Job title'),
 				'help' => 'title',
 				'example' => _('President')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_employeeNumber',
+				'description' => _('Employee number'),
+				'help' => 'employeeNumber',
+				'example' => '123456'
 			);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
@@ -417,6 +442,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'example' => _('Administration')
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_o',
+				'description' => _('Organisation'),
+				'help' => 'o',
+				'example' => _('YourCompany')
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_l',
@@ -513,6 +546,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			$return['PDF_fields']['manager'] = _('Manager');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$return['PDF_fields']['o'] = _('Organisation');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+			$return['PDF_fields']['employeeNumber'] = _('Employee number');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+			$return['PDF_fields']['initials'] = _('Initials');
 		}
 		
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
@@ -631,7 +673,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
 				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
-			)
+			),
+			'o' => array(
+				"Headline" => _("Organisation"),
+				"Text" => _("The user's organisation name.") . ' ' . _('Multiple values are separated by semicolon.')
+			),
+			'employeeNumber' => array(
+				"Headline" => _("Employee number"),
+				"Text" => _("The user's unique employee number.")
+			),
+			'initials' => array(
+				"Headline" => _("Initials"),
+				"Text" => _("The initials of the user's first names.") . ' ' . _('Multiple values are separated by semicolon.')
+			),
 		);
 
 		return $return;
@@ -842,7 +896,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 				unset($this->attributes['manager'][0]);
 			}
 		}
-
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$this->attributes['o'] = preg_split('/;[ ]*/', $_POST['o']);
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+			$this->attributes['initials'] = preg_split('/;[ ]*/', $_POST['initials']);
+		}
+		
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			// uid
@@ -914,6 +977,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$lastNameElement = new htmlTableExtendedInputField(_('Last name'), 'sn', $lastName, 'sn');
 		$lastNameElement->setRequired(true);
 		$fieldContainer->addElement($lastNameElement, true);
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+			$initials = '';
+			if (isset($this->attributes['initials'][0])) $initials = implode('; ', $this->attributes['initials']);
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Initials'), 'initials', $initials, 'initials'), true);
+		}
 		if (!in_array('posixAccount', $modules)) {
 			$cn = '';
 			if (isset($this->attributes['cn'][0])) $cn = $this->attributes['cn'][0];
@@ -1023,6 +1091,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Car license'), 'carLicense', $carLicense, 'carLicense'), true);
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+			$employeeNumber = '';
+			if (isset($this->attributes['employeeNumber'][0])) $employeeNumber = $this->attributes['employeeNumber'][0];
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee number'), 'employeeNumber', $employeeNumber, 'employeeNumber'), true);
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$employeeType = '';
 			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
@@ -1035,8 +1108,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$departmentNumber = '';
-			if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode(';', $this->attributes['departmentNumber']);
+			if (isset($this->attributes['departmentNumber'][0])) $departmentNumber = implode('; ', $this->attributes['departmentNumber']);
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Department(s)'), 'departmentNumber', $departmentNumber, 'departmentNumber'), true);
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$o = '';
+			if (isset($this->attributes['o'][0])) $o = implode('; ', $this->attributes['o']);
+			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Organisation'), 'o', $o, 'o'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			$optionsSelected = array();
@@ -1208,6 +1286,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
 		$l = '';
 		if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
+		$employeeNumber = '';
+		if (isset($this->attributes['employeeNumber'][0])) {
+			$employeeNumber = $this->attributes['employeeNumber'][0];
+		}
+		$o = '';
+		if (isset($this->attributes['o'][0])) {
+			$o = implode(', ', $this->attributes['o']);
+		}
+		$initials = '';
+		if (isset($this->attributes['initials'][0])) {
+			$initials = implode(', ', $this->attributes['initials']);
+		}
 		
 		$return = array(
 			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>'),
@@ -1232,7 +1322,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			get_class($this) . '_carLicense' => array('<block><key>' . _('Car license') . '</key><value>' . $carLicense . '</value></block>'),
 			get_class($this) . '_location' => array('<block><key>' . _('Location') . '</key><value>' . $l . '</value></block>'),
 			get_class($this) . '_state' => array('<block><key>' . _('State') . '</key><value>' . $st . '</value></block>'),
-			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $physicalDeliveryOfficeName . '</value></block>')
+			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $physicalDeliveryOfficeName . '</value></block>'),
+			get_class($this) . '_o' => array('<block><key>' . _('Organisation') . '</key><value>' . $o . '</value></block>'),
+			get_class($this) . '_employeeNumber' => array('<block><key>' . _('Employee number') . '</key><value>' . $employeeNumber . '</value></block>'),
+			get_class($this) . '_initials' => array('<block><key>' . _('Initials') . '</key><value>' . $initials . '</value></block>'),
 		);
 		if (isset($this->attributes['departmentNumber'])) {
 			$return[get_class($this) . '_departmentNumber'] = array('<block><key>' . _('Department(s)') . '</key><value>' . implode(', ', $this->attributes['departmentNumber']) . '</value></block>');
@@ -1255,6 +1348,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				// remove extra spaces and set attributes
 				$this->attributes['departmentNumber'] = array_map('trim', $departments);
 			}
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$oList = preg_split('/;[ ]*/', $profile['inetOrgPerson_o'][0]);
+			$this->attributes['o'] = $oList;
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$mailList = preg_split('/;[ ]*/', $profile['inetOrgPerson_mail'][0]);
@@ -1375,6 +1472,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
+			// initials
+			if ($rawAccounts[$i][$ids['inetOrgPerson_initials']] != "") {
+				$partialAccounts[$i]['initials'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_initials']]);
+			}
 			// description
 			if ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "") {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['inetOrgPerson_description']];
@@ -1397,6 +1498,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
+			}
+			// employee number
+			if ($rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']] != "") {
+				$partialAccounts[$i]['employeeNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']];
 			}
 			// employee type
 			if ($rawAccounts[$i][$ids['inetOrgPerson_type']] != "") {
@@ -1455,6 +1560,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$partialAccounts[$i]['departmentNumber'] = explode(';', $rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']]);
 				// remove extra spaces
 				$partialAccounts[$i]['departmentNumber'] = array_map('trim', $partialAccounts[$i]['departmentNumber']);
+			}
+			// organisation
+			if ($rawAccounts[$i][$ids['inetOrgPerson_o']] != "") {
+				$partialAccounts[$i]['o'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_o']]);
 			}
 			// location
 			if ($rawAccounts[$i][$ids['inetOrgPerson_l']] != "") {
@@ -1755,9 +1864,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('departmentNumber', $fields)) {
 			$departmentNumber = '';
-			if (isset($attributes['departmentNumber'][0])) $departmentNumber = implode(';', $attributes['departmentNumber']);
+			if (isset($attributes['departmentNumber'][0])) $departmentNumber = implode('; ', $attributes['departmentNumber']);
 			$return['departmentNumber'] = new htmlTableRow(array(
 				new htmlTableExtendedInputField(_('Department(s)'), 'inetOrgPerson_departmentNumber', $departmentNumber)
+			));
+		}
+		if (in_array('initials', $fields)) {
+			$initials = '';
+			if (isset($attributes['initials'][0])) $initials = implode('; ', $attributes['initials']);
+			$return['initials'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', $initials)
 			));
 		}
 		return $return;
@@ -1960,11 +2076,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (in_array('departmentNumber', $fields)) {
 			$attributeNames[] = 'departmentNumber';
 			if (isset($_POST['inetOrgPerson_departmentNumber']) && ($_POST['inetOrgPerson_departmentNumber'] != '')) {
-				$attributesNew['departmentNumber'] = explode(';', $_POST['inetOrgPerson_departmentNumber']);
-				// remove extra spaces
-				$attributesNew['departmentNumber'] = array_map('trim', $attributesNew['departmentNumber']);
+				$attributesNew['departmentNumber'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_departmentNumber']);
 			}
 			elseif (isset($attributes['departmentNumber'])) unset($attributesNew['departmentNumber']);
+		}
+		// initials
+		if (in_array('initials', $fields)) {
+			$attributeNames[] = 'initials';
+			if (isset($_POST['inetOrgPerson_initials']) && ($_POST['inetOrgPerson_initials'] != '')) {
+				$attributesNew['initials'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_initials']);
+			}
+			elseif (isset($attributes['initials'])) unset($attributesNew['initials']);
 		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
