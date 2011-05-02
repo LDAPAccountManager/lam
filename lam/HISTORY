@@ -1,6 +1,7 @@
 August 2011 3.5.0
   - New module "General information": shows internal data about accounts (e.g. creation time)
   - inetOrgPerson: New attributes o, employeeNumber, initials
+  - Server information shows data from cn=monitor
   - LAM Pro:
    -> Automount: allow to create automount maps
    -> Password policy: allow to (un)lock accounts
