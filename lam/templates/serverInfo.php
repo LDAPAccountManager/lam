@@ -141,7 +141,7 @@ if ($vendorversion != '') {
 }
 
 // monitoring information
-if (isset($monitorEntries['cn=monitor'])) {
+if (isset($monitorEntries['cn=monitor']['monitoredinfo'])) {
 	$container->addElement(new htmlOutputText('<b>' . _("Name") . '</b>', false));
 	$container->addElement($spacer);
 	$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['monitoredinfo'])), true);
@@ -174,7 +174,7 @@ if (isset($monitorEntries['cn=max file descriptors,cn=connections,cn=monitor']))
 }
 
 // server statistics
-if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=statistics,cn=monitor'])) {
+if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=statistics,cn=monitor']) || isset($monitorEntries['cn=monitor']['currenttime'])) {
 	$container->addElement(new htmlSubTitle(_('Server statistics')), true);
 	if (isset($monitorEntries['cn=entries,cn=statistics,cn=monitor'])) {
 		$container->addElement(new htmlOutputText('<b>' . _("LDAP entries") . '</b>', false));
@@ -192,8 +192,20 @@ if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=st
 		$container->addElement($spacer);
 		$container->addElement(new htmlOutputText($time), true);
 	}
+	elseif (isset($monitorEntries['cn=monitor']['starttime'])) { // Fedora 389
+		$time = formatLDAPTimestamp($monitorEntries['cn=monitor']['starttime'][0]);
+		$container->addElement(new htmlOutputText('<b>' . _("Start time") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText($time), true);
+	}
 	if (isset($monitorEntries['cn=current,cn=time,cn=monitor'])) {
 		$time = formatLDAPTimestamp($monitorEntries['cn=current,cn=time,cn=monitor']['monitortimestamp'][0]);
+		$container->addElement(new htmlOutputText('<b>' . _("Server time") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText($time), true);
+	}
+	elseif (isset($monitorEntries['cn=monitor']['currenttime'])) { // Fedora 389
+		$time = formatLDAPTimestamp($monitorEntries['cn=monitor']['currenttime'][0]);
 		$container->addElement(new htmlOutputText('<b>' . _("Server time") . '</b>', false));
 		$container->addElement($spacer);
 		$container->addElement(new htmlOutputText($time), true);
@@ -212,20 +224,36 @@ if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=st
 }
 
 // connection statistics
-if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries['cn=statistics,cn=monitor'])) {
+if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries['cn=statistics,cn=monitor']) || isset($monitorEntries['cn=monitor']['currentconnections'])) {
 	$container->addElement(new htmlSubTitle(_('Connection statistics')), true);
 	if (isset($monitorEntries['cn=current,cn=connections,cn=monitor'])) {
 		$container->addElement(new htmlOutputText('<b>' . _("Current connections") . '</b>', false));
 		$container->addElement($spacer);
 		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=current,cn=connections,cn=monitor']['monitorcounter'])), true);
 	}
+	elseif (isset($monitorEntries['cn=monitor']['currentconnections'])) { // Fedora 389
+		$container->addElement(new htmlOutputText('<b>' . _("Current connections") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['currentconnections'])), true);
+	}
 	if (isset($monitorEntries['cn=total,cn=connections,cn=monitor'])) {
 		$container->addElement(new htmlOutputText('<b>' . _("Total connections") . '</b>', false));
 		$container->addElement($spacer);
 		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=total,cn=connections,cn=monitor']['monitorcounter'])), true);
 	}
+	elseif (isset($monitorEntries['cn=monitor']['totalconnections'])) { // Fedora 389
+		$container->addElement(new htmlOutputText('<b>' . _("Total connections") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['totalconnections'])), true);
+	}
 	if (isset($monitorEntries['cn=bytes,cn=statistics,cn=monitor'])) {
 		$bytes = round($monitorEntries['cn=bytes,cn=statistics,cn=monitor']['monitorcounter'][0] / 1000000, 2) . 'MB';
+		$container->addElement(new htmlOutputText('<b>' . _("Bytes sent") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText($bytes), true);
+	}
+	elseif (isset($monitorEntries['cn=monitor']['bytessent'])) { // Fedora 389
+		$bytes = round($monitorEntries['cn=monitor']['bytessent'][0] / 1000000, 2) . 'MB';
 		$container->addElement(new htmlOutputText('<b>' . _("Bytes sent") . '</b>', false));
 		$container->addElement($spacer);
 		$container->addElement(new htmlOutputText($bytes), true);
@@ -235,18 +263,23 @@ if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries
 		$container->addElement($spacer);
 		$container->addElement(new htmlOutputText($monitorEntries['cn=pdu,cn=statistics,cn=monitor']['monitorcounter'][0]), true);
 	}
+	if (isset($monitorEntries['cn=monitor']['entriessent'])) { // Fedora 389
+		$container->addElement(new htmlOutputText('<b>' . _("Entries sent") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText($monitorEntries['cn=monitor']['entriessent'][0]), true);
+	}
 }
 
-// operation statistics
+// operation statistics (OpenLDAP)
 if (isset($monitorEntries['cn=operations,cn=monitor'])) {
 	$container->addElement(new htmlSubTitle(_('Operation statistics')), true);
 	$opStats = new htmlTable();
 	$opStats->colspan = 10;
 	$opStats->addElement(new htmlOutputText(''));
 	$opStats->addElement($spacer);
-	$opStats->addElement(new htmlOutputText('<b>' . _("initiated") . '</b>', false));
+	$opStats->addElement(new htmlOutputText('<b>' . _("Initiated") . '</b>', false));
 	$opStats->addElement($spacer);
-	$opStats->addElement(new htmlOutputText('<b>' . _("completed") . '</b>', false), true);
+	$opStats->addElement(new htmlOutputText('<b>' . _("Completed") . '</b>', false), true);
 	if (isset($monitorEntries['cn=bind,cn=operations,cn=monitor'])) {
 		$opStats->addElement(new htmlOutputText('<b>' . _("Bind") . '</b>', false));
 		$opStats->addElement($spacer);
@@ -317,15 +350,52 @@ if (isset($monitorEntries['cn=operations,cn=monitor'])) {
 		$opStats->addElement($spacer);
 		$opStats->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=extended,cn=operations,cn=monitor']['monitoropcompleted'])), true);
 	}
-	$opStats->addElement(new htmlSpacer(null, '10px'), true);
-	$opStats->addElement(new htmlOutputText('<b>' . _("Total") . '</b>', false));
-	$opStats->addElement($spacer);
-	$opStats->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=operations,cn=monitor']['monitoropinitiated'])));
-	$opStats->addElement($spacer);
-	$opStats->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=operations,cn=monitor']['monitoropcompleted'])), true);
+	if (isset($monitorEntries['cn=operations,cn=monitor']['monitoropinitiated'])) {
+		$opStats->addElement(new htmlSpacer(null, '10px'), true);
+		$opStats->addElement(new htmlOutputText('<b>' . _("Total") . '</b>', false));
+		$opStats->addElement($spacer);
+		$opStats->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=operations,cn=monitor']['monitoropinitiated'])));
+		$opStats->addElement($spacer);
+		$opStats->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=operations,cn=monitor']['monitoropcompleted'])), true);
+	}
 	$container->addElement($opStats);
 }
-//print_r($monitorEntries);
+// operation statistics (389 server)
+elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
+	$container->addElement(new htmlSubTitle(_('Operation statistics')), true);
+	$container->addElement(new htmlOutputText('<b>' . _("Initiated") . '</b>', false));
+	$container->addElement($spacer);
+	$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['opsinitiated'])), true);
+	$container->addElement(new htmlOutputText('<b>' . _("Completed") . '</b>', false));
+	$container->addElement($spacer);
+	$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['opscompleted'])), true);
+	if (isset($monitorEntries['cn=snmp,cn=monitor']['addentryops'])) {
+		$container->addElement(new htmlOutputText('<b>' . _("Bind") . '</b>', false));
+		$container->addElement($spacer);
+		$binds = $monitorEntries['cn=snmp,cn=monitor']['anonymousbinds'][0] + $monitorEntries['cn=snmp,cn=monitor']['unauthbinds'][0]
+					+ $monitorEntries['cn=snmp,cn=monitor']['simpleauthbinds'][0] + $monitorEntries['cn=snmp,cn=monitor']['strongauthbinds'][0];
+		$container->addElement(new htmlOutputText($binds), true);
+		$container->addElement(new htmlOutputText('<b>' . _("Search") . '</b>', false));
+		$container->addElement($spacer);
+		$searches = $monitorEntries['cn=snmp,cn=monitor']['searchops'][0];
+		$container->addElement(new htmlOutputText($searches), true);
+		$container->addElement(new htmlOutputText('<b>' . _("Add") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=snmp,cn=monitor']['addentryops'])), true);
+		$container->addElement(new htmlOutputText('<b>' . _("Modify") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=snmp,cn=monitor']['modifyentryops'])), true);
+		$container->addElement(new htmlOutputText('<b>' . _("Delete") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=snmp,cn=monitor']['removeentryops'])), true);
+		$container->addElement(new htmlOutputText('<b>' . _("Modify RDN") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=snmp,cn=monitor']['modifyrdnops'])), true);
+		$container->addElement(new htmlOutputText('<b>' . _("Compare") . '</b>', false));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(implode(', ', $monitorEntries['cn=snmp,cn=monitor']['compareops'])), true);
+	}
+}
 
 parseHtml(null, $container, array(), true, $tabindex, 'user');
 

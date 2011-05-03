@@ -2983,7 +2983,25 @@ Have fun!
     <section>
       <title>Server information</title>
 
-      <para>This shows some basic information about your LDAP server.</para>
+      <para>This shows information and statistics about your LDAP server. This
+      includes the suffixes, used overlays, connection data and operation
+      statistics. You will need "cn=monitor" setup to see all details. Some
+      data may not be available depending on your LDAP server software.</para>
+
+      <para>Please see the following links how to setup "cn=monitor":</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><ulink
+          url="http://www.openldap.org/doc/admin24/monitoringslapd.html">OpenLDAP</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink type=""
+          url="http://directory.fedoraproject.org/wiki/Howto:CN%3DMonitor_LDAP_Monitoring">389
+          server</ulink></para>
+        </listitem>
+      </itemizedlist>
 
       <screenshot>
         <mediaobject>
