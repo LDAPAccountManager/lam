@@ -792,6 +792,13 @@ class accountContainer {
 				metaRefresh("edit.php?type=" . $this->type . "&amp;suffix=" . $this->dn);
 				exit();
 			}
+			// reedit account
+			if (isset($_POST['accountContainerBackToEdit'])) {
+				// open fresh account page
+				unset($_SESSION[$this->base]);
+				metaRefresh("edit.php?type=" . $this->type . "&amp;DN=" . $this->finalDN);
+				exit();
+			}
 			// back to account list
 			if (isset($_POST['accountContainerBackToList'])) {
 				// Return to account list
@@ -1205,15 +1212,26 @@ class accountContainer {
 		
 		$container = new htmlTable();
 		$message = new htmlStatusMessage('INFO', _('LDAP operation successful.'), $text);
-		$message->colspan = 5;
+		$message->colspan = 10;
 		$container->addElement($message, true);
 		$container->addElement(new htmlSpacer(null, '20px'), true);
 		
 		$type = new $this->type();
-		$container->addElement(new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT));
-		$container->addElement(new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST));
+		$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
+		$createButton->setIconClass('createButton');
+		$container->addElement($createButton);
 		$container->addElement(new htmlSpacer('10px', null));
-		$container->addElement(new htmlButton('accountContainerCreatePDF', _('Create PDF file')));
+		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
+		$pdfButton->setIconClass('pdfButton');
+		$container->addElement($pdfButton);
+		$container->addElement(new htmlSpacer('10px', null));
+		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
+		$backToListButton->setIconClass('backButton');
+		$container->addElement($backToListButton);
+		$container->addElement(new htmlSpacer('10px', null));
+		$backToEditButton = new htmlButton('accountContainerBackToEdit', _('Edit again'));
+		$backToEditButton->setIconClass('editButton');
+		$container->addElement($backToEditButton);
 		
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, $this->type);

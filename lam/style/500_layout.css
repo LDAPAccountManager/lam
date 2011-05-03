@@ -148,12 +148,24 @@ tr.highlight {
 	background-image: url(../graphics/add.png) !important;
 }
 
+.editButton {
+	background-image: url(../graphics/edit.png) !important;
+}
+
 .settingsButton {
 	background-image: url(../graphics/tools.png) !important;
 }
 
 .upButton {
 	background-image: url(../graphics/up.gif) !important;
+}
+
+.backButton {
+	background-image: url(../graphics/back.gif) !important;
+}
+
+.pdfButton {
+	background-image: url(../graphics/pdf.png) !important;
 }
 
 .smallPadding span {
