@@ -4135,6 +4135,11 @@ Have fun!
       <para>You might need to run the sudo command once manually to init sudo.
       The command "sudo -l" will show all possible sudo commands of the
       current user.</para>
+
+      <para><emphasis role="bold">Attention:</emphasis> Please do not use the
+      options "Defaults requiretty" and "Defaults env_reset" in /etc/sudoers.
+      Otherwise you might get errors like "you must have a tty to run sudo" or
+      "no tty present and no askpass program specified".</para>
     </section>
 
     <section>
