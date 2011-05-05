@@ -399,8 +399,7 @@ Have fun!
               </listitem>
 
               <listitem>
-                <para>lam/lib: lamdaemon.pl must be set executable (See also
-                docs/readme.lamdeamon.txt)</para>
+                <para>lam/lib: lamdaemon.pl must be set executable</para>
               </listitem>
             </itemizedlist>
           </section>
