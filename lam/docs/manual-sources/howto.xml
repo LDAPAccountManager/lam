@@ -208,7 +208,24 @@ Have fun!
           </listitem>
 
           <listitem>
-            <para>A web browser :-)</para>
+            <para>A recent web browser that supports CSS2 and JavaScript, at
+            minimum:</para>
+
+            <para><itemizedlist>
+                <listitem>
+                  <para>Firefox 3</para>
+                </listitem>
+
+                <listitem>
+                  <para>Internet Explorer 8 <emphasis
+                  role="bold">(compatibility mode turned
+                  off)</emphasis></para>
+                </listitem>
+
+                <listitem>
+                  <para>Opera 10</para>
+                </listitem>
+              </itemizedlist></para>
           </listitem>
         </itemizedlist>
 
