@@ -27,7 +27,7 @@ use Sys::Syslog;
 
 # Defines the protocol version of the lamdaemon script.
 # This will only be changed when additional commands are added etc.
-my $LAMDAEMON_PROTOCOL_VERSION = 1;
+my $LAMDAEMON_PROTOCOL_VERSION = 2;
 
 my $SPLIT_DELIMITER = "###x##y##x###";
 
@@ -193,6 +193,9 @@ sub manageHomedirs {
 	elsif ($vals[2] eq 'rem') {
 		removeHomedir();
 	}
+	elsif ($vals[2] eq 'check') {
+		checkHomedir();
+	}
 	else {
 		# Show error if undefined command is used
 		$return = "ERROR,Lamdaemon ($hostname),Unknown home command $vals[2].";
@@ -207,7 +210,7 @@ sub createHomedir {
 	my $homedir = $vals[3];
 	if ($homedir eq '') {
 		$return = "ERROR,Lamdaemon ($hostname),No home directory specified.";
-		logMessage(LOG_ERR, "No home directory specified.");
+		logMessage(LOG_ERR, "No home directory specified to create.");
 		return;
 	}
 	my $path = $homedir;
@@ -241,8 +244,8 @@ sub createHomedir {
 #
 sub removeHomedir {
 	if ($vals[3] eq '') {
-		$return = "ERROR,Lamdaemon ($hostname),Home directory path is empty.";
-		logMessage(LOG_ERR, "Home directory path is empty.");
+		$return = "ERROR,Lamdaemon ($hostname),No home directory specified to delete.";
+		logMessage(LOG_ERR, "No home directory specified to delete.");
 		return;
 	}
 	($<, $>) = ($>, $<); # Get root previliges
@@ -266,6 +269,24 @@ sub removeHomedir {
 	($<, $>) = ($>, $<); # Give up root previleges
 }
 
+#
+# Checks if the homedirectory of the user already exists.
+#
+sub checkHomedir {
+	my $homedir = $vals[3];
+	if ($homedir eq '') {
+		$return = "ERROR,Lamdaemon ($hostname),No home directory specified to check.";
+		logMessage(LOG_ERR, "No home directory specified to check.");
+		return;
+	}
+	if (-d $homedir) {
+		$return = "ok";
+	}
+	else {
+		$return = "missing";
+	}
+}
+	
 #
 # Handles all quota related commands
 #

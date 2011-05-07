@@ -169,7 +169,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText, $container) {
  */
 function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$SPLIT_DELIMITER = "###x##y##x###";
-	$LAMDAEMON_PROTOCOL_VERSION = '1';
+	$LAMDAEMON_PROTOCOL_VERSION = '2';
 	$okImage = "../../graphics/pass.png";
 	$failImage = "../../graphics/fail.png";
 	
