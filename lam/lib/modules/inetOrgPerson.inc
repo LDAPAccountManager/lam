@@ -1349,19 +1349,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->attributes['departmentNumber'] = array_map('trim', $departments);
 			}
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO') && isset($profile['inetOrgPerson_o'][0])) {
 			$oList = preg_split('/;[ ]*/', $profile['inetOrgPerson_o'][0]);
 			$this->attributes['o'] = $oList;
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') && isset($profile['inetOrgPerson_mail'][0])) {
 			$mailList = preg_split('/;[ ]*/', $profile['inetOrgPerson_mail'][0]);
 			$this->attributes['mail'] = $mailList;
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') && isset($profile['inetOrgPerson_telephoneNumber'][0])) {
 			$telephoneNumberList = preg_split('/;[ ]*/', $profile['inetOrgPerson_telephoneNumber'][0]);
 			$this->attributes['telephoneNumber'] = $telephoneNumberList;
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber') && isset($profile['inetOrgPerson_facsimileTelephoneNumber'][0])) {
 			$facsimileTelephoneNumberList = preg_split('/;[ ]*/', $profile['inetOrgPerson_facsimileTelephoneNumber'][0]);
 			$this->attributes['facsimileTelephoneNumber'] = $facsimileTelephoneNumberList;
 		}
