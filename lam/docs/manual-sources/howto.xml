@@ -1556,10 +1556,28 @@ Have fun!
         <para>The Unix module manages Unix user accounts including group
         memberships.</para>
 
+        <para></para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_unixUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can also create home directories for your users if you setup
+        <link linkend="a_lamdaemon">lamdaemon</link>. This allows you to
+        create the directories on the local or remote servers.</para>
+
+        <para>It is also possible to check the status of the user's home
+        directories. If needed the directories can be created or removed at
+        any time.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixUserHomedir.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

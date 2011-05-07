@@ -1,6 +1,7 @@
 August 2011 3.5.0
   - New module "General information": shows internal data about accounts (e.g. creation time)
   - inetOrgPerson: New attributes o, employeeNumber, initials
+  - Unix: Support to create home directories on multiple servers and also for existing users
   - Server information shows data from cn=monitor
   - lots of small improvements
   - LAM Pro:

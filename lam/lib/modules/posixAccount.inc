@@ -46,8 +46,7 @@ class posixAccount extends baseModule implements passwordService {
 	private $groups;
 	private $groups_orig;
 
-	private $createhomedir;
-	private $lamdaemonServer;
+	private $lamdaemonServers = array();
 	private $groupCache = null;
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
@@ -98,7 +97,6 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be "true" or "false".'));
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
-		$this->messages['createhomediron'][0] = array('ERROR', _('Home directory'), _('Choose a server for the home directory!'));
 	}
 
 	/**
@@ -425,7 +423,6 @@ class posixAccount extends baseModule implements passwordService {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->createhomedir=false;
 		$this->groups = array();
 		$this->groups_orig = array();
 		$groups = $this->findGroups(); // list of all groupnames
@@ -549,44 +546,43 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param array $attributes LDAP attributes of this entry
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		// create home directory if needed
-		if ($this->createhomedir) {
+		// create home directories if needed
+		if (sizeof($this->lamdaemonServers) > 0) {
 			$server = null;
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 				$temp = explode(":", $lamdaemonServers[$i]);
+				$server = $temp[0];
 				if (isset($temp[1])) {
-					if ($temp[1] == $this->lamdaemonServer) {
-						$server = $temp[0];
-						break;
+					if (!in_array($temp[1], $this->lamdaemonServers)) {
+						continue;
 					}
 				}
-				elseif ($temp[0] == $this->lamdaemonServer) {
-					$server = $temp[0];
-					break;
+				elseif (!in_array($temp[0], $this->lamdaemonServers)) {
+					continue;
 				}
-			}
-			$result = lamdaemon(
-				implode(
-					posixAccount::$SPLIT_DELIMITER,
-					array(
-						$this->attributes['uid'][0],
-						"home",
-						"add",
-						$this->attributes['homeDirectory'][0],
-						"0".$_SESSION['config']->get_scriptRights(),
-						$this->attributes['uidNumber'][0],
-						$this->attributes['gidNumber'][0])
-					),
-				$server);
-			// lamdaemon results
-			if (is_array($result)) {
-				$singleresult = explode(",", $result[0]);
-				if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
-					call_user_func_array('StatusMessage', $singleresult);
-				}
-				else {
-					StatusMessage('ERROR', $result[0]);
+				$result = lamdaemon(
+					implode(
+						posixAccount::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"home",
+							"add",
+							$this->attributes['homeDirectory'][0],
+							"0".$_SESSION['config']->get_scriptRights(),
+							$this->attributes['uidNumber'][0],
+							$this->attributes['gidNumber'][0])
+						),
+					$server);
+				// lamdaemon results
+				if (is_array($result)) {
+					$singleresult = explode(",", $result[0]);
+					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+						call_user_func_array('StatusMessage', $singleresult);
+					}
+					else {
+						StatusMessage('ERROR', $result[0]);
+					}
 				}
 			}
 		}
@@ -691,18 +687,12 @@ class posixAccount extends baseModule implements passwordService {
 			if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
 			else $lamdaemonServers[$i] = $temp[0];
 		}
-		if (isset($_POST['createhomedir'])) {
-			$this->createhomedir = true;
-	 		if (!in_array($_POST['createhomediron'], $lamdaemonServers)) {
-	 			$errorMessage = $this->messages['createhomediron'][0];
-	   			$errorMessage[] = array($this->orig['createhomediron'][0]);
-				$errors[] = $errorMessage;
-			}
-			else {
-				$this->lamdaemonServer = $_POST['createhomediron'];
+		$this->lamdaemonServers = array();
+		for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+			if (isset($_POST['createhomedir_' . $h]) && ($_POST['createhomedir_' . $h] = 'on')) {
+				$this->lamdaemonServers[] = $lamdaemonServers[$h];
 			}
 		}
-		else $this->createhomedir = false;
 		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
 		// Load attributes
 		if (isset($_POST['lockPassword'])) {
@@ -894,6 +884,74 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	* Processes user input of the homedir check page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_homedir() {
+		$return = array();
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+			$temp = explode(":", $lamdaemonServers[$i]);
+			$server = $temp[0];
+			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
+				$result = lamdaemon(
+					implode(
+						posixAccount::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"home",
+							"add",
+							$this->attributes['homeDirectory'][0],
+							"0".$_SESSION['config']->get_scriptRights(),
+							$this->attributes['uidNumber'][0],
+							$this->attributes['gidNumber'][0])
+					),
+					$server);
+				// lamdaemon results
+				if (is_array($result)) {
+					foreach ($result as $singleresult) {
+						$singleresult = explode(",", $singleresult);
+						if (is_array($singleresult)) {
+							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+								$return[] = $singleresult;
+							}
+						}
+					}
+				}
+			}
+			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
+				$result = lamdaemon(
+					implode(
+						posixAccount::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"home",
+							"rem",
+							$this->attributes['homeDirectory'][0],
+							$this->attributes['uidNumber'][0]
+						)
+					),
+					$server);
+				// lamdaemon results
+				if (is_array($result)) {
+					foreach ($result as $singleresult) {
+						$singleresult = explode(",", $singleresult);
+						if (is_array($singleresult)) {
+							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+								$return[] = $singleresult;
+							}
+						}
+					}
+				}
+			}
+		}
+		return $return;
+	}
+
+	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
 	 * @return htmlElement HTML meta data
@@ -976,21 +1034,31 @@ class posixAccount extends baseModule implements passwordService {
 			$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $this->attributes['homeDirectory'][0], 'homeDirectory');
 			$homedirInput->setRequired(true);
 			$return->addElement($homedirInput, true);
-			if ($this->getAccountContainer()->isNewAccount && ($_SESSION['config']->get_scriptPath() != null) 
-				&& ($_SESSION['config']->get_scriptPath() != '')) {
-				// get list of lamdaemon servers
-				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-					$temp = explode(":", $lamdaemonServers[$i]);
-					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-					else $lamdaemonServers[$i] = $temp[0];
+			if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
+				if ($this->getAccountContainer()->isNewAccount) {
+					// get list of lamdaemon servers
+					$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+					for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+						$temp = explode(":", $lamdaemonServers[$i]);
+						if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+						else $lamdaemonServers[$i] = $temp[0];
+					}
+					$homeDirLabel = new htmlOutputText(_('Create home directory'));
+					$homeDirLabel->alignment = htmlElement::ALIGN_TOP;
+					$return->addElement($homeDirLabel);
+					$homeServerContainer = new htmlTable();
+					for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+						$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false), true);
+					}
+					$return->addElement($homeServerContainer);
+					$homeDirHelp = new htmlHelpLink('createhomedir');
+					$homeDirHelp->alignment = htmlElement::ALIGN_TOP;
+					$return->addElement($homeDirHelp, true);
 				}
-				$return->addElement(new htmlOutputText(_('Create home directory')));
-				$homeServerContainer = new htmlTable();
-				$homeServerContainer->addElement(new htmlInputCheckbox('createhomedir', $this->createhomedir));
-				$homeServerContainer->addElement(new htmlSelect('createhomediron', $lamdaemonServers, $this->lamdaemonServer));
-				$return->addElement($homeServerContainer);
-				$return->addElement(new htmlHelpLink('createhomedir'), true);
+				else {
+					$return->addElement(new htmlOutputText(''));
+					$return->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'open', _('Check home directories')), true);
+				}
 			}
 			$selectedShell = array();
 			if (isset($this->attributes['loginShell'][0])) {
@@ -1076,6 +1144,75 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	* Displays the delete homedir option for the homedir page.
+	*
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_homedir() {
+		$return = new htmlTable();
+		$return->addElement(new htmlOutputText(_('Home directory')));
+		$return->addElement(new htmlSpacer('5px', null));
+		$return->addElement(new htmlOutputText($this->attributes['homeDirectory'][0]), true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$homeServerContainer = new htmlTable();
+		$homeServerContainer->colspan = 5;
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+			$temp = explode(":", $lamdaemonServers[$i]);
+			$server = $temp[0];
+			$label = $temp[0];
+			if (isset($temp[1])) {
+				$label = $temp[1];
+			}
+			$result = lamdaemon(
+				implode(
+					posixAccount::$SPLIT_DELIMITER,
+					array(
+						$this->attributes['uid'][0],
+						"home",
+						"check",
+						$this->attributes['homeDirectory'][0])
+					),
+				$server);
+			// lamdaemon results
+			if (is_array($result)) {
+				$returnValue = trim($result[0]);
+				if ($returnValue == 'ok') {
+					$homeServerContainer->addElement(new htmlOutputText($label));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+				}
+				elseif ($returnValue == 'missing') {
+					$homeServerContainer->addElement(new htmlOutputText($label));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+				}
+				else {
+					$messageParams = explode(",", $returnValue);
+					if (isset($messageParams[2])) {
+						$message = new htmlStatusMessage($messageParams[0], $messageParams[1], $messageParams[2]);
+					}
+					else {
+						$message = new htmlStatusMessage($messageParams[0], $messageParams[1]);
+					}
+					$message->colspan = 5;
+					$homeServerContainer->addElement($message, true);
+				}
+				$homeServerContainer->addNewLine();
+			}
+		}
+		$return->addElement($homeServerContainer, true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		return $return;
+	}
+
+	/**
 	* Returns a list of elements for the account profiles.
 	*
 	* @return profile elements
@@ -1101,14 +1238,23 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlTableExtendedSelect('posixAccount_loginShell', $shelllist, array("/bin/bash"), _('Login shell'), 'loginShell'), true);
 			// lamdaemon settings
 			if (($_SESSION['config']->get_scriptPath() != null)) {
-				$return->addElement(new htmlTableExtendedInputCheckbox('posixAccount_createHomedir', false, _('Create home directory'), 'createhomedir'), true);
+				$homeDirLabel = new htmlOutputText(_('Create home directory'));
+				$homeDirLabel->alignment = htmlElement::ALIGN_TOP;
+				$return->addElement($homeDirLabel);
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 					$temp = explode(":", $lamdaemonServers[$i]);
 					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
 					else $lamdaemonServers[$i] = $temp[0];
 				}
-				$return->addElement(new htmlTableExtendedSelect('posixAccount_homedirServer', $lamdaemonServers, array(), _('Home directory server'), 'createhomedir'), true);
+				$homeServerContainer = new htmlTable();
+				for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+					$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_createHomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false), true);
+				}
+				$return->addElement($homeServerContainer);
+				$homeDirHelp = new htmlHelpLink('createhomedir');
+				$homeDirHelp->alignment = htmlElement::ALIGN_TOP;
+				$return->addElement($homeDirHelp, true);
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
@@ -1140,11 +1286,17 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// lamdaemon
 		if (($this->get_scope() == 'user') && $this->getAccountContainer()->isNewAccount) {
-			if (isset($profile['posixAccount_homedirServer'][0])) {
-				$this->lamdaemonServer = $profile['posixAccount_homedirServer'][0];
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+				$temp = explode(":", $lamdaemonServers[$i]);
+				if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+				else $lamdaemonServers[$i] = $temp[0];
 			}
-			if (isset($profile['posixAccount_createHomedir'][0]) && ($profile['posixAccount_createHomedir'][0] == 'true')) {
-				$this->createhomedir = true;
+			$this->lamdaemonServers = array();
+			for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+				if (isset($profile['posixAccount_createHomedir_' . $h][0]) && ($profile['posixAccount_createHomedir_' . $h][0] == 'true')) {
+					$this->lamdaemonServers[] = $lamdaemonServers[$h];
+				}
 			}
 		}
 	}
