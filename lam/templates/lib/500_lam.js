@@ -45,7 +45,7 @@ function list_out(list) {
  * @param box checkbox name
  */
 function list_click(box) {
-	cbox = document.getElementsByName(box)[0];
+	var cbox = document.getElementsByName(box)[0];
 	if (cbox.checked == true) {
 		cbox.checked = false;
 	}

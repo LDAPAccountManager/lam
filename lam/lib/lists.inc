@@ -385,7 +385,7 @@ class lamList {
 				" onMouseOut=\"list_out(this)\"\n" .
 				" onClick=\"list_click('" . $rowID . "')\"\n" .
 				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
-			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click(this, '" . $rowID . "', '" . $this->type . "')\"" .
+			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click('" . $rowID . "')\"" .
 				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
 			$this->listPrintToolLinks($info[$i], $rowID);
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
