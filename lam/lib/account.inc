@@ -287,9 +287,20 @@ function pwd_is_enabled($hash) {
 function generateRandomPassword() {
 	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
 	$password = '';
-	for ($i = 0; $i < 12; $i++) {
-		$rand = $_SESSION['ldap']->new_rand() % 65;
-		$password .= $list[$rand];
+	$length = $_SESSION['cfgMain']->passwordMinLength;
+	if ($length < 12) {
+		$length = 12;
+	}
+	$isOk = false;
+	for ($x = 0; $x < 10000; $x++) {
+		$password = '';
+		for ($i = 0; $i < $length; $i++) {
+			$rand = $_SESSION['ldap']->new_rand() % 65;
+			$password .= $list[$rand];
+		}
+		if (checkPasswordStrength($password) === true) {
+			break;
+		}
 	}
 	return $password;
 }
@@ -405,8 +416,10 @@ function get_preg($argument, $regexp) {
 		case "mailLocalAddress":
 					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
 					break;
-		case "postalAddress":	// Allow all but \, <, >, =, $, ?
-		case "postalCode":
+		case "postalAddress":	// Allow all but \, <, >, =, ?
+					$pregexpr = '/^[^\\\<>=\\?]*$/';
+					break;
+		case "postalCode":	// Allow all but \, <, >, =, ?
 		case "street":
 		case "title":
 		case "employeeType":
