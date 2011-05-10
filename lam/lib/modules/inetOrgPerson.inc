@@ -850,7 +850,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$this->attributes['postalAddress'][0] = $_POST['postalAddress'];
+			$this->attributes['postalAddress'][0] = implode('$', preg_split('/[\r][\n]/', $_POST['postalAddress']));
 			if (!get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
@@ -1029,8 +1029,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$postalAddress = '';
-			if (isset($this->attributes['postalAddress'][0])) $postalAddress = $this->attributes['postalAddress'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Postal address'), 'postalAddress', $postalAddress, 'postalAddress'), true);
+			if (isset($this->attributes['postalAddress'][0])) {
+				$postalAddress = implode("\r\n", explode('$', $this->attributes['postalAddress'][0]));
+			}
+			$fieldContainer->addElement(new htmlTableExtendedInputTextarea('postalAddress', $postalAddress, 30, 3, _('Postal address'), 'postalAddress'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$physicalDeliveryOfficeName = '';
