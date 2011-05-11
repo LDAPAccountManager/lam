@@ -182,7 +182,7 @@ $helpArray = array (
 				"510" => array ("Headline" => _("Additional CSS links"),
 					"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line.")),
 				"520" => array ("Headline" => _("Generate random password"),
-					"Text" => _("This will set a random password and display it on the screen or send it the user via mail. Please edit your LAM server profile to setup the mail settings.")),
+					"Text" => _("This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),

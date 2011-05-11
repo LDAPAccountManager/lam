@@ -1700,8 +1700,8 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attribtues from DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes from DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+						$errors[] = array('ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
 					else {
@@ -1712,8 +1712,8 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attribtues to DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+						$errors[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
 					else {
@@ -1724,8 +1724,8 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attribtues from DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attributes from DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+						$errors[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
 					else {

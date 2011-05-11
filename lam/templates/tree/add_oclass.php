@@ -90,7 +90,7 @@ if( ! $add_res )
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 	echo "</head>\n";
-	StatusMessage('ERROR', _("Was unable to modify attribtues from DN: %s."), ldap_error( $ds ), array($dn));
+	StatusMessage('ERROR', _("Was unable to modify attributes from DN: %s."), ldap_error( $ds ), array($dn));
 	echo "</body></html>";
 }
 else
