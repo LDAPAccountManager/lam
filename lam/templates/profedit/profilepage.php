@@ -178,7 +178,7 @@ $dnContent->addElement(new htmlSpacer(null, '10px'), true);
 // get root suffix
 $rootsuffix = $_SESSION['config']->get_Suffix($type);
 // get subsuffixes
-$suffixes = array();
+$suffixes = array('-' => '-');
 $typeObj = new $type();
 $possibleSuffixes = $typeObj->getSuffixList();
 foreach ($possibleSuffixes as $suffix) {

@@ -775,11 +775,11 @@ class accountContainer {
 		}
 		elseif (!$profileLoaded) {
 			// change dn suffix
-			if (isset($_REQUEST['suffix']) && ($_REQUEST['suffix'] != '')) {
-				$this->dn = $_REQUEST['suffix'];
+			if (isset($_GET['suffix']) && ($_GET['suffix'] != '') && ($this->dn == null)) {
+				$this->dn = $_GET['suffix'];
 			}
-			if (isset($_REQUEST['accountContainerSuffix']) && ($_REQUEST['accountContainerSuffix'] != '')) {
-				$this->dn = $_REQUEST['accountContainerSuffix'];
+			if (isset($_POST['accountContainerSuffix']) && ($_POST['accountContainerSuffix'] != '')) {
+				$this->dn = $_POST['accountContainerSuffix'];
 			}
 			// change RDN
 			if (isset($_POST['accountContainerRDN'])) {
@@ -1257,7 +1257,7 @@ class accountContainer {
 					$this->rdn = $profile['ldap_rdn'][0];
 				}
 			}
-			if (isset($profile['ldap_suffix'][0])) {
+			if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
 				$this->dn = $profile['ldap_suffix'][0];
 			}
 			return true;
@@ -1538,7 +1538,7 @@ class accountContainer {
 				$this->rdn = $profile['ldap_rdn'][0];
 			}
 		}
-		if (isset($profile['ldap_suffix'][0])) {
+		if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
 			$this->dn = $profile['ldap_suffix'][0];
 		}
 		// get titles
