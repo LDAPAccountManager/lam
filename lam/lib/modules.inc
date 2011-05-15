@@ -753,26 +753,6 @@ class accountContainer {
 		if (isset($_POST['accountContainerReset'])) {
 			$result = $this->load_account($this->dn_orig);
 		}
-		elseif (isset($_POST['setNewPasswordCancel'])) {
-			// ignore
-		}
-		elseif (isset($_POST['setNewPasswordOk']) || isset($_POST['setNewPasswordRandom'])) {
-			$pwdMessages = $this->setNewPassword();
-			$pwdErrors = 0;
-			for ($i = 0; $i < sizeof($pwdMessages); $i++) {
-				if ($pwdMessages[$i][0] == 'ERROR') {
-					$pwdErrors++;
-				}
-			}
-			if ($pwdErrors == 0) {
-				$result[] = array('INFO', _('The new password will be stored in the directory after you save this account.'));
-				$result = array_merge($result, $pwdMessages);
-			}
-			else {
-				$this->printPasswordPromt($pwdMessages);
-				return;
-			}
-		}
 		elseif (!$profileLoaded) {
 			// change dn suffix
 			if (isset($_GET['suffix']) && ($_GET['suffix'] != '') && ($this->dn == null)) {
@@ -887,11 +867,6 @@ class accountContainer {
 				}
 			}
 		}
-		// check if password change was requested
-		if (!$errorsOccured && isset($_POST['accountContainerSetPassword'])) {
-			$this->printPasswordPromt(array());
-			return;
-		}
 		// prints a module content page
 		$this->printModuleContent($result, $stopProcessing);
 	}
@@ -904,6 +879,7 @@ class accountContainer {
 	 */
 	private function printModuleContent($result, $stopProcessing) {
 		$this->printPageHeader();
+		$this->printPasswordPromt();
 		// display error messages
 		if (is_array($result)) {
 			for ($i=0; $i<sizeof($result); $i++) {
@@ -914,6 +890,7 @@ class accountContainer {
 				return;
 			}
 		}
+		echo '<div id="passwordMessageArea"></div>';
 		echo "<table class=\"".$this->type."list-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		if (checkIfWriteAccessIsAllowed()) {
 			echo "<tr class=\"".$this->type."list-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
@@ -984,25 +961,11 @@ class accountContainer {
 
 	/**
 	 * Prints the input fields of the central password service.
-	 * 
-	 * @param $errors list of error messages
 	 */
-	private function printPasswordPromt($errors) {
-		$this->printPageHeader();
-		echo "<div class=\"" . $this->type . "list-bright smallPaddingContent\">\n";
+	private function printPasswordPromt() {
+		echo "<div id=\"passwordDialog\" class=\"hidden\">\n";
+		echo '<div id="passwordDialogMessageArea"></div>';
 		$container = new htmlTable();
-		// title
-		$container->addElement(new htmlSubTitle(_("Set password")), true);
-		// error messages
-		for ($i = 0; $i < sizeof($errors); $i++) {
-			$text = '';
-			if (isset($errors[$i][2])) $text = $errors[$i][2];
-			$params = array();
-			if (isset($errors[$i][3])) $params = $errors[$i][3];
-			$message = new htmlStatusMessage($errors[$i][0], $errors[$i][1], $text, $params);
-			$message->colspan = 3;
-			$container->addElement($message, true);
-		}
 		// password fields
 		$container->addElement(new htmlOutputText(_('Password')));
 		$pwdInput1 = new htmlInputField('newPassword1');
@@ -1018,7 +981,7 @@ class accountContainer {
 		$moduleContainer = new htmlTable();
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
-				$moduleContainer->addElement(new htmlInputCheckbox('cb_' . $name, true));
+				$moduleContainer->addElement(new htmlInputCheckbox('password_cb_' . $name, true));
 				$buttonImage = $module->getIcon();
 				if ($buttonImage != null) {
 					$moduleContainer->addElement(new htmlImage('../../graphics/' . $buttonImage, null, null, getModuleAlias($name, $this->type)));
@@ -1030,63 +993,70 @@ class accountContainer {
 		$moduleContainer->colspan = 5;
 		$container->addElement($moduleContainer, true);
 		$container->addElement(new htmlSpacer(null, '10px'), true);
-		// buttons
-		$buttonContainer = new htmlTable();
-		$buttonContainer->colspan = 3;
-		$buttonContainer->addElement(new htmlButton('setNewPasswordOk', _('Ok')));
-		$buttonContainer->addElement(new htmlButton('setNewPasswordCancel', _('Cancel')));
-		$buttonContainer->addElement(new htmlButton('setNewPasswordRandom', _('Set random password')));
-		$container->addElement($buttonContainer);
 		// generate HTML
-		$tabindex = 1;
+		$tabindex = 2000;
 		parseHtml(null, $container, array(), false, $tabindex, $this->type);
-		// set focus on password field
-		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-		echo "<!--\n";
-		echo "myElement = document.getElementsByName('newPassword1')[0];\n";
-		echo "myElement.focus();\n";
-		echo "//-->\n";
-		echo "</script>\n";
 		echo "</div>\n";
-		$this->printPageFooter();
 	}
 	
 	/**
 	 * Sets the new password in all selected account modules.
 	 * 
-	 * @return array list of messages
+	 * @param array $input input parameters
 	 */
-	private function setNewPassword() {
-		$return = array();
-		if (isset($_POST['setNewPasswordRandom'])) {
-			$_POST['newPassword1'] = generateRandomPassword();
-			$return[] = array('INFO', _('The password was set to:') . ' ' . $_POST['newPassword1']);
+	public function setNewPassword($input) {
+		$password1 = $input['password1'];
+		$password2 = $input['password2'];
+		$random = $input['random'];
+		$modules = $input['modules'];
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			$modules[$m] = str_replace('password_cb_', '', $modules[$m]);
+		}
+		$return = array(
+			'messages' => '',
+			'errorsOccured' => 'false'
+		);
+		if ($random == 'true') {
+			$password1 = generateRandomPassword();
+			$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . $password1, '', array(), true);
 		}
 		else {
 			// check if passwords match
-			if ($_POST['newPassword1'] != $_POST['newPassword2']) {
-				$return[] = array('ERROR', _('Passwords are different!'));
-				return $return;
+			if ($password1 != $password2) {
+				$return['messages'] .= StatusMessage('ERROR', _('Passwords are different!'), '', array(), true);
+				$return['errorsOccured'] = 'true';
 			}
 			// check passsword stregth
-			$pwdPolicyResult = checkPasswordStrength($_POST['newPassword1']);
+			$pwdPolicyResult = checkPasswordStrength($password1);
 			if ($pwdPolicyResult !== true) {
-				$return[] = array('ERROR', $pwdPolicyResult);
-				return $return;
+				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', array(), true);
+				$return['errorsOccured'] = 'true';
 			}
 		}
-		// set new password
-		$selectedModules = array();
-		foreach ($_POST as $key => $value) {
-			if (substr($key, 0, 3) == 'cb_') {
-				$name = substr($key, 3);
-				$selectedModules[] = $name;
+		if ($return['errorsOccured'] == 'false') {
+			// set new password
+			foreach ($this->module as $name => $module) {
+				if ($module instanceof passwordService) {
+					$messages = $module->passwordChangeRequested($password1, $modules);
+					for ($m = 0; $m < sizeof($messages); $m++) {
+						if ($messages[$m][0] == 'ERROR') {
+							$return['errorsOccured'] = 'true';
+						}
+						if (sizeof($messages[$m]) == 2) {
+							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], '', array(), true);
+						}
+						elseif (sizeof($messages[$m]) == 3) {
+							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], array(), true);
+						}
+						elseif (sizeof($messages[$m]) == 4) {
+							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], $messages[$m][2], true);
+						}
+					}
+				}
 			}
 		}
-		foreach ($this->module as $name => $module) {
-			if ($module instanceof passwordService) {
-				$return = array_merge($return, $module->passwordChangeRequested($_POST['newPassword1'], $selectedModules));
-			}
+		if ($return['errorsOccured'] == 'false') {
+			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
 		}
 		return $return;		
 	}
@@ -1106,7 +1076,8 @@ class accountContainer {
 		}
 		if ($this->showSetPasswordButton()) {
 			echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo "<button id=\"modPasswordButton\" name=\"accountContainerSetPassword\">" . _('Set password') . "</button> \n";
+			echo '<a href="#" onclick="passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
+				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\');" id="modPasswordButton">' . _('Set password') . "</a> \n";
 		}
 		echo "</td>";
 		echo "<td align=\"right\">";

@@ -72,7 +72,7 @@ function listResizeITabContentDiv() {
 	var myDiv = document.getElementById("listTabContentArea");
     var height = document.documentElement.clientHeight;
     height -= myDiv.offsetTop;
-    height -= 105
+    height -= 105;
     myDiv.style.height = height +"px";
 
     var myDivScroll = document.getElementById("listScrollArea");
@@ -214,3 +214,71 @@ function automountShowNewMapDialog(title, okText, cancelText) {
 	});
 }
 
+/**
+ * Shows the dialog to change the password.
+ * 
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ * @param randomText text for random password
+ * @param ajaxURL URL used for AJAX request
+ */
+function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL) {
+	var buttonList = {};
+	buttonList[randomText] = function() { passwordHandleInput("true", ajaxURL); };
+	buttonList[cancelText] = function() {
+		jQuery('#passwordDialogMessageArea').html("");
+		jQuery(this).dialog("close");
+	};
+	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL); };
+	jQuery('#passwordDialog').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+	// set focus on password field
+	var myElement = document.getElementsByName('newPassword1')[0];
+	myElement.focus();
+}
+
+/**
+ * Manages the password change when a button is pressed.
+ * 
+ * @param random "true" if random password should be generated
+ * @param ajaxURL URL used for AJAX request
+ */
+function passwordHandleInput(random, ajaxURL) {
+	// get input values
+	var modules = new Array();
+	jQuery('#passwordDialog').find(':checked').each(function() {
+		modules.push(jQuery(this).attr('name'));
+	});
+	var pwd1 = jQuery('#passwordDialog').find('[name=newPassword1]').val();
+	var pwd2 = jQuery('#passwordDialog').find('[name=newPassword2]').val();
+	var pwdJSON = {
+		"modules": modules,
+		"password1": pwd1,
+		"password2": pwd2,
+		"random": random
+	};
+	// make AJAX call
+	jQuery.post(ajaxURL, {jsonInput: pwdJSON}, function(data) {passwordHandleReply(data);}, 'json');
+}
+
+/**
+ * Manages the server reply to a password change request.
+ * 
+ * @param data JSON reply
+ */
+function passwordHandleReply(data) {
+	if (data.errorsOccured == "false") {
+		jQuery('#passwordDialogMessageArea').html("");
+		jQuery('#passwordDialog').dialog("close");
+		jQuery('#passwordMessageArea').html(data.messages);
+	}
+	else {
+		jQuery('#passwordDialogMessageArea').html(data.messages);
+	}	
+}
