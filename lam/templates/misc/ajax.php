@@ -34,6 +34,8 @@ include_once("../../lib/security.inc");
 // start session
 startSecureSession();
 
+setlanguage();
+
 lamAjax::handleRequest();
 
 /**
