@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
+                2011         Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -46,8 +47,10 @@ $Id$
  * <br> It may be formatted with special color/link/bold tags. This parameter is optional.
  * @param array $MessageVariables The variables that are used to replace the spacers (%s) in the
  * submitted text. This parameter is optional.
+ * @param boolean $returnOutput if set to true this function will return the generated HTML code instead of printing it directly (default: false)
+ * @return String HTML code if $returnOutput is set to true, otherwise null
  */
-function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVariables = array()) {
+function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVariables = array(), $returnOutput = false) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {
 		$class = "class=\"statusInfo ui-corner-all\"";
@@ -79,18 +82,26 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
 	$format = "<div " . $class . ">\n<table>\n<tr>\n<td>" . $MessageTyp . "</td>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n</div>\n";
+	$output = '';
 	if (is_array($MessageVariables)) {
 		if (sizeof($MessageVariables) > 0) {
 			array_unshift($MessageVariables, $format);
-			call_user_func_array('printf',$MessageVariables);
+			$output = call_user_func_array('sprintf',$MessageVariables);
 		}
 		else {
-			echo $format;
+			$output = $format;
 		}
 	}
 	else {
-		printf($format, $MessageVariables);
+		$output = sprintf($format, $MessageVariables);
 	}
+	if ($returnOutput) {
+		return $output;
+	}
+	else {
+		echo $output;
+	}
+	return null;
 }
 
 /**
