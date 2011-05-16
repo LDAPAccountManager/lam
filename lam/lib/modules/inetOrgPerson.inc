@@ -39,6 +39,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	
 	/** caches the list of possible managers */
 	private $cachedManagers = null;
+	private $clearTextPassword = null;
 	
 	/**
 	* This function fills the message array.
@@ -760,6 +761,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (isset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto'])) {
 			$return[$this->getAccountContainer()->dn]['modify']['jpegPhoto'] = array();
 			unset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto']);
+		}
+		// add information about clear text password
+		if ($this->clearTextPassword != null) {
+			$return[$this->getAccountContainer()->dn]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		}
 		return $return;
 	}
@@ -2145,6 +2150,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		$this->clearTextPassword = $password;
 		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
