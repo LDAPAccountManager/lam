@@ -356,9 +356,12 @@ class htmlInputField extends htmlElement {
 	 * @param String $fieldName unique field name
 	 * @param String $fieldValue value of input field (optional)
 	 */
-	function __construct($fieldName, $fieldValue = null) {
+	function __construct($fieldName, $fieldValue = null, $fieldSize = null) {
 		$this->fieldName = htmlspecialchars($fieldName);
 		$this->fieldValue = htmlspecialchars($fieldValue);
+		if ($fieldSize != null) {
+			$this->fieldSize = $fieldSize;
+		}
 	}
 	
 	/**
