@@ -413,6 +413,9 @@ function get_preg($argument, $regexp) {
 		case "email":
 					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
 					break;
+		case "emailWithName":
+					$pregexpr = '/^([[:alnum:] ])+ <([0-9a-zA-Z+\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
+					break;
 		case "mailLocalAddress":
 					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
 					break;

@@ -1048,7 +1048,7 @@ class LAMConfig {
 	 */
 	public function setLamProMailFrom($lamProMailFrom) {
 		$this->lamProMailFrom = $lamProMailFrom;
-		if (($lamProMailFrom != '') && !get_preg($lamProMailFrom, 'email')) {
+		if (($lamProMailFrom != '') && !get_preg($lamProMailFrom, 'email') && !get_preg($lamProMailFrom, 'emailWithName')) {
 			return false;
 		}
 		return true;
