@@ -77,6 +77,10 @@ for ($i = 0; $i < sizeof($availableTools); $i++) {
 	if ($myTool->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
 		continue;
 	}
+	// check visibility
+	if (!$myTool->isVisible()) {
+		continue;
+	}
 	$toSort[$availableTools[$i]] = $myTool->getPosition();
 }
 asort($toSort);
