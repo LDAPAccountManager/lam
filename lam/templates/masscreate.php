@@ -361,8 +361,9 @@ function showMainPage($scope, $selectedModules) {
 			$rowCells[] = $columnSpacer;
 			$rowCells[] = new htmlHelpLink($columns[$modules[$m]][$i]['help'], $modules[$m], $scope);
 			$rowCells[] = $columnSpacer;
-			$descriptionText = new htmlOutputText($columns[$modules[$m]][$i]['description'] . $required);
+			$descriptionText = new htmlOutputText($columns[$modules[$m]][$i]['description']);
 			$descriptionText->setMarkAsRequired($required);
+			$descriptionText->setNoWrap(true);
 			$rowCells[] = $descriptionText;
 			$rowCells[] = $columnSpacer;
 			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['name']);

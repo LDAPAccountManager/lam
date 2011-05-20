@@ -1178,6 +1178,8 @@ class htmlOutputText extends htmlElement {
 	private $isBold = false;
 	/** mark as required */
 	private $markAsRequired = false;
+	/** no wrap */
+	private $noWrap = false;
 
 	/**
 	 * Constructor.
@@ -1202,6 +1204,9 @@ class htmlOutputText extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->noWrap) {
+			echo "<div class=\"nowrap\">";
+		}
 		if ($this->isBold) {
 			echo "<b>";
 		}
@@ -1218,6 +1223,9 @@ class htmlOutputText extends htmlElement {
 		}
 		if ($this->isBold) {
 			echo "</b>";
+		}
+		if ($this->noWrap) {
+			echo "</div>";
 		}
 		return array();
 	}
@@ -1238,6 +1246,15 @@ class htmlOutputText extends htmlElement {
 	 */
 	public function setMarkAsRequired($markAsRequired) {
 		$this->markAsRequired = $markAsRequired;
+	}
+
+	/**
+	 * Specifies if word wrap is allowed for this text.
+	 * 
+	 * @param boolean $noWrap no wrapping if set to true (default false)
+	 */
+	public function setNoWrap($noWrap) {
+		$this->noWrap = $noWrap;
 	}
 
 }
