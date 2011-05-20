@@ -1049,7 +1049,7 @@ class accountContainer {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], array(), true);
 						}
 						elseif (sizeof($messages[$m]) == 4) {
-							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], $messages[$m][2], true);
+							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], $messages[$m][3], true);
 						}
 					}
 				}
