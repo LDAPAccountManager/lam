@@ -1376,7 +1376,8 @@ class accountContainer {
 		$this->rdn = explode("=", substr($dn, 0, strpos($dn, ',')));
 		$this->rdn = $this->rdn[0];
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		$attr = cleanLDAPResult(array($attr));
+		$attr = array($attr);
+		cleanLDAPResult($attr);
 		$attr = $attr[0];
 		// fix spelling errors
 		$attr = $this->fixLDAPAttributes($attr, $modules);

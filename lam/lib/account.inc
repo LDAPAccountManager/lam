@@ -576,7 +576,8 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
-				$return = array_merge($return, cleanLDAPResult($entries));
+				cleanLDAPResult($entries);
+				$return = array_merge($return, $entries);
 			}
 			@ldap_free_result($sr);
 		}
@@ -601,7 +602,8 @@ function searchLDAPByFilter($filter, $attributes, $scopes) {
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
-				$return = array_merge($return, cleanLDAPResult($entries));
+				cleanLDAPResult($entries);
+				$return = array_merge($return, $entries);
 			}
 			@ldap_free_result($sr);
 		}
@@ -624,9 +626,10 @@ function searchLDAP($suffix, $filter, $attributes) {
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($entries) {
-			$return = cleanLDAPResult($entries);
+			cleanLDAPResult($entries);
+			@ldap_free_result($sr);
+			return $entries;
 		}
-		@ldap_free_result($sr);
 	}
 	return $return;
 }
@@ -644,8 +647,8 @@ function ldapGetDN($dn, $attributes = array('dn')) {
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($entries) {
-			$return = cleanLDAPResult($entries);
-			$return = $return[0];
+			cleanLDAPResult($entries);
+			$return = $entries[0];
 		}
 		@ldap_free_result($sr);
 	}
@@ -685,14 +688,14 @@ function getLastLDAPError() {
  * This will remove all 'count' entries and also all numeric array keys.
  *
  * @param array $entries LDAP entries in format $entries[entry number][attribute name][attribute values]
- * @return array cleaned entries
  */
-function cleanLDAPResult($entries) {
+function cleanLDAPResult(&$entries) {
 	if (isset($entries['count'])) {
 		unset($entries['count']);
 	}
 	// iterate over all results
-	for ($e = 0; $e < sizeof($entries); $e++) {
+	$count = sizeof($entries);
+	for ($e = 0; $e < $count; $e++) {
 		// remove 'count' entries and numerical entries
 		for ($i = 0; $i < $entries[$e]['count']; $i++) {
 			if (isset($entries[$e][$i])) {
@@ -701,13 +704,13 @@ function cleanLDAPResult($entries) {
 		}
 		unset($entries[$e]['count']);
 		$attrNames = array_keys($entries[$e]);
-		for ($i = 0; $i < sizeof($attrNames); $i++) {
+		$attrCount = sizeof($attrNames);
+		for ($i = 0; $i < $attrCount; $i++) {
 			if (is_array($entries[$e][$attrNames[$i]])) {
 				unset($entries[$e][$attrNames[$i]]['count']);
 			}
 		}
 	}
-	return $entries;
 }
 
 /**

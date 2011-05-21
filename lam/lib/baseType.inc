@@ -141,7 +141,7 @@ class baseType {
 		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix), "objectClass=organizationalunit", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
-			$units = cleanLDAPResult($units);
+			cleanLDAPResult($units);
 			// extract Dns
 			for ($i = 0; $i < sizeof($units); $i++) {
 				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];

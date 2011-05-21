@@ -308,7 +308,7 @@ function deleteDN($dn) {
 	$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		$entries = cleanLDAPResult($entries);
+		cleanLDAPResult($entries);
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			// delete recursively
 			$subErrors = deleteDN($entries[$i]['dn']);

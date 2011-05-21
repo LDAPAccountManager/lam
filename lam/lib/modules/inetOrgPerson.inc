@@ -1453,7 +1453,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
 		// get list of existing users
-		$existingUsers = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('uid'), array('user'));
+		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', array('uid'), array('user'));
 		for ($e = 0; $e < sizeof($existingUsers); $e++) {
 			$existingUsers[$e] = $existingUsers[$e]['uid'][0];
 		}

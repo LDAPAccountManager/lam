@@ -156,7 +156,7 @@ class lamList {
 		}
 		// sort rows by sort column
 		if (isset($this->entries)) {
-			$this->entries = $this->listSort($this->entries);
+			$this->listSort($this->entries);
 		}
 		// insert HTML fragment from listDoPost
 		echo $postFragment;
@@ -229,14 +229,12 @@ class lamList {
 	* Sorts an account list by a given attribute
 	*
 	* @param array $info the account list
-	* @return array sorted account list
 	*/
 	protected function listSort(&$info) {
-		if (!is_array($this->attrArray)) return $info;
-		if (!is_string($this->sortColumn)) return $info;
+		if (!is_array($this->attrArray)) return;
+		if (!is_string($this->sortColumn)) return;
 		// sort and return account list
 		usort($info, array($this, "cmp_array"));
-		return $info;
 	}
 
 
@@ -838,12 +836,11 @@ class lamList {
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
 		$filter = "(&" . $module_filter . $this->filterPart  . ")";
 		$attrs = $this->attrArray;
-		$entries = searchLDAP($this->suffix, $filter, $attrs);
+		$this->entries = searchLDAP($this->suffix, $filter, $attrs);
 		$lastError = getLastLDAPError();
 		if ($lastError != null) {
 			call_user_func_array('StatusMessage', $lastError);
 		}
-		$this->entries = $entries;
 		// generate list of possible suffixes
 		$typeObj = new $this->type();
 		$this->possibleSuffixes = $typeObj->getSuffixList();

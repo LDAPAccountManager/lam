@@ -464,7 +464,7 @@ if(!empty($_POST['checklogin'])) {
 				if ($searchResult) {
 					$searchInfo = @ldap_get_entries($searchLDAP->server(), $searchResult);
 					if ($searchInfo) {
-						$searchInfo = cleanLDAPResult($searchInfo);
+						cleanLDAPResult($searchInfo);
 						if (sizeof($searchInfo) == 0) {
 							$searchSuccess = false;
 							$searchError = _('Wrong password/user name combination. Please try again.');

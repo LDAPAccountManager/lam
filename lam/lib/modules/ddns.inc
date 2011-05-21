@@ -197,7 +197,7 @@ class ddns extends baseModule {
 		if ($search) {
 			$info = @ldap_get_entries($ldap,$search);
 			if ($info) {
-				$info = cleanLDAPResult($info);
+				cleanLDAPResult($info);
 				if (sizeof($info) > 0) {
 					return true;
 				}
