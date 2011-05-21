@@ -1651,17 +1651,48 @@ Have fun!
       </section>
 
       <section>
-        <title>Quota</title>
+        <title>Filesystem quota (lamdaemon)</title>
 
         <para>You can manage file system quotas with LAM. This requires to
-        setup <link linkend="a_lamdaemon">lamdaemon</link>. File system quotas
-        are not stored inside LAM but managed directly on the specified
-        servers.</para>
+        setup <link linkend="a_lamdaemon">lamdaemon</link>. LAM connects to
+        your server via SSH and manages the disk filesystem quotas. The quotas
+        are stored directly on the filesystem. This is the default mechanism
+        to store quotas for most systems.</para>
+
+        <para>Please add the module "Quota (quota)" for users to your LAM
+        server profile to enable this feature.</para>
+
+        <para>If you store the quota information directly inside LDAP please
+        see the next section.</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_quotaUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Filesystem quota (LDAP)</title>
+
+        <para>You can store your filesystem quotas directly in LDAP. See
+        <ulink url="http://sourceforge.net/projects/linuxquota/">Linux
+        DiskQuota</ulink> for details since it requires quota tools that
+        support LDAP. You will need to install the quota LDAP schema to manage
+        the object class "systemQuotas".</para>
+
+        <para>Please add the module "Quota (systemQuotas)" for users to your
+        LAM server profile to enable this feature.</para>
+
+        <para>If you store the quota information on the filesystem please see
+        the previous section.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_systemQuotas.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3727,6 +3758,26 @@ Have fun!
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_quota.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Filesystem quotas</entry>
+
+            <entry>systemQuotas</entry>
+
+            <entry>quota.schema</entry>
+
+            <entry><ulink
+            url="http://sourceforge.net/projects/linuxquota/">Linux
+            DiskQuota</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_groupOfNames.png" />
                 </imageobject>
               </inlinemediaobject></entry>
@@ -3739,7 +3790,7 @@ Have fun!
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>These account type is only available in LAM Pro.</entry>
+            <entry>This account type is only available in LAM Pro.</entry>
           </row>
 
           <row>
