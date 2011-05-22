@@ -660,7 +660,9 @@ class posixAccount extends baseModule implements passwordService {
 			// abort if no groups were found
 			return array();
 		}
-		$this->attributes['loginShell'][0] = $_POST['loginShell'];
+		if (isset($_POST['loginShell'])) {
+			$this->attributes['loginShell'][0] = $_POST['loginShell'];
+		}
 		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
 		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($_POST['uid'] != $this->attributes['uid'][0])) {
 			$errors[] = $this->messages['uid'][0];
@@ -693,7 +695,9 @@ class posixAccount extends baseModule implements passwordService {
 				$this->lamdaemonServers[] = $lamdaemonServers[$h];
 			}
 		}
-		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
+		if (isset($_POST['homeDirectory'])) {
+			$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
+		}
 		// Load attributes
 		if (isset($_POST['lockPassword'])) {
 			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
@@ -757,30 +761,10 @@ class posixAccount extends baseModule implements passwordService {
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
 			$errors[] = $this->messages['homeDirectory'][0];
 		}
-		if ($this->get_scope()=='user') {
-			$this->attributes['homeDirectory'][0] = str_replace('$group', $this->getGroupName($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
-			if ($this->attributes['uid'][0] != '')
-			$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
-			if ($this->attributes['homeDirectory'][0] != $_POST['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
-			// Check if Username contains only valid characters
-			if ( !get_preg($this->attributes['uid'][0], 'username'))
-			$errors[] = $this->messages['uid'][2];
-		}
-		if ($this->get_scope()=='host') {
-			// Check if Hostname contains only valid characters
-			if ( !get_preg($this->attributes['uid'][0], 'hostname'))
-			$errors[] = $this->messages['uid'][4];
-			if (!$this->attributes['homeDirectory'][0]) {
-				$this->attributes['homeDirectory'][0] = '/dev/null';
-			}
-			if (!$this->attributes['loginShell'][0]) {
-				$this->attributes['loginShell'][0] = '/bin/false';
-			}
-		}
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ((sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) && ($this->orig['uid'][0]!='')) {
+		if ((sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0]!='')) {
 			$this->attributes['uid'][0] = $this->orig['uid'][0];
 		}
 		else {
@@ -825,6 +809,27 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->attributes['uid'][0] != $_POST['uid']) {
 			if ($this->get_scope()=='user') $errors[] = $this->messages['uid'][5];
 			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
+		}
+		if ($this->get_scope()=='user') {
+			$this->attributes['homeDirectory'][0] = str_replace('$group', $this->getGroupName($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
+			if ($this->attributes['uid'][0] != '') {
+				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
+			}
+			if ($this->attributes['homeDirectory'][0] != $_POST['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+			// Check if Username contains only valid characters
+			if (!get_preg($this->attributes['uid'][0], 'username'))
+			$errors[] = $this->messages['uid'][2];
+		}
+		if ($this->get_scope()=='host') {
+			// Check if Hostname contains only valid characters
+			if (!get_preg($this->attributes['uid'][0], 'hostname'))
+			$errors[] = $this->messages['uid'][4];
+			if (!isset($this->attributes['homeDirectory'][0])) {
+				$this->attributes['homeDirectory'][0] = '/dev/null';
+			}
+			if (!isset($this->attributes['loginShell'][0])) {
+				$this->attributes['loginShell'][0] = '/bin/false';
+			}
 		}
 		$attributeList = array('gecos', 'homeDirectory');
 		for ($i = 0; $i < sizeof($attributeList); $i++) {
@@ -977,7 +982,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		if (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == '')) {
 			// set a default value for common name
-			if (($this->get_scope() == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
+			if (($this->get_scope() == 'host') && isset($_POST['uid']) && (substr($_POST['uid'], -1, 1) == '$')) {
 				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
 			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
@@ -992,7 +997,7 @@ class posixAccount extends baseModule implements passwordService {
 					$this->attributes['cn'][0] = $_POST['uid'];
 				}
 			}
-			else {
+			elseif (isset($_POST['uid'])) {
 				$this->attributes['cn'][0] = $_POST['uid'];
 			}
 		}
