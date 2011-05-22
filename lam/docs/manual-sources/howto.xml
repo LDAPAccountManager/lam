@@ -1421,6 +1421,12 @@ Have fun!
               </row>
 
               <row>
+                <entry>employeeNumber</entry>
+
+                <entry>Employee number</entry>
+              </row>
+
+              <row>
                 <entry>employeeType</entry>
 
                 <entry>Employee type</entry>
@@ -1442,6 +1448,12 @@ Have fun!
                 <entry>homePhone</entry>
 
                 <entry>Home telephone number</entry>
+              </row>
+
+              <row>
+                <entry>initials</entry>
+
+                <entry>Initials</entry>
               </row>
 
               <row>
@@ -1472,6 +1484,12 @@ Have fun!
                 <entry>mobile/mobileTelephoneNumber</entry>
 
                 <entry>Mobile number</entry>
+              </row>
+
+              <row>
+                <entry>organizationName/o</entry>
+
+                <entry>Organisation</entry>
               </row>
 
               <row>
