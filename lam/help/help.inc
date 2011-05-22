@@ -192,6 +192,8 @@ $helpArray = array (
 						'<br><br><b>' . _('Format') . ': </b><ul>' .
 						'<li>' . _('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).') . '</li>' .
 						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
+				"553" => array ("Headline" => _("HTML format"),
+					"Text" => _('Specifies if the mail should be sent as text or HTML.')),
 				// 600 - 699
 				// OU-editor, domain page
 				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organizational unit"),

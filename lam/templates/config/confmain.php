@@ -317,6 +317,12 @@ if (isLAMProVersion()) {
 	$pwdMailSubject = new htmlTableExtendedInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
 	$pwdMailContent->addElement($pwdMailSubject, true);
 	
+	$pwdMailIsHTML = false;
+	if ($conf->getLamProMailIsHTML() == 'true') {
+		$pwdMailIsHTML = true;
+	}
+	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_isHTML',$pwdMailIsHTML , _('HTML format'), '553'), true);
+	
 	$pwdMailBody = new htmlTableExtendedInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
 	$pwdMailContent->addElement($pwdMailBody, true);
 	
@@ -413,6 +419,12 @@ function checkInput() {
 			$errors[] = array("ERROR", _("From address for password mails is invalid."), $_POST['pwdResetMail_from']);
 		}
 		$conf->setLamProMailSubject($_POST['pwdResetMail_subject']);
+		if (isset($_POST['pwdResetMail_isHTML']) && ($_POST['pwdResetMail_isHTML'] == 'on')) {
+			$conf->setLamProMailIsHTML('true');
+		}
+		else {
+			$conf->setLamProMailIsHTML('false');
+		}
 		$conf->setLamProMailText($_POST['pwdResetMail_body']);
 	}
 	$adminText = $_POST['admins'];

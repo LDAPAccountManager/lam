@@ -260,6 +260,9 @@ class LAMConfig {
 	/** subject for password reset mails */
 	private $lamProMailSubject = '';
 	
+	/** treat password reset mail body as HTML */
+	private $lamProMailIsHTML = 'false';
+	
 	/** mail body for password reset mails */
 	private $lamProMailText = '';
 
@@ -267,7 +270,8 @@ class LAMConfig {
 	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
-		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailSubject', 'lamProMailText');
+		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailSubject',
+		'lamProMailText', 'lamProMailIsHTML');
 
 
 	/**
@@ -420,6 +424,7 @@ class LAMConfig {
 			if (!in_array("loginSearchFilter", $saved)) array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
 			if (!in_array("lamProMailFrom", $saved)) array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
 			if (!in_array("lamProMailSubject", $saved)) array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
+			if (!in_array("lamProMailIsHTML", $saved)) array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
 			if (!in_array("lamProMailText", $saved)) array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
@@ -1070,6 +1075,24 @@ class LAMConfig {
 	 */
 	public function setLamProMailSubject($lamProMailSubject) {
 		$this->lamProMailSubject = $lamProMailSubject;
+	}
+
+	/**
+	 * Returns if the password reset mail content should be treated as HTML.
+	 * 
+	 * @return boolean HTML or text
+	 */
+	public function getLamProMailIsHTML() {
+		return $this->lamProMailIsHTML;
+	}
+
+	/**
+	 * Sets if the password reset mail content should be treated as HTML.
+	 * 
+	 * @param boolean $lamProMailIsHTML
+	 */
+	public function setLamProMailIsHTML($lamProMailIsHTML) {
+		$this->lamProMailIsHTML = $lamProMailIsHTML;
 	}
 	
 	/**
