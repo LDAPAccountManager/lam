@@ -123,7 +123,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
-			'departmentNumber' => _('Department(s)'), 'initials' => _('Initials'));
+			'departmentNumber' => _('Department(s)'), 'initials' => _('Initials'), 'title' => _('Job title'));
 		// profile elements
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
@@ -1883,6 +1883,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 				new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', $initials)
 			));
 		}
+		if (in_array('title', $fields)) {
+			$title = '';
+			if (isset($attributes['title'][0])) $title = $attributes['title'][0];
+			$return['title'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Job title'), 'inetOrgPerson_title', $title)
+			));
+		}
 		return $return;
 	}
 
@@ -2094,6 +2101,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$attributesNew['initials'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_initials']);
 			}
 			elseif (isset($attributes['initials'])) unset($attributesNew['initials']);
+		}
+		// title
+		if (in_array('title', $fields)) {
+			$attributeNames[] = 'title';
+			if (isset($_POST['inetOrgPerson_title']) && ($_POST['inetOrgPerson_title'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_title'], 'title')) $return['messages'][] = $this->messages['title'][0];
+				else $attributesNew['title'][0] = $_POST['inetOrgPerson_title'];
+			}
+			elseif (isset($attributes['title'])) unset($attributesNew['title']);
 		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
