@@ -2258,10 +2258,17 @@ Have fun!
     <section>
       <title>Zarafa (LAM Pro)</title>
 
-      <para>Zarafa is an OpenSource collaboration software. LAM pro provides
-      support to manage Zarafa server entries, users and groups. LAM covers
-      all settings for these types including resource and quota
-      settings.</para>
+      <para>Zarafa is an OpenSource collaboration software. LAM Pro provides
+      support to manage Zarafa server entries, users and groups. It covers all
+      settings for these types including resource and quota settings.</para>
+
+      <para>LAM Pro is an official Zarafa Ready Integration.</para>
+
+      <para> <inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/zarafa_logo_integrations_ready_140px.jpg" />
+          </imageobject>
+        </inlinemediaobject></para>
 
       <section>
         <title>Configuration</title>
