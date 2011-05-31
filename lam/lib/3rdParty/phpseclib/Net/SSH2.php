@@ -1338,7 +1338,7 @@ class Net_SSH2 {
             return $this->_privatekey_login($username, $password);
         }
 
-        $utf8_password = utf8_encode($password);
+        $utf8_password = $password;//utf8_encode($password);
         $packet = pack('CNa*Na*Na*CNa*',
             NET_SSH2_MSG_USERAUTH_REQUEST, strlen($username), $username, strlen('ssh-connection'), 'ssh-connection',
             strlen('password'), 'password', 0, strlen($utf8_password), $utf8_password
