@@ -175,7 +175,7 @@ function display_main($message, $error) {
 		$options[$title] = $elements;
 	}
 	// new OU
-	$container->addElement(new htmlOutputText(_("New organizational unit")));
+	$container->addElement(new htmlOutputText(_("New organisational unit")));
 	$parentOUSelect = new htmlSelect('parentOU', $options, array());
 	$parentOUSelect->setContainsOptgroups(true);
 	$parentOUSelect->setHasDescriptiveElements(true);
@@ -189,7 +189,7 @@ function display_main($message, $error) {
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 
 	// delete OU
-	$container->addElement(new htmlOutputText(_("Delete organizational unit")));
+	$container->addElement(new htmlOutputText(_("Delete organisational unit")));
 	$deleteableOUSelect = new htmlSelect('deleteableOU', $options, array());
 	$deleteableOUSelect->setContainsOptgroups(true);
 	$deleteableOUSelect->setHasDescriptiveElements(true);

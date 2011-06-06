@@ -196,10 +196,10 @@ $helpArray = array (
 					"Text" => _('Specifies if the mail should be sent as text or HTML.')),
 				// 600 - 699
 				// OU-editor, domain page
-				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organizational unit"),
-					"Text" => _("This will create a new organizational unit under the selected one.")),
-				"602" => array ("Headline" => _("OU-Editor") . " - " . _("Delete organizational unit"),
-					"Text" => _("This will delete the selected organizational unit. The OU has to be empty."))
+				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organisational unit"),
+					"Text" => _("This will create a new organisational unit under the selected one.")),
+				"602" => array ("Headline" => _("OU-Editor") . " - " . _("Delete organisational unit"),
+					"Text" => _("This will delete the selected organisational unit. The OU has to be empty."))
 
 );
 

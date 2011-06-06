@@ -665,7 +665,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'departmentNumber' => array(
 				"Headline" => _("Department(s)"),
-				"Text" => _("Here you can enter the user's department(s). Multiple entries are separated by semicolons.")
+				"Text" => _("Here you can enter the user's department(s).") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),

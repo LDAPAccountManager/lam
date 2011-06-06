@@ -110,20 +110,20 @@ class eduPerson extends baseModule {
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.") . " " . _('Multiple values are separated by comma.')
 			),
 			'orgDN' => array(
-				"Headline" => _("Organization"),
+				"Headline" => _("Organisation"),
 				"Text" => _("The DN of the directory entry representing the institution with which the person is associated.")
 			),
 			'primaryOrgUnitDN' => array(
-				"Headline" => _("Primary organizational unit"),
-				"Text" => _("The DN of the directory entry representing the person's primary organizational unit.")
+				"Headline" => _("Primary organisational unit"),
+				"Text" => _("The DN of the directory entry representing the person's primary organisational unit.")
 			),
 			'orgUnitDN' => array(
-				"Headline" => _("Organizational units"),
-				"Text" => _("The DNs of the directory entries representing the person's organizational units.")
+				"Headline" => _("Organisational units"),
+				"Text" => _("The DNs of the directory entries representing the person's organisational units.")
 			),
 			'orgUnitDNUpload' => array(
-				"Headline" => _("Organizational units"),
-				"Text" => _("The DNs of the directory entries representing the person's organizational units.") . ' ' . _('Multiple values are separated by comma.')
+				"Headline" => _("Organisational units"),
+				"Text" => _("The DNs of the directory entries representing the person's organisational units.") . ' ' . _('Multiple values are separated by comma.')
 			),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
@@ -176,19 +176,19 @@ class eduPerson extends baseModule {
 			),
 			array(
 				'name' => 'eduPerson_orgDN',
-				'description' => _('Organization'),
+				'description' => _('Organisation'),
 				'help' => 'orgDN',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
 			),
 			array(
 				'name' => 'eduPerson_primaryOrgUnitDN',
-				'description' => _('Primary organizational unit'),
+				'description' => _('Primary organisational unit'),
 				'help' => 'primaryOrgUnitDN',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
 			),
 			array(
 				'name' => 'eduPerson_orgUnitDN',
-				'description' => _('Organizational units'),
+				'description' => _('Organisational units'),
 				'help' => 'orgUnitDNUpload',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
 			)
@@ -197,12 +197,12 @@ class eduPerson extends baseModule {
 		$return['PDF_fields'] = array(
 			'affiliation' => _('Affiliations'),
 			'nickname' => _('Nick names'),
-			'orgDN' => _('Organization'),
-			'orgUnitDN' => _('Organizational units'),
+			'orgDN' => _('Organisation'),
+			'orgUnitDN' => _('Organisational units'),
 			'primaryAffiliation' => _('Primary affiliation'),
 			'principalName' => _('Principal name'),
 			'entitlement' => _('Entitlements'),
-			'primaryOrgUnitDN' => _('Primary organizational unit'),
+			'primaryOrgUnitDN' => _('Primary organisational unit'),
 			'scopedAffiliation' => _('Scoped affiliation')
 		);
 		return $return;
@@ -214,11 +214,11 @@ class eduPerson extends baseModule {
 	function load_Messages() {
 		$this->messages['principalName'][0] = array('ERROR', _('Principal name is invalid!'));
 		$this->messages['principalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!'));
-		$this->messages['orgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organization"));
+		$this->messages['orgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organisation"));
 		$this->messages['orgDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgDN', _('This is not a valid DN!'));
-		$this->messages['primaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organizational unit"));
+		$this->messages['primaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organisational unit"));
 		$this->messages['primaryOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_primaryOrgUnitDN', _('This is not a valid DN!'));
-		$this->messages['orgUnitDN'][0] = array('ERROR', _('Organizational units contains an invalid entry.'));
+		$this->messages['orgUnitDN'][0] = array('ERROR', _('Organisational units contains an invalid entry.'));
 		$this->messages['orgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgUnitDN', _('This is not a valid list of DNs!'));
 		$this->messages['primaryAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_primaryAffiliation', _('Please enter a valid primary affiliation.'));
 		$this->messages['scopedAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_scopedAffiliation', _('Please enter a valid scoped affiliation.'));
@@ -350,7 +350,7 @@ class eduPerson extends baseModule {
 			if (isset($this->attributes['eduPersonOrgDN'][0])) {
 				$orgDN = $this->attributes['eduPersonOrgDN'][0];
 			}
-			$orgDNInput = new htmlTableExtendedInputField(_('Organization'), 'orgDN', $orgDN, 'orgDN');
+			$orgDNInput = new htmlTableExtendedInputField(_('Organisation'), 'orgDN', $orgDN, 'orgDN');
 			$orgDNInput->setFieldSize(40);
 			$return->addElement($orgDNInput, true);
 			// primare OU DN
@@ -358,7 +358,7 @@ class eduPerson extends baseModule {
 			if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
 				$primaryOrgUnitDN = $this->attributes['eduPersonPrimaryOrgUnitDN'][0];
 			}
-			$primaryOUInput = new htmlTableExtendedInputField(_('Primary organizational unit'), 'primaryOrgUnitDN', $primaryOrgUnitDN, 'primaryOrgUnitDN');
+			$primaryOUInput = new htmlTableExtendedInputField(_('Primary organisational unit'), 'primaryOrgUnitDN', $primaryOrgUnitDN, 'primaryOrgUnitDN');
 			$primaryOUInput->setFieldSize(40);
 			$return->addElement($primaryOUInput, true);
 			// OUs
@@ -374,7 +374,7 @@ class eduPerson extends baseModule {
 			else {
 				$orgUnitDN->addElement(new htmlOutputText('-'));
 			}
-			$orgUnitDNLabel = new htmlOutputText(_('Organizational units'));
+			$orgUnitDNLabel = new htmlOutputText(_('Organisational units'));
 			$orgUnitDNLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($orgUnitDNLabel);
 			$return->addElement($orgUnitDN);
@@ -609,7 +609,7 @@ class eduPerson extends baseModule {
 				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_entitlement']]);
 				$partialAccounts[$i]['eduPersonEntitlement'] = $parts;
 			}
-			// organization
+			// organisation
 			if ($rawAccounts[$i][$ids['eduPerson_orgDN']] != "") {
 				if (!get_preg($rawAccounts[$i][$ids['eduPerson_orgDN']], 'dn')) {
 					$error = $this->messages['orgDN'][1];
@@ -681,13 +681,13 @@ class eduPerson extends baseModule {
 			$return['eduPerson_entitlement'][0] = '<block><key>' . _('Entitlements') . '</key><value>' . implode(', ', $this->attributes['eduPersonEntitlement']) . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonOrgDN'][0])) {
-			$return['eduPerson_orgDN'][0] = '<block><key>' . _('Organization') . '</key><value>' . $this->attributes['eduPersonOrgDN'][0] . '</value></block>';
+			$return['eduPerson_orgDN'][0] = '<block><key>' . _('Organisation') . '</key><value>' . $this->attributes['eduPersonOrgDN'][0] . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
-			$return['eduPerson_primaryOrgUnitDN'][0] = '<block><key>' . _('Primary organizational unit') . '</key><value>' . $this->attributes['eduPersonPrimaryOrgUnitDN'][0] . '</value></block>';
+			$return['eduPerson_primaryOrgUnitDN'][0] = '<block><key>' . _('Primary organisational unit') . '</key><value>' . $this->attributes['eduPersonPrimaryOrgUnitDN'][0] . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
-			$return['eduPerson_orgUnitDN'][0] = '<block><key>' . _('Organizational units') . '</key><value>' . implode(', ', $this->attributes['eduPersonOrgUnitDN']) . '</value></block>';
+			$return['eduPerson_orgUnitDN'][0] = '<block><key>' . _('Organisational units') . '</key><value>' . implode(', ', $this->attributes['eduPersonOrgUnitDN']) . '</value></block>';
 		}
 		return $return;
 	}

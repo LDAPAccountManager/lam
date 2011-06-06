@@ -44,7 +44,7 @@ $step = isset( $_POST['step'] ) ? $_POST['step'] : 1;
 
 ?>
 
-<center><h2><?PHP echo _('New organizational unit');?></h2></center>
+<center><h2><?PHP echo _('New organisational unit');?></h2></center>
 
 <?php if( $step == 1 ) { ?>
 
