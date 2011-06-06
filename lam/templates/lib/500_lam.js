@@ -282,3 +282,27 @@ function passwordHandleReply(data) {
 		jQuery('#passwordDialogMessageArea').html(data.messages);
 	}	
 }
+
+/**
+ * Shows a general confirmation dialog and submits a form if the user accepted.
+ * 
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ * @param dialogDiv div that contains dialog content
+ * @param formName form to submit
+ */
+function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName) {
+	var buttonList = {};
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	buttonList[okText] = function() { document.forms[formName].submit(); };
+	jQuery('#' + dialogDiv).dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+
