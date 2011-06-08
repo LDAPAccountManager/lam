@@ -1,5 +1,5 @@
-%define httpd_rootdir @@HTTP_DIR@@
-%define lam_dir lam
+%define httpd_confdir @@HTTP_CONF_DIR@@
+%define lam_dir ldap-account-manager
 %define lam_uid @@USER@@
 %define lam_gid @@GROUP@@
 %define lam_distribution @@DISTRIBUTION@@
@@ -64,26 +64,45 @@ Home-Verzeichnisse verwalten kann.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}
-cp -dR * $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}
+mkdir -p $RPM_BUILD_ROOT/usr/share/%{lam_dir}
+cp -dR * $RPM_BUILD_ROOT/usr/share/%{lam_dir}
+mkdir -p $RPM_BUILD_ROOT/var/lib/%{lam_dir}
+mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/config $RPM_BUILD_ROOT/var/lib/%{lam_dir}
+ln -s $RPM_BUILD_ROOT/var/lib/%{lam_dir}/config $RPM_BUILD_ROOT/usr/share/%{lam_dir}/config
+mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp $RPM_BUILD_ROOT/var/lib/%{lam_dir}
+ln -s $RPM_BUILD_ROOT/var/lib/%{lam_dir}/tmp $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp
+mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
+ln -s $RPM_BUILD_ROOT/var/lib/%{lam_dir}/sess $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess
+cp lam-packaging/RPM/lam.apache.conf %{httpd_confdir}/
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/config
-chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/tmp
-chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT%{httpd_rootdir}/%{lam_dir}/sess
+chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/config
+chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/tmp
+chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/sess
+%if %is_suse
+/etc/init.d/apache2 restart
+%endif
+%if %is_fedora
+/etc/init.d/httpd restart
+%endif
+
 
 %files
 %defattr(-, root, root)
-%doc COPYING HISTORY README docs/*
-%config(noreplace) %{httpd_rootdir}/%{lam_dir}/config/profiles/default.*
-%config(noreplace) %{httpd_rootdir}/%{lam_dir}/config/pdf/default.*
-%config(noreplace) %{httpd_rootdir}/%{lam_dir}/config/selfService/default.*
-%{httpd_rootdir}/%{lam_dir}
+%doc COPYING HISTORY README VERSION docs/*
+%config(noreplace) /var/lib/%{lam_dir}/config/profiles/default.*
+%config(noreplace) /var/lib/%{lam_dir}/config/pdf/default.*
+%config(noreplace) /var/lib/%{lam_dir}/config/selfService/default.*
+/usr/share/%{lam_dir}
+/var/lib/%{lam_dir}
 
 %changelog
+* Wed Jun 08 2011 - Roland Gruber post@rolandgruber.de
+- Install into /usr/share/ldap-account-manager
+
 * Sat Apr 09 2011 - Roland Gruber post@rolandgruber.de
 - Do not overwrite config files
 
@@ -129,6 +148,6 @@ wird auf dem Server installiert, auf dem Quotas und
 Heimatverzeichnisse verwaltet werden sollen.
 
 %files lamdaemon
-%{httpd_rootdir}/%{lam_dir}/lib/lamdaemon.pl
+/usr/share/%{lam_dir}/lib/lamdaemon.pl
 %doc COPYING HISTORY README VERSION docs/*
 
