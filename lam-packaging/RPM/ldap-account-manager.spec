@@ -96,11 +96,21 @@ chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/sess
 %files
 %defattr(-, root, root)
 %doc COPYING HISTORY README VERSION docs/*
-%config(noreplace) /var/lib/%{lam_dir}/config/profiles/default.*
+/var/lib/%{lam_dir}/sess
+/var/lib/%{lam_dir}/tmp
+/var/lib/%{lam_dir}/config/*_sample
+/var/lib/%{lam_dir}/config/.htaccess
+/var/lib/%{lam_dir}/config/language
+/var/lib/%{lam_dir}/config/shells
+/var/lib/%{lam_dir}/config/pdf/.htaccess
+/var/lib/%{lam_dir}/config/pdf/logos
+/var/lib/%{lam_dir}/config/profiles/.htaccess
+/var/lib/%{lam_dir}/config/selfService/.htaccess
 %config(noreplace) /var/lib/%{lam_dir}/config/pdf/default.*
+%config(noreplace) /var/lib/%{lam_dir}/config/profiles/default.*
 %config(noreplace) /var/lib/%{lam_dir}/config/selfService/default.*
 /usr/share/%{lam_dir}
-/var/lib/%{lam_dir}
+%{httpd_confdir}
 
 %changelog
 * Wed Jun 08 2011 - Roland Gruber post@rolandgruber.de
