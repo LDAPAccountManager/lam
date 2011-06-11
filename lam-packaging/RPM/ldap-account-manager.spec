@@ -59,7 +59,7 @@ Home-Verzeichnisse verwalten kann.
 
 %prep
 pwd
-cp lam.apache.conf $RPM_BUILD_ROOT/
+cp $RPM_SOURCE_DIR/lam.apache.conf $RPM_BUILD_ROOT/
 %setup -n ldap-account-manager-%{version}
 
 %build
