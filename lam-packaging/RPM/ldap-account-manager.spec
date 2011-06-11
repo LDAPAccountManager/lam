@@ -75,6 +75,8 @@ mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/tmp $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/sess $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess
+chmod 700 $RPM_BUILD_ROOT/var/lib/%{lam_dir}
+chown %{lam_uid}.%{lam_gid} -R /var/lib/%{lam_dir}
 mkdir -p $RPM_BUILD_ROOT%{httpd_confdir}
 cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 
@@ -85,9 +87,10 @@ cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 	cp /var/lib/%{lam_dir}/config/config.cfg_sample /var/lib/%{lam_dir}/config/config.cfg
 	chmod 600 /var/lib/%{lam_dir}/config/config.cfg
+	if [ ! -f /var/lib/%{lam_dir}/config/lam.conf ]; then
+		cp /var/lib/%{lam_dir}/config/lam.conf_sample /var/lib/%{lam_dir}/config/lam.conf
+	fi
 fi
-chown %{lam_uid}.%{lam_gid} -R /var/lib/%{lam_dir}
-chmod 700 /var/lib/%{lam_dir}
 %if %is_suse
 /etc/init.d/apache2 restart
 %endif
