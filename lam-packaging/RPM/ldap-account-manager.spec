@@ -58,6 +58,8 @@ werden. Außerdem exisitiert ein Script mit dem man Quotas und
 Home-Verzeichnisse verwalten kann.
 
 %prep
+pwd
+cp lam.apache.conf $RPM_BUILD_ROOT/
 %setup -n ldap-account-manager-%{version}
 
 %build
@@ -73,7 +75,6 @@ mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s $RPM_BUILD_ROOT/var/lib/%{lam_dir}/tmp $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s $RPM_BUILD_ROOT/var/lib/%{lam_dir}/sess $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess
-pwd
 cp ../lam.apache.conf %{httpd_confdir}/
 
 %clean
