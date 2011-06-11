@@ -126,7 +126,7 @@ mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 # Fedora RPM for LAM Pro
 cd LAMPro
 cp ldap-account-manager-$VERSION.tar.gz ~/rpmbuild/SOURCES/ldap-account-manager-$VERSION.tar.gz
-cp lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
+cp ../lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
 rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager-fedora.spec
 mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 cd ..
@@ -140,7 +140,7 @@ mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 # Suse RPM for LAM Pro
 cd LAMPro
 cp ldap-account-manager-$VERSION.tar.gz ~/rpmbuild/SOURCES/ldap-account-manager-$VERSION.tar.gz
-cp lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
+cp ../lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
 rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager-suse.spec
 mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 cd ..
