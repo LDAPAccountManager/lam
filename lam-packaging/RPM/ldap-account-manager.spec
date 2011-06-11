@@ -82,9 +82,12 @@ cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT
 
 %post
-chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/config
-chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/tmp
-chown %{lam_uid}.%{lam_gid} -R $RPM_BUILD_ROOT/var/lib/%{lam_dir}/sess
+if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
+	cp /var/lib/%{lam_dir}/config/config.cfg_sample /var/lib/%{lam_dir}/config/config.cfg
+	chmod 600 /var/lib/%{lam_dir}/config/config.cfg
+fi
+chown %{lam_uid}.%{lam_gid} -R /var/lib/%{lam_dir}
+chmod 700 /var/lib/%{lam_dir}
 %if %is_suse
 /etc/init.d/apache2 restart
 %endif
