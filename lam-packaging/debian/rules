@@ -54,7 +54,6 @@ binary-dep: build install
 
 # Build architecture-independent files here.
 binary-indep: build install
-	rm docs/.htaccess
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs HISTORY
