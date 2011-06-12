@@ -99,7 +99,7 @@ fi
 
 %files
 %defattr(-, root, root)
-%attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}
 %doc COPYING HISTORY README VERSION docs/*
 %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/sess
 %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/tmp
