@@ -67,8 +67,6 @@ binary-indep: build install
 	dh_link /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/config.cfg
 	install -D --mode=644 config/shells debian/ldap-account-manager/etc/ldap-account-manager/shells
 	dh_link /etc/ldap-account-manager/shells /var/lib/ldap-account-manager/config/shells
-	install -D --mode=644 config/passwordMailTemplate.txt debian/ldap-account-manager/etc/ldap-account-manager/passwordMailTemplate.txt
-	dh_link /etc/ldap-account-manager/passwordMailTemplate.txt /var/lib/ldap-account-manager/config/passwordMailTemplate.txt
 	dh_installdebconf
 	dh_installdeb
 	dh_gencontrol
