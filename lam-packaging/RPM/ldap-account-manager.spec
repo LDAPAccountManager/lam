@@ -75,8 +75,6 @@ mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/tmp $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/sess $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess
-chmod 700 $RPM_BUILD_ROOT/var/lib/%{lam_dir}
-chown %{lam_uid}.%{lam_gid} -R /var/lib/%{lam_dir}
 mkdir -p $RPM_BUILD_ROOT%{httpd_confdir}
 cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 
@@ -101,20 +99,21 @@ fi
 
 %files
 %defattr(-, root, root)
+%attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}
 %doc COPYING HISTORY README VERSION docs/*
-/var/lib/%{lam_dir}/sess
-/var/lib/%{lam_dir}/tmp
+%attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/sess
+%attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/tmp
 /var/lib/%{lam_dir}/config/*_sample
 /var/lib/%{lam_dir}/config/.htaccess
 /var/lib/%{lam_dir}/config/language
 /var/lib/%{lam_dir}/config/shells
 /var/lib/%{lam_dir}/config/pdf/.htaccess
-/var/lib/%{lam_dir}/config/pdf/logos
+%attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf/logos
 /var/lib/%{lam_dir}/config/profiles/.htaccess
 /var/lib/%{lam_dir}/config/selfService/.htaccess
-%config(noreplace) /var/lib/%{lam_dir}/config/pdf/default.*
-%config(noreplace) /var/lib/%{lam_dir}/config/profiles/default.*
-%config(noreplace) /var/lib/%{lam_dir}/config/selfService/default.*
+%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf/default.*
+%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/profiles/default.*
+%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService/default.*
 /usr/share/%{lam_dir}
 %{httpd_confdir}
 
