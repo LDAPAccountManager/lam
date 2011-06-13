@@ -114,9 +114,9 @@ fi
 %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/sess
 %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/tmp
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config
-%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/pdf
-%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/profiles
-%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/selfService
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/profiles
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService
 /var/lib/%{lam_dir}/config/*_sample
 /var/lib/%{lam_dir}/config/.htaccess
 /var/lib/%{lam_dir}/config/language
