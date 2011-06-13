@@ -180,6 +180,8 @@ wird auf dem Server installiert, auf dem Quotas und
 Heimatverzeichnisse verwaltet werden sollen.
 
 %files lamdaemon
+%dir /usr/share/%{lam_dir}
+%dir /usr/share/%{lam_dir}/lib
 /usr/share/%{lam_dir}/lib/lamdaemon.pl
 %doc COPYING HISTORY README VERSION docs/*
 
