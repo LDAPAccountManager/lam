@@ -85,8 +85,11 @@ cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 	cp /var/lib/%{lam_dir}/config/config.cfg_sample /var/lib/%{lam_dir}/config/config.cfg
 	chmod 600 /var/lib/%{lam_dir}/config/config.cfg
+	chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/config.cfg
 	if [ ! -f /var/lib/%{lam_dir}/config/lam.conf ]; then
 		cp /var/lib/%{lam_dir}/config/lam.conf_sample /var/lib/%{lam_dir}/config/lam.conf
+		chmod 600 /var/lib/%{lam_dir}/config/lam.conf
+		chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/lam.conf
 	fi
 fi
 %if %is_suse
@@ -96,6 +99,13 @@ fi
 /etc/init.d/httpd restart
 %endif
 
+%postun
+%if %is_suse
+/etc/init.d/apache2 restart
+%endif
+%if %is_fedora
+/etc/init.d/httpd restart
+%endif
 
 %files
 %defattr(-, root, root)
