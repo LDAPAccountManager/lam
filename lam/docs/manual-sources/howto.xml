@@ -336,8 +336,11 @@ Have fun!
 
                   <entry>There are RPM packages available on the <ulink
                   type="" url="http://www.ldap-account-manager.org/">LAM
-                  homepage</ulink>. The packages can be installed with this
-                  command<para><emphasis role="bold">rpm -i &lt;path to LAM
+                  homepage</ulink>. The packages can be installed with these
+                  commands:<para><emphasis role="bold">rpm -e
+                  ldap-account-manager ldap-account-manager-lamdaemon</emphasis> (if an
+                  older version is installed)</para><para><emphasis
+                  role="bold">rpm -i &lt;path to LAM
                   package&gt;</emphasis></para></entry>
                 </row>
               </tbody>
@@ -687,6 +690,16 @@ Have fun!
           config/passwordMailTemplate.txt is no longer supported. You can
           setup the mail settings now for each LAM server profile which
           provides more flexibility.</para>
+
+          <para><emphasis role="bold">Suse/Fedora RPM
+          installations:</emphasis> LAM is now installed to
+          /usr/share/ldap-account-manager and
+          /var/lib/ldap-account-manager.</para>
+
+          <para>Please note that configuration files are not migrated
+          automatically. Please move the files from /srv/www/htdocs/lam/config
+          (Suse) or /var/www/html/lam/config (Fedora) to
+          /var/lib/ldap-account-manager/config.</para>
         </section>
 
         <section>
@@ -2264,7 +2277,7 @@ Have fun!
 
       <para>LAM Pro is an official Zarafa Ready Integration.</para>
 
-      <para> <inlinemediaobject>
+      <para><inlinemediaobject>
           <imageobject>
             <imagedata fileref="images/zarafa_logo_integrations_ready_140px.jpg" />
           </imageobject>
