@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2009  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,8 +30,6 @@ $Id$
 
 /** Access to configuration data */
 include_once("config.inc");
-/** LDAP schema */
-include_once("schema.inc");
 
 /**
 * Converts a HEX string to a binary value
