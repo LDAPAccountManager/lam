@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010  Roland Gruber
+  Copyright (C) 2010 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,19 +43,16 @@ include '../main_header.php';
 
 ?>
 <div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-<iframe id="treeframe" style="width: 100%; height: 800px;" src="tree_view.php" frameborder="0"></iframe>
+<iframe id="treeframe" style="width: 100%; height: 800px;" src="../3rdParty/pla/htdocs/index.php" frameborder="0"></iframe>
 <script type="text/javascript">
 function resizeIframe() {
     var height = document.documentElement.clientHeight;
     height -= document.getElementById('treeframe').offsetTop;
-    height -= 90
+    height -= 105
     document.getElementById('treeframe').style.height = height +"px";
 };
 document.getElementById('treeframe').onload = resizeIframe;
 window.onresize = resizeIframe;
-
-jQuery('#tab_tree').addClass('ui-tabs-selected');
-jQuery('#tab_tree').addClass('ui-state-active');
 </script>
 
 </div>
