@@ -53,7 +53,6 @@ echo '</td>';
 echo '</tr>';
 echo "\n";
 
-printf('<tr><td>%s:</td><td>%s</td></tr>',_('Destination Server'),server_select_list($app['server']->getIndex(),true,'server_id_dst'));
 echo "\n";
 
 # We search all children, not only the visible children in the tree
