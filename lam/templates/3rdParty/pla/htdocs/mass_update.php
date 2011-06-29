@@ -46,7 +46,6 @@ foreach ($request['dn'] as $index => $dn) {
 
 # We can use the $render to give us a title
 $render->drawTitle(_('Bulk update the following DNs'));
-$render->drawSubTitle(sprintf('%s: <b>%s</b>',_('Server'),$app['server']->getName()));
 
 if (count($request['update'])) {
 	if (get_request('confirm','REQUEST')) {

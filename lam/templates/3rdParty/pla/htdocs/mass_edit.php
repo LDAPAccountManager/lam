@@ -61,7 +61,6 @@ if (! count($request['page']))
 
 # We'll render this forms Title with the first DN's object.
 $request['page'][0]->drawTitle(_('Bulk edit the following DNs'));
-$request['page'][0]->drawSubTitle(sprintf('%s: <b>%s</b>',_('Server'),$app['server']->getName()));
 
 echo '<form action="cmd.php" method="post">';
 echo '<div>';

@@ -432,20 +432,7 @@ class QueryRender extends PageRender {
 	}
 
 	public function drawSubTitle($subtitle=null) {
-		if (is_null($subtitle)) {
-			$server = $this->getServer();
-	
-			$subtitle = sprintf('%s: <b>%s</b>',_('Server'),$server->getName());
-
-			if ($this->template) {
-				$subtitle .= '<br />';
-				$subtitle .= sprintf('%s: <b>%s</b>',('Query'),$this->template->getID() != 'none' ? $this->template->getTitle() : _('Default'));
-				if ($this->template->getName())
-					$subtitle .= sprintf(' (<b>%s</b>)',$this->template->getName(false));
-			}
-		}
-
-		parent::drawSubTitle($subtitle);
+		return;
 	}
 
 	private function getAFattrs() {

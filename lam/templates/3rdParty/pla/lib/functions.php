@@ -188,7 +188,7 @@ function app_error_handler($errno,$errstr,$file,$lineno) {
  * Returns the application name.
  */
 function app_name() {
-	return 'phpLDAPadmin';
+	return 'LDAP Account Manager';
 }
 
 /**
@@ -198,33 +198,7 @@ function app_name() {
  * @return string The current version as read from the VERSION file.
  */
 function app_version() {
-	static $CACHE = null;
-
-	if ($CACHE)
-		return $CACHE;
-
-	$version_file = realpath(LIBDIR.'../VERSION');
-	if (! file_exists($version_file))
-		$CACHE = 'UNKNOWN';
-
-	else {
-		$version = rtrim(file_get_contents($version_file));
-
-		$CACHE = preg_replace('/^RELEASE-([0-9\.]+(-.*)*)$/','$1',$version);
-
-		# Check if we are a CVS copy.
-		if (preg_match('/^(DEVEL)?$/',$CACHE))
-			$CACHE = 'DEVEL';
-
-		# Check if we are special DEVEL version
-		elseif (preg_match('/^DEVEL-([0-9\.]+)+$/',$CACHE)) {}
-
-		# If return is still the same as version, then the tag is not one we expect.
-		elseif ($CACHE == $version)
-			$CACHE = 'UNKNOWN';
-	}
-
-	return $CACHE;
+	return LAMVersion();
 }
 
 /**

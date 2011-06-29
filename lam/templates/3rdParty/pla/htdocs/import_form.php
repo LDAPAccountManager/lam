@@ -17,7 +17,6 @@ if (! ini_get('file_uploads'))
 
 $request['page'] = new PageRender($app['server']->getIndex(),get_request('template','REQUEST',false,'none'));
 $request['page']->drawTitle(sprintf('<b>%s</b>',_('Import')));
-$request['page']->drawSubTitle(sprintf('%s: <b>%s</b>',_('Server'),$app['server']->getName()));
 
 echo '<form action="cmd.php" method="post" class="new_value" enctype="multipart/form-data">';
 echo '<div>';
