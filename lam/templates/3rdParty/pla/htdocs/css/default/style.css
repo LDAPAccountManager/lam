@@ -156,9 +156,9 @@ table.page table.body h3.title {
 	text-align: center;
 	margin: 0px;
 	padding: 10px;
-	color: #FFFFFF;
-	background-color: #000088;
-	border: 1px solid #000000;
+	color: black;
+	background-color: #F3F3F3;
+	border: 1px solid #CCCCCC;
 	font-weight: normal;
 	font-size: 150%;
 }
@@ -167,12 +167,12 @@ table.page table.body h3.subtitle {
 	text-align: center;
 	margin: 0px;
 	margin-bottom: 15px;
-	font-size: 75%;
-	color: #FFFFFF;
-	border-bottom: 1px solid #000000;
-	border-left: 1px solid #000000;
-	border-right: 1px solid #000000;
-	background: #000088;
+	font-size: 13px;
+	color: black;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+	background: #F3F3F3;
 	padding: 4px;
 	font-weight: normal;
 }
@@ -688,7 +688,7 @@ span.hint {
 
 /* After input results */
 div.execution_time {
-	font-size: 75%;
+	font-size: 13px;
 	font-weight: normal;
 	text-align: left;
 }
@@ -775,8 +775,8 @@ table.result_table tr.highlight td {
 }
 
 table.result_table td.heading {
-	color: #FFFFFF;
-	background-color: #000088;
+	color: black;
+	background-color: #F3F3F3;
 	font-size: 12px;
 }
 
@@ -786,8 +786,8 @@ table.result_table td.value {
 }
 
 table.result_table tr.heading {
-	color: #FFFFFF;
-	background-color: #000088;
+	color: black;
+	background-color: #F3F3F3;
 	font-size: 12px;
 	font-weight: bold;
 }
@@ -853,7 +853,7 @@ table.result_table ul.list li {
 }
 
 table.result_table ul.list li small {
-	font-size: 75%;
+	font-size: 13px;
 	color: #707070;
 }
 
@@ -897,11 +897,11 @@ div.popup h3.subtitle {
 	text-align: center;
 	margin: 0px;
 	margin-bottom: 15px;
-	color: #FFFFFF;
-	border-bottom: 1px solid #000000;
-	border-left: 1px solid #000000;
-	border-right: 1px solid #000000;
-	background: #000088;
+	color: black;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+	background: #F3F3F3;
 	padding: 4px;
 	font-weight: normal;
 }
