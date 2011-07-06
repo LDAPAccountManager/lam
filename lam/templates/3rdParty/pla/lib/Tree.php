@@ -58,8 +58,11 @@ abstract class Tree {
 				return $tree;
 
 			foreach ($server->getBaseDN(null) as $base)
-				if ($base)
+				if ($base) {
 					$tree->addEntry($base);
+					$baseEntry = $tree->getEntry($base);
+					$baseEntry->open();
+				}
 
 			set_cached_item($server_id,'tree','null',$tree);
 		}
