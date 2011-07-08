@@ -108,8 +108,8 @@ class Template extends xmlTemplate {
 
 								elseif (! is_object($soc) && ! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 									system_message(array(
-										'title'=>_('Automatically removed objectClass from template'),
-										'body'=>sprintf('%s: <b>%s</b> %s',$this->getTitle(),$details,_('removed from template as it is not defined in the schema')),
+										'title'=>('Automatically removed objectClass from template'),
+										'body'=>sprintf('%s: <b>%s</b> %s',$this->getTitle(),$details,('removed from template as it is not defined in the schema')),
 										'type'=>'warn'));
 							}
 
@@ -171,19 +171,19 @@ class Template extends xmlTemplate {
 					# Items that should not be an array
 					if (! in_array($xml_key,$allowed_arrays) && is_array($xml_value)) {
 						debug_dump(array(__METHOD__,'key'=>$xml_key,'value'=>$xml_value));
-						error(sprintf(_('In the XML file (%s), [%s] is an array, it must be a string.'),
+						error(sprintf(('In the XML file (%s), [%s] is an array, it must be a string.'),
 							$this->filename,$xml_key),'error');
 					}
 
 					$this->$xml_key = $xml_value;
 
 					if ($xml_key == 'invalid' && $xml_value)
-						$this->setInvalid(_('Disabled by XML configuration'),true);
+						$this->setInvalid(('Disabled by XML configuration'),true);
 			}
 		}
 
 		if (! count($objectclasses)) {
-			$this->setInvalid(_('ObjectClasses in XML dont exist in LDAP server.'));
+			$this->setInvalid(('ObjectClasses in XML dont exist in LDAP server.'));
 			return;
 
 		} else {
@@ -200,7 +200,7 @@ class Template extends xmlTemplate {
 			if (! isset($this->$key)
 				|| (! is_array($this->$key) && ! trim($this->$key))) {
 
-				$this->setInvalid(sprintf(_('Missing %s in the XML file.'),$key));
+				$this->setInvalid(sprintf(('Missing %s in the XML file.'),$key));
 				break;
 			}
 		}
@@ -216,7 +216,7 @@ class Template extends xmlTemplate {
 			if (! is_null($attribute))
 				$attribute->setRDN($counter++);
 			elseif ($this->isType('creation'))
-				$this->setInvalid(sprintf(_('Missing RDN attribute %s in the XML file.'),$key));
+				$this->setInvalid(sprintf(('Missing RDN attribute %s in the XML file.'),$key));
 		}
 	}
 
@@ -1379,8 +1379,8 @@ class Template extends xmlTemplate {
 
 				if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 					system_message(array(
-						'title'=>_('Automatically removed attribute from template'),
-						'body'=>sprintf('%s: <b>%s</b> %s',$this->getTitle(),$attribute->getName(false),_('removed from template as it is not defined by an ObjectClass')),
+						'title'=>('Automatically removed attribute from template'),
+						'body'=>sprintf('%s: <b>%s</b> %s',$this->getTitle(),$attribute->getName(false),('removed from template as it is not defined by an ObjectClass')),
 						'type'=>'warn'));
 			}
 	}
@@ -1463,7 +1463,7 @@ class Template extends xmlTemplate {
 			}
 
 			if (! $haveStructural)
-				error(_('An entry should have one structural objectClass.'),'error','index.php');
+				error(('An entry should have one structural objectClass.'),'error','index.php');
 
 			# Work out the attributes to delete.
 			foreach ($this->getAttribute('objectclass')->getRemovedValues() as $value) {

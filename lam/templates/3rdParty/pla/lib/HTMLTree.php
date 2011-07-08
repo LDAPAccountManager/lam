@@ -67,9 +67,9 @@ class HTMLTree extends Tree {
 				# We didnt get any baseDN entries in our tree?
 				printf('<tr><td class="spacer"></td><td class="spacer"></td><td colspan="%s"><small>%s<br />%s<br /><b>%s</b></small></td></tr>',
 					$this->getDepth()+3-2,
-					_('Could not determine the root of your LDAP tree.'),
-					_('It appears that the LDAP server has been configured to not reveal its root.'),
-					_('Please specify it in config.php'));
+					('Could not determine the root of your LDAP tree.'),
+					('It appears that the LDAP server has been configured to not reveal its root.'),
+					('Please specify it in config.php'));
 
 				echo '</table>';
 
@@ -108,10 +108,10 @@ class HTMLTree extends Tree {
 
 					if (preg_match('/,/',$base->getDN()))
 						printf('<tr><td class="spacer"></td><td class="spacer"></td><td class="spacer"></td><td colspan="%s"><small>%s</small></td></tr>',
-							$this->getDepth()+3-3,_('This base cannot be created with PLA.'));
+							$this->getDepth()+3-3,('This base cannot be created with PLA.'));
 					else
 						printf('<tr><td class="spacer"></td><td class="spacer"></td><td class="spacer"></td><td colspan="%s"><small>%s <a href="javascript:document.getElementById(\'create_base_form_%s_%s\').submit()">%s</a></small></td></tr>',
-							$this->getDepth()+3-3,_('This base entry does not exist.'),$server->getIndex(),$javascript_id,_('Create it?'));
+							$this->getDepth()+3-3,('This base entry does not exist.'),$server->getIndex(),$javascript_id,('Create it?'));
 
 				} else {
 					$this->draw_item($base->getDN(),-1);
@@ -168,7 +168,7 @@ class HTMLTree extends Tree {
 		printf('%s',$server->getName());
 
 		if (! is_null($server->inactivityTime())) {
-			$m = sprintf(_('Inactivity will log you off at %s'),
+			$m = sprintf(('Inactivity will log you off at %s'),
 				strftime('%H:%M',$server->inactivityTime()));
 			printf(' <img width="14" height="14" src="%s/timeout.png" title="%s" alt="%s"/>',IMGDIR,$m,'Timeout');
 		}
@@ -217,11 +217,11 @@ class HTMLTree extends Tree {
 					return '';
 
 				$menu['cmd'] = 'schema';
-				$menu['ajax'] = _('Loading Schema');
+				$menu['ajax'] = ('Loading Schema');
 				$menu['div'] = 'BODY';
-				$menu['title'] = _('View schema for');
+				$menu['title'] = ('View schema for');
 				$menu['img'] = 'schema-big.png';
-				$menu['name'] = _('schema');
+				$menu['name'] = ('schema');
 
 				break;
 
@@ -257,11 +257,11 @@ class HTMLTree extends Tree {
 					return '';
 
 				$menu['cmd'] = 'server_info';
-				$menu['ajax'] = _('Loading Info');
+				$menu['ajax'] = ('Loading Info');
 				$menu['div'] = 'BODY';
-				$menu['title'] = _('Info');
+				$menu['title'] = ('Info');
 				$menu['img'] = 'info-big.png';
-				$menu['name'] = _('info');
+				$menu['name'] = ('info');
 
 				break;
 
@@ -274,11 +274,11 @@ class HTMLTree extends Tree {
 					return '';
 
 				$menu['cmd'] = 'monitor';
-				$menu['ajax'] = _('Loading Monitor Info');
+				$menu['ajax'] = ('Loading Monitor Info');
 				$menu['div'] = 'BODY';
-				$menu['title'] = _('Monitor');
+				$menu['title'] = ('Monitor');
 				$menu['img'] = 'monitorserver-big.png';
-				$menu['name'] = _('monitor');
+				$menu['name'] = ('monitor');
 
 				break;
 
@@ -333,7 +333,7 @@ class HTMLTree extends Tree {
 			return '';
 		else
 			return sprintf('<a href="%s" title="%s"><img src="%s/%s" alt="%s" /><br />%s</a>',
-				htmlspecialchars($href),_('Logout of this server'),IMGDIR,'logout-big.png',_('logout'),_('logout'));
+				htmlspecialchars($href),('Logout of this server'),IMGDIR,'logout-big.png',('logout'),('logout'));
 	}
 
 	/**
@@ -348,7 +348,7 @@ class HTMLTree extends Tree {
 		$logged_in_dn = $server->getLogin(null);
 		echo '<tr>';
 		echo '<td class="spacer"></td>';
-		printf('<td class="logged_in" colspan="%s">%s: ',$this->getDepth()+3-1,_('Logged in as'));
+		printf('<td class="logged_in" colspan="%s">%s: ',$this->getDepth()+3-1,('Logged in as'));
 
 		if ($server->getContainerTop($logged_in_dn) == $logged_in_dn) {
 			$logged_in_branch = '';
@@ -521,9 +521,9 @@ class HTMLTree extends Tree {
 
 		if (isAjaxEnabled()) {
 			printf('<td class="icon"><a href="cmd.php?%s" onclick="return ajDISPLAY(\'BODY\',\'%s\',\'%s\');" title="%s %s"><img src="%s/%s" alt="%s" /></a></td>',
-				$href_parm,$href_parm,_('Loading Login'),_('Login to'),$server->getName(),IMGDIR,'login.png',_('login'));
+				$href_parm,$href_parm,('Loading Login'),('Login to'),$server->getName(),IMGDIR,'login.png',('login'));
 			printf('<td class="logged_in" colspan="%s"><a href="cmd.php?%s" onclick="return ajDISPLAY(\'BODY\',\'%s\',\'%s\');" title="%s %s">%s</a></td>',
-				$this->getDepth()+3-2,$href_parm,$href_parm,_('Loading Login'),_('Login to'),$server->getName(),_('login'));
+				$this->getDepth()+3-2,$href_parm,$href_parm,('Loading Login'),('Login to'),$server->getName(),('login'));
 
 		} else {
 			printf('<td class="icon"><a href="cmd.php?%s"><img src="%s/%s" alt="%s" /></a></td>',$href_parm,IMGDIR,'login.png',_('login'));

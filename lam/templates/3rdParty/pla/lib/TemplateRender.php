@@ -102,8 +102,8 @@ class TemplateRender extends PageRender {
 
 			default:
 				system_message(array(
-					'title'=>_('Unknown Default Attribute context'),
-					'body'=>sprintf('%s (<b>%s</b>)',_('A call was made to getDefaultAttribute() with an unkown context'),$type),
+					'title'=>('Unknown Default Attribute context'),
+					'body'=>sprintf('%s (<b>%s</b>)',('A call was made to getDefaultAttribute() with an unkown context'),$type),
 					'type'=>'warn'));
 
 				return;
@@ -132,8 +132,8 @@ class TemplateRender extends PageRender {
 
 				if (count($args) && count($args) > 1) {
 					system_message(array(
-						'title'=>_('Too many arguments'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('Function() only takes two arguments and more than two were specified'),count($args)),
+						'title'=>('Too many arguments'),
+						'body'=>sprintf('%s (<b>%s</b>)',('Function() only takes two arguments and more than two were specified'),count($args)),
 						'type'=>'warn'));
 
 					return;
@@ -146,8 +146,8 @@ class TemplateRender extends PageRender {
 
 				else
 					system_message(array(
-						'title'=>_('Function doesnt exist'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('An attempt was made to call a function that doesnt exist'),$function),
+						'title'=>('Function doesnt exist'),
+						'body'=>sprintf('%s (<b>%s</b>)',('An attempt was made to call a function that doesnt exist'),$function),
 						'type'=>'warn'));
 
 				break;
@@ -1035,7 +1035,7 @@ class TemplateRender extends PageRender {
 
 		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
 
-		return sprintf($this->layout['hint'],_('Hint: To view the schema for an attribute, click the attribute name.'));
+		return sprintf($this->layout['hint'],('Hint: To view the schema for an attribute, click the attribute name.'));
 	}
 
 	/** PAGE ENTRY MENU ITEMS DETAILS **/
@@ -1063,11 +1063,11 @@ class TemplateRender extends PageRender {
 		$href = sprintf('cmd=template_engine&%s&template=',$this->url_base);
 
 		if (isAjaxEnabled())
-			return sprintf($this->layout['actionajax'],IMGDIR,'switch.png',_('Switch Template'),
-				htmlspecialchars($href),_('Change to another template'),htmlspecialchars($href),str_replace('\'','\\\'',_('Loading')),_('Switch Template'));
+			return sprintf($this->layout['actionajax'],IMGDIR,'switch.png',('Switch Template'),
+				htmlspecialchars($href),('Change to another template'),htmlspecialchars($href),str_replace('\'','\\\'',('Loading')),('Switch Template'));
 		else
-			return sprintf($this->layout['action'],IMGDIR,'switch.png',_('Switch Template'),
-				htmlspecialchars($href),_('Change to another template'),_('Switch Template'));
+			return sprintf($this->layout['action'],IMGDIR,'switch.png',('Switch Template'),
+				htmlspecialchars($href),('Change to another template'),('Switch Template'));
 	}
 
 	protected function getMenuItemExportBase() {
@@ -2170,8 +2170,8 @@ function fillRec(id,value) {
 		$id = isset($params['id']) ? $params['id'] : '';
 		if (is_array($id)) {
 			system_message(array(
-				'title'=>_('Too many arguments'),
-				'body'=>sprintf('%s (<b>%s</b>)',_('Helper attribute has too many ID values, only the first one is used'),count($id)),
+				'title'=>('Too many arguments'),
+				'body'=>sprintf('%s (<b>%s</b>)',('Helper attribute has too many ID values, only the first one is used'),count($id)),
 				'type'=>'warn'));
 
 			$id = $id[0];
@@ -2181,8 +2181,8 @@ function fillRec(id,value) {
 		$display = isset($params['display']) ? $params['display'] : '';
 		if (is_array($display)) {
 			system_message(array(
-				'title'=>_('Too many arguments'),
-				'body'=>sprintf('%s (<b>%s</b>)',_('Helper attribute has too many DISPLAY values, only the first one is used'),count($display)),
+				'title'=>('Too many arguments'),
+				'body'=>sprintf('%s (<b>%s</b>)',('Helper attribute has too many DISPLAY values, only the first one is used'),count($display)),
 				'type'=>'warn'));
 
 			$display = $display[0];
@@ -2192,8 +2192,8 @@ function fillRec(id,value) {
 		$default = isset($params['default']) ? $params['default'] : '';
 		if (is_array($default)) {
 			system_message(array(
-				'title'=>_('Too many arguments'),
-				'body'=>sprintf('%s (<b>%s</b>)',_('Helper attribute has too many DISPLAY values, only the first one is used'),count($default)),
+				'title'=>('Too many arguments'),
+				'body'=>sprintf('%s (<b>%s</b>)',('Helper attribute has too many DISPLAY values, only the first one is used'),count($default)),
 				'type'=>'warn'));
 
 			$default = $default[0];

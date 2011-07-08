@@ -64,21 +64,21 @@ if (! extension_loaded('session'))
 # Make sure this PHP install has gettext, we use it for language translation
 if (! extension_loaded('gettext'))
 	system_message(array(
-		'title'=>_('Missing required extension'),
+		'title'=>('Missing required extension'),
 		'body'=>'Your install of PHP appears to be missing GETTEXT support.</p><p>GETTEXT is used for language translation.</p><p>Please install GETTEXT support before using phpLDAPadmin.<br /><small>(Dont forget to restart your web server afterwards)</small>',
 		'type'=>'error'));
 
 # Make sure this PHP install has all our required extensions
 if (! extension_loaded('ldap'))
 	system_message(array(
-		'title'=>_('Missing required extension'),
+		'title'=>('Missing required extension'),
 		'body'=>'Your install of PHP appears to be missing LDAP support.<br /><br />Please install LDAP support before using phpLDAPadmin.<br /><small>(Dont forget to restart your web server afterwards)</small>',
 		'type'=>'error'));
 
 # Make sure that we have php-xml loaded.
 if (! function_exists('xml_parser_create'))
 	system_message(array(
-		'title'=>_('Missing required extension'),
+		'title'=>('Missing required extension'),
 		'body'=>'Your install of PHP appears to be missing XML support.<br /><br />Please install XML support before using phpLDAPadmin.<br /><small>(Dont forget to restart your web server afterwards)</small>',
 		'type'=>'error'));
 
@@ -101,7 +101,7 @@ if (isset($app['function_files']) && is_array($app['function_files']))
 
 # Configuration File check
 if (! file_exists($app['config_file'])) {
-	error(sprintf(_('You need to configure %s. Edit the file "%s" to do so. An example config file is provided in "%s.example".'),app_name(),$app['config_file'],$app['config_file']),'error',null,true);
+	error(sprintf(('You need to configure %s. Edit the file "%s" to do so. An example config file is provided in "%s.example".'),app_name(),$app['config_file'],$app['config_file']),'error',null,true);
 
 } elseif (! is_readable($app['config_file'])) {
 	error(sprintf('Fatal error: Cannot read your configuration file "%s", its permissions may be too strict.',$app['config_file']),'error',null,true);
@@ -125,7 +125,7 @@ if ($uri = get_request('URI','GET'))
 
 if (! preg_match('/^([0-9]+\.?)+/',app_version())) {
 	system_message(array(
-		'title'=>_('This is a development version of phpLDAPadmin'),
+		'title'=>('This is a development version of phpLDAPadmin'),
 		'body'=>'This is a development version of phpLDAPadmin! You should <b>NOT</b> use it in a production environment (although we dont think it should do any damage).',
 		'type'=>'info','special'=>true));
 

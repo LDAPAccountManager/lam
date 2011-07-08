@@ -22,10 +22,10 @@ $ldap['DST'] = $_SESSION[APPCONFIG]->getServer(get_request('server_id_dst'));
 
 # Error checking
 if (! trim($request['dnDST']))
-	error(_('You left the destination DN blank.'),'error','index.php');
+	error(('You left the destination DN blank.'),'error','index.php');
 
 if ($ldap['DST']->isReadOnly())
-	error(_('Destination server is currently READ-ONLY.'),'error','index.php');
+	error(('Destination server is currently READ-ONLY.'),'error','index.php');
 
 if ($ldap['DST']->dnExists($request['dnDST']))
 	error(sprintf(_('The destination entry (%s) already exists.'),pretty_print_dn($request['dnDST'])),'error','index.php');

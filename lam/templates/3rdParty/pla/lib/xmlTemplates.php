@@ -93,8 +93,8 @@ abstract class xmlTemplates {
 						$changed = true;
 
 						system_message(array(
-							'title'=>_('New Template XML found.'),
-							'body'=>sprintf('%s %s (%s)',_('A new template XML file has been loaded'),$file,$type),
+							'title'=>('New Template XML found.'),
+							'body'=>sprintf('%s %s (%s)',('A new template XML file has been loaded'),$file,$type),
 							'type'=>'info','special'=>true));
 					}
 				}

@@ -27,8 +27,8 @@ class AttributeFactory {
 					default:
 						if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 							system_message(array(
-								'title'=>sprintf('%s [<i>%s</i>]',_('Unknown template [post] function'),$matches[1]),
-								'body'=>sprintf('%s <small>[%s]</small>',_('The template function is not known and will be ignored.'),$values['post']),
+								'title'=>sprintf('%s [<i>%s</i>]',('Unknown template [post] function'),$matches[1]),
+								'body'=>sprintf('%s <small>[%s]</small>',('The template function is not known and will be ignored.'),$values['post']),
 								'type'=>'warn'));
 
 						unset($values['post']);
@@ -42,8 +42,8 @@ class AttributeFactory {
 				if (! in_array($matches[1],array('GetNextNumber','PasswordEncryptionTypes'))) {
 					if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 						system_message(array(
-							'title'=>sprintf('%s [<i>%s</i>]',_('Unknown template helper function'),$matches[1]),
-							'body'=>sprintf('%s <small>[%s]</small>',_('The template helper function is not known and will be ignored.'),$values['helper']['value']),
+							'title'=>sprintf('%s [<i>%s</i>]',('Unknown template helper function'),$matches[1]),
+							'body'=>sprintf('%s <small>[%s]</small>',('The template helper function is not known and will be ignored.'),$values['helper']['value']),
 							'type'=>'warn'));
 
 					unset($values['helper']['value']);
@@ -71,8 +71,8 @@ class AttributeFactory {
 					default:
 						if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 							system_message(array(
-								'title'=>sprintf('%s [<i>%s</i>]',_('Unknown template function'),$matches[1]),
-								'body'=>sprintf('%s <small>[%s]</small>',_('The template function is not known and will be ignored.'),$values['value']),
+								'title'=>sprintf('%s [<i>%s</i>]',('Unknown template function'),$matches[1]),
+								'body'=>sprintf('%s <small>[%s]</small>',('The template function is not known and will be ignored.'),$values['value']),
 								'type'=>'warn'));
 
 						unset($values['value']);

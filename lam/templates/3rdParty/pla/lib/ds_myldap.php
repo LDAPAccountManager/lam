@@ -631,7 +631,7 @@ class myldap extends DS {
 
 			# Invalid regex?
 			if (is_null($CACHE['authz_id']))
-				error(sprintf(_('It seems that sasl_authz_id_regex "%s" contains invalid PCRE regular expression. The error is "%s".'),
+				error(sprintf(('It seems that sasl_authz_id_regex "%s" contains invalid PCRE regular expression. The error is "%s".'),
 					$this->getValue('sasl','authz_id_regex'),(isset($php_errormsg) ? $php_errormsg : '')),
 					'error','index.php');
 

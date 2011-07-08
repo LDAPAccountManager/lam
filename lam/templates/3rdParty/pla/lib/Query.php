@@ -68,7 +68,7 @@ class Query extends xmlTemplate {
 						else
 							$this->base = array($xmldata['query'][$xml_key]['base']);
 					else
-						error(sprintf(_('In the XML file (%s), [%s] contains an unknown key.'),
+						error(sprintf(('In the XML file (%s), [%s] contains an unknown key.'),
 							$this->filename,$xml_key),'error','index.php');
 
 					$this->base = array_unique($this->base);
@@ -98,7 +98,7 @@ class Query extends xmlTemplate {
 					# Items that should not be an array
 					if (! in_array($xml_key,$allowed_arrays) && is_array($xml_value)) {
 						debug_dump(array(__METHOD__,'key'=>$xml_key,'value'=>$xml_value));
-						error(sprintf(_('In the XML file (%s), [%s] is an array, it must be a string.'),
+						error(sprintf(('In the XML file (%s), [%s] is an array, it must be a string.'),
 							$this->filename,$xml_key),'error');
 					}
 
@@ -111,7 +111,7 @@ class Query extends xmlTemplate {
 			if (! isset($this->$key)
 				|| (! is_array($this->$key) && ! trim($this->$key))) {
 
-				$this->setInvalid(sprintf(_('Missing %s in the XML file.'),$key));
+				$this->setInvalid(sprintf(('Missing %s in the XML file.'),$key));
 				break;
 			}
 		}

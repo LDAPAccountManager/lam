@@ -90,7 +90,7 @@ abstract class DS {
 	public function setValue($key,$setting,$value) {
 		if (isset($this->custom->{$key}[$setting]))
 			system_message(array(
-				'title'=>_('Configuration setting already defined.'),
+				'title'=>('Configuration setting already defined.'),
 				'body'=>sprintf('A call has been made to reset a configuration value (%s,%s,%s)',
 					$key,$setting,$value),
 				'type'=>'info'));

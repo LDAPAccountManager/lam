@@ -197,8 +197,8 @@ class PageRender extends Visitor {
 							$blank++;
 
 							system_message(array(
-								'title'=>_('Invalid value count for [post] processing'),
-								'body'=>sprintf('%s (<b>%s [%s]</b>)',_('Function() variable expansion can only handle 1 value'),
+								'title'=>('Invalid value count for [post] processing'),
+								'body'=>sprintf('%s (<b>%s [%s]</b>)',('Function() variable expansion can only handle 1 value'),
 									$attribute->getName(false),count($attribute->getValues())),
 								'type'=>'warn'));
 
@@ -227,8 +227,8 @@ class PageRender extends Visitor {
 			case 'PasswordEncrypt':
 				if (count($args) != 2) {
 					system_message(array(
-						'title'=>_('Invalid argument count for PasswordEncrypt'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('PasswordEncrypt() only accepts two arguments'),$autovalue['args']),
+						'title'=>('Invalid argument count for PasswordEncrypt'),
+						'body'=>sprintf('%s (<b>%s</b>)',('PasswordEncrypt() only accepts two arguments'),$autovalue['args']),
 						'type'=>'warn'));
 
 					return;
@@ -241,8 +241,8 @@ class PageRender extends Visitor {
 				if (preg_match_all('/%(\w+)(\|.+)?(\/[lU])?%/U',strtolower($args[1]),$matchall)) {
 					if (count($matchall[1]) != 1)
 						system_message(array(
-							'title'=>_('Invalid value count for PasswordEncrypt'),
-							'body'=>sprintf('%s (<b>%s</b>)',_('Unable to get the attribute value for PasswordEncrypt()'),count($matchall[1])),
+							'title'=>('Invalid value count for PasswordEncrypt'),
+							'body'=>sprintf('%s (<b>%s</b>)',('Unable to get the attribute value for PasswordEncrypt()'),count($matchall[1])),
 							'type'=>'warn'));
 
 					$passwordattr = $matchall[1][0];
@@ -258,8 +258,8 @@ class PageRender extends Visitor {
 				if ($passwordattr && preg_match_all('/%(\w+)(\|.+)?(\/[lU])?%/U',strtolower($args[0]),$matchall)) {
 					if (count($matchall[1]) != 1)
 						system_message(array(
-							'title'=>_('Invalid value count for PasswordEncrypt'),
-							'body'=>sprintf('%s (<b>%s</b>)',_('Unable to get the attribute value for PasswordEncrypt()'),count($matchall[1])),
+							'title'=>('Invalid value count for PasswordEncrypt'),
+							'body'=>sprintf('%s (<b>%s</b>)',('Unable to get the attribute value for PasswordEncrypt()'),count($matchall[1])),
 							'type'=>'warn'));
 
 					$enc = $_REQUEST[$matchall[1][0]][$passwordattr][$i];
@@ -371,7 +371,7 @@ class PageRender extends Visitor {
 		elseif ($attribute->getLDAPtype())
 			printf('<a href="%s" title="%s: %s">%s</a>',
 				htmlspecialchars($href),
-				_('Click to view the schema definition for attribute type'),$attribute->getName(false),_($attribute->getFriendlyName()));
+				('Click to view the schema definition for attribute type'),$attribute->getName(false),_($attribute->getFriendlyName()));
 		else
 			printf('<acronym title="%s">%s</acronym>',_('This attribute is not defined in the LDAP schema'),_($attribute->getFriendlyName()));
 

@@ -453,8 +453,8 @@ class ldap_pla extends myldap {
 
 					unset($attrs[$attr]);
 					system_message(array(
-						'title'=>_('Attribute not added'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('Hook pre_attr_add prevented attribute from being added'),$attr),
+						'title'=>('Attribute not added'),
+						'body'=>sprintf('%s (<b>%s</b>)',('Hook pre_attr_add prevented attribute from being added'),$attr),
 						'type'=>'warn'));
 
 				} else
@@ -467,8 +467,8 @@ class ldap_pla extends myldap {
 
 					unset($attrs[$attr]);
 					system_message(array(
-						'title'=>_('Attribute not modified'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('Hook pre_attr_modify prevented attribute from being modified'),$attr),
+						'title'=>('Attribute not modified'),
+						'body'=>sprintf('%s (<b>%s</b>)',('Hook pre_attr_modify prevented attribute from being modified'),$attr),
 						'type'=>'warn'));
 
 				} else {
@@ -483,8 +483,8 @@ class ldap_pla extends myldap {
 
 					unset($attrs[$attr]);
 					system_message(array(
-						'title'=>_('Attribute not deleted'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('Hook pre_attr_delete prevented attribute from being deleted'),$attr),
+						'title'=>('Attribute not deleted'),
+						'body'=>sprintf('%s (<b>%s</b>)',('Hook pre_attr_delete prevented attribute from being deleted'),$attr),
 						'type'=>'warn'));
 
 				} else
@@ -577,8 +577,8 @@ class ldap_pla extends myldap {
 		# Check see and use our alternate uid_dn and password if we have it.
 		if (! $this->login($this->getValue('unique','dn'),$this->getValue('unique','pass'),'unique')) {
 			system_message(array(
-				'title'=>_('UNIQUE invalid login/password'),
-				'body'=>sprintf('%s (<b>%s</b>)',_('Unable to connect to LDAP server with the unique login/password, please check your configuration.'),
+				'title'=>('UNIQUE invalid login/password'),
+				'body'=>sprintf('%s (<b>%s</b>)',('Unable to connect to LDAP server with the unique login/password, please check your configuration.'),
 					$this->getName()),
 				'type'=>'warn'));
 
@@ -612,9 +612,9 @@ class ldap_pla extends myldap {
 						$href = sprintf('cmd.php?cmd=query_engine&server_id=%s&filter=%s&scope=sub&query=none&format=list&search=true',$this->index,$query['filter']);
 
 						system_message(array(
-							'title'=>_('Attribute value would not be unique'),
+							'title'=>('Attribute value would not be unique'),
 							'body'=>sprintf('%s (<b><a href="%s">%s</a></b>)',
-								_('This update has been or will be cancelled, it would result in an attribute value not being unique. You might like to search the LDAP server for the offending entry.'),
+								('This update has been or will be cancelled, it would result in an attribute value not being unique. You might like to search the LDAP server for the offending entry.'),
 								htmlspecialchars($href),
 								_('Search')),
 							'type'=>'warn'));

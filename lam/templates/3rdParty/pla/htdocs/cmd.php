@@ -48,12 +48,12 @@ $www['page'] = new page($app['server']->getIndex());
 if (trim($www['cmd'])) {
 	# If this is a READ-WRITE operation, the LDAP server must not be in READ-ONLY mode.
 	if ($app['server']->isReadOnly() && ! in_array(get_request('cmd','REQUEST'),$app['readwrite_cmds']))
-		error(_('You cannot perform updates while server is in read-only mode'),'error','index.php');
+		error(('You cannot perform updates while server is in read-only mode'),'error','index.php');
 
 	# If this command has been disabled by the config.
 	if (! $_SESSION[APPCONFIG]->isCommandAvailable('script',$www['cmd'])) {
-		system_message(array('title'=>_('Command disabled by the server configuration'),
-			_('Error'),'body'=>sprintf('%s: <b>%s</b>.',_('The command could not be run'),htmlspecialchars($www['cmd'])),'type'=>'error'),'index.php');
+		system_message(array('title'=>('Command disabled by the server configuration'),
+			('Error'),'body'=>sprintf('%s: <b>%s</b>.',('The command could not be run'),htmlspecialchars($www['cmd'])),'type'=>'error'),'index.php');
 
 		$app['script_cmd'] = null;
 	}

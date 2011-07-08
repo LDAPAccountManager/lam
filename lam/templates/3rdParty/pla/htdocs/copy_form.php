@@ -91,11 +91,6 @@ echo "\n";
 echo '</table>';
 echo '</form>';
 
-if ($_SESSION[APPCONFIG]->getValue('appearance','show_hints'))
-	printf('<div style="text-align: center;"><small><img src="%s/light.png" alt="Light" /><span class="hint">%s</span></small></div>',
-		IMGDIR,_('Hint: Copying between different servers only works if there are no schema violations'));
-
-
 # Draw the javascrpt to enable/disable the filter field if this may be a recursive copy
 if (count($request['children']) > 0)
 	printf('<script type="text/javascript" src="%sform_field_toggle_enable.js"></script>',JSDIR);

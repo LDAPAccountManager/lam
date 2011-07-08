@@ -721,8 +721,8 @@ class Attribute {
 					case 'helper':
 						if (! isset($values['post']) && ! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 							system_message(array(
-								'title'=>sprintf('%s [<i>%s</i>]',_('Missing [post] setting in XML file'),$index),
-								'body'=>_('[helper] needs an accompanying [post] action.'),
+								'title'=>sprintf('%s [<i>%s</i>]',('Missing [post] setting in XML file'),$index),
+								'body'=>('[helper] needs an accompanying [post] action.'),
 								'type'=>'warn'));
 
 						if (isset($value['value']) && ! is_array($value['value']) && preg_match('/^=php\.(\w+)\((.*)\)$/',$value['value'],$matches)) {
@@ -736,8 +736,8 @@ class Attribute {
 							if (! in_array($i,array('default','display','id','value'))) {
 								if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 									system_message(array(
-										'title'=>sprintf('%s [<i>%s</i>]',_('Unknown XML setting'),$i),
-										'body'=>sprintf('%s <small>[%s]</small>',_('Unknown XML type setting for helper will be ignored.'),$detail),
+										'title'=>sprintf('%s [<i>%s</i>]',('Unknown XML setting'),$i),
+										'body'=>sprintf('%s <small>[%s]</small>',('Unknown XML type setting for helper will be ignored.'),$detail),
 										'type'=>'warn'));
 
 								unset($value[$i]);
@@ -758,8 +758,8 @@ class Attribute {
 					case 'type':
 						if (! in_array($value,array('password','multiselect','select','textarea')) && ! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 							system_message(array(
-								'title'=>sprintf('%s [<i>%s</i>]',_('Unknown XML setting'),$index),
-								'body'=>sprintf('%s <small>[%s]</small>',_('Unknown XML type setting will be ignored.'),$value),
+								'title'=>sprintf('%s [<i>%s</i>]',('Unknown XML setting'),$index),
+								'body'=>sprintf('%s <small>[%s]</small>',('Unknown XML type setting will be ignored.'),$value),
 								'type'=>'warn'));
 
 						break;
@@ -772,8 +772,8 @@ class Attribute {
 						} else
 							if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 								system_message(array(
-									'title'=>sprintf('%s [<i>%s</i>]',_('Unknown XML setting'),$index),
-									'body'=>sprintf('%s <small>[%s]</small>',_('Unknown XML type setting will be ignored.'),$value),
+									'title'=>sprintf('%s [<i>%s</i>]',('Unknown XML setting'),$index),
+									'body'=>sprintf('%s <small>[%s]</small>',('Unknown XML type setting will be ignored.'),$value),
 									'type'=>'warn'));
 
 					case 'value':
@@ -781,8 +781,8 @@ class Attribute {
 							foreach ($value as $y) {
 								if (! $this->haveMoreValues()) {
 									system_message(array(
-									'title'=>_('Automatically removed attribute values from template'),
-										'body'=>sprintf('%s <small>[%s]</small>',_('Template defines more values than can be accepted by attribute.'),$this->getName(true)),
+									'title'=>('Automatically removed attribute values from template'),
+										'body'=>sprintf('%s <small>[%s]</small>',('Template defines more values than can be accepted by attribute.'),$this->getName(true)),
 										'type'=>'warn'));
 
 									$this->clearValue();
@@ -801,7 +801,7 @@ class Attribute {
 
 								# We'll add a hint too
 								if (! $this->hint)
-									$this->hint = _('Automatically determined');
+									$this->hint = ('Automatically determined');
 
 							} else
 								$this->addValue($value);
@@ -835,8 +835,8 @@ class Attribute {
 					default:
 						if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_template_warning'))
 							system_message(array(
-								'title'=>sprintf('%s [<i>%s</i>]',_('Unknown XML setting'),$index),
-								'body'=>sprintf('%s <small>[%s]</small>',_('Unknown attribute setting will be ignored.'),serialize($value)),
+								'title'=>sprintf('%s [<i>%s</i>]',('Unknown XML setting'),$index),
+								'body'=>sprintf('%s <small>[%s]</small>',('Unknown attribute setting will be ignored.'),serialize($value)),
 								'type'=>'warn'));
 				}
 

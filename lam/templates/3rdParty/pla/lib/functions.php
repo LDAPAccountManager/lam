@@ -62,7 +62,7 @@ function __autoload($className) {
 		system_message(array(
 			'title'=>_('Generic Error'),
 			'body'=>sprintf('%s: %s [%s]',
-				__METHOD__,_('Called to load a class that cant be found'),$className),
+				__METHOD__,('Called to load a class that cant be found'),$className),
 			'type'=>'error'));
 }
 
@@ -224,7 +224,7 @@ function check_config($config_file) {
 	# Make sure their PHP version is current enough
 	if (strcmp(phpversion(),REQUIRED_PHP_VERSION) < 0)
 		system_message(array(
-			'title'=>_('Incorrect version of PHP'),
+			'title'=>('Incorrect version of PHP'),
 			'body'=>sprintf('phpLDAPadmin requires PHP version %s or greater.<br /><small>(You are using %s)</small>',
 				REQUIRED_PHP_VERSION,phpversion()),
 			'type'=>'error'));
@@ -322,24 +322,24 @@ function cmd_control_pane($type) {
 		case 'main' :
 			return array(
 				'home'=>array(
-					'title'=>_('Home'),
+					'title'=>('Home'),
 					'enable'=>false,
-					'link'=>sprintf('href="index.php" title="%s"',_('Home')),
-					'image'=>sprintf('<img src="%s/home-big.png" alt="%s" />',IMGDIR,_('Home'))),
+					'link'=>sprintf('href="index.php" title="%s"',('Home')),
+					'image'=>sprintf('<img src="%s/home-big.png" alt="%s" />',IMGDIR,('Home'))),
 
 				'purge'=>array(
-					'title'=>_('Purge caches'),
+					'title'=>('Purge caches'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('script','purge_cache') : false,
 					'link'=>sprintf('href="cmd.php?cmd=purge_cache" onclick="return ajDISPLAY(\'BODY\',\'cmd=purge_cache\',\'%s\');" title="%s"',
-						_('Clearing cache'),_('Purge caches')),
-					'image'=>sprintf('<img src="%s/trash-big.png" alt="%s" />',IMGDIR,_('Purge caches'))),
+						('Clearing cache'),('Purge caches')),
+					'image'=>sprintf('<img src="%s/trash-big.png" alt="%s" />',IMGDIR,('Purge caches'))),
 
 				'hide_debug_info'=>array(
-					'title'=>_('Show Cache'),
+					'title'=>('Show Cache'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('script','show_cache') : false,
 					'link'=>sprintf('href="cmd.php?cmd=show_cache" onclick="return ajDISPLAY(\'BODY\',\'cmd=show_cache\',\'%s\');" title="%s"',
-						_('Loading'),_('Show Cache'),_('Show Cache')),
-					'image'=>sprintf('<img src="%s/debug-cache.png" alt="%s" />',IMGDIR,_('Show Cache'))),
+						('Loading'),('Show Cache'),('Show Cache')),
+					'image'=>sprintf('<img src="%s/debug-cache.png" alt="%s" />',IMGDIR,('Show Cache'))),
 			);
 
 			break;
@@ -349,32 +349,32 @@ function cmd_control_pane($type) {
 				'forum'=>array(
 					'title'=>_('Forum'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
-					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('forum'),_('Forum')),
-					'image'=>sprintf('<img src="%s/forum-big.png" alt="%s" />',IMGDIR,_('Forum'))),
+					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('forum'),('Forum')),
+					'image'=>sprintf('<img src="%s/forum-big.png" alt="%s" />',IMGDIR,('Forum'))),
 
 				'feature'=>array(
 					'title'=>_('Request feature'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
-					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('add_rfe'),_('Request feature')),
-					'image'=>sprintf('<img src="%s/request-feature-big.png" alt="%s" />',IMGDIR,_('Request feature'))),
+					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('add_rfe'),('Request feature')),
+					'image'=>sprintf('<img src="%s/request-feature-big.png" alt="%s" />',IMGDIR,('Request feature'))),
 
 				'bug'=>array(
 					'title'=>_('Report a bug'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
-					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('add_bug'),_('Report a bug')),
-					'image'=>sprintf('<img src="%s/bug-big.png" alt="%s" />',IMGDIR,_('Report a bug'))),
+					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('add_bug'),('Report a bug')),
+					'image'=>sprintf('<img src="%s/bug-big.png" alt="%s" />',IMGDIR,('Report a bug'))),
 
 				'donation'=>array(
 					'title'=>_('Donate'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
-					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('donate'),_('Donate')),
-					'image'=>sprintf('<img src="%s/smile-big.png" alt="%s" />',IMGDIR,_('Donate'))),
+					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('donate'),('Donate')),
+					'image'=>sprintf('<img src="%s/smile-big.png" alt="%s" />',IMGDIR,('Donate'))),
 
 				'help'=>array(
 					'title'=>_('Help'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
-					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('documentation'),_('Help')),
-					'image'=>sprintf('<img src="%s/help-big.png" alt="%s" />',IMGDIR,_('Help')))
+					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('documentation'),('Help')),
+					'image'=>sprintf('<img src="%s/help-big.png" alt="%s" />',IMGDIR,('Help')))
 			);
 
 			break;
@@ -422,7 +422,7 @@ function debug_dump_backtrace($msg='Calling BackTrace',$die=false) {
  * Send a debug as a sys message
  */
 function debug_sysmsg($msg) {
-	system_message(array('title'=>_('Debug'),'body'=>$msg,'type'=>'debug'));
+	system_message(array('title'=>('Debug'),'body'=>$msg,'type'=>'debug'));
 }
 
 /**
@@ -1356,8 +1356,8 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 
 	if (! $server->getValue('auto_number','enable')) {
 		system_message(array(
-			'title'=>_('AUTO_NUMBER is disabled for this server'),
-			'body'=>sprintf('%s (<b>%s</b>)',_('A call was made to get_next_number(), however, it is disabled for this server'),$attr),
+			'title'=>('AUTO_NUMBER is disabled for this server'),
+			'body'=>sprintf('%s (<b>%s</b>)',('A call was made to get_next_number(), however, it is disabled for this server'),$attr),
 			'type'=>'warn'));
 
 		return false;
@@ -1366,8 +1366,8 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 	# Check see and use our alternate uid_dn and password if we have it.
 	if (! $server->login($server->getValue('auto_number','dn'),$server->getValue('auto_number','pass'),'auto_number')) {
 		system_message(array(
-			'title'=>_('AUTO_NUMBER invalid login/password'),
-			'body'=>sprintf('%s (<b>%s</b>)',_('Unable to connect to LDAP server with the auto_number login/password, please check your configuration.'),
+			'title'=>('AUTO_NUMBER invalid login/password'),
+			'body'=>sprintf('%s (<b>%s</b>)',('Unable to connect to LDAP server with the auto_number login/password, please check your configuration.'),
 				$server->getName()),
 			'type'=>'warn'));
 
@@ -1380,8 +1380,8 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 
 		if (! trim($query['base'])) {
 			system_message(array(
-				'title'=>_('No AUTO_NUMBER search_base configured for this server'),
-				'body'=>_('A call was made to get_next_number(), however, the base to search is empty.'),
+				'title'=>('No AUTO_NUMBER search_base configured for this server'),
+				'body'=>('A call was made to get_next_number(), however, the base to search is empty.'),
 				'type'=>'warn'));
 
 			return false;
@@ -1392,8 +1392,8 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 
 	if (! $server->dnExists($query['base'])) {
 		system_message(array(
-			'title'=>_('No AUTO_NUMBER search_base exists for this server'),
-			'body'=>sprintf('%s (<b>%s</b>)',_('A call was made to get_next_number(), however, the base to search does not exist for this server.'),$query['base']),
+			'title'=>('No AUTO_NUMBER search_base exists for this server'),
+			'body'=>sprintf('%s (<b>%s</b>)',('A call was made to get_next_number(), however, the base to search does not exist for this server.'),$query['base']),
 			'type'=>'warn'));
 
 		return false;
@@ -1401,8 +1401,8 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 
 	if (! is_string($attr) || ! $server->getSchemaAttribute($attr)) {
 		system_message(array(
-			'title'=>_('AUTO_NUMBER search attribute invalid'),
-			'body'=>sprintf('%s (<b>%s</b>)',_('The search attribute for AUTO_NUMBER is invalid, expecting a single valid attribute.'),$attr),
+			'title'=>('AUTO_NUMBER search attribute invalid'),
+			'body'=>sprintf('%s (<b>%s</b>)',('The search attribute for AUTO_NUMBER is invalid, expecting a single valid attribute.'),$attr),
 			'type'=>'warn'));
 
 		return false;
@@ -1478,16 +1478,16 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 
 				case '0':
 					system_message(array(
-						'title'=>_('AUTO_NUMBER pool filter didnt return any DNs'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('Please change your filter parameter, or check your auto_number,search_base configuration'),$query['filter']),
+						'title'=>('AUTO_NUMBER pool filter didnt return any DNs'),
+						'body'=>sprintf('%s (<b>%s</b>)',('Please change your filter parameter, or check your auto_number,search_base configuration'),$query['filter']),
 						'type'=>'warn'));
 
 					return false;
 
 				default:
 					system_message(array(
-					'title'=>_('AUTO_NUMBER pool filter returned too many DNs'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('Please change your filter parameter, or check your auto_number,search_base configuration'),$query['filter']),
+					'title'=>('AUTO_NUMBER pool filter returned too many DNs'),
+						'body'=>sprintf('%s (<b>%s</b>)',('Please change your filter parameter, or check your auto_number,search_base configuration'),$query['filter']),
 						'type'=>'warn'));
 
 					return false;
@@ -1511,8 +1511,8 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 		# No other cases allowed. The user has an error in the configuration
 		default:
 			system_message(array(
-				'title'=>_('Invalid AUTO_NUMBER mechanism'),
-				'body'=>sprintf('%s (<b>%s</b>)',_('Your config file specifies an unknown AUTO_NUMBER search mechanism.'),$server->getValue('auto_number','mechanism')),
+				'title'=>('Invalid AUTO_NUMBER mechanism'),
+				'body'=>sprintf('%s (<b>%s</b>)',('Your config file specifies an unknown AUTO_NUMBER search mechanism.'),$server->getValue('auto_number','mechanism')),
 				'type'=>'warn'));
 
 			return false;
