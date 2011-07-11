@@ -111,7 +111,7 @@ class lamPDF extends UFPDF {
 		$this->Line(10,282,200,282);
 		$this->SetY(286);
 		$this->SetFont($this->fontName,"",7);
-		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager") . ' (' . date('Y-m-d H:i:s') . ')',0,0,"C",0);
+		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager") . ' (' . date('Y-m-d H:i:s T') . ')',0,0,"C",0);
 	}
 }
 
