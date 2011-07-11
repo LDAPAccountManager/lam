@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
+                2011         Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -110,7 +111,7 @@ class lamPDF extends UFPDF {
 		$this->Line(10,282,200,282);
 		$this->SetY(286);
 		$this->SetFont($this->fontName,"",7);
-		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager"),0,0,"C",0);
+		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager") . ' (' . date('Y-m-d H:i:s') . ')',0,0,"C",0);
 	}
 }
 
