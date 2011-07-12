@@ -1989,8 +1989,8 @@ function draw_jpeg_photo($server,$dn,$attr_name='jpegphoto',$index,$draw_delete_
 	if (! isset($jpeg_data[$attr_name][$index]) || ! $jpeg_data[$attr_name][$index]) {
 		system_message(array(
 			'title'=>_('Unable to retrieve image'),
-			'body'=>sprintf('%s %s',
-				_('Could not fetch jpeg data for attribute'),$attr_name),
+			'body'=>sprintf(_('Could not fetch jpeg data from LDAP server for attribute [%s].'),
+				$attr_name),
 			'type'=>'warn'));
 
 		# This should atleast generate some text that says "Image not available"
@@ -2006,8 +2006,8 @@ function draw_jpeg_photo($server,$dn,$attr_name='jpegphoto',$index,$draw_delete_
 		$jpeg_temp_dir = realpath($_SESSION[APPCONFIG]->getValue('jpeg','tmpdir').'/');
 		if (! is_writable($jpeg_temp_dir))
 			system_message(array(
-				'title'=>_('Unable to write to jpeg tmp directory'),
-				'body'=>_('Please set jpeg,tmpdir to a writable directory in the phpLDAPadmin config.php'),
+				'title'=>('Unable to write to jpeg tmp directory'),
+				'body'=>('Please set jpeg,tmpdir to a writable directory in the phpLDAPadmin config.php'),
 				'type'=>'warn'));
 
 		else {
@@ -2017,8 +2017,8 @@ function draw_jpeg_photo($server,$dn,$attr_name='jpegphoto',$index,$draw_delete_
 
 			if (! $outjpeg) {
 				system_message(array(
-					'title'=>_('Error writing to jpeg tmp directory'),
-					'body'=>sprintf(_('Please check jpeg,tmpdir is a writable directory in the phpLDAPadmin config.php'),$jpeg_temp_dir),
+					'title'=>('Error writing to jpeg tmp directory'),
+					'body'=>sprintf(('Please check jpeg,tmpdir is a writable directory in the phpLDAPadmin config.php'),$jpeg_temp_dir),
 					'type'=>'warn'));
 
 			} elseif ($outjpeg < 6) {

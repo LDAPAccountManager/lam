@@ -57,7 +57,7 @@ foreach ($ldap['attrs']['need'] as $index => $values)
 	$ldap['attrs']['need'][$index]->show();
 
 if (count($ldap['attrs']['need']) > 0) {
-	$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Add new objectClass to'),get_rdn($request['dn'])));
+	$request['page']->drawTitle(sprintf(_('Add new object class to <b>%s</b>'),get_rdn($request['dn'])));
 	$request['page']->drawSubTitle();
 
 	echo '<div style="text-align: center">';
@@ -95,7 +95,7 @@ if (count($ldap['attrs']['need']) > 0) {
 
 	echo '</table>';
 
-	printf('<div style="text-align: center;"><br /><input type="submit" value="%s" /></div>',_('Add ObjectClass and Attributes'));
+	printf('<div style="text-align: center;"><br /><input type="submit" value="%s" /></div>',_('Add object class and attributes'));
 	echo '</form>';
 	echo '</div>';
 

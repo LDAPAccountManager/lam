@@ -34,7 +34,7 @@ if ($request['attribute']->isReadOnly())
 # Render the form
 if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST') != 'ajax') {
 	# Render the form.
-	$request['page']->drawTitle(sprintf('%s <b>%s</b> %s <b>%s</b>',_('Add new'),$request['attr'],_('value to'),get_rdn($request['dn'])));
+	$request['page']->drawTitle(sprintf(_('Add new <b>%s</b> value to <b>%s</b>'),$request['attr'],get_rdn($request['dn'])));
 	$request['page']->drawSubTitle();
 
 	if (! strcasecmp($request['attr'],'objectclass')) {
@@ -114,7 +114,7 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 
 		echo '<br />';
 		printf('<input id="save_button" type="submit" value="%s" %s />',
-			_('Add new ObjectClass'),
+			_('Add new object class'),
 			(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'entry_form\'),\'%s\');"',_('Updating Object')) : ''));
 		echo '</td></tr></table>';
 		echo '</td>';
@@ -146,7 +146,7 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 				_('Maximum Length'),number_format($sattr->getMaxLength()),_('characters'));
 
 		echo '<br />';
-		printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Add New Value'));
+		printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Add value'));
 		echo '</td></tr></table>';
 
 		echo '</td></tr>';

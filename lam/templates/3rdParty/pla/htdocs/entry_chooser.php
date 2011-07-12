@@ -62,7 +62,7 @@ if (isset($app['server']) && ! is_null($request['container'])) {
 	echo '<tr>';
 	echo '<td class="blank">&nbsp;</td>';
 	printf('<td class="icon"><a href="%s"><img src="%s/up.png" alt="Up" /></a></td>',$href['up'],IMGDIR);
-	printf('<td colspan="2"><a href="%s">%s...</a></td>',$href['up'],_('Back Up'));
+	printf('<td colspan="2"><a href="%s">%s...</a></td>',$href['up'],_('Back up'));
 	echo '</tr>';
 
 	if (! count($request['children']))
@@ -90,7 +90,7 @@ if (isset($app['server']) && ! is_null($request['container'])) {
 			printf('<tr><td class="heading" colspan="3">%s:</td><td class="heading">%s</td></tr>',_('Server'),$server->getName());
 			foreach ($server->getBaseDN() as $dn) {
 				if (! $dn) {
-					printf('<tr><td class="blank">&nbsp;</td><td colspan="3">(%s)</td></tr>',_('Could not determine base DN'));
+					printf('<tr><td class="blank">&nbsp;</td><td colspan="3">(%s)</td></tr>',('Could not determine base DN'));
 
 				} else {
 					$href['return'] = sprintf("javascript:returnDN('%s%s')",($request['rdn'] ? sprintf('%s,',$request['rdn']) : ''),rawurlencode($dn));

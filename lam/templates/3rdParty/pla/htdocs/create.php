@@ -81,7 +81,7 @@ if ($add_result) {
 			$redirect_url .= sprintf('&refresh=SID_%s_nodes&noheader=1',$app['server']->getIndex());
 
 		system_message(array(
-			'title'=>_('Create Entry'),
+			'title'=>_('Create object'),
 			'body'=>$create_message,
 			'type'=>'info'),
 			$redirect_url);

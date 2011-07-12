@@ -657,11 +657,11 @@ class PageRender extends Visitor {
 		if (! $attribute->getOldValue($i))
 			return;
 
-		printf('<small>[%s]</small>',_('Binary Value'));
+		printf('<small>[%s]</small>',_('Binary value'));
 	}
 
 	final protected function drawCurrentValueBinaryAttribute($attribute,$i) {
-		printf('<small>[%s]</small>',_('Binary Value'));
+		printf('<small>[%s]</small>',_('Binary value'));
 
 		if (in_array($attribute->getName(),array('objectsid')))
 			printf('<small> (%s)</small>', binSIDtoText($attribute->getValue(0)));

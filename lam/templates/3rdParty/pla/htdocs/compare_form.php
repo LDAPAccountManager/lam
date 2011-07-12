@@ -25,7 +25,7 @@ $request['page']->setDN($request['dn']);
 $request['page']->accept();
 
 # Render the form
-$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Compare another DN with'),get_rdn($request['dn'])));
+$request['page']->drawTitle(sprintf(_('Compare another DN with <b>%s</b>'),get_rdn($request['dn'])));
 $request['page']->drawSubTitle();
 
 printf('<script type="text/javascript" src="%sdnChooserPopup.js"></script>',JSDIR);

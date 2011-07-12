@@ -45,7 +45,7 @@ if ($request['recursive']) {
 
 	# Build a tree similar to that of the tree browser to give to r_copy_dn
 	$ldap['tree'] = array();
-	printf('<h3 class="title">%s%s</h3>',_('Copying '),$request['dnSRC']);
+	printf('<h3 class="title">%s %s</h3>',_('Copying'),$request['dnSRC']);
 	printf('<h3 class="subtitle">%s</h3>',_('Recursive copy progress'));
 	print '<br /><br />';
 
@@ -97,8 +97,8 @@ if ($request['recursive']) {
 				_('DN'),$request['dnDST'],_('has been created.'));
 		else
 			$copy_message = sprintf('%s %s: <b>%s</b> %s',
-				$request['remove'] ? _('Move NOT successful') : _('Copy NOT successful'),
-				_('DN'),$request['dnDST'],_('has NOT been created.'));
+				$request['remove'] ? _('Move not successful') : _('Copy not successful'),
+				_('DN'),$request['dnDST'],_('has not been created.'));
 	}
 }
 
@@ -107,7 +107,7 @@ if ($copy_result) {
 		$ldap['DST']->getIndex(),rawurlencode($request['dnDST']),$ldap['DST']->getIndex());
 
 	system_message(array(
-		'title'=>_('Copy Entry'),
+		'title'=>_('Copy'),
 		'body'=>$copy_message,
 		'type'=>'info'),
 		$redirect_url);
@@ -157,8 +157,8 @@ function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
 				_('DN'),$dnDST,_('has been created.')));
 		else
 			array_push($copy_message,sprintf('%s %s: <b>%s</b> %s',
-				$remove ? _('Move NOT successful') : _('Copy NOT successful'),
-				_('DN'),$dnDST,_('has NOT been created.')));
+				$remove ? _('Move not successful') : _('Copy not successful'),
+				_('DN'),$dnDST,_('has not been created.')));
 	}
 
 	return $copy_message;

@@ -562,8 +562,8 @@ class myldap extends DS {
 
 		if (! $this->getValue('server','tls') || (function_exists('ldap_start_tls') && ! @ldap_start_tls($resource))) {
 			system_message(array(
-				'title'=>sprintf('%s (%s)',_('Could not start TLS.'),$this->getName()),
-				'body'=>sprintf('<b>%s</b>: %s',_('Error'),_('Could not start TLS. Please check your LDAP server configuration.')),
+				'title'=>sprintf('%s (%s)',('Could not start TLS.'),$this->getName()),
+				'body'=>sprintf('<b>%s</b>: %s',('Error'),('Could not start TLS. Please check your LDAP server configuration.')),
 				'type'=>'error'));
 
 			return false;
@@ -682,8 +682,8 @@ class myldap extends DS {
 
 		if (! (isset($rootdse['supportedcontrol']) && in_array('2.16.840.1.113730.3.4.18',$rootdse['supportedcontrol']))) {
 			system_message(array(
-				'title'=>sprintf('%s %s',_('Unable to start proxy connection'),$this->getName()),
-				'body'=>sprintf('<b>%s</b>: %s',_('Error'),_('Your LDAP server doesnt seem to support this control')),
+				'title'=>sprintf('%s %s',('Unable to start proxy connection'),$this->getName()),
+				'body'=>sprintf('<b>%s</b>: %s',('Error'),('Your LDAP server doesnt seem to support this control')),
 				'type'=>'error'));
 
 			return false;
@@ -696,8 +696,8 @@ class myldap extends DS {
 		foreach ($this->getValue('proxy','attr') as $attr => $var) {
 			if (! isset($_SERVER[$var])) {
 				system_message(array(
-					'title'=>sprintf('%s %s',_('Unable to start proxy connection'),$this->getName()),
-					'body'=>sprintf('<b>%s</b>: %s (%s)',_('Error'),_('Attribute doesnt exist'),$var),
+					'title'=>sprintf('%s %s',('Unable to start proxy connection'),$this->getName()),
+					'body'=>sprintf('<b>%s</b>: %s (%s)',('Error'),('Attribute doesnt exist'),$var),
 					'type'=>'error'));
 
 				$missing = true;
@@ -730,8 +730,8 @@ class myldap extends DS {
 
 			if (count($search) != 1) {
 				system_message(array(
-					'title'=>sprintf('%s %s',_('Unable to start proxy connection'),$this->getName()),
-					'body'=>sprintf('<b>%s</b>: %s (%s)',_('Error'),_('Search for DN returned the incorrect number of results'),count($search)),
+					'title'=>sprintf('%s %s',('Unable to start proxy connection'),$this->getName()),
+					'body'=>sprintf('<b>%s</b>: %s (%s)',('Error'),('Search for DN returned the incorrect number of results'),count($search)),
 					'type'=>'error'));
 
 				return false;
@@ -748,8 +748,8 @@ class myldap extends DS {
 
 		if (! ldap_set_option($resource,LDAP_OPT_SERVER_CONTROLS,array($ctrl))) {
 			system_message(array(
-				'title'=>sprintf('%s %s',_('Unable to start proxy connection'),$this->getName()),
-				'body'=>sprintf('<b>%s</b>: %s (%s) for <b>%s</b>',_('Error'),$this->getErrorMessage($method),$this->getErrorNum($method),$method),
+				'title'=>sprintf('%s %s',('Unable to start proxy connection'),$this->getName()),
+				'body'=>sprintf('<b>%s</b>: %s (%s) for <b>%s</b>',('Error'),$this->getErrorMessage($method),$this->getErrorNum($method),$method),
 				'type'=>'error'));
 
 			return false;

@@ -457,7 +457,7 @@ class ImportLDIF extends Import {
 					$attribute = $this->template->getAttribute($action_attribute_value);
 
 					if (is_null($attribute))
-						return $this->error(sprintf('%s %s',_('Attempting to delete a non existant attribute'),$action_attribute_value),
+						return $this->error(sprintf('%s %s',_('Attempting to delete a non existent attribute'),$action_attribute_value),
 							array_merge(array($currentLine),$lines));
 
 					$deleteattr = true;

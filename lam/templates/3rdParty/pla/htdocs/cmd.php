@@ -66,7 +66,7 @@ if ($app['script_cmd'])
 if (isAjaxEnabled() && get_request('refresh','REQUEST') && get_request('refresh','REQUEST') != get_request('frame','REQUEST')) {
 	echo '<script type="text/javascript" language="javascript">';
 	printf("ajDISPLAY('%s','cmd=refresh&server_id=%s&noheader=%s','%s');",
-		get_request('refresh','REQUEST'),$app['server']->getIndex(),get_request('noheader','REQUEST',false,0),_('Auto refresh'));
+		get_request('refresh','REQUEST'),$app['server']->getIndex(),get_request('noheader','REQUEST',false,0),('Auto refresh'));
 	echo '</script>';
 }
 

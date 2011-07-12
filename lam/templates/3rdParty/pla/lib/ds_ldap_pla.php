@@ -134,8 +134,8 @@ class ldap_pla extends myldap {
 
 			default:
 				system_message(array(
-					'title'=>_('Unknown request for Object value.'),
-					'body'=>sprintf(_('Attempt to obtain value %s from %s'),$key,get_class($this)),
+					'title'=>('Unknown request for Object value.'),
+					'body'=>sprintf(('Attempt to obtain value %s from %s'),$key,get_class($this)),
 					'type'=>'error'));
 		}
 	}

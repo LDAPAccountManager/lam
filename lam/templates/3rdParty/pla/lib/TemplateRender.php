@@ -695,7 +695,7 @@ class TemplateRender extends PageRender {
 		if (is_null($title))
 			switch ($this->getMode()) {
 				case 'creation':
-					$title = _('Create Object');
+					$title = _('Create object');
 					break;
 
 				case 'modification':
@@ -717,8 +717,7 @@ class TemplateRender extends PageRender {
 
 		switch ($this->getMode()) {
 			case 'creation':
-				$subtitle = sprintf('%s: <b>%s</b>&nbsp;&nbsp;&nbsp;%s: <b>%s</b>',
-					_('Server'),$this->getServer()->getName(),
+				$subtitle = sprintf('%s: <b>%s</b>',
 					_('Container'),htmlspecialchars($this->container));
 
 				if ($this->template_id) {
@@ -1096,11 +1095,11 @@ class TemplateRender extends PageRender {
 
 		if (isAjaxEnabled())
 			return sprintf($this->layout['actionajax'],IMGDIR,'cut.png',_('Cut'),
-				htmlspecialchars($href),_('Copy this object to another location, a new DN, or another server'),
+				htmlspecialchars($href),_('Copy or move this entry'),
 				htmlspecialchars($href),str_replace('\'','\\\'',_('Loading')),_('Copy or move this entry'));
 		else
 			return sprintf($this->layout['action'],IMGDIR,'cut.png',_('Cut'),
-				htmlspecialchars($href),_('Copy this object to another location, a new DN, or another server'),
+				htmlspecialchars($href),_('Copy or move this entry'),
 				_('Copy or move this entry'));
 	}
 
@@ -1167,11 +1166,11 @@ class TemplateRender extends PageRender {
 
 		if (isAjaxEnabled())
 			return sprintf($this->layout['actionajax'],IMGDIR,'compare.png',_('Compare'),
-				htmlspecialchars($href),_('Compare this entry with another'),
+				htmlspecialchars($href),_('Compare this DN with another'),
 				htmlspecialchars($href),str_replace('\'','\\\'',_('Loading')),_('Compare with another entry'));
 		else
 			return sprintf($this->layout['action'],IMGDIR,'compare.png',_('Compare'),
-				htmlspecialchars($href),_('Compare this entry with another'),_('Compare with another entry'));
+				htmlspecialchars($href),_('Compare this DN with another'),_('Compare with another entry'));
 	}
 
 	protected function getMenuItemCreate() {
@@ -1456,7 +1455,7 @@ class TemplateRender extends PageRender {
 			printf('%s: ',sprintf(_('Step %s of %s'),$page,$this->pagelast));
 
 			if ($page == 1)
-				echo _('Container and ObjectClass(es)');
+				echo _('Container and object class(es)');
 			else
 				echo _('Specify attributes and values');
 
@@ -1539,7 +1538,7 @@ class TemplateRender extends PageRender {
 		else
 			// @todo cant use AJAX here, it affects file uploads.
 			printf('<td style="text-align: center;"><input type="submit" id="create_button" name="submit" value="%s" /></td>',
-				_('Create Object'));
+				_('Create object'));
 		echo '</tr>';
 	}
 
@@ -2072,7 +2071,7 @@ function fillRec(id,value) {
 		if (isAjaxEnabled())
 			return sprintf('(<a href="cmd.php?%s" title="%s %s" onclick="return ajDISPLAY(\'ADDVALUE%s\',\'%s&amp;raw=1\',\'%s\',1);">%s</a>)',
 				$href_parm,_('Add an additional value to attribute'),$attribute->getName(false),$attribute->getName(),
-				$href_parm,str_replace('\'','\\\'',_('Add Value to Attribute')),_('add value'));
+				$href_parm,str_replace('\'','\\\'',_('Add an additional value to attribute')),_('add value'));
 		else
 			return sprintf('(<a href="cmd.php?%s" title="%s %s">%s</a>)',
 				$href_parm,_('Add an additional value to attribute'),$attribute->getName(false),_('add value'));
@@ -2090,7 +2089,7 @@ function fillRec(id,value) {
 		if (isAjaxEnabled())
 			return sprintf('(<a href="cmd.php?%s" title="%s %s" onclick="return ajDISPLAY(\'BODY\',\'%s\',\'%s\');">%s</a>)',
 				$href_parm,_('Add an additional value to attribute'),$attribute->getName(false),
-				$href_parm,str_replace('\'','\\\'',_('Add Value to Attribute')),_('add value'));
+				$href_parm,str_replace('\'','\\\'',_('Add an additional value to attribute')),_('add value'));
 		else
 			return sprintf('(<a href="cmd.php?%s" title="%s %s">%s</a>)',
 				$href_parm,_('Add an additional value to attribute'),$attribute->getName(false),_('add value'));
@@ -2428,7 +2427,7 @@ function deleteAttribute(attrName,friendlyName,i)
 		echo '	if (!component.value) {'."\n";
 		printf('		component.value = \'%s\';',$pwd);
 		echo "\n";
-		printf('		alert(\'%s:\n%s\');',_('A random password was generated for you'),$pwd);
+		printf('		alert(\'%s:\n%s\');',('A random password was generated for you'),$pwd);
 		echo "\n";
 		echo '	};'."\n";
 		echo '	i++;'."\n";

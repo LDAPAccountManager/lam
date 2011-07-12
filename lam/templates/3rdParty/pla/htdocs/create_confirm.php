@@ -49,7 +49,7 @@ foreach ($request['template']->getAttributes() as $attribute) {
 # Check for unique attributes
 $app['server']->checkUniqueAttrs($request['template']->getDN(),$request['template']->getLDAPadd());
 
-$request['page']->drawTitle(_('Create LDAP Entry'));
+$request['page']->drawTitle(_('Create object'));
 $request['page']->drawSubTitle(sprintf('%s: <b>%s</b>&nbsp;&nbsp;&nbsp;%s: <b>%s</b>',
 	_('Server'),$app['server']->getName(),_('Container'),$request['template']->getContainer()));
 

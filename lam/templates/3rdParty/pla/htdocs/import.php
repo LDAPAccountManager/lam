@@ -36,8 +36,8 @@ $actionString = array(
 $actionErrorMsg = array(
 	'add' => _('Could not add object'),
 	'delete' => _('Could not delete object'),
-	'modrdn' => _('Could not rename object'),
-	'moddn' => _('Could not rename object'),
+	'modrdn' => _('Could not rename the entry.'),
+	'moddn' => _('Could not rename the entry.'),
 	'modify' => _('Could not modify object')
 	);
 

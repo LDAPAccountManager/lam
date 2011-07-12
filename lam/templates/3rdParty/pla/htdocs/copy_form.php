@@ -85,7 +85,7 @@ if (count($request['children']) > 0) {
 }
 echo "\n";
 
-printf('<tr><td colspan="2" style="text-align: center;"><input type="submit" value="%s" /></td></tr>',_('Copy '));
+printf('<tr><td colspan="2" style="text-align: center;"><input type="submit" value="%s" /></td></tr>',_('Copy'));
 echo "\n";
 
 echo '</table>';

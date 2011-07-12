@@ -154,7 +154,7 @@ if (get_request('meth','REQUEST') != 'ajax') {
 		}
 
 	} else {
-		printf('<small>(%s)</small>',_('no new attributes available for this entry'));
+		printf('<small>(%s)</small>',_('No new attributes available for this entry'));
 	}
 
 	echo '</div>';
@@ -163,13 +163,13 @@ if (get_request('meth','REQUEST') != 'ajax') {
 } else {
 	# Put our DIV there for the callback
 	echo '<fieldset>';
-	printf('<legend>%s</legend>',_('Add Attribute'));
+	printf('<legend>%s</legend>',_('Add new attribute'));
 	echo '<div id="ajADDATTR">';
 	echo '<table class="entry" cellspacing="0" align="center" border="0">';
 	echo '<td valign="top" align="center">';
 
 	printf('<select name="attr" onchange="ajDISPLAY(\'%s\',\'cmd=add_value_form&server_id=%s&dn=%s&attr=\'+this.value,\'%s\',\'append\');">',
-		'ADDATTR',$app['server']->getIndex(),$request['template']->getDNEncode(),_('Please Wait'));
+		'ADDATTR',$app['server']->getIndex(),$request['template']->getDNEncode(),_('Please wait'));
 
 	printf('<option value="%s">%s</option>','','');
 	foreach ($request['template']->getAvailAttrs() as $attribute)

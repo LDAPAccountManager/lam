@@ -773,11 +773,6 @@ class Config {
 	public function getFriendlyHTML($attr) {
 		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
 			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if ($this->haveFriendlyName($attr))
-			return sprintf('<acronym title="%s %s">%s</acronym>',
-				_('Alias for'),$attr->getName(false),$this->getFriendlyName($attr));
-		else
 			return $attr->getName(false);
 	}
 
