@@ -555,8 +555,8 @@ class Template extends xmlTemplate {
 
 				else {
 					system_message(array(
-						'title'=>_('No RDN attribute'),
-						'body'=>_('No RDN attribute was selected'),
+						'title'=>_('No RDN attribute was selected.'),
+						'body'=>_('No RDN attribute was selected.'),
 						'type'=>'warn'),'index.php');
 
 					die();

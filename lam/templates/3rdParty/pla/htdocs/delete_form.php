@@ -61,15 +61,6 @@ if (count($request['children'])) {
 
 	echo '<tr><td colspan="2">&nbsp;</td></tr>';
 
-	printf('<tr><td colspan="2">%s</td></tr>',
-		sprintf(_('phpLDAPadmin can recursively delete this entry and all %s of its children. See below for a list of all the entries that this action will delete. Do you want to do this?'),count($request['search'])));
-
-	echo '<tr><td colspan="2">&nbsp;</td></tr>';
-
-	printf('<tr><td colspan="2"><small>%s</small></td></tr>',
-		_('Note: this is potentially very dangerous and you do this at your own risk. This operation cannot be undone. Take into consideration aliases, referrals, and other things that may cause problems.'));
-	echo "\n";
-
 	echo '<tr>';
 	echo '<td style="width: 50%; text-align: center;">';
 	echo '<form action="cmd.php" method="post" id="delete_form">';

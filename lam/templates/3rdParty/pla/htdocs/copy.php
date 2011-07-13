@@ -145,7 +145,7 @@ function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
 			$delete_result = $serverSRC->delete($dnSRC);
 
 			if ($delete_result)
-				array_push($copy_message,sprintf('%s %s: <b>%s</b> %s',_('Delete successful'),_('DN'),$dnDST,_('has been deleted.')));
+				array_push($copy_message,sprintf(_('Delete successful: %s'),$dnSRC));
 		}
 
 	} else {

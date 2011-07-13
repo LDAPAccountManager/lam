@@ -230,7 +230,7 @@ class HTMLTree extends Tree {
 					return '';
 
 				$menu['cmd'] = 'query_engine';
-				$menu['ajax'] = _('Loading Search');
+				$menu['ajax'] = _('Loading search');
 				$menu['div'] = 'BODY';
 				$menu['title'] = _('Search');
 				$menu['img'] = 'search-big.png';
@@ -287,7 +287,7 @@ class HTMLTree extends Tree {
 					return '';
 
 				$menu['cmd'] = 'import_form';
-				$menu['ajax'] = _('Loading Import');
+				$menu['ajax'] = _('Loading import');
 				$menu['div'] = 'BODY';
 				$menu['title'] = _('Import');
 				$menu['img'] = 'import-big.png';
@@ -300,7 +300,7 @@ class HTMLTree extends Tree {
 					return '';
 
 				$menu['cmd'] = 'export_form';
-				$menu['ajax'] = _('Loading Export');
+				$menu['ajax'] = _('Loading export');
 				$menu['div'] = 'BODY';
 				$menu['title'] = _('Export');
 				$menu['img'] = 'export-big.png';
@@ -502,8 +502,8 @@ class HTMLTree extends Tree {
 		echo '<tr>';
 		printf('<td class="spacer" colspan="%s"></td>',$level+3);
 		printf('<td class="icon"><a href="%s"><img src="%s/create.png" alt="%s" /></a></td>',$href,IMGDIR,_('new'));
-		printf('<td class="link" colspan="%s"><a href="%s" title="%s %s">%s</a></td>',
-			$this->getDepth()+3-$level,$href,_('Create a new entry in'),$rdn,_('Create new entry here'));
+		printf('<td class="link" colspan="%s"><a href="%s" title="%s">%s</a></td>',
+			$this->getDepth()+3-$level,$href,_('Create new entry here'),_('Create new entry here'));
 		echo '</tr>';
 	}
 

@@ -78,7 +78,7 @@ if (count($request['template']->getLDAPadd(true))) {
 	echo "\n";
 
 	printf('<tr class="heading"><td>%s</td><td>%s</td><td>%s</td></tr>',
-		_('Attribute'),_('New Value'),_('Skip'));
+		_('Attribute'),_('New value'),_('Skip'));
 	echo "\n\n";
 
 	$counter = 0;

@@ -298,14 +298,6 @@ function check_config($config_file) {
 
 	$config->setServers($servers);
 
-	# Check the memory limit parameter.
-	if ((ini_get('memory_limit') > -1) && ini_get('memory_limit') < $config->getValue('session','memorylimit'))
-		system_message(array(
-			'title'=>_('Memory Limit low.'),
-			'body'=>sprintf('Your php memory limit is low - currently %s, you should increase it to atleast %s. This is normally controlled in /etc/php.ini.',
-				ini_get('memory_limit'),$config->getValue('session','memorylimit')),
-			'type'=>'error'));
-
 	return $config;
 }
 
@@ -347,31 +339,31 @@ function cmd_control_pane($type) {
 		case 'top' :
 			return array(
 				'forum'=>array(
-					'title'=>_('Forum'),
+					'title'=>('Forum'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
 					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('forum'),('Forum')),
 					'image'=>sprintf('<img src="%s/forum-big.png" alt="%s" />',IMGDIR,('Forum'))),
 
 				'feature'=>array(
-					'title'=>_('Request feature'),
+					'title'=>('Request feature'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
 					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('add_rfe'),('Request feature')),
 					'image'=>sprintf('<img src="%s/request-feature-big.png" alt="%s" />',IMGDIR,('Request feature'))),
 
 				'bug'=>array(
-					'title'=>_('Report a bug'),
+					'title'=>('Report a bug'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
 					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('add_bug'),('Report a bug')),
 					'image'=>sprintf('<img src="%s/bug-big.png" alt="%s" />',IMGDIR,('Report a bug'))),
 
 				'donation'=>array(
-					'title'=>_('Donate'),
+					'title'=>('Donate'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
 					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('donate'),('Donate')),
 					'image'=>sprintf('<img src="%s/smile-big.png" alt="%s" />',IMGDIR,('Donate'))),
 
 				'help'=>array(
-					'title'=>_('Help'),
+					'title'=>('Help'),
 					'enable'=>isset($_SESSION[APPCONFIG]) ? $_SESSION[APPCONFIG]->isCommandAvailable('cmd','oslinks') : true,
 					'link'=>sprintf('href="%s" title="%s" onclick="target=\'_blank\';"',get_href('documentation'),('Help')),
 					'image'=>sprintf('<img src="%s/help-big.png" alt="%s" />',IMGDIR,('Help')))
@@ -2019,12 +2011,6 @@ function draw_jpeg_photo($server,$dn,$attr_name='jpegphoto',$index,$draw_delete_
 				system_message(array(
 					'title'=>('Error writing to jpeg tmp directory'),
 					'body'=>sprintf(('Please check jpeg,tmpdir is a writable directory in the phpLDAPadmin config.php'),$jpeg_temp_dir),
-					'type'=>'warn'));
-
-			} elseif ($outjpeg < 6) {
-				system_message(array(
-					'title'=>sprintf('%s %s',$attr_name,_('contains errors')),
-					'body'=>_('It appears that the jpeg image may not be a jpeg image'),
 					'type'=>'warn'));
 
 			} else {

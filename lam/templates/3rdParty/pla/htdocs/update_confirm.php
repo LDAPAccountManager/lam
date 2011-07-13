@@ -52,7 +52,7 @@ if (count($request['template']->getLDAPmodify(true))) {
 	echo "\n";
 
 	printf('<tr class="heading"><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-		_('Attribute'),_('Old Value'),_('New Value'),_('Skip'));
+		_('Attribute'),_('Old value'),_('New value'),_('Skip'));
 	echo "\n\n";
 
 	# If we skip objectclass changes, but there are new must/may attrs provided by the new objectclass, they need to be skip.

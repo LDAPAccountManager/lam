@@ -151,7 +151,7 @@ class ImportLDIF extends Import {
 	public $error = array();
 
 	static public function getType() {
-		return array('type'=>'LDIF','description' => _('LDIF Import'),'extension'=>'ldif');
+		return array('type'=>'LDIF','description' => _('LDIF import'),'extension'=>'ldif');
 	}
 
 	protected function getTemplate() {

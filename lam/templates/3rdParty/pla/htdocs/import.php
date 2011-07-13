@@ -68,7 +68,7 @@ while (! $request['import']->eof()) {
 			$errormsg .= ldap_error_msg($app['server']->getErrorMessage(null),$app['server']->getErrorNum(null));
 
 			system_message(array(
-				'title'=>_('LDIF text import'),
+				'title'=>_('LDIF import'),
 				'body'=>$errormsg,
 				'type'=>'warn'));
 		}

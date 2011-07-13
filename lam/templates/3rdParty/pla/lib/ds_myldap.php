@@ -345,8 +345,8 @@ class myldap extends DS {
 
 		if (is_array($query['base'])) {
 			system_message(array(
-				'title'=>_('Invalid BASE for query'),
-				'body'=>_('The query was cancelled because of an invalid base.'),
+				'title'=>('Invalid BASE for query'),
+				'body'=>('The query was cancelled because of an invalid base.'),
 				'type'=>'error'));
 
 			return array();

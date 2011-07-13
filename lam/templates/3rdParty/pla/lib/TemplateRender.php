@@ -680,7 +680,7 @@ class TemplateRender extends PageRender {
 		# Title
 		$this->drawTitle();
 		if (get_request('create_base'))
-			$this->drawSubTitle(sprintf('<b>%s</b>: %s',_('Creating Base DN'),$this->template->getDN()));
+			$this->drawSubTitle(sprintf('<b>%s</b>: %s',('Creating Base DN'),$this->template->getDN()));
 		else
 			$this->drawSubTitle();
 		echo "\n";
@@ -1339,7 +1339,7 @@ class TemplateRender extends PageRender {
 
 		if ($_SESSION[APPCONFIG]->getValue('appearance','show_hints')) {
 			printf('<tr><td>&nbsp;</td><td><small><img src="%s/light.png" alt="Hint" /><span class="hint">',IMGDIR);
-			echo _('Hint: You must choose exactly one structural objectClass (shown in bold above)');
+			echo _('Hint: You must choose exactly one structural object class (shown in bold above)');
 			echo '</span></small><br /></td></tr>';
 		}
 	}
@@ -1863,13 +1863,13 @@ function fillRec(id,value) {
 			printf('<a href="cmd.php?cmd=template_engine&amp;server_id=%s&amp;dn=%s" title="%s %s"><img src="%s/ldap-alias.png" alt="Go" /></a>&nbsp;',
 				$this->getServerID(),rawurlencode($val),_('Go to'),$val,IMGDIR);
 		else
-			printf('<a title="%s %s"><img src="%s/nogo.png" alt="Go" /></a>&nbsp;',_('DN not available'),$val,IMGDIR);
+			printf('<a title="%s %s"><img src="%s/nogo.png" alt="Go" /></a>&nbsp;',_('DN does not exist'),$val,IMGDIR);
 	}
 
 	protected function drawMailValueIconAttribute($attribute,$val) {
 		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
 
-		$img = sprintf('<img src="%s/mail.png" alt="%s" style="float: right;" />',IMGDIR,_('Mail'));
+		$img = sprintf('<img src="%s/mail.png" alt="%s" style="float: right;" />',IMGDIR,_('Email'));
 		if (strlen($val) <= 0)
 			echo $img;
 		else
@@ -2105,13 +2105,13 @@ function fillRec(id,value) {
 			$this->getServerID(),$this->template->getDNEncode(),rawurlencode($attribute->getName()));
 
 		if (isAjaxEnabled())
-			return sprintf('(<a href="cmd.php?%s" title="%s: %s" onclick="return ajDISPLAY(\'BODY\',\'%s\',\'%s\');">%s</a>)',
-				htmlspecialchars($href),_('Modify members for'),$this->template->getDN(),
-				htmlspecialchars($href),str_replace('\'','\\\'',_('Modify group membership')),
-				_('modify group members'));
+			return sprintf('(<a href="cmd.php?%s" onclick="return ajDISPLAY(\'BODY\',\'%s\',\'%s\');">%s</a>)',
+				htmlspecialchars($href),
+				htmlspecialchars($href),str_replace('\'','\\\'',_('Modify group members')),
+				_('Modify group members'));
 		else
-			return sprintf('(<a href="cmd.php?%s" title="%s: %s">%s</a>)',
-				htmlspecialchars($href),_('Modify members for'),$this->template->getDN(),_('modify group members'));
+			return sprintf('(<a href="cmd.php?%s">%s</a>)',
+				htmlspecialchars($href),_('Modify group members'));
 	}
 
 	protected function getRenameMenuItemAttribute($attribute) {

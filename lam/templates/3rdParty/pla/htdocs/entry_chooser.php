@@ -20,7 +20,7 @@ $request['element'] = get_request('element','GET');
 $request['rdn'] = get_request('rdn','GET');
 
 echo '<div class="popup">';
-printf('<h3 class="subtitle">%s</h3>',_('Entry Chooser'));
+printf('<h3 class="subtitle">%s</h3>',_('Choose entry'));
 
 echo '<script type="text/javascript">';
 echo '	function returnDN(dn) {';
@@ -32,8 +32,7 @@ echo '</script>';
 
 echo '<table class="forminput" width="100%" border="0">';
 if ($request['container']) {
-	printf('<tr><td class="heading" colspan="3">%s:</td><td>%s</td></tr>',_('Server'),$app['server']->getName());
-	printf('<tr><td class="heading" colspan="3">%s:</td><td>%s</td></tr>',_('Looking in'),$request['container']);
+	printf('<tr><td class="heading" colspan="3">%s:</td><td>%s</td></tr>',_('Parent DN'),$request['container']);
 	echo '<tr><td class="blank" colspan="4">&nbsp;</td></tr>';
 }
 
@@ -87,7 +86,6 @@ if (isset($app['server']) && ! is_null($request['container'])) {
 } else {
 	foreach ($_SESSION[APPCONFIG]->getServerList() as $index => $server) {
 		if ($server->isLoggedIn(null)) {
-			printf('<tr><td class="heading" colspan="3">%s:</td><td class="heading">%s</td></tr>',_('Server'),$server->getName());
 			foreach ($server->getBaseDN() as $dn) {
 				if (! $dn) {
 					printf('<tr><td class="blank">&nbsp;</td><td colspan="3">(%s)</td></tr>',('Could not determine base DN'));

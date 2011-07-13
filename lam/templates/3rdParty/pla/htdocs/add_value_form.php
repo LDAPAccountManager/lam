@@ -62,8 +62,8 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 	$request['count'] = $request['attribute']->getValueCount();
 
 	if ($request['count']) {
-		printf('<td class="top">%s <b>%s</b> %s <b>%s</b>:</td>',
-			_('Current list of'),$request['count'],_('values for attribute'),$request['attribute']->getFriendlyName());
+		printf('<td class="top">' . _('Current list of <b>%s</b> values for attribute <b>%s</b>:') . '</td>',
+			$request['count'],$request['attribute']->getFriendlyName());
 
 		echo '<td>';
 
@@ -80,8 +80,8 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 		echo '</td>';
 
 	} else {
-		printf('<td>%s <b>%s</b>.</td>',
-			_('No current value for attribute'),$request['attribute']->getFriendlyName());
+		printf('<td>' . _('No current value for attribute <b>%s</b>.') . '</td>',
+			$request['attribute']->getFriendlyName());
 		echo '<td><br /><br /></td>';
 	}
 
@@ -142,8 +142,8 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 			printf('<small><b>%s:</b> %s</small><br />',_('Syntax'),$sattr->getType());
 
 		if ($sattr->getMaxLength())
-			printf('<small><b>%s:</b> %s %s</small><br />',
-				_('Maximum Length'),number_format($sattr->getMaxLength()),_('characters'));
+			printf('<small>' . _('<b>Maximum length:</b> %s characters') . '</small><br />',
+				number_format($sattr->getMaxLength()));
 
 		echo '<br />';
 		printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Add value'));

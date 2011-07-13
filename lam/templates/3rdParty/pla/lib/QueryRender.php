@@ -91,26 +91,8 @@ class QueryRender extends PageRender {
 
 		$templates = $this->getTemplates();
 
-		if (count($templates->getTemplates())) {
-			echo '<tr>';
-			printf('<td><acronym title="%s">%s</acronym></td>',_('Run a predefined query'),_('Predefined Query'));
-			echo '<td>';
-			echo '<select name="query">';
-			if ($this->haveDefaultTemplate())
-				printf('<option value="%s" %s>%s</option>','none','',_('Custom Query'));
-
-			foreach ($templates->getTemplates() as $template)
-				printf('<option value="%s" %s>%s</option>',
-					$template->getID(),
-					($this->template_id == $template->getID() ? 'selected="selected"' : ''),
-					$template->getDescription());
-			echo '</select>';
-			echo '</td>';
-			echo '</tr>';
-		}
-
 		echo '<tr>';
-		printf('<td><acronym title="%s">%s</acronym></td>',_('The format to show the query results'),_('Display Format'));
+		printf('<td><acronym title="%s">%s</acronym></td>',_('The format to show the query results'),_('Display format'));
 		echo '<td>';
 		echo '<select name="format" style="width: 200px">';
 
@@ -124,7 +106,7 @@ class QueryRender extends PageRender {
 		echo '</tr>';
 
 		echo '<tr>';
-		printf('<td><acronym title="%s"></acronym></td>',_('Entries to show per page'));
+		echo '<td></td>';
 		echo '<td>';
 		echo '</td>';
 		echo '</tr>';
@@ -134,8 +116,6 @@ class QueryRender extends PageRender {
 		echo '<td colspan="2">';
 		printf('<div id="customquery" style="display: %s">','block');
 		echo '<br/>';
-		echo '<fieldset>';
-		printf('<legend>%s</legend>',_('Custom Query'));
 		echo '<table border="0"><tr>';
 
 		printf('<td>%s</td>',_('Base DN'));
@@ -193,7 +173,6 @@ class QueryRender extends PageRender {
 		echo '</tr>';
 
 		echo '</table>';
-		echo '</fieldset>';
 		echo '</div>';
 		echo '</td>';
 		echo '</tr>';
@@ -517,7 +496,7 @@ class QueryRender extends PageRender {
 
 				if (isAjaxEnabled())
 					printf('<a href="cmd.php?%s" onclick="return ajDISPLAY(\'BODY\',\'%s\',\'%s\');">%s</a>',
-						$query_string,$query_string,_('Loading Search'),_($f));
+						$query_string,$query_string,_('Loading search'),_($f));
 				else
 					printf('<a href="cmd.php?%s">%s</a>',$query_string,_($f));
 			}

@@ -58,7 +58,7 @@ if (count($request['update'])) {
 			if ($result)
 				printf('%s: <b>%s</b><br>',$template->getDN(),_('Modification successful!'));
 			else
-				printf('%s: <b>%s</b><br>',$template->getDN(),_('Modification NOT successful!'));
+				printf('%s: <b>%s</b><br>',$template->getDN(),_('Modification not successful!'));
 		}
 
 	} else {

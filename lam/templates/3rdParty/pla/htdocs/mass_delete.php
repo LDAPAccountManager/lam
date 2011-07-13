@@ -17,7 +17,7 @@ $request['dn'] = get_request('dn','REQUEST');
 
 if (! $request['dn'])
 	system_message(array(
-		'title'=>_('No entry selected'),
+		'title'=>_('No entry was selected to delete'),
 		'body'=>_('No entry was selected to delete'),
 		'type'=>'warn'),'index.php');
 
@@ -41,8 +41,7 @@ foreach ($request['dn'] as $dn) {
 	}
 }
 
-printf('<h3 class="title">%s</h3>',_('Mass Delete'));
-printf('<h3 class="subtitle">%s: <b>%s</b></h3>',_('Server'),$app['server']->getName());
+printf('<h3 class="title">%s</h3>',_('Mass delete'));
 echo "\n";
 
 echo '<center>';

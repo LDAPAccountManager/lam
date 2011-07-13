@@ -94,7 +94,7 @@ if ($add_result) {
 		echo '<br />';
 		echo '<center>';
 		printf('<a href="cmd.php?%s&amp;dn=%s">%s</a>.',
-			htmlspecialchars($href),rawurlencode($request['template']->getDN()),_('Display the new created entry'));
+			htmlspecialchars($href),rawurlencode($request['template']->getDN()),_('Display the created entry'));
 		echo '<br />';
 		printf('<a href="cmd.php?%s&amp;container=%s">%s</a>.',
 			htmlspecialchars($href),rawurlencode($request['template']->getContainer()),_('Create another entry'));
