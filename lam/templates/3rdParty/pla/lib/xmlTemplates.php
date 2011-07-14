@@ -41,8 +41,8 @@ abstract class xmlTemplates {
 					$changed = true;
 
 					system_message(array(
-						'title'=>_('Template XML file removed.'),
-						'body'=>sprintf('%s %s (%s)',_('Template XML file has removed'),$template->getName(false),$template->getType()),
+						'title'=>('Template XML file removed.'),
+						'body'=>sprintf('%s %s (%s)',('Template XML file has removed'),$template->getName(false),$template->getType()),
 						'type'=>'info','special'=>true));
 
 					continue;
@@ -52,8 +52,8 @@ abstract class xmlTemplates {
 					&& (filectime($template->getFileName()) > $template->getReadTime())) {
 
 					system_message(array(
-						'title'=>_('Template XML file changed.'),
-						'body'=>sprintf('%s %s (%s)',_('Template XML file has changed and been reread'),$template->getName(false),$template->getType()),
+						'title'=>('Template XML file changed.'),
+						'body'=>sprintf('%s %s (%s)',('Template XML file has changed and been reread'),$template->getName(false),$template->getType()),
 						'type'=>'info','special'=>true));
 
 					$changed = true;

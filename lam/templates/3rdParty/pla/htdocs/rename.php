@@ -50,7 +50,7 @@ if ($success) {
 		$app['server']->getIndex(),rawurlencode($request['dnDST']),get_request('template','REQUEST'));
 
 	system_message(array(
-		'title'=>_('Rename Entry'),
+		'title'=>_('Rename'),
 		'body'=>$rename_message,
 		'type'=>'info'),
 		$redirect_url);

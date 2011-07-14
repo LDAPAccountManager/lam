@@ -49,20 +49,6 @@ if ($result) {
 			$mustRelogin = true;
 	}
 
-	# If the user password was changed, not tell the to relogin.
-	if ($mustRelogin) {
-			$app['server']->logout('user');
-			unset($_SESSION['ACTIVITY'][$app['server']->getIndex()]);
-
-			system_message(array(
-				'title'=>_('Modification successful!'),
-				'body'=>_('Since you changed your password, you must now login again with your new password.'),
-				'type'=>'info'),
-				sprintf('cmd.php?cmd=login_form&server_id=%s',$app['server']->getIndex()));
-
-				exit;
-	}
-
 	$redirect_url = sprintf('cmd.php?cmd=template_engine&server_id=%s&dn=%s',
 		$app['server']->getIndex(),$request['template']->getDNEncode());
 

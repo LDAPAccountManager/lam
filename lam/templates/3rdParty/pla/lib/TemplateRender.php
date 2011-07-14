@@ -1534,7 +1534,7 @@ class TemplateRender extends PageRender {
 
 		echo '<tr>';
 		if ($page < $this->pagelast)
-			printf('<td>&nbsp;</td><td><input type="submit" id="create_button" value="%s" /></td>',_('Proceed &gt;&gt;'));
+			printf('<td>&nbsp;</td><td><input type="submit" id="create_button" value="%s &gt;&gt;" /></td>',_('Proceed'));
 		else
 			// @todo cant use AJAX here, it affects file uploads.
 			printf('<td style="text-align: center;"><input type="submit" id="create_button" name="submit" value="%s" /></td>',
@@ -1564,7 +1564,7 @@ class TemplateRender extends PageRender {
 				array_push($attrs['optional'],$attribute);
 		}
 
-		printf('<tr><th colspan="2">%s</th></tr>',_('Required Attributes'));
+		printf('<tr><th colspan="2">%s</th></tr>',_('Required attributes'));
 		if (count($attrs['required']))
 			foreach ($attrs['required'] as $attribute)
 				$this->draw('Template',$attribute);
@@ -2286,7 +2286,7 @@ function fillRec(id,value) {
 <script type="text/javascript">
 function deleteAttribute(attrName,friendlyName,i)
 {
-	if (confirm("'._('Really delete value from attribute').' \'" + friendlyName + "\'?")) {
+	if (confirm("'._('Really delete value from this attribute?').'")) {
 		document.getElementById(\'delete_attribute_form\').attr.value = attrName;
 		document.getElementById(\'delete_attribute_form\').index.value = i;
 		document.getElementById(\'delete_attribute_form\').submit();

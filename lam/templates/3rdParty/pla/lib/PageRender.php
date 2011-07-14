@@ -1094,7 +1094,7 @@ class PageRender extends Visitor {
 			# If we are a required attribute, and the selection is blank, then the user cannot submit this form.
 			if ($attribute->isRequired() && ! count($attribute->getSelection()))
 				system_message(array(
-					'title'=>_('Template Value Error'),
+					'title'=>('Template Value Error'),
 					'body'=>sprintf('This template uses a selection list for attribute [<b>%s</b>], however the selection list is empty.<br />You may need to create some dependancy entries in your LDAP server so that this attribute renders with values. Alternatively, you may be able to define the appropriate selection values in the template file.',$attribute->getName(false)),
 					'type'=>'warn'));
 

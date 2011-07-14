@@ -215,7 +215,7 @@ class page {
 		if (count($_SESSION[APPCONFIG]->getServerList()) > 1) {
 			echo '<form id="server_select" action="cmd.php" method="post">';
 			echo '<table class="server_select"><tr><td>';
-			printf('%s:<br />%s',_('Server Select'),
+			printf('%s:<br />%s',('Server Select'),
 				server_select_list($this->index,false,'index',true,sprintf("onchange=\"tree_unhide('index',%s)\"",$this->index)));
 			echo '</td></tr></table>';
 			echo '</form>';

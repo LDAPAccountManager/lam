@@ -237,10 +237,10 @@ $app['server'] = $_SESSION[APPCONFIG]->getServer(get_request('server_id','REQUES
  */
 if (! $app['server']->isSessionValid()) {
 	system_message(array(
-		'title'=>_('Session Timed Out'),
+		'title'=>('Session Timed Out'),
 		'body'=>sprintf('%s %s %s',
-			_('Your Session timed out after'),$app['server']->getValue('login','timeout'),
-			_('min. of inactivity. You have been automatically logged out.')),
+			('Your Session timed out after'),$app['server']->getValue('login','timeout'),
+			('min. of inactivity. You have been automatically logged out.')),
 		'type'=>'info'),sprintf('index.php?server_id=%s&refresh=SID_%s',$app['server']->getIndex(),$app['server']->getIndex()));
 
 	die();

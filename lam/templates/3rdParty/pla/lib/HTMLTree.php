@@ -244,7 +244,7 @@ class HTMLTree extends Tree {
 
 				$menu['cmd'] = 'refresh';
 				$menu['href'] = '&noheader=1&purge=1';
-				$menu['ajax'] = _('Refreshing Tree');
+				$menu['ajax'] = _('Refreshing tree');
 				$menu['div'] = sprintf('SID_%s_nodes',$server->getIndex());
 				$menu['title'] = _('Refresh');
 				$menu['img'] = 'refresh-big.png';

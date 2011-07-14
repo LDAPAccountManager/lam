@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2011-07-14 20:27+0200\n"
+"PO-Revision-Date: 2011-07-14 21:41+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "Language: \n"
@@ -6588,11 +6588,8 @@ msgid "Please fill out the DHCP settings first."
 msgstr "Bitte füllen Sie zuerst die DHCP-Einstellungen aus."
 
 #: ../templates/3rdParty/pla/lib/Template.php:474
-#, fuzzy
 msgid "Please go back and try again."
-msgstr ""
-"Der Wert des Attributes war leer. Bitte gehen Sie zurück und füllen den "
-"Eintrag."
+msgstr "Bitte gehen Sie zurück und versuchen es nochmals."
 
 #: ../templates/masscreate.php:232
 msgid ""
@@ -6763,13 +6760,10 @@ msgid "Priority"
 msgstr "Priorität"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1537
-msgid "Proceed &gt;&gt;"
-msgstr ""
-
 #: ../templates/3rdParty/pla/htdocs/import_form.php:44
 #: ../templates/3rdParty/pla/htdocs/export_form.php:138
-msgid "Proceed >>"
-msgstr ""
+msgid "Proceed"
+msgstr "Fortfahren"
 
 #: ../templates/config/profmanage.php:148
 #: ../templates/selfService/profManage.php:127
@@ -6909,17 +6903,6 @@ msgstr "Quotawarnlimit"
 msgid "RDN"
 msgstr "RDN"
 
-#: ../templates/3rdParty/pla/lib/Template.php:821
-#, php-format
-msgid ""
-"RDN attribute sequence [%s] is already used by attribute [%s] and cant be "
-"used by attribute [%s] also."
-msgstr ""
-
-#: ../templates/3rdParty/pla/lib/Template.php:818
-msgid "RDN attribute sequence already defined"
-msgstr ""
-
 #: ../templates/masscreate.php:300 ../templates/profedit/profilepage.php:202
 #: ../lib/modules.inc:926 ../help/help.inc:146
 msgid "RDN identifier"
@@ -6983,9 +6966,8 @@ msgid "Really create this new OU?"
 msgstr "Soll diese neue OU erstellt werden?"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2289
-#, fuzzy
-msgid "Really delete value from attribute"
-msgstr "Dieses Attribut wirklich löschen?"
+msgid "Really delete value from this attribute?"
+msgstr "Diesen Attributwert wirklich löschen?"
 
 #: ../lib/modules/nisMailAlias.inc:71 ../lib/modules/nisMailAlias.inc:154
 msgid "Recipient"
@@ -7010,12 +6992,11 @@ msgstr "Wiederherstellen falls unterbrochen"
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:63
 msgid "Recursive copy"
-msgstr ""
+msgstr "Rekursives Kopieren"
 
 #: ../templates/3rdParty/pla/htdocs/copy.php:49
-#, fuzzy
 msgid "Recursive copy progress"
-msgstr "Fortschritt des Löschvorgangs"
+msgstr "Rekursives Kopieren läuft"
 
 #: ../templates/3rdParty/pla/htdocs/rdelete.php:31
 msgid "Recursive delete progress"
@@ -7023,7 +7004,7 @@ msgstr "Fortschritt des Löschvorgangs"
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:65
 msgid "Recursively copy all children of this object as well."
-msgstr ""
+msgstr "Kopiert alle Kindeinträge rekursiv."
 
 #: ../templates/config/mainmanage.php:242
 msgid "Reenter new master password"
@@ -7040,7 +7021,7 @@ msgstr "Profilpasswort erneut eingeben"
 
 #: ../templates/serverInfo.php:185
 msgid "Referrals"
-msgstr ""
+msgstr "Referrals"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1051
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1052
@@ -7055,12 +7036,11 @@ msgstr "Aktualisieren"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1052
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1055
 msgid "Refresh this entry"
-msgstr ""
+msgstr "Eintrag aktualisieren"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:247
-#, fuzzy
-msgid "Refreshing Tree"
-msgstr "Aktualisieren"
+msgid "Refreshing tree"
+msgstr "Aktualisiere Baum"
 
 #: ../lib/modules/asteriskAccount.inc:206
 #: ../lib/modules/asteriskAccount.inc:293
@@ -7099,7 +7079,7 @@ msgstr "Relativer eindeutiger Name"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1052
 msgid "Reloading"
-msgstr ""
+msgstr "Lade neu"
 
 #: ../templates/config/confmodules.php:291
 #: ../templates/pdfedit/pdfpage.php:461
@@ -7152,10 +7132,6 @@ msgid "Remove phpGroupWare extension"
 msgstr "phpGroupWare-Erweiterung entfernen"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:147
-#, fuzzy
-msgid "Remove selected"
-msgstr "Ausgewählte Einträge entfernen"
-
 #: ../lib/modules/device.inc:278 ../lib/modules/zarafaUser.inc:756
 #: ../lib/modules/groupOfNames.inc:283 ../lib/modules/groupOfNames.inc:394
 msgid "Remove selected entries"
@@ -7176,14 +7152,9 @@ msgstr "Foto ersetzen/entfernen"
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:24
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:28
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:35
-#, fuzzy
-msgid "Rename"
-msgstr "Rollenname"
-
 #: ../templates/3rdParty/pla/htdocs/rename.php:53
-#, fuzzy
-msgid "Rename Entry"
-msgstr "Profil umbenennen"
+msgid "Rename"
+msgstr "Umbenennen"
 
 #: ../templates/config/profmanage.php:259
 #: ../templates/selfService/profManage.php:221 ../help/help.inc:118
@@ -7191,15 +7162,13 @@ msgid "Rename profile"
 msgstr "Profil umbenennen"
 
 #: ../templates/3rdParty/pla/htdocs/rename.php:48
-#, fuzzy
 msgid "Rename successful!"
-msgstr "Löschen war erfolgreich."
+msgstr "Umbenennen war erfolgreich."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1153
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1156
-#, fuzzy
 msgid "Rename this entry"
-msgstr "Diesen Accounttyp entfernen"
+msgstr "Diesen Eintrag umbenennen"
 
 #: ../templates/config/profmanage.php:134
 #: ../templates/selfService/profManage.php:114
@@ -7209,7 +7178,7 @@ msgstr "Profil umbenannt."
 #: ../templates/3rdParty/pla/htdocs/import.php:30
 #: ../templates/3rdParty/pla/htdocs/import.php:31
 msgid "Renaming"
-msgstr ""
+msgstr "Benenne um"
 
 #: ../templates/lists/changePassword.php:249 ../lib/modules.inc:975
 msgid "Repeat password"
@@ -7225,11 +7194,6 @@ msgstr "$user und $group wurden im Heimatverzeichnis ersetzt."
 msgid "Require password change on first login"
 msgstr "Passwortänderung beim ersten Login"
 
-#: ../templates/3rdParty/pla/lib/TemplateRender.php:1567
-#, fuzzy
-msgid "Required Attributes"
-msgstr "Vorgeschriebene Attribute"
-
 #: ../templates/3rdParty/pla/lib/PageRender.php:457
 #, fuzzy
 msgid "Required attribute for objectClass(es)"
@@ -7237,6 +7201,7 @@ msgstr "Erforderliches Attribut für Objektklasse(n) %s"
 
 #: ../templates/tree/templates/creation/custom.php:187
 #: ../templates/schema/schema.php:381
+#: ../templates/3rdParty/pla/lib/TemplateRender.php:1567
 msgid "Required attributes"
 msgstr "Vorgeschriebene Attribute"
 
@@ -7287,7 +7252,7 @@ msgstr "Anrufer-ID ausblenden"
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:122
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:137
 msgid "Retrieving DN"
-msgstr ""
+msgstr "Lade DN"
 
 #: ../lib/modules/ddns.inc:106 ../lib/modules/ddns.inc:113
 #: ../lib/modules/ddns.inc:134 ../lib/modules/ddns.inc:374
@@ -7345,12 +7310,6 @@ msgstr "Ausführbenutzer"
 #: ../lib/modules/sudoRole.inc:696
 msgid "Run users"
 msgstr "Ausführbenutzer"
-
-#: ../templates/3rdParty/pla/lib/ds_myldap.php:590
-msgid ""
-"SASL has been enabled in your config, but your PHP install does not support "
-"SASL. SASL will be disabled."
-msgstr ""
 
 #: ../templates/serverInfo.php:127
 msgid "SASL mechanisms"
@@ -7485,9 +7444,8 @@ msgid "Save as file"
 msgstr "Als Datei speichern"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:172
-#, fuzzy
 msgid "Save changes"
-msgstr "Änderungen zurücksetzen"
+msgstr "Änderungen speichern"
 
 #: ../lib/tools/schemaBrowser.inc:44
 msgid "Schema browser"
@@ -7539,26 +7497,23 @@ msgstr "Suche"
 #: ../templates/3rdParty/pla/lib/QueryRender.php:150
 #: ../templates/3rdParty/pla/lib/export_functions.php:207
 #: ../templates/3rdParty/pla/htdocs/export_form.php:81
-#, fuzzy
 msgid "Search Filter"
 msgstr "Suchfilter"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:171
 #: ../templates/3rdParty/pla/lib/QueryRender.php:190
-#, fuzzy
 msgid "Search Results"
-msgstr "Suchfilter"
+msgstr "Suchergebnisse"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:130
 #: ../templates/3rdParty/pla/lib/export_functions.php:206
 #: ../templates/3rdParty/pla/htdocs/export_form.php:67
-#, fuzzy
 msgid "Search Scope"
 msgstr "Suchbereich"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:294
 msgid "Search returned no results"
-msgstr ""
+msgstr "Suche lieferte keine Ergebnisse"
 
 #: ../lib/modules/asteriskExtension.inc:304
 msgid "Search tree suffix for users"
@@ -7575,7 +7530,7 @@ msgstr "Abschnitt"
 #: ../templates/3rdParty/pla/lib/Template.php:509
 #: ../templates/3rdParty/pla/lib/Template.php:514
 msgid "Security error: The file being uploaded may be malicious."
-msgstr ""
+msgstr "Sicherheitsproblem: Die hochgeladene Datei kann bösartig sein."
 
 #: ../lib/modules/zarafaGroup.inc:71 ../lib/modules/zarafaGroup.inc:99
 #: ../lib/modules/zarafaGroup.inc:128 ../lib/modules/zarafaGroup.inc:185
@@ -7600,18 +7555,16 @@ msgid "Select a template for the creation process"
 msgstr "Wählen Sie eine Vorlage für den Anlegevorgang"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:498
-#, fuzzy
 msgid "Select a template to edit the entry"
-msgstr "Wählen Sie eine Vorlage für den Anlegevorgang"
+msgstr "Wählen Sie eine Vorlage zum Editieren"
 
 #: ../lib/lists.inc:402
 msgid "Select all"
 msgstr "Alle auswählen"
 
 #: ../templates/3rdParty/pla/htdocs/import_form.php:31
-#, fuzzy
 msgid "Select an LDIF file"
-msgstr "Zeige LDIF-Datei"
+msgstr "LDIF-Datei auswählen"
 
 #: ../lib/modules/nisnetgroup.inc:230 ../lib/modules/nisnetgroup.inc:259
 msgid "Select host"
@@ -7666,11 +7619,6 @@ msgstr "Seriennummer"
 msgid "Server"
 msgstr "Server"
 
-#: ../templates/3rdParty/pla/lib/page.php:218
-#, fuzzy
-msgid "Server Select"
-msgstr "Serverliste"
-
 #: ../templates/config/confmain.php:221
 #: ../templates/selfService/adminMain.php:327 ../lib/modules/imapAccess.inc:69
 #: ../lib/modules/imapAccess.inc:104 ../help/help.inc:54
@@ -7706,11 +7654,6 @@ msgstr "Serverstatistiken"
 #: ../templates/serverInfo.php:203 ../templates/serverInfo.php:209
 msgid "Server time"
 msgstr "Serverzeit"
-
-#: ../templates/3rdParty/pla/lib/common.php:240
-#, fuzzy
-msgid "Session Timed Out"
-msgstr "Zeitbeschränkung für Sitzung"
 
 #: ../templates/config/mainmanage.php:193 ../help/help.inc:132
 msgid "Session timeout"
@@ -7791,21 +7734,16 @@ msgstr "Soll die feste IP-Adresse zum DNS-Server hinzugefügt werden?"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1121
 msgid "Show"
-msgstr ""
-
-#: ../templates/3rdParty/pla/lib/QueryRender.php:159
-#, fuzzy
-msgid "Show Attributes"
-msgstr "Attribut"
-
-#: ../templates/3rdParty/pla/htdocs/export_form.php:84
-#, fuzzy
-msgid "Show Attributtes"
-msgstr "Attribut"
+msgstr "Anzeigen"
 
 #: ../templates/massBuildAccounts.php:201
 msgid "Show LDIF file"
 msgstr "Zeige LDIF-Datei"
+
+#: ../templates/3rdParty/pla/lib/QueryRender.php:159
+#: ../templates/3rdParty/pla/htdocs/export_form.php:84
+msgid "Show attributes"
+msgstr "Attribute anzeigen"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1122
 msgid "Show internal attributes"
@@ -7832,7 +7770,7 @@ msgstr "Einzelwert"
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:55
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:81
 msgid "Skip"
-msgstr ""
+msgstr "Überspringen"
 
 #: ../lib/modules/quota.inc:616 ../lib/modules/systemQuotas.inc:357
 msgid "Soft block"
@@ -8024,9 +7962,8 @@ msgstr ""
 "Passwort voraussetzen."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1460
-#, fuzzy
 msgid "Specify attributes and values"
-msgstr "Schritt 2 von 2: Attribute und Werte"
+msgstr "Attribute und Werte angeben"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:150
 msgid "Standard LDAP search filter. Example: (&(sn=Smith)(givenName=David))"
@@ -8052,7 +7989,7 @@ msgstr "Statischer Text"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1467
 #, php-format
 msgid "Step %s of %s"
-msgstr ""
+msgstr "Schritt %s von %s"
 
 #: ../templates/tree/templates/creation/custom.php:54
 msgid "Step 1 of 2: Name and object class(es)"
@@ -8255,9 +8192,8 @@ msgid "Template XML file removed."
 msgstr ""
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:520
-#, fuzzy
 msgid "Templates"
-msgstr "Vorlage"
+msgstr "Vorlagen"
 
 #: ../lib/modules/sambaSamAccount.inc:368
 #: ../lib/modules/sambaSamAccount.inc:581
@@ -8404,9 +8340,8 @@ msgstr ""
 
 #: ../templates/3rdParty/pla/htdocs/create.php:44
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:38
-#, fuzzy
 msgid "The RDN field is empty?"
-msgstr "Datenfeld für RDN ist leer!"
+msgstr "Datenfeld für RDN ist leer?"
 
 #: ../lib/modules/sambaDomain.inc:75
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
@@ -8577,7 +8512,7 @@ msgstr "Der angegebene Netbios-Knotentyp existiert nicht."
 msgid ""
 "The file you selected was only partially uploaded, likley due to a network "
 "error."
-msgstr ""
+msgstr "Die gewählte Datei wurde nur teilweise hochgeladen, wahrscheinlich durch einen Netzwerkfehler."
 
 #: ../templates/3rdParty/pla/lib/Template.php:402
 #: ../templates/3rdParty/pla/lib/Template.php:407
@@ -9059,11 +8994,6 @@ msgstr "Es gibt noch Benutzer, deren primäre Gruppe diese Gruppe ist."
 #: ../lib/modules/sambaGroupMapping.inc:440
 msgid "There can be only one group of this type."
 msgstr "Es kann nur eine Gruppe diesen Typs geben."
-
-#: ../templates/3rdParty/pla/lib/Template.php:820
-#, php-format
-msgid "There is a problem in template [%s]."
-msgstr ""
 
 #: ../lib/modules/asteriskAccount.inc:621
 msgid "There is already another user with this caller ID."
@@ -10868,11 +10798,6 @@ msgid ""
 "PHP."
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/common.php:242
-#, fuzzy
-msgid "Your Session timed out after"
-msgstr "Zeitbeschränkung für Sitzung"
-
 #: ../templates/3rdParty/pla/lib/functions.php:274
 msgid ""
 "Your config.php is missing Server Definitions. Please see the sample file "
@@ -11187,13 +11112,6 @@ msgstr "mail.ihredomain.de"
 #, fuzzy
 msgid "members in group"
 msgstr "Domänengruppe"
-
-#: ../templates/3rdParty/pla/lib/common.php:243
-#, fuzzy
-msgid "min. of inactivity. You have been automatically logged out."
-msgstr ""
-"Nach dieser Zeit von Inaktivität (in Minuten) wird der Benutzer automatisch "
-"abgemeldet."
 
 #: ../lib/modules/sambaSamAccount.inc:390
 #: ../lib/modules/sambaSamAccount.inc:514

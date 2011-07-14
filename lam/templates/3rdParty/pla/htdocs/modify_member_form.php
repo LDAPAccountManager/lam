@@ -144,7 +144,7 @@ printf('<input type="button" onclick="one2two()" value="%s >>" />&nbsp;<input ty
 echo '</td>';
 echo '<td>';
 printf('<input type="button" onclick="two2one()" value="<< %s" />&nbsp;<input type="button" onclick="all2one()" value="<< %s" />',
-	_('Remove selected'),('Remove all'));
+	_('Remove selected entries'),('Remove all'));
 echo '</td>';
 echo '</tr>';
 

@@ -815,10 +815,10 @@ class Template extends xmlTemplate {
 			# We'll test if two RDN's have the same number (we cant test anywhere else)
 			if (isset($return[$attribute->isRDN()]) && $this->getType() == 'creation')
 				system_message(array(
-					'title'=>_('RDN attribute sequence already defined'),
+					'title'=>('RDN attribute sequence already defined'),
 					'body'=>sprintf('%s %s',
-						sprintf(_('There is a problem in template [%s].'),$this->getName()),
-						sprintf(_('RDN attribute sequence [%s] is already used by attribute [%s] and cant be used by attribute [%s] also.'),
+						sprintf(('There is a problem in template [%s].'),$this->getName()),
+						sprintf(('RDN attribute sequence [%s] is already used by attribute [%s] and cant be used by attribute [%s] also.'),
 							$attribute->isRDN(),$return[$attribute->isRDN()],$attribute->getName())),
 					'type'=>'error'),'index.php');
 

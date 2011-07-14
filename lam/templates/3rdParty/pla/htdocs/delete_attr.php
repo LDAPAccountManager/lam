@@ -17,7 +17,7 @@ $request['attr'] = get_request('attr','REQUEST',true);
 $request['index'] = get_request('index','REQUEST',true);
 
 if ($app['server']->isAttrReadOnly($request['attr']))
-	error(sprintf(_('The attribute "%s" is flagged as read-only in the phpLDAPadmin configuration.'),$request['attr']),'error','index.php');
+	error(sprintf(('The attribute "%s" is flagged as read-only in the phpLDAPadmin configuration.'),$request['attr']),'error','index.php');
 
 $update_array = array();
 $update_array[$request['attr']] = $app['server']->getDNAttrValue($request['dn'],$request['attr']);

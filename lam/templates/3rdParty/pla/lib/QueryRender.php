@@ -147,7 +147,7 @@ class QueryRender extends PageRender {
 
 		echo '<tr>';
 		printf('<td><acronym title="%s">%s</acronym></td>',
-			htmlspecialchars(_('Standard LDAP search filter. Example: (&(sn=Smith)(givenName=David))')),_('Search Filter'));
+			htmlspecialchars(_('Standard LDAP search filter. Example: (&(sn=Smith)(givenName=David))')),_('Search filter'));
 
 		printf('<td><input type="text" name="filter" id="filter" style="width: 200px" value="%s" /></td>',
 			'objectClass=*');
@@ -156,7 +156,7 @@ class QueryRender extends PageRender {
 
 		echo '<tr>';
 		printf('<td><acronym title="%s">%s</acronym></td>',
-			_('A list of attributes to display in the results (comma-separated)'),_('Show Attributes'));
+			_('A list of attributes to display in the results (comma-separated)'),_('Show attributes'));
 
 		printf('<td><input type="text" name="display_attrs" style="width: 200px" value="%s" /></td>',
 			implode(', ',$_SESSION[APPCONFIG]->getValue('search','result_attributes')));

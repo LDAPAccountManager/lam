@@ -546,7 +546,7 @@ class myldap extends DS {
 			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
 		if ($this->getValue('server','tls') && ! function_exists('ldap_start_tls')) {
-				error(_('TLS has been enabled in your config, but your PHP install does not support TLS. TLS will be disabled.'),'warn');
+				error(('TLS has been enabled in your config, but your PHP install does not support TLS. TLS will be disabled.'),'warn');
 			return false;
 
 		} else
@@ -587,7 +587,7 @@ class myldap extends DS {
 			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
 		if ($this->getValue('server','sasl') && ! function_exists('ldap_sasl_bind')) {
-				error(_('SASL has been enabled in your config, but your PHP install does not support SASL. SASL will be disabled.'),'warn');
+				error(('SASL has been enabled in your config, but your PHP install does not support SASL. SASL will be disabled.'),'warn');
 			return false;
 
 		} else
