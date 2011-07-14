@@ -52,9 +52,6 @@ if (count($request['parent']) == 1)
 else
 	printf('<tr><td colspan="4"><b>%s</b></td></tr>',_('Are you sure you want to permanently delete these objects?'));
 
-echo '<tr><td colspan="4">&nbsp;</td></tr>';
-printf('<tr><td style="width: 10%%;">%s:</td><td colspan="3" style="width: 75%%;"><b>%s</b></td></tr>',_('Server'),$app['server']->getName());
-
 foreach ($request['parent'] as $dn)
 	printf('<tr><td style="width: 10%%;"><acronym title="%s">%s</acronym></td><td colspan="3" style="width: 75%%;"><b>%s</b></td></tr>',
 		_('DN'),_('DN'),$dn);
@@ -87,19 +84,6 @@ if (count($request['children'])) {
 	echo '<td colspan="4">';
 	printf(_('This request also includes %s children entries.'),count($request['children']));
 	echo '</td></tr>';
-
-	printf('<tr><td colspan="4">%s</td></tr>',
-		sprintf(_('phpLDAPadmin can also recursively delete all %s of the child entries. See below for a list of all the entries that this action will delete. Do you want to do this?'),count($request['children'])));
-
-	echo '<tr><td colspan="4">&nbsp;</td></tr>';
-
-	printf('<tr><td colspan="4"><small>%s</small></td></tr>',
-		_('Note: this is potentially very dangerous and you do this at your own risk. This operation cannot be undone. Take into consideration aliases, referrals, and other things that may cause problems.'));
-	echo "\n";
-
-	echo '<tr><td colspan="4">&nbsp;</td></tr>';
-
-	echo "\n";
 
 	printf('<tr><td colspan="4"><center><b>%s</b></center></td></tr>',_('List of entries to be deleted:'));
 	echo '<tr><td colspan="4">&nbsp;</td></tr>';

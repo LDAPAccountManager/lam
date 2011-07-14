@@ -95,7 +95,7 @@ function display_pla_parse_error($request) {
 	echo '<tr>';
 	printf('<td class="img"><img src="%s/%s" /></td>',IMGDIR,'error-big.png');
 
-	printf('<td><h2>%s %s</h2></td>',$type['description'],_('Parse Error'));
+	printf('<td><h2>%s %s</h2></td>',$type['description'],_('Parse error'));
 	echo '</tr>';
 
 	printf('<tr><td><b>%s</b>:</td><td>%s</td></tr>',_('Description'),$request->error['message']);

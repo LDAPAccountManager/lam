@@ -1321,7 +1321,7 @@ class TemplateRender extends PageRender {
 			$socs = array();
 
 		echo '<tr>';
-		printf('<td class="heading">%s</td>',_('ObjectClasses'));
+		printf('<td class="heading">%s</td>',_('Object classes'));
 		echo '<td><select name="new_values[objectclass][]" multiple="multiple" size="15">';
 
 		foreach ($socs as $name => $oclass) {
@@ -1572,7 +1572,7 @@ class TemplateRender extends PageRender {
 		else
 			printf('<tr class="noinput"><td colspan="2" style="text-align: center;">(%s)</td></tr>',_('none'));
 
-		printf('<tr><th colspan="2">%s</th></tr>',_('Optional Attributes'));
+		printf('<tr><th colspan="2">%s</th></tr>',_('Optional attributes'));
 		if (count($attrs['optional']))
 			foreach ($attrs['optional'] as $attribute)
 				$this->draw('Template',$attribute);

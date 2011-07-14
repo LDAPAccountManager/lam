@@ -1416,8 +1416,8 @@ class myldap extends DS {
 			# We need to have objectclasses and attribues, so display an error, asking the user to get us this information.
 			if (in_array($schema_to_fetch,$schema_error_message_array))
 				system_message(array(
-					'title'=>sprintf('%s (%s)',_('Our attempts to find your SCHEMA have failed'),$schema_to_fetch),
-					'body'=>sprintf('<b>%s</b>: %s',_('Error'),$schema_error_message),
+					'title'=>sprintf('%s (%s)',('Our attempts to find your SCHEMA have failed'),$schema_to_fetch),
+					'body'=>sprintf('<b>%s</b>: %s',('Error'),$schema_error_message),
 					'type'=>'error'));
 			else
 				if (DEBUG_ENABLED)

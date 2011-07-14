@@ -1147,8 +1147,8 @@ class Template extends xmlTemplate {
 			case 'autoFill':
 				if (! preg_match('/;/',$arg)) {
 					system_message(array(
-						'title'=>_('Problem with autoFill() in template'),
-						'body'=>sprintf('%s (<b>%s</b>)',_('There is only 1 argument, when there should be two'),$attribute->getName(false)),
+						'title'=>('Problem with autoFill() in template'),
+						'body'=>sprintf('%s (<b>%s</b>)',('There is only 1 argument, when there should be two'),$attribute->getName(false)),
 						'type'=>'warn'));
 
 					return;

@@ -151,34 +151,11 @@ function app_error_handler($errno,$errstr,$file,$lineno) {
 		case E_USER_NOTICE: $errtype = 'E_USER_NOTICE'; break;
 		case E_ALL: $errtype = 'E_ALL'; break;
 
-		default: $errtype = sprintf('%s: %s',_('Unrecognized error number'),$errno);
+		default: $errtype = sprintf('%s: %s',('Unrecognized error number'),$errno);
 	}
 
 	# Take out extra spaces in error strings.
 	$errstr = preg_replace('/\s+/',' ',$errstr);
-
-	if ($errno == E_NOTICE) {
-		$body = '<table class="notice">';
-		$body .= sprintf('<tr><td>%s:</td><td><b>%s</b> (<b>%s</b>)</td></tr>',_('Error'),$errstr,$errtype);
-		$body .= sprintf('<tr><td>%s:</td><td><b>%s</b> %s <b>%s</b>, %s <b>%s</b></td></tr>',
-			_('File'),$file,_('line'),$lineno,_('caller'),$caller);
-		$body .= sprintf('<tr><td>Versions:</td><td>PLA: <b>%s</b>, PHP: <b>%s</b>, SAPI: <b>%s</b></td></tr>',
-			app_version(),phpversion(),php_sapi_name());
-		$body .= sprintf('<tr><td>Web server:</td><td><b>%s</b></td></tr>',isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : 'SCRIPT');
-
-		if (function_exists('get_href'))
-			$body .= sprintf('<tr><td colspan="2"><a href="%s" onclick="target=\'_blank\';"><center>%s.</center></a></td></tr>',
-				get_href('search_bug',"&summary_keyword=".rawurlencode($errstr)),
-				_('Please check and see if this bug has been reported'));
-		$body .= '</table>';
-
-		system_message(array(
-			'title'=>_('You found a non-fatal phpLDAPadmin bug!'),
-			'body'=>$body,
-			'type'=>'error'));
-
-		return;
-	}
 
 	# If this is a more serious error, call the error call.
 	error(sprintf('%s: %s',$errtype,$errstr),'error',null,true,true);

@@ -192,13 +192,6 @@ if (isset($_SERVER['SERVER_SOFTWARE']) && ! isset($_SESSION[APPCONFIG])) {
 	$_SESSION[APPCONFIG]->CheckCustom();
 }
 
-# Check for safe mode.
-if (@ini_get('safe_mode') && ! get_request('cmd','GET'))
-	system_message(array(
-	'title'=>_('PHP Safe Mode'),
-	'body'=>_('You have PHP Safe Mode enabled. This application may work unexpectedly in Safe Mode.'),
-	'type'=>'info'));
-
 # Set our timezone, if it is specified in config.php
 if ($_SESSION[APPCONFIG]->getValue('appearance','timezone'))
 	date_default_timezone_set($_SESSION[APPCONFIG]->getValue('appearance','timezone'));

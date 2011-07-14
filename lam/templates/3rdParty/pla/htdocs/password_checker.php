@@ -27,7 +27,7 @@ if (get_request('base64','REQUEST')) {
 
 $request['enc_type'] = get_enc_type($request['hash']);
 
-printf('<h3 class="subtitle">%s</h3>',_('Password Checker Tool'));
+printf('<h3 class="subtitle">%s</h3>',_('Password check'));
 
 echo '<form action="password_checker.php" method="post">';
 echo '<input type="hidden" name="action" value="compare" />';
@@ -56,9 +56,9 @@ if ($request['action'] == 'compare') {
 	echo '&nbsp;&nbsp;&nbsp;&nbsp;<b>';
 
 	if (password_check($request['hash'],$request['password'],$request['attribute']))
-		printf('<span class="good">%s</span>',_('Passwords match!'));
+		printf('<span class="good">%s</span>',_('Passwords match.'));
 	else
-		printf('<span class="bad">%s</span>',_('Passwords do not match!'));
+		printf('<span class="bad">%s</span>',_('Passwords are different!'));
 
 	echo '</b>';
 }

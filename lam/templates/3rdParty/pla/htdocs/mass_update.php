@@ -95,7 +95,7 @@ if (count($request['update'])) {
 			echo '</tr>';
 
 			printf('<tr class="list_item"><td class="blank">&nbsp;</td><td class="heading">dn</td><td class="value" style="width: 45%%;">%s</td><td class="value" style="width: 45%%;"><b>%s</b></td></tr>',
-				htmlspecialchars(dn_unescape($template->getDN())),_('Old Value'));
+				htmlspecialchars(dn_unescape($template->getDN())),_('Old value'));
 
 			foreach ($template->getLDAPmodify(true,$index) as $attribute) {
 				echo '<tr class="list_item">';

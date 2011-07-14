@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2011-07-13 20:27+0200\n"
+"PO-Revision-Date: 2011-07-14 20:27+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "Language: \n"
@@ -644,7 +644,7 @@ msgstr "Neue Objektklasse hinzufügen"
 msgid "Add new object class to <b>%s</b>"
 msgstr "Neue Objektklasse zu <b>%s</b> hinzufügen"
 
-#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:97
+#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:95
 msgid "Add object class and attributes"
 msgstr "Objektklasse und Attribut hinzufügen"
 
@@ -888,7 +888,7 @@ msgstr "Anwendungsdaten"
 msgid "Are you sure you want to permanently delete these objects?"
 msgstr "Sollen diese Objekte wirklich gelöscht werden?"
 
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:116
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:107
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:51
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "Soll dieses Objekt gelöscht werden?"
@@ -1304,10 +1304,10 @@ msgstr "Kann weiterleiten"
 #: ../templates/profedit/profilepage.php:230
 #: ../templates/profedit/profilemain.php:157
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:197
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:92
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:145
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:83
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:136
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:121
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:135
+#: ../templates/3rdParty/pla/htdocs/mass_delete.php:119
 #: ../templates/initsuff.php:189 ../lib/types/automountType.inc:199
 #: ../lib/types/automountType.inc:234 ../lib/types/dhcp.inc:277
 #: ../lib/modules/device.inc:251 ../lib/modules/sambaSamAccount.inc:1344
@@ -1478,7 +1478,7 @@ msgstr "Hier klicken wenn Sie nicht zur nächsten Seite weitergeleitet werden."
 msgid "Click to popup a dialog to select a date graphically"
 msgstr "Hiermit können Sie das Datum grafisch auswählen"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2402
+#: ../templates/3rdParty/pla/lib/functions.php:2379
 msgid "Click to popup a dialog to select an entry (DN) graphically"
 msgstr "Hiermit können Sie den DN grafisch auswählen"
 
@@ -1694,7 +1694,7 @@ msgstr "Konnte Eintrag nicht löschen."
 msgid "Could not fetch binary data from LDAP server for attribute [%s]."
 msgstr "Konnte Binärdaten für Attribut [%s] nicht auslesen."
 
-#: ../templates/3rdParty/pla/lib/functions.php:1984
+#: ../templates/3rdParty/pla/lib/functions.php:1961
 #: ../templates/3rdParty/pla/htdocs/view_jpeg_photo.php:60
 #, php-format
 msgid "Could not fetch jpeg data from LDAP server for attribute [%s]."
@@ -1930,8 +1930,8 @@ msgstr "DHCP-Einstellungen"
 #: ../templates/3rdParty/pla/htdocs/copy.php:157
 #: ../templates/3rdParty/pla/htdocs/copy.php:161
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:35
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:121
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:60 ../lib/modules.inc:382
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:112
+#: ../templates/3rdParty/pla/htdocs/mass_delete.php:57 ../lib/modules.inc:382
 #: ../lib/modules.inc:1734
 msgid "DN"
 msgstr "DN"
@@ -2063,7 +2063,7 @@ msgstr "Vollmachten"
 #: ../templates/delete.php:107 ../templates/profedit/profilemain.php:156
 #: ../templates/profedit/profilemain.php:157
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:33
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:133
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:124
 #: ../lib/modules/posixAccount.inc:1191 ../lib/modules/kolabUser.inc:865
 #: ../lib/modules/nisnetgroup.inc:243 ../lib/lists.inc:425
 msgid "Delete"
@@ -2094,8 +2094,8 @@ msgstr "Nach kopieren löschen (verschieben):"
 msgid "Delete alias(es)"
 msgstr "Alias(e) löschen"
 
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:81
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:126
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:72
+#: ../templates/3rdParty/pla/htdocs/mass_delete.php:110
 #, php-format
 msgid "Delete all %s objects"
 msgstr "Alle %s-Objekte löschen"
@@ -2137,7 +2137,7 @@ msgstr "Objekt löschen"
 msgid "Delete organisational unit"
 msgstr "Organisational Unit löschen"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2052
+#: ../templates/3rdParty/pla/lib/functions.php:2029
 #: ../lib/modules/inetOrgPerson.inc:1170
 msgid "Delete photo"
 msgstr "Foto löschen"
@@ -2205,8 +2205,8 @@ msgstr "Löscht einen IP-Adressbereich."
 msgid "Deleting"
 msgstr "Lösche"
 
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:82
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:134
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:73
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:125
 msgid "Deleting Object(s)"
 msgstr "Lösche Objekt(e)"
 
@@ -2233,8 +2233,8 @@ msgstr "Unternehmensbereich(e)"
 
 #: ../templates/schema/schema.php:87 ../templates/schema/schema.php:141
 #: ../templates/schema/schema.php:344
-#: ../templates/3rdParty/pla/lib/functions.php:1936
-#: ../templates/3rdParty/pla/lib/functions.php:1940
+#: ../templates/3rdParty/pla/lib/functions.php:1913
+#: ../templates/3rdParty/pla/lib/functions.php:1917
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:139
 #: ../templates/3rdParty/pla/htdocs/import.php:101
 #: ../lib/types/automountType.inc:79 ../lib/types/nisObjectType.inc:80
@@ -2702,17 +2702,15 @@ msgid "Equipment"
 msgstr "Equipment"
 
 #: ../templates/config/mainmanage.php:215
-#: ../templates/3rdParty/pla/lib/functions.php:162
-#: ../templates/3rdParty/pla/lib/functions.php:552
-#: ../templates/3rdParty/pla/lib/functions.php:554
+#: ../templates/3rdParty/pla/lib/functions.php:529
+#: ../templates/3rdParty/pla/lib/functions.php:531
 #: ../templates/3rdParty/pla/lib/ds_myldap.php:217
-#: ../templates/3rdParty/pla/lib/ds_myldap.php:1420
 #: ../templates/3rdParty/pla/htdocs/import.php:79
 msgid "Error"
 msgstr "Fehler"
 
-#: ../templates/3rdParty/pla/lib/functions.php:1935
-#: ../templates/3rdParty/pla/lib/functions.php:1939
+#: ../templates/3rdParty/pla/lib/functions.php:1912
+#: ../templates/3rdParty/pla/lib/functions.php:1916
 msgid "Error number"
 msgstr "Fehlernummer"
 
@@ -2834,8 +2832,7 @@ msgid "Fax number"
 msgstr "Faxnummer"
 
 #: ../templates/config/mainmanage.php:219
-#: ../templates/3rdParty/pla/lib/functions.php:164
-#: ../templates/3rdParty/pla/lib/functions.php:574
+#: ../templates/3rdParty/pla/lib/functions.php:551
 #: ../templates/3rdParty/pla/tools/unserialize.php:14
 #: ../templates/3rdParty/pla/htdocs/import.php:48
 msgid "File"
@@ -2988,7 +2985,7 @@ msgstr "Vollständiger Name"
 msgid "Full name for Asterisk voicemail mailbox."
 msgstr "Vollständiger Name für den Anrufbeantworter."
 
-#: ../templates/3rdParty/pla/lib/functions.php:578
+#: ../templates/3rdParty/pla/lib/functions.php:555
 #: ../templates/3rdParty/pla/tools/unserialize.php:17
 msgid "Function"
 msgstr "Funktion"
@@ -3054,7 +3051,7 @@ msgid "Generate random password"
 msgstr "Zufälliges Passwort generieren"
 
 #: ../templates/3rdParty/pla/lib/functions.php:63
-#: ../templates/3rdParty/pla/lib/functions.php:636
+#: ../templates/3rdParty/pla/lib/functions.php:613
 msgid "Generic Error"
 msgstr "Allgemeiner Fehler"
 
@@ -3859,9 +3856,14 @@ msgstr "Bild nicht verfügbar"
 msgid "Import"
 msgstr "Import"
 
-#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:65
-msgid "In order to add these objectClass(es) to this entry, you must specify"
+#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:64
+#, php-format
+msgid ""
+"In order to add these objectClass(es) to this entry, you must specify <b>%s</"
+"b> new attributes that this object class requires."
 msgstr ""
+"Um diese Objektklasse(n) hinzuzufügen, müssen Sie <b>%s</b> neue Attribute "
+"angeben."
 
 #: ../templates/3rdParty/pla/htdocs/export_form.php:87
 msgid "Include system attributes"
@@ -4158,7 +4160,7 @@ msgstr "LDAP-Operation war erfolgreich."
 msgid "LDAP password"
 msgstr "LDAP-Passwort"
 
-#: ../templates/3rdParty/pla/lib/functions.php:1932
+#: ../templates/3rdParty/pla/lib/functions.php:1909
 msgid "LDAP said"
 msgstr "LDAP meldet"
 
@@ -4366,8 +4368,8 @@ msgstr "Liste der erlaubten Codecs."
 msgid "List of disallowed codecs."
 msgstr "Liste der unerlaubten Codecs."
 
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:103
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:104
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:94
+#: ../templates/3rdParty/pla/htdocs/mass_delete.php:88
 msgid "List of entries to be deleted:"
 msgstr "Liste der zu löschenden Einträge:"
 
@@ -5274,7 +5276,7 @@ msgstr "Neuer Adressbereich"
 msgid "New recipient"
 msgstr "Neuer Empfänger"
 
-#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:84
+#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:82
 msgid "New required attributes"
 msgstr "Neue erforderliche Attribute"
 
@@ -5364,9 +5366,8 @@ msgstr "Keine NIS-Objekte gefunden!"
 
 #: ../templates/3rdParty/pla/lib/Template.php:558
 #: ../templates/3rdParty/pla/lib/Template.php:559
-#, fuzzy
 msgid "No RDN attribute was selected."
-msgstr "[Attribut gelöscht]"
+msgstr "Es wurde kein RDN-Attribut gewählt."
 
 #: ../lib/modules/sambaSamAccount.inc:1046
 #: ../lib/modules/sambaGroupMapping.inc:245
@@ -5394,9 +5395,9 @@ msgid "No changes were made."
 msgstr "Keine Änderungen vorgenommen."
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:83
-#, fuzzy, php-format
+#, php-format
 msgid "No current value for attribute <b>%s</b>."
-msgstr "Aktuelle Werte für Attribut:"
+msgstr "Derzeit kein Wert für das Attribut <b>%s</b>."
 
 #: ../templates/schema/schema.php:142
 msgid "No description"
@@ -5466,9 +5467,8 @@ msgid "No logo"
 msgstr "Kein Logo"
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:157
-#, fuzzy
 msgid "No new attributes available for this entry"
-msgstr "(keine neuen Attribute verfügbar)"
+msgstr "Keine neuen Attribute für diesen Eintrag verfügbar"
 
 #: ../lib/lists.inc:107
 msgid "No objects found!"
@@ -5542,14 +5542,8 @@ msgid ""
 "Note: You may be required to enter new attributes that these objectClass(es) "
 "require"
 msgstr ""
-
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:70
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:97
-msgid ""
-"Note: this is potentially very dangerous and you do this at your own risk. "
-"This operation cannot be undone. Take into consideration aliases, referrals, "
-"and other things that may cause problems."
-msgstr ""
+"Hinweis: Sie müssen ggf. zusätzliche Attribute angeben, die von diesen "
+"Objektklassen gefordert werden."
 
 #: ../templates/3rdParty/pla/lib/export_functions.php:456
 msgid "Nothing to export"
@@ -5629,12 +5623,8 @@ msgstr "OU-Editor"
 
 #: ../templates/tree/templates/creation/custom.php:70
 #: ../templates/schema/schema.php:63 ../templates/schema/schema.php:64
-msgid "Object classes"
-msgstr "Objektklassen"
-
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1324
-#, fuzzy
-msgid "ObjectClasses"
+msgid "Object classes"
 msgstr "Objektklassen"
 
 #: ../templates/schema/schema.php:150 ../templates/schema/schema.php:281
@@ -5684,12 +5674,7 @@ msgid "Ok"
 msgstr "Ok"
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:98
-#, fuzzy
-msgid "Old Value"
-msgstr "Alter Wert"
-
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:55
-#, fuzzy
 msgid "Old value"
 msgstr "Alter Wert"
 
@@ -5719,13 +5704,9 @@ msgstr "Mindestens ein Fehler ist aufgetreten. Alle ungültigen Felder sind mark
 msgid "Operation statistics"
 msgstr "Befehlsstatistiken"
 
-#: ../templates/3rdParty/pla/lib/TemplateRender.php:1575
-#, fuzzy
-msgid "Optional Attributes"
-msgstr "Optionale Attribute"
-
 #: ../templates/tree/templates/creation/custom.php:209
 #: ../templates/schema/schema.php:382
+#: ../templates/3rdParty/pla/lib/TemplateRender.php:1575
 msgid "Optional attributes"
 msgstr "Optionale Attribute"
 
@@ -5755,12 +5736,11 @@ msgstr "Optionen für den Asterisk Anrufbeantworteraccount (z.B. sendvoicemail=y
 
 #: ../templates/3rdParty/pla/htdocs/import_form.php:39
 msgid "Or paste your LDIF here"
-msgstr ""
+msgstr "Oder geben Sie den LDIF-Text hier an"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:166
-#, fuzzy
 msgid "Order by"
-msgstr "Sortierung"
+msgstr "Sortieren nach"
 
 #: ../templates/schema/schema.php:169
 msgid "Ordering"
@@ -5793,10 +5773,6 @@ msgstr "Organizational Unit"
 #: ../templates/config/confmain.php:299
 msgid "Other"
 msgstr "Andere"
-
-#: ../templates/3rdParty/pla/lib/ds_myldap.php:1419
-msgid "Our attempts to find your SCHEMA have failed"
-msgstr ""
 
 #: ../lib/modules/customScripts.inc:76 ../lib/modules/customScripts.inc:88
 #: ../lib/modules/customScripts.inc:97
@@ -5860,10 +5836,6 @@ msgstr "PDF-Profil wurde erfolgreich gespeichert."
 msgid "PDUs sent"
 msgstr "PDUs gesendet"
 
-#: ../templates/3rdParty/pla/lib/common.php:198
-msgid "PHP Safe Mode"
-msgstr ""
-
 #: ../lib/modules/sambaSamAccount.inc:531
 msgid "Pacific Time (US & Canada)"
 msgstr "Pacific Time (USA & Kanada)"
@@ -5894,18 +5866,16 @@ msgid "Pager number for Asterisk voicemail."
 msgstr "Pager-Nummer für den Asterisk Anrufbeantworter."
 
 #: ../templates/3rdParty/pla/htdocs/entry_chooser.php:35
-#, fuzzy
 msgid "Parent DN"
-msgstr "Elter von"
+msgstr "Eltern-DN"
 
 #: ../templates/schema/schema.php:364
 msgid "Parent to"
 msgstr "Elter von"
 
 #: ../templates/3rdParty/pla/htdocs/import.php:98
-#, fuzzy
-msgid "Parse Error"
-msgstr "Fehler"
+msgid "Parse error"
+msgstr "Einlesefehler"
 
 #: ../templates/lists/changePassword.php:241 ../templates/login.php:296
 #: ../templates/selfService/selfServiceLogin.php:226
@@ -5923,11 +5893,6 @@ msgstr "Fehler"
 msgid "Password"
 msgstr "Passwort"
 
-#: ../templates/3rdParty/pla/htdocs/password_checker.php:30
-#, fuzzy
-msgid "Password Checker Tool"
-msgstr "Passwortrichtlinie"
-
 #: ../lib/modules/sambaSamAccount.inc:272
 #: ../lib/modules/sambaSamAccount.inc:1088
 msgid "Password change at next login"
@@ -5943,6 +5908,10 @@ msgstr "Passwortänderung erforderlich"
 #: ../lib/modules/ppolicy.inc:484
 msgid "Password change requires old password"
 msgstr "Passwortänderung benötigt altes Passwort"
+
+#: ../templates/3rdParty/pla/htdocs/password_checker.php:30
+msgid "Password check"
+msgstr "Passwortprüfung"
 
 #: ../lib/modules/posixGroup.inc:473 ../lib/modules/sambaSamAccount.inc:97
 #: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:80
@@ -6052,19 +6021,15 @@ msgstr "Passwortwarnung"
 msgid "Password warning must be are natural number."
 msgstr "Passwortwarnung muss eine natürliche Zahl sein."
 
-#: ../templates/config/confmain.php:474 ../lib/modules.inc:1026
+#: ../templates/config/confmain.php:474
+#: ../templates/3rdParty/pla/htdocs/password_checker.php:61
+#: ../lib/modules.inc:1026
 msgid "Passwords are different!"
 msgstr "Die Passwörter stimmen nicht überein!"
 
-#: ../templates/3rdParty/pla/htdocs/password_checker.php:61
-#, fuzzy
-msgid "Passwords do not match!"
-msgstr "Passwort läuft nicht ab"
-
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:59
-#, fuzzy
-msgid "Passwords match!"
-msgstr "Passwortqualitätsprüfung"
+msgid "Passwords match."
+msgstr "Passwörter sind identisch."
 
 #: ../lib/types/nisObjectType.inc:77
 msgid "Path"
@@ -6092,8 +6057,7 @@ msgid "Path to key for DNS updates"
 msgstr "Pfad zum Schlüssel für DNS-Änderungen"
 
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:41
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:67
-#, fuzzy
+#: ../templates/3rdParty/pla/htdocs/mass_delete.php:64
 msgid "Permanently delete all children also?"
 msgstr "Sollen auch alle Untereinträge gelöscht werden?"
 
@@ -6144,10 +6108,6 @@ msgstr ""
 #: ../lib/modules/asteriskExtension.inc:198
 msgid "Please add at least one member."
 msgstr "Sie müssen mindestens ein Mitglied hinzufügen."
-
-#: ../templates/3rdParty/pla/lib/functions.php:172
-msgid "Please check and see if this bug has been reported"
-msgstr ""
 
 #: ../lib/modules/sambaSamAccount.inc:1040
 msgid "Please check your settings on the Unix page!"
@@ -6690,7 +6650,7 @@ msgstr ""
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:172
 msgid "Please wait"
-msgstr ""
+msgstr "Bitte warten"
 
 #: ../lib/modules/kolabUser.inc:230
 msgid "Policy list has invalid format!"
@@ -6801,10 +6761,6 @@ msgstr "Der Benutzername ist ungültig!"
 #: ../lib/modules/asteriskExtension.inc:478
 msgid "Priority"
 msgstr "Priorität"
-
-#: ../templates/3rdParty/pla/lib/Template.php:1150
-msgid "Problem with autoFill() in template"
-msgstr ""
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1537
 msgid "Proceed &gt;&gt;"
@@ -7326,8 +7282,8 @@ msgstr "Anrufer-ID ausblenden"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:587
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:198
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:231
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:93
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:146
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:84
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:137
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:122
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:137
 msgid "Retrieving DN"
@@ -7704,9 +7660,8 @@ msgstr "Seriennummer"
 #: ../templates/3rdParty/pla/lib/export_functions.php:205
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:166
 #: ../templates/3rdParty/pla/htdocs/import.php:47
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:119
+#: ../templates/3rdParty/pla/htdocs/delete_form.php:110
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:54
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:56
 #: ../templates/3rdParty/pla/htdocs/export_form.php:56
 msgid "Server"
 msgstr "Server"
@@ -7752,7 +7707,7 @@ msgstr "Serverstatistiken"
 msgid "Server time"
 msgstr "Serverzeit"
 
-#: ../templates/3rdParty/pla/lib/common.php:247
+#: ../templates/3rdParty/pla/lib/common.php:240
 #, fuzzy
 msgid "Session Timed Out"
 msgstr "Zeitbeschränkung für Sitzung"
@@ -9118,10 +9073,6 @@ msgstr "Es gibt bereits einen anderen Benutzer mit dieser Anrufer-ID."
 msgid "There is already another user with this mailbox name."
 msgstr "Es gibt bereits einen anderen Benutzer mit diesem Postfach."
 
-#: ../templates/3rdParty/pla/lib/Template.php:1151
-msgid "There is only 1 argument, when there should be two"
-msgstr ""
-
 #: ../templates/massDoUpload.php:129
 msgid "There were errors while uploading:"
 msgstr "Beim Upload traten Fehler auf:"
@@ -9756,7 +9707,7 @@ msgstr "Dieses Paar von Erweiterungsname und Priorität existiert bereits."
 msgid "This program is run after the login."
 msgstr "Dieses Programm wird nach der Anmeldung gestartet."
 
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:88
+#: ../templates/3rdParty/pla/htdocs/mass_delete.php:85
 #, php-format
 msgid "This request also includes %s children entries."
 msgstr ""
@@ -10024,7 +9975,7 @@ msgstr ""
 msgid "URL"
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/functions.php:2123
+#: ../templates/3rdParty/pla/lib/functions.php:2100
 #, fuzzy
 msgid "Unable to Encrypt Password"
 msgstr "Passwort reaktivieren"
@@ -10135,7 +10086,7 @@ msgstr "Kann das Profil nicht laden!"
 msgid "Unable to read sambaSID attribute."
 msgstr "Konnte das Attribut sambaSID nicht lesen."
 
-#: ../templates/3rdParty/pla/lib/functions.php:1983
+#: ../templates/3rdParty/pla/lib/functions.php:1960
 #, fuzzy
 msgid "Unable to retrieve image"
 msgstr "Konnte Schema nicht auslesen!"
@@ -10205,10 +10156,6 @@ msgstr "Account entsperren"
 #: ../lib/modules/inetOrgPerson.inc:1148
 msgid "Unlock password"
 msgstr "Passwort reaktivieren"
-
-#: ../templates/3rdParty/pla/lib/functions.php:154
-msgid "Unrecognized error number"
-msgstr ""
 
 #: ../templates/masscreate.php:98 ../templates/config/confmodules.php:367
 msgid "Unsolved dependency:"
@@ -10831,16 +10778,6 @@ msgstr ""
 msgid "You entered one or more invalid DNS servers."
 msgstr "Sie haben mindestens einen ungültigen DNS-Server angegeben."
 
-#: ../templates/3rdParty/pla/lib/functions.php:176
-msgid "You found a non-fatal phpLDAPadmin bug!"
-msgstr ""
-
-#: ../templates/3rdParty/pla/lib/common.php:199
-msgid ""
-"You have PHP Safe Mode enabled. This application may work unexpectedly in "
-"Safe Mode."
-msgstr ""
-
 #: ../templates/3rdParty/pla/lib/Template.php:417
 #: ../templates/3rdParty/pla/lib/Template.php:504
 msgid "You left the attribute value blank. Please go back and try again."
@@ -10908,9 +10845,9 @@ msgstr ""
 "Ihre PHP-Konfiguration erlaubt keine Dateiuploads. Bitte prüfen Sie Ihre php."
 "ini."
 
-#: ../templates/3rdParty/pla/lib/functions.php:2148
-#: ../templates/3rdParty/pla/lib/functions.php:2241
-#: ../templates/3rdParty/pla/lib/functions.php:2260
+#: ../templates/3rdParty/pla/lib/functions.php:2125
+#: ../templates/3rdParty/pla/lib/functions.php:2218
+#: ../templates/3rdParty/pla/lib/functions.php:2237
 msgid "Your PHP install does not have the mhash() function. Cannot do SHA hashes."
 msgstr ""
 
@@ -10918,8 +10855,8 @@ msgstr ""
 msgid "Your PHP install does not have the mhash() function. Cannot do hashes."
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/functions.php:2159
-#: ../templates/3rdParty/pla/lib/functions.php:2171
+#: ../templates/3rdParty/pla/lib/functions.php:2136
+#: ../templates/3rdParty/pla/lib/functions.php:2148
 msgid ""
 "Your PHP install does not have the mhash() or mhash_keygen_s2k() function. "
 "Cannot do S2K hashes."
@@ -10931,12 +10868,12 @@ msgid ""
 "PHP."
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/common.php:249
+#: ../templates/3rdParty/pla/lib/common.php:242
 #, fuzzy
 msgid "Your Session timed out after"
 msgstr "Zeitbeschränkung für Sitzung"
 
-#: ../templates/3rdParty/pla/lib/functions.php:297
+#: ../templates/3rdParty/pla/lib/functions.php:274
 msgid ""
 "Your config.php is missing Server Definitions. Please see the sample file "
 "config/config.php.example."
@@ -10969,18 +10906,18 @@ msgstr "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an."
 msgid "Your settings were successfully saved."
 msgstr "Ihre Einstellungen wurden erfolgreich gespeichert."
 
-#: ../templates/3rdParty/pla/lib/functions.php:2095
-#: ../templates/3rdParty/pla/lib/functions.php:2290
+#: ../templates/3rdParty/pla/lib/functions.php:2072
+#: ../templates/3rdParty/pla/lib/functions.php:2267
 msgid "Your system crypt library does not support blowfish encryption."
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/functions.php:2113
-#: ../templates/3rdParty/pla/lib/functions.php:2320
+#: ../templates/3rdParty/pla/lib/functions.php:2090
+#: ../templates/3rdParty/pla/lib/functions.php:2297
 msgid "Your system crypt library does not support extended DES encryption."
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/functions.php:2135
-#: ../templates/3rdParty/pla/lib/functions.php:2305
+#: ../templates/3rdParty/pla/lib/functions.php:2112
+#: ../templates/3rdParty/pla/lib/functions.php:2282
 msgid "Your system crypt library does not support md5crypt encryption."
 msgstr ""
 
@@ -11053,20 +10990,15 @@ msgstr "[Attribut gelöscht]"
 msgid "backupRootFileSystem"
 msgstr "sichereRootDateisystem"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2407
+#: ../templates/3rdParty/pla/lib/functions.php:2384
 #, fuzzy
 msgid "browse"
 msgstr "Schema-Browser"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2038
+#: ../templates/3rdParty/pla/lib/functions.php:2015
 #: ../templates/3rdParty/pla/htdocs/import.php:48
 msgid "bytes"
 msgstr ""
-
-#: ../templates/3rdParty/pla/lib/functions.php:164
-#, fuzzy
-msgid "caller"
-msgstr "Anrufer-ID"
 
 #: ../templates/schema/schema.php:218
 msgid "character"
@@ -11231,11 +11163,6 @@ msgstr ""
 "ldaps://ldap.domain.com baut eine verschlüsselte Verbindung zu ldap.domain."
 "com auf."
 
-#: ../templates/3rdParty/pla/lib/functions.php:164
-#, fuzzy
-msgid "line"
-msgstr "Überschrift"
-
 #: ../templates/3rdParty/pla/lib/QueryRender.php:100
 #, fuzzy
 msgid "list"
@@ -11261,7 +11188,7 @@ msgstr "mail.ihredomain.de"
 msgid "members in group"
 msgstr "Domänengruppe"
 
-#: ../templates/3rdParty/pla/lib/common.php:250
+#: ../templates/3rdParty/pla/lib/common.php:243
 #, fuzzy
 msgid "min. of inactivity. You have been automatically logged out."
 msgstr ""
@@ -11281,11 +11208,6 @@ msgstr "meineGruppe"
 msgid "new"
 msgstr ""
 
-#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:66
-#, fuzzy
-msgid "new attributes"
-msgstr "Neues Attribut hinzufügen"
-
 #: ../templates/config/confmain.php:225 ../lib/modules/zarafaGroup.inc:419
 #: ../lib/modules/zarafaGroup.inc:426 ../lib/modules/zarafaGroup.inc:429
 #: ../lib/modules/sambaSamAccount.inc:558
@@ -11303,7 +11225,7 @@ msgstr "Neues Attribut hinzufügen"
 msgid "no"
 msgstr "nein"
 
-#: ../templates/3rdParty/pla/lib/functions.php:1940
+#: ../templates/3rdParty/pla/lib/functions.php:1917
 #, fuzzy
 msgid "no description available"
 msgstr "Keine Beschreibung"
@@ -11329,7 +11251,7 @@ msgstr "(keine neuen binären Attribute verfügbar)"
 #: ../templates/schema/schema.php:238 ../templates/schema/schema.php:287
 #: ../templates/schema/schema.php:353 ../templates/schema/schema.php:368
 #: ../templates/schema/schema.php:402 ../templates/schema/schema.php:424
-#: ../templates/3rdParty/pla/lib/functions.php:2736
+#: ../templates/3rdParty/pla/lib/functions.php:2713
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1573
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1581
 msgid "none"
@@ -11373,26 +11295,6 @@ msgstr "pc01,Raum 2.34"
 msgid "pc01,pc02"
 msgstr "pc01,pc02"
 
-#: ../templates/3rdParty/pla/htdocs/mass_delete.php:92
-#, fuzzy, php-format
-msgid ""
-"phpLDAPadmin can also recursively delete all %s of the child entries. See "
-"below for a list of all the entries that this action will delete. Do you "
-"want to do this?"
-msgstr ""
-"LAM kann diesen Eintrag rekursiv löschen. Es folgt eine Liste der zu "
-"löschenden Einträge. Wollen Sie alle diese Einträge löschen?"
-
-#: ../templates/3rdParty/pla/htdocs/delete_form.php:65
-#, fuzzy, php-format
-msgid ""
-"phpLDAPadmin can recursively delete this entry and all %s of its children. "
-"See below for a list of all the entries that this action will delete. Do you "
-"want to do this?"
-msgstr ""
-"LAM kann diesen Eintrag rekursiv löschen. Es folgt eine Liste der zu "
-"löschenden Einträge. Wollen Sie alle diese Einträge löschen?"
-
 #: ../templates/3rdParty/pla/lib/export_functions.php:71
 msgid "phpLDAPadmin has not been configured for that export type"
 msgstr ""
@@ -11401,7 +11303,7 @@ msgstr ""
 msgid "phpLDAPadmin has not been configured for that import type"
 msgstr ""
 
-#: ../templates/3rdParty/pla/lib/functions.php:2038
+#: ../templates/3rdParty/pla/lib/functions.php:2015
 msgid "pixels"
 msgstr ""
 
@@ -11483,10 +11385,6 @@ msgstr "test"
 #: ../lib/modules/asteriskExtension.inc:165
 msgid "test-start"
 msgstr "test-start"
-
-#: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:67
-msgid "that this objectClass requires."
-msgstr ""
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:32
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:28
