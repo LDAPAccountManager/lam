@@ -69,7 +69,7 @@ printf('<input type="hidden" name="server_id_src" value="%s" />',$ldap['DST']->g
 printf('<input type="hidden" name="server_id_dst" value="%s" />',$ldap['SRC']->getIndex());
 printf('<input type="hidden" name="dn_src" value="%s" />',htmlspecialchars($request['dnDST']));
 printf('<input type="hidden" name="dn_dst" value="%s" />',htmlspecialchars($request['dnSRC']));
-printf('<input type="submit" value="%s" />',_('Switch Entry'));
+printf('<input type="submit" value="%s" />',_('Switch entries'));
 echo '</div>';
 echo '</form>';
 echo '</td>';

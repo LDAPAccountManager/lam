@@ -199,7 +199,7 @@ abstract class xmlTemplates {
 				# Clone this, as we'll disable some templates, as a result of the container being requested.
 				$template = clone $details;
 				if (! is_null($container) && ($regexp = $template->getRegExp()) && (! @preg_match('/'.$regexp.'/i',$container))) {
-					$template->setInvalid(_('This template is not valid in this container'),true);
+					$template->setInvalid(('This template is not valid in this container'),true);
 
 					if ($_SESSION[APPCONFIG]->getValue('appearance','hide_template_regexp'))
 						$template->setInvisible();

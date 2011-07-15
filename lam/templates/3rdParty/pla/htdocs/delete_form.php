@@ -24,7 +24,7 @@ $request['template'] = $request['page']->getTemplate();
 if (! $request['dn'] || ! $app['server']->dnExists($request['dn']))
 	system_message(array(
 		'title'=>_('Entry does not exist'),
-		'body'=>sprintf('%s (%s)',_('The entry does not exist'),$request['dn']),
+		'body'=>sprintf(_('The entry (%s) does not exist.'),$request['dn']),
 		'type'=>'error'),'index.php');
 
 # We search all children, not only the visible children in the tree

@@ -300,8 +300,8 @@ abstract class DS {
 			case 'config':
 				if (! $CACHE[$this->index][$method] = $this->login($this->getLogin($method),$this->getPassword($method),$method))
 					system_message(array(
-						'title'=>_('Unable to login.'),
-						'body'=>_('Your configuration file has authentication set to CONFIG based authentication, however, the userid/password failed to login'),
+						'title'=>('Unable to login.'),
+						'body'=>('Your configuration file has authentication set to CONFIG based authentication, however, the userid/password failed to login'),
 						'type'=>'error'));
 
 				break;
@@ -325,8 +325,8 @@ abstract class DS {
 					# If we still dont have login details...
 					if (! isset($_SERVER['PHP_AUTH_USER'])) {
 						system_message(array(
-							'title'=>_('Unable to login.'),
-							'body'=>_('Your configuration file has authentication set to HTTP based authentication, however, there was none presented'),
+							'title'=>('Unable to login.'),
+							'body'=>('Your configuration file has authentication set to HTTP based authentication, however, there was none presented'),
 							'type'=>'error'));
 
 						$CACHE[$this->index][$method] = false;
@@ -336,8 +336,8 @@ abstract class DS {
 				} else {
 					if (! $this->login($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW'],$method)) {
 						system_message(array(
-							'title'=>_('Unable to login.'),
-							'body'=>_('Your HTTP based authentication is not accepted by the LDAP server'),
+							'title'=>('Unable to login.'),
+							'body'=>('Your HTTP based authentication is not accepted by the LDAP server'),
 							'type'=>'error'));
 
 						$CACHE[$this->index][$method] = false;

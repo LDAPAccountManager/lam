@@ -31,7 +31,7 @@ if ($ldap['DST']->dnExists($request['dnDST']))
 	error(sprintf(_('The destination entry (%s) already exists.'),pretty_print_dn($request['dnDST'])),'error','index.php');
 
 if (! $ldap['DST']->dnExists($ldap['DST']->getContainer($request['dnDST'])))
-	error(sprintf(_('The destination container (%s) does not exist.'),
+	error(sprintf(_('The container you specified (%s) does not exist. Please try again.'),
 		pretty_print_dn($ldap['DST']->getContainer($request['dnDST']))),'error','index.php');
 
 if (pla_compare_dns($request['dnSRC'],$request['dnDST']) == 0 && $ldap['SRC']->getIndex() == $ldap['DST']->getIndex())

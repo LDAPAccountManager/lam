@@ -29,7 +29,7 @@ if ($result) {
 
 	system_message(array(
 		'title'=>_('Delete DN'),
-		'body'=>_('Successfully deleted DN ').sprintf('<b>%s</b>',$request['dn']),
+		'body'=>sprintf('<b>' . _('Successfully deleted DN %s') . '</b>',$request['dn']),
 		'type'=>'info'),
 		sprintf('index.php?server_id=%s%s',$app['server']->getIndex(),$redirect_url));
 } else

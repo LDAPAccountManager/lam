@@ -66,10 +66,6 @@ class Exporter {
 				break;
 
 			default:
-				system_message(array(
-					'title'=>sprintf('%s %s',_('Unknown Export Type'),$this->template_id),
-					'body'=>_('phpLDAPadmin has not been configured for that export type'),
-					'type'=>'warn'),'index.php');
 				die();
 		}
 

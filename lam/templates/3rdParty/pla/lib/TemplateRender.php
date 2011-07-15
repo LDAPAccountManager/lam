@@ -1132,11 +1132,11 @@ class TemplateRender extends PageRender {
 		$href = sprintf('cmd=delete_form&%s',$this->url_base);
 
 		if (isAjaxEnabled())
-			return sprintf($this->layout['actionajax'],IMGDIR,'trash.png',_('Trash'),
+			return sprintf($this->layout['actionajax'],IMGDIR,'trash.png',('Trash'),
 				htmlspecialchars($href),_('You will be prompted to confirm this decision'),
 				htmlspecialchars($href),str_replace('\'','\\\'',_('Loading')),_('Delete this entry'));
 		else
-			return sprintf($this->layout['action'],IMGDIR,'trash.png',_('Trash'),
+			return sprintf($this->layout['action'],IMGDIR,'trash.png',('Trash'),
 				htmlspecialchars($href),_('You will be prompted to confirm this decision'),_('Delete this entry'));
 	}
 

@@ -201,24 +201,6 @@ if (count($request['template']->getLDAPmodify(true))) {
 	echo '</form>';
 	echo '<br />';
 
-	if (count($request['template']->getForceDeleteAttrs()) > 0) {
-		echo '<table class="result_table" style="margin-left: auto; margin-right: auto;"><tr>';
-		printf('<td class="heading">%s:</td>',_('The deletion of objectClass(es)'));
-		printf('<td class="value"><b>%s</b></td>',implode('</b>, <b>',$request['template']->getAttribute('objectclass')->getRemovedValues()));
-		echo '</tr><tr>';
-		printf('<td class="heading">%s:</td>',_('will delete the attribute(s)'));
-		echo '<td class="value"><b>';
-
-		$i = 0;
-		foreach ($request['template']->getForceDeleteAttrs() as $attribute) {
-			if ($i++ != 0)
-				echo '</b>, <b>';
-
-			echo $_SESSION[APPCONFIG]->getFriendlyHTML($attribute);
-		}
-		echo '</b></td></tr></table>';
-	}
-
 } else {
 	$href = sprintf('cmd=template_engine&server_id=%s&dn=%s',
 		 $app['server']->getIndex(),$request['template']->getDNEncode());

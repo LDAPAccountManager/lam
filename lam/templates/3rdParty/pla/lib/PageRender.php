@@ -491,11 +491,7 @@ class PageRender extends Visitor {
 
 		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
 
-		# Is this attribute is readonly
-		if ($attribute->isReadOnly())
-			return sprintf('<acronym title="%s">ro</acronym>',_('This attribute has been marked as Read Only.'));
-		else
-			return '';
+		return '';
 	}
 	/** DRAW HIDDEN VALUES **/
 

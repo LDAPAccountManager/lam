@@ -48,11 +48,6 @@ class Importer {
 				break;
 
 			default:
-				system_message(array(
-					'title'=>sprintf('%s %s',_('Unknown Import Type'),$this->template_id),
-					'body'=>_('phpLDAPadmin has not been configured for that import type'),
-					'type'=>'warn'),'index.php');
-
 				die();
 		}
 
@@ -533,7 +528,7 @@ class ImportLDIF extends Import {
 						}
 
 					} else
-						return $this->error(sprintf('%s %s',_('The attribute to modify doesnt match the one specified by'),$action_attribute),
+						return $this->error(sprintf(_('The attribute to modify doesn\'t match the one specified by %s.'),$action_attribute),
 							array_merge(array($currentLine),$lines));
 
 				} else

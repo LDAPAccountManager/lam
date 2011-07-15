@@ -82,7 +82,7 @@ if (count($request['children'])) {
 
 	echo '<tr>';
 	echo '<td colspan="4">';
-	printf(_('This request also includes %s children entries.'),count($request['children']));
+	printf(_('This deletion request also includes %s child entries.'),count($request['children']));
 	echo '</td></tr>';
 
 	printf('<tr><td colspan="4"><center><b>%s</b></center></td></tr>',_('List of entries to be deleted:'));

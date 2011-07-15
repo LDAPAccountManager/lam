@@ -168,7 +168,7 @@ class QueryRender extends PageRender {
 		echo '</tr>';
 
 		echo '<tr>';
-		printf('<td><acronym title="%s">%s</acronym></td>',_('Set the search results to 0 to retrieve all available records'),_('Search Results'));
+		printf('<td><acronym title="%s">%s</acronym></td>',_('Set the search results to 0 to retrieve all available records.'),_('Search Results'));
 		printf('<td><input type="text" name="size_limit" id="size_limit" style="width: 200px" value="%s" /></td>',$_SESSION[APPCONFIG]->getValue('search','size_limit'));
 		echo '</tr>';
 
