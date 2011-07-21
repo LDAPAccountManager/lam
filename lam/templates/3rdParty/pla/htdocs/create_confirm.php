@@ -115,7 +115,7 @@ if (count($request['template']->getLDAPadd(true))) {
 
 	printf('<input type="submit" value="%s" %s/>',
 		_('Commit'),
-		(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'create_form\'),\'%s\');"',_('Updating Object')) : ''));
+		(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'create_form\'),\'%s\');"',_('Updating object')) : ''));
 
 	printf('<input type="submit" name="cancel" value="%s" %s/>',
 		_('Cancel'),

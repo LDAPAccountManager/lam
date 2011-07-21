@@ -271,7 +271,7 @@ function check_config($config_file) {
 
 	# Check for server definitions.
 	if (! isset($servers) || count($servers->GetServerList()) == 0)
-		error(_('Your config.php is missing Server Definitions. Please see the sample file config/config.php.example.'),'error','index.php',true);
+		error(('Your config.php is missing Server Definitions. Please see the sample file config/config.php.example.'),'error','index.php',true);
 
 	$config->setServers($servers);
 
@@ -2156,7 +2156,7 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 					return false;
 
 			} else {
-				error(_('Your PHP install does not have the mhash() function. Cannot do SHA hashes.'),'error','index.php');
+				error(('Your PHP install does not have the mhash() function. Cannot do SHA hashes.'),'error','index.php');
 			}
 
 			break;
@@ -2175,7 +2175,7 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 					return false;
 
 			} else {
-				error(_('Your PHP install does not have the mhash() function. Cannot do SHA hashes.'),'error','index.php');
+				error(('Your PHP install does not have the mhash() function. Cannot do SHA hashes.'),'error','index.php');
 			}
 
 			break;
@@ -2203,10 +2203,6 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 			# Check if it's blowfish crypt
 			if (preg_match('/^\\$2+/',$cryptedpassword)) {
 
-				# Make sure that web server supports blowfish crypt
-				if (! defined('CRYPT_BLOWFISH') || CRYPT_BLOWFISH == 0)
-					error(_('Your system crypt library does not support blowfish encryption.'),'error','index.php');
-
 				list($version,$rounds,$salt_hash) = explode('$',$cryptedpassword);
 
 				if (crypt($plainpassword,'$'.$version.'$'.$rounds.'$'.$salt_hash) == $cryptedpassword)
@@ -2218,10 +2214,6 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 			# Check if it's an crypted md5
 			elseif (strstr($cryptedpassword,'$1$')) {
 
-				# Make sure that web server supports md5 crypt
-				if (! defined('CRYPT_MD5') || CRYPT_MD5 == 0)
-					error(_('Your system crypt library does not support md5crypt encryption.'),'error','index.php');
-
 				list($dummy,$type,$salt,$hash) = explode('$',$cryptedpassword);
 
 				if (crypt($plainpassword,'$1$'.$salt) == $cryptedpassword)
@@ -2232,10 +2224,6 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 
 			# Check if it's extended des crypt
 			elseif (strstr($cryptedpassword,'_')) {
-
-				# Make sure that web server supports ext_des
-				if (! defined('CRYPT_EXT_DES') || CRYPT_EXT_DES == 0)
-					error(_('Your system crypt library does not support extended DES encryption.'),'error','index.php');
 
 				if (crypt($plainpassword,$cryptedpassword) == $cryptedpassword)
 					return true;

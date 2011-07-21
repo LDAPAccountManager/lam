@@ -401,19 +401,7 @@ class PageRender extends Visitor {
 	}
 
 	protected function getNoteAliasAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
-		# Is there a user-friendly translation available for this attribute?
-		$friendly_name = $attribute->getFriendlyName();
-
-		if (strtolower($friendly_name) != $attribute->getName())
-			return sprintf('<acronym title="%s: \'%s\' %s \'%s\'">%s</acronym>',
-				_('Note'),$friendly_name,_('is an alias for'),$attribute->getName(false),_('alias'));
-		else
-			return '';
+		return '';
 	}
 
 	#@todo this function shouldnt re-calculate requiredness, it should be known in the template already - need to set the ldaptype when initiating the attribute.

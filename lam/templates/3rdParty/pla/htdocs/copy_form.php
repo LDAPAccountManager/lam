@@ -29,7 +29,7 @@ $request['page']->drawSubTitle();
 
 printf('<script type="text/javascript" src="%sdnChooserPopup.js"></script>',JSDIR);
 echo '<div style="text-align: center;">';
-printf('%s <b>%s</b> %s:<br /><br />',_('Copy'),get_rdn($request['dn']),_('to a new object'));
+printf(_('Copy <b>%s</b> to a new object.') . '<br /><br />',get_rdn($request['dn']));
 echo '</div>';
 
 echo '<form action="cmd.php" method="post" id="copy_form">';
@@ -68,7 +68,7 @@ if (count($request['children']) > 0) {
 
 	echo '<tr>';
 	printf('<td><acronym title="%s">%s</acronym>:</td>',
-		_('When performing a recursive copy, only copy those entries which match this filter'),_('Filter'));
+		_('When performing a recursive copy, only copy those entries which match this filter.'),_('Filter'));
 	echo '<td><input type="text" name="filter" value="(objectClass=*)" size="45" disabled />';
 	echo '</tr>';
 	echo "\n";

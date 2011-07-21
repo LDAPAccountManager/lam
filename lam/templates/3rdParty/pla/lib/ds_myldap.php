@@ -213,7 +213,7 @@ class myldap extends DS {
 			$this->noconnect = true;
 
 			system_message(array(
-				'title'=>sprintf('%s %s',_('Unable to connect to LDAP server'),$this->getName()),
+				'title'=>sprintf('%s %s',('Unable to connect to LDAP server'),$this->getName()),
 				'body'=>sprintf('<b>%s</b>: %s (%s) for <b>%s</b>',_('Error'),$this->getErrorMessage($method),$this->getErrorNum($method),$method),
 				'type'=>'error'));
 

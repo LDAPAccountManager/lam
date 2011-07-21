@@ -134,7 +134,7 @@ if (count($request['update'])) {
 				echo '<td><span style="white-space: nowrap;">';
 
 				if (! $attribute->getOldValues())
-					printf('<span style="color: green">[%s]</span>',_('attribute doesnt exist'));
+					printf('<span style="color: green">[%s]</span>',_('Attribute doesn\'t exist'));
 
 					foreach ($attribute->getOldValues() as $key => $value) {
 					# For multiple values, we'll highlight the changed ones
@@ -162,7 +162,7 @@ if (count($request['update'])) {
 
 		echo '</td></tr>';
 		echo '</table>';
-		printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Update Values'));
+		printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Update values'));
 		echo '</form>';
 	}
 

@@ -73,7 +73,7 @@ class page {
 		if (isset($_SESSION[APPCONFIG])
 			&& $_SESSION[APPCONFIG]->getValue('appearance','compress')
 			&& ini_get('zlib.output_compression'))
-				$this->setsysmsg(array('title'=>_('Warning'),'body'=>_('WARNING: You cannot have PHP compression and application compression enabled at the same time. Please unset zlib.output_compression or set $config->custom->appearance[\'compress\']=false'),'type'=>'warn'));
+				$this->setsysmsg(array('title'=>_('Warning'),'body'=>('WARNING: You cannot have PHP compression and application compression enabled at the same time. Please unset zlib.output_compression or set $config->custom->appearance[\'compress\']=false'),'type'=>'warn'));
 
 		# Turn back on output buffering.
 		ob_start();

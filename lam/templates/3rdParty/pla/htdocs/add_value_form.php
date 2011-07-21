@@ -115,7 +115,7 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 		echo '<br />';
 		printf('<input id="save_button" type="submit" value="%s" %s />',
 			_('Add new object class'),
-			(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'entry_form\'),\'%s\');"',_('Updating Object')) : ''));
+			(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'entry_form\'),\'%s\');"',_('Updating object')) : ''));
 		echo '</td></tr></table>';
 		echo '</td>';
 		echo '</tr>';

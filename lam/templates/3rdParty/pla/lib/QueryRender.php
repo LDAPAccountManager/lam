@@ -480,7 +480,7 @@ class QueryRender extends PageRender {
 				rawurlencode(implode(', ',$this->template->resultsdata[$base]['attrs']))));
 
 			printf('<td style="text-align: right; width: 85%%"><small>[ <a href="%s"><img src="%s/save.png" alt="Save" /> %s</a> ]</small>',
-				$href,IMGDIR,_('export results'));
+				$href,IMGDIR,_('export'));
 		}
 
 		printf('<small>[ <img src="%s/rename.png" alt="rename" /> %s:',IMGDIR,_('Format'));

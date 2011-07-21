@@ -25,7 +25,7 @@ $request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Rename'),get_rdn($request[
 $request['page']->drawSubTitle();
 
 echo '<center>';
-printf('%s <b>%s</b> %s:<br /><br />',_('Rename'),get_rdn($request['dn']),_('to a new object'));
+printf(_('Rename <b>%s</b> to a new object.') . '<br /><br />',get_rdn($request['dn']));
 
 echo '<form action="cmd.php?cmd=rename" method="post" />';
 printf('<input type="hidden" name="server_id" value="%s" />',$app['server']->getIndex());

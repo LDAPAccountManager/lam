@@ -23,7 +23,7 @@ if (! $app['server']->isBranchRenameEnabled()) {
 	$children = $app['server']->getContainerContents($request['dnSRC'],null,0,'(objectClass=*)',LDAP_DEREF_NEVER);
 
 	if (count($children) > 0)
-		error(_('You cannot rename an entry which has children entries (eg, the rename operation is not allowed on non-leaf entries)'),'error','index.php');
+		error(_('You cannot rename an entry which has child entries.'),'error','index.php');
 }
 
 $request['dnDST'] = sprintf('%s,%s',$request['rdnDST'],$request['container']);

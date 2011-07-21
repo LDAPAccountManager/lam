@@ -69,7 +69,7 @@ if (count($request['template']->getLDAPmodify(true))) {
 		echo '<td><span style="white-space: nowrap;">';
 
 		if (! $attribute->getOldValues())
-			printf('<span style="color: green">[%s]</span>',_('attribute doesnt exist'));
+			printf('<span style="color: green">[%s]</span>',_('Attribute doesn\'t exist'));
 
 		$dv = $attribute->getRemovedValues();
 		foreach ($attribute->getOldValues() as $key => $value) {
@@ -191,7 +191,7 @@ if (count($request['template']->getLDAPmodify(true))) {
 	echo '<br />';
 	// @todo cant use AJAX here, it affects file uploads.
 	printf('<input type="submit" value="%s" />',
-		_('Update Object'));
+		_('Update object'));
 
 	printf('<input type="submit" name="cancel" value="%s" %s/>',
 		_('Cancel'),

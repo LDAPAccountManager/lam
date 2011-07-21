@@ -57,8 +57,8 @@ usort($possible_values,'pla_compare_dns');
 $request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Modify group'),get_rdn($request['dn'])));
 $request['page']->drawSubTitle();
 
-printf('%s <b>%s</b> %s <b>%s</b>:',
-	_('There are'),count($current_members),_('members in group'),htmlspecialchars(get_rdn($request['dn'])));
+printf(_('There are <b>%s</b> members in group <b>%s</b>:'),
+	count($current_members),htmlspecialchars(get_rdn($request['dn'])));
 
 $possible_members = array();
 for ($i=0;$i<count($possible_values);$i++) {

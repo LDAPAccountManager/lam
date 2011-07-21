@@ -74,8 +74,8 @@ if ($add_result) {
 		printf('<meta http-equiv="refresh" content="0; url=%s" />',$redirect_url);
 
 	if ($action_number == 1 || $action_number == 2) {
-		$create_message = sprintf('%s %s: <b>%s</b> %s',
-			_('Creation successful!'),_('DN'),$request['template']->getDN(),_('has been created.'));
+		$create_message = sprintf(_('Creation successful. DN <b>%s</b> has been created.'),
+			$request['template']->getDN());
 
 		if (isAjaxEnabled())
 			$redirect_url .= sprintf('&refresh=SID_%s_nodes&noheader=1',$app['server']->getIndex());

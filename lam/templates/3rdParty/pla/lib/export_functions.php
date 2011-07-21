@@ -197,7 +197,6 @@ abstract class Export {
 
 		$output = '';
 
-		$output .= sprintf('# %s %s %s%s',$type['description'],_('for'),implode('|',array_keys($this->results)),$this->br);
 		$output .= sprintf('# %s: %s%s',_('Search scope'),$this->resultsdata['scope'],$this->br);
 		$output .= sprintf('# %s: %s%s',_('Search filter'),$this->resultsdata['filter'],$this->br);
 		$output .= sprintf('# %s: %s%s',_('Total entries'),$this->items,$this->br);

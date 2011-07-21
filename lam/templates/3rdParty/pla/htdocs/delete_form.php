@@ -40,7 +40,7 @@ echo '<center>';
 if (count($request['children'])) {
 	printf('<b>%s</b><br /><br />',_('Permanently delete all children also?'));
 
-	$search['href'] = htmlspecialchars(sprintf('cmd.php?cmd=query_engine&server_id=%s&filter=%s&base=%s&scope=sub&query=none&format=list',
+	$search['href'] = htmlspecialchars(sprintf('cmd.php?cmd=query_engine&server_id=%s&filter=%s&base=%s&scope=sub&query=none&format=list&search=true',
 		$app['server']->getIndex(),rawurlencode('objectClass=*'),rawurlencode($request['dn'])));
 
 	$query = array();

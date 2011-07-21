@@ -427,7 +427,7 @@ class Template extends xmlTemplate {
 								$msg = _('Security error: The file being uploaded may be malicious.');
 
 							system_message(array(
-								'title'=>_('Upload Binary Attribute Error'),'body'=>$msg,'type'=>'warn'));
+								'title'=>_('Error'),'body'=>$msg,'type'=>'warn'));
 
 						} else {
 							$binaryfile = array();
@@ -470,7 +470,7 @@ class Template extends xmlTemplate {
 
 				if ($_FILES['single_item_value']['size'] === 0)
 					system_message(array(
-						'title'=>_('Upload Binary Attribute Error'),
+						'title'=>_('Error'),
 						'body'=>sprintf('%s %s',_('The file you chose is either empty or does not exist.'),_('Please go back and try again.')),
 						'type'=>'warn'));
 
@@ -514,7 +514,7 @@ class Template extends xmlTemplate {
 							$msg = _('Security error: The file being uploaded may be malicious.');
 
 						system_message(array(
-							'title'=>_('Upload Binary Attribute Error'),'body'=>$msg,'type'=>'warn'),'index.php');
+							'title'=>_('Error'),'body'=>$msg,'type'=>'warn'),'index.php');
 					}
 
 					$binaryfile = array();

@@ -126,7 +126,7 @@ foreach ($request['page'] as $j => $page) {
 echo '</table>';
 echo '<div>';
 echo '<br/>';
-printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Update Values'));
+printf('<input type="submit" id="save_button" name="submit" value="%s" />',_('Update values'));
 echo '</div>';
 echo '</form>';
 ?>

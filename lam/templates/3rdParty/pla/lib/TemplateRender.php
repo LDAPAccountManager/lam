@@ -1437,7 +1437,7 @@ class TemplateRender extends PageRender {
 		if (! $this->template->isReadOnly())
 			// @todo cant use AJAX here, it affects file uploads.
 			printf('<tr><td colspan="2" style="text-align: center;"><input type="submit" id="create_button" name="submit" value="%s" /></td></tr>',
-				_('Update Object'));
+				_('Update object'));
 	}
 
 	/** STEP FORM METHODS **/

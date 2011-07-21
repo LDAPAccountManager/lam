@@ -385,15 +385,15 @@ class ImportLDIF extends Import {
 
 				if ($fh = @fopen($filename,'rb')) {
 					if (! $return = @fread($fh,filesize($filename)))
-						return $this->error(_('Unable to read file for'),$value);
+						return $this->error(_('Unable to read file.'),$value);
 
 					@fclose($fh);
 
 				} else
-					return $this->error(_('Unable to open file for'),$value);
+					return $this->error(_('Unable to read file.'),$value);
 
 			} else
-				return $this->error(_('The url attribute value should begin with file:// for'),$value);
+				return $this->error(_('The url attribute value should begin with file://.'),$value);
 
 		# It's a string
 		} else

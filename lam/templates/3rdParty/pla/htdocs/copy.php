@@ -92,13 +92,11 @@ if ($request['recursive']) {
 		$copy_result = copy_dn($ldap['SRC'],$ldap['DST'],$request['dnSRC'],$request['dnDST'],$request['remove']);
 
 		if ($copy_result)
-			$copy_message = sprintf('%s %s: <b>%s</b> %s',
-				$request['remove'] ? _('Move successful') : _('Copy successful'),
-				_('DN'),$request['dnDST'],_('has been created.'));
+			$copy_message = sprintf(_('Operation successful. DN <b>%s</b> has been created.'),
+				$request['dnDST']);
 		else
-			$copy_message = sprintf('%s %s: <b>%s</b> %s',
-				$request['remove'] ? _('Move not successful') : _('Copy not successful'),
-				_('DN'),$request['dnDST'],_('has not been created.'));
+			$copy_message = sprintf(_('Operation not successful. DN <b>%s</b> has not been created.'),
+				$request['dnDST']);
 	}
 }
 
@@ -129,7 +127,7 @@ function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
 		if (! $copy_result)
 			return false;
 
-		array_push($copy_message,sprintf('%s %s: <b>%s</b> %s',_('Copy successful'),_('DN'),$dnDST,_('has been created.')));
+		array_push($copy_message,sprintf(_('Copy successful. DN <b>%s</b> has been created.'),$dnDST));
 
 		$hadError = false;
 		foreach ($children as $child_dn) {
@@ -152,13 +150,9 @@ function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
 		$copy_result = copy_dn($serverSRC,$serverDST,$dnSRC,$dnDST,$remove);
 
 		if ($copy_result)
-			array_push($copy_message,sprintf('%s %s: <b>%s</b> %s',
-				$remove ? _('Move successful') : _('Copy successful'),
-				_('DN'),$dnDST,_('has been created.')));
+			array_push($copy_message,sprintf(_('Operation successful. DN <b>%s</b> has been created.'),$dnDST));
 		else
-			array_push($copy_message,sprintf('%s %s: <b>%s</b> %s',
-				$remove ? _('Move not successful') : _('Copy not successful'),
-				_('DN'),$dnDST,_('has not been created.')));
+			array_push($copy_message,sprintf(_('Operation not successful. DN <b>%s</b> has not been created.'),$dnDST));
 	}
 
 	return $copy_message;
