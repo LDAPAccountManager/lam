@@ -12,7 +12,7 @@ var http_request_error_callback = '';
 
 function ajSUBMIT(div,obj,display) {
 	var pageDiv = getDiv(div);
-
+	window.scrollTo(0,0);
 	if (pageDiv)
 		includeHTML(pageDiv,'<img src="images/ajax-progress.gif"><br><small>'+display+'...</small>');
 	else
@@ -25,7 +25,9 @@ function ajSUBMIT(div,obj,display) {
 
 function ajDISPLAY(div,urlParameters,display,ns) {
 	var pageDiv = getDiv(div);
-
+	if (!ns) {
+		window.scrollTo(0,0);
+	}
 	if (pageDiv)
 		includeHTML(pageDiv,'<img src="images/ajax-progress.gif"><br><small>'+display+'...</small>');
 	else
