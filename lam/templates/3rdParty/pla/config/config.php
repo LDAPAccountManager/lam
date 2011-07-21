@@ -67,5 +67,5 @@ $config->custom->appearance['show_schema_link'] = false;
 if (!checkIfWriteAccessIsAllowed()) {
 	$servers->setValue('server','read_only',true);
 }
-
+$servers->setValue('unique','attrs',array());
 ?>
