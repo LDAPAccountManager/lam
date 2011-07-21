@@ -4,7 +4,7 @@ ldap-account-manager (3.5.0.RC1-1) unstable; urgency=low
   * updated to Debian policy 3.9.2
   * reincluded JQuery libs into package because LAM is very version specific
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 22 May 2011 15:52:46 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 21 Jul 2011 20:27:15 +0200
 
 ldap-account-manager (3.4.0-1) unstable; urgency=low
 
