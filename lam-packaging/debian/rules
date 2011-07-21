@@ -6,7 +6,13 @@ clean:
 	debconf-updatepo
 	dh_clean
 
-build:
+build: build-arch build-indep
+
+build-arch: build-stamp
+
+build-indep: build-stamp
+
+build-stamp:
 
 install: 
 	dh_testdir
