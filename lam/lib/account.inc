@@ -778,4 +778,47 @@ function formatLDAPTimestamp($time) {
 		' ' . substr($time, 8, 2) . ':' . substr($time, 10, 2) . ':' . substr($time, 12, 2) . ' GMT';
 }
 
+/**
+ * Simple function to obfuscate strings.
+ * 
+ * @param String $text text to obfuscate
+ */
+function obfuscateText($text) {
+	if (($text == null) || ($text == '')) {
+		return $text;
+	}
+	return str_rot13(base64_encode('LAM_OBFUSCATE:'.$text));
+}
+
+/**
+ * Simple function to deobfuscate strings.
+ * 
+ * @param String $text text to deobfuscate
+ */
+function deobfuscateText($text) {
+	if (($text == null) || ($text == '')) {
+		return $text;
+	}
+	return str_replace('LAM_OBFUSCATE:', '', base64_decode(str_rot13($text)));
+}
+
+/**
+ * Checks if the given text is obfuscated.
+ * 
+ * @param String $text text to check
+ * @return boolean obfuscated or not
+ */
+function isObfuscatedText($text) {
+	if (($text == null) || ($text == '')) {
+		return false;
+	}
+	$deob = base64_decode(str_rot13($text));
+	if (strpos($deob, 'LAM_OBFUSCATE:') === 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 ?>

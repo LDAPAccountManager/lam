@@ -349,6 +349,8 @@ class htmlInputField extends htmlElement {
 	private $isPassword = false;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** indicates that the value should be saved in obfuscated form */
+	private $obfuscate = false;
 	
 	/**
 	 * Constructor
@@ -357,6 +359,9 @@ class htmlInputField extends htmlElement {
 	 * @param String $fieldValue value of input field (optional)
 	 */
 	function __construct($fieldName, $fieldValue = null, $fieldSize = null) {
+		if (isObfuscatedText($fieldValue)) {
+			$fieldValue = deobfuscateText($fieldValue);
+		}
 		$this->fieldName = htmlspecialchars($fieldName);
 		$this->fieldValue = htmlspecialchars($fieldValue);
 		if ($fieldSize != null) {
@@ -377,7 +382,12 @@ class htmlInputField extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		if (isset($values[$this->fieldName])) {
-			$this->fieldValue = $values[$this->fieldName][0];
+			if (isObfuscatedText($values[$this->fieldName][0])) {
+				$this->fieldValue = deobfuscateText($values[$this->fieldName][0]);
+			}
+			else {
+				$this->fieldValue = $values[$this->fieldName][0];
+			}
 		}
 		// print input field
 		$name = ' name="' . $this->fieldName . '"';
@@ -401,7 +411,12 @@ class htmlInputField extends htmlElement {
 			$disabled = ' disabled';
 		}
 		echo '<input type="' . $inputType . '"' . $name . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
-		return array($this->fieldName => 'text');
+		if ($this->obfuscate) {
+			return array($this->fieldName => 'text_obfuscated');
+		}
+		else {
+			return array($this->fieldName => 'text');
+		}
 	}
 
 	/**
@@ -438,6 +453,15 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+
+	/**
+	 * Specifies if the value should be saved in obfuscated form (e.g. self service profile).
+	 * 
+	 * @param boolean $obfuscate obfuscate value
+	 */
+	public function setObfuscate($obfuscate) {
+		$this->obfuscate = $obfuscate;
 	}
 
 }
