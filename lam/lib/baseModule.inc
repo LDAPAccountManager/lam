@@ -1322,6 +1322,19 @@ abstract class baseModule {
 	}
 	
 	/**
+	 * This allows modules to create a link to a module specific page
+	 * for the self service.
+	 * The link is shown on the login page of the self service. You
+	 * can use this to provide e.g. a page to reset passwords.
+	 * 
+	 * @param array $settings self service settings
+	 * @return String link text (null if no special page used)
+	 */
+	public function getLinkToSpecialSelfServicePage($settings) {
+		return null;
+	}
+	
+	/**
 	 * Returns the {@link accountContainer} object.
 	 * 
 	 * @return accountContainer accountContainer object
