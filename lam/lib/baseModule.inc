@@ -1335,6 +1335,19 @@ abstract class baseModule {
 	}
 	
 	/**
+	 * This function creates meta HTML code to display the module specific page
+	 * for the self service.
+	 * 
+	 * @param selfServiceProfile $profile self service settings
+	 * @return htmlElement meta HTML object
+	 *
+	 * @see htmlElement
+	 */
+	public function displaySpecialSelfServicePage($profile) {
+		return null;
+	}
+
+	/**
 	 * Returns the {@link accountContainer} object.
 	 * 
 	 * @return accountContainer accountContainer object
