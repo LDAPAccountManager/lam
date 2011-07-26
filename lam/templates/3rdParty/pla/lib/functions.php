@@ -357,25 +357,7 @@ function cmd_control_pane($type) {
  * @param boolean Whether to stop execution or not.
  */
 function debug_dump($variable,$die=false,$onlydebugaddr=false) {
-	if ($onlydebugaddr &&
-		isset($_SESSION[APPCONFIG]) && $_SESSION[APPCONFIG]->getValue('debug','addr') &&
-		$_SERVER['HTTP_X_FORWARDED_FOR'] != $_SESSION[APPCONFIG]->getValue('debug','addr') &&
-		$_SERVER['REMOTE_ADDR'] != $_SESSION[APPCONFIG]->getValue('debug','addr'))
-		return;
-
-	$backtrace = debug_backtrace();
-	$caller['class'] = isset($backtrace[0]['class']) ? $backtrace[0]['class'] : 'N/A';
-	$caller['function'] = isset($backtrace[0]['function']) ? $backtrace[0]['function'] : 'N/A';
-	$caller['file'] = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'N/A';
-	$caller['line'] = isset($backtrace[0]['line']) ? $backtrace[0]['line'] : 'N/A';
-	$caller['debug'] = $variable;
-
-	print '<PRE>';
-	print_r($caller);
-	print '</PRE>';
-
-	if ($die)
-		die();
+	if ($die) die();
 }
 
 /**

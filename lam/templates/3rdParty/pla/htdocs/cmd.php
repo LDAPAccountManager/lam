@@ -18,24 +18,17 @@ $www['meth'] = get_request('meth','REQUEST');
 
 ob_start();
 
-switch ($www['cmd']) {
-	case '_debug':
-		debug_dump($_REQUEST,1);
-		break;
+if (defined('HOOKSDIR') && file_exists(HOOKSDIR.$www['cmd'].'.php'))
+	$app['script_cmd'] = HOOKSDIR.$www['cmd'].'.php';
 
-	default:
-		if (defined('HOOKSDIR') && file_exists(HOOKSDIR.$www['cmd'].'.php'))
-			$app['script_cmd'] = HOOKSDIR.$www['cmd'].'.php';
+elseif (defined('HTDOCDIR') && file_exists(HTDOCDIR.$www['cmd'].'.php'))
+	$app['script_cmd'] = HTDOCDIR.$www['cmd'].'.php';
 
-		elseif (defined('HTDOCDIR') && file_exists(HTDOCDIR.$www['cmd'].'.php'))
-			$app['script_cmd'] = HTDOCDIR.$www['cmd'].'.php';
+elseif (file_exists('welcome.php'))
+	$app['script_cmd'] = 'welcome.php';
 
-		elseif (file_exists('welcome.php'))
-			$app['script_cmd'] = 'welcome.php';
-
-		else
-			$app['script_cmd'] = null;
-}
+else
+	$app['script_cmd'] = null;
 
 if (DEBUG_ENABLED)
 	debug_log('Ready to render page for command [%s,%s].',128,0,__FILE__,__LINE__,__METHOD__,$www['cmd'],$app['script_cmd']);
