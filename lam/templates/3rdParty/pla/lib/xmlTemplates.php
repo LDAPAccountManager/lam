@@ -57,7 +57,8 @@ abstract class xmlTemplates {
 						'type'=>'info','special'=>true));
 
 					$changed = true;
-					eval(sprintf('$this->templates[$index] = new %s($this->server_id,$template->getName(false),$template->getFileName(),$template->getType(),$index);',$class['name']));
+					$className = $class['name'];
+					$this->templates[$index] = new $className($this->server_id,$template->getName(false),$template->getFileName(),$template->getType(),$index);
 				}
 			}
 
@@ -87,7 +88,8 @@ abstract class xmlTemplates {
 					if (! in_array($filename,$this->getTemplateFiles())) {
 						$templatename = preg_replace('/.xml$/','',$file);
 	
-						eval(sprintf('$this->templates[$index] = new %s($this->server_id,$templatename,$filename,$type,$index);',$class['name']));
+						$className = $class['name'];
+						$this->templates[$index] = new $className($this->server_id,$templatename,$filename,$type,$index);
 						$index++;
 
 						$changed = true;
@@ -129,7 +131,8 @@ abstract class xmlTemplates {
 
 					# Store the template
 					$templatename = preg_replace('/.xml$/','',$file);
-					eval(sprintf('$this->templates[$counter] = new %s($this->server_id,$templatename,$filename,$type,$counter);',$class['name']));
+					$className = $class['name'];
+					$this->templates[$counter] = new $className($this->server_id,$templatename,$filename,$type,$counter);
 					$counter++;
 				}
 			}
@@ -230,7 +233,8 @@ abstract class xmlTemplates {
 				return clone $template;
 
 		# If we get here, the template ID didnt exist, so return a blank template, which be interpreted as the default template
-		eval(sprintf('$object = new %s($this->server_id,null,null,"default");',$class['name']));
+		$className = $class['name'];
+		$object = new $className($this->server_id,null,null,"default");
 		return $object;
 	}
 
