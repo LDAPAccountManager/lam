@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2011-07-16 22:36+0200\n"
+"PO-Revision-Date: 2011-07-29 18:39+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.net>\n"
 "Language: \n"
@@ -540,8 +540,8 @@ msgstr "Aktive Accounttypen"
 #: ../lib/modules/nisnetgroup.inc:272 ../lib/modules/sudoRole.inc:269
 #: ../lib/modules/sudoRole.inc:296 ../lib/modules/sudoRole.inc:323
 #: ../lib/modules/sudoRole.inc:350 ../lib/modules/sudoRole.inc:377
-#: ../lib/modules/sudoRole.inc:404 ../lib/modules/groupOfNames.inc:255
-#: ../lib/modules/groupOfNames.inc:366
+#: ../lib/modules/sudoRole.inc:404 ../lib/modules/groupOfNames.inc:265
+#: ../lib/modules/groupOfNames.inc:376
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -593,7 +593,7 @@ msgid "Add an additional value to attribute"
 msgstr "Neuen Attributwert hinzufügen"
 
 #: ../lib/modules/device.inc:293 ../lib/modules/zarafaUser.inc:767
-#: ../lib/modules/groupOfNames.inc:298 ../lib/modules/groupOfNames.inc:409
+#: ../lib/modules/groupOfNames.inc:308 ../lib/modules/groupOfNames.inc:419
 msgid "Add entries of this type:"
 msgstr "Einträge diesen Typs hinzufügen:"
 
@@ -605,7 +605,7 @@ msgstr "Feste IP-Adressen zum DNS hinzufügen"
 msgid "Add host extension"
 msgstr "Host-Erweiterung hinzufügen"
 
-#: ../templates/selfService/adminMain.php:411 ../help/help.inc:178
+#: ../templates/selfService/adminMain.php:414 ../help/help.inc:178
 msgid "Add input field"
 msgstr "Feld hinzufügen"
 
@@ -631,7 +631,7 @@ msgstr "Neues Attribut zu diesem Eintrag hinzufügen"
 msgid "Add new binary attribute"
 msgstr "Neues Binärattribut hinzufügen"
 
-#: ../templates/selfService/adminMain.php:403 ../help/help.inc:176
+#: ../templates/selfService/adminMain.php:406 ../help/help.inc:176
 msgid "Add new group"
 msgstr "Gruppe hinzufügen"
 
@@ -647,6 +647,10 @@ msgstr "Neue Objektklasse zu <b>%s</b> hinzufügen"
 #: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:95
 msgid "Add object class and attributes"
 msgstr "Objektklasse und Attribut hinzufügen"
+
+#: ../lib/modules/passwordSelfReset.inc:176
+msgid "Add password self reset extension"
+msgstr "Erweiterung für Passwortrücksetzung hinzufügen"
 
 #: ../lib/modules/inetOrgPerson.inc:635 ../lib/modules/inetOrgPerson.inc:1167
 #: ../lib/modules/inetOrgPerson.inc:1202 ../lib/modules/inetOrgPerson.inc:1866
@@ -683,7 +687,7 @@ msgstr "Füge hinzu"
 msgid "Adding the range failed because errors occured."
 msgstr "Hinzufügen des Adressbereiches schlug fehl."
 
-#: ../templates/selfService/adminMain.php:360 ../help/help.inc:182
+#: ../templates/selfService/adminMain.php:363 ../help/help.inc:182
 msgid "Additional CSS links"
 msgstr "Zusätzliche CSS-Links"
 
@@ -731,6 +735,16 @@ msgstr "Fügt Eingabefelder für einen neuen IP-Bereich hinzu."
 #: ../lib/modules/zarafaUser.inc:1083
 msgid "Admin"
 msgstr "Administrator"
+
+#: ../lib/modules/passwordSelfReset.inc:85
+#: ../lib/modules/passwordSelfReset.inc:139
+msgid "Admin DN"
+msgstr "Administrator-DN"
+
+#: ../lib/modules/passwordSelfReset.inc:89
+#: ../lib/modules/passwordSelfReset.inc:143
+msgid "Admin password"
+msgstr "Adminstratorpasswort"
 
 #: ../lib/modules/inetOrgPerson.inc:355 ../lib/modules/inetOrgPerson.inc:443
 msgid "Administration"
@@ -862,10 +876,14 @@ msgstr ""
 "Es gibt bereits eine Sudo-Rolle mit diesem Namen. Bitte wählen Sie einen "
 "anderen."
 
-#: ../lib/modules/passwordSelfReset.inc:56
-#: ../lib/modules/passwordSelfReset.inc:70
-#: ../lib/modules/passwordSelfReset.inc:78
-#: ../lib/modules/passwordSelfReset.inc:129
+#: ../lib/modules/passwordSelfReset.inc:69
+#: ../lib/modules/passwordSelfReset.inc:112
+#: ../lib/modules/passwordSelfReset.inc:120
+#: ../lib/modules/passwordSelfReset.inc:154
+#: ../lib/modules/passwordSelfReset.inc:196
+#: ../lib/modules/passwordSelfReset.inc:302
+#: ../lib/modules/passwordSelfReset.inc:439
+#: ../lib/modules/passwordSelfReset.inc:666
 msgid "Answer"
 msgstr "Antwort"
 
@@ -993,7 +1011,8 @@ msgstr "Benutzer zur Authentifizierung bei ausgehenden Proxies."
 #: ../lib/modules/sambaSamAccount.inc:377 ../lib/modules/zarafaUser.inc:120
 #: ../lib/modules/zarafaUser.inc:1118 ../lib/modules/phpGroupwareUser.inc:86
 #: ../lib/modules/phpGroupwareUser.inc:92 ../lib/modules/shadowAccount.inc:99
-#: ../lib/modules/shadowAccount.inc:188 ../lib/modules/hostObject.inc:76
+#: ../lib/modules/shadowAccount.inc:188
+#: ../lib/modules/passwordSelfReset.inc:96 ../lib/modules/hostObject.inc:76
 #: ../lib/modules/hostObject.inc:94
 msgid "Automatically add this extension"
 msgstr "Diese Erweiterung automatisch hinzufügen"
@@ -1057,8 +1076,8 @@ msgstr "B-Knoten (0x01)"
 #: ../lib/modules/device.inc:300 ../lib/modules/sambaSamAccount.inc:1269
 #: ../lib/modules/posixAccount.inc:1146 ../lib/modules/posixAccount.inc:1216
 #: ../lib/modules/zarafaUser.inc:774 ../lib/modules/nisnetgroup.inc:390
-#: ../lib/modules/inetOrgPerson.inc:1203 ../lib/modules/groupOfNames.inc:305
-#: ../lib/modules/groupOfNames.inc:416
+#: ../lib/modules/inetOrgPerson.inc:1203 ../lib/modules/groupOfNames.inc:315
+#: ../lib/modules/groupOfNames.inc:426
 msgid "Back"
 msgstr "Zurück"
 
@@ -1105,6 +1124,7 @@ msgstr "Zurück zur Liste"
 
 #: ../templates/config/mainmanage.php:155 ../templates/config/index.php:71
 #: ../templates/config/conflogin.php:109 ../templates/config/mainlogin.php:114
+#: ../templates/selfService/selfServiceSP.php:96
 #: ../templates/selfService/adminLogin.php:109
 msgid "Back to login"
 msgstr "Zurück zum Login"
@@ -1309,7 +1329,7 @@ msgstr "Kann weiterleiten"
 #: ../templates/config/confmain.php:379
 #: ../templates/config/moduleSettings.php:229
 #: ../templates/config/conftypes.php:280
-#: ../templates/selfService/adminMain.php:479
+#: ../templates/selfService/adminMain.php:482
 #: ../templates/pdfedit/pdfdelete.php:96 ../templates/pdfedit/pdfpage.php:585
 #: ../templates/pdfedit/pdfmain.php:158 ../templates/delete.php:108
 #: ../templates/profedit/profiledelete.php:92
@@ -1328,15 +1348,15 @@ msgstr "Kann weiterleiten"
 #: ../lib/modules/kolabUser.inc:563 ../lib/modules/phpGroupwareUser.inc:261
 #: ../lib/modules/shadowAccount.inc:428 ../lib/modules/nisnetgroup.inc:480
 #: ../lib/modules/aliasEntry.inc:142 ../lib/modules/aliasEntry.inc:162
-#: ../lib/modules/groupOfNames.inc:256 ../lib/modules/groupOfNames.inc:367
+#: ../lib/modules/groupOfNames.inc:266 ../lib/modules/groupOfNames.inc:377
 #: ../lib/lists.inc:642 ../lib/lists.inc:714 ../lib/modules.inc:1080
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: ../templates/login.php:460 ../templates/login.php:518
 #: ../templates/login.php:523
-#: ../templates/selfService/selfServiceLogin.php:120
-#: ../templates/selfService/selfServiceLogin.php:124
+#: ../templates/selfService/selfServiceLogin.php:122
+#: ../templates/selfService/selfServiceLogin.php:126
 #: ../templates/selfService/selfServiceMain.php:155
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
@@ -1356,7 +1376,7 @@ msgstr "Kann Quota nicht ändern."
 msgid "Capacity"
 msgstr "Kapazität"
 
-#: ../templates/selfService/adminMain.php:361
+#: ../templates/selfService/adminMain.php:364
 msgid "Captions and labels"
 msgstr "Überschriften und Beschriftungen"
 
@@ -1375,7 +1395,7 @@ msgstr "Mitteleuropäische Zeit, Paris, Berlin"
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Central Time (USA & Kanada), Mexiko Stadt"
 
-#: ../templates/selfService/adminMain.php:373
+#: ../templates/selfService/adminMain.php:376
 #: ../templates/pdfedit/pdfpage.php:484 ../templates/pdfedit/pdfpage.php:493
 #: ../lib/modules/device.inc:180 ../lib/modules/sambaSamAccount.inc:1115
 #: ../lib/modules/sambaSamAccount.inc:1380 ../lib/modules/zarafaUser.inc:403
@@ -1383,7 +1403,8 @@ msgstr "Central Time (USA & Kanada), Mexiko Stadt"
 #: ../lib/modules/phpGroupwareUser.inc:256
 #: ../lib/modules/shadowAccount.inc:340 ../lib/modules/shadowAccount.inc:424
 #: ../lib/modules/asteriskExtension.inc:256 ../lib/modules/aliasEntry.inc:94
-#: ../lib/modules/groupOfNames.inc:177 ../lib/modules/groupOfNames.inc:190
+#: ../lib/modules/passwordSelfReset.inc:202
+#: ../lib/modules/groupOfNames.inc:177 ../lib/modules/groupOfNames.inc:195
 msgid "Change"
 msgstr "Ändern"
 
@@ -1431,7 +1452,7 @@ msgstr "Einstellungen ändern"
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "Wert wurde geändert da nur ASCII-Zeichen erlaubt sind."
 
-#: ../lib/modules/passwordSelfReset.inc:72
+#: ../lib/modules/passwordSelfReset.inc:114
 msgid "Charlie"
 msgstr "Charlie"
 
@@ -1494,7 +1515,7 @@ msgstr "Hier klicken wenn Sie nicht zur nächsten Seite weitergeleitet werden."
 msgid "Click to popup a dialog to select a date graphically"
 msgstr "Hiermit können Sie das Datum grafisch auswählen"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2308
+#: ../templates/3rdParty/pla/lib/functions.php:2290
 msgid "Click to popup a dialog to select an entry (DN) graphically"
 msgstr "Hiermit können Sie den DN grafisch auswählen"
 
@@ -1708,7 +1729,7 @@ msgstr "Konnte Eintrag nicht löschen."
 msgid "Could not fetch binary data from LDAP server for attribute [%s]."
 msgstr "Konnte Binärdaten für Attribut [%s] nicht auslesen."
 
-#: ../templates/3rdParty/pla/lib/functions.php:1961
+#: ../templates/3rdParty/pla/lib/functions.php:1943
 #: ../templates/3rdParty/pla/htdocs/view_jpeg_photo.php:60
 #, php-format
 msgid "Could not fetch jpeg data from LDAP server for attribute [%s]."
@@ -2146,7 +2167,7 @@ msgstr "Objekt löschen"
 msgid "Delete organisational unit"
 msgstr "Organisational Unit löschen"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2029
+#: ../templates/3rdParty/pla/lib/functions.php:2011
 #: ../lib/modules/inetOrgPerson.inc:1170
 msgid "Delete photo"
 msgstr "Foto löschen"
@@ -2242,8 +2263,8 @@ msgstr "Unternehmensbereich(e)"
 
 #: ../templates/schema/schema.php:87 ../templates/schema/schema.php:141
 #: ../templates/schema/schema.php:344
-#: ../templates/3rdParty/pla/lib/functions.php:1913
-#: ../templates/3rdParty/pla/lib/functions.php:1917
+#: ../templates/3rdParty/pla/lib/functions.php:1895
+#: ../templates/3rdParty/pla/lib/functions.php:1899
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:139
 #: ../templates/3rdParty/pla/htdocs/import.php:101
 #: ../lib/types/automountType.inc:79 ../lib/types/nisObjectType.inc:80
@@ -2274,7 +2295,7 @@ msgstr "Unternehmensbereich(e)"
 #: ../lib/modules/sudoRole.inc:172 ../lib/modules/sudoRole.inc:253
 #: ../lib/modules/sudoRole.inc:684 ../lib/modules/groupOfNames.inc:64
 #: ../lib/modules/groupOfNames.inc:99 ../lib/modules/groupOfNames.inc:130
-#: ../lib/modules/groupOfNames.inc:174 ../lib/modules/groupOfNames.inc:514
+#: ../lib/modules/groupOfNames.inc:174 ../lib/modules/groupOfNames.inc:524
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -2572,6 +2593,8 @@ msgstr "EMail"
 #: ../lib/modules/asteriskVoicemail.inc:169
 #: ../lib/modules/asteriskVoicemail.inc:261
 #: ../lib/modules/asteriskVoicemail.inc:410 ../lib/modules/imapAccess.inc:206
+#: ../lib/modules/passwordSelfReset.inc:588
+#: ../lib/modules/passwordSelfReset.inc:657
 msgid "Email address"
 msgstr "EMail-Adresse"
 
@@ -2631,6 +2654,11 @@ msgstr "Angestelltentyp: Angestellter, Extern, Aushilfskraft, ..."
 #: ../templates/lists/changePassword.php:317 ../templates/login.php:437
 msgid "Empty password submitted. Please try again."
 msgstr "Das Passwort war leer. Bitte erneut eingeben."
+
+#: ../lib/modules/passwordSelfReset.inc:77
+#: ../lib/modules/passwordSelfReset.inc:129
+msgid "Enable password self reset link"
+msgstr "Link für Passwortrücksetzung aktivieren"
 
 #: ../lib/modules/ppolicy.inc:89
 msgid ""
@@ -2714,15 +2742,15 @@ msgstr "Equipment"
 #: ../templates/3rdParty/pla/lib/Template.php:430
 #: ../templates/3rdParty/pla/lib/Template.php:473
 #: ../templates/3rdParty/pla/lib/Template.php:517
-#: ../templates/3rdParty/pla/lib/functions.php:529
-#: ../templates/3rdParty/pla/lib/functions.php:531
+#: ../templates/3rdParty/pla/lib/functions.php:511
+#: ../templates/3rdParty/pla/lib/functions.php:513
 #: ../templates/3rdParty/pla/lib/ds_myldap.php:217
 #: ../templates/3rdParty/pla/htdocs/import.php:79
 msgid "Error"
 msgstr "Fehler"
 
-#: ../templates/3rdParty/pla/lib/functions.php:1912
-#: ../templates/3rdParty/pla/lib/functions.php:1916
+#: ../templates/3rdParty/pla/lib/functions.php:1894
+#: ../templates/3rdParty/pla/lib/functions.php:1898
 msgid "Error number"
 msgstr "Fehlernummer"
 
@@ -2844,7 +2872,7 @@ msgid "Fax number"
 msgstr "Faxnummer"
 
 #: ../templates/config/mainmanage.php:219
-#: ../templates/3rdParty/pla/lib/functions.php:551
+#: ../templates/3rdParty/pla/lib/functions.php:533
 #: ../templates/3rdParty/pla/tools/unserialize.php:14
 #: ../templates/3rdParty/pla/htdocs/import.php:48
 msgid "File"
@@ -2922,6 +2950,10 @@ msgstr ""
 msgid "Force password change"
 msgstr "Passwortänderung erzwingen"
 
+#: ../lib/modules/passwordSelfReset.inc:534
+msgid "Forgot password?"
+msgstr "Passwort vergessen?"
+
 #: ../templates/3rdParty/pla/lib/QueryRender.php:486 ../help/help.inc:192
 msgid "Format"
 msgstr "Format"
@@ -2997,7 +3029,7 @@ msgstr "Vollständiger Name"
 msgid "Full name for Asterisk voicemail mailbox."
 msgstr "Vollständiger Name für den Anrufbeantworter."
 
-#: ../templates/3rdParty/pla/lib/functions.php:555
+#: ../templates/3rdParty/pla/lib/functions.php:537
 #: ../templates/3rdParty/pla/tools/unserialize.php:17
 msgid "Function"
 msgstr "Funktion"
@@ -3063,7 +3095,7 @@ msgid "Generate random password"
 msgstr "Zufälliges Passwort generieren"
 
 #: ../templates/3rdParty/pla/lib/functions.php:63
-#: ../templates/3rdParty/pla/lib/functions.php:613
+#: ../templates/3rdParty/pla/lib/functions.php:595
 msgid "Generic Error"
 msgstr "Allgemeiner Fehler"
 
@@ -3112,7 +3144,7 @@ msgid "Grace inode period"
 msgstr "Inode-Frist"
 
 #: ../templates/config/confmain.php:295
-#: ../templates/selfService/adminMain.php:441
+#: ../templates/selfService/adminMain.php:444
 msgid "Group"
 msgstr "Gruppe"
 
@@ -3151,7 +3183,7 @@ msgstr "Gruppenmitglieder"
 #: ../lib/modules/nisnetgroup.inc:141 ../lib/modules/nisnetgroup.inc:183
 #: ../lib/modules/nisnetgroup.inc:572 ../lib/modules/groupOfNames.inc:60
 #: ../lib/modules/groupOfNames.inc:92 ../lib/modules/groupOfNames.inc:129
-#: ../lib/modules/groupOfNames.inc:510
+#: ../lib/modules/groupOfNames.inc:520
 msgid "Group name"
 msgstr "Gruppenname"
 
@@ -3953,7 +3985,7 @@ msgstr ""
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "Das weiche Inode-Quota muss kleiner sein als das harte Inode-Quota."
 
-#: ../templates/selfService/adminMain.php:456
+#: ../templates/selfService/adminMain.php:459
 msgid "Input fields"
 msgstr "Eingabefelder"
 
@@ -4168,11 +4200,11 @@ msgstr "LDAP-Filter"
 msgid "LDAP operation successful."
 msgstr "LDAP-Operation war erfolgreich."
 
-#: ../templates/selfService/adminMain.php:337
+#: ../templates/selfService/adminMain.php:340
 msgid "LDAP password"
 msgstr "LDAP-Passwort"
 
-#: ../templates/3rdParty/pla/lib/functions.php:1909
+#: ../templates/3rdParty/pla/lib/functions.php:1891
 msgid "LDAP said"
 msgstr "LDAP meldet"
 
@@ -4180,7 +4212,7 @@ msgstr "LDAP meldet"
 msgid "LDAP search"
 msgstr "LDAP-Suche"
 
-#: ../templates/selfService/adminMain.php:342 ../help/help.inc:168
+#: ../templates/selfService/adminMain.php:345 ../help/help.inc:168
 msgid "LDAP search attribute"
 msgstr "LDAP-Suchattribut"
 
@@ -4203,7 +4235,7 @@ msgstr ""
 "angezeigt."
 
 #: ../templates/config/confmain.php:351 ../templates/config/conftypes.php:234
-#: ../templates/selfService/adminMain.php:331
+#: ../templates/selfService/adminMain.php:334
 #: ../templates/profedit/profilepage.php:191 ../help/help.inc:67
 #: ../help/help.inc:164
 msgid "LDAP suffix"
@@ -4213,7 +4245,7 @@ msgstr "LDAP-Suffix"
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP-Upload läuft. Bitte warten."
 
-#: ../templates/selfService/adminMain.php:335
+#: ../templates/selfService/adminMain.php:338
 msgid "LDAP user"
 msgstr "LDAP-Benutzer"
 
@@ -4348,7 +4380,12 @@ msgstr "Zeile"
 msgid "Line ends"
 msgstr "Zeilenenden"
 
-#: ../templates/selfService/adminMain.php:317
+#: ../lib/modules/passwordSelfReset.inc:81
+#: ../lib/modules/passwordSelfReset.inc:137
+msgid "Link text"
+msgstr "Linktext"
+
+#: ../templates/selfService/adminMain.php:320
 msgid "Link to self service login page for your users"
 msgstr "Link zum SelfService für Ihre Benutzer"
 
@@ -4509,17 +4546,17 @@ msgstr "Logging"
 
 #: ../templates/login.php:332 ../templates/config/conflogin.php:62
 #: ../templates/config/mainlogin.php:70
-#: ../templates/selfService/selfServiceLogin.php:138
+#: ../templates/selfService/selfServiceLogin.php:140
 #: ../templates/selfService/adminLogin.php:64
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:530 ../help/help.inc:52
 msgid "Login"
 msgstr "Login"
 
-#: ../templates/selfService/adminMain.php:350 ../help/help.inc:170
+#: ../templates/selfService/adminMain.php:353 ../help/help.inc:170
 msgid "Login attribute label"
 msgstr "Beschriftung des Login-Attributs"
 
-#: ../templates/selfService/adminMain.php:354 ../help/help.inc:172
+#: ../templates/selfService/adminMain.php:357 ../help/help.inc:172
 msgid "Login caption"
 msgstr "Login-Überschrift"
 
@@ -4683,7 +4720,7 @@ msgstr "Mails an diesen Namen werden an die Empfänger weitergeleitet."
 msgid "Main"
 msgstr "Allgemein"
 
-#: ../templates/selfService/adminMain.php:356 ../help/help.inc:174
+#: ../templates/selfService/adminMain.php:359 ../help/help.inc:174
 msgid "Main page caption"
 msgstr "Überschrift der Hauptseite"
 
@@ -4866,7 +4903,7 @@ msgstr "Maximales Passwortalter"
 #: ../lib/modules/nisnetgroup.inc:580 ../lib/modules/groupOfNames.inc:76
 #: ../lib/modules/groupOfNames.inc:80 ../lib/modules/groupOfNames.inc:113
 #: ../lib/modules/groupOfNames.inc:121 ../lib/modules/groupOfNames.inc:132
-#: ../lib/modules/groupOfNames.inc:189 ../lib/modules/groupOfNames.inc:525
+#: ../lib/modules/groupOfNames.inc:194 ../lib/modules/groupOfNames.inc:545
 msgid "Members"
 msgstr "Mitglieder"
 
@@ -4907,6 +4944,11 @@ msgstr "Minimale UID-Nummer"
 #: ../lib/modules/posixAccount.inc:62 ../lib/modules/posixAccount.inc:64
 msgid "Minimum UID number is invalid!"
 msgstr "Minimale UID-Nummer ist ungültig!"
+
+#: ../lib/modules/passwordSelfReset.inc:73
+#: ../lib/modules/passwordSelfReset.inc:135
+msgid "Minimum answer length"
+msgstr "Minimale Antwortlänge"
 
 #: ../templates/config/mainmanage.php:208
 msgid "Minimum character classes"
@@ -5257,6 +5299,7 @@ msgid "New organisational unit"
 msgstr "Neue Organisational Unit"
 
 #: ../templates/config/confmain.php:360 ../lib/modules/posixAccount.inc:1856
+#: ../lib/modules/passwordSelfReset.inc:678
 msgid "New password"
 msgstr "Neues Passwort"
 
@@ -5480,6 +5523,7 @@ msgid "No or more than one base module selected!"
 msgstr "Es wurde kein oder mehrere Basismodule gewählt!"
 
 #: ../templates/config/confsave.php:53 ../templates/config/confmain.php:54
+#: ../lib/modules/passwordSelfReset.inc:737
 msgid "No password was entered!"
 msgstr "Passwort leer!"
 
@@ -5498,6 +5542,10 @@ msgstr "Keine Skripte zum Ausführen."
 #: ../templates/pdfedit/pdfpage.php:119
 msgid "No section text specified"
 msgstr "Kein Abschnittsname angegeben"
+
+#: ../lib/modules/passwordSelfReset.inc:758
+msgid "No security answer found."
+msgstr "Keine Antwort auf Sicherheitsfrage gefunden."
 
 #: ../templates/config/conflogin.php:128
 msgid "No server profiles found. Please create one."
@@ -5653,12 +5701,12 @@ msgstr "Büroname"
 #: ../templates/config/mainmanage.php:252
 #: ../templates/config/conflogin.php:158 ../templates/config/conflogin.php:159
 #: ../templates/config/mainlogin.php:155
-#: ../templates/selfService/selfServiceLogin.php:240
+#: ../templates/selfService/selfServiceLogin.php:242
 #: ../templates/selfService/profManage.php:285
 #: ../templates/selfService/adminLogin.php:152
 #: ../templates/selfService/adminLogin.php:153
-#: ../templates/selfService/adminMain.php:406
-#: ../templates/selfService/adminMain.php:450
+#: ../templates/selfService/adminMain.php:409
+#: ../templates/selfService/adminMain.php:453
 #: ../templates/pdfedit/pdfmain.php:158
 #: ../templates/profedit/profiledelete.php:91
 #: ../templates/profedit/profilemain.php:157
@@ -5669,7 +5717,9 @@ msgstr "Büroname"
 #: ../lib/modules/nisnetgroup.inc:469 ../lib/modules/nisnetgroup.inc:479
 #: ../lib/modules/asteriskExtension.inc:330 ../lib/modules/aliasEntry.inc:141
 #: ../lib/modules/aliasEntry.inc:161 ../lib/modules/imapAccess.inc:269
-#: ../lib/modules/groupOfNames.inc:302 ../lib/modules/groupOfNames.inc:413
+#: ../lib/modules/passwordSelfReset.inc:592
+#: ../lib/modules/passwordSelfReset.inc:696
+#: ../lib/modules/groupOfNames.inc:312 ../lib/modules/groupOfNames.inc:423
 #: ../lib/lists.inc:641 ../lib/lists.inc:714 ../lib/modules.inc:1079
 msgid "Ok"
 msgstr "Ok"
@@ -5815,7 +5865,7 @@ msgstr "Besitzer"
 #: ../lib/modules/device.inc:426 ../lib/modules/groupOfNames.inc:68
 #: ../lib/modules/groupOfNames.inc:72 ../lib/modules/groupOfNames.inc:105
 #: ../lib/modules/groupOfNames.inc:131 ../lib/modules/groupOfNames.inc:176
-#: ../lib/modules/groupOfNames.inc:518
+#: ../lib/modules/groupOfNames.inc:533
 msgid "Owners"
 msgstr "Besitzer"
 
@@ -5862,7 +5912,7 @@ msgstr ""
 "Pakete an den Default-Gateway gesendet. Dieser routet sie in das "
 "Zielnetzwerk."
 
-#: ../templates/selfService/adminMain.php:358 ../help/help.inc:180
+#: ../templates/selfService/adminMain.php:361 ../help/help.inc:180
 msgid "Page header"
 msgstr "Seitenkopf"
 
@@ -5891,7 +5941,7 @@ msgid "Parse error"
 msgstr "Einlesefehler"
 
 #: ../templates/lists/changePassword.php:241 ../templates/login.php:296
-#: ../templates/selfService/selfServiceLogin.php:226
+#: ../templates/selfService/selfServiceLogin.php:228
 #: ../lib/modules/asteriskAccount.inc:106
 #: ../lib/modules/asteriskAccount.inc:389 ../lib/modules/posixGroup.inc:193
 #: ../lib/modules/posixGroup.inc:473 ../lib/modules/sambaSamAccount.inc:400
@@ -6023,9 +6073,15 @@ msgstr "Passwortrichtlinie"
 msgid "Password quality check"
 msgstr "Passwortqualitätsprüfung"
 
-#: ../lib/modules/passwordSelfReset.inc:38
+#: ../lib/modules/passwordSelfReset.inc:51
+#: ../lib/modules/passwordSelfReset.inc:595
+#: ../lib/modules/passwordSelfReset.inc:699
 msgid "Password self reset"
 msgstr "Passwortrücksetzung"
+
+#: ../lib/modules/passwordSelfReset.inc:913
+msgid "Password successfully reset."
+msgstr "Passwort erfolgreich geändert."
 
 #: ../lib/modules/shadowAccount.inc:63 ../lib/modules/shadowAccount.inc:101
 #: ../lib/modules/shadowAccount.inc:161 ../lib/modules/shadowAccount.inc:168
@@ -6040,7 +6096,7 @@ msgstr "Passwortwarnung muss eine natürliche Zahl sein."
 
 #: ../templates/config/confmain.php:474
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:61
-#: ../lib/modules.inc:1026
+#: ../lib/modules/passwordSelfReset.inc:742 ../lib/modules.inc:1026
 msgid "Passwords are different!"
 msgstr "Die Passwörter stimmen nicht überein!"
 
@@ -6230,6 +6286,10 @@ msgstr "Bitte geben Sie eine Zahl für die Länge der Passworthistorie ein."
 msgid "Please enter a role name."
 msgstr "Bitte geben Sie einen Rollennamen ein."
 
+#: ../lib/modules/passwordSelfReset.inc:762
+msgid "Please enter a security answer."
+msgstr "Bitte geben Sie eine Antwort auf die Sicherheitsfrage ein."
+
 #: ../lib/modules/ppolicy.inc:73
 msgid "Please enter a unique name for this password policy."
 msgstr "Bitte geben Sie einen eindeutigen Namen für diese Passwortrichtlinie ein."
@@ -6271,6 +6331,8 @@ msgstr "Bitte geben Sie einen gültigen Laufwerksbuchstaben ein."
 
 #: ../lib/modules/zarafaGroup.inc:137 ../lib/modules/zarafaGroup.inc:138
 #: ../lib/modules/inetOrgPerson.inc:60 ../lib/modules/inetOrgPerson.inc:61
+#: ../lib/modules/passwordSelfReset.inc:612
+#: ../lib/modules/passwordSelfReset.inc:716
 msgid "Please enter a valid email address!"
 msgstr "Bitte geben Sie eine gültige EMail Adresse ein!"
 
@@ -6402,9 +6464,21 @@ msgstr "Bitte geben Sie nur ASCII-Zeichen für die Seriennummer ein."
 msgid "Please enter only ASCII characters for the user names."
 msgstr "Bitte geben Sie nur ASCII-Zeichen für die Benutzernamen ein."
 
+#: ../lib/modules/passwordSelfReset.inc:165
+msgid ""
+"Please enter the DN and password of the administrative password self reset "
+"account."
+msgstr "Bitte geben Sie DN und Passwort für den administrativen Benutzer ein."
+
 #: ../lib/modules/ddns.inc:101
 msgid "Please enter the IP address of your DNS server."
 msgstr "Bitte geben Sie die IP-Adresse Ihres DNS-Servers ein."
+
+#: ../lib/modules/passwordSelfReset.inc:86
+msgid "Please enter the LDAP DN that should be used to reset passwords."
+msgstr ""
+"Bitte geben Sie den DN des administrativen Benutzers ein, mit dem die "
+"Passwörter zurückgesetzt werden sollen."
 
 #: ../help/help.inc:113
 msgid ""
@@ -6525,6 +6599,14 @@ msgstr ""
 "Bitte geben Sie den neuen Namen des Profils an. Profilnamen dürfen "
 "Buchstaben, Zahlen und -/_ enthalten."
 
+#: ../lib/modules/passwordSelfReset.inc:90
+msgid ""
+"Please enter the password for the admin DN. Please note that this is saved "
+"as clear-text in the self service profile."
+msgstr ""
+"Bitte geben Sie das Passwort des administrativen Benutzers an. Bitte "
+"beachten Sie, dass es als Klartext im SelfService-Profil gespeichert wird."
+
 #: ../lib/modules/asteriskAccount.inc:107 ../lib/modules/posixAccount.inc:372
 msgid "Please enter the password which you want to set for this account."
 msgstr "Bitte geben Sie das Passwort für diesen Account ein."
@@ -6551,7 +6633,7 @@ msgstr "Bitte geben Sie die Portnummer für (unverschlüsselte) HTTP-Verbindunge
 msgid "Please enter the port number for encrypted connections."
 msgstr "Bitte geben Sie die Portnummer für verschlüsselte Verbindungen ein."
 
-#: ../lib/modules/passwordSelfReset.inc:53
+#: ../lib/modules/passwordSelfReset.inc:66
 msgid "Please enter the possible security questions for the password self reset."
 msgstr ""
 "Bitte geben Sie die möglichen Sicherheitsfragen für die Passwortrücksetzung "
@@ -6588,7 +6670,7 @@ msgstr ""
 msgid "Please enter the same password in both password fields."
 msgstr "Bitte geben Sie das selbe Passwort in beide Felder ein."
 
-#: ../lib/modules/passwordSelfReset.inc:49
+#: ../lib/modules/passwordSelfReset.inc:62
 msgid "Please enter the security question for the password self reset."
 msgstr "Bitte geben Sie die Sicherheitsfrage für die Passwortrücksetzung ein."
 
@@ -6876,10 +6958,15 @@ msgstr "Öffentlicher Speicher"
 msgid "Qualify"
 msgstr "Verbindungsprüfung"
 
-#: ../lib/modules/passwordSelfReset.inc:48
-#: ../lib/modules/passwordSelfReset.inc:64
-#: ../lib/modules/passwordSelfReset.inc:77
-#: ../lib/modules/passwordSelfReset.inc:123
+#: ../lib/modules/passwordSelfReset.inc:61
+#: ../lib/modules/passwordSelfReset.inc:99
+#: ../lib/modules/passwordSelfReset.inc:106
+#: ../lib/modules/passwordSelfReset.inc:119
+#: ../lib/modules/passwordSelfReset.inc:153
+#: ../lib/modules/passwordSelfReset.inc:189
+#: ../lib/modules/passwordSelfReset.inc:298
+#: ../lib/modules/passwordSelfReset.inc:434
+#: ../lib/modules/passwordSelfReset.inc:663
 msgid "Question"
 msgstr "Frage"
 
@@ -7160,6 +7247,10 @@ msgstr "Host-Erweiterung entfernen"
 msgid "Remove password"
 msgstr "Passwort entfernen"
 
+#: ../lib/modules/passwordSelfReset.inc:207
+msgid "Remove password self reset extension"
+msgstr "Erweiterung für Passwortrücksetzung entfernen"
+
 #: ../lib/modules/phpGroupwareGroup.inc:100
 #: ../lib/modules/phpGroupwareUser.inc:186
 msgid "Remove phpGroupWare extension"
@@ -7167,7 +7258,7 @@ msgstr "phpGroupWare-Erweiterung entfernen"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:147
 #: ../lib/modules/device.inc:278 ../lib/modules/zarafaUser.inc:756
-#: ../lib/modules/groupOfNames.inc:283 ../lib/modules/groupOfNames.inc:394
+#: ../lib/modules/groupOfNames.inc:293 ../lib/modules/groupOfNames.inc:404
 msgid "Remove selected entries"
 msgstr "Ausgewählte Einträge entfernen"
 
@@ -7218,7 +7309,8 @@ msgstr "Profil umbenannt."
 msgid "Renaming"
 msgstr "Benenne um"
 
-#: ../templates/lists/changePassword.php:249 ../lib/modules.inc:975
+#: ../templates/lists/changePassword.php:249
+#: ../lib/modules/passwordSelfReset.inc:685 ../lib/modules.inc:975
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
 
@@ -7457,7 +7549,7 @@ msgstr "Samstag"
 #: ../templates/config/moduleSettings.php:226
 #: ../templates/config/conftypes.php:277
 #: ../templates/selfService/selfServiceMain.php:355
-#: ../templates/selfService/adminMain.php:476
+#: ../templates/selfService/adminMain.php:479
 #: ../templates/pdfedit/pdfpage.php:583
 #: ../templates/profedit/profilepage.php:227
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1243
@@ -7578,9 +7670,9 @@ msgstr "Sicherheitsproblem: Die hochgeladene Datei kann bösartig sein."
 msgid "Security group"
 msgstr "Gesicherte Gruppe"
 
-#: ../lib/modules/passwordSelfReset.inc:52
-#: ../lib/modules/passwordSelfReset.inc:82
-#: ../lib/modules/passwordSelfReset.inc:87
+#: ../lib/modules/passwordSelfReset.inc:65
+#: ../lib/modules/passwordSelfReset.inc:124
+#: ../lib/modules/passwordSelfReset.inc:148
 msgid "Security questions"
 msgstr "Sicherheitsfragen"
 
@@ -7632,15 +7724,15 @@ msgstr "Ausgewählte Module"
 msgid "Selected users"
 msgstr "Ausgewählte Benutzer"
 
-#: ../templates/selfService/adminMain.php:244
+#: ../templates/selfService/adminMain.php:247
 msgid "Self service configuration"
 msgstr "SelfService-Einstellungen"
 
-#: ../templates/selfService/adminMain.php:285
+#: ../templates/selfService/adminMain.php:288
 msgid "Self service configuration editor"
 msgstr "SelfService-Einstellungsassistent"
 
-#: ../templates/selfService/adminMain.php:318
+#: ../templates/selfService/adminMain.php:321
 msgid "Self service login"
 msgstr "SelfService-Login"
 
@@ -7665,7 +7757,7 @@ msgid "Server"
 msgstr "Server"
 
 #: ../templates/config/confmain.php:221
-#: ../templates/selfService/adminMain.php:327 ../lib/modules/imapAccess.inc:69
+#: ../templates/selfService/adminMain.php:330 ../lib/modules/imapAccess.inc:69
 #: ../lib/modules/imapAccess.inc:104 ../help/help.inc:54
 msgid "Server address"
 msgstr "Serveraddresse"
@@ -7688,7 +7780,7 @@ msgid "Server profile"
 msgstr "Serverprofil"
 
 #: ../templates/config/confmain.php:250
-#: ../templates/selfService/adminMain.php:343
+#: ../templates/selfService/adminMain.php:346
 msgid "Server settings"
 msgstr "Servereinstellungen"
 
@@ -8394,6 +8486,15 @@ msgstr "Der Accounttyp ist ungültig."
 #: ../help/help.inc:151
 msgid "The account will be saved under this LDAP suffix."
 msgstr "Der Account wird unter diesem LDAP-Suffix gespeichert."
+
+#: ../lib/modules/passwordSelfReset.inc:164
+#, php-format
+msgid "The answer needs to be at least %s characters long."
+msgstr "Die Antwort muss mindestens %s Zeichen lang sein."
+
+#: ../lib/modules/passwordSelfReset.inc:770
+msgid "The answer to the security question is wrong."
+msgstr "Die Antwort zur Sicherheitsfrage ist falsch."
 
 #: ../templates/tests/schemaTest.php:123
 #, php-format
@@ -9173,6 +9274,10 @@ msgstr ""
 "Diese EMailadresse wird als Absenderadresse für alle Passwortmails "
 "verwendet. Falls leer dann wird die Systemeinstellung (php.ini) verwendet."
 
+#: ../lib/modules/passwordSelfReset.inc:78
+msgid "This enables the password self reset function."
+msgstr "Damit wird die Passwortrücksetzung aktiviert."
+
 #: ../templates/3rdParty/pla/htdocs/compare.php:79
 msgid "This entry has no attributes"
 msgstr "Der Eintrag hat keine Attribute"
@@ -9361,7 +9466,7 @@ msgstr "Das ist der Name, der auf Windows-Systemen angezeigt wird."
 msgid "This is the active password policy for this account."
 msgstr "Dies ist die aktuelle Passwortrichtlinie dieses Accounts."
 
-#: ../lib/modules/passwordSelfReset.inc:57
+#: ../lib/modules/passwordSelfReset.inc:70
 msgid ""
 "This is the answer to the security question. It allows users to reset their "
 "password."
@@ -9397,6 +9502,14 @@ msgstr ""
 "erlaubten LDAP-Attribute sein (z.B. verwenden Benutzer-Accounts gewöhnlich "
 "\"uid\" und Gruppen \"cn\")."
 
+#: ../lib/modules/passwordSelfReset.inc:82
+msgid ""
+"This is the label for the link to the password self reset. If empty \"Forgot "
+"password?\" will be used."
+msgstr ""
+"Dies ist der Text für den Link zur Passwortrücksetzung. Falls leer wird "
+"\"Passwort vergessen?\" verwendet."
+
 #: ../help/help.inc:80
 msgid ""
 "This is the list of attributes to show in the account list. The entries can "
@@ -9419,6 +9532,12 @@ msgstr ""
 #: ../lib/modules/inetLocalMailRecipient.inc:74
 msgid "This is the mail server for the user."
 msgstr "Dies ist der Mailserver des Benutzers."
+
+#: ../lib/modules/passwordSelfReset.inc:74
+msgid "This is the minimum length for answers to the security question."
+msgstr ""
+"Hiermit legen Sie die Mindestlänge für Antworten auf die Sicherheitsfrage "
+"fest."
 
 #: ../lib/modules/nisnetgroup.inc:74 ../lib/modules/groupOfNames.inc:61
 msgid "This is the name of this group."
@@ -9953,6 +10072,11 @@ msgstr "Kann das Profil nicht löschen!"
 msgid "Unable to find group in LDAP."
 msgstr "Kann Gruppe nicht im LDAP-Baum finden."
 
+#: ../lib/modules/passwordSelfReset.inc:626
+#: ../lib/modules/passwordSelfReset.inc:730
+msgid "Unable to find password security question for this account."
+msgstr "Konnte keine Sicherheitsfrage für diesen Account finden."
+
 #: ../templates/login.php:482 ../templates/login.php:488
 msgid "Unable to find the user name in LDAP."
 msgstr "Kann den Benutzernamen nicht in LDAP finden."
@@ -9979,7 +10103,13 @@ msgstr "Kann Datei nicht lesen."
 msgid "Unable to read sambaSID attribute."
 msgstr "Konnte das Attribut sambaSID nicht lesen."
 
-#: ../templates/3rdParty/pla/lib/functions.php:1960
+#: ../lib/modules/passwordSelfReset.inc:890
+#: ../lib/modules/passwordSelfReset.inc:894
+#: ../lib/modules/passwordSelfReset.inc:902
+msgid "Unable to reset password."
+msgstr "Konnte Passwort nicht zurücksetzen."
+
+#: ../templates/3rdParty/pla/lib/functions.php:1942
 msgid "Unable to retrieve image"
 msgstr "Konnte Bild nicht auslesen."
 
@@ -9989,7 +10119,7 @@ msgstr "Konnte Bild nicht auslesen."
 msgid "Unable to retrieve schema!"
 msgstr "Konnte Schema nicht auslesen!"
 
-#: ../templates/selfService/adminMain.php:141
+#: ../templates/selfService/adminMain.php:144
 #: ../templates/profedit/profilepage.php:113
 msgid "Unable to save profile!"
 msgstr "Kann das Profil nicht speichern!"
@@ -10241,7 +10371,8 @@ msgstr "Benutzer muss Passwort ändern"
 #: ../lib/modules/inetOrgPerson.inc:74 ../lib/modules/inetOrgPerson.inc:564
 #: ../lib/modules/inetOrgPerson.inc:631 ../lib/modules/inetOrgPerson.inc:975
 #: ../lib/modules/inetOrgPerson.inc:1328 ../lib/modules/inetOrgPerson.inc:1434
-#: ../lib/modules/passwordSelfReset.inc:182
+#: ../lib/modules/passwordSelfReset.inc:585
+#: ../lib/modules/passwordSelfReset.inc:654
 msgid "User name"
 msgstr "Benutzername"
 
@@ -10259,6 +10390,8 @@ msgstr "Attribut für Benutzernamen"
 #: ../lib/modules/zarafaUser.inc:358 ../lib/modules/zarafaUser.inc:359
 #: ../lib/modules/nisnetgroup.inc:142 ../lib/modules/inetOrgPerson.inc:74
 #: ../lib/modules/inetOrgPerson.inc:75
+#: ../lib/modules/passwordSelfReset.inc:608
+#: ../lib/modules/passwordSelfReset.inc:712
 msgid ""
 "User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -10449,7 +10582,7 @@ msgstr "Mittwoch"
 msgid "Western Europe Time, London, Lisbon"
 msgstr "Westeuropäische Zeit, London, Lissabon"
 
-#: ../lib/modules/passwordSelfReset.inc:66
+#: ../lib/modules/passwordSelfReset.inc:108
 msgid "What is the name of your favourite pet?"
 msgstr "Wie ist der Name Ihres Lieblingshaustieres?"
 
@@ -10550,8 +10683,8 @@ msgid "Write access"
 msgstr "Schreibzugriff"
 
 #: ../templates/login.php:470 ../templates/login.php:528
-#: ../templates/selfService/selfServiceLogin.php:98
-#: ../templates/selfService/selfServiceLogin.php:116
+#: ../templates/selfService/selfServiceLogin.php:100
+#: ../templates/selfService/selfServiceLogin.php:118
 msgid "Wrong password/user name combination. Please try again."
 msgstr "Falsche Benutzername/Passwort-Kombination. Bitte erneut eingeben."
 
@@ -10678,7 +10811,7 @@ msgstr ""
 msgid "You need to add at least one member to this group."
 msgstr "Sie müssen mindestens ein Mitglied zu dieser Gruppe hinzufügen."
 
-#: ../lib/modules/passwordSelfReset.inc:97
+#: ../lib/modules/passwordSelfReset.inc:163
 msgid "You specified an answer but no security question."
 msgstr "Sie haben eine Antwort angegeben aber keine Sicherheitsfrage dazu."
 
@@ -10794,11 +10927,11 @@ msgstr "Attribut gelöscht"
 msgid "backupRootFileSystem"
 msgstr "sichereRootDateisystem"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2313
+#: ../templates/3rdParty/pla/lib/functions.php:2295
 msgid "browse"
 msgstr "Auswählen"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2015
+#: ../templates/3rdParty/pla/lib/functions.php:1997
 #: ../templates/3rdParty/pla/htdocs/import.php:48
 msgid "bytes"
 msgstr "Bytes"
@@ -10984,7 +11117,7 @@ msgstr "neu"
 msgid "no"
 msgstr "nein"
 
-#: ../templates/3rdParty/pla/lib/functions.php:1917
+#: ../templates/3rdParty/pla/lib/functions.php:1899
 msgid "no description available"
 msgstr "Keine Beschreibung verfügbar"
 
@@ -11006,7 +11139,7 @@ msgstr "Keine neuen binären Attribute für diesen Eintrag verfügbar"
 #: ../templates/schema/schema.php:238 ../templates/schema/schema.php:287
 #: ../templates/schema/schema.php:353 ../templates/schema/schema.php:368
 #: ../templates/schema/schema.php:402 ../templates/schema/schema.php:424
-#: ../templates/3rdParty/pla/lib/functions.php:2642
+#: ../templates/3rdParty/pla/lib/functions.php:2599
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1573
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1581
 msgid "none"
@@ -11050,7 +11183,7 @@ msgstr "pc01,Raum 2.34"
 msgid "pc01,pc02"
 msgstr "pc01,pc02"
 
-#: ../templates/3rdParty/pla/lib/functions.php:2015
+#: ../templates/3rdParty/pla/lib/functions.php:1997
 msgid "pixels"
 msgstr "Pixel"
 
@@ -11066,8 +11199,8 @@ msgstr "Aktualisieren"
 msgid "rename"
 msgstr "Umbenennen"
 
-#: ../templates/3rdParty/pla/lib/PageRender.php:445 ../lib/html.inc:491
-#: ../lib/html.inc:1222 ../lib/html.inc:1624
+#: ../templates/3rdParty/pla/lib/PageRender.php:445 ../lib/html.inc:515
+#: ../lib/html.inc:1246 ../lib/html.inc:1648
 msgid "required"
 msgstr "erforderlich"
 
