@@ -1,4 +1,4 @@
-August 2011 3.5.0
+09.08.2011 3.5.0
   - New modules:
    -> "General information": shows internal data about accounts (e.g. creation time)
    -> "Quota": manage filesystem quota inside LDAP (Linux DiskQuota) (RFE 1811449)
