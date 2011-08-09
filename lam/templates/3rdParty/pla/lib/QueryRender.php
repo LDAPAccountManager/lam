@@ -127,7 +127,7 @@ class QueryRender extends PageRender {
 		echo '</tr>';
 
 		echo '<tr>';
-		printf('<td><acronym title="%s">%s</acronym></td>',_('The scope in which to search'),_('Search Scope'));
+		printf('<td><acronym title="%s">%s</acronym></td>',_('The scope in which to search'),_('Search scope'));
 
 		echo '<td>';
 		echo '<select name="scope" style="width: 200px">';

@@ -64,7 +64,7 @@ echo '</span></td>';
 echo '</tr>';
 
 echo '<tr>';
-printf('<td><span style="white-space: nowrap">%s</span></td>',_('Search Scope'));
+printf('<td><span style="white-space: nowrap">%s</span></td>',_('Search scope'));
 
 echo '<td>';
 

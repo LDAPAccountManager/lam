@@ -509,7 +509,7 @@ class ImportLDIF extends Import {
 								if ($key = array_search($attribute_value_part,$attribute->getValues()))
 									$attribute->delValue($key);
 								else
-									return $this->error(sprintf('%s %s',_('Delete value doesnt exist in DN'),$attribute_value_part),
+									return $this->error(sprintf('%s %s',_('Value to delete does not exist in DN'),$attribute_value_part),
 										array_merge(array($currentLine),$lines));
 
 
