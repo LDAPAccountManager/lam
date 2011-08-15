@@ -194,6 +194,8 @@ $helpArray = array (
 						'<li>' . _('The wildcard for the new password is @@newPassword@@.') . '</li>'),
 				"553" => array ("Headline" => _("HTML format"),
 					"Text" => _('Specifies if the mail should be sent as text or HTML.')),
+				"554" => array ("Headline" => _("Reply-to address"),
+					"Text" => _("This email address will be set as reply-to address of all password mails.")),
 				// 600 - 699
 				// OU-editor, domain page
 				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organisational unit"),

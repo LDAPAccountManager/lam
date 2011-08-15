@@ -314,6 +314,9 @@ if (isLAMProVersion()) {
 	$pwdMailFrom = new htmlTableExtendedInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
 	$pwdMailContent->addElement($pwdMailFrom, true);
 	
+	$pwdMailReplyTo = new htmlTableExtendedInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
+	$pwdMailContent->addElement($pwdMailReplyTo, true);
+	
 	$pwdMailSubject = new htmlTableExtendedInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
 	$pwdMailContent->addElement($pwdMailSubject, true);
 	
@@ -417,6 +420,9 @@ function checkInput() {
 		$conf->setAccessLevel($_POST['accessLevel']);
 		if (!$conf->setLamProMailFrom($_POST['pwdResetMail_from'])) {
 			$errors[] = array("ERROR", _("From address for password mails is invalid."), $_POST['pwdResetMail_from']);
+		}
+		if (!$conf->setLamProMailReplyTo($_POST['pwdResetMail_replyTo'])) {
+			$errors[] = array("ERROR", _("Reply-to address for password mails is invalid."), $_POST['pwdResetMail_replyTo']);
 		}
 		$conf->setLamProMailSubject($_POST['pwdResetMail_subject']);
 		if (isset($_POST['pwdResetMail_isHTML']) && ($_POST['pwdResetMail_isHTML'] == 'on')) {

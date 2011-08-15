@@ -257,6 +257,9 @@ class LAMConfig {
 	/** email address for sender of password reset mails */
 	private $lamProMailFrom = '';
 	
+	/** reply-to email address for password reset mails */
+	private $lamProMailReplyTo = '';
+	
 	/** subject for password reset mails */
 	private $lamProMailSubject = '';
 	
@@ -270,7 +273,7 @@ class LAMConfig {
 	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
-		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailSubject',
+		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML');
 
 
@@ -423,6 +426,7 @@ class LAMConfig {
 			if (!in_array("loginSearchSuffix", $saved)) array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
 			if (!in_array("loginSearchFilter", $saved)) array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
 			if (!in_array("lamProMailFrom", $saved)) array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
+			if (!in_array("lamProMailReplyTo", $saved)) array_push($file_array, "\n\n# Password mail reply-to\n" . "lamProMailReplyTo: " . $this->lamProMailReplyTo . "\n");
 			if (!in_array("lamProMailSubject", $saved)) array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
 			if (!in_array("lamProMailIsHTML", $saved)) array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
 			if (!in_array("lamProMailText", $saved)) array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
@@ -1059,6 +1063,29 @@ class LAMConfig {
 		return true;
 	}
 	
+	/**
+	 * Returns the reply-to address for password reset mails.
+	 * 
+	 * @return String mail address
+	 */
+	public function getLamProMailReplyTo() {
+		return $this->lamProMailReplyTo;
+	}
+
+	/**
+	 * Sets the reply-to address for password reset mails.
+	 * 
+	 * @param String $lamProMailReplyTo mail address
+	 * @return boolean true if address is valid
+	 */
+	public function setLamProMailReplyTo($lamProMailReplyTo) {
+		$this->lamProMailReplyTo = $lamProMailReplyTo;
+		if (($lamProMailReplyTo != '') && !get_preg($lamProMailReplyTo, 'email') && !get_preg($lamProMailReplyTo, 'emailWithName')) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Returns the subject for password reset mails.
 	 * 
