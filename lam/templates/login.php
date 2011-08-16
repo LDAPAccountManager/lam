@@ -249,7 +249,7 @@ function display_LoginPage($config_object) {
 		}
 		// check if self service was saved
 		if (isset($_GET['selfserviceSaveOk'])) {
-			StatusMessage("INFO", _("Your settings were successfully saved."), $_GET['selfserviceSaveOk']);
+			StatusMessage("INFO", _("Your settings were successfully saved."), htmlspecialchars($_GET['selfserviceSaveOk']));
 			echo "<br>";
 		}
 		?>
