@@ -1,3 +1,9 @@
+November 2011 3.6.0
+  - Zarafa 7 support
+  - new modules
+   -> authorizedServiceObject
+
+
 09.08.2011 3.5.0
   - New modules:
    -> "General information": shows internal data about accounts (e.g. creation time)
