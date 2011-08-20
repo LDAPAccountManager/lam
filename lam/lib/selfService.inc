@@ -257,6 +257,9 @@ class selfServiceProfile {
 
 	/** server address */
 	public $serverURL;
+	
+	/** use TLS */
+	public $useTLS;
 
 	/** LDAP suffix */
 	public $LDAPSuffix;
@@ -302,6 +305,7 @@ class selfServiceProfile {
 	function __construct() {
 		// set default values
 		$this->serverURL = "localhost";
+		$this->useTLS = false;
 		$this->LDAPSuffix = "dc=my-domain,dc=com";
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
