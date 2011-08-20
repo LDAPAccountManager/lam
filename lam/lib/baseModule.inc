@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1229,7 +1229,7 @@ abstract class baseModule {
 	 * It is not possible to display help links.
 	 *
 	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
+	 * @param array $attributes attributes of LDAP account
 	 * @return htmlElement meta HTML object
 	 * 
 	 * @see htmlElement

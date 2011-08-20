@@ -813,7 +813,7 @@ class kolabUser extends baseModule {
 	 * It is not possible to display help links.
 	 *
 	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
+	 * @param array $attributes attributes of LDAP account
 	 * @return array meta HTML
 	 */
 	function getSelfServiceOptions($fields, $attributes) {
