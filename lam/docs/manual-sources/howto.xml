@@ -338,10 +338,10 @@ Have fun!
                   type="" url="http://www.ldap-account-manager.org/">LAM
                   homepage</ulink>. The packages can be installed with these
                   commands:<para><emphasis role="bold">rpm -e
-                  ldap-account-manager ldap-account-manager-lamdaemon</emphasis> (if an
-                  older version is installed)</para><para><emphasis
-                  role="bold">rpm -i &lt;path to LAM
-                  package&gt;</emphasis></para></entry>
+                  ldap-account-manager
+                  ldap-account-manager-lamdaemon</emphasis> (if an older
+                  version is installed)</para><para><emphasis role="bold">rpm
+                  -i &lt;path to LAM package&gt;</emphasis></para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -2335,6 +2335,14 @@ Have fun!
 
         <para>ldap_user_sendas_relation_attribute = uid</para>
 
+        <para> <literallayout>
+</literallayout><literallayout>
+</literallayout></para>
+
+        <para><emphasis role="bold">Features:</emphasis> Zarafa 7 allows to
+        enable IMAP/POP3 for each user. Please hide this option if you use
+        Zarafa 6.x.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -2351,6 +2359,10 @@ Have fun!
           (e.g. hide from address book). You can also set the resource type
           and capacity for meeting rooms and equipment. The Zarafa extension
           can be added and removed at any time for every user.</para>
+
+          <para>Please note that the option "Features" requires Zarafa 7.
+          Please hide this option in the LAM server profile if you run Zarafa
+          6.x.</para>
 
           <screenshot>
             <mediaobject>
