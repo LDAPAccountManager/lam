@@ -115,7 +115,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
 			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials');
 		// self service search attributes
-		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
+		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName', 'employeeNumber');
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array('firstName' => _('First name'), 'lastName' => _('Last name'),
 			'mail' => _('Email address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
