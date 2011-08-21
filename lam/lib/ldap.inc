@@ -186,19 +186,20 @@ class Ldap{
 	* Encrypts a string
 	*
 	* @param string $data string to encrypt
+	* @param string $prefix prefix for cookie names
 	* @return object encrypted string
 	*/
-	function encrypt($data) {
+	public static function encrypt($data, $prefix='') {
 		// use MCrypt if available
 		if (function_exists('mcrypt_create_iv')) {
 			// MCrypt may have been enabled in a running session
-			if (!isset($_COOKIE["IV"]) || ($_COOKIE["IV"] == '')) return $data;
-			if ($_COOKIE["IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
+			if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
+			if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
 				return $data;
 			}
 			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
+			$iv = base64_decode($_COOKIE[$prefix . "IV"]);
+			$key = base64_decode($_COOKIE[$prefix . "Key"]);
 			// encrypt string
 			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, base64_encode($data), MCRYPT_MODE_ECB, $iv);
 		}
@@ -212,19 +213,20 @@ class Ldap{
 	* Decrypts a string
 	*
 	* @param object $data string to decrypt
+	* @param string $prefix prefix for cookie names
 	* @return string decrypted string
 	*/
-	function decrypt($data) {
+	public static function decrypt($data, $prefix='') {
 		// use MCrypt if available
 		if (function_exists('mcrypt_create_iv')) {
 			// MCrypt may have been enabled in a running session
-			if (!isset($_COOKIE["IV"]) || ($_COOKIE["IV"] == '')) return $data;
-			if ($_COOKIE["IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
+			if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
+			if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
 				return $data;
 			}
 			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
+			$iv = base64_decode($_COOKIE[$prefix . "IV"]);
+			$key = base64_decode($_COOKIE[$prefix . "Key"]);
 			// decrypt string
 			$ret = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
 			$ret = base64_decode(str_replace(chr(00), "", $ret));
