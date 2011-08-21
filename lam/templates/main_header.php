@@ -102,6 +102,13 @@ foreach ($toSort as $key => $value) {
 				echo " - " . LAMVersion();
 				?>
 			</a>
+			<?php
+				echo '&nbsp;&nbsp;<small>';
+				$userData = $_SESSION['ldap']->decrypt_login();
+				printf('(' . _('Logged in as: %s') . ')', getAbstractDN($userData[0]));
+				$userData = null;
+				echo '</small>';
+			?>
 		</td>
 	<td align="right" height=30>
 	<ul id="dropmenu" class="dropmenu">
