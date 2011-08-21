@@ -1855,6 +1855,34 @@ Have fun!
       </section>
 
       <section>
+        <title>Authorized services</title>
+
+        <para>You can setup PAM to check if a user is allowed to run a
+        specific service (e.g. sshd) by reading the LDAP attribute
+        "authorizedService". This way you can manage all allowed services via
+        LAM.</para>
+
+        <para></para>
+
+        <para>To activate this PAM feature please setup your <emphasis
+        role="bold">/etc/libnss-ldap.conf</emphasis> and set
+        "pam_check_service_attr" to "yes".</para>
+
+        <para></para>
+
+        <para>Inside LAM you can now set the allowed services. You may also
+        setup default services in your account profiles.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_authorizedServices.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>IMAP mailboxes</title>
 
         <para>LAM may create and delete mailboxes on an IMAP server for your
@@ -2335,7 +2363,7 @@ Have fun!
 
         <para>ldap_user_sendas_relation_attribute = uid</para>
 
-        <para> <literallayout>
+        <para><literallayout>
 </literallayout><literallayout>
 </literallayout></para>
 
@@ -3712,6 +3740,24 @@ Have fun!
 
             <entry>The device object class is only available in LAM
             Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_authorizedServices.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Authorized services</entry>
+
+            <entry>authorizedServiceObject</entry>
+
+            <entry>ldapns.schema</entry>
+
+            <entry>Part of libpam-ldap installation</entry>
+
+            <entry></entry>
           </row>
 
           <row>
