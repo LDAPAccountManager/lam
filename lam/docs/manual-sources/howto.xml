@@ -1034,13 +1034,16 @@ Have fun!
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/configProfiles7.png" />
+                <imagedata fileref="images/configProfiles8.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
 
-          <para>LAM supports two methods for login. You may either specify a
-          fixed list of LDAP DNs or let LAM search for the DN in your
+          <para>LAM supports two methods for login. The first one is to
+          specify a fixed list of LDAP DNs that are allowed to login. Please
+          enter one DN per line.</para>
+
+          <para>The second one is to let LAM search for the DN in your
           directory. E.g. if a user logs in with the user name "joe" then LAM
           will do an LDAP search for this user name. When it finds a matching
           DN then it will use this to authenticate the user. The wildcard
@@ -1048,8 +1051,23 @@ Have fun!
           provide login by user name, email address or other LDAP
           attributes.</para>
 
-          <para>You may also change the password of this server
-          profile.</para>
+          <para>Additionally, you can enable HTTP authentication when using
+          "LDAP search". This way the web server is responsible to
+          authenticate your users. LAM will use the given user name + password
+          for the LDAP login. To setup HTTP authentication in Apache please
+          see this <ulink
+          url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configProfiles7.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>You may also change the password of this server profile.
+          Please just enter the new password in both password fields.</para>
         </section>
 
         <section>

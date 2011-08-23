@@ -358,6 +358,8 @@ $securitySettingsContent->addElement($searchSuffixInput, true);
 $searchFilterInput = new htmlTableExtendedInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
 $searchFilterInput->setRequired(true);
 $securitySettingsContent->addElement($searchFilterInput, true);
+// HTTP authentication
+$securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223', true), true);
 $securitySettingsContent->addElement(new htmlSpacer(null, '10px'), true);
 // new password
 $password1 = new htmlTableExtendedInputField(_("New password"), 'passwd1', null, '212');
@@ -443,6 +445,12 @@ function checkInput() {
 	$conf->setLoginMethod($_POST['loginMethod']);
 	$conf->setLoginSearchFilter($_POST['loginSearchFilter']);
 	$conf->setLoginSearchSuffix($_POST['loginSearchSuffix']);
+	if (isset($_POST['httpAuthentication']) && ($_POST['httpAuthentication'] == 'on')) {
+		$conf->setHttpAuthentication('true');
+	}
+	else {
+		$conf->setHttpAuthentication('false');
+	}
 	if (!$conf->set_Adminstring(implode(";", $adminTextNew))) {
 		$errors[] = array("ERROR", _("List of admin users is empty or invalid!"));
 	}
