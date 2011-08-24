@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006  Roland Gruber
+  Copyright (C) 2006 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -273,6 +273,9 @@ class selfServiceProfile {
 	/** LDAP search attribute */
 	public $searchAttribute;
 	
+	/** HTTP authentication */
+	public $httpAuthentication;
+	
 	/** header for self service pages */
 	public $pageHeader;
 	
@@ -310,6 +313,7 @@ class selfServiceProfile {
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
 		$this->searchAttribute = "uid";
+		$this->httpAuthentication = false;
 		$this->pageHeader = '<table border=0 width="100%" class="lamHeader ui-corner-all"><tr><td align="left" height="30"><a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a></td></tr></table><br>';
 		$this->additionalCSS = '';
 		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";

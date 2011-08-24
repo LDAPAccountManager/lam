@@ -3506,6 +3506,16 @@ Have fun!
             </row>
 
             <row>
+              <entry>HTTP authentication</entry>
+
+              <entry>You can enable HTTP authentication for your users. This
+              way the web server is responsible to authenticate your users.
+              LAM will use the given user name + password for the LDAP login.
+              To setup HTTP authentication in Apache please see this <ulink
+              url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</entry>
+            </row>
+
+            <row>
               <entry>Login attribute label</entry>
 
               <entry>This is the description for the LDAP search attribute.
