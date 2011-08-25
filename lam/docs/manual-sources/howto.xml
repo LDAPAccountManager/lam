@@ -1649,6 +1649,64 @@ Have fun!
       </section>
 
       <section>
+        <title>Password self reset (LAM Pro)</title>
+
+        <para>LAM Pro allows your users to reset their passwords by answering
+        a security question. The reset link is displayed on the <link
+        linkend="PasswordSelfReset">self service page</link>. Additionally,
+        you can set question + answer in the admin interface.</para>
+
+        <para><emphasis role="bold">Schema</emphasis></para>
+
+        <para>Please install the schema that comes with LAM Pro:
+        passwordSelfReset.schema or passwordSelfReset.ldif</para>
+
+        <para>This allows to set a security question + answer for each
+        account.</para>
+
+        <para><emphasis role="bold">Activate password self reset
+        module</emphasis></para>
+
+        <para>Please activate the password self reset module in your LAM Pro
+        server profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset7.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now select the tab "Module settings" and specify the list of
+        possible security questions. Only these questions will be selectable
+        when you later edit accounts.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset8.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Edit users</emphasis></para>
+
+        <para>After everything is setup please login to LAM Pro and edit your
+        users. You will see a new tab called "Password self reset". Here you
+        can activate/remove the password self reset function for each user.
+        You can also change the security question and answer.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset9.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Hosts</title>
 
         <para>You can specify a list of valid host names where the user may
@@ -3458,114 +3516,229 @@ Have fun!
     <section>
       <title>Edit your new profile</title>
 
-      <para>On top of the page you see the link to the user login page. Copy
-      this link address and give it to your users.</para>
+      <section>
+        <title>Basic settings</title>
 
-      <para>Below the link you can specify several options.</para>
+        <para>On top of the page you see the link to the user login page. Copy
+        this link address and give it to your users.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/conf4.jpg" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <para>Below the link you can specify several options.</para>
 
-      <table>
-        <title>General options</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/conf4.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
-        <tgroup cols="2">
-          <tbody>
-            <row>
-              <entry>Server address</entry>
+        <table>
+          <title>General options</title>
 
-              <entry>The address of your LDAP server</entry>
-            </row>
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>Server address</entry>
 
-            <row>
-              <entry>LDAP suffix</entry>
+                <entry>The address of your LDAP server</entry>
+              </row>
 
-              <entry>The part of the LDAP tree where LAM should search for
-              users</entry>
-            </row>
+              <row>
+                <entry>LDAP suffix</entry>
 
-            <row>
-              <entry>LDAP user + password</entry>
+                <entry>The part of the LDAP tree where LAM should search for
+                users</entry>
+              </row>
 
-              <entry>The DN and password which is used to search for users in
-              the LDAP database. It is sufficient if this DN has only read
-              rights. If you leave these fields empty LAM will try to connect
-              anonymously.</entry>
-            </row>
+              <row>
+                <entry>LDAP user + password</entry>
 
-            <row>
-              <entry>LDAP search attribute</entry>
+                <entry>The DN and password which is used to search for users
+                in the LDAP database. It is sufficient if this DN has only
+                read rights. If you leave these fields empty LAM will try to
+                connect anonymously.</entry>
+              </row>
 
-              <entry>Here you can specify if your users can login with user
-              name + password, email + password or other attributes.</entry>
-            </row>
+              <row>
+                <entry>LDAP search attribute</entry>
 
-            <row>
-              <entry>HTTP authentication</entry>
+                <entry>Here you can specify if your users can login with user
+                name + password, email + password or other attributes.</entry>
+              </row>
 
-              <entry>You can enable HTTP authentication for your users. This
-              way the web server is responsible to authenticate your users.
-              LAM will use the given user name + password for the LDAP login.
-              To setup HTTP authentication in Apache please see this <ulink
-              url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</entry>
-            </row>
+              <row>
+                <entry>HTTP authentication</entry>
 
-            <row>
-              <entry>Login attribute label</entry>
+                <entry>You can enable HTTP authentication for your users. This
+                way the web server is responsible to authenticate your users.
+                LAM will use the given user name + password for the LDAP
+                login. To setup HTTP authentication in Apache please see this
+                <ulink
+                url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</entry>
+              </row>
 
-              <entry>This is the description for the LDAP search attribute.
-              Set it to something which your users are familiar with.</entry>
-            </row>
+              <row>
+                <entry>Login attribute label</entry>
 
-            <row>
-              <entry>Login caption</entry>
+                <entry>This is the description for the LDAP search attribute.
+                Set it to something which your users are familiar
+                with.</entry>
+              </row>
 
-              <entry>This text is displayed at the login page. You can input
-              HTML, too.</entry>
-            </row>
+              <row>
+                <entry>Login caption</entry>
 
-            <row>
-              <entry>Main page caption</entry>
+                <entry>This text is displayed at the login page. You can input
+                HTML, too.</entry>
+              </row>
 
-              <entry>This text is displayed at self service main page where
-              your users change their data. You can input HTML, too.</entry>
-            </row>
+              <row>
+                <entry>Main page caption</entry>
 
-            <row>
-              <entry>Page header</entry>
+                <entry>This text is displayed at self service main page where
+                your users change their data. You can input HTML, too.</entry>
+              </row>
 
-              <entry>This HTML code will be placed on top of all self service
-              pages. E.g. you can use this to place your custom logo. Any HTML
-              code is permitted.</entry>
-            </row>
+              <row>
+                <entry>Page header</entry>
 
-            <row>
-              <entry>Additional CSS links</entry>
+                <entry>This HTML code will be placed on top of all self
+                service pages. E.g. you can use this to place your custom
+                logo. Any HTML code is permitted.</entry>
+              </row>
 
-              <entry>Here you can specify additional CSS links to change the
-              layout of the self service pages. This is useful to adapt them
-              to your corporate design. Please enter one link per
-              line.</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+              <row>
+                <entry>Additional CSS links</entry>
 
-      <para>On the bottom you can specify what input fields your users can
-      see. It is also possible to group several input fields.</para>
+                <entry>Here you can specify additional CSS links to change the
+                layout of the self service pages. This is useful to adapt them
+                to your corporate design. Please enter one link per
+                line.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/conf5.jpg" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+      <section>
+        <title>Page layout</title>
+
+        <para>On the bottom you can specify what input fields your users can
+        see. It is also possible to group several input fields.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/conf5.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section id="PasswordSelfReset">
+        <title>Password self reset</title>
+
+        <para><emphasis role="bold">Settings</emphasis></para>
+
+        <para>You can allow your users to reset their passwords themselves.
+        This will reduce your administrative costs for cases where users
+        forget their passwords.</para>
+
+        <para>To enable this feature please activate the checkbox "Enable
+        password self reset link":</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can now configure the minimum answer length for password
+        reset answers. This is checked when you allow you users to specify
+        their answers via the self service. Additionally, you can specify the
+        text of the password reset link (default: "Forgot password?"). The
+        link is displayed below the password field on the self service login
+        page.</para>
+
+        <para>Next, please enter the DN and password of an LDAP entry that is
+        allowed to reset the passwords. This entry needs write access to the
+        attributes shadowLastChange, pwdAccountLockedTime and userPassword. It
+        also needs read access to uid, mail, passwordSelfResetQuestion and
+        passwordSelfResetAnswer. Please note that LAM Pro saves the password
+        on your server file system. Therefore, it is required to protect your
+        server against unauthorised access.</para>
+
+        <para>Finally, please specify the list of password reset questions
+        that the user can choose.</para>
+
+        <para><emphasis role="bold">New fields for self service
+        page</emphasis></para>
+
+        <para>There are two new fields that you may put on the self service
+        page for your users. These fields allow them to change the reset
+        question and its answer.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>This is an example how can be presented to your users on the
+        self service page:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Password reset link</emphasis></para>
+
+        <para>After activating the password self reset feature there will be a
+        new link on the self service login page. The text can be configured as
+        described above (default: "Forgot password?").</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>When a user clicks on the link then he will be asked for
+        identification with his user name and email address.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM Pro will use this information to find the correct LDAP entry
+        of this user. It then displays the user's security question and input
+        fields for his new password. If the answer is correct then the new
+        password will be set. Additionally, pwdAccountLockedTime will be
+        removed and shadowLastChange updated to the current time if
+        existing.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section>
