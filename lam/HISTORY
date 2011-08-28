@@ -1,8 +1,11 @@
 November 2011 3.6.0
-  - Zarafa 7 support
   - support HTTP authentication for admin pages and self service
   - new modules
    -> authorizedServiceObject
+  - LAM Pro
+   -> added password self reset feature
+   -> Zarafa 7 support
+   -> Zarafa dynamic groups support
 
 
 09.08.2011 3.5.0
