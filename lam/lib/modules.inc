@@ -965,6 +965,7 @@ class accountContainer {
 	private function printPasswordPromt() {
 		echo "<div id=\"passwordDialog\" class=\"hidden\">\n";
 		echo '<div id="passwordDialogMessageArea"></div>';
+		$printContainer = false;
 		$container = new htmlTable();
 		// password fields
 		$container->addElement(new htmlOutputText(_('Password')));
@@ -981,6 +982,7 @@ class accountContainer {
 		$moduleContainer = new htmlTable();
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
+				$printContainer = true;
 				$moduleContainer->addElement(new htmlInputCheckbox('password_cb_' . $name, true));
 				$buttonImage = $module->getIcon();
 				if ($buttonImage != null) {
@@ -995,7 +997,9 @@ class accountContainer {
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// generate HTML
 		$tabindex = 2000;
-		parseHtml(null, $container, array(), false, $tabindex, $this->type);
+		if ($printContainer) {
+			parseHtml(null, $container, array(), false, $tabindex, $this->type);
+		}
 		echo "</div>\n";
 	}
 	
