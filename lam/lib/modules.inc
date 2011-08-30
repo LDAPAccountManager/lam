@@ -776,7 +776,7 @@ class accountContainer {
 			if (isset($_POST['accountContainerBackToEdit'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type . "&amp;DN=" . $this->finalDN);
+				metaRefresh("edit.php?type=" . $this->type . "&amp;DN=" . urlencode($this->finalDN));
 				exit();
 			}
 			// back to account list
@@ -1368,11 +1368,11 @@ class accountContainer {
 		$search = substr($dn, 0, strpos($dn, ','));
 		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), array('*', '+'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
-			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . $dn, ldap_error($_SESSION['ldap']->server())));
+			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
 		}
 		$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 		if (!$entry) {
-			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . $dn, ldap_error($_SESSION['ldap']->server())));
+			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
 		}
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
