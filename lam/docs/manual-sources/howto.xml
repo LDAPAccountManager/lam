@@ -2509,6 +2509,50 @@ Have fun!
             </mediaobject>
           </screenshot>
         </section>
+
+        <section>
+          <title>Address lists</title>
+
+          <para>Zarafa allows to store address lists in LDAP. You need to
+          define a search base and LDAP filter for each address list. E.g.
+          entering "ou=people,dc=company,dc=com" as base and "uid=*" will
+          select all users that are stored in
+          "ou=people,dc=company,dc=com".</para>
+
+          <para>You can also hide your lists from the address book or
+          temporarily disable them.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/zarafa6.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Dynamic groups</title>
+
+          <para>Zarafa allows to define dynamic groups in LDAP. You need to
+          define a search base and LDAP filter for each group. E.g. entering
+          "ou=people,dc=company,dc=com" as base and "uid=*" will select all
+          users that are stored in "ou=people,dc=company,dc=com".</para>
+
+          <para>Dynamic groups may have an email address and multiple email
+          alias addresses.</para>
+
+          <para>You can also hide your dynamic groups from the address book or
+          temporarily disable them.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/zarafa7.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
       </section>
     </section>
 
