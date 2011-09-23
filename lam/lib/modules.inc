@@ -687,8 +687,8 @@ class accountContainer {
 	/** Name of accountContainer variable in session */
 	private $base;
 
-	/** This variable stores the name of the currently displayed page */
-	private $current_page;
+	/** This variable stores the page number of the currently displayed page */
+	private $current_page = 0;
 
 	/** This variable is set to the pagename of a subpage if it should be displayed */
 	private $subpage;
@@ -1558,29 +1558,29 @@ class accountContainer {
 			}
 		// Complete dn with RDN attribute
 		$search = $this->rdn;
-		$added = false;
+		$DNChanged = false;
 		foreach ($attributes as $DN) {
-			if (isset($DN['modify'][$search][0]) && !$added) {
+			if (isset($DN['modify'][$search][0]) && !$DNChanged) {
 				$attributes[$search.'='.$DN['modify'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
 				unset ($attributes[$this->finalDN]);
 				$this->finalDN = $search.'='.$DN['modify'][$search][0].','.$this->finalDN;
-				$added = true;
+				$DNChanged = true;
 				}
-			if (isset($DN['add'][$search][0]) && !$added) {
+			if (isset($DN['add'][$search][0]) && !$DNChanged) {
 				$attributes[$search.'='.$DN['add'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
 				unset ($attributes[$this->finalDN]);
 				$this->finalDN = $search.'='.$DN['add'][$search][0].','.$this->finalDN;
-				$added = true;
+				$DNChanged = true;
 				}
-			if (isset($DN['notchanged'][$search][0]) && !$added) {
+			if (isset($DN['notchanged'][$search][0]) && !$DNChanged) {
 				$attributes[$search.'='.$DN['notchanged'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
 				unset ($attributes[$this->finalDN]);
 				$this->finalDN = $search.'='.$DN['notchanged'][$search][0].','.$this->finalDN;
-				$added = true;
+				$DNChanged = true;
 				}
 			}
 		// Add old dn if dn hasn't changed
-		if (!$added) {
+		if (!$DNChanged) {
 			$attributes[$this->dn_orig] = $attributes[$this->finalDN];
 			unset ($attributes[$this->finalDN]);
 			$this->finalDN = $this->dn_orig;
@@ -1746,6 +1746,9 @@ class accountContainer {
 		$order = array();
 		$modules = array_keys($this->module);
 		$depModules = array();
+		if (isset($this->order)) {
+			$currentPage = $this->order[$this->current_page];
+		}
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			// insert waiting modules
 			for ($w = 0; $w < sizeof($depModules); $w++) {
@@ -1808,6 +1811,10 @@ class accountContainer {
 			}
 		}
 		$this->order = array_merge($activeModules, $passiveModules);
+		// check if ordering changed and current page number must be updated
+		if (isset($currentPage) && ($currentPage != $this->order[$this->current_page])) {
+			$this->current_page = array_search($currentPage, $this->order);
+		}
 	}
 	
 	/**
