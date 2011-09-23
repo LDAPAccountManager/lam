@@ -2444,8 +2444,8 @@ Have fun!
 </literallayout></para>
 
         <para><emphasis role="bold">Features:</emphasis> Zarafa 7 allows to
-        enable IMAP/POP3 for each user. Please hide this option if you use
-        Zarafa 6.x.</para>
+        enable IMAP/POP3 for each user. Please hide the option "Features" if
+        you use Zarafa 6.x.</para>
 
         <screenshot>
           <mediaobject>
@@ -2472,6 +2472,26 @@ Have fun!
             <mediaobject>
               <imageobject>
                 <imagedata fileref="images/zarafa3.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Contacts</title>
+
+          <para>LAM Pro can manage your Zarafa contact entries. You can set
+          the email aliases and "send as" privileges. Additionally, accounts
+          may be hidden in the address book or disabled.</para>
+
+          <para>Please note that you can either use the Zarafa user module or
+          Zarafa contact. LAM Pro will disable the other tab when enabling one
+          of them.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/zarafa8.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
