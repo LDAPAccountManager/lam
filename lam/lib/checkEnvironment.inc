@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010  Roland Gruber
+  Copyright (C) 2010 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,6 +74,10 @@ if (! function_exists('utf8_decode')) {
 // check if PHP has GD support
 if (! function_exists('getimagesize')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no GD support!", "Please install the GD extension for PHP.");
+}
+// check if PHP has JSON support
+if (! function_exists('json_encode')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no JSON support!", "Please install the JSON extension for PHP.");
 }
 // check file permissions
 $writableDirs = array('sess', 'tmp');
