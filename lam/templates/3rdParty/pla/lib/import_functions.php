@@ -167,7 +167,7 @@ class ImportLDIF extends Import {
 				list($text,$version) = $this->getAttrValue(array_shift($lines));
 
 				if ($version != 1)
-					return $this->error(sprintf('%s %s',_('LDIF import only suppports version 1'),$version),$lines);
+					return $this->error(sprintf('%s %s',_('LDIF import only supports version 1'),$version),$lines);
 
 				$haveVersion = true;
 				$lines = $this->nextLines();
