@@ -305,6 +305,10 @@ function getChildCount($dn) {
 */
 function deleteDN($dn) {
 	$errors = array();
+	if (($dn == null) || ($dn == '')) {
+		$errors[] = array('ERROR', _('Entry does not exist'));
+		return $errors;
+	}
 	$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);

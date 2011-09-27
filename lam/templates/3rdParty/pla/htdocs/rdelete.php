@@ -51,6 +51,13 @@ foreach ($request['parent'] as $dn) {
 }
 
 function pla_rdelete($server,$dn) {
+	if (($dn == null) || ($dn == '')) {
+		system_message(array(
+			'title'=>_('Entry does not exist'),
+			'body'=>sprintf('%s (%s)',_('Unable to delete entry, it does not exist'),$dn),
+			'type'=>'error'));
+		return false;
+	}
 	# We delete all children, not only the visible children in the tree
 	$children = $server->getContainerContents($dn,null,0,'(objectClass=*)',LDAP_DEREF_NEVER);
 
