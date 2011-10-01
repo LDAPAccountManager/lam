@@ -708,13 +708,21 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($_POST['removePassword'])) {
 			unset($this->attributes['userPassword']);
 		}
-		$this->attributes['uid'][0] = $_POST['uid'];
 		$this->attributes['cn'][0] = $_POST['cn'];
 		if (!get_preg($this->attributes['cn'][0], 'cn')) {
 			$errors[] = $this->messages['cn'][0];
 		}
 		$this->attributes['uidNumber'][0] = $_POST['uidNumber'];
 		$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
+		if ($this->get_scope()=='user') {
+			if (($this->attributes['uid'][0] != $_POST['uid']) && !get_preg($_POST['uid'], '!upper')) {
+				$errors[] = $this->messages['uid'][1];
+			}
+			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' )) {
+				$errors[] = $this->messages['homeDirectory'][0];
+			}
+		}
+		$this->attributes['uid'][0] = $_POST['uid'];
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
 		if ($this->get_scope()=='user') {
@@ -754,12 +762,6 @@ class posixAccount extends baseModule implements passwordService {
 					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 				}
 			}
-		}
-		if ($this->get_scope()=='user') {
-			if (($this->attributes['uid'][0] != $_POST['uid']) &&  !get_preg($_POST['uid'], '!upper'))
-			$errors[] = $this->messages['uid'][1];
-			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
-			$errors[] = $this->messages['homeDirectory'][0];
 		}
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
