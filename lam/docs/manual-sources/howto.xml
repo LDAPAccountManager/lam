@@ -2663,7 +2663,18 @@ Have fun!
       <literallayout>
 </literallayout>
 
-      <para>You may also manage the settings of your DHCP server entry:</para>
+      <para><emphasis role="bold">slapd.conf changes:</emphasis></para>
+
+      <para><code>include /etc/ldap/schema/dhcp.schema</code></para>
+
+      <para><code>index dhcpHWAddress eq</code></para>
+
+      <para><code>index dhcpClassData eq</code><literallayout>
+Run slapindex to rebuild the index.
+
+</literallayout></para>
+
+      <para>You can manage the settings of your DHCP server entry:</para>
 
       <screenshot>
         <mediaobject>
