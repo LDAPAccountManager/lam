@@ -2585,7 +2585,85 @@ Have fun!
       the DHCP modules. LAM requires that you use an LDAP entry with the
       object class "dhcpServer" as suffix for this account type.</para>
 
-      <para>You can also change the settings of your DHCP server entry:</para>
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Example server
+      entry:</emphasis><code></code></para>
+
+      <para><code>dn:
+      cn=server,ou=dhcp,dc=ldap-account-manager,dc=org</code></para>
+
+      <para><code>objectclass: dhcpServer</code></para>
+
+      <para><code>objectclass: dhcpOptions</code></para>
+
+      <para><code>objectclass: top</code></para>
+
+      <para><code>cn: server</code></para>
+
+      <para><code>dhcpcomments: My DHCP server</code></para>
+
+      <para><code>dhcpoption: domain-name
+      "ldap-account-manager.org"</code></para>
+
+      <para><code>dhcpoption: domain-name-servers 192.168.1.1</code></para>
+
+      <para><code>dhcpoption: routers 192.168.1.1</code></para>
+
+      <para><code>dhcpoption: netbios-name-servers 192.168.1.1</code></para>
+
+      <para><code>dhcpoption: subnet-mask 255.255.255.0</code></para>
+
+      <para><code>dhcpoption: netbios-node-type 8</code></para>
+
+      <para><code>dhcpstatements: default-lease-time 3600</code></para>
+
+      <para><code>dhcpstatements: max-lease-time 7200</code></para>
+
+      <para><code>dhcpstatements: include "mykey"</code></para>
+
+      <para><code>dhcpstatements: ddns-update-style interim</code></para>
+
+      <para><code>dhcpstatements: update-static-leases true</code></para>
+
+      <para><code>dhcpstatements: ignore client-updates</code></para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Example settings for
+      dhcpd.conf:</emphasis></para>
+
+      <para><code>ddns-update-style none;</code></para>
+
+      <para><code>deny unknown-clients;</code></para>
+
+      <para><code>ldap-server "server";</code></para>
+
+      <para><code>ldap-dhcp-server-cn "server";</code></para>
+
+      <para><code>ldap-port 389;</code></para>
+
+      <para><code>ldap-username
+      "uid=dhcp,ou=people,dc=ldap-account-manager,dc=org";</code></para>
+
+      <para><code>ldap-password "{SSHA}XXXXXXXXXXXX";</code></para>
+
+      <para><code>ldap-base-dn
+      "ou=dhcp,dc=ldap-account-manager,dc=org";</code></para>
+
+      <para><code>ldap-method dynamic;</code></para>
+
+      <para><code>ldap-debug-file
+      "/var/log/dhcp-ldap-startup.log";</code></para>
+
+      <para><code></code></para>
+
+      <literallayout>
+</literallayout>
+
+      <para>You may also manage the settings of your DHCP server entry:</para>
 
       <screenshot>
         <mediaobject>
