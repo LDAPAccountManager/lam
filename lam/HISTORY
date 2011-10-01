@@ -6,6 +6,8 @@ November 2011 3.6.0
    -> added password self reset feature
    -> Zarafa 7 support
    -> Zarafa support for dynamic groups, adress lists and contacts
+  - Fixed bugs:
+   -> Unix: check for upper-case characters in user name (3416180)
 
 
 09.08.2011 3.5.0
