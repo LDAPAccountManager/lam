@@ -1715,7 +1715,13 @@ Have fun!
         are prefixed with "!" (e.g. "!hr_server").</para>
 
         <para>Please note that your PAM settings need to support host
-        restrictions.</para>
+        restrictions. This feature is enabled by setting <emphasis
+        role="bold">pam_check_host_attr yes</emphasis> in your <emphasis
+        role="bold">/etc/pam_ldap.conf</emphasis>. When it is enabled then the
+        account facility of pam_ldap will perform the checks and return an
+        error when no proper host attribute is present. Please note that users
+        without host attribute cannot login to such a configured
+        server.</para>
 
         <screenshot>
           <mediaobject>
