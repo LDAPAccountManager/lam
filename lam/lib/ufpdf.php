@@ -26,8 +26,6 @@ if(!class_exists('UFPDF'))
 {
 define('UFPDF_VERSION','0.1');
 
-include_once 'fpdf.php';
-
 /**
  * Main UFPDF class for creating Unicode PDF documents
  *

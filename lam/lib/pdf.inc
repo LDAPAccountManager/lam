@@ -54,7 +54,7 @@ $line_width = LAMPDF_LINEWIDTH;
 function createModulePDF($accounts,$pdf_structure="default") {
 	
 	/** PDF generator class */
-	include_once("fpdf.php");
+	include_once(dirname(__FILE__) . "/fpdf.php");
 	/** Unicode support for FPDF */
 	include_once("ufpdf.php");
 	/** LAM PDF generator class */
@@ -73,7 +73,7 @@ function createModulePDF($accounts,$pdf_structure="default") {
 	$fontName = "BitstreamVeraSans-Roman"; // TODO: load font name from XML file
 	
 	// Create a new PDF file acording to the account type
-	$pdf = new LamPDF($load['page_definitions'],$fontName);
+	$pdf = new lamPDF($load['page_definitions'],$fontName);
 	
 	// Loop over each account and add a new page in the PDF file for it 
 	foreach($accounts as $account) {
