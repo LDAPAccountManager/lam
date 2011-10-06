@@ -46,8 +46,13 @@ class posixAccount extends baseModule implements passwordService {
 	private $groups;
 	private $groups_orig;
 
+	/* list of group of names that the user is member of */
+	private $gonList;
+	private $gonList_orig;
+	
 	private $lamdaemonServers = array();
 	private $groupCache = null;
+	private $gonCache = null;
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
 	private $cachedUIDList = null;
@@ -262,6 +267,14 @@ class posixAccount extends baseModule implements passwordService {
 				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
 			)
 			);
+			if ($this->areGroupOfNamesActive()) {
+				$return['upload_columns'][] = array(
+					'name' => 'posixAccount_gon',
+					'description' => _('Group of names'),
+					'help' => 'addgroup_upload',
+					'example' => _('group01,group02')
+				);
+			}
 		}
 		// host specific upload options
 		elseif ($this->get_scope() == 'host') {
@@ -308,6 +321,9 @@ class posixAccount extends baseModule implements passwordService {
 			'cn' => _('Common name'),
 			'userPassword' => _('Password')
 		);
+		if ($this->areGroupOfNamesActive()) {
+			$return['PDF_fields']['gon'] = _('Group of names');
+		}
 		// help Entries
 		$return['help'] = array(
 			'primaryGroupAsSecondary' => array(
@@ -430,6 +446,8 @@ class posixAccount extends baseModule implements passwordService {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
 			return;
 		}
+		$this->gonList = array();
+		$this->gonList_orig = array();
 	}
 
 	/**
@@ -460,6 +478,17 @@ class posixAccount extends baseModule implements passwordService {
 			$this->groups[] = $groupList[$i]['cn'][0];
 		}
 		$this->groups_orig = $this->groups;
+		// get additional group of names memberships
+		if ($this->areGroupOfNamesActive()) {
+			$gonList1 = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'groupOfNames', array('dn'), array('gon', 'group'));
+			$gonList2 = searchLDAPByAttribute('uniqueMember', $this->getAccountContainer()->dn_orig, 'groupOfUniqueNames', array('dn'), array('gon', 'group'));
+			$gonList = array_merge($gonList1, $gonList2);
+			$this->gonList_orig = array();
+			for ($i = 0; $i < sizeof($gonList); $i++) {
+				$this->gonList_orig[] = $gonList[$i]['dn'];
+			}
+			$this->gonList = $this->gonList_orig;
+		}
 	}
 
 	/**
@@ -582,6 +611,40 @@ class posixAccount extends baseModule implements passwordService {
 					}
 					else {
 						StatusMessage('ERROR', $result[0]);
+					}
+				}
+			}
+		}
+		// set group of names
+		if ($this->areGroupOfNamesActive()) {
+			$gons = $this->findGroupOfNames();
+			$toAdd = array_values(array_diff($this->gonList, $this->gonList_orig));
+			$toRem = array_values(array_diff($this->gonList_orig, $this->gonList));
+			$ldapUser = $_SESSION['ldap']->decrypt_login();
+			$ldapUser = $ldapUser[0];
+			for ($i = 0; $i < sizeof($toAdd); $i++) {
+				if (isset($gons[$toAdd[$i]])) {
+					$attrName = 'member';
+					if (in_array('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
+						$attrName = 'uniqueMember';
+					}
+					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($this->getAccountContainer()->finalDN)));
+					if (!$success) {
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $toAdd[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+						StatusMessage('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), ldap_error($_SESSION['ldap']->server()));
+					}
+				}
+			}
+			for ($i = 0; $i < sizeof($toRem); $i++) {
+				if (isset($gons[$toRem[$i]])) {
+					$attrName = 'member';
+					if (in_array('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
+						$attrName = 'uniqueMember';
+					}
+					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($this->getAccountContainer()->dn_orig)));
+					if (!$success) {
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attributes from DN: ' . $toRem[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+						StatusMessage('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), ldap_error($_SESSION['ldap']->server()));
 					}
 				}
 			}
@@ -880,12 +943,23 @@ class posixAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_group() {
+		// Unix groups
 		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
-			// Add new group
+			// add new group
 			$this->groups = @array_merge($this->groups, $_POST['addgroups']);
 		}
 		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
 			$this->groups = array_delete($_POST['removegroups'], $this->groups);
+		}
+		// group of names
+		if ($this->areGroupOfNamesActive()) {
+			if (isset($_POST['addgons']) && isset($_POST['addgons_button'])) { // Add groups to list
+				// add new group
+				$this->gonList = @array_merge($this->gonList, $_POST['addgons']);
+			}
+			elseif (isset($_POST['removegons']) && isset($_POST['removegons_button'])) { // remove groups from list
+				$this->gonList = array_delete($_POST['removegons'], $this->gonList);
+			}
 		}
 		return array();
 	}
@@ -1124,25 +1198,77 @@ class posixAccount extends baseModule implements passwordService {
 		unset ($groups[$group]);
 		$groups = array_flip($groups);
 
-		$return->addElement(new htmlSubTitle(_("Additional groups")), true);
-		$return->addElement(new htmlOutputText(_("Selected groups")));
-		$return->addElement(new htmlOutputText(''));
-		$return->addElement(new htmlOutputText(_("Available groups")));
-		$return->addNewLine();
+		$unixContainer = new htmlTable();
+		$unixContainer->alignment = htmlElement::ALIGN_TOP;
+		$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
+		$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
+		$unixContainer->addElement(new htmlOutputText(''));
+		$unixContainer->addElement(new htmlOutputText(_("Available groups")));
+		$unixContainer->addNewLine();
 		
 		$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
 		$remSelect->setMultiSelect(true);
-		$return->addElement($remSelect);
+		$remSelect->setTransformSingleSelect(false);
+		$unixContainer->addElement($remSelect);
 		$buttonContainer = new htmlTable();
 		$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
 		$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
 		$buttonContainer->addElement(new htmlHelpLink('addgroup'));
-		$return->addElement($buttonContainer);
+		$unixContainer->addElement($buttonContainer);
 		$addSelect = new htmlSelect('addgroups', $groups, null, 15);
 		$addSelect->setMultiSelect(true);
-		$return->addElement($addSelect);
-		$return->addNewLine();
+		$addSelect->setTransformSingleSelect(false);
+		$unixContainer->addElement($addSelect);
+		$unixContainer->addNewLine();
+	
+		$return->addElement($unixContainer);
+
+		if ($this->areGroupOfNamesActive()) {
+			$return->addElement(new htmlSpacer('100px', null));
+			
+			$gons = $this->findGroupOfNames();
+			
+			$gonContainer = new htmlTable();
+			$gonContainer->alignment = htmlElement::ALIGN_TOP;
+			$gonContainer->addElement(new htmlSubTitle(_("Group of names")), true);
+			$gonContainer->addElement(new htmlOutputText(_("Selected groups")));
+			$gonContainer->addElement(new htmlOutputText(''));
+			$gonContainer->addElement(new htmlOutputText(_("Available groups")));
+			$gonContainer->addNewLine();
+			
+			$selectedGons = array();
+			for ($i = 0; $i < sizeof($this->gonList); $i++) {
+				if (isset($gons[$this->gonList[$i]])) {
+					$selectedGons[$gons[$this->gonList[$i]]['cn'][0]] = $this->gonList[$i];
+				}
+			}
+			$availableGons = array();
+			foreach ($gons as $dn => $attr) {
+				if (!in_array($dn, $this->gonList)) {
+					$availableGons[$attr['cn'][0]] = $dn;
+				}
+			}
+			
+			$remGonSelect = new htmlSelect('removegons', $selectedGons, null, 15);
+			$remGonSelect->setMultiSelect(true);
+			$remGonSelect->setTransformSingleSelect(false);
+			$remGonSelect->setHasDescriptiveElements(true);
+			$gonContainer->addElement($remGonSelect);
+			$buttonGonContainer = new htmlTable();
+			$buttonGonContainer->addElement(new htmlButton('addgons_button', 'back.gif', true), true);
+			$buttonGonContainer->addElement(new htmlButton('removegons_button', 'forward.gif', true), true);
+			$buttonGonContainer->addElement(new htmlHelpLink('addgroup'));
+			$gonContainer->addElement($buttonGonContainer);
+			$addGonSelect = new htmlSelect('addgons', $availableGons, null, 15);
+			$addGonSelect->setMultiSelect(true);
+			$addGonSelect->setHasDescriptiveElements(true);
+			$addGonSelect->setTransformSingleSelect(false);
+			$gonContainer->addElement($addGonSelect);
+			$gonContainer->addNewLine();
+			$return->addElement($gonContainer);
+		}
 		
+		$return->addNewLine();
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
@@ -1238,7 +1364,21 @@ class posixAccount extends baseModule implements passwordService {
 			// additional group memberships
 			$addGroupSelect = new htmlTableExtendedSelect('posixAccount_additionalGroup', $groups, array(), _('Additional groups'), 'addgroup', 10);
 			$addGroupSelect->setMultiSelect(true);
+			$addGroupSelect->setTransformSingleSelect(false);
 			$return->addElement($addGroupSelect, true);
+			// group of names
+			if ($this->areGroupOfNamesActive()) {
+				$gons = $this->findGroupOfNames();
+				$gonList = array();
+				foreach ($gons as $dn => $attr) {
+					$gonList[$attr['cn'][0]] = $dn;
+				}
+				$gonSelect = new htmlTableExtendedSelect('posixAccount_gon', $gonList, array(), _('Group of names'), 'addgroup', 10);
+				$gonSelect->setHasDescriptiveElements(true);
+				$gonSelect->setMultiSelect(true);
+				$gonSelect->setTransformSingleSelect(false);
+				$return->addElement($gonSelect, true);
+			}
 			// home directory
 			$return->addElement(new htmlTableExtendedInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), true);
 			// login shell
@@ -1291,6 +1431,10 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($profile['posixAccount_additionalGroup'][0])) {
 			$this->groups = $profile['posixAccount_additionalGroup'];
 		}
+		// group of names
+		if (isset($profile['posixAccount_gon'][0])) {
+			$this->gonList = $profile['posixAccount_gon'];
+		}
 		// lamdaemon
 		if (($this->get_scope() == 'user') && $this->getAccountContainer()->isNewAccount) {
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -1325,6 +1469,16 @@ class posixAccount extends baseModule implements passwordService {
 			'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 			'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 		);
+		if ($this->areGroupOfNamesActive()) {
+			$allGons = $this->findGroupOfNames();
+			$gons = array();
+			for ($i = 0; $i < sizeof($this->gonList); $i++) {
+				if (isset($allGons[$this->gonList[$i]])) {
+					$gons[] = $allGons[$this->gonList[$i]]['cn'][0];
+				}
+			}
+			$return['posixAccount_gon'] = array('<block><key>' . _('Group of names') . '</key><value>' . implode(", ", $gons) . '</value></block>');
+		}
 		if (isset($this->clearTextPassword)) {
 			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
 		}
@@ -1413,6 +1567,14 @@ class posixAccount extends baseModule implements passwordService {
 			$groupMap[$groupList[$i][1]] = $groupList[$i][0];
 		}
 		$existingGroups = array_keys($groupMap);
+		// get list of existing group of names
+		if ($this->areGroupOfNamesActive()) {
+			$gons = $this->findGroupOfNames();
+			$gonList = array();
+			foreach ($gons as $dn => $attr) {
+				$gonList[] = $attr['cn'][0];
+			}
+		}
 		// check input
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
@@ -1504,6 +1666,15 @@ class posixAccount extends baseModule implements passwordService {
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $existingGroups)) {
 							$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
+						}
+					}
+				}
+				// group of names
+				if ($this->areGroupOfNamesActive() && ($rawAccounts[$i][$ids['posixAccount_gon']] != "")) {
+					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_gon']]);
+					for ($g = 0; $g < sizeof($groups); $g++) {
+						if (!in_array($groups[$g], $gonList)) {
+							$errors[] = array('ERROR', _('Unable to find group of names in LDAP.'), $groups[$g]);
 						}
 					}
 				}
@@ -1657,15 +1828,25 @@ class posixAccount extends baseModule implements passwordService {
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
 			$temp['groups'] = array();
+			$temp['dn_gon'] = array();
 			$temp['createHomes'] = array();
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
+			$col_gon = $ids['posixAccount_gon'];
 			$col_home = $ids['posixAccount_createHomeDir'];
 			// get list of existing groups
 			$groupList = $this->findGroups();
 			$groupMap = array();
 			for ($i = 0; $i < sizeof($groupList); $i++) {
 				$groupMap[$groupList[$i][0]] = $groupList[$i][1];
+			}
+			// get list of existing group of names
+			if ($this->areGroupOfNamesActive()) {
+				$gonList = $this->findGroupOfNames();
+				$gonMap = array();
+				foreach ($gonList as $dn => $attr) {
+					$gonMap[$attr['cn'][0]] = $dn;
+				}
 			}
 			for ($i = 0; $i < sizeof($data); $i++) {
 				if (in_array($i, $failed)) continue; // ignore failed accounts
@@ -1689,10 +1870,21 @@ class posixAccount extends baseModule implements passwordService {
 						$temp['members'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
 					}
 				}
+				if ($data[$i][$col_gon] != "") {
+					$gons = explode(",", $data[$i][$col_gon]);
+					$memberAttr = 'member';
+					for ($g = 0; $g < sizeof($gons); $g++) {
+						if (in_array('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
+							$memberAttr = 'uniqueMember';
+						}
+						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
+					}
+				}
 				if ($data[$i][$col_home] != "") {
 					$temp['createHomes'][] = $i;
 				}
 			}
+			$temp['dn_gon_keys'] = array_keys($temp['dn_gon']);
 			return array(
 				'status' => 'inProgress',
 				'progress' => 0,
@@ -1728,7 +1920,7 @@ class posixAccount extends baseModule implements passwordService {
 				$temp['counter']++;
 				return array (
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes'])),
+					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon'])),
 					'errors' => $errors
 				);
 			}
@@ -1736,7 +1928,7 @@ class posixAccount extends baseModule implements passwordService {
 				$temp['counter']++;
 				return array (
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']))),
+					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']))),
 					'errors' => array(array('ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]))
 				);
 			}
@@ -1768,11 +1960,33 @@ class posixAccount extends baseModule implements passwordService {
 			$temp['counter']++;
 			return array (
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes'])),
+				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon'])),
 				'errors' => $errors
 			);
 		}
-		// all groups are modified
+		// add users to group of names
+		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']))) {
+			$gonDn = $temp['dn_gon_keys'][$temp['counter'] - sizeof($temp['groups']) - sizeof($temp['createHomes'])];
+			$gonAttr = $temp['dn_gon'][$gonDn];
+			$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttr);
+			$errors = array();
+			if (!$success) {
+				$errors[] = array(
+					"ERROR",
+					_("LAM was unable to modify group memberships for group of names: %s"),
+					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
+					array($temp['groups'][$temp['counter']])
+				);
+			}
+			$temp['counter']++;
+			$errors = array();
+			return array (
+				'status' => 'inProgress',
+				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon'])),
+				'errors' => $errors
+			);
+		}
+		// all modifications are done
 		else {
 			return array (
 				'status' => 'finished',
@@ -2026,6 +2240,35 @@ class posixAccount extends baseModule implements passwordService {
 	}
 	
 	/**
+	 * Finds all existing LDAP group of names.
+	 *
+	 * @return array groups array(dn => array('cn' => array('groupName'), 'objectClass' => array('top', 'groupOfNames')))
+	 */
+	private function findGroupOfNames() {
+		if ($this->gonCache != null) {
+			return $this->gonCache;
+		}
+		$return = array();
+		$types = array();
+		if (in_array('group', $_SESSION['config']->get_ActiveTypes())) {
+			$types[] = 'group';
+		}
+		if (in_array('gon', $_SESSION['config']->get_ActiveTypes())) {
+			$types[] = 'gon';
+		}
+		if (sizeof($types) > 0) {
+			$results = searchLDAPByFilter('(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))', array('cn', 'dn', 'objectClass'), $types);
+			for ($i = 0; $i < sizeof($results); $i++) {
+				if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
+					$return[$results[$i]['dn']] = $results[$i];
+				}
+			}
+		}
+		$this->gonCache = $return;
+		return $return;
+	}
+	
+	/**
 	 * Returns a list of existing UID numbers.
 	 *
 	 * @return array list of UID numbers
@@ -2041,6 +2284,30 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		sort($this->cachedUIDList, SORT_NUMERIC);
 		return $this->cachedUIDList;
+	}
+	
+	/**
+	 * Returns if LAM manages group of names entries.
+	 * 
+	 * @return boolean group of names are active
+	 */
+	private function areGroupOfNamesActive() {
+		if (!isset($_SESSION['config'])) {
+			return false;
+		}
+		if (in_array('group', $_SESSION['config']->get_ActiveTypes())) {
+			$groupModules = $_SESSION['config']->get_AccountModules('group');
+			if (in_array('groupOfNames', $groupModules) || in_array('groupOfUniqueNames', $groupModules)) {
+				return true;
+			}
+		}
+		if (in_array('gon', $_SESSION['config']->get_ActiveTypes())) {
+			$gonModules = $_SESSION['config']->get_AccountModules('gon');
+			if (in_array('groupOfNames', $gonModules) || in_array('groupOfUniqueNames', $gonModules)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
