@@ -1366,7 +1366,9 @@ class accountContainer {
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		$search = substr($dn, 0, strpos($dn, ','));
-		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), array('*', '+'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$searchAttrs = array('*', '+', 'creatorsName', 'createTimestamp', 'modifiersName',
+			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime');
+		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
 		}

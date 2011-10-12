@@ -68,4 +68,6 @@ if (!checkIfWriteAccessIsAllowed()) {
 	$servers->setValue('server','read_only',true);
 }
 $servers->setValue('unique','attrs',array());
+$servers->setValue('server','custom_sys_attrs', array('creatorsName', 'createTimestamp', 'modifiersName',
+			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime'));
 ?>
