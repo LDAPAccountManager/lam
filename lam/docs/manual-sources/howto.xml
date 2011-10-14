@@ -684,6 +684,16 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>3.5.0 -&gt; 3.6</title>
+
+          <para><emphasis role="bold">Debian users:</emphasis> LAM 3.6
+          requires to install FPDF 1.7. You can download the package <ulink
+          url="http://packages.debian.org/search?keywords=php-fpdf&amp;searchon=names&amp;suite=all&amp;section=all">here</ulink>.
+          If you use Debian Stable (Squeeze) please use the package from
+          Testing (Wheezy).</para>
+        </section>
+
+        <section>
           <title>3.4.0 -&gt; 3.5.0</title>
 
           <para><emphasis role="bold">LAM Pro:</emphasis> The global
