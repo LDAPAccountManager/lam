@@ -128,7 +128,7 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='J',$fill=0,$link='')
       $this->ws=0;
       $this->_out('0 Tw');
     }
-    $this->AddPage($this->CurOrientation, $this->CurPageFormat);
+    $this->AddPage($this->CurOrientation, $this->CurPageSize);
     $this->x=$x;
     if($ws>0)
     {
@@ -530,13 +530,13 @@ function _putpages()
 	}
 	if($this->DefOrientation=='P')
 	{
-		$wPt=$this->DefPageFormat[0]*$this->k;
-		$hPt=$this->DefPageFormat[1]*$this->k;
+		$wPt=$this->DefPageSize[0]*$this->k;
+		$hPt=$this->DefPageSize[1]*$this->k;
 	}
 	else
 	{
-		$wPt=$this->DefPageFormat[1]*$this->k;
-		$hPt=$this->DefPageFormat[0]*$this->k;
+		$wPt=$this->DefPageSize[1]*$this->k;
+		$hPt=$this->DefPageSize[0]*$this->k;
 	}
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
 	for($n=1;$n<=$nb;$n++)

@@ -54,7 +54,7 @@ $line_width = LAMPDF_LINEWIDTH;
 function createModulePDF($accounts,$pdf_structure="default") {
 	
 	/** PDF generator class */
-	include_once(dirname(__FILE__) . "/fpdf.php");
+	include_once("fpdf.php");
 	/** Unicode support for FPDF */
 	include_once("ufpdf.php");
 	/** LAM PDF generator class */
