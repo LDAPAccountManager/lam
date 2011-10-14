@@ -188,12 +188,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'error_message' => $this->messages['employeeType'][0]);
 			$return['profile_mappings']['inetOrgPerson_employeeType'] = 'employeeType';
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$return['profile_mappings']['inetOrgPerson_l'] = 'l';
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$return['profile_mappings']['inetOrgPerson_st'] = 'st';
-		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$return['profile_checks']['inetOrgPerson_street'] = array(
 				'type' => 'ext_preg',
@@ -644,11 +638,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'l' => array(
 				"Headline" => _("Location"),
-				"Text" => _("This describes the location of the user.")
+				"Text" => _("This describes the location of the user.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'st' => array(
 				"Headline" => _("State"),
-				"Text" => _("The state where the user resides or works.")
+				"Text" => _("The state where the user resides or works.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'carLicense' => array(
 				"Headline" => _("Car license"),
@@ -746,11 +740,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// postalAddress, facsimileTelephoneNumber and jpegPhoto need special removing
 		if (isset($return[$this->getAccountContainer()->dn]['remove']['postalAddress'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['postalAddress'] = array();
+			$return[$this->getAccountContainer()->dn]['modify']['postalAddress'] = $this->attributes['postalAddress'];
 			unset($return[$this->getAccountContainer()->dn]['remove']['postalAddress']);
 		}
 		if (isset($return[$this->getAccountContainer()->dn]['remove']['facsimileTelephoneNumber'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['facsimileTelephoneNumber'] = array();
+			$return[$this->getAccountContainer()->dn]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
 			unset($return[$this->getAccountContainer()->dn]['remove']['facsimileTelephoneNumber']);
 		}
 		if (isset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto'])) {
@@ -860,8 +854,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$this->attributes['postalAddress'][0] = implode('$', preg_split('/[\r][\n]/', $_POST['postalAddress']));
-			if (!get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
+			$addressCounter = 0;
+			while (isset($_POST['postalAddress' . $addressCounter])) {
+				$this->attributes['postalAddress'][$addressCounter] = implode('$', preg_split('/[\r][\n]/', $_POST['postalAddress' . $addressCounter]));
+				if (!get_preg($this->attributes['postalAddress'][$addressCounter], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
+				if ($this->attributes['postalAddress'][$addressCounter] == '') {
+					unset($this->attributes['postalAddress'][$addressCounter]);
+				}
+				$addressCounter++;
+			}
+			if (isset($_POST['addPostalAddress'])) {
+				$this->attributes['postalAddress'][] = '';
+			}
+			$this->attributes['postalAddress'] = array_values($this->attributes['postalAddress']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$this->attributes['employeeType'][0] = $_POST['employeeType'];
@@ -875,10 +880,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$this->attributes['l'][0] = $_POST['l'];
+			$this->attributes['l'] = preg_split('/;[ ]*/', $_POST['l']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$this->attributes['st'][0] = $_POST['st'];
+			$this->attributes['st'] = preg_split('/;[ ]*/', $_POST['st']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
@@ -1029,20 +1034,41 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$l = '';
-			if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
+			if (isset($this->attributes['l'][0])) $l = implode('; ', $this->attributes['l']);
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Location'), 'l', $l, 'l'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
 			$st = '';
-			if (isset($this->attributes['st'][0])) $st = $this->attributes['st'][0];
+			if (isset($this->attributes['st'][0])) $st = implode('; ', $this->attributes['st']);
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('State'), 'st', $st, 'st'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$postalAddress = '';
+			$postalAddresses = array();
 			if (isset($this->attributes['postalAddress'][0])) {
-				$postalAddress = implode("\r\n", explode('$', $this->attributes['postalAddress'][0]));
+				for ($i = 0; $i < sizeof($this->attributes['postalAddress']); $i++) {
+					$postalAddresses[] = implode("\r\n", explode('$', $this->attributes['postalAddress'][$i]));
+				}
 			}
-			$fieldContainer->addElement(new htmlTableExtendedInputTextarea('postalAddress', $postalAddress, 30, 3, _('Postal address'), 'postalAddress'), true);
+			if (sizeof($postalAddresses) == 0) {
+				$postalAddresses[] = '';
+			}
+			$addressLabel = new htmlOutputText(_('Postal address'));
+			$addressLabel->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($addressLabel);
+			$addressContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($postalAddresses); $i++) {
+				$addressContainer->addElement(new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3));
+				if ($i < (sizeof($postalAddresses) - 1)) {
+					$addressContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.png', true));
+				}
+			}
+			$fieldContainer->addElement($addressContainer);
+			$addressHelp = new htmlHelpLink('postalAddress');
+			$addressHelp->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($addressHelp, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
 			$physicalDeliveryOfficeName = '';
@@ -1244,7 +1270,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$postalAddress = '';
 		if (isset($this->attributes['postalAddress'][0])) {
-			$postalAddress = $this->attributes['postalAddress'][0];
+			$postalAddress = implode(', ', $this->attributes['postalAddress']);
 		}
 		$telephoneNumber = '';
 		if (isset($this->attributes['telephoneNumber'][0])) {
@@ -1288,7 +1314,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$st = '';
 		if (isset($this->attributes['st'][0])) {
-			$st = $this->attributes['st'][0];
+			$st = implode(', ', $this->attributes['st']);
 		}
 		$physicalDeliveryOfficeName = '';
 		if (isset($this->attributes['physicalDeliveryOfficeName'][0])) {
@@ -1297,7 +1323,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$employeeType = '';
 		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
 		$l = '';
-		if (isset($this->attributes['l'][0])) $l = $this->attributes['l'][0];
+		if (isset($this->attributes['l'][0])) {
+			$l = implode(', ', $this->attributes['l']);
+		}
 		$employeeNumber = '';
 		if (isset($this->attributes['employeeNumber'][0])) {
 			$employeeNumber = $this->attributes['employeeNumber'][0];
@@ -1388,6 +1416,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode') && isset($profile['inetOrgPerson_postalCode'][0])) {
 			$list = preg_split('/;[ ]*/', $profile['inetOrgPerson_postalCode'][0]);
 			$this->attributes['postalCode'] = $list;
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation') && isset($profile['inetOrgPerson_l'][0])) {
+			$list = preg_split('/;[ ]*/', $profile['inetOrgPerson_l'][0]);
+			$this->attributes['l'] = $list;
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState') && isset($profile['inetOrgPerson_st'][0])) {
+			$list = preg_split('/;[ ]*/', $profile['inetOrgPerson_st'][0]);
+			$this->attributes['st'] = $list;
 		}
 	}
 	
@@ -1593,11 +1629,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// location
 			if ($rawAccounts[$i][$ids['inetOrgPerson_l']] != "") {
-				$partialAccounts[$i]['l'] = $rawAccounts[$i][$ids['inetOrgPerson_l']];
+				$partialAccounts[$i]['l'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_l']]);
 			}
 			// state
 			if ($rawAccounts[$i][$ids['inetOrgPerson_st']] != "") {
-				$partialAccounts[$i]['st'] = $rawAccounts[$i][$ids['inetOrgPerson_st']];
+				$partialAccounts[$i]['st'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_st']]);
 			}
 			// physicalDeliveryOfficeName
 			if ($rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']] != "") {
