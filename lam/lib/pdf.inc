@@ -70,7 +70,7 @@ function createModulePDF($accounts,$pdf_structure="default") {
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
 	
-	$fontName = "BitstreamVeraSans-Roman"; // TODO: load font name from XML file
+	$fontName = "BitstreamVeraSans-Roman";
 	
 	// Create a new PDF file acording to the account type
 	$pdf = new lamPDF($load['page_definitions'],$fontName);
