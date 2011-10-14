@@ -238,8 +238,6 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 	{
 	  //Get next character
 	  $c = $this->code2utf($cp[$i]);
-	  $charw = $cw[$cp[$i]];
-		
 		if($c=="\n")
 		{
 			//Explicit line break
@@ -265,7 +263,9 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 			$ls=$l;
 			$ns++;
 		}
-		$l+=$charw;
+		if (isset($cw[$cp[$i]])) {
+			$l += $cw[$cp[$i]];
+		}
 		
 		if($l>$wmax)
 		{
