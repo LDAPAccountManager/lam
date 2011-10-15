@@ -3036,6 +3036,12 @@ Run slapindex to rebuild the index.
         </listitem>
 
         <listitem>
+          <para><emphasis
+          role="bold">$INFO.passwordSelfResetAnswerClearText$</emphasis>:
+          cleartext answer to security question</para>
+        </listitem>
+
+        <listitem>
           <para><emphasis role="bold">$NEW.&lt;attribute&gt;$:</emphasis> the
           value of a new attribute (e.g. $NEW.telephoneNumber$) for modified
           accounts</para>
