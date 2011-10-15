@@ -143,7 +143,7 @@ class posixGroup extends baseModule implements passwordService {
 		$return = array();
 		$result = searchLDAPByFilter('gidNumber=' . $this->attributes['gidNumber'][0], array('dn'), array('user', 'host'));
 		if (sizeof($result) > 0) {
-			$return[$this->getAccountContainer()->dn]['errors'][] = $this->messages['primaryGroup'][0];
+			$return[$this->getAccountContainer()->dn_orig]['errors'][] = $this->messages['primaryGroup'][0];
 		}
 		return $return;
 	}

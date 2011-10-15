@@ -739,21 +739,21 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// postalAddress, facsimileTelephoneNumber and jpegPhoto need special removing
-		if (isset($return[$this->getAccountContainer()->dn]['remove']['postalAddress'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['postalAddress'] = $this->attributes['postalAddress'];
-			unset($return[$this->getAccountContainer()->dn]['remove']['postalAddress']);
+		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['postalAddress'])) {
+			$return[$this->getAccountContainer()->dn_orig]['modify']['postalAddress'] = $this->attributes['postalAddress'];
+			unset($return[$this->getAccountContainer()->dn_orig]['remove']['postalAddress']);
 		}
-		if (isset($return[$this->getAccountContainer()->dn]['remove']['facsimileTelephoneNumber'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
-			unset($return[$this->getAccountContainer()->dn]['remove']['facsimileTelephoneNumber']);
+		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['facsimileTelephoneNumber'])) {
+			$return[$this->getAccountContainer()->dn_orig]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
+			unset($return[$this->getAccountContainer()->dn_orig]['remove']['facsimileTelephoneNumber']);
 		}
-		if (isset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['jpegPhoto'] = array();
-			unset($return[$this->getAccountContainer()->dn]['remove']['jpegPhoto']);
+		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto'])) {
+			$return[$this->getAccountContainer()->dn_orig]['modify']['jpegPhoto'] = array();
+			unset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto']);
 		}
 		// add information about clear text password
 		if ($this->clearTextPassword != null) {
-			$return[$this->getAccountContainer()->dn]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
+			$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		}
 		return $return;
 	}

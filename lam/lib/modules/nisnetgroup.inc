@@ -159,13 +159,13 @@ class nisnetgroup extends baseModule {
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// nisNetgroupTriple needs special changing
-		if (isset($return[$this->getAccountContainer()->dn]['remove']['nisNetgroupTriple'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
-			unset($return[$this->getAccountContainer()->dn]['remove']['nisNetgroupTriple']);
+		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['nisNetgroupTriple'])) {
+			$return[$this->getAccountContainer()->dn_orig]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
+			unset($return[$this->getAccountContainer()->dn_orig]['remove']['nisNetgroupTriple']);
 		}
-		if (isset($return[$this->getAccountContainer()->dn]['add']['nisNetgroupTriple'])) {
-			$return[$this->getAccountContainer()->dn]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
-			unset($return[$this->getAccountContainer()->dn]['add']['nisNetgroupTriple']);
+		if (isset($return[$this->getAccountContainer()->dn_orig]['add']['nisNetgroupTriple'])) {
+			$return[$this->getAccountContainer()->dn_orig]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
+			unset($return[$this->getAccountContainer()->dn_orig]['add']['nisNetgroupTriple']);
 		}
 		return $return;
 	}

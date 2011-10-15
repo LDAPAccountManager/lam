@@ -506,17 +506,17 @@ class posixAccount extends baseModule implements passwordService {
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// add information about clear text password and password status change
-		$return[$this->getAccountContainer()->dn]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
+		$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		if (isset($this->orig['userPassword'][0]) && isset($this->attributes['userPassword'][0])) {
 			if ((pwd_is_enabled($this->orig['userPassword'][0]) && pwd_is_enabled($this->attributes['userPassword'][0]))
 				|| (!pwd_is_enabled($this->orig['userPassword'][0]) && !pwd_is_enabled($this->attributes['userPassword'][0]))) {
-				$return[$this->getAccountContainer()->dn]['info']['userPasswordStatusChange'][0] = 'unchanged'; 
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unchanged'; 
 			}
 			elseif (pwd_is_enabled($this->orig['userPassword'][0])) {
-				$return[$this->getAccountContainer()->dn]['info']['userPasswordStatusChange'][0] = 'locked';
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'locked';
 			}
 			else {
-				$return[$this->getAccountContainer()->dn]['info']['userPasswordStatusChange'][0] = 'unlocked';
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unlocked';
 			}
 		}
 		// Remove primary group from additional groups

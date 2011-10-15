@@ -667,7 +667,7 @@ class accountContainer {
 	private $module;
 
 	/** DN suffix of the account */
-	public $dn;
+	public $dnSuffix;
 
 	/** DN suffix of account when it was loaded */
 	public $dn_orig;
@@ -755,11 +755,11 @@ class accountContainer {
 		}
 		elseif (!$profileLoaded) {
 			// change dn suffix
-			if (isset($_GET['suffix']) && ($_GET['suffix'] != '') && ($this->dn == null)) {
-				$this->dn = $_GET['suffix'];
+			if (isset($_GET['suffix']) && ($_GET['suffix'] != '') && ($this->dnSuffix == null)) {
+				$this->dnSuffix = $_GET['suffix'];
 			}
 			if (isset($_POST['accountContainerSuffix']) && ($_POST['accountContainerSuffix'] != '')) {
-				$this->dn = $_POST['accountContainerSuffix'];
+				$this->dnSuffix = $_POST['accountContainerSuffix'];
 			}
 			// change RDN
 			if (isset($_POST['accountContainerRDN'])) {
@@ -769,7 +769,7 @@ class accountContainer {
 			if (isset($_POST['accountContainerCreateAgain'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type . "&amp;suffix=" . $this->dn);
+				metaRefresh("edit.php?type=" . $this->type . "&amp;suffix=" . $this->dnSuffix);
 				exit();
 			}
 			// reedit account
@@ -911,13 +911,13 @@ class accountContainer {
 				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 				foreach ($this->getOUs() as $suffix) {
 					echo '<option value="' . $suffix . '" ';
-					if ($this->dn == $suffix) {
+					if ($this->dnSuffix == $suffix) {
 						echo 'selected';
 					}
 					echo ">" . getAbstractDN($suffix) . "</option>\n";
 				}
-				if (!($this->dn == '') && !in_array($this->dn, $this->getOUs())) {
-					echo '<option value="' . $this->dn . '" selected>' . getAbstractDN($this->dn) . "</option>\n";;
+				if (!($this->dnSuffix == '') && !in_array($this->dnSuffix, $this->getOUs())) {
+					echo '<option value="' . $this->dnSuffix . '" selected>' . getAbstractDN($this->dnSuffix) . "</option>\n";;
 				}
 			echo "</select>\n";
 			echo '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -1233,7 +1233,7 @@ class accountContainer {
 				}
 			}
 			if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
-				$this->dn = $profile['ldap_suffix'][0];
+				$this->dnSuffix = $profile['ldap_suffix'][0];
 			}
 			return true;
 		}
@@ -1348,10 +1348,10 @@ class accountContainer {
 					unset($torem[$attributes2[$i]]);
 				}
 			}
-		if (count($toadd)!=0) $return[$this->dn]['add'] = $toadd;
-		if (count($torem)!=0) $return[$this->dn]['remove'] = $torem;
-		if (count($tomodify)!=0) $return[$this->dn]['modify'] = $tomodify;
-		if (count($notchanged)!=0) $return[$this->dn]['notchanged'] = $notchanged;
+		if (count($toadd)!=0) $return[$this->dn_orig]['add'] = $toadd;
+		if (count($torem)!=0) $return[$this->dn_orig]['remove'] = $torem;
+		if (count($tomodify)!=0) $return[$this->dn_orig]['modify'] = $tomodify;
+		if (count($notchanged)!=0) $return[$this->dn_orig]['notchanged'] = $notchanged;
 		return $return;
 		}
 
@@ -1376,7 +1376,7 @@ class accountContainer {
 		if (!$entry) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
 		}
-		$this->dn = substr($dn, strpos($dn, ',')+1);
+		$this->dnSuffix = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
 		// extract RDN
 		$this->rdn = explode("=", substr($dn, 0, strpos($dn, ',')));
@@ -1517,7 +1517,7 @@ class accountContainer {
 			}
 		}
 		if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
-			$this->dn = $profile['ldap_suffix'][0];
+			$this->dnSuffix = $profile['ldap_suffix'][0];
 		}
 		// get titles
 		$typeObject = new $this->type();
@@ -1535,7 +1535,7 @@ class accountContainer {
 		if (!checkIfWriteAccessIsAllowed()) {
 			die();
 		}
-		$this->finalDN = $this->dn;
+		$this->finalDN = $this->dn_orig;
 		$errors = array();
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
@@ -1553,39 +1553,26 @@ class accountContainer {
 				$ops = array_keys($temp[$DNs[$i]]);
 				for ($j=0; $j<count($ops); $j++) {
 					$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
-					for ($k=0; $k<count($attrs); $k++)
+					for ($k=0; $k<count($attrs); $k++) {
 						$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]);
 					}
 				}
 			}
-		// Complete dn with RDN attribute
-		$search = $this->rdn;
-		$DNChanged = false;
-		foreach ($attributes as $DN) {
-			if (isset($DN['modify'][$search][0]) && !$DNChanged) {
-				$attributes[$search.'='.$DN['modify'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
-				unset ($attributes[$this->finalDN]);
-				$this->finalDN = $search.'='.$DN['modify'][$search][0].','.$this->finalDN;
-				$DNChanged = true;
-				}
-			if (isset($DN['add'][$search][0]) && !$DNChanged) {
-				$attributes[$search.'='.$DN['add'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
-				unset ($attributes[$this->finalDN]);
-				$this->finalDN = $search.'='.$DN['add'][$search][0].','.$this->finalDN;
-				$DNChanged = true;
-				}
-			if (isset($DN['notchanged'][$search][0]) && !$DNChanged) {
-				$attributes[$search.'='.$DN['notchanged'][$search][0].','.$this->finalDN] = $attributes[$this->finalDN];
-				unset ($attributes[$this->finalDN]);
-				$this->finalDN = $search.'='.$DN['notchanged'][$search][0].','.$this->finalDN;
-				$DNChanged = true;
-				}
+		}
+		// build DN for new accounts and change it for existing ones if needed
+		if (isset($attributes[$this->dn_orig]['modify'][$this->rdn][0])) {
+			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['modify'][$this->rdn][0] . ',' . $this->dnSuffix;
+			if ($this->dn_orig != $this->finalDN) {
+				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
+				unset($attributes[$this->dn_orig]);
 			}
-		// Add old dn if dn hasn't changed
-		if (!$DNChanged) {
-			$attributes[$this->dn_orig] = $attributes[$this->finalDN];
-			unset ($attributes[$this->finalDN]);
-			$this->finalDN = $this->dn_orig;
+		}
+		elseif (isset($attributes[$this->dn_orig]['add'][$this->rdn][0])) {
+			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['add'][$this->rdn][0] . ',' . $this->dnSuffix;
+			if ($this->dn_orig != $this->finalDN) {
+				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
+				unset($attributes[$this->dn_orig]);
+			}
 		}
 		// pre modify actions
 		$prePostModifyAttributes = array();
