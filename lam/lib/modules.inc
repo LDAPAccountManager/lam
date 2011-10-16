@@ -1159,7 +1159,12 @@ class accountContainer {
 	 */
 	private function printPageHeader() {
 		include '../main_header.php';
-		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";		
+		echo '<script type="text/javascript">';
+		echo 'jQuery(document).ready(function() {';
+		echo '		jQuery("#inputForm").validationEngine();';
+		echo '});';
+		echo '</script>';
+		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";		
 	}
 	
 	/**

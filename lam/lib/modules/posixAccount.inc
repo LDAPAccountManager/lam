@@ -1086,13 +1086,10 @@ class posixAccount extends baseModule implements passwordService {
 		$return->addElement($uidInput, true);
 		$commonName = '';
 		if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
-		$cnInput = new htmlTableExtendedInputField(_("Common name"), 'cn', $commonName, 'cn');
-		$cnInput->setRequired(true);
-		$return->addElement($cnInput, true);
+		$return->addElement(new htmlTableExtendedInputField(_("Common name"), 'cn', $commonName, 'cn'), true);
 		$uidNumber = '';
 		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
 		$uidNumberInput = new htmlTableExtendedInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
-		$uidNumberInput->setRequired(true);
 		$uidNumberInput->setFieldMaxLength(20);
 		$return->addElement($uidNumberInput, true);
 		$gecos = '';

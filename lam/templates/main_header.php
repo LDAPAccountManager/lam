@@ -57,7 +57,9 @@ $jsDirName = dirname(__FILE__) . '/lib';
 $jsDir = dir($jsDirName);
 $jsFiles = array();
 while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+	if ((substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') && (substr($jsEntry, strlen($jsEntry) - 4, 4) != '.php')) {
+		continue;
+	}
 	$jsFiles[] = $jsEntry;
 }
 sort($jsFiles);

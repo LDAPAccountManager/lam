@@ -36,13 +36,19 @@ $Id$
  */
 abstract class htmlElement {
 	
-	const OPTION_ALIGN = 0;
-	
+	/** align to top */
 	const ALIGN_TOP = 0;
+	/** align to left */
 	const ALIGN_LEFT = 1;
+	/** align to right */
 	const ALIGN_RIGHT = 2;
+	/** align to bottom */
 	const ALIGN_BOTTOM = 3;
+	/** align to center */
 	const ALIGN_CENTER = 4;
+	
+	/** validation rule to allow only numbers ([0-9]+) */
+	const VALIDATE_NUMERIC = 'numeric';
 	
 	/** alignment when inside a table */
 	public $alignment = null;
@@ -351,6 +357,10 @@ class htmlInputField extends htmlElement {
 	private $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
 	private $obfuscate = false;
+	/** required field */
+	protected $required = false;
+	/** validation rule */
+	private $validationRule = null;
 	
 	/**
 	 * Constructor
@@ -389,8 +399,20 @@ class htmlInputField extends htmlElement {
 				$this->fieldValue = $values[$this->fieldName][0];
 			}
 		}
+		$validators = array();
+		if ($this->required) {
+			$validators[] = 'required';
+		}
+		if ($this->validationRule != null) {
+			$validators[] = 'custom[' . $this->validationRule . ']';
+		}
 		// print input field
+		$class = '';
+		if (sizeof($validators) > 0) {
+			$class = ' class="validate[' . implode(',', $validators) . ']"';
+		}
 		$name = ' name="' . $this->fieldName . '"';
+		$id = ' id="inputField_' . $this->fieldName . '"';
 		$value = '';
 		if ($this->fieldValue != null) {
 			$value = ' value="' . $this->fieldValue . '"';
@@ -410,7 +432,7 @@ class htmlInputField extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="' . $inputType . '"' . $name . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
 		if ($this->obfuscate) {
 			return array($this->fieldName => 'text_obfuscated');
 		}
@@ -464,6 +486,25 @@ class htmlInputField extends htmlElement {
 		$this->obfuscate = $obfuscate;
 	}
 
+	/**
+	 * Specifies if the input field is required.
+	 * 
+	 * @param boolean $required required
+	 */
+	public function setRequired($required) {
+		$this->required = $required;
+	}
+
+	/**
+	 * Specifies the validation rule (e.g. htmlElement::VALIDATE_NUMERIC) for this field.
+	 * This rule is checked on client side when the input field looses focus.
+	 * 
+	 * @param boolean $rule rule name
+	 */
+	public function setValidationRule($rule) {
+		$this->validationRule = $rule;
+	}
+
 }
 
 /**
@@ -477,8 +518,6 @@ class htmlTableExtendedInputField extends htmlInputField {
 	private $label;
 	/** help ID */
 	private $helpID;
-	/** required field */
-	private $required = false;
 	
 	/**
 	 * Constructor
@@ -525,15 +564,6 @@ class htmlTableExtendedInputField extends htmlInputField {
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
 		return $return;
-	}
-
-	/**
-	 * Specifies if this input field must be filled.
-	 * 
-	 * @param boolean $required required or not
-	 */
-	public function setRequired($required) {
-		$this->required = $required;
 	}
 
 }

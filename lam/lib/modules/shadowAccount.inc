@@ -305,6 +305,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$pwdWarnInput = new htmlTableExtendedInputField(_('Password warning'), 'shadowWarning', $shWarning, 'shadowWarning');
 			$pwdWarnInput->setFieldMaxLength(4);
 			$pwdWarnInput->setFieldSize(5);
+			$pwdWarnInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($pwdWarnInput, true);
 			
 			$shPwdExpiration = '';
@@ -312,6 +313,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$pwdExpInput = new htmlTableExtendedInputField(_('Password expiration'), 'shadowInactive', $shPwdExpiration, 'shadowInactive');
 			$pwdExpInput->setFieldMaxLength(4);
 			$pwdExpInput->setFieldSize(5);
+			$pwdExpInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($pwdExpInput, true);
 			
 			$shMinAge = '';
@@ -319,6 +321,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$minAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowMin', $shMinAge, 'shadowMin');
 			$minAgeInput->setFieldMaxLength(5);
 			$minAgeInput->setFieldSize(5);
+			$minAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($minAgeInput, true);
 			
 			$shMaxAge = '';
@@ -326,6 +329,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$maxAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowMax', $shMaxAge, 'shadowMax');
 			$maxAgeInput->setFieldMaxLength(5);
 			$maxAgeInput->setFieldSize(5);
+			$maxAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($maxAgeInput, true);
 			
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";

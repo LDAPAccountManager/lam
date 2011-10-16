@@ -139,8 +139,10 @@ D:
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/fpdf.php                   A  2008  Olivier Plathey
-lib/font/Vera*                 B  2003  Bitstream, Inc.
-templates/lib/wz_tooltip.js    C        Walter Zorn
-templates/lib/jquery*.js       D  2010  John Resig, Paul Bakaus, Fred Heusschen
-lib/3rdParty/phpseclib         C        Jim Wigginton
+lib/fpdf.php                                A  2008  Olivier Plathey
+lib/font/Vera*                              B  2003  Bitstream, Inc.
+templates/lib/*wz_tooltip.js                C        Walter Zorn
+lib/3rdParty/phpseclib                      C        Jim Wigginton
+templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
+templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
+
