@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2010  Roland Gruber
+  Copyright (C) 2005 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -306,31 +306,41 @@ class sambaDomain extends baseModule {
 		if (isset($this->attributes['sambaLockoutThreshold'][0])) {
 			$sambaLockoutThreshold = $this->attributes['sambaLockoutThreshold'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Lockout users after bad logon attempts'), 'lockoutThreshold', $sambaLockoutThreshold, 'lockoutThreshold'), true);
+		$sambaLockoutThresholdInput = new htmlTableExtendedInputField(_('Lockout users after bad logon attempts'), 'lockoutThreshold', $sambaLockoutThreshold, 'lockoutThreshold');
+		$sambaLockoutThresholdInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($sambaLockoutThresholdInput, true);
 		// Minimum password age
 		$sambaMinPwdAge = '';
 		if (isset($this->attributes['sambaMinPwdAge'][0])) {
 			$sambaMinPwdAge = $this->attributes['sambaMinPwdAge'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Minimum password age'), 'minPwdAge', $sambaMinPwdAge, 'minPwdAge'), true);
+		$sambaMinPwdAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'minPwdAge', $sambaMinPwdAge, 'minPwdAge');
+		$sambaMinPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($sambaMinPwdAgeInput, true);
 		// Maximum password age
 		$sambaMaxPwdAge = '';
 		if (isset($this->attributes['sambaMaxPwdAge'][0])) {
 			$sambaMaxPwdAge = $this->attributes['sambaMaxPwdAge'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Maximum password age'), 'maxPwdAge', $sambaMaxPwdAge, 'maxPwdAge'), true);
+		$sambaMaxPwdAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'maxPwdAge', $sambaMaxPwdAge, 'maxPwdAge');
+		$sambaMaxPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($sambaMaxPwdAgeInput, true);
 		// Lockout duration
 		$sambaLockoutDuration = '';
 		if (isset($this->attributes['sambaLockoutDuration'][0])) {
 			$sambaLockoutDuration = $this->attributes['sambaLockoutDuration'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Lockout duration'), 'lockoutDuration', $sambaLockoutDuration, 'lockoutDuration'), true);
+		$sambaLockoutDurationInput = new htmlTableExtendedInputField(_('Lockout duration'), 'lockoutDuration', $sambaLockoutDuration, 'lockoutDuration');
+		$sambaLockoutDurationInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($sambaLockoutDurationInput, true);
 		// Reset time after lockout
 		$sambaLockoutObservationWindow = '';
 		if (isset($this->attributes['sambaLockoutObservationWindow'][0])) {
 			$sambaLockoutObservationWindow = $this->attributes['sambaLockoutObservationWindow'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Reset time after lockout'), 'lockoutObservationWindow', $sambaLockoutObservationWindow, 'lockoutObservationWindow'), true);
+		$sambaLockoutObservationWindowInput = new htmlTableExtendedInputField(_('Reset time after lockout'), 'lockoutObservationWindow', $sambaLockoutObservationWindow, 'lockoutObservationWindow');
+		$sambaLockoutObservationWindowInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($sambaLockoutObservationWindowInput, true);
 
 		$return->addElement(new htmlSubTitle(_('RID settings')), true);
 
@@ -341,24 +351,31 @@ class sambaDomain extends baseModule {
 		if (isset($this->attributes['sambaNextRid'][0])) {
 			$nextRID = $this->attributes['sambaNextRid'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Next RID'), 'nextRID', $nextRID, 'nextRID'), true);
+		$nextRIDInput = new htmlTableExtendedInputField(_('Next RID'), 'nextRID', $nextRID, 'nextRID');
+		$nextRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($nextRIDInput, true);
 		// next user RID
 		$nextUserRID = '';
 		if (isset($this->attributes['sambaNextUserRid'][0])) {
 			$nextUserRID = $this->attributes['sambaNextUserRid'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Next user RID'), 'nextUserRID', $nextUserRID, 'nextUserRID'), true);
+		$nextUserRIDInput = new htmlTableExtendedInputField(_('Next user RID'), 'nextUserRID', $nextUserRID, 'nextUserRID');
+		$nextUserRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($nextUserRIDInput, true);
 		// next group RID
 		$nextGroupRID = '';
 		if (isset($this->attributes['sambaNextGroupRid'][0])) {
 			$nextGroupRID = $this->attributes['sambaNextGroupRid'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Next group RID'), 'nextGroupRID', $nextGroupRID, 'nextGroupRID'), true);
+		$nextGroupRIDInput = new htmlTableExtendedInputField(_('Next group RID'), 'nextGroupRID', $nextGroupRID, 'nextGroupRID');
+		$nextGroupRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($nextGroupRIDInput, true);
 		// RID base
 		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) $this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
 		if ($this->getAccountContainer()->isNewAccount) {
 			$ridBaseInput = new htmlTableExtendedInputField(_('RID base'), 'RIDbase', $this->attributes['sambaAlgorithmicRidBase'][0], 'RIDbase');
 			$ridBaseInput->setRequired(true);
+			$ridBaseInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($ridBaseInput, true);
 		}
 		else {
