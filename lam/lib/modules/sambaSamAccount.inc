@@ -1419,11 +1419,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// working dir
 		$return->addElement(new htmlTableExtendedInputField(_('Working directory'), 'tsWorkDirectory', $mDial->ctx['CtxWorkDirectory'], 'tsWorkDirectory'), true);
 		// connection time limit
-		$return->addElement(new htmlTableExtendedInputField(_('Connection time limit'), 'tsConnectionLimit', $mDial->ctx['CtxMaxConnectionTime'], 'tsTimeLimit'), true);
+		$tsConnectionLimit = new htmlTableExtendedInputField(_('Connection time limit'), 'tsConnectionLimit', $mDial->ctx['CtxMaxConnectionTime'], 'tsTimeLimit');
+		$tsConnectionLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($tsConnectionLimit, true);
 		// disconnection time limit
-		$return->addElement(new htmlTableExtendedInputField(_('Disconnection time limit'), 'tsDisconnectionLimit', $mDial->ctx['CtxMaxDisconnectionTime'], 'tsTimeLimit'), true);
+		$tsDisconnectionLimit = new htmlTableExtendedInputField(_('Disconnection time limit'), 'tsDisconnectionLimit', $mDial->ctx['CtxMaxDisconnectionTime'], 'tsTimeLimit');
+		$tsDisconnectionLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($tsDisconnectionLimit, true);
 		// idle time limit
-		$return->addElement(new htmlTableExtendedInputField(_('Idle time limit'), 'tsIdleLimit', $mDial->ctx['CtxMaxIdleTime'], 'tsTimeLimit'), true);
+		$tsIdleLimit = new htmlTableExtendedInputField(_('Idle time limit'), 'tsIdleLimit', $mDial->ctx['CtxMaxIdleTime'], 'tsTimeLimit');
+		$tsIdleLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($tsIdleLimit, true);
 		// connect client drives
 		$return->addElement(new htmlTableExtendedInputCheckbox('tsConnectDrives', $mDial->getConnectClientDrives(), _('Connect client drives'), 'tsConnectDrives'), true);
 		// connect client printers

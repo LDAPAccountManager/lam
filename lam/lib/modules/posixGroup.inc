@@ -175,6 +175,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		$gidNumberInput = new htmlTableExtendedInputField(_('GID number'), 'gidNumber', $gidNumber, 'gidNumber');
 		$gidNumberInput->setFieldMaxLength(20);
+		$gidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$return->addElement($gidNumberInput, true);
 		// description
 		$description = '';

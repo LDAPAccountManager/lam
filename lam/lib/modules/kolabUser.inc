@@ -303,13 +303,17 @@ class kolabUser extends baseModule {
 			if (isset($this->attributes['cyrus-userquota'][0])) {
 				$userquota = $this->attributes['cyrus-userquota'][0];
 			}
-			$basicPartContainer->addElement(new htmlTableExtendedInputField(_('Mail quota'), 'quota', $userquota, 'quota'), true);
+			$userquotaInput = new htmlTableExtendedInputField(_('Mail quota'), 'quota', $userquota, 'quota');
+			$userquotaInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$basicPartContainer->addElement($userquotaInput, true);
 			// free/busy future
 			$freebusyfuture = '';
 			if (isset($this->attributes['kolabFreeBusyFuture'][0])) {
 				$freebusyfuture = $this->attributes['kolabFreeBusyFuture'][0];
 			}
-			$basicPartContainer->addElement(new htmlTableExtendedInputField(_('Free/Busy interval'), 'freeBusy', $freebusyfuture, 'freeBusy'), true);
+			$freebusyfutureInput = new htmlTableExtendedInputField(_('Free/Busy interval'), 'freeBusy', $freebusyfuture, 'freeBusy');
+			$freebusyfutureInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$basicPartContainer->addElement($freebusyfutureInput, true);
 			$return->addElement($basicPartContainer, true);
 			// invitation policies
 			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);

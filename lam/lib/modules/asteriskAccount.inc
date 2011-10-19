@@ -825,6 +825,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					$AstAccountPort = $this->attributes['AstAccountPort'][0];
 				}
 				$AstAccountPortInput = new htmlTableExtendedInputField(_("Port"), 'AstAccountPort', $AstAccountPort, 'AstAccountPort');
+				$AstAccountPortInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($AstAccountPortInput, true);
 			}
 			// qualify
@@ -852,6 +853,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					$AstAccountRTPTimeout = $this->attributes['AstAccountRTPTimeout'][0];
 				}
 				$AstAccountRTPTimeoutInput = new htmlTableExtendedInputField(_("RTP timeout"), 'AstAccountRTPTimeout', $AstAccountRTPTimeout, 'AstAccountRTPTimeout');
+				$AstAccountRTPTimeoutInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($AstAccountRTPTimeoutInput, true);
 			}
 			// RTP hold timeout
@@ -861,6 +863,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					$AstAccountRTPHoldTimeout = $this->attributes['AstAccountRTPHoldTimeout'][0];
 				}
 				$AstAccountRTPHoldTimeoutInput = new htmlTableExtendedInputField(_("RTP hold timeout"), 'AstAccountRTPHoldTimeout', $AstAccountRTPHoldTimeout, 'AstAccountRTPHoldTimeout');
+				$AstAccountRTPHoldTimeoutInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($AstAccountRTPHoldTimeoutInput, true);
 			}
 			// disallowed codec

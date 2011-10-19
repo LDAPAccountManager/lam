@@ -1091,6 +1091,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
 		$uidNumberInput = new htmlTableExtendedInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
 		$uidNumberInput->setFieldMaxLength(20);
+		$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$return->addElement($uidNumberInput, true);
 		$gecos = '';
 		if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];

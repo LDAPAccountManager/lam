@@ -129,26 +129,42 @@ class systemQuotas extends baseModule {
 				$parts = explode(',', $this->attributes['quota'][$i]);
 				$container->addElement(new htmlInputField('path_' . $i, $parts[0], 20));
 				$container->addElement($spacer);
-				$container->addElement(new htmlInputField('softBlock_' . $i, $parts[1], 10));
+				$softBlockInput = new htmlInputField('softBlock_' . $i, $parts[1], 10);
+				$softBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$container->addElement($softBlockInput);
 				$container->addElement($spacer);
-				$container->addElement(new htmlInputField('hardBlock_' . $i, $parts[2], 10));
+				$hardBlockInput = new htmlInputField('hardBlock_' . $i, $parts[2], 10);
+				$hardBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$container->addElement($hardBlockInput);
 				$container->addElement($spacer);
-				$container->addElement(new htmlInputField('softInode_' . $i, $parts[3], 10));
+				$softInodeInput = new htmlInputField('softInode_' . $i, $parts[3], 10);
+				$softInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$container->addElement($softInodeInput);
 				$container->addElement($spacer);
-				$container->addElement(new htmlInputField('hardInode_' . $i, $parts[4], 10));
+				$hardInodeInput = new htmlInputField('hardInode_' . $i, $parts[4], 10);
+				$hardInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$container->addElement($hardInodeInput);
 				$container->addElement(new htmlButton('del_' . $i, 'del.png', true), true);
 			}
 		}
 		// new entry
 		$container->addElement(new htmlInputField('path', null, 20));
 		$container->addElement($spacer);
-		$container->addElement(new htmlInputField('softBlock', 0, 10));
+		$newSoftBlockInput = new htmlInputField('softBlock', 0, 10);
+		$newSoftBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$container->addElement($newSoftBlockInput);
 		$container->addElement($spacer);
-		$container->addElement(new htmlInputField('hardBlock', 0, 10));
+		$newHardBlockInput = new htmlInputField('hardBlock', 0, 10);
+		$newHardBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$container->addElement($newHardBlockInput);
 		$container->addElement($spacer);
-		$container->addElement(new htmlInputField('softInode', 0, 10));
+		$newSoftInodeInput = new htmlInputField('softInode', 0, 10);
+		$newSoftInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$container->addElement($newSoftInodeInput);
 		$container->addElement($spacer);
-		$container->addElement(new htmlInputField('hardInode', 0, 10));
+		$newHardInodeInput = new htmlInputField('hardInode', 0, 10);
+		$newHardInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$container->addElement($newHardInodeInput);
 		$container->addElement(new htmlButton('add', 'add.png', true));
 		return $container;
 	}
