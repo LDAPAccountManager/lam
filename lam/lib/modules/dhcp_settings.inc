@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2010  Roland Gruber
+                2008 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -346,7 +346,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			elseif (!check_ip($_POST['cn'],true)) {
 				$errors[] = $this->messages['cn'][2];
 			}
-			elseif (array_pop(explode(".",  $_POST['cn']))!=0) {
+			elseif (strrpos($_POST['cn'], '.0') != (strlen($_POST['cn']) - 2)) {
 				$errors[] = $this->messages['cn'][2];
 			}
 			else {
@@ -523,9 +523,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// domain name
 		$return->addElement(new htmlTableExtendedInputField(_('Domain name'), 'domainname', $this->getDHCPOption('domain-name'), 'domainname'), true);
 		// lease Time
-		$return->addElement(new htmlTableExtendedInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime'), true);
+		$leasetimeInput = new htmlTableExtendedInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime');
+		$leasetimeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($leasetimeInput, true);
 		// max lease time
-		$return->addElement(new htmlTableExtendedInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime'), true);
+		$max_leasetimeInput = new htmlTableExtendedInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime');
+		$max_leasetimeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$return->addElement($max_leasetimeInput, true);
 		// DNS
 		$return->addElement(new htmlTableExtendedInputField(_('DNS'), 'dns', $this->getDHCPOption('domain-name-servers'), 'dns'), true);
 		// gateway

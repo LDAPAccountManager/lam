@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2010  Roland Gruber
+                2008 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -205,13 +205,17 @@ class fixed_ip extends baseModule {
 	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', array('cn', 'dhcphwaddress', 'dhcpstatements'));
 			for ($i=0; $i < sizeof($entries); $i++) {
+				$dhcphwaddress = explode(" ", $entries[$i]['dhcphwaddress'][0]);
+				$dhcphwaddress = array_pop($dhcphwaddress);
+				$dhcpstatements = explode(" ", $entries[$i]['dhcpstatements'][0]);
+				$dhcpstatements = array_pop($dhcpstatements);
 				$this->fixed_ip[$i]['cn'] = $entries[$i]['cn'][0];
-				$this->fixed_ip[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-				$this->fixed_ip[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+				$this->fixed_ip[$i]['mac'] = $dhcphwaddress;
+				$this->fixed_ip[$i]['ip'] = $dhcpstatements;
 
 				$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
-				$this->orig_ips[$i]['mac'] = array_pop(explode(" ", $entries[$i]['dhcphwaddress'][0]));
-				$this->orig_ips[$i]['ip'] = array_pop(explode(" ", $entries[$i]['dhcpstatements'][0]));
+				$this->orig_ips[$i]['mac'] = $dhcphwaddress;
+				$this->orig_ips[$i]['ip'] = $dhcpstatements;
 			}
 		}
 	}
