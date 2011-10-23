@@ -2,10 +2,11 @@ November 2011 3.6.0
   - support HTTP authentication for admin pages and self service
   - new modules
    -> authorizedServiceObject
+   -> FreeRadius
   - LAM Pro
    -> added password self reset feature
    -> Zarafa 7 support
-   -> Zarafa support for dynamic groups, adress lists and contacts
+   -> Zarafa support for dynamic groups, address lists and contacts
    -> Unix: group of names can be managed on user edit page
   - Fixed bugs:
    -> Unix: check for upper-case characters in user name (3416180)
