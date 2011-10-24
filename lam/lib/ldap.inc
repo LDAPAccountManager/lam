@@ -102,8 +102,8 @@ class Ldap{
 			$useTLS = $this->conf->getUseTLS();
 			if (isset($useTLS) && ($useTLS == "yes")) {
 				@ldap_start_tls($this->server);
-				// connect without TLS if it failed
 				if (ldap_errno($this->server) != 0) {
+					logNewMessage(LOG_ERR, 'Unable to start TLS encryption. Please check if your server certificate is valid and if the LDAP server supports TLS at all.');
 					return ldap_errno($this->server);
 				}
 			}
