@@ -64,7 +64,7 @@ class freeRadius extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('radiusprofile');
 		// managed attributes
-		$return['attributes'] = array('radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm');
+		$return['attributes'] = array('radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm', 'radiusGroupName', 'radiusExpiration', 'radiusIdleTimeout');
 		// help Entries
 		$return['help'] = array(
 			'radiusFramedIPAddress' => array(
@@ -78,6 +78,22 @@ class freeRadius extends baseModule {
 			'radiusRealm' => array(
 				"Headline" => _("Realm"),
 				"Text" => _("The Radius realm of this account.")
+			),
+			'radiusGroupName' => array(
+				"Headline" => _("Group name(s)"),
+				"Text" => _("The group name(s) for this account.")
+			),
+			'radiusGroupNameList' => array(
+				"Headline" => _("Group name(s)"),
+				"Text" => _("The group name(s) for this account.") . ' ' . _("Multiple values are separated by semicolon.")
+			),
+			'radiusExpiration' => array(
+				"Headline" => _("Expiration date"),
+				"Text" => _("The account will be locked after this date.")
+			),
+			'radiusIdleTimeout' => array(
+				"Headline" => _("Idle timeout"),
+				"Text" => _("Specifies the maximum number of seconds that a connection can be idle before the session is terminated.")
 			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
@@ -95,6 +111,12 @@ class freeRadius extends baseModule {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPNetmask', false, _('Net mask'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusRealm', false, _('Realm'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusGroupName', false, _('Group name(s)'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		// profile settings
@@ -114,6 +136,17 @@ class freeRadius extends baseModule {
 				'regex' => 'DNSname',
 				'error_message' => $this->messages['radiusRealm'][0]);
 			$return['profile_mappings']['freeRadius_radiusRealm'] = 'radiusRealm';
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Group name(s)'), 'freeRadius_radiusGroupName', null, 'radiusGroupNameList');
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Idle timeout'), 'freeRadius_radiusIdleTimeout', null, 'radiusIdleTimeout');
+			$return['profile_checks']['freeRadius_radiusIdleTimeout'] = array(
+				'type' => 'ext_preg',
+				'regex' => 'digit',
+				'error_message' => $this->messages['radiusIdleTimeout'][0]);
+			$return['profile_mappings']['freeRadius_radiusIdleTimeout'] = 'radiusIdleTimeout';
 		}
 		if (sizeof($profileElements) > 0) {
 			$profileContainer = new htmlTable();
@@ -149,6 +182,30 @@ class freeRadius extends baseModule {
 				'example' => _('company.com')
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
+			$return['upload_columns'][] = array(
+				'name' => 'freeRadius_radiusGroupName',
+				'description' => _('Group name(s)'),
+				'help' => 'radiusGroupNameList',
+				'example' => _('group01;group02')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusExpiration')) {
+			$return['upload_columns'][] = array(
+				'name' => 'freeRadius_radiusExpiration',
+				'description' => _('Expiration date'),
+				'help' => 'radiusExpiration',
+				'example' => '17-07-2011 00:00'
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
+			$return['upload_columns'][] = array(
+				'name' => 'freeRadius_radiusIdleTimeout',
+				'description' => _('Idle timeout'),
+				'help' => 'radiusIdleTimeout',
+				'example' => '3600'
+			);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array();
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
@@ -159,6 +216,15 @@ class freeRadius extends baseModule {
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
 			$return['PDF_fields']['radiusRealm'] = _('Realm');
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
+			$return['PDF_fields']['radiusGroupName'] = _('Group name(s)');
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusExpiration')) {
+			$return['PDF_fields']['radiusExpiration'] = _('Expiration date');
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
+			$return['PDF_fields']['radiusIdleTimeout'] = _('Idle timeout');
 		}
 		return $return;
 	}
@@ -173,6 +239,12 @@ class freeRadius extends baseModule {
 		$this->messages['radiusFramedIPNetmask'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusFramedIPNetmask', _('The net mask is invalid.'));
 		$this->messages['radiusRealm'][0] = array('ERROR', _('Please enter a valid realm.'));
 		$this->messages['radiusRealm'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusRealm', _('Please enter a valid realm.'));
+		$this->messages['radiusGroupName'][0] = array('ERROR', _('Please enter a valid list of group names.'));
+		$this->messages['radiusGroupName'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusGroupName', _('Please enter a valid list of group names.'));
+		$this->messages['radiusExpiration'][0] = array('ERROR', _('The expiration date must be in format DD-MM-YYYY HH:MM.'));
+		$this->messages['radiusExpiration'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusExpiration', _('The expiration date must be in format DD-MM-YYYY HH:MM.'));
+		$this->messages['radiusIdleTimeout'][0] = array('ERROR', _('Please enter a numeric value for the idle timeout.'));
+		$this->messages['radiusIdleTimeout'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusIdleTimeout', _('Please enter a numeric value for the idle timeout.'));
 	}
 
 	/**
@@ -206,6 +278,31 @@ class freeRadius extends baseModule {
 					$radiusRealm = $this->attributes['radiusRealm'][0];
 				}
 				$return->addElement(new htmlTableExtendedInputField(_('Realm'), 'radiusRealm', $radiusRealm, 'radiusRealm'), true);
+			}
+			// group names
+			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
+				
+			}
+			// expiration date
+			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusExpiration')) {
+				$radiusExpiration = '&nbsp;&nbsp;-';
+				if (isset($this->attributes['radiusExpiration'][0])) {
+					$radiusExpiration = $this->formatExpirationDate($this->attributes['radiusExpiration'][0]);
+				}
+				$return->addElement(new htmlOutputText('Expiration date'));
+				$radiusExpirationList = new htmlGroup();
+				$radiusExpirationList->addElement(new htmlOutputText($radiusExpiration . ' &nbsp;&nbsp;&nbsp;&nbsp;', false));
+				$radiusExpirationList->addElement(new htmlAccountPageButton(get_class($this), 'expiration', 'change', _('Change')));
+				$return->addElement($radiusExpirationList);
+				$return->addElement(new htmlHelpLink('radiusExpiration'), true);
+			}
+			// idle timeout
+			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
+				$radiusIdleTimeout = '';
+				if (isset($this->attributes['radiusIdleTimeout'][0])) {
+					$radiusIdleTimeout = $this->attributes['radiusIdleTimeout'][0];
+				}
+				$return->addElement(new htmlTableExtendedInputField(_('Idle timeout'), 'radiusIdleTimeout', $radiusIdleTimeout, 'radiusIdleTimeout'), true);
 			}
 			// button to remove extension
 			$return->addElement(new htmlSpacer(null, '10px'), true);
@@ -338,6 +435,51 @@ class freeRadius extends baseModule {
 		return $return;
 	}
 
+	/**
+	* Checks input values of account profiles.
+	*
+	* @param array $options a hash array (name => value) containing the options
+	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	*/
+	function check_profileOptions($options) {
+		$messages = parent::check_profileOptions($options);
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
+			$list = preg_split('/;[ ]*/', $options['freeRadius_radiusGroupName'][0]);
+			for ($i = 0; $i < sizeof($list); $i++) {
+				if (!get_preg($list[$i], 'groupname')) {
+					$messages[] = $this->messages['radiusGroupName'][0];
+					break;
+				}
+			}
+		}
+		return $messages;
+	}
+
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
+			// group name(s)
+			if (isset($profile['freeRadius_radiusGroupName'][0]) && $profile['freeRadius_radiusGroupName'][0] != '') {
+				$this->attributes['radiusGroupName'] = preg_split('/;[ ]*/', $profile['freeRadius_radiusGroupName'][0]);
+			}
+		}
+	}
+	
+	/**
+	 * Formats the expiration date attribute.
+	 * 
+	 * @param String $date date value
+	 */
+	private function formatExpirationDate($date) {
+		return $date;
+	}
+	
 }
 
 

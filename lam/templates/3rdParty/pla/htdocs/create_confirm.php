@@ -35,7 +35,7 @@ if (! $request['container']) {
 if (! count($request['template']->getRDNAttrs()))
 	error(_('The were no attributes marked as an RDN attribute.'),'error','index.php');
 if (! $request['template']->getRDN())
-	error(_('The RDN field is empty?'),'error','index.php');
+	error(_('The RDN field is empty.'),'error','index.php');
 
 # Some other attribute checking...
 foreach ($request['template']->getAttributes() as $attribute) {

@@ -71,7 +71,7 @@ class authorizedServiceObject extends baseModule {
 		$return['help'] = array (
 			'authorizedService' => array (
 				"Headline" => _("Authorized Services"),
-				"Text" => _("Service name e.g. sshd, imap, ftp.... Enter one service per entry."). ' '. _("Use * for all services.")
+				"Text" => _("Service name (e.g. sshd, imap, ftp). Enter one service per entry."). ' '. _("Use * for all services.")
 			),
 			'authorizedServices' => array (
 				"Headline" => _("Authorized Services"),

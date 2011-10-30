@@ -1672,7 +1672,7 @@ class posixAccount extends baseModule implements passwordService {
 					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_gon']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $gonList)) {
-							$errors[] = array('ERROR', _('Unable to find group of names in LDAP.'), $groups[$g]);
+							$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
 						}
 					}
 				}
@@ -1971,7 +1971,7 @@ class posixAccount extends baseModule implements passwordService {
 			if (!$success) {
 				$errors[] = array(
 					"ERROR",
-					_("LAM was unable to modify group memberships for group of names: %s"),
+					_("LAM was unable to modify group memberships for group: %s"),
 					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
 					array($temp['groups'][$temp['counter']])
 				);
