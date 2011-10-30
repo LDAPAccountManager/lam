@@ -341,7 +341,7 @@ function display_LoginPage($config_object) {
 							<tr>
 								<td style="border-style:none" height="50" colspan="2" align="center">
 									<input name="checklogin" type="hidden" value="checklogin">
-									<button id="loginButton" class="smallPadding" name="submit" tabindex="4"><?php echo _("Login"); ?></button>
+									<button type="submit" id="loginButton" class="smallPadding" name="submit" tabindex="4"><?php echo _("Login"); ?></button>
 								</td>
 							</tr>
 							<tr>

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,8 +155,8 @@ echo $_SESSION['header'];
 						else echo "<select disabled size=1 name=\"filename\">\n<option></option>\n</select>\n";
 						if (sizeof($files) > 0) echo "<input type=\"password\" name=\"passwd\">\n";
 						else echo "<input disabled type=\"password\" name=\"passwd\">\n";
-						if (sizeof($files) > 0) echo "<button id=\"submitButton\" class=\"smallPadding\" name=\"submit\">" . _("Ok") . "</button>\n";
-						else echo "<button id=\"submitButton\" class=\"smallPadding\" name=\"submit\" disabled>" . _("Ok") . "</button>&nbsp;\n";
+						if (sizeof($files) > 0) echo "<button type=\"submit\" id=\"submitButton\" class=\"smallPadding\" name=\"submit\">" . _("Ok") . "</button>\n";
+						else echo "<button type=\"submit\" id=\"submitButton\" class=\"smallPadding\" name=\"submit\" disabled>" . _("Ok") . "</button>&nbsp;\n";
 						// help link
 						printHelpLink(getHelp('', '200'), '200');
 					?>
