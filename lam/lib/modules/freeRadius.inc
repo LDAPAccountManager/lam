@@ -454,7 +454,9 @@ class freeRadius extends baseModule {
 		for ( $i=0; $i<=23; $i++ ) {
 			$hourList[] = str_pad($i, 2, '0', STR_PAD_LEFT);
 		}
-		for ( $i=1; $i<=31; $i++ ) $dayList[] = $i;
+		for ( $i=1; $i<=31; $i++ ) {
+			$dayList[] = str_pad($i, 2, '0', STR_PAD_LEFT);
+		}
 		for ( $i=2003; $i<=2050; $i++ ) $yearList[] = $i;
 		$return->addElement(new htmlOutputText($text));
 		$return->addElement(new htmlSelect('expire_day', $dayList, array($day)));
