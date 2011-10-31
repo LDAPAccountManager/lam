@@ -40,6 +40,7 @@ include_once($headerPrefix . "../lib/tools.inc");
 
 // HTML header and title
 echo $_SESSION['header'];
+echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . $headerPrefix . "../graphics/favicon.ico\">\n";
 echo "<title>LDAP Account Manager</title>\n";
 
 // include all CSS files
