@@ -1912,6 +1912,48 @@ Have fun!
       </section>
 
       <section>
+        <title>FreeRadius</title>
+
+        <para>FreeRadius is a software that implements the RADIUS
+        authentication protocol. LAM allows you to mange several of the
+        FreeRadius attributes.</para>
+
+        <para>To activate the FreeRadius plugin please activate the FreeRadius
+        user module in your server profile:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_freeRadius1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can disable unneeded fields on the tab "Module
+        settings":</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_freeRadius2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you will see the tab "FreeRadius" when editing users. The
+        extension can be (de)activated for each user. You can setup e.g.
+        realm, IP and expiration date.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_freeRadius3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Mail routing</title>
 
         <para>LAM supports to manage mail routing for user accounts. You can
@@ -4391,6 +4433,24 @@ Run slapindex to rebuild the index.
             <entry>Part of OpenLDAP installation</entry>
 
             <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_freeRadius.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>FreeRadius users</entry>
+
+            <entry>radiusprofile</entry>
+
+            <entry>openldap.schema</entry>
+
+            <entry>Part of FreeRadius installation</entry>
+
+            <entry></entry>
           </row>
 
           <row>
