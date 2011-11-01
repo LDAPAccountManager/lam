@@ -416,25 +416,25 @@ class lamList {
 		$toolCount = 0;
 		// edit image
 		$output .= "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-		$output .= "<img height=16 width=16 src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\">";
+		$output .= "<img height=16 width=16 src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\" class=\"align-middle\">";
 		$output .= "</a>\n ";
 		$toolCount++;
 		// delete image
 		if (checkIfWriteAccessIsAllowed()) {
 			$output .= "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			$output .= "<img height=16 width=16 src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\">";
+			$output .= "<img height=16 width=16 src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\" class=\"align-middle\">";
 			$output .= "</a>\n ";
 			$toolCount++;
 		}
 		// pdf image
 		$pdfButtonStyle = "background-image: url(../../graphics/pdf.png);background-position: -1px -1px;background-repeat: no-repeat;width:20px;height:20px;background-color:transparent;border-style:none;";
-		$output .= "<input type=\"submit\" style=\"$pdfButtonStyle\" name=\"createPDF_" . $id . "\" value=\" \" title=\"" . _('Create PDF file') . "\">\n ";
+		$output .= "<input type=\"submit\" style=\"$pdfButtonStyle\" name=\"createPDF_" . $id . "\" value=\" \" title=\"" . _('Create PDF file') . "\" class=\"align-middle\">\n ";
 		$toolCount++;
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$output .= "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			$output .= "<img height=16 width=16 src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\">";
+			$output .= "<img height=16 width=16 src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\" class=\"align-middle\">";
 			$output .= "</a>\n ";
 			$toolCount++;
 		}
@@ -710,8 +710,8 @@ class lamList {
 		echo "</td>\n";
 		echo "<td align=\"right\">\n";
 		$this->listShowOUSelection();
-		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
-		echo '&nbsp;<a href="#" onclick="listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');">';
+		echo "<input class=\"smallImageButton align-middle\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
+		echo '&nbsp;<a class="align-middle" href="#" onclick="listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');">';
 			echo '<img height=16 width=16 src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
 		echo '</a>';
 		echo "</td>\n";
