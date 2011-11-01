@@ -3665,7 +3665,7 @@ Run slapindex to rebuild the index.
         <para><emphasis role="bold">access to</emphasis></para>
 
         <para><emphasis role="bold">
-        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,userPassword,shadowLastChange</emphasis></para>
+        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,roomNumber,userPassword,shadowLastChange</emphasis></para>
 
         <para><emphasis role="bold"> by self write</emphasis></para>
 
@@ -3673,7 +3673,8 @@ Run slapindex to rebuild the index.
 
         <para>If you do not want them to change all attributes then reduce the
         list to fit your needs. Some modules may require additional LDAP
-        attributes.</para>
+        attributes. You can use the tree view to get the technical attribute
+        names e.g. by selecting an user account.</para>
 
         <para>Usually, the slapd.conf file is located in /etc/ldap or
         /etc/openldap.</para>
