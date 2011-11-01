@@ -558,7 +558,7 @@ class lamList {
 			}
 			elseif ($option == 'SESSION') {
 				$filename = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
-				unset($_SESSION[$_GET['PDFSessionID']]);
+				unset($_SESSION[$_POST['PDFSessionID']]);
 			}
 			if ($filename != '') {
 				return "<script type=\"text/javascript\">window.open('" . $filename . "', '_blank');</script>";
