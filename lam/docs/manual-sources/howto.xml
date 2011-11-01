@@ -3669,6 +3669,8 @@ Run slapindex to rebuild the index.
 
         <para><emphasis role="bold"> by self write</emphasis></para>
 
+        <para><emphasis role="bold"> by * read</emphasis></para>
+
         <para>If you do not want them to change all attributes then reduce the
         list to fit your needs. Some modules may require additional LDAP
         attributes.</para>
