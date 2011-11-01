@@ -815,7 +815,7 @@ class accountContainer {
 					}
 				}
 				if (sizeof($incompleteModules) > 0) {
-					StatusMessage('INFO', _('Some required information is missing'),
+					$result[] = array('INFO', _('Some required information is missing'),
 						sprintf(_('Please set up all required attributes on page: %s'), implode(", ", $incompleteModules)));
 				}
 				else {
