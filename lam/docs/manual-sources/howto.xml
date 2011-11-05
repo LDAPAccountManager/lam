@@ -1558,6 +1558,12 @@ Have fun!
               </row>
 
               <row>
+                <entry>registeredAddress</entry>
+
+                <entry>Registered address</entry>
+              </row>
+
+              <row>
                 <entry>roomNumber</entry>
 
                 <entry>Room number</entry>
