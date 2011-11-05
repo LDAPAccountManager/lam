@@ -866,7 +866,7 @@ class htmlSelect extends htmlElement {
 			$onchange = ' onchange="' . $this->onchangeEvent . '"';
 		}
 		// hide select boxes that contain less than 2 elements
-		if ((sizeof($this->elements) < 2) && $this->transformSingleSelect) {
+		if ((sizeof($this->elements) < 2) && !$this->multiSelect && $this->transformSingleSelect) {
 			echo '<div class="hidden">';
 		}
 		// print select box
@@ -886,7 +886,7 @@ class htmlSelect extends htmlElement {
 		}
 		echo "</select>\n";
 		// if select box has only one element then show it as text
-		if ((sizeof($this->elements) == 1) && $this->transformSingleSelect) {
+		if ((sizeof($this->elements) == 1) && !$this->multiSelect && $this->transformSingleSelect) {
 			echo '</div>';
 			if ($this->hasDescriptiveElements) {
 				$keys = array_keys($this->elements);
