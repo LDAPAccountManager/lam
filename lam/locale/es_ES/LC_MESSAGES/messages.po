@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Leandro Lattanzio <llattan2002@yahoo.com.ar>\n"
+"PO-Revision-Date: 2011-11-02 08:19-0500\n"
+"Last-Translator: Hugo Florentino <sysadmin@cips.cu>\n"
 "Language-Team: Español <llattan2002@yahoo.com.ar>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: ../lib/modules/zarafaUser.inc:134
 #: ../lib/modules/zarafaUser.inc:169
 msgid "\"Send as\" attribute"
-msgstr "Atributo \"Send as\""
+msgstr "Atributo \"Enviar como\""
 
 #: ../lib/modules/zarafaUser.inc:88
 #: ../lib/modules/zarafaUser.inc:154
@@ -29,7 +29,7 @@ msgstr "Atributo \"Send as\""
 #: ../lib/modules/zarafaUser.inc:693
 #: ../lib/modules/zarafaUser.inc:1101
 msgid "\"Send as\" privileges"
-msgstr "Privilegios \"Send as\""
+msgstr "Privilegios \"Enviar como\""
 
 #: ../lib/modules/posixAccount.inc:368
 msgid "$user and $group will be replaced with user name and primary group name."
@@ -38,33 +38,33 @@ msgstr "$user y $group serán reemplazados con el nombre del usuario y el nombre
 #: ../lib/types/dhcp.inc:159
 #, php-format
 msgid "%s DHCP(s) found"
-msgstr "%s host(s) encontrados"
+msgstr "%s DHCP(s) encontrado(s)"
 
 #: ../lib/types/nisObjectType.inc:144
 #, php-format
 msgid "%s NIS object(s) found"
-msgstr "%s objeto/s NIS encontrados"
+msgstr "%s objeto(s) NIS encontrado(s)"
 
 #: ../lib/types/mailAlias.inc:135
 #: ../lib/types/alias.inc:135
 #, php-format
 msgid "%s alias(es) found"
-msgstr "%s host(s) encontrados"
+msgstr "%s alias encontrado(s)"
 
 #: ../lib/types/automountType.inc:175
 #, php-format
 msgid "%s automount entry(ies) found"
-msgstr "%s entrada/s automount encontrada/s"
+msgstr "%s entrada(s) de automontaje encontrada(s)"
 
 #: ../lib/types/smbDomain.inc:156
 #, php-format
 msgid "%s domain(s) found"
-msgstr "%s Dominios de Samba encontrado(s) "
+msgstr "%s dominio(s) encontrado(s)"
 
 #: ../lib/types/asteriskExt.inc:137
 #, php-format
 msgid "%s extension(s) found"
-msgstr "%s extension/es encontrada/s"
+msgstr "%s extension(es) encontrada(s)"
 
 #: ../lib/types/gon.inc:158
 #: ../lib/types/group.inc:174
@@ -76,31 +76,31 @@ msgstr "%s grupo(s) encontrado(s)"
 #: ../lib/types/host.inc:161
 #, php-format
 msgid "%s host(s) found"
-msgstr "%s host(s) encontrados"
+msgstr "%s host(s) encontrado(s)"
 
 #: ../lib/lists.inc:106
 #, php-format
 msgid "%s object(s) found"
-msgstr "%s objeto(s) encontrados"
+msgstr "%s objeto(s) encontrado(s)"
 
 #: ../lib/types/ppolicyType.inc:143
 #, php-format
 msgid "%s policy(ies) found"
-msgstr "%s política/s encontrada/s"
+msgstr "%s política(s) encontrada(s)"
 
 #: ../lib/types/sudo.inc:148
 #, php-format
 msgid "%s sudo role(s) found"
-msgstr "%s rol/es usuario/s sudo encontrado/s"
+msgstr "%s rol(es) sudo encontrado(s)"
 
 #: ../lib/types/user.inc:197
 #, php-format
 msgid "%s user(s) found"
-msgstr "%s usuario(s) encontrados"
+msgstr "%s usuario(s) encontrado(s)"
 
 #: ../templates/tree/templates/creation/custom.php:63
 msgid "(example: cn=MyNewPerson)"
-msgstr "(p.ej: cn=MyNewPerson)"
+msgstr "(ejemplo: cn=MiNuevaPersona)"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:60
 msgid "(hint: do not include \"ou=\")"
@@ -151,19 +151,19 @@ msgid ""
 "\n"
 "By default, the nodes are configured as H-Nodes which fits for small networks. In large networks Point-to-Point (0x02) should be used."
 msgstr ""
-"<b>B-Node (0x01): Broadcast.</b><br/>The client tries to find other workstations via broadcasting\n"
-"(works only inside the same collision domain, viz. the same subnet).<br/><br/>\n"
+"<b>Nodo-B (0x01): Difusión.</b><br/>El cliente intenta encontrar otras estaciones de trabajo por difusión\n"
+"(funciona solo dentro del mismo dominio de colisión, es decir, la misma subred).<br/><br/>\n"
 "\n"
-"<b>P-Node (0x02): Point-To-Point</b><br />\n"
-"The client contacts a Netbios name server (NBNS) from Microsoft Windows Name Service (WINS) for name resolution.<br/><br/>\n"
+"<b>Nodo-P (0x02): Punto a punto</b><br />\n"
+"El cliente contacta un servidor de nombres Netbios (NBNS) del Servicio de Nombres de Microsoft Windows (WINS) para la resolución de nombres.<br/><br/>\n"
 "\n"
-"<b>M-Node (0x04): Mixed</b><br />\n"
-"The node tries broadcasting first. If that fails then it tries WINS.<br/><br/>\n"
+"<b>Nodo-M (0x04): Mixto</b><br />\n"
+"El nodo intenta primero la difusión. Si esto falla, entonces intenta con WINS.<br/><br/>\n"
 "\n"
-"<b>H-Node (0x08): Hybrid</b><br />\n"
-"The node tries WINS first. If that fails it tries broadcasting.<br/><br/>\n"
+"<b>Nodo-H (0x08): Híbrido</b><br />\n"
+"El nodo intenta primero con WINS. Si esto falla, intenta la difusión.<br/><br/>\n"
 "\n"
-"By default, the nodes are configured as H-Nodes which fits for small networks. In large networks Point-to-Point (0x02) should be used."
+"Por defecto, los nodos se configuran como Nodos-H, adecuados para pequeñas redes. Para grandes redes debería utilizarse Punto a punto (0x02)."
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:145
 #, php-format
@@ -172,40 +172,40 @@ msgstr "<b>Longitud máxima:</b> %s caracteres"
 
 #: ../lib/modules/device.inc:75
 msgid "A description for this device."
-msgstr "Una descripción para el dispositivo."
+msgstr "Una descripción para este dispositivo."
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:159
 msgid "A list of attributes to display in the results (comma-separated)"
-msgstr "Lista de atributos a mostrar en los resultados, separados por comas"
+msgstr "Lista de atributos a mostrar en los resultados (delimitados por comas)"
 
 #: ../lib/modules/sudoRole.inc:84
 #: ../lib/modules/sudoRole.inc:113
 msgid "A list of options (e.g. NOPASSWD)."
-msgstr "Lista de opciones (p.e. NOPASSWD)."
+msgstr "Lista de opciones (p.ej. NOPASSWD)."
 
 #: ../templates/massBuildAccounts.php:115
 msgid "A required column is missing in your CSV file."
-msgstr "Falta una columna obligatoria en su archivo CVS"
+msgstr "Falta una columna obligatoria en su archivo CSV."
 
 #: ../lib/modules/kolabUser.inc:132
 msgid "A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails."
-msgstr "Un usuario puede definir quién está autorizado a actuar en su nombre. Esta propiedad se comprueba al usar el demonio de SMTP de Kolab (Postfix) para enviar e-mails."
+msgstr "Un usuario puede definir quién está autorizado a actuar en su nombre. Esta propiedad se comprueba al usar el demonio SMTP de Kolab (Postfix) para enviar emails."
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:593
 msgid "A valid deleteoldrdn attribute should be specified"
-msgstr "Un atributo válido deleteoldrdn debe ser especificado"
+msgstr "Debe especificarse un atributo deleteoldrdn válido"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:237
 msgid "A valid dn line is required"
-msgstr "Una línea válida dn es requerida"
+msgstr "Se requiere una línea dn válida"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:596
 msgid "A valid newrdn attribute should be specified"
-msgstr "Un atributo válido newrdn debe ser especificado"
+msgstr "Debe especificarse un atributo newrdn válido"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:587
 msgid "A valid newsuperier attribute should be specified"
-msgstr "Un atributo válido newsuperier debe ser especificado"
+msgstr "Debe especificarse un atributo newsuperier válido"
 
 #: ../lib/modules/asteriskAccount.inc:122
 #: ../lib/modules/asteriskAccount.inc:251
@@ -214,7 +214,7 @@ msgstr "Un atributo válido newsuperier debe ser especificado"
 #: ../lib/modules/asteriskAccount.inc:707
 #: ../lib/modules/asteriskAccount.inc:1196
 msgid "AMA flags"
-msgstr "flags AMA"
+msgstr "banderas AMA"
 
 #: ../templates/serverInfo.php:340
 msgid "Abandon"
@@ -222,7 +222,7 @@ msgstr "Abandonar"
 
 #: ../templates/lists/changePassword.php:539
 msgid "Aborted password change."
-msgstr "Cambio de contraseña abortado."
+msgstr "Cambio de contraseña cancelado."
 
 #: ../lib/modules/sambaSamAccount.inc:543
 msgid "Abu Dhabi, Muscat, Baku"
@@ -425,7 +425,7 @@ msgstr "Conexto de la cuenta"
 
 #: ../templates/masscreate.php:116
 msgid "Account creation via file upload"
-msgstr "Creación de cuenta mediante transferencia de archivo"
+msgstr "Creación de cuenta por envío de archivo"
 
 #: ../lib/modules/posixAccount.inc:375
 msgid "Account deactivated"
@@ -483,7 +483,7 @@ msgstr "Nombre de la cuenta:"
 #: ../lib/modules/phpGroupwareUser.inc:161
 #: ../lib/modules/phpGroupwareUser.inc:338
 msgid "Account status"
-msgstr "Estado de la cuenta %s"
+msgstr "Estado de la cuenta"
 
 #: ../templates/masscreate.php:130
 #: ../templates/pdfedit/pdfdelete.php:85
@@ -501,28 +501,28 @@ msgstr "Tipo de cuenta"
 #: ../templates/config/moduleSettings.php:158
 #: ../templates/config/conftypes.php:177
 msgid "Account types"
-msgstr "Tipos de cuenta"
+msgstr "Tipos de cuentas"
 
 #: ../help/help.inc:101
 msgid "Account types and modules"
-msgstr "Tipos de cuenta y módulos"
+msgstr "Tipos y módulos de cuentas"
 
 #: ../help/help.inc:103
 msgid "Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited."
-msgstr "Definir los tipos de cuentas para las entradas LDAP (e.g. usuarios y grupos) que deben ser gestionadas. Las propiedades de las cuentas (e.g. Unix y Samba) pueden ser editadas."
+msgstr "Los tipos de cuentas definen qué tipo de entradas LDAP (p.ej. usuarios y grupos) deben gestionarse. Los módulos de cuentas definen qué propiedades (p.ej. Unix y Samba) pueden editarse."
 
 #: ../lib/modules.inc:1177
 msgid "Account was created successfully."
-msgstr "La cuenta se creó correctamente."
+msgstr "La cuenta se creó exitosamente."
 
 #: ../templates/lists/changePassword.php:562
 #: ../lib/modules.inc:1180
 msgid "Account was modified successfully."
-msgstr "La cuenta se modificó correctamente."
+msgstr "La cuenta se modificó exitosamente."
 
 #: ../lib/modules/customScripts.inc:128
 msgid "Action type"
-msgstr "Tipos de atributos"
+msgstr "Tipo de acción"
 
 #: ../lib/modules/ddns.inc:87
 #: ../lib/modules/ddns.inc:342
@@ -535,27 +535,27 @@ msgstr "Activar TLS"
 
 #: ../lib/modules/sambaSamAccount.inc:330
 msgid "Activate this checkbox to allow this user to use the terminal service."
-msgstr "Si activa este campo, se borrará el directorio personal del usuario."
+msgstr "Active esta casilla para permitir a este usuario utilizar el servicio de terminal."
 
 #: ../lib/modules/sambaSamAccount.inc:351
 msgid "Activate this checkbox to connect drives from the client machine."
-msgstr "Activar casilla de verificación para unidades a la máquina cliente."
+msgstr "Active esta casilla para conectar unidades de la máquina cliente."
 
 #: ../lib/modules/sambaSamAccount.inc:354
 msgid "Activate this checkbox to connect printers from the client machine."
-msgstr "Si activa este campo, se borrará el directorio personal del usuario."
+msgstr "Active esta casilla para conectar impresoras de la máquina cliente."
 
 #: ../lib/modules/sambaSamAccount.inc:339
 msgid "Activate this checkbox to inherit the initial program and working directory from the client machine."
-msgstr "Activar casilla de verificación para heredar el programa inicial y el directorio de trabajo para la máquina cliente."
+msgstr "Active esta casilla para heredar el programa inicial y el directorio de trabajo de la máquina cliente."
 
 #: ../lib/modules/sambaSamAccount.inc:357
 msgid "Activate this checkbox to set the client's printer as default printer."
-msgstr "Si activa este campo, se borrará el directorio personal del usuario."
+msgstr "Active esta casilla para establecer la impresora del cliente como predeterminada."
 
 #: ../lib/modules/posixAccount.inc:347
 msgid "Activating this checkbox will remove the user's home directory."
-msgstr "Si activa este campo, se borrará el directorio personal del usuario."
+msgstr "Activar esta casilla eliminará el directorio inicial del usuario."
 
 #: ../lib/modules/zarafaGroup.inc:79
 #: ../lib/modules/zarafaGroup.inc:115
@@ -571,7 +571,7 @@ msgstr "Activo"
 
 #: ../templates/config/conftypes.php:223
 msgid "Active account types"
-msgstr "Tipos de atributos"
+msgstr "Tipos de cuentas activos"
 
 #: ../templates/serverInfo.php:305
 #: ../templates/serverInfo.php:382
@@ -603,15 +603,15 @@ msgstr "Añadir"
 
 #: ../lib/modules/asteriskAccount.inc:971
 msgid "Add Asterisk account"
-msgstr "Añadir Cuenta Asterisk"
+msgstr "Añadir cuenta Asterisk"
 
 #: ../lib/modules/asteriskVoicemail.inc:288
 msgid "Add Asterisk voicemail extension"
-msgstr "Añadir extensión de Buzón de Voz Asterisk"
+msgstr "Añadir extensión de buzón de voz Asterisk"
 
 #: ../lib/modules/eduPerson.inc:398
 msgid "Add EDU person extension"
-msgstr "Añadir EDU extension personal"
+msgstr "Añadir extensión de persona EDU"
 
 #: ../lib/modules/ipHost.inc:181
 msgid "Add IP address extension"
@@ -619,22 +619,22 @@ msgstr "Añadir extensión de dirección IP"
 
 #: ../lib/modules/kolabUser.inc:394
 msgid "Add Kolab extension"
-msgstr "Añadir extension Kolab"
+msgstr "Añadir extension de Kolab"
 
 #: ../lib/modules/sambaSamAccount.inc:1223
 #: ../lib/modules/sambaGroupMapping.inc:293
 msgid "Add Samba 3 extension"
-msgstr "Añadir extensión Samba 3"
+msgstr "Añadir extensión de Samba 3"
 
 #: ../lib/modules/shadowAccount.inc:365
 msgid "Add Shadow account extension"
-msgstr "Añadir extensión cuenta Shadow"
+msgstr "Añadir extensión de cuenta Shadow"
 
 #: ../lib/modules/zarafaGroup.inc:211
 #: ../lib/modules/zarafaUser.inc:375
 #: ../lib/modules/zarafaServer.inc:172
 msgid "Add Zarafa extension"
-msgstr "Añadir extension Zarafa"
+msgstr "Añadir extension de Zarafa"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:143
 msgid "Add all"
@@ -654,20 +654,20 @@ msgstr "Añadir nuevo valor al atributo"
 #: ../lib/modules/groupOfNames.inc:308
 #: ../lib/modules/groupOfNames.inc:419
 msgid "Add entries of this type:"
-msgstr "Añadir entradas para este tipo"
+msgstr "Añadir entradas de este tipo:"
 
 #: ../lib/modules/ddns.inc:343
 msgid "Add fix IP addresses to DNS"
-msgstr "Añadir IP fija para DNS"
+msgstr "Añadir una dirección IP fija al DNS"
 
 #: ../lib/modules/hostObject.inc:162
 msgid "Add host extension"
-msgstr "Agregar extensión de host"
+msgstr "Añadir extensión de host"
 
 #: ../templates/selfService/adminMain.php:411
 #: ../help/help.inc:178
 msgid "Add input field"
-msgstr "Añadir perfil"
+msgstr "Añadir campo de entrada"
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:37
 #, php-format
@@ -698,16 +698,16 @@ msgstr "Añadir nuevo grupo"
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:117
 msgid "Add new object class"
-msgstr "Agregar nueva objectClass"
+msgstr "Agregar nueva clase de objeto"
 
 #: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:60
 #, php-format
 msgid "Add new object class to <b>%s</b>"
-msgstr "Agregar nueva objectClass a <b>%s</b>"
+msgstr "Agregar nueva clase de objeto a <b>%s</b>"
 
 #: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:95
 msgid "Add object class and attributes"
-msgstr "Agregar objectClass y atributos"
+msgstr "Agregar clase y atributos del objeto"
 
 #: ../lib/modules/inetOrgPerson.inc:635
 #: ../lib/modules/inetOrgPerson.inc:1167
@@ -723,7 +723,7 @@ msgstr "Añadir foto"
 #: ../lib/modules/phpGroupwareUser.inc:107
 #: ../lib/modules/phpGroupwareUser.inc:191
 msgid "Add phpGroupWare extension"
-msgstr "Añadir extension phpGroupWare"
+msgstr "Añadir extensión phpGroupWare"
 
 #: ../templates/config/profmanage.php:210
 #: ../templates/selfService/profManage.php:168
@@ -733,29 +733,29 @@ msgstr "Añadir perfil"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:143
 msgid "Add selected"
-msgstr "Agregar seleccionado"
+msgstr "Añadir lo seleccionado"
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:149
 msgid "Add value"
-msgstr "añadir valor"
+msgstr "Añadir valor"
 
 #: ../templates/3rdParty/pla/htdocs/import.php:28
 msgid "Adding"
-msgstr "Agregando"
+msgstr "Añadiendo"
 
 #: ../lib/modules/range.inc:108
 msgid "Adding the range failed because errors occured."
-msgstr "Añadiendo el rango de fallo porque se han producido errores."
+msgstr "Fallo al añadir el rango porque se han producido errores."
 
 #: ../templates/selfService/adminMain.php:360
 #: ../help/help.inc:182
 msgid "Additional CSS links"
-msgstr "Adicionar links CSS"
+msgstr "Enlaces CSS adicionales"
 
 #: ../lib/modules/zarafaGroup.inc:64
 #: ../lib/modules/zarafaGroup.inc:68
 msgid "Additional email addresses for this entry."
-msgstr "Dirección de correo electrónico adicional para esta entrada"
+msgstr "Dirección de email adicional para esta entrada."
 
 #: ../lib/modules/posixAccount.inc:218
 #: ../lib/modules/posixAccount.inc:305
@@ -778,19 +778,19 @@ msgstr "Dirección"
 
 #: ../lib/modules/imapAccess.inc:70
 msgid "Address of IMAP server (e.g. mail.example.org)."
-msgstr "Dirección del servidor IMAP (e.g. mail.ejemplo.org)."
+msgstr "Dirección del servidor IMAP (p.ej. mail.ejemplo.org)."
 
 #: ../help/help.inc:177
 msgid "Adds a new group element to the list of self service options. Use this to structure the input fields."
-msgstr "Agrega un nuevo elemento al grupo de la lista de autoservicio. Use esto para la estructura de los campos de entrada."
+msgstr "Añade un nuevo elemento al grupo de la lista de autoservicio. Utiliícelo para estructurar los campos de entrada."
 
 #: ../help/help.inc:179
 msgid "Adds a new self service option to the selected group element."
-msgstr "Agrega una nueva opción de autoservicio para el elemento del grupo seleccionado."
+msgstr "Añade una nueva opción de autoservicio para el elemento del grupo seleccionado."
 
 #: ../lib/modules/range.inc:95
 msgid "Adds input fields for a new IP range."
-msgstr "Agrega campos de entrada para un nuevo rango de ip."
+msgstr "Agrega campos de entrada para un nuevo rango de IP."
 
 #: ../lib/modules/zarafaUser.inc:92
 #: ../lib/modules/zarafaUser.inc:271
@@ -803,13 +803,13 @@ msgstr "Admin"
 #: ../lib/modules/inetOrgPerson.inc:355
 #: ../lib/modules/inetOrgPerson.inc:443
 msgid "Administration"
-msgstr "Administracion"
+msgstr "Administración"
 
 #: ../lib/modules/posixGroup.inc:378
 #: ../lib/modules/nisnetgroup.inc:112
 #: ../lib/modules/groupOfNames.inc:101
 msgid "Administrators group"
-msgstr "Grupo del administrador"
+msgstr "Grupo de administradores"
 
 #: ../lib/modules/eduPerson.inc:92
 #: ../lib/modules/eduPerson.inc:96
@@ -827,7 +827,7 @@ msgstr "Alaska"
 #: ../lib/modules/sambaDomain.inc:211
 #: ../lib/modules/sambaDomain.inc:212
 msgid "Algorithmic RID base is not a number!"
-msgstr "La base algorítmica del RID no es un numero!"
+msgstr "¡La base algorítmica del RID no es un número!"
 
 #: ../lib/modules/aliasEntry.inc:38
 msgid "Alias"
@@ -835,12 +835,12 @@ msgstr "Alias"
 
 #: ../lib/types/alias.inc:62
 msgid "Alias entries"
-msgstr "Entradas Alias"
+msgstr "Entradas de alias"
 
 #: ../lib/modules/nisMailAlias.inc:106
 #: ../lib/modules/nisMailAlias.inc:107
 msgid "Alias is empty or invalid!"
-msgstr "El alias está vacio o es inválido!"
+msgstr "¡El alias está vacío o es inválido!"
 
 #: ../lib/types/mailAlias.inc:91
 #: ../lib/modules/nisMailAlias.inc:67
@@ -849,7 +849,7 @@ msgstr "El alias está vacio o es inválido!"
 #: ../lib/modules/nisMailAlias.inc:144
 #: ../lib/modules/nisMailAlias.inc:287
 msgid "Alias name"
-msgstr "Alias"
+msgstr "Nombre del alias"
 
 #: ../lib/types/alias.inc:92
 #: ../lib/modules/customScripts.inc:45
@@ -861,7 +861,7 @@ msgstr "Alias"
 #: ../lib/modules/aliasEntry.inc:101
 #: ../lib/modules/aliasEntry.inc:231
 msgid "Aliased entry"
-msgstr "Entradas Alias"
+msgstr "Entrada con alias"
 
 #: ../templates/schema/schema.php:224
 #: ../lib/types/alias.inc:53
@@ -869,29 +869,29 @@ msgstr "Entradas Alias"
 #: ../lib/modules/zarafaUser.inc:335
 #: ../lib/modules/zarafaUser.inc:1107
 msgid "Aliases"
-msgstr "Aliases"
+msgstr "Alias"
 
 #: ../lib/lists.inc:633
 #, php-format
 msgid "All accounts (%s)"
-msgstr "Todas las cuentas %s:"
+msgstr "Todas las cuentas (%s)"
 
 #: ../templates/selfService/selfServiceMain.php:321
 #: ../templates/initsuff.php:157
 msgid "All changes were successful."
-msgstr "Todos los cambios aplicados con éxito."
+msgstr "Todos los cambios fueron exitosos."
 
 #: ../lib/lists.inc:632
 #, php-format
 msgid "All selected accounts (%s)"
-msgstr "Selecionar todas las cuentas (%s)"
+msgstr "Todas las cuentas seleccionadas (%s)"
 
 #: ../lib/modules/sambaDomain.inc:110
 #: ../lib/modules/sambaDomain.inc:187
 #: ../lib/modules/sambaDomain.inc:301
 #: ../lib/modules/sambaDomain.inc:654
 msgid "Allow machine password changes"
-msgstr "Permitir a la máquina cambiar contraseña"
+msgstr "Permitir a la máquina cambiar la contraseña"
 
 #: ../lib/types/ppolicyType.inc:90
 #: ../lib/modules/ppolicy.inc:124
@@ -899,14 +899,14 @@ msgstr "Permitir a la máquina cambiar contraseña"
 #: ../lib/modules/ppolicy.inc:268
 #: ../lib/modules/ppolicy.inc:479
 msgid "Allow password change"
-msgstr "Permitir cambio de contraseña"
+msgstr "Permitir cambiar la contraseña"
 
 #: ../lib/modules/sambaSamAccount.inc:211
 #: ../lib/modules/sambaSamAccount.inc:329
 #: ../lib/modules/sambaSamAccount.inc:1402
 #: ../lib/modules/sambaSamAccount.inc:1682
 msgid "Allow terminal server login"
-msgstr "Permir el acceso para terminal server"
+msgstr "Permir el acceso por servidor de terminales"
 
 #: ../lib/modules/asteriskAccount.inc:194
 #: ../lib/modules/asteriskAccount.inc:287
@@ -943,11 +943,11 @@ msgstr "Rechazar siempre"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1018
 #, php-format
 msgid "An attribute (%s) was modified and is highlighted below."
-msgstr "Un atributo (%s) se modificó, y ahora se ha resaltado"
+msgstr "Un atributo (%s) se modificó, y se ha resaltado abajo."
 
 #: ../lib/modules/sudoRole.inc:222
 msgid "An sudo role with this name already exists. Please choose another name."
-msgstr "Un rol sudo con este nombre ya existe. Por favor elija otro nombre."
+msgstr "ya existe un rol sudo con este nombre. Por favor, elija otro nombre."
 
 #: ../lib/modules/passwordSelfReset.inc:58
 #: ../lib/modules/passwordSelfReset.inc:80
@@ -982,12 +982,12 @@ msgstr "Datos de aplicación"
 
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:53
 msgid "Are you sure you want to permanently delete these objects?"
-msgstr "¿Está seguro que quiere borrar permanentemente estos objetos?"
+msgstr "¿Está seguro que desea eliminar permanentemente estos objetos?"
 
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:107
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:51
 msgid "Are you sure you want to permanently delete this object?"
-msgstr "Está Ud. seguro que quiere borrar este objeto?"
+msgstr "¿Está seguro que desea eliminar permanentemente este objeto?"
 
 #: ../lib/modules/imapAccess.inc:114
 msgid "Ask"
@@ -999,33 +999,33 @@ msgstr "Asterisk"
 
 #: ../lib/modules/asteriskAccount.inc:123
 msgid "Asterisk AMA (Automated Message Accounting) flags."
-msgstr "Configuración de cuenta de mensaje automatizado de Asterisk."
+msgstr "Banderas AMA (Contabilización Automática de Mensajes) de Asterisk."
 
 #: ../lib/modules/asteriskExtension.inc:63
 msgid "Asterisk extension"
-msgstr "Extensión Asterisk"
+msgstr "Extensión de Asterisk"
 
 #: ../lib/types/asteriskExt.inc:54
 msgid "Asterisk extensions"
-msgstr "Extensiones Asterisk"
+msgstr "Extensiones de Asterisk"
 
 #: ../lib/types/asteriskExt.inc:63
 msgid "Asterisk extensions entries"
-msgstr "Extensiones Asterisk"
+msgstr "Entradas de extensiones de Asterisk"
 
 #: ../lib/modules/asteriskAccount.inc:114
 #: ../lib/modules/asteriskAccount.inc:241
 #: ../lib/modules/asteriskAccount.inc:311
 msgid "Asterisk realm"
-msgstr "Asterisk realm"
+msgstr "Reino de Asterisk"
 
 #: ../lib/modules/asteriskVoicemail.inc:64
 msgid "Asterisk voicemail"
-msgstr "Buzón de Correo Asterisk"
+msgstr "Buzón de voz Asterisk"
 
 #: ../lib/modules/asteriskVoicemail.inc:111
 msgid "Asterisk voicemail context."
-msgstr "Contexto de Buzón de Voz Asterisk."
+msgstr "Contexto del buzón de voz de Asterisk."
 
 #: ../lib/modules/sambaSamAccount.inc:535
 msgid "Atlantic time (Canada), Caracas"
@@ -1033,29 +1033,29 @@ msgstr "Horario atlántico (Canadá), Caracas"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:455
 msgid "Attempting to delete a non existent attribute"
-msgstr "Intentando borrar un atributo no existente"
+msgstr "Intentando eliminar un atributo inexistente"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:466
 msgid "Attempting to replace a non existant attribute"
-msgstr "Intentando reemplazar un atributo no existente"
+msgstr "Intentando reemplazar un atributo inexistente"
 
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:55
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:81
 msgid "Attribute"
-msgstr "Atributos"
+msgstr "Atributo"
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:137
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:72
 msgid "Attribute doesn't exist"
-msgstr "El atributos no existe"
+msgstr "El atributo no existe"
 
 #: ../templates/3rdParty/pla/htdocs/mass_edit.php:117
 msgid "Attribute not available"
-msgstr "Atributos no disponible"
+msgstr "Atributo no disponible"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:535
 msgid "Attribute not valid"
-msgstr "Atributo no válido"
+msgstr "Atributo inválido"
 
 #: ../templates/schema/schema.php:67
 #: ../templates/schema/schema.php:68
@@ -1068,11 +1068,11 @@ msgstr "Auckland, Fiji, Kamchatka"
 
 #: ../lib/modules/asteriskAccount.inc:115
 msgid "Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\")."
-msgstr "Servidor de autenticación realm (predeterminado: asterisk). Este valor se setea sip.conf (opción \"realm\")."
+msgstr "Reino de autenticación para el servidor de Asterisk (predeterminado: asterisk). Este valor se establece en sip.conf (opción: \"realm\")."
 
 #: ../lib/modules/asteriskAccount.inc:223
 msgid "Authentication user for outbound proxies."
-msgstr "Usuario de autenticación para proxy de salida."
+msgstr "Usuario de autenticación para proxys de salida."
 
 #: ../lib/modules/eduPerson.inc:129
 #: ../lib/modules/eduPerson.inc:134
@@ -1087,12 +1087,12 @@ msgstr "Usuario de autenticación para proxy de salida."
 #: ../lib/modules/hostObject.inc:76
 #: ../lib/modules/hostObject.inc:94
 msgid "Automatically add this extension"
-msgstr "Automáticamente agregar esta extensión"
+msgstr "Añadir automáticamente esta extensión"
 
 #: ../lib/types/automountType.inc:39
 #: ../lib/types/automountType.inc:48
 msgid "Automount entries"
-msgstr "Cantidad de entradas"
+msgstr "Entradas de automontaje"
 
 #: ../lib/types/automountType.inc:78
 #: ../lib/modules/automount.inc:40
@@ -1103,22 +1103,22 @@ msgstr "Cantidad de entradas"
 #: ../lib/modules/automount.inc:124
 #: ../lib/modules/automount.inc:191
 msgid "Automount entry"
-msgstr "Entrada automount"
+msgstr "Entrada de automountaje"
 
 #: ../lib/modules/automount.inc:104
 #: ../lib/modules/automount.inc:105
 msgid "Automount entry contains invalid characters. Only ASCII characters are allowed."
-msgstr "La entrada automount contiene carácteres inválidos. Sólo se admiten caracteres ASCII."
+msgstr "La entrada deautomountaje contiene carácteres inválidos. Sólo se admiten caracteres ASCII."
 
 #: ../templates/config/conftypes.php:206
 #: ../lib/modules/customScripts.inc:54
 msgid "Available account types"
-msgstr "Habilitar tipos de cuenta"
+msgstr "Tipos de cuentas disponibles"
 
 #: ../lib/modules/customScripts.inc:55
 #: ../lib/modules/customScripts.inc:67
 msgid "Available actions"
-msgstr "Habilitar acciones."
+msgstr "Acciones disponibles"
 
 #: ../lib/modules/posixAccount.inc:1128
 #: ../lib/modules/nisnetgroup.inc:376
@@ -1127,11 +1127,11 @@ msgstr "Grupos disponibles"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:93
 msgid "Available members"
-msgstr "Usuarios disponibles"
+msgstr "Miembros disponibles"
 
 #: ../templates/config/confmodules.php:295
 msgid "Available modules"
-msgstr "Modulos disponibles"
+msgstr "Módulos disponibles"
 
 #: ../lib/modules/posixGroup.inc:242
 #: ../lib/modules/asteriskExtension.inc:310
@@ -1183,7 +1183,7 @@ msgstr "Regresar a la lista de alias"
 
 #: ../lib/types/automountType.inc:30
 msgid "Back to automount list"
-msgstr "Regresar a la lista de automount"
+msgstr "Regresar a la lista de automontaje"
 
 #: ../lib/types/smbDomain.inc:44
 msgid "Back to domain list"
@@ -1198,11 +1198,12 @@ msgstr "Regresar a la lista de extensiones"
 #: ../lib/types/group.inc:45
 #: ../lib/types/netgroup.inc:44
 msgid "Back to group list"
-msgstr "Regresar a la lista de usuarios"
+msgstr "Regresar a la lista de grupos"
 
+# host=equipo,máquina,servidor
 #: ../lib/types/host.inc:44
 msgid "Back to host list"
-msgstr "Regresar a la lista de host"
+msgstr "Regresar a la lista de equipos"
 
 #: ../templates/delete.php:269
 msgid "Back to list"
@@ -1214,7 +1215,7 @@ msgstr "Regresar a la lista"
 #: ../templates/config/mainlogin.php:114
 #: ../templates/selfService/adminLogin.php:109
 msgid "Back to login"
-msgstr "Volver a autentificarse"
+msgstr "Regresar a la autenticación"
 
 #: ../lib/types/ppolicyType.inc:30
 msgid "Back to policy list"
@@ -1235,15 +1236,16 @@ msgstr "Regresar a la lista de usuarios"
 
 #: ../templates/3rdParty/pla/htdocs/entry_chooser.php:64
 msgid "Back up"
-msgstr "Volver"
+msgstr "Regresar"
 
+# ¿Entorno?
 #: ../templates/serverInfo.php:161
 msgid "Backends"
 msgstr "Entorno"
 
 #: ../lib/modules/sudoRole.inc:130
 msgid "Backup script"
-msgstr "Script de backup"
+msgstr "Script de salva"
 
 #: ../lib/modules/sambaSamAccount.inc:542
 msgid "Baghdad, Riyadh, Moscow"
@@ -1269,13 +1271,14 @@ msgstr "DN base"
 msgid "Base module"
 msgstr "Módulo base"
 
+# ??
 #: ../templates/pdfedit/pdfpage.php:434
 msgid "Beginning"
 msgstr "Comienzo"
 
 #: ../lib/modules/sambaSamAccount.inc:547
 msgid "Beijing, Perth, Singapore"
-msgstr "Beijing, Perth, Singapore"
+msgstr "Beijing, Perth, Singapur"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:644
 #: ../templates/3rdParty/pla/lib/PageRender.php:648
@@ -1290,46 +1293,46 @@ msgstr "Unirse"
 #: ../lib/modules/quota.inc:52
 #: ../lib/modules/systemQuotas.inc:94
 msgid "Block hard quota"
-msgstr "Bloquear quota \"hard\""
+msgstr "Bloquear cuota dura"
 
 #: ../lib/modules/quota.inc:52
 #: ../lib/modules/quota.inc:53
 #: ../lib/modules/systemQuotas.inc:94
 #: ../lib/modules/systemQuotas.inc:95
 msgid "Block hard quota contains invalid characters. Only natural numbers are allowed."
-msgstr "El campo \"Bloquear quota hard\" contiene carácteres inválidos. Sólo se admiten numeros naturales."
+msgstr "El campo bloquear cuota dura contiene carácteres inválidos. Sólo se admiten números naturales."
 
 #: ../lib/modules/quota.inc:58
 #: ../lib/modules/systemQuotas.inc:100
 msgid "Block quota"
-msgstr "Bloquear quota"
+msgstr "Bloquear cuota"
 
 #: ../lib/modules/quota.inc:50
 #: ../lib/modules/systemQuotas.inc:92
 msgid "Block soft quota"
-msgstr "Bloquear quota \"soft\""
+msgstr "Bloquear quota suave"
 
 #: ../lib/modules/quota.inc:50
 #: ../lib/modules/quota.inc:51
 #: ../lib/modules/systemQuotas.inc:92
 #: ../lib/modules/systemQuotas.inc:93
 msgid "Block soft quota contains invalid characters. Only natural numbers are allowed."
-msgstr "El campo \"Bloquear quota soft\" contiene carácteres inválidos. Sólo se admiten números naturales."
+msgstr "El campo bloquear cuota suave contiene carácteres inválidos. Sólo se admiten números naturales."
 
 #: ../lib/modules/quota.inc:58
 #: ../lib/modules/quota.inc:59
 #: ../lib/modules/systemQuotas.inc:100
 #: ../lib/modules/systemQuotas.inc:101
 msgid "Block soft quota must be smaller than block hard quota."
-msgstr "El campo \"Bloquear quota soft\" debe ser menor que el campo \"Bloquear quota hard\"."
+msgstr "El campo bloquear cuota suave debe ser menor que bloquear cuota dura."
 
 #: ../lib/modules/sambaSamAccount.inc:536
 msgid "Brazil, Buenos Aires"
-msgstr "Brazil, Buenos Aires"
+msgstr "Brasil, Buenos Aires"
 
 #: ../templates/3rdParty/pla/htdocs/copy.php:53
 msgid "Building snapshot of tree to copy"
-msgstr "Construyendo una imagen del árbol para copiar"
+msgstr "Construyendo instantánea del árbol a copiar"
 
 #: ../lib/modules/sambaGroupMapping.inc:73
 msgid "Builtin group"
@@ -1337,11 +1340,11 @@ msgstr "Grupo incorporado del sistema"
 
 #: ../templates/3rdParty/pla/htdocs/mass_edit.php:63
 msgid "Bulk edit the following DNs"
-msgstr "Edita los siguientes DNs"
+msgstr "Edición masiva de los siguientes DNs"
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:48
 msgid "Bulk update the following DNs"
-msgstr "Actualiza los siguientes DNs"
+msgstr "Actualización masiva de los siguientes DNs"
 
 #: ../lib/modules/inetOrgPerson.inc:79
 #: ../lib/modules/inetOrgPerson.inc:125
@@ -1357,7 +1360,7 @@ msgstr "Categoría de negocios"
 
 #: ../lib/modules/inetOrgPerson.inc:648
 msgid "Business category (e.g. Administration, IT-Services, Manangement, ...)"
-msgstr "Categoría de negocios (e.g. Administración, IT-Servicios, Gestión, ...)"
+msgstr "Categoría de negocios (p.ej. Administración, IT-Servicios, Gestión, ...)"
 
 #: ../lib/modules/customScripts.inc:81
 msgid "By default, LAM will show the executed command along with any output of it. If you want to hide the command and only show the output then activate this option."
@@ -1374,7 +1377,7 @@ msgstr "Archivo CSV"
 
 #: ../help/help.inc:97
 msgid "Cache timeout"
-msgstr "Tiempo máximo de espera de la caché:"
+msgstr "Tiempo de espera de la caché:"
 
 #: ../lib/modules/asteriskAccount.inc:126
 #: ../lib/modules/asteriskAccount.inc:253
@@ -1391,7 +1394,7 @@ msgstr "Grupos de llamadas"
 #: ../lib/modules/asteriskAccount.inc:661
 #: ../lib/modules/asteriskAccount.inc:1187
 msgid "Caller ID"
-msgstr "Caller ID"
+msgstr "Identificador de llamada"
 
 #: ../lib/modules/sambaSamAccount.inc:284
 #: ../lib/modules/sambaSamAccount.inc:287
@@ -1404,7 +1407,7 @@ msgstr "Caller ID"
 #: ../lib/modules/shadowAccount.inc:177
 #: ../lib/modules/shadowAccount.inc:181
 msgid "Can be left empty."
-msgstr "Se puede dejar vacio."
+msgstr "Puede dejarse vacio."
 
 #: ../lib/modules/asteriskAccount.inc:214
 #: ../lib/modules/asteriskAccount.inc:297
@@ -1827,31 +1830,31 @@ msgstr "Copiando"
 
 #: ../templates/3rdParty/pla/htdocs/import.php:37
 msgid "Could not add object"
-msgstr "No se pudo agregar el objeto"
+msgstr "Imposible agregar el objeto"
 
 #: ../templates/3rdParty/pla/lib/ds_ldap_pla.php:370
 msgid "Could not add the object to the LDAP server."
-msgstr "No se puede agregar el objeto al servidor LDAP."
+msgstr "Imposible agregar el objeto al servidor LDAP."
 
 #: ../templates/3rdParty/pla/htdocs/delete_attr.php:30
 msgid "Could not delete attribute value."
-msgstr "No puede borrar el valor de este atributo."
+msgstr "Imposible borrar el valor de este atributo."
 
 #: ../templates/3rdParty/pla/htdocs/import.php:38
 msgid "Could not delete object"
-msgstr "No puede borrar este objeto"
+msgstr "Imposible borrar este objeto"
 
 #: ../templates/3rdParty/pla/htdocs/delete.php:37
 #: ../templates/3rdParty/pla/htdocs/rdelete.php:47
 #: ../templates/3rdParty/pla/htdocs/rdelete.php:66
 #: ../templates/3rdParty/pla/htdocs/rdelete.php:83
 msgid "Could not delete the entry."
-msgstr "No puede borrar esta entrada."
+msgstr "Imposible borrar esta entrada."
 
 #: ../templates/3rdParty/pla/htdocs/download_binary_attr.php:37
 #, php-format
 msgid "Could not fetch binary data from LDAP server for attribute [%s]."
-msgstr "No puede obtenerse data desde servidor LDAP para el atributo [%s]."
+msgstr "Imposible obtener datos binarios desde servidor LDAP para el atributo [%s]."
 
 #: ../templates/3rdParty/pla/lib/functions.php:1961
 #: ../templates/3rdParty/pla/htdocs/view_jpeg_photo.php:60
@@ -2884,7 +2887,7 @@ msgstr "Contraseña en blanco.Pruebe de nuevo."
 
 #: ../lib/modules/ppolicy.inc:89
 msgid "Enables quality checking (e.g. password length) of passwords. If set to \"force\" then you need to disable password hashing in your LAM server profile to change passwords with LAM."
-msgstr "Habilita la verifcación de calidad de contraseñas (p.e. longitud). Si es seteado a \"force\" entonces necesitará deshabilitar el hash de contraseña en su perfil de servidor LAM para cambiar las contraseñas desde LAM."
+msgstr "Habilita la verifcación de calidad de contraseñas (p.ej. longitud). Si es seteado a \"force\" entonces necesitará deshabilitar el hash de contraseña en su perfil de servidor LAM para cambiar las contraseñas desde LAM."
 
 #: ../templates/3rdParty/pla/lib/export_functions.php:160
 msgid "Encountered an error while performing search."
@@ -3393,7 +3396,7 @@ msgstr "Grupos"
 
 #: ../lib/types/group.inc:63
 msgid "Group accounts (e.g. Unix and Samba)"
-msgstr "Las cuentas de grupo (e.g. Unix y Samba)"
+msgstr "Las cuentas de grupo (p.ej. Unix y Samba)"
 
 #: ../lib/types/group.inc:96
 #: ../lib/modules/posixGroup.inc:376
@@ -3599,7 +3602,7 @@ msgstr "Aquí puede introducir el/los departamento/s del usuario."
 
 #: ../help/help.inc:143
 msgid "Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive."
-msgstr "Aquí puede ingresar pequeños filtros (p.e. 'valor' o 'v*'). Se diferencian mayúsculas y minúsculas."
+msgstr "Aquí puede ingresar pequeños filtros (p.ej. 'valor' o 'v*'). Se diferencian mayúsculas y minúsculas."
 
 #: ../help/help.inc:155
 msgid "Here you can load an account profile to set default settings for your account. The \"default\" profile is automatically loaded for new accounts."
@@ -3816,7 +3819,7 @@ msgstr "Hosts"
 
 #: ../lib/types/host.inc:62
 msgid "Host accounts (e.g. Samba)"
-msgstr "Cuentas de hosts (e.g. Samba)"
+msgstr "Cuentas de hosts (p.ej. Samba)"
 
 #: ../lib/types/host.inc:94
 msgid "Host description"
@@ -4948,7 +4951,7 @@ msgstr "El nombre del servidor del buzón de correo es inválido!"
 
 #: ../lib/types/mailAlias.inc:62
 msgid "Mailing aliases (e.g. NIS mail aliases)"
-msgstr "Alias de correo (e.g. Alias de correo NIS)"
+msgstr "Alias de correo (p.ej. Alias de correo NIS)"
 
 #: ../lib/modules/nisMailAlias.inc:68
 msgid "Mails to this name are forwarded to the recipients."
@@ -6173,7 +6176,7 @@ msgstr "Opciones."
 
 #: ../lib/modules/asteriskVoicemail.inc:107
 msgid "Options for Asterisk voicemail account (e.g. sendvoicemail=yes)."
-msgstr "Opciones para Buzón de Voz Asterisk (e.g. sendvoicemail=yes)."
+msgstr "Opciones para Buzón de Voz Asterisk (p.ej. sendvoicemail=yes)."
 
 #: ../templates/3rdParty/pla/htdocs/import_form.php:39
 msgid "Or paste your LDIF here"
@@ -6625,7 +6628,7 @@ msgstr "Por favor ingrese un caller ID."
 
 #: ../lib/modules/imapAccess.inc:91
 msgid "Please enter a comma separated list of domain names (e.g. \"company.com,example.com\"). LAM will only manage mailboxes from these domains."
-msgstr "Por favor ingrese una lista separada por comas de nombres de dominio (p.e. \"empresa.com,ejemplo.com\"). LAM sólo administrará los buzones de correo electrónico de esos dominios."
+msgstr "Por favor ingrese una lista separada por comas de nombres de dominio (p.ej. \"empresa.com,ejemplo.com\"). LAM sólo administrará los buzones de correo electrónico de esos dominios."
 
 #: ../lib/modules/sambaSamAccount.inc:95
 #: ../lib/modules/sambaSamAccount.inc:96
@@ -6924,7 +6927,7 @@ msgstr "Por favor seleccione su tipo de cuenta."
 
 #: ../lib/modules/asteriskAccount.inc:111
 msgid "Please enter the account's type (e.g. \"friend\")."
-msgstr "Por favor ingrese el tipo de cuenta (p.e. \"friend\")."
+msgstr "Por favor ingrese el tipo de cuenta (p.ej. \"amigo\")."
 
 #: ../lib/modules/asteriskExtension.inc:193
 msgid "Please enter the application data."
@@ -6936,7 +6939,7 @@ msgstr "Por favor ingrese la aplicación."
 
 #: ../lib/modules/automount.inc:59
 msgid "Please enter the automount entry (e.g. \"-fstype=nfs,rw server:/home\")."
-msgstr "Por favor ingrese la entrada automount (p.e. \"-fstype=nfs,rw server:/home\")."
+msgstr "Por favor ingrese la entrada automount (p.ej. \"-fstype=nfs,rw server:/home\")."
 
 #: ../help/help.inc:53
 msgid "Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\"."
@@ -6965,11 +6968,11 @@ msgstr "Por favor ingresar la lista de scripts que deben ejecutarse. Cada linea 
 
 #: ../lib/modules/nisObject.inc:59
 msgid "Please enter the mapping entry (e.g. \"-fstype=nfs,rw server:/projects\")."
-msgstr "Por favor ingrese la entrada de mapeo (p.e. \"-fstype=nfs,rw server:/proyectos\")."
+msgstr "Por favor ingrese la entrada de mapeo (p.ej. \"-fstype=nfs,rw server:/proyectos\")."
 
 #: ../lib/modules/nisObject.inc:63
 msgid "Please enter the mapping name for this entry (e.g. auto.home)."
-msgstr "Por favor ingrese el nombre de mapeo para esta entrada (p.e. auto.home)."
+msgstr "Por favor ingrese el nombre de mapeo para esta entrada (p.ej. auto.inicio)."
 
 #: ../help/help.inc:129
 msgid "Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\"."
@@ -7742,7 +7745,7 @@ msgstr "Repita la contraseña"
 #: ../lib/modules/posixAccount.inc:70
 #: ../lib/modules/posixAccount.inc:818
 msgid "Replaced $user or $group in homedir."
-msgstr "Se reemplazó $usuario o $grupo en el directorio home del usuario."
+msgstr "Se reemplazó $user o $group en el directorio de inicio."
 
 #: ../lib/types/ppolicyType.inc:89
 #: ../lib/modules/ppolicy.inc:120
@@ -8310,7 +8313,7 @@ msgstr "Setear los resultados de búsqueda a 0 para devolver todos los registros
 
 #: ../lib/modules/groupOfNames.inc:85
 msgid "Set this only if your LDAP schema allows that groups may not have any members (e.g. if you use OpenDJ)."
-msgstr "Setear solamente si su esquema LDAP permite que los grupos pueden no tener miembros (p.e. si utiliza OpenDJ)."
+msgstr "Setear solamente si su esquema LDAP permite que los grupos pueden no tener miembros (p.ej. si utiliza OpenDJ)."
 
 #: ../lib/modules/posixGroup.inc:402
 msgid "Sets the group password."
@@ -8412,7 +8415,7 @@ msgstr "Limte soft de inodos"
 
 #: ../lib/modules/imapAccess.inc:88
 msgid "Some IMAP servers store mailboxes with a prefix (e.g. \"user\" for Cyrus which results in \"user.username\")."
-msgstr "Algunos servidores IMAP almacenan buzones de correo con un prefijo (p.e. \"usuario\" para Cyrus el cual resulta in \"usuario.nombreusuario\")."
+msgstr "Algunos servidores IMAP almacenan buzones de correo con un prefijo (p.ej. \"usuario\" para Cyrus el cual resulta in \"usuario.nombreusuario\")."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1019
 #, php-format
@@ -8833,7 +8836,7 @@ msgstr "Las direcciónes IP para los servidores DNS. Varias direcciones separada
 
 #: ../lib/modules/dhcp_settings.inc:143
 msgid "The IP addresses of the Netbios name servers (e.g. \"123.123.123.123, 123.123.123.124\")."
-msgstr "Las direcciónes IP para el servidor de nombres Netbios. (e.g. \"123.123.123.123, 123.123.123.124\")."
+msgstr "Las direcciónes IP para el servidor de nombres Netbios. (p.ej. \"123.123.123.123, 123.123.123.124\")."
 
 #: ../lib/modules/range.inc:412
 #: ../lib/modules/range.inc:426
@@ -9136,7 +9139,7 @@ msgstr "Nombre del PC"
 
 #: ../lib/modules/asteriskExtension.inc:87
 msgid "The name of the extension (e.g. voicemail or sip)."
-msgstr "Nombre de la extensión (p.e. buzón de voz o SIP)."
+msgstr "Nombre de la extensión (p.ej. buzón de voz o SIP)."
 
 #: ../lib/modules/kolabUser.inc:152
 msgid "The name of the server where the mailbox is located."
@@ -9173,7 +9176,7 @@ msgstr "La clase objecto %s no esta soportada por tu servidor LDAP."
 
 #: ../lib/modules/inetOrgPerson.inc:664
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
-msgstr "El nombre de la oficina par a el usuario (e.g. Tuempresa, recursos humanos)."
+msgstr "El nombre de la oficina par a el usuario (p.ej. SuEmpresa, Recursos humanos)."
 
 #: ../templates/selfService/selfServiceMain.php:269
 #: ../lib/modules.inc:1624
@@ -9283,7 +9286,7 @@ msgstr "Alcance de la búsqueda"
 #: ../lib/modules/customScripts.inc:57
 #: ../lib/modules/customScripts.inc:69
 msgid "The scripts will be run on your web server in the user context of your web server (e.g. apache/www-data)."
-msgstr "Los scripts que se ejecutan en el servidor Web como el usuario en contexto de tu servidor web (e.g. Apache / www-data)"
+msgstr "Los scripts se ejecutarán en el servidor Web en el contexto de usuario de su servidor Web (p.ej. apache/www-data)"
 
 #: ../lib/modules/asteriskAccount.inc:235
 #: ../lib/modules/sambaSamAccount.inc:375
@@ -9338,7 +9341,7 @@ msgstr "Los comandos sudo son ejecutados con estos miembros de grupo."
 #: ../lib/modules/sudoRole.inc:76
 #: ../lib/modules/sudoRole.inc:103
 msgid "The sudo commands may be run as these users (e.g. root)."
-msgstr "Los comandos sudo pueden ser ejecutados como estos usuarios (p.e. root)."
+msgstr "Los comandos sudo pueden ser ejecutados como estos usuarios (p.ej. root)."
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:396
 msgid "The url attribute value should begin with file://."
@@ -9520,7 +9523,7 @@ msgstr "Esto define los derechos de los directorios de inicio que son creados po
 
 #: ../lib/modules/asteriskExtension.inc:79
 msgid "This defines what application Asterisk has to start for this user (e.g. SIP/user1)."
-msgstr "Define que aplicación Asterisk tiene que ejecutar para este usuario (p.e. SIP/user1)."
+msgstr "Define que aplicación Asterisk tiene que ejecutar para este usuario (p.ej. SIP/user1)."
 
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:85
 #, php-format
@@ -9590,7 +9593,7 @@ msgstr "Esto es una lista separada por comas de direcciones de e-mail del usuari
 
 #: ../help/help.inc:139
 msgid "This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*)."
-msgstr "Esta es la lista de direcciones IP para los Hosts que pueden acceder a LAM. Tu puedes usar \"*\" como comodín (e-g- 192.168.0.*)."
+msgstr "Esta es la lista de direcciones IP para los Hosts que pueden acceder a LAM. Tu puedes usar \"*\" como comodín (p.ej. 192.168.0.*)."
 
 #: ../lib/modules/groupOfNames.inc:77
 msgid "This is a list of members of this group."
@@ -9632,35 +9635,35 @@ msgstr "Esto es necesario para encontrar los DN de tu cuenta de usuario en el LD
 #: ../lib/modules/inetOrgPerson.inc:77
 #: ../lib/modules/aliasEntry.inc:79
 msgid "This is not a valid DN!"
-msgstr "No es un DN válido!"
+msgstr "¡Esto no es un DN válido!"
 
 #: ../lib/modules/sambaSamAccount.inc:99
 msgid "This is not a valid RID number!"
-msgstr "No es un RID válido!"
+msgstr "¡Esto no es un número RID válido!"
 
 #: ../lib/modules/sambaGroupMapping.inc:442
 msgid "This is not a valid Samba 3 group type!"
-msgstr "Esto no es un tipo de grupo de Samba 3 válido!"
+msgstr "¡Esto no es un tipo de grupo de Samba 3 válido!"
 
 #: ../lib/modules/eduPerson.inc:222
 msgid "This is not a valid list of DNs!"
-msgstr "No es un DN válido!"
+msgstr "¡Esto no es un listado de DN válido!"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:66
 msgid "This is one of the users public email addresses."
-msgstr "Esta es una de las direcciones validas de email del usuario."
+msgstr "Esta es una de las direcciones válidas de email del usuario."
 
 #: ../lib/modules/nisMailAlias.inc:72
 msgid "This is one recipient for this alias."
-msgstr "Esté es un destinatario para éste alias."
+msgstr "Este es un destinatario para este alias."
 
 #: ../lib/modules/asteriskAccount.inc:95
 msgid "This is the ID of the user in the Asterisk database. It may contain digits and letters (e.g. user1 or 200134)."
-msgstr "Este es el ID del usuario en la base de datos Asterisk. Puede contener dígitos y letras (p.e. usuario1 o 200134)."
+msgstr "Este es el ID del usuario en la base de datos Asterisk. Puede contener dígitos y letras (p.ej. usuario1 o 200134)."
 
 #: ../lib/modules/ipHost.inc:59
 msgid "This is the IP address of the network card of the device (e.g. 123.123.123.123)."
-msgstr "Esta es la dirección IP de la tarjeta de red (p.ej 123.123.123.123)."
+msgstr "Esta es la dirección IP de la tarjeta de red (p.ej. 123.123.123.123)."
 
 #: ../lib/modules/ipHost.inc:71
 msgid "This is the LDAP DN of the host's manager."
@@ -9672,7 +9675,7 @@ msgstr "Este es el DN del Administrador del usuario. Esta propiedad le puede ayu
 
 #: ../lib/modules/ieee802device.inc:62
 msgid "This is the MAC address of the network card of the device (e.g. 00:01:02:DE:EF:18)."
-msgstr "Esto es la direccion MAC de la tarjeta de red (p.ej 00:01:02:DE:EF:18)"
+msgstr "Esto es la direccion MAC de la tarjeta de red (p.ej. 00:01:02:DE:EF:18)"
 
 #: ../lib/modules/sambaSamAccount.inc:302
 msgid "This is the SID of the user's primary Windows group."
@@ -9714,7 +9717,7 @@ msgstr "Nombre del grupo que será mostrado en Windows."
 
 #: ../help/help.inc:147
 msgid "This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\")."
-msgstr "Identificador relativo del DN. Debe de ser uno de los atributos LDAP permitidos (p.ej las cuentas de usuario normalmente emplean \"uid\", mientras los grupos emplean \"cn\")."
+msgstr "Identificador relativo del DN. Debe de ser uno de los atributos LDAP permitidos (p.ej. las cuentas de usuario normalmente emplean \"uid\", mientras los grupos emplean \"cn\")."
 
 #: ../help/help.inc:80
 msgid "This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are separated by semicolons."
@@ -9722,7 +9725,7 @@ msgstr "Lista de atributos a mostrar en la lista de cuentas. Los elementos puede
 
 #: ../lib/modules/asteriskAccount.inc:99
 msgid "This is the machine id (e.g. IP address or host name) from which the user can call/receive calls."
-msgstr "Esta es la computadora (p.e. dirección IP o nombre de host) desde el cual el usuario puede generar/recibir llamadas."
+msgstr "Esta es la computadora (p.ej. dirección IP o nombre de host) desde el cual el usuario puede generar/recibir llamadas."
 
 #: ../lib/modules/inetLocalMailRecipient.inc:74
 msgid "This is the mail server for the user."
@@ -9821,7 +9824,7 @@ msgstr "Esto es el grupo primario de Windows del usuario."
 
 #: ../lib/modules/asteriskAccount.inc:147
 msgid "This is typically used to allow incoming calls (e.g. from FWD) while having a type=friend entry defined with username and password."
-msgstr "Esto es típicamente utilizado para llamadas entrantes (p.e. desde FWD) mientras se tiene una entrada type=friend definida con nombre de usuario y contraseña."
+msgstr "Esto es típicamente utilizado para llamadas entrantes (p.ej. desde FWD) mientras se tiene una entrada type=friend definida con nombre de usuario y contraseña."
 
 #: ../lib/modules/zarafaUser.inc:101
 msgid "This is used to mark this account as resource."
@@ -9881,7 +9884,7 @@ msgstr "Este texto se mostrará en la parte superior de la página del principal
 
 #: ../help/help.inc:171
 msgid "This text should shortly describe your selected LDAP search attribute (e.g. email or user name)."
-msgstr "Texto breve que describa su atributo LDAP para selecionar la busquedad (e.g. correo o nombre de usuario)."
+msgstr "Texto breve que describa su atributo LDAP para selecionar la busquedad (p.ej. correo o nombre de usuario)."
 
 #: ../lib/tools/pdfEdit.inc:53
 msgid "This tool allows you to customize the PDF pages."
@@ -9957,7 +9960,7 @@ msgstr "Esto dará una contraseña generada aleatoriamente y la mostrará en la 
 
 #: ../lib/modules/kolabUser.inc:164
 msgid "This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
-msgstr "Esto establecerá un flag en la cuenta que le indicará a Kolab que debe borrarla. Use esto para borrar cuentas Kolab de forma limpia (esto borraria los buzones de correo)."
+msgstr "Esto establecerá una bandera especial sobre la cuenta que indicará a Kolab que debe borrarla. Use esto para borrar limpiamente cuentas Kolab (p.ej. esto elimina los buzones de correo)."
 
 #: ../lib/modules/sambaSamAccount.inc:1287
 msgid "Thursday"
@@ -10382,7 +10385,7 @@ msgstr "ID de usuario"
 
 #: ../lib/types/user.inc:62
 msgid "User accounts (e.g. Unix, Samba and Kolab)"
-msgstr "Cuentas de usuario (e.g. UNIX,Samba y Kolab)"
+msgstr "Cuentas de usuario (p.ej. UNIX,Samba y Kolab)"
 
 #: ../lib/modules/asteriskAccount.inc:118
 #: ../lib/modules/asteriskAccount.inc:249
@@ -10649,23 +10652,23 @@ msgstr "Miércoles"
 
 #: ../lib/modules/sambaSamAccount.inc:539
 msgid "Western Europe Time, London, Lisbon"
-msgstr "Zona horaria de Europa del Oeste, Londres, Lisboa"
+msgstr "Zona horaria de Europa Occidental, Londres, Lisboa"
 
 #: ../lib/modules/passwordSelfReset.inc:76
 msgid "What is the name of your favourite pet?"
-msgstr "¿ Cual es el nombre de su mascota favorita ?"
+msgstr "¿Cuál es el nombre de su mascota favorita?"
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:71
 msgid "When performing a recursive copy, only copy those entries which match this filter."
-msgstr "Cuando se realiza una copia recursiva, sólo se copian aquellas entradas que se condicen con este filtro."
+msgstr "Al realizar una copia recursiva, copiar sólo aquellas entradas que coincidan con este filtro."
 
 #: ../lib/modules/zarafaUser.inc:85
 msgid "When the hard quota limit is reached, email can not be delivered to that user anymore."
-msgstr "Cuando el límite de la cuota hard es alcanzado, no serán entregados correos electrónicos a este usuario."
+msgstr "Cuando se alcance el límite de la cuota dura, no se entregarán correos electrónicos a este usuario."
 
 #: ../help/help.inc:66
 msgid "When using ldaps:// or TLS be sure to use exactly the same IP/domain name as in your certificate!"
-msgstr "Si usa ldaps://, asegurese de usar la misma dirección IP/ nombre de dominio que en su certificado!"
+msgstr "Al utilizar ldaps:// o TLS, ¡asegurese de usar exactamente la misma dirección IP o nombre de dominio que en su certificado!"
 
 #: ../lib/modules/sambaSamAccount.inc:315
 msgid "Windows domain name of account."
@@ -10692,7 +10695,7 @@ msgstr "Tipo de grupo de Windows."
 
 #: ../lib/modules/sambaSamAccount.inc:372
 msgid "Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them."
-msgstr "Las contraseñas hashes se guardan por defecto como NT y LM hashes. LM hashes son inseguros y solo se necesitan para versiones antiguas de windows. Usted debería deshabilitar a menos que realmente los necesite."
+msgstr "Las máscaras de contraseñas se guardan por defecto como máscaras NT y LM. las máscaras LM son inseguras y solo se necesitan para versiones antiguas de Windows. Debería deshabilitarlas a menos que realmente las necesite."
 
 #: ../lib/modules/sambaSamAccount.inc:298
 msgid "Windows primary group"
@@ -10708,7 +10711,7 @@ msgstr "Nombre del grupo de Windows"
 
 #: ../lib/modules/inetOrgPerson.inc:1088
 msgid "Work details"
-msgstr "Detalles Laborales"
+msgstr "Detalles laborales"
 
 #: ../lib/modules/sambaDomain.inc:139
 msgid "Workgroup"
@@ -10731,14 +10734,14 @@ msgstr "Escribir"
 
 #: ../templates/config/confmain.php:242
 msgid "Write access"
-msgstr "Acceso de escritura."
+msgstr "Acceso de escritura"
 
 #: ../templates/login.php:470
 #: ../templates/login.php:528
 #: ../templates/selfService/selfServiceLogin.php:98
 #: ../templates/selfService/selfServiceLogin.php:116
 msgid "Wrong password/user name combination. Please try again."
-msgstr "Combinación incorrecta de usuario/contraseña. Pruebe otra vez."
+msgstr "Combinación incorrecta de usuario/contraseña. Por favor, reintente."
 
 #: ../lib/modules/imapAccess.inc:162
 msgid "Wrong quota format. Quota must be numeric."
@@ -10750,38 +10753,38 @@ msgstr "Formato de cuota incorrecto. La cuota debe ser numérica."
 #: ../templates/schema/schema.php:203
 #: ../lib/modules/imapAccess.inc:108
 msgid "Yes"
-msgstr "Si"
+msgstr "Sí"
 
 #: ../lib/modules/posixGroup.inc:482
 msgid "You are using a capital letters. This can cause problems because Windows isn't case-sensitive."
-msgstr "Está usando mayúsculas. Esto puede causar problemas, ya que Windows no es sensitivo a mayúsculas/minúsculas"
+msgstr "Está usando letras mayúsculas. Esto puede causar problemas, ya que Windows no distingue entre mayúsculas/minúsculas."
 
 #: ../lib/modules/account.inc:119
 msgid "You are using a capital letters. This can cause problems because windows isn't case-sensitive."
-msgstr "Está usando letras mayúsculas. Esto puede causar problemas, ya que Windows no es sensitivo a mayúsculas."
+msgstr "Está usando letras mayúsculas. Esto puede causar problemas, ya que Windows no distingue entre mayúsculas/minúsculas."
 
 #: ../lib/modules/posixAccount.inc:82
 #: ../lib/modules/posixAccount.inc:84
 msgid "You are using capital letters. This can cause problems because Windows is not case-sensitive."
-msgstr "Está usando mayúsculas. Esto puede causar problemas, ya que Windows no es sensitivo a mayúsculas/minúsculas."
+msgstr "Está usando mayúsculas. Esto puede causar problemas, ya que Windows no distingue entre mayúsculas/minúsculas."
 
 #: ../help/help.inc:100
 msgid "You can specify if LAM allows full write access, password changes or only read access."
-msgstr "Puedes especificar si LAM permite permisos de escritura, cambios de contraseña o permisos solo de lectura."
+msgstr "Puede especificar si LAM permite acceso pleno de escritura, cambios de contraseña o sólo acceso de lectura."
 
 #: ../lib/modules/zarafaGroup.inc:80
 #: ../lib/modules/zarafaUser.inc:69
 msgid "You can use this to temporarily deactivate the Zarafa extension."
-msgstr "Puede utilizar esto para temporalmente desactivar la extensión Zarafa."
+msgstr "Puede utilizar esto para desactivar temporalmente la extensión Zarafa."
 
 #: ../help/help.inc:193
 msgid "You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name)."
-msgstr "Puedes usar comodines para atributos de LDAP de la forma @@attribute@@ (e.g. @@uid@@ para el nombre de usuario)."
+msgstr "Puedes usar comodines para atributos de LDAP de la forma @@attribute@@ (p.ej. @@uid@@ para el nombre de usuario)."
 
 #: ../lib/modules/customScripts.inc:58
 #: ../lib/modules/customScripts.inc:70
 msgid "You can use wildcards in the format $wildcard$ which are replaced by the LDAP attribute with the same name. For multi-value attributes the values will be separated by commas."
-msgstr "Puedes usar comodines en formato $wildcard$ que se sustituye por el atributo LDAP con el mismo nombre. Para varios valores de los atributos los valores se separan por comas."
+msgstr "Puede utilizar comodines en formato $wildcard$ que se sustituyen por el atributo LDAP con el mismo nombre. Para atributos multivalentes, los valores se separan por comas."
 
 #: ../templates/3rdParty/pla/htdocs/template_engine.php:52
 msgid "You cannot perform updates while server is in read-only mode"
@@ -10797,91 +10800,91 @@ msgstr "No ha cambiado el RDN"
 
 #: ../templates/tree/templates/creation/custom.php:106
 msgid "You did not select any object classes for this object. Please go back and do so."
-msgstr "No especificó ninguna clase para este objeto. Por favor, vaya atrás y especifique una."
+msgstr "No seleccionó ninguna clase para este objeto. Por favor, regrese y hágalo."
 
 #: ../templates/tests/schemaTest.php:59
 msgid "You do not have the required access rights or the LDAP schema is not published by your server."
-msgstr "Usted no tiene los derechos de acceso requeridos o el esquema LDAP no es publicado por su servidor."
+msgstr "No tiene los derechos de acceso requeridos o su servidor no ha publicado el esquema LDAP."
 
 #: ../lib/modules/dhcp_settings.inc:276
 #: ../lib/modules/dhcp_settings.inc:277
 msgid "You entered one or more invalid DNS servers."
-msgstr "Has introducido un o más servidores DNS inválidos."
+msgstr "Ha introducido uno o más servidores DNS inválidos."
 
 #: ../templates/3rdParty/pla/lib/Template.php:417
 #: ../templates/3rdParty/pla/lib/Template.php:504
 msgid "You left the attribute value blank. Please go back and try again."
-msgstr "Dejó el valor del atributo en blanco. Por vafor, vaya atrás especifique un valor."
+msgstr "Ha dejado el valor del atributo en blanco. Por favor, regrese y reintente."
 
 #: ../templates/3rdParty/pla/htdocs/create.php:51
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:45
 #, php-format
 msgid "You left the value blank for required attribute (%s)."
-msgstr "Ha dejado en blanco un atributo requerido: %s."
+msgstr "Ha dejado en blanco un atributo requerido: (%s)."
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:171
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:209
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:133
 msgid "You made no changes"
-msgstr "No se han hecho cambios"
+msgstr "No ha realizado cambios"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:95
 msgid "You must either upload a file or provide an import in the text box."
-msgstr "Debe subir un archivo o especificar una importación en el cuadro de texto debajo."
+msgstr "Debe o bien enviar un archivo o especificar una importación en el cuadro de texto."
 
 #: ../lib/modules/groupOfNames.inc:146
 #: ../lib/modules/groupOfNames.inc:147
 msgid "You need to add at least one member to this group."
-msgstr "Necesitas añadir como mínimo un miembro para este grupo."
+msgstr "Necesita añadir al menos un miembro a este grupo."
 
 #: ../lib/modules/passwordSelfReset.inc:107
 msgid "You specified an answer but no security question."
-msgstr "Ha especificado una respuesta pero no la pregunta de seguridad."
+msgstr "Ha especificado una respuesta, pero no la pregunta de seguridad."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1136
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1140
 msgid "You will be prompted to confirm this decision"
-msgstr "Será consultado para confirmar esta decisión"
+msgstr "Se le pedirá que confirme esta decisión"
 
 #: ../lib/modules/imapAccess.inc:158
 msgid "Your IMAP domain(s) and email address domain do not match."
-msgstr "Tu dominio/s y la dirección de correo electrónico no coinciden."
+msgstr "Su(s) dominio(s) y la dirección de correo electrónico no coinciden."
 
 #: ../templates/tests/lamdaemonTest.php:226
 #, php-format
 msgid "Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"
-msgstr "Tu usuario administrador de LAM (%s) debe ser una cuenta valida en UNIX para trabajar con el demonio LAM"
+msgstr "Su usuario administrador de LAM (%s) debe ser una cuenta válida en UNIX para trabajar con lamdaemon!"
 
 #: ../lib/lamdaemon.inc:61
 #: ../lib/lamdaemon.inc:66
 msgid "Your LAM admin user must be a valid Unix account to work with lamdaemon!"
-msgstr "Tu usuario administrador de LAM debe ser una cuenta valida en UNIX para trabajar con el demonio LAM"
+msgstr "Su usuario administrador de LAM debe ser una cuenta válida en UNIX para trabajar con lamdaemon!"
 
 #: ../lib/modules/imapAccess.inc:160
 msgid "Your LAM login password was not accepted by the IMAP server."
-msgstr "Su contraseña LAM de ingreso no fue aceptada por el servidor IMAP."
+msgstr "Su contraseña de acceso LAM no fué aceptada por el servidor IMAP."
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:125
 msgid "Your PHP configuration has disabled file uploads. Please check php.ini before proceeding."
-msgstr "Su configuración de PHP impide el envio de archivos. Por favor, verifique php.ini antes de seguir."
+msgstr "Su configuración de PHP impide el envío de archivos. Por favor, verifique php.ini antes de proceder."
 
 #: ../templates/3rdParty/pla/htdocs/import_form.php:16
 msgid "Your PHP.INI does not have file_uploads = ON. Please enable file uploads in PHP."
-msgstr "Su PHP.INI no tiene file_uploads = ON. Por favor active las subidas de archivos en PHP."
+msgstr "Su PHP.INI no tiene file_uploads = ON. Por favor active el envío de archivos en PHP."
 
 #: ../lib/security.inc:145
 msgid "Your session expired, click here to go back to the login page."
-msgstr "Tu sesión ha expirado, pincha aquí para volver a la página de acceso."
+msgstr "Su sesión ha expirado, haga clic aquí para volver a la página de acceso."
 
 #: ../templates/login.php:233
 msgid "Your session expired, please log in again."
-msgstr "Tu sesión ha expirado, por favor vuelve a autenticarte."
+msgstr "Su sesión ha expirado, por favor vuelva a autenticarse."
 
 #: ../templates/login.php:238
 #: ../templates/login.php:243
 #: ../templates/login.php:252
 msgid "Your settings were successfully saved."
-msgstr "La configuracion ha sido salvada correctamente"
+msgstr "Sus preferencias se guardaron exitosamente."
 
 #: ../lib/modules/inetOrgPerson.inc:451
 msgid "YourCompany"
@@ -10889,7 +10892,7 @@ msgstr "SuEmpresa"
 
 #: ../lib/modules/inetOrgPerson.inc:483
 msgid "YourCompany, Human Resources"
-msgstr "Tuempresa, recursos humanos."
+msgstr "SuEmpresa, Recursos humanos."
 
 #: ../lib/modules/zarafaGroup.inc:49
 #: ../lib/modules/zarafaUser.inc:49
@@ -10907,11 +10910,11 @@ msgstr "Nombres de zona"
 
 #: ../lib/modules/ddns.inc:104
 msgid "Zone names for the DNS server (e.g. company.local)."
-msgstr "Nombres de zona para los servidores DNS (e.g empresa.local)."
+msgstr "Nombres de zona para los servidores DNS (p.ej. empresa.local)."
 
 #: ../lib/modules/sambaSamAccount.inc:471
 msgid "\\\\server\\homes\\smiller"
-msgstr "\\\\servidor\\directorio\\smiller"
+msgstr "\\\\servidor\\inicio\\smiller"
 
 #: ../lib/modules/sambaSamAccount.inc:479
 msgid "\\\\server\\profiles\\smiller"
@@ -10920,7 +10923,7 @@ msgstr "\\\\servidor\\perfiles\\smiller"
 #: ../lib/modules/phpGroupwareUser.inc:162
 #: ../lib/modules/phpGroupwareUser.inc:333
 msgid "active"
-msgstr "Activo"
+msgstr "activo"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2074
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2077
@@ -10938,7 +10941,7 @@ msgstr "administradores"
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:112
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:95
 msgid "attribute deleted"
-msgstr "atributo borrado"
+msgstr "atributo eliminado"
 
 #: ../lib/modules/sudoRole.inc:123
 msgid "backupRootFileSystem"
@@ -10968,37 +10971,37 @@ msgstr "confirmar"
 
 #: ../help/help.inc:78
 msgid "dc=yourcompany,dc=com"
-msgstr "dc=yourcompany,dc=com"
+msgstr "dc=suempresa,dc=com"
 
 #: ../lib/modules/ppolicyUser.inc:111
 msgid "default"
-msgstr "usar predeterminado"
+msgstr "predeterminado"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:206
 msgid "delete"
-msgstr "borrar"
+msgstr "eliminar"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:677
 msgid "delete attribute"
-msgstr "Borrar atributo"
+msgstr "eliminar atributo"
 
 #: ../lib/modules/sambaSamAccount.inc:1435
 #: ../lib/modules/sambaSamAccount.inc:1712
 msgid "disabled"
-msgstr "Deshabilitado"
+msgstr "deshabilitado"
 
 #: ../lib/modules/sambaSamAccount.inc:1446
 #: ../lib/modules/sambaSamAccount.inc:1723
 msgid "disconnect"
-msgstr "Desconectado"
+msgstr "desconectar"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:664
 msgid "download value"
-msgstr "valor de envio"
+msgstr "valor de descarga"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:207
 msgid "edit"
-msgstr "editor de OU"
+msgstr "editar"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:483
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:307
@@ -11016,12 +11019,12 @@ msgstr "forzar"
 #: ../lib/modules/sambaSamAccount.inc:1454
 #: ../lib/modules/sambaSamAccount.inc:1731
 msgid "from any client"
-msgstr "Para cualquier cliente"
+msgstr "Desde cualquier cliente"
 
 #: ../lib/modules/sambaSamAccount.inc:1455
 #: ../lib/modules/sambaSamAccount.inc:1732
 msgid "from previous client only"
-msgstr "Solo desde el cliente anterior."
+msgstr "Sólo desde el cliente anterior."
 
 #: ../lib/modules/posixAccount.inc:220
 #: ../lib/modules/nisnetgroup.inc:118
@@ -11038,7 +11041,7 @@ msgstr "grupo@empresa.com"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:471
 msgid "hint"
-msgstr "pregunta"
+msgstr "sugerencia"
 
 #: ../lib/modules/quota.inc:190
 #: ../lib/modules/quota.inc:192
@@ -11052,45 +11055,45 @@ msgstr "importar"
 #: ../lib/modules/phpGroupwareUser.inc:162
 #: ../lib/modules/phpGroupwareUser.inc:336
 msgid "inactive"
-msgstr "Inactivo"
+msgstr "inactivo"
 
 #: ../lib/modules/sambaSamAccount.inc:1439
 #: ../lib/modules/sambaSamAccount.inc:1716
 msgid "input off, notify off"
-msgstr "Entradas desactivadas, notificaciones desactivadas."
+msgstr "entradas desactivadas, notificaciones desactivadas."
 
 #: ../lib/modules/sambaSamAccount.inc:1438
 #: ../lib/modules/sambaSamAccount.inc:1715
 msgid "input off, notify on"
-msgstr "Entradas desactivadas, notificaciones activadas."
+msgstr "entradas desactivadas, notificaciones activadas."
 
 #: ../lib/modules/sambaSamAccount.inc:1437
 #: ../lib/modules/sambaSamAccount.inc:1714
 msgid "input on, notify off"
-msgstr "Entradas activadas, notificaciones desactivadas."
+msgstr "entradas activadas, notificaciones desactivadas."
 
 #: ../lib/modules/sambaSamAccount.inc:1436
 #: ../lib/modules/sambaSamAccount.inc:1713
 msgid "input on, notify on"
-msgstr "Entradas activadas, notificaciones activadas."
+msgstr "entradas activadas, notificaciones activadas."
 
 #: ../help/help.inc:60
 msgid "ldap://localhost:389 connects to localhost using a standard LDAP connection on port 389"
-msgstr "ldap://localhost:389  conecta a la misma maquina localhost, mediante una conexión LDAP estándard en el puerto 389."
+msgstr "ldap://localhost:389  conecta a la máquina local utilizando una conexión LDAP estándard en el puerto 389"
 
 #: ../help/help.inc:62
 msgid "ldaps://ldap.domain.com connects to ldap.domain.com using an encrypted LDAP connection."
-msgstr "ldaps://141.40.146.133 conecta a 11.40.146.133 usando una conexión LDAP encriptada."
+msgstr "ldaps://ldap.dominio.com  conecta a ldap.dominio.com usando una conexión LDAP encriptada."
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:100
 msgid "list"
-msgstr "lista de hosts"
+msgstr "listado"
 
 #: ../templates/3rdParty/pla/lib/config_default.php:494
 #: ../templates/3rdParty/pla/lib/ds.php:318
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:529
 msgid "login"
-msgstr "Iniciar sesión"
+msgstr "iniciar sesión"
 
 #: ../lib/modules/posixAccount.inc:287
 msgid "machines"
@@ -11098,7 +11101,7 @@ msgstr "máquinas"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:107
 msgid "mail.yourdomain.org"
-msgstr "mail.yourdomain.org"
+msgstr "mail.sudominio.org"
 
 #: ../lib/modules/sambaSamAccount.inc:390
 #: ../lib/modules/sambaSamAccount.inc:514
@@ -11107,7 +11110,7 @@ msgstr "midominio"
 
 #: ../lib/modules/sambaSamAccount.inc:447
 msgid "mygroup"
-msgstr "mygroup"
+msgstr "migrupo"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:504
 msgid "new"
@@ -11136,11 +11139,11 @@ msgstr "nuevo"
 #: ../lib/modules/generalInformation.inc:93
 #: ../lib/modules/zarafaServer.inc:321
 msgid "no"
-msgstr "No"
+msgstr "no"
 
 #: ../templates/3rdParty/pla/lib/functions.php:1917
 msgid "no description available"
-msgstr "sin descripción"
+msgstr "no hay descripción disponible"
 
 #: ../templates/3rdParty/pla/htdocs/entry_chooser.php:68
 msgid "no entries"
@@ -11183,17 +11186,17 @@ msgstr "no aplicable"
 #: ../templates/schema/schema.php:175
 #: ../templates/schema/schema.php:208
 msgid "not specified"
-msgstr "Sin especificar"
+msgstr "sin especificar"
 
 #: ../help/help.inc:72
 msgid "ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree."
-msgstr "ou=People,dc=suempresa,dc=com leerá y almacenará todas sus cuentas en ese subárbol."
+msgstr "ou=Personas,dc=suempresa,dc=com leerá y almacenará todas sus cuentas en este subárbol."
 
 #: ../lib/modules/eduPerson.inc:181
 #: ../lib/modules/eduPerson.inc:187
 #: ../lib/modules/eduPerson.inc:193
 msgid "ou=accounts,dc=yourdomain,dc=org"
-msgstr "ou=accounts,dc=yourdomain,dc=org"
+msgstr "ou=cuentas,dc=sudominio,dc=org"
 
 #: ../lib/modules/posixAccount.inc:273
 msgid "pc01$"
@@ -11209,7 +11212,7 @@ msgstr "pc01,pc02"
 
 #: ../templates/3rdParty/pla/lib/functions.php:2015
 msgid "pixels"
-msgstr "pixeles"
+msgstr "píxeles"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:54
 msgid "read only"
@@ -11233,7 +11236,7 @@ msgstr "requerido"
 #: ../lib/modules/sambaSamAccount.inc:1447
 #: ../lib/modules/sambaSamAccount.inc:1724
 msgid "reset"
-msgstr "Resetear"
+msgstr "restablecer"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:237
 msgid "search"
@@ -11292,7 +11295,7 @@ msgstr "prueba-inicio"
 
 #: ../templates/3rdParty/pla/lib/AttributeFactory.php:122
 msgid "true"
-msgstr "Verdadero"
+msgstr "verdadero"
 
 #: ../lib/modules/ipHost.inc:92
 #: ../lib/modules/inetOrgPerson.inc:347
@@ -11345,7 +11348,7 @@ msgstr "con"
 #: ../lib/modules/generalInformation.inc:95
 #: ../lib/modules/zarafaServer.inc:323
 msgid "yes"
-msgstr "Si"
+msgstr "sí"
 
 #~ msgid "Add Samba 3 account"
 #~ msgstr "Añadir para cuentas a Samba 3"
