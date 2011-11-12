@@ -212,12 +212,12 @@ class lamList {
 				$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 			}
 			if (isset($foundFilter) && ($foundFilter != '')) {
-				if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
+				if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
 					$filterParam .= "&amp;filter" . $this->attrArray[$i] . '=' . $foundFilter;
 					$LDAPFilterPart .= '(' . $this->attrArray[$i] . '=' . $foundFilter . ')';
 				}
 				else {
-					StatusMessage('ERROR', _('Please enter a valid filter. Only letters, numbers and " _*$.-" are allowed.'), htmlspecialchars($foundFilter));
+					StatusMessage('ERROR', _('Please enter a valid filter. Only letters, numbers and " _*$.@-" are allowed.'), htmlspecialchars($foundFilter));
 				}
 			}
 		}
