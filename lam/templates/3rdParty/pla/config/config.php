@@ -64,7 +64,6 @@ $config->custom->commands['script'] = array(
 	'update' => true
 );
 $config->custom->appearance['show_schema_link'] = false;
-$config->custom->deref['tree'] = LDAP_DEREF_ALWAYS;
 if (!checkIfWriteAccessIsAllowed()) {
 	$servers->setValue('server','read_only',true);
 }
