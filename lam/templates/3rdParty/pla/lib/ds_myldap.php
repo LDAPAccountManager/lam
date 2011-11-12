@@ -186,7 +186,7 @@ class myldap extends DS {
 		/* Disabling this makes it possible to browse the tree for Active Directory, and seems
 		 * to not affect other LDAP servers (tested with OpenLDAP) as phpLDAPadmin explicitly
 		 * specifies deref behavior for each ldap_search operation. */
-		ldap_set_option($resource,LDAP_OPT_REFERRALS,0);
+//		ldap_set_option($resource,LDAP_OPT_REFERRALS,0);
 
 		# Try to fire up TLS is specified in the config
 		if ($this->isTLSEnabled())
