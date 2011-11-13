@@ -938,7 +938,7 @@ function masort(&$data,$sortby,$rev=0) {
 
 		foreach (explode(',',$sortby) as $key) {
 			if (!preg_match('/^[a-zA-z0-9_]+$/', $key)) {
-				die();
+				return;
 			}
 			$code .= "if (is_object(\$a) || is_object(\$b)) {\n";
 
