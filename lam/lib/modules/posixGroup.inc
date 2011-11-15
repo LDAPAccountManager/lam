@@ -143,7 +143,17 @@ class posixGroup extends baseModule implements passwordService {
 		$return = array();
 		$result = searchLDAPByFilter('gidNumber=' . $this->attributes['gidNumber'][0], array('dn'), array('user', 'host'));
 		if (sizeof($result) > 0) {
-			$return[$this->getAccountContainer()->dn_orig]['errors'][] = $this->messages['primaryGroup'][0];
+			$max = 5;
+			if (sizeof($result) < 5) {
+				$max = sizeof($result);
+			}
+			$users = array();
+			for ($i = 0; $i < $max; $i++) {
+				$users[] = getAbstractDN($result[$i]['dn']);
+			}
+			$message = $this->messages['primaryGroup'][0];
+			$message[] = implode(', ', $users);
+			$return[$this->getAccountContainer()->dn_orig]['errors'][] = $message;
 		}
 		return $return;
 	}
@@ -485,7 +495,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->messages['cn'][2] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['memberUID'][0] = array('ERROR', _('Account %s:') . ' posixGroup_members', _("This value must be a list of user names separated by semicolons."));
-		$this->messages['primaryGroup'][0] = array('ERROR', _('Primary group'), _('There are still users who have this group as their primary group.'));
+		$this->messages['primaryGroup'][0] = array('ERROR', _('There are still users who have this group as their primary group.'));
 	}
 
 
