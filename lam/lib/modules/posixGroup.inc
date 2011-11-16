@@ -141,7 +141,7 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function delete_attributes() {
 		$return = array();
-		$result = searchLDAPByFilter('gidNumber=' . $this->attributes['gidNumber'][0], array('dn'), array('user', 'host'));
+		$result = searchLDAPByFilter('(&(objectClass=posixAccount)(gidNumber=' . $this->attributes['gidNumber'][0] . '))', array('dn'), array('user', 'host'));
 		if (sizeof($result) > 0) {
 			$max = 5;
 			if (sizeof($result) < 5) {
