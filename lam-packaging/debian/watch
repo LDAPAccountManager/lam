@@ -2,4 +2,4 @@
 version=2
 
 # LDAP Account Manager at Sourceforge
-http://sf.net/lam/ldap-account-manager-([0-9]\.[0-9]\.[0-9])\.tar\.gz
+http://sf.net/lam/ldap-account-manager-([0-9]\.[0-9](\.[0-9])?)\.tar\.gz
