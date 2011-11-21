@@ -465,8 +465,8 @@ Have fun!
         <section>
           <title>Configuration files</title>
 
-          <para>Copy conf/config.cfg_sample to conf/config.cfg and
-          conf/lam.conf_sample to conf/lam.conf. Open the index.html in your
+          <para>Copy config/config.cfg_sample to config/config.cfg and
+          config/lam.conf_sample to config/lam.conf. Open the index.html in your
           web browser:</para>
 
           <itemizedlist>
