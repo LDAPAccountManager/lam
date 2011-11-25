@@ -501,6 +501,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
+		$return = new htmlTable();
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
 			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
@@ -508,7 +509,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				return $return;
 			}
 		}
-		$return = new htmlTable();
 		// Subnet name
 		if ($_SESSION['config']->get_suffix('dhcp') != $this->getAccountContainer()->dn_orig) {
 			$cn = '';
