@@ -1,3 +1,7 @@
+23.11.2011 3.6.1
+  - LAM Pro: fixed password reset function
+
+
 22.11.2011 3.6
   - support HTTP authentication for admin pages and self service
   - new modules
