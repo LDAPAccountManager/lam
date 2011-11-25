@@ -466,8 +466,8 @@ Have fun!
           <title>Configuration files</title>
 
           <para>Copy config/config.cfg_sample to config/config.cfg and
-          config/lam.conf_sample to config/lam.conf. Open the index.html in your
-          web browser:</para>
+          config/lam.conf_sample to config/lam.conf. Open the index.html in
+          your web browser:</para>
 
           <itemizedlist>
             <listitem>
@@ -1675,7 +1675,8 @@ Have fun!
         <para><emphasis role="bold">Schema</emphasis></para>
 
         <para>Please install the schema that comes with LAM Pro:
-        passwordSelfReset.schema or passwordSelfReset.ldif</para>
+        docs/schema/passwordSelfReset.schema or
+        docs/schema/passwordSelfReset.ldif</para>
 
         <para>This allows to set a security question + answer for each
         account.</para>
