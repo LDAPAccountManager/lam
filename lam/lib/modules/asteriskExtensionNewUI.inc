@@ -4,8 +4,8 @@
   $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009 - 2010  Pavel Pozdnyak
-  2009 - 2010  Roland Gruber
+  Copyright (C) 2009 - 2011  Pavel Pozdnyak
+                2009 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -126,13 +126,14 @@ class asteriskExtensionNewUI extends baseModule {
         $return['profile_mappings'] = array(
             'AsteriskExtension_AstContext' => 'AstContext',
         );
-        /*
-          $configContainer = new htmlTable();
-          $configMigrateSuffix = new htmlTableExtendedInputField(_('Suffix to migrate'), 'AsteriskExtension_MigrateSuffix', '', 'MigrateSuffix');
-          $configMigrateSuffix->setRequired(false);
-          $configContainer->addElement($configMigrateSuffix, true);
-          $return['config_options']['all'] = $configContainer;
-         */
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'AstContext' => _('Account context'),
+			'AstExtension' => _('Extension name'),
+			'member' => _('Extension owners'),
+			'cn' => _('Common name'),
+			'rules' => _('Rules'),
+		);
         return $return;
     }
 
@@ -677,32 +678,43 @@ class asteriskExtensionNewUI extends baseModule {
         if (isset($this->extensionRows[0]['astextension'][0])) {
             $extName = $this->extensionRows[0]['astextension'][0];
         }
-        $entries = $this->load_extension_parts($extName);
-        for ($rowCounter = 0; $rowCounter < count($this->extensionRows); $rowCounter++) {
-            $row = $this->extensionRows[$rowCounter];
-            if (isset($row['astcontext'])) {
-                $return[get_class($this) . '_AstContext'. $rowCounter] = array('<block><key>' . _('Account context') . '</key><value>' . $row['astcontext'][0] . '</value></block>');
-            }
-            if (isset($row['astapplicationdata'])) {
-                $return[get_class($this) . '_AstApplicationData' . $rowCounter] = array('<block><key>' . _('Application data') . '</key><value>' . $row['astapplicationdata'][0] . '</value></block>');
-            }
-            if (isset($row['astapplication'])) {
-                $return[get_class($this) . '_AstApplication' . $rowCounter] = array('<block><key>' . _('Application') . '</key><value>' . $row['astapplication'][0] . '</value></block>');
-            }
-            if (isset($row['astpriority'])) {
-                $return[get_class($this) . '_AstPriority' . $rowCounter] = array('<block><key>' . _('Priority') . '</key><value>' . $row['astpriority'][0] . '</value></block>');
-            }
-            if (isset($row['astetension'])) {
-                $return[get_class($this) . '_AstExtension' . $rowCounter] = array('<block><key>' . _('Extension name') . '</key><value>' . $row['astetension'][0] . '</value></block>');
-            }
-            if (isset($row['member'])) {
-                $return[get_class($this) . '_member' . $rowCounter] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $row['member']) . '</value></block>');
-            }
-            if (isset($row['cn'])) {
-                $return[get_class($this) . '_cn' . $rowCounter] = array('<block><key>' . _('Common name') . '</key><value>' . $row['cn'][0] . '</value></block>');
-            }
-        }
-
+        // global values
+		if (isset($this->attributes['AstContext'])) {
+			$return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstContext'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['AstExtension'])) {
+			$return[get_class($this) . '_AstExtension'] = array('<block><key>' . _('Extension name') . '</key><value>' . $this->attributes['AstExtension'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['member'])) {
+			$return[get_class($this) . '_member'] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $this->attributes['member']) . '</value></block>');
+		}
+		if (isset($this->attributes['cn'])) {
+			$return[get_class($this) . '_cn'] = array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>');
+		}
+		// rules
+		$entries = $this->load_extension_parts($extName);
+		$rulePDF = array();
+		$rulePDF[] = '<block><tr><td width="80%"> </td></tr></block>';
+		$rulePDF[] = '<block><tr><td width="80%"> </td></tr></block>';
+		$rulePDF[] = '<block><tr><td width="80%"> </td></tr></block>';
+		$rulePDF[] = '<block><tr>' .
+				'<td width="20%"><b>' . _('Name') . '</b></td>' .
+				'<td width="30%"><b>' . _('Application') . '</b></td>' .
+				'<td width="30%"><b>' . _('Application data') . '</b></td>' .
+				'<td width="20%"><b>' . _('Priority') . '</b></td>' .
+				'</tr></block>';
+		for ($i = 0; $i < sizeof($entries); $i++) {
+				$appdata = '';
+				if (isset($entries[$i]['astapplicationdata'][0])) {
+					$appdata = $entries[$i]['astapplicationdata'][0];
+				}
+				$rulePDF[] = '<block><tr>' .
+					'<td width="20%" align=\"L\">' . $entries[$i]['cn'][0] . '</td>' .
+					'<td width="30%" align=\"L\">' . $entries[$i]['astapplication'][0] . '</td>' .
+					'<td width="30%" align=\"L\">' . $appdata . '</td>' .
+					'<td width="20%" align=\"L\">' . $entries[$i]['astpriority'][0] . '</td></tr></block>';
+		}
+		$return[get_class($this) . '_rules'] = $rulePDF;
         return $return;
     }
 
