@@ -3,7 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Michael D�rgner
+  Copyright (C) 2003 - 2006  Michael Duergner
+                       2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@ $Id$
 /**
  * Functions to manage the PDF structures.
  * 
- * @author Michael D�rgner
+ * @author Michael Duergner
  * @package PDF
  */
 
@@ -51,7 +52,7 @@ function getPDFStructureDefinitions($scope = "user") {
 		$dirHandle = opendir($path);
 		while($file = readdir($dirHandle)) {
 			$struct_file = explode('.',$file);
-			if(!is_dir($path.$file) && $file != '.' && $file != '..' && $struct_file[1] == $scope) {
+			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && ($struct_file[1] == $scope) && ($struct_file[2] == 'xml')) {
 				array_push($return, $struct_file[0]);
 			}
 		}
