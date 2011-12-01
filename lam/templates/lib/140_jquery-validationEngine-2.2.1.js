@@ -60,7 +60,7 @@
 						form.find("[class*=validate][class*=datepicker]").bind(options.validationEventTrigger,{"delay": 300}, methods._onFieldEvent);
 
                         // bind form.submit
-                        form.bind("submit", methods._onSubmitEvent);
+                        //form.bind("submit", methods._onSubmitEvent);
 					} else if (options.bindMethod == "live") {
                         // bind fields with LIVE (for persistant state)
                         form.find("[class*=validate]").not("[type=checkbox]").not(".datepicker").live(options.validationEventTrigger, methods._onFieldEvent);
@@ -69,7 +69,7 @@
 						form.find("[class*=validate][class*=datepicker]").live(options.validationEventTrigger,{"delay": 300}, methods._onFieldEvent);
 
                         // bind form.submit
-                        form.live("submit", methods._onSubmitEvent);
+                        //form.live("submit", methods._onSubmitEvent);
 					}
 
                 options.binded = true;
