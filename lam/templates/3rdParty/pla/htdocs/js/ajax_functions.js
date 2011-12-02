@@ -12,28 +12,31 @@ var http_request_error_callback = '';
 
 function ajSUBMIT(div,obj,display) {
 	var pageDiv = getDiv(div);
+
 	window.scrollTo(0,0);
+
+	makeHttpRequest('cmd.php',getParameters(obj.parentNode)+'meth=ajax','POST','alertAJ','cancelAJ',div);
+
 	if (pageDiv)
 		includeHTML(pageDiv,'<img src="images/ajax-progress.gif"><br><small>'+display+'...</small>');
 	else
 		return true;
-
-	makeHttpRequest('cmd.php',getParameters(obj.parentNode)+'meth=ajax','POST','alertAJ','cancelAJ',div);
 
 	return false;
 }
 
 function ajDISPLAY(div,urlParameters,display,ns) {
 	var pageDiv = getDiv(div);
-	if (!ns) {
+
+	if (! ns)
 		window.scrollTo(0,0);
-	}
+
+	makeHttpRequest('cmd.php',urlParameters+'&meth=ajax','GET','alertAJ','cancelAJ',div);
+
 	if (pageDiv)
 		includeHTML(pageDiv,'<img src="images/ajax-progress.gif"><br><small>'+display+'...</small>');
 	else
 		return true;
-
-	makeHttpRequest('cmd.php',urlParameters+'&meth=ajax','GET','alertAJ','cancelAJ',div);
 
 	return false;
 }
