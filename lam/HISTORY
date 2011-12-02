@@ -1,6 +1,9 @@
 March 2012 3.7
   - Fixed bugs:
    -> DHCP: error message not displayed properly (3441975)
+   -> Profile loading not possible if required fields are not filled (3444948)
+   -> Tree view: unable to add object class (3446037)
+   -> Edit page: unable to move accounts to different OU
 
 
 23.11.2011 3.6.1
