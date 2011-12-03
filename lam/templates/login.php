@@ -269,7 +269,7 @@ function display_LoginPage($config_object) {
 							<tr>
 								<td style="border-style:none" height="35" align="right"><b>
 									<?php
-									echo _("User name") . ":";
+									echo _("User name");
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
@@ -298,7 +298,7 @@ function display_LoginPage($config_object) {
 							<tr>
 								<td style="border-style:none" height="35" align="right"><b>
 									<?php
-									echo _("Password") . ":";
+									echo _("Password");
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
@@ -315,7 +315,7 @@ function display_LoginPage($config_object) {
 							<tr>
 								<td style="border-style:none" align="right"><b>
 									<?php
-									echo _("Language") . ":";
+									echo _("Language");
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
@@ -370,8 +370,8 @@ function display_LoginPage($config_object) {
 								<td height="30" style="white-space: nowrap">
 									<b>
 									<?php
-									echo _("LDAP server") . ": ";
-									?></b>
+									echo _("LDAP server");
+									?></b>&nbsp;&nbsp;
 								</td>
 								<td width="100%" height="30">
 									<?php echo $config_object->get_ServerURL(); ?>
@@ -381,8 +381,8 @@ function display_LoginPage($config_object) {
 							<td height="30" style="white-space: nowrap">
 								<b>
 								<?php
-								echo _("Server profile") . ": ";
-								?></b>
+								echo _("Server profile");
+								?></b>&nbsp;&nbsp;
 							</td>
 							<td height="30">
 								<select name="profile" size="1" tabindex="5" onchange="loginProfileChanged(this)">
@@ -469,10 +469,16 @@ if(!empty($_POST['checklogin'])) {
 	if ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
 		$searchFilter = $_SESSION['config']->getLoginSearchFilter();
 		$searchFilter = str_replace('%USER%', $username ,$searchFilter);
+		$searchDN = '';
+		$searchPassword = '';
+		if (($_SESSION['config']->getLoginSearchDN() != null) && ($_SESSION['config']->getLoginSearchDN() != '')) {
+			$searchDN = $_SESSION['config']->getLoginSearchDN();
+			$searchPassword = $_SESSION['config']->getLoginSearchPassword();
+		}
 		$searchSuccess = true;
 		$searchError = '';
 		$searchLDAP = new Ldap($_SESSION['config']);
-		$searchLDAPResult = $searchLDAP->connect('', '', true);
+		$searchLDAPResult = $searchLDAP->connect($searchDN, $searchPassword, true);
 		if (! ($searchLDAPResult == 0)) {
 			$searchSuccess = false;
 			$searchError = _('Cannot connect to specified LDAP server. Please try again.') . ' ' . @ldap_error($searchLDAP->server());

@@ -358,6 +358,12 @@ $securitySettingsContent->addElement($searchSuffixInput, true);
 $searchFilterInput = new htmlTableExtendedInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
 $searchFilterInput->setRequired(true);
 $securitySettingsContent->addElement($searchFilterInput, true);
+// login search bind user
+$securitySettingsContent->addElement(new htmlTableExtendedInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'), true);
+// login search bind password
+$searchPasswordInput = new htmlTableExtendedInputField(_("Bind password"), 'loginSearchPassword', $conf->getLoginSearchPassword(), '224');
+$searchPasswordInput->setIsPassword(true);
+$securitySettingsContent->addElement($searchPasswordInput, true);
 // HTTP authentication
 $securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223', true), true);
 $securitySettingsContent->addElement(new htmlSpacer(null, '10px'), true);
@@ -445,6 +451,10 @@ function checkInput() {
 	$conf->setLoginMethod($_POST['loginMethod']);
 	$conf->setLoginSearchFilter($_POST['loginSearchFilter']);
 	$conf->setLoginSearchSuffix($_POST['loginSearchSuffix']);
+	if (!$conf->setLoginSearchDN($_POST['loginSearchDN'])) {
+		$errors[] = array("ERROR", _("Please enter a valid bind user."));
+	}
+	$conf->setLoginSearchPassword($_POST['loginSearchPassword']);
 	if (isset($_POST['httpAuthentication']) && ($_POST['httpAuthentication'] == 'on')) {
 		$conf->setHttpAuthentication('true');
 	}

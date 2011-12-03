@@ -254,6 +254,12 @@ class LAMConfig {
 	/** search filter for login */
 	private $loginSearchFilter = 'uid=%USER%';
 	
+	/** bind user for login search */
+	private $loginSearchDN = '';
+	
+	/** bind password for login search */
+	private $loginSearchPassword = '';
+	
 	/** specifies if HTTP authentication should be used */
 	private $httpAuthentication = 'false';
 	
@@ -277,7 +283,7 @@ class LAMConfig {
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
-		'lamProMailText', 'lamProMailIsHTML', 'httpAuthentication');
+		'lamProMailText', 'lamProMailIsHTML', 'httpAuthentication', 'loginSearchDN', 'loginSearchPassword');
 
 
 	/**
@@ -428,6 +434,8 @@ class LAMConfig {
 			if (!in_array("loginMethod", $saved)) array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
 			if (!in_array("loginSearchSuffix", $saved)) array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
 			if (!in_array("loginSearchFilter", $saved)) array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
+			if (!in_array("loginSearchDN", $saved)) array_push($file_array, "\n\n# Bind DN for login search.\n" . "loginSearchDN: " . $this->loginSearchDN . "\n");
+			if (!in_array("loginSearchPassword", $saved)) array_push($file_array, "\n\n# Bind password for login search.\n" . "loginSearchPassword: " . $this->loginSearchPassword . "\n");
 			if (!in_array("httpAuthentication", $saved)) array_push($file_array, "\n\n# HTTP authentication for LAM login.\n" . "httpAuthentication: " . $this->httpAuthentication . "\n");
 			if (!in_array("lamProMailFrom", $saved)) array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
 			if (!in_array("lamProMailReplyTo", $saved)) array_push($file_array, "\n\n# Password mail reply-to\n" . "lamProMailReplyTo: " . $this->lamProMailReplyTo . "\n");
@@ -1027,24 +1035,6 @@ class LAMConfig {
 	}
 	
 	/**
-	 * Returns if HTTP authentication should be used.
-	 * 
-	 * @return String $httpAuthentication use HTTP authentication ('true' or 'false')
-	 */
-	public function getHttpAuthentication() {
-		return $this->httpAuthentication;
-	}
-
-	/**
-	 * Specifies if HTTP authentication should be used.
-	 * 
-	 * @param String $httpAuthentication use HTTP authentication ('true' or 'false')
-	 */
-	public function setHttpAuthentication($httpAuthentication) {
-		$this->httpAuthentication = $httpAuthentication;
-	}
-
-	/**
 	 * Returns the login search suffix.
 	 * 
 	 * @return String suffix
@@ -1062,6 +1052,65 @@ class LAMConfig {
 		$this->loginSearchSuffix = $loginSearchSuffix;
 	}
 	
+	/**
+	 * Sets the DN for the login search bind user.
+	 * 
+	 * @param String $loginSearchDN DN
+	 * @return boolean true if DN is valid
+	 */
+	public function setLoginSearchDN($loginSearchDN) {
+		$this->loginSearchDN = $loginSearchDN;
+		if (($loginSearchDN == '') || get_preg($loginSearchDN, 'dn')) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the DN for the login search bind user.
+	 * 
+	 * @return String DN
+	 */
+	public function getLoginSearchDN() {
+		return $this->loginSearchDN;
+	}
+
+	/**
+	 * Sets the password for the login search bind user.
+	 * 
+	 * @param String $loginSearchPassword password
+	 */
+	public function setLoginSearchPassword($loginSearchPassword) {
+		$this->loginSearchPassword = $loginSearchPassword;
+	}
+
+	/**
+	 * Returns the password for the login search bind user.
+	 * 
+	 * @return String password
+	 */
+	public function getLoginSearchPassword() {
+		return $this->loginSearchPassword;
+	}
+
+	/**
+	 * Returns if HTTP authentication should be used.
+	 * 
+	 * @return String $httpAuthentication use HTTP authentication ('true' or 'false')
+	 */
+	public function getHttpAuthentication() {
+		return $this->httpAuthentication;
+	}
+
+	/**
+	 * Specifies if HTTP authentication should be used.
+	 * 
+	 * @param String $httpAuthentication use HTTP authentication ('true' or 'false')
+	 */
+	public function setHttpAuthentication($httpAuthentication) {
+		$this->httpAuthentication = $httpAuthentication;
+	}
+
 	/**
 	 * Returns the sender address for password reset mails.
 	 * 

@@ -157,12 +157,16 @@ function configLoginMethodChanged() {
 		jQuery('textarea[name=admins]').parent().parent().show();
 		jQuery('input[name=loginSearchSuffix]').parent().parent().hide();
 		jQuery('input[name=loginSearchFilter]').parent().parent().hide();
+		jQuery('input[name=loginSearchDN]').parent().parent().hide();
+		jQuery('input[name=loginSearchPassword]').parent().parent().hide();
 		jQuery('input[name=httpAuthentication]').parent().parent().hide();
 	}
 	else {
 		jQuery('textarea[name=admins]').parent().parent().hide();
 		jQuery('input[name=loginSearchSuffix]').parent().parent().show();
 		jQuery('input[name=loginSearchFilter]').parent().parent().show();
+		jQuery('input[name=loginSearchDN]').parent().parent().show();
+		jQuery('input[name=loginSearchPassword]').parent().parent().show();
 		jQuery('input[name=httpAuthentication]').parent().parent().show();
 	}
 }

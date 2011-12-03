@@ -28,6 +28,7 @@ $Id$
  * LDAP Account Manager help entries.
  * 
  * @author Michael Duergner
+ * @author Roland Gruber
  * @package Help
  */
 
@@ -115,6 +116,8 @@ $helpArray = array (
 					"Text" => _("Here you can set a limit for LDAP searches. This will restrict the number of results for LDAP searches. Please use this if LAM's LDAP queries produce too much load.")),
 				"223" => array ("Headline" => _("HTTP authentication"),
 					"Text" => _("If enabled then LAM will use user and password that is provided by the web server via HTTP authentication.")),
+				"224" => array ("Headline" => _("Bind user and password"),
+					"Text" => _("Here you can specify the DN and password of the bind user that will be used for the LDAP search. This is required if your LDAP server does not allow anonymous access.")),
 				"230" => array ("Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("Headline" => _("Profile management") . " - " . _("Rename profile"),
