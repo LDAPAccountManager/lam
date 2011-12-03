@@ -669,7 +669,7 @@ class accountContainer {
 	/** DN suffix of the account */
 	public $dnSuffix;
 
-	/** DN suffix of account when it was loaded */
+	/** DN of account when it was loaded */
 	public $dn_orig;
 
 	/** RDN attribute of this account */
@@ -1381,11 +1381,10 @@ class accountContainer {
 		if (!$entry) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
 		}
-		$this->dnSuffix = substr($dn, strpos($dn, ',')+1);
+		$this->dnSuffix = extractDNSuffix($dn);
 		$this->dn_orig = $dn;
 		// extract RDN
-		$this->rdn = explode("=", substr($dn, 0, strpos($dn, ',')));
-		$this->rdn = $this->rdn[0];
+		$this->rdn = extractRDNAttribute($dn);
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		$attr = array($attr);
 		cleanLDAPResult($attr);
@@ -1578,6 +1577,11 @@ class accountContainer {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
+		}
+		elseif (!$this->isNewAccount && (($this->dnSuffix != extractDNSuffix($this->dn_orig)) || ($this->rdn != extractRDNAttribute($this->rdn)))) {
+			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['notchanged'][$this->rdn][0] . ',' . $this->dnSuffix;
+			$attributes[$this->finalDN] = $attributes[$this->dn_orig];
+			unset($attributes[$this->dn_orig]);
 		}
 		// pre modify actions
 		$prePostModifyAttributes = array();

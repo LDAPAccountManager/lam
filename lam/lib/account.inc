@@ -821,4 +821,28 @@ function isObfuscatedText($text) {
 	}
 }
 
+/**
+ * Extracts the RDN attribute name from a given DN.
+ * 
+ * @param String $dn DN
+ * @return String RDN attribute name
+ */
+function extractRDNAttribute($dn) {
+	if ($dn == null) return null;
+	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
+	return $parts[0];
+}
+
+/**
+ * Extracts the DN suffix from a given DN.
+ * E.g. ou=people,dc=test,dc=com will result in dc=test,dc=com.
+ * 
+ * @param String $dn DN
+ * @return String DN suffix
+ */
+function extractDNSuffix($dn) {
+	if ($dn == null) return null;
+	return substr($dn, strpos($dn, ',')+1);
+}
+
 ?>
