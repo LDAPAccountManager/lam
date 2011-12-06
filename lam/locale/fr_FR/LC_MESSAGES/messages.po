@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2011-12-02 11:05+0100\n"
+"PO-Revision-Date: 2011-12-06 08:29+0100\n"
 "Last-Translator: Franck Rakotonindrainy <franck.rakotonindrainy@fresenius-"
 "kabi.com>\n"
 "Language-Team: français <fr@lam.org>\n"
@@ -216,9 +216,8 @@ msgstr ""
 "des emails."
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:593
-#, fuzzy
 msgid "A valid deleteoldrdn attribute should be specified"
-msgstr "Un attribut valide deleteoldrdn doit être fourni"
+msgstr "Un attribut deleteoldrdn valide doit être fourni"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:237
 msgid "A valid dn line is required"
@@ -250,9 +249,8 @@ msgid "Aborted password change."
 msgstr "Annulation de changement de mot de passe."
 
 #: ../lib/modules/sambaSamAccount.inc:543
-#, fuzzy
 msgid "Abu Dhabi, Muscat, Baku"
-msgstr "Abu Dhabi, Muscat, Bakou"
+msgstr "Abu Dhabi, Mascate, Bakou"
 
 #: ../templates/config/confmain.php:246 ../help/help.inc:99
 msgid "Access level"
@@ -1414,9 +1412,8 @@ msgstr "Peut être laissé vide."
 #: ../lib/modules/asteriskAccount.inc:579
 #: ../lib/modules/asteriskAccount.inc:933
 #: ../lib/modules/asteriskAccount.inc:1268
-#, fuzzy
 msgid "Can call forward"
-msgstr "Peut faire suivre un appel"
+msgstr "Peut renvoyer un appel"
 
 #: ../templates/lists/changePassword.php:228
 #: ../templates/lists/changePassword.php:264 ../templates/ou_edit.php:119
@@ -1758,9 +1755,8 @@ msgstr "Statistiques de connexion"
 #: ../lib/modules/sambaSamAccount.inc:218
 #: ../lib/modules/sambaSamAccount.inc:1422
 #: ../lib/modules/sambaSamAccount.inc:1699
-#, fuzzy
 msgid "Connection time limit"
-msgstr "Temps limite de connexion"
+msgstr "Durée de connexion max"
 
 #: ../lib/modules/inetOrgPerson.inc:1164
 msgid "Contact data"
@@ -2176,7 +2172,6 @@ msgid "Defines if workstations may change their passwords."
 msgstr "Définit si les postes clients peuvent changer leur mot de passe."
 
 #: ../lib/modules/asteriskAccount.inc:151
-#, fuzzy
 msgid ""
 "Defines the mailbox to check for message waiting indication (MWI) for this "
 "peer."
@@ -2437,9 +2432,8 @@ msgstr "Matériel"
 
 #: ../lib/modules/sambaSamAccount.inc:371
 #: ../lib/modules/sambaSamAccount.inc:559
-#, fuzzy
 msgid "Disable LM hashes"
-msgstr "Désactiver les LM hashes"
+msgstr "Désactiver les hachages LM"
 
 #: ../lib/modules/ddns.inc:93 ../lib/modules/ddns.inc:344
 msgid "Disable client updates"
@@ -2650,7 +2644,6 @@ msgid "Dynamic subtrees"
 msgstr "Sous-arbres dynamiques "
 
 #: ../lib/modules/eduPerson.inc:64
-#, fuzzy
 msgid "EDU person"
 msgstr "Personne EDU"
 
@@ -2971,9 +2964,8 @@ msgstr "Date d'expiration du compte"
 #: ../lib/modules/asteriskAccount.inc:558
 #: ../lib/modules/asteriskAccount.inc:902
 #: ../lib/modules/asteriskAccount.inc:1259
-#, fuzzy
 msgid "Expiration timestamp"
-msgstr "Date d'expiration"
+msgstr "Horodatage d'expiration"
 
 #: ../lib/modules/asteriskAccount.inc:203
 msgid "Expiration timestamp (\"regseconds\" option)."
@@ -3101,7 +3093,6 @@ msgid "Filter"
 msgstr "Filtre"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:511
-#, fuzzy
 msgid "Filter performed"
 msgstr "Filtre appliqué"
 
@@ -3128,9 +3119,8 @@ msgid "Fix IP addresses"
 msgstr "IP fixe"
 
 #: ../templates/config/confmain.php:341
-#, fuzzy
 msgid "Fixed list"
-msgstr "Liste réparée"
+msgstr "Liste fixe"
 
 #: ../lib/modules/kolabUser.inc:124
 msgid "For automatic invitation handling."
@@ -3708,9 +3698,8 @@ msgid "Here you can specify the new password yourself."
 msgstr "Vous pouvez définir ici un nouveau mot de passe."
 
 #: ../lib/modules/sambaSamAccount.inc:360
-#, fuzzy
 msgid "Here you can specify the shadowing mode."
-msgstr "Précisez ici le mode de l' ombre"
+msgstr "Précisez ici le mode shadow."
 
 #: ../lib/tools/tests.inc:53
 msgid "Here you can test if certain LAM features work on your installation."
@@ -4002,9 +3991,8 @@ msgid "IP address of the DNS server"
 msgstr "Adresse IP du serveur DNS"
 
 #: ../lib/modules/asteriskAccount.inc:219
-#, fuzzy
 msgid "IP address of the peer. Valid only for realtime peers."
-msgstr "Adresse IP du pair. Valide uniquement pour les pairs temps-réel."
+msgstr "Adresse IP du pair. Valable uniquement pour les pairs temps-réel."
 
 #: ../lib/modules/asteriskAccount.inc:227
 msgid "IP address or domain name of the registration server."
@@ -4689,9 +4677,8 @@ msgstr "Dernier changement de mot de passe"
 #: ../lib/modules/asteriskAccount.inc:608
 #: ../lib/modules/asteriskAccount.inc:969
 #: ../lib/modules/asteriskAccount.inc:1280
-#, fuzzy
 msgid "Last qualify milliseconds"
-msgstr "Last qualify milliseconds"
+msgstr ""
 
 #: ../lib/modules/dhcp_settings.inc:130 ../lib/modules/dhcp_settings.inc:173
 #: ../lib/modules/dhcp_settings.inc:187 ../lib/modules/dhcp_settings.inc:216
@@ -6224,9 +6211,8 @@ msgid "Output of command \"%s\" with return code %s"
 msgstr "Sortie de la commande \"%s\" avec code de retour %s"
 
 #: ../templates/serverInfo.php:166
-#, fuzzy
 msgid "Overlays"
-msgstr "Overlays"
+msgstr "Surcouches"
 
 #: ../lib/modules/zarafaUser.inc:73
 msgid "Override default quota settings."
@@ -8279,7 +8265,6 @@ msgid "Set password"
 msgstr "Mot de passe"
 
 #: ../lib/modules/posixAccount.inc:187 ../lib/modules/posixAccount.inc:330
-#, fuzzy
 msgid "Set primary group as memberUid"
 msgstr "Ajouter l'utilisateur aux membres du groupe principal"
 
@@ -8640,7 +8625,6 @@ msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 msgstr "Steve Miller,Chambre 2.14,123-123-1234,123-123-1234"
 
 #: ../lib/modules/eduPerson.inc:169
-#, fuzzy
 msgid "Steve, Stevo"
 msgstr "Steve, Stevo"
 
@@ -9343,9 +9327,8 @@ msgstr ""
 "compte."
 
 #: ../lib/modules/asteriskAccount.inc:231
-#, fuzzy
 msgid "The number of milliseconds for the last qualify."
-msgstr "The number of milliseconds for the last qualify."
+msgstr ""
 
 #: ../help/help.inc:111
 msgid ""
@@ -10764,7 +10747,7 @@ msgid "Unix groups"
 msgstr "Groupes unix"
 
 #: ../lib/modules/kolabUser.inc:238
-#, fuzzy, php-format
+#, php-format
 msgid "Unknown delegate address: %s"
 msgstr "Adresse de délégation inconnue : %s"
 
@@ -10840,7 +10823,6 @@ msgid "Upload was stopped after errors in %s module!"
 msgstr "Upload interrompu après erreurs dans %s module !"
 
 #: ../templates/serverInfo.php:220
-#, fuzzy
 msgid "Uptime"
 msgstr "Uptime"
 
@@ -11285,9 +11267,8 @@ msgid "Windows-Domain name of group."
 msgstr "Nom de domaine windows du groupe."
 
 #: ../lib/modules/inetOrgPerson.inc:1196
-#, fuzzy
 msgid "Work details"
-msgstr "Détails du travail"
+msgstr "Détails d'activité"
 
 #: ../lib/modules/sambaDomain.inc:139
 msgid "Workgroup"
@@ -11576,7 +11557,6 @@ msgid "attribute deleted"
 msgstr "attribut supprimé"
 
 #: ../lib/modules/sudoRole.inc:123
-#, fuzzy
 msgid "backupRootFileSystem"
 msgstr "backupRootFileSystem"
 
