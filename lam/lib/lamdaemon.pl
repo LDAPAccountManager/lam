@@ -300,12 +300,12 @@ sub manageQuotas {
 	while ($quota_temp1[$i]) {
 		$j=0;
 		@temp = split (',', $quota_temp1[$i]);
-			while ($temp[$j]) {
-				$quota[$i][$j] = $temp[$j];
-				$j++;
-				}
-			$i++;
+		while ($temp[$j]) {
+			$quota[$i][$j] = $temp[$j];
+			$j++;
 		}
+		$i++;
+	}
 	if ($vals[3] eq 'user') { $group=false; }
 	else {
 		$group=1;
@@ -348,10 +348,11 @@ sub setQuotas {
 	($<, $>) = ($>, $<); # Get root privileges
 	while ($quota[$i][0]) {
 		$dev = Quota::getqcarg($quota[$i][0]);
+		last if ($dev eq '');
 		$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
 		if ($return == -1) {
 				$return = "ERROR,Lamdaemon ($hostname),Unable to set quota!";
-				logMessage(LOG_ERR, "Unable to set quota for $user[0].");
+				logMessage(LOG_ERR, "Unable to set quota for $user[0] on " . $quota[$i][0] . ".");
 		}
 		else {
 			logMessage(LOG_INFO, "Set quota for $user[0].");
