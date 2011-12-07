@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2011-12-06 08:29+0100\n"
+"PO-Revision-Date: 2011-12-07 09:25+0100\n"
 "Last-Translator: Franck Rakotonindrainy <franck.rakotonindrainy@fresenius-"
 "kabi.com>\n"
 "Language-Team: français <fr@lam.org>\n"
@@ -4678,7 +4678,7 @@ msgstr "Dernier changement de mot de passe"
 #: ../lib/modules/asteriskAccount.inc:969
 #: ../lib/modules/asteriskAccount.inc:1280
 msgid "Last qualify milliseconds"
-msgstr ""
+msgstr "milisecondes depuis la dernière qualification"
 
 #: ../lib/modules/dhcp_settings.inc:130 ../lib/modules/dhcp_settings.inc:173
 #: ../lib/modules/dhcp_settings.inc:187 ../lib/modules/dhcp_settings.inc:216
@@ -9328,7 +9328,7 @@ msgstr ""
 
 #: ../lib/modules/asteriskAccount.inc:231
 msgid "The number of milliseconds for the last qualify."
-msgstr ""
+msgstr "Nombre de milisecondes depuis le dernier test de qualification."
 
 #: ../help/help.inc:111
 msgid ""
