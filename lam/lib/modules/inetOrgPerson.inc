@@ -1284,7 +1284,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* Sets a new photo.
 	*/
 	function process_photo() {
-		if ($_POST['form_subpage_' . get_class($this) . '_attributes_back']) return array();
+		if (!isset($_POST['form_subpage_' . get_class($this) . '_attributes_submit'])) {
+			return array();
+		}
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
