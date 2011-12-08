@@ -33,7 +33,7 @@ h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
   font-family:Arial,Tahoma,Verdana,sans-serif;
 }
 
-h1,h2,h3 { color:#253aa3; }
+h1,h2,h3 { color:black; }
 
 body {
   background-color:#F5F5F5;
@@ -85,7 +85,7 @@ padding:10px;
 }
 
 legend {
-color:blue;
+color:black;
 }
 
 select {
@@ -184,7 +184,7 @@ tr.highlight {
 /** subtitles */
 .subTitle {
 	margin: 20px 0px 15px 0px;
-	border-bottom: 2px dotted black;
+	border-bottom: 1px dotted black;
 }
 
 .subTitleText {
