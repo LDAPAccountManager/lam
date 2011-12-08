@@ -92,6 +92,11 @@ select {
 	background:#F5F5F5 none repeat-x scroll 50% 50%;
 	border:1px solid #AAAAAA;
 	color:#222222;
+	margin: 1px;
+}
+
+input {
+	margin: 1px;	
 }
 
 .align-middle {
