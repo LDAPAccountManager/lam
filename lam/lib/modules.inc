@@ -1080,8 +1080,8 @@ class accountContainer {
 		}
 		if ($this->showSetPasswordButton()) {
 			echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo '<a href="#" onclick="passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\');" id="modPasswordButton">' . _('Set password') . "</a> \n";
+			echo '<button type="button" onclick="passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
+				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\');" id="modPasswordButton">' . _('Set password') . "</button> \n";
 		}
 		echo "</td>";
 		echo "<td align=\"right\">";
