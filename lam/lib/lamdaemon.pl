@@ -297,14 +297,16 @@ sub manageQuotas {
 	@quota_temp1 = split (':', $vals[4]);
 	$group=0;
 	$i=0;
-	while ($quota_temp1[$i]) {
-		$j=0;
-		@temp = split (',', $quota_temp1[$i]);
-		while ($temp[$j]) {
-			$quota[$i][$j] = $temp[$j];
-			$j++;
+	foreach my $quota_element (@quota_temp1) {
+		if (length ($quota_element) >= 2) {
+			@temp = split (',', $quota_element);
+			$j=0;
+			foreach my $temp_element (@temp) {
+				$quota[$i][$j] = $temp_element;
+				$j++;
+			}
+			$i++;
 		}
-		$i++;
 	}
 	if ($vals[3] eq 'user') { $group=false; }
 	else {
