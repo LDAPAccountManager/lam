@@ -1140,13 +1140,18 @@ class htmlRadio extends htmlElement {
 			$disabled = ' disabled';
 		}
 		// print radio list
+		$counter = 0;
 		foreach ($this->elements as $label => $value) {
+			$onClick = 'onClick="jQuery(\'input[name=' . $this->name . ']\').attr(\'checked\', false);jQuery(\'#' . $this->name . $counter . '\').attr(\'checked\', true);"';
+			echo '<div class="nowrap" ' . $onClick . '>';
 			$selected = '';
 			if ($value == $this->selectedElement) {
 				$selected = ' checked';
 			}
-			echo '<input type="radio"' . $name . $disabled . $selected . ' value="' . $value . '" tabindex="' . $tabindex . '"> ' . $label . '<br>';
+			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . ' value="' . $value . '" tabindex="' . $tabindex . '"> ' . $label;
+			echo '</div>';
 			$tabindex++;
+			$counter++;
 		}
 		return array($this->name => 'select');
 	}
@@ -1321,11 +1326,11 @@ class htmlOutputText extends htmlElement {
 class htmlInputCheckbox extends htmlElement {
 	
 	/** unique name of input element */
-	private $name;
+	protected $name;
 	/** value */
-	private $checked;
+	protected $checked;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	protected $isEnabled = true;
 	
 	/**
 	 * Constructor.
@@ -1368,7 +1373,7 @@ class htmlInputCheckbox extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="checkbox" name="' . $this->name . '"' . $tabindexValue . $checked . $disabled . '>';
+		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $checked . $disabled . '>';
 		return array($this->name => 'checkbox');
 	}
 
@@ -1425,8 +1430,9 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').attr(\'checked\',!jQuery(\'#' . $this->name . '\').attr(\'checked\'));"';
 		if ($this->labelFirst) {
-			echo '<div class="nowrap">';
+			echo '<div class="nowrap" ' . $onClick . '>';
 			echo $this->label;
 			echo '</div>';
 			echo "\n</td>\n<td>\n";
@@ -1435,7 +1441,7 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 		else {
 			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 			echo "\n</td>\n<td>\n";
-			echo '<div class="nowrap">';
+			echo '<div class="nowrap" ' . $onClick . '>';
 			echo $this->label;
 			echo '</div>';
 		}

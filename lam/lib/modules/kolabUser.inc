@@ -865,8 +865,8 @@ class kolabUser extends baseModule {
 			$delegateFields = array();
 			$delegateContainer = new htmlTable();
 			for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
-				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, $kolabDelegate[$i]));
-				$delegateContainer->addElement(new htmlOutputText(_('Delete')), true);
+				$delegateContainer->addElement(new htmlOutputText($kolabDelegate[$i]));
+				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, _('Delete'), null, false), true);
 			}
 			$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates));
 			$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
