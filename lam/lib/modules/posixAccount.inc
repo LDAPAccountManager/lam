@@ -2067,6 +2067,7 @@ class posixAccount extends baseModule implements passwordService {
 		$return = array();
 		if (in_array('password', $fields)) {
 			$pwdTable = new htmlTable();
+			$pwdTable->colspan = 3;
 			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'posixAccount_password');
 			$pwd1->setIsPassword(true);
 			$pwdTable->addElement($pwd1, true);
