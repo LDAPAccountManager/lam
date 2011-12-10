@@ -214,6 +214,21 @@ function saveSelfServiceProfile($name, $scope, $profile) {
 }
 
 /**
+* Checks if a service profile is writable.
+*
+* @param string $name profile name
+* @param string $scope account type
+* @return boolean true if file is writable
+*/
+function isSelfServiceProfileWritable($name, $scope) {
+	// check profile name
+	if (!preg_match("/^[0-9a-z _-]+$/i", $scope)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $name)) return false;
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
+	return is_writable($path);
+}
+
+/**
 * Returns a hash array (module name => elements) of all module options for the configuration page.
 *
 * @param string $scope account type
