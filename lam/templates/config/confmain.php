@@ -50,7 +50,7 @@ if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
 
 // check if password was entered
 // if not: load login page
-if (!isset($passwd) && !isset($_SESSION['conf_isAuthenticated'])) {
+if (!isset($passwd) && !(isset($_SESSION['conf_isAuthenticated']) && isset($_SESSION['conf_config']))) {
 	$_SESSION['conf_message'] = _("No password was entered!");
 	/** go back to login if password is empty */
 	metaRefresh('conflogin.php');
@@ -83,6 +83,10 @@ if (isset($_POST['cancelSettings'])) {
 }
 
 $errorsToDisplay = array();
+if (isset($_SESSION['conf_messages']) && is_array($_SESSION['conf_messages'])) {
+	$errorsToDisplay = array_merge($errorsToDisplay, $_SESSION['conf_messages']);
+	unset($_SESSION['conf_messages']);
+}
 
 // check if button was pressed and if we have to save the settings or go to another tab
 if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
@@ -156,7 +160,7 @@ foreach ($jsFiles as $jsEntry) {
 <?php
 
 if (!$conf->isWritable()) {
-	StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
+	StatusMessage('WARN', _('The config file is not writable.'), _('Your changes cannot be saved until you make the file writable for the webserver user.'));
 	echo "<br>";
 }
 

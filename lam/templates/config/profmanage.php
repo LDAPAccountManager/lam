@@ -43,52 +43,6 @@ if (strtolower(session_module_name()) == 'files') {
 
 setlanguage();
 
-echo $_SESSION['header'];
-
-?>
-
-		<title>
-			<?php
-				echo _("Profile management");
-			?>
-		</title>
-	<?php 
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../../style';
-		$cssDir = dir($cssDirName);
-		while ($cssEntry = $cssDir->read()) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-		}
-	?>
-		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
-	</head>
-	<body>
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
-				</td>
-				<td align="right" height=20>
-					<a href="conflogin.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to profile login") ?></a>
-				</td>
-			</tr>
-		</table>
-		<br>
-
-<?php
-// include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
 
 $cfg = new LAMCfgMain();
 // check if submit button was pressed
@@ -116,7 +70,11 @@ if (isset($_POST['submit'])) {
 						$conf = new LAMConfig($_POST['addprofile']);
 						$conf->set_Passwd($_POST['addpassword']);
 						$conf->save();
-						$msg = _("Created new profile.");
+						$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
+						$_SESSION['conf_config'] = $conf;
+						$_SESSION['conf_messages'][] = array('INFO', _("Created new profile."), $_POST['addprofile']);
+						metaRefresh('confmain.php');
+						exit;
 					}
 					else {
 						$error = _("Unable to create new profile!");
@@ -168,18 +126,65 @@ if (isset($_POST['submit'])) {
 		$configMain = null;
 		$msg = _("New default profile set successfully.");
 	}
-	// print messages
-	if (isset($error) || isset($msg)) {
-		if (isset($error)) {
-			StatusMessage("ERROR", $error);
-		}
-		if (isset($msg)) {
-			StatusMessage("INFO", $msg);
-		}
-	}
-	else exit;
 }
 
+
+echo $_SESSION['header'];
+
+?>
+
+		<title>
+			<?php
+				echo _("Profile management");
+			?>
+		</title>
+	<?php 
+		// include all CSS files
+		$cssDirName = dirname(__FILE__) . '/../../style';
+		$cssDir = dir($cssDirName);
+		while ($cssEntry = $cssDir->read()) {
+			if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
+			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
+		}
+	?>
+		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
+	</head>
+	<body>
+		<table border=0 width="100%" class="lamHeader ui-corner-all">
+			<tr>
+				<td align="left" height="30">
+					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
+				</td>
+				<td align="right" height=20>
+					<a href="conflogin.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to profile login") ?></a>
+				</td>
+			</tr>
+		</table>
+		<br>
+
+<?php
+// include all JavaScript files
+$jsDirName = dirname(__FILE__) . '/../lib';
+$jsDir = dir($jsDirName);
+$jsFiles = array();
+while ($jsEntry = $jsDir->read()) {
+	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
+	$jsFiles[] = $jsEntry;
+}
+sort($jsFiles);
+foreach ($jsFiles as $jsEntry) {
+	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
+}
+
+// print messages
+if (isset($error) || isset($msg)) {
+	if (isset($error)) {
+		StatusMessage("ERROR", $error);
+	}
+	if (isset($msg)) {
+		StatusMessage("INFO", $msg);
+	}
+}
 
 // check if config.cfg is valid
 if (!isset($cfg->default)) {

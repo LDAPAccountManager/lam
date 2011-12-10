@@ -85,10 +85,10 @@ for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 }
 
 if ($result === LAMConfig::SAVE_OK) {
-	metaRefresh('../login.php?configSaveOk=1&amp;configSaveFile=' . $conf->getPath());
+	metaRefresh('../login.php?configSaveOk=1&amp;configSaveFile=' . $conf->getName());
 }
 else {
-	metaRefresh('../login.php?configSaveFailed=1&amp;configSaveFile=' . $conf->getPath());
+	metaRefresh('../login.php?configSaveFailed=1&amp;configSaveFile=' . $conf->getName());
 }
 
 ?>
