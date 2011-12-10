@@ -148,6 +148,9 @@ function getSelfServiceProfiles() {
 		}
 	}
 	ksort($ret);
+	foreach ($ret as $key => $value) {
+		sort($ret[$key]);
+	}
 	return $ret;
 }
 
