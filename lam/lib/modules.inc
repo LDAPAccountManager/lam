@@ -1578,7 +1578,7 @@ class accountContainer {
 				unset($attributes[$this->dn_orig]);
 			}
 		}
-		elseif (!$this->isNewAccount && (($this->dnSuffix != extractDNSuffix($this->dn_orig)) || ($this->rdn != extractRDNAttribute($this->rdn)))) {
+		elseif (!$this->isNewAccount && (($this->dnSuffix != extractDNSuffix($this->dn_orig)) || ($this->rdn != extractRDNAttribute($this->dn_orig)))) {
 			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['notchanged'][$this->rdn][0] . ',' . $this->dnSuffix;
 			$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 			unset($attributes[$this->dn_orig]);
