@@ -316,6 +316,9 @@ class systemQuotas extends baseModule {
 		$messages = parent::check_profileOptions($options);
 		$quotas = explode(';', $options['systemQuotas_quota'][0]);
 		for ($q = 0; $q < sizeof($quotas); $q++) {
+			if ($quotas[$q] == '') {
+				continue;
+			}
 			$parts = explode(',', $quotas[$q]);
 			$messages = array_merge($messages, $this->checkQuota($parts[0], $parts[1], $parts[2], $parts[3], $parts[4]));
 		}
