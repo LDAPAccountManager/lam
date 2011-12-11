@@ -115,7 +115,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
-			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials', 'registeredAddress');
+			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials', 'registeredAddress', 'labeledURI');
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName', 'employeeNumber');
 		// self service field settings
@@ -125,7 +125,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
-			'departmentNumber' => _('Department(s)'), 'initials' => _('Initials'), 'title' => _('Job title'));
+			'departmentNumber' => _('Department(s)'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'));
 		// profile elements
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
@@ -157,6 +157,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Email address'), 'inetOrgPerson_mail', null, 'mail');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Web site'), 'inetOrgPerson_labeledURI', null, 'labeledURIList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Department(s)'), 'inetOrgPerson_departmentNumber', null, 'departmentNumber');
@@ -233,31 +236,31 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostOfficeBox', false, _('Post office box'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalCode', false, _('Postal code'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLocation', false, _('Location'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLocation', false, _('Location'), null, false));
+		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideState', false, _('State'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalAddress', false, _('Postal address'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRegisteredAddress', false, _('Registered address'), null, false));
-		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideOfficeName', false, _('Office name'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRoomNumber', false, _('Room number'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideTelephoneNumber', false, _('Telephone number'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideHomeTelephoneNumber', false, _('Home telephone number'), null, false));
-		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideMobileNumber', false, _('Mobile number'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideFaxNumber', false, _('Fax number'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEMailAddress', false, _('Email address'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideJobTitle', false, _('Job title'), null, false));
 		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideJobTitle', false, _('Job title'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideCarLicense', false, _('Car license'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeType', false, _('Employee type'), null, false));
@@ -273,6 +276,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeNumber', false, _('Employee number'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideInitials', false, _('Initials'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLabeledURI', false, _('Web site'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
@@ -438,6 +443,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'example' => _('user@company.com')
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_labeledURI',
+				'description' => _('Web site'),
+				'help' => 'labeledURIList',
+				'example' => _('http://www.company.com')
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_roomNumber',
@@ -544,6 +557,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$return['PDF_fields']['mail'] = _('Email address');
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$return['PDF_fields']['labeledURI'] = _('Web site');
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$return['PDF_fields']['title'] = _('Job title');
 		}
@@ -640,6 +656,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'mail' => array (
 				"Headline" => _("Email address"),
 				"Text" => _("The user's email address.") . ' ' . _('Multiple values are separated by semicolon.')
+			),
+			'labeledURI' => array(
+				"Headline" => _("Web site"),
+				"Text" => _("The user's web site or any other comment (e.g. http://www.company.com).")
+			),
+			'labeledURIList' => array(
+				"Headline" => _("Web site"),
+				"Text" => _("The user's web site or any other comment (e.g. http://www.company.com).") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'cn' => array (
 				"Headline" => _("Common name"),
@@ -901,6 +925,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$this->attributes['postalAddress'] = array_values($this->attributes['postalAddress']);
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$labeledURICounter = 0;
+			while (isset($_POST['labeledURI' . $labeledURICounter])) {
+				$this->attributes['labeledURI'][$labeledURICounter] = $_POST['labeledURI' . $labeledURICounter];
+				if ($this->attributes['labeledURI'][$labeledURICounter] == '') {
+					unset($this->attributes['labeledURI'][$labeledURICounter]);
+				}
+				$labeledURICounter++;
+			}
+			if (isset($_POST['addLabeledURI'])) {
+				$this->attributes['labeledURI'][] = '';
+			}
+			$this->attributes['labeledURI'] = array_values($this->attributes['labeledURI']);
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
 			$addressCounter = 0;
 			while (isset($_POST['registeredAddress' . $addressCounter])) {
@@ -1160,7 +1198,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')
-				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Contact data')), true);
 		}
 		
@@ -1189,7 +1227,33 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($this->attributes['mail'][0])) $email = implode('; ', $this->attributes['mail']);
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Email address'), 'mail', $email, 'mail'), true);
 		}
-
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$labeledURI = array();
+			if (isset($this->attributes['labeledURI'][0])) {
+				$labeledURI = $this->attributes['labeledURI'];
+			}
+			if (sizeof($labeledURI) == 0) {
+				$labeledURI[] = '';
+			}
+			$labeledURILabel = new htmlOutputText(_('Web site'));
+			$labeledURILabel->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($labeledURILabel);
+			$labeledURIContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($labeledURI); $i++) {
+				$labeledURIContainer->addElement(new htmlInputField('labeledURI' . $i, $labeledURI[$i]));
+				if ($i < (sizeof($labeledURI) - 1)) {
+					$labeledURIContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$labeledURIContainer->addElement(new htmlButton('addLabeledURI', 'add.png', true));
+				}
+			}
+			$fieldContainer->addElement($labeledURIContainer);
+			$labeledURIHelp = new htmlHelpLink('labeledURI');
+			$labeledURIHelp->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($labeledURIHelp, true);
+		}
+		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
@@ -1421,6 +1485,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (isset($this->attributes['initials'][0])) {
 			$initials = implode(', ', $this->attributes['initials']);
 		}
+		$labeledURI = '';
+		if (isset($this->attributes['labeledURI'][0])) {
+			$labeledURI = implode(', ', $this->attributes['labeledURI']);
+		}
 		
 		$return = array(
 			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>'),
@@ -1450,6 +1518,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			get_class($this) . '_o' => array('<block><key>' . _('Organisation') . '</key><value>' . $o . '</value></block>'),
 			get_class($this) . '_employeeNumber' => array('<block><key>' . _('Employee number') . '</key><value>' . $employeeNumber . '</value></block>'),
 			get_class($this) . '_initials' => array('<block><key>' . _('Initials') . '</key><value>' . $initials . '</value></block>'),
+			get_class($this) . '_labeledURI' => array('<block><key>' . _('Web site') . '</key><value>' . $labeledURI . '</value></block>'),
 		);
 		if (isset($this->attributes['departmentNumber'])) {
 			$return[get_class($this) . '_departmentNumber'] = array('<block><key>' . _('Department(s)') . '</key><value>' . implode(', ', $this->attributes['departmentNumber']) . '</value></block>');
@@ -1480,6 +1549,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') && isset($profile['inetOrgPerson_mail'][0])) {
 			$mailList = preg_split('/;[ ]*/', $profile['inetOrgPerson_mail'][0]);
 			$this->attributes['mail'] = $mailList;
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI') && isset($profile['inetOrgPerson_labeledURI'][0])) {
+			$labeledURIList = preg_split('/;[ ]*/', $profile['inetOrgPerson_labeledURI'][0]);
+			$this->attributes['labeledURI'] = $labeledURIList;
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') && isset($profile['inetOrgPerson_telephoneNumber'][0])) {
 			$telephoneNumberList = preg_split('/;[ ]*/', $profile['inetOrgPerson_telephoneNumber'][0]);
@@ -1827,6 +1900,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 				}
 			}
+			// labeledURI
+			if ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "") {
+				$partialAccounts[$i]['labeledURI'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_labeledURI']]);
+			}
 			if (!in_array('posixAccount', $selectedModules)) {
 				// cn
 				if ($rawAccounts[$i][$ids['inetOrgPerson_cn']] != "") {
@@ -1896,6 +1973,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($attributes['mail'][0])) $mail = $attributes['mail'][0];
 			$return['mail'] = new htmlTableRow(array(
 				new htmlTableExtendedInputField(_('Email address'), 'inetOrgPerson_mail', $mail)
+			));
+		}
+		if (in_array('labeledURI', $fields)) {
+			$labeledURI = '';
+			if (isset($attributes['labeledURI'][0])) $labeledURI = implode('; ', $attributes['labeledURI']);
+			$return['labeledURI'] = new htmlTableRow(array(
+				new htmlTableExtendedInputField(_('Web site'), 'inetOrgPerson_labeledURI', $labeledURI)
 			));
 		}
 		if (in_array('telephoneNumber', $fields)) {
@@ -2100,6 +2184,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				else $attributesNew['mail'][0] = $_POST['inetOrgPerson_mail'];
 			}
 			elseif (isset($attributes['mail'])) unset($attributesNew['mail']);
+		}
+		// labeledURI
+		if (in_array('labeledURI', $fields)) {
+			$attributeNames[] = 'labeledURI';
+			if (isset($_POST['inetOrgPerson_labeledURI']) && ($_POST['inetOrgPerson_labeledURI'] != '')) {
+				$attributesNew['labeledURI'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_labeledURI']);
+			}
+			elseif (isset($attributes['labeledURI'])) unset($attributesNew['labeledURI']);
 		}
 		// telephone number
 		if (in_array('telephoneNumber', $fields)) {
