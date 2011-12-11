@@ -1,7 +1,7 @@
 #!/bin/bash
 # $Id$
 #
-# Copyright (C) 2004 - 2008  Roland Gruber
+# Copyright (C) 2004 - 2011  Roland Gruber
 # This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 
 # This script is run to create archives of all messages.po files.
@@ -70,5 +70,9 @@ echo " "
 echo "Generating Russian translation template"
 ./make_po_ru
 tar -czf messages.po_ru.tar.gz messages.po
+
+echo "Generating Slovakian translation template"
+./make_po_sk
+tar -czf messages.po_sk.tar.gz messages.po
 
 rm messages.po

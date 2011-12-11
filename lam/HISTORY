@@ -1,5 +1,7 @@
 March 2012 3.7
-  - login: support bind user for login search
+  - Login: support bind user for login search
+  - Personal: added labeledURI and cosmetic changes
+  - New translation: Slovakian
   - Fixed bugs:
    -> DHCP: error message not displayed properly (3441975)
    -> Profile loading not possible if required fields are not filled (3444948)
