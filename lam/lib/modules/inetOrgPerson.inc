@@ -659,11 +659,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'labeledURI' => array(
 				"Headline" => _("Web site"),
-				"Text" => _("The user's web site or any other comment (e.g. http://www.company.com).")
+				"Text" => _("The user's web site (e.g. http://www.company.com).")
 			),
 			'labeledURIList' => array(
 				"Headline" => _("Web site"),
-				"Text" => _("The user's web site or any other comment (e.g. http://www.company.com).") . ' ' . _('Multiple values are separated by semicolon.')
+				"Text" => _("The user's web site (e.g. http://www.company.com).") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'cn' => array (
 				"Headline" => _("Common name"),
