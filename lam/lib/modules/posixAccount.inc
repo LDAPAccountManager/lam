@@ -47,8 +47,8 @@ class posixAccount extends baseModule implements passwordService {
 	private $groups_orig;
 
 	/* list of group of names that the user is member of */
-	private $gonList;
-	private $gonList_orig;
+	private $gonList = array();
+	private $gonList_orig = array();
 	
 	private $lamdaemonServers = array();
 	private $groupCache = null;
