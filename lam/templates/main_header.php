@@ -38,10 +38,15 @@ elseif (is_file("../../login.php")) $headerPrefix = "../../";
 /** tool definitions */
 include_once($headerPrefix . "../lib/tools.inc");
 
+$pro = '';
+if (isLAMProVersion()) {
+	$pro = ' Pro';
+}
+
 // HTML header and title
 echo $_SESSION['header'];
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . $headerPrefix . "../graphics/favicon.ico\">\n";
-echo "<title>LDAP Account Manager</title>\n";
+echo "<title>LDAP Account Manager" . $pro . " (" . str_replace(array('ldap://', 'ldaps://'), array('', ''), $_SESSION['config']->get_ServerURL()) . ")</title>\n";
 
 // include all CSS files
 $cssDirName = dirname(__FILE__) . '/../style';
@@ -99,10 +104,7 @@ foreach ($toSort as $key => $value) {
 			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">
 				&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager
 				<?php
-				if (isLAMProVersion()) {
-					echo " Pro";
-				}
-				echo " - " . LAMVersion();
+				echo $pro . " - " . LAMVersion();
 				?>
 			</a>
 			<?php
