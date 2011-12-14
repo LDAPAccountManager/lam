@@ -145,7 +145,7 @@ class posixAccount extends baseModule implements passwordService {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
 			// self service field settings
-			$return['selfServiceFieldSettings'] = array('password' => _('Password'), 'cn' => _('Common name'));
+			$return['selfServiceFieldSettings'] = array('password' => _('Password'), 'cn' => _('Common name'), 'loginShell' => _('Login shell'));
 			// self service configuration settings
 			$selfServiceContainer = new htmlTable();
 			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
@@ -2085,6 +2085,14 @@ class posixAccount extends baseModule implements passwordService {
 				new htmlTableExtendedInputField(_('Common name'), 'posixAccount_cn', $cn)
 			));
 		}
+		if (in_array('loginShell', $fields)) {
+			$shelllist = getshells(); // list of all valid shells
+			$loginShell = '';
+			if (isset($attributes['loginShell'][0])) $loginShell = $attributes['loginShell'][0];
+			$return['loginShell'] = new htmlTableRow(array(
+				new htmlTableExtendedSelect('posixAccount_loginShell', $shelllist, array($loginShell), _('Login shell'))
+			));
+		}
 		return $return;
 	}
 
@@ -2142,6 +2150,12 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			else {
 				$return['messages'][] = $this->messages['cn'][0];
+			}
+		}
+		if (in_array('loginShell', $fields)) {
+			$shelllist = getshells(); // list of all valid shells
+			if (in_array($_POST['posixAccount_loginShell'], $shelllist)) {
+				$return['mod']['loginShell'][0] = $_POST['posixAccount_loginShell'];
 			}
 		}
 		return $return;
