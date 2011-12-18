@@ -412,7 +412,7 @@ class htmlInputField extends htmlElement {
 			$class = ' class="validate[' . implode(',', $validators) . ']"';
 		}
 		$name = ' name="' . $this->fieldName . '"';
-		$id = ' id="inputField_' . $this->fieldName . '"';
+		$id = ' id="' . $this->fieldName . '"';
 		$value = '';
 		if ($this->fieldValue != null) {
 			$value = ' value="' . $this->fieldValue . '"';
@@ -843,7 +843,7 @@ class htmlSelect extends htmlElement {
 			$this->selectedElements = $values[$this->name];
 		}
 		$multi = '';
-		$name = ' name="' . $this->name . '"';
+		$name = ' name="' . $this->name . '" id="' . $this->name . '"';
 		if ($this->multiSelect) {
 			$multi = ' multiple';
 			$name = ' name="' . $this->name . '[]"';
@@ -1331,6 +1331,10 @@ class htmlInputCheckbox extends htmlElement {
 	protected $checked;
 	/** enabled or disabled */
 	protected $isEnabled = true;
+	/** list of enclosing table rows to hide when checked */
+	protected $tableRowsToHide = array();
+	/** list of enclosing table rows to show when checked */
+	protected $tableRowsToShow = array();
 	
 	/**
 	 * Constructor.
@@ -1373,7 +1377,49 @@ class htmlInputCheckbox extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $checked . $disabled . '>';
+		// build Java script to show/hide depending fields
+		$onChange = '';
+		$script = '';
+		if ((sizeof($this->tableRowsToShow) > 0) || (sizeof($this->tableRowsToHide) > 0)) {
+			// build onChange listener
+			$onChange = ' onChange="';
+			$onChange .= 'if (jQuery(\'#' . $this->name . ':checked\').val() !== undefined) {';
+			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+			}
+			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+			}
+			$onChange .= '}';
+			$onChange .= 'else {';
+			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+			}
+			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+			}
+			$onChange .= '};';
+			$onChange .= '"';
+			// build script to set initial state
+			$script = '<script type="text/javascript">jQuery(document).ready(function() {';
+			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
+				$classType = 'addClass';
+				if ($this->checked) {
+					$classType = 'removeClass';
+				}
+				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
+			}
+			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
+				$classType = 'removeClass';
+				if ($this->checked) {
+					$classType = 'addClass';
+				}
+				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
+			}
+			$script .= '});</script>';
+		}
+		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $onChange . $checked . $disabled . '>';
+		echo $script;
 		return array($this->name => 'checkbox');
 	}
 
@@ -1385,6 +1431,37 @@ class htmlInputCheckbox extends htmlElement {
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
 	}
+	
+	/**
+	 * This will hide the given table rows when the checkbox is checked.
+	 * The given IDs can be of any e.g. input element. Starting from this element
+	 * the first parent "<tr>" element will be used to show/hide.
+	 * <br>
+	 * <br>
+	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
+	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
+	 * 
+	 * @param array $tableRowsToHide IDs of child elements to hide
+	 */
+	public function setTableRowsToHide($tableRowsToHide) {
+		$this->tableRowsToHide = $tableRowsToHide;
+	}
+
+	/**
+	 * This will show the given table rows when the checkbox is checked.
+	 * The given IDs can be of any e.g. input element. Starting from this element
+	 * the first parent "<tr>" element will be used to show/hide.
+	 * <br>
+	 * <br>
+	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
+	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
+	 * 
+	 * @param array $tableRowsToShow IDs of child elements to show
+	 */
+	public function setTableRowsToShow($tableRowsToShow) {
+		$this->tableRowsToShow = $tableRowsToShow;
+	}
+
 
 }
 
@@ -1619,7 +1696,7 @@ class htmlInputTextarea extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<textarea name="' . $this->name . '"' . $tabindexValue . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
+		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 
