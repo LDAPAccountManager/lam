@@ -351,7 +351,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_manager',
 				'description' => _('Manager'),
-				'help' => 'manager',
+				'help' => 'managerList',
 				'example' => _('uid=smiller,ou=People,dc=company,dc=com')
 			);
 		}
@@ -620,6 +620,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'manager' => array (
 				"Headline" => _("Manager"),
 				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
+			),
+			'managerList' => array (
+				"Headline" => _("Manager"),
+				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'street' => array (
 				"Headline" => _("Street"),
@@ -989,14 +993,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
-			if ($_POST['manager'] != '-') {
-				$this->attributes['manager'][0] = $_POST['manager'];
-			}
-			else {
-				unset($this->attributes['manager'][0]);
-			}
-		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
 			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
 		}
@@ -1295,19 +1291,25 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($this->attributes['o'][0])) $o = implode('; ', $this->attributes['o']);
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Organisation'), 'o', $o, 'o'), true);
 		}
+		// manager
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
-			$optionsSelected = array();
+			$fieldContainer->addElement(new htmlOutputText(_('Manager')));
+			$fieldContainer->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
+			$fieldContainer->addElement(new htmlHelpLink('manager'), true);
 			if (isset($this->attributes['manager'][0])) {
-				$optionsSelected[] = $this->attributes['manager'][0];
+				$managerList = array();
+				for ($i = 0; $i < sizeof($this->attributes['manager']); $i++) {
+					$managerList[] = $this->attributes['manager'][$i];
+				}
+				usort($managerList, 'compareDN');
+				$managers = new htmlTable();
+				$managers->colspan = 2;
+				for ($i = 0; $i < sizeof($managerList); $i++) {
+					$managers->addElement(new htmlOutputText(getAbstractDN($managerList[$i])), true);
+				}
+				$fieldContainer->addElement(new htmlOutputText(''));
+				$fieldContainer->addElement($managers, true);
 			}
-			else {
-				$optionsSelected[] = '-';
-			}
-			$managerElement = new htmlTableExtendedSelect('manager', $this->getManagers(), $optionsSelected, _('Manager'), 'manager');
-			$managerElement->setHasDescriptiveElements(true);
-			$managerElement->setRightToLeftTextDirection(true);
-			$managerElement->setSortElements(false);
-			$fieldContainer->addElement($managerElement, true);
 		}
 		// password buttons
 		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
@@ -1377,6 +1379,108 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
 		$container->addElement($buttonContainer);
 		return $container;
+	}
+	
+	/**
+	* This function will create the meta HTML code to show a page to change the manager attribute.
+	* 
+	* @return htmlElement HTML meta data
+	*/
+	function display_html_manager() {
+		$return = new htmlTable();
+		if (!isset($this->attributes['manager'])) {
+			$this->attributes['manager'] = array();
+		}
+		// show list of possible new managers
+		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_select'])) {
+			$options = array();
+			$filter = get_ldap_filter('user');
+			$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
+			for ($i = 0; $i < sizeof($entries); $i++) {
+				$entries[$i] = $entries[$i]['dn'];
+			}
+			// sort by DN
+			usort($entries, 'compareDN');
+			for ($i = 0; $i < sizeof($entries); $i++) {
+				if (!isset($this->attributes['manager']) || !in_array($entries[$i], $this->attributes['manager'])) {
+					$options[getAbstractDN($entries[$i])] = $entries[$i];
+				}
+			}
+			$size = 20;
+			if (sizeof($options) < 20) $size = sizeof($options);
+			$managerSelect = new htmlSelect('manager', $options, array(), $size);
+			$managerSelect->setHasDescriptiveElements(true);
+			$managerSelect->setMultiSelect(true);
+			$managerSelect->setRightToLeftTextDirection(true);
+			$managerSelect->setSortElements(false);
+			$managerSelect->setTransformSingleSelect(false);
+			$return->addElement($managerSelect, true);
+			$buttonTable = new htmlTable();
+			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'addManagers', _('Add')));
+			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'cancel', _('Cancel')));
+			$return->addElement($buttonTable);
+			return $return;
+		}
+		// show existing managers
+		$managerTemp = array();
+		if (isset($this->attributes['manager'])) {
+			$managerTemp = $this->attributes['manager'];
+		}
+		// sort by DN
+		usort($managerTemp, 'compareDN');
+		$managers = array();
+		for ($i = 0; $i < sizeof($managerTemp); $i++) {
+			$managers[getAbstractDN($managerTemp[$i])] = $managerTemp[$i];
+		}
+		$size = 20;
+		if (sizeof($this->attributes['manager']) < 20) {
+			$size = sizeof($this->attributes['manager']);
+		}
+		if (sizeof($managers) > 0) {
+			$managerSelect = new htmlSelect('manager', $managers, array(), $size);
+			$managerSelect->setHasDescriptiveElements(true);
+			$managerSelect->setMultiSelect(true);
+			$managerSelect->setRightToLeftTextDirection(true);
+			$managerSelect->setSortElements(false);
+			$managerSelect->setTransformSingleSelect(false);
+			$return->addElement($managerSelect, true);
+			$removeButton = new htmlAccountPageButton(get_class($this), 'manager', 'remove', _('Remove selected entries'));
+			$removeButton->colspan = 3;
+			$return->addElement($removeButton, true);
+			$return->addElement(new htmlOutputText('&nbsp;', false), true);
+		}
+		$return->addElement(new htmlOutputText('&nbsp;', false), true);
+		$buttonTable = new htmlTable();
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'select', _('Add entries')));
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'managerBack', _('Back')));
+		$return->addElement($buttonTable);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the manager page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_manager() {
+		$return = array();
+		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_remove']) && isset($_POST['manager'])) {
+			$managers = array_flip($this->attributes['manager']);
+			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
+				if (isset($managers[$_POST['manager'][$i]])) {
+					unset($managers[$_POST['manager'][$i]]);
+				}
+			}
+			$this->attributes['manager'] = array_values(array_flip($managers));
+		}
+		elseif (isset($_POST['form_subpage_' . get_class($this) . '_manager_addManagers']) && isset($_POST['manager'])) {
+			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
+				$this->attributes['manager'][] = $_POST['manager'][$i];
+				$this->attributes['manager'] = array_unique($this->attributes['manager']);
+			}
+		}
+		return $return;
 	}
 
 	/**
@@ -1744,13 +1848,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// manager
 			if ($rawAccounts[$i][$ids['inetOrgPerson_manager']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_manager']], 'dn')) {
-					$partialAccounts[$i]['manager'] = $rawAccounts[$i][$ids['inetOrgPerson_manager']];
-				}
-				else {
-					$errMsg = $this->messages['manager'][0];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+				$managerList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_manager']]);
+				$partialAccounts[$i]['manager'] = $managerList;
+				for ($x = 0; $x < sizeof($managerList); $x++) {
+					if (!get_preg($managerList[$x], 'dn')) {
+						$errMsg = $this->messages['manager'][0];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+						break;
+					}
 				}
 			}
 			// street
