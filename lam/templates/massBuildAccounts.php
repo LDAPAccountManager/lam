@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,6 +155,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
 		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
+		massPrintBackButton($_POST['scope'], $selectedModules);
 	}
 	
 	// let modules build accounts
@@ -196,9 +197,17 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				echo "<h2 class=\"titleText\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h2>\n";
 				echo "</div>";
 				echo "<p>&nbsp;</p>\n";
-					echo "<a href=\"massDoUpload.php\">" . _("Upload accounts to LDAP") . "</a>";
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-					echo "<a href=\"massBuildAccounts.php?showldif=true\">" . _("Show LDIF file") . "</a>";
+				echo "<a id=\"uploadLink\" href=\"massDoUpload.php\">" . _("Upload accounts to LDAP") . "</a>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a id=\"createLDIFLink\" href=\"massBuildAccounts.php?showldif=true\">" . _("Show LDIF file") . "</a>";
+				?>
+				<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#uploadLink').button();
+					jQuery('#createLDIFLink').button();
+				});
+				</script>
+				<?php
 			}
 		}
 		else {
