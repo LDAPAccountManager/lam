@@ -643,11 +643,13 @@ class freeRadius extends baseModule {
 		$messages = parent::check_profileOptions($options);
 		// group names
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-			$list = preg_split('/;[ ]*/', $options['freeRadius_radiusGroupName'][0]);
-			for ($i = 0; $i < sizeof($list); $i++) {
-				if (!get_preg($list[$i], 'groupname')) {
-					$messages[] = $this->messages['radiusGroupName'][0];
-					break;
+			if (isset($options['freeRadius_radiusGroupName'][0]) && ($options['freeRadius_radiusGroupName'][0] != '')) {
+				$list = preg_split('/;[ ]*/', $options['freeRadius_radiusGroupName'][0]);
+				for ($i = 0; $i < sizeof($list); $i++) {
+					if (!get_preg($list[$i], 'groupname')) {
+						$messages[] = $this->messages['radiusGroupName'][0];
+						break;
+					}
 				}
 			}
 		}
