@@ -69,10 +69,17 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	echo "<div class=\"title\">\n";
 	echo "<h2 class=\"titleText\">" . _("LDAP upload in progress. Please wait.") . "</h2>\n";
 	echo "</div>";
-	echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
-	echo "<tr><td bgcolor=\"blue\" width=\"" . ($_SESSION['mass_counter'] * 100) / sizeof($accounts) . "%\">&nbsp;</td>";
-	echo "<td bgcolor=\"grey\" width=\"" . (100 - (($_SESSION['mass_counter'] * 100) / sizeof($accounts))) . "%\">&nbsp;</td></tr>\n";
-	echo "</table>";
+	$progress = ($_SESSION['mass_counter'] * 100) / sizeof($accounts);
+	?>
+		<div id="progressbarGeneral"></div>
+		<script type="text/javascript">
+			$(function() {
+				$( "#progressbarGeneral" ).progressbar({
+					value: <?php echo $progress; ?>
+				});
+			});
+		</script>
+	<?php
 	flush();  // send HTML to browser
 	// add accounts to LDAP
 	while (($_SESSION['mass_counter'] < sizeof($accounts)) && (($startTime + $maxTime) > time())) {
@@ -92,6 +99,17 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		}
 		$_SESSION['mass_counter']++;
 	}
+	$progress = ($_SESSION['mass_counter'] * 100) / sizeof($accounts);
+	?>
+		<script type="text/javascript">
+			$(function() {
+				$( "#progressbarGeneral" ).progressbar({
+					value: <?php echo $progress; ?>
+				});
+			});
+		</script>
+	<?php
+	flush();  // send HTML to browser
 	// do post upload actions
 	if ($_SESSION['mass_counter'] >= sizeof($accounts)) {
 		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
@@ -101,11 +119,18 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		}
 		for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
 		echo "<h1>" . _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $_SESSION['mass_scope']) . "</h1>\n";
-		echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
-		echo "<tr><td bgcolor=\"blue\" width=\"" . $return['progress'] . "%\">&nbsp;</td>";
-		echo "<td bgcolor=\"grey\" width=\"" . (100 - $return['progress']) . "%\">&nbsp;</td></tr>\n";
-		echo "</table>";
+		?>
+			<div id="progressbar<?php echo $return['module']; ?>"></div>
+			<script type="text/javascript">
+				$(function() {
+					$( "#progressbar<?php echo $return['module']; ?>" ).progressbar({
+						value: <?php echo $return['progress']; ?>
+					});
+				});
+			</script>
+		<?php
 		flush();
+		die();
 		while (!isset($_SESSION['mass_postActions']['finished']) && (($startTime + $maxTime) > time())) {
 			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
 			if ($return['status'] == 'finished') {

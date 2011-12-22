@@ -205,6 +205,10 @@ tr.highlight {
 	white-space: nowrap;
 }
 
+div.ui-progressbar-value {
+	background-image: url(images/pbar-ani.gif);
+}
+
 /**
  * table style for delete.php
  *
