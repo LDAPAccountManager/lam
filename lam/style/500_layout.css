@@ -262,6 +262,7 @@ tr.account {
 	width: 100%;
 	text-align: left;
 	display:block;
+	color: #555555;
 }
 
 /* --- end of workaround for vertical tabs --- */
