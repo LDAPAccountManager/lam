@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2011  Roland Gruber
+                2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -836,9 +836,21 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->attributes['objectClass'][] = 'person';
 			}
 		}
-		// Load and check attributes
+		// load and check attributes
+		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$this->attributes['description'][0] = $_POST['description'];
+			$descriptionCounter = 0;
+			while (isset($_POST['description' . $descriptionCounter])) {
+				$this->attributes['description'][$descriptionCounter] = $_POST['description' . $descriptionCounter];
+				if ($this->attributes['description'][$descriptionCounter] == '') {
+					unset($this->attributes['description'][$descriptionCounter]);
+				}
+				$descriptionCounter++;
+			}
+			if (isset($_POST['addDescription'])) {
+				$this->attributes['description'][] = '';
+			}
+			$this->attributes['description'] = array_values($this->attributes['description']);
 		}
 		$this->attributes['sn'][0] = $_POST['sn'];
 		if (!get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
@@ -1086,10 +1098,32 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$cnElement->setRequired(true);
 			$fieldContainer->addElement($cnElement, true);
 		}
+		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$description = '';
-			if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
+			$descriptions = array();
+			if (isset($this->attributes['description'][0])) {
+				$descriptions = $this->attributes['description'];
+			}
+			if (sizeof($descriptions) == 0) {
+				$descriptions[] = '';
+			}
+			$descriptionLabel = new htmlOutputText(_('Description'));
+			$descriptionLabel->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($descriptionLabel);
+			$descriptionContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($descriptions); $i++) {
+				$descriptionContainer->addElement(new htmlInputField('description' . $i, $descriptions[$i]));
+				if ($i < (sizeof($descriptions) - 1)) {
+					$descriptionContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$descriptionContainer->addElement(new htmlButton('addDescription', 'add.png', true));
+				}
+			}
+			$fieldContainer->addElement($descriptionContainer);
+			$descriptionHelp = new htmlHelpLink('description');
+			$descriptionHelp->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($descriptionHelp, true);
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')
@@ -1490,7 +1524,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function get_pdfEntries() {
 		$description = '';
-		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
+		if (isset($this->attributes['description'][0])) $description = implode(', ', $this->attributes['description']);
 		$title = '';
 		if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
 		$givenName = '';
