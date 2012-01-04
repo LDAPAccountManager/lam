@@ -1034,14 +1034,14 @@ abstract class baseModule {
 	 * 
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
-	 * An error message should be printed if the function returns false.
+	 * The modification is aborted if an error message is returned.
 	 * 
 	 * @param boolean $newAccount new account
 	 * @param array $attributes LDAP attributes of this entry
-	 * @return boolean true, if no problems occured
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function preModifyActions($newAccount, $attributes) {
-		return true;
+		return array();
 	}
 	
 	/**

@@ -1636,10 +1636,13 @@ class accountContainer {
 		logNewMessage(LOG_DEBUG, 'Edit page pre/postModify attributes: ' . print_r($prePostModifyAttributes, true));
 		$preModifyOk = true;
 		foreach ($module as $singlemodule) {
-			$result = $this->module[$singlemodule]->preModifyActions($this->isNewAccount, $prePostModifyAttributes);
-			if (!$result) {
-				$preModifyOk = false;
-				break;
+			$preModifyMessages = $this->module[$singlemodule]->preModifyActions($this->isNewAccount, $prePostModifyAttributes);
+			$errors = array_merge($errors, $preModifyMessages);
+			for ($i = 0; $i < sizeof($preModifyMessages); $i++) {
+				if ($preModifyMessages[$i][0] == 'ERROR') {
+					$preModifyOk = false;
+					break;
+				}
 			}
 		}
 		if (!$preModifyOk) {
