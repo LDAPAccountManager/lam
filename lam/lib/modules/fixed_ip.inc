@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2011  Roland Gruber
+                2008 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -444,6 +444,7 @@ class fixed_ip extends baseModule {
 	 *
 	 * @param boolean $newAccount
 	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
@@ -507,6 +508,7 @@ class fixed_ip extends baseModule {
 					ldap_add($_SESSION['ldap']->server(),'cn='.$add[$id]['cn'].',cn='.$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0].','.$_SESSION['config']->get_suffix('dhcp'),$attr);
 		    }
 		}
+		return array();
 	}
 
 	/**

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1051,9 +1051,10 @@ abstract class baseModule {
 	 *
 	 * @param boolean $newAccount new account
 	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		return;
+		return array();
 	}
 	
 	/**

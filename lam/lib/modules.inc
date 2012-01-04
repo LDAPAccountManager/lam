@@ -820,13 +820,19 @@ class accountContainer {
 				}
 				else {
 					// save account
-					$errors = $this->save_account();
-					if (sizeof($errors) > 0) {
-						$result = $errors;
+					$saveMessages = $this->save_account();
+					$saveOk = true;
+					for ($i = 0; $i < sizeof($saveMessages); $i++) {
+						if ($saveMessages[$i][0] == 'ERROR') {
+							$saveOk = false;
+						}
+					}
+					if (!$saveOk) {
+						$result = $saveMessages;
 						$stopProcessing = true;
 					}
 					else {
-						$this->printSuccessPage();
+						$this->printSuccessPage($saveMessages);
 						return;
 					}
 				}
@@ -1178,8 +1184,9 @@ class accountContainer {
 	/**
 	 * Prints the HTML code to notify the user about the successful saving.
 	 *
+	 * @param array $messages array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	private function printSuccessPage() {
+	private function printSuccessPage($messages) {
 		$this->printPageHeader();
 		// Show success message
 		if ($this->dn_orig == '') {
@@ -1191,6 +1198,19 @@ class accountContainer {
 		echo "<div class=\"".$this->type."list-bright smallPaddingContent\">";
 		
 		$container = new htmlTable();
+		// show messages
+		for ($i = 0; $i < sizeof($messages); $i++) {
+			if (sizeof($messages[$i]) == 2) {
+				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1]);
+				$message->colspan = 10;
+				$container->addElement($message, true);
+			}
+			else {
+				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1], $messages[$i][2]);
+				$message->colspan = 10;
+				$container->addElement($message, true);
+			}
+		}
 		$message = new htmlStatusMessage('INFO', _('LDAP operation successful.'), $text);
 		$message->colspan = 10;
 		$container->addElement($message, true);
@@ -1533,7 +1553,7 @@ class accountContainer {
 	/**
 	* This function will save an account to the LDAP database.
 	*
-	* @return array list of status messages if any errors occured
+	* @return array list of status messages
 	*/
 	function save_account() {
 		if (!checkIfWriteAccessIsAllowed()) {
@@ -1712,7 +1732,8 @@ class accountContainer {
 		if (!$stopprocessing) {
 			// post modify actions
 			foreach ($module as $singlemodule) {
-				$this->module[$singlemodule]->postModifyActions($this->isNewAccount, $prePostModifyAttributes);
+				$postMessages = $this->module[$singlemodule]->postModifyActions($this->isNewAccount, $prePostModifyAttributes);
+				$errors = array_merge($errors, $postMessages);
 			}
 		}
 		return $errors;

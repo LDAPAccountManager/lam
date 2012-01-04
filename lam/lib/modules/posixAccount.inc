@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2011  Roland Gruber
+    Copyright (C) 2005 - 2012  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -573,8 +573,10 @@ class posixAccount extends baseModule implements passwordService {
 	 *
 	 * @param boolean $newAccount
 	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
+		$messages = array();
 		// create home directories if needed
 		if (sizeof($this->lamdaemonServers) > 0) {
 			$server = null;
@@ -607,10 +609,10 @@ class posixAccount extends baseModule implements passwordService {
 				if (is_array($result)) {
 					$singleresult = explode(",", $result[0]);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
-						call_user_func_array('StatusMessage', $singleresult);
+						$messages[] = $singleresult;
 					}
 					else {
-						StatusMessage('ERROR', $result[0]);
+						$messages[] = array('ERROR', $result[0]);
 					}
 				}
 			}
@@ -631,7 +633,7 @@ class posixAccount extends baseModule implements passwordService {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($this->getAccountContainer()->finalDN)));
 					if (!$success) {
 						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $toAdd[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						StatusMessage('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), ldap_error($_SESSION['ldap']->server()));
+						$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), ldap_error($_SESSION['ldap']->server()));
 					}
 				}
 			}
@@ -644,11 +646,12 @@ class posixAccount extends baseModule implements passwordService {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($this->getAccountContainer()->dn_orig)));
 					if (!$success) {
 						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attributes from DN: ' . $toRem[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						StatusMessage('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), ldap_error($_SESSION['ldap']->server()));
+						$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), ldap_error($_SESSION['ldap']->server()));
 					}
 				}
 			}
 		}
+		return $messages;
 	}
 	
 	/**

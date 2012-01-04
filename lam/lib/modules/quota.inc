@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2010  Roland Gruber
+                2007 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -236,9 +236,11 @@ class quota extends baseModule {
 	 *
 	 * @param boolean $newAccount
 	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		if (!isset($this->quota) || !is_array($this->quota)) return;
+		$messages = array();
+		if (!isset($this->quota) || !is_array($this->quota)) return $messages;
 		// determine if this is a user or group account
 		if ($this->get_scope()=='user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -267,6 +269,7 @@ class quota extends baseModule {
 			}
 			lamdaemon(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")), $server);
 		}
+		return $messages;
 	}
 
 	/**
