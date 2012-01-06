@@ -650,7 +650,7 @@ Have fun!
 
           <member>config/pdf/*.xml</member>
 
-          <member>config/profiles/*.xml</member>
+          <member>config/profiles/*</member>
         </simplelist>
 
         <para>LAM Pro only:</para>
