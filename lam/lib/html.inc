@@ -1657,6 +1657,8 @@ class htmlInputTextarea extends htmlElement {
 	private $rowCount;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** specifies if LAM should display this field whith a WYSIWYG editor */
+	private $richEdit = false;
 	
 	/**
 	 * Constructor.
@@ -1696,7 +1698,11 @@ class htmlInputTextarea extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
+		$classes = '';
+		if ($this->richEdit) {
+			$classes = ' class="ckeditor"';
+		}
+		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 
@@ -1707,6 +1713,17 @@ class htmlInputTextarea extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+	
+	/**
+	 * Specifies if the textarea should be displayed whith a WYSIWYG editor.
+	 * <br>This requires that the page which displays the textarea also includes the ckeditor JS.
+	 * <br>Rich editing is disabled by default.
+	 * 
+	 * @param boolean $richEdit rich edit or standard
+	 */
+	public function setIsRichEdit($richEdit) {
+		$this->richEdit = $richEdit;
 	}
 
 }
