@@ -2570,6 +2570,10 @@ Have fun!
           to specify options (e.g. hide from address book). The extension can
           be added/removed dynamically.</para>
 
+          <para>Please note that the option "Send-as privileges" requires the
+          Zarafa 7.0.3 schema. Please hide this option in the LAM server
+          profile if you run Zarafa &lt; 7.0.3.</para>
+
           <screenshot>
             <mediaobject>
               <imageobject>
