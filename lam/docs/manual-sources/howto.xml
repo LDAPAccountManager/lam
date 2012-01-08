@@ -3901,8 +3901,16 @@ Run slapindex to rebuild the index.
         on your server file system. Therefore, it is required to protect your
         server against unauthorised access.</para>
 
-        <para>Finally, please specify the list of password reset questions
-        that the user can choose.</para>
+        <para>Please also specify the list of password reset questions that
+        the user can choose.</para>
+
+        <para></para>
+
+        <para>You can inform your users via mail about their password change.
+        The mail can include the new password by using the special wildcard
+        "@@newPassword@@". Additionally, you may want to insert other
+        wildcards that are replaced by the corresponding LDAP attributes. E.g.
+        "@@uid@@" will be replaced by the user name.</para>
 
         <para><emphasis role="bold">New fields for self service
         page</emphasis></para>

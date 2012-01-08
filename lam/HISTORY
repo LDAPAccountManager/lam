@@ -2,6 +2,8 @@ March 2012 3.7
   - Login: support bind user for login search
   - Personal: added labeledURI and cosmetic changes, description is now multi-valued (RFE 3446363)
   - New translation: Slovakian
+  - LAM Pro:
+   -> Password self reset can send password notification mails
   - Fixed bugs:
    -> DHCP: error message not displayed properly (3441975)
    -> Profile loading not possible if required fields are not filled (3444948)
