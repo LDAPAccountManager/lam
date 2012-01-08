@@ -1507,7 +1507,7 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').attr(\'checked\',!jQuery(\'#' . $this->name . '\').attr(\'checked\'));"';
+		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').attr(\'checked\',!jQuery(\'#' . $this->name . '\').attr(\'checked\')); jQuery(\'#' . $this->name . '\').change();"';
 		if ($this->labelFirst) {
 			echo '<div class="nowrap" ' . $onClick . '>';
 			echo $this->label;
@@ -1752,7 +1752,7 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
 	 */
-	function __construct($name, $value, $colCount, $rowCount, $label, $helpID) {
+	function __construct($name, $value, $colCount, $rowCount, $label, $helpID = null) {
 		parent::__construct($name, $value, $colCount, $rowCount);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
