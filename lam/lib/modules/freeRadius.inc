@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011  Roland Gruber
+  Copyright (C) 2011 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -118,9 +118,9 @@ class freeRadius extends baseModule {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusRealm', false, _('Realm'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusGroupName', false, _('Group names'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
+		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;

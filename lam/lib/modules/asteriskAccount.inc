@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2011  Pavel Pozdnyak
-                2009 - 2011  Roland Gruber
+                2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -253,31 +253,31 @@ class asteriskAccount extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountCallGroup', false, _('Call groups'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountDTMFMode', false, _('DTFM flags'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountFromUser', false, _('From user'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountFromUser', false, _('From user'), null, false));
+		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountFromDomain', false, _('From domain'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountFullContact', false, _('Full contact'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountInsecure', false, _('Insecure'), null, false));
-		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountMailbox', false, _('Mailbox'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountNAT', false, _('NAT'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountDeny', false, _('Deny'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountPermit', false, _('Permit'), null, false));
-		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountPickupGroup', false, _('Pickup group'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountPort', false, _('Port'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountQualify', false, _('Qualify'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRestrictCID', false, _('Restrict caller ID'), null, false));
 		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRestrictCID', false, _('Restrict caller ID'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRTPTimeout', false, _('RTP timeout'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRTPHoldTimeout', false, _('RTP hold timeout'), null, false));
@@ -293,15 +293,15 @@ class asteriskAccount extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRegistrationContext', false, _('Registration context'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRegistrationExten', false, _('Registration extension'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountCanCallForward', false, _('Can call forward'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountCanCallForward', false, _('Can call forward'), null, false));
+		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountIPAddress', false, _('IP address'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountDefaultUser', false, _('Default user'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountRegistrationServer', false, _('Registration server'), null, false));
-		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('asteriskAccount_hideAstAccountLastQualifyMilliseconds', false, _('Last qualify milliseconds'), null, false));
 		$configContainerOptions->addNewLine();
 		$configContainer->addElement($configContainerOptions, true);
