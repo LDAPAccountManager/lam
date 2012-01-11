@@ -1833,7 +1833,6 @@ class posixAccount extends baseModule implements passwordService {
 			$temp['createHomes'] = array();
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
-			$col_gon = $ids['posixAccount_gon'];
 			$col_home = $ids['posixAccount_createHomeDir'];
 			// get list of existing groups
 			$groupList = $this->findGroups();
@@ -1871,8 +1870,8 @@ class posixAccount extends baseModule implements passwordService {
 						$temp['members'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
 					}
 				}
-				if ($data[$i][$col_gon] != "") {
-					$gons = explode(",", $data[$i][$col_gon]);
+				if (isset($ids['posixAccount_gon']) && ($data[$i][$ids['posixAccount_gon']] != "")) {
+					$gons = explode(",", $data[$i][$ids['posixAccount_gon']]);
 					$memberAttr = 'member';
 					for ($g = 0; $g < sizeof($gons); $g++) {
 						if (in_array('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
