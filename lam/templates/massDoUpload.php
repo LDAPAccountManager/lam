@@ -130,7 +130,6 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 			</script>
 		<?php
 		flush();
-		die();
 		while (!isset($_SESSION['mass_postActions']['finished']) && (($startTime + $maxTime) > time())) {
 			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
 			if ($return['status'] == 'finished') {
