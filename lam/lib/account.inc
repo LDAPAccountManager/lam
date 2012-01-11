@@ -186,15 +186,15 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			$hash = "{CRYPT}" . crypt($password);
 			break;
 		case 'MD5':
-			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
+			$hash = "{MD5}" . base64_encode(convertHex2bin(md5($password)));
 			break;
 		case 'SMD5':
 				$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 				$salt = substr(pack("H*", md5($salt0 . $password)), 0, 4);
-				$hash = "{SMD5}" . base64_encode(hex2bin(md5($password . $salt)) . $salt);
+				$hash = "{SMD5}" . base64_encode(convertHex2bin(md5($password . $salt)) . $salt);
 			break;
 		case 'SHA':
-			$hash = "{SHA}" . base64_encode(hex2bin(sha1($password)));
+			$hash = "{SHA}" . base64_encode(convertHex2bin(sha1($password)));
 			break;
 		case 'PLAIN':
 			$hash = $password;
@@ -203,7 +203,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 		default: // use SSHA if the setting is invalid
 			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 			$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
+			$hash = "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt)) . $salt);
 			break;
 	}
 	// enable/disable password

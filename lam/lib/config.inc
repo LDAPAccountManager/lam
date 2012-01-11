@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -624,7 +624,7 @@ class LAMConfig {
 	 * @return String hash value
 	 */
 	private function hashPassword($password, $salt) {
-		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+		return "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
 
 	/**
@@ -1399,7 +1399,7 @@ class LAMCfgMain {
 	 * @return String hash value
 	 */
 	private function hashPassword($password, $salt) {
-		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+		return "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
 	
 	/**
