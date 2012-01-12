@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2011 Roland Gruber
+                2003 - 2012 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,11 +36,14 @@ $Id$
 $types = getTypes();
 $entry206Example = "";
 for ($i = 0; $i < sizeof($types); $i++) {
-	$entry206Example .= "<b>" . getTypeAlias($types[$i]) . ":</b><br><br>\n";
+	$entry206Example .= "<b>" . getTypeAlias($types[$i]) . ":</b><br>\n";
 	$descriptions = getListAttributeDescriptions($types[$i]);
 	$attributes = array_keys($descriptions);
 	for ($a = 0; $a < sizeof($attributes); $a++) {
-		$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]] . "<br>";
+		$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]];
+		if ($a < (sizeof($attributes) - 1)) {
+			$entry206Example .= ", ";
+		}
 	}
 	$entry206Example .= "<br><br>";
 }
@@ -81,7 +84,7 @@ $helpArray = array (
 					"Text" => _("This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are separated by semicolons.") .
 						"<br><br><br><big><b>" .
 						_("Example") . ": </b></big>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br>" .
-						"<br><big><b>" . _("Predefined values") . ":</b></big><br><br><br>" . $entry206Example),
+						"<big><b>" . _("Predefined values") . ":</b></big><br><br>" . $entry206Example),
 				"207" => array ("Headline" => _("Valid users"),
 					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. Please enter one DN per line.") .
 						"<br><br><b>" .
