@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -424,6 +424,9 @@ function checkInput() {
 		$errors[] = array("ERROR", _("Server address is invalid!"));
 	}
 	$conf->setUseTLS($_POST['useTLS']);
+	if ((strpos($_POST['serverurl'], 'ldaps://') !== false) && ($_POST['useTLS'] == 'yes')) {
+		$errors[] = array("ERROR", _('You cannot use SSL and TLS encryption at the same time. Please use either "ldaps://" or TLS.'));
+	}
 /*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
 	}*/
