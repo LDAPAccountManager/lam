@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009 - 2011  Pavel Pozdnyak
+  Copyright (C) 2009 - 2012  Pavel Pozdnyak
                 2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
@@ -60,12 +60,12 @@ class asteriskAccount extends baseModule implements passwordService {
 	function get_metaData() {
 		$return = array();	
 		// manages users accounts
-		$return["account_types"] = array("user");
+		$return["account_types"] = array("user", "host");
 		$return["is_base"] = false;
 		// alias name
 		$return["alias"] = _("Asterisk");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('AsteriskSIPUser');
 		// managed attributes
@@ -359,8 +359,6 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountRegistrationServer' => _('Registration server'),
 			'AstAccountLastQualifyMilliseconds' => _('Last qualify milliseconds'),
 		);
-		// upload dependencies
-		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
