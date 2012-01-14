@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ setlanguage();
 
 $cfg = new LAMCfgMain();
 // check if submit button was pressed
-if (isset($_POST['submit'])) {
+if (isset($_POST['action'])) {
 	// check master password
 	if (!$cfg->checkPassword($_POST['passwd'])) {
 		$error = _("Master password is wrong!");
@@ -197,208 +197,98 @@ if (!isset($cfg->default)) {
 
 		<br>
 		<!-- form for adding/renaming/deleting profiles -->
-		<form action="profmanage.php" method="post">
-		<table>
-		<tr><td>
-		<fieldset class="ui-corner-all">
-			<legend><b> <?php echo _("Profile management"); ?> </b></legend>
-			<br>
-			<table cellspacing=0 border=0>
-
-				<!-- add profile -->
-				<tr>
-					<td>
-						<input type="radio" name="action" value="add" checked>
-					</td>
-					<td>
-						<b>
-							<?php echo _("Add profile") . ":"; ?>
-						</b>
-					</td>
-					<td align="right">
-						<?php echo _("Profile name") . ":"; ?>
-						<input type="text" name="addprofile">
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '230'), '230');
-					?>
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td align="right">
-						<?php echo _("Profile password") . ":"; ?>
-						<input type="password" name="addpassword">
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td align="right">
-						<?php echo _("Reenter profile password") . ":"; ?>
-						<input type="password" name="addpassword2">
-					</td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<td colspan=4>&nbsp;</td>
-				</tr>
-
-				<!-- rename profile -->
-				<tr>
-					<td>
-						<input type="radio" name="action" value="rename">
-					</td>
-					<td>
-						<select size=1 name="oldfilename">
-						<?php
-							$files = getConfigProfiles();
-							for ($i = 0; $i < sizeof($files); $i++) echo ("<option>" . $files[$i] . "</option>\n");
-						?>
-						</select>
-						<b>
-							<?php echo _("Rename profile"); ?>
-						</b>
-					</td>
-					<td align="right">
-						<?php echo _("Profile name") . ":"; ?>
-						<input type="text" name="renfilename">
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '231'), '231');
-					?>
-					</td>
-				</tr>
-
-				<tr>
-					<td colspan=4>&nbsp;</td>
-				</tr>
-
-				<!-- delete profile -->
-				<tr>
-					<td>
-						<input type="radio" name="action" value="delete">
-					</td>
-					<td colspan=2>
-						<select size=1 name="delfilename">
-						<?php
-							$files = getConfigProfiles();
-							for ($i = 0; $i < sizeof($files); $i++) echo ("<option>" . $files[$i] . "</option>\n");
-						?>
-						</select>
-						<b>
-							<?php echo _("Delete profile"); ?>
-						</b>
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '232'), '232');
-					?>
-					</td>
-				</tr>
-
-				<tr>
-					<td colspan=4>&nbsp;</td>
-				</tr>
-
-				<!-- set profile password -->
-				<tr>
-					<td>
-						<input type="radio" name="action" value="setpass">
-					</td>
-					<td>
-						<select size=1 name="setprofile">
-						<?php
-							$files = getConfigProfiles();
-							for ($i = 0; $i < sizeof($files); $i++) echo ("<option>" . $files[$i] . "</option>\n");
-						?>
-						</select>
-						<b>
-							<?php echo _("Set profile password"); ?>
-						</b>
-					</td>
-					<td align="right">
-						<?php echo _("Profile password") . ":"; ?>
-						<input type="password" name="setpassword">
-					</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '233'), '233');
-					?>
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td align="right">
-						<?php echo _("Reenter profile password") . ":"; ?>
-						<input type="password" name="setpassword2">
-					</td>
-					<td>&nbsp;</td>
-				</tr>
-
-				<tr>
-					<td colspan=4>&nbsp;</td>
-				</tr>
-
-				<!-- change default profile -->
-				<tr>
-					<td>
-						<input type="radio" name="action" value="setdefault">
-					</td>
-					<td>
-						<select size=1 name="defaultfilename">
-						<?php
-							$files = getConfigProfiles();
-							$conf = new LAMCfgMain();
-							$defaultprofile = $conf->default;
-							for ($i = 0; $i < sizeof($files); $i++) {
-								if ($files[$i] == $defaultprofile) echo ("<option selected>" . $files[$i] . "</option>\n");
-								else echo ("<option>" . $files[$i] . "</option>\n");
-							}
-						?>
-						</select>
-						<b>
-							<?php echo _("Change default profile"); ?>
-						</b>
-					</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;
-					<?PHP
-						printHelpLink(getHelp('', '234'), '234');
-					?>
-					</td>
-				</tr>
-
-			</table>
-			</fieldset>
-			</td></tr>
-			</table>
-			<p>&nbsp;</p>
-
-			<!-- password field and submit button -->
-			<b>
-				<?php echo _("Master password"); ?>:
-			</b>
-			&nbsp;
+		<form id="profileForm" name="profileForm" action="profmanage.php" method="post">
+		<input type="hidden" name="action" id="action" value="none">
+		<div id="passwordDialogDiv" class="hidden">
+			<?PHP echo _("Master password"); ?>
 			<input type="password" name="passwd">
-			&nbsp;
-			<button id="submitButton" name="submit" class="smallPadding"><?php echo _("Ok"); ?></button>
-			&nbsp;
 			<?PHP
 				printHelpLink(getHelp('', '236'), '236');
 			?>
-			<script type="text/javascript" language="javascript">
-			jQuery(document).ready(function() {
-				jQuery('#submitButton').button();
-			});
-			</script>
+		</div>
+		<div class="filled ui-corner-all">
+<?php
+$files = getConfigProfiles();
 
+$topicSpacer = new htmlSpacer(null, '20px');
+
+$tabindex = 1;
+$container = new htmlTable();
+
+$container->addElement(new htmlTitle(_("Profile management")), true);
+
+// new profile
+$container->addElement(new htmlSubTitle(_("Add profile")), true);
+$newProfileInput = new htmlTableExtendedInputField(_("Profile name"), 'addprofile', null, '230');
+$newProfileInput->setFieldSize(15);
+$container->addElement($newProfileInput, true);
+$profileNewPwd1 = new htmlTableExtendedInputField(_("Profile password"), 'addpassword');
+$profileNewPwd1->setIsPassword(true);
+$profileNewPwd1->setFieldSize(15);
+$container->addElement($profileNewPwd1, true);
+$profileNewPwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'addpassword2');
+$profileNewPwd2->setIsPassword(true);
+$profileNewPwd2->setFieldSize(15);
+$container->addElement($profileNewPwd2, true);
+$newProfileButton = new htmlButton('btnAddProfile', _('Add'));
+$newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" . 
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+$container->addElement($newProfileButton, true);
+$container->addElement($topicSpacer, true);
+
+// rename profile
+$container->addElement(new htmlSubTitle(_("Rename profile")), true);
+$container->addElement(new htmlTableExtendedSelect('oldfilename', $files, array(), _('Profile name'), '231'), true);
+$oldProfileInput = new htmlTableExtendedInputField(_('New profile name'), 'renfilename');
+$oldProfileInput->setFieldSize(15);
+$container->addElement($oldProfileInput, true);
+$renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
+$renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" . 
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+$container->addElement($renameProfileButton, true);
+$container->addElement($topicSpacer, true);
+
+// delete profile
+$container->addElement(new htmlSubTitle(_("Delete profile")), true);
+$container->addElement(new htmlTableExtendedSelect('delfilename', $files, array(), _('Profile name'), '232'), true);
+$deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
+$deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" . 
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+$container->addElement($deleteProfileButton, true);
+$container->addElement($topicSpacer, true);
+
+// set password
+$container->addElement(new htmlSubTitle(_("Set profile password")), true);
+$container->addElement(new htmlTableExtendedSelect('setprofile', $files, array(), _('Profile name'), '233'), true);
+$profileSetPwd1 = new htmlTableExtendedInputField(_("Profile password"), 'setpassword');
+$profileSetPwd1->setIsPassword(true);
+$profileSetPwd1->setFieldSize(15);
+$container->addElement($profileSetPwd1, true);
+$profileSetPwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'setpassword2');
+$profileSetPwd2->setIsPassword(true);
+$profileSetPwd2->setFieldSize(15);
+$container->addElement($profileSetPwd2, true);
+$setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
+$setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" . 
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+$container->addElement($setPasswordProfileButton, true);
+$container->addElement($topicSpacer, true);
+
+// set default profile
+$conf = new LAMCfgMain();
+$defaultprofile = $conf->default;
+$container->addElement(new htmlSubTitle(_("Change default profile")), true);
+$container->addElement(new htmlTableExtendedSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), true);
+$defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
+$defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" . 
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+$container->addElement($defaultProfileButton, true);
+$container->addElement($topicSpacer, true);
+
+parseHtml('', $container, array(), false, $tabindex, 'user');
+
+?>
+		</div>
 		</form>
 		<p><br></p>
 
