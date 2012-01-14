@@ -641,6 +641,8 @@ class htmlButton extends htmlElement {
 	private $isEnabled = true;
 	/** icon class (CSS) for buttons with icon + text */
 	private $iconClass = null;
+	/** onclick event */
+	private $onClick = null;
 	
 	/**
 	 * Constructor.
@@ -672,6 +674,8 @@ class htmlButton extends htmlElement {
 			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
 			return array();
 		}
+		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
+		$tabindex++;
 		$style = '';
 		$class = '';
 		$title = '';
@@ -692,11 +696,17 @@ class htmlButton extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$type = ' type="submit"';
+		$onClick = '';
+		if ($this->onClick != null) {
+			$type = ' type="button"';
+			$onClick = ' onclick="' . $this->onClick . '"';
+		}		
 		if ($this->isImageButton) {
-			echo '<input type="submit" id="btn_' . $this->name . '" value=" "' . $name . $style . $class . $title . $disabled . '>';
+			echo '<input type="submit" id="btn_' . $this->name . '" value=" "' . $name . $fieldTabIndex . $style . $class . $title . $disabled . '>';
 		}
 		else {
-			echo '<button id="btn_' . $this->name . '"' . $name . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
+			echo '<button id="btn_' . $this->name . '"' . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
 			$icon = '';
 			if ($this->iconClass != null) {
@@ -738,6 +748,17 @@ class htmlButton extends htmlElement {
 	public function setIconClass($iconClass) {
 		$this->iconClass = htmlspecialchars($iconClass);
 	}
+	
+	/**
+	 * Sets the onclick event code.
+	 * This makes this button a simple button that does not submit a form.
+	 * 
+	 * @param String $onClick JS code
+	 */
+	public function setOnClick($onClick) {
+		$this->onClick = $onClick;
+	}
+
 
 }
 
