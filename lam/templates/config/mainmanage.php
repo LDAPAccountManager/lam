@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -239,7 +239,7 @@ $passwordTable = new htmlTable();
 $pwd1 = new htmlTableExtendedInputField(_("New master password"), 'masterpassword', '', '235');
 $pwd1->setIsPassword(true);
 $passwordTable->addElement($pwd1, true);
-$pwd2 = new htmlTableExtendedInputField(_("Reenter new master password"), 'masterpassword2', '');
+$pwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'masterpassword2', '');
 $pwd2->setIsPassword(true);
 $passwordTable->addElement($pwd2, true);
 $passwordField = new htmlFieldset($passwordTable, _("Change master password"));
