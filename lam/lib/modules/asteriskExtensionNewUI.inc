@@ -170,7 +170,12 @@ class asteriskExtensionNewUI extends baseModule {
      * @return htmlElement HTML meta data
      */
     function display_html_attributes() {
-        $return = new htmlTable();
+        //Set default owner as logged in user if flag is set and no other owner is set
+        if ( $this->isBooleanConfigOptionSet('asteriskExtension_UseCreatorAsOwner') && ! $this->isExtensionOwnerSet()){
+                $this->setDefaultExtensionOwner();
+        }
+        
+    	$return = new htmlTable();
 
         $extName = '';
         if (isset($this->attributes['AstExtension'][0])) {
@@ -183,9 +188,7 @@ class asteriskExtensionNewUI extends baseModule {
         $this->render_extensions_by_priority($extName, $return);
 
         // owners
-        if (!$this->isBooleanConfigOptionSet('asteriskExtension_UseCreatorAsOwner')) {
-            $this->render_exten_owners_set_controls($return);
-        }
+        $this->render_exten_owners_set_controls($return);
 
         return $return;
     }
@@ -363,7 +366,7 @@ class asteriskExtensionNewUI extends baseModule {
      * @return htmlElement HTML meta data
      */
     function display_html_user() {
-        $return = new htmlTable();
+    	$return = new htmlTable();
         // load list with all potential owners
         $searchScope = 'user';
         if ($this->searchOwnersInTreeSuffix) {
@@ -476,7 +479,17 @@ class asteriskExtensionNewUI extends baseModule {
             }
         }
     }
-
+    
+    /**
+     * Return true if even one owner is set and false otherwise
+     */
+    function isExtensionOwnerSet(){
+        if(sizeof($this->extensionOwners) > 0){
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Write variables into object and do some regex checks
      *
@@ -485,7 +498,7 @@ class asteriskExtensionNewUI extends baseModule {
     function process_attributes() {
         $errors = array();
         $extensionName = array();
-
+        
         if (!isset($_POST['generate_extension_name'])) {
 
             //perform normal set of operations
@@ -530,11 +543,6 @@ class asteriskExtensionNewUI extends baseModule {
     function processExtensionRows($extensionName, $extensionContext) {
         $errors = array();
         if (isset($_POST['extension_rows']) && get_preg($_POST['extension_rows'], 'digit')) {
-            
-            //handle situation where we mast add current loged user as extension owner
-            if ($this->isBooleanConfigOptionSet('asteriskExtension_UseCreatorAsOwner')){
-                $this->setDefaultExtensionOwner();
-            }
             
             $extensionPriorityCntr = 1;
             $this->extensionRows = array();
