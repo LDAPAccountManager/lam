@@ -4,6 +4,7 @@ March 2012 3.7
   - New translation: Slovakian
   - LAM Pro:
    -> Password self reset can send password notification mails
+   -> Zarafa archiver support
   - Fixed bugs:
    -> DHCP: error message not displayed properly (3441975)
    -> Profile loading not possible if required fields are not filled (3444948)
