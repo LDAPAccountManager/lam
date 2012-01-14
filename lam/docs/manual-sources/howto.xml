@@ -1064,9 +1064,12 @@ Have fun!
           <para>Additionally, you can enable HTTP authentication when using
           "LDAP search". This way the web server is responsible to
           authenticate your users. LAM will use the given user name + password
-          for the LDAP login. To setup HTTP authentication in Apache please
-          see this <ulink
-          url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</para>
+          for the LDAP login. You can also configure this to setup advanced
+          login restrictions (e.g. require group memberships for login). To
+          setup HTTP authentication in Apache please see this <ulink
+          url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>
+          and an example for LDAP authentication <link
+          linkend="apache_http_auth">here</link>.</para>
 
           <screenshot>
             <mediaobject>
@@ -4617,75 +4620,126 @@ Run slapindex to rebuild the index.
     <section>
       <title>Apache configuration</title>
 
-      <para>LAM includes several .htaccess files to protect your configuration
-      files and temporary data. Apache is often configured to not use
-      .htaccess files by default. Therefore, please check your Apache
-      configuration and change the override setting to:</para>
+      <section>
+        <title>Sensitive directories</title>
 
-      <para>AllowOverride All</para>
+        <para>LAM includes several .htaccess files to protect your
+        configuration files and temporary data. Apache is often configured to
+        not use .htaccess files by default. Therefore, please check your
+        Apache configuration and change the override setting to:</para>
 
-      <para>If you are experienced in configuring Apache then you can also
-      copy the security settings from the .htaccess files to your main Apache
-      configuration.</para>
+        <para>AllowOverride All</para>
 
-      <para>If possible, you should not rely on .htaccess files but also move
-      the config and sess directory to a place outside of your WWW root. You
-      can put a symbolic link in the LAM directory so that LAM finds the
-      configuration/session files.</para>
+        <para>If you are experienced in configuring Apache then you can also
+        copy the security settings from the .htaccess files to your main
+        Apache configuration.</para>
 
-      <para>Security sensitive directories:</para>
+        <para>If possible, you should not rely on .htaccess files but also
+        move the config and sess directory to a place outside of your WWW
+        root. You can put a symbolic link in the LAM directory so that LAM
+        finds the configuration/session files.</para>
 
-      <para><emphasis role="bold">config: </emphasis>Contains your LAM
-      configuration and account profiles</para>
+        <para>Security sensitive directories:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>LAM configuration passwords (SSHA hashed)</para>
-        </listitem>
+        <para><emphasis role="bold">config: </emphasis>Contains your LAM
+        configuration and account profiles</para>
 
-        <listitem>
-          <para>default values for new accounts</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>LAM configuration passwords (SSHA hashed)</para>
+          </listitem>
 
-        <listitem>
-          <para>directory must be accessibly by Apache but needs not to be
-          accessible by the browser</para>
-        </listitem>
-      </itemizedlist>
+          <listitem>
+            <para>default values for new accounts</para>
+          </listitem>
 
-      <para><emphasis role="bold">sess:</emphasis> PHP session files</para>
+          <listitem>
+            <para>directory must be accessibly by Apache but needs not to be
+            accessible by the browser</para>
+          </listitem>
+        </itemizedlist>
 
-      <itemizedlist>
-        <listitem>
-          <para>LAM admin password in clear text or MCrypt encrypted</para>
-        </listitem>
+        <para><emphasis role="bold">sess:</emphasis> PHP session files</para>
 
-        <listitem>
-          <para>cached LDAP entries in clear text or MCrypt encrypted</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>LAM admin password in clear text or MCrypt encrypted</para>
+          </listitem>
 
-        <listitem>
-          <para>directory must be accessibly by Apache but needs not to be
-          accessible by the browser</para>
-        </listitem>
-      </itemizedlist>
+          <listitem>
+            <para>cached LDAP entries in clear text or MCrypt encrypted</para>
+          </listitem>
 
-      <para><emphasis role="bold">tmp:</emphasis> temporary files</para>
+          <listitem>
+            <para>directory must be accessibly by Apache but needs not to be
+            accessible by the browser</para>
+          </listitem>
+        </itemizedlist>
 
-      <itemizedlist>
-        <listitem>
-          <para>PDF documents which may also include passwords</para>
-        </listitem>
+        <para><emphasis role="bold">tmp:</emphasis> temporary files</para>
 
-        <listitem>
-          <para>images of your users</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>PDF documents which may also include passwords</para>
+          </listitem>
 
-        <listitem>
-          <para>directory contents must be accessible by browser but directory
-          itself needs not to be browseable</para>
-        </listitem>
-      </itemizedlist>
+          <listitem>
+            <para>images of your users</para>
+          </listitem>
+
+          <listitem>
+            <para>directory contents must be accessible by browser but
+            directory itself needs not to be browseable</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section id="apache_http_auth">
+        <title>Use LDAP HTTP authentication for LAM</title>
+
+        <para>With HTTP authentication Apache will be responsible to ask for
+        the user name and password. Both will then be forwarded to LAM which
+        will use it to access LDAP. This approach gives you more flexibility
+        to restrict the number of users that may access LAM (e.g. by requiring
+        group memberships).</para>
+
+        <para>First of all you need to load additional Apache modules. These
+        are "<ulink
+        url="http://httpd.apache.org/docs/2.2/mod/mod_ldap.html">mod_ldap</ulink>"
+        and "<ulink type=""
+        url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">mod_authnz_ldap</ulink>".</para>
+
+        <para>Next you can add a file called "lam_auth_ldap" to
+        /etc/apache/conf.d. This simple example restricts access to all URLs
+        beginning with "lam" to LDAP authentication.</para>
+
+        <programlisting>&lt;location /lam&gt;
+  AuthType Basic
+  AuthBasicProvider ldap
+  AuthName "LAM"
+  AuthLDAPURL "ldap://localhost:389/ou=People,dc=company,dc=com?uid"
+  Require valid-user
+&lt;/location&gt;</programlisting>
+
+        <para>You can also require that your users belong to a certain Unix
+        group in LDAP:</para>
+
+        <programlisting>&lt;location /lam&gt;
+  AuthType Basic
+  AuthBasicProvider ldap
+  AuthName "LAM"
+  AuthLDAPURL "ldap://localhost:389/ou=People,dc=company,dc=com?uid"
+  Require valid-user
+  # force membership of lam-admins
+  AuthLDAPGroupAttribute memberUid
+  AuthLDAPGroupAttributeIsDN off
+  Require ldap-group cn=lam-admins,ou=group,dc=company,dc=com
+&lt;/location&gt;</programlisting>
+
+        <para>Please see the <ulink
+        url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">Apache
+        documentation</ulink> for more details.</para>
+      </section>
     </section>
   </appendix>
 
