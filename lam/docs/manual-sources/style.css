@@ -98,3 +98,12 @@ div.noborder table {
  border-color:transparent;
 }
 
+pre.programlisting {
+	border-style:solid;
+	border-color:#696a65;
+	border-width:1px;
+	border-radius:4px;
+	background-color:#f3f2f1;
+}
+
+

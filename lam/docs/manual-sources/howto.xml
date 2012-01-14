@@ -4585,7 +4585,7 @@ Run slapindex to rebuild the index.
       It is a good idea to symlink /etc/ldap.conf to /etc/ldap/ldap.conf.
       Specify the server CA certificate with the following option:</para>
 
-      <para>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</para>
+      <programlisting>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</programlisting>
 
       <para>This needs to be the public part of the signing certificate
       authority. See "man ldap.conf" for additional options.</para>
