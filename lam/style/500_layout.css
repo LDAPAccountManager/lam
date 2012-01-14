@@ -84,6 +84,12 @@ border:1px solid #af8800;
 padding:10px;
 }
 
+div.filled {
+background-color:#fff3c8;
+border:1px solid #af8800;
+padding:10px;
+}
+
 legend {
 color:black;
 }
