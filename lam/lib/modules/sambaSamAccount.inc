@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2011  Roland Gruber
+                2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1040,6 +1040,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$return->addElement(new htmlStatusMessage("ERROR", _('Host name must end with $!'), _('Please check your settings on the Unix page!')), true);
 				}
 			}
+			$personalAttributes = array();
+			if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+				$personalAttributes = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			}
 			// Get Domain SID from user SID
 			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
@@ -1067,7 +1071,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			// display name
 			$displayName = '';
-			if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
+			if (isset($this->attributes['displayName'][0])) {
+				$displayName = $this->attributes['displayName'][0];
+			}
+			else if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['displayName'])) {
+				if (isset($personalAttributes['givenName'][0]) && $personalAttributes['givenName'][0] && isset($personalAttributes['sn'][0]) && $personalAttributes['sn'][0]) {
+					$displayName = $personalAttributes['givenName'][0] . " " . $personalAttributes['sn'][0];
+				}
+				elseif (isset($personalAttributes['sn'][0])) {
+					$displayName = $personalAttributes['sn'][0];
+				}
+			}
 			$return->addElement(new htmlTableExtendedInputField(_('Display name'), 'displayName', $displayName, 'displayName'), true);
 			if ($this->get_scope()=='user') {
 				// user account
