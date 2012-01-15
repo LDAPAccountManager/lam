@@ -69,6 +69,9 @@ if (isset($_GET['showldif'])) {
 		unset($accounts[$i]['dn']);
 		$keys = array_keys($accounts[$i]);
 		for ($k = 0; $k < sizeof($keys); $k++) {
+			if (strpos($keys[$k], 'INFO.') === 0) {
+				continue;
+			}
 			if (is_array($accounts[$i][$keys[$k]])) {
 				for ($x = 0; $x < sizeof($accounts[$i][$keys[$k]]); $x++) {
 					echo $keys[$k] . ": " . $accounts[$i][$keys[$k]][$x] . "\n";

@@ -87,6 +87,12 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		$attrs = $accounts[$_SESSION['mass_counter']];
 		$dn = $attrs['dn'];
 		unset($attrs['dn']);
+		// remove informational attributes
+		foreach ($attrs as $key => $value) {
+			if (strpos($key, 'INFO.') === 0) {
+				unset($attrs[$key]);
+			}
+		}
 		$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 		if (!$success) {
 			$errorMessage = array(
@@ -135,7 +141,11 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 			if ($return['status'] == 'finished') {
 				$_SESSION['mass_postActions']['finished'] = true;
 			}
-			for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
+			if (isset($return['errors'])) {
+				for ($i = 0; $i < sizeof($return['errors']); $i++) {
+					$_SESSION['mass_errors'][] = $return['errors'][$i];
+				}
+			}
 		}
 	}
 	// refresh with JavaScript

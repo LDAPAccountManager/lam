@@ -3021,7 +3021,8 @@ Run slapindex to rebuild the index.
               <entry>preCreate</entry>
 
               <entry>executed before creating a new account (cancels operation
-              if a script returns an exit code &gt; 0)</entry>
+              if a script returns an exit code &gt; 0, not available for file
+              upload)</entry>
             </row>
 
             <row>

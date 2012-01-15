@@ -1734,6 +1734,7 @@ class posixAccount extends baseModule implements passwordService {
 				// password
 				if (($rawAccounts[$i][$ids['posixAccount_password']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_password']], 'password'))) {
 					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['posixAccount_password']]; // for custom scripts etc.
 				}
 				elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
 					$errMsg = str_replace('%', '%%', $this->messages['userPassword'][4]); // double "%" because of later sprintf
