@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2010  Roland Gruber
+                2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -280,7 +280,7 @@ class account extends baseModule {
 			if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
 			}
-			elseif (isset($rawAccounts[$i][$ids['account_uid']])) {
+			elseif (isset($ids['account_uid']) && isset($rawAccounts[$i][$ids['account_uid']])) {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_uid']];
 			}
 			elseif (isset($partialAccounts[$i]['uid'])) {
