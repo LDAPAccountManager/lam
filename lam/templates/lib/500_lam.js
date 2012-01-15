@@ -263,11 +263,13 @@ function passwordHandleInput(random, ajaxURL) {
 	});
 	var pwd1 = jQuery('#passwordDialog').find('[name=newPassword1]').val();
 	var pwd2 = jQuery('#passwordDialog').find('[name=newPassword2]').val();
+	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').attr('checked');
 	var pwdJSON = {
 		"modules": modules,
 		"password1": pwd1,
 		"password2": pwd2,
-		"random": random
+		"random": random,
+		"forcePasswordChange": forcePasswordChange
 	};
 	// make AJAX call
 	jQuery.post(ajaxURL, {jsonInput: pwdJSON}, function(data) {passwordHandleReply(data);}, 'json');
@@ -283,6 +285,9 @@ function passwordHandleReply(data) {
 		jQuery('#passwordDialogMessageArea').html("");
 		jQuery('#passwordDialog').dialog("close");
 		jQuery('#passwordMessageArea').html(data.messages);
+		if (data.forcePasswordChange) {
+			jQuery('#forcePasswordChangeOption').attr('checked', 'checked');
+		}
 	}
 	else {
 		jQuery('#passwordDialogMessageArea').html(data.messages);

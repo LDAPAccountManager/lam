@@ -167,6 +167,8 @@ $helpArray = array (
 					"Text" => _("Please enter the password which you want to set for this account. You may also generate a random password (12 characters) which will be displayed on your screen.")),
 				"405" => array ("Headline" => _("PDF structure"),
 					"Text" => _("The PDF structure defines what information is exported as PDF file and how the pages are structured. You can manage the PDF structures in the PDF editor (under \"Tools\").")),
+				"406" => array ("Headline" => _("Force password change"),
+					"Text" => _("If you set this option then the user has to change his password at the next login.")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),

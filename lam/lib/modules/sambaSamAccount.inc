@@ -860,7 +860,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 			}
 		}
-		if (isset($_POST['passwordIsExpired'])) {
+		if (isset($_POST['forcePasswordChangeOption'])) {
 			$this->expirePassword = true;
 		}
 		else {
@@ -1099,7 +1099,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 				$return->addElement(new htmlTableExtendedInputCheckbox('sambaAcctFlagsL', $locked, _('Account is locked'), 'locked'), true);
 				// password change at next login
-				$return->addElement(new htmlTableExtendedInputCheckbox('passwordIsExpired', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), true);	
+				$return->addElement(new htmlTableExtendedInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), true);	
 				// password can be changed
 				$return->addElement(new htmlOutputText(_('User can change password')));
 				$tempTable = new htmlTable();
@@ -2140,16 +2140,26 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Specifies if this module supports to force that a user must change his password on next login.
+	 * 
+	 * @return boolean force password change supported
+	 */
+	public function supportsForcePasswordChange() {
+		return true;
+	}
+	
+	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
 	 * @param String $password new password
 	 * @param $modules list of modules for which the password should be changed
+	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
-	public function passwordChangeRequested($password, $modules) {
+	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
@@ -2158,6 +2168,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		$this->attributes['sambaNTPassword'][0] = ntPassword($password);
 		$this->attributes['sambaPwdLastSet'][0] = time();
+		if ($forcePasswordChange) {
+			$this->attributes['sambaPwdLastSet'][0] = '0';
+		}
 		return array();
 	}
 		

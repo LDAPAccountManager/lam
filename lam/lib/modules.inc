@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -983,6 +983,18 @@ class accountContainer {
 		$pwdInput2 = new htmlInputField('newPassword2');
 		$pwdInput2->setIsPassword(true);
 		$container->addElement($pwdInput2, true);
+		// print force password change option
+		$forceChangeSupported = false;
+		foreach ($this->module as $name => $module) {
+			if (($module instanceof passwordService) && $module->supportsForcePasswordChange()) {
+				$forceChangeSupported = true;
+				break;
+			}
+		}
+		if ($forceChangeSupported) {
+			$container->addElement(new htmlTableExtendedInputCheckbox('lamForcePasswordChange', false, _('Force password change')));
+			$container->addElement(new htmlHelpLink('406'), true);
+		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// password modules
 		$moduleContainer = new htmlTable();
@@ -1000,7 +1012,6 @@ class accountContainer {
 		}
 		$moduleContainer->colspan = 5;
 		$container->addElement($moduleContainer, true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// generate HTML
 		$tabindex = 2000;
 		if ($printContainer) {
@@ -1043,11 +1054,13 @@ class accountContainer {
 				$return['errorsOccured'] = 'true';
 			}
 		}
+		$forcePasswordChange = ($input['forcePasswordChange'] == 'true');
+		$return['forcePasswordChange'] = $forcePasswordChange;
 		if ($return['errorsOccured'] == 'false') {
 			// set new password
 			foreach ($this->module as $name => $module) {
 				if ($module instanceof passwordService) {
-					$messages = $module->passwordChangeRequested($password1, $modules);
+					$messages = $module->passwordChangeRequested($password1, $modules, $forcePasswordChange);
 					for ($m = 0; $m < sizeof($messages); $m++) {
 						if ($messages[$m][0] == 'ERROR') {
 							$return['errorsOccured'] = 'true';
@@ -1920,18 +1933,26 @@ interface passwordService {
 	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes();
-
+	
+	/**
+	 * Specifies if this module supports to force that a user must change his password on next login.
+	 * 
+	 * @return boolean force password change supported
+	 */
+	public function supportsForcePasswordChange();
+	
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
 	 * @param String $password new password
-	 * @param $modules list of modules for which the password should be changed
+	 * @param array $modules list of modules for which the password should be changed
+	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
 	 */
-	public function passwordChangeRequested($password, $modules);
-	
+	public function passwordChangeRequested($password, $modules, $forcePasswordChange);
+
 }
 
 ?>

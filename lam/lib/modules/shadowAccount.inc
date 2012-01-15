@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2011  Roland Gruber
+  Copyright (C) 2007 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -593,22 +593,35 @@ class shadowAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Specifies if this module supports to force that a user must change his password on next login.
+	 * 
+	 * @return boolean force password change supported
+	 */
+	public function supportsForcePasswordChange() {
+		return true;
+	}
+	
+	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
 	 * @param String $password new password
 	 * @param $modules list of modules for which the password should be changed
+	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
-	public function passwordChangeRequested($password, $modules) {
+	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		// update password timestamp when Unix password was updated
 		if (!in_array('posixAccount', $modules)) {
 			return array();
 		}
 		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
 			$this->attributes['shadowLastChange'][0] = intval(time()/3600/24);
+			if ($forcePasswordChange && isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != 0)) {
+				$this->attributes['shadowLastChange'][0] = intval(time()/3600/24) - $this->attributes['shadowMax'][0] - 1;
+			}
 		}
 		return array();
 	}
