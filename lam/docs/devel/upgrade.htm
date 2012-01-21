@@ -5,6 +5,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -25,8 +26,12 @@ This is a list of API changes for all LAM releases.
 <h2>3.6 -&gt; 3.7</h2>Module interface:<br>
 <ul>
   <li><span style="font-weight: bold;">postModifyActions()</span>: Must return an array containing any messages to display</li>
-  <li><span style="font-weight: bold;">preModifyActions():</span> Changed return value from boolean to array of message arrays<br>
+  <li><span style="font-weight: bold;">preModifyActions():</span> Changed return value from boolean to array of message arrays</li>
+  <li><span style="font-weight: bold;">passwordService interface:</span>
+new function supportsForcePasswordChange() and changed function
+passwordChangeRequested() to support password change at next login <br>
   </li>
+
 </ul>
 
 <br>

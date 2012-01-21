@@ -3655,6 +3655,19 @@ Run slapindex to rebuild the index.
           Only existing attributes are updated. No new attributes are
           added.</para>
         </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Sync Asterisk (voicemail) password with
+          Unix password:</emphasis> Changes also the Asterisk
+          passwords.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Force password change:</emphasis> This
+          will force the user to change his password at next login. This
+          option supports Shadow, Samba 3 and PPolicy (automatically
+          detected).</para>
+        </listitem>
       </itemizedlist>
 
       <para></para>
