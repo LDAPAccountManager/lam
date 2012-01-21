@@ -4,7 +4,7 @@
   $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009 - 2011  Pavel Pozdnyak
+  Copyright (C) 2009 - 2012  Pavel Pozdnyak
                 2009 - 2011  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
@@ -124,13 +124,6 @@ class asteriskExtensionNewUI extends baseModule {
             ),
         );
 
-        // configuration settings
-        $configContainer = new htmlTable();
-        $configContainer->addElement(new htmlTableExtendedInputCheckbox('asteriskExtension_UseCreatorAsOwner', false, _('Use a creator as an owner'), 'UseCreatorAsOwner', false));
-
-        $return['config_options']['all'] = $configContainer;
-
-
         // profile options
         $profileContainer = new htmlTable();
         $profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'AsteriskExtension_AstContext', null, 'AstContext'), true);
@@ -170,8 +163,8 @@ class asteriskExtensionNewUI extends baseModule {
      * @return htmlElement HTML meta data
      */
     function display_html_attributes() {
-        //Set default owner as logged in user if flag is set and no other owner is set
-        if ( $this->isBooleanConfigOptionSet('asteriskExtension_UseCreatorAsOwner') && ! $this->isExtensionOwnerSet()){
+        //Set default owner as logged in user if no other owner is set
+        if (  ! $this->isExtensionOwnerSet()){
                 $this->setDefaultExtensionOwner();
         }
         
@@ -826,14 +819,13 @@ class asteriskExtensionNewUI extends baseModule {
         $searchClass = "AsteriskExtension";
         $searchScope = 'asteriskExtNewUI';
         $entries = searchLDAPByAttribute("AstExtension", $extension, $searchClass, array('cn', 'AstContext', 'AstPriority',
-            'AstApplication', 'AstApplicationData', 'AstExtension', 'member', 'ObjectClass'), array($searchScope));
+            'AstApplication', 'AstApplicationData', 'AstExtension', 'member', 'ObjectClass', 'dn'), array($searchScope));
         $entries = $this->array_sort($entries, 'astpriority');
 
         for ($rowCounter = 0; $rowCounter < count($entries); $rowCounter++) {
             $rowOrig = $entries[$rowCounter];
-            if ($rowOrig["astpriority"][0] > 1) {
-
-                ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . $_SESSION['config']->get_Suffix('asteriskExtNewUI'));
+            if ($rowOrig["astpriority"][0] > 1) {                
+                ldap_delete($_SESSION['ldap']->server(), $rowOrig['dn']);                  
             }
         }
         $message = array(0 => array("ERROR"));
