@@ -22,7 +22,7 @@ config.toolbar_LAM = [
 
 /* style */
 config.skin = 'office2003';
-config.width = '60em';
+config.width = '70em';
 config.height = 100;
 
 /* no bottom bar */
