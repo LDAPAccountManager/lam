@@ -39,3 +39,4 @@ var/lib/ldap-account-manager/config/pdf/logos
 var/lib/ldap-account-manager/config/profiles
 var/lib/ldap-account-manager/sess
 var/lib/ldap-account-manager/tmp
+var/lib/ldap-account-manager/tmp/internal

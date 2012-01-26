@@ -23,6 +23,7 @@ install:
 	install -D --mode=644 index.html debian/ldap-account-manager/usr/share/ldap-account-manager/index.html
 	install -D --mode=644 VERSION debian/ldap-account-manager/usr/share/ldap-account-manager/VERSION
 	install -D --mode=644 tmp/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/tmp/.htaccess
+	install -D --mode=644 tmp/internal/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/tmp/internal/.htaccess
 	install -D --mode=644 config/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/.htaccess
 	install -D --mode=644 config/language debian/ldap-account-manager/var/lib/ldap-account-manager/config/language
 	install -D --mode=644 config/lam.conf_sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/lam.conf_sample
