@@ -70,4 +70,5 @@ if (!checkIfWriteAccessIsAllowed()) {
 $servers->setValue('unique','attrs',array());
 $servers->setValue('server','custom_sys_attrs', array('creatorsName', 'createTimestamp', 'modifiersName',
 			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime'));
+$config->custom->confirm['copy'] = false;
 ?>
