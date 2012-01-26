@@ -167,6 +167,21 @@ class Ldap{
 			$file = @readdir($dir);
 		}
 		@closedir($dir);
+		// clean internal files that are older than 24 hours
+		$tmpDir = dirname(__FILE__) . '/../tmp/internal/';
+		$time = time();
+		$dir = @opendir($tmpDir);
+		$file = @readdir($dir);
+		while ($file) {
+			if ((substr($file, -4) == '.tmp')) {
+				$path = $tmpDir . $file;
+				if ($time - filemtime($path) > (3600 * 24)) {
+					@unlink($path);
+				}
+			}
+			$file = @readdir($dir);
+		}
+		@closedir($dir);
 	}
 
 	/**
