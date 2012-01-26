@@ -42,9 +42,12 @@ if [ ! -h /usr/share/ldap-account-manager/tmp ]; then\
 chown www-data /etc/ldap-account-manager/config.cfg
 chmod 600 /etc/ldap-account-manager/config.cfg
 chown www-data /var/lib/ldap-account-manager/sess
+chmod 700 /var/lib/ldap-account-manager/sess
 chown www-data /var/lib/ldap-account-manager/tmp
+chown www-data /var/lib/ldap-account-manager/tmp/internal
+chmod 700 /var/lib/ldap-account-manager/tmp
 chown -R www-data /var/lib/ldap-account-manager/config
-chown www-data /var/lib/ldap-account-manager/tmp
+chmod 700 /var/lib/ldap-account-manager/config
 if [ ! -f /var/lib/ldap-account-manager/config/lam.conf ]; \
    then cp /var/lib/ldap-account-manager/config/lam.conf_sample /var/lib/ldap-account-manager/config/lam.conf; \
 	chown www-data /var/lib/ldap-account-manager/config/lam.conf; fi
