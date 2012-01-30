@@ -669,19 +669,33 @@ class asteriskExtensionNewUI extends baseModule {
     function generateNextExtensionName() {
         $searchClass = "AsteriskExtension";
         $searchScope = 'asteriskExtNewUI';
+        
+        $suggeted_extension = ''; //default empty value
+        if( isset($this->extensionRows[0]['astextension'][0]) ){
+            $suggeted_extension = $this->extensionRows[0]['astextension'][0];
+        }else{
+            $entries = searchLDAPByAttribute(null, null, $searchClass, array('astextension'), array($searchScope));
+            $entries = $this->array_sort($entries, 'astextension');
 
-
-        $entries = searchLDAPByAttribute(null, null, $searchClass, array('astextension'), array($searchScope));
-
-        $entries = $this->array_sort($entries, 'astextension');
-
-        if (isset($entries[sizeof($entries) - 1]['astextension'][0])) {
-            $greater_ext_name = $entries[sizeof($entries) - 1]['astextension'][0];
-        } else {
-            $greater_ext_name = 0;
+            if (isset($entries[sizeof($entries) - 1]['astextension'][0])) {
+                $greater_ext_name = $entries[sizeof($entries) - 1]['astextension'][0];
+            } else {
+                $greater_ext_name = 0;
+            }
+            if(is_numeric($greater_ext_name)){
+                $suggeted_extension = $greater_ext_name + 1;
+            }else{
+                $ptn = "/(?P<name>[A-Za-z0-9]+)_(?P<digit>\d+)/";
+                if(preg_match_all($ptn, $greater_ext_name, $matches, PREG_PATTERN_ORDER)){
+                    $next_digit = $matches['digit'][0] + 1;
+                    $suggeted_extension = $matches['name'][0] . '_' . $next_digit;
+                }else{
+                    $suggeted_extension = $greater_ext_name . '_1';
+                }
+            }
         }
-        //naive THERY naive, so in future here mast be somthing more complcated and safe
-        return $greater_ext_name + 1;
+        
+        return $suggeted_extension;
     }
 
     /**
