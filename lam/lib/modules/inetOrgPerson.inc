@@ -598,163 +598,163 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// help Entries
 		$return['help'] = array (
 			'description' => array (
-				"Headline" => _("Description"),
+				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("User description. If left empty sur- and give name will be used.")
 			),
 			'title' => array (
-				"Headline" => _("Job title"),
+				"Headline" => _("Job title"), 'attr' => 'title',
 				"Text" => _("Job title of user: President, department manager, ...")
 			),
 			'givenName' => array (
-				"Headline" => _("First name"),
+				"Headline" => _("First name"), 'attr' => 'givenName',
 				"Text" => _("First name of user. Only letters, - and spaces are allowed.")
 			),
 			'sn' => array (
-				"Headline" => _("Last name"),
+				"Headline" => _("Last name"), 'attr' => 'sn',
 				"Text" => _("Last name of user. Only letters, - and spaces are allowed.")
 			),
 			'employeeType' => array (
-				"Headline" => _("Employee type"),
+				"Headline" => _("Employee type"), 'attr' => 'employeeType',
 				"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
 			),
 			'manager' => array (
-				"Headline" => _("Manager"),
+				"Headline" => _("Manager"), 'attr' => 'manager',
 				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
 			),
 			'managerList' => array (
-				"Headline" => _("Manager"),
+				"Headline" => _("Manager"), 'attr' => 'manager',
 				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'street' => array (
-				"Headline" => _("Street"),
+				"Headline" => _("Street"), 'attr' => 'street',
 				"Text" => _("The street name of the user's address.")
 			),
 			'streetList' => array (
-				"Headline" => _("Street"),
+				"Headline" => _("Street"), 'attr' => 'street',
 				"Text" => _("The street name of the user's address.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'postOfficeBox' => array (
-				"Headline" => _("Post office box"),
+				"Headline" => _("Post office box"), 'attr' => 'postOfficeBox',
 				"Text" => _("The post office box of the user's address.")
 			),
 			'postOfficeBoxList' => array (
-				"Headline" => _("Post office box"),
+				"Headline" => _("Post office box"), 'attr' => 'postOfficeBox',
 				"Text" => _("The post office box of the user's address.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'postalCode' => array (
-				"Headline" => _("Postal code"),
+				"Headline" => _("Postal code"), 'attr' => 'postalCode',
 				"Text" => _("The postal code of the user's address.")
 			),
 			'postalCodeList' => array (
-				"Headline" => _("Postal code"),
+				"Headline" => _("Postal code"), 'attr' => 'postalCode',
 				"Text" => _("The postal code of the user's address.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'postalAddress' => array (
-				"Headline" => _("Postal address"),
+				"Headline" => _("Postal address"), 'attr' => 'postalAddress',
 				"Text" => _("Postal address, city")
 			),
 			'registeredAddress' => array (
-				"Headline" => _("Registered address"),
+				"Headline" => _("Registered address"), 'attr' => 'registeredAddress',
 				"Text" => _("Registered address, city")
 			),
 			'telephoneNumber' => array (
-				"Headline" => _("Telephone number"),
+				"Headline" => _("Telephone number"), 'attr' => 'telephoneNumber',
 				"Text" => _("The user's telephone number.")
 			),
 			'telephoneNumberList' => array (
-				"Headline" => _("Telephone number"),
+				"Headline" => _("Telephone number"), 'attr' => 'telephoneNumber',
 				"Text" => _("The user's telephone number.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'mobileTelephoneNumber' => array (
-				"Headline" => _("Mobile number"),
+				"Headline" => _("Mobile number"), 'attr' => 'mobile',
 				"Text" => _("The user's mobile number.")
 			),
 			'mobileTelephoneNumberList' => array (
-				"Headline" => _("Mobile number"),
+				"Headline" => _("Mobile number"), 'attr' => 'mobile',
 				"Text" => _("The user's mobile number.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'facsimileTelephoneNumber' => array (
-				"Headline" => _("Fax number"),
+				"Headline" => _("Fax number"), 'attr' => 'facsimileTelephoneNumber',
 				"Text" => _("The user's fax number.")
 			),
 			'facsimileTelephoneNumberList' => array (
-				"Headline" => _("Fax number"),
+				"Headline" => _("Fax number"), 'attr' => 'facsimileTelephoneNumber',
 				"Text" => _("The user's fax number.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'mail' => array (
-				"Headline" => _("Email address"),
+				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The user's email address.")
 			),
 			'mailList' => array (
-				"Headline" => _("Email address"),
+				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The user's email address.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'labeledURI' => array(
-				"Headline" => _("Web site"),
+				"Headline" => _("Web site"), 'attr' => 'labeledURI',
 				"Text" => _("The user's web site (e.g. http://www.company.com).")
 			),
 			'labeledURIList' => array(
-				"Headline" => _("Web site"),
+				"Headline" => _("Web site"), 'attr' => 'labeledURI',
 				"Text" => _("The user's web site (e.g. http://www.company.com).") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'cn' => array (
-				"Headline" => _("Common name"),
+				"Headline" => _("Common name"), 'attr' => 'cn',
 				"Text" => _("This is the natural name of the user. If empty, the first and last name is used.")
 			),
 			'uid' => array(
-				"Headline" => _("User name"),
+				"Headline" => _("User name"), 'attr' => 'uid',
 				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
 			),
 			'photoUpload' => array(
-				"Headline" => _("Add photo"),
+				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
 			),
 			'homePhone' => array(
-				"Headline" => _("Home telephone number"),
+				"Headline" => _("Home telephone number"), 'attr' => 'homePhone',
 				"Text" => _("The user's private telephone number.")
 			),
 			'homePhoneList' => array(
-				"Headline" => _("Home telephone number"),
+				"Headline" => _("Home telephone number"), 'attr' => 'homePhone',
 				"Text" => _("The user's private telephone number.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'roomNumber' => array(
-				"Headline" => _("Room number"),
+				"Headline" => _("Room number"), 'attr' => 'roomNumber',
 				"Text" => _("The room number of the employee's office.")
 			),
 			'businessCategory' => array(
-				"Headline" => _("Business category"),
+				"Headline" => _("Business category"), 'attr' => 'businessCategory',
 				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
 			),
 			'l' => array(
-				"Headline" => _("Location"),
+				"Headline" => _("Location"), 'attr' => 'l',
 				"Text" => _("This describes the location of the user.")
 			),
 			'lList' => array(
-				"Headline" => _("Location"),
+				"Headline" => _("Location"), 'attr' => 'l',
 				"Text" => _("This describes the location of the user.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'st' => array(
-				"Headline" => _("State"),
+				"Headline" => _("State"), 'attr' => 'st',
 				"Text" => _("The state where the user resides or works.")
 			),
 			'stList' => array(
-				"Headline" => _("State"),
+				"Headline" => _("State"), 'attr' => 'st',
 				"Text" => _("The state where the user resides or works.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'carLicense' => array(
-				"Headline" => _("Car license"),
+				"Headline" => _("Car license"), 'attr' => 'carLicense',
 				"Text" => _("This can be used to specify if the user has a car license.")
 			),
 			'physicalDeliveryOfficeName' => array(
-				"Headline" => _("Office name"),
+				"Headline" => _("Office name"), 'attr' => 'physicalDeliveryOfficeName',
 				"Text" => _("The office name of the user (e.g. YourCompany, Human Resources).")
 			),
 			'departmentNumber' => array(
-				"Headline" => _("Department"),
+				"Headline" => _("Department"), 'attr' => 'departmentNumber',
 				"Text" => _("Here you can enter the user's department.")
 			),
 			'departmentNumberList' => array(
-				"Headline" => _("Department"),
+				"Headline" => _("Department"), 'attr' => 'departmentNumber',
 				"Text" => _("Here you can enter the user's department.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'hiddenOptions' => array(
@@ -766,19 +766,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			),
 			'o' => array(
-				"Headline" => _("Organisation"),
+				"Headline" => _("Organisation"), 'attr' => 'o',
 				"Text" => _("The user's organisation name.")
 			),
 			'oList' => array(
-				"Headline" => _("Organisation"),
+				"Headline" => _("Organisation"), 'attr' => 'o',
 				"Text" => _("The user's organisation name.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 			'employeeNumber' => array(
-				"Headline" => _("Employee number"),
+				"Headline" => _("Employee number"), 'attr' => 'employeeNumber',
 				"Text" => _("The user's unique employee number.")
 			),
 			'initials' => array(
-				"Headline" => _("Initials"),
+				"Headline" => _("Initials"), 'attr' => 'initials',
 				"Text" => _("The initials of the user's first names.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
 		);
