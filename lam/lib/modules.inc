@@ -610,6 +610,9 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	if (is_file("./help.php")) $helpPath = "";
 	$title = $entry['Headline'];
 	$message = $entry['Text'];
+	if (isset($entry['attr'])) {
+		$message .= '<br><br><hr class="dotted">' . _('Technical name') . ': <i>' . $entry['attr'] . '</i>';
+	}
 	// replace special characters
 	$message = str_replace(array("'", '"', "\n"), array("\\'", '&quot;', ''), $message);
 	$title = str_replace(array("'", '"', "\n"), array("\\'", '&quot;', ''), $title);

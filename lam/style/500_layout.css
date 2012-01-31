@@ -3,7 +3,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2011  Roland Gruber
+  Copyright (C) 2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -211,6 +211,13 @@ tr.highlight {
 	white-space: nowrap;
 }
 
+hr.dotted {
+	border-bottom: 1px dotted black;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+}
+
 div.ui-progressbar-value {
 	background-image: url(images/pbar-ani.gif);
 }
@@ -361,13 +368,6 @@ input.smallImageButton {
   border: 0px;
   background-color: transparent;
   cursor:pointer;
-}
-
-hr.modulePage {
-  width: 100%;
-  height: 2px;
-  margin-bottom: 20px;
-  margin-top: 3px;
 }
 
 
