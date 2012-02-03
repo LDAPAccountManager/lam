@@ -1,20 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Dutch translation of ldap-account-manager debconf templates.
+# Copyright (C) 2007-2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the ldap-account-manager package.
+# Bart Cornelis <cobaco@skolelinux.no>, 2007.
+# Jeroen Schot <schot@a-eskwadraat.nl>, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ldap-account-manager\n"
+"Project-Id-Version: ldap-account-manager 3.6-1\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
 "POT-Creation-Date: 2010-06-03 12:36+0200\n"
-"PO-Revision-Date: 2007-04-17 18:21+0100\n"
-"Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
-"Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
+"PO-Revision-Date: 2012-02-03 10:49+0100\n"
+"Last-Translator: Jeroen Schot <schot@a-eskwadraat.nl>\n"
+"Language-Team: Debian l10n Dutch <debian-l10n-dutch@lists.debian.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Dutch\n"
 
 #. Type: multiselect
 #. Description
@@ -25,21 +26,15 @@ msgstr "Webserverconfiguratie:"
 #. Type: multiselect
 #. Description
 #: ../templates:1001
-#, fuzzy
-#| msgid ""
-#| "LDAP Account Manager supports any webserver that supports PHP4, but this "
-#| "automatic configuration process only supports Apache and Apache2. If you "
-#| "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/"
-#| "lam"
 msgid ""
 "LDAP Account Manager supports any webserver that supports PHP5, but this "
 "automatic configuration process only supports Apache2. If you choose to "
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP Account Manager ondersteund alle webservers die PHP4 ondersteunen, dit "
-"automatische configuratieproces ondersteund echter enkel Apache en Apache2.  "
-"Als u ervoor kiest om de automatische configuratie uit te voeren wordt LAM "
-"toegankelijk via http(s)://localhost/lam"
+"LDAP Account Manager ondersteund alle webservers die PHP5 ondersteunen, dit "
+"automatische configuratieproces ondersteund alleen Apache2.  Als u ervoor "
+"kiest om de automatische configuratie uit te voeren wordt LAM beschikbaar op "
+"http(s)://localhost/lam."
 
 #. Type: string
 #. Description
@@ -68,39 +63,4 @@ msgstr "Wilt u uw webserver(s) nu herstarten?"
 #: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
-"Uw webserver(s) dienen herstart te worden om de veranderingen te doen ingaan."
-
-#~ msgid "Master configuration password (clear text):"
-#~ msgstr "Meester-configuratiewachtwoord (niet versleuteld):"
-
-#~ msgid ""
-#~ "The configuration profiles are secured by a master password. You will "
-#~ "need it to create and delete profiles. As default it is set to \"lam\" "
-#~ "and can be changed directly in LAM."
-#~ msgstr ""
-#~ "De configuratieprofielen worden beveiligd met een meestwachtwoord. U "
-#~ "heeft dit wachtwoord nodig om profielen aan te maken en te verwijderen. "
-#~ "De standaardwaarde is 'lam' en kan rechtstreeks in LAM veranderd worden."
-
-#~ msgid "Upgrade from pre-0.5.0 versions"
-#~ msgstr "Opwaardering van pre-0.50 versies"
-
-#~ msgid ""
-#~ "Please note that this version uses new file formats for configuration and "
-#~ "account profiles. You will have to update your configuration and create "
-#~ "new account profiles."
-#~ msgstr ""
-#~ "Opgelet: deze versie gebruikt nieuwe bestandsformaten voor configuratie "
-#~ "en account-profielen. U zult uw configuratie moeten bijwerken en nieuwe "
-#~ "account-profielen moeten aanmaken."
-
-#~ msgid "Upgrade from pre-1.0.0 versions"
-#~ msgstr "Opwaardering van pre-1.0.0 versies"
-
-#~ msgid ""
-#~ "Please note that this version uses new file formats for the configuration "
-#~ "profiles. Please edit your configuration files and save the new settings."
-#~ msgstr ""
-#~ "Opgelet: deze versie gebruikt nieuwe bestandsformaten voor configuratie "
-#~ "en account-profielen. Gelieve uw configuratiebestanden aan te passen en "
-#~ "de veranderingen op te slaan."
+"Uw webserver(s) dienen herstart te worden om de veranderingen toe te passen."

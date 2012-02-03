@@ -1,8 +1,9 @@
 ldap-account-manager (3.7.TEST-1) unstable; urgency=low
 
   * new upstream release
+  * Fix "[INTL:nl] Dutch translation of debconf templates" (Closes: #658463)
 
- -- Roland Gruber <post@rolandgruber.de>  Thu, 26 Jan 2012 21:18:09 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 03 Feb 2012 18:14:05 +0100
 
 ldap-account-manager (3.6.1-1) unstable; urgency=low
 
