@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2010  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,11 +58,11 @@ class ieee802Device extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'mac' => array(
-				"Headline" => _("MAC address"),
+				"Headline" => _("MAC address"), 'attr' => 'macAddress',
 				"Text" => _("This is the MAC address of the network card of the device (e.g. 00:01:02:DE:EF:18).")
 			),
 			'macList' => array(
-				"Headline" => _("MAC address list"),
+				"Headline" => _("MAC address list"), 'attr' => 'macAddress',
 				"Text" => _("This is a comma separated list of MAC addresses.")
 			));
 		// upload fields

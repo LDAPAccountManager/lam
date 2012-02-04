@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2010  Roland Gruber
+                2007 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -353,11 +353,11 @@ class sambaGroupMapping extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'displayName' => array(
-				"Headline" => _("Display name"),
+				"Headline" => _("Display name"), 'attr' => 'displayName',
 				"Text" => _("This is the group name which will be shown in Windows.")
 			),
 			'sambaSID' => array(
-				"Headline" => _("Windows group name"),
+				"Headline" => _("Windows group name"), 'attr' => 'sambaSID',
 				"Text" => _("If you want to use a well known RID you can select a well known group.")
 			),
 			'rid' => array(
@@ -369,7 +369,7 @@ class sambaGroupMapping extends baseModule {
 				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")
 			),
 			'type' => array(
-				"Headline" => _("Samba group type"),
+				"Headline" => _("Samba group type"), 'attr' => 'sambaGroupType',
 				"Text" => _("Windows group type.")
 			)
 		);

@@ -393,23 +393,23 @@ class posixGroup extends baseModule implements passwordService {
 		// help Entries
 		$return['help'] = array(
 			'gidNumber'	=> array(
-				"Headline" => _("GID number"),
+				"Headline" => _("GID number"), 'attr' => 'gidNumber',
 				"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")
 			),
 			'description' => array(
-				"Headline" => _("Description"),
+				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Group description. If left empty group name will be used.")
 			),
 			'members' => array(
-				"Headline" => _("Group members"),
+				"Headline" => _("Group members"), 'attr' => 'memberUid',
 				"Text" => _("Users who are member of the current group. Users who have set their primary group to this group will not be shown.")
 			),
 			'upload_members' => array(
-				"Headline" => _("Group members"),
+				"Headline" => _("Group members"), 'attr' => 'memberUid',
 				"Text" => _("Users who will become member of the current group. User names are separated by semicolons.")
 			),
 			'password' => array(
-				"Headline" => _("Group password"),
+				"Headline" => _("Group password"), 'attr' => 'userPassword',
 				"Text" => _("Sets the group password.")
 			),
 			'minMaxGID' => array(
@@ -421,7 +421,7 @@ class posixGroup extends baseModule implements passwordService {
 				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			),
 			'cn' => array(
-				"Headline" => _("Group name"),
+				"Headline" => _("Group name"), 'attr' => 'cn',
 				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ . If group name is already used group name will be expanded with a number. The next free number will be used.")
 			),
 			'changegids' => array(

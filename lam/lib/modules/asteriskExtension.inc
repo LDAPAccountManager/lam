@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2010  Pavel Pozdnyak
-                2009 - 2010  Roland Gruber
+                2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,36 +75,36 @@ class asteriskExtension extends baseModule {
 		// help
 		$return['help'] = array(
 			'AstApplicationData' => array(
-			"Headline" => _("Application data"),
-			"Text" => _("This defines what application Asterisk has to start for this user (e.g. SIP/user1).")
+				"Headline" => _("Application data"), 'attr' => 'AstApplicationData',
+				"Text" => _("This defines what application Asterisk has to start for this user (e.g. SIP/user1).")
 			),			
 			'AstContext' => array(
-			"Headline" => _("Account context"),
-			"Text" => _("The account context stores information about the dial plan.")
+				"Headline" => _("Account context"), 'attr' => 'AstContext',
+				"Text" => _("The account context stores information about the dial plan.")
 			),
 			'AstExtension' => array(
-			"Headline" => _("Extension name"),
-			"Text" => _("The name of the extension (e.g. voicemail or sip).")
+				"Headline" => _("Extension name"), 'attr' => 'AstExtension',
+				"Text" => _("The name of the extension (e.g. voicemail or sip).")
 			),
 			'AstPriority' => array(
-			"Headline" => _("Priority"),
-			"Text" => _("The priority is a sequence number used to order the execution of commands. Commands are executed beginning with the lowest sequence number.")
+				"Headline" => _("Priority"), 'attr' => 'AstPriority',
+				"Text" => _("The priority is a sequence number used to order the execution of commands. Commands are executed beginning with the lowest sequence number.")
 			),
 			'AstApplication' => array(
-			"Headline" => _("Application"),
-			"Text" => _("The name of a command to execute. The available commands may be listed at the Asterisk command line by executing \"core show applications\".")
+				"Headline" => _("Application"), 'attr' => 'AstApplication',
+				"Text" => _("The name of a command to execute. The available commands may be listed at the Asterisk command line by executing \"core show applications\".")
 			),
 			'member' => array(
-			"Headline" => _("Extension owners"),
-			"Text" => _("DNs of the extension owners")
+				"Headline" => _("Extension owners"), 'attr' => 'member',
+				"Text" => _("DNs of the extension owners")
 			),
 			'cn' => array(
-			"Headline" => _("Common name"),
-			"Text" => _("Common name of the Asterisk extension.")
+				"Headline" => _("Common name"), 'attr' => 'cn',
+				"Text" => _("Common name of the Asterisk extension.")
 			),
 			'ownerOptions' => array(
-			"Headline" => _("Options"),
-			"Text" => _("These options change the list of potential extension owners below. You can select to show Asterisk accounts or all users. It is also possible to search the tree suffix if you have users which are not in the standard user suffix.")
+				"Headline" => _("Options"),
+				"Text" => _("These options change the list of potential extension owners below. You can select to show Asterisk accounts or all users. It is also possible to search the tree suffix if you have users which are not in the standard user suffix.")
 			)
 		);
 		// profile options

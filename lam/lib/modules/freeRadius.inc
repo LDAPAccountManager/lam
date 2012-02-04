@@ -73,31 +73,31 @@ class freeRadius extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'radiusFramedIPAddress' => array(
-				"Headline" => _("IP address"),
+				"Headline" => _("IP address"), 'attr' => 'radiusFramedIPAddress',
 				"Text" => _("This is the IP address for the user (e.g. 123.123.123.123).")
 			),
 			'radiusFramedIPNetmask' => array(
-				"Headline" => _("Net mask"),
+				"Headline" => _("Net mask"), 'attr' => 'radiusFramedIPNetmask',
 				"Text" => _("The net mask for the IP address.")
 			),
 			'radiusRealm' => array(
-				"Headline" => _("Realm"),
+				"Headline" => _("Realm"), 'attr' => 'radiusRealm',
 				"Text" => _("The Radius realm of this account.")
 			),
 			'radiusGroupName' => array(
-				"Headline" => _("Group names"),
+				"Headline" => _("Group names"), 'attr' => 'radiusGroupName',
 				"Text" => _("The group names for this account.")
 			),
 			'radiusGroupNameList' => array(
-				"Headline" => _("Group names"),
+				"Headline" => _("Group names"), 'attr' => 'radiusGroupName',
 				"Text" => _("The group names for this account.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'radiusExpiration' => array(
-				"Headline" => _("Expiration date"),
+				"Headline" => _("Expiration date"), 'attr' => 'radiusExpiration',
 				"Text" => _("The account will be locked after this date.")
 			),
 			'radiusIdleTimeout' => array(
-				"Headline" => _("Idle timeout"),
+				"Headline" => _("Idle timeout"), 'attr' => 'radiusIdleTimeout',
 				"Text" => _("Specifies the maximum number of seconds that a connection can be idle before the session is terminated.")
 			),
 			'hiddenOptions' => array(

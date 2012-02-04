@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2011  Roland Gruber
+  Copyright (C) 2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -77,52 +77,52 @@ class eduPerson extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'primaryAffiliation' => array(
-				"Headline" => _("Primary affiliation"),
+				"Headline" => _("Primary affiliation"), 'attr' => 'eduPersonPrimaryAffiliation',
 				"Text" => _("Specifies the person's primary relationship to the institution in broad categories such as student, faculty, staff, alum, etc.")
 			),
 			'scopedAffiliation' => array(
-				"Headline" => _("Scoped affiliation"),
+				"Headline" => _("Scoped affiliation"), 'attr' => 'eduPersonScopedAffiliation',
 				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.")
 			),
 			'nickName' => array(
-				"Headline" => _("Nick names"),
+				"Headline" => _("Nick names"), 'attr' => 'eduPersonNickname',
 				"Text" => _("This is a list of nick names for this user.")
 			),
 			'affiliation' => array(
-				"Headline" => _("Affiliations"),
+				"Headline" => _("Affiliations"), 'attr' => 'eduPersonAffiliation',
 				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc.")
 			),
 			'affiliationUpload' => array(
-				"Headline" => _("Affiliations"),
+				"Headline" => _("Affiliations"), 'attr' => 'eduPersonAffiliation',
 				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc.") . " " .
 							_('Multiple values are separated by comma.')
 			),
 			'principalName' => array(
-				"Headline" => _("Principal name"),
+				"Headline" => _("Principal name"), 'attr' => 'eduPersonPrincipalName',
 				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication. It should be represented in the form \"user@scope\" where scope defines a local security domain.")
 			),
 			'entitlement' => array(
-				"Headline" => _("Entitlements"),
+				"Headline" => _("Entitlements"), 'attr' => 'eduPersonEntitlement',
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.")
 			),
 			'entitlementUpload' => array(
-				"Headline" => _("Entitlements"),
+				"Headline" => _("Entitlements"), 'attr' => 'eduPersonEntitlement',
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.") . " " . _('Multiple values are separated by comma.')
 			),
 			'orgDN' => array(
-				"Headline" => _("Organisation"),
+				"Headline" => _("Organisation"), 'attr' => 'eduPersonOrgDN',
 				"Text" => _("The DN of the directory entry representing the institution with which the person is associated.")
 			),
 			'primaryOrgUnitDN' => array(
-				"Headline" => _("Primary organisational unit"),
+				"Headline" => _("Primary organisational unit"), 'attr' => 'eduPersonPrimaryOrgUnitDN',
 				"Text" => _("The DN of the directory entry representing the person's primary organisational unit.")
 			),
 			'orgUnitDN' => array(
-				"Headline" => _("Organisational units"),
+				"Headline" => _("Organisational units"), 'attr' => 'eduPersonOrgUnitDN',
 				"Text" => _("The DNs of the directory entries representing the person's organisational units.")
 			),
 			'orgUnitDNUpload' => array(
-				"Headline" => _("Organisational units"),
+				"Headline" => _("Organisational units"), 'attr' => 'eduPersonOrgUnitDN',
 				"Text" => _("The DNs of the directory entries representing the person's organisational units.") . ' ' . _('Multiple values are separated by comma.')
 			),
 			'autoAdd' => array(

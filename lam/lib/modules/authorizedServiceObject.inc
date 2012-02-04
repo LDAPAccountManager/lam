@@ -4,6 +4,7 @@ $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011  J de Jong
+  				2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,11 +71,11 @@ class authorizedServiceObject extends baseModule {
 		// help Entries
 		$return['help'] = array (
 			'authorizedService' => array (
-				"Headline" => _("Authorized Services"),
+				"Headline" => _("Authorized Services"), 'attr' => 'authorizedService',
 				"Text" => _("Service name (e.g. sshd, imap, ftp). Enter one service per entry."). ' '. _("Use * for all services.")
 			),
 			'authorizedServices' => array (
-				"Headline" => _("Authorized Services"),
+				"Headline" => _("Authorized Services"), 'attr' => 'authorizedService',
 				"Text" => _("Comma separated list of services (e.g. sshd, imap, ftp)."). ' '. _("Use * for all services.")
 			),
 			'autoAdd' => array(

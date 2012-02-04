@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2010  Roland Gruber
+                2008 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -83,29 +83,36 @@ class ddns extends baseModule {
 		$return['attributes'] = array('dhcpOption', 'dhcpStatements');
 		// help Entries
 		$return['help'] = array(
-				'active' => array(
+			'active' => array(
 				"Headline" => _("Activate DynDNS"),
 				"Text" => _("Should DDNS (Dynamic DNS) be activated?")
-			) , 'fixed_ips' => array(
+			),
+			'fixed_ips' => array(
 				"Headline" => _("Fix IP addresses"),
 				"Text" => _("Should fix IP addresses be added to the DNS server?")
-			) , 'client_insert' => array(
+			),
+			'client_insert' => array(
 				"Headline" => _("Disable client updates"),
 				"Text" => _("Disables the client to update DNS entries.")
-			) , 'keypath' => array(
+			),
+			'keypath' => array(
 				"Headline" => _("Path to key for DNS updates"),
 				"Text" => _("The key enables the DHCP server to perform DNS updates." .
 				" " . "The key is generated with \"genDDNSkey\".")
-			) , 'dns' => array(
+			),
+			'dns' => array(
 				"Headline" => _("IP address of the DNS server"),
 				"Text" => _("Please enter the IP address of your DNS server.")
-			) , 'zone' => array(
+			),
+			'zone' => array(
 				"Headline" => _("Zone names"),
 				"Text" => _("Zone names for the DNS server (e.g. company.local).")
-			) , 'zone_reverse' => array(
+			),
+			'zone_reverse' => array(
 				"Headline" => _("Reverse zone names"),
 				"Text" => ("Name of the reverse zones of the DNS server (e.g. 0.168.192.in-addr.arpa).")
-			) ,);
+			),
+		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'DNSserver' => _('IP address of the DNS server'),

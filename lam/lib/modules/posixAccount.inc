@@ -343,7 +343,7 @@ class posixAccount extends baseModule implements passwordService {
 				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			),
 			'uidNumber' => array(
-				"Headline" => _("UID number"),
+				"Headline" => _("UID number"), 'attr' => 'uidNumber',
 				"Text" => _("If empty UID number will be generated automaticly.")
 			),
 			'group_upload' => array(
@@ -368,7 +368,7 @@ class posixAccount extends baseModule implements passwordService {
 			),
 			'user' => array(
 				'uid' => array(
-					"Headline" => _("User name"),
+					"Headline" => _("User name"), 'attr' => 'uid',
 					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
 				),
 				'gecos' => array(
@@ -376,11 +376,11 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("User description. If left empty first and last name will be used.")
 				),
 				'gidNumber' => array(
-					"Headline" => _("Primary group"),
+					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the user should be member of.")
 				),
 				'homeDirectory' => array(
-					"Headline" => _("Home directory"),
+					"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 					"Text" => _('$user and $group will be replaced with user name and primary group name.')
 				),
 				'userPassword' => array(
@@ -400,13 +400,13 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")
 				),
 				'cn' => array (
-					"Headline" => _("Common name"),
+					"Headline" => _("Common name"), 'attr' => 'cn',
 					"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
 				)
 			),
 			'host' => array(
 				'uid' => array(
-					"Headline" => _("Host name"),
+					"Headline" => _("Host name"), 'attr' => 'uid',
 					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
@@ -414,7 +414,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("Host description. If left empty host name will be used.")
 				),
 				'gidNumber' => array(
-					"Headline" => _("Primary group"),
+					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the host should be member of.")
 				),
 				'description' => array (
@@ -422,7 +422,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("Host description. If left empty host name will be used.")
 				),
 				'cn' => array (
-					"Headline" => _("Common name"),
+					"Headline" => _("Common name"), 'attr' => 'cn',
 					"Text" => _("This is the natural name of the host. If empty, the host name will be used.")
 				)
 			)

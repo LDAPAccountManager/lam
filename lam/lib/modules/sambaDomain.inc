@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2011  Roland Gruber
+  Copyright (C) 2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,67 +67,67 @@ class sambaDomain extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'domainName' => array(
-				"Headline" => _("Domain name"),
+				"Headline" => _("Domain name"), 'attr' => 'sambaDomainName',
 				"Text" => _("The name of your Windows domain or workgroup.")
 			),
 			'domainSID' => array(
-				"Headline" => _("Domain SID"),
+				"Headline" => _("Domain SID"), 'attr' => 'sambaSID',
 				"Text" => _("The SID of your Samba server. Get it with \"net getlocalsid\".")
 			),
 			'nextRID' => array(
-				"Headline" => _("Next RID"),
+				"Headline" => _("Next RID"), 'attr' => 'sambaNextRid',
 				"Text" => _("Next RID to use when creating accounts (only used by Winbind).")
 			),
 			'nextUserRID' => array(
-				"Headline" => _("Next user RID"),
+				"Headline" => _("Next user RID"), 'attr' => 'sambaNextUserRid',
 				"Text" => _("Next RID to use when creating user accounts (only used by Winbind).")
 			),
 			'nextGroupRID' => array(
-				"Headline" => _("Next group RID"),
+				"Headline" => _("Next group RID"), 'attr' => 'sambaNextGroupRid',
 				"Text" => _("Next RID to use when creating group accounts (only used by Winbind).")
 			),
 			'RIDbase' => array(
-				"Headline" => _("RID base"),
+				"Headline" => _("RID base"), 'attr' => 'sambaAlgorithmicRidBase',
 				"Text" => _("Used for calculating RIDs from UID/GID. Do not change if unsure.")
 			),
 			'minPwdLength' => array(
-				"Headline" => _("Minimal password length"),
+				"Headline" => _("Minimal password length"), 'attr' => 'sambaMinPwdLength',
 				"Text" => _("Here you can specify the minimum number of characters for a user password.")
 			),
 			'pwdHistLength' => array(
-				"Headline" => _("Password history length"),
+				"Headline" => _("Password history length"), 'attr' => 'sambaPwdHistoryLength',
 				"Text" => _("This is the number of passwords which are saved to prevent that users reuse old passwords.")
 			),
 			'logonToChgPwd' => array(
-				"Headline" => _("Logon for password change"),
+				"Headline" => _("Logon for password change"), 'attr' => 'sambaLogonToChgPwd',
 				"Text" => _("If set then users need to login to change their password.")
 			),
 			'forceLogoff' => array(
-				"Headline" => _("Disconnect users outside logon hours"),
+				"Headline" => _("Disconnect users outside logon hours"), 'attr' => 'sambaForceLogoff',
 				"Text" => _("Disconnects users if they are logged in outside logon hours.")
 			),
 			'refuseMachinePwdChange' => array(
-				"Headline" => _("Allow machine password changes"),
+				"Headline" => _("Allow machine password changes"), 'attr' => 'sambaRefuseMachinePwdChange',
 				"Text" => _("Defines if workstations may change their passwords.")
 			),
 			'lockoutThreshold' => array(
-				"Headline" => _("Lockout users after bad logon attempts"),
+				"Headline" => _("Lockout users after bad logon attempts"), 'attr' => 'sambaLockoutThreshold',
 				"Text" => _("This is the number of bad logon attempts (0 - 999) before the account is deactivated. 0 means unlimited attempts.")
 			),
 			'minPwdAge' => array(
-				"Headline" => _("Minimum password age"),
+				"Headline" => _("Minimum password age"), 'attr' => 'sambaMinPwdAge',
 				"Text" => _("Number of seconds after the user is allowed to change his password again.")
 			),
 			'maxPwdAge' => array(
-				"Headline" => _("Maximum password age"),
+				"Headline" => _("Maximum password age"), 'attr' => 'sambaMaxPwdAge',
 				"Text" => _("Number of seconds after which the user must change his password.")
 			),
 			'lockoutDuration' => array(
-				"Headline" => _("Lockout duration"),
+				"Headline" => _("Lockout duration"), 'attr' => 'sambaLockoutDuration',
 				"Text" => _("This is the time (in minutes) for which the user may not log in after the account was locked. -1 means forever.")
 			),
 			'lockoutObservationWindow' => array(
-				"Headline" => _("Reset time after lockout"),
+				"Headline" => _("Reset time after lockout"), 'attr' => 'sambaLockoutObservationWindow',
 				"Text" => _("Number of minutes after which the bad logon attempts are reset.")
 			));
 		// upload fields

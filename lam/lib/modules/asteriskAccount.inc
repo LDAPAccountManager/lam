@@ -91,23 +91,23 @@ class asteriskAccount extends baseModule implements passwordService {
 		// help
 		$return['help'] = array(
 			'AstAccountCallerID' => array(
-				"Headline" => _("Caller ID"),
+				"Headline" => _("Caller ID"), 'attr' => 'AstAccountCallerID',
 				"Text" => _("This is the ID of the user in the Asterisk database. It may contain digits and letters (e.g. user1 or 200134).")
 			),
 			'AstAccountHost' => array(
-				"Headline" => _("Host"),
+				"Headline" => _("Host"), 'attr' => 'AstAccountHost',
 				"Text" => _("This is the machine id (e.g. IP address or host name) from which the user can call/receive calls.")
 			),
 			'AstAccountContext' => array(
-				"Headline" => _("Account context"),
+				"Headline" => _("Account context"), 'attr' => 'AstAccountContext',
 				"Text" => _("The account context stores information about the dial plan.")
 			),
 			'AstAccountRealmedPassword' => array(
-				"Headline" => _("Password"),
+				"Headline" => _("Password"), 'attr' => 'AstAccountRealmedPassword',
 				"Text" => _("Please enter the password which you want to set for this account.")
 			),
 			'AstAccountType' => array(
-				"Headline" => _("Account type"),
+				"Headline" => _("Account type"), 'attr' => 'AstAccountType',
 				"Text" => _("Please enter the account's type (e.g. \"friend\").")
 			),
 			'AsteriskRealm' => array(
@@ -115,119 +115,119 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Text" => _("Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
 			),
 			'AstAccountUserAgent' => array(
-				"Headline" => _("User agent"),
+				"Headline" => _("User agent"), 'attr' => 'AstAccountUserAgent',
 				"Text" => _("SIP user agent identification.")
 			),
 			'AstAccountAMAFlags' => array(
-				"Headline" => _("AMA flags"),
+				"Headline" => _("AMA flags"), 'attr' => 'AstAccountAMAFlags',
 				"Text" => _("Asterisk AMA (Automated Message Accounting) flags.")
 			),
 			'AstAccountCallGroup' => array(
-				"Headline" => _("Call groups"),
+				"Headline" => _("Call groups"), 'attr' => 'AstAccountCallGroup',
 				"Text" => _("The user's call groups.")
 			),                    
 			'AstAccountDTMFMode' => array(
-				"Headline" => _("DTMF mode"),
+				"Headline" => _("DTMF mode"), 'attr' => 'AstAccountDTMFMode',
 				"Text" => _("DTMF mode for SIP client configuration.")
 			),
 			'AstAccountFromUser' => array(
-				"Headline" => _("From user"),
+				"Headline" => _("From user"), 'attr' => 'AstAccountFromUser',
 				"Text" => _("From user setting for this account.")
 			),
 			'AstAccountFromDomain' => array(
-				"Headline" => _("From domain"),
+				"Headline" => _("From domain"), 'attr' => 'AstAccountFromDomain',
 				"Text" => _("From domain setting for this account.")
 			),
 			'AstAccountFullContact' => array(
-				"Headline" => _("Full contact"),
+				"Headline" => _("Full contact"), 'attr' => 'AstAccountFullContact',
 				"Text" => _("SIP URI for a realtime peer.")
 			),
 			'AstAccountInsecure' => array(
-				"Headline" => _("Insecure"),
+				"Headline" => _("Insecure"), 'attr' => 'AstAccountInsecure',
 				"Text" => _("This is typically used to allow incoming calls (e.g. from FWD) while having a type=friend entry defined with username and password.")
 			),
 			'AstAccountMailbox' => array(
-				"Headline" => _("Mailbox"),
+				"Headline" => _("Mailbox"), 'attr' => 'AstAccountMailbox',
 				"Text" => _("Defines the mailbox to check for message waiting indication (MWI) for this peer.")
 			),
 			'AstAccountNAT' => array(
-				"Headline" => _("NAT"),
+				"Headline" => _("NAT"), 'attr' => 'AstAccountNAT',
 				"Text" => _("NAT setting for this account.")
 			),
 			'AstAccountDeny' => array(
-				"Headline" => _("Deny"),
+				"Headline" => _("Deny"), 'attr' => 'AstAccountDeny',
 				"Text" => _("Used to limit SIP traffic to and from this peer to a certain IP or network.")
 			),
 			'AstAccountPermit' => array(
-				"Headline" => _("Permit"),
+				"Headline" => _("Permit"), 'attr' => 'AstAccountPermit',
 				"Text" => _("Used to limit SIP traffic to and from this peer to a certain IP or network.")
 			),
 			'AstAccountPickupGroup' => array(
-				"Headline" => _("Pickup group"),
+				"Headline" => _("Pickup group"), 'attr' => 'AstAccountPickupGroup',
 				"Text" => _("Specifies the user's pickup group.")
 			),
 			'AstAccountPort' => array(
-				"Headline" => _("Port"),
+				"Headline" => _("Port"), 'attr' => 'AstAccountPort',
 				"Text" => _("Port number.")
 			),
 			'AstAccountQualify' => array(
-				"Headline" => _("Qualify"),
+				"Headline" => _("Qualify"), 'attr' => 'AstAccountQualify',
 				"Text" => _("Used to regularly check that a device is still online.")
 			),
 			'AstAccountRestrictCID' => array(
-				"Headline" => _("Restrict caller ID"),
+				"Headline" => _("Restrict caller ID"), 'attr' => 'AstAccountRestrictCID',
 				"Text" => _("Use this to hide the caller ID.")
 			),
 			'AstAccountRTPTimeout' => array(
-				"Headline" => _("RTP timeout"),
+				"Headline" => _("RTP timeout"), 'attr' => 'AstAccountRTPTimeout',
 				"Text" => _("Used to automatically hangup the call if no RTP traffic is received.")
 			),
 			'AstAccountRTPHoldTimeout' => array(
-				"Headline" => _("RTP hold timeout"),
+				"Headline" => _("RTP hold timeout"), 'attr' => 'AstAccountRTPHoldTimeout',
 				"Text" => _("Maximum number of seconds of inactivity before terminating a call on hold.")
 			),
 			'AstAccountDisallowedCodec' => array(
-				"Headline" => _("Disallowed codec"),
+				"Headline" => _("Disallowed codec"), 'attr' => 'AstAccountDisallowedCodec',
 				"Text" => _("List of disallowed codecs.")
 			),
 			'AstAccountAllowedCodec' => array(
-				"Headline" => _("Allowed codec"),
+				"Headline" => _("Allowed codec"), 'attr' => 'AstAccountAllowedCodec',
 				"Text" => _("List of allowed codecs.")
 			),
 			'AstAccountMusicOnHold' => array(
-				"Headline" => _("Music on hold"),
+				"Headline" => _("Music on hold"), 'attr' => 'AstAccountMusicOnHold',
 				"Text" => _("Music to play on hold.")
 			),
 			'AstAccountExpirationTimestamp' => array(
-				"Headline" => _("Expiration timestamp"),
+				"Headline" => _("Expiration timestamp"), 'attr' => 'AstAccountExpirationTimestamp',
 				"Text" => _("Expiration timestamp (\"regseconds\" option).")
 			),
 			'AstAccountRegistrationContext' => array(
-				"Headline" => _("Registration context"),
+				"Headline" => _("Registration context"), 'attr' => 'AstAccountRegistrationContext',
 				"Text" => _("If registration context is specified, Asterisk will dynamically create and destroy a NoOp priority 1 extension for a given peer who registers or unregisters with Asterisk.")
 			),
 			'AstAccountRegistrationExten' => array(
-				"Headline" => _("Registration extension"),
+				"Headline" => _("Registration extension"), 'attr' => 'AstAccountRegistrationExten',
 				"Text" => _("Used for registration context.")
 			),
 			'AstAccountCanCallForward' => array(
-				"Headline" => _("Can call forward"),
+				"Headline" => _("Can call forward"), 'attr' => 'AstAccountCanCallForward',
 				"Text" => _("Specifies if the user can call forward.")
 			),
 			'AstAccountIPAddress' => array(
-				"Headline" => _("IP address"),
+				"Headline" => _("IP address"), 'attr' => 'AstAccountIPAddress',
 				"Text" => _("IP address of the peer. Valid only for realtime peers.")
 			),
 			'AstAccountDefaultUser' => array(
-				"Headline" => _("Default user"),
+				"Headline" => _("Default user"), 'attr' => 'AstAccountDefaultUser',
 				"Text" => _("Authentication user for outbound proxies.")
 			),
 			'AstAccountRegistrationServer' => array(
-				"Headline" => _("Registration server"),
+				"Headline" => _("Registration server"), 'attr' => 'AstAccountRegistrationServer',
 				"Text" => _("IP address or domain name of the registration server.")
 			),
 			'AstAccountLastQualifyMilliseconds' => array(
-				"Headline" => _("Last qualify milliseconds"),
+				"Headline" => _("Last qualify milliseconds"), 'attr' => 'AstAccountLastQualifyMilliseconds',
 				"Text" => _("The number of milliseconds for the last qualify.")
 			),
 			'hiddenOptions' => array(

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2011  Roland Gruber
+                2008 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -120,28 +120,35 @@ class dhcp_settings extends baseModule {
 		$return['attributes'] = array('cn', 'dhcpOption', 'dhcpComments', 'dhcpNetMask', 'dhcpStatements');
 		// help Entries
 		$return['help'] = array(
-				'domainname' => array(
+			'domainname' => array(
 				"Headline" => _("Domain name"),
 				"Text" => _("The domain name of the subnet.")
-			) , 'subnet' => array(
-				"Headline" => _("Subnet"),
+			),
+			'subnet' => array(
+				"Headline" => _("Subnet"), 'attr' => 'cn',
 				"Text" => _("The name of the subnet. Example: 192.168.10.0")
-			) , 'leasetime' => array(
+			),
+			'leasetime' => array(
 				"Headline" => _("Lease time"),
 				"Text" => _("The lease time specifies after how many seconds the client should request a new IP address.")
-			) , 'max_leasetime' => array(
+			),
+			'max_leasetime' => array(
 				"Headline" => _("Maximum lease time"),
 				"Text" => _("The maximum lease time specifies after how many seconds the client must request a new IP address.")
-			) , 'dns' => array(
+			),
+			'dns' => array(
 				"Headline" => _("DNS (Domain Name System)"),
 				"Text" => _("The IP address(es) of the DNS servers. Multiple addresses are separated by \",\". Example: 192.168.0.10, 192.168.0.11")
-			) , 'gateway' => array(
+			),
+			'gateway' => array(
 				"Headline" => _("Default gateway"),
 				"Text" => _("Packets are sent to the default gateway if the receiver does not reside in the same network. The default gateway routes them to the target network.")
-			) , 'netbios' => array(
+			),
+			'netbios' => array(
 				"Headline" => _("Netbios name servers"),
 				"Text" => _("The IP addresses of the Netbios name servers (e.g. \"123.123.123.123, 123.123.123.124\").")
-			) , 'netbios_type' => array(
+			),
+			'netbios_type' => array(
 				"Headline" => _("Netbios node type"),
 				"Text" => _("<b>B-Node (0x01): Broadcast.</b><br/>The client tries to find other workstations via broadcasting
 (works only inside the same collision domain, viz. the same subnet).<br/><br/>
@@ -156,16 +163,20 @@ The node tries broadcasting first. If that fails then it tries WINS.<br/><br/>
 The node tries WINS first. If that fails it tries broadcasting.<br/><br/>
 
 By default, the nodes are configured as H-Nodes which fits for small networks. In large networks Point-to-Point (0x02) should be used.")
-			) , 'subnetmask' => array(
+			),
+			'subnetmask' => array(
 				"Headline" => _("Subnet mask"),
 				"Text" => _("The subnet mask of the network.")
-			) , 'netmask' => array(
-				"Headline" => _("Net mask"),
+			),
+			'netmask' => array(
+				"Headline" => _("Net mask"), 'attr' => 'dhcpNetMask',
 				"Text" => _("The net mask is derived from the subnet mask. LAM will calculate it automatically.")
-			), 'description' => array(
-				"Headline" => _("Description"),
+			),
+			'description' => array(
+				"Headline" => _("Description"), 'attr' => 'dhcpComments',
 				"Text" => _("Here you can enter a description for this DHCP entry.")
-			) );
+			)
+		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'subnet' => _('Subnet'),

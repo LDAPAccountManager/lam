@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2010  Roland Gruber
+  Copyright (C) 2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,11 +59,11 @@ class ldapPublicKey extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'key' => array(
-				"Headline" => _("SSH public key"),
+				"Headline" => _("SSH public key"), 'attr' => 'sshPublicKey',
 				"Text" => _("Please enter your public SSH key.")
 			),
 			'keyList' => array(
-				"Headline" => _("SSH public key"),
+				"Headline" => _("SSH public key"), 'attr' => 'sshPublicKey',
 				"Text" => _("Please a comma separated list of your public SSH keys.")
 			)
 		);

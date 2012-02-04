@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2010  Roland Gruber
+  Copyright (C) 2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,23 +70,23 @@ class nisnetgroup extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
-				"Headline" => _("Group name"),
+				"Headline" => _("Group name"), 'attr' => 'cn',
 				"Text" => _("This is the name of this group.")
 			),
 			'description' => array(
-				"Headline" => _("Description"),
+				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Here you can enter a description for this group.")
 			),
 			'memberNisNetgroup' => array(
-				"Headline" => _("Subgroups"),
+				"Headline" => _("Subgroups"), 'attr' => 'memberNisNetgroup',
 				"Text" => _("Here you can specify subgroups which are included in this NIS netgroup. All members of the subgroups will be treated as members of this group.")
 			),
 			'members' => array(
-				"Headline" => _("Members"),
+				"Headline" => _("Members"), 'attr' => 'nisNetgroupTriple',
 				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.")
 						),
 			'membersUpload' => array(
-				"Headline" => _("Members"),
+				"Headline" => _("Members"), 'attr' => 'nisNetgroupTriple',
 				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.") . ' ' .
 						_("For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon.")
 						),

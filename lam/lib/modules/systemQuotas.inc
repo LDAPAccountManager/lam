@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011  Roland Gruber
+  Copyright (C) 2011 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class systemQuotas extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'quota' => array(
-				"Headline" => _("Quota"),
+				"Headline" => _("Quota"), 'attr' => 'quota',
 				"Text" => _("Please enter the quota settings for this user. The syntax is: {mount point},{soft block limit},{hard block limit},{soft inode limit},{hard inode limit}.")
 							. ' ' . _('Multiple values are separated by semicolon.')
 			)

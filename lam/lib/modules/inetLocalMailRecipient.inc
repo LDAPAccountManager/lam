@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,19 +58,19 @@ class inetLocalMailRecipient extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'routingAdr' => array(
-				"Headline" => _("Routing address"),
+				"Headline" => _("Routing address"), 'attr' => 'mailRoutingAddress',
 				"Text" => _("This is the target email address for the user's mails.")
 			),
 			'localAdr' => array(
-				"Headline" => _("Local address"),
+				"Headline" => _("Local address"), 'attr' => 'mailLocalAddress',
 				"Text" => _("This is one of the users public email addresses.")
 			),
 			'localAdrList' => array(
-				"Headline" => _("Local address list"),
+				"Headline" => _("Local address list"), 'attr' => 'mailLocalAddress',
 				"Text" => _("This is a comma separated list of the users public email addresses.")
 			),
 			'host' => array(
-				"Headline" => _("Mail server"),
+				"Headline" => _("Mail server"), 'attr' => 'mailHost',
 				"Text" => _("This is the mail server for the user.")
 			));
 		// profile options

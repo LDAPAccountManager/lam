@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -64,15 +64,15 @@ class nisMailAlias extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'alias' => array(
-				"Headline" => _("Alias name"),
+				"Headline" => _("Alias name"), 'attr' => 'cn',
 				"Text" => _("Mails to this name are forwarded to the recipients.")
 			),
 			'recipient' => array(
-				"Headline" => _("Recipient"),
+				"Headline" => _("Recipient"), 'attr' => 'rfc822MailMember',
 				"Text" => _("This is one recipient for this alias.")
 			),
 			'recipientList' => array(
-				"Headline" => _("Recipient list"),
+				"Headline" => _("Recipient list"), 'attr' => 'rfc822MailMember',
 				"Text" => _("This is a comma separated list of recipients.")
 			));
 		// upload fields

@@ -79,35 +79,35 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		// help
 		$return['help'] = array(
 			'AstContext' => array(
-				"Headline" => _("Account context"),
+				"Headline" => _("Account context"), 'attr' => 'AstContext',
 				"Text" => _("The account context stores information about the dial plan.")
 			),
 			'AstVoicemailMailbox' => array(
-				"Headline" => _("Mailbox"),
+				"Headline" => _("Mailbox"), 'attr' => 'AstVoicemailMailbox',
 				"Text" => _("Voicemail mailbox for this account.")
 			),
 			'AstVoicemailPassword' => array(
-				"Headline" => _("Password"),
+				"Headline" => _("Password"), 'attr' => 'AstVoicemailPassword',
 				"Text" => _("Password for voicemail mailbox.")
 			),
 			'AstVoicemailFullname' => array(
-				"Headline" => _("Full name"),
+				"Headline" => _("Full name"), 'attr' => 'AstVoicemailFullname',
 				"Text" => _("Full name for Asterisk voicemail mailbox.")
 			),
 			'AstVoicemailEmail' => array(
-				"Headline" => _("Email address"),
+				"Headline" => _("Email address"), 'attr' => 'AstVoicemailEmail',
 				"Text" => _("Email address for this voicemail account.")
 			),
 			'AstVoicemailPager' => array(
-				"Headline" => _("Pager"),
+				"Headline" => _("Pager"), 'attr' => 'AstVoicemailPager',
 				"Text" => _("Pager number for Asterisk voicemail.")
 			),
 			'AstVoicemailOptions' => array(
-				"Headline" => _("Options"),
+				"Headline" => _("Options"), 'attr' => 'AstVoicemailOptions',
 				"Text" => _("Options for Asterisk voicemail account (e.g. sendvoicemail=yes).")
 			),
 			'AstVoicemailContext' => array(
-				"Headline" => _("Voicemail context"),
+				"Headline" => _("Voicemail context"), 'attr' => 'AstVoicemailContext',
 				"Text" => _("Asterisk voicemail context.")
 			),
 		);

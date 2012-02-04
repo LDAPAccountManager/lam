@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -120,47 +120,47 @@ class kolabUser extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'invPol' => array(
-				"Headline" => _("Invitation policy"),
+				"Headline" => _("Invitation policy"), 'attr' => 'kolabInvitationPolicy',
 				"Text" => _("For automatic invitation handling.")
 			),
 			'invPolList' => array(
-				"Headline" => _("Invitation policy list"),
+				"Headline" => _("Invitation policy list"), 'attr' => 'kolabInvitationPolicy',
 				"Text" => _("This is a comma separated list of invitation policies.")
 			),
 			'delegate' => array(
-				"Headline" => _("Delegates"),
+				"Headline" => _("Delegates"), 'attr' => 'kolabDelegate',
 				"Text" => _("A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails.")
 			),
 			'delegateList' => array(
-				"Headline" => _("Delegates"),
+				"Headline" => _("Delegates"), 'attr' => 'kolabDelegate',
 				"Text" => _("This is a comma separated list of delegates.")
 			),
 			'alias' => array(
-				"Headline" => _("Email alias"),
+				"Headline" => _("Email alias"), 'attr' => 'alias',
 				"Text" => _("Email alias for this account.")
 			),
 			'aliasList' => array(
-				"Headline" => _("Email alias list"),
+				"Headline" => _("Email alias list"), 'attr' => 'alias',
 				"Text" => _("This is a comma separated list of eMail aliases.")
 			),
 			'country' => array(
-				"Headline" => _("Country"),
+				"Headline" => _("Country"), 'attr' => 'c',
 				"Text" => _("The country name of the user.")
 			),
 			'homeServer' => array(
-				"Headline" => _("Mailbox home server"),
+				"Headline" => _("Mailbox home server"), 'attr' => 'kolabHomeServer',
 				"Text" => _("The name of the server where the mailbox is located.")
 			),
 			'freeBusy' => array(
-				"Headline" => _("Free/Busy interval"),
+				"Headline" => _("Free/Busy interval"), 'attr' => 'kolabFreeBusyFuture',
 				"Text" => _("This is the time limit (in days) for other users who want to check future appointments. If you leave this blank the default (60 days) will be set.")
 			),
 			'quota' => array(
-				"Headline" => _("Mail quota"),
+				"Headline" => _("Mail quota"), 'attr' => 'cyrus-userquota',
 				"Text" => _("The Cyrus mail quota for users in MBytes, leave blank for unlimited space.")
 			),
 			'deleteFlag' => array(
-				"Headline" => _("Mark for deletion"),
+				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
 				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
 			));
 		// upload fields

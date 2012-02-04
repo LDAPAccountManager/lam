@@ -233,7 +233,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
-				"Headline" => _("Display name"),
+				"Headline" => _("Display name"), 'attr' => 'displayName',
 				"Text" => _("This is the account's full name on Windows systems.")),
 			"password" => array(
 				"Headline" => _("Samba password"),
@@ -277,28 +277,28 @@ class sambaSamAccount extends baseModule implements passwordService {
 			"pwdMustChange" => array ("Headline" => _("User must change password"),
 				"Text" => _("Date after the user must change his password.")),
 			"homeDrive" => array(
-				"Headline" => _("Home drive"),
+				"Headline" => _("Home drive"), 'attr' => 'sambaHomeDrive',
 				"Text" => _("The home directory will be connected under this drive letter.")),
 			"homePath" => array(
-				"Headline" => _("Home path"),
+				"Headline" => _("Home path"), 'attr' => 'sambaHomePath',
 				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"profilePath" => array(
-				"Headline" => _("Profile path"),
+				"Headline" => _("Profile path"), 'attr' => 'sambaProfilePath',
 				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"scriptPath" => array(
-				"Headline" => _("Logon script"),
+				"Headline" => _("Logon script"), 'attr' => 'sambaLogonScript',
 				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"userWorkstations" => array(
-				"Headline" => _("Samba workstations"),
+				"Headline" => _("Samba workstations"), 'attr' => 'sambaUserWorkstations',
 				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation.")),
 			"workstations" => array(
-				"Headline" => _("Samba workstations"),
+				"Headline" => _("Samba workstations"), 'attr' => 'sambaUserWorkstations',
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
 			"group" => array(
-				"Headline" => _("Windows primary group"),
+				"Headline" => _("Windows primary group"), 'attr' => 'sambaPrimaryGroupSID',
 				"Text" => _("This is the user's primary Windows group.")),
 			"groupUpload" => array(
-				"Headline" => _("Windows primary group SID"),
+				"Headline" => _("Windows primary group SID"), 'attr' => 'sambaPrimaryGroupSID',
 				"Text" => _("This is the SID of the user's primary Windows group.")),
 			"specialUser" => array(
 				"Headline" => _("Special user"),
@@ -311,16 +311,16 @@ class sambaSamAccount extends baseModule implements passwordService {
 				"Headline" => _("Samba RID"),
 				"Text" => _("This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
 			"domain" => array(
-				"Headline" => _("Domain"),
+				"Headline" => _("Domain"), 'attr' => 'sambaDomainName',
 				"Text" => _("Windows domain name of account.")),
 			"logonHours" => array(
-				"Headline" => _("Logon hours"),
+				"Headline" => _("Logon hours"), 'attr' => 'sambaLogonHours',
 				"Text" => _("This option defines the allowed logon hours for this account.")),
 			"logonHoursUpload" => array(
-				"Headline" => _("Logon hours"),
+				"Headline" => _("Logon hours"), 'attr' => 'sambaLogonHours',
 				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT.")),
 			'expireDate' => array (
-				"Headline" => _("Account expiration date"),
+				"Headline" => _("Account expiration date"), 'attr' => 'sambaKickoffTime',
 				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")),
 			'timeZone' => array (
 				"Headline" => _("Time zone"),

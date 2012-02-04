@@ -165,23 +165,23 @@ class shadowAccount extends baseModule implements passwordService {
 		// help Entries
 		$return['help'] = array (
 			'shadowWarning' => array (
-				"Headline" => _("Password warning"),
+				"Headline" => _("Password warning"), 'attr' => 'shadowWarning',
 				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be >0."). ' '. _("Can be left empty.")
 			),
 			'shadowInactive' => array (
-				"Headline" => _("Password expiration"),
+				"Headline" => _("Password expiration"), 'attr' => 'shadowInactive',
 				"Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")
 			),
 			'shadowMin' => array (
-				"Headline" => _("Minimum password age"),
+				"Headline" => _("Minimum password age"), 'attr' => 'shadowMin',
 				"Text" => _("Number of days a user has to wait until he is allowed to change his password again. If set value must be >0."). ' '. _("Can be left empty.")
 			),
 			'shadowMax' => array (
-				"Headline" => _("Maximum password age"),
+				"Headline" => _("Maximum password age"), 'attr' => 'shadowMax',
 				"Text" => _("Number of days after a user has to change his password again. If set value must be >0."). ' '. _("Can be left empty.")
 			),
 			'shadowExpire' => array (
-				"Headline" => _("Account expiration date"),
+				"Headline" => _("Account expiration date"), 'attr' => 'shadowExpire',
 				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")
 			),
 			'autoAdd' => array(
@@ -189,7 +189,7 @@ class shadowAccount extends baseModule implements passwordService {
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			),
 			'shadowLastChange' => array(
-				"Headline" => _("Last password change"),
+				"Headline" => _("Last password change"), 'attr' => 'shadowLastChange',
 				"Text" => _("This is the date when the user changed his password. If you specify a maximum password age then you can force a password change here.")
 			)
 		);
