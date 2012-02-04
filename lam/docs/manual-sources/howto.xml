@@ -3248,11 +3248,19 @@ Run slapindex to rebuild the index.
 
       <itemizedlist>
         <listitem>
-          <para>Users (Personal + Unix + Zarafa)</para>
+          <para>Users (Personal + Unix + Zarafa (+ Zarafa contact))</para>
         </listitem>
 
         <listitem>
           <para>Groups (Unix + Zarafa)</para>
+        </listitem>
+
+        <listitem>
+          <para>Zarafa dynamic groups (Zarafa dynamic group)</para>
+        </listitem>
+
+        <listitem>
+          <para>Zarafa address lists (Zarafa address list)</para>
         </listitem>
 
         <listitem>
