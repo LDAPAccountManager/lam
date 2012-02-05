@@ -1400,9 +1400,11 @@ class accountContainer {
 	* Loads an LDAP account with the given DN.
 	*
 	* @param string $dn the DN of the account
+	* @param array $infoAttributes list of additional informational attributes that are added to the LDAP attributes
+	* E.g. this is used to inject the clear text password in the file upload. Informational attribute names must start with "INFO.". 
 	* @return array error messages
 	*/
-	function load_account($dn) {
+	function load_account($dn, $infoAttributes = array()) {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
@@ -1436,6 +1438,8 @@ class accountContainer {
 				$attr[$binaryAttr[$i]] = $binData;
 			}
 		}
+		// add informational attributes
+		$attr = array_merge($attr, $infoAttributes);
 		// save original attributes
 		$this->attributes_orig = $attr;
 

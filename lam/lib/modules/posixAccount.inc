@@ -140,7 +140,7 @@ class posixAccount extends baseModule implements passwordService {
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'userid' => 'uid');
 		// managed attributes
 		$return['attributes'] = array('cn', 'uid', 'uidNumber', 'gidNumber', 'homeDirectory',
-			'userPassword', 'loginShell', 'gecos');
+			'userPassword', 'loginShell', 'gecos', 'INFO.userPasswordClearText');
 		if ($this->get_scope() == "user") {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
@@ -1482,6 +1482,9 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		if (isset($this->clearTextPassword)) {
 			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
+		}
+		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
+			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['INFO.userPasswordClearText'] . '</value></block>');
 		}
 		return $return;
 	}

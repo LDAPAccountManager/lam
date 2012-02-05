@@ -180,11 +180,18 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 			<?php
 			flush();
 			while (!isset($_SESSION['mass_pdf']['finished']) && (($startTime + $maxTime) > time())) {
-				// load account
 				$attrs = $accounts[$_SESSION['mass_pdf']['counter']];
 				$dn = $attrs['dn'];
+				// get informational attributes
+				$infoAttributes = array();
+				foreach ($attrs as $key => $value) {
+					if (strpos($key, 'INFO.') === 0) {
+						$infoAttributes[$key] = $value;
+					}
+				}
+				// load account
 				$_SESSION['pdfAccount'] = new accountContainer($_SESSION['mass_scope'], 'pdfAccount');
-				$pdfErrors = $_SESSION['pdfAccount']->load_account($dn);
+				$pdfErrors = $_SESSION['pdfAccount']->load_account($dn, $infoAttributes);
 				if (sizeof($pdfErrors) > 0) {
 					$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $pdfErrors);
 					$_SESSION['mass_pdf']['finished'] = true;
