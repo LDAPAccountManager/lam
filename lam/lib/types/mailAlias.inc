@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2010  Roland Gruber
+  Copyright (C) 2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -135,7 +135,7 @@ class lamMailAliasList extends lamList {
 			'nav' => _("%s alias(es) found"),
 			'error_noneFound' => _("No aliases found!"),
 			'newEntry' => _("New alias"),
-			'deleteEntry' => _("Delete alias(es)"));
+			'deleteEntry' => _("Delete selected aliases"));
 	}
 
 }

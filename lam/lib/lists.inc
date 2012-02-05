@@ -106,7 +106,7 @@ class lamList {
 			'nav' => _("%s object(s) found"),
 			'error_noneFound' => _("No objects found!"),
 			'newEntry' => _("New object"),
-			'deleteEntry' => _("Delete object"));
+			'deleteEntry' => _("Delete selected objects"));
 		$this->configOptions = $this->listGetAllConfigOptions();
 		$this->listReadOptionsFromCookie();
 	}

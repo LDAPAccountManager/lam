@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2009  Roland Gruber
+  Copyright (C) 2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ class lamHostList extends lamList {
 			'nav' => _("%s host(s) found"),
 			'error_noneFound' => _("No hosts found!"),
 			'newEntry' => _("New host"),
-			'deleteEntry' => _("Delete host(s)"));
+			'deleteEntry' => _("Delete selected hosts"));
 	}
 
 }

@@ -4,8 +4,8 @@
   $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009  Pozdnyak Pavel
-  2010  Roland Gruber
+  Copyright (C) 2009         Pozdnyak Pavel
+                2010 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
  *
  * @package types
  * @author Pozdnyak Pavel
+ * @author Roland Gruber
  */
 
 /**
@@ -136,9 +137,9 @@ class lamAsteriskExtNewUIList extends lamList {
         parent::__construct($type);
         $this->labels = array(
             'nav' => _("%s extension(s) found"),
-            'error_noneFound' => _("No extension(s) found!"),
+            'error_noneFound' => _("No Asterisk extensions found."),
             'newEntry' => _("New extension"),
-            'deleteEntry' => _("Delete extension(s)"));
+            'deleteEntry' => _("Delete selected extensions"));
     }
 
     protected function listGetParams() {
