@@ -89,9 +89,6 @@ printf('<tr><td>&nbsp;</td><td><input type="checkbox" name="sys_attr" id="sys_at
 printf('<tr><td>&nbsp;</td><td><input type="checkbox" id="save_as_file" name="save_as_file" onclick="export_field_toggle(this)" /> <label for="save_as_file">%s</label></td></tr>',
 	_('Save as file'));
 
-printf('<tr><td>&nbsp;</td><td><input type="checkbox" id="compress" name="compress" disabled="disabled" /> <label for="compress">%s</label></td></tr>',
-	_('Compress'));
-
 echo '</table>';
 echo '</fieldset>';
 echo '</td>';
