@@ -90,11 +90,11 @@ class eduPerson extends baseModule {
 			),
 			'affiliation' => array(
 				"Headline" => _("Affiliations"), 'attr' => 'eduPersonAffiliation',
-				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc.")
+				"Text" => _("Specifies the person's relationships to the institution in broad categories such as student, faculty, staff, alum, etc.")
 			),
 			'affiliationUpload' => array(
 				"Headline" => _("Affiliations"), 'attr' => 'eduPersonAffiliation',
-				"Text" => _("Specifies the person's relationship(s) to the institution in broad categories such as student, faculty, staff, alum, etc.") . " " .
+				"Text" => _("Specifies the person's relationships to the institution in broad categories such as student, faculty, staff, alum, etc.") . " " .
 							_('Multiple values are separated by comma.')
 			),
 			'principalName' => array(
