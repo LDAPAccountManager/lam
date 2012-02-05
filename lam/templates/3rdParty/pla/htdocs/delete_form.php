@@ -70,7 +70,7 @@ if (count($request['children'])) {
 	//@todo need to refresh the tree after a delete
 	printf('<input type="submit" value="%s" %s />',
 		sprintf(_('Delete all %s objects'),count($request['search'])),
-		(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'delete_form\'),\'%s\');"',_('Deleting Object(s)')) : ''));
+		(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'delete_form\'),\'%s\');"',_('Deleting objects')) : ''));
 	echo '</form>';
 	echo '</td>';
 
@@ -122,7 +122,7 @@ if (count($request['children'])) {
 	//@todo need to refresh the tree after a delete
 	printf('<input type="submit" name="submit" value="%s" %s />',
 		_('Delete'),
-		(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'delete_form\'),\'%s\');"',_('Deleting Object(s)')) : ''));
+		(isAjaxEnabled() ? sprintf('onclick="return ajSUBMIT(\'BODY\',document.getElementById(\'delete_form\'),\'%s\');"',_('Deleting objects')) : ''));
 	echo '</form>';
 
 	echo '</td>';

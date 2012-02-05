@@ -87,7 +87,7 @@ class imapAccess extends baseModule {
 				"Headline" => _("Prefix for mailboxes"),
 				"Text" => _("Some IMAP servers store mailboxes with a prefix (e.g. \"user\" for Cyrus which results in \"user.username\").")),
 			'ImapMailDomain' => array(
-				"Headline" => _("Mail domain(s)"),
+				"Headline" => _("Mail domains"),
 				"Text" => _("Please enter a comma separated list of domain names (e.g. \"company.com,example.com\"). LAM will only manage mailboxes from these domains.")),
 			'ImapUserNameAttr' => array(
 				"Headline" => _("User name attribute"),
@@ -115,7 +115,7 @@ class imapAccess extends baseModule {
 		$configPasswordType->setHasDescriptiveElements(true);
 		$configContainer->addElement($configPasswordType, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
-		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domain(s)'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
+		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
 		$mailDomainsInput->setRequired(true);
 		$configContainer->addElement($mailDomainsInput, true);
 		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');

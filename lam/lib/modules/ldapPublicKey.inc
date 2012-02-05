@@ -78,7 +78,7 @@ class ldapPublicKey extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'sshPublicKey' => _('SSH public key(s)')
+			'sshPublicKey' => _('SSH public keys')
 		);
 		return $return;
 	}
@@ -173,7 +173,7 @@ class ldapPublicKey extends baseModule {
 	function get_pdfEntries() {
 		$return = array();
 		if (sizeof($this->attributes['sshPublicKey']) > 0) {
-			$return['ldapPublicKey_sshPublicKey'][0] = '<block><key>' . _('SSH public key(s)') . '</key><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][0] . '</td></tr></block>';
+			$return['ldapPublicKey_sshPublicKey'][0] = '<block><key>' . _('SSH public keys') . '</key><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][0] . '</td></tr></block>';
 			for ($i = 1; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
 				$return['ldapPublicKey_sshPublicKey'][] = '<block><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][$i] . '</td></tr></block>';
 			}

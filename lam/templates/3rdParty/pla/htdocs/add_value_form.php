@@ -88,7 +88,7 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 	echo '</tr>';
 
 	echo '<tr>';
-	printf('<td class="top">%s</td>',_('Enter the value(s) you would like to add:'));
+	printf('<td class="top">%s</td>',_('Enter the values you would like to add:'));
 	echo '<td>';
 
 	if (! strcasecmp($request['attr'],'objectclass')) {
