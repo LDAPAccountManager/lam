@@ -103,6 +103,10 @@ if (isset($memLimit) && ($memLimit != '') && (substr(strtoupper($memLimit), strl
 if (!@preg_match('/^\p{L}+$/u', "abc")) {
 	$criticalErrors[] = array("ERROR", "Your PCRE library has no complete Unicode support. Please upgrade libpcre or compile with \"--enable-unicode-properties\".");
 }
+// check ZIP support for PDF files in file upload
+if (!extension_loaded('zip')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no ZIP support.", "Please install the ZIP extension for PHP.");
+}
 // stop login if critical errors occured
 if (sizeof($criticalErrors) > 0) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";

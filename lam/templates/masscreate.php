@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@ include_once('../lib/config.inc');
 include_once('../lib/status.inc');
 /** account modules */
 include_once('../lib/modules.inc');
+/** Used to get PDF information. */
+include_once('../lib/pdfstruct.inc');
 
 
 // Start session
@@ -238,11 +240,29 @@ function showMainPage($scope, $selectedModules) {
 	$inputContainer = new htmlTable();
 	$inputContainer->addElement(new htmlOutputText(_("CSV file")));
 	$inputContainer->addElement(new htmlInputFileUpload('inputfile'));
-	$inputContainer->addElement(new htmlButton('submitfile', _('Upload file and create accounts')));
 	$inputContainer->addElement(new htmlSpacer('10px', null));
 	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1'));
 	$inputContainer->addElement(new htmlHiddenInput('scope', $scope));
 	$inputContainer->addElement(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), true);
+	// PDF
+	$createPDF = false;
+	if (isset($_POST['createPDF']) && ($_POST['createPDF'] === '1')) {
+		$createPDF = true;
+	}
+	$pdfCheckbox = new htmlTableExtendedInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
+	$pdfCheckbox->setTableRowsToShow(array('pdfStructure'));
+	$inputContainer->addElement($pdfCheckbox, true);
+	$pdfStructures = getPDFStructureDefinitions($scope);
+	$pdfSelected = array();
+	if (isset($_POST['pdfStructure'])) {
+		$pdfSelected = array($_POST['pdfStructure']);
+	}
+	else if (in_array('default', $pdfStructures)) {
+		$pdfSelected = array('default');
+	}
+	$inputContainer->addElement(new htmlTableExtendedSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')), true);
+	$inputContainer->addElement(new htmlSpacer(null, '5px'), true);
+	$inputContainer->addElement(new htmlButton('submitfile', _('Upload file and create accounts')));
 	$container->addElement($inputContainer, true);
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 	// column list

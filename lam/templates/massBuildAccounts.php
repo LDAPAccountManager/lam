@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -195,6 +195,17 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$_SESSION['mass_ids'] = $ids;
 				$_SESSION['mass_scope'] = $_POST['scope'];
 				$_SESSION['mass_selectedModules'] = $selectedModules;
+				if (isset($_SESSION['mass_pdf'])) {
+					unset($_SESSION['mass_pdf']);
+				}
+				if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
+					$_SESSION['mass_pdf']['structure'] = $_POST['pdfStructure'];
+					$_SESSION['mass_pdf']['counter'] = 0;
+					$_SESSION['mass_pdf']['file'] = '../tmp/lam_pdf' . $_SESSION['ldap']->new_rand() . '.zip';
+				}
+				else {
+					$_SESSION['mass_pdf']['structure'] = null;
+				}
 				// show links for upload and LDIF export
 				echo "<div class=\"title\">\n";
 				echo "<h2 class=\"titleText\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h2>\n";
@@ -238,6 +249,12 @@ function massPrintBackButton($scope, $selectedModules) {
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 	$container->addElement(new htmlButton('submit', _('Back')));
 	$container->addElement(new htmlHiddenInput('type', $scope));
+	$createPDF = 0;
+	if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
+		$createPDF = 1;
+	}
+	$container->addElement(new htmlHiddenInput('createPDF', $createPDF));
+	$container->addElement(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']));
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$container->addElement(new htmlHiddenInput($scope . '_' . $selectedModules[$i], 'on'));
 	}

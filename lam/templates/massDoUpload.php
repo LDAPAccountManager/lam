@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ include_once('../lib/ldap.inc');
 include_once('../lib/status.inc');
 /** account modules */
 include_once('../lib/modules.inc');
+/** PDF */
+include_once('../lib/pdf.inc');
 
 
 // Start session
@@ -60,12 +62,11 @@ echo '<div class="' . $_SESSION['mass_scope'] . 'list-bright smallPaddingContent
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
-if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_postActions']['finished'])) {
+if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_postActions']['finished']) || !isset($_SESSION['mass_pdf']['finished'])) {
 	$startTime = time();
 	$maxTime = get_cfg_var('max_execution_time') - 5;
 	if ($maxTime > 60) $maxTime = 60;
 	if ($maxTime <= 0) $maxTime = 60;
-	$refreshTime = $maxTime + 7;
 	echo "<div class=\"title\">\n";
 	echo "<h2 class=\"titleText\">" . _("LDAP upload in progress. Please wait.") . "</h2>\n";
 	echo "</div>";
@@ -116,7 +117,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		</script>
 	<?php
 	flush();  // send HTML to browser
-	// do post upload actions
+	// do post upload actions after all accounts are created
 	if ($_SESSION['mass_counter'] >= sizeof($accounts)) {
 		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
 		$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
@@ -146,6 +147,61 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 					$_SESSION['mass_errors'][] = $return['errors'][$i];
 				}
 			}
+		}
+	}
+	// create PDF when upload post actions are done
+	if (isset($_SESSION['mass_postActions']['finished'])) {
+		if (($_SESSION['mass_pdf']['structure'] != null) && !isset($_SESSION['mass_pdf']['finished'])) {
+			$file = $_SESSION['mass_pdf']['file'];
+			$pdfStructure = $_SESSION['mass_pdf']['structure'];
+			$pdfZip = new ZipArchive();
+			if ($_SESSION['mass_pdf']['counter'] == 0) {
+				$pdfZipResult = @$pdfZip->open($_SESSION['mass_pdf']['file'], ZipArchive::CREATE);
+				if (!$pdfZipResult === true) {
+					$_SESSION['mass_errors'][] = array('ERROR', _('Unable to create ZIP file for PDF export.'), $file);
+					$_SESSION['mass_pdf']['finished'] = true;
+				}
+			}
+			else {
+				@$pdfZip->open($_SESSION['mass_pdf']['file']);
+			}
+			// show progress bar
+			$progress = ($_SESSION['mass_pdf']['counter'] * 100) / sizeof($accounts);
+			echo "<h1>" . _('Create PDF files') . "</h1>\n";
+			?>
+				<div id="progressbarPDF"></div>
+				<script type="text/javascript">
+					$(function() {
+						$( "#progressbarPDF" ).progressbar({
+							value: <?php echo $progress; ?>
+						});
+					});
+				</script>
+			<?php
+			flush();
+			while (!isset($_SESSION['mass_pdf']['finished']) && (($startTime + $maxTime) > time())) {
+				// load account
+				$attrs = $accounts[$_SESSION['mass_pdf']['counter']];
+				$dn = $attrs['dn'];
+				$_SESSION['pdfAccount'] = new accountContainer($_SESSION['mass_scope'], 'pdfAccount');
+				$pdfErrors = $_SESSION['pdfAccount']->load_account($dn);
+				if (sizeof($pdfErrors) > 0) {
+					$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $pdfErrors);
+					$_SESSION['mass_pdf']['finished'] = true;
+					break;
+				}
+				// create and save PDF
+				$pdfContent = createModulePDF(array($_SESSION['pdfAccount']), $pdfStructure, true);
+				$pdfZip->addFromString($dn, $pdfContent);
+				$_SESSION['mass_pdf']['counter'] ++;
+				if ($_SESSION['mass_pdf']['counter'] >= sizeof($accounts)) {
+					$_SESSION['mass_pdf']['finished'] = true;
+				}
+			}
+			@$pdfZip->close();
+		}
+		else {
+			$_SESSION['mass_pdf']['finished'] = true;
 		}
 	}
 	// refresh with JavaScript

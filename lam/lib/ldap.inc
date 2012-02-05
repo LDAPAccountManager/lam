@@ -122,7 +122,9 @@ class Ldap{
 
 	/** Closes connection to server */
 	function close() {
-		@ldap_close($this->server);
+		if ($this->server != null) {
+			@ldap_close($this->server);
+		}
 	}
 
 	/**
@@ -158,7 +160,7 @@ class Ldap{
 		$dir = @opendir($tmpDir);
 		$file = @readdir($dir);
 		while ($file) {
-			if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg')) {
+			if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg') || (substr($file, -4) == '.zip')) {
 				$path = $tmpDir . $file;
 				if ($time - filemtime($path) > 600) {
 					@unlink($path);

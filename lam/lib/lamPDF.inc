@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011         Roland Gruber
+                2007 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ $Id$
  * and furthermore some helper functions.
  * 
  * @author Michael Duergner
+ * @author Roland Gruber
  * @package PDF
  */
 
@@ -35,6 +36,7 @@ $Id$
  * 
  * @package PDF
  * @author Michael Duergner
+ * @author Roland Gruber
  */
 class lamPDF extends UFPDF {
 	
@@ -64,7 +66,9 @@ class lamPDF extends UFPDF {
 	 */
 	function __construct($page_definitions = array(),$fontName) {
 		$this->fontName = $fontName;
-		define('FPDF_FONTPATH', dirname(__FILE__) . '/font/');
+		if (!defined('FPDF_FONTPATH')) {
+			define('FPDF_FONTPATH', dirname(__FILE__) . '/font/');
+		}
 		// Call constructor of superclass
 		$this->FPDF('P','mm','A4');
 		

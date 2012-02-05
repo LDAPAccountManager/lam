@@ -1,7 +1,9 @@
 March 2012 3.7
   - Login: support bind user for login search
   - Personal: added labeledURI and cosmetic changes, description is now multi-valued (RFE 3446363)
-  - File upload: support custom scripts postCreate (LAM Pro)
+  - File upload:
+   -> support custom scripts postCreate (LAM Pro)
+   -> PDF export
   - New translation: Slovakian
   - removed phpGroupWare support (project no longer exists)
   - LAM Pro:

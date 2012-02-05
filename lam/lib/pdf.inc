@@ -3,7 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Michael Duergner
+  Copyright (C) 2003 - 2004  Michael Duergner
+                2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ $Id$
  * and furthermore some helper functions.
  * 
  * @author Michael Duergner
+ * @author Roland Gruber
  * @package PDF
  */
 
@@ -49,9 +51,10 @@ $line_width = LAMPDF_LINEWIDTH;
  * @param string $pdf_structure The filename of the structure definition that should be used
  * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
+ * @param $returnAsString returns the PDF output as String value instead of writing it to a file
  * @return String PDF file name
  */
-function createModulePDF($accounts,$pdf_structure="default") {
+function createModulePDF($accounts, $pdf_structure="default", $returnAsString = false) {
 	
 	/** PDF generator class */
 	include_once("fpdf.php");
@@ -142,12 +145,17 @@ function createModulePDF($accounts,$pdf_structure="default") {
 	
 	// Close PDF
 	$pdf->Close();
-	// use timestamp and random number from ldap.inc as filename so it should be unique.
-	$filename = '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
-	// Save PDF
-	$pdf->Output($filename);
-	// return PDF file name
-	return $filename;
+	if (!$returnAsString) {
+		// use timestamp and random number from ldap.inc as filename so it should be unique.
+		$filename = '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
+		// Save PDF
+		$pdf->Output($filename);
+		// return PDF file name
+		return $filename;
+	}
+	else {
+		return $pdf->Output('', 'S');
+	}
 }
 
 /**
