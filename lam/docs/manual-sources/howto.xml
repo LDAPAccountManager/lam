@@ -505,7 +505,7 @@ Have fun!
           <para>If you run PHP with activated <ulink
           url="http://www.hardened-php.net/suhosin/index.html">Suhosin</ulink>
           extension please check your logs for alerts. E.g. LAM requires that
-          "suhosin.post.max_name_length" is increased.</para>
+          "suhosin.post.max_name_length" and "suhosin.request.max_varname_length" are increased (e.g. to 256).</para>
         </section>
 
         <section>
