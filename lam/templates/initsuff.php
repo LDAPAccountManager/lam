@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ include 'main_header.php';
 	echo '<div class="userlist-bright smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	$container = new htmlTable();
-	$container->addElement(new htmlOutputText(_("The following suffix(es) are missing in LDAP. LAM can create them for you.")), true);
+	$container->addElement(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")), true);
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 	// print missing suffixes
 	for ($i = 0; $i < sizeof($new_suff); $i++) {

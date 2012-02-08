@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2010  Roland Gruber
+  Copyright (C) 2007 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,11 +116,14 @@ function checkSchemaForModule($name, $type) {
 	}
 	// check if attributes are supported
 	for ($a = 0; $a < sizeof($attrs); $a++) {
+		if (strpos($attrs[$a], 'INFO.') === 0) {
+			continue;
+		}
 		if (!in_array_ignore_case($attrs[$a], $schemaAttrs)) {
 			if (isset($aliases[$attrs[$a]]) && in_array_ignore_case($aliases[$attrs[$a]], $schemaAttrs)) {
 				continue;
 			}
-			return sprintf(_("The attribute %s is not supported for the object class(es) %s by your LDAP server."), $attrs[$a], implode(", ", $classes));
+			return sprintf(_("The attribute %s is not supported for the object class %s by your LDAP server."), $attrs[$a], implode("/", $classes));
 		}
 	}
 	return null;

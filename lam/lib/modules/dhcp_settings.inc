@@ -138,7 +138,7 @@ class dhcp_settings extends baseModule {
 			),
 			'dns' => array(
 				"Headline" => _("DNS (Domain Name System)"),
-				"Text" => _("The IP address(es) of the DNS servers. Multiple addresses are separated by \",\". Example: 192.168.0.10, 192.168.0.11")
+				"Text" => _("The IP addresses of the DNS servers. Multiple addresses are separated by \",\". Example: 192.168.0.10, 192.168.0.11")
 			),
 			'gateway' => array(
 				"Headline" => _("Default gateway"),
@@ -376,7 +376,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		    if (strlen($_POST['domainname'])<3) {
 			    $errors[] = $this->messages['domainname'][1];
 			}
-			elseif (!preg_match("/^[A-Za-z0-9\._-]*$/", $_POST['domainname'])) {
+			elseif (!preg_match("/^[A-Za-z0-9\\._-]*$/", $_POST['domainname'])) {
 			    $errors[] = $this->messages['domainname'][2];
 			}
 		}

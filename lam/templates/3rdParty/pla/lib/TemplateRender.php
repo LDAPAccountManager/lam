@@ -1455,7 +1455,7 @@ class TemplateRender extends PageRender {
 			printf('%s: ',sprintf(_('Step %s of %s'),$page,$this->pagelast));
 
 			if ($page == 1)
-				echo _('Container and object class(es)');
+				echo _('Container and object classes');
 			else
 				echo _('Specify attributes and values');
 

@@ -61,8 +61,7 @@ if (count($ldap['attrs']['need']) > 0) {
 	$request['page']->drawSubTitle();
 
 	echo '<div style="text-align: center">';
-	printf('<small>' . _('In order to add these objectClass(es) to this entry, you must specify <b>%s</b> new attributes that this object class requires.') . '</small>',
-		count($ldap['attrs']['need']));
+	echo '<small>' . _('This change requires to add new attributes.') . '</small>';
 
 	echo '<br /><br />';
 

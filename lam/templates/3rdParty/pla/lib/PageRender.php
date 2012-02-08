@@ -442,7 +442,7 @@ class PageRender extends Visitor {
 		}
 
 		if ($required_by)
-			return sprintf('<acronym title="%s %s">%s</acronym>',_('Required attribute for objectClass(es)'),$required_by,_('required'));
+			return sprintf('<acronym title="%s: %s">%s</acronym>',_('Required attribute for object classes'),$required_by,_('required'));
 		else
 			return '';
 	}

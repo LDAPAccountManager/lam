@@ -122,7 +122,7 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 
 		if ($_SESSION[APPCONFIG]->getValue('appearance','show_hints'))
 			printf('<tr><td colspan="2"><small><br /><img src="%s/light.png" alt="Hint" /><span class="hint">%s</span></small></td></tr>',
-				IMGDIR,_('Note: You may be required to enter new attributes that these objectClass(es) require'));
+				IMGDIR,_('Note: You may be required to enter new attributes that these object classes require'));
 
 		echo '</table>';
 		echo '</form>';
