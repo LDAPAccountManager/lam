@@ -587,11 +587,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 *
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	function checkSelfServiceOptions($fields, $attributes) {
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
-		if (!in_array_ignore_case('AsteriskVoiceMail', $attributes['objectClass'])) {
+		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskVoiceMail', $attributes['objectClass'])) {
 			return $return;
 		}
 		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {

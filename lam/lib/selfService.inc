@@ -90,15 +90,16 @@ function getSelfServiceFieldSettings($scope) {
  * @param string $scope account type
  * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
  * @param array $attributes LDAP attributes (attribute names in lower case)
+ * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
  * @return array meta HTML code (array(<moduleName> => htmlTableRow))
  */
-function getSelfServiceOptions($scope, $fields, $attributes) {
+function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
 		$m = new $modules[$i]($scope);
-		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes);
+		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly);
 		if (sizeof($code) > 0) $return[$modules[$i]] = $code;
 	}
 	return $return;
@@ -111,15 +112,16 @@ function getSelfServiceOptions($scope, $fields, $attributes) {
  * @param string $scope account type
  * @param string $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
  * @param array $attributes LDAP attributes
+ * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
  * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
  */
-function checkSelfServiceOptions($scope, $fields, $attributes) {
+function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly) {
 	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
 		$m = new $modules[$i]($scope);
-		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes);
+		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly);
 		if (sizeof($result['messages']) > 0) $return['messages'] = array_merge($result['messages'], $return['messages']);
 		if (sizeof($result['add']) > 0) $return['add'] = array_merge($result['add'], $return['add']);
 		if (sizeof($result['del']) > 0) $return['del'] = array_merge($result['del'], $return['del']);

@@ -2478,10 +2478,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 *
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @return array meta HTML
 	 */
-	function getSelfServiceOptions($fields, $attributes) {
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
 		$return = array();
+		if ($passwordChangeOnly) {
+			return $return; // no fields as long no LDAP content can be read
+		}
 		if (in_array('firstName', $fields)) {
 			$firstName = '';
 			if (isset($attributes['givenName'][0])) $firstName = $attributes['givenName'][0];
@@ -2677,10 +2681,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 *
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	function checkSelfServiceOptions($fields, $attributes) {
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		if ($passwordChangeOnly) {
+			return $return; // skip processing if only a password change is done
+		}
 		$attributeNames = array(); // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
 		// first name

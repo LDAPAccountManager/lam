@@ -1231,11 +1231,12 @@ abstract class baseModule {
 	 *
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @return htmlElement meta HTML object
 	 * 
 	 * @see htmlElement
 	 */
-	public function getSelfServiceOptions($fields, $attributes) {
+	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
 		// this function must be overwritten by subclasses.
 		return array();
 	}
@@ -1253,9 +1254,10 @@ abstract class baseModule {
 	 *
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	public function checkSelfServiceOptions($fields, $attributes) {
+	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		return $return;
 	}
