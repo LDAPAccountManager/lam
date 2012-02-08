@@ -14,6 +14,7 @@ March 2012 3.7
    -> Profile loading not possible if required fields are not filled (3444948)
    -> Tree view: unable to add object class (3446037)
    -> Edit page: unable to move accounts to different OU
+   -> Self Service: support forced password changes (PPolicy) (3483907)
 
 
 23.11.2011 3.6.1
