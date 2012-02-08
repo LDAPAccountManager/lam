@@ -2158,7 +2158,7 @@ class posixAccount extends baseModule implements passwordService {
 				if (!get_preg($_POST['posixAccount_cn'], 'cn')) {
 					$return['messages'][] = $this->messages['cn'][0];
 				}
-				else {
+				else if (!isset($attributes['cn']) || ($attributes['cn'][0] != $_POST['posixAccount_cn'])) {
 					$return['mod']['cn'][0] = $_POST['posixAccount_cn'];
 				}
 			}
@@ -2168,7 +2168,8 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		if (in_array('loginShell', $fields)) {
 			$shelllist = getshells(); // list of all valid shells
-			if (in_array($_POST['posixAccount_loginShell'], $shelllist)) {
+			if (in_array($_POST['posixAccount_loginShell'], $shelllist)
+					&& (!isset($attributes['loginShell']) || ($attributes['loginShell'][0] != $_POST['posixAccount_loginShell']))) {
 				$return['mod']['loginShell'][0] = $_POST['posixAccount_loginShell'];
 			}
 		}
