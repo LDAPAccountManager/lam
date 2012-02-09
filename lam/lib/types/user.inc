@@ -194,7 +194,7 @@ class lamUserList extends lamList {
 	public function __construct($type) {
 		parent::__construct($type);
 		$this->labels = array(
-			'nav' => _("%s user(s) found"),
+			'nav' => _("User count: %s"),
 			'error_noneFound' => _("No users found!"),
 			'newEntry' => _("New user"),
 			'deleteEntry' => _("Delete selected users"));

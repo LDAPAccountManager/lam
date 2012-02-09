@@ -136,7 +136,7 @@ class lamAsteriskExtNewUIList extends lamList {
     function __construct($type) {
         parent::__construct($type);
         $this->labels = array(
-            'nav' => _("%s extension(s) found"),
+            'nav' => _("Extension count: %s"),
             'error_noneFound' => _("No Asterisk extensions found."),
             'newEntry' => _("New extension"),
             'deleteEntry' => _("Delete selected extensions"));

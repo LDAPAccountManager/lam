@@ -153,7 +153,7 @@ class lamSmbDomainList extends lamList {
 	function __construct($type) {
 		parent::__construct($type);
 		$this->labels = array(
-			'nav' => _("%s domain(s) found"),
+			'nav' => _("Domain count: %s"),
 			'error_noneFound' => _("No domains found!"),
 			'newEntry' => _("New domain"),
 			'deleteEntry' => _("Delete selected domains"));

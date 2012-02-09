@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ class lamList {
 	public function __construct($type) {
 		$this->type = $type;
 		$this->labels = array(
-			'nav' => _("%s object(s) found"),
+			'nav' => _("Object count: %s"),
 			'error_noneFound' => _("No objects found!"),
 			'newEntry' => _("New object"),
 			'deleteEntry' => _("Delete selected objects"));

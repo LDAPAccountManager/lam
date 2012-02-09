@@ -132,7 +132,7 @@ class lamMailAliasList extends lamList {
 	function __construct($type) {
 		parent::__construct($type);
 		$this->labels = array(
-			'nav' => _("%s alias(es) found"),
+			'nav' => _("Alias count: %s"),
 			'error_noneFound' => _("No aliases found!"),
 			'newEntry' => _("New alias"),
 			'deleteEntry' => _("Delete selected aliases"));

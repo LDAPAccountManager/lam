@@ -155,7 +155,7 @@ class lamNetgroupList extends lamList {
 	function __construct($type) {
 		parent::__construct($type);
 		$this->labels = array(
-			'nav' => _("%s group(s) found"),
+			'nav' => _("Group count: %s"),
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
 			'deleteEntry' => _("Delete selected groups"));

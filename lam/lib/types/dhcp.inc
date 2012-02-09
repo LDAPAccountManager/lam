@@ -156,7 +156,7 @@ class lamDHCPList extends lamList {
 	public function __construct($type) {
 		parent::__construct($type);
 		$this->labels = array(
-			'nav' => _("%s DHCP(s) found"),
+			'nav' => _("DHCP count: %s"),
 			'error_noneFound' => _("No DHCPs found!"),
 			'newEntry' => _("New DHCP"),
 			'dhcpDefaults' => _("DHCP settings"),

@@ -158,7 +158,7 @@ class lamHostList extends lamList {
 	function __construct($type) {
 		parent::__construct($type);
 		$this->labels = array(
-			'nav' => _("%s host(s) found"),
+			'nav' => _("Host count: %s"),
 			'error_noneFound' => _("No hosts found!"),
 			'newEntry' => _("New host"),
 			'deleteEntry' => _("Delete selected hosts"));
