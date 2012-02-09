@@ -6,6 +6,7 @@ March 2012 3.7
    -> PDF export
   - New translation: Slovakian
   - removed phpGroupWare support (project no longer exists)
+  - Use new password after self password change (RFE 3446350)
   - LAM Pro:
    -> Password self reset can send password notification mails
    -> Zarafa archiver support
