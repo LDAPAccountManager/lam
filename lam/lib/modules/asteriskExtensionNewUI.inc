@@ -776,7 +776,7 @@ class asteriskExtensionNewUI extends baseModule {
                 '<td width="20%"><b>' . _('Priority') . '</b></td>' .
                 '</tr></block>';
         for ($i = 0; $i < sizeof($entries); $i++) {
-            $appdata = '';
+            $appdata = ' ';
             if (isset($entries[$i]['astapplicationdata'][0])) {
                 $appdata = $entries[$i]['astapplicationdata'][0];
             }
