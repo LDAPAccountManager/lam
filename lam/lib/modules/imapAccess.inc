@@ -323,12 +323,13 @@ class imapAccess extends baseModule {
 		$imap_server_address = $this->getServerAddress();
 		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
 		
-		if (isset($_POST['ImapAdminPassword'])) {
+		if (isset($_POST['ImapAdminPassword']) && isset($_POST['enterPasswordButton'])) {
 			$errors = $this->doLogin();
 		}
 		
 		$imap_admin_password = $this->getAdminPassword();
-		if ($imap_admin_password) {
+		$mbox = 0;//default state is false
+                if ($imap_admin_password) {
 			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 		}
 		if ($mbox) {
