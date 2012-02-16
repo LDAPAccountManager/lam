@@ -645,10 +645,6 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		if (isset($_POST['addObjectClass'])) {
-			$this->attributes['objectClass'][] = 'AsteriskSIPUser';
-		}
-
 		$return = new htmlTable();
 		if (in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
 			// caller ID
@@ -978,6 +974,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * Write variables into object and do some regex checks
 	 */
 	function process_attributes() {
+		if (isset($_POST['addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'AsteriskSIPUser';
+			return array();
+		}
 		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
 			return array();
 		}
