@@ -1057,7 +1057,10 @@ class accountContainer {
 				$return['errorsOccured'] = 'true';
 			}
 		}
-		$forcePasswordChange = ($input['forcePasswordChange'] == 'true');
+		$forcePasswordChange = false;
+		if (isset($input['forcePasswordChange']) && ($input['forcePasswordChange'] == 'true')) {
+			$forcePasswordChange = true;
+		}
 		$return['forcePasswordChange'] = $forcePasswordChange;
 		if ($return['errorsOccured'] == 'false') {
 			// set new password
