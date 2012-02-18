@@ -382,16 +382,26 @@ class shadowAccount extends baseModule implements passwordService {
 		// set expiration date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_change'])) {
 			$this->setExpirationDate($_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
+			// sync other modules
 			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
+					$_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
+			}
+			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
 					$_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
 			}
 		}
 		// remove expiration date
 		elseif (isset($_POST['form_subpage_shadowAccount_attributes_del'])) {
 			unset($this->attributes['shadowExpire']);
+			// sync other modules
 			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
 					null, null, null);
 			}
 		}
@@ -422,6 +432,9 @@ class shadowAccount extends baseModule implements passwordService {
 		$return->addElement(new htmlHelpLink('shadowExpire'), true);
 		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('syncSamba', false, _('Set also for Samba 3')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
 		}
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$buttonTable = new htmlTable();

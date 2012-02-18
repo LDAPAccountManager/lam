@@ -438,7 +438,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 					'description' => _('Account expiration date'),
 					'help' => 'expireDate',
 					'default' => '31-12-2030',
-					'example' => '15-10-2006'
+					'example' => '15-10-2020'
 				),
 				array(
 					'name' => 'sambaSamAccount_group',
@@ -978,16 +978,26 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (strpos($buttonName, '_change') !== false) {
 			// set new time
 			$this->setExpirationDate($_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			// sync other modules
 			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
+			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
 					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
 			}
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
 			// remove attribute value
 			unset($this->attributes[$attr]);
+			// sync other modules
 			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
 					null, null, null);
 			}
 		}
@@ -1388,6 +1398,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return->addElement(new htmlHelpLink($help), true);
 		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('syncShadow', false, _('Set also for Shadow')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
 		}
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$buttons = new htmlTable();
