@@ -369,7 +369,7 @@ class posixAccount extends baseModule implements passwordService {
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("User name"), 'attr' => 'uid',
-					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
+					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"),

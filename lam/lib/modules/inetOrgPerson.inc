@@ -703,7 +703,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'uid' => array(
 				"Headline" => _("User name"), 'attr' => 'uid',
-				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, .-_.")
+				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
 			),
 			'photoUpload' => array(
 				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
