@@ -396,6 +396,9 @@ function get_preg($argument, $regexp) {
 		case 'hostname':	
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_\\$-])+$/u';
 					break;
+		case 'krbUserName':	
+					$pregexpr = '/^([[:alnum:]@\\/\\.\\ \\_\\$-])+$/u';
+					break;
 		case 'hostObject':
 					$pregexpr = '/^[!]?([[:alnum:]@\\.\\ \\_\\$\\*-])+$/u';
 					break;
