@@ -153,14 +153,13 @@ class asteriskExtensionNewUI extends baseModule {
 				'description' => _('Account context'),
 				'help' => 'AstContext',
 				'example' => _('test'),
-				'required' => true
+				'required' => true,
 			),
                         array(
-				'name' => 'asteriskExtensionNewUI_member',
+				'name' => 'asteriskExtensionNewUI_owner',
 				'description' => _('Extension owners'),
 				'help' => 'member',
-				'example' => 'uid=user1,o=test;uid=user2,o=test',
-				'required' => true
+				'example' => 'uid=user1,o=test;uid=user2,o=test',				
 			),
                         array(
 				'name' => 'asteriskExtensionNewUI_AstApplication',
@@ -283,8 +282,7 @@ class asteriskExtensionNewUI extends baseModule {
             $suggestedExtName = $this->generateNextExtensionName();
             $extNameInput = new htmlTableExtendedInputField(_("Extension name"), 'AstExtension', $suggestedExtName, 'AstExtension');
             $extNameInput->setRequired(true);
-            $renderContainer->addElement($extNameInput, false);
-            $renderContainer->addElement(new htmlOutputText(_("We suggest: " . $suggestedExtName)), true);
+            $renderContainer->addElement($extNameInput, true);            
         } else {
             $extNameInput = new htmlTableExtendedInputField(_("Extension name"), 'AstExtension', $extension, 'AstExtension');
             $extNameInput->setRequired(true);
@@ -293,8 +291,12 @@ class asteriskExtensionNewUI extends baseModule {
 
         $accountContext = '';
         if (isset($entries[0]['astcontext'][0])) {
+            //LOAD context from already entities that  already exists
             $accountContext = $entries[0]['astcontext'][0];
-        }
+        }  elseif (isset($this->attributes['AstContext'][0])) {
+            //LOAD context from attributes, this is treak to deal with profile
+            $accountContext = $this->attributes['AstContext'][0];
+	}
         $accountContextInput = new htmlTableExtendedInputField(_("Extension context"), 'AstContext', $accountContext, 'AstContext');
         $accountContextInput->setRequired(true);
         $renderContainer->addElement($accountContextInput, true);
@@ -316,6 +318,8 @@ class asteriskExtensionNewUI extends baseModule {
                 $upDownButtons->addElement(new htmlButton('rule_down_button_' . $i, 'down.gif', true));
             }
             $renderContainer->addElement($upDownButtons, true);
+            
+            $renderContainer->addElement(new htmlSpacer(null, '30px'), true);
         }
 
         $displayEntrNum = sizeof($entries);
@@ -336,7 +340,8 @@ class asteriskExtensionNewUI extends baseModule {
         }
         $hidenInput = new htmlHiddenInput("extension_rows", $displayEntrNum); //the size of found rows plus 1 for new one;
         $renderContainer->addElement($hidenInput, true);
-
+        
+        $renderContainer->addElement(new htmlSpacer(null, '30px'), true);
         $renderContainer->addElement(new htmlButton("add_rule", _('Add another rule')), true);
     }
 
@@ -357,7 +362,7 @@ class asteriskExtensionNewUI extends baseModule {
         }
         $renderContainer->addElement(new htmlTableExtendedInputField(_("Application data"), "AstApplicationData_" . $placeInList, $applicationData, 'AstApplicationData'), true);
         //delimeter
-        $renderContainer->addElement(new htmlSpacer(null, '10px'), true);
+        $renderContainer->addElement(new htmlSpacer(null, '5px'), true);
     }
 
     function array_sort($array, $on, $order='SORT_ASC') {
@@ -497,13 +502,18 @@ class asteriskExtensionNewUI extends baseModule {
         return array();
     }
 
+    function getOrigDNSuffix(){
+        $dn_orig_array = explode(",", $this->getAccountContainer()->dn_orig);
+        $orig_suffix = implode(",", array_slice($dn_orig_array, 1, count($dn_orig_array)));
+        return $orig_suffix;
+    }
+    
     /*
      * Gwet list of all application for given extension and move it into given suffix
      */
 
     function move_extention_to_new_suffix() {
-        $dn_orig_array = explode(",", $this->getAccountContainer()->dn_orig);
-        $orig_suffix = implode(",", array_slice($dn_orig_array, 1, count($dn_orig_array)));
+        $orig_suffix = $this->getOrigDNSuffix();
         if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount) {
             $is_rename_success = false;
             for ($rowCounter = 0; $rowCounter < count($this->extensionRows); $rowCounter++) {
@@ -615,11 +625,16 @@ class asteriskExtensionNewUI extends baseModule {
      * Set extension owner as current logged in user.
      */
     function setDefaultExtensionOwner(){
-        $credentials = $_SESSION['ldap']->decrypt_login();
-	$login = $credentials[0];
+        $login = $this->getDefaultExtensionOwner();
         $this->extensionOwners[0] = $login;
     }
-
+    
+    function getDefaultExtensionOwner(){
+        $credentials = $_SESSION['ldap']->decrypt_login();
+	$login = $credentials[0];
+        return $login;
+    }
+    
     /*
      * Fill fileds of single extension row
      * In Asterisk it would only be an extension name,a priority,an application, but LDAP spicific 
@@ -816,6 +831,7 @@ class asteriskExtensionNewUI extends baseModule {
             $astPriorityTmp = 0;
             if(isset ($extensionNamePriorityMap[$extensionName])){
                 $astPriorityTmp = $extensionNamePriorityMap[$extensionName] + 1;
+                $extensionNamePriorityMap[$extensionName] = $astPriorityTmp;
             }else{
                 $astPriorityTmp = 1;
                 $extensionNamePriorityMap[$extensionName] = $astPriorityTmp;
@@ -824,8 +840,11 @@ class asteriskExtensionNewUI extends baseModule {
             
             $partialAccounts[$rawAccIdx]['cn'] =   $extensionName  . '-' . $astPriorityTmp;
             
-            
-            $partialAccounts[$rawAccIdx]['member'] = explode(';', $rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_member']]);
+            if(isset($rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_owner']]) && $rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_owner']] != '' ){
+                $partialAccounts[$rawAccIdx]['member'] = explode(';', $rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_owner']]);
+            }else{
+                $partialAccounts[$rawAccIdx]['member'] = $this->getDefaultExtensionOwner();
+            }
             if ($rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_AstApplication']] != "") {
                 $partialAccounts[$rawAccIdx]['AstApplication'] = $rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_AstApplication']];
             }
@@ -837,7 +856,8 @@ class asteriskExtensionNewUI extends baseModule {
                 $partialAccounts[$rawAccIdx]['AstContext'] = $rawAccounts[$rawAccIdx][$ids['asteriskExtensionNewUI_AstContext']];
             }
         }
-        return $messages;
+        
+       return $messages;
     }
     
     
@@ -876,7 +896,12 @@ class asteriskExtensionNewUI extends baseModule {
             $row = $this->extensionRows[$rowCounter];
             ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
         }
-        return $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
+        //this is trick for Edit again button to work
+        $this->finalDN = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        
+        $retun_obj = $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
+        
+        return $retun_obj;
     }
 
     /**
