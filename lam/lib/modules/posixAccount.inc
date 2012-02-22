@@ -1331,7 +1331,7 @@ class posixAccount extends baseModule implements passwordService {
 					if (isset($messageParams[2])) {
 						$message = new htmlStatusMessage($messageParams[0], $messageParams[1], $messageParams[2]);
 					}
-					else {
+					elseif (($messageParams[0] == 'ERROR') || ($messageParams[0] == 'WARN') || ($messageParams[0] == 'INFO')) {
 						$message = new htmlStatusMessage($messageParams[0], $messageParams[1]);
 					}
 					$message->colspan = 5;
