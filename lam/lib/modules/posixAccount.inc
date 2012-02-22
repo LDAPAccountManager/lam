@@ -1326,13 +1326,16 @@ class posixAccount extends baseModule implements passwordService {
 					$homeServerContainer->addElement(new htmlSpacer('5px', null));
 					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
 				}
-				else {
+				elseif (trim($returnValue) != '') {
 					$messageParams = explode(",", $returnValue);
 					if (isset($messageParams[2])) {
-						$message = new htmlStatusMessage($messageParams[0], $messageParams[1], $messageParams[2]);
+						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]), htmlspecialchars($messageParams[2]));
 					}
 					elseif (($messageParams[0] == 'ERROR') || ($messageParams[0] == 'WARN') || ($messageParams[0] == 'INFO')) {
-						$message = new htmlStatusMessage($messageParams[0], $messageParams[1]);
+						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]));
+					}
+					else {
+						$message = new htmlStatusMessage('WARN', htmlspecialchars($messageParams[0]));
 					}
 					$message->colspan = 5;
 					$homeServerContainer->addElement($message, true);
