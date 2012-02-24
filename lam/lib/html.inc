@@ -1130,7 +1130,7 @@ class htmlRadio extends htmlElement {
 	 * 
 	 * @param String $name element name
 	 * @param array $elements list of elements array(label => value)
-	 * @param array $selectedElement value of selected element (optional, default none)
+	 * @param String $selectedElement value of selected element (optional, default none)
 	 */
 	function __construct($name, $elements, $selectedElement = null) {
 		$this->name = htmlspecialchars($name);
@@ -1206,7 +1206,7 @@ class htmlTableExtendedRadio extends htmlRadio {
 	 * @param String $label descriptive label
 	 * @param String $name element name
 	 * @param array $elements list of elements array(label => value)
-	 * @param array $selectedElement value of selected element (optional, default none)
+	 * @param String $selectedElement value of selected element (optional, default none)
 	 * @param String $helpID help ID
 	 */
 	function __construct($label, $name, $elements, $selectedElement = null, $helpID = null) {
@@ -1227,14 +1227,16 @@ class htmlTableExtendedRadio extends htmlRadio {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo '<div class="nowrap">';
-		echo $this->label;
-		echo '</div>';
-		echo "\n</td>\n<td>\n";
+		if ($this->label != null) {
+			echo '<div class="nowrap">';
+			echo $this->label;
+			echo '</div>';
+			echo "\n</td>\n<td>\n";
+		}
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
 		if ($this->helpID != null) {
-			echo "\n</td>\n<td>\n";
+			echo "\n</td>\n<td valign=\"top\">\n";
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
