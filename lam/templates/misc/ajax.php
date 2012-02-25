@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011  Roland Gruber
+  Copyright (C) 2011 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,6 +47,17 @@ class lamAjax {
 	 * Manages an AJAX request.
 	 */
 	public static function handleRequest() {
+		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
+			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
+				if (!isset($_SESSION['account'])) die();
+				$module = $_SESSION['account']->getAccountModule($_GET['module']);
+				$module->handleAjaxRequest();
+			}
+			else {
+				$module = new $_GET['module']($_GET['scope']);
+				$module->handleAjaxRequest();
+			}
+		}
 		if (!isset($_GET['function'])) {
 			die();
 		}

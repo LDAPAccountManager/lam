@@ -1400,6 +1400,14 @@ abstract class baseModule {
 		return null;
 	}
 	
+	/**
+	 * Manages AJAX requests.
+	 * This function may be called with or without an account container.
+	 */
+	public function handleAjaxRequest() {
+		// modules that use AJAX need to implement this function
+	}
+	
 	
 	
 	// helper functions
