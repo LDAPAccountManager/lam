@@ -197,6 +197,9 @@ class ddns extends baseModule {
 	 * This function check if ddns is enable.
 	 */
 	private function check_if_ddns_is_enable() {
+		if (!in_array('dhcp', $_SESSION['config']->get_ActiveTypes())) {
+			return false;
+		}
 		$ldap = $_SESSION['ldap']->server();
 		$dn = $_SESSION['config']->get_suffix('dhcp');
 		
