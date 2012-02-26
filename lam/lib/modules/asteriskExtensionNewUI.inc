@@ -502,25 +502,28 @@ class asteriskExtensionNewUI extends baseModule {
         return array();
     }
 
-    function getOrigDNSuffix(){
-        $dn_orig_array = explode(",", $this->getAccountContainer()->dn_orig);
-        $orig_suffix = implode(",", array_slice($dn_orig_array, 1, count($dn_orig_array)));
-        return $orig_suffix;
-    }
-    
-    /*
-     * Gwet list of all application for given extension and move it into given suffix
+    /**
+     * Get list of all applications for given extension and move it into new suffix.
+     * 
+     * @return array list of error messages
      */
-
     function move_extention_to_new_suffix() {
-        $orig_suffix = $this->getOrigDNSuffix();
-        if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount) {
-            $is_rename_success = false;
+    	$errors = array();
+        $orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
+    	if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount) {
+        	$is_rename_success = false;
             for ($rowCounter = 0; $rowCounter < count($this->extensionRows); $rowCounter++) {
                 $row = $this->extensionRows[$rowCounter];
-                $is_rename_success = ldap_rename($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $orig_suffix, "cn=" . $row["cn"][0], $this->getAccountContainer()->dnSuffix, true);
+                $oldDN = "cn=" . $row["cn"][0] . "," . $orig_suffix;
+                $newRDN = "cn=" . $row["cn"][0];
+                $is_rename_success = @ldap_rename($_SESSION['ldap']->server(), $oldDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
+                if (!$is_rename_success) {
+                	$errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
+                	logNewMessage(LOG_ERR, 'Unable to rename ' . $oldDN . ' to ' . $newRDN . ',' . $this->getAccountContainer()->dnSuffix);
+                }
             }
         }
+        return $errors;
     }
     
     /**
@@ -695,12 +698,10 @@ class asteriskExtensionNewUI extends baseModule {
         }
     }
 
-    /*
-     * Search by extension name and retun true if fileds wtith this extension name is presented
+    /**
+     * Search by extension name and retun true if fields wtith this extension name is presented
      * and false otherwise.
-     * 
      */
-
     function isThisExtensionPresented($extension) {
         $searchClass = "AsteriskExtension";
         $searchScope = 'asteriskExtNewUI';
@@ -715,12 +716,11 @@ class asteriskExtensionNewUI extends baseModule {
         return $isPresented;
     }
 
-    /*
-     * This function search in in the base subtree and find all extensions names within.
+    /**
+     * This function searches in the base subtree and finds all extensions names within.
      * The generation algorithm is the naive one, so only work when extension is numbers.
      * All extension name is sorted and new extension name will be greates on + 1.
      */
-
     function generateNextExtensionName() {
         $searchClass = "AsteriskExtension";
         $searchScope = 'asteriskExtNewUI';
@@ -862,13 +862,32 @@ class asteriskExtensionNewUI extends baseModule {
     
     
     
-    //public
-
-    function save_attributes() {
-
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	* 
+	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	*
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
+	* to some groups via attribute memberUid)<br>
+	* <br><b>"add"</b> are attributes which have to be added to the LDAP entry
+	* <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
+	* <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
+	* <br><b>"notchanged"</b> are attributes which stay unchanged
+	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
+	* <br>
+	* <br>This builds the required comands from $this-attributes and $this->orig.
+	* 
+	* @return array list of modifications
+	*/
+	function save_attributes() {
+		$errors = array();
         $this->extensionRows = $this->array_sort($this->extensionRows, 'astpriority');
 
-        $this->move_extention_to_new_suffix(); //Muve extension to new suffix if necessary
+        $moveErrors = $this->move_extention_to_new_suffix(); // move extension to new suffix if necessary
+        $errors = array_merge($errors, $moveErrors);
         //Modify existent config roes if necessary
         for ($rowCounter = 0; $rowCounter < count($this->extensionRowsOrig); $rowCounter++) {
             $rowOrig = $this->extensionRowsOrig[$rowCounter];
@@ -897,7 +916,8 @@ class asteriskExtensionNewUI extends baseModule {
             ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
         }
         //this is trick for Edit again button to work
-        $this->finalDN = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
         
         $retun_obj = $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
         
