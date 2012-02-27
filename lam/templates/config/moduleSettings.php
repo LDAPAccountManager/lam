@@ -198,7 +198,7 @@ $old_options = $conf->get_moduleSettings();
 
 
 // display module boxes
-$tabindex = 0;
+$tabindex = 1;
 $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
@@ -258,6 +258,10 @@ function checkInput() {
 		// text fields
 		if ($_SESSION['conf_types'][$element] == "text") {
 			$options[$element] = array($_POST[$element]);
+		}
+		// text fields
+		elseif ($_SESSION['conf_types'][$element] == "text_obfuscated") {
+			$options[$element] = array(obfuscateText($_POST[$element]));
 		}
 		// checkboxes
 		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
