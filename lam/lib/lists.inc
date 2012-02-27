@@ -875,7 +875,7 @@ class lamList {
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		echo '<table width="100%"><tr><td>';
 		
-		$tabindex = 0;
+		$tabindex = 1;
 		$configContainer = new htmlTable();
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
 			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
