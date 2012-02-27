@@ -916,9 +916,14 @@ class asteriskExtensionNewUI extends baseModule {
             ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
         }
         //this is trick for Edit again button to work
-        $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
-        $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
-        
+        if($this->getAccountContainer()->isNewAccount){
+            $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+            $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        }else{
+            $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+            $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        }
+        //print_r($this->getAccountContainer()->finalDN );
         $retun_obj = $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
         
         return $retun_obj;
