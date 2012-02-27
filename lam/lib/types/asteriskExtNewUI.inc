@@ -91,8 +91,7 @@ class asteriskExtNewUI extends baseType {
      */
     function getListAttributeDescriptions() {
         return array(
-//"cn" => _("Extension name"),
-            "astextension" => _("Label"),
+            "astextension" => _("Extension name"),
             "astcontext" => _("Context"),
             "member" => _("Extension owner DN"),
         );
@@ -108,11 +107,11 @@ class asteriskExtNewUI extends baseType {
         if ($attributes == null) {
             return _("New extension");
         }
-// check if a common name is set
-        if (isset($attributes['cn'][0])) {
-            return htmlspecialchars($attributes['cn'][0]);
+		// check if a common name is set
+        if (isset($attributes['astextension'][0])) {
+            return htmlspecialchars($attributes['astextension'][0]);
         }
-// fall back to default
+		// fall back to default
         return parent::getTitleBarTitle($attributes);
     }
 
@@ -161,7 +160,6 @@ class lamAsteriskExtNewUIList extends lamList {
             call_user_func_array('StatusMessage', $lastError);
         }
         
-        //array_walk_recursive($entries, create_function('&$item, $key, $keyToElum', 'print($key. "<br>"); if(strcmp ($key, $keyToElum) == 0){print("ITEM - " . $item . "<br>"); $item = "dn=none";}'), 'dn');
         $entries = $this->normalizeLdapOutput($entries);        
         $this->entries = $entries;        
         // generate list of possible suffixes
