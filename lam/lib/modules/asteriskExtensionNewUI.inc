@@ -135,8 +135,7 @@ class asteriskExtensionNewUI extends baseModule {
         $return['PDF_fields'] = array(
             'AstContext' => _('Account context'),
             'AstExtension' => _('Extension name'),
-            'member' => _('Extension owners'),
-            'cn' => _('Common name'),
+            'owners' => _('Extension owners'),
             'rules' => _('Rules'),
         );
         
@@ -203,7 +202,7 @@ class asteriskExtensionNewUI extends baseModule {
      */
     function display_html_attributes() {
         //Set default owner as logged in user if no other owner is set
-        if (  ! $this->isExtensionOwnerSet()){
+        if ( !$this->isExtensionOwnerSet()) {
                 $this->setDefaultExtensionOwner();
         }
         
@@ -498,6 +497,7 @@ class asteriskExtensionNewUI extends baseModule {
         } elseif (isset($_POST['removeusers']) && isset($_POST['removeusers_button'])) { // remove users from list
             $this->extensionOwners = array_delete($_POST['removeusers'], $this->extensionOwners);
         }
+        $this->attributes['member'] = $this->extensionOwners;
 
         return array();
     }
@@ -530,7 +530,7 @@ class asteriskExtensionNewUI extends baseModule {
      * Return true if even one owner is set and false otherwise
      */
     function isExtensionOwnerSet(){
-        if(sizeof($this->extensionOwners) > 0){
+        if (sizeof($this->extensionOwners) > 0) {
             return true;
         }
         return false;
@@ -549,12 +549,14 @@ class asteriskExtensionNewUI extends baseModule {
 
             //perform normal set of operations
             if (isset($_POST['AstExtension']) && $_POST['AstExtension'] != '') {
+            	$this->attributes['AstExtension'][0] = $_POST['AstExtension'];
                 $extensionName[0] = $_POST['AstExtension'];
             } else {
                 $errors[] = $this->messages['AstExtension'][0];
             }
             $extensionContext = array();
             if (isset($_POST['AstContext'])) {
+            	$this->attributes['AstContext'][0] = $_POST['AstContext'];
                 $extensionContext[0] = $_POST['AstContext'];
                 if ($extensionContext[0] == '') {
                     $errors[] = $this->messages['AstContext'][0];
@@ -630,11 +632,12 @@ class asteriskExtensionNewUI extends baseModule {
     function setDefaultExtensionOwner(){
         $login = $this->getDefaultExtensionOwner();
         $this->extensionOwners[0] = $login;
+        $this->attributes['member'] = array($login);
     }
     
     function getDefaultExtensionOwner(){
         $credentials = $_SESSION['ldap']->decrypt_login();
-	$login = $credentials[0];
+		$login = $credentials[0];
         return $login;
     }
     
@@ -740,7 +743,7 @@ class asteriskExtensionNewUI extends baseModule {
             if(is_numeric($greater_ext_name)){
                 $suggeted_extension = $greater_ext_name + 1;
             }else{
-                $ptn = "/(?P<name>[A-Za-z0-9]+)_(?P<digit>\d+)/";
+                $ptn = "/(?P<name>[A-Za-z0-9]+)_(?P<digit>\\d+)/";
                 if(preg_match_all($ptn, $greater_ext_name, $matches, PREG_PATTERN_ORDER)){
                     $next_digit = $matches['digit'][0] + 1;
                     $suggeted_extension = $matches['name'][0] . '_' . $next_digit;
@@ -757,6 +760,8 @@ class asteriskExtensionNewUI extends baseModule {
      * Returns a list of PDF entries
      */
     function get_pdfEntries() {
+    	$a = $this->attributes;
+    	$o = $this->orig;
         $return = array();
         $extName = '';
         if (isset($this->attributes['AstExtension'][0])) {
@@ -773,10 +778,7 @@ class asteriskExtensionNewUI extends baseModule {
             $return[get_class($this) . '_AstExtension'] = array('<block><key>' . _('Extension name') . '</key><value>' . $this->attributes['AstExtension'][0] . '</value></block>');
         }
         if (isset($this->attributes['member'])) {
-            $return[get_class($this) . '_member'] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $this->attributes['member']) . '</value></block>');
-        }
-        if (isset($this->attributes['cn'])) {
-            $return[get_class($this) . '_cn'] = array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>');
+            $return[get_class($this) . '_owners'] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $this->attributes['member']) . '</value></block>');
         }
         // rules
         $entries = $this->load_extension_parts($extName);
