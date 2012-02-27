@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: multiselect
+#. Description
+#: ../templates:1001
+msgid "Web server configuration:"
+msgstr "Configuració del servidor Web"
+
+#. Type: multiselect
+#. Description
+#: ../templates:1001
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr "LDAP Account Manager suporta qualsevol servidor web que disposi de PHP5 "
+"però aquest procés de configuració automàtic només funciona amb Apache2. Si esculls "
+"configurar Apache2, llavors LAM serà accessible des de http(s)://localhost/lam" 
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Alias name:"
+msgstr "Nom d'àlies:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
+msgstr "LAM afegirà un alias al teu httpd.conf que et permetrà accedir a LAM "
+"mitjançant l'adreça http(s)://localhost/lam. També pots escollir un àlies diferent de \"lam\"."
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Would you like to restart your webserver(s) now?"
+msgstr "Vols reiniciar el servidor web ara mateix?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Your webserver(s) need to be restarted in order to apply the changes."
+msgstr "El servidor web necessita ser reiniciat per poder aplicar els canvis."
