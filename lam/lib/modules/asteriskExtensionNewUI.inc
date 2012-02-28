@@ -201,10 +201,7 @@ class asteriskExtensionNewUI extends baseModule {
      * @return htmlElement HTML meta data
      */
     function display_html_attributes() {
-        //Set default owner as logged in user if no other owner is set
-        if ( !$this->isExtensionOwnerSet()) {
-                $this->setDefaultExtensionOwner();
-        }
+        
         
     	$return = new htmlTable();
 
@@ -215,10 +212,15 @@ class asteriskExtensionNewUI extends baseModule {
         if (isset($this->extensionRows[0]['astextension'][0])) {
             $extName = $this->extensionRows[0]['astextension'][0];
         }
-
+        //This procedure LOAD all data from LDAP and then print to a page
         $this->render_extensions_by_priority($extName, $return);
 
         // owners
+        //Set default owner as logged in user if no other owner is set
+        if ( !$this->isExtensionOwnerSet()) {
+                $this->setDefaultExtensionOwner();
+        }
+        
         $this->render_exten_owners_set_controls($return);
 
         return $return;
@@ -256,6 +258,9 @@ class asteriskExtensionNewUI extends baseModule {
             $entries = $this->array_sort($entries, 'astpriority');
             $this->extensionRowsOrig = $entries;
             $this->extensionRows = $entries;
+            if(isset($this->extensionRows[0]['member'])){
+                $this->extensionOwners = $this->extensionRows[0]['member'];
+            }
         } else {
             $entries = $this->extensionRows;
         }
@@ -530,7 +535,7 @@ class asteriskExtensionNewUI extends baseModule {
      * Return true if even one owner is set and false otherwise
      */
     function isExtensionOwnerSet(){
-        if (sizeof($this->extensionOwners) > 0) {
+        if ( sizeof($this->extensionOwners) > 0 ) {
             return true;
         }
         return false;
@@ -894,7 +899,7 @@ class asteriskExtensionNewUI extends baseModule {
         for ($rowCounter = 0; $rowCounter < count($this->extensionRowsOrig); $rowCounter++) {
             $rowOrig = $this->extensionRowsOrig[$rowCounter];
             unset($rowOrig['dn']);
-            if ($rowCounter <= count($this->extensionRows)) {
+            if ($rowCounter < count($this->extensionRows)) {
                 $row = $this->extensionRows[$rowCounter];
 
                 if (count($diffVals = array_diff_key($rowOrig, $row)) != 0) {
@@ -906,7 +911,14 @@ class asteriskExtensionNewUI extends baseModule {
                 $diffValsSerialysed = array_diff(array_map("serialize", array_intersect_key($row, $rowOrig)), array_map("serialize", $rowOrig));
                 if (count($diffValsSerialysed) != 0) {
                     $diffVals = array_map("unserialize", $diffValsSerialysed);
-                    ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
+                    if($row["cn"][0] ==  $rowOrig["cn"][0]){
+                        ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
+                    }else{
+                        $origDN = "cn=" . $rowOrig["cn"][0] . "," . $this->getAccountContainer()->dnSuffix;
+                        $newRDN = "cn=" . $row["cn"][0];
+                        ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
+                        ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
+                    }
                 }
             } else {
                 ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . $_SESSION['config']->get_Suffix('asteriskExtNewUI'));
