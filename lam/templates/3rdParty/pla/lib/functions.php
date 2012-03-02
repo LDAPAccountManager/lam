@@ -2412,7 +2412,7 @@ function dn_unescape($dn) {
  */
 function get_href($type,$extra_info='') {
 	$sf = 'https://sourceforge.net';
-	$pla = 'http://phpldapadmin.sourceforge.net';
+	$pla = 'http://www.ldap-account-manager.org';
 	$group_id = '61828';
 	$bug_atid = '498546';
 	$rfe_atid = '498549';
