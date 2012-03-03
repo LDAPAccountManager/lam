@@ -506,30 +506,17 @@ class asteriskExtensionNewUI extends baseModule {
 
         return array();
     }
-
-    /**
-     * Get list of all applications for given extension and move it into new suffix.
-     * 
-     * @return array list of error messages
-     */
-    function move_extention_to_new_suffix() {
-    	$errors = array();
+    
+    
+    function isMoveToNewSuffix(){
         $orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
-    	if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount) {
-        	$is_rename_success = false;
-            for ($rowCounter = 0; $rowCounter < count($this->extensionRows); $rowCounter++) {
-                $row = $this->extensionRows[$rowCounter];
-                $oldDN = "cn=" . $row["cn"][0] . "," . $orig_suffix;
-                $newRDN = "cn=" . $row["cn"][0];
-                $is_rename_success = @ldap_rename($_SESSION['ldap']->server(), $oldDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
-                if (!$is_rename_success) {
-                	$errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
-                	logNewMessage(LOG_ERR, 'Unable to rename ' . $oldDN . ' to ' . $newRDN . ',' . $this->getAccountContainer()->dnSuffix);
-                }
-            }
+        if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount){
+            return true;
         }
-        return $errors;
+        return false;
     }
+    
+    
     
     /**
      * Return true if even one owner is set and false otherwise
@@ -867,7 +854,24 @@ class asteriskExtensionNewUI extends baseModule {
        return $messages;
     }
     
-    
+    /**
+     * Get list of all applications for given extension and move it into new suffix.
+     * 
+     * @return array list of error messages
+     */
+    function moveExtentionToNewSuffix($rowOrig) {
+        if ($this->isMoveToNewSuffix()) {
+            $orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
+            $oldDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
+            $newRDN = "cn=" . $rowOrig["cn"][0];
+            $is_rename_success = false;
+            $is_rename_success = @ldap_rename($_SESSION['ldap']->server(), $oldDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
+            if (!$is_rename_success) {
+                $errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->getAccountContainer()->dn_orig), ldap_error($_SESSION['ldap']->server()));
+                logNewMessage(LOG_ERR, 'Unable to rename ' . $oldDN . ' to ' . $newRDN . ',' . $this->getAccountContainer()->dnSuffix);
+            }
+        }        
+    }
     
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
@@ -890,11 +894,9 @@ class asteriskExtensionNewUI extends baseModule {
 	* @return array list of modifications
 	*/
 	function save_attributes() {
-		$errors = array();
+	$errors = array();
         $this->extensionRows = $this->array_sort($this->extensionRows, 'astpriority');
 
-        $moveErrors = $this->move_extention_to_new_suffix(); // move extension to new suffix if necessary
-        $errors = array_merge($errors, $moveErrors);
         //Modify existent config roes if necessary
         for ($rowCounter = 0; $rowCounter < count($this->extensionRowsOrig); $rowCounter++) {
             $rowOrig = $this->extensionRowsOrig[$rowCounter];
@@ -909,6 +911,10 @@ class asteriskExtensionNewUI extends baseModule {
                     ldap_mod_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
                 }
                 $diffValsSerialysed = array_diff(array_map("serialize", array_intersect_key($row, $rowOrig)), array_map("serialize", $rowOrig));
+               
+                //if new suffix jast move old rows to the new suffix and go on
+                $this->moveExtentionToNewSuffix($rowOrig);
+                
                 if (count($diffValsSerialysed) != 0) {
                     $diffVals = array_map("unserialize", $diffValsSerialysed);
                     if($row["cn"][0] ==  $rowOrig["cn"][0]){
@@ -916,12 +922,13 @@ class asteriskExtensionNewUI extends baseModule {
                     }else{
                         $origDN = "cn=" . $rowOrig["cn"][0] . "," . $this->getAccountContainer()->dnSuffix;
                         $newRDN = "cn=" . $row["cn"][0];
+                        
                         ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
                         ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
                     }
                 }
             } else {
-                ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . $_SESSION['config']->get_Suffix('asteriskExtNewUI'));
+                ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
             }
         }
         //Add new config rows
@@ -929,15 +936,11 @@ class asteriskExtensionNewUI extends baseModule {
             $row = $this->extensionRows[$rowCounter];
             ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
         }
-        //this is trick for Edit again button to work
-        if($this->getAccountContainer()->isNewAccount){
-            $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
-            $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
-        }else{
-            $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
-            $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRowsOrig[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
-        }
-        //print_r($this->getAccountContainer()->finalDN );
+        
+        //a trick for Edit again to work
+        $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
+        
         $retun_obj = $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
         
         return $retun_obj;
