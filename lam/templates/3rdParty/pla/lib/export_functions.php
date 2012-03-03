@@ -318,9 +318,9 @@ class ExportCSV extends Export {
 		}
 
 		if ($this->compress)
-			echo gzencode($output);
+			return gzencode($output);
 		else
-			echo $output;
+			return $output;
 	}
 
 	/**
@@ -422,9 +422,9 @@ class ExportDSML extends Export {
 		$output .= sprintf('</dsml>%s',$this->br);
 
 		if ($this->compress)
-			echo gzencode($output);
+			return gzencode($output);
 		else
-			echo $output;
+			return $output;
 	}
 }
 
@@ -500,9 +500,9 @@ class ExportLDIF extends Export {
 		}
 
 		if ($this->compress)
-			echo gzencode($output);
+			return gzencode($output);
 		else
-			echo $output;
+			return $output;
 	}
 
 	/**
@@ -627,9 +627,9 @@ class ExportVCARD extends Export {
 		}
 
 		if ($this->compress)
-			echo gzencode($output);
+			return gzencode($output);
 		else
-			echo $output;
+			return $output;
 	}
 }
 ?>
