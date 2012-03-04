@@ -186,7 +186,7 @@ class asteriskExtensionNewUI extends baseModule {
         $this->messages['AstApplication'][0] = array('ERROR', _('Please enter the application.'));
         $this->messages['AstApplication'][1] = array('ERROR', _('Number of applications and application data in bulk upload is not the same.'));
         $this->messages['AstApplicationData'][0] = array('ERROR', _('Please enter the application data.'));
-        $this->messages['AstContext'][0] = array('ERROR', _('Please enter the extension context.'));
+        $this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
         $this->messages['AstExtension'][0] = array('ERROR', _('Please enter the extension name.'));
         $this->messages['AstExtension'][1] = array('ERROR', _('Extension with this name is already exists.'));
         $this->messages['AstPriority'][0] = array('ERROR', _('Please enter the priority.'));
@@ -201,8 +201,6 @@ class asteriskExtensionNewUI extends baseModule {
      * @return htmlElement HTML meta data
      */
     function display_html_attributes() {
-        
-        
     	$return = new htmlTable();
 
         $extName = '';
@@ -226,10 +224,11 @@ class asteriskExtensionNewUI extends baseModule {
         return $return;
     }
 
-    /*
-     * if necessary this function prints managment elements to manipulate owners of an extension.
+    /**
+     * This function prints management elements to manipulate owners of an extension.
+     * 
+     * @param htmlTable container
      */
-
     function render_exten_owners_set_controls($renderContainer) {
         $renderContainer->addElement(new htmlOutputText(_("Extension owners") . '*'));
         $renderContainer->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Change')));
@@ -248,10 +247,13 @@ class asteriskExtensionNewUI extends baseModule {
         $renderContainer->addElement($ownerList);
     }
 
+    /**
+     * Loads all related extension entries.
+     * 
+     * @param String $extension extension name
+     */
     function load_extension_parts($extension) {
         if (!isset($this->extensionRows[0]['astcontext'][0])) {
-            //$entries = searchLDAPByAttribute("AstExtension", $extension, $searchClass, array('cn', 'AstContext', 'AstPriority',
-            //    'AstApplication', 'AstApplicationData', 'AstExtension', 'member', 'ObjectClass'), array($searchScope));
             $entries = searchLDAP($this->getAccountContainer()->dnSuffix, '(&(objectClass=AsteriskExtension)(AstExtension=' . $extension . '))', array('cn', 'AstContext', 'AstPriority',
                 'AstApplication', 'AstApplicationData', 'AstExtension', 'member', 'ObjectClass'));
 
@@ -267,18 +269,16 @@ class asteriskExtensionNewUI extends baseModule {
         return $entries;
     }
 
-    /*
-     * Get array of arrays of such form
-     * [0: ['AstContext': "default", 'AstPriority': 1, 'AstApplicationData': 'Sip']
-     *  1:...
-     * ]
+    /**
+     * Generates the meta HTML for the rules.
+     * 
+     * @param String $extension extension name
+     * @param htmlTable $renderContainer container
      */
-
     function render_extensions_by_priority($extension, $renderContainer) {
         if (!isset($extension) || $extension == "") {
             $extension = "";
         }
-
 
         $entries = $this->load_extension_parts($extension);
 
@@ -301,7 +301,7 @@ class asteriskExtensionNewUI extends baseModule {
             //LOAD context from attributes, this is treak to deal with profile
             $accountContext = $this->attributes['AstContext'][0];
 	}
-        $accountContextInput = new htmlTableExtendedInputField(_("Extension context"), 'AstContext', $accountContext, 'AstContext');
+        $accountContextInput = new htmlTableExtendedInputField(_("Account context"), 'AstContext', $accountContext, 'AstContext');
         $accountContextInput->setRequired(true);
         $renderContainer->addElement($accountContextInput, true);
 
@@ -349,8 +349,14 @@ class asteriskExtensionNewUI extends baseModule {
         $renderContainer->addElement(new htmlButton("add_rule", _('Add another rule')), true);
     }
 
+    /**
+     * Generates the meta HTML for a single rule.
+     * 
+     * @param array $extensLine attributes of rule
+     * @param int $placeInList rule position
+     * @param htmlTable $renderContainer container
+     */
     function render_extension($extensLine, $placeInList, $renderContainer) {
-
         // application
         $application = '';
         if (isset($extensLine['astapplication'][0])) {
@@ -507,7 +513,11 @@ class asteriskExtensionNewUI extends baseModule {
         return array();
     }
     
-    
+    /**
+     * Returns if the extension was moved to another OU.
+     * 
+     * @return boolean true if moved
+     */
     function isMoveToNewSuffix(){
         $orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
         if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount){
@@ -519,7 +529,9 @@ class asteriskExtensionNewUI extends baseModule {
     
     
     /**
-     * Return true if even one owner is set and false otherwise
+     * Returns true if at least one owner is set and false otherwise
+     * 
+     * @return boolean true if one or more owners
      */
     function isExtensionOwnerSet(){
         if ( sizeof($this->extensionOwners) > 0 ) {
@@ -529,9 +541,9 @@ class asteriskExtensionNewUI extends baseModule {
     }
     
     /**
-     * Write variables into object and do some regex checks
+     * Writes variables into object and does some regex checks.
      *
-     * @param array $_POST HTTP-POST values
+     * @return array error messages
      */
     function process_attributes() {
         $errors = array();
@@ -573,13 +585,20 @@ class asteriskExtensionNewUI extends baseModule {
                 $errors = array_merge($errors, $extrow_errors);
             }
         } else {
-            //find new not taken extension name
+            //find new free extension name
             $this->extensionRows[0]['astextension'][0] = $this->generateNextExtensionName();
         }
 
         return $errors;
     }
 
+    /**
+     * Processes the rule data.
+     * 
+     * @param String $extensionName extension name
+     * @param String $extensionContext extension context
+     * @return array error messages
+     */
     function processExtensionRows($extensionName, $extensionContext) {
         $errors = array();
         if (isset($_POST['extension_rows']) && get_preg($_POST['extension_rows'], 'digit')) {
@@ -618,7 +637,7 @@ class asteriskExtensionNewUI extends baseModule {
         return $errors;
     }
     
-    /*
+    /**
      * Set extension owner as current logged in user.
      */
     function setDefaultExtensionOwner(){
@@ -627,21 +646,28 @@ class asteriskExtensionNewUI extends baseModule {
         $this->attributes['member'] = array($login);
     }
     
+    /**
+     * Returns the default extension owner.
+     * 
+     * @return String owner
+     */
     function getDefaultExtensionOwner(){
         $credentials = $_SESSION['ldap']->decrypt_login();
 		$login = $credentials[0];
         return $login;
     }
     
-    /*
-     * Fill fileds of single extension row
+    /**
+     * Fills the fileds of a single extension row.
      * In Asterisk it would only be an extension name,a priority,an application, but LDAP spicific 
-     * add to processing context filed.
-     * @param $extRow - hash array to store single extension properties;
-     * @param $entryCounter - counter to distinguish single extensuion properties from $_POST
-     * @param $extensionPriorityCntr - it is the variable where actual number of extension rules wuld be aggregated 
+     * add to processing context field.
+     * 
+     * @param array $extRow - hash array to store single extension properties;
+     * @param String $extensionName extension name
+     * @param String $extensionContext extension context
+     * @param int $entryCounter - counter to distinguish single extensuion properties from $_POST
+     * @param int $extensionPriorityCntr - it is the variable where actual number of extension rules wuld be aggregated 
      */
-
     function processSingleExtension(&$extRow,$extensionName, $extensionContext ,$entryCounter,$extensionPriorityCntr) {
         $errors = array();
         if (isset($extensionContext[0])) {
@@ -680,6 +706,9 @@ class asteriskExtensionNewUI extends baseModule {
         return $errors;
     }
 
+    /**
+     * Reorders the rules if the user clicked on a move button.
+     */
     function processPriorityChange() {
         for ($entryCounter = 0; $entryCounter < sizeof($this->extensionRows); $entryCounter++) {
             if (isset($_POST["rule_up_button_" . $entryCounter])) {
@@ -694,8 +723,10 @@ class asteriskExtensionNewUI extends baseModule {
     }
 
     /**
-     * Search by extension name and retun true if fields wtith this extension name is presented
+     * Search by extension name and retun true if fields with this extension name is presented
      * and false otherwise.
+     * 
+     * @return boolean true if there are entries with this extension name.
      */
     function isThisExtensionPresented($extension) {
         $searchClass = "AsteriskExtension";
@@ -715,6 +746,8 @@ class asteriskExtensionNewUI extends baseModule {
      * This function searches in the base subtree and finds all extensions names within.
      * The generation algorithm is the naive one, so only work when extension is numbers.
      * All extension name is sorted and new extension name will be greates on + 1.
+     * 
+     * @return String suggested extension name
      */
     function generateNextExtensionName() {
         $searchClass = "AsteriskExtension";
@@ -948,8 +981,9 @@ class asteriskExtensionNewUI extends baseModule {
 
     /**
      * Runs ufter main deltete procedure was done and do postmorten for other parts of extension
-     * wtith priority > 1
-     * @return type 
+     * wtith priority > 1.
+     * 
+     * @return array error messages 
      */
     function postDeleteActions() {
 
@@ -966,7 +1000,6 @@ class asteriskExtensionNewUI extends baseModule {
                 ldap_delete($_SESSION['ldap']->server(), $rowOrig['dn']);                  
             }
         }
-        $message = array(0 => array("ERROR"));
         return array();
     }
 

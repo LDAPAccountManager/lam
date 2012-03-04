@@ -4,7 +4,7 @@
   $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2009         Pozdnyak Pavel
+  Copyright (C) 2009 - 2012  Pozdnyak Pavel
                 2010 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
@@ -92,8 +92,8 @@ class asteriskExtNewUI extends baseType {
     function getListAttributeDescriptions() {
         return array(
             "astextension" => _("Extension name"),
-            "astcontext" => _("Context"),
-            "member" => _("Extension owner DN"),
+            "astcontext" => _("Account context"),
+            "member" => _("Owner"),
         );
     }
 
@@ -108,8 +108,8 @@ class asteriskExtNewUI extends baseType {
             return _("New extension");
         }
 		// check if a common name is set
-        if (isset($attributes['astextension'][0])) {
-            return htmlspecialchars($attributes['astextension'][0]);
+        if (isset($attributes['AstExtension'][0])) {
+            return htmlspecialchars($attributes['AstExtension'][0]);
         }
 		// fall back to default
         return parent::getTitleBarTitle($attributes);
@@ -141,12 +141,23 @@ class lamAsteriskExtNewUIList extends lamList {
             'deleteEntry' => _("Delete selected extensions"));
     }
 
+    /**
+     * Forces the list view to show only specific attributes.
+	 *
+     * @see lamList::listGetParams()
+     */
     protected function listGetParams() {
         // check if only PDF should be shown
         parent::listGetParams();
         $this->attrArray = array("astextension", "astcontext", "member");
     }
 
+    /**
+     * Groups the extensions.
+     * 
+     * (non-PHPdoc)
+     * @see lamList::listRefreshData()
+     */
     protected function listRefreshData() {
         parent::listRefreshData();
         // configure search filter
@@ -167,6 +178,11 @@ class lamAsteriskExtNewUIList extends lamList {
         $this->possibleSuffixes = $typeObj->getSuffixList();
     }
 
+    /**
+     * Groups the extensions.
+     * 
+     * @param array $entries extension entries
+     */
     private function normalizeLdapOutput($entries){
         $entries = array_map("unserialize", array_unique(array_map("serialize", $entries)));
         foreach($entries as $key=> $value){
@@ -176,9 +192,6 @@ class lamAsteriskExtNewUIList extends lamList {
         }
         return $entries;
     }
-
-    
-     
     
 }
 
