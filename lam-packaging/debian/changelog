@@ -7,6 +7,13 @@ ldap-account-manager (3.7.TEST-1) unstable; urgency=low
 
  -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Mar 2012 11:20:20 +0100
 
+ldap-account-manager (3.6-2) unstable; urgency=high
+
+  * Fix "Multiple vulnerabilities"
+    Replace special characters in HTML output. (Closes: #661904)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Mar 2012 21:41:05 +0100
+
 ldap-account-manager (3.6.1-1) unstable; urgency=low
 
   * new upstream release
