@@ -68,7 +68,7 @@ class asteriskExtension extends baseModule {
         // LDAP filter
         $return["ldap_filter"] = array('or' => "(objectClass=AsteriskExtension)");
         // alias name
-        $return["alias"] = _("Asterisk extension New UI");
+        $return["alias"] = _("Asterisk extension");
         // module dependencies
         $return['dependencies'] = array('depends' => array(), 'conflicts' => array());
         // managed object classes
@@ -113,14 +113,6 @@ class asteriskExtension extends baseModule {
             'ownerOptions' => array(
                 "Headline" => _("Options"),
                 "Text" => _("These options change the list of potential extension owners below. You can select to show Asterisk accounts or all users. It is also possible to search the tree suffix if you have users which are not in the standard user suffix.")
-            ),
-            'MigrateSuffix' => array(
-                "Headline" => _("Suffix to migrate"),
-                "Text" => _("This is suffix of LDAP tree to migrate entryes after testing or other staff.")
-            ),
-            'UseCreatorAsOwner' => array(
-                "Headline" => _("Use an extension creator as its owner"),
-                "Text" => _("This feature hide owner's selection button from an extension managment interface and set a logged in user as an extension owner. You can use this feature as a leverage to grand/reject users to manage thair extensions")
             ),
         );
 
@@ -184,7 +176,6 @@ class asteriskExtension extends baseModule {
     function load_Messages() {
         $this->messages['cn'][0] = array('ERROR', _('Please enter a common name.'));
         $this->messages['AstApplication'][0] = array('ERROR', _('Please enter the application.'));
-        $this->messages['AstApplication'][1] = array('ERROR', _('Number of applications and application data in bulk upload is not the same.'));
         $this->messages['AstApplicationData'][0] = array('ERROR', _('Please enter the application data.'));
         $this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
         $this->messages['AstExtension'][0] = array('ERROR', _('Please enter the extension name.'));
