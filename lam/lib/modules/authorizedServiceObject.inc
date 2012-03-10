@@ -295,7 +295,7 @@ class authorizedServiceObject extends baseModule {
 			}
 		}
 		// add ASs
-		if ($profile['authorizedServiceObject_services'][0] != "") {
+		if (isset ($profile['authorizedServiceObject_services'][0]) && ($profile['authorizedServiceObject_services'][0] != "")) {
 			$services = explode(',', $profile['authorizedServiceObject_services'][0]);
 			for ($m = 0; $m < sizeof($services); $m++) {
 				if (get_preg($services[$m], 'ascii')) {
