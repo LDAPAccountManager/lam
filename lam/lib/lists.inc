@@ -341,7 +341,7 @@ class lamList {
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
 		echo "<td>";
-		echo "<button class=\"smallPadding\" id=\"filterButton\" name=\"apply_filter\">" . _("Filter") . "</button>";
+		echo "<button type=\"submit\" class=\"smallPadding\" id=\"apply_filter\" name=\"apply_filter\">" . _("Filter") . "</button>";
 		echo "</td>\n";
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
@@ -353,7 +353,7 @@ class lamList {
 				$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
 			}
 			echo "<td align=\"left\">";
-			echo "<input style=\"margin-right: 10px;\" type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event)\">";
+			echo "<input style=\"margin-right: 10px;\" type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event);\">";
 			echo "</td>\n";
 		}
 		echo "</tr></thead>\n";

@@ -103,9 +103,16 @@ function listShowSettingsDialog(title, okText, cancelText) {
 
 function SubmitForm(id, e) {
 	if (e.keyCode == 13) {
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		if (e.returnValue) {
+			e.returnValue = false;
+		}
 		document.getElementsByName(id)[0].click();
 		return false;
 	}
+	return true;
 }
 
 function addResizeHandler(item, min, max) {
