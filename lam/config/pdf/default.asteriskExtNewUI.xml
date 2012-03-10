@@ -1,7 +1,0 @@
-<pdf type="asteriskExtNewUI" filename="printLogo.jpg" headline="LDAP Account Manager">
-	<section name="_asteriskExtensionNewUI_AstExtension">
-		<entry name="asteriskExtensionNewUI_AstContext" />
-		<entry name="asteriskExtensionNewUI_owners" />
-		<entry name="asteriskExtensionNewUI_rules" />
-	</section>
-</pdf>
