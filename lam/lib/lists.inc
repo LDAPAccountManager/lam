@@ -290,11 +290,11 @@ class lamList {
 					continue;
 				}
 				if ($i == $this->page - 1) {
-					echo("&nbsp;" . ($i + 1));
+					echo '&nbsp;' . ($i + 1) . '&nbsp;';
 				}
 				else {
-					echo("&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n");
+					echo "&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n";
 				}
 			}
 			if ($this->page < (($count / $this->maxPageEntries) - 10)) {
@@ -303,7 +303,7 @@ class lamList {
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 			}
 			if ($this->page < ($count / $this->maxPageEntries)) {
-				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . round(($count / $this->maxPageEntries)) .
+				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ceil(($count / $this->maxPageEntries)) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 			}
