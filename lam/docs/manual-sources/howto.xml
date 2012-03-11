@@ -505,7 +505,9 @@ Have fun!
           <para>If you run PHP with activated <ulink
           url="http://www.hardened-php.net/suhosin/index.html">Suhosin</ulink>
           extension please check your logs for alerts. E.g. LAM requires that
-          "suhosin.post.max_name_length" and "suhosin.request.max_varname_length" are increased (e.g. to 256).</para>
+          "suhosin.post.max_name_length" and
+          "suhosin.request.max_varname_length" are increased (e.g. to
+          256).</para>
         </section>
 
         <section>
@@ -682,6 +684,14 @@ Have fun!
 
       <section id="a_versUpgrade">
         <title>Version specific upgrade instructions</title>
+
+        <section>
+          <title>3.6 -&gt; 3.7</title>
+
+          <para>Asterisk extensions: The extension entries are now grouped by
+          extension name and account context. LAM will automatically assign
+          priorities and set same owners for all entries.</para>
+        </section>
 
         <section>
           <title>3.5.0 -&gt; 3.6</title>
@@ -1946,6 +1956,52 @@ Have fun!
       </section>
 
       <section>
+        <title>Heimdal Kerberos (LAM Pro)</title>
+
+        <para>You can manage your Heimdal Kerberos accounts with LAM Pro.
+        Please add the user module "Heimdal Kerberos" to activate this
+        feature.</para>
+
+        <para><emphasis role="bold">Setup password changing</emphasis></para>
+
+        <para>LAM Pro cannot generate the password hashes itself because
+        Heimdal uses a propietary format for them. Therefore, LAM Pro needs to
+        call e.g. kadmin to set the password.</para>
+
+        <para>The wildcards @@password@@ and @@principal@@ are replaced with
+        password and principal name. Please use keytab authentication for this
+        command since it must run without any interaction.</para>
+
+        <para>Example to create a keytab: ktutil -k /root/lam.keytab add -p
+        lam@LAM.LOCAL -e aes256-cts-hmac-sha1-96 -V 1</para>
+
+        <para>Security hint: Please secure your LAM Pro server since the new
+        passwords will be visible for a short term in the process list during
+        password change.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_kerberos2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">User management</emphasis></para>
+
+        <para>You can specify the principal/user name, ticket lifetimes and
+        expiration dates.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_kerberos1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Mail routing</title>
 
         <para>LAM supports to manage mail routing for user accounts. You can
@@ -2396,6 +2452,11 @@ Have fun!
       <para>If you also want to manage Asterisk extensions then simply add the
       account type "Asterisk extensions" and its module to your server
       profile.</para>
+
+      <para>LAM groups your Asterisk extension entries by extension name and
+      account context. If you edit an extension then you will see the Asterisk
+      entries as rules. LAM manages that all rule entries have the same owners
+      and assigns the priorities.</para>
 
       <screenshot>
         <mediaobject>
