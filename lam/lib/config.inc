@@ -346,6 +346,16 @@ class LAMConfig {
 			}
 			fclose($file);
 		}
+		// check types
+		$allTypes = getTypes();
+		$activeTypes = $this->get_ActiveTypes();
+		for ($i = 0; $i < sizeof($activeTypes); $i++) {
+			if (!in_array($activeTypes[$i], $allTypes)) {
+				unset($activeTypes[$i]);
+			}
+		}
+		$activeTypes = array_values($activeTypes);
+		$this->set_ActiveTypes($activeTypes);
 		// check modules
 		$scopes = $this->get_ActiveTypes();
 		for ($s = 0; $s < sizeof($scopes); $s++) {
