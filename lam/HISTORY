@@ -1,6 +1,7 @@
-March 2012 3.7
+28.03.2012 3.7
   - Login: support bind user for login search
   - Personal: added labeledURI and cosmetic changes, description is now multi-valued (RFE 3446363)
+  - Asterisk extensions: group extension entries by name and context
   - File upload:
    -> support custom scripts postCreate (LAM Pro)
    -> PDF export
@@ -10,12 +11,14 @@ March 2012 3.7
   - LAM Pro:
    -> Password self reset can send password notification mails
    -> Zarafa archiver support
+   -> Heimdal Kerberos support
   - Fixed bugs:
    -> DHCP: error message not displayed properly (3441975)
    -> Profile loading not possible if required fields are not filled (3444948)
    -> Tree view: unable to add object class (3446037)
    -> Edit page: unable to move accounts to different OU
    -> Self Service: support forced password changes (PPolicy) (3483907)
+   -> XSS security patch (3496624)
 
 
 23.11.2011 3.6.1
