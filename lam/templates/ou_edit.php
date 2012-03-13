@@ -82,7 +82,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		}
 		// show errormessage if ou is invalid
 		else {
-			$error = _("OU is invalid!") . "<br>" . $_POST['newOU'];
+			$error = _("OU is invalid!") . "<br>" . htmlspecialchars($_POST['newOU']);
 		}
 	}
 	// delete ou, user was sure

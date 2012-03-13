@@ -62,7 +62,16 @@ if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 // Set correct language, codepages, ....
 setlanguage();
 
+if (isset($_POST['type']) && !preg_match('/^[a-z0-9_]+$/i', $_POST['type'])) {
+	logNewMessage(LOG_ERR, 'Invalid type: ' . $_POST['type']);
+	die();
+}
+
 if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
+	if (!preg_match('/^[a-z0-9_]+$/i', $_GET['type'])) {
+		logNewMessage(LOG_ERR, 'Invalid type: ' . $_GET['type']);
+		die();
+	}
 	// Create account list
 	foreach ($_SESSION['delete_dn'] as $dn) {
 		$start = strpos ($dn, "=")+1;
@@ -83,8 +92,8 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<table border=0>\n";
 	for ($i=0; $i<count($users); $i++) {
 		echo "<tr>\n";
-		echo "<td><b>" . _("Account name:") . "</b> $users[$i]</td>\n";
-		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . $_SESSION['delete_dn'][$i] . "</td>\n";
+		echo "<td><b>" . _("Account name:") . "</b> " . htmlspecialchars($users[$i]) . "</td>\n";
+		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . htmlspecialchars($_SESSION['delete_dn'][$i]) . "</td>\n";
 		$childCount = getChildCount($_SESSION['delete_dn'][$i]);
 		if ($childCount > 0) {
 			echo "<td>&nbsp;&nbsp;<b>" . _('Number of child entries') . ":</b> " . $childCount . "</td>\n";

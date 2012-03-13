@@ -45,6 +45,10 @@ setlanguage();
 // get account name and type
 $dn = $_GET['DN'];
 $type = $_GET['type'];
+if (!preg_match('/^[a-z0-9_]+$/i', $type)) {
+	logNewMessage(LOG_ERR, 'Invalid type: ' . $type);
+	die();
+}
 
 if (isset($dn) && isset($type)) {
 	$dn = str_replace("\\", '',$dn);

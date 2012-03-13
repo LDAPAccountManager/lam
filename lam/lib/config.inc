@@ -293,7 +293,7 @@ class LAMConfig {
 	*/
 	function __construct($file) {
 		if (empty($file) || !preg_match("/^[a-z0-9_-]+$/i", $file)) {
-			logNewMessage('ERROR', 'Invalid config file name: ' . $file);
+			logNewMessage(LOG_ERR, 'Invalid config file name: ' . $file);
 			die();
 		}
 		// load first profile if none is given
