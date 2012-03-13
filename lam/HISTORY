@@ -9,7 +9,7 @@
   - removed phpGroupWare support (project no longer exists)
   - Use new password after self password change (RFE 3446350)
   - LAM Pro:
-   -> Password self reset can send password notification mails
+   -> Password self reset can send password confirmation and notification mails
    -> Zarafa archiver support
    -> Heimdal Kerberos support
   - Fixed bugs:
