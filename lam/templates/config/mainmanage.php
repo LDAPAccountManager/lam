@@ -90,9 +90,9 @@ if (isset($_POST['submit'])) {
 				continue;
 			}
 			// check each line
-			$ipRegex = '/^[0-9\\.\\*]+$/';
+			$ipRegex = '/^[0-9a-f\\.:\\*]+$/i';
 			if (!preg_match($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 15)) {
-				$errors[] = sprintf(_("The IP address %s is invalid!"), str_replace('%', '%%', $allowedHostsList[$i]));
+				$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsList[$i])));
 			}
 		}
 		$allowedHosts = implode(",", $allowedHostsList);

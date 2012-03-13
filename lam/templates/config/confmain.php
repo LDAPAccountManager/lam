@@ -434,10 +434,10 @@ function checkInput() {
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
 		if (!$conf->setLamProMailFrom($_POST['pwdResetMail_from'])) {
-			$errors[] = array("ERROR", _("From address for password mails is invalid."), $_POST['pwdResetMail_from']);
+			$errors[] = array("ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from']));
 		}
 		if (!$conf->setLamProMailReplyTo($_POST['pwdResetMail_replyTo'])) {
-			$errors[] = array("ERROR", _("Reply-to address for password mails is invalid."), $_POST['pwdResetMail_replyTo']);
+			$errors[] = array("ERROR", _("Reply-to address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_replyTo']));
 		}
 		$conf->setLamProMailSubject($_POST['pwdResetMail_subject']);
 		if (isset($_POST['pwdResetMail_isHTML']) && ($_POST['pwdResetMail_isHTML'] == 'on')) {

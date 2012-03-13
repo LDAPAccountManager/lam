@@ -109,22 +109,28 @@ if (isset($_POST['action'])) {
 	}
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {
-		if ($_POST['setpassword'] && $_POST['setpassword2'] && ($_POST['setpassword'] == $_POST['setpassword2'])) {
-			$config = new LAMConfig($_POST['setprofile']);
-			$config->set_Passwd($_POST['setpassword']);
-			$config->save();
-			$config = null;
-			$msg = _("New password set successfully.");
+		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['setprofile'])) {
+			if ($_POST['setpassword'] && $_POST['setpassword2'] && ($_POST['setpassword'] == $_POST['setpassword2'])) {
+				$config = new LAMConfig($_POST['setprofile']);
+				$config->set_Passwd($_POST['setpassword']);
+				$config->save();
+				$config = null;
+				$msg = _("New password set successfully.");
+			}
+			else $error = _("Profile passwords are different or empty!");
 		}
-		else $error = _("Profile passwords are different or empty!");
+		else $error = _("Profile name is invalid!");
 	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
-		$configMain = new LAMCfgMain();
-		$configMain->default = $_POST['defaultfilename'];
-		$configMain->save();
-		$configMain = null;
-		$msg = _("New default profile set successfully.");
+		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['defaultfilename'])) {
+			$configMain = new LAMCfgMain();
+			$configMain->default = $_POST['defaultfilename'];
+			$configMain->save();
+			$configMain = null;
+			$msg = _("New default profile set successfully.");
+		}
+		else $error = _("Profile name is invalid!");
 	}
 }
 

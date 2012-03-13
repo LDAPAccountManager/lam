@@ -90,7 +90,7 @@ function checkClientIP() {
 	$grantAccess = false;
 	for ($i = 0; $i < sizeof($allowedHosts); $i++) {
 		$host = $allowedHosts[$i];
-		$ipRegex = '/^[0-9\\.\\*]+$/';
+		$ipRegex = '/^[0-9a-z\\.:\\*]+$/i';
 		if (!preg_match($ipRegex, $host)) continue;
 		$hostRegex = str_replace(".", "\\.", $host);
 		$hostRegex = '/^' . str_replace("*", ".*", $hostRegex) . '$/';

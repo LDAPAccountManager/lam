@@ -289,9 +289,13 @@ class LAMConfig {
 	/**
 	* Loads preferences from config file
 	*
-	* @param integer $file Index number in config file array
+	* @param String $file file name without ".conf" (e.g. lam)
 	*/
-	function __construct($file = 0) {
+	function __construct($file) {
+		if (empty($file) || !preg_match("/^[a-z0-9_-]+$/i", $file)) {
+			logNewMessage('ERROR', 'Invalid config file name: ' . $file);
+			die();
+		}
 		// load first profile if none is given
 		if (!is_string($file)) {
 			$profiles = getConfigProfiles();
