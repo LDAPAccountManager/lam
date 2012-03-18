@@ -58,7 +58,8 @@ if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 setlanguage();
 
 include 'main_header.php';
-echo '<div class="' . $_SESSION['mass_scope'] . 'list-bright smallPaddingContent">';
+$scope = htmlspecialchars($_SESSION['mass_scope']);
+echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
@@ -120,12 +121,12 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	// do post upload actions after all accounts are created
 	if ($_SESSION['mass_counter'] >= sizeof($accounts)) {
 		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
-		$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
+		$return  = doUploadPostActions($scope, $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
 		if ($return['status'] == 'finished') {
 			$_SESSION['mass_postActions']['finished'] = true;
 		}
 		for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
-		echo "<h1>" . _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $_SESSION['mass_scope']) . "</h1>\n";
+		echo "<h1>" . _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $scope) . "</h1>\n";
 		?>
 			<div id="progressbar<?php echo $return['module']; ?>"></div>
 			<script type="text/javascript">
@@ -138,7 +139,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		<?php
 		flush();
 		while (!isset($_SESSION['mass_postActions']['finished']) && (($startTime + $maxTime) > time())) {
-			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
+			$return  = doUploadPostActions($scope, $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
 			if ($return['status'] == 'finished') {
 				$_SESSION['mass_postActions']['finished'] = true;
 			}
@@ -190,7 +191,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 					}
 				}
 				// load account
-				$_SESSION['pdfAccount'] = new accountContainer($_SESSION['mass_scope'], 'pdfAccount');
+				$_SESSION['pdfAccount'] = new accountContainer($scope, 'pdfAccount');
 				$pdfErrors = $_SESSION['pdfAccount']->load_account($dn, $infoAttributes);
 				if (sizeof($pdfErrors) > 0) {
 					$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $pdfErrors);
@@ -233,7 +234,7 @@ else {
 	else {
 		// redirect to list if no errors occured
 		echo "<script type=\"text/javascript\">\n";
-		echo "top.location.href = \"lists/list.php?type=" . $_SESSION['mass_scope'] . "&uploadAllOk\";\n";
+		echo "top.location.href = \"lists/list.php?type=" . $scope . "&uploadAllOk\";\n";
 		echo "</script>\n";
 	}
 }

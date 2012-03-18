@@ -84,7 +84,7 @@ $types = array_values($types);
 // check if account specific page should be shown
 if (isset($_POST['type'])) {
 	// get selected type
-	$scope = $_POST['type'];
+	$scope = htmlspecialchars($_POST['type']);
 	// get selected modules
 	$selectedModules = array();
 	$checkedBoxes = array_keys($_POST, 'on');

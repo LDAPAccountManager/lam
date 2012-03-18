@@ -97,8 +97,7 @@ function displayHelp($helpEntry,$helpVariables) {
 }
 
 /* If no help number was submitted print error message */
-if(!isset($_GET['HelpNumber']))
-{
+if (!isset($_GET['HelpNumber'])) {
 	$errorMessage = "Sorry no help number submitted.";
 	echoHTMLHead();
 	statusMessage("ERROR","",$errorMessage);
@@ -111,16 +110,16 @@ $helpEntry = array();
 // module help
 if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
 	include_once("../lib/modules.inc");
-	if(isset($_GET['scope'])) {
+	if (isset($_GET['scope'])) {
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);
 	}
 	else {
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber']);
 	}
-	if(!$helpEntry) {
+	if (!$helpEntry) {
 		$variables = array();
-		array_push($variables,$_GET['HelpNumber']);
-		array_push($variables,$_GET['module']);
+		array_push($variables, htmlspecialchars($_GET['HelpNumber']));
+		array_push($variables, htmlspecialchars($_GET['module']));
 		$errorMessage = _("Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold}).");
 		echoHTMLHead();
 		statusMessage("ERROR","",$errorMessage,$variables);
@@ -131,11 +130,10 @@ if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] =
 // help entry in help.inc
 else {
 	/* If submitted help number is not in help/help.inc print error message */
-	if(!array_key_exists($_GET['HelpNumber'],$helpArray))
-	{
+	if (!array_key_exists($_GET['HelpNumber'],$helpArray)) {
 		$variables = array();
-		array_push($variables,$_GET['HelpNumber']);
-		$errorMessage = _("Sorry this help number ({bold}%d{endbold}) is not available.");
+		array_push($variables, htmlspecialchars($_GET['HelpNumber']));
+		$errorMessage = _("Sorry this help number ({bold}%s{endbold}) is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR","",$errorMessage,$variables);
 		echoHTMLFoot();
@@ -150,8 +148,8 @@ $i = 1;
 $moreVariables = true;
 $helpVariables = array();
 while($moreVariables) {
-	if(isset($_GET['var' . $i])) {
-		array_push($helpVariables,$_GET['var' . $i]);
+	if (isset($_GET['var' . $i])) {
+		array_push($helpVariables, htmlspecialchars($_GET['var' . $i]));
 		$i++;
 	}
 	else {

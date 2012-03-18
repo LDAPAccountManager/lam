@@ -87,7 +87,8 @@ if (isset($_GET['showldif'])) {
 }
 
 include 'main_header.php';
-echo '<div class="' . $_POST['scope'] . 'list-bright smallPaddingContent">';
+$scope = htmlspecialchars($_POST['scope']);
+echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
 
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
@@ -95,7 +96,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules
-	$columns = getUploadColumns($_POST['scope'], $selectedModules);
+	$columns = getUploadColumns($scope, $selectedModules);
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
@@ -158,15 +159,15 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
 		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
-		massPrintBackButton($_POST['scope'], $selectedModules);
+		massPrintBackButton($scope, $selectedModules);
 	}
 	
 	// let modules build accounts
 	else {
-		$accounts = buildUploadAccounts($_POST['scope'], $data, $ids, $selectedModules);
+		$accounts = buildUploadAccounts($scope, $data, $ids, $selectedModules);
 		if ($accounts != false) {
-			$rdnList = getRDNAttributes($_POST['scope'], $selectedModules);
-			$suffix = $_SESSION['config']->get_Suffix($_POST['scope']);
+			$rdnList = getRDNAttributes($scope, $selectedModules);
+			$suffix = $_SESSION['config']->get_Suffix($scope);
 			// set DN
 			for ($i = 0; $i < sizeof($accounts); $i++) {
 				// check against list of possible RDN attributes
@@ -193,7 +194,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$_SESSION['mass_postActions'] = array();
 				$_SESSION['mass_data'] = $_SESSION['ldap']->encrypt(serialize($data));
 				$_SESSION['mass_ids'] = $ids;
-				$_SESSION['mass_scope'] = $_POST['scope'];
+				$_SESSION['mass_scope'] = $scope;
 				$_SESSION['mass_selectedModules'] = $selectedModules;
 				if (isset($_SESSION['mass_pdf'])) {
 					unset($_SESSION['mass_pdf']);
@@ -225,13 +226,13 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 		}
 		else {
-			massPrintBackButton($_POST['scope'], $selectedModules);
+			massPrintBackButton($scope, $selectedModules);
 		}
 	}
 }
 else {
 	StatusMessage('ERROR', _('Please provide a file to upload.'));
-	massPrintBackButton($_POST['scope'], $selectedModules);
+	massPrintBackButton($scope, $selectedModules);
 }
 
 echo '</div>';

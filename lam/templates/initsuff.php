@@ -148,7 +148,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 		if (sizeof($fail) > 0) {
 			// print error messages
 			for ($i = 0; $i < sizeof($fail); $i++) {
-				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . $error[$i], $fail[$i]);
+				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error[$i]), htmlspecialchars($fail[$i]));
 			}
 			include 'main_footer.php';
 		}
