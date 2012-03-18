@@ -1452,7 +1452,7 @@ class accountContainer {
 				$this->module[$module]->init($this->base);
 			}
 			$this->module[$module]->load_attributes($attr);
-			}
+		}
 
 		// sort module buttons
 		$this->sortModules();
