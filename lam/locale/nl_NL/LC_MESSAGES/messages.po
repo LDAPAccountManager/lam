@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: LAM 0.5\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2012-03-17 13:57+0100\n"
+"PO-Revision-Date: 2012-03-18 16:14+0100\n"
 "Last-Translator: me <me@me.nl>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -492,16 +492,16 @@ msgstr "Type accounts en modules"
 
 #: ../help/help.inc:107
 msgid "Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited."
-msgstr "Type accounts bepalen welk soort LDAP entrees (bijvoorbeeld gebruikers en groepen) beheerd zouden moeten worden. De account modules bepalen welke eigenschappen (bijvoorbeeld Unix en Samba) geredigeerd kunnen worden."
+msgstr "Type accounts bepalen welk soort LDAP items (bijvoorbeeld gebruikers en groepen) beheerd zouden moeten worden. De account modules bepalen welke eigenschappen (bijvoorbeeld Unix en Samba) geredigeerd kunnen worden."
 
 #: ../lib/modules.inc:1212
 msgid "Account was created successfully."
-msgstr "Aanmaken account is aangemaakt."
+msgstr "Account is aangemaakt."
 
 #: ../templates/lists/changePassword.php:619
 #: ../lib/modules.inc:1215
 msgid "Account was modified successfully."
-msgstr "Aanmaken account is gewijzigd."
+msgstr "Account is met succes aangepast."
 
 #: ../lib/modules/customScripts.inc:128
 msgid "Action type"
@@ -1050,12 +1050,12 @@ msgstr "Archiveren"
 
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:53
 msgid "Are you sure you want to permanently delete these objects?"
-msgstr "U bet zeker dat u dit obect permanent wilt verwijderen?"
+msgstr "Bent u zeker dat u deze obecten permanent wilt verwijderen?"
 
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:107
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:51
 msgid "Are you sure you want to permanently delete this object?"
-msgstr "U bet zeker dat u dit obect permanent wilt verwijderen?"
+msgstr "Bent u zeker dat u dit obect permanent wilt verwijderen?"
 
 #: ../lib/modules/imapAccess.inc:114
 msgid "Ask"
@@ -1533,7 +1533,7 @@ msgstr "Beller ID"
 #: ../lib/modules/shadowAccount.inc:177
 #: ../lib/modules/shadowAccount.inc:181
 msgid "Can be left empty."
-msgstr "Kan open gelaten worden."
+msgstr "Kan leeg gelaten worden."
 
 #: ../lib/modules/asteriskAccount.inc:214
 #: ../lib/modules/asteriskAccount.inc:297
@@ -1783,7 +1783,7 @@ msgstr "Klik om een popup dialoog te tonen om grafisch een ​​datum te select
 
 #: ../templates/3rdParty/pla/lib/functions.php:2293
 msgid "Click to popup a dialog to select an entry (DN) graphically"
-msgstr "Klik om een popup dialoog te tonen om grafisch een entry (DN)  te selecteren"
+msgstr "Klik om een popup dialoog te tonen om grafisch een item (DN)  te selecteren"
 
 #: ../lib/types/user.inc:280
 msgid "Click to switch between thumbnail and original size."
@@ -1899,7 +1899,7 @@ msgstr "Configuratie overzicht"
 
 #: ../templates/config/confmodules.php:375
 msgid "Conflicting module:"
-msgstr "Conflikterende module:"
+msgstr "Conflicterende module:"
 
 #: ../lib/modules/sambaSamAccount.inc:221
 #: ../lib/modules/sambaSamAccount.inc:350
@@ -2035,7 +2035,7 @@ msgstr "Land"
 #: ../lib/modules/kolabUser.inc:233
 #: ../lib/modules/kolabUser.inc:234
 msgid "Country name is invalid!"
-msgstr "Landennaam is ongeldig!"
+msgstr "Landnaam is ongeldig!"
 
 #: ../templates/pdfedit/pdfmain.php:137
 #: ../templates/profedit/profilemain.php:131
@@ -2056,7 +2056,7 @@ msgstr "PDF bestand maken"
 #: ../templates/massDoUpload.php:170
 #: ../templates/masscreate.php:252
 msgid "Create PDF files"
-msgstr "PDF bestand maken"
+msgstr "PDF bestanden maken"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1186
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1187
@@ -2505,7 +2505,7 @@ msgstr "Verwijder geselecteerde policies"
 
 #: ../lib/types/sudo.inc:151
 msgid "Delete selected sudo roles"
-msgstr "Verwijderd geselecteerde sudo rollen"
+msgstr "Verwijder geselecteerde sudo rollen"
 
 #: ../lib/types/user.inc:200
 msgid "Delete selected users"
@@ -2524,19 +2524,19 @@ msgstr "Verwijder dit item"
 #: ../templates/delete.php:253
 #, php-format
 msgid "Deleted DN: %s"
-msgstr "Verwijderd DN: %s"
+msgstr "Verwijderde DN: %s"
 
 #: ../templates/pdfedit/pdfmain.php:84
 msgid "Deleted PDF structure."
-msgstr "Verwijderd PDF structuur."
+msgstr "Verwijderde PDF structuur."
 
 #: ../lib/modules/sambaGroupMapping.inc:74
 msgid "Deleted account"
-msgstr "Verwijderd account"
+msgstr "Verwijderde account"
 
 #: ../templates/profedit/profilemain.php:94
 msgid "Deleted profile."
-msgstr "Verwijderd profiel."
+msgstr "Verwijderde profiel."
 
 #: ../lib/modules/range.inc:92
 msgid "Deletes an IP range."
@@ -2879,7 +2879,7 @@ msgstr "Stop niet bij fouten"
 
 #: ../templates/pdfedit/pdfpage.php:459
 msgid "Down"
-msgstr "Omloaag"
+msgstr "Omlaag"
 
 #: ../templates/masscreate.php:244
 msgid "Download sample CSV file"
@@ -8897,7 +8897,7 @@ msgstr "Server tijd"
 
 #: ../lib/modules/authorizedServiceObject.inc:75
 msgid "Service name (e.g. sshd, imap, ftp). Enter one service per entry."
-msgstr "Service naam (bv sshd, imap, ftp). Een item per entry."
+msgstr "Service naam (bv sshd, imap, ftp). Een service per regel."
 
 #: ../templates/config/mainmanage.php:193
 #: ../help/help.inc:140
@@ -10115,7 +10115,7 @@ msgstr "De url attribuutwaarde moet beginnen met file://."
 
 #: ../lib/modules/zarafaUser.inc:98
 msgid "The user account is non-active and login is disabled."
-msgstr "Het user account is niet-actieve en inloggen is uitgeschakeld."
+msgstr "Het gebruikers account is niet-actieve en inloggen is uitgeschakeld."
 
 #: ../lib/modules/zarafaUser.inc:78
 msgid "The user will get warned when his mailbox reaches this limit."
@@ -10202,7 +10202,7 @@ msgstr "Er mag maar een groep bestaan van dit type."
 
 #: ../lib/modules/asteriskAccount.inc:619
 msgid "There is already another user with this caller ID."
-msgstr "Er is al een andere gebruiker met deze beller-ID."
+msgstr "Er is al een andere gebruiker met dit beller-ID."
 
 #: ../lib/modules/asteriskVoicemail.inc:202
 msgid "There is already another user with this mailbox name."
@@ -10645,7 +10645,7 @@ msgstr "Dit is de tijdslimiet (in dagen) voor andere gebruikers die hun aankomen
 
 #: ../lib/modules/sambaSamAccount.inc:327
 msgid "This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly."
-msgstr "Dit is de tijdzone van uw Samba server. LAM heeft deze informatie nodig voor het correct weer geven van logon uren."
+msgstr "Dit is de tijdzone van uw Samba server. LAM heeft deze informatie nodig voor het correct weergeven van logon uren."
 
 #: ../lib/modules/sambaSamAccount.inc:299
 msgid "This is the user's primary Windows group."
@@ -10763,7 +10763,7 @@ msgstr "Deze waarde moet een lijst met gebruikersnamen zijn gescheiden door een 
 
 #: ../help/help.inc:212
 msgid "This will create a new organisational unit under the selected one."
-msgstr "Dit zal een nieuwe organisatie eenheid creeren onder de geselecteerde eenheid."
+msgstr "Dit zal een nieuwe organisatie eenheid creëren onder de geselecteerde eenheid."
 
 #: ../lib/modules/posixAccount.inc:367
 msgid "This will create the user's home directory on the specified server."
@@ -10793,11 +10793,11 @@ msgstr "Dtr zal het wachtwoord van de host terugzetten naar de default waarde."
 
 #: ../templates/lists/changePassword.php:233
 msgid "This will set a random password and display it on the screen or send it to the user via mail."
-msgstr "Dit zal een willekeurig wachtwoord genereren en weer geven op het scherm of via e-mail sturen het naar de gebruiker. "
+msgstr "Dit zal een willekeurig wachtwoord genereren en weergeven op het scherm of via e-mail sturen naar de gebruiker. "
 
 #: ../help/help.inc:195
 msgid "This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings."
-msgstr "Dit zal een willekeurig wachtwoord genereren en weer geven op het scherm of via e-mail sturen het naar de gebruiker. Bewerk uw LAM server profiel voor het beheren van de mail-instellingen."
+msgstr "Dit zal een willekeurig wachtwoord genereren en weergeven op het scherm of via e-mail sturen naar de gebruiker. Bewerk uw LAM server profiel voor het beheren van de mail-instellingen."
 
 #: ../lib/modules/kolabUser.inc:164
 msgid "This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
@@ -11078,7 +11078,7 @@ msgstr "Niet in staat om mail te sturen!"
 #: ../templates/lists/changePassword.php:508
 #: ../templates/lists/changePassword.php:525
 msgid "Unable to sync the time when the user can/must change his password because no domain was found."
-msgstr "Kan niet het tijdstip waarop de gebruiker kan / moet zijn wachtwoord te wijzigen, omdat er geen domein werd gevonden synchroniseren."
+msgstr "Kan niet het tijdstip waarop de gebruiker zijn wachtwoord kan / moet wijzigen niet synchroniseren, omdat er geen domein werd gevonden ."
 
 #: ../lib/modules/passwordSelfReset.inc:761
 #: ../lib/modules/passwordSelfReset.inc:940
