@@ -55,7 +55,7 @@ if (isset($dn) && isset($type)) {
 	$dn = str_replace("'", '',$dn);
 	$_SESSION['delete_dn'] = array($dn);
 	// redirect to delete.php
-	metaRefresh("../delete.php?type=" . $type);
+	metaRefresh("../delete.php?type=" . htmlspecialchars($type));
 
 }
 else {

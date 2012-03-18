@@ -58,7 +58,7 @@ if ($dn) {
 else {
 	// print error message if user was not found
 	include '../main_header.php';
-	StatusMessage("ERROR", "", _("This user was not found!") . " (" . $user . ")");
+	StatusMessage("ERROR", "", _("This user was not found!") . " (" . htmlspecialchars($user) . ")");
 	echo "<p>&nbsp;</p>";
 	echo "<p><a href=\"list.php?type=group\">" . _("Back to group list") . "</a></p>";
 	include '../main_footer.php';
