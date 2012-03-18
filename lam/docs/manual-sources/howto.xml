@@ -4513,6 +4513,24 @@ Run slapindex to rebuild the index.
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_heimdal.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Heimdal Kerberos</entry>
+
+            <entry>krb5KDCEntry</entry>
+
+            <entry>hdb.schema</entry>
+
+            <entry>Part of Heimdal Kerberos installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_sudo.png" />
                 </imageobject>
               </inlinemediaobject></entry>
