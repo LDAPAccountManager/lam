@@ -69,14 +69,14 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 
 // check if new profile should be created
 elseif (isset($_POST['createProfileButton'])) {
-	metaRefresh("profilepage.php?type=" . $_POST['createProfile']);
+	metaRefresh("profilepage.php?type=" . htmlspecialchars($_POST['createProfile']));
 	exit;
 }
 // check if a profile should be edited
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	if (isset($_POST['editProfile_' . $profileClasses[$i]['scope']]) || isset($_POST['editProfile_' . $profileClasses[$i]['scope'] . '_x'])) {
-		metaRefresh("profilepage.php?type=" . $profileClasses[$i]['scope'] .
-					"&amp;edit=" . $_POST['profile_' . $profileClasses[$i]['scope']]);
+		metaRefresh("profilepage.php?type=" . htmlspecialchars($profileClasses[$i]['scope']) .
+					"&amp;edit=" . htmlspecialchars($_POST['profile_' . $profileClasses[$i]['scope']]));
 		exit;
 	}
 }

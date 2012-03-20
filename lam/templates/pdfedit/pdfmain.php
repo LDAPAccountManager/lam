@@ -64,7 +64,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 
 // check if new template should be created
 if(isset($_POST['createNewTemplate'])) {
-	metaRefresh('pdfpage.php?type=' . $_POST['scope']);
+	metaRefresh('pdfpage.php?type=' . htmlspecialchars($_POST['scope']));
 	exit();
 }
 
@@ -110,7 +110,7 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 // check if a template should be edited
 for ($i = 0; $i < sizeof($templateClasses); $i++) {
 	if (isset($_POST['editTemplate_' . $templateClasses[$i]['scope']]) || isset($_POST['editTemplate_' . $templateClasses[$i]['scope'] . '_x'])) {
-		metaRefresh('pdfpage.php?type=' . $templateClasses[$i]['scope'] . '&edit=' . $_POST['template_' . $templateClasses[$i]['scope']]);
+		metaRefresh('pdfpage.php?type=' . htmlspecialchars($templateClasses[$i]['scope']) . '&edit=' . htmlspecialchars($_POST['template_' . $templateClasses[$i]['scope']]));
 		exit;
 	}
 }
