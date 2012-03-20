@@ -540,7 +540,7 @@ abstract class baseModule {
 			$identifiers = array_keys($this->meta['profile_checks']);
 			for ($i = 0; $i < sizeof($identifiers); $i++) {
 				// empty input
-				if (($options[$identifiers[$i]][0] == '') || !isset($options[$identifiers[$i]][0])) {
+				if (!isset($options[$identifiers[$i]][0]) || ($options[$identifiers[$i]][0] == '')) {
 					// check if option is required
 					if (isset($this->meta['profile_checks'][$identifiers[$i]]['required']) && $this->meta['profile_checks'][$identifiers[$i]]['required']) {
 						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
