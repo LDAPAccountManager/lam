@@ -1467,12 +1467,14 @@ class posixAccount extends baseModule implements passwordService {
 			'posixAccount_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 			'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
 			'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
-			'posixAccount_gecos' => array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>'),
 			'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $this->getGroupName($this->attributes['gidNumber'][0]) . '</value></block>'),
 			'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . implode(", ", $this->groups) . '</value></block>'),
 			'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 			'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 		);
+		if (isset($this->attributes['gecos'][0])) {
+			$return['posixAccount_gecos'] = array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>');
+		}
 		if ($this->areGroupOfNamesActive()) {
 			$allGons = $this->findGroupOfNames();
 			$gons = array();
