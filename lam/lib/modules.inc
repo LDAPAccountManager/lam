@@ -1042,7 +1042,7 @@ class accountContainer {
 		);
 		if ($random == 'true') {
 			$password1 = generateRandomPassword();
-			$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . $password1, '', array(), true);
+			$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', array(), true);
 		}
 		else {
 			// check if passwords match
