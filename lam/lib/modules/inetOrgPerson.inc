@@ -503,8 +503,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_physicalDeliveryOfficeName',
 				'description' => _('Office name'),
-				'help' => 'physicalDeliveryOfficeName',
-				'example' => _('YourCompany, Human Resources')
+				'help' => 'physicalDeliveryOfficeNameList',
+				'example' => _('YourCompany')
 			);
 		}
 		// available PDF fields
@@ -748,6 +748,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'physicalDeliveryOfficeName' => array(
 				"Headline" => _("Office name"), 'attr' => 'physicalDeliveryOfficeName',
 				"Text" => _("The office name of the user (e.g. YourCompany, Human Resources).")
+			),
+			'physicalDeliveryOfficeNameList' => array(
+				"Headline" => _("Office name"), 'attr' => 'physicalDeliveryOfficeName',
+				"Text" => _("The office name of the user (e.g. YourCompany, Human Resources).") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'departmentNumber' => array(
 				"Headline" => _("Department"), 'attr' => 'departmentNumber',
@@ -1114,7 +1118,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
+			$physicalDeliveryOfficeNameCounter = 0;
+			while (isset($_POST['physicalDeliveryOfficeName' . $physicalDeliveryOfficeNameCounter])) {
+				$this->attributes['physicalDeliveryOfficeName'][$physicalDeliveryOfficeNameCounter] = $_POST['physicalDeliveryOfficeName' . $physicalDeliveryOfficeNameCounter];
+				if ($this->attributes['physicalDeliveryOfficeName'][$physicalDeliveryOfficeNameCounter] == '') {
+					unset($this->attributes['physicalDeliveryOfficeName'][$physicalDeliveryOfficeNameCounter]);
+				}
+				$physicalDeliveryOfficeNameCounter++;
+			}
+			if (isset($_POST['addPhysicalDeliveryOfficeName'])) {
+				$this->attributes['physicalDeliveryOfficeName'][] = '';
+			}
+			$this->attributes['physicalDeliveryOfficeName'] = array_values($this->attributes['physicalDeliveryOfficeName']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$departmentNumberCounter = 0;
@@ -1457,9 +1472,30 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($registeredAddressHelp, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$physicalDeliveryOfficeName = '';
-			if (isset($this->attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Office name'), 'physicalDeliveryOfficeName', $physicalDeliveryOfficeName, 'physicalDeliveryOfficeName'), true);
+			$physicalDeliveryOfficeNames = array();
+			if (isset($this->attributes['physicalDeliveryOfficeName'][0])) {
+				$physicalDeliveryOfficeNames = $this->attributes['physicalDeliveryOfficeName'];
+			}
+			if (sizeof($physicalDeliveryOfficeNames) == 0) {
+				$physicalDeliveryOfficeNames[] = '';
+			}
+			$physicalDeliveryOfficeNameLabel = new htmlOutputText(_('Office name'));
+			$physicalDeliveryOfficeNameLabel->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($physicalDeliveryOfficeNameLabel);
+			$physicalDeliveryOfficeNameContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($physicalDeliveryOfficeNames); $i++) {
+				$physicalDeliveryOfficeNameContainer->addElement(new htmlInputField('physicalDeliveryOfficeName' . $i, $physicalDeliveryOfficeNames[$i]));
+				if ($i < (sizeof($physicalDeliveryOfficeNames) - 1)) {
+					$physicalDeliveryOfficeNameContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$physicalDeliveryOfficeNameContainer->addElement(new htmlButton('addPhysicalDeliveryOfficeName', 'add.png', true));
+				}
+			}
+			$fieldContainer->addElement($physicalDeliveryOfficeNameContainer);
+			$physicalDeliveryOfficeNameHelp = new htmlHelpLink('physicalDeliveryOfficeName');
+			$physicalDeliveryOfficeNameHelp->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($physicalDeliveryOfficeNameHelp, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$roomNumber = '';
@@ -1991,7 +2027,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$physicalDeliveryOfficeName = '';
 		if (isset($this->attributes['physicalDeliveryOfficeName'][0])) {
-			$physicalDeliveryOfficeName = $this->attributes['physicalDeliveryOfficeName'][0];
+			$physicalDeliveryOfficeName = implode(', ', $this->attributes['physicalDeliveryOfficeName']);
 		}
 		$employeeType = '';
 		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
@@ -2322,7 +2358,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// physicalDeliveryOfficeName
 			if ($rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']] != "") {
-				$partialAccounts[$i]['physicalDeliveryOfficeName'] = $rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']];
+				$partialAccounts[$i]['physicalDeliveryOfficeName'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']]);
 			}
 			// carLicense
 			if ($rawAccounts[$i][$ids['inetOrgPerson_carLicense']] != "") {
