@@ -1,4 +1,4 @@
-28.03.2012 3.7
+25.03.2012 3.7
   - Login: support bind user for login search
   - Personal: added labeledURI and cosmetic changes, description is now multi-valued (RFE 3446363)
   - Asterisk extensions: group extension entries by name and context
