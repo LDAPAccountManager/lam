@@ -1271,12 +1271,13 @@ abstract class baseModule {
 	 * and save settings. We recommend to use the module name as prefix for them
 	 * (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	 *
+	 * @param selfServiceProfile $profile currently edited profile
 	 * @return htmlElement meta HTML object
 	 * 
 	 * @see baseModule::get_metaData()
 	 * @see htmlElement
 	 */
-	public function getSelfServiceSettings() {
+	public function getSelfServiceSettings($profile) {
 		if (isset($this->meta['selfServiceSettings'])) {
 			return $this->meta['selfServiceSettings'];
 		}

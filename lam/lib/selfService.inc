@@ -237,14 +237,15 @@ function isSelfServiceProfileWritable($name, $scope) {
 * Returns a hash array (module name => elements) of all module options for the configuration page.
 *
 * @param string $scope account type
+* @param selfServiceProfile $profile currently edited profile
 * @return array configuration options
 */
-function getSelfServiceSettings($scope) {
+function getSelfServiceSettings($scope, $profile) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = new $modules[$i]($scope);
-		$return[$modules[$i]] = $m->getSelfServiceSettings();
+		$return[$modules[$i]] = $m->getSelfServiceSettings($profile);
 	}
 	return $return;
 }

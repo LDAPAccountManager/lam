@@ -2164,7 +2164,7 @@ class htmlHiddenInput extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		echo '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '">';
-		return array();
+		return array($this->name => 'hidden');
 	}
 	
 }
