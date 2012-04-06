@@ -373,7 +373,7 @@ class LAMConfig {
 				for ($i = 0; $i < sizeof($modules); $i++) {
 					if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
 				}
-				$this->$moduleVar = implode(",", $ret);
+				$this->typeSettings[$moduleVar] = implode(",", $ret);
 			}
 		}
 		return true;
