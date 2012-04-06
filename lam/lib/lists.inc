@@ -94,6 +94,9 @@ class lamList {
 	/** ID for list size config option */
 	const LIST_SIZE_OPTION_NAME = "L_SIZE";
 	
+	/** prefix for virtual (non-LDAP) attributes */
+	const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
+	
 	/**
 	 * Constructor
 	 *
@@ -345,18 +348,32 @@ class lamList {
 		echo "</td>\n";
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
-			$value = "";
-			if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
-				$value = " value=\"" . $_GET["filter" . strtolower($this->attrArray[$k])] . "\"";
-			}
-			if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
-				$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
-			}
 			echo "<td align=\"left\">";
-			echo "<input style=\"margin-right: 10px;\" type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event);\">";
+			if ($this->canBeFiltered($this->attrArray[$k])) {
+				$value = "";
+				if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
+					$value = " value=\"" . $_GET["filter" . strtolower($this->attrArray[$k])] . "\"";
+				}
+				if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
+					$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
+				}
+				echo "<input style=\"margin-right: 10px;\" type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event);\">";
+			}
 			echo "</td>\n";
 		}
 		echo "</tr></thead>\n";
+	}
+	
+	/**
+	 * Returns if the given attribute can be filtered.
+	 * If filtering is not possible then no filter box will be displayed.
+	 * By default all attributes can be filtered.
+	 * 
+	 * @param String $attr attribute name
+	 * @return boolean filtering possible
+	 */
+	protected function canBeFiltered($attr) {
+		return true;
 	}
 
 	/**
@@ -751,7 +768,7 @@ class lamList {
 	*
 	* @return array attribute list
 	*/
-	private function listGetAttributeDescriptionList() {
+	protected function listGetAttributeDescriptionList() {
 		$ret = array();
 		$attr_string = $_SESSION["config"]->get_listAttributes($this->type);
 		$temp_array = explode(";", $attr_string);
@@ -836,6 +853,20 @@ class lamList {
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
 		$filter = "(&" . $module_filter . $this->filterPart  . ")";
 		$attrs = $this->attrArray;
+		// remove virtual attributes from list
+		for ($i = 0; $i < sizeof($attrs); $i++) {
+			if (strpos($attrs[$i], self::VIRTUAL_ATTRIBUTE_PREFIX) === 0) {
+				unset($attrs[$i]);
+			}
+		}
+		$attrs = array_values($attrs);
+		// include additional attributes
+		$additionalAttrs = $this->getAdditionalLDAPAttributesToRead();
+		for ($i = 0; $i < sizeof($additionalAttrs); $i++) {
+			if (!in_array_ignore_case($additionalAttrs[$i], $attrs)) {
+				$attrs[] = $additionalAttrs[$i];
+			}
+		}
 		$this->entries = searchLDAP($this->suffix, $filter, $attrs);
 		$lastError = getLastLDAPError();
 		if ($lastError != null) {
@@ -844,6 +875,16 @@ class lamList {
 		// generate list of possible suffixes
 		$typeObj = new $this->type();
 		$this->possibleSuffixes = $typeObj->getSuffixList();
+	}
+	
+	/**
+	 * Returns a list of additional LDAP attributes that should be read.
+	 * This can be used to show additional data even if the user selected other attributes to show in the list.
+	 * 
+	 * @return array additional attribute names
+	 */
+	protected function getAdditionalLDAPAttributesToRead() {
+		return array();
 	}
 	
 	/**

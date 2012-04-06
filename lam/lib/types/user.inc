@@ -178,13 +178,21 @@ class lamUserList extends lamList {
 	
 	/** Controls if GID number is translated to group name */
 	private $trans_primary = false;
+	
+	/** Controls if the account status is shown */
+	private $showAccountStatus = false;
 
 	/** translates GID to group name */
 	private $trans_primary_hash = array();
 	
-	/** ID for config option */
+	/** ID for config option to translate primary group GIDs to group names */
 	const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
-
+	/** ID for config option to show account status */
+	const ACCOUNT_STATUS_OPTION_NAME = "LU_AS";
+	
+	/** virtual attribute name for account status column */
+	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
+	
 	/**
 	 * Constructor
 	 *
@@ -219,6 +227,9 @@ class lamUserList extends lamList {
 		if ($this->trans_primary == "on") {
 			$this->refreshPrimaryGroupTranslation();
 		}
+		if ($this->showAccountStatus) {
+			$this->injectAccountStatusAttribute();
+		}
 	}
 	
 	/**
@@ -243,7 +254,9 @@ class lamUserList extends lamList {
 	 */
 	protected function listPrintTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
-		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
+		if (($attribute != self::ATTR_ACCOUNT_STATUS) && (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1))) {
+			return;
+		}
 		// translate GID to group name
 		if (($attribute == "gidnumber") && ($this->trans_primary == "on")) {
 			if (isset($this->trans_primary_hash[$entry[$attribute][0]])) {
@@ -310,6 +323,10 @@ class lamUserList extends lamList {
 				}
 			}
 		}
+		// account status
+		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {
+			$this->printAccountStatus($entry);
+		}
 		// print all other attributes
 		else {
 			parent::listPrintTableCellContent($entry, $attribute);
@@ -337,6 +354,7 @@ class lamUserList extends lamList {
 	protected function listGetAllConfigOptions() {
 		$options = parent::listGetAllConfigOptions();
 		$options[] = new lamBooleanListOption(_('Translate GID number to group name'), self::TRANS_PRIMARY_OPTION_NAME);
+		$options[] = new lamBooleanListOption(_('Show account status'), self::ACCOUNT_STATUS_OPTION_NAME);
 		return $options;
 	}
 
@@ -347,6 +365,202 @@ class lamUserList extends lamList {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();
+		$asOption = $this->listGetConfigOptionByID(self::ACCOUNT_STATUS_OPTION_NAME);
+		$this->showAccountStatus = $asOption->isSelected();
+	}
+	
+	/**
+	* Returns an hash array containing with all attributes to be shown and their descriptions.
+	* <br>Format: array(attribute => description)
+	* <br>
+	* <br>The user list may display an additional account status column
+	*
+	* @return array attribute list
+	*/
+	protected function listGetAttributeDescriptionList() {
+		$list = parent::listGetAttributeDescriptionList();
+		if ($this->showAccountStatus) {
+			$list[self::ATTR_ACCOUNT_STATUS] = _('Account status');
+		}
+		return $list;
+	}
+	
+	/**
+	 * Returns if the given attribute can be filtered.
+	 * If filtering is not possible then no filter box will be displayed.
+	 * <br>
+	 * <br>The user list allows no filtering for account status.
+	 * 
+	 * @param String $attr attribute name
+	 * @return boolean filtering possible
+	 */
+	protected function canBeFiltered($attr) {
+		if ($attr == self::ATTR_ACCOUNT_STATUS) {
+			return false;
+		}
+		elseif (strtolower($attr) == 'jpegphoto') {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns a list of additional LDAP attributes that should be read.
+	 * This can be used to show additional data even if the user selected other attributes to show in the list.
+	 * <br>
+	 * <br>The user list reads pwdAccountLockedTime, sambaAcctFlags and userPassword
+	 * 
+	 * @return array additional attribute names
+	 */
+	protected function getAdditionalLDAPAttributesToRead() {
+		$attrs = parent::getAdditionalLDAPAttributesToRead();
+		if ($this->showAccountStatus) {
+			$attrs[] = 'pwdAccountLockedTime';
+			$attrs[] = 'sambaAcctFlags';
+			$attrs[] = 'userPassword';
+			$attrs[] = 'objectClass';
+		}
+		return $attrs;
+	}
+	
+	/**
+	 * Injects values for the virtual account status attribute to make it sortable.
+	 */
+	private function injectAccountStatusAttribute() {
+		for ($i = 0; $i < sizeof($this->entries); $i++) {
+			$status = 0;
+			if (!$this->isUnixLocked($this->entries[$i])) {
+				$status++;
+			}
+			if (!$this->isSambaLocked($this->entries[$i])) {
+				$status++;
+			}
+			if (!$this->isPPolicyLocked($this->entries[$i])) {
+				$status++;
+			}
+			$this->entries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
+		}
+	}
+	
+	/**
+	 * Prints the account status.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 */
+	private function printAccountStatus(&$attrs) {
+		// check status
+		$unixAvailable = $this->isUnixAvailable($attrs);
+		$unixLocked = $this->isUnixLocked($attrs);
+		$sambaAvailable = $this->isSambaAvailable($attrs);
+		$sambaLocked = $this->isSambaLocked($attrs);
+		$ppolicyAvailable = $this->isPPolicyAvailable($attrs);
+		$ppolicyLocked = $this->isPPolicyLocked($attrs);
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
+							&& (!$unixAvailable || $unixLocked)
+							&& (!$sambaAvailable || $sambaLocked)
+							&& (!$ppolicyAvailable || $ppolicyLocked);
+		$icon = 'unlocked.png';
+		if ($fullyLocked) {
+			$icon = 'lock.png';
+		}
+		elseif ($partiallyLocked) {
+			$icon = 'partiallyLocked.png';
+		}
+		// print icon and detail tooltips
+		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable) {
+			$tipContent = '<table border=0>';
+			// Unix
+			if ($unixAvailable) {
+				$unixIcon = 'unlocked.png';
+				if ($unixLocked) {
+					$unixIcon = 'lock.png';
+				}
+				$tipContent .= '<tr><td>' . _('Unix') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $unixIcon . '&quot;></td></tr>';
+			}
+			// Samba
+			if ($sambaAvailable) {
+				$sambaIcon = 'unlocked.png';
+				if ($sambaLocked) {
+					$sambaIcon = 'lock.png';
+				}
+				$tipContent .= '<tr><td>' . _('Samba') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
+			}
+			// PPolicy
+			if ($ppolicyAvailable) {
+				$ppolicyIcon = 'unlocked.png';
+				if ($ppolicyLocked) {
+					$ppolicyIcon = 'lock.png';
+				}
+				$tipContent .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
+			}
+			$tipContent .= '</table>';
+			$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
+			echo '<img alt="status" onmouseout="UnTip()" onmouseover="Tip(' . $tooltip . ')" height=16 width=16 src="../../graphics/' . $icon . '">';
+		}
+		else {
+			echo '<img alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';
+		}
+	}
+
+	/**
+	 * Returns if the Unix part exists.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Unix part exists
+	 */
+	private function isUnixAvailable(&$attrs) {
+		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']));
+	}
+	
+	/**
+	 * Returns if the Unix part is locked.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Unix part locked
+	 */
+	private function isUnixLocked(&$attrs) {
+		return (isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0]));
+	}
+	
+	/**
+	 * Returns if the Samba part exists.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Samba part exists
+	 */
+	private function isSambaAvailable(&$attrs) {
+		return (isset($attrs['objectclass']) && in_array_ignore_case('sambaSamAccount', $attrs['objectclass']));
+	}
+	
+	/**
+	 * Returns if the Samba part is locked.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Samba part is locked
+	 */
+	private function isSambaLocked(&$attrs) {
+		return (isset($attrs['sambaacctflags'][0]) && strpos($attrs['sambaacctflags'][0], "D"));
+	}
+	
+	/**
+	 * Returns if the PPolicy part exists.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean PPolicy part exists
+	 */
+	private function isPPolicyAvailable(&$attrs) {
+		return in_array('ppolicyUser', $_SESSION['config']->get_AccountModules('user'));
+	}
+	
+	/**
+	 * Returns if the PPolicy part is locked.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean PPolicy part is locked
+	 */
+	private function isPPolicyLocked(&$attrs) {
+		return (isset($attrs['pwdaccountlockedtime'][0]) && ($attrs['pwdaccountlockedtime'][0] != ''));
 	}
 	
 }
