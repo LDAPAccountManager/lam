@@ -100,41 +100,66 @@ class host extends baseType {
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarTitle($attributes) {
-		if ($attributes == null) {
-			return _("New host");
+	public function getTitleBarTitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('account') != null) {
+			$attributes = $container->getAccountModule('account')->getAttributes();
+		}
+		elseif ($container->getAccountModule('device') != null) {
+			$attributes = $container->getAccountModule('device')->getAttributes();
 		}
 		// check if a user name is set
 		if (isset($attributes['uid'][0])) {
 			return htmlspecialchars($attributes['uid'][0]);
 		}
+		// check if a common name is set
+		if (isset($attributes['cn'][0])) {
+			return htmlspecialchars($attributes['cn'][0]);
+		}
+		if ($container->isNewAccount) {
+			return _("New host");
+		}
 		// fall back to default
-		return parent::getTitleBarTitle($attributes);
+		return parent::getTitleBarTitle($container);
 	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarSubtitle($attributes) {
-		if ($attributes == null) {
-			return null;
+	public function getTitleBarSubtitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('account') != null) {
+			$attributes = $container->getAccountModule('account')->getAttributes();
 		}
-		// check if a common name is set
-		if (isset($attributes['cn'][0])) {
-			return htmlspecialchars($attributes['cn'][0]);
+		elseif ($container->getAccountModule('device') != null) {
+			$attributes = $container->getAccountModule('device')->getAttributes();
+		}
+		$sambaAttributes = null;
+		if ($container->getAccountModule('sambaSamAccount') != null) {
+			$sambaAttributes = $container->getAccountModule('sambaSamAccount')->getAttributes();
 		}
 		// check if a display name is set
-		if (isset($attributes['displayName'][0])) {
-			return htmlspecialchars($attributes['displayName'][0]);
+		if (($sambaAttributes != null) && isset($sambaAttributes['displayName'][0]) && ($sambaAttributes['displayName'][0] != '')) {
+			return htmlspecialchars($sambaAttributes['displayName'][0]);
+		}
+		// check if a serial number is set
+		if (($attributes != null) && isset($attributes['serialNumber'][0]) && ($attributes['serialNumber'][0] != '')) {
+			return htmlspecialchars($attributes['serialNumber'][0]);
+		}
+		// check if a description is set
+		if (($attributes != null) && isset($attributes['description'][0])) {
+			return htmlspecialchars($attributes['description'][0]);
 		}
 		// fall back to default
-		return parent::getTitleBarSubtitle($attributes);
+		return parent::getTitleBarSubtitle($container);
 	}
 
 }

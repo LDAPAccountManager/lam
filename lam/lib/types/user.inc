@@ -108,61 +108,105 @@ class user extends baseType {
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarTitle($attributes) {
-		if ($attributes == null) {
-			return _("New user");
+	public function getTitleBarTitle($container) {
+		// get attributes
+		$personalAttributes = null;
+		if ($container->getAccountModule('inetOrgPerson') != null) {
+			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
+		}
+		$accountAttributes = null;
+		if ($container->getAccountModule('account') != null) {
+			$accountAttributes = $container->getAccountModule('account')->getAttributes();
+		}
+		$sambaAttributes = null;
+		if ($container->getAccountModule('sambaSamAccount') != null) {
+			$sambaAttributes = $container->getAccountModule('sambaSamAccount')->getAttributes();
+		}
+		$unixAttributes = null;
+		if ($container->getAccountModule('posixAccount') != null) {
+			$unixAttributes = $container->getAccountModule('posixAccount')->getAttributes();
 		}
 		// check if first and last name can be shown
-		if (isset($attributes['sn'][0]) && isset($attributes['givenName'][0])) {
-			return htmlspecialchars($attributes['givenName'][0] . ' ' . $attributes['sn'][0]);
+		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && isset($personalAttributes['givenName'][0])) {
+			return htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
 		}
 		// check if a display name is set
-		if (isset($attributes['displayName'][0])) {
-			return htmlspecialchars($attributes['displayName'][0]);
+		if (($sambaAttributes != null) && isset($sambaAttributes['displayName'][0])) {
+			return htmlspecialchars($sambaAttributes['displayName'][0]);
 		}
 		// check if a common name is set
-		if (isset($attributes['cn'][0])) {
-			return htmlspecialchars($attributes['cn'][0]);
+		if (($personalAttributes != null) && isset($personalAttributes['cn'][0])) {
+			return htmlspecialchars($personalAttributes['cn'][0]);
+		}
+		if (($unixAttributes != null) && isset($unixAttributes['cn'][0])) {
+			return htmlspecialchars($unixAttributes['cn'][0]);
 		}
 		// check if a user name is set
-		if (isset($attributes['uid'][0])) {
-			return htmlspecialchars($attributes['uid'][0]);
+		if (($unixAttributes != null) && isset($unixAttributes['uid'][0])) {
+			return htmlspecialchars($unixAttributes['uid'][0]);
+		}
+		if (($personalAttributes != null) && isset($personalAttributes['uid'][0])) {
+			return htmlspecialchars($personalAttributes['uid'][0]);
+		}
+		if (($accountAttributes != null) && isset($accountAttributes['uid'][0])) {
+			return htmlspecialchars($accountAttributes['uid'][0]);
+		}
+		if ($container->isNewAccount) {
+			return _("New user");
 		}
 		// fall back to default
-		return parent::getTitleBarTitle($attributes);
+		return parent::getTitleBarTitle($container);
 	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarSubtitle($attributes) {
-		if ($attributes == null) {
+	public function getTitleBarSubtitle($container) {
+		$personalAttributes = null;
+		if ($container->getAccountModule('inetOrgPerson') != null) {
+			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
+		}
+		if ($personalAttributes == null) {
 			return null;
 		}
 		$subtitle = '';
 		$spacer = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		// check if an email address can be shown
-		if (isset($attributes['mail'][0])) {
-			$subtitle .= '<a href="mailto:' . htmlspecialchars($attributes['mail'][0]) . '">' . htmlspecialchars($attributes['mail'][0]) . '</a>' . $spacer;
+		if (isset($personalAttributes['mail'][0])) {
+			$subtitle .= '<a href="mailto:' . htmlspecialchars($personalAttributes['mail'][0]) . '">' . htmlspecialchars($personalAttributes['mail'][0]) . '</a>' . $spacer;
 		}
 		// check if an telephone number can be shown
-		if (isset($attributes['telephoneNumber'][0])) {
-			$subtitle .= _('Telephone number') . ' ' . htmlspecialchars($attributes['telephoneNumber'][0]) . $spacer;
+		if (isset($personalAttributes['telephoneNumber'][0])) {
+			$subtitle .= _('Telephone number') . ' ' . htmlspecialchars($personalAttributes['telephoneNumber'][0]) . $spacer;
 		}
 		// check if an mobile number can be shown
-		if (isset($attributes['mobile'][0])) {
-			$subtitle .= _('Mobile number') . ' ' . htmlspecialchars($attributes['mobile'][0]);
+		if (isset($personalAttributes['mobile'][0])) {
+			$subtitle .= _('Mobile number') . ' ' . htmlspecialchars($personalAttributes['mobile'][0]);
 		}
 		if ($subtitle == '') {
 			return null;
 		}
 		return $subtitle;
+	}
+	
+	/**
+	 * Builds the HTML code for the icon that shows the account status (locked/unlocked).
+	 * 
+	 * @param array $attributes LDAP attributes
+	 * @return String HTML code for icon
+	 */
+	private function buildAccountStatusIcon($attributes) {
+		$lowerAttributes = array_change_key_case($attributes, CASE_LOWER);
+		if (!lamUserList::isUnixAvailable($lowerAttributes) && !lamUserList::isUnixAvailable($lowerAttributes) && !lamUserList::isPPolicyAvailable($lowerAttributes)) {
+			return '';
+		}
+		return '<img src="../../graphics/lock.png">&nbsp;&nbsp;&nbsp;';
 	}
 
 }
@@ -449,12 +493,12 @@ class lamUserList extends lamList {
 	 */
 	private function printAccountStatus(&$attrs) {
 		// check status
-		$unixAvailable = $this->isUnixAvailable($attrs);
-		$unixLocked = $this->isUnixLocked($attrs);
-		$sambaAvailable = $this->isSambaAvailable($attrs);
-		$sambaLocked = $this->isSambaLocked($attrs);
-		$ppolicyAvailable = $this->isPPolicyAvailable($attrs);
-		$ppolicyLocked = $this->isPPolicyLocked($attrs);
+		$unixAvailable = self::isUnixAvailable($attrs);
+		$unixLocked = self::isUnixLocked($attrs);
+		$sambaAvailable = self::isSambaAvailable($attrs);
+		$sambaLocked = self::isSambaLocked($attrs);
+		$ppolicyAvailable = self::isPPolicyAvailable($attrs);
+		$ppolicyLocked = self::isPPolicyLocked($attrs);
 		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
 		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
 							&& (!$unixAvailable || $unixLocked)
@@ -509,7 +553,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Unix part exists
 	 */
-	private function isUnixAvailable(&$attrs) {
+	private static function isUnixAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']));
 	}
 	
@@ -519,7 +563,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Unix part locked
 	 */
-	private function isUnixLocked(&$attrs) {
+	private static function isUnixLocked(&$attrs) {
 		return (isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0]));
 	}
 	
@@ -529,7 +573,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Samba part exists
 	 */
-	private function isSambaAvailable(&$attrs) {
+	private static function isSambaAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('sambaSamAccount', $attrs['objectclass']));
 	}
 	
@@ -539,7 +583,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Samba part is locked
 	 */
-	private function isSambaLocked(&$attrs) {
+	private static function isSambaLocked(&$attrs) {
 		return (isset($attrs['sambaacctflags'][0]) && strpos($attrs['sambaacctflags'][0], "D"));
 	}
 	
@@ -549,7 +593,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part exists
 	 */
-	private function isPPolicyAvailable(&$attrs) {
+	private static function isPPolicyAvailable(&$attrs) {
 		return in_array('ppolicyUser', $_SESSION['config']->get_AccountModules('user'));
 	}
 	
@@ -559,7 +603,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part is locked
 	 */
-	private function isPPolicyLocked(&$attrs) {
+	private static function isPPolicyLocked(&$attrs) {
 		return (isset($attrs['pwdaccountlockedtime'][0]) && ($attrs['pwdaccountlockedtime'][0] != ''));
 	}
 	

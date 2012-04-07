@@ -98,28 +98,39 @@ class netgroup extends baseType {
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarTitle($attributes) {
-		if ($attributes == null) {
-			return _("New group");
+	public function getTitleBarTitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('nisnetgroup') != null) {
+			$attributes = $container->getAccountModule('nisnetgroup')->getAttributes();
 		}
 		// check if a common name is set
 		if (isset($attributes['cn'][0])) {
 			return htmlspecialchars($attributes['cn'][0]);
 		}
+		// new entry
+		if ($container->isNewAccount) {
+			return _("New group");
+		}
 		// fall back to default
-		return parent::getTitleBarTitle($attributes);
+		return parent::getTitleBarTitle($container);
 	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarSubtitle($attributes) {
+	public function getTitleBarSubtitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('nisnetgroup') != null) {
+			$attributes = $container->getAccountModule('nisnetgroup')->getAttributes();
+		}
 		if ($attributes == null) {
 			return null;
 		}

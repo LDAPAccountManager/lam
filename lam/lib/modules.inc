@@ -876,6 +876,10 @@ class accountContainer {
 				}
 			}
 		}
+		// update titles
+		$typeObject = new $this->type();
+		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
+		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page
 		$this->printModuleContent($result, $stopProcessing);
 	}
@@ -1458,8 +1462,8 @@ class accountContainer {
 		$this->sortModules();
 		// get titles
 		$typeObject = new $this->type();
-		$this->titleBarTitle = $typeObject->getTitleBarTitle($this->attributes_orig);
-		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this->attributes_orig);
+		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
+		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return array();
 	}
 
@@ -1568,8 +1572,8 @@ class accountContainer {
 		}
 		// get titles
 		$typeObject = new $this->type();
-		$this->titleBarTitle = $typeObject->getTitleBarTitle(null);
-		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle(null);
+		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
+		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return 0;
 	}
 

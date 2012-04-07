@@ -96,28 +96,39 @@ class smbDomain extends baseType {
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarTitle($attributes) {
-		if ($attributes == null) {
-			return _("New domain");
+	public function getTitleBarTitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('sambaDomain') != null) {
+			$attributes = $container->getAccountModule('sambaDomain')->getAttributes();
 		}
 		// check if a domain name is set
 		if (isset($attributes['sambaDomainName'][0])) {
 			return htmlspecialchars($attributes['sambaDomainName'][0]);
 		}
+		// new entry
+		if ($container->isNewAccount) {
+			return _("New domain");
+		}
 		// fall back to default
-		return parent::getTitleBarTitle($attributes);
+		return parent::getTitleBarTitle($container);
 	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarSubtitle($attributes) {
+	public function getTitleBarSubtitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('sambaDomain') != null) {
+			$attributes = $container->getAccountModule('sambaDomain')->getAttributes();
+		}
 		if ($attributes == null) {
 			return null;
 		}

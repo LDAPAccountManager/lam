@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2011  Roland Gruber
+  Copyright (C) 2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -107,26 +107,23 @@ class baseType {
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarTitle($attributes) {
-		if ($attributes == null) {
+	public function getTitleBarTitle($container) {
+		if ($container->dn_orig == null) {
 			return null;
 		}
-		if (isset($attributes['entryDN'][0])) {
-			return $attributes['entryDN'][0];
-		}
-		return null;
+		return htmlspecialchars(getAbstractDN($container->dn_orig));
 	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarSubtitle($attributes) {
+	public function getTitleBarSubtitle($container) {
 		return null;
 	}
 	

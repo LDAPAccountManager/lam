@@ -100,12 +100,24 @@ class group extends baseType {
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarTitle($attributes) {
-		if ($attributes == null) {
-			return _("New group");
+	public function getTitleBarTitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('posixGroup') != null) {
+			$attributes = $container->getAccountModule('posixGroup')->getAttributes();
+		}
+		elseif ($container->getAccountModule('rfc2307bisPosixGroup') != null) {
+			$attributes = $container->getAccountModule('rfc2307bisPosixGroup')->getAttributes();
+		}
+		$gonAttributes = null;
+		if ($container->getAccountModule('groupOfNames') != null) {
+			$gonAttributes = $container->getAccountModule('groupOfNames')->getAttributes();
+		}
+		elseif ($container->getAccountModule('groupOfUniqueNames') != null) {
+			$gonAttributes = $container->getAccountModule('groupOfUniqueNames')->getAttributes();
 		}
 		// check if a group name is set
 		if (isset($attributes['gid'][0])) {
@@ -115,29 +127,47 @@ class group extends baseType {
 		if (isset($attributes['cn'][0])) {
 			return htmlspecialchars($attributes['cn'][0]);
 		}
+		if (isset($gonAttributes['cn'][0])) {
+			return htmlspecialchars($gonAttributes['cn'][0]);
+		}
+		// new entry
+		if ($container->isNewAccount) {
+			return _("New group");
+		}
 		// fall back to default
-		return parent::getTitleBarTitle($attributes);
+		return parent::getTitleBarTitle($container);
 	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
-	 * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
+	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-	public function getTitleBarSubtitle($attributes) {
-		if ($attributes == null) {
-			return null;
+	public function getTitleBarSubtitle($container) {
+		// get attributes
+		$attributes = null;
+		if ($container->getAccountModule('posixGroup') != null) {
+			$attributes = $container->getAccountModule('posixGroup')->getAttributes();
 		}
-		$subtitle = '';
+		elseif ($container->getAccountModule('rfc2307bisPosixGroup') != null) {
+			$attributes = $container->getAccountModule('rfc2307bisPosixGroup')->getAttributes();
+		}
+		$gonAttributes = null;
+		if ($container->getAccountModule('groupOfNames') != null) {
+			$gonAttributes = $container->getAccountModule('groupOfNames')->getAttributes();
+		}
+		elseif ($container->getAccountModule('groupOfUniqueNames') != null) {
+			$gonAttributes = $container->getAccountModule('groupOfUniqueNames')->getAttributes();
+		}
 		// check if an description can be shown
-		if (isset($attributes['description'][0])) {
-			$subtitle .= htmlspecialchars($attributes['description'][0]);
+		if (($attributes != null) && isset($attributes['description'][0])) {
+			return htmlspecialchars($attributes['description'][0]);
 		}
-		if ($subtitle == '') {
-			return null;
+		if (($gonAttributes != null) && isset($gonAttributes['description'][0])) {
+			return htmlspecialchars($gonAttributes['description'][0]);
 		}
-		return $subtitle;
+		return null;
 	}
 
 }

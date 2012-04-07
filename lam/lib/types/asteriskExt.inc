@@ -97,22 +97,27 @@ class asteriskExt extends baseType {
         );
     }
 
-    /**
-     * Returns the the title text for the title bar on the new/edit page.
-     *
-     * @param array $attributes list of LDAP attributes for the displayed account (null, if new account)
-     * @return String title text
-     */
-    public function getTitleBarTitle($attributes) {
-        if ($attributes == null) {
-            return _("New extension");
-        }
+	/**
+	 * Returns the the title text for the title bar on the new/edit page.
+	 *
+	 * @param accountContainer $container account container
+	 * @return String title text
+	 */
+    public function getTitleBarTitle($container) {
+		$attributes = null;
+		if ($container->getAccountModule('asteriskExtension') != null) {
+			$attributes = $container->getAccountModule('asteriskExtension')->getAttributes();
+		}
 		// check if a common name is set
         if (isset($attributes['AstExtension'][0])) {
             return htmlspecialchars($attributes['AstExtension'][0]);
         }
-		// fall back to default
-        return parent::getTitleBarTitle($attributes);
+        // new account
+    	if ($container->isNewAccount) {
+            return _("New extension");
+        }
+        // fall back to default
+        return parent::getTitleBarTitle($container);
     }
 
 }
