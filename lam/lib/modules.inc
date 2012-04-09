@@ -751,6 +751,7 @@ class accountContainer {
 		$result = array();
 		$stopProcessing = false; // when set to true, no module options are displayed
 		$errorsOccured = false;
+		$typeObject = new $this->type();
 		$profileLoaded = $this->loadProfileIfRequested();
 		if ($this->subpage=='') $this->subpage='attributes';
 		if (isset($_POST['accountContainerReset'])) {
@@ -805,8 +806,10 @@ class accountContainer {
 						}
 					}
 				}
-			$this->sortModules();
+				$this->sortModules();
 			}
+			// run type post actions
+			$typeObject->runEditPagePostAction($this);
 			// save account
 			if (!$errorsOccured && isset($_POST['accountContainerSaveAccount'])) {
 				// check if all modules are complete
@@ -877,7 +880,6 @@ class accountContainer {
 			}
 		}
 		// update titles
-		$typeObject = new $this->type();
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page

@@ -309,11 +309,22 @@ function passwordHandleReply(data) {
  * @param cancelText text for Cancel button
  * @param dialogDiv div that contains dialog content
  * @param formName form to submit
+ * @param resultField (hidden) input field whose value is set to ok/cancel when button is pressed
  */
-function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName) {
+function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, resultField) {
 	var buttonList = {};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	buttonList[okText] = function() { document.forms[formName].submit(); };
+	buttonList[cancelText] = function() {
+		if (resultField) {
+			jQuery('#' + resultField).val('cancel');
+		};
+		jQuery(this).dialog("close");
+	};
+	buttonList[okText] = function() {
+		if (resultField) {
+			jQuery('#' + resultField).val('ok');
+		};
+		document.forms[formName].submit();
+	};
 	jQuery('#' + dialogDiv).dialog({
 		modal: true,
 		title: title,
@@ -324,5 +335,4 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName) 
 	/* reattach dialog to form */
 	jQuery('#' + dialogDiv).parent().appendTo(document.forms[formName]);
 }
-
 

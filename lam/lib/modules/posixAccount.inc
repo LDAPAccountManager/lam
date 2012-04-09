@@ -267,7 +267,7 @@ class posixAccount extends baseModule implements passwordService {
 				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
 			)
 			);
-			if ($this->areGroupOfNamesActive()) {
+			if (self::areGroupOfNamesActive()) {
 				$return['upload_columns'][] = array(
 					'name' => 'posixAccount_gon',
 					'description' => _('Group of names'),
@@ -321,7 +321,7 @@ class posixAccount extends baseModule implements passwordService {
 			'cn' => _('Common name'),
 			'userPassword' => _('Password')
 		);
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			$return['PDF_fields']['gon'] = _('Group of names');
 		}
 		// help Entries
@@ -479,7 +479,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$this->groups_orig = $this->groups;
 		// get additional group of names memberships
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			$gonList1 = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'groupOfNames', array('dn'), array('gon', 'group'));
 			$gonList2 = searchLDAPByAttribute('uniqueMember', $this->getAccountContainer()->dn_orig, 'groupOfUniqueNames', array('dn'), array('gon', 'group'));
 			$gonList = array_merge($gonList1, $gonList2);
@@ -618,7 +618,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		// set group of names
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			$gons = $this->findGroupOfNames();
 			$toAdd = array_values(array_diff($this->gonList, $this->gonList_orig));
 			$toRem = array_values(array_diff($this->gonList_orig, $this->gonList));
@@ -766,10 +766,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// Load attributes
 		if (isset($_POST['lockPassword'])) {
-			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+			$this->lock();
 		}
 		if (isset($_POST['unlockPassword'])) {
-			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+			$this->unlock();
 		}
 		if (isset($_POST['removePassword'])) {
 			unset($this->attributes['userPassword']);
@@ -955,7 +955,7 @@ class posixAccount extends baseModule implements passwordService {
 			$this->groups = array_delete($_POST['removegroups'], $this->groups);
 		}
 		// group of names
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			if (isset($_POST['addgons']) && isset($_POST['addgons_button'])) { // Add groups to list
 				// add new group
 				$this->gonList = @array_merge($this->gonList, $_POST['addgons']);
@@ -1224,7 +1224,7 @@ class posixAccount extends baseModule implements passwordService {
 	
 		$return->addElement($unixContainer);
 
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			$return->addElement(new htmlSpacer('100px', null));
 			
 			$gons = $this->findGroupOfNames();
@@ -1371,7 +1371,7 @@ class posixAccount extends baseModule implements passwordService {
 			$addGroupSelect->setTransformSingleSelect(false);
 			$return->addElement($addGroupSelect, true);
 			// group of names
-			if ($this->areGroupOfNamesActive()) {
+			if (self::areGroupOfNamesActive()) {
 				$gons = $this->findGroupOfNames();
 				$gonList = array();
 				foreach ($gons as $dn => $attr) {
@@ -1475,7 +1475,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($this->attributes['gecos'][0])) {
 			$return['posixAccount_gecos'] = array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>');
 		}
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			$allGons = $this->findGroupOfNames();
 			$gons = array();
 			for ($i = 0; $i < sizeof($this->gonList); $i++) {
@@ -1577,7 +1577,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$existingGroups = array_keys($groupMap);
 		// get list of existing group of names
-		if ($this->areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive()) {
 			$gons = $this->findGroupOfNames();
 			$gonList = array();
 			foreach ($gons as $dn => $attr) {
@@ -1679,7 +1679,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// group of names
-				if ($this->areGroupOfNamesActive() && ($rawAccounts[$i][$ids['posixAccount_gon']] != "")) {
+				if (self::areGroupOfNamesActive() && ($rawAccounts[$i][$ids['posixAccount_gon']] != "")) {
 					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_gon']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $gonList)) {
@@ -1850,7 +1850,7 @@ class posixAccount extends baseModule implements passwordService {
 				$groupMap[$groupList[$i][0]] = $groupList[$i][1];
 			}
 			// get list of existing group of names
-			if ($this->areGroupOfNamesActive()) {
+			if (self::areGroupOfNamesActive()) {
 				$gonList = $this->findGroupOfNames();
 				$gonMap = array();
 				foreach ($gonList as $dn => $attr) {
@@ -2334,7 +2334,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * 
 	 * @return boolean group of names are active
 	 */
-	private function areGroupOfNamesActive() {
+	public static function areGroupOfNamesActive() {
 		if (!isset($_SESSION['config'])) {
 			return false;
 		}
@@ -2375,6 +2375,43 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns if the Unix part of the current account is locked.
+	 * 
+	 * @return boolean password is locked
+	 */
+	public function isLocked() {
+		return isset($this->attributes['userPassword'][0]) && !pwd_is_enabled($this->attributes['userPassword'][0]);
+	}
+	
+	/**
+	 * Locks the user password of this account.
+	 */
+	public function lock() {
+		$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+	}
+	
+	/**
+	 * Unlocks the user password of this account.
+	 */
+	public function unlock() {
+		$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+	}
+	
+	/**
+	 * Removes all Unix group memberships from this user.
+	 */
+	public function removeFromUnixGroups() {
+		$this->groups = array();
+	}
+	
+	/**
+	 * Removes all group of names memberships from this user.
+	 */
+	public function removeFromGONGroups() {
+		$this->gonList = array();
 	}
 	
 }

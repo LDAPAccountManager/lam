@@ -173,9 +173,9 @@ class user extends baseType {
 			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
 		}
 		if ($personalAttributes == null) {
-			return null;
+			return $this->buildAccountStatusIcon($container);
 		}
-		$subtitle = '';
+		$subtitle = $this->buildAccountStatusIcon($container);
 		$spacer = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		// check if an email address can be shown
 		if (isset($personalAttributes['mail'][0])) {
@@ -198,17 +198,226 @@ class user extends baseType {
 	/**
 	 * Builds the HTML code for the icon that shows the account status (locked/unlocked).
 	 * 
-	 * @param array $attributes LDAP attributes
+	 * @param accountContainer $container account container
 	 * @return String HTML code for icon
 	 */
-	private function buildAccountStatusIcon($attributes) {
-		$lowerAttributes = array_change_key_case($attributes, CASE_LOWER);
-		if (!lamUserList::isUnixAvailable($lowerAttributes) && !lamUserList::isUnixAvailable($lowerAttributes) && !lamUserList::isPPolicyAvailable($lowerAttributes)) {
+	private function buildAccountStatusIcon($container) {
+		// check if there are account parts that can be locked
+		$unixAvailable = ($container->getAccountModule('posixAccount') != null);
+		$sambaAvailable = (($container->getAccountModule('sambaSamAccount') != null) && $container->getAccountModule('sambaSamAccount')->isExtensionEnabled());
+		$ppolicyAvailable = ($container->getAccountModule('ppolicyUser') != null);
+		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable) {
 			return '';
 		}
-		return '<img src="../../graphics/lock.png">&nbsp;&nbsp;&nbsp;';
+		// get locking status
+		$unixLocked = false;
+		if ($unixAvailable && $container->getAccountModule('posixAccount')->isLocked()) {
+			$unixLocked = true;
+		}
+		$sambaLocked = false;
+		if ($sambaAvailable && $container->getAccountModule('sambaSamAccount')->isDeactivated()) {
+			$sambaLocked = true;
+		}
+		$ppolicyLocked = false;
+		if ($ppolicyAvailable && $container->getAccountModule('ppolicyUser')->isLocked()) {
+			$ppolicyLocked = true;
+		}
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
+							&& (!$unixAvailable || $unixLocked)
+							&& (!$sambaAvailable || $sambaLocked)
+							&& (!$ppolicyAvailable || $ppolicyLocked);
+		// build tooltip
+		$icon = 'unlocked.png';
+		if ($fullyLocked) {
+			$icon = 'lock.png';
+		}
+		elseif ($partiallyLocked) {
+			$icon = 'partiallyLocked.png';
+		}
+		$statusTable = '<table border=0>';
+		// Unix
+		if ($unixAvailable) {
+			$unixIcon = 'unlocked.png';
+			if ($unixLocked) {
+				$unixIcon = 'lock.png';
+			}
+			$statusTable .= '<tr><td>' . _('Unix') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $unixIcon . '&quot;></td></tr>';
+		}
+		// Samba
+		if ($sambaAvailable) {
+			$sambaIcon = 'unlocked.png';
+			if ($sambaLocked) {
+				$sambaIcon = 'lock.png';
+			}
+			$statusTable .= '<tr><td>' . _('Samba') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
+		}
+		// PPolicy
+		if ($ppolicyAvailable) {
+			$ppolicyIcon = 'unlocked.png';
+			if ($ppolicyLocked) {
+				$ppolicyIcon = 'lock.png';
+			}
+			$statusTable .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
+		}
+		$statusTable .= '</table>';
+		$tipContent = $statusTable;
+		$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
+		$tipContent .= _('Please click to lock/unlock this account.');
+		$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
+		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked);
+		$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
+		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' onmouseout="UnTip()" onmouseover="Tip(' . $tooltip . ')" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
+	}
+	
+	/**
+	 * Builds the dialog to (un)lock parts of an account.
+	 * 
+	 * @param boolean $unixAvailable Unix part is active
+	 * @param boolean $unixLocked Unix part is locked
+	 * @param boolean $sambaAvailable Samba part is active
+	 * @param boolean $sambaLocked Samba part is locked
+	 * @param boolean $ppolicyAvailable PPolicy part is active
+	 * @param boolean $ppolicyLocked PPolicy part is locked
+	 */
+	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked) {
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
+							&& (!$unixAvailable || $unixLocked)
+							&& (!$sambaAvailable || $sambaLocked)
+							&& (!$ppolicyAvailable || $ppolicyLocked);
+		$dialog = '<div id="lam_accountStatusDialog" class="hidden">';
+		// show radio buttons for lock/unlock
+		$radioDisabled = ' readonly="readonly"';
+		$lockChecked = ' checked="checked"';
+		$unlockChecked = '';
+		$onchange = '';
+		if ($partiallyLocked && !$fullyLocked) {
+			$radioDisabled = '';
+			$onchange = ' onchange="if (jQuery(\'#lam_accountStatusActionRadioLock:checked\').val()) {' .
+								'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
+								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').addClass(\'hidden\');' .
+							'}' .
+							'else {' .
+								'jQuery(\'#lam_accountStatusDialogLockDiv\').addClass(\'hidden\');' .
+								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').removeClass(\'hidden\');' .
+							'};"';
+		}
+		if ($fullyLocked) {
+			$lockChecked = '';
+			$unlockChecked = ' checked="checked"';
+		}
+		$dialog .= '<input id="lam_accountStatusActionRadioLock" type="radio" name="lam_accountStatusAction" value="lock"' . $onchange . $lockChecked . $radioDisabled . '> ' . _('Lock') . '<br>';
+		$dialog .= '<input id="lam_accountStatusActionRadioUnlock" type="radio" name="lam_accountStatusAction" value="unlock"' . $onchange . $unlockChecked . $radioDisabled . '> ' . _('Unlock') . '<br><br>';
+		$dialog .= '<input type="hidden" name="lam_accountStatusResult" id="lam_accountStatusResult" value="cancel">';
+		// locking part
+		if (!$fullyLocked) {
+			$dialog .= '<div id="lam_accountStatusDialogLockDiv"><table border=0>';
+			if ($unixAvailable && !$unixLocked) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockUnix" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/tux.png"></td>';
+				$dialog .= '<td>' . _('Unix') . '</td>';
+			}
+			if ($sambaAvailable && !$sambaLocked) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockSamba" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/samba.png"></td>';
+				$dialog .= '<td>' . _('Samba') . '</td>';
+			}
+			if ($ppolicyAvailable && !$ppolicyLocked) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockPPolicy" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/security.png"></td>';
+				$dialog .= '<td>' . _('PPolicy') . '</td>';
+			}
+			if ($unixAvailable) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusRemoveUnixGroups" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/groupBig.png"></td>';
+				$dialog .= '<td>' . _('Remove from all Unix groups') . '</td>';
+			}
+			if (posixAccount::areGroupOfNamesActive()) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusRemoveGONGroups" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/groupBig.png"></td>';
+				$dialog .= '<td>' . _('Remove from all group of (unique) names') . '</td>';
+			}
+			$dialog .= '</table></div>';
+		}
+		// unlocking part
+		if ($partiallyLocked) {
+			$unlockClass = 'hidden';
+			if ($fullyLocked) {
+				$unlockClass = '';
+			}
+			$dialog .= '<div id="lam_accountStatusDialogUnlockDiv" class="' . $unlockClass . '"><table border=0>';
+			if ($unixAvailable && $unixLocked) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockUnix" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/tux.png"></td>';
+				$dialog .= '<td>' . _('Unix') . '</td>';
+			}
+			if ($sambaAvailable && $sambaLocked) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockSamba" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/samba.png"></td>';
+				$dialog .= '<td>' . _('Samba') . '</td>';
+			}
+			if ($ppolicyAvailable && $ppolicyLocked) {
+				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockPPolicy" checked="checked"></td>';
+				$dialog .= '<td><img alt="" src="../../graphics/security.png"></td>';
+				$dialog .= '<td>' . _('PPolicy') . '</td>';
+			}
+			$dialog .= '</table></div>';
+		}
+		$dialog .= '</div>';
+		return $dialog;
 	}
 
+	/**
+	 * This function is called after the edit page is processed and before the page content is generated.
+	 * This can be used to run custom handlers after each page processing.
+	 * 
+	 * @param accountContainer $container account container
+	 */
+	public function runEditPagePostAction($container) {
+		// check if account status should be changed
+		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
+			// lock account
+			if ($_POST['lam_accountStatusAction'] == 'lock') {
+				// Unix
+				if (isset($_POST['lam_accountStatusLockUnix']) && ($_POST['lam_accountStatusLockUnix'] == 'on')) {
+					$container->getAccountModule('posixAccount')->lock();
+				}
+				// Samba
+				if (isset($_POST['lam_accountStatusLockSamba']) && ($_POST['lam_accountStatusLockSamba'] == 'on')) {
+					$container->getAccountModule('sambaSamAccount')->deactivate();
+				}
+				// PPolicy
+				if (isset($_POST['lam_accountStatusLockPPolicy']) && ($_POST['lam_accountStatusLockPPolicy'] == 'on')) {
+					$container->getAccountModule('ppolicyUser')->lock();
+				}
+				// remove Unix groups
+				if (isset($_POST['lam_accountStatusRemoveUnixGroups']) && ($_POST['lam_accountStatusRemoveUnixGroups'] == 'on')) {
+					$container->getAccountModule('posixAccount')->removeFromUnixGroups();
+				}
+				// remove group of names memberships
+				if (isset($_POST['lam_accountStatusRemoveGONGroups']) && ($_POST['lam_accountStatusRemoveGONGroups'] == 'on')) {
+					$container->getAccountModule('posixAccount')->removeFromGONGroups();
+				}
+			}
+			// unlock account
+			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
+				// Unix
+				if (isset($_POST['lam_accountStatusUnlockUnix']) && ($_POST['lam_accountStatusUnlockUnix'] == 'on')) {
+					$container->getAccountModule('posixAccount')->unlock();
+				}
+				// Samba
+				if (isset($_POST['lam_accountStatusUnlockSamba']) && ($_POST['lam_accountStatusUnlockSamba'] == 'on')) {
+					$container->getAccountModule('sambaSamAccount')->activate();
+				}
+				// PPolicy
+				if (isset($_POST['lam_accountStatusUnlockPPolicy']) && ($_POST['lam_accountStatusUnlockPPolicy'] == 'on')) {
+					$container->getAccountModule('ppolicyUser')->unlock();
+				}
+			}
+		}
+	}
+	
 }
 
 /**

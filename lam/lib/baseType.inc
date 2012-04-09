@@ -158,6 +158,16 @@ class baseType {
 		usort($ret, 'compareDN');
 		return $ret;
 	}
+	
+	/**
+	 * This function is called after the edit page is processed and before the page content is generated.
+	 * This can be used to run custom handlers after each page processing.
+	 * 
+	 * @param accountContainer $container account container
+	 */
+	public function runEditPagePostAction($container) {
+		
+	}
 
 }
 

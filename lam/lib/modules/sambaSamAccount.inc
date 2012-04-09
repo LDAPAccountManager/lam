@@ -619,7 +619,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return boolean true, if settings are complete
 	*/
 	public function module_complete() {
-		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+		if (!$this->isExtensionEnabled()) {
 			return true;
 		}
 		if ($this->get_scope() == "host") {
@@ -672,7 +672,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			// skip saving if the extension was not added/modified
 			return array();
 		}
-		if (in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+		if ($this->isExtensionEnabled()) {
 			if ($this->expirePassword === true) {
 				$this->attributes['sambaPwdLastSet'][0] = '0';
 			}
@@ -710,7 +710,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			return array();
 		}
 		// skip processing if extension is not active
-		if (!in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+		if (!$this->isExtensionEnabled()) {
 			return array();
 		}
 		// delete LM hash if needed
@@ -1043,7 +1043,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		if (in_array('sambaSamAccount', $this->attributes['objectClass'])) {
+		if ($this->isExtensionEnabled()) {
 			if ($this->get_scope() == "host") {
 				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				if (substr($attrs['uid'][0], -1, 1) != '$') {
@@ -2326,7 +2326,39 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->attributes['sambaKickoffTime'][0] = gmmktime(0, 0, 0, intval($month), intval($day),
 			intval($year));
 	}
+	
+	/**
+	 * Returns if the Samba extension is enabled.
+	 * 
+	 * @return boolean Samba extension is active
+	 */
+	public function isExtensionEnabled() {
+		return in_array('sambaSamAccount', $this->attributes['objectClass']);
+	}
 		
+	/**
+	 * Returns if the Samba part of the current account is deactivated.
+	 * 
+	 * @return boolean account is locked
+	 */
+	public function isDeactivated() {
+		return $this->deactivated;
+	}
+	
+	/**
+	 * Deactivates this account.
+	 */
+	public function deactivate() {
+		$this->deactivated = true;
+	}
+	
+	/**
+	 * Activates this account.
+	 */
+	public function activate() {
+		$this->deactivated = false;
+	}
+	
 }
 
 ?>

@@ -238,7 +238,7 @@ $profileNewPwd2->setFieldSize(15);
 $container->addElement($profileNewPwd2, true);
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
 $newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" . 
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null);");
 $container->addElement($newProfileButton, true);
 $container->addElement($topicSpacer, true);
 
@@ -250,7 +250,7 @@ $oldProfileInput->setFieldSize(15);
 $container->addElement($oldProfileInput, true);
 $renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
 $renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" . 
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null);");
 $container->addElement($renameProfileButton, true);
 $container->addElement($topicSpacer, true);
 
@@ -259,7 +259,7 @@ $container->addElement(new htmlSubTitle(_("Delete profile")), true);
 $container->addElement(new htmlTableExtendedSelect('delfilename', $files, array(), _('Profile name'), '232'), true);
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
 $deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" . 
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null);");
 $container->addElement($deleteProfileButton, true);
 $container->addElement($topicSpacer, true);
 
@@ -276,7 +276,7 @@ $profileSetPwd2->setFieldSize(15);
 $container->addElement($profileSetPwd2, true);
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
 $setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" . 
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null);");
 $container->addElement($setPasswordProfileButton, true);
 $container->addElement($topicSpacer, true);
 
@@ -287,7 +287,7 @@ $container->addElement(new htmlSubTitle(_("Change default profile")), true);
 $container->addElement(new htmlTableExtendedSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), true);
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
 $defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" . 
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm');");
+	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null);");
 $container->addElement($defaultProfileButton, true);
 $container->addElement($topicSpacer, true);
 
