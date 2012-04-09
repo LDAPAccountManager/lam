@@ -1,3 +1,7 @@
+June 2012
+  - quick (un)lock for users
+
+
 25.03.2012 3.7
   - Login: support bind user for login search
   - Personal: added labeledURI and cosmetic changes, description is now multi-valued (RFE 3446363)
