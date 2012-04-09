@@ -1406,7 +1406,93 @@ Have fun!
     <section>
       <title>Users</title>
 
-      <para></para>
+      <para>LAM manages various types of user accounts. This includes address
+      book entries, Unix, Samba, Zarafa and much more.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Account list settings:</emphasis></para>
+
+      <para>The user list includes two special options to change how your
+      users are displayed.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/userListOptions.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Translate GID number to group name:</emphasis> By
+      default the user list can show the primary group IDs (GIDs) of your
+      users. There are often cases where it is more suitable to show the group
+      name instead. This can be done by activating this option. Please note
+      that LAM will execute more LDAP queries which may result in decreased
+      performance.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/userListOptionTransPrimary.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Show account status:</emphasis> If you activate this
+      option then there will be an additional column displayed that shows if
+      the account is locked. You can see more details when moving the mouse
+      cursor over the lock icon. This function supports Unix, Samba and
+      PPolicy.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/userListOptionAccountStatus.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Quick account (un)locking:</emphasis></para>
+
+      <para>When you edit an user then LAM supports to quickly lock/unlock the
+      whole account. This includes Unix, Samba and PPolicy. LAM can also
+      remove group memberships if an account is locked.</para>
+
+      <para>You will see the current status of all account parts in the title
+      area of the account.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/userAccountStatus1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>If you click on the lock icon then a dialog will be opened to
+      change these values. Depending on which parts are locked LAM will
+      provide options to lock/unlock account parts.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/userAccountStatus2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/userAccountStatus3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
       <section>
         <title>Personal</title>
