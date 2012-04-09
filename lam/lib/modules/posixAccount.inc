@@ -2378,6 +2378,17 @@ class posixAccount extends baseModule implements passwordService {
 	}
 	
 	/**
+	 * Returns if this account can be locked.
+	 * This is the case if a hashed password is set ("{" at the beginning).
+	 */
+	public function isLockable() {
+		if (isset($this->attributes['userPassword'][0]) && ((substr($this->attributes['userPassword'][0], 0, 1) == "{") || (substr($this->attributes['userPassword'][0], 1, 1) == "{"))) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Returns if the Unix part of the current account is locked.
 	 * 
 	 * @return boolean password is locked
@@ -2390,14 +2401,18 @@ class posixAccount extends baseModule implements passwordService {
 	 * Locks the user password of this account.
 	 */
 	public function lock() {
-		$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+		if (isset($this->attributes['userPassword'][0])) {
+			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+		}
 	}
 	
 	/**
 	 * Unlocks the user password of this account.
 	 */
 	public function unlock() {
-		$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+		if (isset($this->attributes['userPassword'][0])) {
+			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+		}
 	}
 	
 	/**

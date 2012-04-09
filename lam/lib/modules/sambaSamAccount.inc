@@ -2350,6 +2350,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	public function deactivate() {
 		$this->deactivated = true;
+		$flags = $this->attributes['sambaAcctFlags'][0];
+		if (strpos($flags, 'D') === false) {
+			$flags[strpos($flags, ' ')] = 'D';
+		}
+		$this->attributes['sambaAcctFlags'][0] = $flags;
 	}
 	
 	/**
@@ -2357,6 +2362,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	public function activate() {
 		$this->deactivated = false;
+		$this->attributes['sambaAcctFlags'][0] = str_replace('D', '', $this->attributes['sambaAcctFlags'][0]);
+		$this->attributes['sambaAcctFlags'][0] = str_replace(']', ' ]', $this->attributes['sambaAcctFlags'][0]);
 	}
 	
 }

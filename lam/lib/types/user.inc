@@ -203,7 +203,7 @@ class user extends baseType {
 	 */
 	private function buildAccountStatusIcon($container) {
 		// check if there are account parts that can be locked
-		$unixAvailable = ($container->getAccountModule('posixAccount') != null);
+		$unixAvailable = ($container->getAccountModule('posixAccount') != null) && $container->getAccountModule('posixAccount')->isLockable();
 		$sambaAvailable = (($container->getAccountModule('sambaSamAccount') != null) && $container->getAccountModule('sambaSamAccount')->isExtensionEnabled());
 		$ppolicyAvailable = ($container->getAccountModule('ppolicyUser') != null);
 		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable) {
