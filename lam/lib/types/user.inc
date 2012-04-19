@@ -619,7 +619,12 @@ class lamUserList extends lamList {
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();
 		$asOption = $this->listGetConfigOptionByID(self::ACCOUNT_STATUS_OPTION_NAME);
+		// if account status was activated, reload LDAP data
+		$asOptionOldValue = $this->showAccountStatus;
 		$this->showAccountStatus = $asOption->isSelected();
+		if ($this->showAccountStatus && !$asOptionOldValue) {
+			$this->listRefreshData();
+		}
 	}
 	
 	/**
