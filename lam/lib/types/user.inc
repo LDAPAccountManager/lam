@@ -250,7 +250,7 @@ class user extends baseType {
 			if ($sambaLocked) {
 				$sambaIcon = 'lock.png';
 			}
-			$statusTable .= '<tr><td>' . _('Samba') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
+			$statusTable .= '<tr><td>' . _('Samba 3') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
 		}
 		// PPolicy
 		if ($ppolicyAvailable) {
@@ -321,7 +321,7 @@ class user extends baseType {
 			if ($sambaAvailable && !$sambaLocked) {
 				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockSamba" checked="checked"></td>';
 				$dialog .= '<td><img alt="" src="../../graphics/samba.png"></td>';
-				$dialog .= '<td>' . _('Samba') . '</td>';
+				$dialog .= '<td>' . _('Samba 3') . '</td>';
 			}
 			if ($ppolicyAvailable && !$ppolicyLocked) {
 				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockPPolicy" checked="checked"></td>';
@@ -355,7 +355,7 @@ class user extends baseType {
 			if ($sambaAvailable && $sambaLocked) {
 				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockSamba" checked="checked"></td>';
 				$dialog .= '<td><img alt="" src="../../graphics/samba.png"></td>';
-				$dialog .= '<td>' . _('Samba') . '</td>';
+				$dialog .= '<td>' . _('Samba 3') . '</td>';
 			}
 			if ($ppolicyAvailable && $ppolicyLocked) {
 				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockPPolicy" checked="checked"></td>';
@@ -737,7 +737,7 @@ class lamUserList extends lamList {
 				if ($sambaLocked) {
 					$sambaIcon = 'lock.png';
 				}
-				$tipContent .= '<tr><td>' . _('Samba') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Samba 3') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
 			}
 			// PPolicy
 			if ($ppolicyAvailable) {
