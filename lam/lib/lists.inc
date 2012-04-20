@@ -849,6 +849,10 @@ class lamList {
 	 * Rereads the entries from LDAP.
 	 */
 	protected function listRefreshData() {
+		// check suffix
+		if (!$this->suffix) {
+			$this->suffix = $_SESSION["config"]->get_Suffix($this->type);  // default suffix
+		}
 		// configure search filter
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
 		$filter = "(&" . $module_filter . $this->filterPart  . ")";
