@@ -357,6 +357,8 @@ class htmlInputField extends htmlElement {
 	private $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
 	private $obfuscate = false;
+	/** indicates that this field should not automatically be saved in the self service or server profile */
+	private $transient = false;
 	/** required field */
 	protected $required = false;
 	/** validation rule */
@@ -433,6 +435,9 @@ class htmlInputField extends htmlElement {
 			$disabled = ' disabled';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
+		if ($this->transient) {
+			return array();
+		}
 		if ($this->obfuscate) {
 			return array($this->fieldName => 'text_obfuscated');
 		}
@@ -484,6 +489,15 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setObfuscate($obfuscate) {
 		$this->obfuscate = $obfuscate;
+	}
+
+	/**
+	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
+	 * 
+	 * @param boolean $transient transient field
+	 */
+	public function setTransient($transient) {
+		$this->transient = $transient;
 	}
 
 	/**
@@ -683,7 +697,7 @@ class htmlButton extends htmlElement {
 		// image button
 		if ($this->isImageButton) {
 			$class = ' class="smallImageButton"';
-			$style = ' style="background-image: url(../../graphics/' . $this->value . ');"';
+			$style = ' style="background-image: url(../../graphics/' . $this->value . '); background-color: transparent;"';
 		}
 		// text button
 		elseif ($this->iconClass == null) {
@@ -819,6 +833,8 @@ class htmlSelect extends htmlElement {
 	private $transformSingleSelect = true;
 	/** onchange event */
 	private $onchangeEvent = null;
+	/** indicates that this field should not automatically be saved in the self service or server profile */
+	private $transient = false;
 	
 	/**
 	 * Constructor.
@@ -919,6 +935,9 @@ class htmlSelect extends htmlElement {
 		}
 		elseif (sizeof($this->elements) == 0) {
 			echo '</div>';
+		}
+		if ($this->transient) {
+			return array();
 		}
 		if ($this->multiSelect) {
 			return array($this->name => 'multiselect');
@@ -1045,6 +1064,15 @@ class htmlSelect extends htmlElement {
 	 */
 	public function setOnchangeEvent($onchangeEvent) {
 		$this->onchangeEvent = htmlspecialchars($onchangeEvent);
+	}
+
+	/**
+	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
+	 * 
+	 * @param boolean $transient transient field
+	 */
+	public function setTransient($transient) {
+		$this->transient = $transient;
 	}
 
 }
