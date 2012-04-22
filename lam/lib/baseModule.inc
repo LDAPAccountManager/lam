@@ -1298,7 +1298,7 @@ abstract class baseModule {
 	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	 * @return array error messages
 	 */
-	public function checkSelfServiceSettings($options) {
+	public function checkSelfServiceSettings(&$options) {
 		// needs to be implemented by the subclasses, if needed
 		return array();
 	}

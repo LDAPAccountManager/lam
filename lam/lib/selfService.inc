@@ -257,7 +257,7 @@ function getSelfServiceSettings($scope, $profile) {
 * @param array $options hash array containing all options (name => array(...))
 * @return array list of error messages
 */
-function checkSelfServiceSettings($scope, $options) {
+function checkSelfServiceSettings($scope, &$options) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
