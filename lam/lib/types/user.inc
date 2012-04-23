@@ -333,7 +333,7 @@ class user extends baseType {
 				$dialog .= '<td><img alt="" src="../../graphics/groupBig.png"></td>';
 				$dialog .= '<td>' . _('Remove from all Unix groups') . '</td>';
 			}
-			if (posixAccount::areGroupOfNamesActive()) {
+			if ($unixAvailable && posixAccount::areGroupOfNamesActive()) { // check unixAvailable because Unix module removes group memberships
 				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusRemoveGONGroups" checked="checked"></td>';
 				$dialog .= '<td><img alt="" src="../../graphics/groupBig.png"></td>';
 				$dialog .= '<td>' . _('Remove from all group of (unique) names') . '</td>';
