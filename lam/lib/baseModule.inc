@@ -1232,7 +1232,7 @@ abstract class baseModule {
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @return htmlElement meta HTML object
+	 * @return array list of meta HTML elements (field name => htmlTableRow)
 	 * 
 	 * @see htmlElement
 	 */
