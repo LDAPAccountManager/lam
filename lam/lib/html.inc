@@ -1241,6 +1241,7 @@ class htmlTableExtendedRadio extends htmlRadio {
 		parent::__construct($name, $elements, $selectedElement);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
+		$this->alignment = htmlElement::ALIGN_TOP;
 	}
 
 	/**
@@ -1722,8 +1723,8 @@ class htmlInputTextarea extends htmlElement {
 	function __construct($name, $value, $colCount, $rowCount) {
 		$this->name = htmlspecialchars($name);
 		$this->value = htmlspecialchars($value);
-		$this->colCount = $colCount;
-		$this->rowCount = $rowCount;
+		$this->colCount = htmlspecialchars($colCount);
+		$this->rowCount = htmlspecialchars($rowCount);
 	}
 
 	/**
