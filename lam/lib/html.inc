@@ -1808,6 +1808,7 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 		parent::__construct($name, $value, $colCount, $rowCount);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
+		$this->alignment = htmlElement::ALIGN_TOP;
 	}
 
 	/**
