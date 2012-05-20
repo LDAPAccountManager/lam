@@ -622,8 +622,31 @@ class posixAccount extends baseModule implements passwordService {
 			$gons = $this->findGroupOfNames();
 			$toAdd = array_values(array_diff($this->gonList, $this->gonList_orig));
 			$toRem = array_values(array_diff($this->gonList_orig, $this->gonList));
+			$toUpdate = array_values(array_intersect($this->gonList, $this->gonList_orig));
 			$ldapUser = $_SESSION['ldap']->decrypt_login();
 			$ldapUser = $ldapUser[0];
+			// update groups if DN changed
+			if (isset($this->getAccountContainer()->dn_orig) && ($this->getAccountContainer()->dn_orig != $this->getAccountContainer()->finalDN)) {
+				for ($i = 0; $i < sizeof($toUpdate); $i++) {
+					if (isset($gons[$toUpdate[$i]])) {
+						$attrName = 'member';
+						if (in_array('groupOfUniqueNames', $gons[$toUpdate[$i]]['objectclass'])) {
+							$attrName = 'uniqueMember';
+						}
+						$success = @ldap_mod_add($_SESSION['ldap']->server(), $toUpdate[$i], array($attrName => array($this->getAccountContainer()->finalDN)));
+						if (!$success) {
+							logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $toUpdate[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+							$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toUpdate[$i]), ldap_error($_SESSION['ldap']->server()));
+						}
+						$success = @ldap_mod_del($_SESSION['ldap']->server(), $toUpdate[$i], array($attrName => array($this->getAccountContainer()->dn_orig)));
+						if (!$success) {
+							logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to remove attributes from DN: ' . $toUpdate[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+							$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toUpdate[$i]), ldap_error($_SESSION['ldap']->server()));
+						}
+					}
+				}
+			}
+			// add groups
 			for ($i = 0; $i < sizeof($toAdd); $i++) {
 				if (isset($gons[$toAdd[$i]])) {
 					$attrName = 'member';
@@ -637,6 +660,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 			}
+			// remove groups
 			for ($i = 0; $i < sizeof($toRem); $i++) {
 				if (isset($gons[$toRem[$i]])) {
 					$attrName = 'member';
