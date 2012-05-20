@@ -2257,11 +2257,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// initials
-			if ($rawAccounts[$i][$ids['inetOrgPerson_initials']] != "") {
+			if (isset($ids['inetOrgPerson_initials']) && ($rawAccounts[$i][$ids['inetOrgPerson_initials']] != "")) {
 				$partialAccounts[$i]['initials'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_initials']]);
 			}
 			// description
-			if ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "") {
+			if (isset($ids['inetOrgPerson_description']) && ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "")) {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['inetOrgPerson_description']];
 			}
 			else {
@@ -2273,7 +2273,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// title
-			if ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "") {
+			if (isset($ids['inetOrgPerson_title']) && ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_title']], 'title')) {
 					$partialAccounts[$i]['title'] = $rawAccounts[$i][$ids['inetOrgPerson_title']];
 				}
@@ -2284,11 +2284,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// employee number
-			if ($rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']] != "") {
+			if (isset($ids['inetOrgPerson_employeeNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']] != "")) {
 				$partialAccounts[$i]['employeeNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']];
 			}
 			// employee type
-			if ($rawAccounts[$i][$ids['inetOrgPerson_type']] != "") {
+			if (isset($ids['inetOrgPerson_type']) && ($rawAccounts[$i][$ids['inetOrgPerson_type']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_type']], 'employeeType')) {
 					$partialAccounts[$i]['employeeType'] = $rawAccounts[$i][$ids['inetOrgPerson_type']];
 				}
@@ -2299,7 +2299,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// business category
-			if ($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']] != "") {
+			if (isset($ids['inetOrgPerson_businessCategory']) && ($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']], 'businessCategory')) {
 					$partialAccounts[$i]['businessCategory'] = $rawAccounts[$i][$ids['inetOrgPerson_businessCategory']];
 				}
@@ -2310,7 +2310,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// manager
-			if ($rawAccounts[$i][$ids['inetOrgPerson_manager']] != "") {
+			if (isset($ids['inetOrgPerson_manager']) && ($rawAccounts[$i][$ids['inetOrgPerson_manager']] != "")) {
 				$managerList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_manager']]);
 				$partialAccounts[$i]['manager'] = $managerList;
 				for ($x = 0; $x < sizeof($managerList); $x++) {
@@ -2323,7 +2323,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// street
-			if ($rawAccounts[$i][$ids['inetOrgPerson_street']] != "") {
+			if (isset($ids['inetOrgPerson_street']) && ($rawAccounts[$i][$ids['inetOrgPerson_street']] != "")) {
 				$streetList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_street']]);
 				$partialAccounts[$i]['street'] = $streetList;
 				for ($x = 0; $x < sizeof($streetList); $x++) {
@@ -2336,41 +2336,41 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// post office box
-			if ($rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']] != "") {
+			if (isset($ids['inetOrgPerson_postOfficeBox']) && ($rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']] != "")) {
 				$partialAccounts[$i]['postOfficeBox'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']]);
 			}
 			// room number
-			if ($rawAccounts[$i][$ids['inetOrgPerson_roomNumber']] != "") {
+			if (isset($ids['inetOrgPerson_roomNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_roomNumber']] != "")) {
 				$partialAccounts[$i]['roomNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_roomNumber']];
 			}
 			// departments
-			if ($rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']] != "") {
+			if (isset($ids['inetOrgPerson_departmentNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']] != "")) {
 				$partialAccounts[$i]['departmentNumber'] = explode(';', $rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']]);
 				// remove extra spaces
 				$partialAccounts[$i]['departmentNumber'] = array_map('trim', $partialAccounts[$i]['departmentNumber']);
 			}
 			// organisation
-			if ($rawAccounts[$i][$ids['inetOrgPerson_o']] != "") {
+			if (isset($ids['inetOrgPerson_o']) && ($rawAccounts[$i][$ids['inetOrgPerson_o']] != "")) {
 				$partialAccounts[$i]['o'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_o']]);
 			}
 			// location
-			if ($rawAccounts[$i][$ids['inetOrgPerson_l']] != "") {
+			if (isset($ids['inetOrgPerson_l']) && ($rawAccounts[$i][$ids['inetOrgPerson_l']] != "")) {
 				$partialAccounts[$i]['l'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_l']]);
 			}
 			// state
-			if ($rawAccounts[$i][$ids['inetOrgPerson_st']] != "") {
+			if (isset($ids['inetOrgPerson_st']) && ($rawAccounts[$i][$ids['inetOrgPerson_st']] != "")) {
 				$partialAccounts[$i]['st'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_st']]);
 			}
 			// physicalDeliveryOfficeName
-			if ($rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']] != "") {
+			if (isset($ids['inetOrgPerson_physicalDeliveryOfficeName']) && ($rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']] != "")) {
 				$partialAccounts[$i]['physicalDeliveryOfficeName'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']]);
 			}
 			// carLicense
-			if ($rawAccounts[$i][$ids['inetOrgPerson_carLicense']] != "") {
+			if (isset($ids['inetOrgPerson_carLicense']) && ($rawAccounts[$i][$ids['inetOrgPerson_carLicense']] != "")) {
 				$partialAccounts[$i]['carLicense'] = $rawAccounts[$i][$ids['inetOrgPerson_carLicense']];
 			}
 			// postal code
-			if ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") {
+			if (isset($ids['inetOrgPerson_postalCode']) && ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "")) {
 				$postalCodeList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postalCode']]);
 				$partialAccounts[$i]['postalCode'] = $postalCodeList;
 				for ($x = 0; $x < sizeof($postalCodeList); $x++) {
@@ -2383,7 +2383,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// postal address
-			if ($rawAccounts[$i][$ids['inetOrgPerson_address']] != "") {
+			if (isset($ids['inetOrgPerson_address']) && ($rawAccounts[$i][$ids['inetOrgPerson_address']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_address']], 'postalAddress')) {
 					$partialAccounts[$i]['postalAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_address']];
 				}
@@ -2394,7 +2394,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// registered address
-			if ($rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']] != "") {
+			if (isset($ids['inetOrgPerson_registeredAddress']) && ($rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']], 'postalAddress')) {
 					$partialAccounts[$i]['registeredAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']];
 				}
@@ -2405,7 +2405,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// telephone
-			if ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") {
+			if (isset($ids['inetOrgPerson_telephone']) && ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "")) {
 				$telephoneList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_telephone']]);
 				$partialAccounts[$i]['telephoneNumber'] = $telephoneList;
 				for ($x = 0; $x < sizeof($telephoneList); $x++) {
@@ -2418,7 +2418,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// home telephone
-			if ($rawAccounts[$i][$ids['inetOrgPerson_homePhone']] != "") {
+			if (isset($ids['inetOrgPerson_homePhone']) && ($rawAccounts[$i][$ids['inetOrgPerson_homePhone']] != "")) {
 				$homePhoneList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_homePhone']]);
 				$partialAccounts[$i]['homePhone'] = $homePhoneList;
 				for ($x = 0; $x < sizeof($homePhoneList); $x++) {
@@ -2431,7 +2431,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// mobile
-			if ($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "") {
+			if (isset($ids['inetOrgPerson_mobile']) && ($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "")) {
 				$mobileList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_mobile']]);
 				$partialAccounts[$i]['mobile'] = $mobileList;
 				for ($x = 0; $x < sizeof($mobileList); $x++) {
@@ -2444,7 +2444,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// facsimile
-			if ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") {
+			if (isset($ids['inetOrgPerson_fax']) && ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "")) {
 				$facsimileTelephoneNumberList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_fax']]);
 				$partialAccounts[$i]['facsimileTelephoneNumber'] = $facsimileTelephoneNumberList;
 				for ($x = 0; $x < sizeof($facsimileTelephoneNumberList); $x++) {
@@ -2457,7 +2457,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// eMail
-			if ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "") {
+			if (isset($ids['inetOrgPerson_email']) && ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "")) {
 				$mailList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_email']]);
 				$partialAccounts[$i]['mail'] = $mailList;
 				for ($x = 0; $x < sizeof($mailList); $x++) {
@@ -2470,7 +2470,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// labeledURI
-			if ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "") {
+			if (isset($ids['inetOrgPerson_labeledURI']) && ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "")) {
 				$partialAccounts[$i]['labeledURI'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_labeledURI']]);
 			}
 			if (!in_array('posixAccount', $selectedModules)) {
