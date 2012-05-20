@@ -2,5 +2,5 @@
 
 rm -rf docs/devel/phpdoc
 mkdir docs/devel/phpdoc
-phpdoc -ue on --output "HTML:Smarty:PHP" -d ./ -t docs/devel/phpdoc -ti "LDAP Account Manager - Documentation" -dc "LDAP Account Manager" -dn main
+phpdoc -d ./ -t docs/devel/phpdoc --title "LDAP Account Manager - Documentation" --defaultpackagename main -e php,inc
  
