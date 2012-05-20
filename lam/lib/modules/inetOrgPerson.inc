@@ -860,6 +860,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return[$this->getAccountContainer()->dn_orig]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
 			unset($return[$this->getAccountContainer()->dn_orig]['remove']['facsimileTelephoneNumber']);
 		}
+		if (isset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber'])
+			&& isset($this->orig['facsimileTelephoneNumber']) && (sizeof($this->orig['facsimileTelephoneNumber']) > 0)) {
+			$return[$this->getAccountContainer()->dn_orig]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
+			unset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber']);
+		}
 		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto'])) {
 			$return[$this->getAccountContainer()->dn_orig]['modify']['jpegPhoto'] = array();
 			unset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto']);
