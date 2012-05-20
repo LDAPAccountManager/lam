@@ -179,7 +179,7 @@ class asteriskExtension extends baseModule {
         $this->messages['AstApplicationData'][0] = array('ERROR', _('Please enter the application data.'));
         $this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
         $this->messages['AstExtension'][0] = array('ERROR', _('Please enter the extension name.'));
-        $this->messages['AstExtension'][1] = array('ERROR', _('Extension with this name is already exists.'));
+        $this->messages['AstExtension'][1] = array('ERROR', _('Extension with this name already exists.'));
         $this->messages['AstPriority'][0] = array('ERROR', _('Please enter the priority.'));
         $this->messages['AstExtensionAstPriority'][0] = array('ERROR', _('This pair of extension name and priority already exists.'));
         $this->messages['member'][0] = array('ERROR', _('Please add at least one extension owner.'));
@@ -716,8 +716,9 @@ class asteriskExtension extends baseModule {
     }
 
     /**
-     * Search by extension name and retun true if fields with this extension name is presented
+     * Search by extension name and retun true if fields with this extension name exists
      * and false otherwise.
+     * Equal extension names are allowed in different OUs.
      * 
      * @return boolean true if there are entries with this extension name.
      */
@@ -727,12 +728,15 @@ class asteriskExtension extends baseModule {
 
         $entries = searchLDAPByAttribute("AstExtension", $extension, $searchClass, array('dn'), array($searchScope));
 
-        $isPresented = false;
-        if (count($entries) > 0) {
-            $isPresented = true;
+        $exists = false;
+        for ($i = 0; $i < sizeof($entries); $i++) {
+        	$dn = extractDNSuffix($entries[$i]['dn']);
+        	if ($dn == $this->getAccountContainer()->dnSuffix) {
+        		$exists = true;
+        		break;
+        	}
         }
-
-        return $isPresented;
+        return $exists;
     }
 
     /**
