@@ -2,6 +2,7 @@ June 2012
   - quick (un)lock for users
   - LAM Pro:
    -> Custom fields module allows to manage custom LDAP attributes in Self Service
+   -> Separate group of names module for users allows to manage memberships if Unix module is not used
   - fixed bugs
    -> Asterisk extensions with same name (3528288)
 

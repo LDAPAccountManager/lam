@@ -1754,6 +1754,30 @@ Have fun!
       </section>
 
       <section>
+        <title>Group of names (LAM Pro)</title>
+
+        <para>This module manages memberships in group of (unique) names. To
+        activate this feature please add the user module "Group of names
+        (groupOfNamesUser)" to your LAM server profile.</para>
+
+        <para>Please note that this module cannot be used if the Unix module
+        is active. In this case group memberships may be managed with the Unix
+        module.</para>
+
+        <para>The module automatically detects if groups are based on
+        "groupOfNames" or "groupOfUniqueNames" and sets the correct
+        attribute.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_groupOfNamesUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Shadow</title>
 
         <para>LAM supports the management of the LDAP substitution of
