@@ -245,7 +245,7 @@ if (isLAMProVersion()) {
 	$accessOptions = array(
 		_('Write access') => LAMConfig::ACCESS_ALL,
 		_('Change passwords') => LAMConfig::ACCESS_PASSWORD_CHANGE,
-		_('Read only') => LAMConfig::ACCESS_READ_ONLY
+		_('Read-only') => LAMConfig::ACCESS_READ_ONLY
 	);
 	$accessSelect = new htmlTableExtendedSelect('accessLevel', $accessOptions, array($conf->getAccessLevel()), _("Access level"), '215');
 	$accessSelect->setHasDescriptiveElements(true);
