@@ -337,15 +337,15 @@ class selfServiceProfile {
 		$this->httpAuthentication = false;
 		$this->pageHeader = '<table border=0 width="100%" class="lamHeader ui-corner-all"><tr><td align="left" height="30"><a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a></td></tr></table><br>';
 		$this->additionalCSS = '';
-		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";
-		$this->loginAttributeText = "User name";
-		$this->mainPageText = "<h1>LAM self service</h1>\nHere you can change your personal settings.";
+		$this->loginCaption = _("Welcome to LAM self service. Please enter your user name and password.");
+		$this->loginAttributeText = _('User name');
+		$this->mainPageText = "<h1>LAM self service</h1>\n" . _("Here you can change your personal settings.");
 		$this->inputFields = array(
-			array('name' => 'Personal data',
+			array('name' => _('Personal data'),
 				'fields' => array('inetOrgPerson_firstName', 'inetOrgPerson_lastName', 'inetOrgPerson_mail',
 					'inetOrgPerson_telephoneNumber', 'inetOrgPerson_mobile', 'inetOrgPerson_faxNumber',
 					'inetOrgPerson_street', 'inetOrgPerson_postalAddress')),
-			array('name' => 'Password',
+			array('name' => _('Password'),
 				'fields' => array('posixAccount_password'))
 		);
 	}
