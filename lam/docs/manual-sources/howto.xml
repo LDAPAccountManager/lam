@@ -2288,14 +2288,16 @@ Have fun!
         <para>Some applications (e.g. Suse Linux) use the rfc2307bis schema
         for Unix accounts instead of the nis schema. In this case group
         accounts are based on the object class <link lang=""
-        linkend="a_groupOfNames">groupOf(Unique)Names</link>. The object class
-        is auxiliary in this case.</para>
+        linkend="a_groupOfNames">groupOf(Unique)Names</link> or namedObject.
+        The object class posixGroup is auxiliary in this case.</para>
 
         <para>LAM Pro supports these groups with a special account module:
         <emphasis role="bold">rfc2307bisPosixGroup</emphasis></para>
 
         <para>Use this module only if your system depends on the rfc2307bis
-        schema. The module can be selected in the LAM configuration.</para>
+        schema. The module can be selected in the LAM configuration. Instead
+        of using groupOfNames as basis for your groups you may also use
+        namedObject.</para>
 
         <para><screenshot>
             <mediaobject>

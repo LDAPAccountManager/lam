@@ -3,6 +3,7 @@ June 2012
   - LAM Pro:
    -> Custom fields module allows to manage custom LDAP attributes in Self Service
    -> Separate group of names module for users allows to manage memberships if Unix module is not used (RFE 3504429)
+   -> Named object module for groups (used for rfc2307bis schema)
   - fixed bugs
    -> Asterisk extensions with same name (3528288)
 
