@@ -208,6 +208,9 @@ class LAMConfig {
 
 	/** type settings */
 	private $typeSettings = array();
+	
+	/** tool settings */
+	private $toolSettings = array();
 
 	/**
 	* Path to external lamdaemon script on server where it is executed
@@ -281,7 +284,7 @@ class LAMConfig {
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
-		"modules", "activeTypes", "types", "accessLevel", 'loginMethod', 'loginSearchSuffix',
+		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'httpAuthentication', 'loginSearchDN', 'loginSearchPassword');
 
@@ -335,6 +338,12 @@ class LAMConfig {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$this->typeSettings[substr($option, 0, $pos)] = substr($option, $pos + 2);
+						}
+						// tool settings
+						elseif (strtolower(substr($line, 0, $keylen + 2)) == "tools: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$this->toolSettings[substr($option, 0, $pos)] = substr($option, $pos + 2);
 						}
 						// general settings
 						else {
@@ -419,6 +428,15 @@ class LAMConfig {
 							$file_array[$i] = "types: " . $name . ": " . $this->typeSettings[$name] . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
+						// tool settings
+						elseif (strtolower(substr($line, 0, $keylen + 2)) == "tools: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$name = substr($option, 0, $pos);
+							if (!isset($this->toolSettings[$name])) continue;
+							$file_array[$i] = "tools: " . $name . ": " . $this->toolSettings[$name] . "\n";
+							$mod_saved[] = $name;	// mark keyword as saved
+						}
 						// general settings
 						else {
 							$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
@@ -468,6 +486,13 @@ class LAMConfig {
 			for ($i = 0; $i < sizeof($t_settings); $i++) {
 				if (!in_array($t_settings[$i], $mod_saved)) {
 					array_push($file_array, "types: " . $t_settings[$i] . ": " . $this->typeSettings[$t_settings[$i]] . "\n");
+				}
+			}
+			// check if all tool settings were added
+			$tool_settings = array_keys($this->toolSettings);
+			for ($i = 0; $i < sizeof($tool_settings); $i++) {
+				if (!in_array($tool_settings[$i], $mod_saved)) {
+					array_push($file_array, "tools: " . $tool_settings[$i] . ": " . $this->toolSettings[$tool_settings[$i]] . "\n");
 				}
 			}
 			$file = @fopen($conffile, "w");
@@ -990,6 +1015,27 @@ class LAMConfig {
 	*/
 	public function get_typeSettings() {
 		return $this->typeSettings;
+	}
+
+	/**
+	 * Returns the tool settings.
+	 * 
+	 * @return array $toolSettings tool settings
+	 */
+	public function getToolSettings() {
+		return $this->toolSettings;
+	}
+
+	/**
+	 * Sets the tool settings.
+	 * 
+	 * @param array $toolSettings tool settings
+	 * @return boolean true if ok
+	 */
+	public function setToolSettings($toolSettings) {
+		if (!is_array($toolSettings)) return false;
+		$this->toolSettings = $toolSettings;
+		return true;
 	}
 
 	/**

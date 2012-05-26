@@ -1,5 +1,6 @@
 June 2012
   - quick (un)lock for users
+  - allow to disable tools
   - LAM Pro:
    -> Custom fields module allows to manage custom LDAP attributes in Self Service
    -> Separate group of names module for users allows to manage memberships if Unix module is not used (RFE 3504429)

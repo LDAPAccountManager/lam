@@ -75,6 +75,7 @@ foreach ($jsFiles as $jsEntry) {
 
 // get tool list
 $availableTools = getTools();
+$toolSettings = $_SESSION['config']->getToolSettings();
 // sort tools
 $toSort = array();
 for ($i = 0; $i < sizeof($availableTools); $i++) {
@@ -87,6 +88,10 @@ for ($i = 0; $i < sizeof($availableTools); $i++) {
 	}
 	// check visibility
 	if (!$myTool->isVisible()) {
+		continue;
+	}
+	// check if hidden by config
+	if (isset($toolSettings['tool_hide_' . get_class($myTool)]) && ($toolSettings['tool_hide_' . get_class($myTool)] == 'true')) {
 		continue;
 	}
 	$toSort[$availableTools[$i]] = $myTool->getPosition();

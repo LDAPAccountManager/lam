@@ -33,9 +33,10 @@ $Id$
 
 /** Access to config functions */
 include_once("../../lib/config.inc");
-
 /** access to module settings */
 include_once("../../lib/modules.inc");
+/** access to tools */
+include_once("../../lib/tools.inc");
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -338,6 +339,44 @@ if (isLAMProVersion()) {
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 }
 
+// tool settings
+$toolSettings = $conf->getToolSettings();
+$toolSettingsContent = new htmlTable();
+$toolsLabel = new htmlOutputText(_('Hidden tools'));
+$toolsLabel->colspan = 5;
+$toolSettingsContent->addElement($toolsLabel, true);
+$tools = getTools();
+for ($i = 0; $i < sizeof($tools); $i++) {
+	$tool = new $tools[$i]();
+	if ($tool->isHideable()) {
+		$tools[$i] = $tool;
+	}
+	else {
+		unset($tools[$i]);
+		$i--;
+		$tools = array_values($tools);
+	}
+}
+for ($r = 0; $r < (sizeof($tools) / 4); $r++) {
+	for ($c = 0; $c < 4; $c++) {
+		if (!isset($tools[($r * 4) + $c])) {
+			break;
+		}
+		$tool = $tools[($r * 4) + $c];
+		$toolClass = get_class($tool);
+		$selected = false;
+		if (isset($toolSettings['tool_hide_' . $toolClass]) && ($toolSettings['tool_hide_' . $toolClass] === 'true')) {
+			$selected = true;
+		}
+		$toolSettingsContent->addElement(new htmlTableExtendedInputCheckbox('tool_hide_' . $toolClass, $selected, $tool->getName(), null, false));
+		$toolSettingsContent->addElement(new htmlSpacer('10px', null));
+	}
+	$toolSettingsContent->addNewLine();
+}
+$toolSettingsFieldset = new htmlFieldset($toolSettingsContent, _("Tool settings"), '../../graphics/bigTools.png');
+$container->addElement($toolSettingsFieldset, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
 // security setings
 $securitySettingsContent = new htmlTable();
 // login method
@@ -499,6 +538,19 @@ function checkInput() {
 	if (!$conf->set_scriptrights($chmod)) {
 		$errors[] = array("ERROR", _("Script rights are invalid!"));
 	}
+	// tool settings
+	$tools = getTools();
+	$toolSettings = array();
+	for ($i = 0; $i < sizeof($tools); $i++) {
+		$toolConfigID = 'tool_hide_' . $tools[$i];
+		if ((isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on')) {
+			$toolSettings[$toolConfigID] = 'true';
+		}
+		else {
+			$toolSettings[$toolConfigID] = 'false';
+		}
+	}
+	$conf->setToolSettings($toolSettings);	
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {
 		if ($_POST['passwd1'] != $_POST['passwd2']) {

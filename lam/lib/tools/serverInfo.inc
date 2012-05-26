@@ -117,6 +117,15 @@ class toolServerInformation implements LAMTool {
 		return true;
 	}
 	
+	/**
+	 * Returns if a tool may be hidden by configuration in the LAM server profile.
+	 * 
+	 * @return boolean hideable
+	 */
+	function isHideable() {
+		return true;
+	}
+	
 }
 
 ?>
