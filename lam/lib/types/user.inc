@@ -772,7 +772,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Unix part exists
 	 */
-	private static function isUnixAvailable(&$attrs) {
+	public static function isUnixAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']));
 	}
 	
@@ -782,7 +782,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Unix part locked
 	 */
-	private static function isUnixLocked(&$attrs) {
+	public static function isUnixLocked(&$attrs) {
 		return (isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0]));
 	}
 	
@@ -792,7 +792,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Samba part exists
 	 */
-	private static function isSambaAvailable(&$attrs) {
+	public static function isSambaAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('sambaSamAccount', $attrs['objectclass']));
 	}
 	
@@ -802,7 +802,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Samba part is locked
 	 */
-	private static function isSambaLocked(&$attrs) {
+	public static function isSambaLocked(&$attrs) {
 		return (isset($attrs['sambaacctflags'][0]) && strpos($attrs['sambaacctflags'][0], "D"));
 	}
 	
@@ -812,7 +812,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part exists
 	 */
-	private static function isPPolicyAvailable(&$attrs) {
+	public static function isPPolicyAvailable(&$attrs) {
 		return in_array('ppolicyUser', $_SESSION['config']->get_AccountModules('user'));
 	}
 	
@@ -822,7 +822,7 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part is locked
 	 */
-	private static function isPPolicyLocked(&$attrs) {
+	public static function isPPolicyLocked(&$attrs) {
 		return (isset($attrs['pwdaccountlockedtime'][0]) && ($attrs['pwdaccountlockedtime'][0] != ''));
 	}
 	
