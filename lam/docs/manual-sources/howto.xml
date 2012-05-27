@@ -3945,11 +3945,11 @@ Run slapindex to rebuild the index.
       <title>Password reset page</title>
 
       <para>This special page allows your deskside support staff to reset the
-      Unix and Samba passwords of your users. If you set the <link
-      linkend="s_accessLevel">access level</link> to "Change passwords" then
-      LAM will not allow any changes to the LDAP database except password
-      changes via this page. The account pages will be still available in
-      read-only mode.</para>
+      Unix and Samba passwords of your users. Account may also be (un)locked
+      If you set the <link linkend="s_accessLevel">access level</link> to
+      "Change passwords" then LAM will not allow any changes to the LDAP
+      database except password changes via this page. The account pages will
+      be still available in read-only mode.</para>
 
       <para>You can open the password reset page by clicking on the key symbol
       on each user account:</para>
@@ -4048,7 +4048,23 @@ Run slapindex to rebuild the index.
         </listitem>
       </itemizedlist>
 
-      <para></para>
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Account (un)locking:</emphasis></para>
+
+      <para>Depending if the account includes a Unix/Samba extension and
+      PPolicy is activated the page will show options to (un)lock the account.
+      E.g. if the account is fully unlocked then there will be no unlocking
+      options printed.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/passwordReset3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
   </chapter>
 
