@@ -262,11 +262,16 @@ class user extends baseType {
 		}
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;
-		$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
-		$tipContent .= _('Please click to lock/unlock this account.');
+		if (checkIfWriteAccessIsAllowed()) {
+			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
+			$tipContent .= _('Please click to lock/unlock this account.');
+		}
 		$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
 		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked);
-		$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
+		$onClick = '';
+		if (checkIfWriteAccessIsAllowed()) {
+			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
+		}
 		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' onmouseout="UnTip()" onmouseover="Tip(' . $tooltip . ')" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
 	}
 	
