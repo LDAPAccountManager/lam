@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2011  Roland Gruber
+                2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -846,6 +846,64 @@ function extractRDNAttribute($dn) {
 function extractDNSuffix($dn) {
 	if ($dn == null) return null;
 	return substr($dn, strpos($dn, ',')+1);
+}
+
+/**
+ * Sends the password mail.
+ *
+ * @param String $pwd new password
+ * @param array $user LDAP attributes of user
+ * @return array list of arrays that can be used to create status messages
+ */
+function sendPasswordMail($pwd, $user) {
+	// read mail data
+	$mailTo = $user['mail'][0];
+	$mailFrom = $_SESSION['config']->getLamProMailFrom();
+	$mailReplyTo = $_SESSION['config']->getLamProMailReplyTo();
+	$mailSubject = $_SESSION['config']->getLamProMailSubject();
+	$mailText = $_SESSION['config']->getLamProMailText();
+	$mailIsHTML = $_SESSION['config']->getLamProMailIsHTML();
+	$subject = $mailSubject;
+	$body = $mailText;
+	$body = str_replace('@@newPassword@@', $pwd, $body);
+	$results = array();
+	$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
+	while ($found == 1) {
+		$attr = str_replace('@', '', $results[0]);
+		$value = '';
+		if (isset($user[strtolower($attr)][0])) {
+			$value = $user[strtolower($attr)][0];
+		}
+		$body = str_replace('@@' . $attr . '@@', $value, $body);
+		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
+	}
+	$headerLines = "X-Mailer: LDAP Account Manager\r\n";
+	if ($mailFrom != '') {
+		$headerLines .= 'From: ' . $mailFrom . "\r\n";
+	}
+	if ($mailReplyTo != '') {
+		$headerLines .= 'Reply-To: ' . $mailReplyTo . "\r\n";
+	}
+	if ($mailIsHTML == 'true') {
+		$headerLines .= "MIME-Version: 1.0\r\n";
+		$headerLines .= "Content-type: text/html; charset=UTF-8\r\n";
+	}
+	else {
+		$headerLines .= "Content-type: text; charset=UTF-8\r\n";
+	}
+	$success = mail($mailTo, $subject, $body, $headerLines);
+	if ($success) {
+		logNewMessage(LOG_DEBUG, 'Sent password mail to ' . $mailTo);
+		return array(
+			array('INFO', sprintf(_('Mail successfully sent to %s.'), htmlspecialchars($mailTo)))
+		);
+	}
+	else {
+		logNewMessage(LOG_ERR, 'Unable to send password mail to ' . htmlspecialchars($mailTo));
+		return array(
+			array('ERROR', _('Unable to send mail!'))
+		);
+	}
 }
 
 ?>

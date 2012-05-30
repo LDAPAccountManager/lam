@@ -1004,6 +1004,10 @@ class accountContainer {
 			$container->addElement(new htmlTableExtendedInputCheckbox('lamForcePasswordChange', false, _('Force password change')));
 			$container->addElement(new htmlHelpLink('406'), true);
 		}
+		if (isLAMProVersion() && isset($this->attributes_orig['mail'][0])) {
+			$container->addElement(new htmlTableExtendedInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail')));
+			$container->addElement(new htmlHelpLink('407'), true);
+		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// password modules
 		$moduleContainer = new htmlTable();
@@ -1067,6 +1071,10 @@ class accountContainer {
 		if (isset($input['forcePasswordChange']) && ($input['forcePasswordChange'] == 'true')) {
 			$forcePasswordChange = true;
 		}
+		$sendMail = false;
+		if (isset($input['sendMail']) && ($input['sendMail'] == 'true')) {
+			$sendMail = true;
+		}
 		$return['forcePasswordChange'] = $forcePasswordChange;
 		if ($return['errorsOccured'] == 'false') {
 			// set new password
@@ -1086,6 +1094,22 @@ class accountContainer {
 						elseif (sizeof($messages[$m]) == 4) {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], $messages[$m][3], true);
 						}
+					}
+				}
+			}
+		}
+		if (isLAMProVersion() && $sendMail) {
+			$mailMessages = sendPasswordMail($password1, $this->attributes_orig);
+			if (sizeof($mailMessages) > 0) {
+				for ($i = 0; $i < sizeof($mailMessages); $i++) {
+					if ($mailMessages[$i][0] == 'ERROR') {
+						$return['errorsOccured'] = 'true';
+					}
+					if (sizeof($mailMessages[$i]) == 2) {
+						$return['messages'] .= StatusMessage($mailMessages[$i][0], $mailMessages[$i][1], '', array(), true);
+					}
+					elseif (sizeof($mailMessages[$i]) == 3) {
+						$return['messages'] .= StatusMessage($mailMessages[$i][0], $mailMessages[$i][1], $mailMessages[$i][2], array(), true);
 					}
 				}
 			}

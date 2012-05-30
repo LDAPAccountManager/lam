@@ -169,6 +169,8 @@ $helpArray = array (
 					"Text" => _("The PDF structure defines what information is exported as PDF file and how the pages are structured. You can manage the PDF structures in the PDF editor (under \"Tools\").")),
 				"406" => array ("Headline" => _("Force password change"),
 					"Text" => _("If you set this option then the user has to change his password at the next login.")),
+				"407" => array ("Headline" => _("Send via mail"),
+					"Text" => _("Sends the password to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),

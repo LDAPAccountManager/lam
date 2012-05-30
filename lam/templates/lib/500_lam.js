@@ -271,12 +271,14 @@ function passwordHandleInput(random, ajaxURL) {
 	var pwd1 = jQuery('#passwordDialog').find('[name=newPassword1]').val();
 	var pwd2 = jQuery('#passwordDialog').find('[name=newPassword2]').val();
 	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').attr('checked');
+	var sendMail = jQuery('input[name=lamPasswordChangeSendMail]').attr('checked');
 	var pwdJSON = {
 		"modules": modules,
 		"password1": pwd1,
 		"password2": pwd2,
 		"random": random,
-		"forcePasswordChange": forcePasswordChange
+		"forcePasswordChange": forcePasswordChange,
+		"sendMail": sendMail
 	};
 	// make AJAX call
 	jQuery.post(ajaxURL, {jsonInput: pwdJSON}, function(data) {passwordHandleReply(data);}, 'json');

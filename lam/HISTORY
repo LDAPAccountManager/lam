@@ -6,6 +6,7 @@ June 2012
    -> Separate group of names module for users allows to manage memberships if Unix module is not used (RFE 3504429)
    -> Named object module for groups (used for rfc2307bis schema)
    -> Password change page allows account (un)locking
+   -> Allow to send password mails on user edit page
   - fixed bugs
    -> Asterisk extensions with same name (3528288)
 
