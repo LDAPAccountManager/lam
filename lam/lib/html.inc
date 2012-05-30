@@ -1387,6 +1387,9 @@ class htmlInputCheckbox extends htmlElement {
 	protected $tableRowsToHide = array();
 	/** list of enclosing table rows to show when checked */
 	protected $tableRowsToShow = array();
+	/** indicates that this field should not automatically be saved in the self service or server profile */
+	private $transient = false;
+	
 	
 	/**
 	 * Constructor.
@@ -1472,6 +1475,9 @@ class htmlInputCheckbox extends htmlElement {
 		}
 		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $onChange . $checked . $disabled . '>';
 		echo $script;
+		if ($this->transient) {
+			return array();
+		}
 		return array($this->name => 'checkbox');
 	}
 
@@ -1514,6 +1520,14 @@ class htmlInputCheckbox extends htmlElement {
 		$this->tableRowsToShow = $tableRowsToShow;
 	}
 
+	/**
+	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
+	 * 
+	 * @param boolean $transient transient field
+	 */
+	public function setTransient($transient) {
+		$this->transient = $transient;
+	}
 
 }
 
