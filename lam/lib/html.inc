@@ -2133,16 +2133,20 @@ class htmlSubTitle extends htmlElement {
 	private $label = null;
 	/** optional image */
 	private $image = null;
+	/** optional ID for this element (e.g. to use for JavaScript) */
+	private $id = null;
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @param String $label label
 	 * @param String $image optional image
+	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
 	 */
-	function __construct($label, $image = null) {
+	function __construct($label, $image = null, $id = null) {
 		$this->label = htmlspecialchars($label);
 		$this->image = htmlspecialchars($image);
+		$this->id = htmlspecialchars($id);
 		// the title should not end at a table cell
 		$this->colspan = 100;
 	}
@@ -2159,7 +2163,11 @@ class htmlSubTitle extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo "<div class=\"subTitle\">\n";
+		$idValue = '';
+		if ($this->id != null) {
+			$idValue = ' id="' . $this->id . '"';
+		}
+		echo "<div $idValue class=\"subTitle\">\n";
 		echo "<h4 class=\"subTitleText\">\n";
 		if ($this->image != null) {
 			echo '<img src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
