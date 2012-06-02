@@ -1686,6 +1686,9 @@ class accountContainer {
 			}
 		}
 		$prePostModifyAttributes['dn'][0] = $this->finalDN;
+		if (!$this->isNewAccount && ($this->finalDN != $this->dn_orig)) {
+			$prePostModifyAttributes['MOD.dn'] = $this->finalDN;
+		}
 		logNewMessage(LOG_DEBUG, 'Edit page pre/postModify attributes: ' . print_r($prePostModifyAttributes, true));
 		$preModifyOk = true;
 		foreach ($module as $singlemodule) {
