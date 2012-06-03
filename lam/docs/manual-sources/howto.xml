@@ -4405,6 +4405,107 @@ Run slapindex to rebuild the index.
           </mediaobject>
         </screenshot>
       </section>
+
+      <section>
+        <title>User self registration</title>
+
+        <para>With LAM Pro your users can create their own accounts if you
+        like. LAM Pro will display an additional link on the self service
+        login page that allows you users to create a new account including
+        email validation.</para>
+
+        <para>You enable this feature in your self service profile. Just
+        activate the checkbox "Enable self registration link".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Options:</emphasis></para>
+
+        <para><emphasis>Link text:</emphasis> This is the label for the link
+        to the self registration. If empty "Register new account" will be
+        used.</para>
+
+        <para><emphasis>Admin DN and password:</emphasis> Please enter the
+        LDAP DN and its password that should be used to create new users. This
+        DN also needs to be able to do LDAP searches by uid in the self
+        service part of your LDAP tree.</para>
+
+        <para><emphasis>Object classes:</emphasis> This is a list of object
+        classes that are used to build the new user accounts. Please enter one
+        object class in each line.</para>
+
+        <para><emphasis>Attributes:</emphasis> This is a list of additional
+        attributes that the user can enter. Please note that user name,
+        password and email address are mandatory anyway and need not be
+        specified.</para>
+
+        <para>Each line represents one LDAP attribute. The options are
+        separated by "::". The first option specifies if the attribute is
+        mandatory. It can have the values "optional" and "required". The
+        second option is the LDAP attribute name and the third one is a
+        descriptive label for it. Options four and five are used for input
+        validation. Please enter the regular expression (e.g.
+        "/^[0-9a-zA-Z]+$/") and an error message if the value does not match
+        it. For a syntax description see <ulink
+        url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation is
+        optional.</para>
+
+        <para>Example:</para>
+
+        <para> optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
+        enter a valid first name.</para>
+
+        <para> required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
+        valid last name.</para>
+
+        <para>If you use the object class "inetOrgPerson" and do not provide
+        the "cn" attribute then LAM will set it to the user name value.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para>Please note that only simple input boxes are supported for
+        account registration. The user may log in to self service when his
+        account was created to manage all his attributes.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">User view:</emphasis></para>
+
+        <para>The user can register by clicking on a link on the self service
+        login page:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Here he can insert the data that you specified in the self
+        service profile:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM will then send him an email with a validation link that is
+        valid for 24 hours. When he clicks on this link then the account will
+        be created in the self service user suffix. The DN will look like
+        this: <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
+      </section>
     </section>
 
     <section>
