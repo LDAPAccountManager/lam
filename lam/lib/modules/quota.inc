@@ -279,7 +279,7 @@ class quota extends baseModule {
 	 */
 	function preDeleteActions() {
 		$this->initQuotas();
-		if (!isset($this->quota) || !is_array($this->quota)) return true;
+		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		// determine if this is a user or group account
 		if ($this->get_scope()=='user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
