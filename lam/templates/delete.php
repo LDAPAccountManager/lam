@@ -147,6 +147,7 @@ if (isset($_POST['delete'])) {
 	
 	// Delete dns
 	$allOk = true;
+	$allErrors = array();
 	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {
 		// Set to true if an real error has happened
 		$stopprocessing = false;
@@ -240,7 +241,8 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		if (!$stopprocessing) {
-			$errors = deleteDN($_SESSION['delete_dn'][$m]);
+			$messages = deleteDN($_SESSION['delete_dn'][$m]);
+			$errors = array_merge($errors, $messages);
 			if (sizeof($errors) > 0) {
 				$stopprocessing = true;
 				$allOk = false;
@@ -273,6 +275,7 @@ if (isset($_POST['delete'])) {
 			}
 			echo "<br>\n";
 		}
+		$allErrors = array_merge($allErrors, $errors);
 	}
 	echo "<br>\n";
 	echo "<br><button class=\"smallPadding\" name=\"cancel\" id=\"backButton\">" . _('Back to list') . "</button>\n";
@@ -285,6 +288,7 @@ if (isset($_POST['delete'])) {
 		jQuery('#backButton').button();
 		<?php
 		if ($allOk) {
+			$_SESSION['listRedirectMessages'] = $allErrors;
 			echo "jQuery('#backButtonAllOk').click();";
 		}
 		?>

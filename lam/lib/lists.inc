@@ -972,7 +972,7 @@ class lamList {
 				StatusMessage('INFO', sprintf(_('You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}{endlink}.'), '../' . $_SESSION['mass_pdf']['file']));
 			}
 		}
-		elseif (isset($_SESSION['listRedirectMessages'])) {
+		if (isset($_SESSION['listRedirectMessages'])) {
 			for ($i = 0; $i < sizeof($_SESSION['listRedirectMessages']); $i++) {
 				call_user_func_array('StatusMessage', $_SESSION['listRedirectMessages'][$i]);
 			}
