@@ -3354,9 +3354,11 @@ Run slapindex to rebuild the index.
       <para>LAM Pro allows you to execute scripts whenever an account is
       created, modified or deleted. This can be useful to automate processes
       which needed manual work afterwards (e.g. sending your user a welcome
-      mail or register a mailbox). To activate this feature please add the
-      "Custom scripts" module to all needed account types on the configuration
-      pages.</para>
+      mail or register a mailbox). Additionally, you can specify manual scipts
+      that can be executed from within LAM Pro.</para>
+
+      <para>To activate this feature please add the "Custom scripts" module to
+      all needed account types on the configuration pages.</para>
 
       <para>You can specify multiple scripts for each action type (e.g.
       modify) and account type (e.g. user). The scripts need to be located on
@@ -3440,6 +3442,12 @@ Run slapindex to rebuild the index.
 
               <entry>executed after an account was modified</entry>
             </row>
+
+            <row>
+              <entry>manual</entry>
+
+              <entry>can be run manually on account page</entry>
+            </row>
           </tbody>
         </tgroup>
       </table>
@@ -3457,10 +3465,16 @@ Run slapindex to rebuild the index.
       the attribute "uid" and value "steve" then LAM will resolve "$uid$" to
       "steve".</para>
 
+      <para>Please note that manual scripts can only use the current LDAP
+      attribute values of the account. Any modifications done that are not
+      saved will not be available. Manual scripts are also not available for
+      new accounts that are not yet saved to LDAP.</para>
+
       <para>You can switch LAM's logging to debug mode if you are unsure which
       attributes with which values are available.</para>
 
-      <para>The following special wildcards are available:</para>
+      <para>The following special wildcards are available for automatical
+      scripts:</para>
 
       <itemizedlist>
         <listitem>
@@ -3511,8 +3525,9 @@ Run slapindex to rebuild the index.
 
       <para></para>
 
-      <para>You can see a preview of the commands which will be executed on
-      the "Custom scripts" tab.</para>
+      <para>You can see a preview of the commands which will be automatically
+      executed on the "Custom scripts" tab. Here you can also run the manual
+      scripts.</para>
 
       <screenshot>
         <mediaobject>
@@ -4458,10 +4473,10 @@ Run slapindex to rebuild the index.
 
         <para>Example:</para>
 
-        <para> optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
+        <para>optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
         enter a valid first name.</para>
 
-        <para> required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
+        <para>required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
         valid last name.</para>
 
         <para>If you use the object class "inetOrgPerson" and do not provide

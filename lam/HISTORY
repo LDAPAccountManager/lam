@@ -8,6 +8,7 @@ July 2012
    -> Named object module for groups (used for rfc2307bis schema)
    -> Password change page allows account (un)locking
    -> Allow to send password mails on user edit page
+   -> Custom scripts: supports manual scripts that can be run from account edit pages
   - fixed bugs
    -> Asterisk extensions with same name (3528288)
 
