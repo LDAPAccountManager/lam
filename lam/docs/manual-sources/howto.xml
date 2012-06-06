@@ -267,35 +267,12 @@ Have fun!
                   url="http://packages.debian.org/search?keywords=ldap-account-manager">Debian
                   package homepage</ulink>.<para><emphasis
                   role="bold">Installation of the latest packages on Debian
-                  Lenny</emphasis></para><orderedlist>
+                  Squeeze</emphasis></para><orderedlist>
                       <listitem>
-                        <para>apt-get install javascript-common</para>
-                      </listitem>
-
-                      <listitem>
-                        <para>Download the jquery and jquery-ui packages from
-                        here:</para>
+                        <para>Install php-fpdf 1.7.dfsg-1 from here:</para>
 
                         <para><ulink
-                        url="http://packages.debian.org/squeeze/all/libjs-jquery/download">http://packages.debian.org/squeeze/all/libjs-jquery/download</ulink></para>
-
-                        <para><ulink
-                        url="http://packages.debian.org/squeeze/all/libjs-jquery-ui/download">http://packages.debian.org/squeeze/all/libjs-jquery-ui/download</ulink></para>
-                      </listitem>
-
-                      <listitem>
-                        <para>Install first jquery and then jquery-ui:</para>
-
-                        <para>dpkg -i libjs-jquery_*.deb</para>
-
-                        <para>dpkg -i libjs-jquery-ui_*.deb</para>
-                      </listitem>
-
-                      <listitem>
-                        <para>Install php-fpdf 1.6.dfsg-1 from here:</para>
-
-                        <para><ulink
-                        url="http://packages.debian.org/stable/all/php-fpdf/download">http://packages.debian.org/stable/all/php-fpdf/download</ulink></para>
+                        url="http://packages.debian.org/wheezy/all/php-fpdf/download">http://packages.debian.org/wheezy/all/php-fpdf/download</ulink></para>
                       </listitem>
 
                       <listitem>
