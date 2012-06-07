@@ -2083,7 +2083,8 @@ Have fun!
         <para><emphasis role="bold">User management</emphasis></para>
 
         <para>You can specify the principal/user name, ticket lifetimes and
-        expiration dates.</para>
+        expiration dates. Additionally, you can set various account
+        options.</para>
 
         <screenshot>
           <mediaobject>
@@ -4024,6 +4025,12 @@ Run slapindex to rebuild the index.
           (sambaPwdCanChange) and must be changed again (sambaPwdMustChange).
           Only existing attributes are updated. No new attributes are
           added.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Sync Kerberos password with Unix
+          password:</emphasis> This will also update the Heimdal Kerberos
+          password.</para>
         </listitem>
 
         <listitem>
