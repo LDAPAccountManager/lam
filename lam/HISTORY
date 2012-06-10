@@ -9,6 +9,7 @@ July 2012
    -> Password change page allows account (un)locking
    -> Allow to send password mails on user edit page
    -> Custom scripts: supports manual scripts that can be run from account edit pages
+   -> Zarafa 7.1 support (proxy URL for servers)
   - fixed bugs
    -> Asterisk extensions with same name (3528288)
 

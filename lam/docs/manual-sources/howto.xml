@@ -2716,6 +2716,13 @@ Have fun!
           connection ports and file path. You can add/remove the extension at
           any time.</para>
 
+          <para>Setting the public store option is only possible for new host
+          entries.</para>
+
+          <para>Please note that the proxy URL option requires the Zarafa 7.1
+          schema. Please hide this option in your LAM server profile if you
+          use an older version.</para>
+
           <screenshot>
             <mediaobject>
               <imageobject>
