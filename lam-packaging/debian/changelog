@@ -1,3 +1,9 @@
+ldap-account-manager (3.7-2) unstable; urgency=low
+
+  * Fix "[INTL:pl] Polish debconf translation" (Closes: #667086)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 10 Jun 2012 14:17:33 +0200
+
 ldap-account-manager (3.7.1-1) unstable; urgency=low
 
   * new upstream release
