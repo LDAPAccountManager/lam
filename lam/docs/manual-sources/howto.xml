@@ -1778,6 +1778,11 @@ Have fun!
         linkend="PasswordSelfReset">self service page</link>. Additionally,
         you can set question + answer in the admin interface.</para>
 
+        <para>Please note that self service and LAM admin interface are
+        separated functionalities. You need to specify the list of possible
+        security questions in both self service profile(s) and server
+        profile(s).</para>
+
         <para><emphasis role="bold">Schema</emphasis></para>
 
         <para>Please install the schema that comes with LAM Pro:
@@ -4320,6 +4325,11 @@ Run slapindex to rebuild the index.
 
         <para>Please also specify the list of password reset questions that
         the user can choose.</para>
+
+        <para>Please note that self service and LAM admin interface are
+        separated functionalities. You need to specify the list of possible
+        security questions in both self service profile(s) and server
+        profile(s).</para>
 
         <literallayout> </literallayout>
 
