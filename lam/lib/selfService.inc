@@ -172,7 +172,7 @@ function loadSelfServiceProfile($name, $scope) {
 	if (is_file($file) === True) {
 		$file = @fopen($file, "r");
 		if ($file) {
-			$data = fread($file, 10000);
+			$data = fread($file, 100000);
 			$profile = unserialize($data);
 			fclose($file);
 		}
@@ -255,14 +255,15 @@ function getSelfServiceSettings($scope, $profile) {
 *
 * @param string $scope account type
 * @param array $options hash array containing all options (name => array(...))
+* @param selfServiceProfile $profile profile
 * @return array list of error messages
 */
-function checkSelfServiceSettings($scope, &$options) {
+function checkSelfServiceSettings($scope, &$options, &$profile) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = new $modules[$i]($scope);
-		$errors = $m->checkSelfServiceSettings($options);
+		$errors = $m->checkSelfServiceSettings($options, $profile);
 		$return = array_merge($return, $errors);
 	}
 	return $return;
@@ -313,7 +314,10 @@ class selfServiceProfile {
 	public $mainPageText;
 
 	/** input fields
-	 * Format: array(<module> => array(array('name' => <group name>, 'fields' => array(<field1>, <field2>))))
+	 * Format: array(
+	 * <br> array(array('name' => <group name 1>, 'fields' => array(<field1>, <field2>))),
+	 * <br> array(array('name' => <group name 2>, 'fields' => array(<field3>, <field4>)))
+	 * <br> )
 	 *
 	 */
 	public $inputFields;

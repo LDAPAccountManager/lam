@@ -1296,9 +1296,10 @@ abstract class baseModule {
 	 * occured the function returns an empty array.
 	 *
 	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @param selfServiceProfile $profile self service profile
 	 * @return array error messages
 	 */
-	public function checkSelfServiceSettings(&$options) {
+	public function checkSelfServiceSettings(&$options, &$profile) {
 		// needs to be implemented by the subclasses, if needed
 		return array();
 	}
