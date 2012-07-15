@@ -39,8 +39,9 @@ $Id$
 */
 class quota extends baseModule {
 	
+	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
-	
+	/** prefix for lamdaemon results */
 	private static $QUOTA_PREFIX = 'QUOTA_ENTRY ';
 
 	/** this functin fills the error message array with messages
@@ -232,9 +233,11 @@ class quota extends baseModule {
 	}
 
 	/**
+	 * Quotas are set in postmodify.
+	 * 
 	 * @see baseModule::postModifyActions()
 	 *
-	 * @param boolean $newAccount
+	 * @param boolean $newAccount is new account
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */

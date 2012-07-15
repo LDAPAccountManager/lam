@@ -35,7 +35,9 @@ $Id$
 */
 class baseType {
 	
+	/** label to create another account */
 	public $LABEL_CREATE_ANOTHER_ACCOUNT;
+	/** label to return to account list */
 	public $LABEL_BACK_TO_ACCOUNT_LIST;
 
 	/**

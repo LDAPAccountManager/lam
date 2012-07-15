@@ -34,6 +34,7 @@ $Id$
 */
 class freeRadius extends baseModule {
 
+	/** list of possible months */
 	private static $monthList = array('01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr', '05' => 'May',
 			'06' => 'Jun', '07' => 'Jul', '08' => 'Aug', '09' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Dec'
 		);
@@ -518,8 +519,8 @@ class freeRadius extends baseModule {
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/

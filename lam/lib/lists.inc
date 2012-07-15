@@ -990,8 +990,11 @@ class lamList {
  */
 class lamListTool {
 	
+	/** tool name */
 	private $name;
+	/** tool image */
 	private $image;
+	/** link target */
 	private $target;
 	
 	/**
@@ -1048,8 +1051,9 @@ class lamListTool {
  */
 abstract class lamListOption {
 	
+	/** unique ID */
 	private $ID;
-	
+	/** option value */
 	private $value;
 	
 	/**
@@ -1116,6 +1120,7 @@ abstract class lamListOption {
  */
 class lamBooleanListOption extends lamListOption {
 	
+	/** option name */
 	private $name;
 	
 	/**
@@ -1174,8 +1179,11 @@ class lamBooleanListOption extends lamListOption {
  */
 class lamSelectListOption extends lamListOption {
 	
+	/** option name */
 	private $name;
+	/** possible select options */
 	private $options;
+	/** help ID */
 	private $helpID;
 	
 	/**

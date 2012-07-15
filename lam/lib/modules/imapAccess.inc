@@ -38,6 +38,7 @@ $Id$
  */
 class imapAccess extends baseModule {
 	
+	/** quota limit from profile */
 	private $profileQuotaLimit = null;
 	
 	/**
@@ -275,6 +276,7 @@ class imapAccess extends baseModule {
 	 * 
 	 * @param htmlTable $htmlTable structure that contained information to be displayed
 	 * @param stream $mbox stream to open IMAP session
+	 * @param String $username user name to connect to IMAP server
 	 * @return htmlTable table with added information about user quotas or controls to add quota
 	 */
 	function renderQuotasForMailbox($htmlTable, $mbox, $username) {
@@ -523,6 +525,7 @@ class imapAccess extends baseModule {
 	 * This function checks if the domain of the mailbox is not in the list of domains listed in the configuration.
 	 * If it is in the list then it returns false, otherwise returns true. If the list of domains is not set then it returns true.
 	 * 
+	 * @param String $email_domain email domain
 	 * @return boolean true if domains match
 	 */
 	function isWrongDomain($email_domain) {

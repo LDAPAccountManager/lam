@@ -181,10 +181,11 @@ function getSectionHeadline($line) {
  * 
  * @param string $line XML code of PDF entry
  * @param boolean $first_td True if this is the first column
+ * @param String $fontName font name
  * 
  * @return array XML codes
  */
-function processLine($line,$first_td = true, $fontName) {
+function processLine($line, $first_td = true, $fontName) {
 	global $key, $line_width;
 	
 	// PCRE matching <block> tag

@@ -40,19 +40,27 @@
 class posixAccount extends baseModule implements passwordService {
 
 	// Variables
+	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
 	
 	/* These two variables keep an array of groups the user is also member of. */
+	/** current group list */
 	private $groups;
+	/** original group list */
 	private $groups_orig;
 
 	/* list of group of names that the user is member of */
+	/** current group of names list */
 	private $gonList = array();
+	/** original group of names list */
 	private $gonList_orig = array();
-	
+	/** lamdaemon servers */
 	private $lamdaemonServers = array();
+	/** cache for group objects */
 	private $groupCache = null;
+	/** cache for group of names objects */
 	private $gonCache = null;
+	/** clear text password */
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
 	private $cachedUIDList = null;
@@ -569,6 +577,8 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Runs the postmodify actions.
+	 * 
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -1580,8 +1590,8 @@ class posixAccount extends baseModule implements passwordService {
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/

@@ -1317,6 +1317,7 @@ class LAMCfgMain {
 	/** minimum character classes (upper, lower, numeric, symbols) */
 	public $passwordMinClasses = 0;
 	
+	/** path to config file */
 	private $conffile;
 
 	/** list of data fields to save in config file */

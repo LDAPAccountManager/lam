@@ -807,7 +807,6 @@ abstract class baseModule {
 	 * <br>
 	 * 'myAttribute' => '<block><key>AttrName</key><tr><td align=\"L\">123</td></tr></block><block><tr><td align=\"L\">456</td></tr></block><block><tr><td align=\"L\">789</td></tr></block>'
 	 * 
-	 * @param string $scope account type
 	 * @return array PDF entries
 	 * 
 	 * @see baseModule::get_metaData()
@@ -878,8 +877,8 @@ abstract class baseModule {
 	* Returns an array which contains subarrays to generate StatusMessages if any errors occured.
 	*
 	* @param array $rawAccounts the user input data, contains one subarray for each account.
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/

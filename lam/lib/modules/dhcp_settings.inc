@@ -39,7 +39,14 @@ $Id$
  * @return boolean true or false
  **/
 if (!function_exists('check_ip')) {
-	function check_ip($ip,$subnet=false) {
+	
+	/**
+	 * Checks if the given IP is valid.
+	 * 
+	 * @param String $ip IP address
+	 * @param boolean $subnet IP must be a subnet
+	 */
+	function check_ip($ip, $subnet = false) {
 		$part = explode(".", $ip);
 		// Wenn... Keine 4 Segmente gefunden wurde
 		if (count($part) != 4) {
@@ -71,9 +78,9 @@ if (!function_exists('check_ip')) {
 */
 class dhcp_settings extends baseModule {
 
-	// All netbios node types:
+	/** all netbios node types */
 	private $all_netbios_node_types;
-	
+	/** LDAP attributes */
 	public $attributes;
 	
 	/**
@@ -760,8 +767,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/
@@ -787,7 +794,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 					array_push($error, $i);
 					$messages[] = $error;
 				}
-				elseif (preg_match("/^[A-Za-z0-9\._-]*$/", $rawAccounts[$i][$ids['dhcp_settings_domainName']])) {
+				elseif (preg_match("/^[A-Za-z0-9\\._-]*$/", $rawAccounts[$i][$ids['dhcp_settings_domainName']])) {
 					$partialAccounts[$i]['dhcpOption'][] = "domain-name \"".$rawAccounts[$i][$ids['dhcp_settings_domainName']]."\"";
 				}
 				else {

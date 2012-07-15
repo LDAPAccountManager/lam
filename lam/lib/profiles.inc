@@ -102,8 +102,8 @@ function loadAccountProfile($profile, $scope) {
 *
 * file is created, if needed
 *
-* @param string $profile name of the account profile (without .<scope> extension)
 * @param array $attributes hash array (attribute => value)
+* @param string $profile name of the account profile (without .<scope> extension)
 * @param string $scope account type
 * @return boolean true, if saving succeeded
 */

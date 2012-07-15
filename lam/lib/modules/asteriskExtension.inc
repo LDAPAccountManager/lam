@@ -45,12 +45,13 @@ class asteriskExtension extends baseModule {
 
     /** if true then the tree suffix will be used to search potential owners */
     private $searchOwnersInTreeSuffix = false;
-    /*     * Containe all attributes information for set of accounts */
+    /** Contains all attributes information for set of accounts */
     private $extensionRows = array();
-    /*     * Containe all original attributes information for set of accounts */
+    /** Contains all original attributes information for set of accounts */
     private $extensionRowsOrig = array();
-    /*     * Extension owners */
+    /** extension owners */
     private $extensionOwners = array();
+    /** flag if new rule should be added */
     private $addRuleFlag = false;
 
     /**
@@ -368,6 +369,13 @@ class asteriskExtension extends baseModule {
         $renderContainer->addElement(new htmlSpacer(null, '5px'), true);
     }
 
+    /**
+     * Sorts an array of arrays by the given key.
+     * 
+     * @param array $array array
+     * @param String $on key
+     * @param String $order order (SORT_ASC or SORT_DESC)
+     */
     function array_sort($array, $on, $order='SORT_ASC') {
         $new_array = array();
         $sortable_array = array();
@@ -720,6 +728,7 @@ class asteriskExtension extends baseModule {
      * and false otherwise.
      * Equal extension names are allowed in different OUs.
      * 
+     * @param String $extension extension name
      * @return boolean true if there are entries with this extension name.
      */
     function isThisExtensionPresented($extension) {
@@ -833,8 +842,8 @@ class asteriskExtension extends baseModule {
      * In this function the LDAP account is built up.
      *
      * @param array $rawAccounts list of hash arrays (name => value) from user input
-     * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
      * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+     * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
      * @param array $selectedModules list of selected account modules
      * @return array list of error messages if any
      */
@@ -887,6 +896,7 @@ class asteriskExtension extends baseModule {
     /**
      * Get list of all applications for given extension and move it into new suffix.
      * 
+     * @param array $rowOrig attributes of original extension
      * @return array list of error messages
      */
     function moveExtentionToNewSuffix($rowOrig) {

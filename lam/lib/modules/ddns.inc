@@ -39,7 +39,7 @@ $Id$
 
 class ddns extends baseModule {
 	
-	// Standard DDNS Settings
+	/** standard DDNS settings */
 	public $ddns = array();
 	
 
@@ -471,7 +471,7 @@ class ddns extends baseModule {
 	/**
 	 * Sets if DDNS is activated.
 	 * 
-	 * $activated boolean activated
+	 * @param boolean $activated activated
 	 */
 	private function setDynDNSActivated($activated) {
 		if (is_array($this->attributes['dhcpStatements'])) {
@@ -511,7 +511,7 @@ class ddns extends baseModule {
 	/**
 	 * Sets if client updates are ignored.
 	 * 
-	 * $add boolean add fixed IPs
+	 * @param boolean $add add fixed IPs
 	 */
 	private function setFixIPs($add) {
 		if (is_array($this->attributes['dhcpStatements'])) {
@@ -548,7 +548,7 @@ class ddns extends baseModule {
 	/**
 	 * Sets if client updates are ignored.
 	 * 
-	 * $ignore boolean ignore client updates
+	 * @param boolean $ignore ignore client updates
 	 */
 	private function setIgnoreClientUpdates($ignore) {
 		if (is_array($this->attributes['dhcpStatements'])) {
@@ -585,7 +585,7 @@ class ddns extends baseModule {
 	/**
 	 * Sets the key for DNS updates.
 	 * 
-	 * $key String key
+	 * @param String $key key
 	 */
 	private function setUpdateKey($key) {
 		if (!is_array($this->attributes['dhcpStatements'])) {
@@ -620,8 +620,8 @@ class ddns extends baseModule {
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/

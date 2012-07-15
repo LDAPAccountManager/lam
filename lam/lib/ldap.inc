@@ -55,6 +55,7 @@ class Ldap{
 	/** Server handle */
 	private $server;
 	
+	/** LDAP connection established */
 	private $is_connected = false;
 
 	/** LDAP username used for bind */
@@ -66,6 +67,8 @@ class Ldap{
 	private $rand;
 
 	/**
+	* Creates a new LDAP object.
+	* 
 	* @param object $config an object of class Config
 	*/
 	function __construct($config) {

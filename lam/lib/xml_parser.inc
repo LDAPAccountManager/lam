@@ -21,23 +21,21 @@ $Id$
 */
 
 /**
- * LDAP Account Manager xmlParser class
+ * Simple XML parser.
  * 
  * @author Michael Duergner
  * @package PDF
  */
 
 /**
- * 
+ * Simple XML parser.
  * 
  * @author Michael Duergner
  * @package PDF
  */
 class xmlParser {
 	
-	/**
-	 * 
-	 */
+	/**	XML parser */
 	private $xmlParser;
 	
 	/**
@@ -51,11 +49,10 @@ class xmlParser {
 	}
 	
 	/**
+	 * Starts the parsing.
 	 * 
-	 * 
-	 * @param string 
-	 * 
-	 * @return array 
+	 * @param String $filename file name 
+	 * @return array XML structure
 	 */
 	function parse($filename) {
 		if(file_exists($filename)) {

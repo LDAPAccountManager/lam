@@ -284,6 +284,7 @@ class htmlTable extends htmlElement {
  */
 class htmlTableRow extends htmlElement {
 
+	/** table cells */
 	private $cells;
 	/** additional CSS classes */
 	private $CSSClasses = '';
@@ -369,6 +370,7 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param String $fieldName unique field name
 	 * @param String $fieldValue value of input field (optional)
+	 * @param String $fieldSize maximum input length
 	 */
 	function __construct($fieldName, $fieldValue = null, $fieldSize = null) {
 		if (isObfuscatedText($fieldValue)) {
@@ -1933,7 +1935,9 @@ class htmlImage extends htmlElement {
  */
 class htmlSpacer extends htmlElement {
 	
+	/** width of spacer in px */
 	private $width;
+	/** height of spacer in px */
 	private $height;
 	
 	/**
@@ -1980,9 +1984,13 @@ class htmlSpacer extends htmlElement {
  */
 class htmlStatusMessage extends htmlElement {
 	
+	/** message type (e.g. ERROR) */
 	private $type;
+	/** message title */
 	private $title;
+	/** message text */
 	private $text;
+	/** message parameters */
 	private $params;
 	
 	/**
@@ -1991,6 +1999,7 @@ class htmlStatusMessage extends htmlElement {
 	 * @param String $type message type (e.g. ERROR)
 	 * @param String $title message title
 	 * @param String $text message (optional)
+	 * @param array $params additional message parameters
 	 */
 	function __construct($type, $title, $text = null, $params = null) {
 		$this->type = $type;

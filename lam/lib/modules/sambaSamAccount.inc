@@ -56,8 +56,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
 	/** specifies if the password should be expired */
 	private $expirePassword = false;
-	/* cache to reduce LDAP queries */
+	/** host cache to reduce LDAP queries */
 	private $cachedHostList = null;
+	/** group cache to reduce LDAP queries */
 	private $cachedGroupSIDList = null;
 	/** cache for domain list */
 	private $cachedDomainList = null;
@@ -638,7 +639,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/**
 	* This function loads the LDAP attributes for this module.
 	*
-	* @param array $attributes attribute list
+	* @param array $attr attribute list
 	*/
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
@@ -1776,8 +1777,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
 	* @return array list of error messages if any
 	*/

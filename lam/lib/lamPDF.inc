@@ -59,10 +59,10 @@ class lamPDF extends UFPDF {
 	);
 
 	/**
+	 * Creates a new lamPDF object.
 	 * 
-	 * 
-	 * @param string $account_type
-	 * @param array $page_definitions
+	 * @param array $page_definitions page settings
+	 * @param String $fontName font name
 	 */
 	function __construct($page_definitions = array(),$fontName) {
 		$this->fontName = $fontName;
@@ -88,7 +88,7 @@ class lamPDF extends UFPDF {
 	}
 	
 	/**
-	 * 
+	 * Creates the PDF page header.
 	 */
 	function header() {
 		if($this->page_definitions['filename'] != 'none') {
@@ -107,7 +107,7 @@ class lamPDF extends UFPDF {
 	}
 
 	/**
-	 * 
+	 * Creates the PDF page footer.
 	 */
 	function footer() {
 		$this->SetLineWidth(0.4);

@@ -81,6 +81,9 @@ function array_delete($values, $array) {
 
 /**
  * Checks if a string exists in an array, ignoring case.
+ * 
+ * @param String $needle search string
+ * @param array $haystack array
  */
 function in_array_ignore_case($needle, $haystack) {
     if( ! is_array( $haystack ) )
@@ -308,6 +311,8 @@ function generateRandomPassword() {
 /**
 * Returns an array with all Samba 3 domain entries under the given suffix
 *
+* @param handle LDAP handle (if null then $_SESSION['ldap']->server() is used)
+* @param String $suffix LDAP suffix to search (if null then $_SESSION['config']->get_Suffix('smbDomain') is used)
 * @return array list of samba3domain objects
 */
 function search_domains($server = null, $suffix = null) {
@@ -774,6 +779,7 @@ function compareDN($a, $b) {
 /**
  * Formats an LDAP time string (e.g. from createTimestamp).
  * 
+ * @param String $time LDAP time value
  * @return String formated time
  */
 function formatLDAPTimestamp($time) {

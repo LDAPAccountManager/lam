@@ -40,16 +40,16 @@ $Id$
 
 class range extends baseModule {
 
-	// subnet
+	/** subnet */
 	public $subnet;
 	
-	// ranges
+	/** ranges */
 	public $ranges;
 	
-	// Range -> Function attibute_processed already running?
+	/** Range -> Function attibute_processed already running? */
 	public $processed;
 	
-	// For check, if IPs overlaped.
+	/** For check, if IPs overlaped. */
 	public $overlaped;
 
 	/**
