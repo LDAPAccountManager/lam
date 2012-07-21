@@ -61,6 +61,7 @@ echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 // print tools table
 $container = new htmlTable();
 $container->addElement(new htmlTitle(_('Tools')), true);
+$toolSettings = $_SESSION['config']->getToolSettings();
 
 for ($i = 0; $i < sizeof($tools); $i++) {
 	// check access level
@@ -72,6 +73,10 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 	}
 	// check visibility
 	if (!$tools[$i]->isVisible()) {
+		continue;
+	}
+	// check if hidden by config
+	if (isset($toolSettings['tool_hide_' . get_class($tools[$i])]) && ($toolSettings['tool_hide_' . get_class($tools[$i])] == 'true')) {
 		continue;
 	}
 	// add tool
