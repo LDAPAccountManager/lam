@@ -293,12 +293,12 @@ class user extends baseType {
 							&& (!$ppolicyAvailable || $ppolicyLocked);
 		$dialog = '<div id="lam_accountStatusDialog" class="hidden">';
 		// show radio buttons for lock/unlock
-		$radioDisabled = ' readonly="readonly"';
+		$radioDisabled = true;
 		$lockChecked = ' checked="checked"';
 		$unlockChecked = '';
 		$onchange = '';
 		if ($partiallyLocked && !$fullyLocked) {
-			$radioDisabled = '';
+			$radioDisabled = false;
 			$onchange = ' onchange="if (jQuery(\'#lam_accountStatusActionRadioLock:checked\').val()) {' .
 								'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
 								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').addClass(\'hidden\');' .
@@ -312,8 +312,19 @@ class user extends baseType {
 			$lockChecked = '';
 			$unlockChecked = ' checked="checked"';
 		}
-		$dialog .= '<input id="lam_accountStatusActionRadioLock" type="radio" name="lam_accountStatusAction" value="lock"' . $onchange . $lockChecked . $radioDisabled . '> ' . _('Lock') . '<br>';
-		$dialog .= '<input id="lam_accountStatusActionRadioUnlock" type="radio" name="lam_accountStatusAction" value="unlock"' . $onchange . $unlockChecked . $radioDisabled . '> ' . _('Unlock') . '<br><br>';
+		if (!$radioDisabled) {
+			$dialog .= '<input id="lam_accountStatusActionRadioLock" type="radio" name="lam_accountStatusAction" value="lock"' . $onchange . $lockChecked . '> ' . _('Lock') . '<br>';
+			$dialog .= '<input id="lam_accountStatusActionRadioUnlock" type="radio" name="lam_accountStatusAction" value="unlock"' . $onchange . $unlockChecked . '> ' . _('Unlock') . '<br><br>';
+		}
+		else {
+			$radioValue = 'lock';
+			if ($lockChecked == '') {
+				$radioValue = 'unlock';
+			}
+			$dialog .= '<input id="lam_accountStatusActionRadioLockDisabled" type="radio" name="lam_accountStatusActionDisabled" disabled value="lock"' . $onchange . $lockChecked . '> ' . _('Lock') . '<br>';
+			$dialog .= '<input id="lam_accountStatusActionRadioUnlockDisabled" type="radio" name="lam_accountStatusActionDisabled" disabled value="unlock"' . $onchange . $unlockChecked . '> ' . _('Unlock') . '<br><br>';
+			$dialog .= '<input type="hidden" name="lam_accountStatusAction" value="' . $radioValue . '">';
+		}
 		$dialog .= '<input type="hidden" name="lam_accountStatusResult" id="lam_accountStatusResult" value="cancel">';
 		// locking part
 		if (!$fullyLocked) {
