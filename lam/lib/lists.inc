@@ -285,7 +285,7 @@ class lamList {
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 			}
-			for ($i = $this->page - 5; $i < ($this->page + 4); $i++) {
+			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
 				if ($i >= ($count / $this->maxPageEntries)) {
 					break;
 				}
