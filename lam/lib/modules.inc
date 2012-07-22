@@ -247,9 +247,10 @@ function check_module_conflicts($selected, $deps) {
 * Returns an array with all available user module names
 *
 * @param string $scope account type (user, group, host)
+* @param boolean $mustSupportAdminInterface module must support LAM admin interface (default: false)
 * @return array list of possible modules
 */
-function getAvailableModules($scope) {
+function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
 	$dir = dir($dirname);
 	$return = array();
@@ -258,7 +259,12 @@ function getAvailableModules($scope) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$temp = new $entry($scope);
-			if ($temp->can_manage()) $return[] = $entry;
+			if ($mustSupportAdminInterface && !$entry::supportsAdminInterface()) {
+				continue;
+			}
+			if ($temp->can_manage()) {
+				$return[] = $entry;
+			}
 		}
 	return $return;
 }

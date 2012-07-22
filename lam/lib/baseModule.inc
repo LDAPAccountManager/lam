@@ -1409,6 +1409,18 @@ abstract class baseModule {
 		// modules that use AJAX need to implement this function
 	}
 	
+	/**
+	 * Specifies if this module supports the LAM admin interface.
+	 * The LAM admin interface are the pages that allow to manage e.g. users and groups.
+	 * In contrast there is also the LAM self service interface. Most modules support
+	 * the admin interface.
+	 * 
+	 * @return boolean support admin interface
+	 */
+	public static function supportsAdminInterface() {
+		return true;
+	}
+	
 	
 	
 	// helper functions

@@ -237,7 +237,7 @@ function config_showAccountModules($scope, $title, &$container) {
 	$conf = &$_SESSION['conf_config'];
 	$typeSettings = $conf->get_typeSettings();
 	// account modules
-	$available = getAvailableModules($scope);
+	$available = getAvailableModules($scope, true);
 	$selected = $typeSettings['modules_' . $scope];
 	if (isset($selected) && ($selected != '')) {
 		$selected = explode(',', $selected);
@@ -332,7 +332,7 @@ function checkInput() {
 	$accountTypes = $conf->get_ActiveTypes();
 	for ($t = 0; $t < sizeof($accountTypes); $t++) {
 		$scope = $accountTypes[$t];
-		$available = getAvailableModules($scope);
+		$available = getAvailableModules($scope, true);
 		$selected_temp = $typeSettings['modules_' . $scope];
 		if (isset($selected_temp)) $selected_temp = explode(',', $selected_temp);
 		$selected = array();
