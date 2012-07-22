@@ -1859,7 +1859,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_select'])) {
 			$options = array();
 			$filter = get_ldap_filter('user');
-			$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
+			$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', array('dn'), array('user'));
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				$entries[$i] = $entries[$i]['dn'];
 			}
