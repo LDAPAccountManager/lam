@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2010  Roland Gruber
+  Copyright (C) 2006 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -289,6 +289,21 @@ function checkPasswordStrength($password) {
 		return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $cfg->passwordMinClasses);
 	}
 	return true;
+}
+
+/**
+ * Checks if the given tool is active.
+ * Otherwise, an error message is logged and the execution is stopped (die()).
+ * 
+ * @param String $tool tool class name (e.g. toolFileUpload)
+ */
+function checkIfToolIsActive($tool) {
+	$toolSettings = $_SESSION['config']->getToolSettings();
+		// check if hidden by config
+	if (isset($toolSettings['tool_hide_' . $tool]) && ($toolSettings['tool_hide_' . $tool] == 'true')) {
+		logNewMessage(LOG_ERR, 'Unauthorized access to tool ' . $tool . ' denied.');
+		die();
+	}
 }
 
 ?>

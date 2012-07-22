@@ -1,4 +1,9 @@
-July 2012
+September 2012 3.9
+  - fixed bugs
+   -> Hidden tools are still shown in the "Tools" page (3546092)
+
+
+19.07.2012 3.8
   - quick (un)lock for users
   - allow to disable tools
   - LAM Pro:

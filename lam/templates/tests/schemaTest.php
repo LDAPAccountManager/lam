@@ -43,6 +43,8 @@ startSecureSession();
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();
 
+checkIfToolIsActive('toolTests');
+
 setlanguage();
 
 include '../main_header.php';

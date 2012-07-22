@@ -43,6 +43,8 @@ startSecureSession();
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();
 
+checkIfToolIsActive('toolOUEditor');
+
 setlanguage();
 
 $types = $_SESSION['config']->get_ActiveTypes();

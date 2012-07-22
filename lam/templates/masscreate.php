@@ -46,6 +46,8 @@ startSecureSession();
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();
 
+checkIfToolIsActive('toolFileUpload');
+
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
 	metaRefresh("login.php");

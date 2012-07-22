@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2011  Roland Gruber
+  Copyright (C) 2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ include_once("../lib/config.inc");
 
 // start session
 startSecureSession();
+
+checkIfToolIsActive('toolServerInformation');
 
 setlanguage();
 
