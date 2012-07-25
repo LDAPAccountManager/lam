@@ -618,11 +618,18 @@ Have fun!
     <section>
       <title>Upgrading LAM or migrate from LAM to LAM Pro</title>
 
-      <section>
-        <title>Migrating configuration files</title>
+      <para>Upgrading from LAM to LAM Pro is like installing a new LAM
+      version. Simply install the LAM Pro packages/tar.gz instead of the LAM
+      ones.</para>
 
-        <para>First, you need to make a backup of your existing configuration
-        files.</para>
+      <section>
+        <title>Install new version</title>
+
+        <para><emphasis role="bold">Backup configuration
+        files</emphasis></para>
+
+        <para>Configuration files need only to be backed up for .tar.gz
+        installations. DEB/RPM installations do not require this step.</para>
 
         <para>LAM stores all configuration files in the "config" folder.
         Please backup the following files and copy them after the new version
@@ -644,18 +651,36 @@ Have fun!
           <member>config/selfService/*.*</member>
         </simplelist>
 
-        <para>Second, <link linkend="a_uninstall">uninstall</link> your
-        current LAM (Pro) installation.</para>
+        <para><emphasis role="bold">Uninstall current LAM (Pro)
+        version</emphasis></para>
 
-        <para>Third, <link linkend="a_install">install</link> the new LAM
+        <para>If you used the DEB/RPM installation packages then remove the
+        ldap-account-manager and ldap-account-manager-lamdaemon
+        packages.</para>
+
+        <para>Otherwise, remove the folder where you installed LAM via
+        configure or by copying the files.</para>
+
+        <para><emphasis role="bold">Install new LAM (Pro)
+        version</emphasis></para>
+
+        <para>Please <link linkend="a_install">install</link> the new LAM
         (Pro) release. Skip the part about setting up LAM configuration
         files.</para>
 
-        <para>Finally, restore your configuration files from the backup. Copy
+        <para><emphasis role="bold">Restore configuration
+        files</emphasis></para>
+
+        <para>This step can be skipped if you installed the DEB/RPM
+        packages.</para>
+
+        <para>Please restore your configuration files from the backup. Copy
         all files from the backup folder to the config folder in your LAM Pro
         installation. Do not simply replace the folder because the new LAM
         (Pro) release might include additional files in this folder. Overwrite
         any existing files with your backup files.</para>
+
+        <para><emphasis role="bold">Final steps</emphasis></para>
 
         <para>Now open your webbrowser and point it to the LAM login page. All
         your settings should be migrated.</para>
