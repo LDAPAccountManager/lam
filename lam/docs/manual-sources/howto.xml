@@ -3528,6 +3528,12 @@ Run slapindex to rebuild the index.
           new value of a modified attribute (e.g. $MOD.telephoneNumber$) for
           modified accounts</para>
         </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">$ORIG.&lt;attribute&gt;$:</emphasis> the
+          original value of an attribute (e.g. $ORIG.telephoneNumber$) for
+          modified accounts</para>
+        </listitem>
       </itemizedlist>
 
       <para><emphasis role="bold">Output may contain HTML:</emphasis> If your
