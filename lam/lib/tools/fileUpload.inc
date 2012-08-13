@@ -123,7 +123,7 @@ class toolFileUpload implements LAMTool {
 	 * @return boolean hideable
 	 */
 	function isHideable() {
-		return false;
+		return true;
 	}
 	
 }

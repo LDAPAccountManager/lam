@@ -249,8 +249,11 @@ class lamDHCPList extends lamList {
 			if (!$createOnly) {
 				echo ("<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n");
 			}
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-			echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
+			$toolSettings = $_SESSION['config']->getToolSettings();
+			if (!(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+				echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
+			}
 			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			echo ("<button id=\"dhcpDefaultsButton\" name=\"dhcpDefaults\">" . $this->labels['dhcpDefaults'] . "</button>\n");
 			echo "&nbsp;&nbsp;&nbsp;";

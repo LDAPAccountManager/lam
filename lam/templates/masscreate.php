@@ -43,6 +43,9 @@ include_once('../lib/pdfstruct.inc');
 // Start session
 startSecureSession();
 
+// check if this tool may be run
+checkIfToolIsActive('toolFileUpload');
+
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();
 

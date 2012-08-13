@@ -131,6 +131,7 @@ foreach ($toSort as $key => $value) {
 		</li>
 		<?php
 		}
+		if (sizeof($tools) > 0) {
 		?>
 		<li>
 			<a href="<?php echo $headerPrefix; ?>tools.php"><img height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
@@ -160,6 +161,7 @@ foreach ($toSort as $key => $value) {
 			</ul>
 		</li>
 		<?php
+		}
 		if ($_SESSION['config']->get_Suffix('tree') != "") {
 		?>
 	    <li>

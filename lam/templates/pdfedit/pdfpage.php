@@ -51,6 +51,8 @@ startSecureSession();
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();
 
+checkIfToolIsActive('toolPDFEditor');
+
 setlanguage();
 
 // check if user is logged in, if not go to login

@@ -697,7 +697,8 @@ class lamList {
 				echo "<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n";
 			}
 			$type = new $this->type();
-			if ($type->supportsFileUpload()) {
+			$toolSettings = $_SESSION['config']->getToolSettings();
+			if ($type->supportsFileUpload() && !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
 				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
 			}
