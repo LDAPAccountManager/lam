@@ -81,8 +81,16 @@ class authorizedServiceObject extends baseModule {
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
+			),
+			'predefinedServices' => array(
+				"Headline" => _("Predefined services"),
+				"Text" => _("These services will show up as hint if you enter a new service.")
 			)
 		);
+		// config options
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlTableExtendedInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'));
+		$return['config_options']['all'] = $configContainer;
 		// upload fields 
 		$return['upload_columns'] = array(
 			array(
@@ -146,6 +154,10 @@ class authorizedServiceObject extends baseModule {
 		}
 		$return = new htmlTable();
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
+			$autocompleteValues = array();
+			if (isset($this->moduleSettings['authorizedServiceObject_services'])) {
+				$autocompleteValues = $this->moduleSettings['authorizedServiceObject_services'];
+			}
 			$ASCount = 0;
 			// list current authorizedService's
 			if (isset($this->attributes['authorizedService'])) {
@@ -158,6 +170,7 @@ class authorizedServiceObject extends baseModule {
 						$return->addElement(new htmlOutputText(''));
 					}
 					$ASInput = new htmlInputField('authorizedService' . $i, $this->attributes['authorizedService'][$i]);
+					$ASInput->enableAutocompletion($autocompleteValues, 0);
 					$return->addElement($ASInput);
 					$return->addElement(new htmlButton('delAS' . $i, 'del.png', true));
 					$return->addElement(new htmlHelpLink('authorizedService'), true);
@@ -166,6 +179,7 @@ class authorizedServiceObject extends baseModule {
 			// input box for new Service
 			$return->addElement(new htmlOutputText(_('New Authorized Service')));
 			$newASInput = new htmlInputField('authorizedService', '');
+			$newASInput->enableAutocompletion($autocompleteValues, 0);
 			$return->addElement($newASInput);
 			$return->addElement(new htmlButton('addAS', 'add.png', true));
 			$return->addElement(new htmlHelpLink('authorizedService'));

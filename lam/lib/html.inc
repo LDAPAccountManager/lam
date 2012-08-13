@@ -364,6 +364,12 @@ class htmlInputField extends htmlElement {
 	protected $required = false;
 	/** validation rule */
 	private $validationRule = null;
+	/** enable autocomplete */
+	private $autocomplete = false;
+	/** autocompletion suggestions */
+	private $autocompleteValues = array();
+	/** autocomplete start at this input length */
+	private $autocompleteMinLength = 1;
 	
 	/**
 	 * Constructor
@@ -437,6 +443,15 @@ class htmlInputField extends htmlElement {
 			$disabled = ' disabled';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
+		// autocompletion
+		if ($this->autocomplete) {
+			echo "<script type=\"text/javascript\">\n";
+			echo 'jQuery(function() {';
+			echo 'var availableTags = [' . implode(',', $this->autocompleteValues) . '];';
+			echo 'jQuery( "#' . $this->fieldName . '" ).autocomplete({ source: availableTags, minLength: ' . $this->autocompleteMinLength . '});';
+			echo '});';
+			echo "</script\n>";
+		}
 		if ($this->transient) {
 			return array();
 		}
@@ -519,6 +534,21 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setValidationRule($rule) {
 		$this->validationRule = $rule;
+	}
+	
+	/**
+	 * Enables autocompletion for this input field.
+	 * 
+	 * @param array $values list of values to suggest
+	 * @param int $minLength autocompletion starts after this number of caracters entered (default 1; 0 means immediate start)
+	 */
+	public function enableAutocompletion($values, $minLength = 1) {
+		for ($i = 0; $i < sizeof($values); $i++) {
+			$values[$i] = '"' . htmlspecialchars($values[$i]) . '"';
+		}
+		$this->autocomplete = true;
+		$this->autocompleteValues = $values;
+		$this->autocompleteMinLength = $minLength;
 	}
 
 }

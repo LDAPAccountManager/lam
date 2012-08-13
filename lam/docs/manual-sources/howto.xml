@@ -2186,6 +2186,30 @@ Have fun!
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para>You can define a list of services in your LAM server profile
+        that is used for autocompletion.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_authorizedServices3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The autocompletion will show all values that contains the
+        entered text. To display the whole list you can press backspace in the
+        empty input field. Of course, you can also insert a service name that
+        is not in the list.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_authorizedServices2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>
@@ -3059,12 +3083,24 @@ Run slapindex to rebuild the index.
 
       <para>LAM Pro allows you to manage automount entries. Please activate
       the account type "Automount objects" in your LAM Pro server
-      profile:</para>
+      profile.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/automount1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then add the correct automount module. Usually, this is "Automount
+      entry (automount)". If you use Suse Linux with RFC2307bis schema please
+      select "Automount entry (rfc2307bisAutomount)".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/automount3.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -4988,7 +5024,7 @@ Run slapindex to rebuild the index.
 
             <entry>automount</entry>
 
-            <entry>autofs.schema</entry>
+            <entry>autofs.schema, rfc2307bis.schema</entry>
 
             <entry>Autofs LDAP</entry>
 
