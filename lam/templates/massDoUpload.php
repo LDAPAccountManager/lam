@@ -122,7 +122,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	<?php
 	flush();  // send HTML to browser
 	// do post upload actions after all accounts are created
-	if ($_SESSION['mass_counter'] >= sizeof($accounts)) {
+	if (($_SESSION['mass_counter'] >= sizeof($accounts)) && !isset($_SESSION['mass_postActions']['finished'])) {
 		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
 		$return  = doUploadPostActions($scope, $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
 		if ($return['status'] == 'finished') {
