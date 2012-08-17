@@ -95,6 +95,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
 		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!'));
+		$this->messages['sambaLMPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
+		$this->messages['sambaLMPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['sambaLMPassword'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
 		$this->messages['rid'][3] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!'));
@@ -140,7 +142,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaAcctFlags',
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
-			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial');
+			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial',
+			'sambaPwdCanChange', 'sambaPwdMustChange'); // sambaPwdCanChange/sambaPwdMustChange only for extension removal
 		// PHP extensions
 		$return['extensions'] = array('hash', 'iconv');
 		// profile options
@@ -230,6 +233,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
 			'syncLMPassword' => _('Sync Samba LM password with Unix password'),
 			'syncSambaPwdLastSet' => _('Update attribute "sambaPwdLastSet" on password change'),
+			'password' => _('Password'),
 		);
 		// help Entries
 		$return['help'] = array (
@@ -2092,6 +2096,40 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 */
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+		$return = array();
+		if ($passwordChangeOnly) {
+			return $return; // no input fields as long no LDAP content can be read
+		}
+		if (!isset($attributes['objectClass']) || !in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
+			return $return;
+		}
+		if (in_array('password', $fields)) {
+			$pwdTable = new htmlTable();
+			$pwdTable->colspan = 3;
+			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'sambaSamAccount_password');
+			$pwd1->setIsPassword(true);
+			$pwdTable->addElement($pwd1, true);
+			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'sambaSamAccount_password2');
+			$pwd2->setIsPassword(true);
+			$pwdTable->addElement($pwd2);
+			$return['password'] = new htmlTableRow(array(
+				$pwdTable
+			));
+		}
+		return $return;
+	}
+
+	/**
 	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
 	 * <br>Return values:
 	 * <br>messages: array of parameters to create status messages
@@ -2111,6 +2149,33 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
 			return $return;
+		}
+		if (in_array('password', $fields)) {
+			if (isset($_POST['sambaSamAccount_password']) && ($_POST['sambaSamAccount_password'] != '')) {
+				if ($_POST['sambaSamAccount_password'] != $_POST['sambaSamAccount_password2']) {
+					$return['messages'][] = $this->messages['sambaLMPassword'][0];
+				}
+				else {
+					if (!get_preg($_POST['sambaSamAccount_password'], 'password')) {
+						$return['messages'][] = $this->messages['sambaLMPassword'][1];
+					}
+					else {
+						$pwdPolicyResult = checkPasswordStrength($_POST['sambaSamAccount_password']);
+						if ($pwdPolicyResult === true) {
+							$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['sambaSamAccount_password']);
+							if (array_key_exists('sambaLMPassword', $attributes)) {
+								$return['mod']['sambaLMPassword'][0] = lmPassword($_POST['sambaSamAccount_password']);
+							}
+							if (array_key_exists('sambaPwdLastSet', $attributes)) {
+								$return['mod']['sambaPwdLastSet'][0] = time();
+							}
+						}
+						else {
+							$return['messages'][] = array('ERROR', $pwdPolicyResult);
+						}
+					}
+				}
+			}
 		}
 		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
 			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
