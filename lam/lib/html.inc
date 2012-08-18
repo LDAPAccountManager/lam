@@ -728,7 +728,7 @@ class htmlButton extends htmlElement {
 		$name = ' name="' . $this->name . '"';
 		// image button
 		if ($this->isImageButton) {
-			$class = ' class="smallImageButton"';
+			$class = ' class="smallImageButton align-middle"';
 			$style = ' style="background-image: url(../../graphics/' . $this->value . '); background-color: transparent;"';
 		}
 		// text button
@@ -2308,7 +2308,7 @@ class htmlLink extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$image = '';
 		if ($this->image != null) {
-			$image = '<img src="' . $this->image . '" alt="' . $this->text . '">&nbsp;';
+			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->text . '">&nbsp;';
 		}
 		$title = '';
 		if ($this->title != null) {

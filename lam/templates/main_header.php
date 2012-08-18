@@ -122,19 +122,19 @@ foreach ($toSort as $key => $value) {
 		</td>
 	<td align="right" height=30>
 	<ul id="dropmenu" class="dropmenu">
-		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
+		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img class="align-middle" height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
 		<?php
 		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
 		?>
 	    <li>
-			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img width="16" height="16" alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			<a target="_blank" href="<?php echo $headerPrefix; ?>../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="<?php echo $headerPrefix; ?>../graphics/help.png">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 		</li>
 		<?php
 		}
 		if (sizeof($tools) > 0) {
 		?>
 		<li>
-			<a href="<?php echo $headerPrefix; ?>tools.php"><img height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
+			<a href="<?php echo $headerPrefix; ?>tools.php"><img class="align-middle" height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
 				<ul>
 				<?php
 					for ($i = 0; $i < sizeof($tools); $i++) {
@@ -165,7 +165,7 @@ foreach ($toSort as $key => $value) {
 		if ($_SESSION['config']->get_Suffix('tree') != "") {
 		?>
 	    <li>
-			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img height="16" width="16" alt="tree" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
+			<a href="<?php echo $headerPrefix; ?>tree/treeViewContainer.php"><img class="align-middle" height="16" width="16" alt="tree" src="<?php echo $headerPrefix; ?>../graphics/process.png">&nbsp;<?php echo _("Tree view") ?></a>
 		</li>
 		<?php
 		}
