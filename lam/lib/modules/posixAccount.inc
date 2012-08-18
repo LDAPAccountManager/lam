@@ -154,6 +154,8 @@ class posixAccount extends baseModule implements passwordService {
 			$return['selfServiceSearchAttributes'] = array('uid');
 			// self service field settings
 			$return['selfServiceFieldSettings'] = array('password' => _('Password'), 'cn' => _('Common name'), 'loginShell' => _('Login shell'));
+			// possible self service read-only fields
+			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
 			// self service configuration settings
 			$selfServiceContainer = new htmlTable();
 			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
@@ -2107,9 +2109,10 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array list of meta HTML elements (field name => htmlTableRow)
 	 */
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
 		if (in_array('password', $fields)) {
 			$pwdTable = new htmlTable();
@@ -2130,16 +2133,24 @@ class posixAccount extends baseModule implements passwordService {
 		if (in_array('cn', $fields)) {
 			$cn = '';
 			if (isset($attributes['cn'][0])) $cn = $attributes['cn'][0];
+			$cnField = new htmlInputField('posixAccount_cn', $cn);
+			if (in_array('cn', $readOnlyFields)) {
+				$cnField = new htmlOutputText($cn);
+			}
 			$return['cn'] = new htmlTableRow(array(
-				new htmlTableExtendedInputField(_('Common name'), 'posixAccount_cn', $cn)
+				new htmlOutputText(_('Common name')), $cnField
 			));
 		}
 		if (in_array('loginShell', $fields)) {
 			$shelllist = getshells(); // list of all valid shells
 			$loginShell = '';
 			if (isset($attributes['loginShell'][0])) $loginShell = $attributes['loginShell'][0];
+			$loginShellField = new htmlSelect('posixAccount_loginShell', $shelllist, array($loginShell));
+			if (in_array('loginShell', $readOnlyFields)) {
+				$loginShellField = new htmlOutputText($loginShell);
+			}
 			$return['loginShell'] = new htmlTableRow(array(
-				new htmlTableExtendedSelect('posixAccount_loginShell', $shelllist, array($loginShell), _('Login shell'))
+				new htmlOutputText(_('Login shell')), $loginShellField
 			));
 		}
 		return $return;
@@ -2159,9 +2170,10 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if (in_array('password', $fields)) {
 			if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
@@ -2192,7 +2204,7 @@ class posixAccount extends baseModule implements passwordService {
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
-		if (in_array('cn', $fields)) {
+		if (in_array('cn', $fields) && !in_array('cn', $readOnlyFields)) {
 			if (isset($_POST['posixAccount_cn']) && ($_POST['posixAccount_cn'] != '')) {
 				if (!get_preg($_POST['posixAccount_cn'], 'cn')) {
 					$return['messages'][] = $this->messages['cn'][0];
@@ -2205,7 +2217,7 @@ class posixAccount extends baseModule implements passwordService {
 				$return['messages'][] = $this->messages['cn'][0];
 			}
 		}
-		if (in_array('loginShell', $fields)) {
+		if (in_array('loginShell', $fields) && !in_array('loginShell', $readOnlyFields)) {
 			$shelllist = getshells(); // list of all valid shells
 			if (in_array($_POST['posixAccount_loginShell'], $shelllist)
 					&& (!isset($attributes['loginShell']) || ($attributes['loginShell'][0] != $_POST['posixAccount_loginShell']))) {

@@ -4343,8 +4343,16 @@ Run slapindex to rebuild the index.
       <section>
         <title>Page layout</title>
 
-        <para>On the bottom you can specify what input fields your users can
-        see. It is also possible to group several input fields.</para>
+        <para>Here you can specify what input fields your users can see. It is
+        also possible to group several input fields.</para>
+
+        <para>Please use the arrow signs to change the order of the
+        fields/groups.</para>
+
+        <para>You may also set some fields as read-only for your users. This
+        can be done by clicking on the lock symbol. Read-only fields can be
+        used to show your users additional data on the self service page that
+        must not be changed by themselves (e.g. first/last name).</para>
 
         <screenshot>
           <mediaobject>
@@ -4355,239 +4363,257 @@ Run slapindex to rebuild the index.
         </screenshot>
       </section>
 
-      <section id="PasswordSelfReset">
-        <title>Password self reset</title>
-
-        <para><emphasis role="bold">Settings</emphasis></para>
-
-        <para>You can allow your users to reset their passwords themselves.
-        This will reduce your administrative costs for cases where users
-        forget their passwords.</para>
-
-        <para>To enable this feature please activate the checkbox "Enable
-        password self reset link":</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/passwordSelfReset1.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>You can now configure the minimum answer length for password
-        reset answers. This is checked when you allow you users to specify
-        their answers via the self service. Additionally, you can specify the
-        text of the password reset link (default: "Forgot password?"). The
-        link is displayed below the password field on the self service login
-        page.</para>
-
-        <para>Next, please enter the DN and password of an LDAP entry that is
-        allowed to reset the passwords. This entry needs write access to the
-        attributes shadowLastChange, pwdAccountLockedTime and userPassword. It
-        also needs read access to uid, mail, passwordSelfResetQuestion and
-        passwordSelfResetAnswer. Please note that LAM Pro saves the password
-        on your server file system. Therefore, it is required to protect your
-        server against unauthorised access.</para>
-
-        <para>Please also specify the list of password reset questions that
-        the user can choose.</para>
-
-        <para>Please note that self service and LAM admin interface are
-        separated functionalities. You need to specify the list of possible
-        security questions in both self service profile(s) and server
-        profile(s).</para>
-
-        <literallayout> </literallayout>
-
-        <para>You can inform your users via mail about their password change.
-        The mail can include the new password by using the special wildcard
-        "@@newPassword@@". Additionally, you may want to insert other
-        wildcards that are replaced by the corresponding LDAP attributes. E.g.
-        "@@uid@@" will be replaced by the user name.</para>
-
-        <literallayout> </literallayout>
-
-        <para>LAM Pro can send your users an email with a confirmation link to
-        validate their email address. Of course, this should only be used if
-        the email account is independent from the user password (e.g. at
-        external provider). The mail must include the confirmation link by
-        using the special wildcard "@@resetLink@@". Additionally, you may want
-        to insert other wildcards that are replaced by the corresponding LDAP
-        attributes. E.g. "@@uid@@" will be replaced by the user name.</para>
-
-        <para>There is also an option to skip the security question at all if
-        email verification is enabled. In this case the password can be reset
-        directly after clicking on the confirmation link. Please handle with
-        care since anybody with access to the user's mail account can reset
-        the password.</para>
-
-        <para><emphasis role="bold">New fields for self service
-        page</emphasis></para>
-
-        <para>There are two new fields that you may put on the self service
-        page for your users. These fields allow them to change the reset
-        question and its answer.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/passwordSelfReset2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>This is an example how can be presented to your users on the
-        self service page:</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/passwordSelfReset3.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para><emphasis role="bold">Password reset link</emphasis></para>
-
-        <para>After activating the password self reset feature there will be a
-        new link on the self service login page. The text can be configured as
-        described above (default: "Forgot password?").</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/passwordSelfReset4.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>When a user clicks on the link then he will be asked for
-        identification with his user name and email address.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/passwordSelfReset5.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>LAM Pro will use this information to find the correct LDAP entry
-        of this user. It then displays the user's security question and input
-        fields for his new password. If the answer is correct then the new
-        password will be set. Additionally, pwdAccountLockedTime will be
-        removed and shadowLastChange updated to the current time if
-        existing.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/passwordSelfReset6.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
-
       <section>
-        <title>User self registration</title>
+        <title>Module settings</title>
 
-        <para>With LAM Pro your users can create their own accounts if you
-        like. LAM Pro will display an additional link on the self service
-        login page that allows you users to create a new account including
-        email validation.</para>
-
-        <para>You enable this feature in your self service profile. Just
-        activate the checkbox "Enable self registration link".</para>
+        <para>This allows to configure some module specific options (e.g.
+        custom scripts or password hash type).</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/accountRegistration1.png" />
+              <imagedata fileref="images/conf6.jpg" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para><emphasis role="bold">Options:</emphasis></para>
+        <section id="PasswordSelfReset">
+          <title>Password self reset</title>
 
-        <para><emphasis>Link text:</emphasis> This is the label for the link
-        to the self registration. If empty "Register new account" will be
-        used.</para>
+          <para><emphasis role="bold">Settings</emphasis></para>
 
-        <para><emphasis>Admin DN and password:</emphasis> Please enter the
-        LDAP DN and its password that should be used to create new users. This
-        DN also needs to be able to do LDAP searches by uid in the self
-        service part of your LDAP tree.</para>
+          <para>You can allow your users to reset their passwords themselves.
+          This will reduce your administrative costs for cases where users
+          forget their passwords.</para>
 
-        <para><emphasis>Object classes:</emphasis> This is a list of object
-        classes that are used to build the new user accounts. Please enter one
-        object class in each line.</para>
+          <para>To enable this feature please activate the checkbox "Enable
+          password self reset link":</para>
 
-        <para><emphasis>Attributes:</emphasis> This is a list of additional
-        attributes that the user can enter. Please note that user name,
-        password and email address are mandatory anyway and need not be
-        specified.</para>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/passwordSelfReset1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-        <para>Each line represents one LDAP attribute. The options are
-        separated by "::". The first option specifies if the attribute is
-        mandatory. It can have the values "optional" and "required". The
-        second option is the LDAP attribute name and the third one is a
-        descriptive label for it. Options four and five are used for input
-        validation. Please enter the regular expression (e.g.
-        "/^[0-9a-zA-Z]+$/") and an error message if the value does not match
-        it. For a syntax description see <ulink
-        url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation is
-        optional.</para>
+          <para>You can now configure the minimum answer length for password
+          reset answers. This is checked when you allow you users to specify
+          their answers via the self service. Additionally, you can specify
+          the text of the password reset link (default: "Forgot password?").
+          The link is displayed below the password field on the self service
+          login page.</para>
 
-        <para>Example:</para>
+          <para>Next, please enter the DN and password of an LDAP entry that
+          is allowed to reset the passwords. This entry needs write access to
+          the attributes shadowLastChange, pwdAccountLockedTime and
+          userPassword. It also needs read access to uid, mail,
+          passwordSelfResetQuestion and passwordSelfResetAnswer. Please note
+          that LAM Pro saves the password on your server file system.
+          Therefore, it is required to protect your server against
+          unauthorised access.</para>
 
-        <para>optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
-        enter a valid first name.</para>
+          <para>Please also specify the list of password reset questions that
+          the user can choose.</para>
 
-        <para>required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
-        valid last name.</para>
+          <para>Please note that self service and LAM admin interface are
+          separated functionalities. You need to specify the list of possible
+          security questions in both self service profile(s) and server
+          profile(s).</para>
 
-        <para>If you use the object class "inetOrgPerson" and do not provide
-        the "cn" attribute then LAM will set it to the user name value.</para>
+          <literallayout> </literallayout>
 
-        <literallayout>
+          <para>You can inform your users via mail about their password
+          change. The mail can include the new password by using the special
+          wildcard "@@newPassword@@". Additionally, you may want to insert
+          other wildcards that are replaced by the corresponding LDAP
+          attributes. E.g. "@@uid@@" will be replaced by the user name.</para>
+
+          <literallayout> </literallayout>
+
+          <para>LAM Pro can send your users an email with a confirmation link
+          to validate their email address. Of course, this should only be used
+          if the email account is independent from the user password (e.g. at
+          external provider). The mail must include the confirmation link by
+          using the special wildcard "@@resetLink@@". Additionally, you may
+          want to insert other wildcards that are replaced by the
+          corresponding LDAP attributes. E.g. "@@uid@@" will be replaced by
+          the user name.</para>
+
+          <para>There is also an option to skip the security question at all
+          if email verification is enabled. In this case the password can be
+          reset directly after clicking on the confirmation link. Please
+          handle with care since anybody with access to the user's mail
+          account can reset the password.</para>
+
+          <para><emphasis role="bold">New fields for self service
+          page</emphasis></para>
+
+          <para>There are two new fields that you may put on the self service
+          page for your users. These fields allow them to change the reset
+          question and its answer.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/passwordSelfReset2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>This is an example how can be presented to your users on the
+          self service page:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/passwordSelfReset3.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Password reset link</emphasis></para>
+
+          <para>After activating the password self reset feature there will be
+          a new link on the self service login page. The text can be
+          configured as described above (default: "Forgot password?").</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/passwordSelfReset4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>When a user clicks on the link then he will be asked for
+          identification with his user name and email address.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/passwordSelfReset5.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM Pro will use this information to find the correct LDAP
+          entry of this user. It then displays the user's security question
+          and input fields for his new password. If the answer is correct then
+          the new password will be set. Additionally, pwdAccountLockedTime
+          will be removed and shadowLastChange updated to the current time if
+          existing.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/passwordSelfReset6.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>User self registration</title>
+
+          <para>With LAM Pro your users can create their own accounts if you
+          like. LAM Pro will display an additional link on the self service
+          login page that allows you users to create a new account including
+          email validation.</para>
+
+          <para>You enable this feature in your self service profile. Just
+          activate the checkbox "Enable self registration link".</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/accountRegistration1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Options:</emphasis></para>
+
+          <para><emphasis>Link text:</emphasis> This is the label for the link
+          to the self registration. If empty "Register new account" will be
+          used.</para>
+
+          <para><emphasis>Admin DN and password:</emphasis> Please enter the
+          LDAP DN and its password that should be used to create new users.
+          This DN also needs to be able to do LDAP searches by uid in the self
+          service part of your LDAP tree.</para>
+
+          <para><emphasis>Object classes:</emphasis> This is a list of object
+          classes that are used to build the new user accounts. Please enter
+          one object class in each line.</para>
+
+          <para><emphasis>Attributes:</emphasis> This is a list of additional
+          attributes that the user can enter. Please note that user name,
+          password and email address are mandatory anyway and need not be
+          specified.</para>
+
+          <para>Each line represents one LDAP attribute. The options are
+          separated by "::". The first option specifies if the attribute is
+          mandatory. It can have the values "optional" and "required". The
+          second option is the LDAP attribute name and the third one is a
+          descriptive label for it. Options four and five are used for input
+          validation. Please enter the regular expression (e.g.
+          "/^[0-9a-zA-Z]+$/") and an error message if the value does not match
+          it. For a syntax description see <ulink
+          url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation
+          is optional.</para>
+
+          <para>Example:</para>
+
+          <para>optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
+          enter a valid first name.</para>
+
+          <para>required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
+          valid last name.</para>
+
+          <para>If you use the object class "inetOrgPerson" and do not provide
+          the "cn" attribute then LAM will set it to the user name
+          value.</para>
+
+          <literallayout>
 </literallayout>
 
-        <para>Please note that only simple input boxes are supported for
-        account registration. The user may log in to self service when his
-        account was created to manage all his attributes.</para>
+          <para>Please note that only simple input boxes are supported for
+          account registration. The user may log in to self service when his
+          account was created to manage all his attributes.</para>
 
-        <literallayout>
+          <literallayout>
 </literallayout>
 
-        <para><emphasis role="bold">User view:</emphasis></para>
+          <para><emphasis role="bold">User view:</emphasis></para>
 
-        <para>The user can register by clicking on a link on the self service
-        login page:</para>
+          <para>The user can register by clicking on a link on the self
+          service login page:</para>
 
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/accountRegistration2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/accountRegistration2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-        <para>Here he can insert the data that you specified in the self
-        service profile:</para>
+          <para>Here he can insert the data that you specified in the self
+          service profile:</para>
 
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/accountRegistration3.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/accountRegistration3.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-        <para>LAM will then send him an email with a validation link that is
-        valid for 24 hours. When he clicks on this link then the account will
-        be created in the self service user suffix. The DN will look like
-        this: <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
+          <para>LAM will then send him an email with a validation link that is
+          valid for 24 hours. When he clicks on this link then the account
+          will be created in the self service user suffix. The DN will look
+          like this: <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
+        </section>
       </section>
     </section>
 

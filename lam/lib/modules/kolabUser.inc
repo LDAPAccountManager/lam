@@ -117,6 +117,8 @@ class kolabUser extends baseModule {
 			'kolabDelegate' => _('Delegates'),
 			'kolabInvitationPolicy' => _('Invitation policy')
 		);
+		// possible self service read-only fields
+		$return['selfServiceReadOnlyFields'] = array('kolabFreeBusyFuture', 'kolabDelegate', 'kolabInvitationPolicy');
 		// help Entries
 		$return['help'] = array(
 			'invPol' => array(
@@ -819,9 +821,10 @@ class kolabUser extends baseModule {
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array list of meta HTML elements (field name => htmlTableRow)
 	 */
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		if ($passwordChangeOnly) {
 			return array(); // no Kolab fields as long no LDAP content can be read
 		}
@@ -835,8 +838,12 @@ class kolabUser extends baseModule {
 			if (isset($attributes['kolabFreeBusyFuture'][0])) {
 				$kolabFreeBusyFuture = $attributes['kolabFreeBusyFuture'][0];
 			}
+			$kolabFreeBusyFutureField = new htmlInputField('kolabUser_kolabFreeBusyFuture', $kolabFreeBusyFuture);
+			if (in_array('kolabFreeBusyFuture', $readOnlyFields)) {
+				$kolabFreeBusyFutureField = new htmlOutputText($kolabFreeBusyFuture);
+			}
 			$return['kolabFreeBusyFuture'] = new htmlTableRow(array(
-				new htmlTableExtendedInputField(_('Free/Busy interval'), 'kolabUser_kolabFreeBusyFuture', $kolabFreeBusyFuture)
+				new htmlOutputText(_('Free/Busy interval')), $kolabFreeBusyFutureField
 			));
 		}
 		// delegates
@@ -870,10 +877,17 @@ class kolabUser extends baseModule {
 			$delegateContainer = new htmlTable();
 			for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
 				$delegateContainer->addElement(new htmlOutputText($kolabDelegate[$i]));
-				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, _('Delete'), null, false), true);
+				if (!in_array('kolabDelegate', $readOnlyFields)) {
+					$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, _('Delete'), null, false), true);
+				}
+				else {
+					$delegateContainer->addNewLine();
+				}
 			}
-			$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates));
-			$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
+			if (!in_array('kolabDelegate', $readOnlyFields)) {
+				$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates));
+				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
+			}
 			$delegateLabel = new htmlOutputText(_('Delegates'));
 			$delegateLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['kolabDelegate'] = new htmlTableRow(array(
@@ -894,20 +908,34 @@ class kolabUser extends baseModule {
 					break;
 				}
 			}
-			$invitationContainer->addElement(new htmlTableExtendedSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol), _('Anyone')), true);
+			if (!in_array('kolabDelegate', $readOnlyFields)) {
+				$invitationContainer->addElement(new htmlTableExtendedSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol), _('Anyone')), true);
+			}
+			else {
+				$invitationContainer->addElement(new htmlOutputText(_('Anyone')));
+				$invitationContainer->addElement(new htmlOutputText($defaultInvPol), true);
+			}
 			// other invitation policies
 			for ($i = 0; $i < sizeof($attributes['kolabInvitationPolicy']); $i++) {
 				$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
-					$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
-					$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
-					$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('delInvPol' . $i, false, _("Remove"), null, false), true);
+					if (!in_array('kolabDelegate', $readOnlyFields)) {
+						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
+						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
+						$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('delInvPol' . $i, false, _("Remove"), null, false), true);
+					}
+					else {
+						$invitationContainer->addElement(new htmlOutputText($parts[0]));
+						$invitationContainer->addElement(new htmlOutputText($this->invitationPolicies[$parts[1]]), true);
+					}
 				}
 			}
 			// input box for new invitation policy
-			$invitationContainer->addElement(new htmlInputField('invPol1', ''));
-			$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
-			$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('addInvPol', false, _("Add"), null, false), true);
+			if (!in_array('kolabDelegate', $readOnlyFields)) {
+				$invitationContainer->addElement(new htmlInputField('invPol1', ''));
+				$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
+				$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('addInvPol', false, _("Add"), null, false), true);
+			}
 			$invitationLabel = new htmlOutputText(_('Invitation policy'));
 			$invitationLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['kolabInvitationPolicy'] = new htmlTableRow(array(
@@ -931,9 +959,10 @@ class kolabUser extends baseModule {
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
@@ -944,7 +973,7 @@ class kolabUser extends baseModule {
 		$attributeNames = array(); // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
 		// kolabFreeBusyFuture
-		if (in_array('kolabFreeBusyFuture', $fields)) {
+		if (in_array('kolabFreeBusyFuture', $fields) && !in_array('kolabFreeBusyFuture', $readOnlyFields)) {
 			$attributeNames[] = 'kolabFreeBusyFuture';
 			if (isset($_POST['kolabUser_kolabFreeBusyFuture']) && ($_POST['kolabUser_kolabFreeBusyFuture'] != '')) {
 				if (!get_preg($_POST['kolabUser_kolabFreeBusyFuture'], 'digit')) $return['messages'][] = $this->messages['freeBusy'][0];
@@ -955,7 +984,7 @@ class kolabUser extends baseModule {
 			}
 		}
 		// delegates
-		if (in_array('kolabDelegate', $fields)) {
+		if (in_array('kolabDelegate', $fields) && !in_array('kolabDelegate', $readOnlyFields)) {
 			$attributeNames[] = 'kolabDelegate';
 			// new delegation
 			if (isset($_POST['new_delegate']) && ($_POST['new_delegate'] == 'on')) {
@@ -975,7 +1004,7 @@ class kolabUser extends baseModule {
 			}
 		}
 		// invitation policies
-		if (in_array('kolabInvitationPolicy', $fields)) {
+		if (in_array('kolabInvitationPolicy', $fields) && !in_array('kolabInvitationPolicy', $readOnlyFields)) {
 			$attributeNames[] = 'kolabInvitationPolicy';
 			$policies = array_flip($this->invitationPolicies);
 			$attributesNew['kolabInvitationPolicy'] = array();

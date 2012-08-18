@@ -1220,6 +1220,19 @@ abstract class baseModule {
 		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) return $this->meta['selfServiceFieldSettings'];
 		else return array();
 	}
+	
+	/**
+	 * Returns if a given self service field can be set in read-only mode.
+	 * 
+	 * @param String $fieldID field identifier
+	 * @param selfServiceProfile $profile currently edited profile
+	 */
+	public function canSelfServiceFieldBeReadOnly($fieldID, $profile) {
+		if (isset($this->meta['selfServiceReadOnlyFields']) && is_array($this->meta['selfServiceReadOnlyFields'])) {
+			return in_array($fieldID, $this->meta['selfServiceReadOnlyFields']);
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the meta HTML code for each input field.
@@ -1231,11 +1244,12 @@ abstract class baseModule {
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array list of meta HTML elements (field name => htmlTableRow)
 	 * 
 	 * @see htmlElement
 	 */
-	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		// this function must be overwritten by subclasses.
 		return array();
 	}
@@ -1254,9 +1268,10 @@ abstract class baseModule {
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		return $return;
 	}

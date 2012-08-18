@@ -1578,9 +1578,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskSIPUser', $attributes['objectClass'])) {
 			return $return;

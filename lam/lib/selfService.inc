@@ -91,15 +91,23 @@ function getSelfServiceFieldSettings($scope) {
  * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
  * @param array $attributes LDAP attributes (attribute names in lower case)
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+ * @param array $readOnlyFields list of read-only fields
  * @return array meta HTML code (array(<moduleName> => htmlTableRow))
  */
-function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly) {
+function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
 		$m = new $modules[$i]($scope);
-		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly);
+		$modReadOnlyFields = array();
+		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
+			$parts = explode('_', $readOnlyFields[$r]);
+			if ($parts[0] == $modules[$i]) {
+				$modReadOnlyFields[] = $parts[1];
+			}
+		}
+		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly, $modReadOnlyFields);
 		if (sizeof($code) > 0) $return[$modules[$i]] = $code;
 	}
 	return $return;
@@ -113,15 +121,23 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
  * @param string $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
  * @param array $attributes LDAP attributes
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+ * @param array $readOnlyFields list of read-only fields
  * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
  */
-function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly) {
+function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
 		$m = new $modules[$i]($scope);
-		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly);
+		$modReadOnlyFields = array();
+		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
+			$parts = explode('_', $readOnlyFields[$r]);
+			if ($parts[0] == $modules[$i]) {
+				$modReadOnlyFields[] = $parts[1];
+			}
+		}
+		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly, $modReadOnlyFields);
 		if (sizeof($result['messages']) > 0) $return['messages'] = array_merge($result['messages'], $return['messages']);
 		if (sizeof($result['add']) > 0) $return['add'] = array_merge($result['add'], $return['add']);
 		if (sizeof($result['del']) > 0) $return['del'] = array_merge($result['del'], $return['del']);
@@ -322,6 +338,11 @@ class selfServiceProfile {
 	 */
 	public $inputFields;
 	
+	/**
+	 * List of fields that are set in read-only mode.
+	 */
+	public $readOnlyFields;
+	
 	/** configuration settings of modules */
 	public $moduleSettings;
 
@@ -352,6 +373,7 @@ class selfServiceProfile {
 			array('name' => _('Password'),
 				'fields' => array('posixAccount_password'))
 		);
+		$this->readOnlyFields = array();
 	}
 
 }

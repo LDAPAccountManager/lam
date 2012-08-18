@@ -625,7 +625,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	echo "<a href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\" ";
 		echo "onmouseover=\"Tip('" . $message . "', TITLE, '" . $title . "')\" onmouseout=\"UnTip()\">";
-		echo "<img width=16 height=16 src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+		echo "<img class=\"align-middle\" width=16 height=16 src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 	echo "</a>";
 }
 

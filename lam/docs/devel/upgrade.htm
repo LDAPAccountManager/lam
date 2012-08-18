@@ -12,6 +12,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -32,8 +33,11 @@ This is a list of API changes for all LAM releases.
 <h2>3.8 -&gt; 3.9</h2>Module interface:<br>
 
 <ul>
-<li><span style="font-weight: bold;">supportsAdminInterface()</span>: Can be used mark modules that only support the self service.<br>
-</li>
+<li>new function <span style="font-weight: bold;">supportsAdminInterface()</span>: Can be used to mark modules that only support the self service.</li>
+  <li>new function <span style="font-weight: bold;">canSelfServiceFieldBeReadOnly()</span>: Specifies if a certain self service field can be set in read-only mode.</li>
+  <li><span style="font-weight: bold;">getSelfServiceOptions()</span>: new parameter <span style="font-style: italic;">$readOnlyFields</span> that contains read-only fields</li>
+  <li><span style="font-weight: bold;">checkSelfServiceOptions()</span>: new parameter <span style="font-style: italic;">$readOnlyFields </span>that contains read-only fields</li>
+
 </ul>
 Meta HTML:<br>
 <ul>

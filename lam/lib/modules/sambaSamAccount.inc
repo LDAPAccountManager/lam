@@ -2103,9 +2103,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @param array $fields list of active fields
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array list of meta HTML elements (field name => htmlTableRow)
 	 */
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
 		if ($passwordChangeOnly) {
 			return $return; // no input fields as long no LDAP content can be read
@@ -2143,9 +2144,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @param string $fields input fields
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly) {
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
 			return $return;
