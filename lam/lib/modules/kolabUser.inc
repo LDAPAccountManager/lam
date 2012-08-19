@@ -78,47 +78,27 @@ class kolabUser extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('kolabInetOrgPerson');
 		// managed attributes
-		$return['attributes'] = array('c', 'alias', 'kolabHomeServer', 'kolabHomeMTA', 'kolabDelegate',
-			'cyrus-userquota', 'kolabInvitationPolicy', 'kolabFreeBusyFuture', 'kolabDeleteflag');
+		$return['attributes'] = array('alias', 'mailHost', 'kolabDelegate', 'kolabInvitationPolicy', 'kolabDeleteflag');
 		// profile options
 		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_homeServer', null, 'homeServer'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Country'), 'kolab_country', null, 'country'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Free/Busy interval'), 'kolab_freeBusy', null, 'freeBusy'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail quota'), 'kolab_quota', null, 'quota'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_mailHost', null, 'mailHost'), true);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
-		$return['profile_checks']['kolab_homeServer'] = array(
+		$return['profile_checks']['kolab_mailHost'] = array(
 			'type' => 'ext_preg',
 			'regex' => 'DNSname',
-			'error_message' => $this->messages['homeServer'][0]);
-		$return['profile_checks']['kolab_country'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'country',
-			'error_message' => $this->messages['country'][0]);
-		$return['profile_checks']['kolab_freeBusy'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'digit',
-			'error_message' => $this->messages['freeBusy'][0]);
-		$return['profile_checks']['kolab_quota'] = array(
-			'type' => 'ext_preg',
-			'regex' => 'digit',
-			'error_message' => $this->messages['quota'][0]);
+			'error_message' => $this->messages['mailHost'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'kolab_homeServer' => 'kolabHomeServer',
-			'kolab_country' => 'c',
-			'kolab_freeBusy' => 'kolabFreeBusyFuture',
-			'kolab_quota' => 'cyrus-userquota'
+			'kolab_mailHost' => 'mailHost',
 		);
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array(
-			'kolabFreeBusyFuture' => _('Free/Busy interval'),
 			'kolabDelegate' => _('Delegates'),
 			'kolabInvitationPolicy' => _('Invitation policy')
 		);
 		// possible self service read-only fields
-		$return['selfServiceReadOnlyFields'] = array('kolabFreeBusyFuture', 'kolabDelegate', 'kolabInvitationPolicy');
+		$return['selfServiceReadOnlyFields'] = array('kolabDelegate', 'kolabInvitationPolicy');
 		// help Entries
 		$return['help'] = array(
 			'invPol' => array(
@@ -145,21 +125,9 @@ class kolabUser extends baseModule {
 				"Headline" => _("Email alias list"), 'attr' => 'alias',
 				"Text" => _("This is a comma separated list of eMail aliases.")
 			),
-			'country' => array(
-				"Headline" => _("Country"), 'attr' => 'c',
-				"Text" => _("The country name of the user.")
-			),
-			'homeServer' => array(
-				"Headline" => _("Mailbox home server"), 'attr' => 'kolabHomeServer',
+			'mailHost' => array(
+				"Headline" => _("Mailbox home server"), 'attr' => 'mailHost',
 				"Text" => _("The name of the server where the mailbox is located.")
-			),
-			'freeBusy' => array(
-				"Headline" => _("Free/Busy interval"), 'attr' => 'kolabFreeBusyFuture',
-				"Text" => _("This is the time limit (in days) for other users who want to check future appointments. If you leave this blank the default (60 days) will be set.")
-			),
-			'quota' => array(
-				"Headline" => _("Mail quota"), 'attr' => 'cyrus-userquota',
-				"Text" => _("The Cyrus mail quota for users in MBytes, leave blank for unlimited space.")
 			),
 			'deleteFlag' => array(
 				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
@@ -174,15 +142,9 @@ class kolabUser extends baseModule {
 				'example' => 'user@domain:ACT_ALWAYS_ACCEPT,user2@domain:ACT_MANUAL'
 			),
 			array(
-				'name' => 'kolabUser_country',
-				'description' => _('Country'),
-				'help' => 'country',
-				'example' => _('Germany')
-			),
-			array(
-				'name' => 'kolabUser_homeServer',
+				'name' => 'kolabUser_mailHost',
 				'description' => _('Mailbox home server'),
-				'help' => 'homeServer',
+				'help' => 'mailHost',
 				'example' => 'localhost',
 				'required' => true
 			),
@@ -198,28 +160,13 @@ class kolabUser extends baseModule {
 				'help' => 'delegateList',
 				'example' => 'user@domain,user2@domain'
 			),
-			array(
-				'name' => 'kolabUser_freeBusy',
-				'description' => _('Free/Busy interval'),
-				'help' => 'freeBusy',
-				'example' => '60'
-			),
-			array(
-				'name' => 'kolabUser_quota',
-				'description' => _('Mail quota'),
-				'help' => 'quota',
-				'example' => '300'
-			)
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'invPol' => _('Invitation policy'),
-			'country' => _('Country'),
-			'homeServer' => _('Mailbox home server'),
+			'mailHost' => _('Mailbox home server'),
 			'aliases' => _('Email aliases'),
 			'delegate' => _('Delegates'),
-			'freeBusy' => _('Free/Busy interval'),
-			'quota' => _('Mail quota')
 		);
 		return $return;
 	}
@@ -232,16 +179,10 @@ class kolabUser extends baseModule {
 		$this->messages['invPol'][1] = array('ERROR', _('Account %s:') . ' kolabUser_invPol', _('Policy list has invalid format!'));
 		$this->messages['alias'][0] = array('ERROR', _('Email alias is invalid!'));  // third array value is set dynamically
 		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' kolabUser_aliases', _('Email alias list has invalid format!'));
-		$this->messages['country'][0] = array('ERROR', _('Country name is invalid!'));  // third array value is set dynamically
-		$this->messages['country'][1] = array('ERROR', _('Account %s:') . ' kolabUser_country', _('Country name is invalid!'));
-		$this->messages['homeServer'][0] = array('ERROR', _('Mailbox home server name is invalid!'));  // third array value is set dynamically
-		$this->messages['homeServer'][1] = array('ERROR', _('Account %s:') . ' kolabUser_homeServer', _('Mailbox home server name is invalid!'));
-		$this->messages['homeServer'][2] = array('ERROR', _('Mailbox home server name is empty!'), '');
+		$this->messages['mailHost'][0] = array('ERROR', _('Mailbox home server name is invalid!'));  // third array value is set dynamically
+		$this->messages['mailHost'][1] = array('ERROR', _('Account %s:') . ' kolabUser_mailHost', _('Mailbox home server name is invalid!'));
+		$this->messages['mailHost'][2] = array('ERROR', _('Mailbox home server name is empty!'));
 		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegate', _('Unknown delegate address: %s'));
-		$this->messages['freeBusy'][0] = array('ERROR', _('Free/Busy interval must be a number!'));  // third array value is set dynamically
-		$this->messages['freeBusy'][1] = array('ERROR', _('Account %s:') . ' kolabUser_freeBusy', _('Free/Busy interval must be a number!'));
-		$this->messages['quota'][0] = array('ERROR', _('Mail quota must be a number!'));  // third array value is set dynamically
-		$this->messages['quota'][1] = array('ERROR', _('Account %s:') . ' kolabUser_quota', _('Mail quota must be a number!'));
 	}
 
 	/**
@@ -268,7 +209,7 @@ class kolabUser extends baseModule {
 					$return->addElement($message, true);
 				}
 			}
-			if (!$attrsI['mail'][0]) {
+			if (!isset($attrsI['mail'][0])) {
 				$message = new htmlStatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
 				$message->colspan = 5;
 				$return->addElement($message, true);
@@ -279,43 +220,21 @@ class kolabUser extends baseModule {
 				return $return;
 			}
 			$basicPartContainer = new htmlTable();
-			// country
-			$country = '';
-			if (isset($this->attributes['c'][0])) {
-				$country = $this->attributes['c'][0];
-			}
-			$basicPartContainer->addElement(new htmlTableExtendedInputField(_('Country'), 'country', $country, 'country'), true);
 			// mailbox server
-			if (!isset($this->orig['kolabHomeServer'][0])) {  // value currently not set
-				$homeServer = '';
-				if (isset($this->attributes['kolabHomeServer'][0])) {
-					$homeServer = $this->attributes['kolabHomeServer'][0];
+			if (!isset($this->orig['mailHost'][0])) {  // value currently not set
+				$mailHost = '';
+				if (isset($this->attributes['mailHost'][0])) {
+					$mailHost = $this->attributes['mailHost'][0];
 				}
-				$serverInput = new htmlTableExtendedInputField(_('Mailbox home server'), 'homeServer', $homeServer, 'homeServer');
+				$serverInput = new htmlTableExtendedInputField(_('Mailbox home server'), 'mailHost', $mailHost, 'mailHost');
 				$serverInput->setRequired(true);
 				$basicPartContainer->addElement($serverInput, true);
 			}
 			else {  // input is unchangable when set
 				$basicPartContainer->addElement(new htmlOutputText(_('Mailbox home server')));
-				$basicPartContainer->addElement(new htmlOutputText($this->orig['kolabHomeServer'][0]));
-				$basicPartContainer->addElement(new htmlHelpLink('homeServer'), true);
+				$basicPartContainer->addElement(new htmlOutputText($this->attributes['mailHost'][0]));
+				$basicPartContainer->addElement(new htmlHelpLink('mailHost'), true);
 			}
-			// Cyrus mail quota
-			$userquota = '';
-			if (isset($this->attributes['cyrus-userquota'][0])) {
-				$userquota = $this->attributes['cyrus-userquota'][0];
-			}
-			$userquotaInput = new htmlTableExtendedInputField(_('Mail quota'), 'quota', $userquota, 'quota');
-			$userquotaInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$basicPartContainer->addElement($userquotaInput, true);
-			// free/busy future
-			$freebusyfuture = '';
-			if (isset($this->attributes['kolabFreeBusyFuture'][0])) {
-				$freebusyfuture = $this->attributes['kolabFreeBusyFuture'][0];
-			}
-			$freebusyfutureInput = new htmlTableExtendedInputField(_('Free/Busy interval'), 'freeBusy', $freebusyfuture, 'freeBusy');
-			$freebusyfutureInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$basicPartContainer->addElement($freebusyfutureInput, true);
 			$return->addElement($basicPartContainer, true);
 			// invitation policies
 			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);
@@ -416,28 +335,17 @@ class kolabUser extends baseModule {
 		else {
 			if (isset($_POST['form_subpage_kolabUser_deleteUser_open']))  return array();
 			$this->attributes['kolabInvitationPolicy'] = array();
-			// country
-			if (isset($_POST['country'])) {
-				if (($_POST['country'] == "") || get_preg($_POST['country'], 'country')) {
-					$this->attributes['c'][0] = $_POST['country'];
-				}
-				else {
-					$message = $this->messages['country'][0];
-					$message[] = $_POST['country'];
-					$errors[] = $message;
-				}
-			}
 			// mailbox server
-			if (isset($_POST['homeServer'])) {
-				if ($_POST['homeServer'] == "") {
-					$errors[] = $this->messages['homeServer'][2];
+			if (isset($_POST['mailHost'])) {
+				if ($_POST['mailHost'] == "") {
+					$errors[] = $this->messages['mailHost'][2];
 				}
-				elseif (get_preg($_POST['homeServer'], 'DNSname')) {
-					$this->attributes['kolabHomeServer'][0] = $_POST['homeServer'];
+				elseif (get_preg($_POST['mailHost'], 'DNSname')) {
+					$this->attributes['mailHost'][0] = $_POST['mailHost'];
 				}
 				else {
-					$message = $this->messages['homeServer'][0];
-					$message[] = $_POST['homeServer'];
+					$message = $this->messages['mailHost'][0];
+					$message[] = $_POST['mailHost'];
 					$errors[] = $message;
 				}
 			}
@@ -528,28 +436,6 @@ class kolabUser extends baseModule {
 				$this->attributes['kolabDelegate'][] = $_POST['delegate'];
 			}
 			$this->attributes['kolabDelegate'] = array_unique($this->attributes['kolabDelegate']);
-			// free/busy future
-			if (isset($_POST['freeBusy'])) {
-				if (($_POST['freeBusy'] == "") || get_preg($_POST['freeBusy'], 'digit')) {
-					$this->attributes['kolabFreeBusyFuture'][0] = $_POST['freeBusy'];
-				}
-				else {
-					$message = $this->messages['freeBusy'][0];
-					$message[] = $_POST['freeBusy'];
-					$errors[] = $message;
-				}
-			}
-			// Cyrus mail quota
-			if (isset($_POST['quota'])) {
-				if (($_POST['quota'] == "") || get_preg($_POST['quota'], 'digit')) {
-					$this->attributes['cyrus-userquota'][0] = $_POST['quota'];
-				}
-				else {
-					$message = $this->messages['quota'][0];
-					$message[] = $_POST['quota'];
-					$errors[] = $message;
-				}
-			}
 		}
 		return $errors;
 	}
@@ -576,7 +462,7 @@ class kolabUser extends baseModule {
 	function process_deleteUser() {
 		if (isset($_POST['form_subpage_kolabUser_attributes_confirm'])) {
 			// set delete flag
-			$this->attributes['kolabDeleteflag'][0] = $this->attributes['kolabHomeServer'][0];
+			$this->attributes['kolabDeleteflag'][0] = $this->attributes['mailHost'][0];
 		}
 	}
 
@@ -642,24 +528,13 @@ class kolabUser extends baseModule {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("kolabInetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "kolabInetOrgPerson";
-			// country
-			if ($rawAccounts[$i][$ids['kolabUser_country']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['kolabUser_country']], 'country')) {
-					$partialAccounts[$i]['c'] = $rawAccounts[$i][$ids['kolabUser_country']];
-				}
-				else {
-					$errMsg = $this->messages['country'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
 			// mailbox server
-			if ($rawAccounts[$i][$ids['kolabUser_homeServer']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['kolabUser_homeServer']], 'DNSname')) {
-					$partialAccounts[$i]['kolabHomeServer'] = $rawAccounts[$i][$ids['kolabUser_homeServer']];
+			if ($rawAccounts[$i][$ids['kolabUser_mailHost']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['kolabUser_mailHost']], 'DNSname')) {
+					$partialAccounts[$i]['mailHost'] = $rawAccounts[$i][$ids['kolabUser_mailHost']];
 				}
 				else {
-					$errMsg = $this->messages['homeServer'][1];
+					$errMsg = $this->messages['mailHost'][1];
 					array_push($errMsg, array($i));
 					$messages[] = $errMsg;
 				}
@@ -735,28 +610,6 @@ class kolabUser extends baseModule {
 					}
 				}
 			}
-			// free/busy
-			if ($rawAccounts[$i][$ids['kolabUser_freeBusy']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['kolabUser_freeBusy']], 'digit')) {
-					$partialAccounts[$i]['kolabFreeBusyFuture'] = $rawAccounts[$i][$ids['kolabUser_freeBusy']];
-				}
-				else {
-					$errMsg = $this->messages['freeBusy'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
-			// Cyrus mail quota
-			if ($rawAccounts[$i][$ids['kolabUser_quota']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['kolabUser_quota']], 'digit')) {
-					$partialAccounts[$i]['cyrus-userquota'] = $rawAccounts[$i][$ids['kolabUser_quota']];
-				}
-				else {
-					$errMsg = $this->messages['quota'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
 		}
 		return $messages;
 	}
@@ -768,21 +621,9 @@ class kolabUser extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		// country
-		if (isset($this->attributes['c'][0])) {
-			$return['kolabUser_country'][0] = '<block><key>' . _('Country') . '</key><value>' . $this->attributes['c'][0] . '</value></block>';
-		}
 		// mail server
-		if (isset($this->attributes['kolabHomeServer'][0])) {
-			$return['kolabUser_homeServer'][0] = '<block><key>' . _('Mailbox home server') . '</key><value>' . $this->attributes['kolabHomeServer'][0] . '</value></block>';
-		}
-		// mail quota
-		if (isset($this->attributes['cyrus-userquota'][0])) {
-			$return['kolabUser_quota'][0] = '<block><key>' . _('Mail quota') . '</key><value>' . $this->attributes['cyrus-userquota'][0] . '</value></block>';
-		}
-		// free/busy
-		if (isset($this->attributes['kolabFreeBusyFuture'][0])) {
-			$return['kolabUser_freeBusy'][0] = '<block><key>' . _('Free/Busy interval') . '</key><value>' . $this->attributes['kolabFreeBusyFuture'][0] . '</value></block>';
+		if (isset($this->attributes['mailHost'][0])) {
+			$return['kolabUser_mailHost'][0] = '<block><key>' . _('Mailbox home server') . '</key><value>' . $this->attributes['mailHost'][0] . '</value></block>';
 		}
 		// invitation policies
 		if (isset($this->attributes['kolabInvitationPolicy'][0])) {
@@ -832,20 +673,6 @@ class kolabUser extends baseModule {
 			return array();
 		}
 		$return = array();
-		// free/busy future
-		if (in_array('kolabFreeBusyFuture', $fields)) {
-			$kolabFreeBusyFuture = '';
-			if (isset($attributes['kolabFreeBusyFuture'][0])) {
-				$kolabFreeBusyFuture = $attributes['kolabFreeBusyFuture'][0];
-			}
-			$kolabFreeBusyFutureField = new htmlInputField('kolabUser_kolabFreeBusyFuture', $kolabFreeBusyFuture);
-			if (in_array('kolabFreeBusyFuture', $readOnlyFields)) {
-				$kolabFreeBusyFutureField = new htmlOutputText($kolabFreeBusyFuture);
-			}
-			$return['kolabFreeBusyFuture'] = new htmlTableRow(array(
-				new htmlOutputText(_('Free/Busy interval')), $kolabFreeBusyFutureField
-			));
-		}
 		// delegates
 		if (in_array('kolabDelegate', $fields)) {
 			$delegates = array();
@@ -972,17 +799,6 @@ class kolabUser extends baseModule {
 		}
 		$attributeNames = array(); // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
-		// kolabFreeBusyFuture
-		if (in_array('kolabFreeBusyFuture', $fields) && !in_array('kolabFreeBusyFuture', $readOnlyFields)) {
-			$attributeNames[] = 'kolabFreeBusyFuture';
-			if (isset($_POST['kolabUser_kolabFreeBusyFuture']) && ($_POST['kolabUser_kolabFreeBusyFuture'] != '')) {
-				if (!get_preg($_POST['kolabUser_kolabFreeBusyFuture'], 'digit')) $return['messages'][] = $this->messages['freeBusy'][0];
-				else $attributesNew['kolabFreeBusyFuture'][0] = $_POST['kolabUser_kolabFreeBusyFuture'];
-			}
-			elseif (isset($attributes['kolabFreeBusyFuture'])) {
-				$attributesNew['kolabFreeBusyFuture'] = array();
-			}
-		}
 		// delegates
 		if (in_array('kolabDelegate', $fields) && !in_array('kolabDelegate', $readOnlyFields)) {
 			$attributeNames[] = 'kolabDelegate';

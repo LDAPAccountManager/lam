@@ -1,4 +1,5 @@
 September 2012 3.9
+  - Kolab 2.4 support
   - LAM Pro
    -> support RFC2307bis automount entries
    -> read-only fields in self service
