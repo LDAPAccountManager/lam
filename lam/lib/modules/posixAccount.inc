@@ -65,7 +65,7 @@ class posixAccount extends baseModule implements passwordService {
 	/** caches the list of known UIDs */
 	private $cachedUIDList = null;
 	/** if set to true the suggested user name for John Doe will be john.doe instead of jdoe */
-	private $SUGGEST_LONG_USER_NAME = false;
+	protected $SUGGEST_LONG_USER_NAME = false;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -606,7 +606,7 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				$result = lamdaemon(
 					implode(
-						posixAccount::$SPLIT_DELIMITER,
+						self::$SPLIT_DELIMITER,
 						array(
 							$this->attributes['uid'][0],
 							"home",
@@ -723,7 +723,7 @@ class posixAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 				$result = lamdaemon(
 					implode(
-						posixAccount::$SPLIT_DELIMITER,
+						self::$SPLIT_DELIMITER,
 						array(
 							$this->attributes['uid'][0],
 							"home",
@@ -1019,7 +1019,7 @@ class posixAccount extends baseModule implements passwordService {
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$result = lamdaemon(
 					implode(
-						posixAccount::$SPLIT_DELIMITER,
+						self::$SPLIT_DELIMITER,
 						array(
 							$this->attributes['uid'][0],
 							"home",
@@ -1045,7 +1045,7 @@ class posixAccount extends baseModule implements passwordService {
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
 				$result = lamdaemon(
 					implode(
-						posixAccount::$SPLIT_DELIMITER,
+						self::$SPLIT_DELIMITER,
 						array(
 							$this->attributes['uid'][0],
 							"home",
@@ -1337,7 +1337,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			$result = lamdaemon(
 				implode(
-					posixAccount::$SPLIT_DELIMITER,
+					self::$SPLIT_DELIMITER,
 					array(
 						$this->attributes['uid'][0],
 						"home",
@@ -1983,7 +1983,7 @@ class posixAccount extends baseModule implements passwordService {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
 			$result = lamdaemon(
 				implode(
-					posixAccount::$SPLIT_DELIMITER,
+					self::$SPLIT_DELIMITER,
 					array(
 						$data[$pos][$ids['posixAccount_userName']],
 						"home",
@@ -2406,7 +2406,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param array $attrs LDAP attributes
 	 * @return String user name
 	 */
-	private function getUserNameSuggestion($attrs) {
+	protected function getUserNameSuggestion($attrs) {
 		if (isset($attrs['sn'][0])) {
 			if (isset($attrs['givenName'][0]) && ($attrs['givenName'][0] != '')) {
 				if ($this->SUGGEST_LONG_USER_NAME) {
