@@ -2477,6 +2477,55 @@ Have fun!
           </mediaobject>
         </screenshot>
       </section>
+
+      <section>
+        <title>Puppet</title>
+
+        <para>LAM supports to manage your <ulink
+        url="http://puppetlabs.com/">Puppet</ulink> configuration. You can
+        edit all attributes like environment, classes, variables and parent
+        node.</para>
+
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>To activate this feature please edit your LAM server profile and
+        add the host module "Puppet (puppetClient)" on tab "Modules". This
+        will add the Puppet tab to your host pages.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_puppet2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>On tab "Module settings" in your LAM server profile you may also
+        setup some common environment names. LAM will use them to provide
+        autocompletion hints when editing the environment for a node.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_puppet3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Editing nodes</emphasis></para>
+
+        <para>When you edit a host entry then you will see the tab "Puppet".
+        Here you can add/remove the Puppet extension and edit all
+        attributes.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_puppet1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section>
