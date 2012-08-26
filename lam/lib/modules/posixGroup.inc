@@ -418,7 +418,7 @@ class posixGroup extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			),
 			'cn' => array(
 				"Headline" => _("Group name"), 'attr' => 'cn',
@@ -445,7 +445,7 @@ class posixGroup extends baseModule implements passwordService {
 		$return = parent::get_configOptions($scopes, $allScopes);
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
-			$return[0]->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), array('SSHA'), _("Password hash type"), 'pwdHash'));
+			$return[0]->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'));
 		}
 		return $return;
 	}

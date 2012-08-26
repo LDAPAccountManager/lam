@@ -288,10 +288,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// add password hash type if posixAccount is inactive
 			$confActiveUnixModules = array_merge($_SESSION['conf_config']->get_AccountModules('user'), $_SESSION['conf_config']->get_AccountModules('host'), $_SESSION['conf_config']->get_AccountModules('group'));
 			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
-				$options = array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN");
 				$optionsSelected = array('SSHA');
 				$hashOption = new htmlTable();
-				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', $options, $optionsSelected, _("Password hash type"), 'pwdHash'));
+				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
 				$configContainer->addElement($hashOption);
 			}
 		}
@@ -772,7 +771,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			),
 			'o' => array(
 				"Headline" => _("Organisation"), 'attr' => 'o',

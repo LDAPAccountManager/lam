@@ -162,12 +162,12 @@ function ntPassword($password) {
 
 
 /**
-* Returns the hash value of a plain text password
-* the hash algorithm depends on the configuration file
+* Returns the hash value of a plain text password.
+* @see getSupportedHashTypes()
 *
 * @param string $password the password string
 * @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
-* @param string $hashType password hash type (CRYPT, SHA, SSHA, MD5, SMD5, PLAIN)
+* @param string $hashType password hash type (CRYPT, CRYPT-SHA512, SHA, SSHA, MD5, SMD5, PLAIN)
 * @return string the password hash
 */
 function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
@@ -188,12 +188,14 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 		case 'CRYPT':
 			$hash = "{CRYPT}" . crypt($password);
 			break;
+		case 'CRYPT-SHA512':
+			$hash = "{CRYPT}" . crypt($password, '$6$' . generateSalt(16));
+			break;
 		case 'MD5':
 			$hash = "{MD5}" . base64_encode(convertHex2bin(md5($password)));
 			break;
 		case 'SMD5':
-				$salt0 = substr(pack("h*", md5($rand)), 0, 8);
-				$salt = substr(pack("H*", md5($salt0 . $password)), 0, 4);
+				$salt = generateSalt(4);
 				$hash = "{SMD5}" . base64_encode(convertHex2bin(md5($password . $salt)) . $salt);
 			break;
 		case 'SHA':
@@ -204,14 +206,43 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			break;
 		case 'SSHA':
 		default: // use SSHA if the setting is invalid
-			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
-			$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
+			$salt = generateSalt(4);
 			$hash = "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt)) . $salt);
 			break;
 	}
 	// enable/disable password
 	if (! $enabled) return pwd_disable($hash);
 	else return $hash;
+}
+
+/**
+ * Returns the list of supported hash types (e.g. SSHA).
+ * 
+ * @return array hash types
+ */
+function getSupportedHashTypes() {
+	if (version_compare(phpversion(), '5.3.2') < 0) {
+		// CRYPT-SHA512 requires PHP 5.3.2 or higher
+		return array('CRYPT', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN');
+	}
+	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN');
+}
+
+/**
+* Calculates a password salt of the given legth.
+*
+* @param int $len salt length
+* @return String the salt string
+*
+*/
+function generateSalt($len) {
+	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890./';
+	$salt = '';
+	for ($i = 0; $i < $len; $i++) {
+		$pos= mt_rand(0, strlen($chars)-1);
+		$salt .= $chars{$pos};
+	}
+	return $salt;
 }
 
 /**

@@ -158,7 +158,7 @@ class posixAccount extends baseModule implements passwordService {
 			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
 			// self service configuration settings
 			$selfServiceContainer = new htmlTable();
-			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
+			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 				array('SSHA'), _("Password hash type")));
 			$selfServiceContainer->addElement(new htmlHelpLink('pwdHash', get_class($this)));
 			$return['selfServiceSettings'] = $selfServiceContainer;
@@ -192,7 +192,7 @@ class posixAccount extends baseModule implements passwordService {
 		$return['config_options']['host'] = $configHostContainer;
 		$configOptionsContainer = new htmlTable();
 		$configOptionsContainer->addElement(new htmlSubTitle(_('Options')), true);
-		$configOptionsContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"),
+		$configOptionsContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 			array('SSHA'), _("Password hash type"), 'pwdHash'), true);
 		$configOptionsContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'));
 		$return['config_options']['all'] = $configOptionsContainer;
@@ -350,7 +350,7 @@ class posixAccount extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
 			),
 			'uidNumber' => array(
 				"Headline" => _("UID number"), 'attr' => 'uidNumber',
