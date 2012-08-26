@@ -94,6 +94,10 @@ if (isset($_POST['save'])) {
 			if (isset($_POST[$element])) $options[$element] = $_POST[$element];  // value is already an array
 			else $options[$element] = array();
 		}
+		// textareas
+		if ($_SESSION['profile_types'][$element] == "textarea") {
+			$options[$element] = explode("\r\n", $_POST[$element]);
+		}
 	}
 	
 	// remove double slashes if magic quotes are on
