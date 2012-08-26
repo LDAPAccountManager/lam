@@ -119,7 +119,7 @@ class authorizedServiceObject extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['authorizedService'][0] = array('ERROR', 'Authorized services are invalid.');  // third array value is set dynamically
+		$this->messages['authorizedService'][0] = array('ERROR', _('Authorized services are invalid.'));  // third array value is set dynamically
 		$this->messages['authorizedService'][1] = array('ERROR', _('Account %s:') . ' authorizedService', _('Please enter a valid list of service names.'));
 	}
 
