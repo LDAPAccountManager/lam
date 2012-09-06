@@ -309,7 +309,7 @@ class fixed_ip extends baseModule {
 			}
 
 			// Add new IP
-			if(isset($_POST['add_ip'])) {
+			if (isset($_POST['add_ip']) || ($_POST['pc_add'] != '') || ($_POST['mac_add'] != '')) {
 			    // Add IP:
 				$this->fixed_ip[] = array('cn' => $_POST['pc_add'], 'mac' => $_POST['mac_add'], 'ip' => $_POST['ip_add']);
 			}
