@@ -4410,6 +4410,313 @@ Run slapindex to rebuild the index.
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para><emphasis role="bold">Possible input fields</emphasis></para>
+
+        <para>This is a list of input fields you may add to the self service
+        page.</para>
+
+        <table frame="box" rules="rows">
+          <caption>Self service fields</caption>
+
+          <col align="center" span="1" />
+
+          <thead>
+            <tr align="center">
+              <th>Account type</th>
+
+              <th>Option</th>
+
+              <th>Description</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <th align="left"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_asterisk.png" />
+                  </imageobject>
+                </inlinemediaobject> Asterisk (voicemail)</th>
+
+              <td>Sync Asterisk password with Unix password</td>
+
+              <td>This is a hidden field. It will update the Asterisk password
+              each time the Unix password is changed.</td>
+            </tr>
+
+            <tr>
+              <th align="left"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_heimdal.png" />
+                  </imageobject>
+                </inlinemediaobject> Kerberos</th>
+
+              <td>Sync Kerberos password with Unix password</td>
+
+              <td>This is a hidden field. It will update the Kerberos password
+              each time the Unix password is changed.</td>
+            </tr>
+
+            <tr>
+              <th align="left" axis="" rowspan="2"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_kolab.png" />
+                  </imageobject>
+                </inlinemediaobject> Kolab</th>
+
+              <td>Delegates</td>
+
+              <td>Allows to manage delegate permissions</td>
+            </tr>
+
+            <tr>
+              <td>Invitation policy</td>
+
+              <td>Invitation policy management</td>
+            </tr>
+
+            <tr>
+              <th align="left" rowspan="2"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_ssh.png" />
+                  </imageobject>
+                </inlinemediaobject> Password self reset</th>
+
+              <td>Question</td>
+
+              <td>Security question selection</td>
+            </tr>
+
+            <tr>
+              <td>Answer</td>
+
+              <td>Security answer</td>
+            </tr>
+
+            <tr>
+              <th align="left" rowspan="23"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_user.png" />
+                  </imageobject>
+                </inlinemediaobject> Personal</th>
+
+              <td>Business category</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Car license</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Department</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Email address</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Fax number</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>First name</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Home telephone number</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Initials</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Job title</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Last name</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Location</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Mobile number</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Office name</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Photo</td>
+
+              <td>Shows the user photo if set. The user may also remove the
+              photo or upload a new one.</td>
+            </tr>
+
+            <tr>
+              <td>Postal address</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Postal code</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Post office box</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Registered address</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Room number</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>State</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Street</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Telephone number</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Web site</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <th align="left" rowspan="4"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_samba.png" />
+                  </imageobject>
+                </inlinemediaobject> Samba 3</th>
+
+              <td>Password</td>
+
+              <td>Input field to set a new NT/LM password. The attribute
+              "sambaPwdLastSet" is updated if it existed before.</td>
+            </tr>
+
+            <tr>
+              <td>Sync Samba LM password with Unix password</td>
+
+              <td>This is a hidden field. It will update the Samba LM password
+              each time the Unix password is changed.</td>
+            </tr>
+
+            <tr>
+              <td>Sync Samba NT password with Unix password</td>
+
+              <td>This is a hidden field. It will update the Samba NT password
+              each time the Unix password is changed.</td>
+            </tr>
+
+            <tr>
+              <td>Update attribute "sambaPwdLastSet" on password change</td>
+
+              <td>Updates the password timestamp when password is synchronized
+              with Unix.</td>
+            </tr>
+
+            <tr>
+              <th align="left" rowspan="3"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_unix.png" />
+                  </imageobject>
+                </inlinemediaobject> Unix</th>
+
+              <td>Common name</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Login shell</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Password</td>
+
+              <td>This is also the source for several password synchronization
+              options.</td>
+            </tr>
+
+            <tr>
+              <th align="left" rowspan="2"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_zarafa.png" />
+                  </imageobject>
+                </inlinemediaobject> Zarafa</th>
+
+              <td>"Send as" privileges</td>
+
+              <td>Define user who may send mails as this user</td>
+            </tr>
+
+            <tr>
+              <td>Email aliases</td>
+
+              <td>Email aliases</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
       <section>
