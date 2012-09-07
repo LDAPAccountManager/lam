@@ -49,6 +49,8 @@ class posixGroup extends baseModule implements passwordService {
 	private $cachedGIDList = null;
 	/** cache for existing users and their GIDs */
 	private $cachedUserToGIDList = null;
+	/** cache for existing groups */
+	private $cachedGroupNameList = null;
 	
 	/**
 	* In this function the LDAP account is built up.
@@ -317,6 +319,7 @@ class posixGroup extends baseModule implements passwordService {
 		$maxGidInput = new htmlTableExtendedInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
 		$maxGidInput->setRequired(true);
 		$configContainer->addElement($maxGidInput, true);
+		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
 		$return['config_options']['group'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['group']['posixGroup_minGID'] = array (
@@ -427,6 +430,10 @@ class posixGroup extends baseModule implements passwordService {
 			'changegids' => array(
 				"Headline" => _("Change GID number of users and hosts"),
 				"Text" => _("The ID of this group was changed. You can update all user and host entries to the new group ID.")
+			),
+			'gidCheckSuffix' => array (
+				"Headline" => _("Suffix for GID/group name check"),
+				"Text" => _("LAM checks if the entered group name and GID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique group names or GIDs.")
 			)
 		);
 
@@ -607,7 +614,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 			}
 		}
-		if ($this->manageCnAttribute && ($this->attributes['cn'][0]!=$_POST['cn'])) {
+		if ($this->manageCnAttribute) {
 			$this->attributes['cn'][0] = $_POST['cn'];
 			if (preg_match('/^[A-Z]+$/', $_POST['cn'])) {
 				$errors[] = $this->messages['cn'][0];
@@ -617,13 +624,13 @@ class posixGroup extends baseModule implements passwordService {
 			$errors[] = $this->messages['cn'][2];
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
-			// Set username back to original name if new username is in use
-			if ((sizeof(searchLDAPByAttribute('cn', $this->attributes['cn'][0], 'posixGroup', array('cn'), array('group'))) > 0) && ($this->orig['cn'][0]!='')) {
+			// Set username back to original name if new group name is in use
+			if ($this->groupNameExists($this->attributes['cn'][0]) && ($this->orig['cn'][0] != '')) {
 				$this->attributes['cn'][0] = $this->orig['cn'][0];
 			}
 			// Change gid to a new gid until a free gid is found
-			else while (sizeof(searchLDAPByAttribute('cn', $this->attributes['cn'][0], 'posixGroup', array('cn'), array('group'))) > 0) {
-				// get last character of username
+			else while ($this->groupNameExists($this->attributes['cn'][0])) {
+				// get last character of group name
 				$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
 				// Last character is no number
 				if ( !preg_match('/^([0-9])+$/', $lastchar))
@@ -652,14 +659,15 @@ class posixGroup extends baseModule implements passwordService {
 					$this->attributes['cn'][0] = $firstchars . (intval($lastchars)+1);
 				}
 			}
-			// Show warning if lam has changed username
+			// Show warning if lam has changed group name
 			if ($this->attributes['cn'][0] != $_POST['cn']) {
 				$errors[] = $this->messages['cn'][1];
 			}
-			// show info when gidnumber has changed
-			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $_POST['gidNumber']!=$this->attributes['gidNumber'][0]) {
-				$errors[] = $this->messages['gidNumber'][0];
-			}
+		}
+		// show info when gidnumber has changed
+		if (isset($this->orig['gidNumber'][0]) && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])
+			&& ($this->orig['gidNumber'][0] != '') && !$this->changegids) {
+			$errors[] = $this->messages['gidNumber'][0];
 		}
 		// Return error-messages
 		return $errors;
@@ -818,8 +826,14 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->cachedGIDList != null) {
 			return $this->cachedGIDList;
 		}
-		$result = searchLDAPByAttribute('gidNumber', '*', 'posixGroup', array('gidNumber'), array('group'));
 		$this->cachedGIDList = array();
+		$attrs = array('gidNumber');
+		$filter = '(&(objectClass=posixGroup)(gidNumber=*))';
+		$suffix = $_SESSION['config']->get_Suffix('group');
+		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
+			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
+		}
+		$result = searchLDAP($suffix, $filter, $attrs);
 		for ($i = 0; $i < sizeof($result); $i++) {
 			$this->cachedGIDList[] = $result[$i]['gidnumber'][0];
 		}
@@ -842,6 +856,39 @@ class posixGroup extends baseModule implements passwordService {
 			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = $result[$i]['gidnumber'][0];
 		}
 		return $this->cachedUserToGIDList;
+	}
+	
+	/**
+	 * Checks if the given group name already exists in LDAP.
+	 * 
+	 * @param String $groupName group name
+	 * @return boolean true if already exists
+	 */
+	private function groupNameExists($groupName) {
+		return in_array($groupName, $this->getGroupNames());
+	}
+	
+	/**
+	 * Returns a list of all group names in LDAP.
+	 * 
+	 * @return array group names
+	 */
+	private function getGroupNames() {
+		if ($this->cachedGroupNameList != null) {
+			return $this->cachedGroupNameList;
+		}
+		$this->cachedGroupNameList = array();
+		$attrs = array('cn');
+		$filter = '(&(objectClass=posixGroup)(cn=*))';
+		$suffix = $_SESSION['config']->get_Suffix('group');
+		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
+			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
+		}
+		$result = searchLDAP($suffix, $filter, $attrs);
+		for ($i = 0; $i < sizeof($result); $i++) {
+			$this->cachedGroupNameList[] = $result[$i]['cn'][0];
+		}
+		return $this->cachedGroupNameList;
 	}
 	
 }

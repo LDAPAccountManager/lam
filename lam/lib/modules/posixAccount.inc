@@ -64,6 +64,8 @@ class posixAccount extends baseModule implements passwordService {
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
 	private $cachedUIDList = null;
+	/** caches the list of known user names */
+	private $cachedUserNameList = null;
 	/** if set to true the suggested user name for John Doe will be john.doe instead of jdoe */
 	protected $SUGGEST_LONG_USER_NAME = false;
 
@@ -179,7 +181,8 @@ class posixAccount extends baseModule implements passwordService {
 		$configUserContainer->addElement($minUid, true);
 		$maxUid = new htmlTableExtendedInputField(_('Maximum UID number'), 'posixAccount_maxUID', null, 'minMaxUser');
 		$maxUid->setRequired(true);
-		$configUserContainer->addElement($maxUid);
+		$configUserContainer->addElement($maxUid, true);
+		$configUserContainer->addElement(new htmlTableExtendedInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixUser', '', 'uidCheckSuffix'), true);
 		$return['config_options']['user'] = $configUserContainer;
 		$configHostContainer = new htmlTable();
 		$configHostContainer->addElement(new htmlSubTitle(_("Hosts")), true);
@@ -188,7 +191,8 @@ class posixAccount extends baseModule implements passwordService {
 		$configHostContainer->addElement($minUid, true);
 		$maxUid = new htmlTableExtendedInputField(_('Maximum UID number'), 'posixAccount_maxMachine', null, 'minMaxHost');
 		$maxUid->setRequired(true);
-		$configHostContainer->addElement($maxUid);
+		$configHostContainer->addElement($maxUid, true);
+		$configHostContainer->addElement(new htmlTableExtendedInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixHost', '', 'uidCheckSuffix'), true);
 		$return['config_options']['host'] = $configHostContainer;
 		$configOptionsContainer = new htmlTable();
 		$configOptionsContainer->addElement(new htmlSubTitle(_('Options')), true);
@@ -376,6 +380,10 @@ class posixAccount extends baseModule implements passwordService {
 				"Headline" => _("Home directory"),
 				"Text" => _("This will create the user's home directory on the specified server.")
 			),
+			'uidCheckSuffix' => array (
+				"Headline" => _("Suffix for UID/user name check"),
+				"Text" => _("LAM checks if the entered user name and UID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique user names or UIDs.")
+			),
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("User name"), 'attr' => 'uid',
@@ -546,7 +554,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 
 		// Set additional group memberships
-		if ($this->orig['uid'][0]!='' && $this->attributes['uid'][0]!=$this->orig['uid'][0]) {
+		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($this->attributes['uid'][0] != $this->orig['uid'][0])) {
 			// find affected groups
 			$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', array('dn'), array('group'));
 			for ($i = 0; $i < sizeof($groupList); $i++) {
@@ -868,12 +876,12 @@ class posixAccount extends baseModule implements passwordService {
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ((sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0]!='')) {
+		if ($this->userNameExists($this->attributes['uid'][0]) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0]!='')) {
 			$this->attributes['uid'][0] = $this->orig['uid'][0];
 		}
 		else {
 			// Change uid to a new uid until a free uid is found
-			while (sizeof(searchLDAPByAttribute('uid', $this->attributes['uid'][0], 'posixAccount', array('uid'), array('user', 'host'))) > 0) {
+			while ($this->userNameExists($this->attributes['uid'][0])) {
 				if ($this->get_scope()=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
 				// get last character of username
 				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
@@ -1601,10 +1609,7 @@ class posixAccount extends baseModule implements passwordService {
 		$errors = array();
 		$needAutoUID = array();
 		// get list of existing users
-		$existingUsers = searchLDAPByAttribute('uid', '*', 'posixAccount', array('uid'), array('user', 'host'));
-		for ($i = 0; $i < sizeof($existingUsers); $i++) {
-			$existingUsers[$i] = $existingUsers[$i]['uid'][0];
-		}
+		$existingUsers = $this->getUserNames();
 		// get list of existing groups
 		$groupList = $this->findGroups();
 		$groupMap = array();
@@ -2366,13 +2371,86 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->cachedUIDList != null) {
 			return $this->cachedUIDList;
 		}
-		$result = searchLDAPByAttribute('uidNumber', '*', 'posixAccount', array('uidNumber'), array('user', 'host'));
 		$this->cachedUIDList = array();
-		for ($i = 0; $i < sizeof($result); $i++) {
-			$this->cachedUIDList[] = $result[$i]['uidnumber'][0];
+		$attrs = array('uidNumber');
+		$filter = '(&(objectClass=posixAccount)(uidNumber=*))';
+		$types = $_SESSION['config']->get_ActiveTypes();
+		// get user UIDs
+		if (in_array('user', $types)) {
+			$suffixUsers = $_SESSION['config']->get_Suffix('user');
+			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0] != '')) {
+				$suffixUsers = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
+			}
+			$result = searchLDAP($suffixUsers, $filter, $attrs);
+			for ($i = 0; $i < sizeof($result); $i++) {
+				$this->cachedUIDList[] = $result[$i]['uidnumber'][0];
+			}
+		}
+		// get host UIDs
+		if (in_array('host', $types)) {
+			$suffixHosts = $_SESSION['config']->get_Suffix('host');
+			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0] != '')) {
+				$suffixHosts = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
+			}
+			if ($suffixUsers != $suffixHosts) {
+				$result = searchLDAP($suffixHosts, $filter, $attrs);
+				for ($i = 0; $i < sizeof($result); $i++) {
+					$this->cachedUIDList[] = $result[$i]['uidnumber'][0];
+				}
+			}
 		}
 		sort($this->cachedUIDList, SORT_NUMERIC);
 		return $this->cachedUIDList;
+	}
+	
+	/**
+	 * Checks if the given user name already exists in LDAP.
+	 * 
+	 * @param String $userName user name
+	 * @return boolean true if already exists
+	 */
+	private function userNameExists($userName) {
+		return in_array($userName, $this->getUserNames());
+	}
+	
+	/**
+	 * Returns a list of all user names in LDAP.
+	 * 
+	 * @return array user names
+	 */
+	private function getUserNames() {
+		if ($this->cachedUserNameList != null) {
+			return $this->cachedUserNameList;
+		}
+		$this->cachedUserNameList = array();
+		$attrs = array('uid');
+		$filter = '(&(objectClass=posixAccount)(uid=*))';
+		$types = $_SESSION['config']->get_ActiveTypes();
+		// get user names
+		if (in_array('user', $types)) {
+			$suffixUsers = $_SESSION['config']->get_Suffix('user');
+			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0] != '')) {
+				$suffixUsers = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
+			}
+			$result = searchLDAP($suffixUsers, $filter, $attrs);
+			for ($i = 0; $i < sizeof($result); $i++) {
+				$this->cachedUserNameList[] = $result[$i]['uid'][0];
+			}
+		}
+		// get host UIDs
+		if (in_array('host', $types)) {
+			$suffixHosts = $_SESSION['config']->get_Suffix('host');
+			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0] != '')) {
+				$suffixHosts = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
+			}
+			if ($suffixUsers != $suffixHosts) {
+				$result = searchLDAP($suffixHosts, $filter, $attrs);
+				for ($i = 0; $i < sizeof($result); $i++) {
+					$this->cachedUserNameList[] = $result[$i]['uid'][0];
+				}
+			}
+		}
+		return $this->cachedUserNameList;
 	}
 	
 	/**
