@@ -142,23 +142,30 @@ echo $_SESSION['header'];
 				<td style="border-style:none" rowspan="4" width="20"></td>
 				<td style="border-style:none" align="center">
 					<?php
+						$conf = new LAMCfgMain();
+						$group = new htmlTable();
+						$profiles = array();
+						$selectedProfile = array();
+						$fieldsEnabled = false;
 						if (sizeof($files) > 0) {
-							echo "<select size=1 name=\"filename\">\n";
-							$conf = new LAMCfgMain();
-							$defaultprofile = $conf->default;
-							for ($i = 0; $i < sizeof($files); $i++) {
-								if ($files[$i] == $defaultprofile) echo ("<option selected>" . $files[$i] . "</option>\n");
-								else echo ("<option>" . $files[$i] . "</option>\n");
-							}
-							echo "</select>\n";
+							$profiles = $files;
+							$selectedProfile[] = $conf->default;
+							$fieldsEnabled = true;
 						}
-						else echo "<select disabled size=1 name=\"filename\">\n<option></option>\n</select>\n";
-						if (sizeof($files) > 0) echo "<input type=\"password\" name=\"passwd\">\n";
-						else echo "<input disabled type=\"password\" name=\"passwd\">\n";
-						if (sizeof($files) > 0) echo "<button type=\"submit\" id=\"submitButton\" class=\"smallPadding\" name=\"submit\">" . _("Ok") . "</button>\n";
-						else echo "<button type=\"submit\" id=\"submitButton\" class=\"smallPadding\" name=\"submit\" disabled>" . _("Ok") . "</button>&nbsp;\n";
-						// help link
-						printHelpLink(getHelp('', '200'), '200');
+						$select = new htmlSelect('filename', $profiles, $selectedProfile);
+						$select->setIsEnabled($fieldsEnabled);
+						$group->addElement($select);
+						$passwordField = new htmlInputField('passwd');
+						$passwordField->setIsPassword(true);
+						$passwordField->setIsEnabled($fieldsEnabled);
+						$passwordField->setFieldSize(20);
+						$group->addElement($passwordField);
+						$button = new htmlButton('submit', _("Ok"));
+						$button->setIsEnabled($fieldsEnabled);
+						$group->addElement($button);
+						$group->addElement(new htmlHelpLink('200'));
+						$tabindex = 1;
+						parseHtml(null, $group, array(), false, $tabindex, 'user');
 					?>
 				</td>
 				<td style="border-style:none" rowspan="4" width="20"></td>
