@@ -143,6 +143,18 @@ class htmlTable extends htmlElement {
 	private $rowOpen = false;
 	/** additional CSS classes */
 	private $CSSClasses = '';
+	/** table width */
+	private $width = null;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param String $width table width (e.g. 100%)
+	 * @see htmlElement
+	 */
+	function __construct($width = null) {
+		$this->width = $width;
+	}
 
 	/**
 	 * Adds an element to the table. The element may be a htmlElement object or a simple String.
@@ -213,7 +225,11 @@ class htmlTable extends htmlElement {
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
-		echo "<table $this->CSSClasses>\n";
+		$width = '';
+		if ($this->width != null) {
+			$width = ' width="' . htmlspecialchars($this->width) . '"';
+		}
+		echo "<table" . $width . " $this->CSSClasses>\n";
 		// print all contained elements
 		for ($i = 0; $i < sizeof($this->elements); $i++) {
 			// print htmlElement objects
@@ -2001,7 +2017,7 @@ class htmlSpacer extends htmlElement {
 		if ($this->height != null) {
 			$height = 'height: ' . $this->height . ';';
 		}
-		echo "<div style=\"$width $height\"></div>\n";
+		echo "<div style=\"$width $height display: inline-block;\"></div>\n";
 		return array();
 	}
 	
