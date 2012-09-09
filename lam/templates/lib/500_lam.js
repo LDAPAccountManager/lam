@@ -22,24 +22,6 @@ $Id$
 */
 
 /**
- * Used to highlight the row under the mouse cursor.
- * 
- * @param list table row
- */
-function list_over(list) {
-	jQuery(list).addClass('highlight');
-}
-
-/**
- * Used to unhighlight a row if the mouse cursor leaves it.
- * 
- * @param list table row
- */
-function list_out(list) {
-	jQuery(list).removeClass('highlight');
-}
-
-/**
  * Called when user clicks on a table row. This toggles the checkbox in the row.
  * 
  * @param box checkbox name

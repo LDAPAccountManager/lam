@@ -116,12 +116,6 @@ table.lamHeader {
   height: 35px;
 }
 
-tr.highlight {
-	border-color: red;
-	border-style: dotted;
-	border-width: 1px 0px 1px 0px;
-}
-
 .rightToLeftText {
 	text-align: right;
 }

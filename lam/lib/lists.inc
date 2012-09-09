@@ -90,6 +90,9 @@ class lamList {
 	
 	/** configuration options */
 	private $configOptions;
+	
+	/** tabindex for GUI elements */
+	protected $tabindex = 1;
 
 	/** ID for list size config option */
 	const LIST_SIZE_OPTION_NAME = "L_SIZE";
@@ -144,6 +147,7 @@ class lamList {
 	 * Prints the HTML code to display the list view.
 	 */
 	public function showPage() {
+		$this->tabindex = 1;
 		// do POST actions
 		$postFragment = $this->listDoPost();
 		// get some parameters
@@ -396,8 +400,7 @@ class lamList {
 			else {
 				$classes = ' ' . $this->type . 'list-dark';
 			}
-			echo("<tr class=\"$classes\" onMouseOver=\"list_over(this)\"\n" .
-				" onMouseOut=\"list_out(this)\"\n" .
+			echo("<tr class=\"$classes\"" .
 				" onClick=\"list_click('" . $rowID . "')\"\n" .
 				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
 			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click('" . $rowID . "')\"" .
@@ -659,8 +662,7 @@ class lamList {
 		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
 		$container->addElement($buttonContainer);
 		
-		$tabindex = 1;
-		parseHtml(null, $container, array(), false, $tabindex, $this->type);
+		parseHtml(null, $container, array(), false, $this->tabindex, $this->type);
 		
 		$this->listPrintFooter();
 	}
@@ -670,14 +672,19 @@ class lamList {
 	*/
 	protected function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
-			echo ("<select title=\"" . _("Suffix") . "\" class=\"" . $this->type . " rightToLeftText\" size=1 name=\"suffix\" onchange=\"listOUchanged('" . $this->type . "', this)\">\n");
+			$group = new htmlGroup();
+			$suffixList = array();
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
-				if ($this->suffix == $this->possibleSuffixes[$i]) {
-					echo ("<option value=\"" . $this->possibleSuffixes[$i] . "\" selected>" . getAbstractDN($this->possibleSuffixes[$i]) . "</option>\n");
-				}
-				else echo("<option value=\"" . $this->possibleSuffixes[$i] . "\">" . getAbstractDN($this->possibleSuffixes[$i]) . "</option>\n");
+				$suffixList[getAbstractDN($this->possibleSuffixes[$i])] = $this->possibleSuffixes[$i];
 			}
-			echo ("</select>&nbsp;&nbsp;&nbsp;\n");
+			$suffixSelect = new htmlSelect('suffix', $suffixList, array($this->suffix));
+			$suffixSelect->setOnchangeEvent("listOUchanged('" . $this->type . "', this)");
+			$suffixSelect->setRightToLeftTextDirection(true);
+			$suffixSelect->setSortElements(false);
+			$suffixSelect->setHasDescriptiveElements(true);
+			$group->addElement($suffixSelect);
+			$group->addElement(new htmlSpacer('5px', null));
+			parseHtml(null, $group, array(), true, $this->tabindex, $this->type);
 		}
 	}
 
@@ -921,14 +928,13 @@ class lamList {
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		echo '<table width="100%"><tr><td>';
 		
-		$tabindex = 1;
 		$configContainer = new htmlTable();
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
 			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
 		}
 		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));		
 		
-		parseHtml('', $configContainer, array(), false, $tabindex, $this->type);
+		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type);
 
 		echo "</td></tr></table>\n";
 		echo '</form>';

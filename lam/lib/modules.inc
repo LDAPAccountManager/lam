@@ -899,6 +899,7 @@ class accountContainer {
 	 * @param boolean $stopProcessing true if page should end after displaying the messages
 	 */
 	private function printModuleContent($result, $stopProcessing) {
+		$tabindex = 1;
 		$this->printPageHeader();
 		$this->printPasswordPromt();
 		// display error messages
@@ -915,7 +916,7 @@ class accountContainer {
 		echo "<table class=\"".$this->type."list-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		if (checkIfWriteAccessIsAllowed()) {
 			echo "<tr class=\"".$this->type."list-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
-			$this->printCommonControls();
+			$this->printCommonControls($tabindex);
 			echo "</td></tr>\n";
 		}
 		echo "<tr class=\"".$this->type."list-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
@@ -926,35 +927,28 @@ class accountContainer {
 		echo $this->titleBarTitle;
 		echo '</div></td>';
 		echo '<td align="right">';
-			echo _('Suffix');
-			echo " <select class=\"rightToLeftText\" name=\"accountContainerSuffix\" size=1>\n";
-				// loop through all suffixes
-				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
-				foreach ($this->getOUs() as $suffix) {
-					echo '<option value="' . $suffix . '" ';
-					if ($this->dnSuffix == $suffix) {
-						echo 'selected';
-					}
-					echo ">" . getAbstractDN($suffix) . "</option>\n";
-				}
-				if (!($this->dnSuffix == '') && !in_array($this->dnSuffix, $this->getOUs())) {
-					echo '<option value="' . $this->dnSuffix . '" selected>' . getAbstractDN($this->dnSuffix) . "</option>\n";;
-				}
-			echo "</select>\n";
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;';
+			$group = new htmlGroup();
+			// suffix
+			$group->addElement(new htmlOutputText(_('Suffix')));
+			$suffixList = array();
+			foreach ($this->getOUs() as $suffix) {
+				$suffixList[getAbstractDN($suffix)] = $suffix;
+			}
+			if (!($this->dnSuffix == '') && !in_array($this->dnSuffix, $this->getOUs())) {
+				$suffixList[getAbstractDN($this->dnSuffix)] = $this->dnSuffix;
+			}
+			$selectedSuffix = array($this->dnSuffix);
+			$suffixSelect = new htmlSelect('accountContainerSuffix', $suffixList, $selectedSuffix);
+			$suffixSelect->setHasDescriptiveElements(true);
+			$suffixSelect->setRightToLeftTextDirection(true);
+			$group->addElement($suffixSelect);
+			$group->addElement(new htmlSpacer('10px', null));
 			// RDN selection
+			$group->addElement(new htmlOutputText(_('RDN identifier')));
 			$rdnlist = getRDNAttributes($this->type);
-			echo _('RDN identifier');
-			echo " <select name=\"accountContainerRDN\" size=1>\n";
-				for ($i = 0; $i < sizeof($rdnlist); $i++) {
-					echo "<option ";
-					if ($this->rdn === $rdnlist[$i]) {
-						echo 'selected';
-					}
-					echo ">" . $rdnlist[$i] . "</option>\n";
-				}
-			echo "</select>\n";
-			printHelpLink(getHelp('', '301'), '301');
+			$group->addElement(new htmlSelect('accountContainerRDN', $rdnlist, array($this->rdn)));
+			$group->addElement(new htmlHelpLink('301'));
+			parseHtml(null, $group, array(), true, $tabindex, $this->type);
 		echo '</td>';
 		echo '</tr></table>';
 		if ($this->titleBarSubtitle != null) {
@@ -1129,64 +1123,51 @@ class accountContainer {
 	
 	/**
 	 * Prints common controls like the save button and the ou selection.
+	 * 
+	 * @param int $tabindex tabindex for GUI elements
 	 */
-	private function printCommonControls() {
-		echo "<table style=\"border-width:0px;\" width=\"100%\"><tr>";
-		echo "<td align=\"left\">";
+	private function printCommonControls(&$tabindex) {
+		$table = new htmlTable('100%');
+		$leftButtonGroup = new htmlGroup();
+		$leftButtonGroup->alignment = htmlElement::ALIGN_LEFT;
 		// save button
-		echo "<button id=\"modSaveButton\" name=\"accountContainerSaveAccount\">" . _('Save') . "</button> \n";
+		$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
+		$saveButton->setIconClass('saveButton');
+		$leftButtonGroup->addElement($saveButton);
+		$leftButtonGroup->addElement(new htmlSpacer('1px', null));
 		// reset button
-		if ($this->dn_orig!='') {
-			echo "<button id=\"modResetButton\" name=\"accountContainerReset\">" . _('Reset changes') . "</button>\n";
-		}
+		$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
+		$resetButton->setIconClass('undoButton');
+		$leftButtonGroup->addElement($resetButton);
+		// set password button
 		if ($this->showSetPasswordButton()) {
-			echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo '<button type="button" onclick="passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\');" id="modPasswordButton">' . _('Set password') . "</button> \n";
+			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
+			$passwordButton->setIconClass('passwordButton');
+			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
+				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\');');
+			$leftButtonGroup->addElement($passwordButton);
 		}
-		echo "</td>";
-		echo "<td align=\"right\">";
+		$table->addElement($leftButtonGroup);
+		
+		$rightGroup = new htmlGroup();
+		$rightGroup->alignment = htmlElement::ALIGN_RIGHT;
 		// profile selection
 		$profilelist = getAccountProfiles($this->type);
 		if (sizeof($profilelist) > 0) {
-			sort($profilelist);
-			echo "<select name=\"accountContainerSelectLoadProfile\" size=1>\n";
-				for ($i = 0; $i < sizeof($profilelist); $i++) {
-					$selected = '';
-					if ($profilelist[$i] === $this->lastLoadedProfile) {
-						$selected = 'selected';
-					}
-					echo "<option $selected>" . $profilelist[$i] . "</option>\n";
-				}
-			echo "</select> \n";
-			echo "<button id=\"modLoadProfileButton\" name=\"accountContainerLoadProfile\">" . _('Load profile') . "</button>&nbsp;\n";
-			printHelpLink(getHelp('', '401'), '401');
+			$rightGroup->addElement(new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile)));
+			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
+			$profileButton->setIconClass('loadProfileButton');
+			$rightGroup->addElement($profileButton);
+			$rightGroup->addElement(new htmlSpacer('1px', null));
+			$rightGroup->addElement(new htmlHelpLink('401'));
 		}
-		echo "</td>";
-		echo "</tr></table>";
+		$table->addElement($rightGroup);
+		
+		parseHtml(null, $table, array(), false, $tabindex, $this->type);
 		?>
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				jQuery('#modSaveButton').button({
-			        icons: {
-			      	  primary: 'saveButton'
-			    	}
-				});
-				jQuery('#modResetButton').button({
-			        icons: {
-			      	  primary: 'undoButton'
-			    	}
-				});
-				jQuery('#modPasswordButton').button({
-			        icons: {
-			      	  primary: 'passwordButton'
-			    	}
-				});
-				jQuery('#modLoadProfileButton').button({
-			        icons: {
-			      	  primary: 'loadProfileButton'
-			    	}
-				});
 				var maxHeight = 0;
 				jQuery('.lamEqualHeightTabContent').each(function() {
 					if (jQuery(this).height() > maxHeight) {
@@ -1945,7 +1926,6 @@ class accountContainer {
 		if ($this->cachedOUs != null) {
 			return $this->cachedOUs;
 		}
-		$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 		$typeObj = new $this->type();
 		$this->cachedOUs = $typeObj->getSuffixList();
 		return $this->cachedOUs;

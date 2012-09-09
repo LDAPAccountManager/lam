@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2011  Roland Gruber
+                2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -198,6 +198,21 @@ function display_LoginPage($config_object) {
 		echo "</script>\n";
 	?>
 
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				var equalWidthElements = new Array('#username', '#password', '#language');
+				var maxWidth = 0;
+				for (var i = 0; i < equalWidthElements.length; ++i) {
+					if (jQuery(equalWidthElements[i]).width() > maxWidth) {
+						maxWidth = jQuery(equalWidthElements[i]).width();
+					};
+				}
+				for (var i = 0; i < equalWidthElements.length; ++i) {
+					jQuery(equalWidthElements[i]).css({'width': maxWidth});
+				}
+			});
+		</script>
+
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
@@ -209,7 +224,7 @@ function display_LoginPage($config_object) {
 			</tr>
 		</table>
 		
-		<br><br><br><br>
+		<br><br>
 
 		<?php
 		// check extensions
@@ -253,155 +268,138 @@ function display_LoginPage($config_object) {
 			echo "<br>";
 		}
 		?>
+		<br><br>
 		<div style="position:relative; z-index:5;">
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">
 			<tr>
 				<td style="border-style:none" width="70" rowspan="2">
-					<img src="../graphics/lam.png" alt="Logo">
+					<img src="../graphics/lam.png" alt="Logo" style="margin-top: 5px; margin-bottom: 5px;">
 				</td>
-				<td style="border-style:none" width="580">
+				<td style="border-style:none" width="580px">
 					<form action="login.php" method="post">
-						<table width="580">
-							<tr>
-								<td style="border-style:none" height="30" colspan="2" align="center">
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="35" align="right"><b>
-									<?php
-									echo _("User name");
-									?>
-								</b>&nbsp;&nbsp;</td>
-								<td style="border-style:none" height="35" align="left">
-									<?php
-									if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
-										echo '<select name="username" size="1" tabindex="1">';
-										$admins = $config_object->get_Admins();
-										for($i = 0; $i < count($admins); $i++) {
-											$text = explode(",", $admins[$i]);
-											$text = explode("=", $text[0]);
-											echo '<option value="' . $admins[$i] . '">' . $text[1] . '</option>';
-										}
-										echo '</select>';
-									}
-									else {
-										if ($config_object->getHttpAuthentication() == 'true') {
-											echo htmlspecialchars($_SERVER['PHP_AUTH_USER']);
-										}
-										else {
-											echo '<input type="text" name="username" tabindex="1">';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="35" align="right"><b>
-									<?php
-									echo _("Password");
-									?>
-								</b>&nbsp;&nbsp;</td>
-								<td style="border-style:none" height="35" align="left">
-									<?php
-										if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() == 'true')) {
-											echo '**********';
-										}
-										else {
-											echo '<input type="password" name="passwd" tabindex="2">';
-										}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" align="right"><b>
-									<?php
-									echo _("Language");
-									?>
-								</b>&nbsp;&nbsp;</td>
-								<td style="border-style:none" height="35" align="left">
-									<select name="language" size="1" tabindex="3">
-									<?php
-									for($i = 0; $i < count($languages); $i++) {
-										if($languages[$i]["default"] == "YES") {
-										?>
-										<option selected value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
-										<?php
-										}
-										else
-										{
-										?>
-										<option value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
-										<?php
-										}
-									}
-									?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="50" colspan="2" align="center">
-									<input name="checklogin" type="hidden" value="checklogin">
-									<button type="submit" id="loginButton" class="smallPadding" name="submit" tabindex="4"><?php echo _("Login"); ?></button>
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" colspan="2" align="center">
-									<?php
-										if($error_message != "") {
-											echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
-										}
-									?>
-								</td>
-							</tr>
-						</table>
+						<?php
+							$table = new htmlTable('580px');
+							$spacer = new htmlSpacer(null, '30px');
+							$spacer->colspan = 3;
+							$table->addElement($spacer, true);
+							// user name
+							$userLabel = new htmlOutputText(_("User name"));
+							$userLabel->alignment = htmlElement::ALIGN_RIGHT;
+							$table->addElement($userLabel);
+							$gap = new htmlSpacer('5px', '30px');
+							$table->addElement($gap);
+							if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
+								$admins = $config_object->get_Admins();
+								$adminList = array();
+								for($i = 0; $i < count($admins); $i++) {
+									$text = explode(",", $admins[$i]);
+									$text = explode("=", $text[0]);
+									$adminList[$text[1]] = $admins[$i];
+								}
+								$userSelect = new htmlSelect('username', $adminList);
+								$userSelect->setHasDescriptiveElements(true);
+								$userSelect->alignment = htmlElement::ALIGN_LEFT;
+								$table->addElement($userSelect);
+							}
+							else {
+								if ($config_object->getHttpAuthentication() == 'true') {
+									$httpAuth = new htmlOutputText($_SERVER['PHP_AUTH_USER']);
+									$httpAuth->alignment = htmlElement::ALIGN_LEFT;
+									$table->addElement($httpAuth);
+								}
+								else {
+									$userInput = new htmlInputField('username');
+									$userInput->alignment = htmlElement::ALIGN_LEFT;
+									$table->addElement($userInput);
+								}
+							}
+							$table->addNewLine();
+							// password
+							$passwordLabel = new htmlOutputText(_("Password"));
+							$passwordLabel->alignment = htmlElement::ALIGN_RIGHT;
+							$table->addElement($passwordLabel);
+							$table->addElement($gap);
+							if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() == 'true')) {
+								$passwordInputFake = new htmlOutputText('**********');
+								$passwordInputFake->alignment = htmlElement::ALIGN_LEFT;
+								$table->addElement($passwordInputFake);
+							}
+							else {
+								$passwordInput = new htmlInputField('passwd');
+								$passwordInput->alignment = htmlElement::ALIGN_LEFT;
+								$passwordInput->setIsPassword(true);
+								$passwordInput->setFieldSize('20px');
+								$table->addElement($passwordInput);
+							}
+							$table->addNewLine();
+							// language
+							$languageLabel = new htmlOutputText(_("Language"));
+							$languageLabel->alignment = htmlElement::ALIGN_RIGHT;
+							$table->addElement($languageLabel);
+							$table->addElement($gap);
+							$languageList = array();
+							$defaultLanguage = array();
+							for($i = 0; $i < count($languages); $i++) {
+								$languageList[$languages[$i]["descr"]] = $languages[$i]["link"] . ":" . $languages[$i]["descr"];
+								if($languages[$i]["default"] == "YES") {
+									$defaultLanguage[] = $languages[$i]["link"] . ":" . $languages[$i]["descr"];
+								}
+							}
+							$languageSelect = new htmlSelect('language', $languageList, $defaultLanguage);
+							$languageSelect->setHasDescriptiveElements(true);
+							$languageSelect->alignment = htmlElement::ALIGN_LEFT;
+							$table->addElement($languageSelect, true);
+							// login button
+							$table->addElement(new htmlSpacer(null, '35px'));
+							$table->addElement(new htmlHiddenInput('checklogin', 'checklogin'));
+							$loginButton = new htmlButton('submit', _("Login"));
+							$loginButton->alignment = htmlElement::ALIGN_LEFT;
+							$table->addElement($loginButton, true);
+							// error message
+							if($error_message != "") {
+								$message = new htmlStatusMessage('ERROR', $error_message);
+								$message->colspan = 3;
+								$table->addElement($message, true);
+							}
+							
+							$tabindex = 1;
+							parseHtml(null, $table, array(), false, $tabindex, 'user');
+						?>
 					</form>
 				</td>
 			</tr>
 			<tr>
-				<td style="border-style:none">
+				<td align="left" style="border-style:none">
 					<form action="login.php" method="post">
-						<table width="580">
-							<tr>
-								<td height="30" colspan=2>
-								<hr>
-								</td>
-							</tr>
-							<tr>
-								<td height="30" style="white-space: nowrap">
-									<b>
-									<?php
-									echo _("LDAP server");
-									?></b>&nbsp;&nbsp;
-								</td>
-								<td width="100%" height="30">
-									<?php echo $config_object->get_ServerURL(); ?>
-								</td>
-							</tr>
-							<tr>
-							<td height="30" style="white-space: nowrap">
-								<b>
-								<?php
-								echo _("Server profile");
-								?></b>&nbsp;&nbsp;
-							</td>
-							<td height="30">
-								<select name="profile" size="1" tabindex="5" onchange="loginProfileChanged(this)">
-								<?php
-								for($i=0;$i<count($profiles);$i++) {
-									$selected = '';
-									if ($profiles[$i] == $_SESSION['config']->getName()) {
-										$selected = ' selected';
-									}
-									echo '<option value="' . $profiles[$i] . '"' . $selected . '>' . $profiles[$i] . '</option>';
-								}
-								?>
-								</select>
-							</td>
-							</tr>
-							<tr>
-								<td height="10" colspan="2"></td>
-							</tr>
-						</table>
+					<?php
+						$table = new htmlTable('580px');
+						$line = new htmlHorizontalLine();
+						$line->colspan = 2;
+						$table->addElement($line, true);
+						$subTable = new htmlTable();
+						$subTable->alignment = htmlElement::ALIGN_LEFT;
+						// LDAP server
+						$serverLabel = new htmlOutputText(_("LDAP server"));
+						$serverLabel->alignment = htmlElement::ALIGN_RIGHT;
+						$subTable->addElement($serverLabel);
+						$subTable->addElement($gap);
+						$serverName = new htmlOutputText($config_object->get_ServerURL());
+						$serverName->alignment = htmlElement::ALIGN_LEFT;
+						$subTable->addElement($serverName, true);
+						// server profile
+						$profileLabel = new htmlOutputText(_("Server profile"));
+						$profileLabel->alignment = htmlElement::ALIGN_RIGHT;
+						$subTable->addElement($profileLabel);
+						$subTable->addElement($gap);
+						$profileSelect = new htmlSelect('profile', $profiles, array($_SESSION['config']->getName()));
+						$profileSelect->alignment = htmlElement::ALIGN_LEFT;
+						$profileSelect->setOnchangeEvent('loginProfileChanged(this)');
+						$subTable->addElement($profileSelect, true);
+						$subTable->addElement(new htmlSpacer(null, '10px'));
+						$table->addElement($subTable);
+
+						parseHtml(null, $table, array(), true, $tabindex, 'user');
+					?>
 					</form>
 				</td>
 			</tr>
