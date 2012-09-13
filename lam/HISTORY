@@ -5,7 +5,7 @@
    -> support RFC2307bis automount entries
    -> read-only fields in self service
   - fixed bugs
-   -> Hidden tools are still shown in the "Tools" page (3546092)
+   -> Hidden tools are still shown on the "Tools" page (3546092)
 
 
 19.07.2012 3.8
