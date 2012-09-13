@@ -132,87 +132,86 @@ echo "<p>&nbsp;</p>\n";
 
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
-echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"0\" cellspacing=\"0\">\n";
-	echo "<tr><td>\n";
-	echo '<b>' . _("Account type") . ':</b>';
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<select class=\"$divClass\" name=\"type\" onChange=\"changeVisibleModules(this);\">\n";
-	$sortedTypes = array();
-	for ($i = 0; $i < sizeof($types); $i++) {
-		$sortedTypes[$types[$i]] = getTypeAlias($types[$i]);
+$tabindex = 1;
+$table = new htmlTable();
+
+// account type
+$typeList = array();
+for ($i = 0; $i < sizeof($types); $i++) {
+	$typeList[getTypeAlias($types[$i])] = $types[$i];
+}
+$selectedType = array();
+if (isset($_REQUEST['type'])) {
+	$selectedType[] = $_REQUEST['type'];
+}
+else {
+	$selectedType[] = $types[0];
+}
+$typeSelect = new htmlTableExtendedSelect('type', $typeList, $selectedType, _("Account type"));
+$typeSelect->setHasDescriptiveElements(true);
+$typeSelect->setOnchangeEvent('changeVisibleModules(this);');
+$table->addElement($typeSelect, true);
+$table->addElement(new htmlSpacer(null, '10px'), true);
+
+// module selection
+$moduleLabel = new htmlOutputText(_('Selected modules'));
+$moduleLabel->alignment = htmlElement::ALIGN_TOP;
+$table->addElement($moduleLabel);
+$moduleGroup = new htmlGroup();
+for ($i = 0; $i < sizeof($types); $i++) {
+	$divClasses = array('typeOptions');
+	if ((!isset($_REQUEST['type']) && ($i != 0)) || (isset($_REQUEST['type']) && ($_REQUEST['type'] != $types[$i]))) {
+		$divClasses[] = 'hidden';
 	}
-	natcasesort($sortedTypes);
-	foreach ($sortedTypes as $key => $value) {
-		$selected = '';
-		if (isset($_REQUEST['type']) && ($_REQUEST['type'] == $key)) {
-			$selected = 'selected';
+	$innerTable = new htmlTable();
+	$modules = $_SESSION['config']->get_AccountModules($types[$i]);
+	for ($m = 0; $m < sizeof($modules); $m++) {
+		if (($m != 0) && ($m%3 == 0)) {
+			echo $innerTable->addNewLine();
 		}
-		echo "<option value=\"" . $key . "\" $selected>" . $value . "</option>\n";
+		$module = new $modules[$m]($types[$i]);
+		$iconImage = '../graphics/' . $module->getIcon();
+		$innerTable->addElement(new htmlImage($iconImage));
+		$enabled = true;
+		if (is_base_module($modules[$m], $types[$i])) {
+			$enabled = false;
+		}
+		$checked = true;
+		if (isset($_POST['submit']) && !isset($_POST[$types[$i] . '_' . $modules[$m]])) {
+			$checked = false;
+		}
+		$checkbox = new htmlTableExtendedInputCheckbox($types[$i] . '_' . $modules[$m], $checked, getModuleAlias($modules[$m], $types[$i]), null, false);
+		$checkbox->setIsEnabled($enabled);
+		if ($enabled) {
+			$innerTable->addElement($checkbox);
+		}
+		else {
+			$boxGroup = new htmlGroup();
+			$boxGroup->addElement($checkbox);
+			// add hidden field to fake disabled checkbox value
+			$boxGroup->addElement(new htmlHiddenInput($types[$i] . '_' . $modules[$m], 'on'));
+			$innerTable->addElement($boxGroup);
+		}
+		$innerTable->addElement(new htmlSpacer('10px', null));
 	}
-	echo "</select>\n";
-	echo "</td></tr>\n";
-	echo "<tr><td valign=\"top\">\n";
-		echo '<b>' . _('Selected modules') . ':</b>';
-	echo "</td>\n";
-	echo "<td>\n";
-	// generate one DIV for each account type
-	$counter = 0;
-	foreach ($sortedTypes as $type => $label) {
-		$style = 'style="display:none;"';
-		if ((!isset($_REQUEST['type']) && ($counter == 0)) || (isset($_REQUEST['type']) && ($_REQUEST['type'] == $type))) {
-			// show first account type or last selected one
-			$style = '';
-		}
-		echo "<div $style id=\"" . $type . "\" class=\"typeOptions\">\n";
-		echo "<table border=0>";
-		$modules = $_SESSION['config']->get_AccountModules($type);
-		for ($m = 0; $m < sizeof($modules); $m++) {
-			if ($m%3 == 0) {
-				echo "<tr>\n";
-			}
-			echo "<td>";
-				$module = new $modules[$m]($type);
-				$iconImage = $module->getIcon();
-				echo '<img align="middle" src="../graphics/' . $iconImage . '" alt="' . $iconImage . '">';
-			echo "</td><td>\n";
-				if (is_base_module($modules[$m], $type)) {
-					echo "<input type=\"hidden\" name=\"" . $type . '_' . $modules[$m] . "\" value=\"on\"><input type=\"checkbox\" checked disabled>";
-				}
-				else {
-					$checked = 'checked';
-					if (isset($_POST['submit']) && !isset($_POST[$type . '_' . $modules[$m]])) {
-						$checked = '';
-					}
-					echo "<input type=\"checkbox\" name=\"" . $type . '_' . $modules[$m] . "\" $checked>";
-				}
-				echo getModuleAlias($modules[$m], $type);
-			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-			if (($m%3 == 2) && ($m != (sizeof($modules) - 1))) {
-				echo "</tr>\n";
-			}
-		}
-		echo "</tr>";
-		echo "</table>\n";
-		echo "</div>\n";
-		$counter++;
-	}
-	echo "</td></tr>\n";
-	echo "<tr><td>\n";
-		echo "<button id=\"okButton\" class=\"smallPadding\" name=\"submit\">". _("Ok") . "</button>\n";
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery('#okButton').button();
-		});
-		function changeVisibleModules(element) {
-			jQuery('div.typeOptions').toggle(false);
-			jQuery('div#' + element.options[element.selectedIndex].value).toggle();
-		}
-		</script>
-		<?php
-	echo "</td></tr>\n";
-echo "</table>\n";
+	$typeDiv = new htmlDiv($types[$i], $innerTable, $divClasses);
+	$moduleGroup->addElement($typeDiv);
+}
+$table->addElement($moduleGroup, true);
+
+// ok button
+$table->addElement(new htmlSpacer(null, '20px'), true);
+$table->addElement(new htmlButton('submit', _('Ok')), true);
+
+parseHtml(null, $table, array(), false, $tabindex, 'user');
+?>
+<script type="text/javascript">
+function changeVisibleModules(element) {
+	jQuery('div.typeOptions').toggle(false);
+	jQuery('div#' + element.options[element.selectedIndex].value).toggle();
+}
+</script>
+<?php
 echo "</form>\n";
 
 echo '</div>';

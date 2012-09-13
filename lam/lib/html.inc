@@ -2439,4 +2439,69 @@ class htmlHorizontalLine extends htmlElement {
 
 }
 
+/**
+ * Creates a simple DIV element.
+ * 
+ * @package metaHTML
+ */
+class htmlDiv extends htmlElement {
+	
+	/** unique ID */
+	private $id = null;
+	/** htmlElement that generates inner content */
+	private $content = null;
+	/** CSS classes */
+	private $classes = array();
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $id unique ID
+	 * @param htmlElement $content inner content
+	 * @param array $classes CSS classes
+	 */
+	function __construct($id, $content, $classes = array()) {
+		$this->id = htmlspecialchars($id);
+		$this->content = $content;
+		$this->classes = $classes;
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		$idValue = '';
+		if ($this->id != null) {
+			$idValue = ' id="' . $this->id . '"';
+		}
+		$classesValue = '';
+		if (($this->classes != null) && (sizeof($this->classes) > 0)) {
+			$classesValue = ' class="';
+			for ($i = 0; $i < sizeof($this->classes); $i++) {
+				$classesValue .= htmlspecialchars($this->classes[$i]) . ' ';
+			}
+			$classesValue .= '"';
+		}
+		echo '<div' . $idValue . $classesValue . '>';
+		if ($this->content != null) {
+			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		echo '</div>';
+		return $return;
+	}
+
+
+	
+	
+}
+
 ?>
