@@ -200,7 +200,7 @@ function display_LoginPage($config_object) {
 
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				var equalWidthElements = new Array('#username', '#password', '#language');
+				var equalWidthElements = new Array('#username', '#passwd', '#language');
 				var maxWidth = 0;
 				for (var i = 0; i < equalWidthElements.length; ++i) {
 					if (jQuery(equalWidthElements[i]).width() > maxWidth) {
@@ -208,7 +208,7 @@ function display_LoginPage($config_object) {
 					};
 				}
 				for (var i = 0; i < equalWidthElements.length; ++i) {
-					jQuery(equalWidthElements[i]).css({'width': maxWidth});
+					jQuery(equalWidthElements[i]).css({'width': maxWidth - (jQuery(equalWidthElements[i]).outerWidth() - jQuery(equalWidthElements[i]).width())});
 				}
 			});
 		</script>
