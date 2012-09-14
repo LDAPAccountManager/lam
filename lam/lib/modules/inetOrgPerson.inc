@@ -136,6 +136,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', null, 'initials');
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Description'), 'inetOrgPerson_description', null, 'description');
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Street'), 'inetOrgPerson_street', null, 'streetList');
 		}
@@ -198,6 +201,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// profile checks and mappings
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['profile_mappings']['inetOrgPerson_initials'] = 'initials';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
+			$return['profile_mappings']['inetOrgPerson_description'] = 'description';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$return['profile_checks']['inetOrgPerson_title'] = array(
