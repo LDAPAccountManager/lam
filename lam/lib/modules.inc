@@ -1014,12 +1014,11 @@ class accountContainer {
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
 				$printContainer = true;
-				$moduleContainer->addElement(new htmlInputCheckbox('password_cb_' . $name, true));
 				$buttonImage = $module->getIcon();
 				if ($buttonImage != null) {
 					$moduleContainer->addElement(new htmlImage('../../graphics/' . $buttonImage, null, null, getModuleAlias($name, $this->type)));
 				}
-				$moduleContainer->addElement(new htmlOutputText(getModuleAlias($name, $this->type)));
+				$moduleContainer->addElement(new htmlTableExtendedInputCheckbox('password_cb_' . $name, true, getModuleAlias($name, $this->type), null, false));
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
 			}
 		}
