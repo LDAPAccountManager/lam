@@ -5250,6 +5250,26 @@ Run slapindex to rebuild the index.
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_puppet.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Puppet</entry>
+
+            <entry>puppetClient</entry>
+
+            <entry>puppet.schema</entry>
+
+            <entry><ulink
+            url="https://github.com/puppetlabs/puppet/blob/master/ext/ldap/puppet.schema">Puppet
+            on GitHub</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_user.png" />
                 </imageobject>
               </inlinemediaobject></entry>
