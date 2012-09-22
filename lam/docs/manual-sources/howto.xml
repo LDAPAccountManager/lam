@@ -694,6 +694,12 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>3.7 -&gt; 3.9</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
           <title>3.6 -&gt; 3.7</title>
 
           <para>Asterisk extensions: The extension entries are now grouped by
