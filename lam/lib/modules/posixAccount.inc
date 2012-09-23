@@ -102,8 +102,8 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use. Selected next free host name.'));
 		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!'));
-		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!'));
+		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.'));
+		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.'));
 		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
 		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
 		$this->messages['gidNumber'][2] = array('INFO', _('GID number'), _('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''));
@@ -882,39 +882,7 @@ class posixAccount extends baseModule implements passwordService {
 		else {
 			// Change uid to a new uid until a free uid is found
 			while ($this->userNameExists($this->attributes['uid'][0])) {
-				if ($this->get_scope()=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
-				// get last character of username
-				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
-				// Last character is no number
-				if ( !preg_match('/^([0-9])+$/', $lastchar)) {
-					// Last character is no number. Therefore we only have to add "2" to it.
-					if ($this->get_scope()=='host') {
-						$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
-					}
-					else {
-						$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
-					}
-				}
-				else {
-					/* Last character is a number -> we have to increase the number until we've
-					* found a groupname with trailing number which is not in use.
-					*
-					* $i will show us were we have to split groupname so we get a part
-					* with the groupname and a part with the trailing number
-					*/
-					$i=strlen($this->attributes['uid'][0])-1;
-					$mark = false;
-					// Set $i to the last character which is a number in $account_new->general_username
-					while (!$mark)
-					if (preg_match('/^([0-9])+$/',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
-					else $mark=true;
-					// increase last number with one
-					$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
-					$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
-					// Put username together
-					if ($this->get_scope()=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
-					else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
-				}
+				$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
 			}
 		}
 		// Show warning if LAM has changed username
@@ -1730,8 +1698,12 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				// user name
 				if (in_array($rawAccounts[$i][$ids['posixAccount_userName']], $existingUsers)) {
+					$userName = $rawAccounts[$i][$ids['posixAccount_userName']];
+					while (in_array($userName, $existingUsers)) {
+						$userName = $this->getNextUserName($userName);
+					}
 					$errMsg = $this->messages['uid'][9];
-					array_push($errMsg, array($i));
+					array_push($errMsg, array($i, $userName, $rawAccounts[$i][$ids['posixAccount_userName']]));
 					$errors[] = $errMsg;
 				}
 				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_userName']], 'username')) {
@@ -1817,8 +1789,12 @@ class posixAccount extends baseModule implements passwordService {
 			elseif ($this->get_scope() == 'host') {
 				// host name
 				if (in_array($rawAccounts[$i][$ids['posixAccount_hostName']], $existingUsers)) {
+					$userName = $rawAccounts[$i][$ids['posixAccount_hostName']];
+					while (in_array($userName, $existingUsers)) {
+						$userName = $this->getNextUserName($userName);
+					}
 					$errMsg = $this->messages['uid'][10];
-					array_push($errMsg, array($i));
+					array_push($errMsg, array($i, $userName, $rawAccounts[$i][$ids['posixAccount_hostName']]));
 					$errors[] = $errMsg;
 				}
 				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_hostName']], 'hostname')) {
@@ -1831,7 +1807,7 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// description
-				if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
+				if (isset($ids['posixAccount_description']) && isset($rawAccounts[$i][$ids['posixAccount_description']]) && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
 					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
 				}
 				else {
@@ -2551,6 +2527,64 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function removeFromGONGroups() {
 		$this->gonList = array();
+	}
+	
+	/**
+	 * Returns the next possible user name based on the given one.
+	 * If the user name does not end with a number then a "2" is added.
+	 * User names with numbers at the end are simply increased by one.
+	 * <br>
+	 * <br>Attention: This user name might still be in use. This needs to be checked separately. 
+	 * 
+	 * @param String $userName user name
+	 * @return String new user name
+	 */
+	protected function getNextUserName($userName) {
+		if ($this->get_scope()=='host') {
+			$userName = substr($userName, 0, -1);
+		}
+		// get last character of username
+		$lastchar = substr($userName, strlen($userName) - 1, 1);
+		// Last character is no number
+		if ( !preg_match('/^([0-9])+$/', $lastchar)) {
+			// Last character is no number. Therefore we only have to add "2" to it.
+			if ($this->get_scope()=='host') {
+				$userName = $userName . '2$';
+			}
+			else {
+				$userName = $userName . '2';
+			}
+		}
+		else {
+			/* Last character is a number -> we have to increase the number until we've
+			* found a groupname with trailing number which is not in use.
+			*
+			* $i will show us were we have to split groupname so we get a part
+			* with the groupname and a part with the trailing number
+			*/
+			$i = strlen($userName) - 1;
+			$mark = false;
+			// Set $i to the last character which is a number in $account_new->general_username
+			while (!$mark) {
+				if (preg_match('/^([0-9])+$/', substr($userName, $i, strlen($userName) - $i))) {
+					$i--;
+				}
+				else {
+					$mark=true;
+				}
+			}
+			// increase last number with one
+			$firstchars = substr($userName, 0, $i + 1);
+			$lastchars = substr($userName, $i + 1, strlen($userName) - $i);
+			// Put username together
+			if ($this->get_scope()=='host') {
+				$userName = $firstchars . (intval($lastchars) + 1) . "$";
+			}
+			else {
+				$userName = $firstchars . (intval($lastchars) + 1);
+			}
+		}
+		return $userName;
 	}
 	
 }
