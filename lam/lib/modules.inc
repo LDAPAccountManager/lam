@@ -259,7 +259,7 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$temp = new $entry($scope);
-			if ($mustSupportAdminInterface && !$entry::supportsAdminInterface()) {
+			if ($mustSupportAdminInterface && !$temp->supportsAdminInterface()) {
 				continue;
 			}
 			if ($temp->can_manage()) {

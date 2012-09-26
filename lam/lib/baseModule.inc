@@ -1432,7 +1432,7 @@ abstract class baseModule {
 	 * 
 	 * @return boolean support admin interface
 	 */
-	public static function supportsAdminInterface() {
+	public function supportsAdminInterface() {
 		return true;
 	}
 	
