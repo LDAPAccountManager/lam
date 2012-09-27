@@ -1642,6 +1642,15 @@ class accountContainer {
 			$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 			unset($attributes[$this->dn_orig]);
 		}
+		// remove pwdAccountLockedTime attribute change if also userPassword is changed (PPolicy will remove this attribute itself)
+		if (isset($attributes[$this->finalDN]['modify']['userPassword'])) {
+			if (isset($attributes[$this->finalDN]['modify']['pwdAccountLockedTime'])) {
+				unset($attributes[$this->finalDN]['modify']['pwdAccountLockedTime']);
+			}
+			if (isset($attributes[$this->finalDN]['remove']['pwdAccountLockedTime'])) {
+				unset($attributes[$this->finalDN]['remove']['pwdAccountLockedTime']);
+			}
+		}
 		// pre modify actions
 		$prePostModifyAttributes = array();
 		if (isset($attributes[$this->finalDN]) && is_array($attributes[$this->finalDN])) {
