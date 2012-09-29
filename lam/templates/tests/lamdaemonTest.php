@@ -195,6 +195,12 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 		$container->addElement(new htmlOutputText(_("No lamdaemon path set, please update your LAM configuration settings.")), true);
 		$stopTest = true;
 	}
+	elseif (substr($_SESSION['config']->get_scriptPath(), -3) != '.pl') {
+		$container->addElement(new htmlImage($failImage));
+		$container->addElement($spacer);
+		$container->addElement(new htmlOutputText(_("Lamdaemon path does not end with \".pl\". Did you enter the full path to the script?")), true);
+		$stopTest = true;
+	}
 	else {
 		$container->addElement(new htmlImage($okImage));
 		$container->addElement($spacer);
