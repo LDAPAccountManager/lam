@@ -3988,6 +3988,11 @@ Run slapindex to rebuild the index.
         <para>LAM provides an external script to manage home directories and
         quotas. You can test here if everything is setup correctly.</para>
 
+        <para>If you get an error like "no tty present and no askpass program
+        specified" then the path to the lamdaemon.pl may be wrong. Please see
+        the <link linkend="a_lamdaemon">lamdaemon installation
+        instructions</link> for setup details.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -5814,8 +5819,8 @@ Run slapindex to rebuild the index.
         <listitem>
           <para>Path to lamdaemon.pl, e.g.
           /srv/www/htdocs/lam/lib/lamdaemon.pl If you installed a Debian or
-          RPM package then the script may be located at
-          /usr/share/ldap-account-manager/lib or /var/www/html/lam/lib.</para>
+          RPM package then the script will be located at
+          /usr/share/ldap-account-manager/lib/lamdaemon.pl.</para>
         </listitem>
 
         <listitem>
