@@ -98,15 +98,32 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 				unset($attrs[$key]);
 			}
 		}
-		$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
-		if (!$success) {
-			$errorMessage = array(
-				"ERROR",
-				_("LAM was unable to create account %s! An LDAP error occured."),
-				ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
-				array($_SESSION['mass_counter']));
-			$_SESSION['mass_errors'][] = $errorMessage;
-			$_SESSION['mass_failed'][] = $_SESSION['mass_counter'];
+		// run preactions
+		$preAttributes = array();
+		foreach ($attrs as $key => $value) {
+			$preAttributes[$key] = &$attrs[$key];
+		}
+		$preAttributes['dn'] = &$dn;
+		$preMessages = doUploadPreActions($scope, $_SESSION['mass_selectedModules'], $preAttributes);
+		$preActionOk = true;
+		for ($i = 0; $i < sizeof($preMessages); $i++) {
+			if (($preMessages[$i][0] == 'ERROR') || ($preMessages[$i][0] == 'WARN')) {
+				$preActionOk = false;
+				$_SESSION['mass_errors'][] = $preMessages[$i];
+			}
+		}
+		if ($preActionOk) {
+			// add LDAP entry
+			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+			if (!$success) {
+				$errorMessage = array(
+					"ERROR",
+					_("LAM was unable to create account %s! An LDAP error occured."),
+					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
+					array($_SESSION['mass_counter']));
+				$_SESSION['mass_errors'][] = $errorMessage;
+				$_SESSION['mass_failed'][] = $_SESSION['mass_counter'];
+			}
 		}
 		$_SESSION['mass_counter']++;
 	}

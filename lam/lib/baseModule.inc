@@ -973,6 +973,16 @@ abstract class baseModule {
 	public function getButtonStatus() {
 		return "enabled";
 	}
+	
+	/**
+	 * Runs any actions that need to be done before an LDAP entry is created.
+	 * 
+	 * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 */
+	public function doUploadPreActions($attributes) {
+		return array();
+	}
 
 	/**
 	* This function is responsible to do additional tasks after the account has been created in LDAP (e.g. modifying group memberships, adding Quota etc..).
@@ -1036,7 +1046,7 @@ abstract class baseModule {
 	 * The modification is aborted if an error message is returned.
 	 * 
 	 * @param boolean $newAccount new account
-	 * @param array $attributes LDAP attributes of this entry
+	 * @param array $attributes LDAP attributes of this entry (added/modified attributes are provided as reference, handle modifications of $attributes with care)
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function preModifyActions($newAccount, $attributes) {

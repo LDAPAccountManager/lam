@@ -491,6 +491,24 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 }
 
 /**
+ * Runs any actions that need to be done before an LDAP entry is created.
+ * 
+ * @param String $scope account type
+ * @param array $selectedModules list of selected account modules
+ * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
+ * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+ */
+function doUploadPreActions($scope, $selectedModules, $attributes) {
+	$messages = array();
+	for ($i = 0; $i < sizeof($selectedModules); $i++) {
+		$activeModule = $selectedModules[$i];
+		$module = new $activeModule($scope);
+		$messages = array_merge($messages, $module->doUploadPreActions($attributes));
+	}
+	return $messages;
+}
+
+/**
 * This function executes one post upload action.
 *
 * @param string $scope account type
@@ -1658,13 +1676,17 @@ class accountContainer {
 				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['notchanged']);
 			}
 			if (isset($attributes[$this->finalDN]['modify'])) {
-				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['modify']);
+				foreach ($attributes[$this->finalDN]['modify'] as $key => $value) {
+					$prePostModifyAttributes[$key] = &$attributes[$this->finalDN]['modify'][$key];
+				}
 				foreach ($attributes[$this->finalDN]['modify'] as $key => $value) {
 					$prePostModifyAttributes['MOD.' . $key] = $value;
 				}
 			}
 			if (isset($attributes[$this->finalDN]['add'])) {
-				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['add']);
+				foreach ($attributes[$this->finalDN]['add'] as $key => $value) {
+					$prePostModifyAttributes[$key] = &$attributes[$this->finalDN]['add'][$key];
+				}
 				foreach ($attributes[$this->finalDN]['add'] as $key => $value) {
 					$prePostModifyAttributes['NEW.' . $key] = $value;
 				}
