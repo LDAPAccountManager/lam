@@ -93,18 +93,18 @@ if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 	fi
 fi
 %if %is_suse
-/etc/init.d/apache2 restart
+/etc/init.d/apache2 reload
 %endif
 %if %is_fedora
-/etc/init.d/httpd restart
+/etc/init.d/httpd reload
 %endif
 
 %postun
 %if %is_suse
-/etc/init.d/apache2 restart
+/etc/init.d/apache2 reload
 %endif
 %if %is_fedora
-/etc/init.d/httpd restart
+/etc/init.d/httpd reload
 %endif
 
 %files
@@ -132,6 +132,9 @@ fi
 %{httpd_confdir}
 
 %changelog
+* Sun Oct 07 2012 - Roland Gruber post@rolandgruber.de
+- Apache reload instead of restart
+
 * Wed Jun 08 2011 - Roland Gruber post@rolandgruber.de
 - Install into /usr/share/ldap-account-manager
 

@@ -36,9 +36,9 @@ if [ -f /usr/share/debconf/confmodule ]; then
 		for server in $restart; do
 				server=${server%,}
 				if [ -x /usr/sbin/invoke-rc.d ]; then
-						invoke-rc.d $server restart
+						invoke-rc.d $server reload
 				else
-						/etc/init.d/$server restart
+						/etc/init.d/$server reload
 				fi
 		done
 	fi
