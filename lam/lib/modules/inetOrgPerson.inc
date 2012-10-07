@@ -81,6 +81,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
+		$this->messages['userPassword'][0] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
 	}
 
 	/**
@@ -813,8 +814,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _("Initials"), 'attr' => 'initials',
 				"Text" => _("The initials of the user's first names.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
+			'userPassword' => array(
+				"Headline" => _("Password"),
+				"Text" => _("Please enter the password which you want to set for this account.")
+			),
 		);
-
 		return $return;
 	}
 
@@ -2242,6 +2246,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'unique' => true,
 				'required' => true
 			);
+			$return[] = array(
+				'name' => 'inetOrgPerson_userPassword',
+				'description' => _('Password'),
+				'help' => 'userPassword',
+				'example' => _('secret'),
+			);
 		}
 		return $return;
 	}
@@ -2532,6 +2542,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				else {
 					$errMsg = $this->messages['uid'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+				// password
+				if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
+					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']]; // for custom scripts etc.
+				}
+				elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
+					$errMsg = $this->messages['userPassword'][0];
+					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
