@@ -233,69 +233,21 @@ class lamDHCPList extends lamList {
 		}
 	}
 	
-	
 	/**
-	 * Prints the create, delete and PDF buttons.
-	 *
-	 * @param boolean $createOnly true if only the create button should be displayed
+	 * Add DCP main settings button.
+	 * 
+	 * @param htmlGroup $left left part
+	 * @param htmlGroup $right right part
 	 */
-	function listPrintButtons($createOnly) {
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td align=\"left\">\n";
+	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		if (checkIfWriteAccessIsAllowed()) {
-			// add/delete buttons
-			echo ("<button id=\"newButton\" name=\"new\">" . $this->labels['newEntry'] . "</button>\n");
-			if (!$createOnly) {
-				echo ("<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n");
-			}
-			$toolSettings = $_SESSION['config']->getToolSettings();
-			if (!(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
-				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-				echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
-			}
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-			echo ("<button id=\"dhcpDefaultsButton\" name=\"dhcpDefaults\">" . $this->labels['dhcpDefaults'] . "</button>\n");
-			echo "&nbsp;&nbsp;&nbsp;";
-			?>
-				<script type="text/javascript">
-					jQuery(document).ready(function() {
-						jQuery('#newButton').button({
-					        icons: {
-					      	  primary: 'createButton'
-					    	}
-						});
-						jQuery('#delButton').button({
-					        icons: {
-					      	  primary: 'deleteButton'
-					    	}
-						});
-						jQuery('#fileUploadButton').button({
-					        icons: {
-					      	  primary: 'upButton'
-					    	}
-						});
-						jQuery('#dhcpDefaultsButton').button({
-					        icons: {
-					      	  primary: 'settingsButton'
-					    	}
-						});
-					});
-				</script>
-			<?php
+			$left->addElement(new htmlSpacer('20px', null));
+			$dhcpButton = new htmlButton('dhcpDefaults', $this->labels['dhcpDefaults']);
+			$dhcpButton->setIconClass('settingsButton');
+			$left->addElement($dhcpButton);
 		}
-		echo "</td>\n";
-		echo "<td align=\"right\">\n";
-		$this->listShowOUSelection();
-		echo "<input class=\"smallImageButton\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
-		echo '&nbsp;<a href="#" onclick="listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');">';
-			echo '<img height=16 width=16 src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
-		echo '</a>';
-		echo "</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
 	}
-	
+
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*/

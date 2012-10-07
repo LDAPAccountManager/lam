@@ -669,10 +669,12 @@ class lamList {
 
 	/**
 	* Prints a combobox with possible sub-DNs.
+	* 
+	* @return htmlGroup OU selection (may be empty)
 	*/
 	protected function listShowOUSelection() {
+		$group = new htmlGroup();
 		if (sizeof($this->possibleSuffixes) > 1) {
-			$group = new htmlGroup();
 			$suffixList = array();
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				$suffixList[getAbstractDN($this->possibleSuffixes[$i])] = $this->possibleSuffixes[$i];
@@ -684,64 +686,69 @@ class lamList {
 			$suffixSelect->setHasDescriptiveElements(true);
 			$group->addElement($suffixSelect);
 			$group->addElement(new htmlSpacer('5px', null));
-			parseHtml(null, $group, array(), true, $this->tabindex, $this->type);
 		}
+		return $group;
 	}
 
 	/**
 	 * Prints the create and delete buttons.
 	 *
 	 * @param boolean $createOnly true if only the create button should be displayed
+	 * @param int $tabindex HTML tabindex counter
 	 */
 	protected function listPrintButtons($createOnly) {
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td align=\"left\">\n";
+		$table = new htmlTable('100%');
+		$left = new htmlGroup();
+		// button part
+		$left->alignment = htmlElement::ALIGN_LEFT;
 		if (checkIfWriteAccessIsAllowed()) {
 			// add/delete buttons
-			echo "<button id=\"newButton\" name=\"new\">" . $this->labels['newEntry'] . "</button>\n";
+			$newButton = new htmlButton('new', $this->labels['newEntry']);
+			$newButton->setIconClass('createButton');
+			$left->addElement($newButton);
 			if (!$createOnly) {
-				echo "<button id=\"delButton\" name=\"del\">" . $this->labels['deleteEntry'] . "</button>\n";
+				$left->addElement(new htmlSpacer('1px', null));
+				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
+				$delButton->setIconClass('deleteButton');
+				$left->addElement($delButton);
 			}
 			$type = new $this->type();
 			$toolSettings = $_SESSION['config']->getToolSettings();
 			if ($type->supportsFileUpload() && !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
-				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-				echo "<button id=\"fileUploadButton\" name=\"fileUpload\">" . _('File upload') . "</button>\n";
+				$left->addElement(new htmlSpacer('20px', null));
+				$uploadButton = new htmlButton('fileUpload', _('File upload'));
+				$uploadButton->setIconClass('upButton');
+				$left->addElement($uploadButton);
 			}
-			?>
-			&nbsp;&nbsp;&nbsp;
-			<script type="text/javascript">
-			jQuery(document).ready(function() {
-				jQuery('#newButton').button({
-			        icons: {
-			      	  primary: 'createButton'
-			    	}
-				});
-				jQuery('#delButton').button({
-			        icons: {
-			      	  primary: 'deleteButton'
-			    	}
-				});
-				jQuery('#fileUploadButton').button({
-			        icons: {
-			      	  primary: 'upButton'
-			    	}
-				});
-			});
-			</script>
-			<?php
 		}
-		echo "</td>\n";
-		echo "<td align=\"right\">\n";
-		$this->listShowOUSelection();
-		echo "<input class=\"smallImageButton align-middle\" style=\"background-image: url(../../graphics/refresh.png);\" type=\"submit\" value=\" \" name=\"refresh\" title=\"" . _("Refresh") . "\">";
-		echo '&nbsp;<a class="align-middle" href="#" onclick="listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');">';
-			echo '<img height=16 width=16 src="../../graphics/tools.png" alt="' . _('Change settings') . '" title="' . _('Change settings') . '">';
-		echo '</a>';
-		echo "</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
+		
+		// OU selection and settings
+		$right = new htmlGroup();
+		$right->alignment = htmlElement::ALIGN_RIGHT;
+		$right->addElement($this->listShowOUSelection());
+		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
+		$refreshButton->setTitle(_("Refresh"));
+		$right->addElement($refreshButton);
+		$right->addElement(new htmlSpacer('1px', null));
+		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
+		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
+		$settingsLink->setTitle(_('Change settings'));
+		$right->addElement($settingsLink);
+		
+		$this->addExtraInputElementsToTopArea($left, $right);
+		$table->addElement($left);
+		$table->addElement($right);
+		parseHtml(null, $table, array(), false, $this->tabindex, $this->type);
+	}
+	
+	/**
+	 * Can be used by subclasses to add e.g. additional buttons to the top area.
+	 * 
+	 * @param htmlGroup $left left part
+	 * @param htmlGroup $right right part
+	 */
+	protected function addExtraInputElementsToTopArea(&$left, &$right) {
+		// only used by subclasses
 	}
 	
 	/**
