@@ -125,7 +125,7 @@ echo $_SESSION['header'];
 		<br>
 		<!-- form to change main options -->
 		<form action="mainlogin.php" method="post">
-		<table align="center" border="2" rules="none" bgcolor="white">
+		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all">
 			<tr>
 				<td style="border-style:none" rowspan="3" width="20"></td>
 				<td style="border-style:none" height="20"></td>

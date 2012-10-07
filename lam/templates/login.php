@@ -270,7 +270,7 @@ function display_LoginPage($config_object) {
 		?>
 		<br><br>
 		<div style="position:relative; z-index:5;">
-		<table width="650" align="center" border="2" rules="none" bgcolor="white">
+		<table width="650" align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all">
 			<tr>
 				<td style="border-style:none" width="70" rowspan="2">
 					<img src="../graphics/lam.png" alt="Logo" style="margin-top: 5px; margin-bottom: 5px;">

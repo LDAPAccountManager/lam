@@ -948,6 +948,7 @@ class accountContainer {
 			$group = new htmlGroup();
 			// suffix
 			$group->addElement(new htmlOutputText(_('Suffix')));
+			$group->addElement(new htmlSpacer('2px', null));
 			$suffixList = array();
 			foreach ($this->getOUs() as $suffix) {
 				$suffixList[getAbstractDN($suffix)] = $suffix;
@@ -963,6 +964,7 @@ class accountContainer {
 			$group->addElement(new htmlSpacer('10px', null));
 			// RDN selection
 			$group->addElement(new htmlOutputText(_('RDN identifier')));
+			$group->addElement(new htmlSpacer('2px', null));
 			$rdnlist = getRDNAttributes($this->type);
 			$group->addElement(new htmlSelect('accountContainerRDN', $rdnlist, array($this->rdn)));
 			$group->addElement(new htmlHelpLink('301'));
