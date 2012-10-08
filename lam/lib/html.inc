@@ -368,6 +368,8 @@ class htmlInputField extends htmlElement {
 	private $fieldSize = 30;
 	/** field max length (default 255) */
 	private $fieldMaxLength = 255;
+	/** on keypress event */
+	private $onKeyPress = null;
 	/** password field */
 	private $isPassword = false;
 	/** enabled or disabled */
@@ -458,7 +460,11 @@ class htmlInputField extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $disabled . '>';
+		$onKeyPress = '';
+		if ($this->onKeyPress != null) {
+			$onKeyPress = ' onkeypress="' . $this->onKeyPress . '"';
+		}
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $onKeyPress . $disabled . '>';
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
@@ -565,6 +571,15 @@ class htmlInputField extends htmlElement {
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
 		$this->autocompleteMinLength = $minLength;
+	}
+	
+	/**
+	 * Sets the JavaScript for the onKeyPress event.
+	 * 
+	 * @param String $onKeyPress JavaScript code
+	 */
+	public function setOnKeyPress($onKeyPress) {
+		$this->onKeyPress = $onKeyPress;
 	}
 
 }
@@ -763,12 +778,13 @@ class htmlButton extends htmlElement {
 		if ($this->onClick != null) {
 			$type = ' type="button"';
 			$onClick = ' onclick="' . $this->onClick . '"';
-		}		
+		}
+		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
 		if ($this->isImageButton) {
-			echo '<input type="submit" id="btn_' . $this->name . '" value=" "' . $name . $fieldTabIndex . $style . $class . $title . $disabled . '>';
+			echo '<input type="submit" ' . $id . ' value=" "' . $name . $fieldTabIndex . $style . $class . $title . $disabled . '>';
 		}
 		else {
-			echo '<button id="btn_' . $this->name . '"' . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
+			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
 			$icon = '';
 			if ($this->iconClass != null) {

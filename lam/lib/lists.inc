@@ -348,7 +348,8 @@ class lamList {
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
 		echo "<td>";
-		echo "<button type=\"submit\" class=\"smallPadding\" id=\"apply_filter\" name=\"apply_filter\">" . _("Filter") . "</button>";
+		$filterButton = new htmlButton('apply_filter', _("Filter"));
+		parseHtml(null, $filterButton, array(), false, $this->tabindex, $this->type);
 		echo "</td>\n";
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
@@ -356,12 +357,15 @@ class lamList {
 			if ($this->canBeFiltered($this->attrArray[$k])) {
 				$value = "";
 				if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
-					$value = " value=\"" . $_GET["filter" . strtolower($this->attrArray[$k])] . "\"";
+					$value = $_GET["filter" . strtolower($this->attrArray[$k])];
 				}
 				if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
-					$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
+					$value = $_POST["filter" . strtolower($this->attrArray[$k])];
 				}
-				echo "<input style=\"margin-right: 10px;\" type=\"text\" size=15 name=\"filter" . strtolower ($this->attrArray[$k]) ."\"" . $value . " onkeypress=\"SubmitForm('apply_filter', event);\">";
+				$filterInput = new htmlInputField('filter' . strtolower($this->attrArray[$k]), $value);
+				$filterInput->setFieldSize('15');
+				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
+				parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
 			}
 			echo "</td>\n";
 		}
@@ -432,35 +436,36 @@ class lamList {
 	 * @param String $id account ID
 	 */
 	private function listPrintToolLinks($account, $id) {
-		$output = '';
 		$toolCount = 0;
-		// edit image
-		$output .= "<a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-		$output .= "<img height=16 width=16 src=\"../../graphics/edit.png\" alt=\"" . _("Edit") . "\" title=\"" . _("Edit") . "\" class=\"align-middle\">";
-		$output .= "</a>\n ";
+		$group = new htmlGroup();
+		// edit link
+		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
+		$editLink->setTitle(_("Edit"));
+		$group->addElement($editLink);
 		$toolCount++;
-		// delete image
+		// delete link
 		if (checkIfWriteAccessIsAllowed()) {
-			$output .= "<a href=\"deletelink.php?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			$output .= "<img height=16 width=16 src=\"../../graphics/delete.png\" alt=\"" . _("Delete") . "\" title=\"" . _("Delete") . "\" class=\"align-middle\">";
-			$output .= "</a>\n ";
+			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
+			$deleteLink->setTitle(_("Delete"));
+			$group->addElement($deleteLink);
 			$toolCount++;
 		}
-		// pdf image
-		$pdfButtonStyle = "background-image: url(../../graphics/pdf.png);background-position: -1px -1px;background-repeat: no-repeat;width:20px;height:20px;background-color:transparent;border-style:none;";
-		$output .= "<input type=\"submit\" style=\"$pdfButtonStyle\" name=\"createPDF_" . $id . "\" value=\" \" title=\"" . _('Create PDF file') . "\" class=\"align-middle\">\n ";
+		// PDF button
+		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
+		$pdfButton->setTitle(_('Create PDF file'));
+		$group->addElement($pdfButton);
 		$toolCount++;
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
-			$output .= "<a href=\"" . $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&amp;DN='" . rawurlencode($account['dn']) . "'\">";
-			$output .= "<img height=16 width=16 src=\"../../graphics/" . $tools[$i]->getImage() . "\" alt=\"" . $tools[$i]->getName() . "\" title=\"" . $tools[$i]->getName() . "\" class=\"align-middle\">";
-			$output .= "</a>\n ";
+			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
+			$toolLink->setTitle($tools[$i]->getName());
+			$group->addElement($toolLink);
 			$toolCount++;
 		}
 		$width = ($toolCount * 20) + 20;
-		echo "<td align='center' style=\"white-space: nowrap; width: ${width}px\">";
-		echo $output;
+		echo "<td align='center' style=\"white-space: nowrap; width: ${width}px;\">";
+		parseHtml(null, $group, array(), false, $this->tabindex, $this->type);
 		echo "</td>\n";
 	}
 	
@@ -627,12 +632,6 @@ class lamList {
 		echo "<div class=\"smallPaddingContent\">\n";
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		
-		// hiden inputs for selected accounts
-		for ($i = 0; $i < sizeof($selAccounts); $i++) {
-			echo '<input type="hidden" name="' . $selAccounts[$i] . '" value="on">';
-		}
-		echo '<input type="hidden" name="clickedAccount" value="' . $id . '">';
-		
 		$container = new htmlTable();
 		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
 		
@@ -660,7 +659,12 @@ class lamList {
 		$buttonContainer->colspan = 3;
 		$buttonContainer->addElement(new htmlButton('createPDFok', _('Ok')));
 		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
-		$container->addElement($buttonContainer);
+		$container->addElement($buttonContainer, true);
+		// hidden inputs for selected accounts
+		for ($i = 0; $i < sizeof($selAccounts); $i++) {
+			$container->addElement(new htmlHiddenInput($selAccounts[$i], 'on'));
+		}
+		$container->addElement(new htmlHiddenInput('clickedAccount', $id));
 		
 		parseHtml(null, $container, array(), false, $this->tabindex, $this->type);
 		
