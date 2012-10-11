@@ -99,6 +99,9 @@ class imapAccess extends baseModule {
 			'ImapUserQuotaLimit' => array(
 				"Headline" => _("Quota"),
 				"Text" => _("Please enter the quota limit of this mailbox in kilobytes.")),
+			'pathSeparator' => array(
+				"Headline" => _("Path separator"),
+				"Text" => _("This is the separator for the mailbox path. Usually, this is \".\" but e.g. Cyrus with \"unixhierarchysep\" will require \"/\".")),
 		);
 		// configuration settings
 		$configContainer = new htmlTable();
@@ -121,6 +124,8 @@ class imapAccess extends baseModule {
 		$configContainer->addElement($mailDomainsInput, true);
 		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
 		$configContainer->addElement($configUserName, true);
+		$configPathSeparator = new htmlTableExtendedSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
+		$configContainer->addElement($configPathSeparator, true);
 		$return['config_options']['all'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
@@ -216,14 +221,14 @@ class imapAccess extends baseModule {
 		}
 		
 		$return->addElement(new htmlOutputText(_('Mailbox')));
-		$return->addElement(new htmlOutputText($prefix . "." . $email_username));
+		$return->addElement(new htmlOutputText($prefix . $this->getSep() . $email_username));
 		$return->addElement(new htmlHelpLink('MailAddress'), true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		
 		$is_mailbox_exist = false; //default is false
-		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . "." . $email_username);
+		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $email_username);
 		if (is_array($list) && sizeof($list) == 1) {
-			$this->renderQuotasForMailbox($return, $mbox, $prefix . "." . $email_username);
+			$this->renderQuotasForMailbox($return, $mbox, $prefix . $this->getSep() . $email_username);
 			$mailboxMessage = new htmlOutputText(_("Mailbox already exists on IMAP server."));
 			$mailboxMessage->colspan = 3;
 			$return->addElement($mailboxMessage, true);
@@ -359,11 +364,11 @@ class imapAccess extends baseModule {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					if (!imap_setacl($mbox, $prefix . "." . $email_username, $this->moduleSettings['ImapAccess_ImapAdmin'][0], "c")) {
+					if (!imap_setacl($mbox, $prefix . $this->getSep() . $email_username, $this->moduleSettings['ImapAccess_ImapAdmin'][0], "c")) {
 						$errors[] = $this->messages['managemailbox'][0];
 					}
 					
-					$delete_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . "." . $email_username;
+					$delete_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $email_username;
 					if (!@imap_deletemailbox($mbox, $delete_mailbox_arg)) {
 						$errors[] = $this->messages['managemailbox'][1];
 					}
@@ -375,9 +380,9 @@ class imapAccess extends baseModule {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . "." . $email_username;
+					$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $email_username;
 					if (imap_createmailbox($mbox, imap_utf7_encode($create_mailbox_arg))) {
-						$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . "." . $email_username);
+						$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $email_username);
 						if (is_array($list) && sizeof($list) == 1) {
 						
 						}
@@ -396,14 +401,14 @@ class imapAccess extends baseModule {
 				}
 				else {
 					if (!isset($_POST['ImapUserQuotaLimit']) || ($_POST['ImapUserQuotaLimit'] == '')) {
-/*						if (!imap_set_quota($mbox, $prefix . "." . $email_username, -1)) {
+/*						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, -1)) {
 							$message = $this->messages['managemailbox'][7];
 							$message[] = imap_last_error();
 							$errors[] = $message;
 						}*/
 					}
 					elseif (isset($_POST['ImapUserQuotaLimit']) && ($_POST['ImapUserQuotaLimit'] != '') && get_preg($_POST['ImapUserQuotaLimit'], 'digit')){
-						if (!imap_set_quota($mbox, $prefix . "." . $email_username, $_POST['ImapUserQuotaLimit'])) {
+						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, $_POST['ImapUserQuotaLimit'])) {
 							$message = $this->messages['managemailbox'][7];
 							$message[] = imap_last_error();
 							$errors[] = $message;
@@ -543,6 +548,18 @@ class imapAccess extends baseModule {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Returns the path separator.
+	 * 
+	 * @return String separator char
+	 */
+	private function getSep() {
+		if (isset($this->moduleSettings['ImapAccess_pathSeparator'][0])) {
+			return $this->moduleSettings['ImapAccess_pathSeparator'][0];
+		}
+		return '.'; // default
 	}
 
 }
