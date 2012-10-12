@@ -3,8 +3,8 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010  Cedric Dugas and Olivier Refalo
-                2011  Roland Gruber
+  Copyright (C) 2010         Cedric Dugas and Olivier Refalo
+                2011 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ $Id$
             $.validationEngineLanguage.allRules = {
                 "required": {
                     "regex": "none",
-                    "alertText": "<?php echo _('This field is required.'); ?>",
+                    "alertText": "<?php echo _('This field is required.'); ?>"
                 },
                 "numeric": {
                     "regex": /^[0-9]+$/,
