@@ -5619,7 +5619,7 @@ Run slapindex to rebuild the index.
       <para>You may also need to specify the CA certificate in your Apache
       configuration by using the option "LDAPTrustedGlobalCert":</para>
 
-      <programlisting>LDAPTrustedGlobalCert /etc/ldap/ca/myCA/cacert.pem</programlisting>
+      <programlisting>LDAPTrustedGlobalCert CA_BASE64 /etc/ldap/ca/myCA/cacert.pem</programlisting>
     </section>
 
     <section>
@@ -5846,7 +5846,7 @@ Run slapindex to rebuild the index.
 
       <para>The access rights for OpenLDAP are configured in
       /etc/ldap/slapd.conf or
-      /etc/ldap/slapd.d/cn=config/olcDatabase={1}bdb.ldif. </para>
+      /etc/ldap/slapd.d/cn=config/olcDatabase={1}bdb.ldif.</para>
     </section>
 
     <section>
