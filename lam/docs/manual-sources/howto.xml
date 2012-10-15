@@ -5612,6 +5612,14 @@ Run slapindex to rebuild the index.
 
       <para>This needs to be the public part of the signing certificate
       authority. See "man ldap.conf" for additional options.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>You may also need to specify the CA certificate in your Apache
+      configuration by using the option "LDAPTrustedGlobalCert":</para>
+
+      <programlisting>LDAPTrustedGlobalCert /etc/ldap/ca/myCA/cacert.pem</programlisting>
     </section>
 
     <section>
@@ -5829,9 +5837,16 @@ Run slapindex to rebuild the index.
           account must be accepted by the SSH daemon of your home directory
           server. Do not create a second local account but change your system
           to accept LDAP users. You can use LAM to add the Unix account part
-          to your admin user.</para>
+          to your admin user or create a new account. Please do not forget to
+          setup LDAP write access (ACLs) if you create a new account.</para>
         </listitem>
       </itemizedlist>
+
+      <para><emphasis role="bold">OpenLDAP ACL location:</emphasis></para>
+
+      <para>The access rights for OpenLDAP are configured in
+      /etc/ldap/slapd.conf or
+      /etc/ldap/slapd.d/cn=config/olcDatabase={1}bdb.ldif. </para>
     </section>
 
     <section>
