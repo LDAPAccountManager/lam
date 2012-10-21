@@ -36,7 +36,7 @@ $Id$
                 "numeric": {
                     "regex": /^[0-9]+$/,
                     "alertText": "<?php echo _('Please enter a number.') ?>"
-                },
+                }
             };
         }
     };
