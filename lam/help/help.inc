@@ -26,7 +26,7 @@ $Id$
 
 /**
  * LDAP Account Manager help entries.
- * 
+ *
  * @author Michael Duergner
  * @author Roland Gruber
  * @package Help
@@ -157,6 +157,10 @@ $helpArray = array (
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				"361" => array ("Headline" => _("DN suffix"),
 					"Text" => _("The account will be saved under this LDAP suffix.")),
+				"362" => array ("Headline" => _("Import profiles"),
+					"Text" => _("Here you can import account profiles from other server profiles (overwrite existing).")),
+				"363" => array ("Headline" => _("Export profiles"),
+					"Text" => _("Here you can export account profiles to other server profiles (overwrite existing).")),
 				// 400 - 499
 				// account pages
 				"401" => array ("Headline" => _("Load profile"),
@@ -171,6 +175,10 @@ $helpArray = array (
 					"Text" => _("If you set this option then the user has to change his password at the next login.")),
 				"407" => array ("Headline" => _("Send via mail"),
 					"Text" => _("Sends the password to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
+				"408" => array ("Headline" => _("Import PDF structures"),
+					"Text" => _("Here you can import PDF structures from other server profiles (overwrite existing).")),
+				"409" => array ("Headline" => _("Export PDF structures"),
+					"Text" => _("Here you can export PDF structures to other server profiles (overwrite existing).")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),
@@ -213,7 +221,7 @@ $helpArray = array (
 				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organisational unit"),
 					"Text" => _("This will create a new organisational unit under the selected one.")),
 				"602" => array ("Headline" => _("OU-Editor") . " - " . _("Delete organisational unit"),
-					"Text" => _("This will delete the selected organisational unit. The OU has to be empty."))
+					"Text" => _("This will delete the selected organisational unit. The OU has to be empty.")),
 
 );
 
