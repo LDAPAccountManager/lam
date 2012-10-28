@@ -694,6 +694,18 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>3.9 -&gt; 4.0</title>
+
+          <para>The account profiles and PDF structures are now separated by
+          server profile. This means that if you edit e.g. an account profile
+          in server profile A then this change will not affect the account
+          profiles in server profile B.</para>
+
+          <para>LAM will automatically migrate your existing files as soon as
+          the login page is loaded.</para>
+        </section>
+
+        <section>
           <title>3.7 -&gt; 3.9</title>
 
           <para>No changes.</para>
