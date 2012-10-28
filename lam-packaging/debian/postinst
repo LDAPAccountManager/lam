@@ -8,21 +8,21 @@ db_version 2.0 || [ $? -lt 30 ]
 cd /usr/share/ldap-account-manager/config-samples/profiles
 files=`ls -a default.*`
 for file in $files; do
-	if [ ! -f /var/lib/ldap-account-manager/config/profiles/$file ]; then
-		cp $file /var/lib/ldap-account-manager/config/profiles/$file
+	if [ ! -f /var/lib/ldap-account-manager/config/templates/profiles/$file ]; then
+		cp $file /var/lib/ldap-account-manager/config/templates/profiles/$file
 	fi
 done
 cd /usr/share/ldap-account-manager/config-samples/pdf
 files=`ls -a default.*`
 for file in $files; do
-	if [ ! -f /var/lib/ldap-account-manager/config/pdf/$file ]; then
-		cp $file /var/lib/ldap-account-manager/config/pdf/$file
+	if [ ! -f /var/lib/ldap-account-manager/config/templates/pdf/$file ]; then
+		cp $file /var/lib/ldap-account-manager/config/templates/pdf/$file
 	fi
 done
-cd /usr/share/ldap-account-manager/config-samples/pdf/logos
+cd /usr/share/ldap-account-manager/config-samples/templates/pdf/logos
 files=`ls -a *.jpg`
 for file in $files; do
-	cp $file /var/lib/ldap-account-manager/config/pdf/logos/$file
+	cp $file /var/lib/ldap-account-manager/config/templates/pdf/logos/$file
 done
 cd /usr/share/ldap-account-manager/config-samples/selfService
 files=`ls -a default.*`
