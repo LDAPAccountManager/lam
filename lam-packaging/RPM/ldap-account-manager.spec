@@ -71,6 +71,8 @@ cp -dR * $RPM_BUILD_ROOT/usr/share/%{lam_dir}
 mkdir -p $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/config $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/config $RPM_BUILD_ROOT/usr/share/%{lam_dir}/config
+mkdir -p $RPM_BUILD_ROOT/var/lib/%{lam_dir}/config/pdf
+mkdir -p $RPM_BUILD_ROOT/var/lib/%{lam_dir}/config/profiles
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/tmp $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
