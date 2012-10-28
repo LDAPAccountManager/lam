@@ -3833,7 +3833,56 @@ Run slapindex to rebuild the index.
       <screenshot>
         <mediaobject>
           <imageobject>
+            <imagedata fileref="images/profileEditor2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You can enter the LDAP suffix, RDN identifier and various other
+      attributes depending on account type and activated modules.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
             <imagedata fileref="images/profileEditor.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Import/export:</emphasis></para>
+
+      <para>Profiles can be exported to and imported from other server
+      profiles.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/profileEditor3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/profileEditor4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>There is a special export target called "*Global templates". All
+      profiles exported here will be copied to all other server profiles
+      (incl. new ones). But existing profiles with the same name are not
+      overwritten. So a profile in global templates is treated as default
+      profile for all server profiles.</para>
+
+      <para>Use this if you would like to setup default profiles that are
+      valid for all server profiles.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/profileEditor5.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -3903,10 +3952,19 @@ Run slapindex to rebuild the index.
       the page structure and displayed information by editing the PDF
       profiles.</para>
 
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/pdfEditor2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
       <para>When you export accounts to PDF then each account will get its own
       page inside the PDF. There is a headline on each page where you can show
       a page title. You may also add a logo to each page. To add more possible
-      logos simply copy the images to config/pdf/logos.</para>
+      logos simply copy the images to config/pdf/&lt;server profile
+      name&gt;/logos.</para>
 
       <screenshot>
         <mediaobject>
@@ -3925,6 +3983,47 @@ Run slapindex to rebuild the index.
       LDAP attributes. You can simply add new fields by selecting the field
       name and its position. Then use the arrows to move the field inside the
       section.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Import/export:</emphasis></para>
+
+      <para>PDF structures can be exported to and imported from other server
+      profiles.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/pdfEditor3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/pdfEditor4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>There is a special export target called "*Global templates". All
+      PDF structures exported here will be copied to all other server profiles
+      (incl. new ones). But existing PDF structures with the same name are not
+      overwritten. So a PDF structure in global templates is treated as
+      default structure for all server profiles.</para>
+
+      <para>Use this if you would like to setup default PDF structures that
+      are valid for all server profiles.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/pdfEditor5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section>
