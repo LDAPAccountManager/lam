@@ -114,24 +114,28 @@ fi
 %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/sess
 %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/tmp
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config
-%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf
-%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/profiles
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/profiles
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService
 /var/lib/%{lam_dir}/config/*_sample
 /var/lib/%{lam_dir}/config/.htaccess
 /var/lib/%{lam_dir}/config/language
 /var/lib/%{lam_dir}/config/shells
-/var/lib/%{lam_dir}/config/pdf/.htaccess
-%attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf/logos
-/var/lib/%{lam_dir}/config/profiles/.htaccess
+/var/lib/%{lam_dir}/config/templates/pdf/.htaccess
+/var/lib/%{lam_dir}/config/templates/pdf/logos/.htaccess
+%attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf/logos
+/var/lib/%{lam_dir}/config/templates/profiles/.htaccess
 /var/lib/%{lam_dir}/config/selfService/.htaccess
-%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf/default.*
-%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/profiles/default.*
+%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf/default.*
+%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/profiles/default.*
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService/default.*
 /usr/share/%{lam_dir}
 %{httpd_confdir}
 
 %changelog
+* Sun Oct 28 2012 - Roland Gruber post@rolandgruber.de
+- Config file changes
+
 * Sun Oct 07 2012 - Roland Gruber post@rolandgruber.de
 - Apache reload instead of restart
 
