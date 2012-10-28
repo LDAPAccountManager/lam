@@ -121,8 +121,9 @@ fi
 /var/lib/%{lam_dir}/config/.htaccess
 /var/lib/%{lam_dir}/config/language
 /var/lib/%{lam_dir}/config/shells
+/var/lib/%{lam_dir}/config/pdf
+/var/lib/%{lam_dir}/config/profiles
 /var/lib/%{lam_dir}/config/templates/pdf/.htaccess
-/var/lib/%{lam_dir}/config/templates/pdf/logos/.htaccess
 %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf/logos
 /var/lib/%{lam_dir}/config/templates/profiles/.htaccess
 /var/lib/%{lam_dir}/config/selfService/.htaccess
