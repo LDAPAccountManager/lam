@@ -181,7 +181,6 @@ function display_LoginPage($config_object) {
 	
 	// upgrade if pdf/profiles contain single files
 	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
-		echo 'bla';
 		$result = testPermissions();
 		if (sizeof($result) > 0) {
 		    StatusMessage('ERROR', 'Unable to migrate configuration files. Please allow write access to these paths:', implode('<br>', $result));
