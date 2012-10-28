@@ -195,19 +195,17 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', '" . 'profile_' . $profileClasses[$i]['scope'] . "');");
 	$existingContainer->addElement($deleteLink);
-	if (count($configProfiles) > 1) {
-		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
-		$importLink->setTitle(_('Import profiles'));
-		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
-								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'import');");
-		$existingContainer->addElement($importLink);
+	$importLink = new htmlLink(null, '#', '../../graphics/import.png');
+	$importLink->setTitle(_('Import profiles'));
+	$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
+							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'import');");
+	$existingContainer->addElement($importLink);
 
-		$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
-		$exportLink->setTitle(_('Export profile'));
-		$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
-								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'export', '" . 'profile_' . $profileClasses[$i]['scope'] . "', '" . $_SESSION['config']->getName() . "');");
-		$existingContainer->addElement($exportLink);
-	}
+	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
+	$exportLink->setTitle(_('Export profile'));
+	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
+							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'export', '" . 'profile_' . $profileClasses[$i]['scope'] . "', '" . $_SESSION['config']->getName() . "');");
+	$existingContainer->addElement($exportLink);
 	$existingContainer->addNewLine();
 }
 $container->addElement($existingContainer);

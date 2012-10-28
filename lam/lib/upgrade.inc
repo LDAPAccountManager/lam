@@ -174,8 +174,10 @@ function recursiveCopy($src, $dst, $profiles, $fileFilter = null, $overwrite = t
 				recursiveCopy($src . '/' . $file, $dst . '/' . $file, $profiles, $fileFilter, $overwrite);
 			}
 			elseif ((isset($fileFilter) && (strpos($file, $fileFilter) === 0 || $file == '.htaccess'))
-						|| (!isset($fileFilter)))
-			{
+						|| (!isset($fileFilter))) {
+				if (!is_file($src . '/' . $file)) {
+					continue;
+				}
 				if ($overwrite || !file_exists($dst . '/' . $file)) {
 					$tmpState = @copy($src . '/' . $file, $dst . '/' . $file);
 					if ($tmpState === false) {
