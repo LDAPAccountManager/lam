@@ -197,12 +197,13 @@ include '../main_header.php';
 			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $templateClasses[$i]['scope'] . "', '" . 'template_' . $templateClasses[$i]['scope'] . "');");
 			$existingContainer->addElement($deleteLink);
 
-			$importLink = new htmlLink(null, '#', '../../graphics/import.png');
-			$importLink->setTitle(_('Import PDF structures'));
-			$importLink->setOnClick("showDistributionDialog('" . _("Import PDF structures") . "', '" .
-									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClasses[$i]['scope'] . "', 'import');");
-			$existingContainer->addElement($importLink);
-
+			if (count($configProfiles) > 1) {
+				$importLink = new htmlLink(null, '#', '../../graphics/import.png');
+				$importLink->setTitle(_('Import PDF structures'));
+				$importLink->setOnClick("showDistributionDialog('" . _("Import PDF structures") . "', '" .
+										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClasses[$i]['scope'] . "', 'import');");
+				$existingContainer->addElement($importLink);
+			}
 			$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 			$exportLink->setTitle(_('Export PDF structure'));
 			$exportLink->setOnClick("showDistributionDialog('" . _("Export PDF structure") . "', '" .

@@ -195,12 +195,13 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', '" . 'profile_' . $profileClasses[$i]['scope'] . "');");
 	$existingContainer->addElement($deleteLink);
-	$importLink = new htmlLink(null, '#', '../../graphics/import.png');
-	$importLink->setTitle(_('Import profiles'));
-	$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
-							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'import');");
-	$existingContainer->addElement($importLink);
-
+	if (count($configProfiles) > 1) {
+		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
+		$importLink->setTitle(_('Import profiles'));
+		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
+								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'import');");
+		$existingContainer->addElement($importLink);
+	}
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
