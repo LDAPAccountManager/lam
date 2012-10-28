@@ -85,8 +85,14 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 
 include '../main_header.php';
 echo "<div class=\"userlist-bright smallPaddingContent\">\n";
-echo "<form action=\"profilemain.php\" method=\"post\">\n";
-
+echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
+?>
+	<div id="passwordDialogDiv" class="hidden">
+	   <?php echo _("Master password")?>
+	   <input type="password" name="passwd">
+	   <?php echo printHelpLink(getHelp('', '236'), '236')?>
+	</div>
+<?php
 $container = new htmlTable();
 $container->addElement(new htmlTitle(_("Profile editor")), true);
 
@@ -101,6 +107,33 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
+	}
+}
+
+// check if profiles should be imported or exported
+if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
+	$cfg = new LAMCfgMain();
+	$impExpMessage = null;
+	if (isset($_POST['importProfiles_' . $_POST['scope']])) {
+		// check master password
+		if (!$cfg->checkPassword($_POST['passwd_' . $_POST['scope']])) {
+			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+		} 
+		elseif (copyAccountProfiles($_POST['importProfiles_' . $_POST['scope']], $_POST['scope'])) {
+			$impExpMessage = new htmlStatusMessage('INFO', _('Import successful'));
+		}
+	} else if (isset($_POST['exportProfiles'])) {
+		// check master password
+		if (!$cfg->checkPassword($_POST['passwd'])) {
+			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+		} 
+		elseif (copyAccountProfiles($_POST['exportProfiles'], $_POST['scope'], $_POST['destServerProfiles'])) {
+			$impExpMessage = new htmlStatusMessage('INFO', _('Export successful'));
+		}
+	}
+	if ($impExpMessage != null) {
+		$impExpMessage->colspan = 10;
+		$container->addElement($impExpMessage, true);
 	}
 }
 
@@ -139,10 +172,14 @@ $container->addElement(new htmlSpacer(null, '10px'), true);
 $container->addElement(new htmlSubTitle(_('Manage existing profiles')), true);
 $existingContainer = new htmlTable();
 $existingContainer->colspan = 5;
+
+$configProfiles = getConfigProfiles();
+
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	if ($i > 0) {
 		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 	}
+
 	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['scope'] . '.png'));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
 	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
@@ -158,15 +195,121 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', '" . 'profile_' . $profileClasses[$i]['scope'] . "');");
 	$existingContainer->addElement($deleteLink);
+	if (count($configProfiles) > 1) {
+		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
+		$importLink->setTitle(_('Import profiles'));
+		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
+								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'import');");
+		$existingContainer->addElement($importLink);
+
+		$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
+		$exportLink->setTitle(_('Export profile'));
+		$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
+								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['scope'] . "', 'export', '" . 'profile_' . $profileClasses[$i]['scope'] . "', '" . $_SESSION['config']->getName() . "');");
+		$existingContainer->addElement($exportLink);
+	}
 	$existingContainer->addNewLine();
 }
 $container->addElement($existingContainer);
+$container->addElement(new htmlSpacer(null, '10px'), true);
 
 // generate content
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo "</form>\n";
+echo "</div>\n";
+
+for ($i = 0; $i < sizeof($profileClasses); $i++) {
+	$scope = $profileClasses[$i]['scope'];
+	$tmpArr = array();
+	foreach ($configProfiles as $profile) {
+		if ($profile != $_SESSION['config']->getName()) {
+			$accountProfiles = getAccountProfiles($scope, $profile);
+			if (!empty($accountProfiles)) {
+				for ($p = 0; $p < sizeof($accountProfiles); $p++) {
+					$tmpArr[$profile][$accountProfiles[$p]] = $profile . '##' . $accountProfiles[$p];
+				}
+			}
+		}
+	}
+
+	//import dialog
+	echo "<div id=\"importDialog_$scope\" class=\"hidden\">\n";
+	echo "<form id=\"importDialogForm_$scope\" method=\"post\" action=\"profilemain.php\">\n";
+
+	$container = new htmlTable();
+	$container->addElement(new htmlOutputText(_('Profiles')), true);
+	
+	$select = new htmlSelect('importProfiles_' . $scope, $tmpArr, array(), count($tmpArr, 1) < 15 ? count($tmpArr, 1) : 15);
+	$select->setMultiSelect(true);
+	$select->setHasDescriptiveElements(true);
+	$select->setContainsOptgroups(true);
+	$select->setWidth('290px');
+
+	$container->addElement($select);
+	$container->addElement(new htmlHelpLink('362'), true);
+
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+
+	$container->addElement(new htmlOutputText(_("Master password")), true);
+	$exportPasswd = new htmlInputField('passwd_' . $scope);
+	$exportPasswd->setIsPassword(true);
+	$container->addElement($exportPasswd);
+	$container->addElement(new htmlHelpLink('236'));
+	$container->addElement(new htmlHiddenInput('importexport', '1'));
+	$container->addElement(new htmlHiddenInput('scope', $scope), true);
+	
+	parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+	echo '</form>';
+	echo "</div>\n";
+}
+
+//export dialog
+echo "<div id=\"exportDialog\" class=\"hidden\">\n";
+echo "<form id=\"exportDialogForm\" method=\"post\" action=\"profilemain.php\">\n";
+
+$container = new htmlTable();
+
+$container->addElement(new htmlOutputText(_('Profile name')), true);
+$expStructGroup = new htmlTable();
+$expStructGroup->addElement(new htmlSpacer('10px', null));
+$expStructGroup->addElement(new htmlDiv('exportName', ''));
+$container->addElement($expStructGroup, true);
+$container->addElement(new htmlSpacer(null, '10px'), true);
+		
+$container->addElement(new htmlOutputText(_("Target server profile")), true);
+foreach ($configProfiles as $key => $value) {
+	$tmpProfiles[$value] = $value;
+}
+natcasesort($tmpProfiles);
+$tmpProfiles['*' . _('Global templates')] = 'templates*';
+
+$findProfile = array_search($_SESSION['config']->getName(), $tmpProfiles);
+if ($findProfile !== false) {
+	unset($tmpProfiles[$findProfile]);
+}
+$select = new htmlSelect('destServerProfiles', $tmpProfiles, array(), count($tmpProfiles) < 10 ? count($tmpProfiles) : 10);
+$select->setHasDescriptiveElements(true);
+$select->setSortElements(false);
+$select->setMultiSelect(true);
+
+$container->addElement($select);
+$container->addElement(new htmlHelpLink('363'), true);
+
+$container->addElement(new htmlSpacer(null, '10px'), true);
+
+$container->addElement(new htmlOutputText(_("Master password")), true);
+$exportPasswd = new htmlInputField('passwd');
+$exportPasswd->setIsPassword(true);
+$container->addElement($exportPasswd);
+$container->addElement(new htmlHelpLink('236'));
+$container->addElement(new htmlHiddenInput('importexport', '1'), true);
+
+parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+echo '</form>';
 echo "</div>\n";
 
 // form for delete action

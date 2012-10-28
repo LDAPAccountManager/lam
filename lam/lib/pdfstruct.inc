@@ -37,22 +37,27 @@ include_once("ldap.inc");
 /**
  * This function will return all available PDF structure definitions for the submitted
  * account scope.
- * 
+ *
  * @param string $scope The account scope the PDF structure definitions should be
  * returned.
- * 
+ * @param string $profile server profile name
+ *
  * @return array $scope All available PDF structure definitions for the submitted account
- * scope. Each entry is a string being the filename that may be passed to the 
+ * scope. Each entry is a string being the filename that may be passed to the
  * createModulePDF() function as second argument.
  */
-function getPDFStructureDefinitions($scope = "user") {
+function getPDFStructureDefinitions($scope = "user", $profile = null) {
 	$return = array();
-	$path = dirname(__FILE__) . '/../config/pdf/';
+
+	if (!isset($profile)) {
+		$profile = $_SESSION['config']->getName();
+	}
+	$path = dirname(__FILE__) . '/../config/pdf/' . $profile;
 	if(is_dir($path)) {
 		$dirHandle = opendir($path);
 		while($file = readdir($dirHandle)) {
 			$struct_file = explode('.',$file);
-			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && ($struct_file[1] == $scope) && ($struct_file[2] == 'xml')) {
+			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && (sizeof($struct_file) == 3) && ($struct_file[1] == $scope) && ($struct_file[2] == 'xml')) {
 				array_push($return, $struct_file[0]);
 			}
 		}
@@ -67,12 +72,12 @@ function getPDFStructureDefinitions($scope = "user") {
  *
  * @param string $scope The account scope for wich the PDF structure should be returned.
  * @param string $pdf_structure Structure name of selected scope wich should be returned.
- * 
+ *
  * @return array PDF structure
  */
 function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 	$parser = new xmlParser();
-	$file = dirname(__FILE__) . '/../config/pdf/' . $pdf_structure . '.' . $scope . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $pdf_structure . '.' . $scope . '.xml';
 	$xml = $parser->parse($file);
 	$border = array();
 	$structure = array();
@@ -101,8 +106,8 @@ function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 function savePDFStructureDefinitions($scope,$definition) {
 	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return 'no perms';
 	if (!preg_match('/[a-zA-Z]+/',$scope)) return 'no perms';
-	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $definition . '.' . $scope . '.xml';
-	if(!is_writable(dirname(__FILE__) . '/../config/pdf/')) {
+	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $definition . '.' . $scope . '.xml';
+	if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName())) {
 		return 'no perms';
 	}
 	else {
@@ -150,33 +155,33 @@ function savePDFStructureDefinitions($scope,$definition) {
 
 /**
  * Deletes XML file with PDF structure definitions.
- * 
+ *
  * @param string $scope account type
  * @param string $definition Name of definition to delete
- * 
+ *
  * @return boolean True if file was deleted or false if a problem occured.
  */
 function deletePDFStructureDefinition($scope, $definition) {
 	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return false;
 	if (!preg_match('/[a-zA-Z]+/',$scope)) return false;
-	$file = dirname(__FILE__) . '/../config/pdf/' . $definition . '.' . $scope . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $definition . '.' . $scope . '.xml';
 	if(is_file($file) && is_writable($file)) {
 		return unlink($file);
 	}
 	else {
 		return false;
 	}
-	
+
 }
 
 /**
  * This function returns an array with all aviliable logo images.
- * 
+ *
  * @return array list of logo files
  */
 function getAvailableLogos() {
 	$return = array();
-	$dirPath = dirname(__FILE__) . '/../config/pdf/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
 	$dirHandle = opendir($dirPath);
 	while($file = readdir($dirHandle)) {
 		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/',$file)) {
@@ -189,4 +194,47 @@ function getAvailableLogos() {
 	sort($return);
 	return $return;
 }
+
+
+/**
+ * Copies PDF profiles to other server profiles.
+ *
+ * @param array $pdfProfiles PDF profile names
+ * @param String $scope account scope
+ * @param array $dests destinations
+ *
+ * @return boolean operation succeeded
+ */
+function copyPdfProfiles($pdfProfiles, $scope, $dests = array()) {
+	$state = true;
+	$profilePath = substr(__FILE__, 0, strlen(__FILE__) - 17) . 'config/pdf/';
+	foreach ($pdfProfiles as $profile) {
+		//part 1: server profile
+		//part 2: account profile
+		$tmpArr = explode('##', $profile);
+		$src = $profilePath . $tmpArr[0] . '/' . $tmpArr[1] . '.' . $scope . '.xml';
+		if (!empty($dests)) {
+			foreach ($dests as $dest) {
+				if ($dest == 'templates*') {
+					$dst = substr(__FILE__, 0, strlen(__FILE__) - 17) . 'config/templates/pdf/' . $tmpArr[1] . '.' . $scope . '.xml';
+				} else {
+					$dst = $profilePath . $dest . '/' . $tmpArr[1] . '.' . $scope . '.xml';
+				}
+				if (!@copy($src, $dst)) {
+					StatusMessage('ERROR', _('Failed to export!'), $tmpArr[1] . '.' . $scope . '.xml');
+					$state = false;
+				}
+			}
+		} else {
+			$dst = $profilePath . $_SESSION['config']->getName() . '/' . $tmpArr[1] . '.' . $scope . '.xml';
+			if (!@copy($src, $dst)) {
+				StatusMessage('ERROR', _('Failed to import!'), $tmpArr[1] . '.' . $scope . '.xml');
+				$state = false;
+			}
+		}
+	}
+
+	return $state;
+}
+
 ?>

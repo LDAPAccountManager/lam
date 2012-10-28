@@ -86,13 +86,13 @@ class lamPDF extends UFPDF {
 		$this->setMargins('10.0','10.0','10.0');
 		$this->setAutoPageBreak(true,'20.0');
 	}
-	
+
 	/**
 	 * Creates the PDF page header.
 	 */
 	function header() {
 		if($this->page_definitions['filename'] != 'none') {
-			$imageFile = substr(__FILE__,0,strlen(__FILE__)- 14) . "config/pdf/logos/" . $this->page_definitions['filename'];
+			$imageFile = substr(__FILE__,0,strlen(__FILE__)- 14) . "config/pdf/" . $_SESSION['config']->getName() . "/logos/" . $this->page_definitions['filename'];
 			$imgProperties = getimagesize($imageFile);
 			$this->Image($imageFile,10,15,($imgProperties[0] / $this->k) / 5, ($imgProperties[1] / $this->k) / 5,0,"JPG");
 		}

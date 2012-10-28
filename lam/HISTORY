@@ -1,4 +1,5 @@
 December 2012
+  - account profiles and PDF structures are now bound to server profile
   - IMAP: support "/" as path separator (RFE 3575692)
 
 

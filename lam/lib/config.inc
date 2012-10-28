@@ -117,6 +117,45 @@ function getConfigProfiles() {
 }
 
 /**
+ * Deletes the given server profile.
+ * 
+ * @param String $name profile name
+ * @return String null if success or error message if failed
+ */
+function deleteConfigProfile($name) {
+	if (!preg_match("/^[a-z0-9_-]+$/i", $name)) {
+		return _("Unable to delete profile!");
+	}
+	$dir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/";
+	// delete account profiles and PDF structures
+	$subDirs = array($dir . 'pdf/' . $name . '/logos', $dir . 'pdf/' . $name, $dir . 'profiles/' . $name);
+	for ($i = 0; $i < sizeof($subDirs); $i++) {
+		if (is_dir($subDirs[$i])) {
+			$dirHandle = @opendir($subDirs[$i]);
+			while (false !== ($path = readdir($dirHandle))) {
+				if ($path != '.'  && $path != '..') {
+					if (!@unlink($subDirs[$i] . '/' . $path)) {
+						logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
+						return _("Unable to delete profile!");
+					}
+				}
+			}
+			@closedir($dirHandle);
+			if (!@rmdir($subDirs[$i])) {
+				logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i]);
+				return _("Unable to delete profile!");
+			}
+		}
+	}
+	// delete config file
+	$confFile = $dir . $_POST['delfilename'] . ".conf";
+	if (!@unlink($confFile)) {
+		logNewMessage(LOG_ERR, 'Unable to delete ' . $confFile);
+		return _("Unable to delete profile!");
+	}
+}
+
+/**
 * Returns the version number of this LAM installation.
 * Format: <major version>.<minor version>.<patch level>
 * <br> Major/minor version are always numbers, patch level may contain letters for inofficial releases only (e.g. 0.5.alpha1).

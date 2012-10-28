@@ -89,6 +89,10 @@ if (isset($_POST['action'])) {
 	elseif ($_POST['action'] == "rename") {
 		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['oldfilename']) && preg_match("/^[a-z0-9_-]+$/i", $_POST['renfilename']) && !in_array($_POST['renfilename'], getConfigProfiles())) {
 			if (rename("../../config/" . $_POST['oldfilename'] . ".conf", "../../config/" . $_POST['renfilename'] . ".conf")) {
+			    // rename pdf and profiles folder
+			    rename("../../config/profiles/" . $_POST['oldfilename'], "../../config/profiles/" . $_POST['renfilename']);
+			    rename("../../config/pdf/" . $_POST['oldfilename'], "../../config/pdf/" . $_POST['renfilename']);
+
 				$msg = _("Renamed profile.");
 			}
 			else $error = _("Could not rename file!");
@@ -102,7 +106,7 @@ if (isset($_POST['action'])) {
 	}
 	// delete profile
 	elseif ($_POST['action'] == "delete") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['delfilename']) && @unlink("../../config/" . $_POST['delfilename'] . ".conf")) {
+		if (deleteConfigProfile($_POST['delfilename']) == null) {
 			$msg = _("Profile deleted.");
 		}
 		else $error = _("Unable to delete profile!");

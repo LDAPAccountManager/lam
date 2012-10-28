@@ -43,6 +43,9 @@ include_once("../lib/selfService.inc");
 /** access to configuration options */
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
+/** Upgrade functions */
+include_once("../lib/upgrade.inc");
+
 // set session save path
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path(dirname(__FILE__) . '/../sess');
@@ -176,6 +179,20 @@ function display_LoginPage($config_object) {
 		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
 	}
 	
+	// upgrade if pdf/profiles contain single files
+	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
+		echo 'bla';
+		$result = testPermissions();
+		if (sizeof($result) > 0) {
+		    StatusMessage('ERROR', 'Unable to migrate configuration files. Please allow write access to these paths:', implode('<br>', $result));
+		}
+		else {
+			upgradeConfigToServerProfileFolders(getConfigProfiles());
+		}
+	}
+	// copy any missing default profiles
+	copyConfigTemplates(getConfigProfiles());
+	
 	// set focus on password field
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
@@ -201,15 +218,7 @@ function display_LoginPage($config_object) {
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
 				var equalWidthElements = new Array('#username', '#passwd', '#language');
-				var maxWidth = 0;
-				for (var i = 0; i < equalWidthElements.length; ++i) {
-					if (jQuery(equalWidthElements[i]).width() > maxWidth) {
-						maxWidth = jQuery(equalWidthElements[i]).width();
-					};
-				}
-				for (var i = 0; i < equalWidthElements.length; ++i) {
-					jQuery(equalWidthElements[i]).css({'width': maxWidth - (jQuery(equalWidthElements[i]).outerWidth() - jQuery(equalWidthElements[i]).width())});
-				}
+				equalWidth(equalWidthElements);
 			});
 		</script>
 
@@ -560,6 +569,6 @@ if(!empty($_POST['checklogin'])) {
 	}
 }
 
+//displays the login window
 display_LoginPage($_SESSION["config"]);
-
 ?>

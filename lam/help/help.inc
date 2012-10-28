@@ -160,7 +160,7 @@ $helpArray = array (
 				"362" => array ("Headline" => _("Import profiles"),
 					"Text" => _("Here you can import account profiles from other server profiles (overwrite existing).")),
 				"363" => array ("Headline" => _("Export profiles"),
-					"Text" => _("Here you can export account profiles to other server profiles (overwrite existing).")),
+					"Text" => _("Here you can export account profiles to other server profiles (overwrite existing). You may also export a profile to the global templates. In this case it will always be copied to all server profiles that do not yet have a profile with this name.")),
 				// 400 - 499
 				// account pages
 				"401" => array ("Headline" => _("Load profile"),
@@ -178,7 +178,7 @@ $helpArray = array (
 				"408" => array ("Headline" => _("Import PDF structures"),
 					"Text" => _("Here you can import PDF structures from other server profiles (overwrite existing).")),
 				"409" => array ("Headline" => _("Export PDF structures"),
-					"Text" => _("Here you can export PDF structures to other server profiles (overwrite existing).")),
+					"Text" => _("Here you can export PDF structures to other server profiles (overwrite existing). You may also export a structure to the global templates. In this case it will always be copied to all server profiles that do not yet have a structure with this name.")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),

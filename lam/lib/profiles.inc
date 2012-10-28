@@ -33,10 +33,16 @@ $Id$
 * Returns an array of string with all available profiles for the given account type
 *
 * @param string $scope account type
+* @param string $profile server profile name
 * @return array profile names
 */
-function getAccountProfiles($scope) {
-	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles");
+function getAccountProfiles($scope, $profile = null) {
+	if (!isset($profile)) {
+		$profile = $_SESSION['config']->getName();
+	}
+
+	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $profile);
+
 	$ret = array();
 	$pos = 0;
 	if ($dir) {
@@ -56,6 +62,7 @@ function getAccountProfiles($scope) {
 	return $ret;
 }
 
+
 /**
 * Loads an profile of the given account type
 *
@@ -66,7 +73,7 @@ function getAccountProfiles($scope) {
 function loadAccountProfile($profile, $scope) {
 	if (!preg_match("/^[0-9a-z _-]+$/i", $profile) || !preg_match("/^[a-z]+$/i", $scope)) return false;
 	$settings = array();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $profile . "." . $scope;
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $_SESSION['config']->getName() . '/' . $profile . "." . $scope;
 	if (is_file($file) == True) {
 		$file = @fopen($file, "r");
 		if ($file) {
@@ -114,7 +121,7 @@ function saveAccountProfile($attributes, $profile, $scope) {
 	if (!is_array($attributes)) {
 		return false;
 	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $profile . "." . $scope;
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $_SESSION['config']->getName() . '/' . $profile . "." . $scope;
 	$file = @fopen($path, "w");
 	if ($file) {
   	// write attributes
@@ -147,12 +154,53 @@ function saveAccountProfile($attributes, $profile, $scope) {
 function delAccountProfile($file, $scope) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	if (!preg_match("/^[0-9a-z _-]+$/i", $file) || !preg_match("/^[a-z]+$/i", $scope)) return false;
-	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/" . $file . "." . $scope;
+	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/". $_SESSION['config']->getName() . '/' . $file . "." . $scope;
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
 	else return false;
 }
 
+
+/**
+ * Copies account profiles to other server profiles.
+ *
+ * @param array $accountProfiles account profile names
+ * @param String $scope account scope
+ * @param array $dests destinations
+ *
+ * @return boolean operation succeeded
+ */
+function copyAccountProfiles($accountProfiles, $scope, $dests = array()) {
+	$state = true;
+	$profilePath = substr(__FILE__, 0, strlen(__FILE__) - 17) . '/config/profiles/';
+	foreach ($accountProfiles as $profile) {
+		//part 1: server profile
+		//part 2: account profile
+		$tmpArr = explode('##', $profile);
+		$src = $profilePath . $tmpArr[0] . '/' . $tmpArr[1] . '.' . $scope;
+		if (!empty($dests)) {
+			foreach ($dests as $dest) {
+				if ($dest == 'templates*') {
+					$dst = substr(__FILE__, 0, strlen(__FILE__) - 17) . '/config/templates/profiles/' . $tmpArr[1] . '.' . $scope;
+				} else {
+					$dst = $profilePath . $dest . '/' . $tmpArr[1] . '.' . $scope;
+				}
+				if (!@copy($src, $dst)) {
+					StatusMessage('ERROR', _('Failed to export!'), $tmpArr[1] . '.' . $scope);
+					$state = false;
+				}
+			}
+		} else {
+			$dst = $profilePath . $_SESSION['config']->getName() . '/' . $tmpArr[1] . '.' . $scope;
+			if (!@copy($src, $dst)) {
+				StatusMessage('ERROR', _('Failed to import!'), $tmpArr[1] . '.' . $scope);
+				$state = false;
+			}
+		}
+	}
+
+	return $state;
+}
 
 ?>

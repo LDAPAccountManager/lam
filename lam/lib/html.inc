@@ -947,7 +947,7 @@ class htmlSelect extends htmlElement {
 		$name = ' name="' . $this->name . '" id="' . $this->name . '"';
 		if ($this->multiSelect) {
 			$multi = ' multiple';
-			$name = ' name="' . $this->name . '[]"';
+			$name = ' name="' . $this->name . '[]" id="' . $this->name . '"';
 		}
 		$size = ' size="' . $this->size . '"';
 		$class = '';
@@ -2514,9 +2514,45 @@ class htmlDiv extends htmlElement {
 		echo '</div>';
 		return $return;
 	}
+}
 
-
+/**
+ * Creates a JavaScript element.
+ * 
+ * @package metaHTML
+ */
+class htmlJavaScript extends htmlElement {
 	
+	/** htmlElement that generates inner content */
+	private $content = null;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $content script
+	 */
+	function __construct($content) {
+		$this->content = $content;
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		echo '<script type="text/javascript">';
+		echo $this->content;
+		echo '</script>';
+		return $return;
+	}
 	
 }
 
