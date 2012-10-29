@@ -703,6 +703,54 @@ Have fun!
 
           <para>LAM will automatically migrate your existing files as soon as
           the login page is loaded.</para>
+
+          <para>Special install instructions:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Debian: none, config files will be migrated when opening
+              LAM's login page</para>
+            </listitem>
+
+            <listitem>
+              <para>Suse/Fedora RPM:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Run "rpm -e ldap-account-manager
+                  ldap-account-manager-lamdaemon"</para>
+                </listitem>
+
+                <listitem>
+                  <para>You may get warnings like "warning:
+                  /var/lib/ldap-account-manager/config/profiles/default.user
+                  saved as
+                  /var/lib/ldap-account-manager/config/profiles/default.user.rpmsave"</para>
+                </listitem>
+
+                <listitem>
+                  <para>Please rename all files "*.rpmsave" and remove the
+                  file extension ".rpmsave". E.g. "default.user.rpmsave" needs
+                  to be renamed to "default.user".</para>
+                </listitem>
+
+                <listitem>
+                  <para>Install the LAM packages with "rpm -i". E.g. "rpm -i
+                  ldap-account-manager-4.0-0.suse.1.noarch.rpm".</para>
+                </listitem>
+
+                <listitem>
+                  <para>Open LAM's login page in your browser to complete the
+                  migration</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>tar.gz: standard upgrade steps, config files will be
+              migrated when opening LAM's login page</para>
+            </listitem>
+          </itemizedlist>
         </section>
 
         <section>

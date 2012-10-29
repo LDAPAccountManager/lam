@@ -187,6 +187,7 @@ function display_LoginPage($config_object) {
 		}
 		else {
 			upgradeConfigToServerProfileFolders(getConfigProfiles());
+			StatusMessage('INFO', 'Config file migration finished.');
 		}
 	}
 	// copy any missing default profiles
