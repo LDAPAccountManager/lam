@@ -1804,6 +1804,22 @@ Have fun!
           </mediaobject>
         </screenshot>
 
+        <para>Group memberships can be changed when clicking on "Edit groups".
+        Here you can select the Unix groups and group of names
+        memberships.</para>
+
+        <para>To enable "Group of names" please either add the groups module
+        "groupOfNames"/"groupOfUniqueNames" or add the account type "Group of
+        names".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixUserGroups.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
         <para>You can also create home directories for your users if you setup
         <link linkend="a_lamdaemon">lamdaemon</link>. This allows you to
         create the directories on the local or remote servers.</para>
