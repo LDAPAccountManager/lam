@@ -6186,4 +6186,53 @@ Run slapindex to rebuild the index.
       all required packages.</para>
     </section>
   </appendix>
+
+  <appendix>
+    <title>Troubleshooting</title>
+
+    <para>If you get any strange errors like "Invalid syntax" or "Invalid DN
+    syntax" please check if your LDAP schema matches LAM's
+    requirements.</para>
+
+    <para><emphasis role="bold">Schema test:</emphasis></para>
+
+    <para>This can be done by running "Tools" -&gt; "Tests" -&gt; "Schema
+    test" inside LAM.</para>
+
+    <para>If there are any object classes or attributes missing you will get a
+    notice. See <link linkend="a_schema">LDAP schema files</link> for a list
+    of used schemas. You may also want to deactive unused modules in your LAM
+    server profile (tab "Modules").</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/schemaTest.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para><emphasis role="bold">Logging:</emphasis></para>
+
+    <para>If your schema is correct you can turn on LDAP logging to get more
+    detailed error messages from your LDAP server.</para>
+
+    <para><emphasis role="bold">OpenLDAP logging:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>slapd.conf: In /etc/ldap/slapd.conf turn logging on with the
+        line "loglevel 256".</para>
+      </listitem>
+
+      <listitem>
+        <para>slapd.d: In /etc/ldap/slapd.d/cn=config.ldif please change the
+        attribute "olcLogLevel" to "Stats". Please add a line "olcLogLevel:
+        Stats" if the attribute is missing. </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>After changing the configuration please restart OpenLDAP. It usually
+    uses /var/log/syslog for log output.</para>
+  </appendix>
 </book>
