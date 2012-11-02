@@ -45,17 +45,17 @@ body {
 
 /* links */
 a {
-color: blue;
+color: #222222;
 text-decoration: none;
 }
 
 a:link {
-color: blue;
+color: #222222;
 text-decoration: none;
 }
 
 a:visited {
-color: blue;
+color: #222222;
 text-decoration: none;
 }
 

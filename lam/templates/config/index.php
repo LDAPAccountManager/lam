@@ -54,8 +54,16 @@ echo $_SESSION['header'];
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
 		$cssDir = dir($cssDirName);
-		while ($cssEntry = $cssDir->read()) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) != '.css') continue;
+		$cssFiles = array();
+		$cssEntry = $cssDir->read();
+		while ($cssEntry !== false) {
+			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
+				$cssFiles[] = $cssEntry;
+			}
+			$cssEntry = $cssDir->read();
+		}
+		sort($cssFiles);
+		foreach ($cssFiles as $cssEntry) {
 			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
 		}
 	?>
