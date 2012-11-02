@@ -48,8 +48,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 	private $noexpire;
 	/** account deactivated? */
 	private $deactivated;
-	/** array of well known rids */
-	private $rids;
+	/** array of well known group rids */
+	private $groupRids;
+	/** array of well known user rids */
+	private $userRids;
 	/** HEX to binary conversion table */
 	private $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
 		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
@@ -70,11 +72,14 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @param string $scope account type (user, group, host)
 	*/
 	function __construct($scope) {
-		// List of well known rids
-		$this->rids = array(
+		// List of well known group rids
+		$this->groupRids = array(
 			_('Domain admins') => 512, _('Domain users') => 513, _('Domain guests') => 514,
 			_('Domain computers') => 515, _('Domain controllers') => 516, _('Domain certificate admins') => 517,
 			_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520);
+		// List of well known user rids
+		$this->userRids = array(
+			_('Domain admins') => 500, _('Domain guests') => 501, _('Domain KRBTGT') => 502);
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
@@ -311,7 +316,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			"ridUpload" => array(
 				"Headline" => _("Samba RID"),
 				"Text" => _("This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: ") .
-				implode(", ", array_keys($this->rids)) . "<br><br>" . _("If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
+				implode(", ", array_keys($this->userRids)) . "<br><br>" . _("If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
 			"ridUploadHost" => array(
 				"Headline" => _("Samba RID"),
 				"Text" => _("This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
@@ -781,7 +786,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 
 		// host attributes
 		if ($this->get_scope()=='host') {
-			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain computers')];
+			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->groupRids[_('Domain computers')];
 			if (isset($_POST['ResetSambaPassword']) || !isset($this->attributes['sambaNTPassword'][0])) {
 				$hostname = $attrs['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
@@ -827,13 +832,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$errors[] = $this->messages['profilePath'][0];
 				}
 			}
-			$rids = array_keys($this->rids);
+			$rids = array_keys($this->groupRids);
 			$wrid = false;
 			for ($i=0; $i<count($rids); $i++) {
 				if ($_POST['sambaPrimaryGroupSID'] == $rids[$i]) {
 					$wrid = true;
 					// Get Domain SID
-					$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[$rids[$i]];
+					$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->groupRids[$rids[$i]];
 					}
 			}
 			if (!$wrid) {
@@ -844,17 +849,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 			}
 
-			$specialRids = array_flip($this->rids);
+			$specialRids = array_flip($this->userRids);
 			// set special RID if selected
 			if (in_array($_POST['sambaSID'], $specialRids)) {
-				$this->attributes['sambaSID'][0] = $SID . '-' . $this->rids[$_POST['sambaSID']];
+				$this->attributes['sambaSID'][0] = $SID . '-' . $this->userRids[$_POST['sambaSID']];
 			}
 			// standard RID
 			else if ($_POST['sambaSID'] == "-") {
 				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
 				// change only if not yet set, previously set to special SID or domain changed
 				if (!isset($this->attributes['sambaSID'][0])
-					|| in_array($rid, $this->rids)
+					|| in_array($rid, $this->userRids)
 					|| (strpos($this->attributes['sambaSID'][0], $SID) === false)) {
 					$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
 				}
@@ -1183,12 +1188,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$return->addElement(new htmlHelpLink('userWorkstations'), true);
 				}
 				// Windows group
-				$names = array_keys($this->rids);
+				$names = array_keys($this->groupRids);
 				$wrid=false;
 				$options = array();
 				$selected = array();
 				for ($i=0; $i<count($names); $i++) {
-					if (isset($this->attributes['sambaPrimaryGroupSID'][0]) && ($this->attributes['sambaPrimaryGroupSID'][0] == $SID . "-" . $this->rids[$names[$i]])) {
+					if (isset($this->attributes['sambaPrimaryGroupSID'][0]) && ($this->attributes['sambaPrimaryGroupSID'][0] == $SID . "-" . $this->groupRids[$names[$i]])) {
 						$selected[] = $names[$i];
 						$wrid=true;
 					}
@@ -1201,13 +1206,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 				$return->addElement(new htmlTableExtendedSelect('sambaPrimaryGroupSID', $options, $selected, _('Windows group'), 'group'), true);
 				// display if group SID should be mapped to a well known SID
-				$options = array_keys($this->rids);
+				$options = array_keys($this->userRids);
 				$options[] = '-';
 				$selected = array();
 				if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0] != '')) {
 					$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
-					$specialRids = array_flip($this->rids);
-					if (in_array($rid, $this->rids)) {
+					$specialRids = array_flip($this->userRids);
+					if (in_array($rid, $this->userRids)) {
 						$selected = array($specialRids[$rid]);
 					}
 					else {
@@ -1563,7 +1568,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), true);
 			// Windows group
 			$groups = array();
-			foreach ($this->rids as $key => $value) {
+			foreach ($this->groupRids as $key => $value) {
 				$groups[$key] = $value;
 			}
 			$groups["-"] = "-";
@@ -1999,8 +2004,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 							 $domains[$domIndex]->RIDbase + 1);
 						}
 					}
-					elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_group']], array_keys($this->rids))) {
-						$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids[$rawAccounts[$i][$ids['sambaSamAccount_group']]];
+					elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_group']], array_keys($this->groupRids))) {
+						$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->groupRids[$rawAccounts[$i][$ids['sambaSamAccount_group']]];
 					}
 					else {
 						$errMsg = $this->messages['group'][0];
@@ -2010,12 +2015,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 				else {
 					// default domain users
-					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids[_('Domain users')];
+					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->groupRids[_('Domain users')];
 				}
 				// special user
 				if ($rawAccounts[$i][$ids['sambaSamAccount_rid']] != "") {
-					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_rid']], array_keys($this->rids))) {
-						$partialAccounts[$i]['sambaSID'] .= '-' . $this->rids[$rawAccounts[$i][$ids['sambaSamAccount_rid']]];
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_rid']], array_keys($this->userRids))) {
+						$partialAccounts[$i]['sambaSID'] .= '-' . $this->userRids[$rawAccounts[$i][$ids['sambaSamAccount_rid']]];
 					}
 					elseif (get_preg($rawAccounts[$i][$ids['sambaSamAccount_rid']], 'digit')) {
 						$partialAccounts[$i]['sambaSID'] .= '-' . $rawAccounts[$i][$ids['sambaSamAccount_rid']];
