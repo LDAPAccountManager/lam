@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2011  Roland Gruber
+  Copyright (C) 2009 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -131,6 +131,10 @@ foreach ($jsFiles as $jsEntry) {
 			<tr>
 				<td align="left" height="30">
 					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
+				</td>
+				<td align="right">
+					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>
+					&nbsp;&nbsp;
 				</td>
 			</tr>
 		</table>

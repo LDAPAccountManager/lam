@@ -163,6 +163,10 @@ foreach ($jsFiles as $jsEntry) {
 				<td align="left" height="30">
 					<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a>
 				</td>
+				<td align="right">
+					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>
+					&nbsp;&nbsp;
+				</td>
 			</tr>
 		</table>
 		<br>
