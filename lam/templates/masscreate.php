@@ -245,7 +245,7 @@ function showMainPage($scope, $selectedModules) {
 	$inputContainer->addElement(new htmlOutputText(_("CSV file")));
 	$inputContainer->addElement(new htmlInputFileUpload('inputfile'));
 	$inputContainer->addElement(new htmlSpacer('10px', null));
-	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1'));
+	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1', '../graphics/save.png', true));
 	$inputContainer->addElement(new htmlHiddenInput('scope', $scope));
 	$inputContainer->addElement(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), true);
 	// PDF
