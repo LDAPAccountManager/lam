@@ -73,6 +73,12 @@ a img {
 	border: 0px;
 }
 
+a.classicBold {
+	color: blue;
+	text-decoration: none;
+	font-weight: bold;
+}
+
 fieldset {
 background-color:#fff3c8;
 border:1px solid #af8800;

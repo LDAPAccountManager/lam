@@ -2314,6 +2314,8 @@ class htmlLink extends htmlElement {
 	private $onClick = null;
 	/** show as button */
 	private $showAsButton = false;
+	/** CSS classes */
+	private $cssClasses = array();
 	
 	/**
 	 * Constructor.
@@ -2363,7 +2365,11 @@ class htmlLink extends htmlElement {
 			$id = 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
 			$idAttr = ' id="' . $id . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $idAttr . $title . $targetWindow . $onClick . '>' . $image . $this->text . '</a>';
+		$classAttr = '';
+		if (sizeof($this->cssClasses) > 0) {
+			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $this->text . '</a>';
 		if ($this->showAsButton) {
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
@@ -2399,6 +2405,15 @@ class htmlLink extends htmlElement {
 	 */
 	public function setOnClick($event) {
 		$this->onClick = htmlspecialchars($event);
+	}
+	
+	/**
+	 * Adds CSS classes to this link.
+	 * 
+	 * @param array $classes CSS class names
+	 */
+	public function setCSSClasses($classes) {
+		$this->cssClasses = $classes;
 	}
 
 }
