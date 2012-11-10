@@ -2328,7 +2328,7 @@ msgstr "Borrar foto"
 #: ../templates/selfService/profManage.php:233
 #: ../templates/selfService/profManage.php:240 ../help/help.inc:128
 msgid "Delete profile"
-msgstr "Borrar perefil"
+msgstr "Borrar perfil"
 
 #: ../lib/modules/range.inc:91 ../lib/modules/range.inc:109
 #: ../lib/modules/range.inc:435
