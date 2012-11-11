@@ -2164,8 +2164,8 @@ Have fun!
         <title>Heimdal Kerberos (LAM Pro)</title>
 
         <para>You can manage your Heimdal Kerberos accounts with LAM Pro.
-        Please add the user module "Heimdal Kerberos" to activate this
-        feature.</para>
+        Please add the user module "Kerberos (heimdalKerberos)" to activate
+        this feature.</para>
 
         <para><emphasis role="bold">Setup password changing</emphasis></para>
 
@@ -2202,6 +2202,67 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_kerberos1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>MIT Kerberos (LAM Pro)</title>
+
+        <para>You can manage your MIT Kerberos accounts with LAM Pro. Please
+        add the user module "Kerberos (mitKerberos)" to activate this feature.
+        If you want to manage entries based on the structural object class
+        "krbPrincipal" please use "Kerberos (mitKerberosStructural)"
+        instead.</para>
+
+        <para><emphasis role="bold">Setup password changing</emphasis></para>
+
+        <para>LAM Pro cannot generate the password hashes itself because MIT
+        uses a propietary format for them. Therefore, LAM Pro needs to call
+        kadmin/kadmin.local to set the password.</para>
+
+        <para>LAM will add "-q 'cpw -pw PASSWORD PRINCIPAL'" to the command to
+        set the password. Please use keytab authentication for this command
+        since it must run without any interaction.</para>
+
+        <para>Keytabs may be created with the "ktutil" application.</para>
+
+        <para>Security hint: Please secure your LAM Pro server since the new
+        passwords will be visible for a short term in the process list during
+        password change.</para>
+
+        <para>Example commands:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>/usr/sbin/kadmin -k -t /home/www-data/apache.keytab -p
+            realm/changepwd</para>
+          </listitem>
+
+          <listitem>
+            <para>sudo /usr/sbin/kadmin.local</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_mitKerberos1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">User management</emphasis></para>
+
+        <para>You can specify the principal/user name, ticket lifetimes and
+        expiration dates. Additionally, you can set various account
+        options.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_mitKerberos2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -5676,6 +5737,24 @@ Run slapindex to rebuild the index.
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_mitKerberos.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>MIT Kerberos</entry>
+
+            <entry>krbPrincipal, krbPrincipalAux, krbTicketPolicyAux</entry>
+
+            <entry>kerberos.schema</entry>
+
+            <entry>Part of MIT Kerberos installation</entry>
+
+            <entry>This account type is only available in LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_sudo.png" />
                 </imageobject>
               </inlinemediaobject></entry>
@@ -6228,7 +6307,7 @@ Run slapindex to rebuild the index.
       <listitem>
         <para>slapd.d: In /etc/ldap/slapd.d/cn=config.ldif please change the
         attribute "olcLogLevel" to "Stats". Please add a line "olcLogLevel:
-        Stats" if the attribute is missing. </para>
+        Stats" if the attribute is missing.</para>
       </listitem>
     </itemizedlist>
 
