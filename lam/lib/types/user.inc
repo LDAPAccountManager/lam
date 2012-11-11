@@ -129,6 +129,13 @@ class user extends baseType {
 		if ($container->getAccountModule('posixAccount') != null) {
 			$unixAttributes = $container->getAccountModule('posixAccount')->getAttributes();
 		}
+		$mitKerberosAttributes = null;
+		if ($container->getAccountModule('mitKerberosStructural') != null) {
+			$mitKerberosAttributes = $container->getAccountModule('mitKerberosStructural')->getAttributes();
+		}
+		elseif ($container->getAccountModule('mitKerberos') != null) {
+			$mitKerberosAttributes = $container->getAccountModule('mitKerberos')->getAttributes();
+		}
 		// check if first and last name can be shown
 		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && isset($personalAttributes['givenName'][0])) {
 			return htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
@@ -153,6 +160,9 @@ class user extends baseType {
 		}
 		if (($accountAttributes != null) && isset($accountAttributes['uid'][0])) {
 			return htmlspecialchars($accountAttributes['uid'][0]);
+		}
+		if (($mitKerberosAttributes != null) && isset($mitKerberosAttributes['krbPrincipalName'][0])) {
+			return htmlspecialchars($mitKerberosAttributes['krbPrincipalName'][0]);
 		}
 		if ($container->isNewAccount) {
 			return _("New user");

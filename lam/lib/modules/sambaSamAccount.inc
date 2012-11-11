@@ -997,6 +997,14 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
 					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
 			}
+			if (isset($_POST['syncMIT']) && ($_POST['syncMIT'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberos')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
+			if (isset($_POST['syncMITStructural']) && ($_POST['syncMITStructural'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberosStructural')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
 			// remove attribute value
@@ -1008,6 +1016,14 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncMIT']) && ($_POST['syncMIT'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberos')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncMITStructural']) && ($_POST['syncMITStructural'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberosStructural')->setExpirationDate(
 					null, null, null);
 			}
 		}
@@ -1411,6 +1427,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncMIT', false, _('Set also for Kerberos')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), true);
 		}
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$buttons = new htmlTable();

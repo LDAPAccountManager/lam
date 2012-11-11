@@ -2,6 +2,8 @@ December 2012
   - account profiles and PDF structures are now bound to server profile
   - IMAP: support "/" as path separator (RFE 3575692)
   - show server profile name on config pages (RFE 3579768)
+  - LAM Pro:
+   -> MIT Kerberos support
 
 
 25.09.2012 3.9
