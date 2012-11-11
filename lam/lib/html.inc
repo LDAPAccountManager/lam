@@ -996,6 +996,7 @@ class htmlSelect extends htmlElement {
 			else {
 				echo $this->elements[0];
 			}
+			echo '&nbsp;';
 		}
 		elseif (sizeof($this->elements) == 0) {
 			echo '</div>';
