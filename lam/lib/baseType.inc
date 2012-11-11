@@ -137,7 +137,7 @@ class baseType {
 	public function getSuffixList() {
 		$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
 		$ret = array();
-		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix), "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization))", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix), "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer))", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 			cleanLDAPResult($units);
