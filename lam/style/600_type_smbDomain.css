@@ -76,10 +76,6 @@ fieldset.smbDomainedit {
   border:1px solid #1d993e;
 }
 
-fieldset.smbDomainedit legend {
-  color:blue;
-}
-
 /* input elements */
 fieldset.smbDomainedit input, fieldset.smbDomainedit select, fieldset.smbDomainedit button {
   background-color:#a8ddbf;

@@ -76,10 +76,6 @@ fieldset.hostedit {
   border:1px solid #911a1a;
 }
 
-fieldset.hostedit legend {
-  color:blue;
-}
-
 /* input elements */
 fieldset.hostedit input, fieldset.hostedit select, fieldset.hostedit button {
   background-color:#ffc4ba;

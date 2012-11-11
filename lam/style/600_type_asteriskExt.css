@@ -76,10 +76,6 @@ fieldset.asteriskExtedit {
   border:1px solid #af8800;
 }
 
-fieldset.asteriskExtedit legend {
-  color:blue;
-}
-
 /* input elements */
 fieldset.asteriskExtedit input, fieldset.asteriskExtedit select, fieldset.asteriskExtedit button {
   background-color:#ffe27f;

@@ -85,11 +85,6 @@ fieldset.useredit {
   border:1px solid #9b8523;
 }
 
-/* legend of main fieldset */
-fieldset.useredit legend {
-  color:blue;
-}
-
 /* input elements */
 fieldset.useredit input, fieldset.useredit select, fieldset.useredit button {
   background-color:#fff2a3;

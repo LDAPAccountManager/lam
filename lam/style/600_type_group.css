@@ -76,10 +76,6 @@ fieldset.groupedit {
   border:1px solid #7167bf;
 }
 
-fieldset.groupedit legend {
-  color:blue;
-}
-
 /* input elements */
 fieldset.groupedit input, fieldset.groupedit select, fieldset.groupedit button {
   background-color:#a8c3ff;

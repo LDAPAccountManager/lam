@@ -76,10 +76,6 @@ fieldset.netgroupedit {
   border:1px solid #7167bf;
 }
 
-fieldset.netgroupedit legend {
-  color:blue;
-}
-
 /* input elements */
 fieldset.netgroupedit input, fieldset.netgroupedit select, fieldset.netgroupedit button {
   background-color:#a8c3ff;
