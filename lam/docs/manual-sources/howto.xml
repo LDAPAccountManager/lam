@@ -348,8 +348,9 @@ Have fun!
                     </inlinemediaobject></entry>
 
                   <entry>LAM is part of the official FreeBSD ports tree. For
-                  more details see these pages:<para>FreeBSD-CVS: <ulink
-                  url="http://www.freebsd.org/cgi/cvsweb.cgi/ports/sysutils/ldap-account-manager">http://www.freebsd.org/cgi/cvsweb.cgi/ports/sysutils/ldap-account-manager</ulink></para><para>FreshPorts:
+                  more details see these pages:<para>FreeBSD-SVN: <ulink
+                  url="http://svnweb.freebsd.org/ports/head/sysutils/ldap-account-manager/"
+                  userlevel="">http://svnweb.freebsd.org/ports/head/sysutils/ldap-account-manager/</ulink></para><para>FreshPorts:
                   <ulink
                   url="http://www.freshports.org/sysutils/ldap-account-manager">http://www.freshports.org/sysutils/ldap-account-manager</ulink></para></entry>
                 </row>
@@ -2263,6 +2264,37 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_mitKerberos2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Qmail (LAM Pro)</title>
+
+        <para>LAM Pro manages all qmail attributes for users. This includes
+        mail addresses, ID numbers and quota settings.</para>
+
+        <para>Please note that the main mail address is managed on tab
+        "Personal" if this module is active. Otherwise, it will be on the
+        qmail tab.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_qmail2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can hide several qmail options if you do not want to manage
+        them with LAM. This can be done on the module settings tab of your LAM
+        server profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_qmail1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -5461,6 +5493,25 @@ Run slapindex to rebuild the index.
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Qmail user</entry>
+
+            <entry>qmailUser</entry>
+
+            <entry>qmail.schema</entry>
+
+            <entry>Part of <ulink
+            url="http://www.nrg4u.com/">qmail_ldap</ulink></entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_mac.png" />
                 </imageobject>
               </inlinemediaobject></entry>
@@ -5491,7 +5542,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5586,7 +5637,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5623,7 +5674,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5659,7 +5710,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5677,7 +5728,7 @@ Run slapindex to rebuild the index.
 
             <entry>Autofs LDAP</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5695,7 +5746,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of OpenLDAP installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5731,7 +5782,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of Heimdal Kerberos installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5749,7 +5800,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of MIT Kerberos installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5767,7 +5818,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of sudo-ldap installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
@@ -5785,7 +5836,7 @@ Run slapindex to rebuild the index.
 
             <entry>Part of Zarafa installation</entry>
 
-            <entry>This account type is only available in LAM Pro.</entry>
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>

@@ -4,6 +4,7 @@ December 2012
   - show server profile name on config pages (RFE 3579768)
   - LAM Pro:
    -> MIT Kerberos support
+   -> Qmail user support
 
 
 25.09.2012 3.9
