@@ -219,8 +219,8 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	if ($iconImage != null) {
 		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
-	echo "<legend>$icon<b>" . getModuleAlias($modules[$i], "none") . "</b></legend>\n";
-	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, 'user');
+	echo "<legend>$icon" . getModuleAlias($modules[$i], "none") . "</legend>\n";
+	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, false, $tabindex, 'user');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
 	echo "<br>";
@@ -271,6 +271,10 @@ function checkInput() {
 		// text fields
 		elseif ($_SESSION['conf_types'][$element] == "text_obfuscated") {
 			$options[$element] = array(obfuscateText($_POST[$element]));
+		}
+		// hidden fields
+		elseif ($_SESSION['conf_types'][$element] == "hidden") {
+			$options[$element] = array($_POST[$element]);
 		}
 		// checkboxes
 		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
