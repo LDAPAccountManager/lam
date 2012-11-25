@@ -499,7 +499,7 @@ function get_preg($argument, $regexp) {
 		case 'macAddress':
 					$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
 					break;
-		case 'date':
+		case 'date':			// 31-12-2012
 					$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)\\-((0?[1-9])|(1[0-2]))\\-[1-3][0-9][0-9][0-9]$/';
 					break;
 		case 'date2':
@@ -531,6 +531,9 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'ascii': // ASCII
 					$pregexpr = '/^[' . chr(1) . '-' . chr(128) . ']*$/';
+					break;
+		case 'objectClass':
+					$pregexpr = '/^[[:alnum:]_]+$/';
 					break;
 	}
 	if ($pregexpr!='')
