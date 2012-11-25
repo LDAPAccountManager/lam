@@ -877,6 +877,18 @@ function extractRDNAttribute($dn) {
 }
 
 /**
+ * Extracts the RDN attribute value from a given DN.
+ * 
+ * @param String $dn DN
+ * @return String RDN attribute value
+ */
+function extractRDNValue($dn) {
+	if ($dn == null) return null;
+	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
+	return $parts[1];
+}
+
+/**
  * Extracts the DN suffix from a given DN.
  * E.g. ou=people,dc=test,dc=com will result in dc=test,dc=com.
  * 
