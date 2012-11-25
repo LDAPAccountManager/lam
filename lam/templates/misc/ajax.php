@@ -32,6 +32,10 @@ $Id$
 include_once("../../lib/security.inc");
 
 // start session
+if (isset($_GET['selfservice'])) {
+	// self service uses a different session name
+	session_name('SELFSERVICE');
+}
 startSecureSession();
 
 setlanguage();
