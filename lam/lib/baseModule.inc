@@ -688,7 +688,7 @@ abstract class baseModule {
 	* 
 	* @see baseModule::get_metaData()
 	*/
-	public function check_configOptions($scopes, $options) {
+	public function check_configOptions($scopes, &$options) {
 		$messages = array();
 		$scopes[] = 'all'; // add checks that are independent of scope
 		for ($s = 0; $s < sizeof($scopes); $s++) {

@@ -326,7 +326,7 @@ function getConfigOptions($scopes) {
 * @param array $options hash array containing all options (name => array(...))
 * @return array list of error messages
 */
-function checkConfigOptions($scopes, $options) {
+function checkConfigOptions($scopes, &$options) {
 	$return = array();
 	$modules = array_keys($scopes);
 	for ($i = 0; $i < sizeof($modules); $i++) {

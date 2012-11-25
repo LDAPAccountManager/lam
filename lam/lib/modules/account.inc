@@ -229,7 +229,11 @@ class account extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		$return['account_description'] = array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>');
+		$description = '';
+		if (isset($this->attributes['description'][0])) {
+			$description = $this->attributes['description'][0];
+		}
+		$return['account_description'] = array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>');
 		$return['account_uid'] = array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>');
 		return $return;
 	}

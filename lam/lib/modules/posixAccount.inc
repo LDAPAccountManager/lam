@@ -1513,7 +1513,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @param array $options hash array containing the settings (array('option' => array('value')))
 	* @return array list of error messages
 	*/
-	function check_configOptions($scopes, $options) {
+	function check_configOptions($scopes, &$options) {
 		$return = array();
 		// user settings
 		if (in_array('user', $scopes)) {
