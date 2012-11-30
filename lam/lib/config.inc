@@ -358,7 +358,7 @@ class LAMConfig {
 			$file = @fopen($conffile, "r");
 			if (!$file) return false; // abort if file is not readable
 			while (!feof($file)) {
-				$line = fgets($file, 1024);
+				$line = fgets($file, 100000);
 				$line = trim($line);  // remove spaces at the beginning and end
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
 				// search keywords
