@@ -56,7 +56,9 @@ abstract class htmlElement {
 	public $colspan = null;
 	/** rowspan if inside a table */
 	public $rowspan = null;
-
+	/** CSS classes */
+	protected $cssClasses = array();
+	
 	/**
 	 * Prints the HTML code for this element.
 	 * 
@@ -123,6 +125,15 @@ abstract class htmlElement {
 		else return 'rowspan="' . $this->rowspan . '"';
 	}
 
+	/**
+	 * Adds CSS classes to this link.
+	 * 
+	 * @param array $classes CSS class names
+	 */
+	public function setCSSClasses($classes) {
+		$this->cssClasses = $classes;
+	}
+
 }
 
 /**
@@ -141,8 +152,6 @@ class htmlTable extends htmlElement {
 	private $elements = array();
 	/** specifies if currently a row is open */
 	private $rowOpen = false;
-	/** additional CSS classes */
-	private $CSSClasses = '';
 	/** table width */
 	private $width = null;
 	
@@ -229,7 +238,11 @@ class htmlTable extends htmlElement {
 		if ($this->width != null) {
 			$width = ' width="' . htmlspecialchars($this->width) . '"';
 		}
-		echo "<table" . $width . " $this->CSSClasses>\n";
+		$classAttr = '';
+		if (sizeof($this->cssClasses) > 0) {
+			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo "<table" . $width . $classAttr . ">\n";
 		// print all contained elements
 		for ($i = 0; $i < sizeof($this->elements); $i++) {
 			// print htmlElement objects
@@ -281,15 +294,6 @@ class htmlTable extends htmlElement {
 		$this->elements = array_merge($this->elements, $table->elements);
 	}
 
-	/**
-	 * Sets the CSS classes for the table. 
-	 * 
-	 * @param String $CSSClasses CSS class names (e.g. "userlist smallPadding")
-	 */
-	public function setCSSClasses($CSSClasses) {
-		$this->CSSClasses = 'class="' . htmlspecialchars($CSSClasses) . '"';
-	}
-
 }
 
 /**
@@ -302,8 +306,6 @@ class htmlTableRow extends htmlElement {
 
 	/** table cells */
 	private $cells;
-	/** additional CSS classes */
-	private $CSSClasses = '';
 	
 	/**
 	 * Constructor
@@ -328,7 +330,11 @@ class htmlTableRow extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$types = array();
-		echo "<tr  $this->CSSClasses>\n";
+		$classAttr = '';
+		if (sizeof($this->cssClasses) > 0) {
+			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo "<tr" . $classAttr . ">\n";
 			for ($i = 0; $i < sizeof($this->cells); $i++) {
 				// check if alignment option was given
 				$align = $this->cells[$i]->getAlignmentString();
@@ -340,15 +346,6 @@ class htmlTableRow extends htmlElement {
 			}
 		echo "</tr>";
 		return $types;
-	}
-
-	/**
-	 * Sets the CSS classes for the table. 
-	 * 
-	 * @param String $CSSClasses CSS class names (e.g. "userlist smallPadding")
-	 */
-	public function setCSSClasses($CSSClasses) {
-		$this->CSSClasses = 'class="' . htmlspecialchars($CSSClasses) . '"';
 	}
 
 }
@@ -437,7 +434,10 @@ class htmlInputField extends htmlElement {
 		// print input field
 		$class = '';
 		if (sizeof($validators) > 0) {
-			$class = ' class="validate[' . implode(',', $validators) . ']"';
+			$class = ' class="validate[' . implode(',', $validators) . '] ' . implode(' ', $this->cssClasses) . '"';
+		}
+		elseif (sizeof($this->cssClasses) > 0) {
+			$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		$name = ' name="' . $this->fieldName . '"';
 		$id = ' id="' . $this->fieldName . '"';
@@ -449,7 +449,10 @@ class htmlInputField extends htmlElement {
 		if ($this->fieldMaxLength != null) {
 			$maxLength = ' maxlength="' . $this->fieldMaxLength . '"';
 		}
-		$size = ' size="' . $this->fieldSize . '"';
+		$size = '';
+		if ($this->fieldSize != null) {
+			$size = ' size="' . $this->fieldSize . '"';
+		}
 		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
 		$inputType = 'text';
@@ -2315,8 +2318,6 @@ class htmlLink extends htmlElement {
 	private $onClick = null;
 	/** show as button */
 	private $showAsButton = false;
-	/** CSS classes */
-	private $cssClasses = array();
 	
 	/**
 	 * Constructor.
@@ -2408,15 +2409,6 @@ class htmlLink extends htmlElement {
 		$this->onClick = htmlspecialchars($event);
 	}
 	
-	/**
-	 * Adds CSS classes to this link.
-	 * 
-	 * @param array $classes CSS class names
-	 */
-	public function setCSSClasses($classes) {
-		$this->cssClasses = $classes;
-	}
-
 }
 
 /**
@@ -2498,8 +2490,6 @@ class htmlDiv extends htmlElement {
 	private $id = null;
 	/** htmlElement that generates inner content */
 	private $content = null;
-	/** CSS classes */
-	private $classes = array();
 	
 	/**
 	 * Constructor.
@@ -2508,10 +2498,9 @@ class htmlDiv extends htmlElement {
 	 * @param htmlElement $content inner content
 	 * @param array $classes CSS classes
 	 */
-	function __construct($id, $content, $classes = array()) {
+	function __construct($id, $content) {
 		$this->id = htmlspecialchars($id);
 		$this->content = $content;
-		$this->classes = $classes;
 	}
 	
 	/**
@@ -2532,12 +2521,8 @@ class htmlDiv extends htmlElement {
 			$idValue = ' id="' . $this->id . '"';
 		}
 		$classesValue = '';
-		if (($this->classes != null) && (sizeof($this->classes) > 0)) {
-			$classesValue = ' class="';
-			for ($i = 0; $i < sizeof($this->classes); $i++) {
-				$classesValue .= htmlspecialchars($this->classes[$i]) . ' ';
-			}
-			$classesValue .= '"';
+		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<div' . $idValue . $classesValue . '>';
 		if ($this->content != null) {

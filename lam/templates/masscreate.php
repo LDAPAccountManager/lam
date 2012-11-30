@@ -194,7 +194,8 @@ for ($i = 0; $i < sizeof($types); $i++) {
 		}
 		$innerTable->addElement(new htmlSpacer('10px', null));
 	}
-	$typeDiv = new htmlDiv($types[$i], $innerTable, $divClasses);
+	$typeDiv = new htmlDiv($types[$i], $innerTable);
+	$typeDiv->setCSSClasses($divClasses);
 	$moduleGroup->addElement($typeDiv);
 }
 $table->addElement($moduleGroup, true);
@@ -273,7 +274,7 @@ function showMainPage($scope, $selectedModules) {
 	$columnSpacer = new htmlSpacer('10px', null);
 	$container->addElement(new htmlTitle(_("Columns")), true);
 	$columnContainer = new htmlTable();
-	$columnContainer->setCSSClasses($scope . 'list');
+	$columnContainer->setCSSClasses(array($scope . 'list'));
 	// DN options
 	$dnTitle = new htmlSubTitle(_("DN settings"), '../graphics/logo32.png');
 	$dnTitle->colspan = 20;
@@ -315,7 +316,7 @@ function showMainPage($scope, $selectedModules) {
 	$dnSuffixRowCells[] = new htmlOutputText('');
 	$dnSuffixRowCells[] = new htmlSpacer(null, '25px');
 	$dnSuffixRow = new htmlTableRow($dnSuffixRowCells);
-	$dnSuffixRow->setCSSClasses($scope . 'list-dark');
+	$dnSuffixRow->setCSSClasses(array($scope . 'list-dark'));
 	$columnContainer->addElement($dnSuffixRow);
 	$dnRDNRowCells = array();
 	$dnRDNRowCells[] = $columnSpacer;
@@ -335,7 +336,7 @@ function showMainPage($scope, $selectedModules) {
 	$dnRDNRowCells[] = new htmlOutputText(implode(", ", $rdnAttributes));
 	$dnRDNRowCells[] = new htmlSpacer(null, '25px');
 	$dnRDNRow = new htmlTableRow($dnRDNRowCells);
-	$dnRDNRow->setCSSClasses($scope . 'list-bright');
+	$dnRDNRow->setCSSClasses(array($scope . 'list-bright'));
 	$columnContainer->addElement($dnRDNRow);
 	// module options
 	for ($m = 0; $m < sizeof($modules); $m++) {
@@ -414,10 +415,10 @@ function showMainPage($scope, $selectedModules) {
 			$rowCells[] = new htmlSpacer(null, '25px');
 			$row = new htmlTableRow($rowCells);
 			if ($odd) {
-				$row->setCSSClasses($scope . 'list-dark');
+				$row->setCSSClasses(array($scope . 'list-dark'));
 			}
 			else {
-				$row->setCSSClasses($scope . 'list-bright');
+				$row->setCSSClasses(array($scope . 'list-bright'));
 			}
 			$odd = !$odd;
 			$columnContainer->addElement($row);

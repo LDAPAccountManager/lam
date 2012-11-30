@@ -217,6 +217,10 @@ div.ui-progressbar-value {
 	background-image: url(images/pbar-ani.gif);
 }
 
+.fullwidth {
+	width: 100%;
+}
+
 /**
  * table style for delete.php
  *
