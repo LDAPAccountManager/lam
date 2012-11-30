@@ -681,11 +681,15 @@ function searchLDAP($suffix, $filter, $attributes) {
  * 
  * @param String $dn DN
  * @param array $attributes list of attributes to fetch
+ * @param handle $handle LDAP handle (optional for admin interface pages)
  * @return array attributes or null if not found
  */
-function ldapGetDN($dn, $attributes = array('dn')) {
+function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
+	if ($handle == null) {
+		$handle = $_SESSION['ldap']->server();
+	}
 	$return = null;
-	$sr = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), 'objectClass=*', $attributes);
+	$sr = @ldap_read($handle, escapeDN($dn), 'objectClass=*', $attributes);
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($entries) {
