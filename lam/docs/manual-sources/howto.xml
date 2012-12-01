@@ -3422,35 +3422,128 @@ Run slapindex to rebuild the index.
         </listitem>
       </itemizedlist>
 
-      <para><emphasis role="bold">Attention:</emphasis> This module is only
-      available for LAM Pro Self Service.</para>
+      <para>Limitations:</para>
 
-      <para>To create custom fields for the Self Service please edit your Self
-      Service profile and switch to tab "Module settings". Here you can add a
-      new field. Simply fill the fields and press on "Add".</para>
+      <para>Custom fields cannot manage</para>
 
-      <para>Please note that the field name cannot be changed later. It is the
-      unique ID for this field.</para>
+      <itemizedlist>
+        <listitem>
+          <para>structural object classes</para>
+        </listitem>
 
-      <para>After you created your fields please press on "Sync fields with
-      page layout". Now you can switch to tab "Page layout" and add your new
-      fields like any other standard field.</para>
+        <listitem>
+          <para>(binary) attributes that require file uploads</para>
+        </listitem>
+
+        <listitem>
+          <para>multi-value attributes</para>
+        </listitem>
+
+        <listitem>
+          <para>attributes that require validation rules across multiple
+          attributes or cannot be described by a simple regular
+          expression</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Activating the custom fields
+      module:</emphasis></para>
+
+      <para>You may specify custom fields for all of your account types.
+      Please enter tab "Modules" in your server profile. Now activate the
+      "Custom fields (customFields)" module for all needed account
+      types.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields1.png" />
+            <imagedata fileref="images/customFields14.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
 
-      <para>Examples for fields and their representation in Self
-      Service:</para>
+      <para><emphasis role="bold">Defining groups:</emphasis></para>
+
+      <para>All input fields are devided into groups. A group may contain one
+      or more object classes and allows you to add/remove a certain set of
+      input fields.</para>
+
+      <para>E.g. you may define two groups - "My application A" and "My
+      application B" - that manage different LDAP attributes and object
+      classes. This way you will be able to control both attribute sets
+      independently.</para>
+
+      <para>To create a group please edit your server profile and switch to
+      tab "Module settings". You will see the section "Custom fields" which
+      allows you to add new groups. Now select your account type (e.g. Users)
+      and specify an alias for your group. This alias will be printed as group
+      header when you later edit an account in the admin interface.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields15.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>After you created your new group you can setup the managed object
+      classes. If you specify any object classes then you will later be able
+      to add/remove a complete set of attributes including their object
+      classes.</para>
+
+      <para>Skipping the object classes field is only useful if you want to
+      manage some attributes that are not yet supported by LAM but there is
+      already a LAM module that manages the object class.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields16.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The group may look like when you edit a user.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields19.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields20.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Adding fields:</emphasis></para>
+
+      <para>Now you can add a new field that manages an LDAP attribute. Simply
+      fill the fields and press on "Add".</para>
+
+      <para>Please note that the field name cannot be changed later. It is the
+      unique ID for this field.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields17.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Examples for fields and their representation:</para>
 
       <para><emphasis role="bold">Text field:</emphasis></para>
 
-      <para>Text fields can be set read-only. They allow to specify a <link
-      linkend="customFields_validation_expressions">validation
+      <para>Text fields allow to specify a <link
+      linkend="customFields_validation_expressions_admin">validation
       expression</link> and error message.</para>
 
       <screenshot>
@@ -3461,7 +3554,7 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation:</para>
 
       <screenshot>
         <mediaobject>
@@ -3485,7 +3578,7 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation:</para>
 
       <screenshot>
         <mediaobject>
@@ -3502,7 +3595,7 @@ Run slapindex to rebuild the index.
       and rows.</para>
 
       <para>Please note that the <link
-      linkend="customFields_validation_expressions">validation
+      linkend="customFields_validation_expressions_admin">validation
       expression</link> should be set to multi-line. This is done by adding
       "m" at the end.</para>
 
@@ -3514,7 +3607,7 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation:</para>
 
       <screenshot>
         <mediaobject>
@@ -3539,7 +3632,7 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation:</para>
 
       <screenshot>
         <mediaobject>
@@ -3566,7 +3659,7 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation:</para>
 
       <screenshot>
         <mediaobject>
@@ -3580,7 +3673,9 @@ Run slapindex to rebuild the index.
 
       <para>Select lists allow the user to select a value in a large list of
       options. The definition of the possible values and their display is
-      equal to radio buttons.</para>
+      similar to radio buttons.</para>
+
+      <para>You can also allow multiple values.</para>
 
       <screenshot>
         <mediaobject>
@@ -3590,7 +3685,7 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation:</para>
 
       <screenshot>
         <mediaobject>
@@ -3600,7 +3695,15 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
-      <para id="customFields_validation_expressions"><emphasis
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields18.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para id="customFields_validation_expressions_admin"><emphasis
       role="bold">Validation expressions:</emphasis></para>
 
       <para>The validation expressions follow the standard of <ulink
@@ -5248,6 +5351,254 @@ Run slapindex to rebuild the index.
           valid for 24 hours. When he clicks on this link then the account
           will be created in the self service user suffix. The DN will look
           like this: <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
+        </section>
+
+        <section>
+          <title>Custom fields (LAM Pro)</title>
+
+          <para>This module allows you to manage LDAP attributes that are not
+          covered by the other LAM modules (e.g. if you use custom LDAP
+          schemas). You can fully define how your input fields look
+          like:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Label</para>
+            </listitem>
+
+            <listitem>
+              <para>LDAP attribute name</para>
+            </listitem>
+
+            <listitem>
+              <para>Unique name for field</para>
+            </listitem>
+
+            <listitem>
+              <para>Read-only display</para>
+            </listitem>
+
+            <listitem>
+              <para>Field type: text, password, text area, checkbox, radio
+              buttons, select list</para>
+            </listitem>
+
+            <listitem>
+              <para>Validation via regular expression</para>
+            </listitem>
+
+            <listitem>
+              <para>Error message if validation fails</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>To create custom fields for the Self Service please edit your
+          Self Service profile and switch to tab "Module settings". Here you
+          can add a new field. Simply fill the fields and press on
+          "Add".</para>
+
+          <para>Please note that the field name cannot be changed later. It is
+          the unique ID for this field.</para>
+
+          <para>After you created your fields please press on "Sync fields
+          with page layout". Now you can switch to tab "Page layout" and add
+          your new fields like any other standard field.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Examples for fields and their representation in Self
+          Service:</para>
+
+          <para><emphasis role="bold">Text field:</emphasis></para>
+
+          <para>Text fields allow to specify a <link
+          linkend="customFields_validation_expressions">validation
+          expression</link> and error message.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation in Self Service:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields3.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Password field:</emphasis></para>
+
+          <para>You can also manage custom password fields. LAM Pro will
+          display two fields where the user must enter the same password. You
+          can hash the password if needed.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation in Self Service:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields5.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Text area:</emphasis></para>
+
+          <para>This adds a multi-line field. The options are similar to text
+          fields. Additionally, you can set the size with the number of
+          columns and rows.</para>
+
+          <para>Please note that the <link
+          linkend="customFields_validation_expressions">validation
+          expression</link> should be set to multi-line. This is done by
+          adding "m" at the end.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields6.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation in Self Service:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields7.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Checkbox:</emphasis></para>
+
+          <para>Sometimes you may want to allow only yes/no values for your
+          LDAP attributes. This can be represented by a checkbox. You can
+          specify the values for checked and unchecked. The default value is
+          set if the LDAP attribute has no value.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields8.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation in Self Service:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields9.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Radio buttons:</emphasis></para>
+
+          <para>This displays a list of radio buttons where the user can
+          select one value.</para>
+
+          <para>You can specify a mapping of LDAP attribute values and their
+          display (label) on the Self Service page. To add more mapping fields
+          please press "Add more mapping fields".</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields10.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation in Self Service:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields11.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis role="bold">Select list:</emphasis></para>
+
+          <para>Select lists allow the user to select a value in a large list
+          of options. The definition of the possible values and their display
+          is similar to radio buttons.</para>
+
+          <para>You can also allow multiple values.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields12.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation in Self Service:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields13.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields18.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para id="customFields_validation_expressions"><emphasis
+          role="bold">Validation expressions:</emphasis></para>
+
+          <para>The validation expressions follow the standard of <ulink
+          url="http://perldoc.perl.org/perlre.html">Perl regular
+          expressions</ulink>. They start and end with a "/". The beginning of
+          a line is specified by "^" and the end by "$".</para>
+
+          <para>Examples:</para>
+
+          <para>/^[a-z0-9]+$/ allows small letters and numbers. The value must
+          not be empty ("+").</para>
+
+          <para>/^[a-z0-9]+$/i allows small and capital letters ("i" at the
+          end means ignore case) and numbers. The value must not be empty
+          ("+").</para>
+
+          <para>Special characters that must be escaped with "\": "\", ".",
+          "(", ")"</para>
+
+          <para>E.g. /^[a-z0-9\.]$/i</para>
         </section>
       </section>
     </section>

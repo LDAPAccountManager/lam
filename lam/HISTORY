@@ -3,6 +3,7 @@ December 2012
   - IMAP: support "/" as path separator (RFE 3575692)
   - show server profile name on config pages (RFE 3579768)
   - LAM Pro:
+   -> Custom fields for admin interface
    -> MIT Kerberos support
    -> Qmail user support
 
