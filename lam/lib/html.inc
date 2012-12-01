@@ -2290,7 +2290,7 @@ class htmlHiddenInput extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '">';
+		echo '<input type="hidden" name="' . $this->name . '" id="' . $this->name . '" value="' . $this->value . '">';
 		return array($this->name => 'hidden');
 	}
 	
