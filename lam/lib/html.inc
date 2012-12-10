@@ -1832,9 +1832,13 @@ class htmlInputTextarea extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$classList = $this->cssClasses;
 		$classes = '';
 		if ($this->richEdit) {
-			$classes = ' class="ckeditor"';
+			$classList[] = 'ckeditor';
+		}
+		if (is_array($classList) && (sizeof($classList) > 0)) {
+			$classes = ' class="' . implode(' ', $classList) . '"';
 		}
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
