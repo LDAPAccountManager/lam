@@ -381,6 +381,10 @@ class htmlInputField extends htmlElement {
 	private $validationRule = null;
 	/** enable autocomplete */
 	private $autocomplete = false;
+	/** multiple values in one field */
+	private $autocompleteMultiValue = false;
+	/** separator expression for multiple values in one field */
+	private $autocompleteMultiValueSeparator = null;
 	/** autocompletion suggestions */
 	private $autocompleteValues = array();
 	/** autocomplete start at this input length */
@@ -471,10 +475,27 @@ class htmlInputField extends htmlElement {
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
-			echo 'jQuery(function() {';
-			echo 'var availableTags = [' . implode(',', $this->autocompleteValues) . '];';
-			echo 'jQuery( "#' . $this->fieldName . '" ).autocomplete({ source: availableTags, minLength: ' . $this->autocompleteMinLength . '});';
-			echo '});';
+				echo 'jQuery(function() {';
+				echo 'var availableTags' . $this->fieldName . ' = [' . implode(',', $this->autocompleteValues) . '];';
+				if (!$this->autocompleteMultiValue) {
+					echo 'jQuery( "#' . $this->fieldName . '" ).autocomplete({ source: availableTags' . $this->fieldName . ', minLength: ' . $this->autocompleteMinLength . '});';
+				}
+				else {
+					echo 'function split' . $this->fieldName . '(val) {return val.split( /' . $this->autocompleteMultiValueSeparator . '/ );}';
+					echo 'function extractLast' . $this->fieldName . '(term) {return split' . $this->fieldName . '(term).pop();}';
+					echo 'jQuery( "#' . $this->fieldName . '" ).bind("keydown", function(event) {
+									if (event.keyCode === jQuery.ui.keyCode.TAB && jQuery(this).data("autocomplete").menu.active ) {
+										event.preventDefault();
+									}
+							})';
+					echo '.autocomplete({
+						source: availableTags' . $this->fieldName . ',
+						minLength: ' . $this->autocompleteMinLength . ',
+						focus: function() {return false;},
+						select: function(event,ui) {var terms = split' . $this->fieldName . '(this.value);terms.pop();terms.push(ui.item.value);terms.push("");this.value = terms.join(", ");return false;}
+						});';
+				}
+				echo '});';
 			echo "</script\n>";
 		}
 		if ($this->transient) {
@@ -566,14 +587,18 @@ class htmlInputField extends htmlElement {
 	 * 
 	 * @param array $values list of values to suggest
 	 * @param int $minLength autocompletion starts after this number of caracters entered (default 1; 0 means immediate start)
+	 * @param boolean $multiValue allow multiple autocompletion values in the same fields
+	 * @param String $multiSeparator separator expression if multiple autocompletion values are allowed
 	 */
-	public function enableAutocompletion($values, $minLength = 1) {
+	public function enableAutocompletion($values, $minLength = 1, $multiValue = false, $multiSeparator = ',\s*') {
 		for ($i = 0; $i < sizeof($values); $i++) {
 			$values[$i] = '"' . htmlspecialchars($values[$i]) . '"';
 		}
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
 		$this->autocompleteMinLength = $minLength;
+		$this->autocompleteMultiValue = $multiValue;
+		$this->autocompleteMultiValueSeparator = $multiSeparator;
 	}
 	
 	/**
@@ -954,8 +979,12 @@ class htmlSelect extends htmlElement {
 		}
 		$size = ' size="' . $this->size . '"';
 		$class = '';
+		$classList = $this->cssClasses;
 		if ($this->rightToLeftTextDirection) {
-			$class = ' class="rightToLeftText"';
+			$classList[] = 'rightToLeftText';
+		}
+		if (sizeof($classList) > 0) {
+			$class = ' class="' . implode(' ', $classList) . '"';
 		}
 		$disabled = '';
 		if (!$this->isEnabled) {
