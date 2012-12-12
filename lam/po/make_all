@@ -6,7 +6,12 @@
 
 # This script is run to create archives of all messages.po files.
 
-#!/bin/bash
+echo "Generating POT"
+./make_po
+mv messages.po messages.pot
+tar -czf messages.pot.tar.gz messages.pot
+echo " "
+
 echo "Generating Catalan translation template"
 ./make_po_ca
 tar -czf messages.po_ca.tar.gz messages.po
