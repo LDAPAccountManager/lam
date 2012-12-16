@@ -7,15 +7,42 @@ time.
 * templates/lists/changePassword.php
 * templates/selfService/*
 * lib/modules/aliasEntry.inc
+* lib/modules/automount.inc
+* lib/modules/customFields.inc
 * lib/modules/customScripts.inc
+* lib/modules/device.inc
 * lib/modules/groupOfNames.inc
+* lib/modules/groupOfNamesUser.inc
 * lib/modules/groupOfUniqueNames.inc
+* lib/modules/heimdalKerberos.inc
+* lib/modules/ipHost.inc
+* lib/modules/mitKerberos.inc
+* lib/modules/mitKerberosStructural.inc
+* lib/modules/namedObject.inc
 * lib/modules/nisObject.inc
+* lib/modules/passwordSelfReset.inc
+* lib/modules/ppolicy.inc
+* lib/modules/ppolicyUser.inc
+* lib/modules/qmailUser.inc
+* lib/modules/rfc2307bisAutomount.inc
 * lib/modules/rfc2307bisPosixGroup.inc
+* lib/modules/selfRegistration.inc
+* lib/modules/sudoRole.inc
 * lib/modules/uidObject.inc
+* lib/modules/zarafaAddressList.inc
+* lib/modules/zarafaContact.inc
+* lib/modules/zarafaDynamicGroup.inc
+* lib/modules/zarafaGroup.inc
+* lib/modules/zarafaServer.inc
+* lib/modules/zarafaUser.inc
 * lib/types/alias.inc
+* lib/types/automountType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
+* lib/types/ppolicyType.inc
+* lib/types/sudo.inc
+* lib/types/zarafaAddressListType.inc
+* lib/types/zarafaDynamicGroupType.inc
 
 
 All other files are licensed under the conditions below.
@@ -145,4 +172,5 @@ templates/lib/*wz_tooltip.js                C        Walter Zorn
 lib/3rdParty/phpseclib                      C        Jim Wigginton
 templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
 templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
+
 
