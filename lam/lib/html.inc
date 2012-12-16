@@ -384,6 +384,8 @@ class htmlInputField extends htmlElement {
 	/** multiple values in one field */
 	private $autocompleteMultiValue = false;
 	/** separator expression for multiple values in one field */
+	private $autocompleteMultiValueSeparatorExp = null;
+	/** separator for multiple values in one field */
 	private $autocompleteMultiValueSeparator = null;
 	/** autocompletion suggestions */
 	private $autocompleteValues = array();
@@ -481,7 +483,7 @@ class htmlInputField extends htmlElement {
 					echo 'jQuery( "#' . $this->fieldName . '" ).autocomplete({ source: availableTags' . $this->fieldName . ', minLength: ' . $this->autocompleteMinLength . '});';
 				}
 				else {
-					echo 'function split' . $this->fieldName . '(val) {return val.split( /' . $this->autocompleteMultiValueSeparator . '/ );}';
+					echo 'function split' . $this->fieldName . '(val) {return val.split( /' . $this->autocompleteMultiValueSeparatorExp . '/ );}';
 					echo 'function extractLast' . $this->fieldName . '(term) {return split' . $this->fieldName . '(term).pop();}';
 					echo 'jQuery( "#' . $this->fieldName . '" ).bind("keydown", function(event) {
 									if (event.keyCode === jQuery.ui.keyCode.TAB && jQuery(this).data("autocomplete").menu.active ) {
@@ -489,10 +491,18 @@ class htmlInputField extends htmlElement {
 									}
 							})';
 					echo '.autocomplete({
-						source: availableTags' . $this->fieldName . ',
+						source: function(request, response) {response(jQuery.ui.autocomplete.filter(
+									availableTags' . $this->fieldName . ', extractLast' . $this->fieldName . '(request.term)));
+								},
 						minLength: ' . $this->autocompleteMinLength . ',
 						focus: function() {return false;},
-						select: function(event,ui) {var terms = split' . $this->fieldName . '(this.value);terms.pop();terms.push(ui.item.value);terms.push("");this.value = terms.join(", ");return false;}
+						select: function(event,ui) {
+							var terms = split' . $this->fieldName . '(this.value);
+							terms.pop();
+							terms.push(ui.item.value);
+							terms.push("");
+							this.value = terms.join("' . $this->autocompleteMultiValueSeparator . '");return false;
+						}
 						});';
 				}
 				echo '});';
@@ -588,9 +598,10 @@ class htmlInputField extends htmlElement {
 	 * @param array $values list of values to suggest
 	 * @param int $minLength autocompletion starts after this number of caracters entered (default 1; 0 means immediate start)
 	 * @param boolean $multiValue allow multiple autocompletion values in the same fields
-	 * @param String $multiSeparator separator expression if multiple autocompletion values are allowed
+	 * @param String $multiSeparator separator expression if multiple autocompletion values are allowed (default ",\s*")
+	 * @param String $multiSeparator separator for two values (default ", ")
 	 */
-	public function enableAutocompletion($values, $minLength = 1, $multiValue = false, $multiSeparator = ',\s*') {
+	public function enableAutocompletion($values, $minLength = 1, $multiValue = false, $multiSeparatorExp = ',\s*', $multiSeparator = ', ') {
 		for ($i = 0; $i < sizeof($values); $i++) {
 			$values[$i] = '"' . htmlspecialchars($values[$i]) . '"';
 		}
@@ -598,6 +609,7 @@ class htmlInputField extends htmlElement {
 		$this->autocompleteValues = $values;
 		$this->autocompleteMinLength = $minLength;
 		$this->autocompleteMultiValue = $multiValue;
+		$this->autocompleteMultiValueSeparatorExp = $multiSeparatorExp;
 		$this->autocompleteMultiValueSeparator = $multiSeparator;
 	}
 	
@@ -782,17 +794,22 @@ class htmlButton extends htmlElement {
 		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
 		$style = '';
+		$classList = $this->cssClasses;
 		$class = '';
 		$title = '';
 		$name = ' name="' . $this->name . '"';
 		// image button
 		if ($this->isImageButton) {
-			$class = ' class="smallImageButton align-middle"';
+			$classList[] = 'smallImageButton';
+			$classList[] = 'align-middle';
 			$style = ' style="background-image: url(../../graphics/' . $this->value . '); background-color: transparent;"';
 		}
 		// text button
 		elseif ($this->iconClass == null) {
-			$class = ' class="smallPadding"';
+			$classList[] = 'smallPadding';
+		}
+		if (sizeof($classList) > 0) {
+			$class = ' class="' . implode(' ', $classList) . '"';
 		}
 		if ($this->title != null) {
 			$title = ' title="' . $this->title . '"';
