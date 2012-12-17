@@ -1,4 +1,4 @@
-December 2012
+17.12.2012 4.0
   - account profiles and PDF structures are now bound to server profile
   - IMAP: support "/" as path separator (RFE 3575692)
   - show server profile name on config pages (RFE 3579768)
