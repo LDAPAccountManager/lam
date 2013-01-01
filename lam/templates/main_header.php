@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -200,6 +200,9 @@ jQuery(document).ready(function() {
 	<?php
 		$linkList = array();
 		for ($i = 0; $i < sizeof($types); $i++) {
+			if (isAccountTypeHidden($types[$i])) {
+				continue;
+			}
 			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] .
 				'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
 				'<img height="16" width="16" alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .

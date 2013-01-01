@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2011  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,7 +57,13 @@ if ((sizeof($new_suffs) > 0) && checkIfWriteAccessIsAllowed()) {
 }
 else {
 	if (sizeof($types) > 0) {
-		metaRefresh("lists/list.php?type=" . $types[0]);
+		for ($i = 0; $i < sizeof($types); $i++) {
+			if (isAccountTypeHidden($types[$i])) {
+				continue;
+			}
+			metaRefresh("lists/list.php?type=" . $types[$i]);
+			break;
+		}
 	}
 	else {
 		metaRefresh("tree/treeViewContainer.php");

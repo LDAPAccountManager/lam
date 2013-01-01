@@ -91,6 +91,13 @@ if (isset($_GET['showldif'])) {
 
 include 'main_header.php';
 $scope = htmlspecialchars($_POST['scope']);
+
+// check if account type is ok
+if (isAccountTypeHidden($scope)) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
+	die();
+}
+
 echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
 
 $selectedModules = explode(',', $_POST['selectedModules']);

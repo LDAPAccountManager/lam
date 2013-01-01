@@ -149,6 +149,11 @@ $helpArray = array (
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
 				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
+				"260" => array ("Headline" => _("Additional LDAP filter"),
+					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
+						. ' ' . _('By default LAM will show all accounts that match the selected account modules.')),
+				"261" => array ("Headline" => _("Hidden"),
+					"Text" => _('Hidden account types will not show up in LAM. This is useful if you want to display e.g. only groups but still need to manage their members.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

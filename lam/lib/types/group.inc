@@ -262,7 +262,10 @@ class lamGroupList extends lamList {
 				// make a link for each member of the group
 				for ($d = 0; $d < sizeof($attr); $d++) {
 					$user = $attr[$d]; // user name
-					if (isset($primaryvals[$user])) {
+					if (isAccountTypeHidden('user')) {
+						$linklist[$d] = $user;
+					}
+					elseif (isset($primaryvals[$user])) {
 						$linklist[$d] = "<b><a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a></b>";
 					}
 					else {
@@ -274,7 +277,12 @@ class lamGroupList extends lamList {
 				// make a link for each member of the group
 				for ($d = 0; $d < sizeof($entry[$attribute]); $d++) {
 					$user = $entry[$attribute][$d]; // user name
-					$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+					if (!isAccountTypeHidden('user')) {
+						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+					}
+					else {
+						$linklist[$d] = $user;
+					}
 				}
 			}
 			echo implode("; ", $linklist);

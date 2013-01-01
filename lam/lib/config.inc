@@ -200,6 +200,16 @@ function metaRefresh($page) {
 	echo "</html>\n";
 }
 
+/**
+ * Checks if the given account type is hidden.
+ * 
+ * @param String $type account type (e.g. user)
+ * @return boolean is hidden
+ */
+function isAccountTypeHidden($type) {
+	$typeSettings = $_SESSION['config']->get_typeSettings();
+	return isset($typeSettings['hidden_' . $type]) && ($typeSettings['hidden_' . $type] == true);
+}
 
 /**
 * This class manages .conf files.

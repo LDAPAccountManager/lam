@@ -247,7 +247,18 @@ if (sizeof($activeTypes) > 0) {
 		$suffixInput = new htmlInputField('suffix_' . $activeTypes[$i], $typeSettings['suffix_' . $activeTypes[$i]]);
 		$suffixInput->setFieldSize(40);
 		$activeContainer->addElement($suffixInput);
-		$activeContainer->addElement(new htmlHelpLink('202'), true);
+		$activeContainer->addElement(new htmlHelpLink('202'));
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		// LDAP filter
+		$filterText = new htmlOutputText(_("Additional LDAP filter"));
+		$filterText->colspan = 2;
+		$activeContainer->addElement($filterText);
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$filterInput = new htmlInputField('filter_' . $activeTypes[$i], $typeSettings['filter_' . $activeTypes[$i]]);
+		$filterInput->setFieldSize(40);
+		$activeContainer->addElement($filterInput);
+		$activeContainer->addElement(new htmlHelpLink('260'));
+		$activeContainer->addNewLine();
 		// list attributes
 		if (isset($typeSettings['attr_' . $activeTypes[$i]])) {
 			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
@@ -262,7 +273,16 @@ if (sizeof($activeTypes) > 0) {
 		$attrsInput = new htmlInputField('attr_' . $activeTypes[$i], $attributes);
 		$attrsInput->setFieldSize(40);
 		$activeContainer->addElement($attrsInput);
-		$activeContainer->addElement(new htmlHelpLink('206'), true);
+		$activeContainer->addElement(new htmlHelpLink('206'));
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		// hidden type
+		$hiddenText = new htmlOutputText(_('Hidden'));
+		$hiddenText->colspan = 2;
+		$activeContainer->addElement($hiddenText);
+		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$activeContainer->addElement(new htmlInputCheckbox('hidden_' . $activeTypes[$i], $typeSettings['hidden_' . $activeTypes[$i]]));
+		$activeContainer->addElement(new htmlHelpLink('261'));
+		$activeContainer->addNewLine();
 		// delete button
 		$delButton = new htmlButton('rem_'. $activeTypes[$i], _("Remove this account type"));
 		$delButton->colspan = 5;
@@ -334,12 +354,21 @@ function checkInput() {
 				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), getTypeAlias($type));
 			}
 		}
+		// set attributes
 		elseif (substr($key, 0, 5) == "attr_") {
 			$typeSettings[$key] = $_POST[$key];
 			$type = substr($postKeys[$i], 5);
 			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
 				$errors[] = array("ERROR", _("List attributes are invalid!"), getTypeAlias($type));
 			}
+		}
+		// set filter
+		elseif (substr($key, 0, 7) == "filter_") {
+			$typeSettings[$key] = $_POST[$key];
+		}
+		// set hidden
+		elseif (substr($key, 0, 7) == "hidden_") {
+			$typeSettings[$key] = ($_POST[$key] == 'on');
 		}
 	}
 	// save input

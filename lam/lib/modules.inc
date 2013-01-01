@@ -104,6 +104,11 @@ function get_ldap_filter($scope) {
 	}
 	// add built OR filter to AND filters
 	if ($orFilter != '') $filters['and'][] = $orFilter;
+	// add type filter
+	$typeSettings = $_SESSION['config']->get_typeSettings();
+	if (isset($typeSettings['filter_' . $scope]) && ($typeSettings['filter_' . $scope] != '')) {
+		$filters['and'][] = $typeSettings['filter_' . $scope];
+	}
 	// collapse AND filters
 	if (sizeof($filters['and']) < 2) return $filters['and'][0];
 	else return "(&" . implode("", $filters['and']) . ")";

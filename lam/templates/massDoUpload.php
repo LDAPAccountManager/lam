@@ -62,6 +62,13 @@ setlanguage();
 
 include 'main_header.php';
 $scope = htmlspecialchars($_SESSION['mass_scope']);
+
+// check if account type is ok
+if (isAccountTypeHidden($scope)) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
+	die();
+}
+
 echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
 
 // create accounts

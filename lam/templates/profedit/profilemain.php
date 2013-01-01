@@ -51,6 +51,9 @@ $types = $_SESSION['config']->get_ActiveTypes();
 $profileClasses = array();
 $profileClassesTemp = array();
 for ($i = 0; $i < sizeof($types); $i++) {
+	if (isAccountTypeHidden($types[$i])) {
+		continue;
+	}
 	$profileClassesTemp[getTypeAlias($types[$i])] = array(
 		'scope' => $types[$i],
 		'title' => getTypeAlias($types[$i]),
@@ -97,6 +100,10 @@ $container = new htmlTable();
 $container->addElement(new htmlTitle(_("Profile editor")), true);
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
+	if (isAccountTypeHidden($_POST['profileDeleteType'])) {
+		logNewMessage(LOG_ERR, 'User tried to delete hidden account type profile: ' . $_POST['profileDeleteType']);
+		die();
+	}
 	// delete profile
 	if (delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
 		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));

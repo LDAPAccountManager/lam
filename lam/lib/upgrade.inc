@@ -168,7 +168,7 @@ function recursiveCopy($src, $dst, $profiles, $fileFilter = null, $overwrite = t
 			StatusMessage('ERROR', 'Upgrade failed.', 'The directory \'' . $dst . '\' could not be created.');
 		}
 	}
-	while (false !== ($file = readdir($dir))) {
+	while (false !== ($file = @readdir($dir))) {
 		if ($file != '.'  && $file != '..'  && !in_array($file, $profiles)) {
 			if (is_dir($src . '/' . $file) && ($file == 'logos')) {
 				recursiveCopy($src . '/' . $file, $dst . '/' . $file, $profiles, $fileFilter, $overwrite);

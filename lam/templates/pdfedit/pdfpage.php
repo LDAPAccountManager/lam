@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2010  Roland Gruber
+                2007 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,6 +67,11 @@ if(isset($_POST['type'])) {
 	if($_POST['pdfname'] == '') {
 		unset($_GET['pdfname']);
 	}
+}
+
+if (isAccountTypeHidden($_GET['type'])) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden PDF structure: ' . $_GET['type']);
+	die();
 }
 
 

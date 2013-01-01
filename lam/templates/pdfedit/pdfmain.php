@@ -73,6 +73,9 @@ if(isset($_POST['createNewTemplate'])) {
 $scopes = $_SESSION['config']->get_ActiveTypes();
 $sortedScopes = array();
 for ($i = 0; $i < sizeof($scopes); $i++) {
+	if (isAccountTypeHidden($scopes[$i])) {
+		continue;
+	}
 	$sortedScopes[$scopes[$i]] = getTypeAlias($scopes[$i]);
 }
 natcasesort($sortedScopes);

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -60,6 +60,11 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 // copy type and profile name from POST to GET
 if (isset($_POST['profname'])) $_GET['edit'] = $_POST['profname'];
 if (isset($_POST['accounttype'])) $_GET['type'] = $_POST['accounttype'];
+
+if (isAccountTypeHidden($_GET['type'])) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden account type profile: ' . $_GET['type']);
+	die();
+}
 
 // abort button was pressed
 // back to profile editor

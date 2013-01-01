@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -164,6 +164,9 @@ function display_main($message, $error) {
 	$types = array();
 	$typeList = $_SESSION['config']->get_ActiveTypes();
 	for ($i = 0; $i < sizeof($typeList); $i++) {
+		if (isAccountTypeHidden($typeList[$i])) {
+			continue;
+		}
 		$types[$typeList[$i]] = getTypeAlias($typeList[$i]);
 	}
 	natcasesort($types);

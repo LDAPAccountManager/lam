@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,9 +41,15 @@ startSecureSession();
 
 setlanguage();
 
+$type = $_GET['type'];
+
+// check if list is hidden
+if (isAccountTypeHidden($type)) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden account list: ' . $type);
+	die();
+}
 
 // create list object if needed
-$type = $_GET['type'];
 $listClass = getListClassName($type);
 if (!isset($_SESSION['list_' . $type])) {
 	$list = new $listClass($type);

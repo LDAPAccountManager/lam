@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
+                2005 - 2012  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ $Id$
 *
 * @package modules
 * @author Tilo Lutz
+* @author Roland Gruber
 */
 
 /** security functions */
@@ -60,6 +62,10 @@ if (isset($_GET['DN'])) {
 	$DN = str_replace("\\'", '', $_GET['DN']);
 	$type = str_replace("\\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
+	if (isAccountTypeHidden($type)) {
+		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type);
+		die();
+	}
 	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$result = $_SESSION['account']->load_account($DN);
@@ -76,6 +82,10 @@ if (isset($_GET['DN'])) {
 else if (count($_POST)==0) {
 	$type = str_replace("\\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
+	if (isAccountTypeHidden($type)) {
+		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type);
+		die();
+	}
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$_SESSION['account']->new_account();
 }

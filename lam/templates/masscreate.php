@@ -80,7 +80,7 @@ include 'main_header.php';
 $types = $_SESSION['config']->get_ActiveTypes();
 for ($i = 0; $i < sizeof($types); $i++) {
 	$myType = new $types[$i]();
-	if (!$myType->supportsFileUpload()) {
+	if (!$myType->supportsFileUpload() || isAccountTypeHidden($types[$i])) {
 		unset($types[$i]);
 	}
 }
