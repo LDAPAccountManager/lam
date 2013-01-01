@@ -89,7 +89,7 @@ function containsFiles($dir) {
 	if ($dirHandle != null) {
 		$file = @readdir($dirHandle);
 		while ($file !== false) {
-			if (is_file($dir . '/' . $file)) {
+			if (is_file($dir . '/' . $file) && ($file != '.htaccess')) {
 				$return = true;
 				break;
 			}
