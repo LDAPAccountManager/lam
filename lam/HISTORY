@@ -1,3 +1,8 @@
+March 2013 4.1
+  - support additional LDAP filters for account types
+  - allow to hide account types (that are required by other account types)
+
+
 17.12.2012 4.0
   - account profiles and PDF structures are now bound to server profile
   - IMAP: support "/" as path separator (RFE 3575692)
