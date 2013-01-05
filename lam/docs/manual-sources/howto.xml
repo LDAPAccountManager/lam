@@ -1198,6 +1198,22 @@ Have fun!
               <para><emphasis role="bold">List attributes:</emphasis> a list
               of attributes which are shown in the account lists</para>
             </listitem>
+
+            <listitem>
+              <para><emphasis role="bold">Additional LDAP filter:</emphasis>
+              LAM will automatically detect the right LDAP entries for each
+              account type. This can be used to further limit the number of
+              visible entries (e.g. if you want to manage only some specific
+              groups).</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis role="bold">Hidden:</emphasis> This is used to
+              hide account types that should not be displayed but are required
+              by other account types. E.g. you can hide the Samba domains
+              account type and still assign domains when you edit your
+              users.</para>
+            </listitem>
           </itemizedlist>
 
           <screenshot>
