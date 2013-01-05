@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2012  Roland Gruber
+                2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ if(isset($_GET['useProfile'])) {
 	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submited
 }
 // Load login page
-else {
+elseif (!empty($default_Profile)) {
 	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
 }
 
@@ -202,6 +202,7 @@ function display_LoginPage($config_object) {
 	copyConfigTemplates(getConfigProfiles());
 	
 	// set focus on password field
+	if (!empty($config_object)) {
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
 		echo "function focusLogin() {\n";
@@ -221,6 +222,7 @@ function display_LoginPage($config_object) {
 		<?php
 		echo "//-->\n";
 		echo "</script>\n";
+	}
 	?>
 
 		<script type="text/javascript">
@@ -253,11 +255,13 @@ function display_LoginPage($config_object) {
 			}
 		}
 		// check TLS
-		$useTLS = $config_object->getUseTLS();
-		if (isset($useTLS) && ($useTLS == "yes")) {
-			if (!function_exists('ldap_start_tls')) {
-				StatusMessage("ERROR", "Your PHP installation does not support TLS encryption!");
-				echo "<br>";
+		if (!empty($config_object)) {
+			$useTLS = $config_object->getUseTLS();
+			if (isset($useTLS) && ($useTLS == "yes")) {
+				if (!function_exists('ldap_start_tls')) {
+					StatusMessage("ERROR", "Your PHP installation does not support TLS encryption!");
+					echo "<br>";
+				}
 			}
 		}
 		// check if session expired
@@ -284,6 +288,7 @@ function display_LoginPage($config_object) {
 			StatusMessage("INFO", _("Your settings were successfully saved."), htmlspecialchars($_GET['selfserviceSaveOk']));
 			echo "<br>";
 		}
+		if (!empty($config_object)) {
 		?>
 		<br><br>
 		<div style="position:relative; z-index:5;">
@@ -422,6 +427,9 @@ function display_LoginPage($config_object) {
 			</tr>
 		</table>
 		</div>
+		<?php
+		}
+		?>
 		<br><br>
 			<TABLE style="position:absolute; bottom:10px;" border="0" width="99%">
 				<tr><td colspan=2><HR></td></tr>
