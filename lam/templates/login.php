@@ -84,7 +84,12 @@ elseif (!empty($default_Profile)) {
 	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
 }
 
-$_SESSION['language'] = $_SESSION["config"]->get_defaultLanguage();
+if (!empty($_SESSION["config"])) {
+	$_SESSION['language'] = $_SESSION["config"]->get_defaultLanguage();
+}
+else {
+	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
+}
 if (isset($_POST['language'])) {
 	$_SESSION['language'] = $_POST['language']; // Write selected language in session
 }
@@ -93,7 +98,6 @@ $_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitiona
 $_SESSION['header'] .= "<html>\n<head>\n";
 $_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
-
 
 /**
 * Displays the login window.
@@ -246,16 +250,16 @@ function display_LoginPage($config_object) {
 		<br><br>
 
 		<?php
-		// check extensions
-		$extList = getRequiredExtensions();
-		for ($i = 0; $i < sizeof($extList); $i++) {
-			if (!extension_loaded($extList[$i])) {
-				StatusMessage("ERROR", "A required PHP extension is missing!", $extList[$i]);
-				echo "<br>";
-			}
-		}
-		// check TLS
 		if (!empty($config_object)) {
+			// check extensions
+			$extList = getRequiredExtensions();
+			for ($i = 0; $i < sizeof($extList); $i++) {
+				if (!extension_loaded($extList[$i])) {
+					StatusMessage("ERROR", "A required PHP extension is missing!", $extList[$i]);
+					echo "<br>";
+				}
+			}
+			// check TLS
 			$useTLS = $config_object->getUseTLS();
 			if (isset($useTLS) && ($useTLS == "yes")) {
 				if (!function_exists('ldap_start_tls')) {
