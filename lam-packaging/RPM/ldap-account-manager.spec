@@ -121,6 +121,8 @@ fi
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService
 /var/lib/%{lam_dir}/config/*_sample
 /var/lib/%{lam_dir}/config/.htaccess
+/var/lib/%{lam_dir}/config/pdf/.htaccess
+/var/lib/%{lam_dir}/config/profiles/.htaccess
 /var/lib/%{lam_dir}/config/language
 /var/lib/%{lam_dir}/config/shells
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf
