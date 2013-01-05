@@ -1,6 +1,8 @@
-March 2013 4.1
+06.01.2013 4.0.1
   - support additional LDAP filters for account types
   - allow to hide account types (that are required by other account types)
+  - fixed bugs:
+   -> missing directories config/pdf and config/profiles on fresh installations
 
 
 17.12.2012 4.0
