@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Michael Duergner
+  Copyright (C) 2003 - 2013  Michael Duergner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ include_once("../lib/status.inc");
 ?>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../style/layout.css" />
+<link rel="stylesheet" type="text/css" href="../style/500_layout.css" />
 </head>
 <body>
 <?php

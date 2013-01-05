@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2012  Roland Gruber
+                2008 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ function echoHTMLHead() {
 	echo $_SESSION['header'];
 	?>
 			<title>LDAP Account Manager Help Center</title>
-			<link rel="stylesheet" type="text/css" href="../style/layout.css">
+			<link rel="stylesheet" type="text/css" href="../style/500_layout.css">
 		</head>
 		<body>
 	<?php

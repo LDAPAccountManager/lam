@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ $Id$
 include ("../lib/config.inc");
 
 $conf = new LAMConfig('test');
-echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
+echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/500_layout.css\"></head><body>";
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
 // now all preferences are loaded
 echo ("Loading preferences...");

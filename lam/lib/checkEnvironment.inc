@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2011  Roland Gruber
+  Copyright (C) 2010 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ if (version_compare(phpversion(), '5.2.4') < 0) {
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/500_layout.css\">\n";
 	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "</head><body>\n";
@@ -113,7 +113,7 @@ if (sizeof($criticalErrors) > 0) {
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/500_layout.css\">\n";
 	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "</head><body>\n";
