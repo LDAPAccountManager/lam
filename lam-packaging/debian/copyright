@@ -1,5 +1,51 @@
-This software is copyright (c) 2003 - 2007 by Tilo Lutz, Roland Gruber
-and Michael Duergner.
+This software is copyright (c) 2003 - 2013 by Roland Gruber
+
+If you purchased a copy of LDAP Account Manager Pro then the following
+files are licensed under the conditions which you accepted at purchase
+time.
+
+* templates/lists/changePassword.php
+* templates/selfService/*
+* lib/modules/aliasEntry.inc
+* lib/modules/automount.inc
+* lib/modules/customFields.inc
+* lib/modules/customScripts.inc
+* lib/modules/device.inc
+* lib/modules/groupOfNames.inc
+* lib/modules/groupOfNamesUser.inc
+* lib/modules/groupOfUniqueNames.inc
+* lib/modules/heimdalKerberos.inc
+* lib/modules/ipHost.inc
+* lib/modules/mitKerberos.inc
+* lib/modules/mitKerberosStructural.inc
+* lib/modules/namedObject.inc
+* lib/modules/nisObject.inc
+* lib/modules/passwordSelfReset.inc
+* lib/modules/ppolicy.inc
+* lib/modules/ppolicyUser.inc
+* lib/modules/qmailUser.inc
+* lib/modules/rfc2307bisAutomount.inc
+* lib/modules/rfc2307bisPosixGroup.inc
+* lib/modules/selfRegistration.inc
+* lib/modules/sudoRole.inc
+* lib/modules/uidObject.inc
+* lib/modules/zarafaAddressList.inc
+* lib/modules/zarafaContact.inc
+* lib/modules/zarafaDynamicGroup.inc
+* lib/modules/zarafaGroup.inc
+* lib/modules/zarafaServer.inc
+* lib/modules/zarafaUser.inc
+* lib/types/alias.inc
+* lib/types/automountType.inc
+* lib/types/gon.inc
+* lib/types/nisObjectType.inc
+* lib/types/ppolicyType.inc
+* lib/types/sudo.inc
+* lib/types/zarafaAddressListType.inc
+* lib/types/zarafaDynamicGroupType.inc
+
+
+All other files are licensed under the conditions below.
 
 
   This program is free software; you can redistribute it and/or modify
@@ -16,17 +62,22 @@ and Michael Duergner.
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-The complete license can be found in the file /usr/share/common-licenses/GPL.
+The complete license can be found in the file COPYING.
 
 
 Some parts of this package have other, compatible licences. These are:
 
-A: Freeware
+A:
 
-  You may use, modify and redistribute this software as you wish.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software to use, copy, modify, distribute, sublicense, and/or sell
+  copies of the software, and to permit persons to whom the software is furnished
+  to do so.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
 
-B: 
+B:
 
    Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream
    Vera is a trademark of Bitstream, Inc.
@@ -74,11 +125,52 @@ B:
    or Bitstream Inc., respectively. For further information, contact:
    fonts at gnome dot org.
 
- 
+
+C:
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License (LGPL) as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+   For more details on the GNU Lesser General Public License,
+   see http://www.gnu.org/copyleft/lesser.html
+
+
+D:
+
+   Permission is hereby granted, free of charge, to any person obtaining
+   a copy of this software and associated documentation files (the
+   "Software"), to deal in the Software without restriction, including
+   without limitation the rights to use, copy, modify, merge, publish,
+   distribute, sublicense, and/or sell copies of the Software, and to
+   permit persons to whom the Software is furnished to do so, subject to
+   the following conditions:
+
+   The above copyright notice and this permission notice shall be
+   included in all copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+   OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/fpdf.php  A  2003  Olivier Plathey
-lib/font/Vera*  B  2003  Bitstream, Inc.
+lib/fpdf.php                                A  2008  Olivier Plathey
+lib/font/Vera*                              B  2003  Bitstream, Inc.
+templates/lib/*wz_tooltip.js                C        Walter Zorn
+lib/3rdParty/phpseclib                      C        Jim Wigginton
+templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
+templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
+
+
