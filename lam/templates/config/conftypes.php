@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -366,9 +366,15 @@ function checkInput() {
 		elseif (substr($key, 0, 7) == "filter_") {
 			$typeSettings[$key] = $_POST[$key];
 		}
-		// set hidden
-		elseif (substr($key, 0, 7) == "hidden_") {
-			$typeSettings[$key] = ($_POST[$key] == 'on');
+	}
+	// set hidden
+	for ($i = 0; $i < sizeof($accountTypes); $i++) {
+		$key = "hidden_" . $accountTypes[$i];
+		if (isset($_POST[$key]) && ($_POST[$key] == 'on')) {
+			$typeSettings[$key] = true;
+		}
+		else {
+			$typeSettings[$key] = false;
 		}
 	}
 	// save input
