@@ -633,14 +633,19 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
  * @param String $filter
  * @param array $attributes list of attributes to return
  * @param array $scopes account types
+ * @param boolean $attrsOnly get only attributes but no values (default: false)
  * @return array list of found entries
  */
-function searchLDAPByFilter($filter, $attributes, $scopes) {
+function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 	$return = array();
+	$readAttributesOnly = 0;
+	if ($attrsOnly) {
+		$readAttributesOnly = 1;
+	}
 	for ($s = 0; $s < sizeof($scopes); $s++) {
 		// search LDAP
 		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
-							$filter, $attributes, 0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+							$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
