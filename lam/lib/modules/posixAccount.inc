@@ -710,6 +710,22 @@ class posixAccount extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($groups); $i++) {
 			$return[$groups[$i]['dn']]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
+		// remove from group of names
+		$dn = $this->getAccountContainer()->dn_orig;
+		$gonTypes = array('group');
+		$types = $_SESSION['config']->get_ActiveTypes();
+		if (in_array('gon', $types)) {
+			$gonTypes[] = 'gon';
+		}
+		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniqueMember=' . $dn . '))', array('member', 'uniqueMember'), $gonTypes);
+		for ($i = 0; $i < sizeof($gons); $i++) {
+			if (isset($gons[$i]['member'])) {
+				$return[$gons[$i]['dn']]['remove']['member'][] = $dn;
+			}
+			elseif (isset($gons[$i]['uniquemember'])) {
+				$return[$gons[$i]['dn']]['remove']['uniqueMember'][] = $dn;
+			}
+		}
 		return $return;
 	}
 
