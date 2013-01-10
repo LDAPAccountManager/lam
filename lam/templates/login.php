@@ -57,9 +57,11 @@ session_destroy();
 session_start();
 session_regenerate_id(true);
 
+$profiles = getConfigProfiles();
+
 // save last selected login profile
 if(isset($_GET['useProfile'])) {
-	if (in_array($_GET['useProfile'], getConfigProfiles())) {
+	if (in_array($_GET['useProfile'], $profiles)) {
 		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24);
 	}
 	else {
@@ -71,17 +73,25 @@ if(isset($_GET['useProfile'])) {
 $default_Config = new LAMCfgMain();
 $_SESSION["cfgMain"] = $default_Config;
 $default_Profile = $default_Config->default;
-if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], getConfigProfiles())) {
+if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
 }
 // Reload loginpage after a profile change
-if(isset($_GET['useProfile'])) {
+if(isset($_GET['useProfile']) && in_array($_GET['useProfile'], $profiles)) {
 	logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
 	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submited
 }
 // Load login page
-elseif (!empty($default_Profile)) {
+elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
 	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
+}
+else if (sizeof($profiles) > 0) {
+	// use first profile as fallback
+	$_SESSION["config"] = new LAMConfig($profiles[0]);
+}
+
+if (!isset($default_Config->default) || !in_array($default_Config->default, $profiles)) {
+	$error_message = _('No default profile set. Please set it in the server profile configuration.');
 }
 
 if (!empty($_SESSION["config"])) {
@@ -198,12 +208,12 @@ function display_LoginPage($config_object) {
 		    StatusMessage('ERROR', 'Unable to migrate configuration files. Please allow write access to these paths:', implode('<br>', $result));
 		}
 		else {
-			upgradeConfigToServerProfileFolders(getConfigProfiles());
+			upgradeConfigToServerProfileFolders($profiles);
 			StatusMessage('INFO', 'Config file migration finished.');
 		}
 	}
 	// copy any missing default profiles
-	copyConfigTemplates(getConfigProfiles());
+	copyConfigTemplates($profiles);
 	
 	// set focus on password field
 	if (!empty($config_object)) {
