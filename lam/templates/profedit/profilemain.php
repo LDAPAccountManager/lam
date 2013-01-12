@@ -89,13 +89,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 include '../main_header.php';
 echo "<div class=\"userlist-bright smallPaddingContent\">\n";
 echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
-?>
-	<div id="passwordDialogDiv" class="hidden">
-	   <?php echo _("Master password")?>
-	   <input type="password" name="passwd">
-	   <?php echo printHelpLink(getHelp('', '236'), '236')?>
-	</div>
-<?php
+
 $container = new htmlTable();
 $container->addElement(new htmlTitle(_("Profile editor")), true);
 

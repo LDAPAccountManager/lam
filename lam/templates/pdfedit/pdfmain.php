@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2012  Roland Gruber
+                2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -150,11 +150,6 @@ include '../main_header.php';
 ?>
 <div class="userlist-bright smallPaddingContent">
 <form action="pdfmain.php" method="post" name="pdfmainForm" >
-	<div id="passwordDialogDiv" class="hidden">
-	   <?php echo _("Master password")?>
-	   <input type="password" name="passwd">
-	   <?php echo printHelpLink(getHelp('', '236'), '236')?>
-	</div>
 	<?php
 		if (isset($_GET['savedSuccessfully'])) {
 			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
