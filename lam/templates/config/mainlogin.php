@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2010  Roland Gruber
+  Copyright (C) 2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -133,50 +133,41 @@ echo $_SESSION['header'];
 		<br>
 		<!-- form to change main options -->
 		<form action="mainlogin.php" method="post">
-		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all">
-			<tr>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-				<td style="border-style:none" height="20"></td>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-			</tr>
-			<tr>
-				<td style="border-style:none" align="center"><b> <?php echo _("Please enter the master password to change the general preferences:"); ?> </b></td>
-			</tr>
-			<tr><td style="border-style:none" >&nbsp;</td></tr>
-<?php
-	// print message if login was incorrect or no config profiles are present
-	if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
-		echo "<tr>\n";
-			echo "<td style=\"border-style:none\" rowspan=\"2\"></td>\n";
-			echo "<td style=\"border-style:none\" align=\"center\"><b><font color=red>" . $message . "</font></b></td>\n";
-			echo "<td style=\"border-style:none\" rowspan=\"2\"></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-			echo "<td style=\"border-style:none\" >&nbsp;</td>\n";
-		echo "</tr>\n";
-	}
-?>
-			<tr>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-				<td style="border-style:none" align="center">
-					<input type="password" name="passwd">
-					<button id="submitButton" class="smallPadding" name="submit"><?php echo _("Ok"); ?></button>
-					&nbsp;
-					<?php printHelpLink(getHelp('', '236'), '236'); ?>
-					<script type="text/javascript" language="javascript">
-					jQuery(document).ready(function() {
-						jQuery('#submitButton').button();
-					});
-					</script>
-				</td>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-			</tr>
-			<tr>
-				<td  style="border-style:none">&nbsp;</td>
-			</tr>
-			<tr>
-				<td style="border-style:none" height="20"></td>
-			</tr>
+		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all" style="padding: 20px;">
+		<tr><td>
+		<?php
+		$spacer = new htmlSpacer('20px', '20px');
+		$table = new htmlTable();
+		$caption = new htmlOutputText(_("Please enter the master password to change the general preferences:"));
+		$table->addElement($caption, true);
+		$table->addElement($spacer, true);
+		// print message if login was incorrect or no config profiles are present
+		if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
+			$messageField = new htmlStatusMessage('ERROR', $message);
+			$table->addElement($messageField, true);
+			$table->addElement($spacer, true);
+		}
+		// password field
+		$gap = new htmlSpacer('1px', null);
+		$passwordGroup = new htmlGroup();
+		$passwordGroup->alignment = htmlElement::ALIGN_CENTER;
+		$passwordGroup->addElement(new htmlOutputText(_('Master password')));
+		$passwordGroup->addElement($gap);
+		$passwordField = new htmlInputField('passwd');
+		$passwordField->setFieldSize(15);
+		$passwordField->setIsPassword(true);
+		$passwordGroup->addElement($passwordField);
+		$passwordGroup->addElement($gap);
+		$passwordGroup->addElement(new htmlButton('submit', _("Ok")));
+		$passwordGroup->addElement($gap);
+		$passwordGroup->addElement(new htmlHelpLink('236'));
+		$table->addElement($passwordGroup, true);
+		
+		
+		$tabindex = 1;
+		parseHtml(null, $table, array(), false, $tabindex, 'user');
+		?>
+		</td></tr>
 		</table>
 		</form>
 

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -227,15 +227,6 @@ if (!isset($cfg->default)) {
 		<br>
 		<!-- form for adding/renaming/deleting profiles -->
 		<form id="profileForm" name="profileForm" action="profmanage.php" method="post">
-		<input type="hidden" name="action" id="action" value="none">
-		<div id="passwordDialogDiv" class="hidden">
-			<?PHP echo _("Master password"); ?>
-			<input type="password" name="passwd">
-			<?PHP
-				printHelpLink(getHelp('', '236'), '236');
-			?>
-		</div>
-		<div class="filled ui-corner-all">
 <?php
 $topicSpacer = new htmlSpacer(null, '20px');
 
@@ -312,10 +303,24 @@ $defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfi
 $container->addElement($defaultProfileButton, true);
 $container->addElement($topicSpacer, true);
 
-parseHtml('', $container, array(), false, $tabindex, 'user');
+$container->addElement(new htmlHiddenInput('action', 'none'), true);
+
+$dialogDivContent = new htmlTable();
+$dialogDivContent->addElement(new htmlOutputText(_("Master password")));
+$masterPassword = new htmlInputField('passwd');
+$masterPassword->setIsPassword(true);
+$dialogDivContent->addElement($masterPassword);
+$dialogDivContent->addElement(new htmlHelpLink('236'));
+$dialogDiv = new htmlDiv('passwordDialogDiv', $dialogDivContent);
+$dialogDiv->setCSSClasses(array('hidden'));
+$container->addElement($dialogDiv, true);
+
+$mainDiv = new htmlDiv('mainDiv', $container);
+$mainDiv->setCSSClasses(array('filled', 'ui-corner-all'));
+
+parseHtml('', $mainDiv, array(), false, $tabindex, 'user');
 
 ?>
-		</div>
 		</form>
 		<p><br></p>
 
