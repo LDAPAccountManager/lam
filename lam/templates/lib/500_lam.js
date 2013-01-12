@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -91,9 +91,18 @@ function SubmitForm(id, e) {
 		if (e.returnValue) {
 			e.returnValue = false;
 		}
+		if (window.lastKeyCode) {
+			// no submit if last key code was arrow key (browser autocompletion)
+			if (window.lastKeyCode == 33 || window.lastKeyCode == 34 ||
+				window.lastKeyCode == 38 || window.lastKeyCode == 40) {
+				window.lastKeyCode = e.keyCode;
+				return true;
+			}
+		}
 		document.getElementsByName(id)[0].click();
 		return false;
 	}
+	window.lastKeyCode = e.keyCode;
 	return true;
 }
 
