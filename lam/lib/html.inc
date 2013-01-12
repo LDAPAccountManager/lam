@@ -1286,6 +1286,8 @@ class htmlRadio extends htmlElement {
 	private $selectedElement = null;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** on change code */
+	private $onchangeEvent = null;
 	
 	/**
 	 * Constructor.
@@ -1326,16 +1328,27 @@ class htmlRadio extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$onchange = '';
+		if ($this->onchangeEvent != null) {
+			$onchange = ' onchange="' . $this->onchangeEvent . '"';
+		}
 		// print radio list
 		$counter = 0;
 		foreach ($this->elements as $label => $value) {
-			$onClick = 'onClick="jQuery(\'input[name=' . $this->name . ']\').attr(\'checked\', false);jQuery(\'#' . $this->name . $counter . '\').attr(\'checked\', true);"';
+			$onClick = 'onClick="
+				jQuery(\'input[name=' . $this->name . ']\').attr(\'checked\', false);
+				jQuery(\'#' . $this->name . $counter . '\').attr(\'checked\', true);
+				jQuery(\'#' . $this->name . $counter . '\').trigger(\'change\');
+				"';
+			if ($this->isEnabled === false) {
+				$onClick = '';
+			}
 			echo '<div class="nowrap" ' . $onClick . '>';
 			$selected = '';
 			if ($value == $this->selectedElement) {
 				$selected = ' checked';
 			}
-			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . ' value="' . $value . '" tabindex="' . $tabindex . '"> ' . $label;
+			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . $onchange . ' value="' . $value . '" tabindex="' . $tabindex . '"> ' . $label;
 			echo '</div>';
 			$tabindex++;
 			$counter++;
@@ -1350,6 +1363,15 @@ class htmlRadio extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+
+	/**
+	 * Sets the JavaScript code for the onchange event.
+	 * 
+	 * @param String $onchangeEvent onchange event code (e.g. myfunction();)
+	 */
+	public function setOnchangeEvent($onchangeEvent) {
+		$this->onchangeEvent = htmlspecialchars($onchangeEvent);
 	}
 
 }
