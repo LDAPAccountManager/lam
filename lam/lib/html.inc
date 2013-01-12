@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2011  Roland Gruber
+  Copyright (C) 2010 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ abstract class htmlElement {
 	public $rowspan = null;
 	/** CSS classes */
 	protected $cssClasses = array();
+	/** table cell CSS classes */
+	protected $tableCellCssClasses = array();
 	
 	/**
 	 * Prints the HTML code for this element.
@@ -126,12 +128,30 @@ abstract class htmlElement {
 	}
 
 	/**
-	 * Adds CSS classes to this link.
+	 * Adds CSS classes to this element.
 	 * 
 	 * @param array $classes CSS class names
 	 */
 	public function setCSSClasses($classes) {
 		$this->cssClasses = $classes;
+	}
+
+	/**
+	 * Adds CSS classes to the surrounding table cell for this element.
+	 * 
+	 * @param array $classes CSS class names
+	 */
+	public function setTableCellCSSClasses($classes) {
+		$this->tableCellCssClasses = $classes;
+	}
+	
+	/**
+	 * Returns the CSS classes of the surrounding table cell for this element.
+	 * 
+	 * @return array CSS classes
+	 */
+	public function getTableCellCSSClasses() {
+		return $this->tableCellCssClasses;
 	}
 
 }
@@ -193,11 +213,15 @@ class htmlTable extends htmlElement {
 			$align = $element->getAlignmentString();
 			$colspan = $element->getColspanString();
 			$rowspan = $element->getRowspanString();
+			$css = '';
+			if (sizeof($element->getTableCellCSSClasses()) > 0) {
+				$css = 'class="' . implode(' ', $element->getTableCellCSSClasses()) . '"';
+			}
 			$tagName = 'td';
 			if ($isTableHeadElement) {
 				$tagName = 'th';
 			}
-			$this->elements[] = "<$tagName $align $colspan $rowspan>\n";
+			$this->elements[] = "<$tagName $align $colspan $rowspan $css>\n";
 			$this->elements[] = $element;
 			$this->elements[] = "</$tagName>\n";
 			if ($newLine) {
@@ -422,6 +446,7 @@ class htmlInputField extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$this->cssClasses[] = 'ui-corner-all';
 		if (isset($values[$this->fieldName])) {
 			if (isObfuscatedText($values[$this->fieldName][0])) {
 				$this->fieldValue = deobfuscateText($values[$this->fieldName][0]);
@@ -442,7 +467,7 @@ class htmlInputField extends htmlElement {
 		if (sizeof($validators) > 0) {
 			$class = ' class="validate[' . implode(',', $validators) . '] ' . implode(' ', $this->cssClasses) . '"';
 		}
-		elseif (sizeof($this->cssClasses) > 0) {
+		else {
 			$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		$name = ' name="' . $this->fieldName . '"';
@@ -985,6 +1010,7 @@ class htmlSelect extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$this->cssClasses[] = 'ui-corner-all';
 		if (isset($values[$this->name])) {
 			$this->selectedElements = $values[$this->name];
 		}
@@ -1000,9 +1026,7 @@ class htmlSelect extends htmlElement {
 		if ($this->rightToLeftTextDirection) {
 			$classList[] = 'rightToLeftText';
 		}
-		if (sizeof($classList) > 0) {
-			$class = ' class="' . implode(' ', $classList) . '"';
-		}
+		$class = ' class="' . implode(' ', $classList) . '"';
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -1867,6 +1891,7 @@ class htmlInputTextarea extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$this->cssClasses[] = 'ui-corner-all';
 		if (isset($values[$this->name])) {
 			$this->value = implode("\r\n", $values[$this->name]);
 		}
@@ -1883,9 +1908,7 @@ class htmlInputTextarea extends htmlElement {
 		if ($this->richEdit) {
 			$classList[] = 'ckeditor';
 		}
-		if (is_array($classList) && (sizeof($classList) > 0)) {
-			$classes = ' class="' . implode(' ', $classList) . '"';
-		}
+		$classes = ' class="' . implode(' ', $classList) . '"';
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
