@@ -301,97 +301,103 @@ class user extends baseType {
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked);
-		$dialog = '<div id="lam_accountStatusDialog" class="hidden">';
+		
+		$container = new htmlTable();
+		
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
-		$lockChecked = ' checked="checked"';
-		$unlockChecked = '';
+		$selectedRadio = 'lock';
 		$onchange = '';
 		if ($partiallyLocked && !$fullyLocked) {
 			$radioDisabled = false;
-			$onchange = ' onchange="if (jQuery(\'#lam_accountStatusActionRadioLock:checked\').val()) {' .
+			$onchange = 'if (jQuery(\'#lam_accountStatusAction0:checked\').val()) {' .
 								'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
 								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').addClass(\'hidden\');' .
 							'}' .
 							'else {' .
 								'jQuery(\'#lam_accountStatusDialogLockDiv\').addClass(\'hidden\');' .
 								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').removeClass(\'hidden\');' .
-							'};"';
+							'};';
 		}
 		if ($fullyLocked) {
-			$lockChecked = '';
-			$unlockChecked = ' checked="checked"';
+			$selectedRadio = 'unlock';
 		}
 		if (!$radioDisabled) {
-			$dialog .= '<input id="lam_accountStatusActionRadioLock" type="radio" name="lam_accountStatusAction" value="lock"' . $onchange . $lockChecked . '> ' . _('Lock') . '<br>';
-			$dialog .= '<input id="lam_accountStatusActionRadioUnlock" type="radio" name="lam_accountStatusAction" value="unlock"' . $onchange . $unlockChecked . '> ' . _('Unlock') . '<br><br>';
+			$radio = new htmlRadio('lam_accountStatusAction', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
+			$radio->setOnchangeEvent($onchange);
+			$container->addElement($radio, true);
 		}
 		else {
-			$radioValue = 'lock';
-			if ($lockChecked == '') {
-				$radioValue = 'unlock';
-			}
-			$dialog .= '<input id="lam_accountStatusActionRadioLockDisabled" type="radio" name="lam_accountStatusActionDisabled" disabled value="lock"' . $onchange . $lockChecked . '> ' . _('Lock') . '<br>';
-			$dialog .= '<input id="lam_accountStatusActionRadioUnlockDisabled" type="radio" name="lam_accountStatusActionDisabled" disabled value="unlock"' . $onchange . $unlockChecked . '> ' . _('Unlock') . '<br><br>';
-			$dialog .= '<input type="hidden" name="lam_accountStatusAction" value="' . $radioValue . '">';
+			$radio = new htmlRadio('lam_accountStatusActionDisabled', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
+			$radio->setIsEnabled(false);
+			$container->addElement($radio, true);
+			$container->addElement(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), true);
 		}
-		$dialog .= '<input type="hidden" name="lam_accountStatusResult" id="lam_accountStatusResult" value="cancel">';
+		
+		$container->addElement(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), true);
+		
 		// locking part
 		if (!$fullyLocked) {
-			$dialog .= '<div id="lam_accountStatusDialogLockDiv"><table border=0>';
+			$lockContent = new htmlTable();
+			
 			if ($unixAvailable && !$unixLocked) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockUnix" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/tux.png"></td>';
-				$dialog .= '<td>' . _('Unix') . '</td>';
+				$lockContent->addElement(new htmlImage('../../graphics/tux.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockUnix', true, _('Unix'), null, false), true);
 			}
 			if ($sambaAvailable && !$sambaLocked) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockSamba" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/samba.png"></td>';
-				$dialog .= '<td>' . _('Samba 3') . '</td>';
+				$lockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockSamba', true, _('Samba 3'), null, false), true);
 			}
 			if ($ppolicyAvailable && !$ppolicyLocked) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusLockPPolicy" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/security.png"></td>';
-				$dialog .= '<td>' . _('PPolicy') . '</td>';
+				$lockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockPPolicy', true, _('PPolicy'), null, false), true);
 			}
 			if ($unixAvailable) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusRemoveUnixGroups" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/groupBig.png"></td>';
-				$dialog .= '<td>' . _('Remove from all Unix groups') . '</td>';
+				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveUnixGroups', true, _('Remove from all Unix groups'), null, false), true);
 			}
 			if ($unixAvailable && posixAccount::areGroupOfNamesActive()) { // check unixAvailable because Unix module removes group memberships
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusRemoveGONGroups" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/groupBig.png"></td>';
-				$dialog .= '<td>' . _('Remove from all group of (unique) names') . '</td>';
+				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveGONGroups', true, _('Remove from all group of (unique) names'), null, false), true);
 			}
-			$dialog .= '</table></div>';
+
+			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
+			$container->addElement($lockDiv, true);
 		}
 		// unlocking part
 		if ($partiallyLocked) {
-			$unlockClass = 'hidden';
-			if ($fullyLocked) {
-				$unlockClass = '';
-			}
-			$dialog .= '<div id="lam_accountStatusDialogUnlockDiv" class="' . $unlockClass . '"><table border=0>';
+			$unlockContent = new htmlTable();
+			
 			if ($unixAvailable && $unixLocked) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockUnix" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/tux.png"></td>';
-				$dialog .= '<td>' . _('Unix') . '</td>';
+				$unlockContent->addElement(new htmlImage('../../graphics/tux.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockUnix', true, _('Unix'), null, false), true);
 			}
 			if ($sambaAvailable && $sambaLocked) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockSamba" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/samba.png"></td>';
-				$dialog .= '<td>' . _('Samba 3') . '</td>';
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockSamba', true, _('Samba 3'), null, false), true);
 			}
 			if ($ppolicyAvailable && $ppolicyLocked) {
-				$dialog .= '<tr><td><input type="checkbox" name="lam_accountStatusUnlockPPolicy" checked="checked"></td>';
-				$dialog .= '<td><img alt="" src="../../graphics/security.png"></td>';
-				$dialog .= '<td>' . _('PPolicy') . '</td>';
+				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockPPolicy', true, _('PPolicy'), null, false), true);
 			}
-			$dialog .= '</table></div>';
+
+			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
+			if (!$fullyLocked) {
+				$unlockDiv->setCSSClasses(array('hidden'));
+			}
+			$container->addElement($unlockDiv, true);
 		}
-		$dialog .= '</div>';
-		return $dialog;
+		
+		$div = new htmlDiv('lam_accountStatusDialog', $container);
+		$div->setCSSClasses(array('hidden'));
+							
+		$tabindex = 999;
+		ob_start();
+		parseHtml(null, $div, array(), false, $tabindex, 'user');
+		$output = ob_get_contents();
+		ob_clean();
+	
+		return $output;
 	}
 
 	/**
