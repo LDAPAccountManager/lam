@@ -45,6 +45,8 @@ setlanguage();
 
 
 $cfg = new LAMCfgMain();
+$files = getConfigProfiles();
+
 // check if submit button was pressed
 if (isset($_POST['action'])) {
 	// check master password
@@ -108,6 +110,15 @@ if (isset($_POST['action'])) {
 	elseif ($_POST['action'] == "delete") {
 		if (deleteConfigProfile($_POST['delfilename']) == null) {
 			$msg = _("Profile deleted.");
+			// update default profile setting if needed
+			if ($cfg->default == $_POST['delfilename']) {
+				$filesNew = array_delete(array($_POST['delfilename']), $files);
+				if (sizeof($filesNew) > 0) {
+					sort($filesNew);
+					$cfg->default = $filesNew[0];
+					$cfg->save();
+				}
+			}
 		}
 		else $error = _("Unable to delete profile!");
 	}
@@ -226,8 +237,6 @@ if (!isset($cfg->default)) {
 		</div>
 		<div class="filled ui-corner-all">
 <?php
-$files = getConfigProfiles();
-
 $topicSpacer = new htmlSpacer(null, '20px');
 
 $tabindex = 1;

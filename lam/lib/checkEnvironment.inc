@@ -33,6 +33,9 @@ $Id$
 /** status messages */
 include_once("../lib/status.inc");
 
+/** config */
+include_once("../lib/config.inc");
+
 // check if PHP >= 5.2.4
 if (version_compare(phpversion(), '5.2.4') < 0) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
@@ -106,6 +109,11 @@ if (!@preg_match('/^\p{L}+$/u', "abc")) {
 // check ZIP support for PDF files in file upload
 if (!extension_loaded('zip')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no ZIP support.", "Please install the ZIP extension for PHP.");
+}
+// check for main config
+$mainConfig = new LAMCfgMain();
+if (!$mainConfig->isConfigFileExisting()) {
+	$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
 }
 // stop login if critical errors occured
 if (sizeof($criticalErrors) > 0) {

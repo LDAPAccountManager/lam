@@ -1521,6 +1521,15 @@ class LAMCfgMain {
 		return is_writeable($this->conffile);
 	}
 	
+	/**
+	 * Returns if the configuration file is existing.
+	 *
+	 * @return boolean exists
+	 */
+	public function isConfigFileExisting() {
+		return file_exists($this->conffile);
+	}
+	
 }
 
 ?>

@@ -89,6 +89,9 @@ else if (sizeof($profiles) > 0) {
 	// use first profile as fallback
 	$_SESSION["config"] = new LAMConfig($profiles[0]);
 }
+else {
+	$_SESSION["config"] = null;
+}
 
 if (!isset($default_Config->default) || !in_array($default_Config->default, $profiles)) {
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
@@ -277,6 +280,9 @@ function display_LoginPage($config_object) {
 					echo "<br>";
 				}
 			}
+		}
+		else {
+			StatusMessage('WARN', _('Please enter the configuration and create a server profile.'));
 		}
 		// check if session expired
 		if (isset($_GET['expired'])) {
