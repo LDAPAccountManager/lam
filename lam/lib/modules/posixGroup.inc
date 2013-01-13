@@ -4,7 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2012  Roland Gruber
+              2007 - 2013  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -492,7 +492,7 @@ class posixGroup extends baseModule implements passwordService {
 	* This function fills the $messages variable with output messages from this module.
 	*/
 	function load_Messages() {
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ !'));
+		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
 		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
