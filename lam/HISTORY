@@ -1,3 +1,7 @@
+March 2013 4.1
+  - updated EDU person module (RFE 3599128)
+
+
 06.01.2013 4.0.1
   - support additional LDAP filters for account types
   - allow to hide account types (that are required by other account types)
