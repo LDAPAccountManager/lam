@@ -501,7 +501,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->messages['gidNumber'][6] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
 		$this->messages['gidNumber'][7] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
 		$this->messages['gidNumber'][8] = array('ERROR', _('Account %s:') . ' posixGroup_gid', _('GID number has to be a numeric value!'));
-		$this->messages['cn'][0] = array('WARN', _('Group name'), _('You are using a capital letters. This can cause problems because Windows isn\'t case-sensitive.'));
+		$this->messages['cn'][0] = array('WARN', _('Group name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.'));
 		$this->messages['cn'][1] = array('WARN', _('Group name'), _('Group name in use. Selected next free group name.'));
 		$this->messages['cn'][2] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
