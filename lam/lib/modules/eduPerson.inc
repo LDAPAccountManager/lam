@@ -72,7 +72,7 @@ class eduPerson extends baseModule {
 								'eduPersonOrgDN', 'eduPersonOrgUnitDN',
 								'eduPersonPrimaryAffiliation', 'eduPersonPrincipalName',
 								'eduPersonEntitlement', 'eduPersonPrimaryOrgUnitDN',
-								'eduPersonScopedAffiliation');
+								'eduPersonScopedAffiliation', 'eduPersonAssurance');
 		// RDN attribute
 		$return["RDN"] = array('eduPersonPrincipalName' => 'low');
 		// help Entries
@@ -130,6 +130,14 @@ class eduPerson extends baseModule {
 			'orgUnitDNUpload' => array(
 				"Headline" => _("Organisational units"), 'attr' => 'eduPersonOrgUnitDN',
 				"Text" => _("The DNs of the directory entries representing the person's organisational units.") . ' ' . _('Multiple values are separated by comma.')
+			),
+			'eduPersonAssurance' => array(
+				"Headline" => _('Assurance profiles'), 'attr' => 'eduPersonAssurance',
+				"Text" => _('Assurance profiles are the set of standards that are met by an identity assertion.')
+			),
+			'eduPersonAssuranceUpload' => array(
+				"Headline" => _('Assurance profiles'), 'attr' => 'eduPersonAssurance',
+				"Text" => _('Assurance profiles are the set of standards that are met by an identity assertion.') . " " . _('Multiple values are separated by comma.')
 			),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
@@ -197,7 +205,13 @@ class eduPerson extends baseModule {
 				'description' => _('Organisational units'),
 				'help' => 'orgUnitDNUpload',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
-			)
+			),
+			array(
+				'name' => 'eduPerson_assurance',
+				'description' => _('Assurance profiles'),
+				'help' => 'eduPersonAssuranceUpload',
+				'example' => 'urn:mace:incommon:IAQ:sample, http://idm.example.org/LOA#sample'
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -209,7 +223,8 @@ class eduPerson extends baseModule {
 			'principalName' => _('Principal name'),
 			'entitlement' => _('Entitlements'),
 			'primaryOrgUnitDN' => _('Primary organisational unit'),
-			'scopedAffiliation' => _('Scoped affiliations')
+			'scopedAffiliation' => _('Scoped affiliations'),
+			'eduPersonAssurance' => _('Assurance profiles'),
 		);
 		return $return;
 	}
@@ -426,6 +441,36 @@ class eduPerson extends baseModule {
 			$orgUnitDNHelp = new htmlHelpLink('orgUnitDN');
 			$orgUnitDNHelp->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($orgUnitDNHelp, true);
+			// assurance profiles
+			$assurances = array();
+			if (isset($this->attributes['eduPersonAssurance'][0])) {
+				$assurances = $this->attributes['eduPersonAssurance'];
+			}
+			if (sizeof($assurances) == 0) {
+				$assurances[] = '';
+			}
+			$assuranceLabel = new htmlOutputText(_('Assurance profiles'));
+			$assuranceLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($assuranceLabel);
+			$assuranceContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($assurances); $i++) {
+				$assuranceField = new htmlInputField('eduPersonAssurance' . $i, $assurances[$i]);
+				$assuranceField->setFieldSize(40);
+				$assuranceContainer->addElement($assuranceField);
+				if ($assurances[$i] != '') {
+					$assuranceContainer->addElement(new htmlButton('deleduPersonAssurance' . $i, 'del.png', true));
+				}
+				if ($i < (sizeof($assurances) - 1)) {
+					$assuranceContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$assuranceContainer->addElement(new htmlButton('addeduPersonAssurance', 'add.png', true));
+				}
+			}
+			$return->addElement($assuranceContainer);
+			$assuranceHelp = new htmlHelpLink('eduPersonAssurance');
+			$assuranceHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($assuranceHelp, true);
 			// remove button
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 			$addButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
@@ -553,6 +598,20 @@ class eduPerson extends baseModule {
 			$this->attributes['eduPersonOrgUnitDN'][] = '';
 		}
 		$this->attributes['eduPersonOrgUnitDN'] = array_values(array_unique($this->attributes['eduPersonOrgUnitDN']));
+		// assurance profiles
+		$this->attributes['eduPersonAssurance'] = array();
+		$assuranceCounter = 0;
+		while (isset($_POST['eduPersonAssurance' . $assuranceCounter])) {
+			$this->attributes['eduPersonAssurance'][$assuranceCounter] = $_POST['eduPersonAssurance' . $assuranceCounter];
+			if (($this->attributes['eduPersonAssurance'][$assuranceCounter] == '') || isset($_POST['deleduPersonAssurance' . $assuranceCounter])) {
+				unset($this->attributes['eduPersonAssurance'][$assuranceCounter]);
+			}
+			$assuranceCounter++;
+		}
+		if (isset($_POST['addeduPersonAssurance'])) {
+			$this->attributes['eduPersonAssurance'][] = '';
+		}
+		$this->attributes['eduPersonAssurance'] = array_values(array_unique($this->attributes['eduPersonAssurance']));
 		return $errors;
 	}
 
@@ -688,6 +747,11 @@ class eduPerson extends baseModule {
 					$partialAccounts[$i]['eduPersonOrgUnitDN'] = $parts;
 				}
 			}
+			// assurance profiles
+			if ($rawAccounts[$i][$ids['eduPerson_assurance']] != "") {
+				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_assurance']]);
+				$partialAccounts[$i]['eduPersonAssurance'] = $parts;
+			}
 		}
 		return $messages;
 	}
@@ -728,6 +792,10 @@ class eduPerson extends baseModule {
 		}
 		if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
 			$return['eduPerson_orgUnitDN'][0] = '<block><key>' . _('Organisational units') . '</key><value>' . implode(', ', $this->attributes['eduPersonOrgUnitDN']) . '</value></block>';
+		}
+		if (isset($this->attributes['eduPersonAssurance'][0])) {
+			sort($this->attributes['eduPersonAssurance']);
+			$return['eduPerson_eduPersonAssurance'][0] = '<block><key>' . _('Assurance profiles') . '</key><value>' . implode(', ', $this->attributes['eduPersonAssurance']) . '</value></block>';
 		}
 		return $return;
 	}
