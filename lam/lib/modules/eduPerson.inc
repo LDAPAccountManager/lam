@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2012  Roland Gruber
+  Copyright (C) 2009 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -299,53 +299,65 @@ class eduPerson extends baseModule {
 			$return->addElement($newAffiliationContainer);
 			$return->addElement(new htmlOutputText(''), true);
 			// nick names
-			$nicks = new htmlTable();
+			$nickNames = array();
 			if (isset($this->attributes['eduPersonNickname'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['eduPersonNickname']); $i++) {
-					$nicks->addElement(new htmlInputField('nickName' . $i, $this->attributes['eduPersonNickname'][$i]));
-					$nicks->addElement(new htmlButton('delNickName' . $i, 'del.png', true), true);
+				$nickNames = $this->attributes['eduPersonNickname'];
+			}
+			if (sizeof($nickNames) == 0) {
+				$nickNames[] = '';
+			}
+			$nickNameLabel = new htmlOutputText(_('Nick names'));
+			$nickNameLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($nickNameLabel);
+			$nickNameContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($nickNames); $i++) {
+				$nickNameField = new htmlInputField('eduPersonNickname' . $i, $nickNames[$i]);
+				$nickNameField->setFieldSize(40);
+				$nickNameContainer->addElement($nickNameField);
+				if ($nickNames[$i] != '') {
+					$nickNameContainer->addElement(new htmlButton('deleduPersonNickname' . $i, 'del.png', true));
+				}
+				if ($i < (sizeof($nickNames) - 1)) {
+					$nickNameContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$nickNameContainer->addElement(new htmlButton('addeduPersonNickname', 'add.png', true));
 				}
 			}
-			else {
-				$nicks->addElement(new htmlOutputText('-'), true);
-			}
-			$nickLabel = new htmlOutputText(_('Nick names'));
-			$nickLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($nickLabel);
-			$return->addElement($nicks);
-			$nickHelp = new htmlHelpLink('nickName');
-			$nickHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($nickHelp, true);
-			$return->addElement(new htmlOutputText(''));
-			$newNickContainer = new htmlTable();
-			$newNickContainer->addElement(new htmlInputField('nickName', ''));
-			$newNickContainer->addElement(new htmlButton('newNickName', 'add.png', true));
-			$return->addElement($newNickContainer);
-			$return->addElement(new htmlOutputText(''), true);
+			$return->addElement($nickNameContainer);
+			$nickNameHelp = new htmlHelpLink('nickName');
+			$nickNameHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($nickNameHelp, true);
 			// entitlements
-			$entitlements = new htmlTable();
+			$entitlements = array();
 			if (isset($this->attributes['eduPersonEntitlement'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['eduPersonEntitlement']); $i++) {
-					$entitlements->addElement(new htmlInputField('entitlement' . $i, $this->attributes['eduPersonEntitlement'][$i]));
-					$entitlements->addElement(new htmlButton('delEntitlement' . $i, 'del.png', true), true);
-				}
+				$entitlements = $this->attributes['eduPersonEntitlement'];
 			}
-			else {
-				$entitlements->addElement(new htmlOutputText('-'));
+			if (sizeof($entitlements) == 0) {
+				$entitlements[] = '';
 			}
 			$entitlementLabel = new htmlOutputText(_('Entitlements'));
 			$entitlementLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($entitlementLabel);
-			$return->addElement($entitlements);
+			$entitlementContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($entitlements); $i++) {
+				$entitlementField = new htmlInputField('eduPersonEntitlement' . $i, $entitlements[$i]);
+				$entitlementField->setFieldSize(40);
+				$entitlementContainer->addElement($entitlementField);
+				if ($entitlements[$i] != '') {
+					$entitlementContainer->addElement(new htmlButton('deleduPersonEntitlement' . $i, 'del.png', true));
+				}
+				if ($i < (sizeof($entitlements) - 1)) {
+					$entitlementContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$entitlementContainer->addElement(new htmlButton('addeduPersonEntitlement', 'add.png', true));
+				}
+			}
+			$return->addElement($entitlementContainer);
 			$entitlementHelp = new htmlHelpLink('entitlement');
 			$entitlementHelp->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($entitlementHelp, true);
-			$return->addElement(new htmlOutputText(''));
-			$newEntitlementContainer = new htmlTable();
-			$newEntitlementContainer->addElement(new htmlInputField('entitlement', ''));
-			$newEntitlementContainer->addElement(new htmlButton('newEntitlement', 'add.png', true));
-			$return->addElement($newEntitlementContainer);
-			$return->addElement(new htmlOutputText(''), true);
 			// org DN
 			$orgDN = '';
 			if (isset($this->attributes['eduPersonOrgDN'][0])) {
@@ -354,7 +366,7 @@ class eduPerson extends baseModule {
 			$orgDNInput = new htmlTableExtendedInputField(_('Organisation'), 'orgDN', $orgDN, 'orgDN');
 			$orgDNInput->setFieldSize(40);
 			$return->addElement($orgDNInput, true);
-			// primare OU DN
+			// primary OU DN
 			$primaryOrgUnitDN = '';
 			if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
 				$primaryOrgUnitDN = $this->attributes['eduPersonPrimaryOrgUnitDN'][0];
@@ -363,33 +375,36 @@ class eduPerson extends baseModule {
 			$primaryOUInput->setFieldSize(40);
 			$return->addElement($primaryOUInput, true);
 			// OUs
-			$orgUnitDN = new htmlTable();
+			$orgUnitDNs = array();
 			if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['eduPersonOrgUnitDN']); $i++) {
-					$orgUnitDNInput = new htmlInputField('orgUnitDN' . $i, $this->attributes['eduPersonOrgUnitDN'][$i]);
-					$orgUnitDNInput->setFieldSize(40);
-					$orgUnitDN->addElement($orgUnitDNInput);
-					$orgUnitDN->addElement(new htmlButton('delOrgUnitDN' . $i, 'del.png', true), true);
-				}
+				$orgUnitDNs = $this->attributes['eduPersonOrgUnitDN'];
 			}
-			else {
-				$orgUnitDN->addElement(new htmlOutputText('-'));
+			if (sizeof($orgUnitDNs) == 0) {
+				$orgUnitDNs[] = '';
 			}
 			$orgUnitDNLabel = new htmlOutputText(_('Organisational units'));
 			$orgUnitDNLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($orgUnitDNLabel);
-			$return->addElement($orgUnitDN);
+			$orgUnitDNContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($orgUnitDNs); $i++) {
+				$orgUnitDNField = new htmlInputField('eduPersonOrgUnitDN' . $i, $orgUnitDNs[$i]);
+				$orgUnitDNField->setFieldSize(40);
+				$orgUnitDNContainer->addElement($orgUnitDNField);
+				if ($orgUnitDNs[$i] != '') {
+					$orgUnitDNContainer->addElement(new htmlButton('deleduPersonOrgUnitDN' . $i, 'del.png', true));
+				}
+				if ($i < (sizeof($orgUnitDNs) - 1)) {
+					$orgUnitDNContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$orgUnitDNContainer->addElement(new htmlButton('addeduPersonOrgUnitDN', 'add.png', true));
+				}
+			}
+			$return->addElement($orgUnitDNContainer);
 			$orgUnitDNHelp = new htmlHelpLink('orgUnitDN');
 			$orgUnitDNHelp->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($orgUnitDNHelp, true);
-			$return->addElement(new htmlOutputText(''));
-			$newOrgUnitDN = new htmlTable();
-			$newOrgUnitDNInput = new htmlInputField('orgUnitDN', '');
-			$newOrgUnitDNInput->setFieldSize(40);
-			$newOrgUnitDN->addElement($newOrgUnitDNInput);
-			$newOrgUnitDN->addElement(new htmlButton('newOrgUnitDN', 'add.png', true));
-			$return->addElement($newOrgUnitDN);
-			$return->addElement(new htmlOutputText(''), true);
+			// remove button
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 			$addButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
 			$addButton->colspan = 3;
@@ -455,31 +470,31 @@ class eduPerson extends baseModule {
 		}
 		$this->attributes['eduPersonAffiliation'] = array_unique($this->attributes['eduPersonAffiliation']);
 		// nick names
-		$this->attributes['eduPersonNickname'] = array();
-		$i = 0;
-		while (isset($_POST['nickName' . $i])) {
-			if (!isset($_POST['delNickName' . $i]) && ($_POST['nickName' . $i] != '')) {
-				$this->attributes['eduPersonNickname'][] = $_POST['nickName' . $i];
+		$nickNameCounter = 0;
+		while (isset($_POST['eduPersonNickname' . $nickNameCounter])) {
+			$this->attributes['eduPersonNickname'][$nickNameCounter] = $_POST['eduPersonNickname' . $nickNameCounter];
+			if (($this->attributes['eduPersonNickname'][$nickNameCounter] == '') || isset($_POST['deleduPersonNickname' . $nickNameCounter])) {
+				unset($this->attributes['eduPersonNickname'][$nickNameCounter]);
 			}
-			$i++;
+			$nickNameCounter++;
 		}
-		if (isset($_POST['newNickName']) && ($_POST['nickName'] != '')) {
-			$this->attributes['eduPersonNickname'][] = $_POST['nickName'];
+		if (isset($_POST['addeduPersonNickname'])) {
+			$this->attributes['eduPersonNickname'][] = '';
 		}
-		$this->attributes['eduPersonNickname'] = array_unique($this->attributes['eduPersonNickname']);
+		$this->attributes['eduPersonNickname'] = array_values(array_unique($this->attributes['eduPersonNickname']));
 		// entitlements
-		$this->attributes['eduPersonEntitlement'] = array();
-		$i = 0;
-		while (isset($_POST['entitlement' . $i])) {
-			if (!isset($_POST['delEntitlement' . $i]) && ($_POST['entitlement' . $i] != '')) {
-				$this->attributes['eduPersonEntitlement'][] = $_POST['entitlement' . $i];
+		$entitlementCounter = 0;
+		while (isset($_POST['eduPersonEntitlement' . $entitlementCounter])) {
+			$this->attributes['eduPersonEntitlement'][$entitlementCounter] = $_POST['eduPersonEntitlement' . $entitlementCounter];
+			if (($this->attributes['eduPersonEntitlement'][$entitlementCounter] == '') || isset($_POST['deleduPersonEntitlement' . $entitlementCounter])) {
+				unset($this->attributes['eduPersonEntitlement'][$entitlementCounter]);
 			}
-			$i++;
+			$entitlementCounter++;
 		}
-		if (isset($_POST['newEntitlement']) && ($_POST['entitlement'] != '')) {
-			$this->attributes['eduPersonEntitlement'][] = $_POST['entitlement'];
+		if (isset($_POST['addeduPersonEntitlement'])) {
+			$this->attributes['eduPersonEntitlement'][] = '';
 		}
-		$this->attributes['eduPersonEntitlement'] = array_unique($this->attributes['eduPersonEntitlement']);
+		$this->attributes['eduPersonEntitlement'] = array_values(array_unique($this->attributes['eduPersonEntitlement']));
 		// org DN
 		$this->attributes['eduPersonOrgDN'][0] = $_POST['orgDN'];
 		if ($_POST['orgDN'] != '') {
@@ -495,28 +510,21 @@ class eduPerson extends baseModule {
 			}
 		}
 		// OUs
-		$this->attributes['eduPersonOrgUnitDN'] = array();
-		$i = 0;
-		while (isset($_POST['orgUnitDN' . $i])) {
-			if (!isset($_POST['delOrgUnitDN' . $i]) && ($_POST['orgUnitDN' . $i] != '')) {
-				$this->attributes['eduPersonOrgUnitDN'][] = $_POST['orgUnitDN' . $i];
-				if (!get_preg($_POST['orgUnitDN' . $i], 'dn')) {
-					$error = $this->messages['orgUnitDN'][0];
-					array_push($error, $_POST['orgUnitDN' . $i]);
-					$errors[] = $error;
-				}
+		$orgUnitDNCounter = 0;
+		while (isset($_POST['eduPersonOrgUnitDN' . $orgUnitDNCounter])) {
+			$this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter] = $_POST['eduPersonOrgUnitDN' . $orgUnitDNCounter];
+			if (($this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter] == '') || isset($_POST['deleduPersonOrgUnitDN' . $orgUnitDNCounter])) {
+				unset($this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter]);
 			}
-			$i++;
-		}
-		if (isset($_POST['newOrgUnitDN']) && ($_POST['orgUnitDN'] != '')) {
-			$this->attributes['eduPersonOrgUnitDN'][] = $_POST['orgUnitDN'];
-			if (!get_preg($_POST['orgUnitDN'], 'dn')) {
-				$error = $this->messages['orgUnitDN'][0];
-				array_push($error, $_POST['orgUnitDN']);
-				$errors[] = $error;
+			elseif (!get_preg($this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter], 'dn')) {
+				$errors[] = $this->messages['eduPersonOrgUnitDN'][0];
 			}
+			$orgUnitDNCounter++;
 		}
-		$this->attributes['eduPersonOrgUnitDN'] = array_unique($this->attributes['eduPersonOrgUnitDN']);
+		if (isset($_POST['addeduPersonOrgUnitDN'])) {
+			$this->attributes['eduPersonOrgUnitDN'][] = '';
+		}
+		$this->attributes['eduPersonOrgUnitDN'] = array_values(array_unique($this->attributes['eduPersonOrgUnitDN']));
 		return $errors;
 	}
 
@@ -664,7 +672,7 @@ class eduPerson extends baseModule {
 			$return['eduPerson_primaryAffiliation'][0] = '<block><key>' . _('Primary affiliation') . '</key><value>' . $this->attributes['eduPersonPrimaryAffiliation'][0] . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
-			$return['eduPerson_scopedAffiliation'][0] = '<block><key>' . _('Scoped affiliation') . '</key><value>' . $this->attributes['eduPersonScopedAffiliation'][0] . '</value></block>';
+			$return['eduPerson_scopedAffiliation'][0] = '<block><key>' . _('Scoped affiliation') . '</key><value>' . implode(', ', $this->attributes['eduPersonScopedAffiliation']) . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonPrincipalName'][0])) {
 			$return['eduPerson_principalName'][0] = '<block><key>' . _('Principal name') . '</key><value>' . $this->attributes['eduPersonPrincipalName'][0] . '</value></block>';
