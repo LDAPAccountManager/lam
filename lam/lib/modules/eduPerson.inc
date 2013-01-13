@@ -82,8 +82,13 @@ class eduPerson extends baseModule {
 				"Text" => _("Specifies the person's primary relationship to the institution in broad categories such as student, faculty, staff, alum, etc.")
 			),
 			'scopedAffiliation' => array(
-				"Headline" => _("Scoped affiliation"), 'attr' => 'eduPersonScopedAffiliation',
+				"Headline" => _("Scoped affiliations"), 'attr' => 'eduPersonScopedAffiliation',
 				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.")
+			),
+			'scopedAffiliationUpload' => array(
+				"Headline" => _("Scoped affiliations"), 'attr' => 'eduPersonScopedAffiliation',
+				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.") . " " .
+							_('Multiple values are separated by comma.')
 			),
 			'nickName' => array(
 				"Headline" => _("Nick names"), 'attr' => 'eduPersonNickname',
@@ -152,9 +157,9 @@ class eduPerson extends baseModule {
 			),
 			array(
 				'name' => 'eduPerson_scopedAffiliation',
-				'description' => _('Scoped affiliation'),
-				'help' => 'scopedAffiliation',
-				'example' => 'student@domain'
+				'description' => _('Scoped affiliations'),
+				'help' => 'scopedAffiliationUpload',
+				'example' => 'student@domain, student@domain2'
 			),
 			array(
 				'name' => 'eduPerson_affiliation',
@@ -204,7 +209,7 @@ class eduPerson extends baseModule {
 			'principalName' => _('Principal name'),
 			'entitlement' => _('Entitlements'),
 			'primaryOrgUnitDN' => _('Primary organisational unit'),
-			'scopedAffiliation' => _('Scoped affiliation')
+			'scopedAffiliation' => _('Scoped affiliations')
 		);
 		return $return;
 	}
@@ -258,21 +263,38 @@ class eduPerson extends baseModule {
 				$primaryAffiliation = array($this->attributes['eduPersonPrimaryAffiliation'][0]);
 			}
 			$return->addElement(new htmlTableExtendedSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'), true);
-			// scoped affiliation
-			$scopedAffiliation = '';
-			$scopedAffiliationPrefix = array();
+			// scoped affiliations
+			$scopedAffiliationLabel = new htmlOutputText(_('Scoped affiliations'));
+			$scopedAffiliationLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($scopedAffiliationLabel);
+			$scopedAffiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
-				$parts = explode('@', $this->attributes['eduPersonScopedAffiliation'][0]);
-				$scopedAffiliationPrefix = array($parts[0]);
-				$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][0], strlen($parts[0]) + 1);
+				for ($i = 0; $i < sizeof($this->attributes['eduPersonScopedAffiliation']); $i++) {
+					$parts = explode('@', $this->attributes['eduPersonScopedAffiliation'][$i]);
+					$scopedAffiliationPrefix = array($parts[0]);
+					$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][$i], strlen($parts[0]) + 1);
+					$scopedAffiliationContainer = new htmlGroup();
+					$scopedAffiliationContainer->addElement(new htmlSelect('scopedAffiliationPrefix' . $i, $this->affiliationTypes, $scopedAffiliationPrefix));
+					$scopedAffiliationContainer->addElement(new htmlOutputText('@'));
+					$scopedAffiliationContainer->addElement(new htmlInputField('scopedAffiliation' . $i, $scopedAffiliation));
+					$scopedAffiliationContainer->addElement(new htmlButton('deleduPersonScopedAffiliation' . $i, 'del.png', true));
+					if ($i == (sizeof($this->attributes['eduPersonScopedAffiliation']) - 1)) {
+						$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.png', true));
+					}
+					$scopedAffiliations->addElement($scopedAffiliationContainer, true);
+				}
 			}
-			$return->addElement(new htmlOutputText(_('Scoped affiliation')));
-			$scopedAffiliationContainer = new htmlTable();
-			$scopedAffiliationContainer->addElement(new htmlSelect('scopedAffiliationPrefix', $this->affiliationTypes, $scopedAffiliationPrefix));
-			$scopedAffiliationContainer->addElement(new htmlOutputText('@'));
-			$scopedAffiliationContainer->addElement(new htmlInputField('scopedAffiliation', $scopedAffiliation));
-			$return->addElement($scopedAffiliationContainer);
-			$return->addElement(new htmlHelpLink('scopedAffiliation'), true);
+			else {
+				$scopedAffiliationContainer = new htmlGroup();
+				$scopedAffiliationContainer->addElement(new htmlOutputText('-'));
+				$scopedAffiliationContainer->addElement(new htmlSpacer('10px', null));
+				$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.png', true));
+				$scopedAffiliations->addElement($scopedAffiliationContainer);
+			}
+			$return->addElement($scopedAffiliations);
+			$scopedAffiliationHelp = new htmlHelpLink('scopedAffiliation');
+			$scopedAffiliationHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($scopedAffiliationHelp, true);
 			// affiliations
 			$affiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
@@ -442,13 +464,19 @@ class eduPerson extends baseModule {
 		$errors = array();
 		// primary affiliation
 		$this->attributes['eduPersonPrimaryAffiliation'][0] = $_POST['primaryAffiliation'];
-		// scoped affiliation
-		if (isset($_POST['scopedAffiliation']) && ($_POST['scopedAffiliation'] != '')) {
-			$this->attributes['eduPersonScopedAffiliation'][0] = $_POST['scopedAffiliationPrefix'] . '@' . $_POST['scopedAffiliation'];
+		// scoped affiliations
+		$scopedAffiliationCounter = 0;
+		while (isset($_POST['scopedAffiliation' . $scopedAffiliationCounter])) {
+			$this->attributes['eduPersonScopedAffiliation'][$scopedAffiliationCounter] = $_POST['scopedAffiliationPrefix' . $scopedAffiliationCounter] . '@' . $_POST['scopedAffiliation' . $scopedAffiliationCounter];
+			if (($_POST['scopedAffiliation' . $scopedAffiliationCounter] == '') || isset($_POST['deleduPersonScopedAffiliation' . $scopedAffiliationCounter])) {
+				unset($this->attributes['eduPersonScopedAffiliation'][$scopedAffiliationCounter]);
+			}
+			$scopedAffiliationCounter++;
 		}
-		elseif (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
-			unset($this->attributes['eduPersonScopedAffiliation']);
+		if (isset($_POST['addeduPersonScopedAffiliation'])) {
+			$this->attributes['eduPersonScopedAffiliation'][] = '';
 		}
+		$this->attributes['eduPersonScopedAffiliation'] = array_values(array_unique($this->attributes['eduPersonScopedAffiliation']));
 		// principal name
 		$this->attributes['eduPersonPrincipalName'][0] = $_POST['principalName'];
 		if ($_POST['principalName'] != '') {
@@ -579,16 +607,19 @@ class eduPerson extends baseModule {
 					$partialAccounts[$i]['eduPersonPrimaryAffiliation'] = $rawAccounts[$i][$ids['eduPerson_primaryAffiliation']];
 				}
 			}
-			// scoped affiliation
+			// scoped affiliations
 			if ($rawAccounts[$i][$ids['eduPerson_scopedAffiliation']] != "") {
-				$parts = explode('@', $rawAccounts[$i][$ids['eduPerson_scopedAffiliation']]);
-				if (!in_array($parts[0], $this->affiliationTypes)) {
-					$error = $this->messages['scopedAffiliation'][0];
-					array_push($error, $i);
-					$messages[] = $error;
-				}
-				else {
-					$partialAccounts[$i]['eduPersonScopedAffiliation'] = $rawAccounts[$i][$ids['eduPerson_scopedAffiliation']];
+				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_scopedAffiliation']]);
+				for ($a = 0; $a < sizeof($parts); $a++) {
+					$subparts = explode('@', $parts[$a]);
+					if (!in_array($subparts[0], $this->affiliationTypes)) {
+						$error = $this->messages['scopedAffiliation'][0];
+						array_push($error, $i);
+						$messages[] = $error;
+					}
+					else {
+						$partialAccounts[$i]['eduPersonScopedAffiliation'] = $parts;
+					}
 				}
 			}
 			// affiliations
@@ -672,7 +703,7 @@ class eduPerson extends baseModule {
 			$return['eduPerson_primaryAffiliation'][0] = '<block><key>' . _('Primary affiliation') . '</key><value>' . $this->attributes['eduPersonPrimaryAffiliation'][0] . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
-			$return['eduPerson_scopedAffiliation'][0] = '<block><key>' . _('Scoped affiliation') . '</key><value>' . implode(', ', $this->attributes['eduPersonScopedAffiliation']) . '</value></block>';
+			$return['eduPerson_scopedAffiliation'][0] = '<block><key>' . _('Scoped affiliations') . '</key><value>' . implode(', ', $this->attributes['eduPersonScopedAffiliation']) . '</value></block>';
 		}
 		if (isset($this->attributes['eduPersonPrincipalName'][0])) {
 			$return['eduPerson_principalName'][0] = '<block><key>' . _('Principal name') . '</key><value>' . $this->attributes['eduPersonPrincipalName'][0] . '</value></block>';
