@@ -5141,7 +5141,12 @@ Run slapindex to rebuild the index.
           forget their passwords.</para>
 
           <para>To enable this feature please activate the checkbox "Enable
-          password self reset link":</para>
+          password self reset link".</para>
+
+          <para><emphasis role="bold">Hint:</emphasis> Plese note that LAM Pro
+          uses security questions by default. Activate confirmation mails and
+          then deactivate security questions if you want to use only email
+          validation.</para>
 
           <screenshot>
             <mediaobject>
@@ -5199,6 +5204,29 @@ Run slapindex to rebuild the index.
           reset directly after clicking on the confirmation link. Please
           handle with care since anybody with access to the user's mail
           account can reset the password.</para>
+
+          <para><emphasis role="bold">Troubleshooting:</emphasis></para>
+
+          <para>If you get messages like "Unable to find user account." this
+          can have multiple reasons:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>security questions enabled but no security question and/or
+              answer set for this user</para>
+            </listitem>
+
+            <listitem>
+              <para>user name + email combination does not exist</para>
+            </listitem>
+
+            <listitem>
+              <para>no connection to LDAP server</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Turn on logging in LAM's main configuration settings. The
+          exact reason is logged on notice level.</para>
 
           <para><emphasis role="bold">New fields for self service
           page</emphasis></para>
