@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -267,7 +267,9 @@ function showMainPage($scope, $selectedModules) {
 	}
 	$inputContainer->addElement(new htmlTableExtendedSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')), true);
 	$inputContainer->addElement(new htmlSpacer(null, '5px'), true);
-	$inputContainer->addElement(new htmlButton('submitfile', _('Upload file and create accounts')));
+	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));
+	$uploadButton->setIconClass('upButton');
+	$inputContainer->addElement($uploadButton);
 	$container->addElement($inputContainer, true);
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 	// column list
