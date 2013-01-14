@@ -209,22 +209,24 @@ class lamList {
 		$filter = array();
 		$filterParam = "";
 		$LDAPFilterPart = "";
-		// build filter array
-		for ($i = 0; $i < sizeof($this->attrArray); $i++) {
-			$foundFilter = null;
-			if (isset($_GET["filter" . strtolower($this->attrArray[$i])])) {
-				$foundFilter = $_GET["filter" . strtolower($this->attrArray[$i])];
-			}
-			if (isset($_POST["filter" . strtolower($this->attrArray[$i])])) {
-				$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
-			}
-			if (isset($foundFilter) && ($foundFilter != '')) {
-				if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
-					$filterParam .= "&amp;filter" . $this->attrArray[$i] . '=' . $foundFilter;
-					$LDAPFilterPart .= '(' . $this->attrArray[$i] . '=' . $foundFilter . ')';
+		if (!isset($_POST['clear_filter'])) {
+			// build filter array
+			for ($i = 0; $i < sizeof($this->attrArray); $i++) {
+				$foundFilter = null;
+				if (isset($_GET["filter" . strtolower($this->attrArray[$i])])) {
+					$foundFilter = $_GET["filter" . strtolower($this->attrArray[$i])];
 				}
-				else {
-					StatusMessage('ERROR', _('Please enter a valid filter. Only letters, numbers and " _*$.@-" are allowed.'), htmlspecialchars($foundFilter));
+				if (isset($_POST["filter" . strtolower($this->attrArray[$i])])) {
+					$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
+				}
+				if (isset($foundFilter) && ($foundFilter != '')) {
+					if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
+						$filterParam .= "&amp;filter" . $this->attrArray[$i] . '=' . $foundFilter;
+						$LDAPFilterPart .= '(' . $this->attrArray[$i] . '=' . $foundFilter . ')';
+					}
+					else {
+						StatusMessage('ERROR', _('Please enter a valid filter. Only letters, numbers and " _*$.@-" are allowed.'), htmlspecialchars($foundFilter));
+					}
 				}
 			}
 		}
@@ -348,19 +350,30 @@ class lamList {
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
 		echo "<td>";
-		$filterButton = new htmlButton('apply_filter', _("Filter"));
-		parseHtml(null, $filterButton, array(), false, $this->tabindex, $this->type);
+		$filterGroup = new htmlGroup();
+		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
+		$filterButton->setTitle(_("Filter"));
+		$filterGroup->addElement($filterButton);
+		if (isset($this->filterPart) && ($this->filterPart != '')) {
+			$filterGroup->addElement(new htmlSpacer('1px', null));
+			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
+			$clearFilterButton->setTitle(_('Clear filter'));
+			$filterGroup->addElement($clearFilterButton);
+		}
+		parseHtml(null, $filterGroup, array(), false, $this->tabindex, $this->type);
 		echo "</td>\n";
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
 			echo "<td align=\"left\">";
 			if ($this->canBeFiltered($this->attrArray[$k])) {
 				$value = "";
-				if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
-					$value = $_GET["filter" . strtolower($this->attrArray[$k])];
-				}
-				if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
-					$value = $_POST["filter" . strtolower($this->attrArray[$k])];
+				if (!isset($_POST['clear_filter'])) {
+					if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
+						$value = $_GET["filter" . strtolower($this->attrArray[$k])];
+					}
+					if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
+						$value = $_POST["filter" . strtolower($this->attrArray[$k])];
+					}
 				}
 				$filterInput = new htmlInputField('filter' . strtolower($this->attrArray[$k]), $value);
 				$filterInput->setFieldSize('15');
@@ -859,7 +872,7 @@ class lamList {
 		// check if LDAP data should be refreshed
 		$this->refresh = true;
 		if (isset($_GET['norefresh'])) $this->refresh = false;
-		if (isset($_POST['refresh']) || isset($_POST['apply_filter'])) {
+		if (isset($_POST['refresh']) || isset($_POST['apply_filter']) || isset($_POST['clear_filter'])) {
 			$this->refresh = true;
 		}
 	}
