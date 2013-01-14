@@ -83,6 +83,13 @@ function listShowSettingsDialog(title, okText, cancelText) {
 	});
 }
 
+/**
+ * Submits the form by clicking on the given button if enter was pressed.
+ * 
+ * @param id button ID
+ * @param e event
+ * @returns Boolean result
+ */
 function SubmitForm(id, e) {
 	if (e.keyCode == 13) {
 		if (e.preventDefault) {
