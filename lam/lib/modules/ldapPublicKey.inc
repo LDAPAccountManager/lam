@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,6 +80,11 @@ class ldapPublicKey extends baseModule {
 		$return['PDF_fields'] = array(
 			'sshPublicKey' => _('SSH public keys')
 		);
+		// self service field settings
+		$return['selfServiceFieldSettings'] = array(
+			'sshPublicKey' => _('SSH public keys'),
+		);
+		$return['selfServiceReadOnlyFields'] = array('sshPublicKey');
 		return $return;
 	}
 
@@ -176,6 +181,109 @@ class ldapPublicKey extends baseModule {
 			$return['ldapPublicKey_sshPublicKey'][0] = '<block><key>' . _('SSH public keys') . '</key><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][0] . '</td></tr></block>';
 			for ($i = 1; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
 				$return['ldapPublicKey_sshPublicKey'][] = '<block><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][$i] . '</td></tr></block>';
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
+	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 */
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = array();
+		if ($passwordChangeOnly) {
+			return $return; // no fields as long no LDAP content can be read
+		}
+		if (in_array('sshPublicKey', $fields)) {
+			$sshPublicKeys = array();
+			if (isset($attributes['sshPublicKey'][0])) {
+				$sshPublicKeys = $attributes['sshPublicKey'];
+			}
+			$sshPublicKeyField = new htmlInputTextarea('ldapPublicKey_sshPublicKey', implode("\r\n", $sshPublicKeys), 100, 4);
+			if (in_array('sshPublicKey', $readOnlyFields)) {
+				$text = '';
+				for ($i = 0; $i < sizeof($sshPublicKeys); $i++) {
+					if ($i > 0) {
+						$text .= '<br>';
+					}
+					$text .= htmlspecialchars($sshPublicKeys[$i]);
+				}
+				$sshPublicKeyField = new htmlOutputText($text, false);
+			}
+			$label = new htmlOutputText(_('SSH public keys'));
+			$label->alignment = htmlElement::ALIGN_TOP;
+			$return['sshPublicKey'] = new htmlTableRow(array(
+				$label, $sshPublicKeyField
+			));
+		}
+		return $return;
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
+	 * <br>Return values:
+	 * <br>messages: array of parameters to create status messages
+	 * <br>add: array of attributes to add
+	 * <br>del: array of attributes to remove
+	 * <br>mod: array of attributes to modify
+	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
+	 * 
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
+	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 */
+	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		if ($passwordChangeOnly) {
+			return $return; // skip processing if only a password change is done
+		}
+		if (in_array('sshPublicKey', $fields)) {
+			$newKeys = explode("\r\n", trim($_POST['ldapPublicKey_sshPublicKey']));
+			$count = sizeof($newKeys);
+			for ($i = 0; $i < $count; $i++) {
+				if (trim($newKeys[$i]) == '') {
+					unset($newKeys[$i]);
+				}
+			}
+			$newKeys = array_values(array_unique($newKeys));
+			$oldKeys = array();
+			if (isset($attributes['sshPublicKey'][0])) {
+				$oldKeys = $attributes['sshPublicKey'];
+			}
+			$update = false;
+			if (sizeof($newKeys) != sizeof($oldKeys)) {
+				$update = true;
+			}
+			else {
+				for ($i = 0; $i < sizeof($newKeys); $i++) {
+					if (!in_array($newKeys[$i], $oldKeys)) {
+						$update = true;
+						break;
+					}
+				}
+			}
+			if ($update) {
+				if (sizeof($oldKeys) == 0) {
+					$return['add']['sshPublicKey'] = $newKeys;
+				}
+				elseif (sizeof($newKeys) == 0) {
+					$return['del']['sshPublicKey'] = $newKeys;
+				}
+				else {
+					$return['mod']['sshPublicKey'] = $newKeys;
+				}
 			}
 		}
 		return $return;
