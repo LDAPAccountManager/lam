@@ -318,7 +318,12 @@ $container->addElement($dialogDiv, true);
 $mainDiv = new htmlDiv('mainDiv', $container);
 $mainDiv->setCSSClasses(array('filled', 'ui-corner-all'));
 
-parseHtml('', $mainDiv, array(), false, $tabindex, 'user');
+$mainContainer = new htmlGroup();
+$mainContainer->addElement($mainDiv);
+$mainContainer->addElement(new htmlOutputText('<br>', false));
+$mainContainer->addElement(new htmlLink(_("Back to profile login"), 'conflogin.php'));
+
+parseHtml('', $mainContainer, array(), false, $tabindex, 'user');
 
 ?>
 		</form>

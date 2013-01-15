@@ -133,6 +133,8 @@ echo $_SESSION['header'];
 		<br>
 		<!-- form to change main options -->
 		<form action="mainlogin.php" method="post">
+		<table align="center">
+		<tr><td>
 		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all" style="padding: 20px;">
 		<tr><td>
 		<?php
@@ -167,6 +169,11 @@ echo $_SESSION['header'];
 		$tabindex = 1;
 		parseHtml(null, $table, array(), false, $tabindex, 'user');
 		?>
+		</td></tr>
+		</table>
+		</td></tr>
+		<tr><td align="left">
+		<br><a href="../login.php"> <?php echo _("Back to login"); ?> </a>
 		</td></tr>
 		</table>
 		</form>
