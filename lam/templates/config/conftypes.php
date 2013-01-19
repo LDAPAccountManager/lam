@@ -201,11 +201,11 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#edittypes').addClass('ui-tabs-selected');
 	jQuery('#edittypes').addClass('ui-state-active');
-	jQuery('#edittypes').addClass('userlist-bright');
+	jQuery('#edittypes').addClass('user-bright');
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
 <?php
 
 $container = new htmlTable();

@@ -56,7 +56,7 @@ foreach ($toSort as $key => $value) {
 	$tools[] = new $key();
 }
 
-echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<div class=\"user-bright smallPaddingContent\">\n";
 
 // print tools table
 $container = new htmlTable();

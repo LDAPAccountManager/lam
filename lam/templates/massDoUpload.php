@@ -69,7 +69,7 @@ if (isAccountTypeHidden($scope)) {
 	die();
 }
 
-echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
+echo '<div class="' . $scope . '-bright smallPaddingContent">';
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));

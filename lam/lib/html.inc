@@ -2228,7 +2228,7 @@ class htmlFieldset extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$class = 'ui-corner-all';
 		if ($scope != null) {
-			$class .= ' ' . $scope . 'edit';
+			$class .= ' ' . $scope . '-border ' . $scope . '-bright';
 		}
 		echo "<fieldset class=\"$class\">\n";
 		// generate legend

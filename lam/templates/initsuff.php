@@ -173,7 +173,7 @@ $new_suff = str_replace("'", "", $new_suff);
 $new_suff = explode(";", $new_suff);
 
 include 'main_header.php';
-	echo '<div class="userlist-bright smallPaddingContent">';
+	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	$container = new htmlTable();
 	$container->addElement(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")), true);

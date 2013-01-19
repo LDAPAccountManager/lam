@@ -15,6 +15,8 @@
 
 
 
+
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -32,7 +34,27 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
-<h2>3.9 -&gt; 4.0</h2>Module interface:<br>
+<h2>4.0 -&gt; 4.1</h2>CSS changes:<br>
+<ul>
+  <li>type specific "td.{TYPE}nav-activepage" was replaced by common "td.activepage" in layout.css</li>
+  <li>renamed ".{TYPE}list-bright" to ".{TYPE}-bright" and ".{TYPE}list-dark" to ".{TYPE}-dark"</li>
+  <li>removed "table.{TYPE}list input", "table.{TYPE}list select",
+"table.{TYPE}list button", "fieldset.{TYPE}edit input",
+"fieldset.{TYPE}edit select", "fieldset.{TYPE}edit button"</li>
+  <li>removed "input.{TYPE}" and "select.{TYPE}"</li>
+  <li>removed "table.{TYPE}nav" and "table.{TYPE}nav input"</li>
+  <li>removed "table.{TYPE}list td,th"</li>
+  <li>new ".{TYPE}-border"</li>
+  <li>replaced "table.{TYPE}list" by ".{TYPE}-border" and "table.accountlist"<br>
+  </li>
+  <li>replaced "fieldset.{TYPE}edit" by ".{TYPE}-border" and ".{TYPE}-bright"</li>
+  <li>moved type styles from 600_type_{TYPE}.css to 500_layout.css<br>
+  </li>
+
+</ul>
+<br>
+<h2>3.9 -&gt; 4.0</h2>
+Module interface:<br>
 <ul>
   <li>new function: <span style="font-weight: bold;">doUploadPreActions()</span></li>
   <li>function <span style="font-weight: bold;">doUploadPostActions() </span>contains attributes by reference<span style="font-weight: bold;"><br>

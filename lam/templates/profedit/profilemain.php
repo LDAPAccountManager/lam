@@ -87,7 +87,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 }
 
 include '../main_header.php';
-echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<div class=\"user-bright smallPaddingContent\">\n";
 echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
 
 $container = new htmlTable();

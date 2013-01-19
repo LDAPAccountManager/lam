@@ -45,7 +45,7 @@ checkIfToolIsActive('toolTests');
 setlanguage();
 
 include '../main_header.php';
-echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<div class=\"user-bright smallPaddingContent\">\n";
 echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 
 $container = new htmlTable();

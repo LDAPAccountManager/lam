@@ -118,7 +118,7 @@ $divClass = 'user';
 if (isset($_REQUEST['type'])) {
 	$divClass = $_REQUEST['type'];
 }
-echo '<div class="' . $divClass . 'list-bright smallPaddingContent">';
+echo '<div class="' . $divClass . '-bright smallPaddingContent">';
 echo "<div class=\"title\">\n";
 echo "<h2 class=\"titleText\">" . _("Account creation via file upload") . "</h2>\n";
 echo "</div>";
@@ -225,7 +225,7 @@ include 'main_footer.php';
 * @param array $selectedModules list of selected account modules
 */
 function showMainPage($scope, $selectedModules) {
-	echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
+	echo '<div class="' . $scope . '-bright smallPaddingContent">';
 	// get input fields from modules
 	$columns = getUploadColumns($scope, $selectedModules);
 	$modules = array_keys($columns);
@@ -318,7 +318,7 @@ function showMainPage($scope, $selectedModules) {
 	$dnSuffixRowCells[] = new htmlOutputText('');
 	$dnSuffixRowCells[] = new htmlSpacer(null, '25px');
 	$dnSuffixRow = new htmlTableRow($dnSuffixRowCells);
-	$dnSuffixRow->setCSSClasses(array($scope . 'list-dark'));
+	$dnSuffixRow->setCSSClasses(array($scope . '-dark'));
 	$columnContainer->addElement($dnSuffixRow);
 	$dnRDNRowCells = array();
 	$dnRDNRowCells[] = $columnSpacer;
@@ -338,7 +338,7 @@ function showMainPage($scope, $selectedModules) {
 	$dnRDNRowCells[] = new htmlOutputText(implode(", ", $rdnAttributes));
 	$dnRDNRowCells[] = new htmlSpacer(null, '25px');
 	$dnRDNRow = new htmlTableRow($dnRDNRowCells);
-	$dnRDNRow->setCSSClasses(array($scope . 'list-bright'));
+	$dnRDNRow->setCSSClasses(array($scope . '-bright'));
 	$columnContainer->addElement($dnRDNRow);
 	// module options
 	for ($m = 0; $m < sizeof($modules); $m++) {
@@ -417,10 +417,10 @@ function showMainPage($scope, $selectedModules) {
 			$rowCells[] = new htmlSpacer(null, '25px');
 			$row = new htmlTableRow($rowCells);
 			if ($odd) {
-				$row->setCSSClasses(array($scope . 'list-dark'));
+				$row->setCSSClasses(array($scope . '-dark'));
 			}
 			else {
-				$row->setCSSClasses(array($scope . 'list-bright'));
+				$row->setCSSClasses(array($scope . '-bright'));
 			}
 			$odd = !$odd;
 			$columnContainer->addElement($row);

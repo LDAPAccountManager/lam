@@ -98,7 +98,7 @@ if (isAccountTypeHidden($scope)) {
 	die();
 }
 
-echo '<div class="' . $scope . 'list-bright smallPaddingContent">';
+echo '<div class="' . $scope . '-bright smallPaddingContent">';
 
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {

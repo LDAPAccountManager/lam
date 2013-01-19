@@ -44,7 +44,7 @@ checkIfToolIsActive('toolTests');
 setlanguage();
 
 include '../main_header.php';
-echo "<div class=\"userlist-bright smallPaddingContent\">\n";
+echo "<div class=\"user-bright smallPaddingContent\">\n";
 
 $container = new htmlTable();
 $container->addElement(new htmlSubTitle(_("LAM tests")), true);

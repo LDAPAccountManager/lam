@@ -148,7 +148,7 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 
 include '../main_header.php';
 ?>
-<div class="userlist-bright smallPaddingContent">
+<div class="user-bright smallPaddingContent">
 <form action="pdfmain.php" method="post" name="pdfmainForm" >
 	<?php
 		if (isset($_GET['savedSuccessfully'])) {

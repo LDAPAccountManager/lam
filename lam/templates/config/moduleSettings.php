@@ -182,11 +182,11 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#moduleSettings').addClass('ui-tabs-selected');
 	jQuery('#moduleSettings').addClass('ui-state-active');
-	jQuery('#moduleSettings').addClass('userlist-bright');
+	jQuery('#moduleSettings').addClass('user-bright');
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
 <?php
 
 
@@ -212,7 +212,7 @@ $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
-	echo "<fieldset class=\"ui-corner-all useredit\">\n";
+	echo "<fieldset class=\"ui-corner-all user-border user-bright\">\n";
 	$icon = '';
 	$module = new $modules[$i]('none');
 	$iconImage = $module->getIcon();

@@ -105,7 +105,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		if ($sr && $info['count'] == 0) {
 			// print header
 			include 'main_header.php';
-			echo '<div class="userlist-bright smallPaddingContent">';
+			echo '<div class="user-bright smallPaddingContent">';
 			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 			$tabindex = 1;
 			$container = new htmlTable();
@@ -144,7 +144,7 @@ display_main($message, $error);
 function display_main($message, $error) {
 	// display main page
 	include 'main_header.php';
-	echo '<div class="userlist-bright smallPaddingContent">';
+	echo '<div class="user-bright smallPaddingContent">';
 	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
 
 	$tabindex = 1;

@@ -95,6 +95,11 @@ legend {
 color:black;
 }
 
+/* color for active page digit */
+td.activepage {
+ color:red;
+}
+
 select {
 	background:#F5F5F5 none repeat-x scroll 50% 50%;
 	border:1px solid #AAAAAA;
@@ -115,6 +120,13 @@ table.lamHeader {
   padding: 0px;
   margin: 0px;
   height: 35px;
+}
+
+/* table preferences */
+table.accountlist {
+  border-width:1px;
+  border-style:solid;
+  border-collapse:collapse;
 }
 
 .rightToLeftText {
@@ -462,4 +474,73 @@ h4.schema_oclass_sub {
 	padding-left: 5px;
 	font-size: 80%;
 }
+
+
+/** colors for account types */
+
+.alias-border { border-color:#af8800; }
+.alias-bright { background-color:#fff3c8 !important; }
+.alias-dark { background-color:#ffe27f !important; }
+
+.asteriskExt-border { border-color:#af8800; }
+.asteriskExt-bright { background-color:#fff3c8 !important; }
+.asteriskExt-dark { background-color:#ffe27f !important; }
+
+.automountType-border { border-color:#7167bf; }
+.automountType-bright { background-color:#d6e3ff !important; }
+.automountType-dark { background-color:#a8c3ff !important; }
+
+.dhcp-border { border-color:#527510; }
+.dhcp-bright { background-color:#d4f19b !important; }
+.dhcp-dark { background-color:#9fc653 !important; }
+
+.gon-border { border-color:#7167bf; }
+.gon-bright { background-color:#d6e3ff !important; }
+.gon-dark { background-color:#a8c3ff !important; }
+
+.group-border { border-color:#7167bf; }
+.group-bright { background-color:#d6e3ff !important; }
+.group-dark { background-color:#a8c3ff !important; }
+
+.host-border { border-color:#911a1a; }
+.host-bright { background-color:#ffe2dd !important; }
+.host-dark { background-color:#ffc4ba !important; }
+
+.mailAlias-border { border-color:#af8800; }
+.mailAlias-bright { background-color:#fff3c8 !important; }
+.mailAlias-dark { background-color:#ffe27f !important; }
+
+.netgroup-border { border-color:#7167bf; }
+.netgroup-bright { background-color:#d6e3ff !important; }
+.netgroup-dark { background-color:#a8c3ff !important; }
+
+.nisObjectType-border { border-color:#7167bf; }
+.nisObjectType-bright { background-color:#d6e3ff !important; }
+.nisObjectType-dark { background-color:#a8c3ff !important; }
+
+.ppolicyType-border { border-color:#af8800; }
+.ppolicyType-bright { background-color:#fff3c8 !important; }
+.ppolicyType-dark { background-color:#ffe27f !important; }
+
+.smbDomain-border { border-color:#1d993e; }
+.smbDomain-bright { background-color:#c9ddd2 !important; }
+.smbDomain-dark { background-color:#a8ddbf !important; }
+
+.sudo-border { border-color:#9b8523; }
+.sudo-bright { background-color:#fffde2 !important; }
+.sudo-dark { background-color:#fff2a3 !important; }
+
+.user-border { border-color:#9b8523; }
+.user-bright { background: #fffde2 !important; }
+.user-dark { background-color:#fff2a3 !important; }
+
+.zarafaAddressListType-border { border-color:#7167bf; }
+.zarafaAddressListType-bright { background-color:#d6e3ff !important; }
+.zarafaAddressListType-dark { background-color:#a8c3ff !important; }
+
+.zarafaDynamicGroupType-border { border-color:#7167bf; }
+.zarafaDynamicGroupType-bright { background-color:#d6e3ff !important; }
+.zarafaDynamicGroupType-dark { background-color:#a8c3ff !important; }
+
+
 

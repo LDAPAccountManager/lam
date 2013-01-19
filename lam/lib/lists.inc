@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -280,7 +280,7 @@ class lamList {
 		echo("</td>");
 
 		if ($count > $this->maxPageEntries) {
-			echo("<td class=\"" . $this->type . "nav-activepage\" align=\"right\">");
+			echo("<td class=\"activepage\" align=\"right\">");
 			if ($this->page != 1) {
 				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
@@ -326,8 +326,8 @@ class lamList {
 	*/
 	protected function listPrintTableHeader() {
 		// print table header
-		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "list\" width=\"100%\"><thead>\n";
-		echo "<tr class=\"" . $this->type . "list-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
+		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "-border accountlist ui-corner-all\" width=\"100%\"><thead>\n";
+		echo "<tr class=\"" . $this->type . "-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
 		// table header
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {
 			if (strtolower($this->attrArray[$k]) == $this->sortColumn) {
@@ -345,7 +345,7 @@ class lamList {
 		echo "</tr>\n";
 
 		// print filter row
-		echo "<tr align=\"center\" class=\"" . $this->type . "list-bright\">\n";
+		echo "<tr align=\"center\" class=\"" . $this->type . "-bright\">\n";
 		echo "<td width=22 height=34>";
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
@@ -376,6 +376,7 @@ class lamList {
 					}
 				}
 				$filterInput = new htmlInputField('filter' . strtolower($this->attrArray[$k]), $value);
+				$filterInput->setCSSClasses(array($this->type . '-dark'));
 				$filterInput->setFieldSize('15');
 				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
 				parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
@@ -412,10 +413,10 @@ class lamList {
 		for ($i = $table_begin; $i < $table_end; $i++) {
 			$rowID = base64_encode($info[$i]['dn']);
 			if ((($i - $table_begin) % 2) == 1) {
-				$classes = ' ' . $this->type . 'list-bright';
+				$classes = ' ' . $this->type . '-bright';
 			}
 			else {
-				$classes = ' ' . $this->type . 'list-dark';
+				$classes = ' ' . $this->type . '-dark';
 			}
 			echo("<tr class=\"$classes\"" .
 				" onClick=\"list_click('" . $rowID . "')\"\n" .
@@ -433,7 +434,7 @@ class lamList {
 		}
 		// display select all link
 		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type . "list-bright\">\n";
+		echo "<tr class=\"" . $this->type . "-bright\">\n";
 		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\">" . _("Select all") . "</font></a></td>\n";
@@ -641,7 +642,7 @@ class lamList {
 		
 		$this->listPrintHeader();
 
-		echo "<div class=\"ui-tabs-nav " . $this->type . "list-bright\">";
+		echo "<div class=\"ui-tabs-nav " . $this->type . "-bright\">";
 		echo "<div class=\"smallPaddingContent\">\n";
 		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		

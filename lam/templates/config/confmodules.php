@@ -183,7 +183,7 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#editmodules').addClass('ui-tabs-selected');
 	jQuery('#editmodules').addClass('ui-state-active');
-	jQuery('#editmodules').addClass('userlist-bright');
+	jQuery('#editmodules').addClass('user-bright');
 	// set common width for select boxes
 	var maxWidth = 0;
 	jQuery("select").each(function(){
@@ -194,7 +194,7 @@ jQuery(document).ready(function() {
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
 <?php
 
 

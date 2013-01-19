@@ -83,7 +83,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
 	// Show HTML Page
 	include 'main_header.php';
-	echo "<div class=\"".$_GET['type']."list-bright smallPaddingContent\">";
+	echo "<div class=\"".$_GET['type']."-bright smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
@@ -142,7 +142,7 @@ if (isset($_POST['delete'])) {
 	include 'main_header.php';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
-	echo "<div class=\"".$_POST['type']."list-bright smallPaddingContent\"><br>\n";
+	echo "<div class=\"".$_POST['type']."-bright smallPaddingContent\"><br>\n";
 	echo "<br>\n";
 	
 	// Delete dns

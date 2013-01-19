@@ -936,13 +936,13 @@ class accountContainer {
 			}
 		}
 		echo '<div id="passwordMessageArea"></div>';
-		echo "<table class=\"".$this->type."list-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<table class=\"".$this->type."-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		if (checkIfWriteAccessIsAllowed()) {
-			echo "<tr class=\"".$this->type."list-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
+			echo "<tr class=\"".$this->type."-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
 			$this->printCommonControls($tabindex);
 			echo "</td></tr>\n";
 		}
-		echo "<tr class=\"".$this->type."list-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
+		echo "<tr class=\"".$this->type."-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
 		echo '<div class="titleBar ui-corner-top">';
 		echo '<table width="100%"><tr>';
@@ -1255,7 +1255,7 @@ class accountContainer {
 		else {
 			$text = _("Account was modified successfully.");
 		}
-		echo "<div class=\"".$this->type."list-bright smallPaddingContent\">";
+		echo "<div class=\"".$this->type."-bright smallPaddingContent\">";
 		
 		$container = new htmlTable();
 		// show messages
@@ -1340,7 +1340,7 @@ class accountContainer {
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$activatedClass = '';
 			if ($this->order[$this->current_page] == $this->order[$i]) {
-				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type . 'list-bright';
+				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type . '-bright';
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';

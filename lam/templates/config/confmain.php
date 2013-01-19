@@ -224,11 +224,11 @@ echo '</ul>';
 jQuery(document).ready(function() {
 	jQuery('#generalSettingsButton').addClass('ui-tabs-selected');
 	jQuery('#generalSettingsButton').addClass('ui-state-active');
-	jQuery('#generalSettingsButton').addClass('userlist-bright');
+	jQuery('#generalSettingsButton').addClass('user-bright');
 });
 </script>
 
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom userlist-bright">
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
 <?php
 
 $container = new htmlTable();

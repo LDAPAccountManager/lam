@@ -95,7 +95,7 @@ for ($i = 0; $i < sizeof($monitorResult); $i++) {
 $monitorEntries = array_change_key_case($monitorEntries, CASE_LOWER);
 
 include 'main_header.php';
-echo '<div class="userlist-bright smallPaddingContent">';
+echo '<div class="user-bright smallPaddingContent">';
 $tabindex = 1;
 $container = new htmlTable();
 $spacer = new htmlSpacer('20px', null);
