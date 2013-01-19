@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Builds LDAP Account Manager packages from CVS.
+# Builds LDAP Account Manager packages from SVN.
 
 if [ $# -lt 1 ]
 then
-echo -e "Usage: buildPackage <CVS tag>"
+echo -e "Usage: buildPackage <SVN tag>"
 exit
 fi
 
@@ -12,11 +12,16 @@ set -e
 
 cd /daten/projekte/lam/pakete
 
-export CVS_TAG=$1
+if [ "$1" = "trunk" ]
+then
+	export SVN_TAG="trunk"
+else
+	export SVN_TAG="tags/$1"
+fi
 
-cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam
-cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam-packaging
-cvs -d/daten/projekte/CVSROOT export -r $CVS_TAG lamPro
+svn export https://lam.svn.sourceforge.net/svnroot/lam/$SVN_TAG/lam lam
+svn export https://lam.svn.sourceforge.net/svnroot/lam/$SVN_TAG/lam-packaging lam-packaging
+svn export file:///daten/projekte/SVNROOT/$SVN_TAG/lamPro lamPro
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
@@ -25,7 +30,7 @@ export VERSION=`./getVersion`
 rm -r lam/po
 rm -r lam/tests
 rm lam/lib/font/*.ttf
-find . -name .cvsignore -exec rm {} \;
+find . -name .svnignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
 # create LAM manual
@@ -149,4 +154,3 @@ cd ..
 rm -r lam-packaging
 rm getVersion
 rm buildPackages
-
