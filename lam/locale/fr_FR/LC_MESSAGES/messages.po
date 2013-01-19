@@ -8,8 +8,7 @@
 # Emmanuel Seyman <eseyman@linagora.com>, 2004.
 # poirier <xpoirier@ch-bourg01.fr>, 2004, 2005, 2006, 2007, 2008.
 # 
-# Franck Rakotonindrainy <franck.rakotonindrainy@fresenius-kabi.com>, 2011.
-, 2012.
+# Franck Rakotonindrainy <franck.rakotonindrainy@fresenius-kabi.com>, 2011, 2012.
 #
 msgid ""
 msgstr ""
