@@ -915,6 +915,17 @@ class lamList {
 	}
 	
 	/**
+	 * Forces a refresh of the LDAP data.
+	 * Function must be called before $this->refresh option is checked to load new LDAP data (e.g. in listGetParams).
+	 */
+	protected function forceRefresh() {
+		$this->refresh = true;
+		if (isset($_GET['norefresh'])) {
+			unset($_GET['norefresh']);
+		}
+	}
+	
+	/**
 	 * Returns a list of additional LDAP attributes that should be read.
 	 * This can be used to show additional data even if the user selected other attributes to show in the list.
 	 * 
