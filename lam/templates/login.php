@@ -223,7 +223,7 @@ function display_LoginPage($config_object) {
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 		echo "<!--\n";
 		echo "function focusLogin() {\n";
-		if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
+		if (($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) || isset($_COOKIE['lam_login_name'])) {
 			echo "myElement = document.getElementsByName('passwd')[0];\n";
 			echo "myElement.focus();\n";
 		}
@@ -350,7 +350,11 @@ function display_LoginPage($config_object) {
 									$table->addElement($httpAuth);
 								}
 								else {
-									$userInput = new htmlInputField('username');
+									$user = '';
+									if (isset($_COOKIE["lam_login_name"])) {
+										$user = $_COOKIE["lam_login_name"];
+									}
+									$userInput = new htmlInputField('username', $user);
 									$userInput->alignment = htmlElement::ALIGN_LEFT;
 									$table->addElement($userInput);
 								}
@@ -391,6 +395,22 @@ function display_LoginPage($config_object) {
 							$languageSelect->setHasDescriptiveElements(true);
 							$languageSelect->alignment = htmlElement::ALIGN_LEFT;
 							$table->addElement($languageSelect, true);
+							// remember login user
+							if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && !($config_object->getHttpAuthentication() == 'true')) {
+								$rememberLabel = new htmlOutputText('');
+								$rememberLabel->alignment = htmlElement::ALIGN_RIGHT;
+								$table->addElement($rememberLabel);
+								$table->addElement($gap);
+								$rememberGroup = new htmlGroup();
+								$doRemember = false;
+								if (isset($_COOKIE["lam_login_name"])) {
+									$doRemember = true;
+								}
+								$rememberGroup->addElement(new htmlInputCheckbox('rememberLogin', $doRemember));
+								$rememberGroup->addElement(new htmlSpacer('1px', null));
+								$rememberGroup->addElement(new htmlOutputText(_('Remember user name')));
+								$table->addElement($rememberGroup, true);
+							}
 							// login button
 							$table->addElement(new htmlSpacer(null, '35px'));
 							$table->addElement(new htmlHiddenInput('checklogin', 'checklogin'));
@@ -496,6 +516,12 @@ if(!empty($_POST['checklogin'])) {
 		$password = $_SERVER['PHP_AUTH_PW'];
 	}
 	else {
+		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
+			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365);
+		}
+		else if (isset($_COOKIE['lam_login_name'])) {
+			setcookie('lam_login_name', '', time() + 60*60*24*365);
+		}
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
 			$error_message = _("Empty password submitted. Please try again.");
