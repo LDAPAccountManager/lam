@@ -519,7 +519,7 @@ if(!empty($_POST['checklogin'])) {
 		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
 			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365);
 		}
-		else if (isset($_COOKIE['lam_login_name'])) {
+		else if (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
 			setcookie('lam_login_name', '', time() + 60*60*24*365);
 		}
 		if($_POST['passwd'] == "") {
