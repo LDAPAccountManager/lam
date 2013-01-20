@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -655,7 +655,7 @@ class lamUserList extends lamList {
 		$asOptionOldValue = $this->showAccountStatus;
 		$this->showAccountStatus = $asOption->isSelected();
 		if ($this->showAccountStatus && !$asOptionOldValue) {
-			$this->listRefreshData();
+			$this->forceRefresh();
 		}
 	}
 	
