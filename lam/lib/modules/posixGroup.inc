@@ -177,7 +177,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			$cnInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $cn, 'cn');
 			$cnInput->setRequired(true);
-			$cnInput->setFieldMaxLength(30);
+			$cnInput->setFieldMaxLength(100);
 			$return->addElement($cnInput, true);
 		}
 		// GID number
