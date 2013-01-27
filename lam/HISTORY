@@ -1,5 +1,7 @@
 March 2013 4.1
   - updated EDU person module (RFE 3599128)
+  - fixed bugs:
+   -> changed user and group size limits (3601649)
 
 
 06.01.2013 4.0.1

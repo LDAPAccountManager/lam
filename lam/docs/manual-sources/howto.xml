@@ -11,16 +11,13 @@
     an LDAP directory. LAM runs on any webserver with PHP5 support and
     connects to your LDAP server unencrypted or via SSL/TLS.</para>
 
-    <para>Currently LAM supports these account types: Samba 3, Unix, Kolab 2,
-    address book entries, NIS mail aliases and MAC addresses. There is a tree
-    viewer included to allow access to the raw LDAP attributes. You can use
-    templates for account creation and use multiple configuration profiles.
-    LAM is translated to Catalan, Chinese (Traditional + Simplified), Czech,
-    Dutch, English, French, German, Hungarian, Italian, Japanese, Polish,
-    Portuguese, Russian and Spanish.</para>
+    <para>LAM supports Samba 3, Unix, Zarafa, Kolab 2, address book entries,
+    NIS mail aliases, MAC addresses and much more. There is a tree viewer
+    included to allow access to the raw LDAP attributes. You can use templates
+    for account creation and use multiple configuration profiles.</para>
 
     <para><ulink
-    url="http://www.ldap-account-manager.org/">http://www.ldap-account-manager.org/</ulink></para>
+    url="https://www.ldap-account-manager.org/">https://www.ldap-account-manager.org/</ulink></para>
 
     <para>Copyright (C) 2003 - 2013 Roland Gruber
     &lt;post@rolandgruber.de&gt;</para>
@@ -1204,7 +1201,9 @@ Have fun!
               LAM will automatically detect the right LDAP entries for each
               account type. This can be used to further limit the number of
               visible entries (e.g. if you want to manage only some specific
-              groups).</para>
+              groups). You can use "@@LOGIN_DN@@" as wildcard (e.g.
+              "(owner=@@LOGIN_DN@@)"). It will be replaced by the DN of the
+              user who is logged in.</para>
             </listitem>
 
             <listitem>

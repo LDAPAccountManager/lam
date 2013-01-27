@@ -110,8 +110,16 @@ function get_ldap_filter($scope) {
 		$filters['and'][] = $typeSettings['filter_' . $scope];
 	}
 	// collapse AND filters
-	if (sizeof($filters['and']) < 2) return $filters['and'][0];
-	else return "(&" . implode("", $filters['and']) . ")";
+	$finalFilter = '';
+	if (sizeof($filters['and']) < 2) {
+		$finalFilter = $filters['and'][0];
+	}
+	else {
+		$finalFilter = "(&" . implode("", $filters['and']) . ")";
+	}
+	$loginData = $_SESSION['ldap']->decrypt_login();
+	$finalFilter = str_replace('@@LOGIN_DN@@', $loginData[0], $finalFilter);
+	return $finalFilter;
 }
 
 /**

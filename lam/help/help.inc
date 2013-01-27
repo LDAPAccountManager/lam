@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2012 Roland Gruber
+                2003 - 2013 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -151,6 +151,7 @@ $helpArray = array (
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
+						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')
 						. ' ' . _('By default LAM will show all accounts that match the selected account modules.')),
 				"261" => array ("Headline" => _("Hidden"),
 					"Text" => _('Hidden account types will not show up in LAM. This is useful if you want to display e.g. only groups but still need to manage their members.')),
