@@ -157,15 +157,15 @@ class Ldap{
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
 		$this->rand = mt_rand();
-		// delete PDF files and images which are older than 10 min
+		// delete PDF files and images which are older than 15 min
 		$tmpDir = dirname(__FILE__) . '/../tmp/';
 		$time = time();
 		$dir = @opendir($tmpDir);
 		$file = @readdir($dir);
 		while ($file) {
-			if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg') || (substr($file, -4) == '.zip')) {
-				$path = $tmpDir . $file;
-				if ($time - filemtime($path) > 600) {
+			$path = $tmpDir . $file;
+			if (($file != '.') && ($file != '..') && ($file != '.htaccess') && !is_dir($path)) {
+				if ($time - filemtime($path) > 900) {
 					@unlink($path);
 				}
 			}
