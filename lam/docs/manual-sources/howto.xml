@@ -1605,7 +1605,16 @@ Have fun!
           </mediaobject>
         </screenshot>
 
-        <para></para>
+        <para>User certificates can be uploaded and downloaded. LAM will
+        automatically convert PEM to DER format.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_personal2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
         <table>
           <title>LDAP attribute mappings</title>
@@ -1786,6 +1795,12 @@ Have fun!
                 <entry>title</entry>
 
                 <entry>Job title</entry>
+              </row>
+
+              <row>
+                <entry>userCertificate</entry>
+
+                <entry>User certificates</entry>
               </row>
 
               <row>

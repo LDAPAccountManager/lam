@@ -78,7 +78,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
-		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
+		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
@@ -117,7 +117,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
-			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials', 'registeredAddress', 'labeledURI', 'ou');
+			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials', 'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary');
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName', 'employeeNumber');
 		// self service field settings
@@ -127,11 +127,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'),
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
-			'departmentNumber' => _('Department'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'));
+			'departmentNumber' => _('Department'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'),
+			'userCertificate' => _('User certificates'));
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('firstName', 'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'street',
 			'postalAddress', 'registeredAddress', 'postalCode', 'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',
-			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI');
+			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate');
 		// profile elements
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
@@ -313,6 +314,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideInitials', false, _('Initials'), null, false));
 		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLabeledURI', false, _('Web site'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
@@ -841,6 +844,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'userPassword' => array(
 				"Headline" => _("Password"),
 				"Text" => _("Please enter the password which you want to set for this account.")
+			),
+			'userCertificate' => array(
+				"Headline" => _('User certificates'),
+				"Text" => _('These are the user\'s certificates.')
 			),
 		);
 		return $return;
@@ -1743,7 +1750,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')
-				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')
+				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Work details')), true);
 		}
 		
@@ -1852,6 +1860,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$oHelp->alignment = htmlElement::ALIGN_TOP;
 			$fieldContainer->addElement($oHelp, true);
 		}
+		// user certificates
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
+			$fieldContainer->addElement(new htmlOutputText(_('User certificates')));
+			$userCertificateGroup = new htmlGroup();
+			$userCertificateCount = 0;
+			if (isset($this->attributes['userCertificate;binary'])) {
+				$userCertificateCount = sizeof($this->attributes['userCertificate;binary']);
+			}
+			$userCertificateGroup->addElement(new htmlOutputText($userCertificateCount));
+			$userCertificateGroup->addElement(new htmlSpacer('10px', null));
+			$userCertificateGroup->addElement(new htmlAccountPageButton(get_class($this), 'userCertificate', 'manage', _('Manage')));
+			$fieldContainer->addElement($userCertificateGroup);
+			$fieldContainer->addElement(new htmlHelpLink('userCertificate'), true);
+		}
 		// manager
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			$fieldContainer->addElement(new htmlOutputText(_('Manager')));
@@ -1922,7 +1944,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['jpegPhoto'][0] = $data;
 		}
 		else {
-			$messages[] = $this->messages['photo'][0];
+			$messages[] = $this->messages['file'][0];
 		}
 		return $messages;
 	}
@@ -2042,6 +2064,103 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		return $return;
+	}
+
+	/**
+	* Displays the certificate upload page.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_userCertificate() {
+		$container = new htmlTable();
+		if (isset($this->attributes['userCertificate;binary'])) {
+			$table = new htmlTable();
+			$table->colspan = 10;
+			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
+				$filename = 'userCertificate' . $_SESSION['ldap']->new_rand() . '.der';
+				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
+				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
+				fclose ($out);
+				$path = '../../tmp/' . $filename;
+				$link = new htmlLink('', $path, '../../graphics/save.png');
+				$link->setTargetWindow('_blank');
+				$table->addElement($link);
+				$deleteButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'delete_' . $i, 'delete.png', true);
+				$deleteButton->setIconClass('deleteButton');
+				$table->addElement($deleteButton);
+				if (function_exists('openssl_x509_parse')) {
+					$pem = @chunk_split(@base64_encode($this->attributes['userCertificate;binary'][$i]), 64, "\n");
+					if (!empty($pem)) {
+						$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
+						$pemData = @openssl_x509_parse($pem);
+						$data = array();
+						if (isset($pemData['serialNumber'])) {
+							$data[] = $pemData['serialNumber'];
+						}
+						if (isset($pemData['name'])) {
+							$data[] = $pemData['name'];
+						}
+						if (sizeof($data) > 0) {
+							$table->addElement(new htmlOutputText(implode(': ', $data)));
+						}
+					}
+				}
+				$table->addNewLine();
+			}
+			$container->addElement($table, true);
+			$container->addElement(new htmlSpacer(null, '20px'), true);
+		}
+		$newGroup = new htmlGroup();
+		$newGroup->addElement(new htmlOutputText(_('New user certificate')));
+		$newGroup->addElement(new htmlSpacer('1px', null));
+		$newGroup->addElement(new htmlInputFileUpload('userCertificateUpload'));
+		$newGroup->addElement(new htmlSpacer('1px', null));
+		$uploadButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'submit', _('Upload'));
+		$uploadButton->setIconClass('upButton');
+		$newGroup->addElement($uploadButton);
+		$container->addElement($newGroup, true);
+		$container->addElement(new htmlSpacer(null, '10px'), true);
+		$container->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		return $container;
+	}
+	
+	/**
+	* Sets a new certificate or deletes old ones.
+	*/
+	function process_userCertificate() {
+		$messages = array();
+		if (isset($_POST['form_subpage_' . get_class($this) . '_userCertificate_submit'])) {
+			if ($_FILES['userCertificateUpload'] && ($_FILES['userCertificateUpload']['size'] > 0)) {
+				$handle = fopen($_FILES['userCertificateUpload']['tmp_name'], "r");
+				$data = fread($handle, 10000000);
+				fclose($handle);
+				if (strpos($data, '-----BEGIN CERTIFICATE-----') === 0) {
+					$pemData = str_replace("\r", '', $data);
+					$pemData = explode("\n", $pemData);
+					array_shift($pemData);
+					$last = array_pop($pemData);
+					while (($last != '-----END CERTIFICATE-----') && sizeof($pemData) > 2) {
+						$last = array_pop($pemData);
+					}
+					$pemData = implode('', $pemData);
+					$data = base64_decode($pemData);
+				}
+				$this->attributes['userCertificate;binary'][] = $data;
+			}
+			else {
+				$messages[] = $this->messages['file'][0];
+			}
+		}
+		elseif (isset($this->attributes['userCertificate;binary'])) {
+			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
+				if (isset($_POST['form_subpage_' . get_class($this) . '_userCertificate_delete_' . $i])) {
+					unset($this->attributes['userCertificate;binary'][$i]);
+					$this->attributes['userCertificate;binary'] = array_values($this->attributes['userCertificate;binary']);
+					break;
+				}
+			}
+		}
+		return $messages;
 	}
 
 	/**

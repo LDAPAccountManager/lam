@@ -1,5 +1,6 @@
 March 2013 4.1
   - updated EDU person module (RFE 3599128)
+  - Personal: allow management of user certificates (RFE 1753030)
   - fixed bugs:
    -> changed user and group size limits (3601649)
 
