@@ -276,7 +276,7 @@ function showMainPage($scope, $selectedModules) {
 	$columnSpacer = new htmlSpacer('10px', null);
 	$container->addElement(new htmlTitle(_("Columns")), true);
 	$columnContainer = new htmlTable();
-	$columnContainer->setCSSClasses(array($scope . 'list'));
+	$columnContainer->setCSSClasses(array($scope . 'list', 'collapse'));
 	// DN options
 	$dnTitle = new htmlSubTitle(_("DN settings"), '../graphics/logo32.png');
 	$dnTitle->colspan = 20;

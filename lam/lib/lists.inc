@@ -326,7 +326,7 @@ class lamList {
 	*/
 	protected function listPrintTableHeader() {
 		// print table header
-		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "-border accountlist ui-corner-all\" width=\"100%\"><thead>\n";
+		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
 		echo "<tr class=\"" . $this->type . "-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
 		// table header
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {

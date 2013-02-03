@@ -126,7 +126,10 @@ table.lamHeader {
 table.accountlist {
   border-width:1px;
   border-style:solid;
-  border-collapse:collapse;
+}
+
+table.collapse {
+	border-collapse:collapse;
 }
 
 .rightToLeftText {
