@@ -6662,6 +6662,78 @@ Run slapindex to rebuild the index.
   </appendix>
 
   <appendix>
+    <title>Clustering LAM</title>
+
+    <para>LAM is a web application based on PHP. Therefore, clustering is not
+    directly a part of the application.</para>
+
+    <para>But here are some hints to run LAM in a clustered
+    environment.</para>
+
+    <para><emphasis role="bold">Application parts:</emphasis></para>
+
+    <para>LAM can be divided into three parts</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Software</para>
+      </listitem>
+
+      <listitem>
+        <para>Configuration files</para>
+      </listitem>
+
+      <listitem>
+        <para>Session files and temporary data</para>
+      </listitem>
+    </itemizedlist>
+
+    <para><emphasis role="bold">Software:</emphasis></para>
+
+    <para>This is the simplest part. Just install LAM on each cluster node.
+    Please note that if you run LAM Pro you will need either one license for
+    each active cluster node or a company license.</para>
+
+    <para><emphasis role="bold">Configuration files:</emphasis></para>
+
+    <para>These files include the LAM server profiles, account profiles, PDF
+    structures, ... Usually, they do not change frequently and can be put on a
+    shared file system (e.g. NFS, AFS, ...).</para>
+
+    <para>Please link "config" or "/var/lib/ldap-account-manager/config" to a
+    directory on your shared file system.</para>
+
+    <para><emphasis role="bold">Session data and temporary
+    files:</emphasis></para>
+
+    <para>These are critical because the files may change on every page load.
+    There are basically two options:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>load balancer with session stickiness: In this case your load
+        balancer will forward all requests of a user to the same cluster node.
+        In this case you can keep the files locally on your cluster nodes. If
+        you already have a load balancer then this is the simplest solution
+        and performs best. The disadvantage is that if a node fails then all
+        users connected to this node will loose their session and need to
+        relogin.</para>
+      </listitem>
+
+      <listitem>
+        <para>shared file system: This should only be used if your load
+        balancer does not support session stickiness or you use a different
+        system to distribute request across the cluster. A shared file system
+        will decrease performance for all page loads.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Session data and temporary files are located in "tmp" + "sess" or
+    "/var/lib/ldap-account-manager/tmp" +
+    "/var/lib/ldap-account-manager/sess".</para>
+  </appendix>
+
+  <appendix>
     <title>Kolab user management</title>
 
     <para>Here are some notes on managing Kolab accounts with LAM:</para>
