@@ -250,11 +250,15 @@ if (sizeof($activeTypes) > 0) {
 		$activeContainer->addElement(new htmlHelpLink('202'));
 		$activeContainer->addElement(new htmlSpacer('10px', null));
 		// LDAP filter
+		$filter = '';
+		if (isset($typeSettings['filter_' . $activeTypes[$i]])) {
+			$filter = $typeSettings['filter_' . $activeTypes[$i]];
+		}
 		$filterText = new htmlOutputText(_("Additional LDAP filter"));
 		$filterText->colspan = 2;
 		$activeContainer->addElement($filterText);
 		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$filterInput = new htmlInputField('filter_' . $activeTypes[$i], $typeSettings['filter_' . $activeTypes[$i]]);
+		$filterInput = new htmlInputField('filter_' . $activeTypes[$i], $filter);
 		$filterInput->setFieldSize(40);
 		$activeContainer->addElement($filterInput);
 		$activeContainer->addElement(new htmlHelpLink('260'));
@@ -276,11 +280,15 @@ if (sizeof($activeTypes) > 0) {
 		$activeContainer->addElement(new htmlHelpLink('206'));
 		$activeContainer->addElement(new htmlSpacer('10px', null));
 		// hidden type
+		$hidden = false;
+		if (isset($typeSettings['hidden_' . $activeTypes[$i]])) {
+			$hidden = $typeSettings['hidden_' . $activeTypes[$i]];
+		}
 		$hiddenText = new htmlOutputText(_('Hidden'));
 		$hiddenText->colspan = 2;
 		$activeContainer->addElement($hiddenText);
 		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$activeContainer->addElement(new htmlInputCheckbox('hidden_' . $activeTypes[$i], $typeSettings['hidden_' . $activeTypes[$i]]));
+		$activeContainer->addElement(new htmlInputCheckbox('hidden_' . $activeTypes[$i], $hidden));
 		$activeContainer->addElement(new htmlHelpLink('261'));
 		$activeContainer->addNewLine();
 		// delete button
