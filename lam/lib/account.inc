@@ -32,33 +32,6 @@ $Id$
 */
 
 
-
-/**
-* Returns a list of shells listed in config/shells.
-*
-* @return array list of shell names
-*/
-function getshells() {
-	$return = array();
-	$shellPath = dirname(__FILE__) . '/../config/shells';
-	// load shells from file
-	if (file_exists($shellPath)) {
-		$shells = file($shellPath);
-		for ($i = 0; $i < sizeof($shells); $i++) {
-			// remove whitespaces and line end
-			$shells[$i] = trim($shells[$i]);
-			// remove comments
-			if ((strlen($shells[$i]) == 0) || $shells[$i]{0}=='#') {
-				continue;
-			}
-			$return[] = $shells[$i];
-		}
-		return $return;
-	}
-	return $return;
-}
-
-
 /**
 * This function will return all values from $array without values of $values.
 *

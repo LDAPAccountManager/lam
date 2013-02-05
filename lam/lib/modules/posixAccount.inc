@@ -162,7 +162,11 @@ class posixAccount extends baseModule implements passwordService {
 			$selfServiceContainer = new htmlTable();
 			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 				array('SSHA'), _("Password hash type")));
-			$selfServiceContainer->addElement(new htmlHelpLink('pwdHash', get_class($this)));
+			$selfServiceContainer->addElement(new htmlHelpLink('pwdHash', get_class($this)), true);
+			$selfServiceContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells')));
+			$loginShellsHelp = new htmlHelpLink('loginShells', get_class($this));
+			$loginShellsHelp->alignment = htmlElement::ALIGN_TOP;
+			$selfServiceContainer->addElement($loginShellsHelp, true);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
@@ -198,7 +202,8 @@ class posixAccount extends baseModule implements passwordService {
 		$configOptionsContainer->addElement(new htmlSubTitle(_('Options')), true);
 		$configOptionsContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 			array('SSHA'), _("Password hash type"), 'pwdHash'), true);
-		$configOptionsContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'));
+		$configOptionsContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), true);
+		$configOptionsContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), true);
 		$return['config_options']['all'] = $configOptionsContainer;
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
@@ -257,7 +262,7 @@ class posixAccount extends baseModule implements passwordService {
 				'description' => _('Login shell'),
 				'help' => 'loginShell',
 				'example' => '/bin/bash',
-				'values' => implode(", ", getshells()),
+				'values' => implode(", ", $this->getShells()),
 				'default' => '/bin/bash'
 			),
 			array(
@@ -384,6 +389,10 @@ class posixAccount extends baseModule implements passwordService {
 				"Headline" => _("Suffix for UID/user name check"),
 				"Text" => _("LAM checks if the entered user name and UID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique user names or UIDs.")
 			),
+			'loginShells' => array(
+				"Headline" => _("Login shells"),
+				"Text" => _("This is the list of valid login shells.")
+			),
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("User name"), 'attr' => 'uid',
@@ -411,7 +420,7 @@ class posixAccount extends baseModule implements passwordService {
 				),
 				'loginShell' => array(
 					"Headline" => _("Login shell"),
-					"Text" => _("To disable login use /bin/false. The list of shells is read from lam/config/shells")
+					"Text" => _("To disable login use /bin/false.")
 				),
 				'addgroup' => array(
 					"Headline" => _("Additional groups"),
@@ -1079,7 +1088,7 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')));
 			return $return;
 		}
-		$shelllist = getshells(); // list of all valid shells
+		$shelllist = $this->getShells(); // list of all valid shells
 
 		// set default values
 		if (!isset($this->attributes['uid'][0]) && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
@@ -1390,7 +1399,7 @@ class posixAccount extends baseModule implements passwordService {
 			$groups[] = $groupList[$i][1];
 		}
 		if ($this->get_scope() == 'user') {
-			$shelllist = getshells(); // list of all valid shells
+			$shelllist = $this->getShells(); // list of all valid shells
 			// primary Unix group
 			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'), true);
 			// additional group memberships
@@ -1746,7 +1755,7 @@ class posixAccount extends baseModule implements passwordService {
 				if ($rawAccounts[$i][$ids['posixAccount_shell']] == "") {
 					$partialAccounts[$i]['loginShell'] = '/bin/bash';
 				}
-				elseif (in_array($rawAccounts[$i][$ids['posixAccount_shell']], getshells())) {
+				elseif (in_array($rawAccounts[$i][$ids['posixAccount_shell']], $this->getShells())) {
 					$partialAccounts[$i]['loginShell'] = $rawAccounts[$i][$ids['posixAccount_shell']];
 				}
 				else {
@@ -2140,7 +2149,7 @@ class posixAccount extends baseModule implements passwordService {
 			));
 		}
 		if (in_array('loginShell', $fields)) {
-			$shelllist = getshells(); // list of all valid shells
+			$shelllist = $this->getShells(); // list of all valid shells
 			$loginShell = '';
 			if (isset($attributes['loginShell'][0])) $loginShell = $attributes['loginShell'][0];
 			$loginShellField = new htmlSelect('posixAccount_loginShell', $shelllist, array($loginShell));
@@ -2216,7 +2225,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		if (in_array('loginShell', $fields) && !in_array('loginShell', $readOnlyFields)) {
-			$shelllist = getshells(); // list of all valid shells
+			$shelllist = $this->getShells(); // list of all valid shells
 			if (in_array($_POST['posixAccount_loginShell'], $shelllist)
 					&& (!isset($attributes['loginShell']) || ($attributes['loginShell'][0] != $_POST['posixAccount_loginShell']))) {
 				$return['mod']['loginShell'][0] = $_POST['posixAccount_loginShell'];
@@ -2602,6 +2611,33 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return $userName;
+	}
+	
+	/**
+	 * Returns the list of possible login shells.
+	 * 
+	 * @return array login shells
+	 */
+	private function getShells() {
+		// self service
+		if (!isset($_SESSION['loggedIn']) && isset($this->selfServiceSettings) && isset($this->selfServiceSettings->moduleSettings['posixAccount_shells'])
+			&& (sizeof($this->selfServiceSettings->moduleSettings['posixAccount_shells'])) > 0) {
+			return $this->selfServiceSettings->moduleSettings['posixAccount_shells'];
+		}
+		// server profile
+		if (!isset($this->selfServiceSettings) && isset($this->moduleSettings) && isset($this->moduleSettings['posixAccount_shells'])
+			&& (sizeof($this->moduleSettings['posixAccount_shells'])) > 0) {
+			return $this->moduleSettings['posixAccount_shells'];
+		}
+		// fall back to default
+		return array(
+			'/bin/bash',
+			'/bin/csh',
+			'/bin/dash',
+			'/bin/false',
+			'/bin/ksh',
+			'/bin/sh'
+		);
 	}
 	
 }

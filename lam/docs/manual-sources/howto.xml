@@ -692,6 +692,19 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>4.0 -&gt; 4.1</title>
+
+          <para><emphasis role="bold">Unix:</emphasis> The list of valid login
+          shells is no longer configured in "config/shells" but in the
+          server/self service profiles (Unix settings). LAM will use the
+          following shells by default: /bin/bash, /bin/csh, /bin/dash,
+          /bin/false, /bin/ksh, /bin/sh.</para>
+
+          <para>Please update your server/self service profile if you would
+          like to change the list of valid login shells.</para>
+        </section>
+
+        <section>
           <title>3.9 -&gt; 4.0</title>
 
           <para>The account profiles and PDF structures are now separated by
