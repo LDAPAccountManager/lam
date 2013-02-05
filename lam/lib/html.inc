@@ -2012,7 +2012,7 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		// print help link
 		if ($this->helpID != null) {
-			echo "\n</td>\n<td>\n";
+			echo "\n</td>\n<td valign=\"top\">\n";
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
