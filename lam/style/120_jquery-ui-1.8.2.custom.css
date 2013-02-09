@@ -49,7 +49,7 @@
 ----------------------------------*/
 .ui-widget { font-family: Arial,Tahoma,Verdana,sans-serif; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Arial,Tahoma,Verdana,sans-serif; }
-.ui-widget-content { border: 1px solid #aaaaaa; background: transparent 50% 50% repeat-x; color: #222222; }
+.ui-widget-content { border: 1px solid #aaaaaa; background: #F5F5F5 50% 50% repeat-x; color: #222222; }
 .ui-widget-content a { color: #222222; }
 .ui-widget-header { border: 1px solid #aaaaaa; background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; color: #222222; font-weight: bold; }
 .ui-widget-header a { color: #222222; }
