@@ -1163,8 +1163,17 @@ Have fun!
           login restrictions (e.g. require group memberships for login). To
           setup HTTP authentication in Apache please see this <ulink
           url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>
-          and an example for LDAP authentication <link
+          and an example for LDAP authentication <link lang=""
           linkend="apache_http_auth">here</link>.</para>
+
+          <para><emphasis role="bold">Hint:</emphasis> LDAP search with group
+          membership check can be done with either <link
+          linkend="apache_http_auth">HTTP authentication</link> or LDAP
+          overlays like <ulink
+          url="http://www.openldap.org/doc/admin24/overlays.html">"Dynamic
+          lists"</ulink>. Dynamic lists allow to insert virtual attributes to
+          your user entries. These can then be used for the LDAP filter (e.g.
+          "(&amp;(uid=%USER%)(memberof=cn=admins,ou=groups,dc=company,dc=com))").</para>
 
           <screenshot>
             <mediaobject>
