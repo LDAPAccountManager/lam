@@ -382,39 +382,43 @@ class htmlTableRow extends htmlElement {
 class htmlInputField extends htmlElement {
 
 	/** unique field name */
-	private $fieldName;
+	protected $fieldName;
 	/** field value */
-	private $fieldValue;
+	protected $fieldValue;
 	/** field size (default 30) */
-	private $fieldSize = 30;
+	protected $fieldSize = 30;
 	/** field max length (default 255) */
-	private $fieldMaxLength = 255;
+	protected $fieldMaxLength = 255;
 	/** on keypress event */
-	private $onKeyPress = null;
+	protected $onKeyPress = null;
 	/** password field */
-	private $isPassword = false;
+	protected $isPassword = false;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	protected $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
-	private $obfuscate = false;
+	protected $obfuscate = false;
 	/** indicates that this field should not automatically be saved in the self service or server profile */
-	private $transient = false;
+	protected $transient = false;
 	/** required field */
 	protected $required = false;
 	/** validation rule */
-	private $validationRule = null;
+	protected $validationRule = null;
 	/** enable autocomplete */
-	private $autocomplete = false;
+	protected $autocomplete = false;
 	/** multiple values in one field */
-	private $autocompleteMultiValue = false;
+	protected $autocompleteMultiValue = false;
 	/** separator expression for multiple values in one field */
-	private $autocompleteMultiValueSeparatorExp = null;
+	protected $autocompleteMultiValueSeparatorExp = null;
 	/** separator for multiple values in one field */
-	private $autocompleteMultiValueSeparator = null;
+	protected $autocompleteMultiValueSeparator = null;
 	/** autocompletion suggestions */
-	private $autocompleteValues = array();
+	protected $autocompleteValues = array();
 	/** autocomplete start at this input length */
-	private $autocompleteMinLength = 1;
+	protected $autocompleteMinLength = 1;
+	/** show calendar */
+	protected $showCalendar = false;
+	/** calendar format */
+	protected $calendarFormat = '';
 	
 	/**
 	 * Constructor
@@ -533,6 +537,14 @@ class htmlInputField extends htmlElement {
 				echo '});';
 			echo "</script\n>";
 		}
+		if ($this->showCalendar) {
+			echo '<script type="text/javascript">
+				jQuery(function() {
+					$("#' . $this->fieldName . '").datepicker({ dateFormat: "' . $this->calendarFormat . '"});
+				});
+				</script>
+			';
+		}
 		if ($this->transient) {
 			return array();
 		}
@@ -645,6 +657,16 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setOnKeyPress($onKeyPress) {
 		$this->onKeyPress = $onKeyPress;
+	}
+	
+	/**
+	 * Shows a calendar when the field is selected.
+	 * 
+	 * @param String $format calendar format (e.g. yyyy-mm-dd)
+	 */
+	public function showCalendar($format) {
+		$this->showCalendar = true;
+		$this->calendarFormat = $format;
 	}
 
 }
