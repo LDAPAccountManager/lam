@@ -2742,4 +2742,66 @@ class htmlEqualWidth extends htmlElement {
 	
 }
 
+/**
+ * Creates a list of elements that can be sorted by the user via drag'n'drop.
+ * 
+ * @package metaHTML
+ */
+class htmlSortableList extends htmlElement {
+	
+	/** list of elements */
+	private $elements = array();
+	/** HTML ID */
+	private $id = '';
+	/** element width */
+	private $elementWidth = '';
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param array $elements list of element IDs (HTML special chars must be escaped already)
+	 * @param String HTML ID
+	 * @param String $elementWidth width of elements (default 250px)
+	 */
+	function __construct($elements, $id, $elementWidth='250px') {
+		$this->elements = $elements;
+		$this->id = htmlspecialchars($id);
+		$this->elementWidth = $elementWidth;
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if (sizeof($this->elements) == 0) {
+			return array();
+		}
+		$return = array();
+		echo '<ul style="width:' . $this->elementWidth . ';" class="sortableList" id="' . $this->id . '">';
+		foreach ($this->elements as $element) {
+			echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
+			echo $element;
+			echo '</li>';
+		}
+		echo '</ul>';
+		$scriptContent = '
+			jQuery(function() {
+				$("#' . $this->id . '").sortable();
+				$("#' . $this->id . '").disableSelection();
+			});';
+		$script = new htmlJavaScript($scriptContent);
+		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		return $return;
+	}
+	
+}
+
 ?>
