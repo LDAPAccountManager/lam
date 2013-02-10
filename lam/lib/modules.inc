@@ -1274,21 +1274,23 @@ class accountContainer {
 		$container->addElement(new htmlSpacer(null, '20px'), true);
 		
 		$type = new $this->type();
+		$buttonGroup = new htmlGroup();
 		$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
 		$createButton->setIconClass('createButton');
-		$container->addElement($createButton);
-		$container->addElement(new htmlSpacer('10px', null));
+		$buttonGroup->addElement($createButton);
+		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
 		$pdfButton->setIconClass('pdfButton');
-		$container->addElement($pdfButton);
-		$container->addElement(new htmlSpacer('10px', null));
+		$buttonGroup->addElement($pdfButton);
+		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
 		$backToListButton->setIconClass('backButton');
-		$container->addElement($backToListButton);
-		$container->addElement(new htmlSpacer('10px', null));
+		$buttonGroup->addElement($backToListButton);
+		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$backToEditButton = new htmlButton('accountContainerBackToEdit', _('Edit again'));
 		$backToEditButton->setIconClass('editButton');
-		$container->addElement($backToEditButton);
+		$buttonGroup->addElement($backToEditButton);
+		$container->addElement($buttonGroup, true);
 		
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, $this->type);
