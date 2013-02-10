@@ -746,6 +746,8 @@ class accountContainer {
 	private $titleBarTitle = null;
 	/** subtitle in title bar */
 	private $titleBarSubtitle = null;
+	/** send password via mail */
+	private $sendPasswordViaMail = null;
 
 	/**
 	 * Returns the account module with the given class name
@@ -1131,20 +1133,7 @@ class accountContainer {
 			}
 		}
 		if (isLAMProVersion() && $sendMail) {
-			$mailMessages = sendPasswordMail($password1, $this->attributes_orig);
-			if (sizeof($mailMessages) > 0) {
-				for ($i = 0; $i < sizeof($mailMessages); $i++) {
-					if ($mailMessages[$i][0] == 'ERROR') {
-						$return['errorsOccured'] = 'true';
-					}
-					if (sizeof($mailMessages[$i]) == 2) {
-						$return['messages'] .= StatusMessage($mailMessages[$i][0], $mailMessages[$i][1], '', array(), true);
-					}
-					elseif (sizeof($mailMessages[$i]) == 3) {
-						$return['messages'] .= StatusMessage($mailMessages[$i][0], $mailMessages[$i][1], $mailMessages[$i][2], array(), true);
-					}
-				}
-			}
+			$this->sendPasswordViaMail = $password1;
 		}
 		if ($return['errorsOccured'] == 'false') {
 			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
@@ -1830,7 +1819,14 @@ class accountContainer {
 				}
 			}
 		}
-
+		// send password mail
+		if (!$stopprocessing && isLAMProVersion() && ($this->sendPasswordViaMail != null)) {
+			$mailMessages = sendPasswordMail($this->sendPasswordViaMail, $prePostModifyAttributes);
+			if (sizeof($mailMessages) > 0) {
+				$errors = array_merge($errors, $mailMessages);
+			}
+			$this->sendPasswordViaMail = null;
+		}
 		if (!$stopprocessing) {
 			// post modify actions
 			foreach ($module as $singlemodule) {
