@@ -98,7 +98,9 @@ if (isAccountTypeHidden($scope)) {
 	die();
 }
 
+echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 echo '<div class="' . $scope . '-bright smallPaddingContent">';
+$container = new htmlTable();
 
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
@@ -168,8 +170,11 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
-		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
-		massPrintBackButton($scope, $selectedModules);
+		for ($i = 0; $i < sizeof($errors); $i++) {
+			$container->addElement(new htmlStatusMessage("ERROR", $errors[$i][0], $errors[$i][1]), true);
+		}
+		$container->addElement(new htmlSpacer(null, '10px'), true);
+		massPrintBackButton($scope, $selectedModules, $container);
 	}
 	
 	// let modules build accounts
@@ -193,7 +198,9 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 			// print errors if DN could not be built
 			if (sizeof($errors) > 0) {
-				for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1], $errors[$i][2]);
+				for ($i = 0; $i < sizeof($errors); $i++) {
+					$container->addElement(new htmlStatusMessage("ERROR", $errors[$i][0], $errors[$i][1], $errors[$i][2]), true);
+				}
 			}
 			else {
 				// store accounts in session
@@ -218,34 +225,33 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$_SESSION['mass_pdf']['structure'] = null;
 				}
 				// show links for upload and LDIF export
-				echo "<div class=\"title\">\n";
-				echo "<h2 class=\"titleText\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h2>\n";
-				echo "</div>";
-				echo "<p>&nbsp;</p>\n";
-				echo "<a id=\"uploadLink\" href=\"massDoUpload.php\">" . _("Upload accounts to LDAP") . "</a>";
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-				echo "<a id=\"createLDIFLink\" href=\"massBuildAccounts.php?showldif=true\">" . _("Show LDIF file") . "</a>";
-				?>
-				<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('#uploadLink').button();
-					jQuery('#createLDIFLink').button();
-				});
-				</script>
-				<?php
+				$container->addElement(new htmlTitle(_("LAM has checked your input and is now ready to create the accounts.")), true);
+				$container->addElement(new htmlSpacer(null, '10px'), true);
+				$buttonContainer = new htmlTable();
+				$buttonContainer->addElement(new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../graphics/up.gif', true));
+				$buttonContainer->addElement(new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../graphics/edit.png', true));
+				$buttonContainer->addElement(new htmlSpacer('10px', null));
+				massPrintBackButton($scope, $selectedModules, $buttonContainer);
+				$container->addElement($buttonContainer, true);
 			}
 		}
 		else {
-			massPrintBackButton($scope, $selectedModules);
+			$container->addElement(new htmlSpacer(null, '10px'), true);
+			massPrintBackButton($scope, $selectedModules, $container);
 		}
 	}
 }
 else {
-	StatusMessage('ERROR', _('Please provide a file to upload.'));
-	massPrintBackButton($scope, $selectedModules);
+	$container->addElement(new htmlStatusMessage('ERROR', _('Please provide a file to upload.')), true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+	massPrintBackButton($scope, $selectedModules, $container);
 }
 
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, $scope);
+
 echo '</div>';
+echo '</form>';
 include 'main_footer.php';
 
 /**
@@ -253,12 +259,12 @@ include 'main_footer.php';
  *
  * @param String $scope account type (e.g. user)
  * @param array $selectedModules selected modules for upload
+ * @param htmlTable $container table container
  */
-function massPrintBackButton($scope, $selectedModules) {
-	echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
-	$container = new htmlTable();
-	$container->addElement(new htmlSpacer(null, '10px'), true);
-	$container->addElement(new htmlButton('submit', _('Back')));
+function massPrintBackButton($scope, $selectedModules, &$container) {
+	$backButton = new htmlButton('submit', _('Back'));
+	$backButton->setIconClass('backButton');
+	$container->addElement($backButton);
 	$container->addElement(new htmlHiddenInput('type', $scope));
 	$createPDF = 0;
 	if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
@@ -269,9 +275,6 @@ function massPrintBackButton($scope, $selectedModules) {
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$container->addElement(new htmlHiddenInput($scope . '_' . $selectedModules[$i], 'on'));
 	}
-	$tabindex = 1;
-	parseHtml(null, $container, array(), false, $tabindex, $scope);
-	echo '</form>';
 }
 
 ?>
