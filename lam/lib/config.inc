@@ -977,7 +977,14 @@ class LAMConfig {
 	*/
 	public function get_AccountModules($scope) {
 		if (isset($this->typeSettings["modules_" . $scope])) {
-			return explode(",", $this->typeSettings["modules_" . $scope]);
+			$modulesTmp = explode(",", $this->typeSettings["modules_" . $scope]);
+			$modules = array();
+			foreach ($modulesTmp as $mod) {
+				if (trim($mod) != '') {
+					$modules[] = $mod;
+				}
+			} 
+			return $modules;
 		}
 		else {
 			return array();
