@@ -1170,6 +1170,8 @@ Have fun!
           membership check can be done with either <link
           linkend="apache_http_auth">HTTP authentication</link> or LDAP
           overlays like <ulink
+          url="http://www.openldap.org/doc/admin24/overlays.html">"memberOf"</ulink>
+          or <ulink
           url="http://www.openldap.org/doc/admin24/overlays.html">"Dynamic
           lists"</ulink>. Dynamic lists allow to insert virtual attributes to
           your user entries. These can then be used for the LDAP filter (e.g.
@@ -4642,13 +4644,27 @@ Run slapindex to rebuild the index.
         the LDAP database. Before your users may change their settings you
         must allow them to change their LDAP data.</para>
 
-        <para>This can be done by adding an ACL to your slapd.conf which looks
-        like this:</para>
+        <para>This can be done by adding ACLs to your slapd.conf or
+        slapd.d/cn=config/olcDatabase={1}bdb.ldif which look similar to
+        these:</para>
+
+        <para><emphasis role="bold">access to</emphasis></para>
+
+        <para><emphasis role="bold"> attrs=userPassword</emphasis></para>
+
+        <para><emphasis role="bold"> by self write</emphasis></para>
+
+        <para><emphasis role="bold"> by anonymous auth</emphasis></para>
+
+        <para><emphasis role="bold"> by * none</emphasis></para>
+
+        <literallayout>
+</literallayout>
 
         <para><emphasis role="bold">access to</emphasis></para>
 
         <para><emphasis role="bold">
-        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,roomNumber,userPassword,shadowLastChange</emphasis></para>
+        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,roomNumber,shadowLastChange</emphasis></para>
 
         <para><emphasis role="bold"> by self write</emphasis></para>
 
