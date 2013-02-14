@@ -2755,6 +2755,8 @@ class htmlSortableList extends htmlElement {
 	private $id = '';
 	/** element width */
 	private $elementWidth = '';
+	/** on update event */
+	private $onUpdate = null;
 	
 	/**
 	 * Constructor.
@@ -2792,9 +2794,19 @@ class htmlSortableList extends htmlElement {
 			echo '</li>';
 		}
 		echo '</ul>';
+		$onUpdate = '';
+		if ($this->onUpdate != null) {
+			$onUpdate = '{
+				update: function(event, ui) {' . $this->onUpdate . '},
+				start:  function(event, ui) {
+				            var posOrig = ui.item.index();
+            				ui.item.data(\'posOrig\', posOrig);
+        				}
+			}';
+		}
 		$scriptContent = '
 			jQuery(function() {
-				$("#' . $this->id . '").sortable();
+				$("#' . $this->id . '").sortable(' . $onUpdate . ');
 				$("#' . $this->id . '").disableSelection();
 			});';
 		$script = new htmlJavaScript($scriptContent);
@@ -2802,6 +2814,17 @@ class htmlSortableList extends htmlElement {
 		return $return;
 	}
 	
+	/**
+	 * Sets the JS code that is executed when the element order was changed.
+	 * The code can access the variables event and ui. See JQueryUI docs for details.
+	 * ui.item.data('posOrig') will contain the original position of the moved element.
+	 * 
+	 * @param String $onUpdate JS code
+	 */
+	public function setOnUpdate($onUpdate) {
+		$this->onUpdate = $onUpdate;
+	}
+
 }
 
 ?>
