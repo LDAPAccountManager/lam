@@ -78,7 +78,7 @@ config. Fix				= null		// Fixated position, two modes. Mode 1: x- an y-coordinat
 config. FollowMouse		= true		// false or true - tooltip follows the mouse
 config. FontColor		= 'black'
 config. FontFace		= 'Verdana,Geneva,sans-serif'
-config. FontSize		= '8pt'		// E.g. '9pt' or '12px' - unit is mandatory
+config. FontSize		= '9pt'		// E.g. '9pt' or '12px' - unit is mandatory
 config. FontWeight		= 'normal'	// 'normal' or 'bold';
 config. Height			= 0			// Tooltip height; 0 for automatic adaption to tooltip content, < 0 (e.g. -100) for a maximum for automatic adaption
 config. JumpHorz		= false		// false or true - jump horizontally to other side of mouse if tooltip would extend past clientarea boundary
@@ -88,7 +88,7 @@ config. OffsetX			= 14		// Horizontal offset of left-top corner from mousepointe
 config. OffsetY			= 8			// Vertical offset
 config. Opacity			= 100		// Integer between 0 and 100 - opacity of tooltip in percent
 config. Padding			= 5			// Spacing between border and content
-config. Shadow			= false		// false or true
+config. Shadow			= true		// false or true
 config. ShadowColor		= '#C0C0C0'
 config. ShadowWidth		= 2
 config. Sticky			= false		// false or true - fixate tip, ie. don't follow the mouse and don't hide on mouseout
@@ -100,7 +100,7 @@ config. TitleFontColor	= 'black'	// Color of title text - if '', BgColor (of too
 config. TitleFontFace	= ''		// If '' use FontFace (boldified)
 config. TitleFontSize	= '10pt'		// If '' use FontSize
 config. TitlePadding	= 3
-config. Width			= 0			// Tooltip width; 0 for automatic adaption to tooltip content; < -1 (e.g. -240) for a maximum width for that automatic adaption;
+config. Width			= -600			// Tooltip width; 0 for automatic adaption to tooltip content; < -1 (e.g. -240) for a maximum width for that automatic adaption;
 									// -1: tooltip width confined to the width required for the titlebar
 //=======  END OF TOOLTIP CONFIG, DO NOT CHANGE ANYTHING BELOW  ==============//
 
