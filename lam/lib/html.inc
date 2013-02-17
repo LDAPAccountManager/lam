@@ -991,6 +991,10 @@ class htmlSelect extends htmlElement {
 	private $onchangeEvent = null;
 	/** indicates that this field should not automatically be saved in the self service or server profile */
 	private $transient = false;
+	/** list of enclosing table rows to hide when checked */
+	protected $tableRowsToHide = array();
+	/** list of enclosing table rows to show when checked */
+	protected $tableRowsToShow = array();
 	
 	/**
 	 * Constructor.
@@ -1059,7 +1063,13 @@ class htmlSelect extends htmlElement {
 		}
 		$onchange = '';
 		if ($this->onchangeEvent != null) {
-			$onchange = ' onchange="' . $this->onchangeEvent . '"';
+			$onchange = $this->onchangeEvent;
+		}
+		if (($this->tableRowsToHide != null) || ($this->tableRowsToShow != null)) {
+			$this->printCodeForShowHideTableRows($onchange);
+		}
+		if ($onchange != '') {
+			$onchange = ' onchange="' . $onchange . '"';
 		}
 		// hide select boxes that contain less than 2 elements
 		if ((sizeof($this->elements) < 2) && !$this->multiSelect && $this->transformSingleSelect) {
@@ -1233,6 +1243,92 @@ class htmlSelect extends htmlElement {
 	 */
 	public function setTransient($transient) {
 		$this->transient = $transient;
+	}
+
+	/**
+	 * This will hide the given table rows when the select is changed to the specified value.
+	 * The given IDs can be of any e.g. input element. Starting from this element
+	 * the first parent "<tr>" element will be used to show/hide.
+	 * <br>
+	 * <br>
+	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
+	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
+	 * <br>
+	 * <br> Example for $tableRowsToHide:
+	 * <br> array('yes' => array('option1', 'option2'), 'no' => array('option3'))
+	 * 
+	 * @param array $tableRowsToHide array of select value => array of IDs of child elements to hide
+	 */
+	public function setTableRowsToHide($tableRowsToHide) {
+		$this->tableRowsToHide = $tableRowsToHide;
+	}
+
+	/**
+	 * This will show the given table rows when the select is changed to the specified value.
+	 * The given IDs can be of any e.g. input element. Starting from this element
+	 * the first parent "<tr>" element will be used to show/hide.
+	 * <br>
+	 * <br>
+	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
+	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
+	 * <br>
+	 * <br> Example for $tableRowsToShow:
+	 * <br> array('yes' => array('option1', 'option2'), 'no' => array('option3'))
+	 * 
+	 * @param array $tableRowsToShow array of select value => array of IDs of child elements to show
+	 */
+	public function setTableRowsToShow($tableRowsToShow) {
+		$this->tableRowsToShow = $tableRowsToShow;
+	}
+	
+	/**
+	 * Creates the JavaScript code to hide/show table rows based on the select value.
+	 * 
+	 * @param String $onChange onChange code
+	 */
+	private function printCodeForShowHideTableRows(&$onChange) {
+		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
+			return;
+		}
+		$values = array();
+		if (!empty($this->tableRowsToHide)) {
+			$values = array_merge($values, array_keys($this->tableRowsToHide));
+		}
+		if (!empty($this->tableRowsToShow)) {
+			$values = array_merge($values, array_keys($this->tableRowsToShow));
+		}
+		// build Java script to show/hide depending fields
+		foreach ($values as $val) {
+			// build onChange listener
+			$onChange .= 'if (jQuery(\'#' . $this->name . '\').val() == \'' . $val . '\') {';
+			if (isset($this->tableRowsToShow[$val])) {
+				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
+					$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$val][$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+				}
+			}
+			if (isset($this->tableRowsToHide[$val])) {
+				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
+					$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$val][$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+				}
+			}
+			$onChange .= '};';
+		}
+		// build script to set initial state
+		$script = '<script type="text/javascript">jQuery(document).ready(function() {' . "\n";
+		if (isset($this->tableRowsToShow[$this->selectedElements[0]])) {
+			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElements[0]]); $i++) {
+				$classType = 'removeClass';
+				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$this->selectedElements[0]][$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');' . "\n";
+			}
+		}
+		if (isset($this->tableRowsToHide[$this->selectedElements[0]])) {
+			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElements[0]]); $i++) {
+				$classType = 'addClass';
+				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$this->selectedElements[0]][$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');' . "\n";
+			}
+		}
+		$script .= '});</script>';
+		echo $script;
 	}
 
 }
