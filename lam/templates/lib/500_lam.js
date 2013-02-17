@@ -154,29 +154,6 @@ function loginProfileChanged(element) {
 }
 
 /**
- * Hides/unhides input fields for the login method.
- */
-function configLoginMethodChanged() {
-	selectLoginMethod = document.getElementsByName('loginMethod')[0];
-	if ( selectLoginMethod.options[selectLoginMethod.selectedIndex].value == 'list' ) {
-		jQuery('textarea[name=admins]').parent().parent().show();
-		jQuery('input[name=loginSearchSuffix]').parent().parent().hide();
-		jQuery('input[name=loginSearchFilter]').parent().parent().hide();
-		jQuery('input[name=loginSearchDN]').parent().parent().hide();
-		jQuery('input[name=loginSearchPassword]').parent().parent().hide();
-		jQuery('input[name=httpAuthentication]').parent().parent().hide();
-	}
-	else {
-		jQuery('textarea[name=admins]').parent().parent().hide();
-		jQuery('input[name=loginSearchSuffix]').parent().parent().show();
-		jQuery('input[name=loginSearchFilter]').parent().parent().show();
-		jQuery('input[name=loginSearchDN]').parent().parent().show();
-		jQuery('input[name=loginSearchPassword]').parent().parent().show();
-		jQuery('input[name=httpAuthentication]').parent().parent().show();
-	}
-}
-
-/**
  * Shows the dialog to delete a profile.
  * 
  * @param title dialog title

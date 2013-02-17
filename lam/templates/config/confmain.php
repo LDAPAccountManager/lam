@@ -144,7 +144,7 @@ foreach ($cssFiles as $cssEntry) {
 
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
 echo ("</head>\n");
-echo ("<body onload=\"configLoginMethodChanged()\">\n");
+echo ("<body>\n");
 // include all JavaScript files
 $jsDirName = dirname(__FILE__) . '/../lib';
 $jsDir = dir($jsDirName);
@@ -398,7 +398,14 @@ $loginOptions = array(
 );
 $loginSelect = new htmlTableExtendedSelect('loginMethod', $loginOptions, array($conf->getLoginMethod()), _("Login method"), '220');
 $loginSelect->setHasDescriptiveElements(true);
-$loginSelect->setOnchangeEvent('configLoginMethodChanged()');
+$loginSelect->setTableRowsToHide(array(
+	LAMConfig::LOGIN_LIST => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication'),
+	LAMConfig::LOGIN_SEARCH => array('admins')
+));
+$loginSelect->setTableRowsToShow(array(
+	LAMConfig::LOGIN_LIST => array('admins'),
+	LAMConfig::LOGIN_SEARCH => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication')
+));
 $securitySettingsContent->addElement($loginSelect, true);
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
