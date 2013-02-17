@@ -364,7 +364,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_title',
 				'description' => _('Job title'),
-				'help' => 'title',
+				'help' => 'titleList',
 				'example' => _('President')
 			);
 		}
@@ -396,7 +396,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_businessCategory',
 				'description' => _('Business category'),
-				'help' => 'businessCategory',
+				'help' => 'businessCategoryList',
 				'example' => _('Administration')
 			);
 		}
@@ -653,6 +653,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _("Job title"), 'attr' => 'title',
 				"Text" => _("Job title of user: President, department manager, ...")
 			),
+			'titleList' => array (
+				"Headline" => _("Job title"), 'attr' => 'title',
+				"Text" => _("Job title of user: President, department manager, ...") . ' ' . _("Multiple values are separated by semicolon.")
+			),
 			'givenName' => array (
 				"Headline" => _("First name"), 'attr' => 'givenName',
 				"Text" => _("First name of user. Only letters, - and spaces are allowed.")
@@ -772,6 +776,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'businessCategory' => array(
 				"Headline" => _("Business category"), 'attr' => 'businessCategory',
 				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
+			),
+			'businessCategoryList' => array(
+				"Headline" => _("Business category"), 'attr' => 'businessCategory',
+				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)") . '. ' . _("Multiple values are separated by semicolon.")
 			),
 			'l' => array(
 				"Headline" => _("Location"), 'attr' => 'l',
@@ -977,8 +985,21 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->attributes['givenName'][0] = $_POST['givenName'];
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$this->attributes['title'][0] = $_POST['title'];
-			if (!get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
+			$titleCounter = 0;
+			while (isset($_POST['title' . $titleCounter])) {
+				$this->attributes['title'][$titleCounter] = $_POST['title' . $titleCounter];
+				if ($this->attributes['title'][$titleCounter] == '') {
+					unset($this->attributes['title'][$titleCounter]);
+				}
+				if (!get_preg($this->attributes['title'][$titleCounter], 'title')) {
+					$errors[] = $this->messages['title'][0];
+				}
+				$titleCounter++;
+			}
+			if (isset($_POST['addtitle'])) {
+				$this->attributes['title'][] = '';
+			}
+			$this->attributes['title'] = array_values($this->attributes['title']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$mailCounter = 0;
@@ -1150,10 +1171,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-			$this->attributes['businessCategory'][0] = $_POST['businessCategory'];
-			if (!get_preg($this->attributes['businessCategory'][0], 'businessCategory')) $errors[] = $this->messages['businessCategory'][0];
-		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
 			$lCounter = 0;
 			while (isset($_POST['l' . $lCounter])) {
@@ -1198,6 +1215,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->attributes['physicalDeliveryOfficeName'][] = '';
 			}
 			$this->attributes['physicalDeliveryOfficeName'] = array_values($this->attributes['physicalDeliveryOfficeName']);
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$businessCategoryCounter = 0;
+			while (isset($_POST['businessCategory' . $businessCategoryCounter])) {
+				$this->attributes['businessCategory'][$businessCategoryCounter] = $_POST['businessCategory' . $businessCategoryCounter];
+				if ($this->attributes['businessCategory'][$businessCategoryCounter] == '') {
+					unset($this->attributes['businessCategory'][$businessCategoryCounter]);
+				}
+				if (!get_preg($this->attributes['businessCategory'][$businessCategoryCounter], 'businessCategory')) {
+					$errors[] = $this->messages['businessCategory'][0];
+				}
+				$businessCategoryCounter++;
+			}
+			if (isset($_POST['addbusinessCategory'])) {
+				$this->attributes['businessCategory'][] = '';
+			}
+			$this->attributes['businessCategory'] = array_values($this->attributes['businessCategory']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$departmentNumberCounter = 0;
@@ -1756,9 +1790,30 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$title = '';
-			if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Job title'), 'title', $title, 'title'), true);
+			$titles = array();
+			if (isset($this->attributes['title'][0])) {
+				$titles = $this->attributes['title'];
+			}
+			if (sizeof($titles) == 0) {
+				$titles[] = '';
+			}
+			$titleLabel = new htmlOutputText(_('Job title'));
+			$titleLabel->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($titleLabel);
+			$titleContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($titles); $i++) {
+				$titleContainer->addElement(new htmlInputField('title' . $i, $titles[$i]));
+				if ($i < (sizeof($titles) - 1)) {
+					$titleContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$titleContainer->addElement(new htmlButton('addtitle', 'add.png', true));
+				}
+			}
+			$fieldContainer->addElement($titleContainer);
+			$titleHelp = new htmlHelpLink('title');
+			$titleHelp->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($titleHelp, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$carLicense = '';
@@ -1776,9 +1831,30 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee type'), 'employeeType', $employeeType, 'employeeType'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-			$businessCategory = '';
-			if (isset($this->attributes['businessCategory'][0])) $businessCategory = $this->attributes['businessCategory'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Business category'), 'businessCategory', $businessCategory, 'businessCategory'), true);
+			$businessCategories = array();
+			if (isset($this->attributes['businessCategory'][0])) {
+				$businessCategories = $this->attributes['businessCategory'];
+			}
+			if (sizeof($businessCategories) == 0) {
+				$businessCategories[] = '';
+			}
+			$businessCategoryLabel = new htmlOutputText(_('Business category'));
+			$businessCategoryLabel->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($businessCategoryLabel);
+			$businessCategoryContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($businessCategories); $i++) {
+				$businessCategoryContainer->addElement(new htmlInputField('businessCategory' . $i, $businessCategories[$i]));
+				if ($i < (sizeof($businessCategories) - 1)) {
+					$businessCategoryContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$businessCategoryContainer->addElement(new htmlButton('addbusinessCategory', 'add.png', true));
+				}
+			}
+			$fieldContainer->addElement($businessCategoryContainer);
+			$businessCategoryHelp = new htmlHelpLink('businessCategory');
+			$businessCategoryHelp->alignment = htmlElement::ALIGN_TOP;
+			$fieldContainer->addElement($businessCategoryHelp, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$departmentNumbers = array();
@@ -2172,7 +2248,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$description = '';
 		if (isset($this->attributes['description'][0])) $description = implode(', ', $this->attributes['description']);
 		$title = '';
-		if (isset($this->attributes['title'][0])) $title = $this->attributes['title'][0];
+		if (isset($this->attributes['title'][0])) {
+			$title = implode(', ', $this->attributes['title']);
+		}
 		$givenName = '';
 		if (isset($this->attributes['givenName'][0])) $givenName = $this->attributes['givenName'][0];
 		$lastName = '';
@@ -2233,7 +2311,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$businessCategory = '';
 		if (isset($this->attributes['businessCategory'][0])) {
-			$businessCategory = $this->attributes['businessCategory'][0];
+			$businessCategory = implode(', ', $this->attributes['businessCategory']);
 		}
 		$uid = '';
 		if (isset($this->attributes['uid'][0])) {
@@ -2506,13 +2584,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// title
 			if (isset($ids['inetOrgPerson_title']) && ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_title']], 'title')) {
-					$partialAccounts[$i]['title'] = $rawAccounts[$i][$ids['inetOrgPerson_title']];
-				}
-				else {
-					$errMsg = $this->messages['title'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+				$titleList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_title']]);
+				$partialAccounts[$i]['title'] = $titleList;
+				for ($x = 0; $x < sizeof($titleList); $x++) {
+					if (!get_preg($titleList[$x], 'title')) {
+						$errMsg = $this->messages['title'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+						break;
+					}
 				}
 			}
 			// employee number
@@ -2532,13 +2612,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// business category
 			if (isset($ids['inetOrgPerson_businessCategory']) && ($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']], 'businessCategory')) {
-					$partialAccounts[$i]['businessCategory'] = $rawAccounts[$i][$ids['inetOrgPerson_businessCategory']];
-				}
-				else {
-					$errMsg = $this->messages['businessCategory'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+				$businessCategoryList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_businessCategory']]);
+				$partialAccounts[$i]['businessCategory'] = $businessCategoryList;
+				for ($x = 0; $x < sizeof($businessCategoryList); $x++) {
+					if (!get_preg($businessCategoryList[$x], 'businessCategory')) {
+						$errMsg = $this->messages['businessCategory'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+						break;
+					}
 				}
 			}
 			// manager
