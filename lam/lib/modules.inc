@@ -1157,9 +1157,11 @@ class accountContainer {
 		$leftButtonGroup->addElement($saveButton);
 		$leftButtonGroup->addElement(new htmlSpacer('1px', null));
 		// reset button
-		$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
-		$resetButton->setIconClass('undoButton');
-		$leftButtonGroup->addElement($resetButton);
+		if (!$this->isNewAccount) {
+			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
+			$resetButton->setIconClass('undoButton');
+			$leftButtonGroup->addElement($resetButton);
+		}
 		// set password button
 		if ($this->showSetPasswordButton()) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
