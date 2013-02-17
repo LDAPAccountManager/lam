@@ -112,6 +112,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be "true" or "false".'));
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
+		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
 	}
 
 	/**
@@ -180,6 +181,14 @@ class posixAccount extends baseModule implements passwordService {
 		// configuration options
 		$configUserContainer = new htmlTable();
 		$configUserContainer->addElement(new htmlSubTitle(_("Users")), true);
+		$uidGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorUsers', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('UID generator'), 'uidGenerator');
+		$uidGeneratorSelect->setHasDescriptiveElements(true);
+		$uidGeneratorSelect->setTableRowsToHide(array('range' => array('posixAccount_sambaIDPoolDNUsers'), 'sambaPool' => array('posixAccount_minUID', 'posixAccount_maxUID')));
+		$uidGeneratorSelect->setTableRowsToShow(array('range' => array('posixAccount_minUID', 'posixAccount_maxUID'), 'sambaPool' => array('posixAccount_sambaIDPoolDNUsers')));
+		$configUserContainer->addElement($uidGeneratorSelect, true);
+		$uidUsersGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
+		$uidUsersGeneratorDN->setRequired(true);
+		$configUserContainer->addElement($uidUsersGeneratorDN, true);
 		$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minUID', null, 'minMaxUser');
 		$minUid->setRequired(true);
 		$configUserContainer->addElement($minUid, true);
@@ -190,6 +199,14 @@ class posixAccount extends baseModule implements passwordService {
 		$return['config_options']['user'] = $configUserContainer;
 		$configHostContainer = new htmlTable();
 		$configHostContainer->addElement(new htmlSubTitle(_("Hosts")), true);
+		$uidHostGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorHosts', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('UID generator'), 'uidGenerator');
+		$uidHostGeneratorSelect->setHasDescriptiveElements(true);
+		$uidHostGeneratorSelect->setTableRowsToHide(array('range' => array('posixAccount_sambaIDPoolDNHosts'), 'sambaPool' => array('posixAccount_minMachine', 'posixAccount_maxMachine')));
+		$uidHostGeneratorSelect->setTableRowsToShow(array('range' => array('posixAccount_minMachine', 'posixAccount_maxMachine'), 'sambaPool' => array('posixAccount_sambaIDPoolDNHosts')));
+		$configHostContainer->addElement($uidHostGeneratorSelect, true);
+		$uidHostsGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
+		$uidHostsGeneratorDN->setRequired(true);
+		$configHostContainer->addElement($uidHostsGeneratorDN, true);
 		$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minMachine', null, 'minMaxHost');
 		$minUid->setRequired(true);
 		$configHostContainer->addElement($minUid, true);
@@ -392,6 +409,14 @@ class posixAccount extends baseModule implements passwordService {
 			'loginShells' => array(
 				"Headline" => _("Login shells"),
 				"Text" => _("This is the list of valid login shells.")
+			),
+			'uidGenerator' => array (
+				"Headline" => _("UID generator"),
+				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\".")
+			),
+			'sambaIDPoolDN' => array (
+				"Headline" => _("Samba ID pool DN"),
+				"Text" => _("Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\".")
 			),
 			'user' => array(
 				'uid' => array(
@@ -1542,38 +1567,53 @@ class posixAccount extends baseModule implements passwordService {
 		$return = array();
 		// user settings
 		if (in_array('user', $scopes)) {
-			// min/maxUID are required, check if they are numeric
-			if (!isset($options['posixAccount_minUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minUID'][0])) {
-				$return[] = $this->messages['minUID'][0];
+			if ($options['posixAccount_uidGeneratorUsers'][0] == 'range') {
+				// min/maxUID are required, check if they are numeric
+				if (!isset($options['posixAccount_minUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minUID'][0])) {
+					$return[] = $this->messages['minUID'][0];
+				}
+				if (!isset($options['posixAccount_maxUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxUID'][0])) {
+					$return[] = $this->messages['maxUID'][0];
+				}
+				// minUID < maxUID
+				if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0])) {
+					if ($options['posixAccount_minUID'][0] > $options['posixAccount_maxUID'][0]) {
+						$return[] = $this->messages['cmp_UID'][0];
+					}
+				}
 			}
-			if (!isset($options['posixAccount_maxUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxUID'][0])) {
-				$return[] = $this->messages['maxUID'][0];
-			}
-			// minUID < maxUID
-			if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0])) {
-				if ($options['posixAccount_minUID'][0] > $options['posixAccount_maxUID'][0]) {
-					$return[] = $this->messages['cmp_UID'][0];
+			else {
+				if (!isset($options['posixAccount_sambaIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_sambaIDPoolDNUsers'][0], 'dn')) {
+					$return[] = $this->messages['sambaIDPoolDN'][0];
 				}
 			}
 		}
 		// host settings
 		if (in_array('host', $scopes)) {
-			// min/maxUID are required, check if they are numeric
-			if (!isset($options['posixAccount_minMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minMachine'][0])) {
-				$return[] = $this->messages['minMachine'][0];
+			if ($options['posixAccount_uidGeneratorHosts'][0] == 'range') {
+				// min/maxUID are required, check if they are numeric
+				if (!isset($options['posixAccount_minMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minMachine'][0])) {
+					$return[] = $this->messages['minMachine'][0];
+				}
+				if (!isset($options['posixAccount_maxMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxMachine'][0])) {
+					$return[] = $this->messages['maxMachine'][0];
+				}
+				// minUID < maxUID
+				if (isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
+					if ($options['posixAccount_minMachine'][0] > $options['posixAccount_maxMachine'][0]) {
+						$return[] = $this->messages['cmp_Machine'][0];
+					}
+				}
 			}
-			if (!isset($options['posixAccount_maxMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxMachine'][0])) {
-				$return[] = $this->messages['maxMachine'][0];
-			}
-			// minUID < maxUID
-			if (isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
-				if ($options['posixAccount_minMachine'][0] > $options['posixAccount_maxMachine'][0]) {
-					$return[] = $this->messages['cmp_Machine'][0];
+			else {
+				if (!isset($options['posixAccount_sambaIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_sambaIDPoolDNHosts'][0], 'dn')) {
+					$return[] = $this->messages['sambaIDPoolDN'][0];
 				}
 			}
 		}
 		// check if user and host ranges overlap
-		if (in_array('user', $scopes) && in_array('host', $scopes)) {
+		if (in_array('user', $scopes) && ($options['posixAccount_uidGeneratorUsers'][0] == 'range')
+			&& in_array('host', $scopes) && ($options['posixAccount_uidGeneratorHosts'][0] == 'range')) {
 			if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0]) &&
 			isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
 				if (($options['posixAccount_minMachine'][0] > $options['posixAccount_minUID'][0]) &&
@@ -2056,6 +2096,13 @@ class posixAccount extends baseModule implements passwordService {
 	* @return mixed Null if no UIDs are free else an array of free UIDs.
 	*/
 	function getNextUIDs($count, &$errors) {
+		// check if UIDs should be taken from Samba pool entry
+		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'sambaPool')) {
+			return $this->getNextSambaPoolUIDs($count, $errors);
+		}
+		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'sambaPool')) {
+			return $this->getNextSambaPoolUIDs($count, $errors);
+		}
 		$ret = array();
 		if ($this->get_scope() == "user") {
 			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
@@ -2106,6 +2153,39 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return $ret;
+	}
+
+	/**
+	 * Gets the free UID numbers from an Samba pool entry in LDAP.
+	 * 
+	 * @param integer $count number of needed free UIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @return mixed null if no UIDs are free else an array of free UIDs
+	 */
+	private function getNextSambaPoolUIDs($count, &$errors) {
+		if ($this->get_scope() == 'user') {
+			$dn = $this->moduleSettings['posixAccount_sambaIDPoolDNUsers'][0];
+		}
+		else {
+			$dn = $this->moduleSettings['posixAccount_sambaIDPoolDNHosts'][0];
+		}
+		$attrs = ldapGetDN($dn, array('uidNumber'));
+		if (isset($attrs['uidnumber'][0]) && ($attrs['uidnumber'][0] != '')) {
+			$newValue = $attrs['uidnumber'][0] + $count;
+			$ldapHandle = $_SESSION['ldap']->server();
+			ldap_modify($ldapHandle, $dn, array('uidnumber' => array($newValue)));
+			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
+			if (ldap_errno($ldapHandle) != 0) {
+				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
+				return null;
+			}
+			$result = array();
+			for ($i = 0; $i < $count; $i++) {
+				$result[] = $attrs['uidnumber'][0] + $i;
+			}
+			return $result;
+		}
+		return null;
 	}
 
 	/**

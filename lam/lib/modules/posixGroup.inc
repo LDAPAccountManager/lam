@@ -313,32 +313,22 @@ class posixGroup extends baseModule implements passwordService {
 		// configuration options
 		$configContainer = new htmlTable();
 		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
+		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('GID generator'), 'gidGenerator');
+		$gidGeneratorSelect->setHasDescriptiveElements(true);
+		$gidGeneratorSelect->setTableRowsToHide(array('range' => array('posixGroup_sambaIDPoolDN'), 'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID')));
+		$gidGeneratorSelect->setTableRowsToShow(array('range' => array('posixGroup_minGID', 'posixGroup_maxGID'), 'sambaPool' => array('posixGroup_sambaIDPoolDN')));
+		$configContainer->addElement($gidGeneratorSelect, true);
 		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
 		$minGidInput->setRequired(true);
 		$configContainer->addElement($minGidInput, true);
 		$maxGidInput = new htmlTableExtendedInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
 		$maxGidInput->setRequired(true);
 		$configContainer->addElement($maxGidInput, true);
+		$gidGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
+		$gidGeneratorDN->setRequired(true);
+		$configContainer->addElement($gidGeneratorDN, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
 		$return['config_options']['group'] = $configContainer;
-		// configuration checks
-		$return['config_checks']['group']['posixGroup_minGID'] = array (
-			'type' => 'ext_preg',
-			'regex' => 'digit',
-			'required' => true,
-			'required_message' => $this->messages['gidNumber'][5],
-			'error_message' => $this->messages['gidNumber'][5]);
-		$return['config_checks']['group']['posixGroup_maxGID'] = array (
-			'type' => 'ext_preg',
-			'regex' => 'digit',
-			'required' => true,
-			'required_message' => $this->messages['gidNumber'][6],
-			'error_message' => $this->messages['gidNumber'][6]);
-		$return['config_checks']['group']['cmpGID'] = array (
-			'type' => 'int_greater',
-			'cmp_name1' => 'posixGroup_maxGID',
-			'cmp_name2' => 'posixGroup_minGID',
-			'error_message' => $this->messages['gidNumber'][7]);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'gidNumber' => _('GID number'),
@@ -434,7 +424,15 @@ class posixGroup extends baseModule implements passwordService {
 			'gidCheckSuffix' => array (
 				"Headline" => _("Suffix for GID/group name check"),
 				"Text" => _("LAM checks if the entered group name and GID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique group names or GIDs.")
-			)
+			),
+			'gidGenerator' => array (
+				"Headline" => _("GID generator"),
+				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\".")
+			),
+			'sambaIDPoolDN' => array (
+				"Headline" => _("Samba ID pool DN"),
+				"Text" => _("Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\".")
+			),
 		);
 
 		return $return;
@@ -507,6 +505,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['memberUID'][0] = array('ERROR', _('Account %s:') . ' posixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		$this->messages['primaryGroup'][0] = array('ERROR', _('There are still users who have this group as their primary group.'));
+		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
 	}
 
 
@@ -724,6 +723,50 @@ class posixGroup extends baseModule implements passwordService {
 		return $return;
 	}
 
+	/**
+	* Checks input values of module settings.
+	* 
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
+	* <br>If no errors occured the function returns an empty array.
+	*
+	* @param array $scopes list of account types which are used
+	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	* @return array list of error messages
+	* 
+	* @see baseModule::get_metaData()
+	*/
+	public function check_configOptions($scopes, &$options) {
+		if ($options['posixGroup_gidGenerator'][0] == 'range') {
+			$this->meta['config_checks']['group']['posixGroup_minGID'] = array (
+				'type' => 'ext_preg',
+				'regex' => 'digit',
+				'required' => true,
+				'required_message' => $this->messages['gidNumber'][5],
+				'error_message' => $this->messages['gidNumber'][5]);
+			$this->meta['config_checks']['group']['posixGroup_maxGID'] = array (
+				'type' => 'ext_preg',
+				'regex' => 'digit',
+				'required' => true,
+				'required_message' => $this->messages['gidNumber'][6],
+				'error_message' => $this->messages['gidNumber'][6]);
+			$this->meta['config_checks']['group']['cmpGID'] = array (
+				'type' => 'int_greater',
+				'cmp_name1' => 'posixGroup_maxGID',
+				'cmp_name2' => 'posixGroup_minGID',
+				'error_message' => $this->messages['gidNumber'][7]);
+		}
+		else {
+			$this->meta['config_checks']['group']['posixGroup_sambaIDPoolDN'] = array (
+				'type' => 'ext_preg',
+				'regex' => 'dn',
+				'required' => true,
+				'required_message' => $this->messages['sambaIDPoolDN'][0],
+				'error_message' => $this->messages['sambaIDPoolDN'][0]);
+		}
+		return parent::check_configOptions($scopes, $options);
+	}
 
 	/**
 	* Returns one or more free GID numbers.
@@ -733,6 +776,10 @@ class posixGroup extends baseModule implements passwordService {
 	* @return mixed Null if no GIDs are free else an array of free GIDs.
 	*/
 	function getNextGIDs($count, &$errors) {
+		// check if UIDs should be taken from Samba pool entry
+		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'sambaPool')) {
+			return $this->getNextSambaPoolGIDs($count, $errors);
+		}
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
@@ -777,6 +824,34 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		return $ret;
+	}
+	
+	/**
+	 * Gets the free GID numbers from an Samba pool entry in LDAP.
+	 * 
+	 * @param integer $count number of needed free GIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @return mixed null if no GIDs are free else an array of free GIDs
+	 */
+	private function getNextSambaPoolGIDs($count, &$errors) {
+		$dn = $this->moduleSettings['posixGroup_sambaIDPoolDN'][0];
+		$attrs = ldapGetDN($dn, array('gidNumber'));
+		if (isset($attrs['gidnumber'][0]) && ($attrs['gidnumber'][0] != '')) {
+			$newValue = $attrs['gidnumber'][0] + $count;
+			$ldapHandle = $_SESSION['ldap']->server();
+			ldap_modify($ldapHandle, $dn, array('gidnumber' => array($newValue)));
+			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
+			if (ldap_errno($ldapHandle) != 0) {
+				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
+				return null;
+			}
+			$result = array();
+			for ($i = 0; $i < $count; $i++) {
+				$result[] = $attrs['gidnumber'][0] + $i;
+			}
+			return $result;
+		}
+		return null;
 	}
 
 	/**
