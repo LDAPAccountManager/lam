@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -163,7 +163,14 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 			$values_unique = array_unique($values_given);
 			if (sizeof($values_given) != sizeof($values_unique)) {
-				$errors[] = array(_("This column is defined to include unique entries but duplicates were found:"), $columns[$i]['name']);
+				$duplicates = array();
+				foreach ($values_given as $key => $value) {
+					if (!isset($values_unique[$key])) {
+						$duplicates[] = htmlspecialchars($value);
+					}
+				}
+				$duplicates = array_values(array_unique($duplicates));
+				$errors[] = array(_("This column is defined to include unique entries but duplicates were found:") . ' ' . $columns[$i]['name'], implode(', ', $duplicates));
 			}
 		}
 	}
