@@ -5,7 +5,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2012  Roland Gruber
+                2010 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ class lamAsteriskExtList extends lamList {
         parent::listRefreshData();
         // configure search filter
         $module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
-        $filter = "(&" . $module_filter . $this->filterPart . ")";
+        $filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
         $attrs = $this->attrArray;
         $attrs[] = "astpriority";
         $entries = searchLDAP($this->suffix, $filter, $attrs);

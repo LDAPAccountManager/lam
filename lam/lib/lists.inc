@@ -76,11 +76,8 @@ class lamList {
 	/** LDAP entries */
 	protected $entries;
 
-	/** filter string to include in URL */
-	protected $filterText;
-	
-	/** LDAP filter part which was entered by user via filter boxes */
-	protected $filterPart = '';
+	/** list of filters (attribute name => filter input) */
+	protected $filters = array();
 
 	/** list of possible LDAP suffixes(organizational units) */
 	protected $possibleSuffixes;
@@ -206,9 +203,11 @@ class lamList {
 	* Builds the regular expressions from the filter values.
 	*/
 	protected function listBuildFilter() {
+		if (isset($_GET['accountEditBack'])) {
+			return;
+		}
 		$filter = array();
-		$filterParam = "";
-		$LDAPFilterPart = "";
+		$this->filters = array();
 		if (!isset($_POST['clear_filter'])) {
 			// build filter array
 			for ($i = 0; $i < sizeof($this->attrArray); $i++) {
@@ -221,8 +220,7 @@ class lamList {
 				}
 				if (isset($foundFilter) && ($foundFilter != '')) {
 					if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
-						$filterParam .= "&amp;filter" . $this->attrArray[$i] . '=' . $foundFilter;
-						$LDAPFilterPart .= '(' . $this->attrArray[$i] . '=' . $foundFilter . ')';
+						$this->filters[strtolower($this->attrArray[$i])] = $foundFilter;
 					}
 					else {
 						StatusMessage('ERROR', _('Please enter a valid filter. Only letters, numbers and " _*$.@-" are allowed.'), htmlspecialchars($foundFilter));
@@ -230,8 +228,6 @@ class lamList {
 				}
 			}
 		}
-		$this->filterText = $filterParam;
-		$this->filterPart = $LDAPFilterPart;
 	}
 
 	/**
@@ -273,6 +269,7 @@ class lamList {
 	* @param integer $count number of account entries
 	*/
 	protected function listDrawNavigationBar($count) {
+		$filter = $this->getFilterAsTextForURL();
 		echo("<table width=\"100%\" border=\"0\">\n");
 		echo("<tr>\n");
 		echo("<td align=\"left\">");
@@ -283,12 +280,12 @@ class lamList {
 			echo("<td class=\"activepage\" align=\"right\">");
 			if ($this->page != 1) {
 				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
 			}
 			if ($this->page > 10) {
 				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 			}
 			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
@@ -303,28 +300,42 @@ class lamList {
 				}
 				else {
 					echo "&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" . ($i + 1) . "</a>\n";
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" . ($i + 1) . "</a>\n";
 				}
 			}
 			if ($this->page < (($count / $this->maxPageEntries) - 10)) {
 				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 			}
 			if ($this->page < ($count / $this->maxPageEntries)) {
 				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ceil(($count / $this->maxPageEntries)) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $this->filterText . "\">" .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 			}
 			echo "</td>";
 		}
 		echo "</tr></table>\n";
 	}
+	
+	/**
+	 * Returns the filter as text to be used as URL parameter.
+	 * 
+	 * @return String filter text
+	 */
+	protected function getFilterAsTextForURL() {
+		$text = '';
+		foreach ($this->filters as $attr => $filter) {
+			$text .= "&amp;filter" . strtolower($attr) . '=' . $filter;
+		}
+		return $text;
+	}
 
 	/**
 	* Prints the attribute and filter row at the account table head
 	*/
 	protected function listPrintTableHeader() {
+		$filter = $this->getFilterAsTextForURL();
 		// print table header
 		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
 		echo "<tr class=\"" . $this->type . "-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
@@ -336,11 +347,11 @@ class lamList {
 					$sortImage = "sort_desc.png";
 				}
 				echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type . "&amp;".
-					"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
+					"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
 					"&nbsp;<img height=16 width=16 style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
 			}
 			else echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type . "&amp;".
-				"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
+				"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
 		}
 		echo "</tr>\n";
 
@@ -354,7 +365,7 @@ class lamList {
 		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
 		$filterButton->setTitle(_("Filter"));
 		$filterGroup->addElement($filterButton);
-		if (isset($this->filterPart) && ($this->filterPart != '')) {
+		if (sizeof($this->filters) > 0) {
 			$filterGroup->addElement(new htmlSpacer('1px', null));
 			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
 			$clearFilterButton->setTitle(_('Clear filter'));
@@ -368,11 +379,8 @@ class lamList {
 			if ($this->canBeFiltered($this->attrArray[$k])) {
 				$value = "";
 				if (!isset($_POST['clear_filter'])) {
-					if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
-						$value = $_GET["filter" . strtolower($this->attrArray[$k])];
-					}
-					if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
-						$value = $_POST["filter" . strtolower($this->attrArray[$k])];
+					if (isset($this->filters[strtolower($this->attrArray[$k])])) {
+						$value = $this->filters[strtolower($this->attrArray[$k])];
 					}
 				}
 				$filterInput = new htmlInputField('filter' . strtolower($this->attrArray[$k]), $value);
@@ -836,6 +844,10 @@ class lamList {
 	 * Sets some internal parameters.
 	 */
 	protected function listGetParams() {
+		if (isset($_GET['accountEditBack'])) {
+			$this->refresh = true;
+			return;
+		}
 		// check if only PDF should be shown
 		if (isset($_GET['printPDF'])) {
 			$this->showPDFPage(null);
@@ -888,7 +900,7 @@ class lamList {
 		}
 		// configure search filter
 		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
-		$filter = "(&" . $module_filter . $this->filterPart  . ")";
+		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter()  . ")";
 		$attrs = $this->attrArray;
 		// remove virtual attributes from list
 		for ($i = 0; $i < sizeof($attrs); $i++) {
@@ -912,6 +924,19 @@ class lamList {
 		// generate list of possible suffixes
 		$typeObj = new $this->type();
 		$this->possibleSuffixes = $typeObj->getSuffixList();
+	}
+	
+	/**
+	 * Builds the LDAP filter based on the filter entries in the GUI.
+	 * 
+	 * @return String LDAP filter
+	 */
+	protected function buildLDAPAttributeFilter() {
+		$text = '';
+		foreach ($this->filters as $attr => $filter) {
+			$text .= '(' . $attr . '=' . $filter . ')';
+		}
+		return $text;
 	}
 	
 	/**
