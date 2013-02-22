@@ -40,7 +40,7 @@ body {
 }
 
 .defaultBackground {
-  background-color:#F5F5F5 !important;
+  background: #F5F5F5 !important;
 }
 
 /* links */
@@ -139,54 +139,67 @@ table.collapse {
 /** buttons */
 .saveButton {
 	background-image: url(../graphics/save.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .cancelButton {
 	background-image: url(../graphics/del.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .logoutButton {
 	background-image: url(../graphics/exit.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .undoButton {
 	background-image: url(../graphics/undo.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .passwordButton {
 	background-image: url(../graphics/key.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .loadProfileButton {
 	background-image: url(../graphics/loadProfile.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .deleteButton {
 	background-image: url(../graphics/del.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .createButton {
 	background-image: url(../graphics/add.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .editButton {
 	background-image: url(../graphics/edit.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .settingsButton {
 	background-image: url(../graphics/tools.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .upButton {
 	background-image: url(../graphics/up.gif) !important;
+	background-position: 0px 0px !important;
 }
 
 .backButton {
 	background-image: url(../graphics/back.gif) !important;
+	background-position: 0px 0px !important;
 }
 
 .pdfButton {
 	background-image: url(../graphics/pdf.png) !important;
+	background-position: 0px 0px !important;
 }
 
 .smallPadding span {
@@ -487,55 +500,55 @@ h4.schema_oclass_sub {
 /** colors for account types */
 
 .alias-border { border-color:#af8800; }
-.alias-bright { background-color:#fff3c8 !important; }
+.alias-bright { background:#fff3c8 !important; }
 .alias-dark { background-color:#ffe27f !important; }
 
 .asteriskExt-border { border-color:#af8800; }
-.asteriskExt-bright { background-color:#fff3c8 !important; }
+.asteriskExt-bright { background:#fff3c8 !important; }
 .asteriskExt-dark { background-color:#ffe27f !important; }
 
 .automountType-border { border-color:#7167bf; }
-.automountType-bright { background-color:#d6e3ff !important; }
+.automountType-bright { background:#d6e3ff !important; }
 .automountType-dark { background-color:#a8c3ff !important; }
 
 .dhcp-border { border-color:#527510; }
-.dhcp-bright { background-color:#d4f19b !important; }
+.dhcp-bright { background:#d4f19b !important; }
 .dhcp-dark { background-color:#9fc653 !important; }
 
 .gon-border { border-color:#7167bf; }
-.gon-bright { background-color:#d6e3ff !important; }
+.gon-bright { background:#d6e3ff !important; }
 .gon-dark { background-color:#a8c3ff !important; }
 
 .group-border { border-color:#7167bf; }
-.group-bright { background-color:#d6e3ff !important; }
+.group-bright { background:#d6e3ff !important; }
 .group-dark { background-color:#a8c3ff !important; }
 
 .host-border { border-color:#911a1a; }
-.host-bright { background-color:#ffe2dd !important; }
+.host-bright { background:#ffe2dd !important; }
 .host-dark { background-color:#ffc4ba !important; }
 
 .mailAlias-border { border-color:#af8800; }
-.mailAlias-bright { background-color:#fff3c8 !important; }
+.mailAlias-bright { background:#fff3c8 !important; }
 .mailAlias-dark { background-color:#ffe27f !important; }
 
 .netgroup-border { border-color:#7167bf; }
-.netgroup-bright { background-color:#d6e3ff !important; }
+.netgroup-bright { background:#d6e3ff !important; }
 .netgroup-dark { background-color:#a8c3ff !important; }
 
 .nisObjectType-border { border-color:#7167bf; }
-.nisObjectType-bright { background-color:#d6e3ff !important; }
+.nisObjectType-bright { background:#d6e3ff !important; }
 .nisObjectType-dark { background-color:#a8c3ff !important; }
 
 .ppolicyType-border { border-color:#af8800; }
-.ppolicyType-bright { background-color:#fff3c8 !important; }
+.ppolicyType-bright { background:#fff3c8 !important; }
 .ppolicyType-dark { background-color:#ffe27f !important; }
 
 .smbDomain-border { border-color:#1d993e; }
-.smbDomain-bright { background-color:#c9ddd2 !important; }
+.smbDomain-bright { background:#c9ddd2 !important; }
 .smbDomain-dark { background-color:#a8ddbf !important; }
 
 .sudo-border { border-color:#9b8523; }
-.sudo-bright { background-color:#fffde2 !important; }
+.sudo-bright { background:#fffde2 !important; }
 .sudo-dark { background-color:#fff2a3 !important; }
 
 .user-border { border-color:#9b8523; }
@@ -543,11 +556,11 @@ h4.schema_oclass_sub {
 .user-dark { background-color:#fff2a3 !important; }
 
 .zarafaAddressListType-border { border-color:#7167bf; }
-.zarafaAddressListType-bright { background-color:#d6e3ff !important; }
+.zarafaAddressListType-bright { background:#d6e3ff !important; }
 .zarafaAddressListType-dark { background-color:#a8c3ff !important; }
 
 .zarafaDynamicGroupType-border { border-color:#7167bf; }
-.zarafaDynamicGroupType-bright { background-color:#d6e3ff !important; }
+.zarafaDynamicGroupType-bright { background:#d6e3ff !important; }
 .zarafaDynamicGroupType-dark { background-color:#a8c3ff !important; }
 
 

@@ -9,9 +9,6 @@
  
 (function($) {
 	$.fn.dropmenu = function(options) {
-		var isIE 	= $.browser.ie,
-			isIE6	= isIE && $.browser.version < 7,
-			isIE7	= isIE && $.browser.version < 8;
 
 
 		return this.each(function() {
@@ -91,21 +88,6 @@
 			
 			$topl
 				
-
-
-			//	IE fixes
-			if (isIE6) {
-				$menu.find('ul').css({
-					lineHeight	: 0
-				});
-			}
-			if (isIE6 || isIE7) {
-				$menu.find('ul a, ul span').css({
-					zoom		: 1
-				});
-			}
-
-
 			$menu.find('a').click(function() {
 				$('ul', $menu).hide();
 				$('a, span', $menu).removeClass('hover');

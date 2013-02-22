@@ -72,8 +72,8 @@ function listResizeITabContentDiv() {
  */
 function listShowSettingsDialog(title, okText, cancelText) {
 	var buttonList = {};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	buttonList[okText] = function() { document.forms["settingsDialogForm"].submit(); };
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	jQuery('#settingsDialog').dialog({
 		modal: true,
 		title: title,
@@ -171,8 +171,8 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
 	jQuery('#profileDeleteType').val(scope);
 	jQuery('#profileDeleteName').val(profileName);
 	var buttonList = {};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	buttonList[okText] = function() { document.forms["deleteProfileForm"].submit(); };
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	jQuery('#deleteProfileDialog').dialog({
 		modal: true,
 		title: title,
@@ -191,8 +191,8 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
  */
 function automountShowNewMapDialog(title, okText, cancelText) {
 	var buttonList = {};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	buttonList[okText] = function() { document.forms["newAutomountMapDialogForm"].submit(); };
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	jQuery('#newAutomountMapDialog').dialog({
 		modal: true,
 		title: title,
@@ -213,12 +213,12 @@ function automountShowNewMapDialog(title, okText, cancelText) {
  */
 function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL) {
 	var buttonList = {};
+	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL); };
 	buttonList[randomText] = function() { passwordHandleInput("true", ajaxURL); };
 	buttonList[cancelText] = function() {
 		jQuery('#passwordDialogMessageArea').html("");
 		jQuery(this).dialog("close");
 	};
-	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL); };
 	jQuery('#passwordDialog').dialog({
 		modal: true,
 		title: title,
@@ -290,17 +290,22 @@ function passwordHandleReply(data) {
  */
 function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, resultField) {
 	var buttonList = {};
+	buttonList[okText] = function() {
+		jQuery('#' + dialogDiv).dialog('close');
+		if (resultField) {
+			jQuery('#' + resultField).val('ok');
+		};
+		var inputs = jQuery('#' + dialogDiv + ' :input');
+		inputs.each(function() {
+			jQuery(this).appendTo(document.forms[formName]);
+	    });
+		document.forms[formName].submit();
+	};
 	buttonList[cancelText] = function() {
 		if (resultField) {
 			jQuery('#' + resultField).val('cancel');
 		};
 		jQuery(this).dialog("close");
-	};
-	buttonList[okText] = function() {
-		if (resultField) {
-			jQuery('#' + resultField).val('ok');
-		};
-		document.forms[formName].submit();
 	};
 	jQuery('#' + dialogDiv).dialog({
 		modal: true,
@@ -309,8 +314,6 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, 
 		buttons: buttonList,
 		width: 'auto'
 	});
-	/* reattach dialog to form */
-	jQuery('#' + dialogDiv).parent().appendTo(document.forms[formName]);
 }
 
 /**
@@ -344,7 +347,6 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 	// show dialog
 	var buttonList = {};
 	var dialogId = '';
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	
 	if (type == 'export') {
 		// show structure name to export
@@ -365,6 +367,7 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 		dialogId = 'importDialog_' + scope;
 		buttonList[okText] = function() { document.forms["importDialogForm_" + scope].submit(); };
 	}
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	
 	jQuery('#' + dialogId).dialog({
 		modal: true,

@@ -883,9 +883,7 @@ class htmlButton extends htmlElement {
 				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
 			}
 			echo '<script type="text/javascript">';
-			echo ' jQuery(document).ready(function() {';
 			echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
-			echo '});';
 			echo '</script>';
 		}
 		return array($this->name => 'submit');
@@ -1454,8 +1452,8 @@ class htmlRadio extends htmlElement {
 		$counter = 0;
 		foreach ($this->elements as $label => $value) {
 			$onClick = 'onClick="
-				jQuery(\'input[name=' . $this->name . ']\').attr(\'checked\', false);
-				jQuery(\'#' . $this->name . $counter . '\').attr(\'checked\', true);
+				jQuery(\'input[name=' . $this->name . ']\').prop(\'checked\', false);
+				jQuery(\'#' . $this->name . $counter . '\').prop(\'checked\', true);
 				jQuery(\'#' . $this->name . $counter . '\').trigger(\'change\');
 				"';
 			if ($this->isEnabled === false) {
