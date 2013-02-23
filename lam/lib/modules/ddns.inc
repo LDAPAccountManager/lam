@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2012  Roland Gruber
+                2008 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,19 +42,6 @@ class ddns extends baseModule {
 	/** standard DDNS settings */
 	public $ddns = array();
 	
-
-	/**
-	* Initializes the module after it became part of an {@link accountContainer}
-	* 
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.
-	*
-	* @param string $base the name of the {@link accountContainer} object ($_SESSION[$base])
-	*/
-	public function init($base) {
-		parent::init($base);
-		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
-		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
-	}
 
 	/**
 	 * Returns meta data that is interpreted by parent class.
@@ -168,7 +155,7 @@ class ddns extends baseModule {
 	public function module_complete() {
 		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
 			// check if DHCP main settings and valid DHCP entry
-			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				return false;
 			}
 			//Main settings
@@ -191,6 +178,22 @@ class ddns extends baseModule {
 		}
 		
 		return true;
+	}
+	
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	*/
+	public function save_attributes() {
+		// done by dhcp_server object
 	}
 	
 	/**
@@ -249,7 +252,7 @@ class ddns extends baseModule {
 	 * Process for mainsettings
 	 */
 	public function process_attributes_mainSettings() {
-		if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+		if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 			return array();
 		}
 		$errors = array();
@@ -339,11 +342,13 @@ class ddns extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
+		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
+		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		$return = new htmlTable();
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
-			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".')));
+			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
 				return $return;
 			}
 		}
@@ -364,7 +369,6 @@ class ddns extends baseModule {
 			else {
 				// DNS server
 				$serverInput = new htmlTableExtendedInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
-				$serverInput->setRequired(true);
 				$return->addElement($serverInput, true);
 					
 				$zones = $this->getZoneNames();
@@ -378,11 +382,9 @@ class ddns extends baseModule {
 				}
 				// zone names
 				$zoneInput = new htmlTableExtendedInputField(_('Zone names'), 'zone', $zone, 'zone');
-				$zoneInput->setRequired(true);
 				$return->addElement($zoneInput, true);
 				// reverse zone names
 				$revZoneInput = new htmlTableExtendedInputField(_('Reverse zone names'), 'zone_reverse', $revzone, 'zone_reverse');
-				$revZoneInput->setRequired(true);
 				$return->addElement($revZoneInput);
 			}
 		}
@@ -396,6 +398,9 @@ class ddns extends baseModule {
 	* @return array list of possible PDF entries
 	*/
 	public function get_pdfEntries() {
+		// attributes are taken from DHCP server object
+		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
+		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		$zones = $this->getZoneNames();
 		$zone = '';
 		$revzone = '';

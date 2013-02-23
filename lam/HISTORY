@@ -2,6 +2,7 @@ March 2013 4.1
   - updated EDU person module (RFE 3599128)
   - Personal: allow management of user certificates (RFE 1753030)
   - Unix: Support Samba Unix Id pool for automatic UID/GID generation
+  - DHCP: support separated dhcpServer and dhcpService entries
   - LAM Pro:
    -> support Qmail groups
   - fixed bugs:

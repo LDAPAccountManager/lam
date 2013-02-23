@@ -3116,8 +3116,13 @@ Have fun!
       <para>You can mange your DHCP server with LAM. It supports to manage
       subnets, fixed IP entries, IP ranges and DDNS. The DHCP can be activated
       by adding the account type DHCP to your server profile. Please also add
-      the DHCP modules. LAM requires that you use an LDAP entry with the
-      object class "dhcpServer" as suffix for this account type.</para>
+      the DHCP modules.</para>
+
+      <para>LAM requires that you use an LDAP entry with the object class
+      "dhcpService" or "dhcpServer" as suffix for this account type. If the
+      "dhcpServer" entry points to a "dhcpService" entry via "dhcpServiceDN"
+      then you need to use the DN of the "dhcpService" entry as LDAP suffix
+      for DHCP.</para>
 
       <literallayout>
 </literallayout>
@@ -3208,7 +3213,8 @@ Run slapindex to rebuild the index.
 
 </literallayout></para>
 
-      <para>You can manage the settings of your DHCP server entry:</para>
+      <para>You can manage the settings of your DHCP service/server
+      entry:</para>
 
       <screenshot>
         <mediaobject>

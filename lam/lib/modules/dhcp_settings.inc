@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2012  Roland Gruber
+                2008 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -342,7 +342,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	public function process_attributes() {
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
-			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				return array();
 			}
 		}
@@ -517,8 +517,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return = new htmlTable();
 		// check if DHCP main settings and valid DHCP entry
 		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
-			if (!in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpServer".')));
+			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
 				return $return;
 			}
 		}

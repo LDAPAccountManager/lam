@@ -1643,7 +1643,7 @@ class accountContainer {
 				for ($j=0; $j<count($ops); $j++) {
 					$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
 					for ($k=0; $k<count($attrs); $k++) {
-						$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]);
+						$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_values(array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]));
 					}
 				}
 			}
