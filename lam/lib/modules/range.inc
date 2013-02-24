@@ -404,28 +404,30 @@ class range extends baseModule {
             foreach($this->ranges AS $id=>$arr) {
 
 				// Range start
-				if ($this->processed && !check_ip($this->ranges[$id]['range_start'])) {
-				    $error = _("The IP address is invalid.");
-				} elseif($this->processed && !$this->check_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end'])) {
-                    $error = _("The range end needs to be greater than the range start.");
-				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
-					$error = _("The IP does not match the subnet.");
-				} elseif ($this->processed && !$this->overlaped_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
-					$error = _("The range conflicts with another range.");
-				} else {
-				    $error = "";
+				$error = "";
+				if (isset($this->ranges[$id]['range_start']) && !empty($this->ranges[$id]['range_start'])) {
+					if ($this->processed && !check_ip($this->ranges[$id]['range_start'])) {
+					    $error = _("The IP address is invalid.");
+					} elseif($this->processed && !$this->check_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end'])) {
+	                    $error = _("The range end needs to be greater than the range start.");
+					} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
+						$error = _("The IP does not match the subnet.");
+					} elseif ($this->processed && !$this->overlaped_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
+						$error = _("The range conflicts with another range.");
+					}
 				}
 				$fromInput = new htmlTableExtendedInputField(_('Range from'), 'range_start_'.$id, $this->ranges[$id]['range_start'], 'range_from');
 				$fromInput->setRequired(true);
 				$return->addElement($fromInput);
 				$return->addElement(new htmlOutputText($error), true);
 				// Range end
-				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
-				    $error = _("The IP address is invalid.");
-				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
-					$error = _("The IP does not match the subnet.");
-				} else {
-				    $error = "";
+				$error = "";
+				if (isset($this->ranges[$id]['range_end']) && !empty($this->ranges[$id]['range_end'])) {
+					if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
+					    $error = _("The IP address is invalid.");
+					} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'],$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0], $mask)) {
+						$error = _("The IP does not match the subnet.");
+					}
 				}
 				$toInput = new htmlTableExtendedInputField(_('Range to'), 'range_end_'.$id, $this->ranges[$id]['range_end'], 'range_to');
 				$toInput->setRequired(true);
