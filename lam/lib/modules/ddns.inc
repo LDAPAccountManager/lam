@@ -92,19 +92,19 @@ class ddns extends baseModule {
 				"Text" => _("Please enter the IP address of your DNS server.")
 			),
 			'zone' => array(
-				"Headline" => _("Zone names"),
-				"Text" => _("Zone names for the DNS server (e.g. company.local).")
+				"Headline" => _("Zone name"),
+				"Text" => _("Zone name for the DNS server (e.g. company.local).")
 			),
 			'zone_reverse' => array(
-				"Headline" => _("Reverse zone names"),
-				"Text" => ("Name of the reverse zones of the DNS server (e.g. 0.168.192.in-addr.arpa).")
+				"Headline" => _("Reverse zone name"),
+				"Text" => ("Name of the reverse zone of the DNS server (e.g. 0.168.192.in-addr.arpa).")
 			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'DNSserver' => _('IP address of the DNS server'),
-			'zone' => _('Zone names'),
-			'reverseZone' => _('Reverse zone names'),
+			'zone' => _('Zone name'),
+			'reverseZone' => _('Reverse zone name'),
 		);
 		// upload fields
 		if (isset($_SESSION['loggedIn']) && $this->check_if_ddns_is_enable()) {
@@ -118,14 +118,14 @@ class ddns extends baseModule {
 				),
 				array(
 					'name' => 'ddns_zone',
-					'description' => _('Zone names'),
+					'description' => _('Zone name'),
 					'help' => 'zone',
 					'example' => 'company.local',
 					'required' => true
 				),
 				array(
 					'name' => 'ddns_reverseZone',
-					'description' => _('Reverse zone names'),
+					'description' => _('Reverse zone name'),
 					'help' => 'zone_reverse',
 					'example' => '0.168.192.in-addr.arpa',
 					'required' => true
@@ -392,11 +392,11 @@ class ddns extends baseModule {
 				if (isset($zones[1])) {
 					$revzone = $zones[1];
 				}
-				// zone names
-				$zoneInput = new htmlTableExtendedInputField(_('Zone names'), 'zone', $zone, 'zone');
+				// zone name
+				$zoneInput = new htmlTableExtendedInputField(_('Zone name'), 'zone', $zone, 'zone');
 				$return->addElement($zoneInput, true);
-				// reverse zone names
-				$revZoneInput = new htmlTableExtendedInputField(_('Reverse zone names'), 'zone_reverse', $revzone, 'zone_reverse');
+				// reverse zone name
+				$revZoneInput = new htmlTableExtendedInputField(_('Reverse zone name'), 'zone_reverse', $revzone, 'zone_reverse');
 				$return->addElement($revZoneInput);
 			}
 		}
@@ -424,8 +424,8 @@ class ddns extends baseModule {
 		}
 		return array(
 			get_class($this) . '_DNSserver' => array('<block><key>' . _('IP address of the DNS server') . '</key><value>' . $this->getDNSServer() . '</value></block>'),
-			get_class($this) . '_zone' => array('<block><key>' . _('Zone names') . '</key><value>' . $zone . '</value></block>'),
-			get_class($this) . '_reverseZone' => array('<block><key>' . _('Reverse zone names') . '</key><value>' . $revzone . '</value></block>'),
+			get_class($this) . '_zone' => array('<block><key>' . _('Zone name') . '</key><value>' . $zone . '</value></block>'),
+			get_class($this) . '_reverseZone' => array('<block><key>' . _('Reverse zone name') . '</key><value>' . $revzone . '</value></block>'),
 		);
 	}
 	
@@ -455,18 +455,28 @@ class ddns extends baseModule {
 	/**
 	 * Returns the zone names.
 	 *
-	 * @return array zone names
+	 * @return array zone names array(zone, reverse zone)
 	 */
 	private function getZoneNames() {
 		$return = array();
+		$zone = '';
+		$revZone = '';
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
 					$parts = explode(" ",substr($this->attributes['dhcpStatements'][$i],5));
-					$return[] = substr(array_shift($parts),0,-1);
+					$value = substr(array_shift($parts),0,-1);
+					if (strpos($value, 'in-addr.arpa') === false) {
+						$zone = $value;
+					}
+					else {
+						$revZone = $value;
+					}
 				}
 			}
 		}
+		$return[0] = $zone;
+		$return[1] = $revZone;
 		return $return;
 	}
 	
