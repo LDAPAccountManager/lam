@@ -316,7 +316,12 @@ class ddns extends baseModule {
 		
 		// Zone inserted?
 		if (!empty($zone)) {
-			$this->attributes['dhcpStatements'][] = "zone {$zone}. { primary {$ip}; key DHCP_UPDATER; }";
+			if (!empty($ip)) {
+				$this->attributes['dhcpStatements'][] = "zone {$zone}. { primary {$ip}; key DHCP_UPDATER; }";
+			}
+			else {
+				$this->attributes['dhcpStatements'][] = "zone {$zone}. { key DHCP_UPDATER; }";
+			}
 		}
 		else {
 			if (!empty($ip)) {
@@ -326,7 +331,12 @@ class ddns extends baseModule {
 		
 		// Zone reverse inserted?
 		if (!empty($zone_reverse)) {
-			$this->attributes['dhcpStatements'][] = "zone {$zone_reverse}. { primary {$ip}; key DHCP_UPDATER; }";
+			if (!empty($ip)) {
+				$this->attributes['dhcpStatements'][] = "zone {$zone_reverse}. { primary {$ip}; key DHCP_UPDATER; }";
+			}
+			else {
+				$this->attributes['dhcpStatements'][] = "zone {$zone_reverse}. { key DHCP_UPDATER; }";
+			}
 		}
 		else {
 			if (!empty($ip)) {
@@ -424,9 +434,12 @@ class ddns extends baseModule {
 	 */
 	private function getDNSServer() {
 		$return = null;
-		if (is_array($this->attributes['dhcpStatements'])) {
+		if (isset($this->attributes['dhcpStatements'][0])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
+					if (strpos($this->attributes['dhcpStatements'][$i], ' primary ') === false) {
+						continue;
+					}
 					$parts = explode(". { primary ", $this->attributes['dhcpStatements'][$i]);
 					$temp = array_pop($parts);
 					$temp = explode(";", $temp);
@@ -541,7 +554,7 @@ class ddns extends baseModule {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if ($this->attributes['dhcpStatements'][$i] == 'ignore client-updates') {
+				if (preg_replace('/[ ]+/', ' ', $this->attributes['dhcpStatements'][$i]) == 'ignore client-updates') {
 					$return = true;
 					break;
 				}
@@ -558,7 +571,10 @@ class ddns extends baseModule {
 	private function setIgnoreClientUpdates($ignore) {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if ($this->attributes['dhcpStatements'][$i] == 'ignore client-updates') {
+				if (preg_replace('/[ ]+/', ' ', $this->attributes['dhcpStatements'][$i]) == 'ignore client-updates') {
+					if ($ignore) {
+						return;  // option already set, no change
+					}
 					unset($this->attributes['dhcpStatements'][$i]);
 					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 				}
