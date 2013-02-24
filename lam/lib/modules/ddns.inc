@@ -153,6 +153,8 @@ class ddns extends baseModule {
 	* @return boolean true if LDAP operation can be done
 	*/
 	public function module_complete() {
+		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
+		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
 			// check if DHCP main settings and valid DHCP entry
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
