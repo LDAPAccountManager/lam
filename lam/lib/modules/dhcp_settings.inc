@@ -442,7 +442,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$netbiosServers = explode(', ', $_POST['netbios']);
 		$netbiosServersOk = true;
 		for ($i = 0; $i < sizeof($netbiosServers); $i++) {
-			if (!check_ip($netbiosServers[$i])) {
+			if (!check_ip($netbiosServers[$i]) && !get_preg($netbiosServers[$i], 'DNSname')) {
 				$netbiosServersOk = false;
 				break;
 			}
@@ -849,7 +849,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$ex = explode(",", $rawAccounts[$i][$ids['dhcp_settings_netbiosServer']]);
 				$invalid = false;
 				foreach($ex AS $string) {
-		            if (!check_ip($string)) {
+		            if (!check_ip($string) && !get_preg($string, 'DNSname')) {
 				        $invalid = true;
 				    }
 				}
