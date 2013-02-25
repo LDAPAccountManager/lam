@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2012  Roland Gruber
+  Copyright (C) 2007 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ function checkSchemaForModule($name, $type) {
 		if (strpos($attrs[$a], 'INFO.') === 0) {
 			continue;
 		}
-		if (!in_array_ignore_case($attrs[$a], $schemaAttrs)) {
+		if (!in_array_ignore_case($attrs[$a], $schemaAttrs) && !in_array_ignore_case(str_replace(';binary', '', $attrs[$a]), $schemaAttrs)) {
 			if (isset($aliases[$attrs[$a]]) && in_array_ignore_case($aliases[$attrs[$a]], $schemaAttrs)) {
 				continue;
 			}
