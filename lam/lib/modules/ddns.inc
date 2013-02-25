@@ -160,10 +160,6 @@ class ddns extends baseModule {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				return false;
 			}
-			//Main settings
-			if ($this->isDynDNSActivated() && (($this->getUpdateKey() == null) || ($this->getUpdateKey() == ''))) {
-				return false;
-			}
 		}
 		else {
 			if (!$this->check_if_ddns_is_enable()) {
@@ -278,11 +274,7 @@ class ddns extends baseModule {
 		$this->setIgnoreClientUpdates(($client_insert == 'on'));
 		
 		$this->setUpdateKey($key_path);
-		// key path must be insert, when ddns is active
-		if ($active == 'on' && empty($key_path)) {
-			$errors[] = $this->messages['key_path'][0];
-		}
-		elseif (!empty($key_path)) {
+		if (!empty($key_path)) {
 			if (str_replace("\"","",$_POST['key_path']) != $key_path) {
 				$errors[] = $this->messages['key_path'][1];
 			}
@@ -370,7 +362,6 @@ class ddns extends baseModule {
 			$return->addElement(new htmlTableExtendedInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'), true);
 			$return->addElement(new htmlTableExtendedInputCheckbox('client_insert', $this->isIgnoreClientUpdates(), _('Disable client updates'), 'client_insert'), true);
 			$keyInput = new htmlTableExtendedInputField(_('Path to key for DNS updates'), 'key_path', $this->getUpdateKey(), 'keypath');
-			$keyInput->setRequired(true);
 			$return->addElement($keyInput);
 		}
 		else {
