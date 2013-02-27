@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2012  Roland Gruber
+  Copyright (C) 2006 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -171,7 +171,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText, $container) {
  */
 function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$SPLIT_DELIMITER = "###x##y##x###";
-	$LAMDAEMON_PROTOCOL_VERSION = '2';
+	$LAMDAEMON_PROTOCOL_VERSION = '3';
 	$okImage = "../../graphics/pass.png";
 	$failImage = "../../graphics/fail.png";
 	

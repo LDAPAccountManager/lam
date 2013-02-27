@@ -4,7 +4,7 @@
 #
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2011  Roland Gruber
+#  Copyright (C) 2006 - 2013  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Sys::Syslog;
 
 # Defines the protocol version of the lamdaemon script.
 # This will only be changed when additional commands are added etc.
-my $LAMDAEMON_PROTOCOL_VERSION = 2;
+my $LAMDAEMON_PROTOCOL_VERSION = 3;
 
 my $SPLIT_DELIMITER = "###x##y##x###";
 
@@ -124,6 +124,9 @@ elsif (($vals[1] eq 'test')) {
 }
 elsif ($vals[1] eq 'home') {
 	manageHomedirs();
+}
+elsif ($vals[1] eq 'directory') {
+	manageDirectories();
 }
 elsif ($vals[1] eq 'quota') {
 	manageQuotas();
@@ -287,6 +290,51 @@ sub checkHomedir {
 	}
 }
 	
+#
+# Handles all directory related commands
+#
+sub manageDirectories {
+	if ($vals[2] eq 'add') {
+		createDirectory();
+	}
+	else {
+		# Show error if undefined command is used
+		$return = "ERROR,Lamdaemon ($hostname),Unknown home command $vals[2].";
+		logMessage(LOG_ERR, "Unknown command $vals[2]");
+	}
+}
+
+#
+# Creates a directory of the user
+#
+sub createDirectory {
+	my $homedir = $vals[3];
+	if ($homedir eq '') {
+		$return = "ERROR,Lamdaemon ($hostname),No directory specified.";
+		logMessage(LOG_ERR, "No directory specified to create.");
+		return;
+	}
+	my $path = $homedir;
+	# split homedir to set all directories below the last dir. to 0755
+	$path =~ s,/(?:[^/]*)$,,;
+	($<, $>) = ($>, $<); # Get root privileges
+	if (! -e $path) {
+		system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
+	}
+	if (! -e $homedir) {
+		system 'mkdir', '-m', $vals[4], $homedir; # Create homedir itself
+		system 'chown', '-hR', "$vals[5]:$vals[6]" , $homedir; # Change owner to new user
+		system 'chmod', $vals[4], $homedir;     # Edit chmod rights
+		$return = "INFO,Lamdaemon ($hostname),Directory created (" . $homedir . ").";
+		logMessage(LOG_INFO, "Directory created (" . $homedir . ")");
+	}
+	else {
+		$return = "ERROR,Lamdaemon ($hostname),Directory already exists (" . $homedir . ").";
+		logMessage(LOG_ERR, "Directory already exists (" . $homedir . ")");
+	}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
 #
 # Handles all quota related commands
 #

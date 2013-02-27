@@ -64,6 +64,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 	private $cachedGroupSIDList = null;
 	/** cache for domain list */
 	private $cachedDomainList = null;
+	/** delimiter for lamdaemon commands */
+	private static $SPLIT_DELIMITER = "###x##y##x###";
 	
 
 	/**
@@ -1188,7 +1190,18 @@ class sambaSamAccount extends baseModule implements passwordService {
 					if (isset($this->attributes['sambaProfilePath'][0])) {
 						$sambaProfilePath = $this->attributes['sambaProfilePath'][0];
 					}
-					$return->addElement(new htmlTableExtendedInputField(_('Profile path'), 'sambaProfilePath', $sambaProfilePath, 'profilePath'), true);
+					$return->addElement(new htmlOutputText(_('Profile path')));
+					$sambaProfilePathGroup = new htmlGroup();
+					$sambaProfilePathGroup->addElement(new htmlInputField('sambaProfilePath', $sambaProfilePath));
+					if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
+						if (get_preg($sambaProfilePath, 'homeDirectory')) {
+							$sambaProfilePathButton = new htmlAccountPageButton(get_class($this), 'profilePath', 'manage', '../graphics/folder.png', true);
+							$sambaProfilePathButton->setTitle(_('Manage profile directory'));
+							$sambaProfilePathGroup->addElement($sambaProfilePathButton);
+						}
+					}
+					$return->addElement($sambaProfilePathGroup);
+					$return->addElement(new htmlHelpLink('profilePath'), true);
 				}
 				// logon script
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
@@ -1532,6 +1545,152 @@ class sambaSamAccount extends baseModule implements passwordService {
 		return $return;	
 	}
 	
+	/**
+	* Displays manage profile path page.
+	*
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_profilePath() {
+		$return = new htmlTable();
+		$return->addElement(new htmlOutputText(_('Profile path')));
+		$return->addElement(new htmlSpacer('5px', null));
+		$return->addElement(new htmlOutputText($this->attributes['sambaProfilePath'][0]), true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$homeServerContainer = new htmlTable();
+		$homeServerContainer->colspan = 5;
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+			$temp = explode(":", $lamdaemonServers[$i]);
+			$server = $temp[0];
+			$label = $temp[0];
+			if (isset($temp[1])) {
+				$label = $temp[1];
+			}
+			$result = lamdaemon(
+				implode(
+					self::$SPLIT_DELIMITER,
+					array(
+						$this->attributes['uid'][0],
+						"home",
+						"check",
+						$this->attributes['sambaProfilePath'][0])
+					),
+				$server);
+			// lamdaemon results
+			if (is_array($result)) {
+				$returnValue = trim($result[0]);
+				if ($returnValue == 'ok') {
+					$homeServerContainer->addElement(new htmlOutputText($label));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+				}
+				elseif ($returnValue == 'missing') {
+					$homeServerContainer->addElement(new htmlOutputText($label));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
+					$homeServerContainer->addElement(new htmlSpacer('5px', null));
+					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+				}
+				elseif (trim($returnValue) != '') {
+					$messageParams = explode(",", $returnValue);
+					if (isset($messageParams[2])) {
+						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]), htmlspecialchars($messageParams[2]));
+					}
+					elseif (($messageParams[0] == 'ERROR') || ($messageParams[0] == 'WARN') || ($messageParams[0] == 'INFO')) {
+						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]));
+					}
+					else {
+						$message = new htmlStatusMessage('WARN', htmlspecialchars($messageParams[0]));
+					}
+					$message->colspan = 5;
+					$homeServerContainer->addElement($message, true);
+				}
+				$homeServerContainer->addNewLine();
+			}
+		}
+		$return->addElement($homeServerContainer, true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		return $return;
+	}
+
+	/**
+	* Processes user input of the profile path check page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_profilePath() {
+		$return = array();
+		$unixAttrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+		$uidNumber = $unixAttrs['uidNumber'][0];
+		$gidNumber = $unixAttrs['gidNumber'][0];
+		if (empty($uidNumber) || empty($gidNumber)) {
+			return;
+		}
+		// get list of lamdaemon servers
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+			$temp = explode(":", $lamdaemonServers[$i]);
+			$server = $temp[0];
+			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
+				$result = lamdaemon(
+					implode(
+						self::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"directory",
+							"add",
+							$this->attributes['sambaProfilePath'][0],
+							"0".$_SESSION['config']->get_scriptRights(),
+							$uidNumber,
+							$gidNumber)
+					),
+					$server);
+				// lamdaemon results
+				if (is_array($result)) {
+					foreach ($result as $singleresult) {
+						$singleresult = explode(",", $singleresult);
+						if (is_array($singleresult)) {
+							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+								$return[] = $singleresult;
+							}
+						}
+					}
+				}
+			}
+			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
+				$result = lamdaemon(
+					implode(
+						self::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"home",
+							"rem",
+							$this->attributes['sambaProfilePath'][0],
+							$uidNumber
+						)
+					),
+					$server);
+				// lamdaemon results
+				if (is_array($result)) {
+					foreach ($result as $singleresult) {
+						$singleresult = explode(",", $singleresult);
+						if (is_array($singleresult)) {
+							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+								$return[] = $singleresult;
+							}
+						}
+					}
+				}
+			}
+		}
+		return $return;
+	}
+
 	/**
 	* Returns a list of elements for the account profiles.
 	*
