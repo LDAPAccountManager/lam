@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2012  Roland Gruber
+  Copyright (C) 2011 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,14 @@ if (isset($_GET['selfservice'])) {
 	// self service uses a different session name
 	session_name('SELFSERVICE');
 }
-startSecureSession();
+
+// return standard JSON response if session expired
+if (startSecureSession(false) === false) {
+	echo json_encode(array(
+		'sessionExpired' => "true"
+	));
+	die();
+}
 
 setlanguage();
 

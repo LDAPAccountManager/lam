@@ -38,9 +38,12 @@ checkClientIP();
 
 /**
  * Starts a session and checks the environment.
- * The script is stopped if one of the checks fail.
+ * The script is stopped if one of the checks fail (timeout redirection may be overriden).
+ * 
+ * @param boolean $redirectToLogin redirect user to login page
+ * @return boolean true if all ok, false if session expired
  */
-function startSecureSession() {
+function startSecureSession($redirectToLogin = true) {
 	// start session
 	if (isset($_SESSION)) unset($_SESSION);
 	if (strtolower(session_module_name()) == 'files') {
@@ -69,10 +72,14 @@ function startSecureSession() {
 		// ok, update time
 		$_SESSION['sec_sessionTime'] = time();
 	}
-	else {
+	elseif ($redirectToLogin) {
 		// session expired, logoff user
 		logoffAndBackToLoginPage();
 	}
+	else {
+		return false;
+	}
+	return true;
 }
 
 /**
