@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2012  Roland Gruber
+  Copyright (C) 2006 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -113,25 +113,38 @@ function checkClientIP() {
  */
 function logoffAndBackToLoginPage() {
 	// log message
-	$ldapUser = $_SESSION['ldap']->decrypt_login();
-	logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser[0] . ' expired.');
+	if (isset($_SESSION['ldap'])) {
+		$ldapUser = $_SESSION['ldap']->decrypt_login();
+		logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser[0] . ' expired.');
+		// close LDAP connection
+		@$_SESSION["ldap"]->destroy();
+	}
+	elseif (isset($_SESSION['selfService_clientDN'])) {
+		logNewMessage(LOG_WARNING, 'Self service session of DN ' . Ldap::decrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
+	}
 	// delete key and iv in cookie
 	if (function_exists('mcrypt_create_iv')) {
 		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 	}
-	// close LDAP connection
-	@$_SESSION["ldap"]->destroy();
 	// link back to login page
 	$paths = array('./', '../', '../../', '../../../');
-	$page = 'login.php';
+	$page = 'login.php?expired=yes';
+	if (isset($_SESSION['selfService_clientDN'])) {
+		$scope = $_GET['scope'];
+		$name = $_GET['name'];
+		if (!preg_match('/^[0-9a-zA-Z _-]+$/', $scope) || !preg_match('/^[0-9a-zA-Z _-]+$/', $name)) {
+			logNewMessage(LOG_ERR, 'GET parameters invalid: ' . $name . ' ' . $scope);
+			die();
+		}
+		$page = 'selfServiceLogin.php?expired=yes&scope=' . $scope . '&name=' . $name;
+	}
 	for ($i = 0; $i < sizeof($paths); $i++) {
 		if (file_exists($paths[$i] . $page)) {
 			$page = $paths[$i] . $page;
 			break;
 		}
 	}
-	$page .= "?expired=yes";
 	echo $_SESSION['header'];
 	echo "<title></title>\n";
 	echo "</head>\n";
