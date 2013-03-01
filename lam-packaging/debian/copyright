@@ -23,6 +23,7 @@ time.
 * lib/modules/passwordSelfReset.inc
 * lib/modules/ppolicy.inc
 * lib/modules/ppolicyUser.inc
+* lib/modules/qmailGroup.inc
 * lib/modules/qmailUser.inc
 * lib/modules/rfc2307bisAutomount.inc
 * lib/modules/rfc2307bisPosixGroup.inc
@@ -62,7 +63,7 @@ All other files are licensed under the conditions below.
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-The complete license can be found in the file COPYING.
+The complete license can be found in the file /usr/share/common-licenses/GPL-2.
 
 
 Some parts of this package have other, compatible licences. These are:
@@ -140,6 +141,8 @@ C:
    For more details on the GNU Lesser General Public License,
    see http://www.gnu.org/copyleft/lesser.html
 
+   See also /usr/share/common-licenses/LGPL-2.   
+   
 
 D:
 
