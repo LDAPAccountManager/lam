@@ -72,8 +72,6 @@ binary-indep: build install
 	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
 	install -D --mode=644 config/config.cfg_sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
 	dh_link /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/config.cfg
-	install -D --mode=644 config/shells debian/ldap-account-manager/etc/ldap-account-manager/shells
-	dh_link /etc/ldap-account-manager/shells /var/lib/ldap-account-manager/config/shells
 	dh_installdebconf
 	dh_installdeb
 	dh_gencontrol
