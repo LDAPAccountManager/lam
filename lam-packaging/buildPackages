@@ -19,8 +19,8 @@ else
 	export SVN_TAG="tags/$1"
 fi
 
-svn export https://lam.svn.sourceforge.net/svnroot/lam/$SVN_TAG/lam lam
-svn export https://lam.svn.sourceforge.net/svnroot/lam/$SVN_TAG/lam-packaging lam-packaging
+svn export svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam lam
+svn export svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam-packaging lam-packaging
 svn export file:///daten/projekte/SVNROOT/$SVN_TAG/lamPro lamPro
 
 cp lam-packaging/getVersion ./
