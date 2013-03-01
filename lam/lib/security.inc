@@ -135,8 +135,9 @@ function logoffAndBackToLoginPage() {
 		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 	}
 	// link back to login page
-	$paths = array('./', '../', '../../', '../../../');
-	$page = 'login.php?expired=yes';
+	$paths = array('./', '../', '../../', '../../../', '../../../../');
+	$page = 'login.php';
+	$pageSuffix = '?expired=yes';
 	if (isset($_SESSION['selfService_clientDN'])) {
 		$scope = $_GET['scope'];
 		$name = $_GET['name'];
@@ -144,7 +145,8 @@ function logoffAndBackToLoginPage() {
 			logNewMessage(LOG_ERR, 'GET parameters invalid: ' . $name . ' ' . $scope);
 			die();
 		}
-		$page = 'selfServiceLogin.php?expired=yes&scope=' . $scope . '&name=' . $name;
+		$page = 'selfServiceLogin.php';
+		$pageSuffix = '?expired=yes&scope=' . $scope . '&name=' . $name;
 	}
 	for ($i = 0; $i < sizeof($paths); $i++) {
 		if (file_exists($paths[$i] . $page)) {
@@ -152,6 +154,7 @@ function logoffAndBackToLoginPage() {
 			break;
 		}
 	}
+	$page .= $pageSuffix;
 	echo $_SESSION['header'];
 	echo "<title></title>\n";
 	echo "</head>\n";
