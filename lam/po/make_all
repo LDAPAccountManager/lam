@@ -10,6 +10,7 @@ echo "Generating POT"
 ./make_po
 mv messages.po messages.pot
 tar -czf messages.pot.tar.gz messages.pot
+rm messages.pot
 echo " "
 
 echo "Generating Catalan translation template"
