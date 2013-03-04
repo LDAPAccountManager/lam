@@ -195,6 +195,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType');
 		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		    $profileElements[] = new htmlTableExtendedInputField(_('Business category'), 'inetOrgPerson_businessCategory', null, 'businessCategory');
+		}
 		if (sizeof($profileElements) > 0) {
 			$profileContainer = new htmlTable();
 			for ($i = 0; $i < sizeof($profileElements); $i++) {
@@ -223,6 +226,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'regex' => 'employeeType',
 				'error_message' => $this->messages['employeeType'][0]);
 			$return['profile_mappings']['inetOrgPerson_employeeType'] = 'employeeType';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		    $return['profile_checks']['inetOrgPerson_businessCategory'] = array(
+		    	'type' => 'ext_preg',
+		    	'regex' => 'businessCategory',
+		    	'error_message' => $this->messages['businessCategory'][0]);
+		    $return['profile_mappings']['inetOrgPerson_businessCategory'] = 'businessCategory';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$return['profile_checks']['inetOrgPerson_street'] = array(
