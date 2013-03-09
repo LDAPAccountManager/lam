@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -822,6 +822,26 @@ abstract class baseModule {
 	*/
 	public function get_pdfEntries() {
 		return array();
+	}
+	
+	/**
+	 * Adds a simple PDF entry to the given array.
+	 * 
+	 * @param array $result result array (entry will be added here)
+	 * @param String $name ID
+	 * @param String $label label name
+	 * @param String $attrName attribute name (default: =$name)
+	 * @param String $delimiter delimiter if multiple attribute values exist
+	 */
+	protected function addSimplePDFField(&$result, $name, $label, $attrName = null, $delimiter = ', ') {
+		if ($attrName == null) {
+			$attrName = $name;
+		}
+		$value = '';
+		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
+			$value = implode($delimiter, $this->attributes[$attrName]);
+		}
+		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
 	}
 
 	/**
