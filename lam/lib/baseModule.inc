@@ -1161,6 +1161,26 @@ abstract class baseModule {
 	public abstract function display_html_attributes();
 
 	/**
+	 * Adds a simple text input field to the given htmlTable.
+	 * The field name will be the same as the attribute name. There must also be a help entry with the attribute name as ID.
+	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
+	 * 
+	 * @param htmlTable $container parent container
+	 * @param String $attrName attribute name
+	 * @param String $label label name
+	 * @param boolean $required this is a required field (default false)
+	 */
+	protected function addSimpleInputTextField(&$container, $attrName, $label, $required = false) {
+		$value = '';
+		if (isset($this->attributes[$attrName][0])) {
+			$value = $this->attributes[$attrName][0];
+		}
+		$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
+		$input->setRequired($required);
+		$container->addElement($input, true);
+	}
+	
+	/**
 	 * Returns a list of managed object classes for this module.
 	 * 
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
