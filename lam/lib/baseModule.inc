@@ -1169,14 +1169,18 @@ abstract class baseModule {
 	 * @param String $attrName attribute name
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
+	 * @param integer $length field length
 	 */
-	protected function addSimpleInputTextField(&$container, $attrName, $label, $required = false) {
+	protected function addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null) {
 		$value = '';
 		if (isset($this->attributes[$attrName][0])) {
 			$value = $this->attributes[$attrName][0];
 		}
 		$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
 		$input->setRequired($required);
+		if ($length != null) {
+			$input->setFieldSize($length);
+		}
 		$container->addElement($input, true);
 	}
 	
