@@ -530,6 +530,7 @@ button.ui-button::-moz-focus-inner {
 	margin: 0;
 	display: block;
 	outline: none;
+	background: #E6E6E6;
 }
 .ui-menu .ui-menu {
 	margin-top: -3px;
@@ -540,6 +541,7 @@ button.ui-button::-moz-focus-inner {
 	padding: 0;
 	width: 100%;
 }
+
 .ui-menu .ui-menu-divider {
 	margin: 5px -2px 5px -2px;
 	height: 0;
