@@ -326,7 +326,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLabeledURI', false, _('Web site'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, false));
-		$configContainer->addElement($configContainerOptions, true);
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
 			$confActiveUnixModules = array_merge($_SESSION['conf_config']->get_AccountModules('user'), $_SESSION['conf_config']->get_AccountModules('host'), $_SESSION['conf_config']->get_AccountModules('group'));
@@ -336,7 +335,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
 				$configContainer->addElement($hashOption);
 			}
+			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			// option to hide uid
+			if (!in_array('posixAccount', $confActiveUnixUserModules)) {
+				$configContainerOptions->addElement(new htmlOutputText(' '));
+				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideUID', false, _('User name'), null, false));
+			}
 		}
+		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		// upload fields
 		$return['upload_columns'] = array(
@@ -649,7 +655,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
-				$return['PDF_fields']['uid'] = _('User name');
+				if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
+					$return['PDF_fields']['uid'] = _('User name');
+				}
 				$return['PDF_fields']['cn'] = _('Common name');
 			}
 		}
@@ -1295,12 +1303,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			// uid
-			if (isset($_POST['userName']) && ($_POST['userName'] != '')) {
-				if (!get_preg($_POST['userName'], 'username')) {
-					$errors[] = $this->messages['uid'][0];
+			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
+				if (isset($_POST['userName']) && ($_POST['userName'] != '')) {
+					if (!get_preg($_POST['userName'], 'username')) {
+						$errors[] = $this->messages['uid'][0];
+					}
+					else {
+						$this->attributes['uid'][0] = $_POST['userName'];
+					}
 				}
-				else {
-					$this->attributes['uid'][0] = $_POST['userName'];
+				elseif (isset($this->attributes['uid'][0])) {
+					unset($this->attributes['uid'][0]);
 				}
 			}
 			// cn
@@ -1350,7 +1363,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->addElement(new htmlSpacer('50px', null));
 		$container->addElement($imageContainer, false);
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules)) {
+		if (!in_array('posixAccount', $modules) && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('User name'), 'userName', $uid, 'uid'), true);
@@ -2520,14 +2533,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'example' => _('Steve Miller'),
 				'default' => '{inetOrgPerson_firstName} {inetOrgPerson_lastName}'
 			);
-			$return[] = array(
-				'name' => 'inetOrgPerson_userName',
-				'description' => _('User name'),
-				'help' => 'uid',
-				'example' => _('smiller'),
-				'unique' => true,
-				'required' => true
-			);
+			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
+				$return[] = array(
+					'name' => 'inetOrgPerson_userName',
+					'description' => _('User name'),
+					'help' => 'uid',
+					'example' => _('smiller'),
+					'unique' => true,
+					'required' => false
+				);
+			}
 			$return[] = array(
 				'name' => 'inetOrgPerson_userPassword',
 				'description' => _('Password'),
@@ -2583,14 +2598,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// description
 			if (isset($ids['inetOrgPerson_description']) && ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "")) {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['inetOrgPerson_description']];
-			}
-			else {
-				if ($partialAccounts[$i]['givenName'] != "") {
-					$partialAccounts[$i]['description'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
-				}
-				else {
-					$partialAccounts[$i]['description'] = $partialAccounts[$i]['sn'];
-				}
 			}
 			// title
 			if (isset($ids['inetOrgPerson_title']) && ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "")) {
@@ -2822,18 +2829,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 				}
 				// uid
-				if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
-					$errMsg = $this->messages['uid'][3];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-				elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
-					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
-				}
-				else {
-					$errMsg = $this->messages['uid'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+				if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
+					if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
+						$errMsg = $this->messages['uid'][3];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
+					elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
+						$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
+					}
+					else {
+						$errMsg = $this->messages['uid'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 				// password
 				if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
