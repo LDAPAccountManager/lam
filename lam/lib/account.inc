@@ -786,8 +786,9 @@ function compareDN($a, $b) {
 				else return 0; // DNs are identical
 			}
 		}
-		elseif ($part_a == max($part_a, $part_b)) return 1;
-		else return -1;
+		else {
+			return strnatcasecmp($part_a, $part_b);
+		}
 	}
 	return -1;
 }
