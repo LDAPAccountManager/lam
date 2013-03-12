@@ -1985,9 +1985,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				usort($managerList, 'compareDN');
 				$managers = new htmlTable();
-				$managers->colspan = 2;
+				$managers->alignment = htmlElement::ALIGN_RIGHT;
+				$managers->colspan = 3;
 				for ($i = 0; $i < sizeof($managerList); $i++) {
-					$managers->addElement(new htmlOutputText(getAbstractDN($managerList[$i])), true);
+					$manager = new htmlOutputText(getAbstractDN($managerList[$i]));
+					$manager->alignment = htmlElement::ALIGN_RIGHT;
+					$managers->addElement($manager, true);
 				}
 				$fieldContainer->addElement(new htmlOutputText(''));
 				$fieldContainer->addElement($managers, true);
