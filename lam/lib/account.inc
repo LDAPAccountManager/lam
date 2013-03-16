@@ -891,6 +891,7 @@ function extractDNSuffix($dn) {
  * @return array list of arrays that can be used to create status messages
  */
 function sendPasswordMail($pwd, $user) {
+	$user = array_change_key_case($user, CASE_LOWER);
 	// read mail data
 	$mailTo = $user['mail'][0];
 	$mailFrom = $_SESSION['config']->getLamProMailFrom();
