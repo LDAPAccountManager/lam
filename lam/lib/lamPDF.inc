@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2012  Roland Gruber
+                2007 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,6 +104,14 @@ class lamPDF extends UFPDF {
 		$this->Line(10,38,200,38);
 		$this->Line(10,40,200,40);
 		$this->SetY(50);
+		//set folding marks
+		if (isset($this->page_definitions['foldingmarks']) && ($this->page_definitions['foldingmarks'] == 'standard')) {
+			$this->SetLineWidth(0.2);
+			$foldingMarks = array(97, 202);
+			foreach ($foldingMarks as $mark) {
+				$this->Line(0, $mark, 5, $mark);
+			}
+		}
 	}
 
 	/**

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2012  Roland Gruber
+                2007 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -87,6 +87,9 @@ if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDe
 }
 if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
 	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
+}
+if ((isset($_GET['foldingmarks'])) && ($_GET['foldingmarks'] != $_SESSION['currentPageDefinitions']['foldingmarks'])) {
+	$_SESSION['currentPageDefinitions']['foldingmarks'] = $_GET['foldingmarks'];
 }
 
 // Check if pdfname is valid, then save current structure to file and go to
@@ -453,13 +456,21 @@ $mainContent->addElement(new htmlTableExtendedInputField(_('Headline'), 'headlin
 $logoSelect = new htmlTableExtendedSelect('logoFile', $logos, $selectedLogo, _('Logo'));
 $logoSelect->setHasDescriptiveElements(true);
 $mainContent->addElement($logoSelect, true);
+$foldingMarks = 'no';
+if (isset($_SESSION['currentPageDefinitions']['foldingmarks'])) {
+	$foldingMarks = $_SESSION['currentPageDefinitions']['foldingmarks'];
+}
+$possibleFoldingMarks = array(_('No') => 'no', _('Yes') => 'standard');
+$foldingMarksSelect = new htmlTableExtendedSelect('foldingmarks', $possibleFoldingMarks, array($foldingMarks), _('Folding marks'));
+$foldingMarksSelect->setHasDescriptiveElements(true);
+$mainContent->addElement($foldingMarksSelect, true);
 $mainContent->addElement(new htmlSpacer(null, '30px'), true);
 // PDF structure
 // print every entry in the current structure
 $structureContent = new htmlTable();
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// create the up/down/remove links
-	$linkBase = 'pdfpage.php?type=' . $_GET['type'] . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0];
+	$linkBase = 'pdfpage.php?type=' . $_GET['type'] . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0] . '&foldingmarks=' . $foldingMarks;
 	$linkUp = new htmlLink(null, $linkBase . '&up=' . $key, '../../graphics/up.gif');
 	$linkUp->setTitle(_("Up"));
 	$linkDown = new htmlLink(null, $linkBase . '&down=' . $key, '../../graphics/down.gif');
