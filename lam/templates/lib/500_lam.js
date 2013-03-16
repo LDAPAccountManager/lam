@@ -133,8 +133,8 @@ function addResizeHandler(item, min, max) {
  */
 function list_switchAccountSelection() {
 	// set checkbox selection
-	jQuery('.accountBoxUnchecked').attr('checked', 'checked');
-	jQuery('.accountBoxChecked').removeAttr('checked');
+	jQuery('input.accountBoxUnchecked').prop('checked', true);
+	jQuery('input.accountBoxChecked').prop('checked', false);
 	// switch CSS class
 	nowChecked = jQuery('.accountBoxUnchecked');
 	nowUnchecked = jQuery('.accountBoxChecked');
@@ -241,12 +241,12 @@ function passwordHandleInput(random, ajaxURL) {
 	// get input values
 	var modules = new Array();
 	jQuery('#passwordDialog').find(':checked').each(function() {
-		modules.push(jQuery(this).attr('name'));
+		modules.push(jQuery(this).prop('name'));
 	});
 	var pwd1 = jQuery('#passwordDialog').find('[name=newPassword1]').val();
 	var pwd2 = jQuery('#passwordDialog').find('[name=newPassword2]').val();
-	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').attr('checked');
-	var sendMail = jQuery('input[name=lamPasswordChangeSendMail]').attr('checked');
+	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').prop('checked');
+	var sendMail = jQuery('input[name=lamPasswordChangeSendMail]').prop('checked');
 	var pwdJSON = {
 		"modules": modules,
 		"password1": pwd1,
