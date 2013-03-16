@@ -1849,7 +1849,7 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').attr(\'checked\',!jQuery(\'#' . $this->name . '\').attr(\'checked\')); jQuery(\'#' . $this->name . '\').change();"';
+		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();"';
 		if ($this->labelFirst) {
 			echo '<div class="nowrap" ' . $onClick . '>';
 			echo $this->label;
