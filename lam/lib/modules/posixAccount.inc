@@ -345,8 +345,13 @@ class posixAccount extends baseModule implements passwordService {
 			);
 		}
 		// available PDF fields
-		$return['PDF_fields'] = array(
-			'uid' => _('User name'),
+		if ($this->get_scope() == 'host') {
+			$return['PDF_fields'] = array('uid' => _('Host name'));
+		}
+		else {
+			$return['PDF_fields'] = array('uid' => _('User name'));
+		}
+		$return['PDF_fields'] = array_merge($return['PDF_fields'], array(
 			'uidNumber' => _('UID number'),
 			'gidNumber' => _('GID number'),
 			'gecos' => _('Gecos'),
@@ -356,7 +361,7 @@ class posixAccount extends baseModule implements passwordService {
 			'loginShell' => _('Login shell'),
 			'cn' => _('Common name'),
 			'userPassword' => _('Password')
-		);
+		));
 		if (self::areGroupOfNamesActive()) {
 			$return['PDF_fields']['gon'] = _('Group of names');
 		}
@@ -1145,7 +1150,11 @@ class posixAccount extends baseModule implements passwordService {
 		
 		$userName = '';
 		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
-		$uidInput = new htmlTableExtendedInputField(_("User name"), 'uid', $userName, 'uid');
+		$uidLabel = _("User name");
+		if ($this->get_scope() == 'host') {
+			$uidLabel = _("Host name");
+		}
+		$uidInput = new htmlTableExtendedInputField($uidLabel, 'uid', $userName, 'uid');
 		$uidInput->setRequired(true);
 		$uidInput->setFieldMaxLength(100);
 		$return->addElement($uidInput, true);
@@ -1524,8 +1533,12 @@ class posixAccount extends baseModule implements passwordService {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
+		$uidLabel = _('User name');
+		if ($this->get_scope() == 'host') {
+			$uidLabel = _('Host name');
+		}
 		$return = array(
-			'posixAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
+			'posixAccount_uid' => array('<block><key>' . $uidLabel . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 			'posixAccount_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 			'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
 			'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
