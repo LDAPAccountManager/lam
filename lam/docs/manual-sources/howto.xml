@@ -2109,7 +2109,12 @@ Have fun!
 
         <para>Please enter an email address at the Personal page and set a
         Unix password first. Both are required that Kolab accepts the
-        accounts.</para>
+        accounts. The email address ("Personal" page) must match your Kolab
+        domain, otherwise the account will not work.</para>
+
+        <para><emphasis role="bold">Attention:</emphasis> The mailbox server
+        cannot be changed after the account has been saved. Please make sure
+        that the value is correct.</para>
 
         <para>Kolab users should not be directly deleted with LAM. You can
         mark an account for deletion which then is done by the Kolab server
@@ -2122,6 +2127,9 @@ Have fun!
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para>If you upgrade existing non-Kolab accounts please make sure that
+        the account has an Unix password.</para>
       </section>
 
       <section>
@@ -6775,71 +6783,6 @@ Run slapindex to rebuild the index.
     <para>Session data and temporary files are located in "tmp" + "sess" or
     "/var/lib/ldap-account-manager/tmp" +
     "/var/lib/ldap-account-manager/sess".</para>
-  </appendix>
-
-  <appendix>
-    <title>Kolab user management</title>
-
-    <para>Here are some notes on managing Kolab accounts with LAM:</para>
-
-    <section>
-      <title>Creating accounts</title>
-
-      <para>The mailbox server cannot be changed after the account has been
-      saved. Please make sure that the value is correct. The email address
-      ("Personal" page) must match your Kolab domain, otherwise the account
-      will not work.</para>
-    </section>
-
-    <section>
-      <title>Deleting accounts</title>
-
-      <para>If you want to cleanly delete accounts use the "Mark for deletion"
-      button on the Kolab subpage of an account. This will also remove the
-      user's mailbox. If you delete the account from the account list (which
-      is standard for LAM accounts) then no cleanup actions are made.</para>
-    </section>
-
-    <section>
-      <title>Managing accounts with both LAM and Kolab Admin GUI</title>
-
-      <para>The Kolab GUI has some restrictions that LAM does not have. Please
-      pay attention to the following restrictions:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Common name in LAM</para>
-
-          <para>The common name must have the format "&lt;first name&gt;
-          &lt;last name&gt;". You can leave the field empty in LAM and it will
-          automatically fill in the correct value.</para>
-        </listitem>
-
-        <listitem>
-          <para>Changing first/last name in Kolab GUI</para>
-
-          <para>Do not change the first/last name of your users in the Kolab
-          GUI! The GUI will change the common name which leads to an LDAP
-          object class violation. This is caused by a bug in the Kolab
-          GUI.</para>
-        </listitem>
-      </itemizedlist>
-    </section>
-
-    <section>
-      <title>Adding a Kolab part to existing accounts</title>
-
-      <para>If you upgrade existing non-Kolab accounts please make sure that
-      the account has an Unix password.</para>
-    </section>
-
-    <section>
-      <title>Installing LAM on the Kolab server</title>
-
-      <para>You can install LAM in the directory "/kolab/var/kolab/www" which
-      is the root directory for Apache. The PHP installation already includes
-      all required packages.</para>
-    </section>
   </appendix>
 
   <appendix>
