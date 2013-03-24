@@ -2837,6 +2837,58 @@ class htmlEqualWidth extends htmlElement {
 }
 
 /**
+ * Sets all given elements to the same height.
+ * 
+ * @package metaHTML
+ */
+class htmlEqualHeight extends htmlElement {
+	
+	/** list of element IDs */
+	private $elements = array();
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param array $elements list of element IDs
+	 */
+	function __construct($elements) {
+		foreach ($elements as $element) {
+			$this->elements[] = htmlspecialchars($element);
+		}
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if (sizeof($this->elements) == 0) {
+			return array();
+		}
+		$return = array();
+		$listContent = "'#" . $this->elements[0] . "'";
+		for ($i = 1; $i < sizeof($this->elements); $i++) {
+			$listContent .= ", '#" . $this->elements[$i] . "'";
+		}
+		echo '<script type="text/javascript">';
+		echo ' jQuery(document).ready(function() {';
+		echo '  var equalHeightElements = new Array(' . $listContent . ');';
+		echo '  equalHeight(equalHeightElements);';
+		echo ' });';
+		echo '</script>';
+		return $return;
+	}
+	
+}
+
+/**
  * Creates a list of elements that can be sorted by the user via drag'n'drop.
  * 
  * @package metaHTML

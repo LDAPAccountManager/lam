@@ -85,6 +85,7 @@ function listShowSettingsDialog(title, okText, cancelText) {
 
 /**
  * Submits the form by clicking on the given button if enter was pressed.
+ * Example: SubmitForm('apply_filter', event);
  * 
  * @param id button ID
  * @param e event
@@ -330,6 +331,23 @@ function equalWidth(elementIDs) {
 	}
 	for (var i = 0; i < elementIDs.length; ++i) {
 		jQuery(elementIDs[i]).css({'width': maxWidth - (jQuery(elementIDs[i]).outerWidth() - jQuery(elementIDs[i]).width())});
+	}
+}
+
+/**
+ * Alines the elements with the given IDs to the same height.
+ * 
+ * @param elementIDs IDs
+ */
+function equalHeight(elementIDs) {
+	var max = 0;
+	for (var i = 0; i < elementIDs.length; ++i) {
+		if (jQuery(elementIDs[i]).height() > max) {
+			max = jQuery(elementIDs[i]).height();
+		};
+	}
+	for (var i = 0; i < elementIDs.length; ++i) {
+		jQuery(elementIDs[i]).css({'height': max - (jQuery(elementIDs[i]).outerHeight() - jQuery(elementIDs[i]).height())});
 	}
 }
 
