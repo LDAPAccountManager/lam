@@ -111,6 +111,10 @@ input {
 	margin: 1px;	
 }
 
+.margin2 {
+	margin: 2px;	
+}
+
 .align-middle {
 	vertical-align: middle;
 }
