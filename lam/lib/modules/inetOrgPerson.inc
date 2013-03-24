@@ -1009,7 +1009,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				if ($this->attributes['title'][$titleCounter] == '') {
 					unset($this->attributes['title'][$titleCounter]);
 				}
-				if (!get_preg($this->attributes['title'][$titleCounter], 'title')) {
+				elseif (!get_preg($this->attributes['title'][$titleCounter], 'title')) {
 					$errors[] = $this->messages['title'][0];
 				}
 				$titleCounter++;
@@ -1241,7 +1241,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				if ($this->attributes['businessCategory'][$businessCategoryCounter] == '') {
 					unset($this->attributes['businessCategory'][$businessCategoryCounter]);
 				}
-				if (!get_preg($this->attributes['businessCategory'][$businessCategoryCounter], 'businessCategory')) {
+				elseif (!get_preg($this->attributes['businessCategory'][$businessCategoryCounter], 'businessCategory')) {
 					$errors[] = $this->messages['businessCategory'][0];
 				}
 				$businessCategoryCounter++;
@@ -1355,6 +1355,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
+		$equalWidthElements = array();
 		$container = new htmlTable();
 		$fieldContainer = new htmlTable();
 		$imageContainer = new htmlTable();
@@ -1367,19 +1368,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('User name'), 'userName', $uid, 'uid'), true);
+			$equalWidthElements[] = 'uid';
 		}
 		$firstName = '';
 		if (isset($this->attributes['givenName'][0])) $firstName = $this->attributes['givenName'][0];
 		$fieldContainer->addElement(new htmlTableExtendedInputField(_('First name'), 'givenName', $firstName, 'givenName'), true);
+		$equalWidthElements[] = 'givenName';
 		$lastName = '';
 		if (isset($this->attributes['sn'][0])) $lastName = $this->attributes['sn'][0];
 		$lastNameElement = new htmlTableExtendedInputField(_('Last name'), 'sn', $lastName, 'sn');
 		$lastNameElement->setRequired(true);
 		$fieldContainer->addElement($lastNameElement, true);
+		$equalWidthElements[] = 'sn';
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$initials = '';
 			if (isset($this->attributes['initials'][0])) $initials = implode('; ', $this->attributes['initials']);
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Initials'), 'initials', $initials, 'initials'), true);
+			$equalWidthElements[] = 'initials';
 		}
 		if (!in_array('posixAccount', $modules)) {
 			$cn = '';
@@ -1387,6 +1392,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$cnElement = new htmlTableExtendedInputField(_('Common name'), 'cn', $cn, 'cn');
 			$cnElement->setRequired(true);
 			$fieldContainer->addElement($cnElement, true);
+			$equalWidthElements[] = 'cn';
 		}
 		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
@@ -1403,6 +1409,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$descriptionContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($descriptions); $i++) {
 				$descriptionContainer->addElement(new htmlInputField('description' . $i, $descriptions[$i]));
+				$equalWidthElements[] = 'description' . $i;
 				if ($i < (sizeof($descriptions) - 1)) {
 					$descriptionContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1438,6 +1445,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$streetContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($streets); $i++) {
 				$streetContainer->addElement(new htmlInputField('street' . $i, $streets[$i]));
+				$equalWidthElements[] = 'street' . $i;
 				if ($i < (sizeof($streets) - 1)) {
 					$streetContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1464,6 +1472,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$postOfficeBoxContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($postOfficeBoxes); $i++) {
 				$postOfficeBoxContainer->addElement(new htmlInputField('postOfficeBox' . $i, $postOfficeBoxes[$i]));
+				$equalWidthElements[] = 'postOfficeBox' . $i;
 				if ($i < (sizeof($postOfficeBoxes) - 1)) {
 					$postOfficeBoxContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1490,6 +1499,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$postalCodeContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($postalCodes); $i++) {
 				$postalCodeContainer->addElement(new htmlInputField('postalCode' . $i, $postalCodes[$i]));
+				$equalWidthElements[] = 'postalCode' . $i;
 				if ($i < (sizeof($postalCodes) - 1)) {
 					$postalCodeContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1516,6 +1526,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$locationContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($locations); $i++) {
 				$locationContainer->addElement(new htmlInputField('l' . $i, $locations[$i]));
+				$equalWidthElements[] = 'l' . $i;
 				if ($i < (sizeof($locations) - 1)) {
 					$locationContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1542,6 +1553,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$stateContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($states); $i++) {
 				$stateContainer->addElement(new htmlInputField('st' . $i, $states[$i]));
+				$equalWidthElements[] = 'st' . $i;
 				if ($i < (sizeof($states) - 1)) {
 					$stateContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1570,6 +1582,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$addressContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($postalAddresses); $i++) {
 				$addressContainer->addElement(new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3));
+				$equalWidthElements[] = 'postalAddress' . $i;
 				if ($i < (sizeof($postalAddresses) - 1)) {
 					$addressContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1598,6 +1611,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$registeredAddressContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($registeredAddresses); $i++) {
 				$registeredAddressContainer->addElement(new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3));
+				$equalWidthElements[] = 'registeredAddress' . $i;
 				if ($i < (sizeof($registeredAddresses) - 1)) {
 					$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1624,6 +1638,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$physicalDeliveryOfficeNameContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($physicalDeliveryOfficeNames); $i++) {
 				$physicalDeliveryOfficeNameContainer->addElement(new htmlInputField('physicalDeliveryOfficeName' . $i, $physicalDeliveryOfficeNames[$i]));
+				$equalWidthElements[] = 'physicalDeliveryOfficeName' . $i;
 				if ($i < (sizeof($physicalDeliveryOfficeNames) - 1)) {
 					$physicalDeliveryOfficeNameContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1640,6 +1655,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$roomNumber = '';
 			if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Room number'), 'roomNumber', $roomNumber, 'roomNumber'), true);
+			$equalWidthElements[] = 'roomNumber';
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')
@@ -1662,6 +1678,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$telephoneNumberContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($telephoneNumbers); $i++) {
 				$telephoneNumberContainer->addElement(new htmlInputField('telephoneNumber' . $i, $telephoneNumbers[$i]));
+				$equalWidthElements[] = 'telephoneNumber' . $i;
 				if ($i < (sizeof($telephoneNumbers) - 1)) {
 					$telephoneNumberContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1688,6 +1705,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$homePhoneContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($homePhones); $i++) {
 				$homePhoneContainer->addElement(new htmlInputField('homePhone' . $i, $homePhones[$i]));
+				$equalWidthElements[] = 'homePhone' . $i;
 				if ($i < (sizeof($homePhones) - 1)) {
 					$homePhoneContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1714,6 +1732,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$mobileContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($mobiles); $i++) {
 				$mobileContainer->addElement(new htmlInputField('mobile' . $i, $mobiles[$i]));
+				$equalWidthElements[] = 'mobile' . $i;
 				if ($i < (sizeof($mobiles) - 1)) {
 					$mobileContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1740,6 +1759,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$facsimileTelephoneNumberContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($facsimileTelephoneNumbers); $i++) {
 				$facsimileTelephoneNumberContainer->addElement(new htmlInputField('facsimileTelephoneNumber' . $i, $facsimileTelephoneNumbers[$i]));
+				$equalWidthElements[] = 'facsimileTelephoneNumber' . $i;
 				if ($i < (sizeof($facsimileTelephoneNumbers) - 1)) {
 					$facsimileTelephoneNumberContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1766,6 +1786,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$mailContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($mails); $i++) {
 				$mailContainer->addElement(new htmlInputField('mail' . $i, $mails[$i]));
+				$equalWidthElements[] = 'mail' . $i;
 				if ($i < (sizeof($mails) - 1)) {
 					$mailContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1792,6 +1813,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$labeledURIContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($labeledURI); $i++) {
 				$labeledURIContainer->addElement(new htmlInputField('labeledURI' . $i, $labeledURI[$i]));
+				$equalWidthElements[] = 'labeledURI' . $i;
 				if ($i < (sizeof($labeledURI) - 1)) {
 					$labeledURIContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1826,6 +1848,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$titleContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($titles); $i++) {
 				$titleContainer->addElement(new htmlInputField('title' . $i, $titles[$i]));
+				$equalWidthElements[] = 'title' . $i;
 				if ($i < (sizeof($titles) - 1)) {
 					$titleContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1842,16 +1865,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$carLicense = '';
 			if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Car license'), 'carLicense', $carLicense, 'carLicense'), true);
+			$equalWidthElements[] = 'carLicense';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
 			$employeeNumber = '';
 			if (isset($this->attributes['employeeNumber'][0])) $employeeNumber = $this->attributes['employeeNumber'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee number'), 'employeeNumber', $employeeNumber, 'employeeNumber'), true);
+			$equalWidthElements[] = 'employeeNumber';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$employeeType = '';
 			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee type'), 'employeeType', $employeeType, 'employeeType'), true);
+			$equalWidthElements[] = 'employeeType';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$businessCategories = array();
@@ -1867,6 +1893,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$businessCategoryContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($businessCategories); $i++) {
 				$businessCategoryContainer->addElement(new htmlInputField('businessCategory' . $i, $businessCategories[$i]));
+				$equalWidthElements[] = 'businessCategory' . $i;
 				if ($i < (sizeof($businessCategories) - 1)) {
 					$businessCategoryContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1893,6 +1920,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$departmentNumberContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($departmentNumbers); $i++) {
 				$departmentNumberContainer->addElement(new htmlInputField('departmentNumber' . $i, $departmentNumbers[$i]));
+				$equalWidthElements[] = 'departmentNumber' . $i;
 				if ($i < (sizeof($departmentNumbers) - 1)) {
 					$departmentNumberContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1920,6 +1948,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$ouContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($ous); $i++) {
 				$ouContainer->addElement(new htmlInputField('ou' . $i, $ous[$i]));
+				$equalWidthElements[] = 'ou' . $i;
 				if ($i < (sizeof($ous) - 1)) {
 					$ouContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -1947,6 +1976,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$oContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($os); $i++) {
 				$oContainer->addElement(new htmlInputField('o' . $i, $os[$i]));
+				$equalWidthElements[] = 'o' . $i;
 				if ($i < (sizeof($os) - 1)) {
 					$oContainer->addElement(new htmlOutputText('<br>', false));
 				}
@@ -2028,6 +2058,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		else {
 			$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
 		}
+		$container->addElement(new htmlEqualWidth($equalWidthElements));
 		return $container; 
 	}
 
