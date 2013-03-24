@@ -336,7 +336,12 @@ function display_LoginPage($config_object) {
 								for($i = 0; $i < count($admins); $i++) {
 									$text = explode(",", $admins[$i]);
 									$text = explode("=", $text[0]);
-									$adminList[$text[1]] = $admins[$i];
+									if (isset($text[1])) {
+										$adminList[$text[1]] = $admins[$i];
+									}
+									else {
+										$adminList[$text[0]] = $admins[$i];
+									}
 								}
 								$userSelect = new htmlSelect('username', $adminList);
 								$userSelect->setHasDescriptiveElements(true);
