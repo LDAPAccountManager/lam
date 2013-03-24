@@ -221,6 +221,26 @@ class posixAccount extends baseModule implements passwordService {
 			array('SSHA'), _("Password hash type"), 'pwdHash'), true);
 		$configOptionsContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), true);
 		$configOptionsContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), true);
+		$hiddenOptionsContainer = new htmlGroup();
+		$hiddenOptionsContainer->colspan = 5;
+		$hiddenOptionsContainerHead = new htmlTable();
+		$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
+		$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
+		$hiddenOptionsContainer->addElement($hiddenOptionsContainerHead);
+		$configContainerOptions = new htmlTable();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hidegecos', false, _('Gecos'), null, false));
+		if (isset($_SESSION['conf_config'])) {
+			$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
+			if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
+				$configContainerOptions->addElement(new htmlOutputText(' '));
+				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hidegon', false, _('Groups of names'), null, false));
+				$configContainerOptions->addElement(new htmlOutputText(' '));
+				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hideposixGroups', false, _('Unix groups'), null, false));
+			}
+		}		
+		$hiddenOptionsContainer->addElement($configContainerOptions);
+		$configOptionsContainer->addElement($hiddenOptionsContainer);
+		
 		$return['config_options']['all'] = $configOptionsContainer;
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
@@ -296,17 +316,19 @@ class posixAccount extends baseModule implements passwordService {
 				'values' => 'true, false',
 				'default' => 'false'
 			),
-			array(
-				'name' => 'posixAccount_gecos',
-				'description' => _('Gecos'),
-				'help' => 'gecos',
-				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
-			)
 			);
+			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+				$return['upload_columns'][] = array(
+					'name' => 'posixAccount_gecos',
+					'description' => _('Gecos'),
+					'help' => 'gecos',
+					'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
+				);
+			}
 			if (self::areGroupOfNamesActive()) {
 				$return['upload_columns'][] = array(
 					'name' => 'posixAccount_gon',
-					'description' => _('Group of names'),
+					'description' => _('Groups of names'),
 					'help' => 'addgroup_upload',
 					'example' => _('group01,group02')
 				);
@@ -336,13 +358,15 @@ class posixAccount extends baseModule implements passwordService {
 				'example' => _('machines'),
 				'required' => true
 			),
-			array(
-				'name' => 'posixAccount_gecos',
-				'description' => _('Gecos'),
-				'help' => 'gecos',
-				'example' => _('pc01,Room 2.34')
-			)
 			);
+			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+				$return['upload_columns'][] = array(
+					'name' => 'posixAccount_gecos',
+					'description' => _('Gecos'),
+					'help' => 'gecos',
+					'example' => _('pc01,Room 2.34')
+				); 
+			}
 		}
 		// available PDF fields
 		if ($this->get_scope() == 'host') {
@@ -354,7 +378,6 @@ class posixAccount extends baseModule implements passwordService {
 		$return['PDF_fields'] = array_merge($return['PDF_fields'], array(
 			'uidNumber' => _('UID number'),
 			'gidNumber' => _('GID number'),
-			'gecos' => _('Gecos'),
 			'primaryGroup' => _('Primary group'),
 			'additionalGroups' => _('Additional groups'),
 			'homeDirectory' => _('Home directory'),
@@ -362,11 +385,18 @@ class posixAccount extends baseModule implements passwordService {
 			'cn' => _('Common name'),
 			'userPassword' => _('Password')
 		));
+		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+			$return['PDF_fields']['gecos'] = _('Gecos');
+		}
 		if (self::areGroupOfNamesActive()) {
-			$return['PDF_fields']['gon'] = _('Group of names');
+			$return['PDF_fields']['gon'] = _('Groups of names');
 		}
 		// help Entries
 		$return['help'] = array(
+			'hiddenOptions' => array(
+				"Headline" => _("Hidden options"),
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
+			),
 			'primaryGroupAsSecondary' => array(
 				'Headline' => _('Set primary group as memberUid'),
 				'Text' => _('Usually, users are not added to groups as memberUid if they have this group as primary group. If your application ignores primary groups then you can select this option to override this behaviour.')
@@ -828,7 +858,9 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($_POST['loginShell'])) {
 			$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		}
-		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
+		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+			if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
+		}
 		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($_POST['uid'] != $this->attributes['uid'][0])) {
 			$errors[] = $this->messages['uid'][0];
 		}
@@ -966,7 +998,10 @@ class posixAccount extends baseModule implements passwordService {
 				$this->attributes['loginShell'][0] = '/bin/false';
 			}
 		}
-		$attributeList = array('gecos', 'homeDirectory');
+		$attributeList = array('homeDirectory');
+		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+			$attributeList[] = 'gecos';
+		}
 		for ($i = 0; $i < sizeof($attributeList); $i++) {
 			if (isset($this->attributes[$attributeList[$i]][0])) {
 				$value = $this->attributes[$attributeList[$i]][0];
@@ -1014,15 +1049,17 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function process_group() {
 		// Unix groups
-		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
-			// add new group
-			$this->groups = @array_merge($this->groups, $_POST['addgroups']);
-		}
-		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
-			$this->groups = array_delete($_POST['removegroups'], $this->groups);
+		if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+			if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
+				// add new group
+				$this->groups = @array_merge($this->groups, $_POST['addgroups']);
+			}
+			elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
+				$this->groups = array_delete($_POST['removegroups'], $this->groups);
+			}
 		}
 		// group of names
-		if (self::areGroupOfNamesActive()) {
+		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_hidegon')) {
 			if (isset($_POST['addgons']) && isset($_POST['addgons_button'])) { // Add groups to list
 				// add new group
 				$this->gonList = @array_merge($this->gonList, $_POST['addgons']);
@@ -1167,9 +1204,11 @@ class posixAccount extends baseModule implements passwordService {
 		$uidNumberInput->setFieldMaxLength(20);
 		$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$return->addElement($uidNumberInput, true);
-		$gecos = '';
-		if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
-		$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
+		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+			$gecos = '';
+			if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
+			$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
+		}
 		$primaryGroup = array();
 		if (isset($this->attributes['gidNumber'][0])) {
 			$primaryGroup[] = $this->attributes['gidNumber'][0];
@@ -1180,9 +1219,11 @@ class posixAccount extends baseModule implements passwordService {
 
 		if ($this->get_scope()=='user') {
 			// additional groups
-			$return->addElement(new htmlOutputText(_('Additional groups')));
-			$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
-			$return->addElement(new htmlHelpLink('addgroup'), true);
+			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+				$return->addElement(new htmlOutputText(_('Additional groups')));
+				$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
+				$return->addElement(new htmlHelpLink('addgroup'), true);
+			}
 			// home directory
 			$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $this->attributes['homeDirectory'][0], 'homeDirectory');
 			$homedirInput->setRequired(true);
@@ -1257,52 +1298,56 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function display_html_group() {
 		$return = new htmlTable();
-		// load list with all groups
-		$groups = $this->findGroups();
-		for ($i = 0; $i < sizeof($groups); $i++) {
-			$groups[$i] = $groups[$i][1];
-		}
-		// remove groups the user is member of from grouplist
-		$groups = array_delete($this->groups, $groups);
-		// Remove primary group from grouplist
-		$group = $this->getGroupName($this->attributes['gidNumber'][0]);
-		$groups = array_flip($groups);
-		unset ($groups[$group]);
-		$groups = array_flip($groups);
-
-		$unixContainer = new htmlTable();
-		$unixContainer->alignment = htmlElement::ALIGN_TOP;
-		$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
-		$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
-		$unixContainer->addElement(new htmlOutputText(''));
-		$unixContainer->addElement(new htmlOutputText(_("Available groups")));
-		$unixContainer->addNewLine();
-		
-		$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
-		$remSelect->setMultiSelect(true);
-		$remSelect->setTransformSingleSelect(false);
-		$unixContainer->addElement($remSelect);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
-		$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
-		$buttonContainer->addElement(new htmlHelpLink('addgroup'));
-		$unixContainer->addElement($buttonContainer);
-		$addSelect = new htmlSelect('addgroups', $groups, null, 15);
-		$addSelect->setMultiSelect(true);
-		$addSelect->setTransformSingleSelect(false);
-		$unixContainer->addElement($addSelect);
-		$unixContainer->addNewLine();
+		if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+			// load list with all groups
+			$groups = $this->findGroups();
+			for ($i = 0; $i < sizeof($groups); $i++) {
+				$groups[$i] = $groups[$i][1];
+			}
+			// remove groups the user is member of from grouplist
+			$groups = array_delete($this->groups, $groups);
+			// Remove primary group from grouplist
+			$group = $this->getGroupName($this->attributes['gidNumber'][0]);
+			$groups = array_flip($groups);
+			unset ($groups[$group]);
+			$groups = array_flip($groups);
 	
-		$return->addElement($unixContainer);
+			$unixContainer = new htmlTable();
+			$unixContainer->alignment = htmlElement::ALIGN_TOP;
+			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
+			$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
+			$unixContainer->addElement(new htmlOutputText(''));
+			$unixContainer->addElement(new htmlOutputText(_("Available groups")));
+			$unixContainer->addNewLine();
+			
+			$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
+			$remSelect->setMultiSelect(true);
+			$remSelect->setTransformSingleSelect(false);
+			$unixContainer->addElement($remSelect);
+			$buttonContainer = new htmlTable();
+			$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
+			$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+			$buttonContainer->addElement(new htmlHelpLink('addgroup'));
+			$unixContainer->addElement($buttonContainer);
+			$addSelect = new htmlSelect('addgroups', $groups, null, 15);
+			$addSelect->setMultiSelect(true);
+			$addSelect->setTransformSingleSelect(false);
+			$unixContainer->addElement($addSelect);
+			$unixContainer->addNewLine();
+		
+			$return->addElement($unixContainer);
+		}
 
-		if (self::areGroupOfNamesActive()) {
-			$return->addElement(new htmlSpacer('100px', null));
+		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_hidegon')) {
+			if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+				$return->addElement(new htmlSpacer('100px', null));
+			}
 			
 			$gons = $this->findGroupOfNames();
 			
 			$gonContainer = new htmlTable();
 			$gonContainer->alignment = htmlElement::ALIGN_TOP;
-			$gonContainer->addElement(new htmlSubTitle(_("Group of names")), true);
+			$gonContainer->addElement(new htmlSubTitle(_("Groups of names")), true);
 			$gonContainer->addElement(new htmlOutputText(_("Selected groups")));
 			$gonContainer->addElement(new htmlOutputText(''));
 			$gonContainer->addElement(new htmlOutputText(_("Available groups")));
@@ -1341,10 +1386,13 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		
 		$return->addNewLine();
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		
+
+		$backGroup = new htmlGroup();
+		$backGroup->colspan = 10;
+		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$return->addElement($backButton);
+		$backGroup->addElement($backButton);
+		$return->addElement($backGroup);
 		return $return;
 	}
 
@@ -1448,7 +1496,7 @@ class posixAccount extends baseModule implements passwordService {
 				foreach ($gons as $dn => $attr) {
 					$gonList[$attr['cn'][0]] = $dn;
 				}
-				$gonSelect = new htmlTableExtendedSelect('posixAccount_gon', $gonList, array(), _('Group of names'), 'addgroup', 10);
+				$gonSelect = new htmlTableExtendedSelect('posixAccount_gon', $gonList, array(), _('Groups of names'), 'addgroup', 10);
 				$gonSelect->setHasDescriptiveElements(true);
 				$gonSelect->setMultiSelect(true);
 				$gonSelect->setTransformSingleSelect(false);
@@ -1558,7 +1606,7 @@ class posixAccount extends baseModule implements passwordService {
 					$gons[] = $allGons[$this->gonList[$i]]['cn'][0];
 				}
 			}
-			$return['posixAccount_gon'] = array('<block><key>' . _('Group of names') . '</key><value>' . implode(", ", $gons) . '</value></block>');
+			$return['posixAccount_gon'] = array('<block><key>' . _('Groups of names') . '</key><value>' . implode(", ", $gons) . '</value></block>');
 		}
 		if (isset($this->clearTextPassword)) {
 			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
@@ -1729,29 +1777,31 @@ class posixAccount extends baseModule implements passwordService {
 				$errors[] = $errMsg;
 			}
 			// GECOS
-			if ($rawAccounts[$i][$ids['posixAccount_gecos']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos')) {
-					$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccounts[$i][$ids['posixAccount_gecos']]);
-				}
-				else {
-					$errMsg = $this->messages['gecos'][0];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
-			else {
-				$gecos = "";
-				if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && ($rawAccounts[$i][$ids['inetOrgPerson_lastName']] != "")) {
-					$gecos = $rawAccounts[$i][$ids['inetOrgPerson_firstName']] . " " . $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
-					if ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") {
-						$gecos = $gecos . ",," . $rawAccounts[$i][$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
-						if ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") {
-							$gecos = $gecos . "," . $rawAccounts[$i][$ids['inetOrgPerson_fax']];
-						}
+			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+				if ($rawAccounts[$i][$ids['posixAccount_gecos']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos')) {
+						$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccounts[$i][$ids['posixAccount_gecos']]);
+					}
+					else {
+						$errMsg = $this->messages['gecos'][0];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
 					}
 				}
-				if ($gecos != "") {
-					$partialAccounts[$i]['gecos'] = $this->checkASCII($gecos);
+				else {
+					$gecos = "";
+					if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && ($rawAccounts[$i][$ids['inetOrgPerson_lastName']] != "")) {
+						$gecos = $rawAccounts[$i][$ids['inetOrgPerson_firstName']] . " " . $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
+						if ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") {
+							$gecos = $gecos . ",," . $rawAccounts[$i][$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
+							if ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") {
+								$gecos = $gecos . "," . $rawAccounts[$i][$ids['inetOrgPerson_fax']];
+							}
+						}
+					}
+					if ($gecos != "") {
+						$partialAccounts[$i]['gecos'] = $this->checkASCII($gecos);
+					}
 				}
 			}
 			// user specific attributes
