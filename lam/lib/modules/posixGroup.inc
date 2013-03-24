@@ -229,6 +229,10 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function display_html_user() {
 		$return = new htmlTable();
+		$filter = '';
+		if (isset($_POST['setFilter'])) {
+			$filter = $_POST['newFilter'];
+		}
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = array();
 		}
@@ -237,14 +241,18 @@ class posixGroup extends baseModule implements passwordService {
 		$users = array();
 		foreach ($userAndGIDs as $user => $userAttrs) {
 			if (!in_array($user, $this->attributes['memberUid'])) {
+				$display = $user . ' (' . $userAttrs['cn'] . ')';
+				if (!empty($filter) && !preg_match('/' . str_replace('*', '.*', $filter) . '/ui', $display)) {
+					continue;
+				}
 				if ($this->attributes['gidNumber'][0] == $userAttrs['gid']) {
 					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
-						$users[$user . ' (' . $userAttrs['cn'] . ')'] = $user;
+							$users[$display] = $user;
 					}
 				}
 				else {
-					$users[$user . ' (' . $userAttrs['cn'] . ')'] = $user;
+					$users[$display] = $user;
 				}
 			}
 		}
@@ -284,10 +292,21 @@ class posixGroup extends baseModule implements passwordService {
 		$addSelect->setHasDescriptiveElements(true);
 		$return->addElement($addSelect);
 		$return->addNewLine();
-	
+		$return->addElement(new htmlOutputText(''));
+		$return->addElement(new htmlOutputText(''));
+		$filterContainer = new htmlGroup();
+		$filterInput = new htmlInputField('newFilter', $filter, 10);
+		$filterInput->setOnKeyPress('SubmitForm(\'setFilter\', event);');
+		$filterContainer->addElement($filterInput);
+		$filterContainer->addElement(new htmlButton('setFilter', _('Filter')));
+		$filterContainer->addElement(new htmlHelpLink('filter'));
+		$filterContainer->addElement(new htmlHiddenInput('filterValue', htmlspecialchars($filter)));
+		$return->addElement($filterContainer, true);
+		
 		// back button
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$return->addElement(new htmlEqualHeight(array('removeusers', 'addusers')));
 		
 		return $return;
 	}
@@ -443,6 +462,11 @@ class posixGroup extends baseModule implements passwordService {
 			'sambaIDPoolDN' => array (
 				"Headline" => _("Samba ID pool DN"),
 				"Text" => _("Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\".")
+			),
+			'filter' => array(
+				"Headline" => _("Filter"),
+				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
+					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
 			),
 		);
 
