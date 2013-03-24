@@ -888,12 +888,16 @@ function extractDNSuffix($dn) {
  *
  * @param String $pwd new password
  * @param array $user LDAP attributes of user
+ * @param String $recipient recipient address (optional, $user['mail'][0] used by default)
  * @return array list of arrays that can be used to create status messages
  */
-function sendPasswordMail($pwd, $user) {
+function sendPasswordMail($pwd, $user, $recipient = null) {
 	$user = array_change_key_case($user, CASE_LOWER);
 	// read mail data
 	$mailTo = $user['mail'][0];
+	if (!empty($recipient)) {
+		$mailTo = $recipient;
+	}
 	$mailFrom = $_SESSION['config']->getLamProMailFrom();
 	$mailReplyTo = $_SESSION['config']->getLamProMailReplyTo();
 	$mailSubject = $_SESSION['config']->getLamProMailSubject();

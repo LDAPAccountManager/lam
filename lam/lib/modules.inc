@@ -748,6 +748,8 @@ class accountContainer {
 	private $titleBarSubtitle = null;
 	/** send password via mail */
 	private $sendPasswordViaMail = null;
+	/** send password via mail to this alternate address */
+	private $sendPasswordViaMailAlternateAddress = null;
 
 	/**
 	 * Returns the account module with the given class name
@@ -1040,8 +1042,11 @@ class accountContainer {
 			$container->addElement(new htmlHelpLink('406'), true);
 		}
 		if (isLAMProVersion() && isset($this->attributes_orig['mail'][0])) {
-			$container->addElement(new htmlTableExtendedInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail')));
+			$pwdMailCheckbox = new htmlTableExtendedInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'));
+			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeSendMailAddress'));
+			$container->addElement($pwdMailCheckbox);
 			$container->addElement(new htmlHelpLink('407'), true);
+			$container->addElement(new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeSendMailAddress', '', '410'));
 		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// password modules
@@ -1134,6 +1139,13 @@ class accountContainer {
 		}
 		if (isLAMProVersion() && $sendMail) {
 			$this->sendPasswordViaMail = $password1;
+			if (!empty($input['sendMailAlternateAddress'])) {
+				if (!get_preg($input['sendMailAlternateAddress'], 'email')) {
+					$return['messages'] .= StatusMessage('ERROR', _('Alternate recipient'), _('Please enter a valid email address!'), array(), true);
+					$return['errorsOccured'] = 'true';
+				}
+				$this->sendPasswordViaMailAlternateAddress = $input['sendMailAlternateAddress'];
+			}
 		}
 		if ($return['errorsOccured'] == 'false') {
 			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
@@ -1780,7 +1792,7 @@ class accountContainer {
 		for ($i=0; $i<count($DNs); $i++) {
 			if (!$stopprocessing) {
 				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
-				// modify attributes
+				// modify attributesabnahme
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
@@ -1825,11 +1837,12 @@ class accountContainer {
 		}
 		// send password mail
 		if (!$stopprocessing && isLAMProVersion() && ($this->sendPasswordViaMail != null)) {
-			$mailMessages = sendPasswordMail($this->sendPasswordViaMail, $prePostModifyAttributes);
+			$mailMessages = sendPasswordMail($this->sendPasswordViaMail, $prePostModifyAttributes, $this->sendPasswordViaMailAlternateAddress);
 			if (sizeof($mailMessages) > 0) {
 				$errors = array_merge($errors, $mailMessages);
 			}
 			$this->sendPasswordViaMail = null;
+			$this->sendPasswordViaMailAlternateAddress = null;
 		}
 		if (!$stopprocessing) {
 			// post modify actions
