@@ -233,52 +233,63 @@ class posixGroup extends baseModule implements passwordService {
 			$this->attributes['memberUid'] = array();
 		}
 		// load list with all users
-		$userAndGIDs = $this->getUserAndGIDs();
+		$userAndGIDs = $this->getUsers();
 		$users = array();
-		foreach ($userAndGIDs as $user => $GID) {
+		foreach ($userAndGIDs as $user => $userAttrs) {
 			if (!in_array($user, $this->attributes['memberUid'])) {
-				if ($this->attributes['gidNumber'][0] == $GID) {
+				if ($this->attributes['gidNumber'][0] == $userAttrs['gid']) {
 					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
-						$users[] = $user;
+						$users[$user . ' (' . $userAttrs['cn'] . ')'] = $user;
 					}
-			}
-			else {
-				$users[] = $user;
+				}
+				else {
+					$users[$user . ' (' . $userAttrs['cn'] . ')'] = $user;
+				}
 			}
 		}
-	}
-	$return->addElement(new htmlSubTitle(_("Group members")), true);
+		$return->addElement(new htmlSubTitle(_("Group members")), true);
+		
+		$return->addElement(new htmlOutputText(_("Selected users")));
+		$return->addElement(new htmlOutputText(''));
+		$return->addElement(new htmlOutputText(_("Available users")));
+		$return->addNewLine();
+		
+		$remUsers = array();
+		if (isset($this->attributes['memberUid'])) {
+			$remUsers = $this->attributes['memberUid'];
+		}
+		$remUsersDescriptive = array();
+		foreach ($remUsers as $user) {
+			if (isset($userAndGIDs[$user])) {
+				$remUsersDescriptive[$user . ' (' . $userAndGIDs[$user]['cn'] . ')'] = $user;
+			}
+			else {
+				$remUsersDescriptive[$user] = $user;
+			}
+		}
+		$remSelect = new htmlSelect('removeusers', $remUsersDescriptive, null, 15);
+		$remSelect->setMultiSelect(true);
+		$remSelect->setTransformSingleSelect(false);
+		$remSelect->setHasDescriptiveElements(true);
+		$return->addElement($remSelect);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
+		$buttonContainer->addElement(new htmlButton('removeusers_button', 'forward.gif', true), true);
+		$buttonContainer->addElement(new htmlHelpLink('members'));
+		$return->addElement($buttonContainer);
+		$addSelect = new htmlSelect('addusers', $users, null, 15);
+		$addSelect->setMultiSelect(true);
+		$addSelect->setTransformSingleSelect(false);
+		$addSelect->setHasDescriptiveElements(true);
+		$return->addElement($addSelect);
+		$return->addNewLine();
 	
-	$return->addElement(new htmlOutputText(_("Selected users")));
-	$return->addElement(new htmlOutputText(''));
-	$return->addElement(new htmlOutputText(_("Available users")));
-	$return->addNewLine();
-	
-	$remGroups = array();
-	if (isset($this->attributes['memberUid'])) {
-		$remGroups = $this->attributes['memberUid'];
-	}
-	$remSelect = new htmlSelect('removeusers', $remGroups, null, 15);
-	$remSelect->setMultiSelect(true);
-	$remSelect->setTransformSingleSelect(false);
-	$return->addElement($remSelect);
-	$buttonContainer = new htmlTable();
-	$buttonContainer->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
-	$buttonContainer->addElement(new htmlButton('removeusers_button', 'forward.gif', true), true);
-	$buttonContainer->addElement(new htmlHelpLink('members'));
-	$return->addElement($buttonContainer);
-	$addSelect = new htmlSelect('addusers', $users, null, 15);
-	$addSelect->setMultiSelect(true);
-	$addSelect->setTransformSingleSelect(false);
-	$return->addElement($addSelect);
-	$return->addNewLine();
-
-	// back button
-	$return->addElement(new htmlSpacer(null, '10px'), true);
-	$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
-	
-	return $return;
+		// back button
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		
+		return $return;
 	}
 
 	/**
@@ -917,18 +928,18 @@ class posixGroup extends baseModule implements passwordService {
 	}
 	
 	/**
-	 * Returns a list of existing users and their GID numbers.
+	 * Returns a list of existing users and their GID numbers and cn.
 	 *
-	 * @return array list in format array(uid => gidNumber)
+	 * @return array list in format array(uid => array('gid' => 123, 'cn' => 'Some user'))
 	 */
-	private function getUserAndGIDs() {
+	private function getUsers() {
 		if ($this->cachedUserToGIDList != null) {
 			return $this->cachedUserToGIDList;
 		}
-		$result = searchLDAPByAttribute('gidNumber', '*', 'posixAccount', array('uid', 'gidNumber'), array('user'));
+		$result = searchLDAPByAttribute('gidNumber', '*', 'posixAccount', array('uid', 'gidNumber', 'cn'), array('user'));
 		$this->cachedUserToGIDList = array();
 		for ($i = 0; $i < sizeof($result); $i++) {
-			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = $result[$i]['gidnumber'][0];
+			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array('gid' => $result[$i]['gidnumber'][0], 'cn' => $result[$i]['cn'][0]);
 		}
 		return $this->cachedUserToGIDList;
 	}
