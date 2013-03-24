@@ -66,8 +66,6 @@ class posixAccount extends baseModule implements passwordService {
 	private $cachedUIDList = null;
 	/** caches the list of known user names */
 	private $cachedUserNameList = null;
-	/** if set to true the suggested user name for John Doe will be john.doe instead of jdoe */
-	protected $SUGGEST_LONG_USER_NAME = false;
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -219,7 +217,6 @@ class posixAccount extends baseModule implements passwordService {
 		$configOptionsContainer->addElement(new htmlSubTitle(_('Options')), true);
 		$configOptionsContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 			array('SSHA'), _("Password hash type"), 'pwdHash'), true);
-		$configOptionsContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), true);
 		$configOptionsContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), true);
 		$hiddenOptionsContainer = new htmlGroup();
 		$hiddenOptionsContainer->colspan = 5;
@@ -239,7 +236,13 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}		
 		$hiddenOptionsContainer->addElement($configContainerOptions);
-		$configOptionsContainer->addElement($hiddenOptionsContainer);
+		$configOptionsContainer->addElement($hiddenOptionsContainer, true);
+		$advancedOptions = new htmlTable();
+		$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), true);
+		$advancedOptions->addElement(new htmlTableExtendedInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'));
+		$advancedOptionsAccordion = new htmlAccordion('posixAccountAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
+		$advancedOptionsAccordion->colspan = 5;
+		$configOptionsContainer->addElement($advancedOptionsAccordion);
 		
 		$return['config_options']['all'] = $configOptionsContainer;
 		// upload
@@ -393,6 +396,11 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// help Entries
 		$return['help'] = array(
+			'userNameSuggestion' => array(
+				"Headline" => _("User name suggestion"),
+				"Text" => _("LAM will suggest a user name based on e.g. first and last name. Here you can specify the suggestion. %sn% will be replaced by the last name. @givenname@ will be replaced by the first character of first name. Only attributes of tab Personal may be used.")
+							. '<br>' . _('Common examples are "@givenname@%sn%" or "%givenname%.%sn%".')
+			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
@@ -2630,20 +2638,36 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return String user name
 	 */
 	protected function getUserNameSuggestion($attrs) {
-		if (isset($attrs['sn'][0])) {
-			if (isset($attrs['givenName'][0]) && ($attrs['givenName'][0] != '')) {
-				if ($this->SUGGEST_LONG_USER_NAME) {
-					return preg_replace('/[^a-z0-9_\\.-]/', '', strtolower($attrs['givenName'][0] . '.' . $attrs['sn'][0]));
+		$attributes = array_change_key_case($attrs, CASE_LOWER);
+		$format = '@givenname@%sn%';
+		if (isset($this->moduleSettings['posixAccount_userNameSuggestion'][0])) {
+			$format = strtolower($this->moduleSettings['posixAccount_userNameSuggestion'][0]);
+		}
+		// search for @key@ wildcards in format string and replace with first character of attribute
+		$wildcards = array();
+		if (preg_match_all('/@([^@]|[a-zA-Z_-])+@/', $format, $wildcards) > 0) {
+			for ($i = 0; $i < sizeof($wildcards[0]); $i++) {
+				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
+				$value = '';
+				if (isset($attributes[$wc][0])) {
+					$value = $attributes[$wc][0][0];
 				}
-				else {
-					return preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['givenName'][0][0] . $attrs['sn'][0]));
-				}
-			}
-			else {
-				return preg_replace('/[^a-z0-9_-]/', '', strtolower($attrs['sn'][0]));
+				$format = str_replace('@' . $wc . '@', $value, $format);
 			}
 		}
-		return null;
+		// search for %key% wildcards in format string and replace with attribute
+		$wildcards = array();
+		if (preg_match_all('/%([^%]|[a-zA-Z_-])+%/', $format, $wildcards) > 0) {
+			for ($i = 0; $i < sizeof($wildcards[0]); $i++) {
+				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
+				$value = '';
+				if (isset($attributes[$wc][0])) {
+					$value = $attributes[$wc][0];
+				}
+				$format = str_replace('%' . $wc . '%', $value, $format);
+			}
+		}
+		return $format;
 	}
 	
 	/**

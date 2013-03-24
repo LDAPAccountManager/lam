@@ -2973,4 +2973,78 @@ class htmlSortableList extends htmlElement {
 
 }
 
+/**
+ * Creates a list of content elements in accordion style.
+ * HTML special characters must be escaped before providing to htmlAccordion.
+ */
+class htmlAccordion extends htmlElement {
+
+	private $id = null;
+	private $elements = null;
+	private $openInitial = '1';
+	private $collapsible = false;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param String $id HTML ID
+	 * @param array $elements list of content elements array('title' => htmlElement)
+	 * @param String $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
+	 * @param boolean $collapsible specifies if all elements may be closed at the same time (default: false, true if $openInitial is false)
+	 */
+	function __construct($id, $elements, $openInitial = '0', $collapsible = false) {
+		$this->id = $id;
+		$this->elements = $elements;
+		$this->openInitial = $openInitial;
+		if (($openInitial === 'false') || ($openInitial === false)) {
+			$this->collapsible = true;
+		}
+		else {
+			$this->collapsible = $collapsible;
+		}
+	}
+	
+	/**
+	 * Prints the HTML code for this element.
+	 * 
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$result = array();
+		$collapsible = 'false';
+		if ($this->collapsible) {
+			$collapsible = 'true';
+		}
+		$active = 'false';
+		if ($this->openInitial !== false) {
+			$active = $this->openInitial;
+		}
+		echo '<div id="' . $this->id . '">';
+		foreach ($this->elements as $label => $content) {
+			echo '<h3>' . $label . '</h3>';
+			echo '<div>';
+			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+			echo '</div>';
+		}
+		echo '</div>';
+		$script = 'jQuery(function() {
+						$( "#' . $this->id . '" ).accordion({
+						collapsible: ' . $collapsible . ',
+						active: ' . $active . '
+						});
+					});';
+		$js = new htmlJavaScript($script);
+		$js->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		return $result;
+	}
+
+	
+}
+
 ?>
