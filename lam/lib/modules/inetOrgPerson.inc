@@ -41,6 +41,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 	private $cachedManagers = null;
 	/** clear text password */
 	private $clearTextPassword = null;
+	/** cache for departments */
+	private $departmentCache = null;
+	/** organization cache */
+	private $oCache = null;
+	/** organizational unit cache */
+	private $ouCache = null;
+	/** title cache */
+	private $titleCache = null;
+	/** employee type cache */
+	private $employeeTypeCache = null;
+	/** business category cache */
+	private $businessCategoryCache = null;
 	
 	/**
 	* This function fills the message array.
@@ -1355,6 +1367,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
+		$this->initCache();
 		$equalWidthElements = array();
 		$container = new htmlTable();
 		$fieldContainer = new htmlTable();
@@ -1847,7 +1860,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($titleLabel);
 			$titleContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($titles); $i++) {
-				$titleContainer->addElement(new htmlInputField('title' . $i, $titles[$i]));
+				$titleInput = new htmlInputField('title' . $i, $titles[$i]);
+				$titleInput->enableAutocompletion($this->titleCache);
+				$titleContainer->addElement($titleInput);
 				$equalWidthElements[] = 'title' . $i;
 				if ($i < (sizeof($titles) - 1)) {
 					$titleContainer->addElement(new htmlOutputText('<br>', false));
@@ -1876,7 +1891,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
 			$employeeType = '';
 			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee type'), 'employeeType', $employeeType, 'employeeType'), true);
+			$employeeTypeInput = new htmlTableExtendedInputField(_('Employee type'), 'employeeType', $employeeType, 'employeeType');
+			$employeeTypeInput->enableAutocompletion($this->employeeTypeCache);
+			$fieldContainer->addElement($employeeTypeInput, true);
 			$equalWidthElements[] = 'employeeType';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
@@ -1892,7 +1909,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($businessCategoryLabel);
 			$businessCategoryContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($businessCategories); $i++) {
-				$businessCategoryContainer->addElement(new htmlInputField('businessCategory' . $i, $businessCategories[$i]));
+				$businessCategoryInput = new htmlInputField('businessCategory' . $i, $businessCategories[$i]);
+				$businessCategoryInput->enableAutocompletion($this->businessCategoryCache);
+				$businessCategoryContainer->addElement($businessCategoryInput);
 				$equalWidthElements[] = 'businessCategory' . $i;
 				if ($i < (sizeof($businessCategories) - 1)) {
 					$businessCategoryContainer->addElement(new htmlOutputText('<br>', false));
@@ -1919,7 +1938,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($departmentNumberLabel);
 			$departmentNumberContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($departmentNumbers); $i++) {
-				$departmentNumberContainer->addElement(new htmlInputField('departmentNumber' . $i, $departmentNumbers[$i]));
+				$departmentInput = new htmlInputField('departmentNumber' . $i, $departmentNumbers[$i]);
+				$departmentInput->enableAutocompletion($this->departmentCache);
+				$departmentNumberContainer->addElement($departmentInput);
 				$equalWidthElements[] = 'departmentNumber' . $i;
 				if ($i < (sizeof($departmentNumbers) - 1)) {
 					$departmentNumberContainer->addElement(new htmlOutputText('<br>', false));
@@ -1947,7 +1968,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($ouLabel);
 			$ouContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($ous); $i++) {
-				$ouContainer->addElement(new htmlInputField('ou' . $i, $ous[$i]));
+				$ouInput = new htmlInputField('ou' . $i, $ous[$i]);
+				$ouInput->enableAutocompletion($this->ouCache);
+				$ouContainer->addElement($ouInput);
 				$equalWidthElements[] = 'ou' . $i;
 				if ($i < (sizeof($ous) - 1)) {
 					$ouContainer->addElement(new htmlOutputText('<br>', false));
@@ -1975,7 +1998,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($oLabel);
 			$oContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($os); $i++) {
-				$oContainer->addElement(new htmlInputField('o' . $i, $os[$i]));
+				$oInput = new htmlInputField('o' . $i, $os[$i]);
+				$oInput->enableAutocompletion($this->oCache);
+				$oContainer->addElement($oInput);
 				$equalWidthElements[] = 'o' . $i;
 				if ($i < (sizeof($os) - 1)) {
 					$oContainer->addElement(new htmlOutputText('<br>', false));
@@ -3512,6 +3537,69 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->cachedManagers[getAbstractDN($dnUsers[$i])] = $dnUsers[$i];
 		}
 		return $this->cachedManagers;		
+	}
+	
+	/**
+	 * Loads cached data from LDAP such as departmets etc.
+	 */
+	private function initCache() {
+		if ($this->departmentCache != null) {
+			return;
+		}
+		$attrs = array();
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
+			$attrs[] = 'departmentNumber';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
+			$attrs[] = 'ou';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$attrs[] = 'o';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
+			$attrs[] = 'title';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$attrs[] = 'employeeType';
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$attrs[] = 'businessCategory';
+		}
+		$departments = array();
+		$ous = array();
+		$os = array();
+		$titles = array();
+		$employeeTypes = array();
+		$businessCategories = array();
+		if (sizeof($attrs) > 0) {
+			$result = searchLDAPByFilter('(objectClass=inetOrgPerson)', $attrs, array($this->get_scope()));
+			foreach ($result as $attributes) {
+				if (isset($attributes['departmentnumber'])) {
+					$departments = array_merge($departments, $attributes['departmentnumber']);
+				}
+				if (isset($attributes['ou'])) {
+					$ous = array_merge($ous, $attributes['ou']);
+				}
+				if (isset($attributes['o'])) {
+					$os = array_merge($os, $attributes['o']);
+				}
+				if (isset($attributes['title'])) {
+					$titles = array_merge($titles, $attributes['title']);
+				}
+				if (isset($attributes['employeetype'])) {
+					$employeeTypes = array_merge($employeeTypes, $attributes['employeetype']);
+				}
+				if (isset($attributes['businesscategory'])) {
+					$businessCategories = array_merge($businessCategories, $attributes['businesscategory']);
+				}
+			}
+		}
+		$this->departmentCache = array_values(array_unique($departments));
+		$this->oCache = array_values(array_unique($os));
+		$this->ouCache = array_values(array_unique($ous));
+		$this->titleCache = array_values(array_unique($titles));
+		$this->employeeTypeCache = array_values(array_unique($employeeTypes));
+		$this->businessCategoryCache = array_values(array_unique($businessCategories));
 	}
 
 }
