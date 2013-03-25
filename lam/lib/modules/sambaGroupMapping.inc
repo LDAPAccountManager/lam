@@ -66,14 +66,10 @@ class sambaGroupMapping extends baseModule {
 			_('Domain policy admins') => 520);
 
 		$this->sambaGroupTypes = array (
-			_('User') => 1,
 			_('Domain group') => 2,
-			_('Domain') => 3,
 			_('Local group') => 4,
 			_('Builtin group') => 5,
-			_('Deleted account') => 6,
-			_('Invalid account') => 7
-			);
+		);
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
