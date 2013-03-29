@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -112,6 +112,9 @@ class group extends baseType {
 		elseif ($container->getAccountModule('rfc2307bisPosixGroup') != null) {
 			$attributes = $container->getAccountModule('rfc2307bisPosixGroup')->getAttributes();
 		}
+		elseif ($container->getAccountModule('windowsGroup') != null) {
+			$attributes = $container->getAccountModule('windowsGroup')->getAttributes();
+		}
 		$gonAttributes = null;
 		if ($container->getAccountModule('groupOfNames') != null) {
 			$gonAttributes = $container->getAccountModule('groupOfNames')->getAttributes();
@@ -152,6 +155,9 @@ class group extends baseType {
 		}
 		elseif ($container->getAccountModule('rfc2307bisPosixGroup') != null) {
 			$attributes = $container->getAccountModule('rfc2307bisPosixGroup')->getAttributes();
+		}
+		elseif ($container->getAccountModule('windowsGroup') != null) {
+			$attributes = $container->getAccountModule('windowsGroup')->getAttributes();
 		}
 		$gonAttributes = null;
 		if ($container->getAccountModule('groupOfNames') != null) {
