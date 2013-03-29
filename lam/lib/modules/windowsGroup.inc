@@ -108,7 +108,7 @@ class windowsGroup extends baseModule {
 			),
 			'description' => array(
 				"Headline" => _('Description'), 'attr' => 'description',
-				"Text" => _('Group description. If left empty group name will be used.')
+				"Text" => _('Please enter a descriptive text for this group.')
 			),
 			'info' => array(
 				"Headline" => _('Notes'), 'attr' => 'info',
@@ -167,12 +167,6 @@ class windowsGroup extends baseModule {
 				'example' => _('Domain administrators'),
 			),
 			array(
-				'name' => 'windowsGroup_mail',
-				'description' => _('Email address'),
-				'help' => 'mail',
-				'example' => _('group@company.com'),
-			),
-			array(
 				'name' => 'windowsGroup_scope',
 				'description' => _('Group scope'),
 				'help' => 'groupScope',
@@ -195,6 +189,14 @@ class windowsGroup extends baseModule {
 				'example' => 'uid=user1,o=test;uid=user2,o=test',
 			),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsGroup_mail',
+				'description' => _('Email address'),
+				'help' => 'mail',
+				'example' => _('group@company.com'),
+			);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'cn' => _('Group name'),

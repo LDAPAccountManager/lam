@@ -112,6 +112,9 @@ class host extends baseType {
 		elseif ($container->getAccountModule('device') != null) {
 			$attributes = $container->getAccountModule('device')->getAttributes();
 		}
+		elseif ($container->getAccountModule('windowsHost') != null) {
+			$attributes = $container->getAccountModule('windowsHost')->getAttributes();
+		}
 		// check if a user name is set
 		if (isset($attributes['uid'][0])) {
 			return htmlspecialchars($attributes['uid'][0]);
@@ -141,6 +144,9 @@ class host extends baseType {
 		}
 		elseif ($container->getAccountModule('device') != null) {
 			$attributes = $container->getAccountModule('device')->getAttributes();
+		}
+		elseif ($container->getAccountModule('windowsHost') != null) {
+			$attributes = $container->getAccountModule('windowsHost')->getAttributes();
 		}
 		$sambaAttributes = null;
 		if ($container->getAccountModule('sambaSamAccount') != null) {

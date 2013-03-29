@@ -117,6 +117,9 @@ class user extends baseType {
 		if ($container->getAccountModule('inetOrgPerson') != null) {
 			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
 		}
+		elseif ($container->getAccountModule('windowsUser') != null) {
+			$personalAttributes = $container->getAccountModule('windowsUser')->getAttributes();
+		}
 		$accountAttributes = null;
 		if ($container->getAccountModule('account') != null) {
 			$accountAttributes = $container->getAccountModule('account')->getAttributes();
@@ -181,6 +184,9 @@ class user extends baseType {
 		$personalAttributes = null;
 		if ($container->getAccountModule('inetOrgPerson') != null) {
 			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
+		}
+		elseif ($container->getAccountModule('windowsUser') != null) {
+			$personalAttributes = $container->getAccountModule('windowsUser')->getAttributes();
 		}
 		if ($personalAttributes == null) {
 			return $this->buildAccountStatusIcon($container);
