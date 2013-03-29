@@ -34,6 +34,41 @@ $Id$
 */
 class windowsGroup extends baseModule {
 	
+	/** possible group types (e.g. distribution) */
+	private $groupTypes;
+	/** possible group scopes (e.g. universal) */
+	private $groupScopes;
+	
+	/** security group */
+	const TYPE_SECURITY = 'security';
+	/** email list */
+	const TYPE_DISTRIBUTION = 'distribution';
+	/** domain local group */
+	const SCOPE_DOMAIN_LOCAL = 'domain';
+	/** global group */
+	const SCOPE_GLOBAL = 'global';
+	/** universal group */
+	const SCOPE_UNIVERSAL = 'universal';
+	
+	/**
+	* Creates a new module for Samba 3 groups.
+	*
+	* @param string $scope account type
+	*/
+	function __construct($scope) {
+		$this->groupTypes = array(
+			_('Security') => windowsGroup::TYPE_SECURITY,
+			_('Distribution') => windowsGroup::TYPE_DISTRIBUTION,
+		);
+		$this->groupScopes = array(
+			_('Domain local') => windowsGroup::SCOPE_DOMAIN_LOCAL,
+			_('Global') => windowsGroup::SCOPE_GLOBAL,
+			_('Universal') => windowsGroup::SCOPE_UNIVERSAL,
+		);
+		// call parent constructor
+		parent::__construct($scope);
+	}
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -60,7 +95,7 @@ class windowsGroup extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('group');
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName');
+		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType');
 		// help Entries
 		$return['help'] = array(
 			'hiddenOptions' => array(
@@ -87,6 +122,18 @@ class windowsGroup extends baseModule {
 				"Headline" => _('Members'), 'attr' => 'member',
 				"Text" => _('This is a list of members of this group.')
 			),
+			'memberList' => array(
+				"Headline" => _('Members'), 'attr' => 'member',
+				"Text" => _('This is a list of members of this group. Multiple members are separated by semicolons.')
+			),
+			'groupType' => array(
+				"Headline" => _('Group type'), 'attr' => 'groupType',
+				"Text" => _('Security groups are used for permission management and distribution groups as email lists.')
+			),
+			'groupScope' => array(
+				"Headline" => _('Group scope'), 'attr' => 'groupType',
+				"Text" => _('Please specify the group scope.')
+			),
 		);
 		// configuration settings
 		$configContainer = new htmlTable();
@@ -100,6 +147,53 @@ class windowsGroup extends baseModule {
 		$return['config_options']['all'] = $configContainer;
 		// upload fields
 		$return['upload_columns'] = array(
+			array(
+				'name' => 'windowsGroup_name',
+				'description' => _('Group name'),
+				'help' => 'cn',
+				'example' => _('Domain administrators'),
+				'required' => true
+			),
+			array(
+				'name' => 'windowsGroup_description',
+				'description' => _('Description'),
+				'help' => 'description',
+				'example' => _('Domain administrators'),
+			),
+			array(
+				'name' => 'windowsGroup_notes',
+				'description' => _('Notes'),
+				'help' => 'info',
+				'example' => _('Domain administrators'),
+			),
+			array(
+				'name' => 'windowsGroup_mail',
+				'description' => _('Email address'),
+				'help' => 'mail',
+				'example' => _('group@company.com'),
+			),
+			array(
+				'name' => 'windowsGroup_scope',
+				'description' => _('Group scope'),
+				'help' => 'groupScope',
+				'values' => implode(', ', array_values($this->groupScopes)),
+				'example' => windowsGroup::SCOPE_GLOBAL,
+				'default' => windowsGroup::SCOPE_GLOBAL,
+			),
+			array(
+				'name' => 'windowsGroup_type',
+				'description' => _('Group type'),
+				'help' => 'groupType',
+				'values' => implode(', ', array_values($this->groupTypes)),
+				'example' => windowsGroup::TYPE_SECURITY,
+				'default' => windowsGroup::TYPE_SECURITY,
+			),
+			array(
+				'name' => 'windowsGroup_members',
+				'description' => _('Members'),
+				'help' => 'memberList',
+				'example' => 'uid=user1,o=test;uid=user2,o=test',
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -107,6 +201,8 @@ class windowsGroup extends baseModule {
 			'description' => _('Description'),
 			'info' => _('Notes'),
 			'member' => _('Members'),
+			'groupType' => _('Group type'),
+			'groupScope' => _('Group scope'),
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
 			$return['PDF_fields']['mail'] = _('Email address');
@@ -122,6 +218,8 @@ class windowsGroup extends baseModule {
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_mail', _('Please enter a valid email address!'));
+		$this->messages['groupScope'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupScope', _('Please enter a valid group scope.'));
+		$this->messages['groupType'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupType', _('Please enter a valid group type.'));
 	}
 
 	/**
@@ -136,6 +234,51 @@ class windowsGroup extends baseModule {
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
 			$this->addSimpleInputTextField($container, 'mail', _('Email address'), false);
 		}
+		// group type
+		$groupType = windowsGroup::TYPE_SECURITY;
+		$groupScope = windowsGroup::SCOPE_GLOBAL;
+		if (isset($this->attributes['groupType'][0])) {
+			if ($this->attributes['groupType'][0] & 2) {
+				$groupScope = windowsGroup::SCOPE_GLOBAL;
+			}
+			elseif ($this->attributes['groupType'][0] & 4) {
+				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
+			}
+			elseif ($this->attributes['groupType'][0] & 8) {
+				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
+			}
+			if ($this->attributes['groupType'][0] & 0x80000000) {
+				$groupType = windowsGroup::TYPE_SECURITY;
+			}
+			else {
+				$groupType = windowsGroup::TYPE_DISTRIBUTION;
+			}
+		}
+		$scopeList = $this->groupScopes;
+		// do not allow invalid conversions
+		if (isset($this->orig['groupType'][0])) {
+			$flippedScopes = array_flip($this->groupScopes);
+			if ($this->orig['groupType'][0] & 2) {
+				// no change from global to domain local
+				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_DOMAIN_LOCAL]]);
+			}
+			elseif ($this->orig['groupType'][0] & 4) {
+				// no change from domain local to global
+				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_GLOBAL]]);
+			}
+		}
+		$groupScopeSelect = new htmlTableExtendedSelect('groupScope', $scopeList, array($groupScope), _('Group scope'), 'groupScope');
+		$groupScopeSelect->setHasDescriptiveElements(true);
+		$container->addElement($groupScopeSelect, true);
+		$groupTypeSelect = new htmlTableExtendedSelect('groupType', $this->groupTypes, array($groupType), _('Group type'), 'groupType');
+		$groupTypeSelect->setHasDescriptiveElements(true);
+		$container->addElement($groupTypeSelect, true);
+		// notes
+		$info = '';
+		if (isset($this->attributes['info'][0])) {
+			$info = $this->attributes['info'][0];
+		}
+		$container->addElement(new htmlTableExtendedInputTextarea('info', $info, 30, 5, _('Notes'), 'info'), true);
 		// group members
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		$container->addElement(new htmlOutputText(_("Group members")));
@@ -158,6 +301,7 @@ class windowsGroup extends baseModule {
 		}
 		$container->addElement(new htmlOutputText(''));
 		$container->addElement($members, true);
+		$container->addElement(new htmlEqualWidth(array('groupType', 'groupScope')));
 		return $container;
 	}
 
@@ -184,6 +328,24 @@ class windowsGroup extends baseModule {
 				$return[] = $this->messages['mail'][0];
 			}
 		}
+		// group scope
+		switch ($_POST['groupScope']) {
+			case windowsGroup::SCOPE_DOMAIN_LOCAL:
+				$this->attributes['groupType'][0] = 4;
+				break;
+			case windowsGroup::SCOPE_GLOBAL:
+				$this->attributes['groupType'][0] = 2;
+				break;
+			case windowsGroup::SCOPE_UNIVERSAL:
+				$this->attributes['groupType'][0] = 8;
+				break;
+		}
+		// group type
+		if ($_POST['groupType'] == windowsGroup::TYPE_SECURITY) {
+			$this->attributes['groupType'][0] = $this->attributes['groupType'][0] - 2147483648;
+		}
+		// notes
+		$this->attributes['info'][0] = $_POST['info'];
 		return $return;
 	}
 	
@@ -317,12 +479,87 @@ class windowsGroup extends baseModule {
 	* @return array list of error messages if any
 	*/
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
-		$messages = array();
+		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('group', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'group';
+			// cn + sAMAccountName
+			if ($rawAccounts[$i][$ids['windowsGroup_name']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsGroup_name']], 'groupname')) {
+					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsGroup_name']];
+					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsGroup_name']];
+				}
+				else {
+					$errMsg = $this->messages['cn'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// description
+			if ($rawAccounts[$i][$ids['windowsGroup_description']] != "") {
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsGroup_description']];
+			}
+			// notes
+			if ($rawAccounts[$i][$ids['windowsGroup_notes']] != "") {
+				$partialAccounts[$i]['info'] = $rawAccounts[$i][$ids['windowsGroup_notes']];
+			}
+			// email
+			if ($rawAccounts[$i][$ids['windowsGroup_mail']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsGroup_mail']], 'email')) {
+					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsGroup_mail']];
+				}
+				else {
+					$errMsg = $this->messages['mail'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// add members
+			if ($rawAccounts[$i][$ids['windowsGroup_members']] != "") {
+				$partialAccounts[$i]['member'] = explode(";", $rawAccounts[$i][$ids['windowsGroup_members']]);
+			}
+			// group scope
+			if ($rawAccounts[$i][$ids['windowsGroup_scope']] != "") {
+				if (in_array($rawAccounts[$i][$ids['windowsGroup_scope']], $this->groupScopes)) {
+					switch ($rawAccounts[$i][$ids['windowsGroup_scope']]) {
+						case windowsGroup::SCOPE_DOMAIN_LOCAL:
+							$partialAccounts[$i]['groupType'] = 4;
+							break;
+						case windowsGroup::SCOPE_GLOBAL:
+							$partialAccounts[$i]['groupType'] = 2;
+							break;
+						case windowsGroup::SCOPE_UNIVERSAL:
+							$partialAccounts[$i]['groupType'] = 8;
+							break;
+					}
+				}
+				else {
+					$errMsg = $this->messages['groupScope'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			else {
+				$partialAccounts[$i]['groupType'] = 2;
+			}
+			// group type
+			if ($rawAccounts[$i][$ids['windowsGroup_type']] != "") {
+				if (in_array($rawAccounts[$i][$ids['windowsGroup_type']], $this->groupTypes)) {
+					if ($rawAccounts[$i][$ids['windowsGroup_type']] == windowsGroup::TYPE_SECURITY) {
+						$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
+					}
+				}
+				else {
+					$errMsg = $this->messages['groupType'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			else {
+				$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
+			}
 		}
-		return $messages;
+		return $errors;
 	}
 	
 	/**
@@ -334,6 +571,32 @@ class windowsGroup extends baseModule {
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'info', _('Notes'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
+		// group type
+		$groupType = windowsGroup::TYPE_SECURITY;
+		$groupScope = windowsGroup::SCOPE_GLOBAL;
+		if (isset($this->attributes['groupType'][0])) {
+			if ($this->attributes['groupType'][0] & 2) {
+				$groupScope = windowsGroup::SCOPE_GLOBAL;
+			}
+			elseif ($this->attributes['groupType'][0] & 4) {
+				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
+			}
+			elseif ($this->attributes['groupType'][0] & 8) {
+				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
+			}
+			if ($this->attributes['groupType'][0] & 0x80000000) {
+				$groupType = windowsGroup::TYPE_SECURITY;
+			}
+			else {
+				$groupType = windowsGroup::TYPE_DISTRIBUTION;
+			}
+		}
+		$groupTypeLabels = array_flip($this->groupTypes);
+		$groupType = $groupTypeLabels[$groupType];
+		$groupScopeLabels = array_flip($this->groupScopes);
+		$groupScope = $groupScopeLabels[$groupScope];
+		$return[get_class($this) . '_groupScope'] = array('<block><key>' . _('Group scope') . '</key><value>' . $groupScope . '</value></block>');
+		$return[get_class($this) . '_groupType'] = array('<block><key>' . _('Group type') . '</key><value>' . $groupType . '</value></block>');
 		// members
 		if (sizeof($this->attributes['member']) > 0) {
 			$memberList = array();
