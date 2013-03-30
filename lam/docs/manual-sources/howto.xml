@@ -4959,7 +4959,7 @@ Run slapindex to rebuild the index.
             </tr>
 
             <tr>
-              <th align="left" rowspan="23"><inlinemediaobject>
+              <th align="left" rowspan="24"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_user.png" />
                   </imageobject>
@@ -5095,6 +5095,12 @@ Run slapindex to rebuild the index.
               <td>Telephone number</td>
 
               <td></td>
+            </tr>
+
+            <tr>
+              <td>User certificates</td>
+
+              <td>Upload of user certificates in PEM or DER format</td>
             </tr>
 
             <tr>
