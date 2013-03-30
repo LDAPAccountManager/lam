@@ -54,6 +54,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	/** business category cache */
 	private $businessCategoryCache = null;
 	
+	/** session variable for existing user certificates in self service */
+	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
+	
 	/**
 	* This function fills the message array.
 	**/
@@ -3204,7 +3207,142 @@ class inetOrgPerson extends baseModule implements passwordService {
 				new htmlOutputText(_('Job title')), $titleField
 			));
 		}
+		if (in_array('userCertificate', $fields)) {
+			$userCertificates = array();
+			if (isset($attributes['userCertificate'][0])) {
+				$userCertificates = $attributes['userCertificate'];
+			}
+			elseif (isset($attributes['userCertificate;binary'][0])) {
+				$userCertificates = $attributes['userCertificate;binary'];
+			}
+			$_SESSION[self::SESS_CERTIFICATES_LIST] = $userCertificates;
+			$certTable = new htmlTable();
+			$certTable->addElement(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()), true);
+			// JavaScript functions
+			$certTable->addElement($this->getSelfServiceUserCertificatesJSBlock(), true);
+			// upload button
+			$uploadButtons = new htmlGroup();
+			$uploadButtons->addElement(new htmlDiv('inetOrgPersonCertUploadId', new htmlOutputText('')), true);
+			$certUpload = new htmlJavaScript('inetOrgPersonUploadCert(\'inetOrgPersonCertUploadId\');');
+			$uploadButtons->addElement($certUpload);
+			$certTable->addElement($uploadButtons, true);
+			// upload status
+			$uploadStatus = new htmlDiv('inetOrgPerson_upload_status_cert', new htmlOutputText(''));
+			$uploadStatus->setCSSClasses(array('qq-upload-list'));
+			$uploadStatus->colspan = 7;
+			$certTable->addElement($uploadStatus, true);
+			$certLabel = new htmlOutputText(_('User certificates'));
+			$certLabel->alignment = htmlElement::ALIGN_TOP;
+			$userCertificatesCells = array($certLabel, $certTable);
+			$userCertificatesRow = new htmlTableRow($userCertificatesCells);
+			$return['userCertificate'] = $userCertificatesRow;
+		}
 		return $return;
+	}
+	
+	/**
+	 * Returns the meta HTML code to display the certificate area.
+	 * This also includes the file upload.
+	 * 
+	 * @return htmlTable certificate content
+	 */
+	private static function getSelfServiceUserCertificates() {
+		$userCertificates = $_SESSION[self::SESS_CERTIFICATES_LIST];
+		$content = new htmlTable();
+		if (sizeof($userCertificates) > 0) {
+			$certTable = new htmlTable();
+			for ($i = 0; $i < sizeof($userCertificates); $i++) {
+				$filename = 'userCertificate' . mt_rand() . '.der';
+				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
+				fwrite($out, $userCertificates[$i]);
+				fclose ($out);
+				$path = '../../tmp/' . $filename;
+				$saveLink = new htmlLink('', $path, '../../graphics/save.png');
+				$saveLink->setTitle(_('Save'));
+				$saveLink->setTargetWindow('_blank');
+				$certTable->addElement($saveLink);
+				$delLink = new htmlLink('', '#', '../../graphics/del.png');
+				$delLink->setTitle(_('Delete'));
+				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . ')');
+				$certTable->addElement($delLink);
+				if (function_exists('openssl_x509_parse')) {
+					$pem = @chunk_split(@base64_encode($userCertificates[$i]), 64, "\n");
+					if (!empty($pem)) {
+						$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
+						$pemData = @openssl_x509_parse($pem);
+						$data = array();
+						if (isset($pemData['serialNumber'])) {
+							$data[] = $pemData['serialNumber'];
+						}
+						if (isset($pemData['name'])) {
+							$data[] = $pemData['name'];
+						}
+						if (sizeof($data) > 0) {
+							$certTable->addElement(new htmlOutputText(implode(': ', $data)));
+						}
+					}
+				}
+				$certTable->addNewLine();
+			}
+			$content->addElement($certTable, true);
+		}
+		return $content;
+	}
+	
+	/**
+	 * Returns the Java Script functions to manage the certificates.
+	 * 
+	 * @return htmlJavaScript JS block
+	 */
+	private static function getSelfServiceUserCertificatesJSBlock() {
+		$content = '
+			function inetOrgPersonDeleteCertificate(id) {
+				var actionJSON = {
+					"action": "delete",
+					"id": id
+				};
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\', {jsonInput: actionJSON}, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
+			}
+			
+			function inetOrgPersonDeleteCertificateHandleReply(data) {
+				if (data.errorsOccured == "false") {
+					jQuery(\'#userCertificateDiv\').html(data.html);
+				}
+				else {
+					alert(data.errormessage);
+				}
+			}
+			
+			function inetOrgPersonUploadCert(elementID) {
+				var uploadStatus = document.getElementById(\'inetOrgPerson_upload_status_cert\');
+				var uploader = new qq.FineUploader({
+					element: document.getElementById(elementID),
+					listElement: uploadStatus,
+					request: {
+						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
+						forceMultipart: true,
+						params: {
+							action: \'ajaxCertUpload\'
+						}
+					},
+					multiple: false,
+					callbacks: {
+						onComplete: function(id, fileName, data) {
+							if (data.success) {
+								if (data.html) {
+									jQuery(\'#userCertificateDiv\').html(data.html);
+								}
+							}
+							else {
+								alert(data.error);
+							}
+						}
+					}
+				});		
+			}
+			
+			';
+		return new htmlJavaScript($content);
 	}
 
 	/**
@@ -3447,6 +3585,21 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			elseif (isset($attributes['title'])) unset($attributesNew['title']);
 		}
+		// user certificates
+		if (in_array('userCertificate', $fields)) {
+			$userCertificates = $_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST];
+			$userCertificatesAttrName = 'userCertificate;binary';
+			if (isset($attributes['userCertificate'])) {
+				$userCertificatesAttrName = 'userCertificate';
+			}
+			$attributeNames[] = $userCertificatesAttrName;
+			if (sizeof($userCertificates) > 0) {
+				$attributesNew[$userCertificatesAttrName] = $userCertificates;
+			}
+			elseif (isset($attributesNew[$userCertificatesAttrName])) {
+				unset($attributesNew[$userCertificatesAttrName]);
+			}
+		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
 			$attrName = $attributeNames[$i];
@@ -3474,6 +3627,103 @@ class inetOrgPerson extends baseModule implements passwordService {
 		return $return;
 	}
 	
+	/**
+	 * Manages AJAX requests.
+	 * This function may be called with or without an account container.
+	 */
+	public function handleAjaxRequest() {
+		// AJAX uploads are non-JSON
+		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxCertUpload')) {
+			$this->ajaxUpload();
+			return;
+		}
+		$jsonInput = $_POST['jsonInput'];
+		$jsonReturn = self::invalidAjaxRequest();
+		if (isset($jsonInput['action'])) {
+			if ($jsonInput['action'] == 'delete') {
+				$jsonReturn = $this->ajaxDeleteSelfServiceUserCertificate($jsonInput);
+			}
+		}
+		echo json_encode($jsonReturn);
+	}
+	
+	/**
+	 * Handles an AJAX file upload and prints the JSON result.
+	 */
+	private function ajaxUpload() {
+		$result = array('success' => true);
+		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) {
+			$result = array('error' => _('No file received.'));
+		}
+		else {
+			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
+			$data = fread($handle, 100000000);
+			fclose($handle);
+			if (strpos($data, '-----BEGIN CERTIFICATE-----') === 0) {
+				$pemData = str_replace("\r", '', $data);
+				$pemData = explode("\n", $pemData);
+				array_shift($pemData);
+				$last = array_pop($pemData);
+				while (($last != '-----END CERTIFICATE-----') && sizeof($pemData) > 2) {
+					$last = array_pop($pemData);
+				}
+				$pemData = implode('', $pemData);
+				$data = base64_decode($pemData);
+			}
+			$_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST][] = $data;
+			ob_start();
+			$contentElement = $this->getSelfServiceUserCertificates();
+			ob_end_clean();
+			ob_start();
+			$tabindex = 999;
+			parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+			$content = ob_get_contents();
+			ob_end_clean();
+			$result['html'] = $content;
+		}
+		echo json_encode($result);
+	}
+
+	/**
+	 * Manages the deletion of a certificate.
+	 * 
+	 * @param array $data JSON data
+	 */
+	private function ajaxDeleteSelfServiceUserCertificate($data) {
+		if (!isset($data['id'])) {
+			return self::invalidAjaxRequest();
+		}
+		$index = $data['id'];
+		if (array_key_exists($index, $_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST])) {
+			unset($_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST][$index]);
+			$_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST] = array_values($_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST]);
+		}
+		ob_start();
+		$contentElement = $this->getSelfServiceUserCertificates();
+		ob_end_clean();
+		ob_start();
+		$tabindex = 999;
+		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		$content = ob_get_contents();
+		ob_end_clean();
+		return array(
+			'errorsOccured' => 'false',
+			'html' => $content,
+		);
+	}
+	
+	/**
+	 * Invalid AJAX request received.
+	 * 
+	 * @param String $message error message
+	 */
+	public static function invalidAjaxRequest($message = null) {
+		if ($message == null) {
+			$message = _('Invalid request');
+		}
+		return array('errorsOccured' => 'true', 'errormessage' => $message);
+	}
+
 	/**
 	 * This method specifies if a module manages password attributes.
 	 * @see passwordService::managesPasswordAttributes
