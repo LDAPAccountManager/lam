@@ -176,6 +176,9 @@ class windowsHost extends baseModule {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManagedBy'])) {
 			unset($this->attributes['managedBy']);
 		}
+		if ($this->getAccountContainer()->isNewAccount) {
+			$this->attributes['userAccountControl'][0] = 4128; // machine trust account, no password required
+		}
 		return $return;
 	}
 	
@@ -245,12 +248,12 @@ class windowsHost extends baseModule {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('group', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'group';
+			if (!in_array('computer', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'computer';
 			// cn + sAMAccountName
 			if ($rawAccounts[$i][$ids['windowsHost_name']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['windowsHost_name']], 'groupname')) {
+				if (get_preg($rawAccounts[$i][$ids['windowsHost_name']], 'hostname')) {
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsHost_name']];
-					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsHost_name']];
+					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsHost_name']] . '$';
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
@@ -262,65 +265,16 @@ class windowsHost extends baseModule {
 			if ($rawAccounts[$i][$ids['windowsHost_description']] != "") {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsHost_description']];
 			}
-			// notes
-			if ($rawAccounts[$i][$ids['windowsHost_notes']] != "") {
-				$partialAccounts[$i]['info'] = $rawAccounts[$i][$ids['windowsHost_notes']];
+			// location
+			if ($rawAccounts[$i][$ids['windowsHost_location']] != "") {
+				$partialAccounts[$i]['location'] = $rawAccounts[$i][$ids['windowsHost_location']];
 			}
-			// email
-			if ($rawAccounts[$i][$ids['windowsHost_mail']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['windowsHost_mail']], 'email')) {
-					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsHost_mail']];
-				}
-				else {
-					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
+			// managed by
+			if ($rawAccounts[$i][$ids['windowsHost_managedBy']] != "") {
+				$partialAccounts[$i]['managedBy'] = $rawAccounts[$i][$ids['windowsHost_managedBy']];
 			}
-			// add members
-			if ($rawAccounts[$i][$ids['windowsHost_members']] != "") {
-				$partialAccounts[$i]['member'] = explode(";", $rawAccounts[$i][$ids['windowsHost_members']]);
-			}
-			// group scope
-			if ($rawAccounts[$i][$ids['windowsHost_scope']] != "") {
-				if (in_array($rawAccounts[$i][$ids['windowsHost_scope']], $this->groupScopes)) {
-					switch ($rawAccounts[$i][$ids['windowsHost_scope']]) {
-						case windowsHost::SCOPE_DOMAIN_LOCAL:
-							$partialAccounts[$i]['groupType'] = 4;
-							break;
-						case windowsHost::SCOPE_GLOBAL:
-							$partialAccounts[$i]['groupType'] = 2;
-							break;
-						case windowsHost::SCOPE_UNIVERSAL:
-							$partialAccounts[$i]['groupType'] = 8;
-							break;
-					}
-				}
-				else {
-					$errMsg = $this->messages['groupScope'][0];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
-			else {
-				$partialAccounts[$i]['groupType'] = 2;
-			}
-			// group type
-			if ($rawAccounts[$i][$ids['windowsHost_type']] != "") {
-				if (in_array($rawAccounts[$i][$ids['windowsHost_type']], $this->groupTypes)) {
-					if ($rawAccounts[$i][$ids['windowsHost_type']] == windowsHost::TYPE_SECURITY) {
-						$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
-					}
-				}
-				else {
-					$errMsg = $this->messages['groupType'][0];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
-			else {
-				$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
-			}
+			// machine trust account, no password required
+			$partialAccounts[$i]['userAccountControl'][0] = 4128;
 		}
 		return $errors;
 	}
@@ -332,45 +286,12 @@ class windowsHost extends baseModule {
 		$return = array();
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
-		$this->addSimplePDFField($return, 'info', _('Notes'));
-		$this->addSimplePDFField($return, 'mail', _('Email address'));
-		// group type
-		$groupType = windowsHost::TYPE_SECURITY;
-		$groupScope = windowsHost::SCOPE_GLOBAL;
-		if (isset($this->attributes['groupType'][0])) {
-			if ($this->attributes['groupType'][0] & 2) {
-				$groupScope = windowsHost::SCOPE_GLOBAL;
-			}
-			elseif ($this->attributes['groupType'][0] & 4) {
-				$groupScope = windowsHost::SCOPE_DOMAIN_LOCAL;
-			}
-			elseif ($this->attributes['groupType'][0] & 8) {
-				$groupScope = windowsHost::SCOPE_UNIVERSAL;
-			}
-			if ($this->attributes['groupType'][0] & 0x80000000) {
-				$groupType = windowsHost::TYPE_SECURITY;
-			}
-			else {
-				$groupType = windowsHost::TYPE_DISTRIBUTION;
-			}
-		}
-		$groupTypeLabels = array_flip($this->groupTypes);
-		$groupType = $groupTypeLabels[$groupType];
-		$groupScopeLabels = array_flip($this->groupScopes);
-		$groupScope = $groupScopeLabels[$groupScope];
-		$return[get_class($this) . '_groupScope'] = array('<block><key>' . _('Group scope') . '</key><value>' . $groupScope . '</value></block>');
-		$return[get_class($this) . '_groupType'] = array('<block><key>' . _('Group type') . '</key><value>' . $groupType . '</value></block>');
-		// members
-		if (sizeof($this->attributes['member']) > 0) {
-			$memberList = array();
-			if (isset($this->attributes['member']) && is_array($this->attributes['member'])) {
-				$memberList = $this->attributes['member'];
-			}
-			usort($memberList, 'compareDN');
-			$return[get_class($this) . '_member'][0] = '<block><key>' . _('Members') . '</key><tr><td align=\"L\">' . $memberList[0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($memberList); $i++) {
-				$return[get_class($this) . '_member'][] = '<block><tr><td align=\"L\">' . $memberList[$i] . '</td></tr></block>';
-			}
+		$this->addSimplePDFField($return, 'location', _('Location'));
+		// managed by
+		$managedBy = '';
+		if (isset($this->attributes['managedBy'][0])) {
+			$managedBy = getAbstractDN($this->attributes['managedBy'][0]);
+			$return[get_class($this) . '_managedBy'] = array('<block><key>' . _('Managed by') . '</key><value>' . $managedBy . '</value></block>');
 		}
 		return $return;
 	}
