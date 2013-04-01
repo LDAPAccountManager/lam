@@ -1384,7 +1384,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$uid = '';
 			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
 			$fieldContainer->addElement(new htmlTableExtendedInputField(_('User name'), 'userName', $uid, 'uid'), true);
-			$equalWidthElements[] = 'uid';
+			$equalWidthElements[] = 'userName';
 		}
 		$firstName = '';
 		if (isset($this->attributes['givenName'][0])) $firstName = $this->attributes['givenName'][0];
