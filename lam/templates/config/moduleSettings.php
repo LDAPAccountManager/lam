@@ -180,7 +180,7 @@ echo '</ul>';
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#moduleSettings').addClass('ui-tabs-selected');
+	jQuery('#moduleSettings').addClass('ui-tabs-active');
 	jQuery('#moduleSettings').addClass('ui-state-active');
 	jQuery('#moduleSettings').addClass('user-bright');
 });

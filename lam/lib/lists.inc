@@ -813,7 +813,7 @@ class lamList {
 			</form></div></div>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-tabs-selected');
+					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-tabs-active');
 					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-state-active');
 					window.onload = listResizeITabContentDiv;
 					window.onresize = listResizeITabContentDiv;

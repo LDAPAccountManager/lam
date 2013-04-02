@@ -222,7 +222,7 @@ echo '</ul>';
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#generalSettingsButton').addClass('ui-tabs-selected');
+	jQuery('#generalSettingsButton').addClass('ui-tabs-active');
 	jQuery('#generalSettingsButton').addClass('ui-state-active');
 	jQuery('#generalSettingsButton').addClass('user-bright');
 });

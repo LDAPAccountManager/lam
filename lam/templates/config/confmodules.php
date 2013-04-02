@@ -181,7 +181,7 @@ echo '</ul>';
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#editmodules').addClass('ui-tabs-selected');
+	jQuery('#editmodules').addClass('ui-tabs-active');
 	jQuery('#editmodules').addClass('ui-state-active');
 	jQuery('#editmodules').addClass('user-bright');
 	// set common width for select boxes

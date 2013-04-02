@@ -199,7 +199,7 @@ echo '</ul>';
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#edittypes').addClass('ui-tabs-selected');
+	jQuery('#edittypes').addClass('ui-tabs-active');
 	jQuery('#edittypes').addClass('ui-state-active');
 	jQuery('#edittypes').addClass('user-bright');
 });
