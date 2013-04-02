@@ -75,6 +75,9 @@ class lamList {
 
 	/** LDAP entries */
 	protected $entries;
+	
+	/** sort mapping for entries array(original index => sorted index) */
+	protected $sortMapping;
 
 	/** list of filters (attribute name => filter input) */
 	protected $filters = array();
@@ -160,7 +163,7 @@ class lamList {
 		}
 		// sort rows by sort column
 		if (isset($this->entries)) {
-			$this->listSort($this->entries);
+			$this->listCreateSortMapping($this->entries);
 		}
 		// insert HTML fragment from listDoPost
 		echo $postFragment;
@@ -229,38 +232,45 @@ class lamList {
 			}
 		}
 	}
-
+	
 	/**
-	* Sorts an account list by a given attribute
+	* Determines the sort mapping and stores it in $this->sortMapping.
+	* The sort mapping is used to display the right rows when the account table is created.
 	*
 	* @param array $info the account list
 	*/
-	protected function listSort(&$info) {
+	protected function listCreateSortMapping(&$info) {
 		if (!is_array($this->attrArray)) return;
 		if (!is_string($this->sortColumn)) return;
-		// sort and return account list
-		usort($info, array($this, "cmp_array"));
-	}
-
-
-	/**
-	* Compare function used for usort-method
-	*
-	* Rows are sorted with the first attribute entry of the sort column.
-	* If objects have attributes with multiple values only the first is used for sorting.
-	*
-	* @param array $a first row which is compared
-	* @param array $b second row which is compared
-	* @return integer 0 if both are equal, 1 if $a is greater, -1 if $b is greater
-	*/
-	protected function cmp_array(&$a, &$b) {
-		if ($this->sortColumn != "dn") {
-			// sort by first attribute with name $sort
-			return @strnatcasecmp($a[$this->sortColumn][0], $b[$this->sortColumn][0]) * $this->sortDirection;
+		$toSort = array();
+		$col = $this->sortColumn;
+		$size = sizeof($info);
+		if ($this->sortColumn != 'dn') {
+			for ($i = 0; $i < $size; $i++) {
+				// sort by first attribute with name $sort
+				$toSort[] = &$info[$i][$col][0];
+			}
 		}
 		else {
-			return strnatcasecmp($a[$this->sortColumn], $b[$this->sortColumn]) * $this->sortDirection;
+			for ($i = 0; $i < $size; $i++) {
+				$toSort[] = &$info[$i][$col];
+			}
 		}
+		natcasesort($toSort);
+		$sortResult = array();
+		if ($this->sortDirection == 1) {
+			foreach ($toSort as $orig => $val) {
+				$sortResult[] = $orig;
+			}
+		}
+		else {
+			$counter = sizeof($toSort);
+			foreach ($toSort as $orig => $val) {
+				$counter--;
+				$sortResult[$counter] = $orig;
+			}
+		}
+		$this->sortMapping = &$sortResult;
 	}
 
 	/**
@@ -417,9 +427,19 @@ class lamList {
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
 		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
 		else $table_end = ($this->page * $this->maxPageEntries);
+		// get sort mapping
+		$sortMapping = &$this->sortMapping;
+		if (empty($sortMapping)) {
+			$sortMapping = array();
+			$infoSize = sizeof($info);
+			for ($i = 0; $i < $infoSize; $i++) {
+				$sortMapping[$i] = $i;
+			}
+		}
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
-			$rowID = base64_encode($info[$i]['dn']);
+			$index = $sortMapping[$i];
+			$rowID = base64_encode($info[$index]['dn']);
 			if ((($i - $table_begin) % 2) == 1) {
 				$classes = ' ' . $this->type . '-bright';
 			}
@@ -428,14 +448,14 @@ class lamList {
 			}
 			echo("<tr class=\"$classes\"" .
 				" onClick=\"list_click('" . $rowID . "')\"\n" .
-				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$i]['dn']) . "'\">\n");
+				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "'\">\n");
 			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click('" . $rowID . "')\"" .
 				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
-			$this->listPrintToolLinks($info[$i], $rowID);
+			$this->listPrintToolLinks($info[$index], $rowID);
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
 				$attrName = strtolower($this->attrArray[$k]);
-				$this->listPrintTableCellContent($info[$i], $attrName);
+				$this->listPrintTableCellContent($info[$index], $attrName);
 				echo ("</td>\n");
 			}
 			echo("</tr>\n");
@@ -590,14 +610,15 @@ class lamList {
 			// create for all accounts
 			elseif ($option == 'ALL') {
 				$list = array();
-				for ($i = 0; $i < sizeof($this->entries); $i++) {
+				$entriesCount = sizeof($this->entries);
+				for ($i = 0; $i < $entriesCount; $i++) {
 					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
 					$_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
 					$filename = createModulePDF($list,$pdfStruct);
-					for ($i = 0; $i < sizeof($this->entries); $i++) {
+					for ($i = 0; $i < $entriesCount; $i++) {
 						// clean session
 						unset($_SESSION["accountPDF-$i"]);
 					}
