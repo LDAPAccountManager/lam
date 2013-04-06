@@ -62,9 +62,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	**/
 	function load_Messages() {
 		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
-		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('First name contains invalid characters!'));
+		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('First name contains invalid characters!'));
 		$this->messages['lastname'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters or is empty!'));
-		$this->messages['lastname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Last name contains invalid characters or is empty!'));
+		$this->messages['lastname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('Last name contains invalid characters or is empty!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_telephone', _('Please enter a valid telephone number!'));
 		$this->messages['homePhone'][0] = array('ERROR', _('Home telephone number'), _('Please enter a valid telephone number!'));
