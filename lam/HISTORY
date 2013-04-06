@@ -1,3 +1,10 @@
+June 2013 4.2
+  - Samba 4 support: users, groups, hosts
+  - LAM Pro:
+   -> Password self reset: support new identification methods: user, email, user or email, employee number
+   -> Custom fields: support PDF, profiles and multi-value text fields
+
+
 19.03.2013 4.1
   - Updated EDU person module (RFE 3599128)
   - Personal: allow management of user certificates (RFE 1753030)
