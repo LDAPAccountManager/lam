@@ -284,7 +284,7 @@ class windowsHost extends baseModule {
 	*/
 	public function get_pdfEntries() {
 		$return = array();
-		$this->addSimplePDFField($return, 'cn', _('Group name'));
+		$this->addSimplePDFField($return, 'cn', _('Host name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'location', _('Location'));
 		// managed by

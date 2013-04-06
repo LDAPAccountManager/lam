@@ -1170,18 +1170,95 @@ abstract class baseModule {
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
+	 * @param boolean $isTextArea show as text area (default false)
 	 */
-	protected function addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null) {
+	protected function addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false) {
 		$value = '';
 		if (isset($this->attributes[$attrName][0])) {
 			$value = $this->attributes[$attrName][0];
 		}
-		$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
-		$input->setRequired($required);
-		if ($length != null) {
-			$input->setFieldSize($length);
+		if ($isTextArea) {
+			$cols = 30;
+			if ($length != null) {
+				$cols = $length;
+			}
+			$input = new htmlTableExtendedInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
 		}
+		else {
+			$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
+			if ($length != null) {
+				$input->setFieldSize($length);
+			}
+		}
+		$input->setRequired($required);
 		$container->addElement($input, true);
+	}
+	
+	/**
+	 * Adds a text input field that may contain multiple values to the given htmlTable.
+	 * The field name will be the same as the attribute name plus a counting number (e.g. street_0).
+	 * The last field will be followed by a button to add a new value. This is named add_{attribute name} (e.g. add_street).
+	 * There must be a help entry with the attribute name as ID.
+	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
+	 * 
+	 * @param htmlTable $container parent container
+	 * @param String $attrName attribute name
+	 * @param String $label label name
+	 * @param boolean $required this is a required field (default false)
+	 * @param integer $length field length
+	 */
+	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null) {
+			$values = array();
+			if (isset($this->attributes[$attrName][0])) {
+				$values = $this->attributes[$attrName];
+			}
+			if (sizeof($values) == 0) {
+				$values[] = '';
+			}
+			$labelTextOut = new htmlOutputText($label);
+			$labelTextOut->alignment = htmlElement::ALIGN_TOP;
+			$container->addElement($labelTextOut);
+			$subContainer = new htmlGroup();
+			for ($i = 0; $i < sizeof($values); $i++) {
+				$subContainer->addElement(new htmlInputField($attrName . '_' . $i, $values[$i]));
+				if ($i < (sizeof($values) - 1)) {
+					$subContainer->addElement(new htmlOutputText('<br>', false));
+				}
+				else {
+					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
+				}
+			}
+			$container->addElement($subContainer);
+			$help = new htmlHelpLink($attrName);
+			$help->alignment = htmlElement::ALIGN_TOP;
+			$container->addElement($help, true);
+	}
+	
+	/**
+	 * Validates a multi-value text field.
+	 * The input fields must be created with function addMultiValueInputTextField().
+	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
+	 * 
+	 * @param String $attrName attribute name
+	 * @param array $errors errors array where to put validation errors
+	 * @param String $validationID validation ID for function get_preg() (default: null, null means no validation)
+	 */
+	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null) {
+		$counter = 0;
+		while (isset($_POST[$attrName . '_' . $counter])) {
+			$this->attributes[$attrName][$counter] = $_POST[$attrName . '_' . $counter];
+			if (($validationID != null) && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
+				$errors[] = $this->messages[$attrName][0];
+			}
+			if ($this->attributes[$attrName][$counter] == '') {
+				unset($this->attributes[$attrName][$counter]);
+			}
+			$counter++;
+		}
+		if (isset($_POST['add_' . $attrName])) {
+			$this->attributes[$attrName][] = '';
+		}
+		$this->attributes[$attrName] = array_values($this->attributes[$attrName]);
 	}
 	
 	/**
