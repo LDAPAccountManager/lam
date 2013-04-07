@@ -806,7 +806,7 @@ class lamUserList extends lamList {
 	 * @return boolean Unix part exists
 	 */
 	public static function isUnixAvailable(&$attrs) {
-		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']));
+		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']) && isset($attrs['userpassword'][0]));
 	}
 	
 	/**
@@ -816,7 +816,7 @@ class lamUserList extends lamList {
 	 * @return boolean Unix part locked
 	 */
 	public static function isUnixLocked(&$attrs) {
-		return (isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0]));
+		return ((isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0])));
 	}
 	
 	/**
