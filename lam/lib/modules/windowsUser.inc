@@ -32,7 +32,7 @@ $Id$
 *
 * @package modules
 */
-class windowsUser extends baseModule {
+class windowsUser extends baseModule implements passwordService {
 	
 	/**
 	* Returns meta data that is interpreted by parent class
@@ -49,6 +49,8 @@ class windowsUser extends baseModule {
 		$return["account_types"] = array('user');
 		// this is a base module
 		$return["is_base"] = true;
+		// PHP extensions
+		$return['extensions'] = array('iconv');
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
@@ -137,28 +139,22 @@ class windowsUser extends baseModule {
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
-				'name' => 'windowsHost_name',
-				'description' => _('Host name'),
+				'name' => 'windowsUser_name',
+				'description' => _('User name'),
 				'help' => 'cn',
-				'example' => _('PC01'),
+				'example' => _('smiller'),
 				'required' => true
 			),
 			array(
-				'name' => 'windowsHost_description',
+				'name' => 'windowsUser_description',
 				'description' => _('Description'),
 				'help' => 'description',
 			),
 			array(
-				'name' => 'windowsHost_location',
+				'name' => 'windowsUser_l',
 				'description' => _('Location'),
-				'help' => 'location',
+				'help' => 'l',
 				'example' => _('MyCity'),
-			),
-			array(
-				'name' => 'windowsHost_managedBy',
-				'description' => _('Managed by'),
-				'help' => 'managedBy',
-				'example' => 'cn=user1,o=test',
 			),
 		);
 		// available PDF fields
@@ -301,6 +297,9 @@ class windowsUser extends baseModule {
 		$this->processMultiValueInputTextField('url', $return);
 		// web site
 		$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
+		if ($this->getAccountContainer()->isNewAccount) {
+			$this->attributes['userAccountControl'][0] = 512;
+		}
 		return $return;
 	}
 	
@@ -317,12 +316,12 @@ class windowsUser extends baseModule {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('computer', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'computer';
+			if (!in_array('user', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'user';
 			// cn + sAMAccountName
-			if ($rawAccounts[$i][$ids['windowsHost_name']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['windowsHost_name']], 'hostname')) {
-					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsHost_name']];
-					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsHost_name']] . '$';
+			if ($rawAccounts[$i][$ids['windowsUser_name']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_name']], 'username')) {
+					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_name']];
+					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsUser_name']] . '$';
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
@@ -331,19 +330,15 @@ class windowsUser extends baseModule {
 				}
 			}
 			// description
-			if ($rawAccounts[$i][$ids['windowsHost_description']] != "") {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsHost_description']];
+			if ($rawAccounts[$i][$ids['windowsUser_description']] != "") {
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsUser_description']];
 			}
 			// location
-			if ($rawAccounts[$i][$ids['windowsHost_location']] != "") {
-				$partialAccounts[$i]['location'] = $rawAccounts[$i][$ids['windowsHost_location']];
+			if ($rawAccounts[$i][$ids['windowsUser_l']] != "") {
+				$partialAccounts[$i]['l'] = $rawAccounts[$i][$ids['windowsUser_l']];
 			}
-			// managed by
-			if ($rawAccounts[$i][$ids['windowsHost_managedBy']] != "") {
-				$partialAccounts[$i]['managedBy'] = $rawAccounts[$i][$ids['windowsHost_managedBy']];
-			}
-			// machine trust account, no password required
-			$partialAccounts[$i]['userAccountControl'][0] = 4128;
+			// user account
+			$partialAccounts[$i]['userAccountControl'][0] = 512;
 		}
 		return $errors;
 	}
@@ -371,6 +366,46 @@ class windowsUser extends baseModule {
 		$this->addSimplePDFField($return, 'url', _('Other web sites'));
 		$this->addSimplePDFField($return, 'wWWHomePage', _('Web site'));
 		return $return;
+	}
+	
+	/**
+	 * This method specifies if a module manages password attributes. The module alias will
+	 * then appear as option in the GUI. 
+	 * <br>If the module only wants to get notified about password changes then return false.
+	 *
+	 * @return boolean true if this module manages password attributes
+	 */
+	public function managesPasswordAttributes() {
+		return true;
+	}
+
+	/**
+	 * Specifies if this module supports to force that a user must change his password on next login.
+	 * 
+	 * @return boolean force password change supported
+	 */
+	public function supportsForcePasswordChange() {
+		return false;
+	}
+
+	/**
+	 * This function is called whenever the password should be changed. Account modules
+	 * must change their password attributes only if the modules list contains their module name.
+	 *
+	 * @param String $password new password
+	 * @param array $modules list of modules for which the password should be changed
+	 * @param boolean $forcePasswordChange force the user to change his password at next login
+	 * @return array list of error messages if any as parameter array for StatusMessage
+	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 */
+	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
+		if (!in_array(get_class($this), $modules)) {
+			return array();
+		}
+		$pwdBin = iconv('UTF-8', 'UTF-16LE', '"' . $password . '"');
+		$this->orig['unicodePwd'][0] = 'unknown';
+		$this->attributes['unicodePwd'][0] = $pwdBin;
+		return array();
 	}
 
 }
