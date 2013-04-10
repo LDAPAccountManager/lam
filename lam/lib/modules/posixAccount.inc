@@ -958,7 +958,16 @@ class posixAccount extends baseModule implements passwordService {
 			// check manual ID
 			if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
 				// check range
-				if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] != 'sambaPool'))) {
+					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
+						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+					}
+				}
+				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] != 'sambaPool'))) {
+					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
+						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+					}
+				}
 				// id-number is in use and account is a new account
 				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 				// id-number is in use, account is existing account and id-number is not used by itself
