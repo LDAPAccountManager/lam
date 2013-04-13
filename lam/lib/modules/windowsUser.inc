@@ -34,6 +34,25 @@ $Id$
 */
 class windowsUser extends baseModule implements passwordService {
 	
+	/** initial account flags */
+	const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
+	/** password never expires */
+	const AC_PWD_NEVER_EXPIRES = 0x00010000;
+	/** login requires smartcard */
+	const AC_SMARTCARD_REQUIRED = 0x00040000;
+	/** account is disabled */
+	const AC_ACCOUNT_DISABLED = 0x00000002;
+	/** currently locked out, read only flag */
+	const AC_LOCKED_OUT = 0x00000010;
+	
+	/** current group of names list */
+	private $groupList = array();
+	/** original group of names list */
+	private $groupList_orig = array();
+	/** cache for groups */
+	private $groupCache = null;
+	
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -54,7 +73,7 @@ class windowsUser extends baseModule implements passwordService {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=user)");
+		$return["ldap_filter"] = array('and' => '(!(objectClass=computer))', 'or' => "(objectClass=user)");
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
@@ -64,7 +83,8 @@ class windowsUser extends baseModule implements passwordService {
 		// managed attributes
 		$return['attributes'] = array('cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
-			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage');
+			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
+			'pwdLastSet');
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -135,7 +155,30 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _('Web site'), 'attr' => 'wWWHomePage',
 				"Text" => _('The user\'s web site (e.g. http://www.company.com).')
 			),
-		);
+			"deactivated" => array(
+				"Headline" => _("Account is deactivated"),
+				"Text" => _("If checked then the account will be deactivated.")),
+			"locked" => array(
+				"Headline" => _("Account is locked"),
+				"Text" => _("If checked then the account is locked. You may only unlock accounts but not lock them.")),
+			"noExpire" => array(
+				"Headline" => _("Password does not expire"),
+				"Text" => _("If checked password does not expire.")),
+			"requireCard" => array(
+				"Headline" => _("Require smartcard"),
+				"Text" => _("The user must log on using a smart card.")),
+			"runLogonScript" => array(
+				"Headline" => _("Run logon script"),
+				"Text" => _("The logon script is executed.")),
+			"profilePath" => array(
+				"Headline" => _("Profile path"), 'attr' => 'profilePath',
+				"Text" => _('Path of the user profile (UNC-path, e.g. \\\\server\\share\\user). $user is replaced with user name.'). ' '. _("Can be left empty.")),
+			"scriptPath" => array(
+				"Headline" => _("Logon script"), 'attr' => 'scriptPath',
+				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user is replaced with user name.'). ' '. _("Can be left empty.")),
+			"pwdMustChange" => array ("Headline" => _("Password change at next login"),
+				"Text" => _("If you set this option then the user has to change his password at the next login.")),
+			);
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -179,6 +222,18 @@ class windowsUser extends baseModule implements passwordService {
 		);
 		return $return;
 	}
+	
+	/**
+	* Initializes the module after it became part of an accountContainer
+	*
+	* @param string $base the name of the accountContainer object ($_SESSION[$base])
+	*/
+	function init($base) {
+		// call parent init
+		parent::init($base);
+		$this->groupList = array();
+		$this->groupList_orig = array();
+	}
 
 	/**
 	* This function fills the $messages variable with output messages from this module.
@@ -200,6 +255,27 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' windowsUser_postalCode', _('Please enter a valid postal code!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsUser_mail', _('Please enter a valid email address!'));
+		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+		$this->messages['profilePath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_profilePath', _('Profile path is invalid!'));
+		$this->messages['scriptPath'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
+		$this->messages['scriptPath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_scriptPath', _('Logon script is invalid!'));
+	}
+	
+	/**
+	 * This function loads all needed LDAP attributes.
+	 *
+	 * @param array $attr list of attributes
+	 */
+	function load_attributes($attr) {
+		parent::load_attributes($attr);
+		// get group memberships
+		$groupList = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'group', array('dn'), array('group'));
+		$this->groupList_orig = array();
+		for ($i = 0; $i < sizeof($groupList); $i++) {
+			$this->groupList_orig[] = $groupList[$i]['dn'];
+		}
+		$this->groupList_orig = array_values(array_unique($this->groupList_orig));
+		$this->groupList = $this->groupList_orig;
 	}
 
 	/**
@@ -208,28 +284,92 @@ class windowsUser extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$container = new htmlTable();
-		$this->addSimpleInputTextField($container, 'cn', _('User name'), true);
-		$this->addSimpleInputTextField($container, 'givenName', _('First name'));
-		$this->addSimpleInputTextField($container, 'sn', _('Last name'));
-		$this->addSimpleInputTextField($container, 'displayName', _('Display name'));
-		$this->addSimpleInputTextField($container, 'initials', _('Initials'));
-		$this->addSimpleInputTextField($container, 'description', _('Description'));
-		$container->addElement(new htmlSubTitle(_('Address')), true);
-		$this->addSimpleInputTextField($container, 'streetAddress', _('Street'), false, 20, true);
-		$this->addSimpleInputTextField($container, 'postOfficeBox', _('Post office box'));
-		$this->addSimpleInputTextField($container, 'postalCode', _('Postal code'));
-		$this->addSimpleInputTextField($container, 'l', _('Location'));
-		$this->addSimpleInputTextField($container, 'st', _('State'));
-		$this->addSimpleInputTextField($container, 'physicalDeliveryOfficeName', _('Office name'));
-		$container->addElement(new htmlSubTitle(_('Contact data')), true);
-		$this->addSimpleInputTextField($container, 'mail', _('Email address'));
-		$this->addSimpleInputTextField($container, 'telephoneNumber', _('Telephone number'));
-		$this->addMultiValueInputTextField($container, 'otherTelephone', _('Other telephone numbers'));
-		$this->addSimpleInputTextField($container, 'wWWHomePage', _('Web site'));
-		$this->addMultiValueInputTextField($container, 'url', _('Other web sites'));
+		$containerLeft = new htmlTable();
+		$containerLeft->alignment = htmlElement::ALIGN_TOP;
+		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['userAccountControl'][0])) {
+			$this->attributes['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+		}
+		$containerLeft->addElement(new htmlSubTitle(_('General')), true);
+		$this->addSimpleInputTextField($containerLeft, 'cn', _('User name'), true);
+		$this->addSimpleInputTextField($containerLeft, 'givenName', _('First name'));
+		$this->addSimpleInputTextField($containerLeft, 'sn', _('Last name'));
+		$this->addSimpleInputTextField($containerLeft, 'displayName', _('Display name'));
+		$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
+		$this->addSimpleInputTextField($containerLeft, 'description', _('Description'));
+
+		$containerLeft->addElement(new htmlSubTitle(_('Address')), true);
+		$this->addSimpleInputTextField($containerLeft, 'streetAddress', _('Street'), false, 20, true);
+		$this->addSimpleInputTextField($containerLeft, 'postOfficeBox', _('Post office box'));
+		$this->addSimpleInputTextField($containerLeft, 'postalCode', _('Postal code'));
+		$this->addSimpleInputTextField($containerLeft, 'l', _('Location'));
+		$this->addSimpleInputTextField($containerLeft, 'st', _('State'));
+		$this->addSimpleInputTextField($containerLeft, 'physicalDeliveryOfficeName', _('Office name'));
+
+		$containerLeft->addElement(new htmlSubTitle(_('Contact data')), true);
+		$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
+		$this->addSimpleInputTextField($containerLeft, 'telephoneNumber', _('Telephone number'));
+		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
+		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
+		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
 		
-		$container->addElement(new htmlEqualWidth(array('streetAddress', 'cn')));
+		$containerLeft->addElement(new htmlSubTitle(_('Options')), true);
+		// locked out
+		$containerLeft->addElement(new htmlOutputText(_("Account is locked")));
+		$lockedOut = windowsUser::isLockedOut($this->attributes);
+		$lockedOutCheckbox = new htmlInputCheckbox('lockedOut', $lockedOut);
+		$lockedOutCheckbox->setIsEnabled(false);
+		$lockedOutGroup = new htmlGroup();
+		$lockedOutGroup->addElement($lockedOutCheckbox);
+		if ($lockedOut) {
+			$lockedOutGroup->addElement(new htmlButton('unlock', _('Unlock')));
+		}
+		$containerLeft->addElement($lockedOutGroup);
+		$containerLeft->addElement(new htmlHelpLink('locked'), true);
+		// password change required
+		$pwdMustChange = false;
+		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
+			$pwdMustChange = true;
+		}
+		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('pwdMustChange', $pwdMustChange, _("User must change password"), 'pwdMustChange'), true);
+		// deactivated
+		$deactivated = windowsUser::isDeactivated($this->attributes);
+		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'), true);
+		// password does not expire
+		$noExpire = windowsUser::isNeverExpiring($this->attributes);
+		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('noExpire', $noExpire, _("Password does not expire"), 'noExpire'), true);
+		// require smartcard
+		$requireCard = windowsUser::isSmartCardRequired($this->attributes);
+		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), true);
+		
+		$containerLeft->addElement(new htmlSubTitle(_('User profile')), true);
+		// profile path
+		$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
+		// logon script
+		$this->addSimpleInputTextField($containerLeft, 'scriptPath', _('Logon script'));
+		
+		$containerLeft->addElement(new htmlEqualWidth(array('streetAddress', 'cn')));
+		
+		$containerRight = new htmlTable();
+		$containerRight->alignment = htmlElement::ALIGN_TOP;
+		$containerRight->addElement(new htmlSubTitle(_('Groups')), true);
+		$containerRight->addElement(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), true);
+		$containerRight->addElement(new htmlSpacer(null, '10px'), true);
+		$groupsList = new htmlGroup();
+		$groupCNs = array();
+		for ($i = 0; $i < sizeof($this->groupList); $i++) {
+			$groupCNs[] = extractRDNValue($this->groupList[$i]);
+		}
+		natcasesort($groupCNs);
+		foreach ($groupCNs as $cn) {
+			$groupsList->addElement(new htmlOutputText($cn));
+			$groupsList->addElement(new htmlOutputText('<br>', false));
+		}
+		$containerRight->addElement($groupsList);
+		
+		$container = new htmlTable();
+		$container->addElement($containerLeft);
+		$container->addElement(new htmlSpacer('40px', null));
+		$container->addElement($containerRight);
 		return $container;
 	}
 
@@ -297,10 +437,170 @@ class windowsUser extends baseModule implements passwordService {
 		$this->processMultiValueInputTextField('url', $return);
 		// web site
 		$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
-		if ($this->getAccountContainer()->isNewAccount) {
-			$this->attributes['userAccountControl'][0] = 512;
+		// password must be changed
+		if (isset($_POST['pwdMustChange']) && ($_POST['pwdMustChange'] == 'on')) {
+			$this->attributes['pwdLastSet'][0] = '0';
+		}
+		else {
+			if (isset($this->orig['pwdLastSet'][0]) && ($this->orig['pwdLastSet'][0] !== '0')) {
+				$this->attributes['pwdLastSet'][0] = $this->orig['pwdLastSet'][0];
+			}
+			else {
+				$this->attributes['pwdLastSet'][0] = '-1';
+			}
+		}
+		// deactivated
+		$deactivated = isset($_POST['deactivated']) && ($_POST['deactivated'] == 'on');
+		windowsUser::setIsDeactivated($this->attributes, $deactivated);
+		// no expire
+		$noExpire = isset($_POST['noExpire']) && ($_POST['noExpire'] == 'on');
+		windowsUser::setIsNeverExpiring($this->attributes, $noExpire);
+		// smartcard required
+		$requireCard = isset($_POST['requireCard']) && ($_POST['requireCard'] == 'on');
+		windowsUser::setIsSmartCardRequired($this->attributes, $requireCard);
+		// profile path
+		$this->attributes['profilePath'][0] = $_POST['profilePath'];
+		$this->attributes['profilePath'][0] = str_replace('$user', $this->attributes['cn'][0], $this->attributes['profilePath'][0]);
+		if (!($this->attributes['profilePath'][0] == '') && !get_preg($this->attributes['profilePath'][0], 'UNC')) {
+			$return[] = $this->messages['profilePath'][0];
+		}
+		// logon script
+		$this->attributes['scriptPath'][0] = $_POST['scriptPath'];
+		$this->attributes['scriptPath'][0] = str_replace('$user', $this->attributes['cn'][0], $this->attributes['scriptPath'][0]);
+		if (($this->attributes['scriptPath'][0] != '') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript'))) {
+			$return[] = $this->messages['scriptPath'][0];
 		}
 		return $return;
+	}
+	
+	/**
+	* Displays the group selection.
+	*
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_group() {
+		$return = new htmlTable();
+		$groups = $this->findGroups();
+		// sort by DN
+		usort($groups, 'compareDN');
+			
+		$groupContainer = new htmlTable();
+		$groupContainer->alignment = htmlElement::ALIGN_TOP;
+		$groupContainer->addElement(new htmlSubTitle(_("Groups of names")), true);
+		$groupContainer->addElement(new htmlOutputText(_("Selected groups")));
+		$groupContainer->addElement(new htmlOutputText(''));
+		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
+		$groupContainer->addNewLine();
+		
+		$selectedGroups = array();
+		// sort by DN
+		usort($this->groupList, 'compareDN');
+		for ($i = 0; $i < sizeof($this->groupList); $i++) {
+			if (in_array($this->groupList[$i], $groups)) {
+				$selectedGroups[getAbstractDN($this->groupList[$i])] = $this->groupList[$i];
+			}
+		}
+		$availableGroups = array();
+		foreach ($groups as $dn) {
+			if (!in_array($dn, $this->groupList)) {
+				$availableGroups[getAbstractDN($dn)] = $dn;
+			}
+		}
+		
+		$remGroupSelect = new htmlSelect('removegroups', $selectedGroups, null, 15);
+		$remGroupSelect->setMultiSelect(true);
+		$remGroupSelect->setTransformSingleSelect(false);
+		$remGroupSelect->setHasDescriptiveElements(true);
+		$remGroupSelect->setRightToLeftTextDirection(true);
+		$remGroupSelect->setSortElements(false);
+		$groupContainer->addElement($remGroupSelect);
+		$buttonGroupContainer = new htmlTable();
+		$buttonGroupContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
+		$buttonGroupContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+		$buttonGroupContainer->addElement(new htmlHelpLink('addgroup'));
+		$groupContainer->addElement($buttonGroupContainer);
+		$addGroupSelect = new htmlSelect('addgroups', $availableGroups, null, 15);
+		$addGroupSelect->setMultiSelect(true);
+		$addGroupSelect->setHasDescriptiveElements(true);
+		$addGroupSelect->setTransformSingleSelect(false);
+		$addGroupSelect->setRightToLeftTextDirection(true);
+		$addGroupSelect->setSortElements(false);
+		$groupContainer->addElement($addGroupSelect);
+		$groupContainer->addNewLine();
+		$return->addElement($groupContainer);
+		$return->addNewLine();
+
+		$backGroup = new htmlGroup();
+		$backGroup->colspan = 10;
+		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
+		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backGroup->addElement($backButton);
+		$return->addElement($backGroup);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the group selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_group() {
+		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
+			// add new group
+			$this->groupList = @array_merge($this->groupList, $_POST['addgroups']);
+		}
+		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
+			$this->groupList = array_delete($_POST['removegroups'], $this->groupList);
+		}
+		return array();
+	}
+
+	/**
+	 * Runs the postmodify actions.
+	 * 
+	 * @see baseModule::postModifyActions()
+	 *
+	 * @param boolean $newAccount
+	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 */
+	public function postModifyActions($newAccount, $attributes) {
+		$messages = array();
+		// set groups
+		$groups = $this->findGroups();
+		$toAdd = array_values(array_diff($this->groupList, $this->groupList_orig));
+		$toRem = array_values(array_diff($this->groupList_orig, $this->groupList));
+		$toUpdate = array_values(array_intersect($this->groupList, $this->groupList_orig));
+		$ldapUser = $_SESSION['ldap']->decrypt_login();
+		$ldapUser = $ldapUser[0];
+		// add groups
+		for ($i = 0; $i < sizeof($toAdd); $i++) {
+			if (in_array($toAdd[$i], $groups)) {
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array('member' => array($this->getAccountContainer()->finalDN)));
+				if (!$success) {
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), ldap_error($_SESSION['ldap']->server()));
+				}
+				else {
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
+				}
+			}
+		}
+		// remove groups
+		for ($i = 0; $i < sizeof($toRem); $i++) {
+			if (in_array($toRem[$i], $groups)) {
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->dn_orig)));
+				if (!$success) {
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), ldap_error($_SESSION['ldap']->server()));
+				}
+				else {
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
+				}
+			}
+		}
+		return $messages;
 	}
 	
 	/**
@@ -338,7 +638,7 @@ class windowsUser extends baseModule implements passwordService {
 				$partialAccounts[$i]['l'] = $rawAccounts[$i][$ids['windowsUser_l']];
 			}
 			// user account
-			$partialAccounts[$i]['userAccountControl'][0] = 512;
+			$partialAccounts[$i]['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 		}
 		return $errors;
 	}
@@ -385,7 +685,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -405,10 +705,166 @@ class windowsUser extends baseModule implements passwordService {
 		$pwdBin = iconv('UTF-8', 'UTF-16LE', '"' . $password . '"');
 		$this->orig['unicodePwd'][0] = 'unknown';
 		$this->attributes['unicodePwd'][0] = $pwdBin;
+		$this->attributes['pwdLastSet'][0] = '-1';
 		return array();
 	}
 
+	/**
+	 * Returns if the account is currently deactivated.
+	 * 
+	 * @param array $attrs LDAP attributes 
+	 * @return boolean is deactivated
+	 */
+	public static function isDeactivated($attrs) {
+		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
+		if (!isset($myAttrs['useraccountcontrol'][0])) {
+			return false;
+		}
+		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_ACCOUNT_DISABLED;
+	}
+
+	/**
+	 * Sets if the account is currently deactivated.
+	 * 
+	 * @param array $attrs LDAP attributes to modify
+	 * @param boolean $deactivated is deactivated
+	 */
+	public static function setIsDeactivated(&$attrs, $deactivated) {
+		foreach ($attrs as $key => $value) {
+			if (strtolower($key) == 'useraccountcontrol') {
+				if ($deactivated) {
+					$attrs[$key][0] = intval($attrs[$key][0]) | windowsUser::AC_ACCOUNT_DISABLED;
+				}
+				else {
+					if (intval($attrs[$key][0]) & windowsUser::AC_ACCOUNT_DISABLED) {
+						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_ACCOUNT_DISABLED;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns if the account is currently locked out.
+	 * 
+	 * @param array $attrs LDAP attributes 
+	 * @return boolean is locked out
+	 */
+	private static function isLockedOut($attrs) {
+		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
+		if (!isset($attrs['useraccountcontrol'][0])) {
+			return false;
+		}
+		return intval($attrs['useraccountcontrol'][0]) & windowsUser::AC_LOCKED_OUT;
+	}
+
+	/**
+	 * Unlocks the account.
+	 * 
+	 * @param array $attrs LDAP attributes to modify
+	 */
+	public static function unlock(&$attrs) {
+		foreach ($attrs as $key => $value) {
+			if (strtolower($key) == 'useraccountcontrol') {
+				if (intval($attrs[$key][0]) & windowsUser::AC_LOCKED_OUT) {
+					$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_LOCKED_OUT;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns if the account requires a smartcard to login.
+	 * 
+	 * @param array $attrs LDAP attributes 
+	 * @return boolean requires a smartcard
+	 */
+	public static function isSmartCardRequired($attrs) {
+		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
+		if (!isset($myAttrs['useraccountcontrol'][0])) {
+			return false;
+		}
+		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_SMARTCARD_REQUIRED;
+	}
+
+	/**
+	 * Sets if the account requires a smartcard to login.
+	 * 
+	 * @param array $attrs LDAP attributes to modify
+	 * @param boolean $requireCard requires a smartcard
+	 */
+	public static function setIsSmartCardRequired(&$attrs, $requireCard) {
+		foreach ($attrs as $key => $value) {
+			if (strtolower($key) == 'useraccountcontrol') {
+				if ($requireCard) {
+					$attrs[$key][0] = intval($attrs[$key][0]) | windowsUser::AC_SMARTCARD_REQUIRED;
+				}
+				else {
+					if (intval($attrs[$key][0]) & windowsUser::AC_SMARTCARD_REQUIRED) {
+						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_SMARTCARD_REQUIRED;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns if the account never expires.
+	 * 
+	 * @param array $attrs LDAP attributes 
+	 * @return boolean never expires
+	 */
+	public static function isNeverExpiring($attrs) {
+		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
+		if (!isset($myAttrs['useraccountcontrol'][0])) {
+			return false;
+		}
+		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_PWD_NEVER_EXPIRES;
+	}
+
+	/**
+	 * Sets if the account never expires.
+	 * 
+	 * @param array $attrs LDAP attributes to modify
+	 * @param boolean $neverExpires never expires
+	 */
+	public static function setIsNeverExpiring(&$attrs, $neverExpires) {
+		foreach ($attrs as $key => $value) {
+			if (strtolower($key) == 'useraccountcontrol') {
+				if ($neverExpires) {
+					$attrs[$key][0] = intval($attrs[$key][0]) | windowsUser::AC_PWD_NEVER_EXPIRES;
+				}
+				else {
+					if (intval($attrs[$key][0]) & windowsUser::AC_PWD_NEVER_EXPIRES) {
+						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_PWD_NEVER_EXPIRES;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Finds all existing groups.
+	 *
+	 * @return array group DNs
+	 */
+	private function findGroups() {
+		if ($this->groupCache != null) {
+			return $this->groupCache;
+		}
+		$return = array();
+		$types = array('group');
+		$results = searchLDAPByFilter('(objectClass=group)', array('dn'), $types);
+		$count = sizeof($results);
+		for ($i = 0; $i < $count; $i++) {
+			if (isset($results[$i]['dn'])) {
+				$return[] = $results[$i]['dn'];
+			}
+		}
+		$this->groupCache = $return;
+		return $return;
+	}
+	
 }
-
-
+	
 ?>
