@@ -52,7 +52,7 @@ class windowsHost extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=computer)");
+		$return["ldap_filter"] = array('and' => "", 'or' => '(objectClass=computer)');
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies

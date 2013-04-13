@@ -87,7 +87,7 @@ class windowsGroup extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=group)");
+		$return["ldap_filter"] = array('and' => "", 'or' => '(objectClass=group)');
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
