@@ -119,6 +119,10 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _('Other telephone numbers'), 'attr' => 'otherTelephone',
 				"Text" => _('If the user has multiple telephone numbers then please enter it here.')
 			),
+			'otherTelephoneList' => array(
+				"Headline" => _('Other telephone numbers'), 'attr' => 'otherTelephone',
+				"Text" => _('If the user has multiple telephone numbers then please enter it here.') . ' ' . _("Multiple values are separated by semicolon.")
+			),
 			'physicalDeliveryOfficeName' => array(
 				"Headline" => _('Office name'), 'attr' => 'physicalDeliveryOfficeName',
 				"Text" => _('The office name of the user (e.g. YourCompany, Human Resources).')
@@ -151,6 +155,10 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _('Other web sites'), 'attr' => 'url',
 				"Text" => _('Here you can enter additional web sites for the user.')
 			),
+			'urlList' => array(
+				"Headline" => _('Other web sites'), 'attr' => 'url',
+				"Text" => _('Here you can enter additional web sites for the user.') . ' ' . _("Multiple values are separated by semicolon.")
+			),
 			'wWWHomePage' => array(
 				"Headline" => _('Web site'), 'attr' => 'wWWHomePage',
 				"Text" => _('The user\'s web site (e.g. http://www.company.com).')
@@ -167,17 +175,25 @@ class windowsUser extends baseModule implements passwordService {
 			"requireCard" => array(
 				"Headline" => _("Require smartcard"),
 				"Text" => _("The user must log on using a smart card.")),
-			"runLogonScript" => array(
-				"Headline" => _("Run logon script"),
-				"Text" => _("The logon script is executed.")),
 			"profilePath" => array(
 				"Headline" => _("Profile path"), 'attr' => 'profilePath',
 				"Text" => _('Path of the user profile (UNC-path, e.g. \\\\server\\share\\user). $user is replaced with user name.'). ' '. _("Can be left empty.")),
 			"scriptPath" => array(
 				"Headline" => _("Logon script"), 'attr' => 'scriptPath',
 				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user is replaced with user name.'). ' '. _("Can be left empty.")),
-			"pwdMustChange" => array ("Headline" => _("Password change at next login"),
+			"pwdMustChange" => array (
+				"Headline" => _("Password change at next login"),
 				"Text" => _("If you set this option then the user has to change his password at the next login.")),
+			"groups" => array (
+				"Headline" => _("Groups"),
+				"Text" => _("Hold the CTRL-key to (de)select multiple groups.")),
+			"groupsUpload" => array (
+				"Headline" => _("Groups"),
+				"Text" => _("The groups for this account. You can insert a group name or DN.") . ' ' . _("Multiple values are separated by semicolon.")),
+			'password' => array(
+					"Headline" => _("Password"),
+					"Text" => _("Please enter the password which you want to set for this account.")
+				),
 			);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -186,18 +202,159 @@ class windowsUser extends baseModule implements passwordService {
 				'description' => _('User name'),
 				'help' => 'cn',
 				'example' => _('smiller'),
-				'required' => true
+				'required' => true,
+				'unique' => true,
+			),
+			array(
+				'name' => 'windowsUser_password',
+				'description' => _('Password'),
+				'help' => 'password',
+				'example' => _('secret'),
+			),
+			array(
+				'name' => 'windowsUser_firstName',
+				'description' => _('First name'),
+				'help' => 'givenName',
+				'example' => _('Steve'),
+			),
+			array(
+				'name' => 'windowsUser_lastName',
+				'description' => _('Last name'),
+				'help' => 'sn',
+				'example' => _('Miller'),
+			),
+			array(
+				'name' => 'windowsUser_displayName',
+				'description' => _('Display name'),
+				'help' => 'displayName',
+				'example' => _('Steve Miller'),
+			),
+			array(
+				'name' => 'windowsUser_initials',
+				'description' => _('Initials'),
+				'help' => 'initials',
+				'example' => _('S.M.'),
 			),
 			array(
 				'name' => 'windowsUser_description',
 				'description' => _('Description'),
 				'help' => 'description',
+				'example' => _('Temp, contract til December'),
+			),
+			array(
+				'name' => 'windowsUser_streetAddress',
+				'description' => _('Street'),
+				'help' => 'streetAddress',
+				'example' => _('Mystreetname 42'),
+			),
+			array(
+				'name' => 'windowsUser_postOfficeBox',
+				'description' => _('Post office box'),
+				'help' => 'postOfficeBox',
+				'example' => _('12345'),
+			),
+			array(
+				'name' => 'windowsUser_postalCode',
+				'description' => _('Postal code'),
+				'help' => 'postalCode',
+				'example' => _('GB-12345'),
 			),
 			array(
 				'name' => 'windowsUser_l',
 				'description' => _('Location'),
 				'help' => 'l',
 				'example' => _('MyCity'),
+			),
+			array(
+				'name' => 'windowsUser_state',
+				'description' => _('State'),
+				'help' => 'st',
+				'example' => _('New York'),
+			),
+			array(
+				'name' => 'windowsUser_officeName',
+				'description' => _('Office name'),
+				'help' => 'physicalDeliveryOfficeName',
+				'example' => _('YourCompany'),
+			),
+			array(
+				'name' => 'windowsUser_mail',
+				'description' => _('Email address'),
+				'help' => 'mail',
+				'example' => _('user@company.com'),
+			),
+			array(
+				'name' => 'windowsUser_telephoneNumber',
+				'description' => _('Telephone number'),
+				'help' => 'telephoneNumber',
+				'example' => _('123-124-1234'),
+			),
+			array(
+				'name' => 'windowsUser_otherTelephone',
+				'description' => _('Other telephone numbers'),
+				'help' => 'otherTelephoneList',
+				'example' => _('123-124-1234'),
+			),
+			array(
+				'name' => 'windowsUser_webSite',
+				'description' => _('Web site'),
+				'help' => 'wWWHomePage',
+				'example' => _('http://www.company.com'),
+			),
+			array(
+				'name' => 'windowsUser_otherWebSites',
+				'description' => _('Other web sites'),
+				'help' => 'urlList',
+				'example' => _('http://www.company.com'),
+			),
+			array(
+				'name' => 'windowsUser_deactivated',
+				'description' => _('Account is deactivated'),
+				'help' => 'deactivated',
+				'example' => _('no'),
+				'default' => _('no'),
+				'values' => _('yes') . ', ' . _('no')
+			),
+			array(
+				'name' => 'windowsUser_noExpire',
+				'description' => _('Password does not expire'),
+				'help' => 'noExpire',
+				'example' => _('no'),
+				'default' => _('no'),
+				'values' => _('yes') . ', ' . _('no')
+			),
+			array(
+				'name' => 'windowsUser_requireCard',
+				'description' => _('Require smartcard'),
+				'help' => 'requireCard',
+				'example' => _('no'),
+				'default' => _('no'),
+				'values' => _('yes') . ', ' . _('no')
+			),
+			array(
+				'name' => 'windowsUser_pwdMustChange',
+				'description' => _('Password change at next login'),
+				'help' => 'pwdMustChange',
+				'example' => _('no'),
+				'default' => _('no'),
+				'values' => _('yes') . ', ' . _('no')
+			),
+			array(
+				'name' => 'windowsUser_profilePath',
+				'description' => _('Profile path'),
+				'help' => 'profilePath',
+				'example' => _('\\\\server\\profiles\\smiller'),
+			),
+			array(
+				'name' => 'windowsUser_scriptPath',
+				'description' => _('Logon script'),
+				'help' => 'scriptPath',
+				'example' => 'logon.bat',
+			),
+			array(
+				'name' => 'windowsUser_groups',
+				'description' => _('Groups'),
+				'help' => 'groupsUpload',
 			),
 		);
 		// available PDF fields
@@ -219,6 +376,13 @@ class windowsUser extends baseModule implements passwordService {
 			'telephoneNumber' => _('Telephone number'),
 			'url' => _('Other web sites'),
 			'wWWHomePage' => _('Web site'),
+			'deactivated' => _('Account is deactivated'),
+			'noExpire' => _('Password does not expire'),
+			'requireCard' => _('Require smartcard'),
+			'profilePath' => _('Profile path'),
+			'scriptPath' => _('Logon script'),
+			'pwdMustChange' => _('Password change at next login'),
+			'groups' => _('Groups'),
 		);
 		return $return;
 	}
@@ -614,6 +778,13 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
+		// get list of existing groups
+		$groupList = $this->findGroups();
+		$groupMap = array();
+		foreach ($groupList as $dn) {
+			$groupMap[extractRDNValue($dn)] = $dn;
+		}
+		$booleanOptions = array(_('yes') => true, _('no') => false);
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('user', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'user';
@@ -621,7 +792,7 @@ class windowsUser extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['windowsUser_name']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_name']], 'username')) {
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_name']];
-					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsUser_name']] . '$';
+					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsUser_name']];
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
@@ -629,18 +800,317 @@ class windowsUser extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
+			// password
+			if (($rawAccounts[$i][$ids['windowsUser_password']] != "") && (get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password'))) {
+				$partialAccounts[$i]['unicodePwd'] = $this->pwdAttributeValue($rawAccounts[$i][$ids['windowsUser_password']]);
+				$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['windowsUser_password']]; // for custom scripts etc.
+			}
+			elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
+				$errMsg = $this->messages['userPassword'][4];
+				$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// first name
+			if ($rawAccounts[$i][$ids['windowsUser_firstName']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_firstName']], 'realname')) {
+					$partialAccounts[$i]['givenName'] = $rawAccounts[$i][$ids['windowsUser_firstName']];
+				}
+				else {
+					$errMsg = $this->messages['givenName'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// last name
+			if ($rawAccounts[$i][$ids['windowsUser_lastName']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_lastName']], 'realname')) {
+					$partialAccounts[$i]['sn'] = $rawAccounts[$i][$ids['windowsUser_lastName']];
+				}
+				else {
+					$errMsg = $this->messages['sn'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// display name
+			if ($rawAccounts[$i][$ids['windowsUser_displayName']] != "") {
+				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['windowsUser_displayName']];
+			}
+			// initials
+			if ($rawAccounts[$i][$ids['windowsUser_initials']] != "") {
+				$partialAccounts[$i]['initials'] = $rawAccounts[$i][$ids['windowsUser_initials']];
+			}
 			// description
 			if ($rawAccounts[$i][$ids['windowsUser_description']] != "") {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsUser_description']];
+			}
+			// street
+			if ($rawAccounts[$i][$ids['windowsUser_streetAddress']] != "") {
+				$partialAccounts[$i]['streetAddress'] = $rawAccounts[$i][$ids['windowsUser_streetAddress']];
+			}
+			// post office box
+			if ($rawAccounts[$i][$ids['windowsUser_postOfficeBox']] != "") {
+				$partialAccounts[$i]['postOfficeBox'] = $rawAccounts[$i][$ids['windowsUser_postOfficeBox']];
+			}
+			// postal code
+			if ($rawAccounts[$i][$ids['windowsUser_postalCode']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_postalCode']], 'postalCode')) {
+					$partialAccounts[$i]['postalCode'] = $rawAccounts[$i][$ids['windowsUser_postalCode']];
+				}
+				else {
+					$errMsg = $this->messages['postalCode'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
 			}
 			// location
 			if ($rawAccounts[$i][$ids['windowsUser_l']] != "") {
 				$partialAccounts[$i]['l'] = $rawAccounts[$i][$ids['windowsUser_l']];
 			}
-			// user account
-			$partialAccounts[$i]['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+			// state
+			if ($rawAccounts[$i][$ids['windowsUser_state']] != "") {
+				$partialAccounts[$i]['st'] = $rawAccounts[$i][$ids['windowsUser_state']];
+			}
+			// office name
+			if ($rawAccounts[$i][$ids['windowsUser_officeName']] != "") {
+				$partialAccounts[$i]['physicalDeliveryOfficeName'] = $rawAccounts[$i][$ids['windowsUser_officeName']];
+			}
+			// mail
+			if ($rawAccounts[$i][$ids['windowsUser_mail']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_mail']], 'email')) {
+					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsUser_mail']];
+				}
+				else {
+					$errMsg = $this->messages['mail'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// telephone
+			if ($rawAccounts[$i][$ids['windowsUser_telephoneNumber']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_telephoneNumber']], 'telephone')) {
+					$partialAccounts[$i]['telephoneNumber'] = $rawAccounts[$i][$ids['windowsUser_telephoneNumber']];
+				}
+				else {
+					$errMsg = $this->messages['telephoneNumber'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// other telephone
+			if (isset($ids['windowsUser_otherTelephone']) && ($rawAccounts[$i][$ids['windowsUser_otherTelephone']] != "")) {
+				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherTelephone']]);
+				$partialAccounts[$i]['otherTelephone'] = $valueList;
+				for ($x = 0; $x < sizeof($valueList); $x++) {
+					if (!get_preg($valueList[$x], 'telephone')) {
+						$errMsg = $this->messages['otherTelephone'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+						break;
+					}
+				}
+			}
+			// website
+			if ($rawAccounts[$i][$ids['windowsUser_webSite']] != "") {
+				$partialAccounts[$i]['wWWHomePage'] = $rawAccounts[$i][$ids['windowsUser_webSite']];
+			}
+			// other websites
+			if (isset($ids['windowsUser_otherWebSites']) && ($rawAccounts[$i][$ids['windowsUser_otherWebSites']] != "")) {
+				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherWebSites']]);
+				$partialAccounts[$i]['url'] = $valueList;
+			}
+			// user account control
+			$userAccountControlAttr['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+			// deactivated
+			if ($rawAccounts[$i][$ids['windowsUser_deactivated']] != "") {
+				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]])) {
+					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_deactivated', _('Please enter either yes or no.'));
+				}
+				else {
+					$this->setIsDeactivated($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]]);
+				}
+			}
+			// password does not expire
+			if ($rawAccounts[$i][$ids['windowsUser_noExpire']] != "") {
+				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]])) {
+					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_noExpire', _('Please enter either yes or no.'));
+				}
+				else {
+					$this->setIsNeverExpiring($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]]);
+				}
+			}
+			// require smartcard
+			if ($rawAccounts[$i][$ids['windowsUser_requireCard']] != "") {
+				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]])) {
+					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_requireCard', _('Please enter either yes or no.'));
+				}
+				else {
+					$this->setIsSmartCardRequired($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]]);
+				}
+			}
+			$partialAccounts[$i]['userAccountControl'][0] = $userAccountControlAttr['userAccountControl'][0];
+			// end user account control
+			// password change at next login
+			if ($rawAccounts[$i][$ids['windowsUser_pwdMustChange']] != "") {
+				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_pwdMustChange']]])) {
+					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_pwdMustChange', _('Please enter either yes or no.'));
+				}
+				// attribute must be set in postModify
+			}
+			// profile path
+			if ($rawAccounts[$i][$ids['windowsUser_profilePath']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_profilePath']], 'UNC')) {
+					$partialAccounts[$i]['profilePath'] = $rawAccounts[$i][$ids['windowsUser_profilePath']];
+				}
+				else {
+					$errMsg = $this->messages['profilePath'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// logon script
+			if ($rawAccounts[$i][$ids['windowsUser_scriptPath']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_scriptPath']], 'logonscript')) {
+					$partialAccounts[$i]['scriptPath'] = $rawAccounts[$i][$ids['windowsUser_scriptPath']];
+				}
+				else {
+					$errMsg = $this->messages['scriptPath'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// groups
+			if (isset($ids['windowsUser_groups']) && ($rawAccounts[$i][$ids['windowsUser_groups']] != "")) {
+				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_groups']]);
+				$invalidGroups = array();
+				foreach ($valueList as $group) {
+					if (!in_array($group, $groupList) && !isset($groupMap[$group])) {
+						$invalidGroups[] = $group;
+					}
+				}
+				if (sizeof($invalidGroups) > 0) {
+					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_groups',
+						_('LAM was unable to find a group with this name!') . '<br>' . htmlspecialchars(implode('; ', $invalidGroups)));
+				}
+			}
 		}
 		return $errors;
+	}
+	
+	/**
+	* This function executes one post upload action.
+	*
+	* @param array $data array containing one account in each element
+	* @param array $ids array(<column_name> => <column number>)
+	* @param array $failed list of accounts which were not created successfully
+	* @param array $temp variable to store temporary data between two post actions
+	* @param array $accounts list of LDAP entries
+	* @return array current status
+	* <br> array (
+	* <br>  'status' => 'finished' | 'inProgress'
+	* <br>  'progress' => 0..100
+	* <br>  'errors' => array (<array of parameters for StatusMessage>)
+	* <br> )
+	*/
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
+		if (!checkIfWriteAccessIsAllowed()) {
+			die();
+		}
+		// on first call generate list of ldap operations
+		if (!isset($temp['counter'])) {
+			$groupList = $this->findGroups();
+			$groupMap = array();
+			foreach ($groupList as $dn) {
+				$groupMap[extractRDNValue($dn)] = $dn;
+			}
+			$temp['groups'] = &$groupList;
+			$temp['groupMap'] = &$groupMap;
+			$temp['members'] = array();
+			$temp['memberCount'] = 0;
+			$temp['pwdChange'] = array();
+			$temp['pwdChangeCount'] = 0;
+			$groupCol = $ids['windowsUser_groups'];
+			$passwordChangeRequiredCol = $ids['windowsUser_pwdMustChange'];
+			for ($i = 0; $i < sizeof($data); $i++) {
+				if (in_array($i, $failed)) continue; // ignore failed accounts
+				if ($data[$i][$groupCol] != "") {
+					$groups = preg_split('/;[ ]*/', $data[$i][$groupCol]);
+					for ($g = 0; $g < sizeof($groups); $g++) {
+						if (in_array($groups[$g], $temp['groups'])) {
+							$temp['members'][$groups[$g]][] = $accounts[$i]['dn'];
+						}
+						elseif (isset($temp['groupMap'][$groups[$g]])) {
+							$temp['members'][$temp['groupMap'][$groups[$g]]][] = $accounts[$i]['dn'];
+						}
+					}
+				}
+				if (isset($data[$i][$passwordChangeRequiredCol]) && ($data[$i][$passwordChangeRequiredCol] == _('yes'))) {
+					$temp['pwdChange'][] = $accounts[$i]['dn'];
+				}
+			}
+			$temp['memberCount'] = sizeof($temp['members']);
+			$temp['pwdChangeCount'] = sizeof($temp['pwdChange']);
+			$temp['counter'] = $temp['memberCount'] + $temp['pwdChangeCount'];
+			return array(
+				'status' => 'inProgress',
+				'progress' => 0,
+				'errors' => array()
+			);
+		}
+		// add users to groups
+		elseif (sizeof($temp['members']) > 0) {
+			$keys = array_keys($temp['members']);
+			$group = $keys[0];
+			$member = array_pop($temp['members'][$group]);
+			$success = @ldap_mod_add($_SESSION['ldap']->server(), $group, array('member' => $member));
+			$errors = array();
+			if (!$success) {
+				$errors[] = array(
+					"ERROR",
+					_("LAM was unable to modify group memberships for group: %s"),
+					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
+					array($group)
+				);
+			}
+			if (sizeof($temp['members'][$group]) == 0) {
+				unset($temp['members'][$group]);
+			}
+			$memberPercentage = (100 * ($temp['memberCount'] - sizeof($temp['members']))) / $temp['counter'];
+			return array (
+				'status' => 'inProgress',
+				'progress' => $memberPercentage,
+				'errors' => $errors
+			);
+		}
+		// force password change
+		elseif (sizeof($temp['pwdChange']) > 0) {
+			$dn = array_pop($temp['pwdChange']);
+			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, array('pwdLastSet' => '0'));
+			$errors = array();
+			if (!$success) {
+				$errors[] = array(
+					"ERROR",
+					_("Was unable to modify attributes of DN: %s."),
+					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
+					array($dn)
+				);
+			}
+			$pwdPercentage = (100 * ($temp['memberCount'] + ($temp['pwdChangeCount'] - sizeof($temp['pwdChange'])))) / $temp['counter'];
+			return array (
+				'status' => 'inProgress',
+				'progress' => $pwdPercentage,
+				'errors' => $errors
+			);
+		}
+		// all modifications are done
+		else {
+			return array (
+				'status' => 'finished',
+				'progress' => 100,
+				'errors' => array()
+			);
+		}
 	}
 	
 	/**
@@ -665,7 +1135,67 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
 		$this->addSimplePDFField($return, 'url', _('Other web sites'));
 		$this->addSimplePDFField($return, 'wWWHomePage', _('Web site'));
+		$deactivated = _('no');
+		if ($this->isDeactivated($this->attributes)) {
+			$deactivated = _('yes');
+		}
+		$return[get_class($this) . '_deactivated'] = array('<block><key>' . _('Account is deactivated') . '</key><value>' . $deactivated . '</value></block>');
+		$noExpire = _('no');
+		if ($this->isNeverExpiring($this->attributes)) {
+			$noExpire = _('yes');
+		}
+		$return[get_class($this) . '_noExpire'] = array('<block><key>' . _('Password does not expire') . '</key><value>' . $noExpire . '</value></block>');
+		$requireCard = _('no');
+		if ($this->isSmartCardRequired($this->attributes)) {
+			$requireCard = _('yes');
+		}
+		$return[get_class($this) . '_requireCard'] = array('<block><key>' . _('Require smartcard') . '</key><value>' . $requireCard . '</value></block>');
+		$pwdMustChange = _('no');
+		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
+			$pwdMustChange = _('yes');
+		}
+		$return[get_class($this) . '_pwdMustChange'] = array('<block><key>' . _('Password change at next login') . '</key><value>' . $pwdMustChange . '</value></block>');
+		$this->addSimplePDFField($return, 'profilePath', _('Profile path'));
+		$this->addSimplePDFField($return, 'scriptPath', _('Logon script'));
+		$groups = array();
+		foreach ($this->groupList as $group) {
+			$groups[] = extractRDNValue($group);
+		}
+		$return[get_class($this) . '_groups'] = array('<block><key>' . _('Groups') . '</key><value>' . implode(', ', $groups) . '</value></block>');
 		return $return;
+	}
+	
+	/**
+	* Returns a list of elements for the account profiles.
+	*
+	* @return htmlElement profile elements
+	*/
+	function get_profileOptions() {
+		$return = new htmlTable();
+		$groups = $this->findGroups();
+		$groupList = array();
+		foreach ($groups as $dn) {
+			$groupList[extractRDNValue($dn)] = $dn;
+		}
+		$groupSelect = new htmlTableExtendedSelect('windowsUser_groups', $groupList, array(), _('Groups'), 'groups', 10);
+		$groupSelect->setHasDescriptiveElements(true);
+		$groupSelect->setMultiSelect(true);
+		$return->addElement($groupSelect, true);
+		return $return;
+	}
+	
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// load groups
+		if (isset($profile['windowsUser_groups'][0])) {
+			$this->groupList = $profile['windowsUser_groups'];
+		}
 	}
 	
 	/**
@@ -702,11 +1232,20 @@ class windowsUser extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$pwdBin = iconv('UTF-8', 'UTF-16LE', '"' . $password . '"');
+		$pwdBin = $this->pwdAttributeValue($password);
 		$this->orig['unicodePwd'][0] = 'unknown';
 		$this->attributes['unicodePwd'][0] = $pwdBin;
 		$this->attributes['pwdLastSet'][0] = '-1';
 		return array();
+	}
+	
+	/**
+	 * Creates the LDAP password value.
+	 * 
+	 * @param String $password password
+	 */
+	public function pwdAttributeValue($password) {
+		return iconv('UTF-8', 'UTF-16LE', '"' . $password . '"');
 	}
 
 	/**
