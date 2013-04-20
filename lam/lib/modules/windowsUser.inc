@@ -1246,6 +1246,18 @@ class windowsUser extends baseModule implements passwordService {
 		if ($passwordChangeOnly) {
 			return $return; // only password fields as long no LDAP content can be read
 		}
+		$this->addSimpleSelfServiceTextField($return, 'physicalDeliveryOfficeName', _('Office name'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'wWWHomePage', _('Web site'), $fields, $attributes, $readOnlyFields);
+		// TODO remove this workaround when self service allows to specify the list of active modules
+		if (isset($attributes['street'])) {
+			$attributes['streetAddress'] = $attributes['street'];
+		}
+		$this->addSimpleSelfServiceTextField($return, 'streetAddress', _('Street'), $fields, $attributes, $readOnlyFields, false, true);
+		$this->addSimpleSelfServiceTextField($return, 'st', _('State'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'l', _('Location'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'postalCode', _('Postal code'), $fields, $attributes, $readOnlyFields);
 		return $return;
 	}
 
@@ -1293,32 +1305,18 @@ class windowsUser extends baseModule implements passwordService {
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
-		$attributeNames = array(); // list of attributes which should be checked for modification
-		$attributesNew = $attributes;
-		// find differences
-		for ($i = 0; $i < sizeof($attributeNames); $i++) {
-			$attrName = $attributeNames[$i];
-			if (isset($attributes[$attrName]) && !isset($attributesNew[$attrName])) $return['del'][$attrName] = $attributes[$attrName];
-			elseif (!isset($attributes[$attrName]) && isset($attributesNew[$attrName])) $return['add'][$attrName] = $attributesNew[$attrName];
-			else {
-				if (isset($attributes[$attrName])) {
-					for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
-						if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
-							$return['mod'][$attrName] = $attributesNew[$attrName];
-							break;
-						}
-					}
-				}
-				if (isset($attributesNew[$attrName])) {
-					for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
-						if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
-							$return['mod'][$attrName] = $attributesNew[$attrName];
-							break;
-						}
-					}
-				}
-			}
+		// TODO remove this workaround when self service allows to specify the list of active modules
+		if (isset($attributes['street'])) {
+			$attributes['streetAddress'] = $attributes['street'];
 		}
+		$this->checkSimpleSelfServiceTextField($return, 'physicalDeliveryOfficeName', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields, $readOnlyFields, 'telephone');
+		$this->checkSimpleSelfServiceTextField($return, 'wWWHomePage', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'streetAddress', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'st', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'l', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'postOfficeBox', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'postalCode', $attributes, $fields, $readOnlyFields, 'postalCode');
 		return $return;
 	}
 	
