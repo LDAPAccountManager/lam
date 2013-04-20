@@ -384,6 +384,23 @@ class windowsUser extends baseModule implements passwordService {
 			'pwdMustChange' => _('Password change at next login'),
 			'groups' => _('Groups'),
 		);
+		// self service search attributes
+		$return['selfServiceSearchAttributes'] = array('sAMAccountName');
+		// self service field settings
+		$return['selfServiceFieldSettings'] = array(
+			'physicalDeliveryOfficeName' => _('Office name'),
+			'telephoneNumber' => _('Telephone number'),
+			'wWWHomePage' => _('Web site'),
+			'streetAddress' => _('Street'),
+			'st' => _('State'),
+			'l' => _('Location'),
+			'postOfficeBox' => _('Post office box'),
+			'postalCode' => _('Postal code'),
+			'unicodePwd' => _('Password')
+		);
+		// possible self service read-only fields
+		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
+			'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox', 'postalCode');
 		return $return;
 	}
 	
@@ -423,6 +440,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['profilePath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_profilePath', _('Profile path is invalid!'));
 		$this->messages['scriptPath'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
 		$this->messages['scriptPath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_scriptPath', _('Logon script is invalid!'));
+		$this->messages['unicodePwd'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
+		$this->messages['unicodePwd'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
 	}
 	
 	/**
@@ -1197,7 +1216,182 @@ class windowsUser extends baseModule implements passwordService {
 			$this->groupList = $profile['windowsUser_groups'];
 		}
 	}
+
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
+	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 */
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = array();
+		if (in_array('unicodePwd', $fields)) {
+			$pwdTable = new htmlTable();
+			$pwdTable->colspan = 3;
+			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'windowsUser_unicodePwd');
+			$pwd1->setIsPassword(true);
+			$pwdTable->addElement($pwd1, true);
+			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'windowsUser_unicodePwd2');
+			$pwd2->setIsPassword(true);
+			$pwdTable->addElement($pwd2);
+			$return['unicodePwd'] = new htmlTableRow(array(
+				$pwdTable
+			));
+		}
+		if ($passwordChangeOnly) {
+			return $return; // only password fields as long no LDAP content can be read
+		}
+		return $return;
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
+	 * <br>Return values:
+	 * <br>messages: array of parameters to create status messages
+	 * <br>add: array of attributes to add
+	 * <br>del: array of attributes to remove
+	 * <br>mod: array of attributes to modify
+	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
+	 * 
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
+	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		if (in_array('unicodePwd', $fields)) {
+			if (isset($_POST['windowsUser_unicodePwd']) && ($_POST['windowsUser_unicodePwd'] != '')) {
+				if ($_POST['windowsUser_unicodePwd'] != $_POST['windowsUser_unicodePwd2']) {
+					$return['messages'][] = $this->messages['unicodePwd'][0];
+				}
+				else {
+					if (!get_preg($_POST['windowsUser_unicodePwd'], 'password')) {
+						$return['messages'][] = $this->messages['unicodePwd'][1];
+					}
+					else {
+						$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd']);
+						if ($pwdPolicyResult === true) {
+							$this->setSelfServicePassword($return, $attributes);
+							$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
+						}
+						else {
+							$return['messages'][] = array('ERROR', $pwdPolicyResult);
+						}
+					}
+				}
+			}
+		}
+		if ($passwordChangeOnly) {
+			return $return; // skip processing if only a password change is done
+		}
+		$attributeNames = array(); // list of attributes which should be checked for modification
+		$attributesNew = $attributes;
+		// find differences
+		for ($i = 0; $i < sizeof($attributeNames); $i++) {
+			$attrName = $attributeNames[$i];
+			if (isset($attributes[$attrName]) && !isset($attributesNew[$attrName])) $return['del'][$attrName] = $attributes[$attrName];
+			elseif (!isset($attributes[$attrName]) && isset($attributesNew[$attrName])) $return['add'][$attrName] = $attributesNew[$attrName];
+			else {
+				if (isset($attributes[$attrName])) {
+					for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
+						if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
+							$return['mod'][$attrName] = $attributesNew[$attrName];
+							break;
+						}
+					}
+				}
+				if (isset($attributesNew[$attrName])) {
+					for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
+						if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
+							$return['mod'][$attrName] = $attributesNew[$attrName];
+							break;
+						}
+					}
+				}
+			}
+		}
+		return $return;
+	}
 	
+	/**
+	 * Sets the user password in self service.
+	 * Since the change requires the old password we need to run ldapmodify for this task.
+	 * 
+	 * Enter description here ...
+	 * @param array $return return value for checkSelfServiceOptions() (used to add message if any)
+	 * @param array $attributes LDAP attributes
+	 */
+	private function setSelfServicePassword(&$return, $attributes) {
+		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
+		$oldPassword = Ldap::decrypt($_SESSION['selfService_clientPassword'], 'SelfService');
+		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
+		$dn = $attributes['dn'];
+		$ldif = "dn: " . $dn . "\n";
+		$ldif .= "changetype: modify\n";
+		$ldif .= "delete: unicodePwd\n";
+		$ldif .= "unicodePwd:: " . base64_encode($oldPasswordVal) . "\n";
+		$ldif .= "-\n";
+		$ldif .= "add: unicodePwd\n";
+		$ldif .= "unicodePwd:: " . base64_encode($newPasswordVal) . "\n";
+		$ldif .= "-\n";
+		
+		$serverURL = $_SESSION['selfServiceProfile']->serverURL;
+		$tls = '';
+		if ($_SESSION['selfServiceProfile']->useTLS) {
+			$tls = ' -ZZ ';
+		}
+		$cmd = "/usr/bin/ldapmodify -H " . $serverURL . $tls . " -D " . escapeshellarg($dn) . " -x -w " . escapeshellarg($oldPassword);
+		
+		$descriptorspec = array(
+			0 => array("pipe", "r"), // stdin
+			1 => array("pipe", "w"), // stout
+			2 => array("pipe", "w") // sterr
+		);
+		$process = proc_open($cmd, $descriptorspec, $pipes); 
+		if (is_resource($process)) {
+			fwrite($pipes[0], $ldif);
+		}
+		else {
+			logNewMessage(LOG_ERR, 'Unable to change password of ' . $dn . '. Calling /usr/bin/ldapmodify failed.');
+			$return['messages'][] = array('ERROR', _('Unable to change password.'));
+			return;
+		}
+		fclose($pipes[0]);
+		$outputMessages = '';
+		while (!feof($pipes[1])) {
+			$output = fgets($pipes[1], 1024);
+			if ($output != '') {
+				$outputMessages .= $output;
+			}
+		}
+		while (!feof($pipes[2])) {
+			$output = fgets($pipes[2], 1024);
+			if ($output != '') {
+				$outputMessages .= $output;
+			}
+		}
+		fclose($pipes[1]);
+		$returnCode = proc_close($process);
+		if ($returnCode != 0) {
+			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
+			$return['messages'][] = array('ERROR', _('Unable to change password.'), htmlspecialchars($outputMessages));
+			return;
+		}
+		else {
+			// update session password for next page load	
+			$_SESSION['selfService_clientPasswordNew'] = $_POST['windowsUser_unicodePwd'];
+		}
+	}
+
 	/**
 	 * This method specifies if a module manages password attributes. The module alias will
 	 * then appear as option in the GUI. 
