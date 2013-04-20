@@ -1262,6 +1262,80 @@ abstract class baseModule {
 	}
 	
 	/**
+	 * Adds a simple text input field for the self service.
+	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
+	 * 
+	 * @param array $container array that is used as return value for getSelfServiceOptions()
+	 * @param String $name attribute name (== field name)
+	 * @param String $label label to display in front of input field
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account
+	 * @param array $readOnlyFields list of read-only fields
+	 * @param boolean $required field is required
+	 * @param boolean $isTextArea display as text area
+	 */
+	protected function addSimpleSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false) {
+		$value = '';
+		if (isset($attributes[$name][0])) {
+			$value = $attributes[$name][0];
+		}
+		if (!$isTextArea && !in_array($name, $readOnlyFields)) {
+			$field = new htmlInputField(get_class($this) . '_' . $name, $value);
+			$field->setRequired($required);
+		}
+		elseif ($isTextArea && !in_array($name, $readOnlyFields)) {
+			$field = new htmlInputTextarea(get_class($this) . '_' . $name, $value, 30, 3);
+		}
+		else {
+			if (!$isTextArea) {
+				$field = new htmlOutputText($value);
+			}
+			else {
+				$value = htmlspecialchars($value);
+				$value = str_replace("\n", '<br>', $value);
+				$field = new htmlOutputText($value, false);
+			}
+		}
+		$container[$name] = new htmlTableRow(array(
+			new htmlOutputText($label), $field
+		));
+	}
+	
+	/**
+	 * Checks the input value of a self service text field.
+	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
+	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
+	 * 
+	 * @param array $container return value of checkSelfServiceOptions()
+	 * @param String $name attribute name
+	 * @param array $attributes LDAP attributes
+	 * @param string $fields input fields
+	 * @param array $readOnlyFields list of read-only fields
+	 * @param String $validationID validation ID for get_preg()
+	 */
+	protected function checkSimpleSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields, $validationID = null) {
+		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
+			$fieldName = get_class($this) . '_' . $name;
+			if (isset($_POST[$fieldName]) && ($_POST[$fieldName] != '')) {
+				if (($validationID != null) && !get_preg($_POST[$fieldName], $validationID)) {
+					$container['messages'][] = $this->messages[$name][0];
+				}
+				else {
+					if (isset($attributes[$name])) {
+						$container['mod'][$name] = array($_POST[$fieldName]);
+					}
+					else {
+						$container['add'][$name] = array($_POST[$fieldName]);
+					}
+				}
+			}
+			elseif (isset($attributes[$name])) {
+				$container['del'][$name] = $attributes[$name];
+			}
+		}
+	}
+	
+	/**
 	 * Returns a list of managed object classes for this module.
 	 * 
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
