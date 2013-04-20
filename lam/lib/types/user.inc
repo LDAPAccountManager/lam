@@ -140,31 +140,32 @@ class user extends baseType {
 			$mitKerberosAttributes = $container->getAccountModule('mitKerberos')->getAttributes();
 		}
 		// check if first and last name can be shown
-		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && isset($personalAttributes['givenName'][0])) {
+		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && !empty($personalAttributes['sn'][0])
+				&& isset($personalAttributes['givenName'][0]) && !empty($personalAttributes['givenName'][0])) {
 			return htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
 		}
 		// check if a display name is set
-		if (($sambaAttributes != null) && isset($sambaAttributes['displayName'][0])) {
+		if (($sambaAttributes != null) && isset($sambaAttributes['displayName'][0]) && !empty($sambaAttributes['displayName'][0])) {
 			return htmlspecialchars($sambaAttributes['displayName'][0]);
 		}
 		// check if a common name is set
-		if (($personalAttributes != null) && isset($personalAttributes['cn'][0])) {
+		if (($personalAttributes != null) && isset($personalAttributes['cn'][0]) && !empty($personalAttributes['cn'][0])) {
 			return htmlspecialchars($personalAttributes['cn'][0]);
 		}
-		if (($unixAttributes != null) && isset($unixAttributes['cn'][0])) {
+		if (($unixAttributes != null) && isset($unixAttributes['cn'][0]) && !empty($unixAttributes['cn'][0])) {
 			return htmlspecialchars($unixAttributes['cn'][0]);
 		}
 		// check if a user name is set
-		if (($unixAttributes != null) && isset($unixAttributes['uid'][0])) {
+		if (($unixAttributes != null) && isset($unixAttributes['uid'][0]) && !empty($unixAttributes['uid'][0])) {
 			return htmlspecialchars($unixAttributes['uid'][0]);
 		}
-		if (($personalAttributes != null) && isset($personalAttributes['uid'][0])) {
+		if (($personalAttributes != null) && isset($personalAttributes['uid'][0]) && !empty($personalAttributes['uid'][0])) {
 			return htmlspecialchars($personalAttributes['uid'][0]);
 		}
-		if (($accountAttributes != null) && isset($accountAttributes['uid'][0])) {
+		if (($accountAttributes != null) && isset($accountAttributes['uid'][0]) && !empty($accountAttributes['uid'][0])) {
 			return htmlspecialchars($accountAttributes['uid'][0]);
 		}
-		if (($mitKerberosAttributes != null) && isset($mitKerberosAttributes['krbPrincipalName'][0])) {
+		if (($mitKerberosAttributes != null) && isset($mitKerberosAttributes['krbPrincipalName'][0]) && !empty($mitKerberosAttributes['krbPrincipalName'][0])) {
 			return htmlspecialchars($mitKerberosAttributes['krbPrincipalName'][0]);
 		}
 		if ($container->isNewAccount) {
@@ -194,15 +195,15 @@ class user extends baseType {
 		$subtitle = $this->buildAccountStatusIcon($container);
 		$spacer = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		// check if an email address can be shown
-		if (isset($personalAttributes['mail'][0])) {
+		if (isset($personalAttributes['mail'][0]) && !empty($personalAttributes['mail'][0])) {
 			$subtitle .= '<a href="mailto:' . htmlspecialchars($personalAttributes['mail'][0]) . '">' . htmlspecialchars($personalAttributes['mail'][0]) . '</a>' . $spacer;
 		}
 		// check if an telephone number can be shown
-		if (isset($personalAttributes['telephoneNumber'][0])) {
+		if (isset($personalAttributes['telephoneNumber'][0]) && !empty($personalAttributes['telephoneNumber'][0])) {
 			$subtitle .= _('Telephone number') . ' ' . htmlspecialchars($personalAttributes['telephoneNumber'][0]) . $spacer;
 		}
 		// check if an mobile number can be shown
-		if (isset($personalAttributes['mobile'][0])) {
+		if (isset($personalAttributes['mobile'][0]) && !empty($personalAttributes['mobile'][0])) {
 			$subtitle .= _('Mobile number') . ' ' . htmlspecialchars($personalAttributes['mobile'][0]);
 		}
 		if ($subtitle == '') {
@@ -222,7 +223,8 @@ class user extends baseType {
 		$unixAvailable = ($container->getAccountModule('posixAccount') != null) && $container->getAccountModule('posixAccount')->isLockable();
 		$sambaAvailable = (($container->getAccountModule('sambaSamAccount') != null) && $container->getAccountModule('sambaSamAccount')->isExtensionEnabled());
 		$ppolicyAvailable = ($container->getAccountModule('ppolicyUser') != null);
-		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable) {
+		$windowsAvailable = ($container->getAccountModule('windowsUser') != null);
+		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable) {
 			return '';
 		}
 		// get locking status
@@ -238,11 +240,16 @@ class user extends baseType {
 		if ($ppolicyAvailable && $container->getAccountModule('ppolicyUser')->isLocked()) {
 			$ppolicyLocked = true;
 		}
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
+		$windowsLocked = false;
+		if ($windowsAvailable && windowsUser::isDeactivated($container->getAccountModule('windowsUser')->getAttributes())) {
+			$windowsLocked = true;
+		}
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
-							&& (!$ppolicyAvailable || $ppolicyLocked);
+							&& (!$ppolicyAvailable || $ppolicyLocked)
+							&& (!$windowsAvailable || $windowsLocked);
 		// build tooltip
 		$icon = 'unlocked.png';
 		if ($fullyLocked) {
@@ -276,6 +283,14 @@ class user extends baseType {
 			}
 			$statusTable .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
 		}
+		// Windows
+		if ($windowsAvailable) {
+			$windowsIcon = 'unlocked.png';
+			if ($windowsLocked) {
+				$windowsIcon = 'lock.png';
+			}
+			$statusTable .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
+		}
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;
 		if (checkIfWriteAccessIsAllowed()) {
@@ -283,7 +298,7 @@ class user extends baseType {
 			$tipContent .= _('Please click to lock/unlock this account.');
 		}
 		$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
-		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked);
+		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked);
 		$onClick = '';
 		if (checkIfWriteAccessIsAllowed()) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
@@ -300,13 +315,16 @@ class user extends baseType {
 	 * @param boolean $sambaLocked Samba part is locked
 	 * @param boolean $ppolicyAvailable PPolicy part is active
 	 * @param boolean $ppolicyLocked PPolicy part is locked
+	 * @param boolean $windowsAvailable Windows part is active
+	 * @param boolean $windowsLocked Windows part is locked
 	 */
-	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked) {
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
+	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked) {
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
-							&& (!$ppolicyAvailable || $ppolicyLocked);
+							&& (!$ppolicyAvailable || $ppolicyLocked)
+							&& (!$windowsAvailable || $windowsLocked);
 		
 		$container = new htmlTable();
 		
@@ -358,6 +376,10 @@ class user extends baseType {
 				$lockContent->addElement(new htmlImage('../../graphics/security.png'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockPPolicy', true, _('PPolicy'), null, false), true);
 			}
+			if ($windowsAvailable && !$windowsLocked) {
+				$lockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockWindows', true, _('Windows'), null, false), true);
+			}
 			if ($unixAvailable) {
 				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveUnixGroups', true, _('Remove from all Unix groups'), null, false), true);
@@ -386,7 +408,11 @@ class user extends baseType {
 				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockPPolicy', true, _('PPolicy'), null, false), true);
 			}
-
+			if ($windowsAvailable && $windowsLocked) {
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
+			}
+			
 			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
 			if (!$fullyLocked) {
 				$unlockDiv->setCSSClasses(array('hidden'));
@@ -429,6 +455,10 @@ class user extends baseType {
 				if (isset($_POST['lam_accountStatusLockPPolicy']) && ($_POST['lam_accountStatusLockPPolicy'] == 'on')) {
 					$container->getAccountModule('ppolicyUser')->lock();
 				}
+				// Windows
+				if (isset($_POST['lam_accountStatusLockWindows']) && ($_POST['lam_accountStatusLockWindows'] == 'on')) {
+					$container->getAccountModule('windowsUser')->setIsDeactivated(true);
+				}
 				// remove Unix groups
 				if (isset($_POST['lam_accountStatusRemoveUnixGroups']) && ($_POST['lam_accountStatusRemoveUnixGroups'] == 'on')) {
 					$container->getAccountModule('posixAccount')->removeFromUnixGroups();
@@ -451,6 +481,10 @@ class user extends baseType {
 				// PPolicy
 				if (isset($_POST['lam_accountStatusUnlockPPolicy']) && ($_POST['lam_accountStatusUnlockPPolicy'] == 'on')) {
 					$container->getAccountModule('ppolicyUser')->unlock();
+				}
+				// Windows
+				if (isset($_POST['lam_accountStatusUnlockWindows']) && ($_POST['lam_accountStatusUnlockWindows'] == 'on')) {
+					$container->getAccountModule('windowsUser')->setIsDeactivated(false);
 				}
 			}
 		}
@@ -714,6 +748,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'pwdAccountLockedTime';
 			$attrs[] = 'sambaAcctFlags';
 			$attrs[] = 'userPassword';
+			$attrs[] = 'userAccountControl';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -725,13 +760,16 @@ class lamUserList extends lamList {
 	private function injectAccountStatusAttribute() {
 		for ($i = 0; $i < sizeof($this->entries); $i++) {
 			$status = 0;
-			if (!$this->isUnixLocked($this->entries[$i])) {
+			if (!self::isUnixLocked($this->entries[$i])) {
 				$status++;
 			}
-			if (!$this->isSambaLocked($this->entries[$i])) {
+			if (!self::isSambaLocked($this->entries[$i])) {
 				$status++;
 			}
-			if (!$this->isPPolicyLocked($this->entries[$i])) {
+			if (!self::isPPolicyLocked($this->entries[$i])) {
+				$status++;
+			}
+			if (!self::isWindowsLocked($this->entries[$i])) {
 				$status++;
 			}
 			$this->entries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
@@ -746,16 +784,22 @@ class lamUserList extends lamList {
 	private function printAccountStatus(&$attrs) {
 		// check status
 		$unixAvailable = self::isUnixAvailable($attrs);
-		$unixLocked = self::isUnixLocked($attrs);
 		$sambaAvailable = self::isSambaAvailable($attrs);
-		$sambaLocked = self::isSambaLocked($attrs);
 		$ppolicyAvailable = self::isPPolicyAvailable($attrs);
+		$windowsAvailable = self::isWindowsAvailable($attrs);
+		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable) {
+			return;
+		}
+		$unixLocked = self::isUnixLocked($attrs);
+		$sambaLocked = self::isSambaLocked($attrs);
 		$ppolicyLocked = self::isPPolicyLocked($attrs);
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable)
+		$windowsLocked = self::isWindowsLocked($attrs);
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
-							&& (!$ppolicyAvailable || $ppolicyLocked);
+							&& (!$ppolicyAvailable || $ppolicyLocked)
+							&& (!$windowsAvailable || $windowsLocked);
 		$icon = 'unlocked.png';
 		if ($fullyLocked) {
 			$icon = 'lock.png';
@@ -764,7 +808,7 @@ class lamUserList extends lamList {
 			$icon = 'partiallyLocked.png';
 		}
 		// print icon and detail tooltips
-		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable) {
+		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable) {
 			$tipContent = '<table border=0>';
 			// Unix
 			if ($unixAvailable) {
@@ -789,6 +833,14 @@ class lamUserList extends lamList {
 					$ppolicyIcon = 'lock.png';
 				}
 				$tipContent .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
+			}
+			// Windows
+			if ($windowsAvailable) {
+				$windowsIcon = 'unlocked.png';
+				if ($windowsLocked) {
+					$windowsIcon = 'lock.png';
+				}
+				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
 			$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
@@ -857,6 +909,26 @@ class lamUserList extends lamList {
 	 */
 	public static function isPPolicyLocked(&$attrs) {
 		return (isset($attrs['pwdaccountlockedtime'][0]) && ($attrs['pwdaccountlockedtime'][0] != ''));
+	}
+	
+	/**
+	 * Returns if the Windows part exists.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Windows part exists
+	 */
+	public static function isWindowsAvailable(&$attrs) {
+		return (isset($attrs['objectclass']) && in_array_ignore_case('user', $attrs['objectclass']) && isset($attrs['useraccountcontrol'][0]));
+	}
+	
+	/**
+	 * Returns if the Windows part is locked.
+	 * 
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Windows part is locked
+	 */
+	public static function isWindowsLocked(&$attrs) {
+		return windowsUser::isDeactivated($attrs);
 	}
 	
 }
