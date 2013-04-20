@@ -802,7 +802,7 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// password
 			if (($rawAccounts[$i][$ids['windowsUser_password']] != "") && (get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password'))) {
-				$partialAccounts[$i]['unicodePwd'] = $this->pwdAttributeValue($rawAccounts[$i][$ids['windowsUser_password']]);
+				$partialAccounts[$i]['unicodePwd'] = self::pwdAttributeValue($rawAccounts[$i][$ids['windowsUser_password']]);
 				$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['windowsUser_password']]; // for custom scripts etc.
 			}
 			elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
@@ -1232,7 +1232,7 @@ class windowsUser extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$pwdBin = $this->pwdAttributeValue($password);
+		$pwdBin = self::pwdAttributeValue($password);
 		$this->orig['unicodePwd'][0] = 'unknown';
 		$this->attributes['unicodePwd'][0] = $pwdBin;
 		$this->attributes['pwdLastSet'][0] = '-1';
@@ -1244,7 +1244,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * 
 	 * @param String $password password
 	 */
-	public function pwdAttributeValue($password) {
+	public static function pwdAttributeValue($password) {
 		return iconv('UTF-8', 'UTF-16LE', '"' . $password . '"');
 	}
 
