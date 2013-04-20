@@ -79,7 +79,7 @@ class windowsUser extends baseModule implements passwordService {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('user');
+		$return['objectClasses'] = array('user', 'securityPrincipal');
 		// managed attributes
 		$return['attributes'] = array('cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
@@ -615,7 +615,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		// deactivated
 		$deactivated = isset($_POST['deactivated']) && ($_POST['deactivated'] == 'on');
-		windowsUser::setIsDeactivated($this->attributes, $deactivated);
+		windowsUser::setIsDeactivated($deactivated);
 		// no expire
 		$noExpire = isset($_POST['noExpire']) && ($_POST['noExpire'] == 'on');
 		windowsUser::setIsNeverExpiring($this->attributes, $noExpire);
@@ -928,7 +928,7 @@ class windowsUser extends baseModule implements passwordService {
 					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_deactivated', _('Please enter either yes or no.'));
 				}
 				else {
-					$this->setIsDeactivated($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]]);
+					$this->setIsDeactivated($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]], $userAccountControlAttr);
 				}
 			}
 			// password does not expire
@@ -1265,10 +1265,13 @@ class windowsUser extends baseModule implements passwordService {
 	/**
 	 * Sets if the account is currently deactivated.
 	 * 
-	 * @param array $attrs LDAP attributes to modify
 	 * @param boolean $deactivated is deactivated
+	 * @param array $attrs LDAP attributes to modify (default $this->attributes)
 	 */
-	public static function setIsDeactivated(&$attrs, $deactivated) {
+	public function setIsDeactivated($deactivated, &$attrs = null) {
+		if ($attrs == null) {
+			$attrs = &$this->attributes;
+		}
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) == 'useraccountcontrol') {
 				if ($deactivated) {

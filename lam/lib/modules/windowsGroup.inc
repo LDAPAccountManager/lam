@@ -93,7 +93,7 @@ class windowsGroup extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('group');
+		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
 		// managed attributes
 		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType');
 		// help Entries

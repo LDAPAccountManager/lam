@@ -58,7 +58,7 @@ class windowsHost extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('computer');
+		$return['objectClasses'] = array('computer', 'securityPrincipal');
 		// managed attributes
 		$return['attributes'] = array('cn', 'description', 'location', 'sAMAccountName', 'managedBy', 'operatingSystem', 'operatingSystemVersion', 'dNSHostName');
 		// help Entries
