@@ -3,7 +3,7 @@
 $Id$
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2006 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2013 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ class ObjectClass extends SchemaItem
 	{
 		$this->initVars();
 		$class = $raw_ldap_schema_string;
-		$strings = preg_split ("/[\s,]+/", $class, -1,PREG_SPLIT_DELIM_CAPTURE);
+		$strings = preg_split ('/[\s,]+/', $class, -1,PREG_SPLIT_DELIM_CAPTURE);
 		for($i=0; $i<count($strings); $i++) {
 			switch($strings[$i]) {
 				case '(':
@@ -140,7 +140,7 @@ class ObjectClass extends SchemaItem
 								$this->name = $strings[$i];
 							else
 								$this->name .= " " . $strings[$i];
-						}while(!preg_match("/\'$/s", $strings[$i]));
+						}while(!preg_match('/\'$/s', $strings[$i]));
 					} else {
 						$i++;
 						do {
@@ -149,13 +149,13 @@ class ObjectClass extends SchemaItem
  								$this->name = $strings[$i];
 							else
 								$this->name .= " " . $strings[$i];
-						} while(!preg_match("/\'$/s", $strings[$i]));
+						} while(!preg_match('/\'$/s', $strings[$i]));
 						do {
 							$i++;
 						}while(!preg_match('/\)+\)?/',$strings[$i]));
 					}
-					$this->name =        preg_replace("/^\'/", "", $this->name);
-					$this->name =        preg_replace("/\'$/", "", $this->name);
+					$this->name =        preg_replace('/^\'/', "", $this->name);
+					$this->name =        preg_replace('/\'$/', "", $this->name);
 					break;
 				case 'DESC':
 					do {
@@ -164,7 +164,7 @@ class ObjectClass extends SchemaItem
 							$this->description=$this->description . $strings[$i];
 						else
 							$this->description=$this->description . " " . $strings[$i];
-					}while(!preg_match("/\'$/s", $strings[$i]));
+					}while(!preg_match('/\'$/s', $strings[$i]));
 					break;
 				case 'OBSOLETE':
 					$this->is_obsolete = TRUE;
@@ -192,11 +192,19 @@ class ObjectClass extends SchemaItem
 					$this->type='auxiliary';
 					break;
 				case 'MUST':
-					if (preg_match("/^\(./",$strings[$i+1]))
+					if (preg_match('/^\(./',$strings[$i+1]))
 					{
 						$i++;
-						$attr = new ObjectClassAttribute(preg_replace("/^\(/","",$strings[$i]), $this->name);
+						$attr = new ObjectClassAttribute(preg_replace('/^\(/',"",$strings[$i]), $this->name);
 						array_push ($this->must_attrs, $attr);
+						do {
+							$i++;
+							if($strings[$i]!="$")
+							{
+							 $attr = new ObjectClassAttribute($strings[$i], $this->name);
+							 array_push ($this->must_attrs, $attr);
+							}
+						}while(! preg_match('/\)+\)?/',$strings[$i+1]));
 					}
 					elseif($strings[$i+1]!="(")
 					{
@@ -217,11 +225,20 @@ class ObjectClass extends SchemaItem
 					sort($this->must_attrs);
 					break;
 				case 'MAY':
-					if (preg_match("/^\(./",$strings[$i+1]))
+					if (preg_match('/^\(./',$strings[$i+1]))
 					{
 						$i++;
-						$attr = new ObjectClassAttribute(preg_replace("/^\(/","",$strings[$i]), $this->name);
+						$attr = new ObjectClassAttribute(preg_replace('/^\(/',"",$strings[$i]), $this->name);
 						array_push ($this->may_attrs, $attr);
+						do
+						{
+							$i++;
+							if($strings[$i]!="$")
+							{
+							 $attr = new ObjectClassAttribute($strings[$i], $this->name);
+							 array_push ($this->may_attrs, $attr);
+							}
+						}while(! preg_match('/\)+\)?/',$strings[$i+1]));
 					}
 					elseif($strings[$i+1]!="(")
 					{
@@ -243,13 +260,13 @@ class ObjectClass extends SchemaItem
 					sort($this->may_attrs);
 					break;
 				default:
-					if(preg_match ("/[\d\.]+/i",$strings[$i]) && $i == 1)
+					if(preg_match ('/[\d\.]+/i',$strings[$i]) && $i == 1)
 						$this->oid = $strings[$i];
 			}
 		}
 
-		$this->description = preg_replace("/^\'/", "", $this->description);
-		$this->description = preg_replace("/\'$/", "", $this->description);
+		$this->description = preg_replace('/^\'/', "", $this->description);
+		$this->description = preg_replace('/\'$/', "", $this->description);
 	}
 
     /**
@@ -1525,7 +1542,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 function get_schema_objectclasses($dn=null, $use_cache=true )
 {
 	if( $use_cache && cached_schema_available('objectclasses' ) ) {
-        return get_cached_schema('objectclasses' );   
+   //     return get_cached_schema('objectclasses' );   
     }
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn );
