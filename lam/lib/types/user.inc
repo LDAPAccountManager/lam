@@ -566,7 +566,8 @@ class lamUserList extends lamList {
 		$filter = "objectClass=posixGroup";
 		$attrs = array("cn", "gidNumber");
 		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, array('group'));
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		$entryCount = sizeof($entries);
+		for ($i = 0; $i < $entryCount; $i++) {
 			$this->trans_primary_hash[$entries[$i]['gidnumber'][0]] = $entries[$i]['cn'][0];
 		}
 	}
@@ -758,7 +759,8 @@ class lamUserList extends lamList {
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
 	private function injectAccountStatusAttribute() {
-		for ($i = 0; $i < sizeof($this->entries); $i++) {
+		$entryCount = sizeof($this->entries);
+		for ($i = 0; $i < $entryCount; $i++) {
 			$status = 0;
 			if (!self::isUnixLocked($this->entries[$i])) {
 				$status++;

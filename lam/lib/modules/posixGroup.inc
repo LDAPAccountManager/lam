@@ -962,7 +962,8 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		$result = searchLDAPByAttribute('gidNumber', '*', 'posixAccount', array('uid', 'gidNumber', 'cn'), array('user'));
 		$this->cachedUserToGIDList = array();
-		for ($i = 0; $i < sizeof($result); $i++) {
+		$resultCount = sizeof($result);
+		for ($i = 0; $i < $resultCount; $i++) {
 			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array('gid' => $result[$i]['gidnumber'][0], 'cn' => $result[$i]['cn'][0]);
 		}
 		return $this->cachedUserToGIDList;
