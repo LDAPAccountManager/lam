@@ -51,6 +51,8 @@ class windowsUser extends baseModule implements passwordService {
 	private $groupList_orig = array();
 	/** cache for groups */
 	private $groupCache = null;
+	/** option for forcing password change, used in postModifyActions */
+	private $pwdLastSet = null;
 	
 	
 	/**
@@ -513,7 +515,7 @@ class windowsUser extends baseModule implements passwordService {
 		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
 			$pwdMustChange = true;
 		}
-		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('pwdMustChange', $pwdMustChange, _("User must change password"), 'pwdMustChange'), true);
+		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('forcePasswordChangeOption', $pwdMustChange, _("User must change password"), 'pwdMustChange'), true);
 		// deactivated
 		$deactivated = windowsUser::isDeactivated($this->attributes);
 		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'), true);
@@ -621,7 +623,7 @@ class windowsUser extends baseModule implements passwordService {
 		// web site
 		$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
 		// password must be changed
-		if (isset($_POST['pwdMustChange']) && ($_POST['pwdMustChange'] == 'on')) {
+		if (isset($_POST['forcePasswordChangeOption']) && ($_POST['forcePasswordChangeOption'] == 'on')) {
 			$this->attributes['pwdLastSet'][0] = '0';
 		}
 		else {
@@ -630,6 +632,13 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			else {
 				$this->attributes['pwdLastSet'][0] = '-1';
+			}
+		}
+		// save pwdLastSet for postModifyActions
+		$this->pwdLastSet = null;
+		if (isset($this->attributes['pwdLastSet'][0])) {
+			if (!isset($this->orig['pwdLastSet'][0]) || ($this->orig['pwdLastSet'][0] != $this->attributes['pwdLastSet'][0])) {
+				$this->pwdLastSet = $this->attributes['pwdLastSet'][0];
 			}
 		}
 		// deactivated
@@ -781,6 +790,15 @@ class windowsUser extends baseModule implements passwordService {
 				else {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
 				}
+			}
+		}
+		// force password change if needed
+		if ($this->pwdLastSet != null) {
+			$attrs = array('pwdLastSet' => array($this->pwdLastSet));
+			$success = @ldap_modify($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
+			if (!$success) {
+				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to change pwdLastSet for ' . $this->getAccountContainer()->finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
+				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), ldap_error($_SESSION['ldap']->server()));
 			}
 		}
 		return $messages;
@@ -1428,6 +1446,9 @@ class windowsUser extends baseModule implements passwordService {
 		$this->orig['unicodePwd'][0] = 'unknown';
 		$this->attributes['unicodePwd'][0] = $pwdBin;
 		$this->attributes['pwdLastSet'][0] = '-1';
+		if ($forcePasswordChange) {
+			$this->attributes['pwdLastSet'][0] = '0';
+		}
 		return array();
 	}
 	
