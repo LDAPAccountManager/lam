@@ -2054,6 +2054,41 @@ Have fun!
       </section>
 
       <section>
+        <title>Windows (Samba 4)</title>
+
+        <para>Please activate the account type "Users" in your LAM server
+        profile and then add the user module "Windows
+        (windowsUser)(*)".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsUser1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you can manage your Windows users and e.g. assign
+        groups.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsUser2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsUser3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Filesystem quota (lamdaemon)</title>
 
         <para>You can manage file system quotas with LAM. This requires to
@@ -2600,6 +2635,67 @@ Have fun!
       </section>
 
       <section>
+        <title>Windows (Samba 4)</title>
+
+        <para>LAM can manage your Windows groups. Please enable the account
+        type "Groups" in your LAM server profile and then add the group module
+        "Windows (windowsGroup)(*)".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsGroup1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can manage the group name, description and its type. Of
+        course, you can also set the group members.</para>
+
+        <para>Group scopes:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Global: Use this for groups with frequent changes. Global
+            groups are not replicated to other domains.</para>
+          </listitem>
+
+          <listitem>
+            <para>Universal: Groups with universal scope are used to
+            consolidate groups that span domains. They are globally
+            replicated.</para>
+          </listitem>
+
+          <listitem>
+            <para>Domain local: Groups with domain local scope can be used to
+            set permissions inside one domain. They are not replicated to
+            other domains.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Group type:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Security: Use this group type to control permissions.</para>
+          </listitem>
+
+          <listitem>
+            <para>Distribution: These groups are only used for email
+            applications. They cannot be used to control permissions.</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsGroup2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Quota</title>
 
         <para>You can manage file system quotas with LAM. This requires to
@@ -2662,6 +2758,33 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_sambaHost2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Windows (Samba 4)</title>
+
+        <para>LAM can manage your Windows servers and workstations. Please
+        enable the account type "Hosts" in your LAM server profile and then
+        add the host module "Windows (windowsHost)(*)".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsServer2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can set e.g. the server's description and location
+        information.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsServer1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3925,15 +4048,16 @@ Run slapindex to rebuild the index.
       <itemizedlist>
         <listitem>
           <para><emphasis role="bold">$INFO.userPasswordClearText$:</emphasis>
-          cleartext password when Unix password is changed (e.g. useful for
-          external password synchronisation) for new/modified accounts</para>
+          cleartext password when Unix/Windows password is changed (e.g.
+          useful for external password synchronisation) for new/modified
+          accounts</para>
         </listitem>
 
         <listitem>
           <para><emphasis
           role="bold">$INFO.userPasswordStatusChange$:</emphasis> provides
-          additional information if the password locking status was changed,
-          possible values: locked, unlocked, unchanged</para>
+          additional information if the Unix password locking status was
+          changed, possible values: locked, unlocked, unchanged</para>
         </listitem>
 
         <listitem>
@@ -5141,6 +5265,66 @@ Run slapindex to rebuild the index.
 
               <td>Updates the password timestamp when password is synchronized
               with Unix.</td>
+            </tr>
+
+            <tr>
+              <td align="left" rowspan="9"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_samba.png" />
+                  </imageobject>
+                </inlinemediaobject>Windows</td>
+
+              <td>Password</td>
+
+              <td>Change the user's password</td>
+            </tr>
+
+            <tr>
+              <td>Location</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Office name</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Postal code</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Post office box</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>State</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Street</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Telephone number</td>
+
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>Web site</td>
+
+              <td></td>
             </tr>
 
             <tr>
