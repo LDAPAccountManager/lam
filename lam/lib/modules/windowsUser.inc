@@ -53,6 +53,8 @@ class windowsUser extends baseModule implements passwordService {
 	private $groupCache = null;
 	/** option for forcing password change, used in postModifyActions */
 	private $pwdLastSet = null;
+	/** clear text password */
+	private $clearTextPassword;
 	
 	
 	/**
@@ -385,6 +387,7 @@ class windowsUser extends baseModule implements passwordService {
 			'scriptPath' => _('Logon script'),
 			'pwdMustChange' => _('Password change at next login'),
 			'groups' => _('Groups'),
+			'password' => _('Password'),
 		);
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('sAMAccountName');
@@ -461,6 +464,27 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$this->groupList_orig = array_values(array_unique($this->groupList_orig));
 		$this->groupList = $this->groupList_orig;
+	}
+
+	
+	
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	*/
+	public function save_attributes() {
+		$return = parent::save_attributes();
+		// add information about clear text password and password status change
+		$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
+		return $return;
 	}
 
 	/**
@@ -1199,6 +1223,13 @@ class windowsUser extends baseModule implements passwordService {
 			$groups[] = extractRDNValue($group);
 		}
 		$return[get_class($this) . '_groups'] = array('<block><key>' . _('Groups') . '</key><value>' . implode(', ', $groups) . '</value></block>');
+		// password
+		if (isset($this->clearTextPassword)) {
+			$return['windowsUser_password'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
+		}
+		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
+			$return['windowsUser_password'] = array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['INFO.userPasswordClearText'] . '</value></block>');
+		}
 		return $return;
 	}
 	
@@ -1449,6 +1480,7 @@ class windowsUser extends baseModule implements passwordService {
 		if ($forcePasswordChange) {
 			$this->attributes['pwdLastSet'][0] = '0';
 		}
+		$this->clearTextPassword = $password;
 		return array();
 	}
 	
