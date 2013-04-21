@@ -11,7 +11,7 @@ LAM - Readme
   templates for account creation and use multiple configuration profiles.
   LAM is translated to Catalan, Chinese (Traditional + Simplified), Czech,
   Dutch, English, French, German, Hungarian, Italian, Japanese, Polish,
-  Portuguese, Russian and Spanish.
+  Portuguese, Russian, Slovak and Spanish.
 
   http://www.ldap-account-manager.org/
 
@@ -24,7 +24,7 @@ LAM - Readme
     The default password to edit the configuration options is "lam".
 
   Download:
-    You can get the newest version at http://www.ldap-account-manager.org/.
+    You can get the newest version at https://www.ldap-account-manager.org/.
 
   License:
     LAM is published under the GNU General Public License.
