@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Module HowTo - Self service</title>
+
+
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
+<div style="text-align: center;">
+<h1>Module HowTo - Self service<br>
+</h1>
+<div style="text-align: left;"><br>
+Self service is a LAM Pro feature. It allows your users to manage their own data (e.g. telephone numbers).<br>
+<br>
+</div>
+<div style="text-align: left;">First you need to implement the function <span style="font-weight: bold;">getSelfServiceFields()</span> or use <span style="font-weight: bold;">meta['selfServiceFieldSettings']</span>.<br>
+Your input fields may also be defined as read-only in the self service
+profile editor. If your fields supports read-only then use
+canSelfServiceFieldBeReadOnly() or <span style="font-weight: bold;">meta['selfServiceReadOnlyFields']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">inetOrgPerson</span> module
+provides lots of possible input fields for the self service. Each field
+has an ID and a descriptive name that will be displayed on the self
+service page.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;"> function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; $return['selfServiceFieldSettings'] =
+array('firstName' =&gt; _('First name'), 'lastName' =&gt; _('Last
+name'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'mail' =&gt;
+_('Email address'), 'telephoneNumber' =&gt; _('Telephone number'),
+'mobile' =&gt; _('Mobile number'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'faxNumber'
+=&gt; _('Fax number'), 'street' =&gt; _('Street'), 'postalAddress'
+=&gt; _('Postal address'), 'registeredAddress' =&gt; _('Registered
+address'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'postalCode'
+=&gt; _('Postal code'), 'postOfficeBox' =&gt; _('Post office box'),
+'jpegPhoto' =&gt; _('Photo'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'homePhone'
+=&gt; _('Home telephone number'), 'roomNumber' =&gt; _('Room number'),
+'carLicense' =&gt; _('Car license'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'location'
+=&gt; _('Location'), 'state' =&gt; _('State'), 'officeName' =&gt;
+_('Office name'), 'businessCategory' =&gt; _('Business category'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;'departmentNumber' =&gt; _('Department'), 'initials' =&gt;
+_('Initials'), 'title' =&gt; _('Job title'), 'labeledURI' =&gt; _('Web
+site'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'userCertificate' =&gt; _('User certificates'));<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // possible self service read-only fields<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;$return['selfServiceReadOnlyFields'] = array('firstName',
+'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'street',<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;'postalAddress', 'registeredAddress', 'postalCode',
+'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'location',
+'state', 'officeName', 'businessCategory', 'departmentNumber',
+'initials', 'title', 'labeledURI', 'userCertificate');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+In very rare cases you need to specify self service search attributes.
+These are used to identify the user inside LDAP. Common examples are
+"uid" or "mail".<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+
+<br>
+
+The <span style="font-style: italic;">inetOrgPerson</span> module specifies several search attributes.<br>
+
+<br>
+
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;"> function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // self service search attributes<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;$return['selfServiceSearchAttributes'] = array('uid', 'mail',
+'cn', 'surname', 'givenName', 'employeeNumber');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<br>
+
+The HTML code for the user page is generated with the function <span style="font-weight: bold;">getSelfServiceOptions()</span>. It returns one table row for each input field.<br>
+Please note that some fields may be defined as read-only
+($readOnlyFields). If $passwordChangeOnly is set then no input fields
+other than the bind password should be displayed (you will not get any
+attribute values).<br>
+
+
+
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+<br>
+
+
+The <span style="font-style: italic;">windowsUser</span> module uses
+the addSimpleSelfServiceTextField() function from baseModule to print
+the text field. You may also build the table row yourself if the input
+field is more complex.<br>
+<br>
+
+
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns the meta HTML code for each input field.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* format: array(&lt;field1&gt; =&gt; array(&lt;META HTML&gt;), ...)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* It is not possible to display help links.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param array $fields list of active fields<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param array $attributes attributes of LDAP account<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param boolean $passwordChangeOnly indicates
+that the user is only allowed to change his password and no LDAP
+content is readable<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param array $readOnlyFields list of read-only fields<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return array list of meta HTML elements (field name =&gt; htmlTableRow)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ($passwordChangeOnly) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
+$return; // only password fields as long no LDAP content can be read<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;addSimpleSelfServiceTextField($return,
+'physicalDeliveryOfficeName', _('Office name'), $fields, $attributes,
+$readOnlyFields);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+
+
+<br>
+Of course, the user input should also be validated before making any LDAP changes. This is done in <span style="font-weight: bold;">checkSelfServiceOptions()</span>.<br>
+The return value includes any error messages to display and also all LDAP operations.<br>
+Please note that some fields may be defined as read-only
+($readOnlyFields). If $passwordChangeOnly is set then no input fields
+other than the bind
+password should be displayed (you will not get any attribute values).<br>
+
+
+
+
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+
+
+
+<br>
+The <span style="font-style: italic;">inetOrgPerson</span> module has a field for the user's first name.<br>
+<br>
+
+
+
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+
+
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Checks if all input values are correct and returns the LDAP attributes which should be changed.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;Return values:<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;messages: array of parameters to create status messages<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;add: array of attributes to add<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;del: array of attributes to remove<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;mod: array of attributes to modify<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;info: array of values with
+informational value (e.g. to be used later by pre/postModify actions)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param string $fields input fields<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param array $attributes LDAP attributes<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param boolean $passwordChangeOnly indicates
+that the user is only allowed to change his password and no LDAP
+content is readable<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param array $readOnlyFields list of read-only fields<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return array messages and attributes
+(array('messages' =&gt; array(), 'add' =&gt; array('mail' =&gt;
+array('test@test.com')), 'del' =&gt; array(), 'mod' =&gt; array(),
+'info' =&gt; array()))<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array('messages' =&gt;
+array(), 'add' =&gt; array(), 'del' =&gt; array(), 'mod' =&gt; array(),
+'info' =&gt; array());<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ($passwordChangeOnly) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return; // skip processing if only a password change is done<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $attributeNames = array(); // list of attributes which should be checked for modification<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $attributesNew = $attributes;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // first name<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (in_array('firstName', $fields) &amp;&amp; !in_array('firstName', $readOnlyFields)) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $attributeNames[] = 'givenName';<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+(isset($_POST['inetOrgPerson_firstName']) &amp;&amp;
+($_POST['inetOrgPerson_firstName'] != '')) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; if (!get_preg($_POST['inetOrgPerson_firstName'],
+'realname')) $return['messages'][] = $this-&gt;messages['givenName'][0];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; else $attributesNew['givenName'][0] =
+$_POST['inetOrgPerson_firstName'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; elseif
+(isset($attributes['givenName'])) unset($attributesNew['givenName']);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
+</td></tr></tbody>
+</table>
+<br>
+<br>
+The self service also supports configuration settings for each module. See <span style="font-weight: bold;">getSelfServiceSettings() </span>or <span style="font-weight: bold;">meta['selfServiceSettings'] </span>to specify the options.<br>
+You can validate the input with <span style="font-weight: bold;">checkSelfServiceSettings()</span>.<br>
+Self service configuration settings are displayed on a separate tab in the self service profile editor.<br>
+<br>
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+</div>
+</div>
+</body></html>
