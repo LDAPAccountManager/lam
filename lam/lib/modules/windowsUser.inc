@@ -866,7 +866,7 @@ class windowsUser extends baseModule implements passwordService {
 				$partialAccounts[$i]['unicodePwd'] = self::pwdAttributeValue($rawAccounts[$i][$ids['windowsUser_password']]);
 				$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['windowsUser_password']]; // for custom scripts etc.
 			}
-			elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
+			elseif ($rawAccounts[$i][$ids['windowsUser_password']] != "") {
 				$errMsg = $this->messages['userPassword'][4];
 				$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
 				array_push($errMsg, array($i));
