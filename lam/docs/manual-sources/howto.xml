@@ -692,6 +692,15 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>4.1 -&gt; 4.2</title>
+
+          <para>Zarafa users: The default attribute for mail aliases is now
+          "dn". If you use "uid" and did not change the server profile for a
+          long time please check your LAM server profile for this setting and
+          save it.</para>
+        </section>
+
+        <section>
           <title>4.0 -&gt; 4.1</title>
 
           <para><emphasis role="bold">Unix:</emphasis> The list of valid login
