@@ -3094,7 +3094,9 @@ Have fun!
         <para>ldap_user_sendas_relation_attribute = uid</para>
 
         <para><literallayout>
-</literallayout><literallayout>
+Attention: If the Active Directory schema is used then LAM will always use dn and ignore this setting.
+
+
 </literallayout></para>
 
         <para><emphasis role="bold">Features:</emphasis> Zarafa 7 allows to

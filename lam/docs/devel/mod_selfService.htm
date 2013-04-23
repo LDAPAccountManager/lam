@@ -2,6 +2,7 @@
 <html><head><title>Module HowTo - Self service</title>
 
 
+
   
   <link rel="stylesheet" type="text/css" href="style/layout.css">
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
@@ -12,7 +13,9 @@
 Self service is a LAM Pro feature. It allows your users to manage their own data (e.g. telephone numbers).<br>
 <br>
 </div>
-<div style="text-align: left;">First you need to implement the function <span style="font-weight: bold;">getSelfServiceFields()</span> or use <span style="font-weight: bold;">meta['selfServiceFieldSettings']</span>.<br>
+<div style="text-align: left;">First you need to implement the function <span style="font-weight: bold;">getSelfServiceFields()</span> or use <span style="font-weight: bold;">meta['selfServiceFieldSettings']</span>. Each field
+has an ID and a descriptive name that will be displayed on the self
+service page.<br>
 Your input fields may also be defined as read-only in the self service
 profile editor. If your fields supports read-only then use
 canSelfServiceFieldBeReadOnly() or <span style="font-weight: bold;">meta['selfServiceReadOnlyFields']</span>.<br>
@@ -20,9 +23,7 @@ canSelfServiceFieldBeReadOnly() or <span style="font-weight: bold;">meta['selfSe
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">inetOrgPerson</span> module
-provides lots of possible input fields for the self service. Each field
-has an ID and a descriptive name that will be displayed on the self
-service page.<br>
+provides lots of possible input fields for the self service.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
