@@ -137,13 +137,21 @@ class baseType {
 	public function getSuffixList() {
 		$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
 		$ret = array();
-		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix), "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer))", array("DN"), 0, 0, 0, LDAP_DEREF_NEVER);
+		$filter = "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
+		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix),$filter , array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 			cleanLDAPResult($units);
 			// extract Dns
-			for ($i = 0; $i < sizeof($units); $i++) {
-				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
+			$count = sizeof($units);
+			for ($i = 0; $i < $count; $i++) {
+				if (in_array('container', $units[$i]['objectclass'])) {
+					// Active Directory fix, hide system containers
+					if (preg_match('/.*cn=system,dc=.+/i', $units[$i]['dn']) || preg_match('/.*CN=program data,dc=.+/i', $units[$i]['dn'])) {
+						continue;
+					}
+				}
+				$ret[] = $units[$i]['dn'];
 			}
 		}
 		// add root suffix if needed
