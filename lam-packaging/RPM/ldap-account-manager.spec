@@ -194,5 +194,5 @@ Heimatverzeichnisse verwaltet werden sollen.
 %dir /usr/share/%{lam_dir}
 %dir /usr/share/%{lam_dir}/lib
 /usr/share/%{lam_dir}/lib/lamdaemon.pl
-%doc COPYING HISTORY README VERSION docs/*
+%doc COPYING HISTORY README VERSION
 
