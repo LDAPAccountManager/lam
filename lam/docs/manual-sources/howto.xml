@@ -3065,6 +3065,20 @@ Have fun!
           </mediaobject>
         </screenshot>
 
+        <para><emphasis role="bold">Attention:</emphasis> LAM Pro uses the
+        Zarafa OpenLDAP schema as default. This schema fits for OpenLDAP,
+        OpenDJ, Apache Directory server and other common LDAP servers. If you
+        run Samba 4 or Active Directory then you need to switch the schema to
+        "Active Directory" on the module settings tab:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/zarafa9.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
         <para>You can configure which parts of the Zarafa user options should
         be enabled. E.g. if you do not want to manage quotas per user then you
         can hide these options on the tab "Module settings".</para>
