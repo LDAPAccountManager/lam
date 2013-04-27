@@ -1247,7 +1247,7 @@ abstract class baseModule {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = $_POST[$attrName . '_' . $counter];
-			if (($validationID != null) && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
+			if (($validationID != null) && ($this->attributes[$attrName][$counter] != '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
 				$errors[] = $this->messages[$attrName][0];
 			}
 			if ($this->attributes[$attrName][$counter] == '') {
