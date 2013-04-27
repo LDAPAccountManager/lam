@@ -88,7 +88,7 @@ class windowsUser extends baseModule implements passwordService {
 		$return['attributes'] = array('cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
-			'pwdLastSet');
+			'pwdLastSet', 'otherMailbox');
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -197,8 +197,16 @@ class windowsUser extends baseModule implements passwordService {
 			'password' => array(
 					"Headline" => _("Password"),
 					"Text" => _("Please enter the password which you want to set for this account.")
-				),
-			);
+			),
+			'otherMailbox' => array(
+				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
+				"Text" => _("Email alias for this account.")
+			),
+			'otherMailboxList' => array(
+				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
+				"Text" => _("Email alias for this account.") . ' ' . _("Multiple values are separated by semicolon.")
+			),
+		);
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -288,6 +296,12 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('user@company.com'),
 			),
 			array(
+				'name' => 'windowsUser_otherMailbox',
+				'description' => _('Email alias'),
+				'help' => 'otherMailboxList',
+				'example' => _('user@company.com'),
+			),
+			array(
 				'name' => 'windowsUser_telephoneNumber',
 				'description' => _('Telephone number'),
 				'help' => 'telephoneNumber',
@@ -370,6 +384,7 @@ class windowsUser extends baseModule implements passwordService {
 			'initials' => _('Initials'),
 			'l' => _('Location'),
 			'mail' => _('Email address'),
+			'otherMailbox' => _('Email alias'),
 			'otherTelephone' => _('Other telephone numbers'),
 			'physicalDeliveryOfficeName' => _('Office name'),
 			'postalCode' => _('Postal code'),
@@ -441,6 +456,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' windowsUser_postalCode', _('Please enter a valid postal code!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsUser_mail', _('Please enter a valid email address!'));
+		$this->messages['otherMailbox'][0] = array('ERROR', _('Email alias'), _('Email alias is invalid!'));
+		$this->messages['otherMailbox'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias is invalid!'));
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		$this->messages['profilePath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_profilePath', _('Profile path is invalid!'));
 		$this->messages['scriptPath'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
@@ -516,6 +533,7 @@ class windowsUser extends baseModule implements passwordService {
 
 		$containerLeft->addElement(new htmlSubTitle(_('Contact data')), true);
 		$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
+		$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
 		$this->addSimpleInputTextField($containerLeft, 'telephoneNumber', _('Telephone number'));
 		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
 		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
@@ -617,6 +635,8 @@ class windowsUser extends baseModule implements passwordService {
 		if (!empty($this->attributes['mail'][0]) && !get_preg($_POST['mail'], 'email')) {
 			$return[] = $this->messages['mail'][0];
 		}
+		// email aliases
+		$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
 		// other telephones
 		$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
 		// office name
@@ -948,6 +968,19 @@ class windowsUser extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
+			// mail aliases
+			if (isset($ids['windowsUser_otherMailbox']) && ($rawAccounts[$i][$ids['windowsUser_otherMailbox']] != "")) {
+				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherMailbox']]);
+				$partialAccounts[$i]['otherMailbox'] = $valueList;
+				for ($x = 0; $x < sizeof($valueList); $x++) {
+					if (!get_preg($valueList[$x], 'email')) {
+						$errMsg = $this->messages['otherMailbox'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+						break;
+					}
+				}
+			}
 			// telephone
 			if ($rawAccounts[$i][$ids['windowsUser_telephoneNumber']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_telephoneNumber']], 'telephone')) {
@@ -1186,6 +1219,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'initials', _('Initials'));
 		$this->addSimplePDFField($return, 'l', _('Location'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
+		$this->addSimplePDFField($return, 'otherMailbox', _('Email alias'));
 		$this->addSimplePDFField($return, 'otherTelephone', _('Other telephone numbers'));
 		$this->addSimplePDFField($return, 'physicalDeliveryOfficeName', _('Office name'));
 		$this->addSimplePDFField($return, 'postalCode', _('Postal code'));
