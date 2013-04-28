@@ -1,8 +1,10 @@
 June 2013 4.2
   - Samba 4 support: users, groups, hosts
+  - Unix: allow to change format for suggested user name
   - LAM Pro:
    -> Password self reset: support new identification methods: user, email, user or email, employee number
    -> Custom fields: support PDF, profiles and multi-value text fields
+   -> Personal: support password mail sending in file upload
 
 
 19.03.2013 4.1
