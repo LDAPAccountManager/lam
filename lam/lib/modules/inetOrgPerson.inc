@@ -97,6 +97,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
+		$this->messages['sendPasswordMail'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_sendPasswordMail', _('This value can only be "true" or "false".'));
 	}
 
 	/**
@@ -510,6 +511,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'help' => 'mailList',
 				'example' => _('user@company.com')
 			);
+			if (isLAMProVersion()) {
+				$return['upload_columns'][] = array(
+					'name' => 'inetOrgPerson_sendPasswordMail',
+					'description' => _('Send password via mail'),
+					'help' => 'mailPassword',
+					'values' => 'true, false',
+					'default' => 'false',
+					'example' => 'false'
+				);
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
 			$return['upload_columns'][] = array(
@@ -774,6 +785,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The user's email address.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
+			"mailPassword" => array (
+				"Headline" => _("Send password via mail"),
+				"Text" => _("Sends the password to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 			'labeledURI' => array(
 				"Headline" => _("Web site"), 'attr' => 'labeledURI',
 				"Text" => _("The user's web site (e.g. http://www.company.com).")
@@ -2866,6 +2880,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 				}
 			}
+			if (isLAMProVersion() && isset($ids['inetOrgPerson_sendPasswordMail']) && ($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']] != "")) {
+				if (!in_array($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']], array('true', 'false'))) {
+					$errMsg = $this->messages['sendPasswordMail'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
 			// labeledURI
 			if (isset($ids['inetOrgPerson_labeledURI']) && ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "")) {
 				$partialAccounts[$i]['labeledURI'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_labeledURI']]);
@@ -2922,6 +2943,65 @@ class inetOrgPerson extends baseModule implements passwordService {
 		return $errors;
 	}
 
+	/**
+	* This function executes one post upload action.
+	*
+	* @param array $data array containing one account in each element
+	* @param array $ids array(<column_name> => <column number>)
+	* @param array $failed list of accounts which were not created successfully
+	* @param array $temp variable to store temporary data between two post actions
+	* @param array $accounts list of LDAP entries
+	* @return array current status
+	* <br> array (
+	* <br>  'status' => 'finished' | 'inProgress'
+	* <br>  'progress' => 0..100
+	* <br>  'errors' => array (<array of parameters for StatusMessage>)
+	* <br> )
+	*/
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
+		if (!checkIfWriteAccessIsAllowed()) {
+			die();
+		}
+		// mail sending is LAM Pro only
+		if (!isLAMProVersion()) {
+			return array (
+				'status' => 'finished',
+				'progress' => 100,
+				'errors' => array()
+			);
+		}
+		if (!isset($temp['counter'])) {
+			$temp['counter'] = 0;
+		}
+		$errors = array();
+		if (!in_array($temp['counter'], $failed) && isset($ids['inetOrgPerson_email']) && ($data[$temp['counter']][$ids['inetOrgPerson_email']] != "")) {
+			if (isset($ids['inetOrgPerson_sendPasswordMail']) && ($data[$temp['counter']][$ids['inetOrgPerson_sendPasswordMail']] == "true")
+					&& isset($accounts[$temp['counter']]['INFO.userPasswordClearText'])) {
+				$mailMessages = sendPasswordMail($accounts[$temp['counter']]['INFO.userPasswordClearText'], $accounts[$temp['counter']]);
+				for ($i = 0; $i < sizeof($mailMessages); $i++) {
+					if ($mailMessages[$i][0] == 'ERROR') {
+						$errors[] = $mailMessages[$i];
+					}
+				}
+			}
+		}
+		$temp['counter']++;
+		if ($temp['counter'] < (sizeof($data) - 1)) {
+			return array (
+				'status' => 'inProgress',
+				'progress' => ($temp['counter'] * 100) / sizeof($data),
+				'errors' => $errors
+			);
+		}
+		else {
+			return array (
+				'status' => 'finished',
+				'progress' => 100,
+				'errors' => $errors
+			);
+		}
+	}
+	
 	/**
 	 * Returns the meta HTML code for each input field.
 	 * format: array(<field1> => array(<META HTML>), ...)
