@@ -912,7 +912,12 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 		$attr = str_replace('@', '', $results[0]);
 		$value = '';
 		if (isset($user[strtolower($attr)][0])) {
-			$value = $user[strtolower($attr)][0];
+			if (is_array($user[strtolower($attr)])) {
+				$value = $user[strtolower($attr)][0];
+			}
+			else {
+				$value = $user[strtolower($attr)];
+			}
 		}
 		$body = str_replace('@@' . $attr . '@@', $value, $body);
 		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
