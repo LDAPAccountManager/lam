@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011         Roland Gruber
+                2011 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,14 +73,16 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 	$MessageText = parseMessageString($MessageText);
 
 	if (is_file("../graphics/error.png")) {
-		$MessageTyp = "&nbsp;&nbsp;<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"32\" height=\"32\">";
+		$MessageTyp = "&nbsp;&nbsp;<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"24\" height=\"24\">";
 	}
 	else {
-		$MessageTyp = "&nbsp;&nbsp;<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"32\" height=\"32\">";
+		$MessageTyp = "&nbsp;&nbsp;<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"24\" height=\"24\">";
 	}
 
-	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
-	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
+	$MessageHeadline = "<div class=\"statusTitle\">" . $MessageHeadline . "</div>"; // Format $MessageHeadline
+	if ($MessageText != '') {
+		$MessageText = "<p class=\"statusText\">" . $MessageText . "</p>"; // Format $MessageText
+	}
 	$format = "<div " . $class . ">\n<table>\n<tr>\n<td>" . $MessageTyp . "</td>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n</div>\n";
 	$output = '';
 	if (is_array($MessageVariables)) {

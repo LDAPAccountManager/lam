@@ -355,7 +355,7 @@ div.statusInfo {
 
 div.statusWarn {
   background-color:#fff2a3;
-  border: 1px solid #ffd800;
+  border: 1px solid #f59d00;
 }
 
 div.statusError {
@@ -364,41 +364,16 @@ div.statusError {
 }
 
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
-h2.statusInfo {
-  font-size:13pt;
-  font-family:Arial,sans-serif;
-  margin:5px 5px 5px 15px;
-}
-
-h2.statusWarn {
-  font-size:13pt;
-  font-family:Arial,sans-serif;
-  margin:5px 5px 5px 15px;
-}
-
-h2.statusError {
-  font-size:13pt;
-  font-family:Arial,sans-serif;
-  margin:5px 5px 5px 15px;
+div.statusTitle {
+	font-size: 12pt;
+	font-weight: bold;
+	margin: 3px 3px 3px 15px;
 }
 
 /* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
-p.statusInfo {
-  font-size:11pt;
-  font-family:Times,serif;
-  margin:5px 5px 5px 25px;
-}
-
-p.statusWarn {
-  font-size:11pt;
-  font-family:Times,serif;
-  margin:5px 5px 5px 25px;
-}
-
-p.statusError {
-  font-size:11pt;
-  font-family:Times,serif;
-  margin:5px 5px 5px 25px;
+p.statusText {
+  font-size: 10pt;
+  margin: 3px 3px 3px 25px;
 }
 
 input.smallImageButton {
