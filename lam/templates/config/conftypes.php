@@ -233,12 +233,22 @@ if (sizeof($activeTypes) > 0) {
 	$activeContainer = new htmlTable();
 	for ($i = 0; $i < sizeof($activeTypes); $i++) {
 		// title
-		$activeContainer->addElement(new htmlImage('../../graphics/' . $activeTypes[$i] . '.png'));
+		$titleGroup = new htmlGroup();
+		$titleGroup->colspan = 10;
+		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeTypes[$i] . '.png'));
 		$titleText = new htmlOutputText(getTypeAlias($activeTypes[$i]));
 		$titleText->setIsBold(true);
-		$activeContainer->addElement($titleText);
-		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$activeContainer->addElement(new htmlOutputText(getTypeDescription($activeTypes[$i])), true);
+		$titleGroup->addElement($titleText);
+		$titleGroup->addElement(new htmlSpacer('10px', null));
+		$titleGroup->addElement(new htmlOutputText(getTypeDescription($activeTypes[$i])));
+		$activeContainer->addElement($titleGroup);
+		// delete button
+		$delButton = new htmlButton('rem_'. $activeTypes[$i], 'del.png', true);
+		$delButton->colspan = 3;
+		$delButton->alignment = htmlElement::ALIGN_RIGHT;
+		$delButton->setTitle(_("Remove this account type"));
+		$activeContainer->addElement($delButton, true); //del.png
+		$activeContainer->addElement(new htmlSpacer(null, '5px'), true);
 		// LDAP suffix
 		$suffixText = new htmlOutputText(_("LDAP suffix"));
 		$suffixText->colspan = 2;
@@ -249,20 +259,6 @@ if (sizeof($activeTypes) > 0) {
 		$activeContainer->addElement($suffixInput);
 		$activeContainer->addElement(new htmlHelpLink('202'));
 		$activeContainer->addElement(new htmlSpacer('10px', null));
-		// LDAP filter
-		$filter = '';
-		if (isset($typeSettings['filter_' . $activeTypes[$i]])) {
-			$filter = $typeSettings['filter_' . $activeTypes[$i]];
-		}
-		$filterText = new htmlOutputText(_("Additional LDAP filter"));
-		$filterText->colspan = 2;
-		$activeContainer->addElement($filterText);
-		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$filterInput = new htmlInputField('filter_' . $activeTypes[$i], $filter);
-		$filterInput->setFieldSize(40);
-		$activeContainer->addElement($filterInput);
-		$activeContainer->addElement(new htmlHelpLink('260'));
-		$activeContainer->addNewLine();
 		// list attributes
 		if (isset($typeSettings['attr_' . $activeTypes[$i]])) {
 			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
@@ -278,7 +274,23 @@ if (sizeof($activeTypes) > 0) {
 		$attrsInput->setFieldSize(40);
 		$activeContainer->addElement($attrsInput);
 		$activeContainer->addElement(new htmlHelpLink('206'));
-		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$activeContainer->addNewLine();
+		// advanced options
+		$advancedOptionsContent = new htmlTable();
+		// LDAP filter
+		$filter = '';
+		if (isset($typeSettings['filter_' . $activeTypes[$i]])) {
+			$filter = $typeSettings['filter_' . $activeTypes[$i]];
+		}
+		$filterText = new htmlOutputText(_("Additional LDAP filter"));
+		$filterText->colspan = 2;
+		$advancedOptionsContent->addElement($filterText);
+		$advancedOptionsContent->addElement(new htmlSpacer('10px', null));
+		$filterInput = new htmlInputField('filter_' . $activeTypes[$i], $filter);
+		$filterInput->setFieldSize(40);
+		$advancedOptionsContent->addElement($filterInput);
+		$advancedOptionsContent->addElement(new htmlHelpLink('260'));
+		$advancedOptionsContent->addElement(new htmlSpacer('10px', null));
 		// hidden type
 		$hidden = false;
 		if (isset($typeSettings['hidden_' . $activeTypes[$i]])) {
@@ -286,16 +298,15 @@ if (sizeof($activeTypes) > 0) {
 		}
 		$hiddenText = new htmlOutputText(_('Hidden'));
 		$hiddenText->colspan = 2;
-		$activeContainer->addElement($hiddenText);
-		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$activeContainer->addElement(new htmlInputCheckbox('hidden_' . $activeTypes[$i], $hidden));
-		$activeContainer->addElement(new htmlHelpLink('261'));
-		$activeContainer->addNewLine();
-		// delete button
-		$delButton = new htmlButton('rem_'. $activeTypes[$i], _("Remove this account type"));
-		$delButton->colspan = 5;
-		$delButton->setIconClass('deleteButton');
-		$activeContainer->addElement($delButton, true); //del.png
+		$advancedOptionsContent->addElement($hiddenText);
+		$advancedOptionsContent->addElement(new htmlSpacer('10px', null));
+		$advancedOptionsContent->addElement(new htmlInputCheckbox('hidden_' . $activeTypes[$i], $hidden));
+		$advancedOptionsContent->addElement(new htmlHelpLink('261'));
+		$advancedOptionsContent->addNewLine();
+		// build advanced options box
+		$advancedOptions = new htmlAccordion('advancedOptions_' . $activeTypes[$i], array(_('Advanced options') => $advancedOptionsContent), false);
+		$advancedOptions->colspan = 15;
+		$activeContainer->addElement($advancedOptions, true);
 		
 		$activeContainer->addElement(new htmlSpacer(null, '40px'), true);
 	}
