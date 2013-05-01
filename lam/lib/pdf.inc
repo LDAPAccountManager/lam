@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2012  Roland Gruber
+                2003 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -150,6 +150,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		$filename = '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
 		// Save PDF
 		$pdf->Output($filename);
+		chmod($filename, 0600);
 		// return PDF file name
 		return $filename;
 	}
