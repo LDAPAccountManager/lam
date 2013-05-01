@@ -403,3 +403,23 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 	}
 }
 
+/**
+ * Stores the current scroll position in the form.
+ * 
+ * @param formName ID of form
+ */
+function saveScrollPosition(formName) {
+	var top = jQuery(window).scrollTop();
+	var left = jQuery(window).scrollLeft();
+	jQuery('<input>').attr({
+	    type: 'hidden',
+	    name: 'scrollPositionTop',
+	    value: top
+	}).appendTo(jQuery('#' + formName));
+	jQuery('<input>').attr({
+	    type: 'hidden',
+	    name: 'scrollPositionLeft',
+	    value: left
+	}).appendTo(jQuery('#' + formName));
+} 
+

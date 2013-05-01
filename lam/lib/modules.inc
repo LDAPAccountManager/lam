@@ -791,6 +791,9 @@ class accountContainer {
 	* It prints the HTML code of each account page.
 	*/
 	function continue_main() {
+		$oldPage = $this->current_page;
+		$oldSubpage = $this->subpage;
+		$post = $_POST;
 		$result = array();
 		$stopProcessing = false; // when set to true, no module options are displayed
 		$errorsOccured = false;
@@ -927,6 +930,17 @@ class accountContainer {
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page
 		$this->printModuleContent($result, $stopProcessing);
+		if (!$errorsOccured && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
+			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+			// scroll to last position
+			echo '<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery(window).scrollTop(' . $_POST['scrollPositionTop'] . ');
+					jQuery(window).scrollLeft('. $_POST['scrollPositionLeft'] . ');
+			});
+			</script>';
+		}
+		$this->printPageFooter();
 	}
 	
 	/**
@@ -945,7 +959,6 @@ class accountContainer {
 				call_user_func_array("StatusMessage", $result[$i]);
 			}
 			if ($stopProcessing) {
-				$this->printPageFooter();
 				return;
 			}
 		}
@@ -1010,7 +1023,6 @@ class accountContainer {
 		echo "</td></tr>\n";
 		// Display rest of html-page
 		echo "</table>\n";
-		$this->printPageFooter();
 	}
 
 	/**
@@ -1238,12 +1250,12 @@ class accountContainer {
 	 */
 	private function printPageHeader() {
 		include '../main_header.php';
-		echo '<script type="text/javascript">';
-		echo 'jQuery(document).ready(function() {';
-		echo '		jQuery("#inputForm").validationEngine();';
-		echo '});';
-		echo '</script>';
-		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";		
+		echo '<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#inputForm").validationEngine();
+				});
+			</script>';
+		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\">\n";		
 	}
 	
 	/**
