@@ -1246,6 +1246,20 @@ Have fun!
               account type and still assign domains when you edit your
               users.</para>
             </listitem>
+
+            <listitem>
+              <para><emphasis role="bold">No new entries (LAM Pro
+              only):</emphasis> Use this if you want to prevent that new
+              accounts of this type are created by your users. The GUI will
+              hide buttons to create new entries and also disable file upload
+              for this type.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis role="bold">Disallow delete (LAM Pro
+              only):</emphasis> Use this if you want to prevent that accounts
+              of this type are deleted by your users.</para>
+            </listitem>
           </itemizedlist>
 
           <screenshot>
