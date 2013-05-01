@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2012  Roland Gruber
+                2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -84,6 +84,10 @@ else if (count($_POST)==0) {
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
 	if (isAccountTypeHidden($type)) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type);
+		die();
+	}
+	elseif (!checkIfNewEntriesAreAllowed($type)) {
+		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type);
 		die();
 	}
 	$_SESSION['account'] = new accountContainer($type, 'account');

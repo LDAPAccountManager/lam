@@ -1291,10 +1291,12 @@ class accountContainer {
 		
 		$type = new $this->type();
 		$buttonGroup = new htmlGroup();
-		$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
-		$createButton->setIconClass('createButton');
-		$buttonGroup->addElement($createButton);
-		$buttonGroup->addElement(new htmlSpacer('10px', null));
+		if (checkIfNewEntriesAreAllowed($this->type)) {
+			$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
+			$createButton->setIconClass('createButton');
+			$buttonGroup->addElement($createButton);
+			$buttonGroup->addElement(new htmlSpacer('10px', null));
+		}
 		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
 		$pdfButton->setIconClass('pdfButton');
 		$buttonGroup->addElement($pdfButton);

@@ -486,7 +486,7 @@ class lamList {
 		$group->addElement($editLink);
 		$toolCount++;
 		// delete link
-		if (checkIfWriteAccessIsAllowed()) {
+		if (checkIfWriteAccessIsAllowed() && checkIfDeleteEntriesIsAllowed($this->type)) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
 			$group->addElement($deleteLink);
@@ -543,12 +543,12 @@ class lamList {
 				die();
 			}
 			// add new account
-			if (isset($_POST['new'])){
+			if (isset($_POST['new']) && checkIfNewEntriesAreAllowed($this->type)){
 				metaRefresh("../account/edit.php?type=" . $this->type . "&amp;suffix=" . $this->suffix);
 				exit;
 			}
 			// delete account(s)
-			elseif (isset($_POST['del'])){
+			elseif (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type)){
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
 				// build DN list
@@ -562,7 +562,7 @@ class lamList {
 				}
 			}
 			// file upload
-			elseif (isset($_POST['fileUpload'])){
+			elseif (isset($_POST['fileUpload']) && checkIfNewEntriesAreAllowed($this->type)){
 				metaRefresh("../masscreate.php?type=" . $this->type);
 				exit;
 			}
@@ -749,11 +749,14 @@ class lamList {
 		// button part
 		$left->alignment = htmlElement::ALIGN_LEFT;
 		if (checkIfWriteAccessIsAllowed()) {
-			// add/delete buttons
-			$newButton = new htmlButton('new', $this->labels['newEntry']);
-			$newButton->setIconClass('createButton');
-			$left->addElement($newButton);
-			if (!$createOnly) {
+			// add button
+			if (checkIfNewEntriesAreAllowed($this->type)) {
+				$newButton = new htmlButton('new', $this->labels['newEntry']);
+				$newButton->setIconClass('createButton');
+				$left->addElement($newButton);
+			}
+			// delete button
+			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type)) {
 				$left->addElement(new htmlSpacer('1px', null));
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
 				$delButton->setIconClass('deleteButton');
@@ -761,7 +764,8 @@ class lamList {
 			}
 			$type = new $this->type();
 			$toolSettings = $_SESSION['config']->getToolSettings();
-			if ($type->supportsFileUpload() && !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
+			if ($type->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type)
+					&& !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
 				$left->addElement(new htmlSpacer('20px', null));
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
 				$uploadButton->setIconClass('upButton');

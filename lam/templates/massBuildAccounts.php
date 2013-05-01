@@ -97,6 +97,10 @@ if (isAccountTypeHidden($scope)) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
 	die();
 }
+if (!checkIfNewEntriesAreAllowed($scope)) {
+	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $scope);
+	die();
+}
 
 echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 echo '<div class="' . $scope . '-bright smallPaddingContent">';

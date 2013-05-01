@@ -78,9 +78,10 @@ include 'main_header.php';
 
 // get possible types and remove those which do not support file upload
 $types = $_SESSION['config']->get_ActiveTypes();
-for ($i = 0; $i < sizeof($types); $i++) {
+$count = sizeof($types);
+for ($i = 0; $i < $count; $i++) {
 	$myType = new $types[$i]();
-	if (!$myType->supportsFileUpload() || isAccountTypeHidden($types[$i])) {
+	if (!$myType->supportsFileUpload() || isAccountTypeHidden($types[$i]) || !checkIfNewEntriesAreAllowed($types[$i])) {
 		unset($types[$i]);
 	}
 }

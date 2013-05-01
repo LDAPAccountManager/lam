@@ -244,6 +244,47 @@ function checkIfPasswordChangeIsAllowed() {
 }
 
 /**
+ * Checks if it is allowed to create new LDAP entries of the given type.
+ * This also checks if general write access is enabled.
+ * 
+ * @param String $scope account type (e.g. 'user')
+ * @return boolean true, if new entries are allowed
+ */
+function checkIfNewEntriesAreAllowed($scope) {
+	if (!isLAMProVersion()) {
+		return true;
+	}
+	if (!isset($_SESSION['config']) || empty($scope)) {
+		return false;
+	}
+	$typeSettings = $_SESSION['config']->get_typeSettings();
+	if (isset($typeSettings['hideNewButton_' . $scope]) && $typeSettings['hideNewButton_' . $scope]) {
+		return false;
+	}
+	return checkIfWriteAccessIsAllowed();
+}
+
+/**
+ * Checks if it is allowed to delete LDAP entries of the given type.
+ * 
+ * @param String $scope account type (e.g. 'user')
+ * @return boolean true, if entries may be deleted
+ */
+function checkIfDeleteEntriesIsAllowed($scope) {
+	if (!isLAMProVersion()) {
+		return true;
+	}
+	if (!isset($_SESSION['config']) || empty($scope)) {
+		return false;
+	}
+	$typeSettings = $_SESSION['config']->get_typeSettings();
+	if (isset($typeSettings['hideDeleteButton_' . $scope]) && $typeSettings['hideDeleteButton_' . $scope]) {
+		return false;
+	}
+	return checkIfWriteAccessIsAllowed();
+}
+
+/**
  * Checks if the password fulfills the password policies.
  * 
  * @param string $password password

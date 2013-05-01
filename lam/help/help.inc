@@ -155,6 +155,10 @@ $helpArray = array (
 						. ' ' . _('By default LAM will show all accounts that match the selected account modules.')),
 				"261" => array ("Headline" => _("Hidden"),
 					"Text" => _('Hidden account types will not show up in LAM. This is useful if you want to display e.g. only groups but still need to manage their members.')),
+				"262" => array ("Headline" => _("No new entries"),
+					"Text" => _('If checked then the user will not be able to create new entries of this account type.')),
+				"263" => array ("Headline" => _("Disallow delete"),
+					"Text" => _('If checked then the user will not be able to delete entries of this account type.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

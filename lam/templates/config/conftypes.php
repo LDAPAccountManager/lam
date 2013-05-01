@@ -234,7 +234,7 @@ if (sizeof($activeTypes) > 0) {
 	for ($i = 0; $i < sizeof($activeTypes); $i++) {
 		// title
 		$titleGroup = new htmlGroup();
-		$titleGroup->colspan = 10;
+		$titleGroup->colspan = 6;
 		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeTypes[$i] . '.png'));
 		$titleText = new htmlOutputText(getTypeAlias($activeTypes[$i]));
 		$titleText->setIsBold(true);
@@ -244,21 +244,15 @@ if (sizeof($activeTypes) > 0) {
 		$activeContainer->addElement($titleGroup);
 		// delete button
 		$delButton = new htmlButton('rem_'. $activeTypes[$i], 'del.png', true);
-		$delButton->colspan = 3;
 		$delButton->alignment = htmlElement::ALIGN_RIGHT;
 		$delButton->setTitle(_("Remove this account type"));
 		$activeContainer->addElement($delButton, true); //del.png
 		$activeContainer->addElement(new htmlSpacer(null, '5px'), true);
 		// LDAP suffix
-		$suffixText = new htmlOutputText(_("LDAP suffix"));
-		$suffixText->colspan = 2;
-		$activeContainer->addElement($suffixText);
-		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$suffixInput = new htmlInputField('suffix_' . $activeTypes[$i], $typeSettings['suffix_' . $activeTypes[$i]]);
+		$suffixInput = new htmlTableExtendedInputField(_("LDAP suffix"), 'suffix_' . $activeTypes[$i], $typeSettings['suffix_' . $activeTypes[$i]], '202');
 		$suffixInput->setFieldSize(40);
 		$activeContainer->addElement($suffixInput);
-		$activeContainer->addElement(new htmlHelpLink('202'));
-		$activeContainer->addElement(new htmlSpacer('10px', null));
+		$activeContainer->addElement(new htmlSpacer('20px', null));
 		// list attributes
 		if (isset($typeSettings['attr_' . $activeTypes[$i]])) {
 			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
@@ -266,14 +260,9 @@ if (sizeof($activeTypes) > 0) {
 		else {
 			$attributes = getDefaultListAttributes($activeTypes[$i]);
 		}
-		$attrsText = new htmlOutputText(_("List attributes"));
-		$attrsText->colspan = 2;
-		$activeContainer->addElement($attrsText);
-		$activeContainer->addElement(new htmlSpacer('10px', null));
-		$attrsInput = new htmlInputField('attr_' . $activeTypes[$i], $attributes);
+		$attrsInput = new htmlTableExtendedInputField(_("List attributes"), 'attr_' . $activeTypes[$i], $attributes, '206');
 		$attrsInput->setFieldSize(40);
 		$activeContainer->addElement($attrsInput);
-		$activeContainer->addElement(new htmlHelpLink('206'));
 		$activeContainer->addNewLine();
 		// advanced options
 		$advancedOptionsContent = new htmlTable();
@@ -282,27 +271,31 @@ if (sizeof($activeTypes) > 0) {
 		if (isset($typeSettings['filter_' . $activeTypes[$i]])) {
 			$filter = $typeSettings['filter_' . $activeTypes[$i]];
 		}
-		$filterText = new htmlOutputText(_("Additional LDAP filter"));
-		$filterText->colspan = 2;
-		$advancedOptionsContent->addElement($filterText);
-		$advancedOptionsContent->addElement(new htmlSpacer('10px', null));
-		$filterInput = new htmlInputField('filter_' . $activeTypes[$i], $filter);
+		$filterInput = new htmlTableExtendedInputField(_("Additional LDAP filter"), 'filter_' . $activeTypes[$i], $filter, '260');
 		$filterInput->setFieldSize(40);
 		$advancedOptionsContent->addElement($filterInput);
-		$advancedOptionsContent->addElement(new htmlHelpLink('260'));
-		$advancedOptionsContent->addElement(new htmlSpacer('10px', null));
+		$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
 		// hidden type
 		$hidden = false;
 		if (isset($typeSettings['hidden_' . $activeTypes[$i]])) {
 			$hidden = $typeSettings['hidden_' . $activeTypes[$i]];
 		}
-		$hiddenText = new htmlOutputText(_('Hidden'));
-		$hiddenText->colspan = 2;
-		$advancedOptionsContent->addElement($hiddenText);
-		$advancedOptionsContent->addElement(new htmlSpacer('10px', null));
-		$advancedOptionsContent->addElement(new htmlInputCheckbox('hidden_' . $activeTypes[$i], $hidden));
-		$advancedOptionsContent->addElement(new htmlHelpLink('261'));
-		$advancedOptionsContent->addNewLine();
+		$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeTypes[$i], $hidden, _('Hidden'), '261'), true);
+		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
+			// hide button to create new accounts
+			$hideNewButton = false;
+			if (isset($typeSettings['hideNewButton_' . $activeTypes[$i]])) {
+				$hideNewButton = $typeSettings['hideNewButton_' . $activeTypes[$i]];
+			}
+			$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hideNewButton_' . $activeTypes[$i], $hideNewButton, _('No new entries'), '262'));
+			$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
+			// hide button to delete accounts
+			$hideDeleteButton = false;
+			if (isset($typeSettings['hideDeleteButton_' . $activeTypes[$i]])) {
+				$hideDeleteButton = $typeSettings['hideDeleteButton_' . $activeTypes[$i]];
+			}
+			$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hideDeleteButton_' . $activeTypes[$i], $hideDeleteButton, _('Disallow delete'), '263'), true);
+		}
 		// build advanced options box
 		$advancedOptions = new htmlAccordion('advancedOptions_' . $activeTypes[$i], array(_('Advanced options') => $advancedOptionsContent), false);
 		$advancedOptions->colspan = 15;
@@ -386,14 +379,17 @@ function checkInput() {
 			$typeSettings[$key] = $_POST[$key];
 		}
 	}
-	// set hidden
 	for ($i = 0; $i < sizeof($accountTypes); $i++) {
+		// set hidden
 		$key = "hidden_" . $accountTypes[$i];
-		if (isset($_POST[$key]) && ($_POST[$key] == 'on')) {
-			$typeSettings[$key] = true;
-		}
-		else {
-			$typeSettings[$key] = false;
+		$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
+		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
+			// set if new entries are allowed
+			$key = "hideNewButton_" . $accountTypes[$i];
+			$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
+			// set if deletion of entries is allowed
+			$key = "hideDeleteButton_" . $accountTypes[$i];
+			$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
 		}
 	}
 	// save input

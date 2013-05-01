@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,6 +66,10 @@ $scope = htmlspecialchars($_SESSION['mass_scope']);
 // check if account type is ok
 if (isAccountTypeHidden($scope)) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
+	die();
+}
+if (!checkIfNewEntriesAreAllowed($scope)) {
+	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $scope);
 	die();
 }
 

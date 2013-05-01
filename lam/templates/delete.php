@@ -72,6 +72,10 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		logNewMessage(LOG_ERR, 'Invalid type: ' . $_GET['type']);
 		die();
 	}
+	if (!checkIfDeleteEntriesIsAllowed($_GET['type'])) {
+		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_GET['type']);
+		die();
+	}
 	// Create account list
 	foreach ($_SESSION['delete_dn'] as $dn) {
 		$start = strpos ($dn, "=")+1;
@@ -138,6 +142,10 @@ elseif (isset($_POST['cancelAllOk'])) {
 }
 
 if (isset($_POST['delete'])) {
+	if (!checkIfDeleteEntriesIsAllowed($_POST['type'])) {
+		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_POST['type']);
+		die();
+	}
 	// Show HTML Page
 	include 'main_header.php';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
