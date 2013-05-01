@@ -2671,7 +2671,7 @@ class posixAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < sizeof($wildcards[0]); $i++) {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
-				if (isset($attributes[$wc][0])) {
+				if (isset($attributes[$wc][0]) && !empty($attributes[$wc][0])) {
 					$value = $attributes[$wc][0][0];
 				}
 				$format = str_replace('@' . $wc . '@', $value, $format);
