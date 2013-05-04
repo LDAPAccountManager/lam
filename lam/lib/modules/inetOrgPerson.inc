@@ -2344,151 +2344,37 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		$description = '';
-		if (isset($this->attributes['description'][0])) $description = implode(', ', $this->attributes['description']);
-		$title = '';
-		if (isset($this->attributes['title'][0])) {
-			$title = implode(', ', $this->attributes['title']);
-		}
-		$givenName = '';
-		if (isset($this->attributes['givenName'][0])) $givenName = $this->attributes['givenName'][0];
-		$lastName = '';
-		if (isset($this->attributes['sn'][0])) {
-			$lastName = $this->attributes['sn'][0];
-		}
-		$manager = '';
-		if (isset($this->attributes['manager'][0])) {
-			$manager = $this->attributes['manager'][0];
-		}
-		$street = '';
-		if (isset($this->attributes['street'][0])) {
-			$street = implode(', ', $this->attributes['street']);
-		}
-		$postOfficeBox = '';
-		if (isset($this->attributes['postOfficeBox'][0])) {
-			$postOfficeBox = implode(', ', $this->attributes['postOfficeBox']);
-		}
-		$postalCode = '';
-		if (isset($this->attributes['postalCode'][0])) {
-			$postalCode = implode(', ', $this->attributes['postalCode']);
-		}
-		$postalAddress = '';
-		if (isset($this->attributes['postalAddress'][0])) {
-			$postalAddress = implode(', ', $this->attributes['postalAddress']);
-		}
-		$registeredAddress = '';
-		if (isset($this->attributes['registeredAddress'][0])) {
-			$registeredAddress = implode(', ', $this->attributes['registeredAddress']);
-		}
-		$telephoneNumber = '';
-		if (isset($this->attributes['telephoneNumber'][0])) {
-			$telephoneNumber = implode(', ', $this->attributes['telephoneNumber']);
-		}
-		$homePhone = '';
-		if (isset($this->attributes['homePhone'][0])) {
-			$homePhone = implode(', ', $this->attributes['homePhone']);
-		}
-		$mobile = '';
-		if (isset($this->attributes['mobile'][0])) {
-			$mobile = implode(', ', $this->attributes['mobile']);
-		}
-		$mail = '';
-		if (isset($this->attributes['mail'][0])) {
-			$mail = implode(', ', $this->attributes['mail']);
-		}
-		$cn = '';
-		if (isset($this->attributes['cn'][0])) {
-			$cn = $this->attributes['cn'][0];
-		}
-		$roomNumber = '';
-		if (isset($this->attributes['roomNumber'][0])) {
-			$roomNumber = $this->attributes['roomNumber'][0];
-		}
-		$facsimileTelephoneNumber = '';
-		if (isset($this->attributes['facsimileTelephoneNumber'][0])) {
-			$facsimileTelephoneNumber = implode(', ', $this->attributes['facsimileTelephoneNumber']);
-		}
-		$businessCategory = '';
-		if (isset($this->attributes['businessCategory'][0])) {
-			$businessCategory = implode(', ', $this->attributes['businessCategory']);
-		}
-		$uid = '';
-		if (isset($this->attributes['uid'][0])) {
-			$uid = $this->attributes['uid'][0];
-		}
-		$carLicense = '';
-		if (isset($this->attributes['carLicense'][0])) {
-			$carLicense = $this->attributes['carLicense'][0];
-		}
-		$st = '';
-		if (isset($this->attributes['st'][0])) {
-			$st = implode(', ', $this->attributes['st']);
-		}
-		$physicalDeliveryOfficeName = '';
-		if (isset($this->attributes['physicalDeliveryOfficeName'][0])) {
-			$physicalDeliveryOfficeName = implode(', ', $this->attributes['physicalDeliveryOfficeName']);
-		}
-		$employeeType = '';
-		if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
-		$l = '';
-		if (isset($this->attributes['l'][0])) {
-			$l = implode(', ', $this->attributes['l']);
-		}
-		$employeeNumber = '';
-		if (isset($this->attributes['employeeNumber'][0])) {
-			$employeeNumber = $this->attributes['employeeNumber'][0];
-		}
-		$ou = '';
-		if (isset($this->attributes['ou'][0])) {
-			$ou = implode(', ', $this->attributes['ou']);
-		}
-		$o = '';
-		if (isset($this->attributes['o'][0])) {
-			$o = implode(', ', $this->attributes['o']);
-		}
-		$initials = '';
-		if (isset($this->attributes['initials'][0])) {
-			$initials = implode(', ', $this->attributes['initials']);
-		}
-		$labeledURI = '';
-		if (isset($this->attributes['labeledURI'][0])) {
-			$labeledURI = implode(', ', $this->attributes['labeledURI']);
-		}
-		
-		$return = array(
-			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>'),
-			get_class($this) . '_title' => array('<block><key>' . _('Job title') . '</key><value>' . $title . '</value></block>'),
-			get_class($this) . '_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $givenName . '</value></block>'),
-			get_class($this) . '_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $lastName . '</value></block>'),
-			get_class($this) . '_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $employeeType . '</value></block>'),
-			get_class($this) . '_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $manager . '</value></block>'),
-			get_class($this) . '_street' => array('<block><key>' . _('Street') . '</key><value>' . $street . '</value></block>'),
-			get_class($this) . '_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $postOfficeBox . '</value></block>'),
-			get_class($this) . '_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $postalCode . '</value></block>'),
-			get_class($this) . '_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $postalAddress . '</value></block>'),
-			get_class($this) . '_registeredAddress' => array('<block><key>' . _('Registered address') . '</key><value>' . $registeredAddress . '</value></block>'),
-			get_class($this) . '_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $telephoneNumber . '</value></block>'),
-			get_class($this) . '_homePhone' => array('<block><key>' . _('Home telephone number') . '</key><value>' . $homePhone . '</value></block>'),
-			get_class($this) . '_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $mobile . '</value></block>'),
-			get_class($this) . '_facsimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $facsimileTelephoneNumber . '</value></block>'),
-			get_class($this) . '_mail' => array('<block><key>' . _('Email address') . '</key><value>' . $mail . '</value></block>'),
-			get_class($this) . '_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $cn . '</value></block>'),
-			get_class($this) . '_roomNumber' => array('<block><key>' . _('Room number') . '</key><value>' . $roomNumber . '</value></block>'),
-			get_class($this) . '_businessCategory' => array('<block><key>' . _('Business category') . '</key><value>' . $businessCategory . '</value></block>'),
-			get_class($this) . '_uid' => array('<block><key>' . _('User name') . '</key><value>' . $uid . '</value></block>'),
-			get_class($this) . '_carLicense' => array('<block><key>' . _('Car license') . '</key><value>' . $carLicense . '</value></block>'),
-			get_class($this) . '_location' => array('<block><key>' . _('Location') . '</key><value>' . $l . '</value></block>'),
-			get_class($this) . '_state' => array('<block><key>' . _('State') . '</key><value>' . $st . '</value></block>'),
-			get_class($this) . '_officeName' => array('<block><key>' . _('Office name') . '</key><value>' . $physicalDeliveryOfficeName . '</value></block>'),
-			get_class($this) . '_ou' => array('<block><key>' . _('Organisational unit') . '</key><value>' . $ou . '</value></block>'),
-			get_class($this) . '_o' => array('<block><key>' . _('Organisation') . '</key><value>' . $o . '</value></block>'),
-			get_class($this) . '_employeeNumber' => array('<block><key>' . _('Employee number') . '</key><value>' . $employeeNumber . '</value></block>'),
-			get_class($this) . '_initials' => array('<block><key>' . _('Initials') . '</key><value>' . $initials . '</value></block>'),
-			get_class($this) . '_labeledURI' => array('<block><key>' . _('Web site') . '</key><value>' . $labeledURI . '</value></block>'),
-		);
-		if (isset($this->attributes['departmentNumber'])) {
-			$return[get_class($this) . '_departmentNumber'] = array('<block><key>' . _('Department') . '</key><value>' . implode(', ', $this->attributes['departmentNumber']) . '</value></block>');
-		}
+		$return = array();
+		$this->addSimplePDFField($return, 'description', _('Description'));
+		$this->addSimplePDFField($return, 'title', _('Job title'));
+		$this->addSimplePDFField($return, 'givenName', _('First name'));
+		$this->addSimplePDFField($return, 'sn', _('Last name'));
+		$this->addSimplePDFField($return, 'manager', _('Manager'));
+		$this->addSimplePDFField($return, 'street', _('Street'));
+		$this->addSimplePDFField($return, 'postOfficeBox', _('Post office box'));
+		$this->addSimplePDFField($return, 'postalCode', _('Postal code'));
+		$this->addSimplePDFField($return, 'postalAddress', _('Postal address'));
+		$this->addSimplePDFField($return, 'registeredAddress', _('Registered address'));
+		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
+		$this->addSimplePDFField($return, 'homePhone', _('Home telephone number'));
+		$this->addSimplePDFField($return, 'mobileTelephoneNumber', _('Mobile number'), 'mobile');
+		$this->addSimplePDFField($return, 'mail', _('Email address'));
+		$this->addSimplePDFField($return, 'cn', _('Common name'));
+		$this->addSimplePDFField($return, 'facsimileTelephoneNumber', _('Fax number'));
+		$this->addSimplePDFField($return, 'roomNumber', _('Room number'));
+		$this->addSimplePDFField($return, 'businessCategory', _('Business category'));
+		$this->addSimplePDFField($return, 'uid', _('User name'));
+		$this->addSimplePDFField($return, 'carLicense', _('Car license'));
+		$this->addSimplePDFField($return, 'state', _('State'), 'st');
+		$this->addSimplePDFField($return, 'officeName', _('Office name'), 'physicalDeliveryOfficeName');
+		$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
+		$this->addSimplePDFField($return, 'location', _('Location'), 'l');
+		$this->addSimplePDFField($return, 'employeeNumber', _('Employee number'));
+		$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
+		$this->addSimplePDFField($return, 'o', _('Organisation'));
+		$this->addSimplePDFField($return, 'initials', _('Initials'));
+		$this->addSimplePDFField($return, 'labeledURI', _('Web site'));
+		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
 		return $return;
 	}
 	

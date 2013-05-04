@@ -229,12 +229,8 @@ class account extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		$description = '';
-		if (isset($this->attributes['description'][0])) {
-			$description = $this->attributes['description'][0];
-		}
-		$return['account_description'] = array('<block><key>' . _('Description') . '</key><value>' . $description . '</value></block>');
-		$return['account_uid'] = array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>');
+		$this->addSimplePDFField($return, 'description', _('Description'));
+		$this->addSimplePDFField($return, 'uid', _('User name'));
 		return $return;
 	}
 
