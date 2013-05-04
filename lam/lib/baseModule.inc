@@ -831,7 +831,7 @@ abstract class baseModule {
 	 * @param String $name ID
 	 * @param String $label label name
 	 * @param String $attrName attribute name (default: =$name)
-	 * @param String $delimiter delimiter if multiple attribute values exist
+	 * @param String $delimiter delimiter if multiple attribute values exist (default: ", ")
 	 */
 	protected function addSimplePDFField(&$result, $name, $label, $attrName = null, $delimiter = ', ') {
 		if ($attrName == null) {
