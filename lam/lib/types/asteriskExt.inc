@@ -196,7 +196,7 @@ class lamAsteriskExtList extends lamList {
                 unset($entries[$key]);
             }
         }
-        return $entries;
+        return array_values($entries);
     }
     
 }

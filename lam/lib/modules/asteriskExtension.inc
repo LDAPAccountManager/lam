@@ -802,15 +802,9 @@ class asteriskExtension extends baseModule {
             $extName = $this->extensionRows[0]['astextension'][0];
         }
         // global values
-        if (isset($this->attributes['AstContext'])) {
-            $return[get_class($this) . '_AstContext'] = array('<block><key>' . _('Account context') . '</key><value>' . $this->attributes['AstContext'][0] . '</value></block>');
-        }
-        if (isset($this->attributes['AstExtension'])) {
-            $return[get_class($this) . '_AstExtension'] = array('<block><key>' . _('Extension name') . '</key><value>' . $this->attributes['AstExtension'][0] . '</value></block>');
-        }
-        if (isset($this->attributes['member'])) {
-            $return[get_class($this) . '_owners'] = array('<block><key>' . _('Extension owners') . '</key><value>' . implode('; ', $this->attributes['member']) . '</value></block>');
-        }
+        $this->addSimplePDFField($return, 'AstContext', _('Account context'));
+        $this->addSimplePDFField($return, 'AstExtension', _('Extension name'));
+        $this->addSimplePDFField($return, 'owners', _('Extension owners'), 'member', '; ');
         // rules
         $entries = $this->load_extension_parts($extName);
         $rulePDF = array();

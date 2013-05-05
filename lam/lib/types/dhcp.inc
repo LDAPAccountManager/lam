@@ -250,11 +250,16 @@ class lamDHCPList extends lamList {
 
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
+	* 
+	* @return String HTML fragment to insert into beginning of account list
 	*/
 	function listDoPost() {
-		parent::listDoPost();
+		$fragment = parent::listDoPost();
         if (isset($_POST['dhcpDefaults'])) {
         	metaRefresh("../account/edit.php?type=dhcp&DN='".$_SESSION['config']->get_suffix('dhcp')."'");
+        }
+        else {
+        	return $fragment;
         }
 	}
 }

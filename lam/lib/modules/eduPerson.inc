@@ -763,40 +763,16 @@ class eduPerson extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
-			$return['eduPerson_primaryAffiliation'][0] = '<block><key>' . _('Primary affiliation') . '</key><value>' . $this->attributes['eduPersonPrimaryAffiliation'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
-			$return['eduPerson_scopedAffiliation'][0] = '<block><key>' . _('Scoped affiliations') . '</key><value>' . implode(', ', $this->attributes['eduPersonScopedAffiliation']) . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonPrincipalName'][0])) {
-			$return['eduPerson_principalName'][0] = '<block><key>' . _('Principal name') . '</key><value>' . $this->attributes['eduPersonPrincipalName'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonNickname'][0])) {
-			sort($this->attributes['eduPersonNickname']);
-			$return['eduPerson_nickname'][0] = '<block><key>' . _('Nick names') . '</key><value>' . implode(', ', $this->attributes['eduPersonNickname']) . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonAffiliation'][0])) {
-			sort($this->attributes['eduPersonAffiliation']);
-			$return['eduPerson_affiliation'][0] = '<block><key>' . _('Affiliations') . '</key><value>' . implode(', ', $this->attributes['eduPersonAffiliation']) . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonEntitlement'][0])) {
-			sort($this->attributes['eduPersonEntitlement']);
-			$return['eduPerson_entitlement'][0] = '<block><key>' . _('Entitlements') . '</key><value>' . implode(', ', $this->attributes['eduPersonEntitlement']) . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonOrgDN'][0])) {
-			$return['eduPerson_orgDN'][0] = '<block><key>' . _('Organisation') . '</key><value>' . $this->attributes['eduPersonOrgDN'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
-			$return['eduPerson_primaryOrgUnitDN'][0] = '<block><key>' . _('Primary organisational unit') . '</key><value>' . $this->attributes['eduPersonPrimaryOrgUnitDN'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
-			$return['eduPerson_orgUnitDN'][0] = '<block><key>' . _('Organisational units') . '</key><value>' . implode(', ', $this->attributes['eduPersonOrgUnitDN']) . '</value></block>';
-		}
-		if (isset($this->attributes['eduPersonAssurance'][0])) {
-			sort($this->attributes['eduPersonAssurance']);
-			$return['eduPerson_eduPersonAssurance'][0] = '<block><key>' . _('Assurance profiles') . '</key><value>' . implode(', ', $this->attributes['eduPersonAssurance']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'primaryAffiliation', _('Primary affiliation'), 'eduPersonPrimaryAffiliation');
+		$this->addSimplePDFField($return, 'scopedAffiliation', _('Scoped affiliations'), 'eduPersonScopedAffiliation');
+		$this->addSimplePDFField($return, 'principalName', _('Principal name'), 'eduPersonPrincipalName');
+		$this->addSimplePDFField($return, 'nickname', _('Nick names'), 'eduPersonNickname');
+		$this->addSimplePDFField($return, 'affiliation', _('Affiliations'), 'eduPersonAffiliation');
+		$this->addSimplePDFField($return, 'entitlement', _('Entitlements'), 'eduPersonEntitlement');
+		$this->addSimplePDFField($return, 'orgDN', _('Organisation'), 'eduPersonOrgDN');
+		$this->addSimplePDFField($return, 'primaryOrgUnitDN', _('Primary organisational unit'), 'eduPersonPrimaryOrgUnitDN');
+		$this->addSimplePDFField($return, 'orgUnitDN', _('Organisational units'), 'eduPersonOrgUnitDN');
+		$this->addSimplePDFField($return, 'eduPersonAssurance', _('Assurance profiles'), 'eduPersonAssurance');
 		return $return;
 	}
 

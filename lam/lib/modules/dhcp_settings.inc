@@ -626,8 +626,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (isset($this->all_netbios_node_types[$nodeType])) {
 			$nodeTypeValue = $this->all_netbios_node_types[$nodeType];
 		}
-		return array(
-			get_class($this) . '_subnet' => array('<block><key>' . _('Subnet') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+		$return = array(
 			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->getDHCPOption('domain-name') . '</value></block>'),
 			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->getDefaultLeaseTime() . '</value></block>'),
 			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->getMaxLeaseTime() . '</value></block>'),
@@ -636,9 +635,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name servers') . '</key><value>' . $this->getDHCPOption('netbios-name-servers') . '</value></block>'),
 			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $nodeTypeValue . '</value></block>'),
 			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->getDHCPOption('subnet-mask') . '</value></block>'),
-			get_class($this) . '_netMask' => array('<block><key>' . _('Net mask') . '</key><value>' . $this->attributes['dhcpNetMask'][0] . '</value></block>'),
-			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['dhcpComments'][0] . '</value></block>'),
 		);
+		$this->addSimplePDFField($return, 'description', _('Description'), 'dhcpComments');
+		$this->addSimplePDFField($return, 'subnet', _('Subnet'), 'cn');
+		$this->addSimplePDFField($return, 'netMask', _('Net mask'), 'dhcpNetMask');
+		return $return;
 	}
 	
 	/**
