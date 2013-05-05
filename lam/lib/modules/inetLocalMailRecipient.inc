@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -296,15 +296,9 @@ class inetLocalMailRecipient extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (isset($this->attributes['mailRoutingAddress'][0])) {
-			$return['inetLocalMailRecipient_routingAdr'][0] = '<block><key>' . _('Routing address') . '</key><value>' . $this->attributes['mailRoutingAddress'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['mailLocalAddress'][0])) {
-			$return['inetLocalMailRecipient_localAdr'][0] = '<block><key>' . _('Local address list') . '</key><value>' . implode(', ', $this->attributes['mailLocalAddress']) . '</value></block>';
-		}
-		if (isset($this->attributes['mailHost'][0])) {
-			$return['inetLocalMailRecipient_host'][0] = '<block><key>' . _('Mail server') . '</key><value>' . $this->attributes['mailHost'][0] . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'routingAdr', _('Routing address'), 'mailRoutingAddress');
+		$this->addSimplePDFField($return, 'localAdr', _('Local address list'), 'mailLocalAddress');
+		$this->addSimplePDFField($return, 'host', _('Mail server'), 'mailHost');
 		return $return;
 	}
 
