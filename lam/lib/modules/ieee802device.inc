@@ -32,7 +32,7 @@ $Id$
 *
 * @package modules
 */
-class ieee802Device extends baseModule {
+class ieee802device extends baseModule {
 
 	/**
 	* Returns meta data that is interpreted by parent class
