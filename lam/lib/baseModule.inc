@@ -839,6 +839,7 @@ abstract class baseModule {
 		}
 		$value = '';
 		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
+			natcasesort($this->attributes[$attrName]);
 			$value = implode($delimiter, $this->attributes[$attrName]);
 		}
 		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
