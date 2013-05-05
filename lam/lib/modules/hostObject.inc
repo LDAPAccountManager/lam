@@ -252,9 +252,7 @@ class hostObject extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (isset($this->attributes['host'][0])) {
-			$return['hostObject_hosts'][0] = '<block><key>' . _('Host list') . '</key><value>' . implode(', ', $this->attributes['host']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'hosts', _('Host list'), 'host');
 		return $return;
 	}
 

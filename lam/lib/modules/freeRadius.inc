@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2012  Roland Gruber
+  Copyright (C) 2011 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -613,23 +613,13 @@ class freeRadius extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (isset($this->attributes['radiusFramedIPAddress'][0])) {
-			$return[get_class($this) . '_radiusFramedIPAddress'][0] = '<block><key>' . _('IP address') . '</key><value>' . $this->attributes['radiusFramedIPAddress'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['radiusFramedIPNetmask'][0])) {
-			$return[get_class($this) . '_radiusFramedIPNetmask'][0] = '<block><key>' . _('Net mask') . '</key><value>' . $this->attributes['radiusFramedIPNetmask'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['radiusRealm'][0])) {
-			$return[get_class($this) . '_radiusRealm'][0] = '<block><key>' . _('Realm') . '</key><value>' . $this->attributes['radiusRealm'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['radiusGroupName'][0])) {
-			$return[get_class($this) . '_radiusGroupName'][0] = '<block><key>' . _('Group names') . '</key><value>' . implode(', ', $this->attributes['radiusGroupName']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'radiusFramedIPAddress', _('IP address'));
+		$this->addSimplePDFField($return, 'radiusFramedIPNetmask', _('Net mask'));
+		$this->addSimplePDFField($return, 'radiusRealm', _('Realm'));
+		$this->addSimplePDFField($return, 'radiusGroupName', _('Group names'));
+		$this->addSimplePDFField($return, 'radiusIdleTimeout', _('Idle timeout'));
 		if (isset($this->attributes['radiusExpiration'][0])) {
 			$return[get_class($this) . '_radiusExpiration'][0] = '<block><key>' . _('Expiration date') . '</key><value>' . $this->formatExpirationDate($this->attributes['radiusExpiration'][0]) . '</value></block>';
-		}
-		if (isset($this->attributes['radiusIdleTimeout'][0])) {
-			$return[get_class($this) . '_radiusIdleTimeout'][0] = '<block><key>' . _('Idle timeout') . '</key><value>' . $this->attributes['radiusIdleTimeout'][0] . '</value></block>';
 		}
 		return $return;
 	}

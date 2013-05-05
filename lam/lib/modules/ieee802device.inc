@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -202,9 +202,7 @@ class ieee802Device extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (sizeof($this->attributes['macAddress']) > 0) {
-			$return['ieee802Device_macAddress'][0] = '<block><key>' . _('MAC addresses') . '</key><value>' . implode(', ', $this->attributes['macAddress']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'macAddress', _('MAC addresses'));
 		return $return;
 	}
 
