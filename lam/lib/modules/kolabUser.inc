@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2012  Roland Gruber
+  Copyright (C) 2004 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -621,10 +621,7 @@ class kolabUser extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		// mail server
-		if (isset($this->attributes['mailHost'][0])) {
-			$return['kolabUser_mailHost'][0] = '<block><key>' . _('Mailbox home server') . '</key><value>' . $this->attributes['mailHost'][0] . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'mailHost', _('Mailbox home server'));
 		// invitation policies
 		if (isset($this->attributes['kolabInvitationPolicy'][0])) {
 			// find default policy
@@ -643,14 +640,8 @@ class kolabUser extends baseModule {
 				}
 			}
 		}
-		// email aliases
-		if (isset($this->attributes['alias'][0])) {
-			$return['kolabUser_aliases'][0] = '<block><key>' . _('Email aliases') . '</key><value>' . implode(", ", $this->attributes['alias']) . '</value></block>';
-		}
-		// delegates
-		if (isset($this->attributes['kolabDelegate'][0])) {
-			$return['kolabUser_delegate'][0] = '<block><key>' . _('Delegates') . '</key><value>' . implode(", ", $this->attributes['kolabDelegate']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'aliases', _('Email aliases'), 'alias');
+		$this->addSimplePDFField($return, 'delegate', _('Delegates'), 'kolabDelegate');
 		return $return;
 	}
 

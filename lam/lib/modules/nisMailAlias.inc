@@ -374,12 +374,8 @@ class nisMailAlias extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (isset($this->attributes['cn'][0])) {
-			$return['nisMailAlias_alias'][0] = '<block><key>' . _('Alias name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>';
-		}
-		if (sizeof($this->attributes['rfc822MailMember']) > 0) {
-			$return['nisMailAlias_recipients'][0] = '<block><key>' . _('Recipient list') . '</key><value>' . implode(', ', $this->attributes['rfc822MailMember']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'alias', _('Alias name'), 'cn');
+		$this->addSimplePDFField($return, 'recipients', _('Recipient list'), 'rfc822MailMember');
 		return $return;
 	}
 

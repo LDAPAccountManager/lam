@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2012  Roland Gruber
+  Copyright (C) 2009 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -571,16 +571,11 @@ class nisnetgroup extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		// aliased entry
-		$return[get_class($this) . '_cn'] = array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>');
-		if (isset($this->attributes['description'][0])) {
-			$return[get_class($this) . '_description'] = array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>');
-		}
-		if (is_array($this->attributes['memberNisNetgroup'])) {
-			$return[get_class($this) . '_subgroups'] = array('<block><key>' . _('Subgroups') . '</key><value>' . implode(', ', $this->attributes['memberNisNetgroup']) . '</value></block>');
-		}
+		$this->addSimplePDFField($return, 'cn', _('Group name'));
+		$this->addSimplePDFField($return, 'description', _('Description'));
+		$this->addSimplePDFField($return, 'subgroups', _('Subgroups'), 'memberNisNetgroup');
 		if (sizeof($this->attributes['nisNetgroupTriple']) > 0) {
-			$return[get_class($this) . '_members'] = array('<block><key>' . _('Members') . '</key><value> </value></block>');
+			$return[get_class($this) . '_members'] = array('<block><tr><td width="80%"><b>' . _('Members') . '</b></td></tr></block>');
 			$return[get_class($this) . '_members'][] = '<block><tr>' .
 					'<td width="20%"><b>' . _('Host') . '</b></td>' .
 					'<td width="20%"><b>' . _('User') . '</b></td>' .
