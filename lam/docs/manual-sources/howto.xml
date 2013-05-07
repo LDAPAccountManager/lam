@@ -2086,6 +2086,19 @@ Have fun!
         <screenshot>
           <mediaobject>
             <imageobject>
+              <imagedata fileref="images/mod_windowsUser4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The default list attributes are for Unix and not suitable for
+        Windows (blank lines in account table). Please use
+        "#cn;#givenName;#sn;#mail" or select your own attributes to display in
+        the account list.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
               <imagedata fileref="images/mod_windowsUser1.png" />
             </imageobject>
           </mediaobject>
@@ -2667,13 +2680,27 @@ Have fun!
         <screenshot>
           <mediaobject>
             <imageobject>
+              <imagedata fileref="images/mod_windowsGroup3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The default list attributes are for Unix and not suitable for
+        Windows (blank lines in account table). Please use
+        "#cn;#member;#description" or select your own attributes to display in
+        the account list.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
               <imagedata fileref="images/mod_windowsGroup1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para>You can manage the group name, description and its type. Of
-        course, you can also set the group members.</para>
+        <para>Now you can edit your groups inside LAM. You can manage the
+        group name, description and its type. Of course, you can also set the
+        group members.</para>
 
         <para>Group scopes:</para>
 
@@ -2796,13 +2823,26 @@ Have fun!
         <screenshot>
           <mediaobject>
             <imageobject>
+              <imagedata fileref="images/mod_windowsServer3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The default list attributes are for Unix and not suitable for
+        Windows (blank lines in account table). Please use
+        "#cn;#description;#location" or select your own attributes to display
+        in the account list.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
               <imagedata fileref="images/mod_windowsServer2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para>You can set e.g. the server's description and location
-        information.</para>
+        <para>Now you will see you computer accounts inside LAM. You can set
+        e.g. the server's description and location information.</para>
 
         <screenshot>
           <mediaobject>
