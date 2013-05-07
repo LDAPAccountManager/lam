@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -93,7 +93,8 @@ class host extends baseType {
 			"rid" => _("RID (Windows UID)"),
 			"description" => _("Host description"),
 			"uidnumber" => _("UID number"),
-			"gidnumber" => _("GID number")
+			"gidnumber" => _("GID number"),
+			'location' => _('Location')
 			);
 	}
 
