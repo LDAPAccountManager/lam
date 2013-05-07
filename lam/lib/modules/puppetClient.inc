@@ -3,7 +3,7 @@
 $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012  Roland Gruber
+  Copyright (C) 2012 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -417,24 +417,21 @@ class puppetClient extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (in_array('puppetClient', $this->attributes['objectClass'])) {
-			if (isset($this->attributes['environment'][0])) {
-				$return['puppetClient_environment'][0] = '<block><key>' . _('Environment') . '</key><value>' . implode(', ', $this->attributes['environment']) . '</value></block>';
+		if (!in_array('puppetClient', $this->attributes['objectClass'])) {
+			return $return;
+		}
+		$this->addSimplePDFField($return, 'environment', _('Environment'));
+		$this->addSimplePDFField($return, 'parentnode', _('Parent node'));
+		if (isset($this->attributes['puppetclass'][0])) {
+			$return['puppetClient_puppetclass'][0] = '<block><key>' . _('Classes') . '</key><tr><td align=\"L\">' . $this->attributes['puppetclass'][0] . '</td></tr></block>';
+			for ($i = 1; $i < sizeof($this->attributes['puppetclass']); $i++) {
+				$return['puppetClient_puppetclass'][] = '<block><tr><td align=\"L\">' . $this->attributes['puppetclass'][$i] . '</td></tr></block>';
 			}
-			if (isset($this->attributes['parentnode'][0])) {
-				$return['puppetClient_parentnode'][0] = '<block><key>' . _('Parent node') . '</key><value>' . $this->attributes['parentnode'][0] . '</value></block>';
-			}
-			if (isset($this->attributes['puppetclass'][0])) {
-				$return['puppetClient_puppetclass'][0] = '<block><key>' . _('Classes') . '</key><tr><td align=\"L\">' . $this->attributes['puppetclass'][0] . '</td></tr></block>';
-				for ($i = 1; $i < sizeof($this->attributes['puppetclass']); $i++) {
-					$return['puppetClient_puppetclass'][] = '<block><tr><td align=\"L\">' . $this->attributes['puppetclass'][$i] . '</td></tr></block>';
-				}
-			}
-			if (isset($this->attributes['puppetvar'][0])) {
-				$return['puppetClient_puppetvar'][0] = '<block><key>' . _('Variables') . '</key><tr><td align=\"L\">' . $this->attributes['puppetvar'][0] . '</td></tr></block>';
-				for ($i = 1; $i < sizeof($this->attributes['puppetvar']); $i++) {
-					$return['puppetClient_puppetvar'][] = '<block><tr><td align=\"L\">' . $this->attributes['puppetvar'][$i] . '</td></tr></block>';
-				}
+		}
+		if (isset($this->attributes['puppetvar'][0])) {
+			$return['puppetClient_puppetvar'][0] = '<block><key>' . _('Variables') . '</key><tr><td align=\"L\">' . $this->attributes['puppetvar'][0] . '</td></tr></block>';
+			for ($i = 1; $i < sizeof($this->attributes['puppetvar']); $i++) {
+				$return['puppetClient_puppetvar'][] = '<block><tr><td align=\"L\">' . $this->attributes['puppetvar'][$i] . '</td></tr></block>';
 			}
 		}
 		return $return;

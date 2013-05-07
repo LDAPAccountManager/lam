@@ -500,12 +500,13 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($this->attributes['memberUid'][0])) {
 			$members = implode(', ', $this->attributes['memberUid']);
 		}
-		return array(
-			get_class($this) . '_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
-			get_class($this) . '_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
+		$return = array(
 			get_class($this) . '_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $members . '</value></block>'),
-			get_class($this) . '_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>')
 		);
+		$this->addSimplePDFField($return, 'cn', _('Group name'));
+		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
+		$this->addSimplePDFField($return, 'description', _('Description'));
+		return $return;
 	}
 
 
