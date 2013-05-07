@@ -841,6 +841,12 @@ abstract class baseModule {
 		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
 			natcasesort($this->attributes[$attrName]);
 			$value = implode($delimiter, $this->attributes[$attrName]);
+			// TODO workarounds for PDF parser, remove when migrated to other PDF library
+			$value = str_replace("\r\n", " ", $value);
+			$value = str_replace("\n", " ", $value);
+			$value = str_replace("\r", " ", $value);
+			// TODO workaround for UFPDF, remove when migrated to other PDF library
+			$value = trim($value);
 		}
 		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
 	}
