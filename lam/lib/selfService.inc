@@ -56,7 +56,7 @@ function getSelfServiceSearchAttributes($scope) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = new $modules[$i]($scope);
+		$m = moduleCache::getModule($modules[$i], $scope);
 		$attributes = $m->getSelfServiceSearchAttributes();
 		$return = array_merge($return, $attributes);
 	}
@@ -76,7 +76,7 @@ function getSelfServiceFieldSettings($scope) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = new $modules[$i]($scope);
+		$m = moduleCache::getModule($modules[$i], $scope);
 		$settings = $m->getSelfServiceFields();
 		if (sizeof($settings) > 0) $return[$modules[$i]] = $settings;
 	}
@@ -99,7 +99,7 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
-		$m = new $modules[$i]($scope);
+		$m = moduleCache::getModule($modules[$i], $scope);
 		$modReadOnlyFields = array();
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
@@ -129,7 +129,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) continue;
-		$m = new $modules[$i]($scope);
+		$m = moduleCache::getModule($modules[$i], $scope);
 		$modReadOnlyFields = array();
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
@@ -260,7 +260,7 @@ function getSelfServiceSettings($scope, $profile) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = new $modules[$i]($scope);
+		$m = moduleCache::getModule($modules[$i], $scope);
 		$return[$modules[$i]] = $m->getSelfServiceSettings($profile);
 	}
 	return $return;
@@ -278,7 +278,7 @@ function checkSelfServiceSettings($scope, &$options, &$profile) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = new $modules[$i]($scope);
+		$m = moduleCache::getModule($modules[$i], $scope);
 		$errors = $m->checkSelfServiceSettings($options, $profile);
 		$return = array_merge($return, $errors);
 	}

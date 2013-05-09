@@ -214,7 +214,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
 	echo "<fieldset class=\"ui-corner-all user-border user-bright\">\n";
 	$icon = '';
-	$module = new $modules[$i]('none');
+	$module = moduleCache::getModule($modules[$i], 'none');
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
 		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';

@@ -112,7 +112,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$values = array();
 	$tabindex = 100;
 	foreach ($modules as $module) {
-		$module = new $module($_GET['type']);
+		$module = moduleCache::getModule($module, $_GET['type']);
 		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $_GET['type']);
 	}
 	echo "</table>\n";

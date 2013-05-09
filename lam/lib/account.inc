@@ -951,4 +951,33 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 	}
 }
 
+/**
+ * Caches module objects.
+ * This improves performance if the same module does not need to be created multiple times (calling get_metaData() each time).
+ * 
+ * @author Roland Gruber
+ */
+class moduleCache {
+	
+	/** module cache ("name:scope" => module) */
+	private static $cache = array();
+	
+	/**
+	 * Returns a new/cached module with the given name and scope.
+	 * 
+	 * @param String $name module name
+	 * @param String $scope module scope (e.g. user)
+	 */
+	public static function getModule($name, $scope) {
+		if (isset(moduleCache::$cache[$name . ':' . $scope])) {
+			return moduleCache::$cache[$name . ':' . $scope];
+		}
+		else {
+			moduleCache::$cache[$name . ':' . $scope] = new $name($scope);
+			return moduleCache::$cache[$name . ':' . $scope];
+		}
+	}
+	
+}
+
 ?>

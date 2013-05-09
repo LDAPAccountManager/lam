@@ -63,7 +63,7 @@ if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($modulesINC_dir
 * @return string alias name
 */
 function getModuleAlias($name, $scope) {
-	$module = new $name($scope);
+	$module = moduleCache::getModule($name, $scope);
 	return $module->get_alias();
 }
 
@@ -75,7 +75,7 @@ function getModuleAlias($name, $scope) {
 * @return boolean true if base module
 */
 function is_base_module($name, $scope) {
-	$module = new $name($scope);
+	$module = moduleCache::getModule($name, $scope);
 	return $module->is_base_module();
 }
 
@@ -90,7 +90,7 @@ function get_ldap_filter($scope) {
 	$filters = array();
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = new $mods[$i]($scope);
+		$module = moduleCache::getModule($mods[$i], $scope);
 		$modinfo = $module->get_ldap_filter();
 		if (isset($modinfo['or'])) $filters['or'][] = $modinfo['or'];
 		if (isset($modinfo['and'])) $filters['and'][] = $modinfo['and'];
@@ -142,7 +142,7 @@ function getRDNAttributes($scope, $selectedModules=null) {
 	$attrs_high = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		// get list of attributes
-		$module = new $mods[$i]($scope);
+		$module = moduleCache::getModule($mods[$i], $scope);
 		$attrs = $module->get_RDNAttributes();
 		$keys = array_keys($attrs);
 		// sort attributes
@@ -187,7 +187,7 @@ function getRDNAttributes($scope, $selectedModules=null) {
 function getModulesDependencies($scope) {
 	$mods = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = new $mods[$i]($scope);
+		$module = moduleCache::getModule($mods[$i], $scope);
 		$return[$mods[$i]] = $module->get_dependencies();
 	}
 	return $return;
@@ -271,7 +271,7 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 	while ($entry = $dir->read())
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
-			$temp = new $entry($scope);
+			$temp = moduleCache::getModule($entry, $scope);
 			if ($mustSupportAdminInterface && !$temp->supportsAdminInterface()) {
 				continue;
 			}
@@ -292,7 +292,7 @@ function getProfileOptions($scope) {
 	$mods = $_SESSION['config']->get_AccountModules($scope);
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = new $mods[$i]($scope);
+		$module = moduleCache::getModule($mods[$i], $scope);
 		$return[$mods[$i]] = $module->get_profileOptions();
 	}
 	return $return;
@@ -309,7 +309,7 @@ function checkProfileOptions($scope, $options) {
 	$mods = $_SESSION['config']->get_AccountModules($scope);
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = new $mods[$i]($scope);
+		$module = moduleCache::getModule($mods[$i], $scope);
 		$temp = $module->check_profileOptions($options);
 		$return = array_merge($return, $temp);
 	}
@@ -326,7 +326,7 @@ function getConfigOptions($scopes) {
 	$return = array();
 	$modules = array_keys($scopes);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = new $modules[$i]('none');
+		$m = moduleCache::getModule($modules[$i], 'none');
 		$return[$modules[$i]] = $m->get_configOptions($scopes[$modules[$i]], $scopes);
 	}
 	return $return;
@@ -343,7 +343,7 @@ function checkConfigOptions($scopes, &$options) {
 	$return = array();
 	$modules = array_keys($scopes);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = new $modules[$i]('none');
+		$m = moduleCache::getModule($modules[$i], 'none');
 		$errors = $m->check_configOptions($scopes[$modules[$i]], $options);
 		if (isset($errors) && is_array($errors)) {
 			$return = array_merge($return, $errors);
@@ -369,7 +369,10 @@ function getHelp($module,$helpID,$scope='') {
 		}
 		return $helpArray[$helpID];
 	}
-	$moduleObject = new $module((($scope != '') ? $scope : 'none'));
+	if (empty($scope)) {
+		$scope = 'none';
+	}
+	$moduleObject = moduleCache::getModule($module, $scope);
 	return $moduleObject->get_help($helpID);
 }
 
@@ -383,7 +386,7 @@ function getAvailablePDFFields($scope) {
 	$mods = $_SESSION['config']->get_AccountModules($scope);
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = new $mods[$i]($scope);
+		$module = moduleCache::getModule($mods[$i], $scope);
 		$fields = $module->get_pdfFields();
 		$return[$mods[$i]] = array();
 		if (is_array($fields)) {
@@ -421,7 +424,7 @@ function getAvailablePDFFields($scope) {
 function getUploadColumns($scope, $selectedModules) {
 	$return = array();
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
-		$module = new $selectedModules[$i]($scope);
+		$module = moduleCache::getModule($selectedModules[$i], $scope);
 		$return[$selectedModules[$i]] = $module->get_uploadColumns($selectedModules);
 	}
 	return $return;
@@ -445,7 +448,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 	$predepends = array();
 	// get dependencies
 	for ($i = 0; $i < sizeof($unOrdered); $i++) {
-		$mod = new $unOrdered[$i]($scope);
+		$mod = moduleCache::getModule($unOrdered[$i], $scope);
 		$predepends[$unOrdered[$i]] = $mod->get_uploadPreDepends();
 	}
 	// first all modules without predepends can be ordered
@@ -488,7 +491,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 	$partialAccounts = array();
 	for ($i = 0; $i < sizeof($data); $i++) $partialAccounts[$i]['objectClass'] = array();
 	for ($i = 0; $i < sizeof($ordered); $i++) {
-		$module = new $ordered[$i]($scope);
+		$module = moduleCache::getModule($ordered[$i], $scope);
 		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules);
 		if (sizeof($errors) > 0) {
 			array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
@@ -515,7 +518,7 @@ function doUploadPreActions($scope, $selectedModules, $attributes) {
 	$messages = array();
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$activeModule = $selectedModules[$i];
-		$module = new $activeModule($scope);
+		$module = moduleCache::getModule($activeModule, $scope);
 		$messages = array_merge($messages, $module->doUploadPreActions($attributes));
 	}
 	return $messages;
@@ -551,7 +554,7 @@ function doUploadPostActions($scope, &$data, $ids, $failed, $selectedModules, &$
 		$_SESSION['mass_postActions'][$activeModule] = array();
 	}
 	// let first module do one post action
-	$module = new $activeModule($scope);
+	$module = moduleCache::getModule($activeModule, $scope);
 	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts);
 	// remove active module from list if already finished
 	if ($return['status'] == 'finished') {
@@ -580,7 +583,7 @@ function getRequiredExtensions() {
 	for ($i = 0; $i < sizeof($scopes); $i++) {
 		$mods = $_SESSION['config']->get_AccountModules($scopes[$i]);
 		for ($m = 0; $m < sizeof($mods); $m++) {
-			$module = new $mods[$m]($scopes[$i]);
+			$module = moduleCache::getModule($mods[$m], $scopes[$i]);
 			$ext = $module->getRequiredExtensions();
 			for ($e = 0; $e < sizeof($ext); $e++) {
 				if (!in_array($ext[$e], $extList)) $extList[] = $ext[$e];
@@ -1518,7 +1521,7 @@ class accountContainer {
 
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
-				$this->module[$module] = new $module($this->type);
+				$this->module[$module] = moduleCache::getModule($module, $this->type);
 				$this->module[$module]->init($this->base);
 			}
 			$this->module[$module]->load_attributes($attr);
@@ -1548,7 +1551,7 @@ class accountContainer {
 		$aliases = array();
 		$ldapAttributesTemp = array();
 		foreach ($modules as $module) {
-			$moduleObj = new $module($this->type);
+			$moduleObj = moduleCache::getModule($module, $this->type);
 			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses());
 			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases());
 			$ldapAttributesTemp = array_merge($ldapAttributesTemp, $moduleObj->getManagedAttributes());
@@ -1619,7 +1622,7 @@ class accountContainer {
 		$this->lastLoadedProfile = 'default';
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		foreach ($modules as $module) {
-			$this->module[$module] = new $module($this->type);
+			$this->module[$module] = moduleCache::getModule($module, $this->type);
 			$this->module[$module]->init($this->base);
 		}
 		// sort module buttons

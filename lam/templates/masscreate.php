@@ -170,7 +170,7 @@ for ($i = 0; $i < sizeof($types); $i++) {
 		if (($m != 0) && ($m%3 == 0)) {
 			echo $innerTable->addNewLine();
 		}
-		$module = new $modules[$m]($types[$i]);
+		$module = moduleCache::getModule($modules[$m], $types[$i]);
 		$iconImage = '../graphics/' . $module->getIcon();
 		$innerTable->addElement(new htmlImage($iconImage));
 		$enabled = true;
@@ -349,7 +349,7 @@ function showMainPage($scope, $selectedModules) {
 		}
 		$columnContainer->addElement(new htmlSpacer(null, '10px'), true);
 		$icon = '';
-		$module = new $modules[$m]($scope);
+		$module = moduleCache::getModule($modules[$m], $scope);
 		$iconImage = $module->getIcon();
 		if ($iconImage != null) {
 			$icon = '../graphics/' . $iconImage;
