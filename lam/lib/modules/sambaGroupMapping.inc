@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2012  Roland Gruber
+                2007 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -380,15 +380,13 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		$displayName = '';
-		if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
-		return array(
-			'sambaGroupMapping_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
-			'sambaGroupMapping_sambaSID' => array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaSID'][0] . '</value></block>'),
-			'sambaGroupMapping_displayName' => array('<block><key>' . _('Display name') . '</key><value>' . $displayName . '</value></block>'),
-			'sambaGroupMapping_sambaGroupType' => array('<block><key>' . _('Samba group type') . '</key><value>' . $this->attributes['sambaGroupType'][0] . '</value></block>'),
-			'sambaGroupMapping_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>')
-		);
+		$return = array();
+		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
+		$this->addSimplePDFField($return, 'sambaSID', _('Windows group'));
+		$this->addSimplePDFField($return, 'displayName', _('Display name'));
+		$this->addSimplePDFField($return, 'sambaGroupType', _('Samba group type'));
+		$this->addSimplePDFField($return, 'description', _('Description'));
+		return $return;
 	}
 
 

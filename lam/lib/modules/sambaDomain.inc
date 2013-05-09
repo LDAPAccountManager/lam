@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -631,30 +631,20 @@ class sambaDomain extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		if (sizeof($this->attributes['sambaDomainName']) > 0) {
-			$return['sambaDomain_domainName'][0] = '<block><key>' . _('Domain name') . '</key><value>' . implode(', ', $this->attributes['sambaDomainName']) . '</value></block>';
-		}
-		if (sizeof($this->attributes['sambaSID']) > 0) {
-			$return['sambaDomain_domainSID'][0] = '<block><key>' . _('Domain SID') . '</key><value>' . implode(', ', $this->attributes['sambaSID']) . '</value></block>';
-		}
-		if (sizeof($this->attributes['sambaNextRid']) > 0) {
-			$return['sambaDomain_nextRID'][0] = '<block><key>' . _('Next RID') . '</key><value>' . implode(', ', $this->attributes['sambaNextRid']) . '</value></block>';
-		}
-		if (sizeof($this->attributes['sambaNextUserRid']) > 0) {
-			$return['sambaDomain_nextUserRID'][0] = '<block><key>' . _('Next user RID') . '</key><value>' . implode(', ', $this->attributes['sambaNextUserRid']) . '</value></block>';
-		}
-		if (sizeof($this->attributes['sambaNextGroupRid']) > 0) {
-			$return['sambaDomain_nextGroupRID'][0] = '<block><key>' . _('Next group RID') . '</key><value>' . implode(', ', $this->attributes['sambaNextGroupRid']) . '</value></block>';
-		}
-		if (sizeof($this->attributes['sambaAlgorithmicRidBase']) > 0) {
-			$return['sambaDomain_RIDbase'][0] = '<block><key>' . _('RID base') . '</key><value>' . implode(', ', $this->attributes['sambaAlgorithmicRidBase']) . '</value></block>';
-		}
-		if (isset($this->attributes['sambaMinPwdLength'])) {
-			$return['sambaDomain_minPwdLength'][0] = '<block><key>' . _('Minimal password length') . '</key><value>' . implode(', ', $this->attributes['sambaMinPwdLength']) . '</value></block>';
-		}
-		if (isset($this->attributes['sambaPwdHistoryLength'])) {
-			$return['sambaDomain_pwdHistoryLength'][0] = '<block><key>' . _('Password history length') . '</key><value>' . implode(', ', $this->attributes['sambaPwdHistoryLength']) . '</value></block>';
-		}
+		$this->addSimplePDFField($return, 'domainName', _('Domain name'), 'sambaDomainName');
+		$this->addSimplePDFField($return, 'domainSID', _('Domain SID'), 'sambaSID');
+		$this->addSimplePDFField($return, 'nextRID', _('Next RID'), 'sambaNextRid');
+		$this->addSimplePDFField($return, 'nextUserRID', _('Next user RID'), 'sambaNextUserRid');
+		$this->addSimplePDFField($return, 'nextGroupRID', _('Next group RID'), 'sambaNextGroupRid');
+		$this->addSimplePDFField($return, 'RIDbase', _('RID base'), 'sambaAlgorithmicRidBase');
+		$this->addSimplePDFField($return, 'minPwdLength', _('Minimal password length'), 'sambaMinPwdLength');
+		$this->addSimplePDFField($return, 'pwdHistoryLength', _('Password history length'), 'sambaPwdHistoryLength');
+		$this->addSimplePDFField($return, 'lockoutThreshold', _('Lockout users after bad logon attempts'), 'sambaLockoutThreshold');
+		$this->addSimplePDFField($return, 'minPwdAge', _('Minimum password age'), 'sambaMinPwdAge');
+		$this->addSimplePDFField($return, 'maxPwdAge', _('Maximum password age'), 'sambaMaxPwdAge');
+		$this->addSimplePDFField($return, 'lockoutDuration', _('Lockout duration'), 'sambaLockoutDuration');
+		$this->addSimplePDFField($return, 'lockoutObservationWindow', _('Reset time after lockout'), 'sambaLockoutObservationWindow');
+		
 		if (isset($this->attributes['sambaLogonToChgPwd'])) {
 			$logonToChgPwd = _('Off');
 			if ($this->attributes['sambaPwdHistoryLength'][0] == 2) $logonToChgPwd = _('On');
@@ -669,21 +659,6 @@ class sambaDomain extends baseModule {
 			$refuseMachinePwdChange = _('Off');
 			if ($this->attributes['sambaRefuseMachinePwdChange'][0] == 0) $refuseMachinePwdChange = _('On');
 			$return['sambaDomain_refuseMachinePwdChange'][0] = '<block><key>' . _('Allow machine password changes') . '</key><value>' . $refuseMachinePwdChange . '</value></block>';
-		}
-		if (isset($this->attributes['sambaLockoutThreshold'][0])) {
-			$return['sambaDomain_lockoutThreshold'][0] = '<block><key>' . _('Lockout users after bad logon attempts') . '</key><value>' . $this->attributes['sambaLockoutThreshold'][0] . '</value></block>';
-		}
-		if (isset($this->attributes['sambaMinPwdAge'])) {
-			$return['sambaDomain_minPwdAge'][0] = '<block><key>' . _('Minimum password age') . '</key><value>' . implode(', ', $this->attributes['sambaMinPwdAge']) . '</value></block>';
-		}
-		if (isset($this->attributes['sambaMaxPwdAge'])) {
-			$return['sambaDomain_maxPwdAge'][0] = '<block><key>' . _('Maximum password age') . '</key><value>' . implode(', ', $this->attributes['sambaMaxPwdAge']) . '</value></block>';
-		}
-		if (isset($this->attributes['sambaLockoutDuration'])) {
-			$return['sambaDomain_lockoutDuration'][0] = '<block><key>' . _('Lockout duration') . '</key><value>' . implode(', ', $this->attributes['sambaLockoutDuration']) . '</value></block>';
-		}
-		if (isset($this->attributes['sambaLockoutObservationWindow'])) {
-			$return['sambaDomain_lockoutObservationWindow'][0] = '<block><key>' . _('Reset time after lockout') . '</key><value>' . implode(', ', $this->attributes['sambaLockoutObservationWindow']) . '</value></block>';
 		}
 		return $return;
 	}
