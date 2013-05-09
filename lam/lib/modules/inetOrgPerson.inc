@@ -284,6 +284,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// configuration settings
 		$configContainer = new htmlTable();
+		if (isset($_SESSION['conf_config'])) {
+			// add password hash type if posixAccount is inactive
+			$confActiveUnixModules = $_SESSION['conf_config']->get_AccountModules('user');
+			if (in_array('host', $_SESSION['conf_config']->get_ActiveTypes())) {
+				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('host'));
+			}
+			if (in_array('group', $_SESSION['conf_config']->get_ActiveTypes())) {
+				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('group'));
+			}
+			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
+				$optionsSelected = array('SSHA');
+				$hashOption = new htmlTable();
+				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
+				$configContainer->addElement($hashOption, true);
+			}
+		}
 		$configContainerHead = new htmlTable();
 		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
@@ -343,14 +359,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, false));
 		if (isset($_SESSION['conf_config'])) {
-			// add password hash type if posixAccount is inactive
-			$confActiveUnixModules = array_merge($_SESSION['conf_config']->get_AccountModules('user'), $_SESSION['conf_config']->get_AccountModules('host'), $_SESSION['conf_config']->get_AccountModules('group'));
-			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
-				$optionsSelected = array('SSHA');
-				$hashOption = new htmlTable();
-				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
-				$configContainer->addElement($hashOption);
-			}
 			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
 			// option to hide uid
 			if (!in_array('posixAccount', $confActiveUnixUserModules)) {
