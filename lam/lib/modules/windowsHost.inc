@@ -65,7 +65,7 @@ class windowsHost extends baseModule {
 		$return['help'] = array(
 			'cn' => array(
 				"Headline" => _('Host name'), 'attr' => 'cn, sAMAccountName',
-				"Text" => _('Please enter the host\'s name.')
+				"Text" => _('Please enter the host name.')
 			),
 			'description' => array(
 				"Headline" => _('Description'), 'attr' => 'description',

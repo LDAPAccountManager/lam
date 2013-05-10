@@ -104,7 +104,7 @@ class windowsGroup extends baseModule {
 			),
 			'cn' => array(
 				"Headline" => _('Group name'), 'attr' => 'cn, sAMAccountName',
-				"Text" => _('Please enter the group\'s name.')
+				"Text" => _('Please enter the group name.')
 			),
 			'description' => array(
 				"Headline" => _('Description'), 'attr' => 'description',
