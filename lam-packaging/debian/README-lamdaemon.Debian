@@ -5,4 +5,11 @@ The scripts are called by the main LDAP Account Manager installation
 via SSH.
 
 You will have to setup sudo for these scripts. Please see the
-documentation for this topic.
+documentation in package ldap-account-manager for this topic.
+
+Example sudo entry:
+
+someuser  ALL= NOPASSWD: /usr/share/ldap-account-manager/lib/lamdaemon.pl *
+
+
+
