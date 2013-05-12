@@ -19,9 +19,12 @@ else
 	export SVN_TAG="tags/$1"
 fi
 
-svn export svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam lam
-svn export svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam-packaging lam-packaging
-svn export file:///daten/projekte/SVNROOT/$SVN_TAG/lamPro lamPro
+echo "Get files from SVN..."
+svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam lam &
+svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam-packaging lam-packaging &
+svn export -q file:///daten/projekte/SVNROOT/$SVN_TAG/lamPro lamPro &
+
+wait
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
@@ -46,14 +49,16 @@ cp -a lamPro/* LAMPro/ldap-account-manager-$VERSION
 rm -r lamPro
 
 # create PHPdoc
+echo "Build PHPDoc..."
 cd LAMPro/ldap-account-manager-$VERSION
-./phpdoc.sh
-rm phpdoc.sh
+./phpdoc.sh > /dev/null &
 cd ../..
 cd ldap-account-manager-$VERSION
-./phpdoc.sh
-rm phpdoc.sh
+./phpdoc.sh > /dev/null &
 cd ..
+wait
+rm ldap-account-manager-$VERSION/phpdoc.sh
+rm LAMPro/ldap-account-manager-$VERSION/phpdoc.sh
 
 # tar.gz
 cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
