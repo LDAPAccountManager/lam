@@ -1,0 +1,701 @@
+June 2013 4.2
+  - Samba 4 support: users, groups, hosts
+  - Unix: allow to change format for suggested user name
+  - LAM Pro:
+   -> allow to hide buttons to create/delete entries for each account type
+   -> Password self reset: support new identification methods: user, email, user or email, employee number
+   -> Custom fields: support PDF, profiles and multi-value text fields
+   -> Personal: support password mail sending in file upload
+
+
+19.03.2013 4.1
+  - Updated EDU person module (RFE 3599128)
+  - Personal: allow management of user certificates (RFE 1753030)
+  - Unix: Support Samba Unix Id pool for automatic UID/GID generation
+  - DHCP: support separated dhcpServer and dhcpService entries
+  - LAM Pro:
+   -> Support Qmail groups
+  - Fixed bugs:
+   -> changed user and group size limits (3601649)
+
+
+06.01.2013 4.0.1
+  - support additional LDAP filters for account types
+  - allow to hide account types (that are required by other account types)
+  - fixed bugs:
+   -> missing directories config/pdf and config/profiles on fresh installations
+
+
+17.12.2012 4.0
+  - account profiles and PDF structures are now bound to server profile
+  - IMAP: support "/" as path separator (RFE 3575692)
+  - show server profile name on config pages (RFE 3579768)
+  - LAM Pro:
+   -> Custom fields for admin interface
+   -> MIT Kerberos support
+   -> Qmail user support
+
+
+25.09.2012 3.9
+  - Kolab 2.4 support
+  - Puppet support
+  - LAM Pro
+   -> support RFC2307bis automount entries
+   -> read-only fields in self service
+  - fixed bugs
+   -> Hidden tools are still shown on the "Tools" page (3546092)
+
+
+19.07.2012 3.8
+  - quick (un)lock for users
+  - allow to disable tools
+  - LAM Pro:
+   -> Custom fields module allows to manage custom LDAP attributes in Self Service
+   -> Self service now supports user self registration
+   -> Separate group of names module for users allows to manage memberships if Unix module is not used (RFE 3504429)
+   -> Named object module for groups (used for rfc2307bis schema)
+   -> Password change page allows account (un)locking
+   -> Allow to send password mails on user edit page
+   -> Custom scripts: supports manual scripts that can be run from account edit pages
+   -> Zarafa 7.1 support (proxy URL for servers)
+  - fixed bugs
+   -> Asterisk extensions with same name (3528288)
+
+
+25.03.2012 3.7
+  - Login: support bind user for login search
+  - Personal: added labeledURI and cosmetic changes, description is now multi-valued (RFE 3446363)
+  - Asterisk extensions: group extension entries by name and context
+  - File upload:
+   -> support custom scripts postCreate (LAM Pro)
+   -> PDF export
+  - New translation: Slovakian
+  - removed phpGroupWare support (project no longer exists)
+  - Use new password after self password change (RFE 3446350)
+  - LAM Pro:
+   -> Password self reset can send password confirmation and notification mails
+   -> Zarafa archiver support
+   -> Heimdal Kerberos support
+  - Fixed bugs:
+   -> DHCP: error message not displayed properly (3441975)
+   -> Profile loading not possible if required fields are not filled (3444948)
+   -> Tree view: unable to add object class (3446037)
+   -> Edit page: unable to move accounts to different OU
+   -> Self Service: support forced password changes (PPolicy) (3483907)
+   -> XSS security patch (3496624)
+
+
+23.11.2011 3.6.1
+  - LAM Pro: fixed password reset function
+
+
+22.11.2011 3.6
+  - support HTTP authentication for admin pages and self service
+  - new modules
+   -> authorizedServiceObject
+   -> FreeRadius
+  - LAM Pro
+   -> added password self reset feature
+   -> Zarafa 7 support
+   -> Zarafa support for dynamic groups, address lists and contacts
+   -> Unix: group of names can be managed on user edit page
+  - Fixed bugs:
+   -> Unix: check for upper-case characters in user name (3416180)
+
+
+09.08.2011 3.5.0
+  - New modules:
+   -> "General information": shows internal data about accounts (e.g. creation time)
+   -> "Quota": manage filesystem quota inside LDAP (Linux DiskQuota) (RFE 1811449)
+  - Personal: New attributes o, employeeNumber, initials
+  - Unix: Support to create home directories on multiple servers and also for existing users
+  - Server information shows data from cn=monitor
+  - Lots of small improvements
+  - LAM Pro:
+   -> Automount: allow to create automount maps
+   -> Password policy: allow to (un)lock accounts
+  - Fixed bugs:
+   -> Owner attribute is multi-valued (3300727)
+
+2011-04-25 3.4.0
+  - IMAP mailboxes:
+   -> support to read user name from uid attribute
+   -> added quota management
+  - Personal: added additional options for account profiles
+  - Mail aliases: sort receipients (RFE 3170336)
+  - Asterisk: support all attributes (can be disabled in configuration)
+  - Samba 3/Shadow: allow to sync expiration date (RFE 3147751)
+  - LAM Pro:
+   -> support automount entries
+   -> Zarafa groups: allow combination with group of names
+   -> enhanced wildcards for custom scripts
+   -> Group of (unique) names: allow members to be optional
+  - Fixed bugs:
+   -> Renaming of default profile (3183920)
+   -> Profile editor: fixed problems with multi select
+
+
+12.02.2011 3.3.0
+  - additional usability enhancements
+  - new IMAP module ("Mailbox (imapAccess)") allows to create/delete user mailboxes
+  - LAM Pro: enhanced Zarafa to support users and groups for "Send as" (new configuration option)
+  - PDF export: higher resolution for logos
+  - reduced number of LDAP queries
+  - lamdaemon: support journaled quotas
+  - Fixed bugs:
+   -> ignore comment lines in shells file (3107124)
+   -> home directory creation on file upload
+  
+
+28.10.2010 3.2.0
+  - large usability enhancements
+  - Shadow: allow to force password change when maximum password age is set
+  - DHCP: renamed module "Fixed IPs" to "Hosts", IP is now optional (3038797)
+  - PHP version 5.2.4 or higher required
+  - LAM Pro:
+   -> Zarafa support (user, group, server)
+   -> Password policy: allow to force password change (RFE 3026940)
+   -> Password reset page: mail subject, text and from address can be set in server profile
+   -> Self service: Asterisk (voicemail) password synchronisation
+  - Fixed bugs:
+   -> Email check did not include "+" (3033605)
+   -> Tab index on login page (3042622)
+
+
+04.07.2010 3.1.1
+  - LAM Pro: fix for user self service
+
+
+25.06.2010 3.1.0
+  - usability improvements
+  - Asterisk voicemail support
+  - new hosts module for user accounts to define valid login workstations (replaces inetOrgPerson schema hack) (2951116)
+  - PDF editor: descriptive fields
+  - lamdaemon:
+   -> sudo entry needs to be changed to ".../lamdaemon.pl *"
+   -> replaced PHP SSH2 with phpseclib
+  - LAM Pro
+   -> custom scripts: new options to hide executed commands and define if output is HTML or plain text
+   -> support sudo entry management (object class sudoRole)
+  - fixed bugs:
+   -> Asterisk password handling (patch 2979728)
+   -> Samba domain SID check (2994528)
+   -> language selection at login (2996335)
+
+
+24.03.2010 3.0.0
+  - support to remove extension from an existing account: shadowAccount, sambaSamAccount, eduPerson
+  - file upload: allow to select account modules for upload
+  - removed frames
+  - Unix: automatic user name generation from first and last name (2492675)
+  - LAM Pro:
+   -> support OpenLDAP password policies (ppolicy)
+   -> manage host IP addresses (ipHost)
+  - fixed bugs:
+   -> Multi-delete not working (2931458)
+   -> Samba: can/must change password needs to be read from domain policy (2919236)
+   -> DNs which include "#" are not editable/deletable (2931461)
+   -> fixed configure/Makefile
+   -> Asterisk input fields and authentication realm (patch 2971792)
+
+
+16.12.2009 2.9.0
+  - Asterisk support
+  - new tool: server information
+  - consolidated LAM documentation in new manual (docs/manual/index.html)
+	- DHCP: add host name to fixed IPs (RFE 2898948)
+	- LAM Pro:
+	 -> enabled custom scripts for self service
+	 -> support for nisObject object class
+  - fixed bugs:
+	 -> unable to edit accounts with DNs that contain spaces next to a comma (2889473)
+	 -> login method "LDAP search" has problems if LDAP server is down (2889414)
+	 -> filter in account lists did not support non-ASCII letters
+	 -> alias handling (2901248)
+	 -> DHCP range check (2903267)
+
+
+28.10.2009 2.8.0
+  - ability to hide fields: inetOrgPerson, sambaSamAccount
+	- compatibility with PHP 5.3
+	- one central button to change passwords on account pages
+	- removed support for Samba 2 accounts
+	- removed lamdaemonOld script
+
+
+05.08.2009 2.7.0
+  - LAM Pro: allow to execute custom scripts
+  - log client IP at login attempt
+  - added separate configuration option to enable/disable TLS encryption
+  - Samba 3: allow to disable LM hashes (on by default) (RFE 2657140)
+  - DHCP: added description field and reordered fixed IP input fields
+  - fixed bugs:
+    * added additional check for creating home directories (2798489)
+		* support memcache for session storage (2811505)
+
+
+08.04.2009 2.6.0
+  - support NIS netgroups
+  - support EDU person accounts (RFE 1413731)
+  - Personal: support departmentNumber attribute
+  - DHCP: allow file upload
+  - added config option to search LAM login users in LDAP (RFE 2494249)
+  - help messages are displayed as tooltips
+  - LAM Pro:
+   -> add businessCategory to self service (RFE 2494246)
+   -> allow to customize page headers and use custom CSS styles
+
+
+21.01.2009 2.5.0
+  - LAM Pro:
+   -> supports rfc2307bis schema for Unix groups (RFE 2111694)
+   -> added alias manangement (object classes alias + uidObject) (RFE 1912779)
+  - Shadow: module is now optional when creating new accounts
+  - Kolab:
+   -> account extension is now optional
+   -> can be used without Unix module
+   -> self service uses no extra LDAP suffix but uses global setting
+  - DHCP:
+   -> several bugfixes
+   -> added PDF support
+   -> support multiple Netbios name servers (RFE 2180179)
+  - Samba 3:
+   -> self service sets attribute "sambaPwdLastSet" on password change (LAM Pro)
+   -> password timestamps can be updated on password reset page (LAM Pro)
+   -> option to force password change on next login
+   -> profile options for time when the user can/must change the password
+
+
+15.10.2008 2.4.0
+  - added DHCP management (donated by Siedl networks GmbH)
+  - requires PHP 5.1.2
+  - MHash dependendy replaced by Hash
+  - save last selected server profile from login page
+  - lamdaemon: allow to specify SSH port
+  - lamdaemon: added Syslog logging
+  - Unix: added profile options for lamdaemon
+  - LAM Pro: password reset page is able to unlock Samba accounts and sets shadowLastChange
+  - fixed bugs:
+    * problems with DN containing ( and ) (2059740)
+    * problem with gecos field in file upload (2103936)
+
+
+30.04.2008 2.3.0
+  - added Polish translation
+  - support phpGroupWare accounts
+  - password policies
+  - redesigned PDF editor
+  - show mail addresses as link in account list
+  - Unix: allow primary group members to be added as memberUid
+  - Kolab: support LAM Pro self service
+  - LAM Pro: new account type for groupOf(Unique)Names
+  - fixed bugs:
+   -> XHTML headers should be removed (1912736)
+
+
+23.01.2008 2.2.0
+  - account lists:
+   -> allow to switch sorting
+   -> added separate configuration page and store settings in cookies
+   -> list size can now be set individually for each account type on the list configuration page
+   -> new PDF buttons
+  - use suffix from account list as default for new accounts (patch 1823583)
+  - Security: passwords in configuration files are now saved as hash values
+  - improved design
+  - style fixes for Internet Explorer users
+  - Unix: allow to set host passwords (RFE 1754069)
+  - Unix: allow to generate random passwords for users
+  - Samba 3 groups: Samba part is now optional
+  - Personal: add object classes person and organizationalPerson for new accounts (RFE 1830033)
+  - new LDAP schema check on tests page
+  - LAM Pro:
+   -> added possibility for deskside support to reset passwords at account list page
+   -> access levels (read only, change passwords, write access) for server profiles
+
+
+07.11.2007 2.1.0
+  - tabular design for account pages
+  - show DN on account pages
+  - Samba 3: made Samba account optional
+  - Samba 3: manages now terminal server settings
+  - fixed bugs:
+   -> LAM Pro: UTF-8 characters are invalid displayed on configuration page (1788752)
+   -> LAM works again on PHP 5.1.x (1792447)
+   -> Quota: managing group quotas does not work (1811728)
+   -> Samba 3 domains: lockout users after bad logon attempts must allow 0 - 999 (1814578)
+
+
+08.08.2007 2.0.0
+  - new translations: Chinese (Simplified), Czech and Portuguese
+  - usability improvements
+  - LDAP accounts including child entries can now be moved
+  - group list can show primary members (RFE 1517679 and patch 1722460)
+  - more translated example texts (RFE 1702140)
+  - inetOrgPerson: now manages homePhone, roomNumber, businessCategory
+  - posixAccount: allow to create home directories in file upload (RFE 1665034)
+  - account lists: display buttons on top and bottom (RFE 1702136)
+  - fixed bugs:
+   -> OU editor: help images (1702132)
+   -> config editor: extra space (1702269)
+   -> fixed some inconsistent help entries (1694863)
+   -> user list: refreshing GID translation did not work (1719168)
+   -> allow uid as RDN attribute for inetOrgPerson (1740499)
+   -> PHP Warning: mcrypt_decrypt(): The IV parameter must be ... (1742543)
+   -> uid attribute no longer required for InetOrgPerson (1757215)
+
+
+28.03.2007 1.3.0
+  - improved design
+  - user list can now display jpegPhoto attributes
+  - lamdaemon: support for multiple servers
+  - LAM Pro: users may change their photos (jpegPhoto)
+  - fixed bugs:
+   -> ShadowAccount: PDF entry for expire date was wrong (1658868)
+   -> Samba groups: fixed help entry (patch 1664542)
+   -> Debian package did not include lamdaemonOld.pl (1660493)
+   -> NIS mail aliases: allow more characters in alias name (1674198)
+   -> fixed syntax errors in some .htaccess files
+   -> security fix: HTML special characters in LDAP data were not escaped
+
+  Developers:
+    API changes:
+    - added listPrintTableCellContent() to class lamList
+    - added listPrintAdditionalOptions() to class lamList
+    - added preModifyActions() to class baseModule
+    - added postModifyActions() to class baseModule
+    - added preDeleteActions() to class baseModule
+    - added postDeleteActions() to class baseModule
+
+
+24.01.2007 1.2.0
+  - Samba 3: better handling of date values
+  - Samba 3: Handling of locked accounts (RFE 1609076)
+  - LAM Pro: modules can define configuration settings (Unix: password hashing)
+  - LAM Pro: management of groupOfNames and groupOfUniqueNames entries (RFE 875482)
+  - fixed bugs:
+   -> Lamdaemon test did not work on PHP 4
+   -> InetOrgPerson: Problems with error messages (1628799)
+
+  Developers:
+    API changes:
+    - removed get_configDescription() from module interface
+    - added functions to handle configuration settings for LAM Pro
+
+
+01.11.2006 1.1.1
+   - Lamdaemon: added test page (Tools -> Tests -> Lamdaemon test)
+   - LAM Pro: Samba passwords can now be synchronized with Unix password
+   - Shadow account: better management of expiration date
+   - fixed bugs:
+    -> Unix: password hashing problem (1562426)
+    -> Unix: No error message for wrong UID numbers in file upload
+    -> Filters in account lists get lost when sorting the table
+
+
+20.09.2006 1.1.0
+   - Lamdaemon now uses the SSH implementation from PECL which is much more stable
+   - Samba 2/3: "Use Unix password" now on by default (1517678)
+
+  Developers:
+    API changes:
+    - removed $post parameters from module functions (delete_attributes(),
+      process_...(), display_html_...()). Use $_POST instead.
+    - process_...() functions: returned messages are no longer grouped
+      (e.g. return: array(array('INFO', 'headline', 'text'), array('INFO', 'headline2', 'text2')))
+
+
+10.08.2006 1.0.4
+   - added Russian translation
+   - Samba 3: added policies for domain objects
+   - inetLocalMailRecipient: print warning if local address is already in use
+
+
+05.07.2006 1.0.3
+   - fixed bugs:
+    -> Kolab: fixed problem with message about missing password
+    -> Unix groups: fixed auto GID
+    -> Unix users/groups: fixed silent unlocking of passwords
+    -> Unix users/groups: removed invalid password option
+    -> Shadow: account expiration date was incorrect in some time zones
+    -> User list: fixed problems when deleting users and translated GIDs are activated (1503367)
+
+
+24.05.2006 1.0.2
+   - security enhancements: session timeout, logging, host restrictions
+   - handle LDAP attribute aliases correctly
+   - fixed bugs:
+    -> PDF creation bug when GID translation is activated (1477111)
+    -> allow "@" in passwords (1477878)
+    -> Samba 2/3: fixed NT hashes
+    -> fixed handling of multi-value attributes (e.g. in inetLocalMailRecipient)
+
+
+12.04.2006 1.0.1
+   - LAM can now be installed with "configure" and "make install"
+   - added workaround for misspelled object classes (e.g. sambaSAMAccount by smbldap-tools)
+   - Unix: merged password hash settings for Unix users and groups
+   - Samba 3: added Windows group to profile options
+   - security: LAM checks the session id and client IP
+   - fixed bugs:
+    -> Samba 3: hash values were wrong in some rare cases (1440021)
+    -> Samba 3: readded time zone selection for logon hours (1407761)
+    -> Unix: call of unknown function (1450464)
+
+
+01.03.2006 1.0.0
+   - new architecture with support for more account types
+   - new translations: Traditional Chinese, Dutch
+   - fixed bugs:
+    -> Samba groups: editing of special groups fixed
+    -> changed check for mail addresses (patch 1403922)
+    -> fixed JPG upload when MCrypt is enabled
+    -> fixed login problems for AD servers
+    -> improved sorting of account lists
+    -> fixed language setting in default configuration profile
+    -> fixed PHP5 warnings (getdate() and mktime())
+    -> error messages in Samba domain module (1437425)
+    -> fixed expired passwords with shadowAccount module
+    -> added lamdaemon.pl compatibility and security patches by Tim Rice
+
+
+08.02.2006 1.0.rc2
+   - new translation: Dutch
+   - fixed bugs:
+    -> changed check for mail addresses (patch 1403922)
+    -> fixed JPG upload when MCrypt is enabled
+    -> fixed login problems for AD servers
+
+
+09.01.2006 1.0.rc1
+   - new architecture with support for more account types
+   - new translation: Traditional Chinese
+   - fixed bugs:
+    -> Samba groups: editing of special groups fixed
+
+
+14.12.2005 0.5.3
+   - accounts are now deleted with subentries
+   - big update for Italian translation
+   - inetOrgPerson: support jpegPhoto images
+   - less restrictive input checks
+   - fixed bugs:
+    -> fixed problems with case-insensitive DNs
+    -> file upload did not work when max_execution_time=0 (1367957)
+    -> posixGroup: fixed help entries
+
+
+16.11.2005 0.5.2
+   - New module for SSH public keys
+   - check file permissions on login page
+   - fixed bugs:
+    -> creation of home directories did not work
+    -> allow spaces in profile names (1333058)
+    -> fixed problem with magic_quotes_gpc in profile editor (1333069)
+    -> inetOrgPerson: deletion of postal address and fax number now works
+
+
+19.10.2005 0.5.1
+   - Samba 3: added support for account expiration
+   - fixed bugs:
+    -> automatic UID/GID assignment did not fully work
+    -> PDF: additional groups for Unix users
+    -> inetOrgPerson: fixed mobile number
+    -> Samba 2/3: passwords fixed for file uploads (1311561)
+    -> Samba 3: fixed logon hours (patch 1311915)
+    -> Samba 3: loading of domain setting from profile did not work
+    -> Quota: profile settings fixed
+    -> reduced memory usage
+
+
+28.09.2005 0.5.0
+   - Samba 2/3: added display name in account pages
+   - fixed bugs:
+    -> fixed error message when creating new accounts with shadowAccount
+    -> added missing help entries on main account page
+    -> Samba 2/3: fixed settings for password expiration, no password and deactivated account
+    -> changing of RDN caused problems in some cases
+
+
+08.09.2005 0.5.rc3
+   - INFO messages no longer prevent changing to subpages of a module
+   - fixed bugs:
+    -> buttons on account page are better sorted
+    -> account module: some problems solved when used for user accounts
+    -> nisMailAlias: fixed missing RDN possibility
+    -> fixed conflicts when accounts were built with other base modules
+    -> Samba 2/3: setting allowed workstations failed
+    -> magic_quotes_gpc = Off prevented editing of accounts
+    -> fixed help links on Samba and Unix pages
+
+
+18.08.2005 0.5.rc2
+   - allow user accounts based only on "account" module
+   - inetOrgPerson: allow setting a password if posixAccount is not active
+   - fixed bugs:
+    -> removed Blowfish encryption (bad performance)
+    -> Kolab now complains if no user password is set
+
+
+08.08.2005 0.5.rc1
+   - Kolab 2 support
+   - added manager and post office box for inetOrgPerson
+   - Samba 3: added support for logon hours
+   - Samba 3: added sambaSID as possible RDN attribute
+   - improved error handling in profile editor
+   - now quotas can be set on CSV upload
+   - new logo
+   - fixed bugs:
+    -> several fixes for PHP5
+    -> fixes for PDF editor and output
+    -> password changing in tree view did not work
+    -> fixed changing of group memberships for users
+
+
+28.07.2005 0.4.10
+  - PHP5 compatibility added
+
+
+30.06.2005 0.5.alpha2
+   - added documentation about schemas
+   - PDF now uses UTF-8 fonts
+   - added possibility to create plain inetOrgPerson accounts
+   - fixed bugs:
+    -> set DN suffix and RDN on profile loading
+    -> several fixes for PDF editor
+    -> creating Samba hosts now works
+
+
+11.05.2005 0.5.alpha1
+  - new modular architecture
+   -> possibility to create Unix-only accounts
+   -> plugins for more objectClasses planned
+   -> enhanced PDF output
+   -> enhanced file upload
+   -> enhanced editor for account profiles
+   -> dynamic configuration options (based on modules)
+  - all pages in UTF-8
+  - added developer documentation
+  - PHPDoc formated comments
+  - new plugin for managing MAC addresses (RFE 926017)
+  - new plugin for managing NIS mail aliases (RFE 1050036)
+  - new plugin for managing mail routing with inetLocalMailRecipient (RFE 1092137)
+  - schema browser
+  - tree view
+
+
+09.03.2005 0.4.9
+  - fixed bugs:
+      fixed error messages when moving an user account
+      fixed problem with special group SIDs
+      lamdaemon.pl security fix
+
+
+26.01.2005 0.4.8
+  - allow "%" at the beginning of Samba home/profile path (1107998)
+  - fixed bugs:
+      fixed IE fix ;-)
+      no more warnings for profiles with no additional groups set
+
+
+19.12.2004 0.4.7
+  - added "*.exe" to Samba logon script regex (1081715)
+  - fixed bugs:
+      fixed doctype of main frame
+      removed syntax check for LDAP suffixes
+      fixed IE bug at login
+      fixed encoding in HTTP header
+      passwords with "'" are now handled correctly at login (1081460)
+      fixed Samba flags if multiple hosts were created
+      updated .htaccess files to be compatible with newer Apache versions
+
+
+26.05.2004 0.4.6
+  - fixed bugs:
+      password hashes were not disabled correctly
+      street was copied to postal code on modify (938502)
+      underscore was not allowed for host names (934445)
+      deleting postal address or facsimile number failed (948616)
+      TLS error handling (958497)
+      smaller fixes on personal settings page
+
+
+21.03.2004 0.4.5
+  - added French translation
+  - fixed bugs:
+      StatusMessages with additional variables did not work
+      Samba hosts had unnecessary objectClass shadowAccount (910084)
+      Samba host passwords were still wrong
+      LAM had problems with non-standard spelled object classes (907636)
+      Perl scripts did not work if Perl is not installed in /usr/bin/perl (913554)
+      problems when cn!=uid (915041)
+      home directories were not deleted by lamdaemon.pl (913552)
+
+
+29.02.2004 0.4.4 (stable)
+  - fixed bugs:
+      plain posix groups could not be used as Samba 3 primary group
+      if magic_quotes_gpc in php.ini is was set to "Off", several pages did not work
+      some smaller bugs in mass upload
+      Samba hash values for hosts were not correct
+      Unix passwords could be disabled but not reenabled
+      fixed problem with eval() in status.inc (894433)
+
+
+08.02.2004 0.4.3
+  - new login layout
+  - added Hungarian and Japanese translations
+  - fixed bugs:
+      Samba paswords were sometimes empty for new users (892272)
+      links in list views may not work with web servers other than Apache
+
+
+21.01.2004 0.4.2
+  - added config wizard
+  - MHash is only needed for PHP < 4.3
+  - use Blowfish for encryption instead of MCrypt
+
+
+29.12.2003 0.4.1
+
+  - better error handling at login
+  - support spaces in DNs
+  - PDF text for users
+  - create missing OUs recursivly
+  - fixed bugs:
+      SMD5 passwords were wrong
+      primaryGroupSID wrong if SID has no relation to Algorithmic RID Base
+      Samba 2 accounts could not be created
+
+
+29.10.2003 0.4 (Beta1)
+
+  - improved design
+  - improved documentation
+  - Fixed possible error which could delete entries if objectclass didn't fit
+  - Fixed many samba 3.0 related bugs, most related to SIDs
+  - edit group members directly
+  - support for several password hashes (CRYPT/SHA/SSHA/MD5/SMD5/PLAIN)
+  - PDF output for groups and hosts
+
+
+31.08.2003 0.3 (Alpha 3)
+
+  - Samba 3 support
+  - manage Samba 3 domains
+  - multiple configuration files
+  - PDF output
+  - better mass creation
+
+
+04.07.2003 0.2 (Alpha 2)
+
+  - support for multiple OUs + OU-Editor
+  - account creation via file upload
+  - profile editor
+  - experimental Samba 3 support
+  - fixed a lot of bugs
+
+
+23.05.2003 0.1 (Alpha 1)
+
+  Initial release

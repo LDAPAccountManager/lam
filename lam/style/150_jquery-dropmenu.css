@@ -1,0 +1,32 @@
+/*	---------------------------------------------------------
+ 
+ 	Essentials
+*/
+.dropmenu { 
+	margin: 0; 
+	padding: 0; 
+	height: 30px;
+}
+
+/* 		All items 			*/
+.dropmenu li a {
+	text-decoration: none;
+}
+.dropmenu li a, 
+.dropmenu li span { 
+	padding: 9px;
+	text-align: left;
+}
+
+
+
+.dropmenu .sublevel {
+ background: #E6E6E6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) repeat-x scroll 50% 50%;
+ border-bottom: 1px solid #888; 
+ border-right: 1px solid #888; 
+ border-left: 1px solid #888; 
+}
+
+.dropmenu .sublevel.hover {
+ background: #E6E6E6 url(images/ui-bg_glass_75_dadada_1x400.png) repeat-x scroll 50% 50%;
+}

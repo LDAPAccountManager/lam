@@ -1,0 +1,11 @@
+#!/bin/bash
+# $Id$
+#
+# Copyright (C) 2003 - 2006  Roland Gruber
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+
+# This script generates a messages.po file for translation from all .inc and .php files.
+
+cp messages.header messages.po
+find ../ -name *.php -exec xgettext --keyword=_ -L PHP -j --omit-header -s {} \;
+find ../ -name *.inc -exec xgettext --keyword=_ -L PHP -j --omit-header -s {} \;
