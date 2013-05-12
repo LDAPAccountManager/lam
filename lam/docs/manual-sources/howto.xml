@@ -2107,6 +2107,10 @@ Have fun!
         <para>Now you can manage your Windows users and e.g. assign
         groups.</para>
 
+        <para><emphasis role="bold">Attention:</emphasis> Password changes
+        require a secure connection via ldaps://. Check your LAM server
+        profile if password changes are refused by the server.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -6107,6 +6111,24 @@ Run slapindex to rebuild the index.
             <entry>samba.schema</entry>
 
             <entry>Part of Samba tarball (examples/LDAP/samba.schema)</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_samba.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Windows AD (Samba 4)</entry>
+
+            <entry>user, group, computer</entry>
+
+            <entry></entry>
+
+            <entry>Samba 4 built-in</entry>
 
             <entry></entry>
           </row>
