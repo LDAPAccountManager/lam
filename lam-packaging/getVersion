@@ -1,0 +1,8 @@
+#!/usr/bin/php
+<?php
+$file = fopen("lam/VERSION", "r");
+$line = fgets($file, 100);
+$line = trim($line);
+echo $line;
+exit;
+?>

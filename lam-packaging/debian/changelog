@@ -1,0 +1,565 @@
+ldap-account-manager (4.2.RC1-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 12 May 2013 10:35:28 +0200
+
+ldap-account-manager (4.1-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 18 Mar 2013 19:34:52 +0100
+
+ldap-account-manager (4.0.1-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 05 Jan 2013 16:20:28 +0100
+
+ldap-account-manager (4.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 17 Dec 2012 19:41:29 +0100
+
+ldap-account-manager (3.9-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 24 Sep 2012 19:15:30 +0200
+
+ldap-account-manager (3.8-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 15 Jul 2012 18:32:28 +0200
+
+ldap-account-manager (3.7-2) unstable; urgency=low
+
+  * Fix "[INTL:pl] Polish debconf translation" (Closes: #667086)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 10 Jun 2012 14:17:33 +0200
+
+ldap-account-manager (3.7.1-1) unstable; urgency=low
+
+  * new upstream release
+  * Fix "[INTL:pl] Polish debconf translation" (Closes: #667086)
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 18 Apr 2012 19:41:19 +0200
+
+ldap-account-manager (3.7-1) unstable; urgency=low
+
+  * new upstream release
+  * Fix "[INTL:nl] Dutch translation of debconf templates" (Closes: #658463)
+  * Fix "[INTL:da] Danish translation of the debconf templates ldap-
+    account-manager" (Closes: #661950)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 25 Mar 2012 11:00:20 +0200
+
+ldap-account-manager (3.6-2) unstable; urgency=high
+
+  * Fix "Multiple vulnerabilities"
+    Replace special characters in HTML output. (Closes: #661904)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Mar 2012 21:41:05 +0100
+
+ldap-account-manager (3.6.1-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 25 Nov 2011 16:24:37 +0100
+
+ldap-account-manager (3.6-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 19 Nov 2011 10:05:48 +0100
+
+ldap-account-manager (3.5.0-1) unstable; urgency=low
+
+  * new upstream release
+  * updated to Debian policy 3.9.2
+  * reincluded JQuery libs into package because LAM is very version specific
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 08 Aug 2011 17:49:29 +0200
+
+ldap-account-manager (3.4.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 25 Apr 2011 15:57:08 +0200
+
+ldap-account-manager (3.3.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 12 Feb 2011 13:37:32 +0100
+
+ldap-account-manager (3.2.0-1) unstable; urgency=low
+
+  * new upstream release
+  * updated to Debian policy 3.9.1
+  * Fix "Package unremovable"
+    Removed "set -e" for debconf calls (Closes: #601706)
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 28 Oct 2010 20:15:13 +0200
+
+ldap-account-manager (3.1.1-1) unstable; urgency=low
+
+  * fixed LAM Pro self service
+  * updated to Debian policy 3.9.0
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Jul 2010 15:26:15 +0200
+
+ldap-account-manager (3.1.0-2) testing-proposed-updates; urgency=high
+
+  * updated to Debian policy 3.9.1
+  * Backported fix to be compatible with php-fpdf again from 3.2.0-1
+  * Backported some fixes in postinst/rules from 3.2.0-1
+  * Fix "Package unremovable"
+    Removed "set -e" for debconf calls (Closes: #601706)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 21 Nov 2010 12:44:12 +0100
+
+ldap-account-manager (3.1.0-1) unstable; urgency=low
+
+  * new upstream release
+  * Switch to dpkg-source 3.0 (quilt) format
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 25 Jun 2010 16:52:41 +0200
+
+ldap-account-manager (3.0.0-2) unstable; urgency=low
+
+  * Fix "prompting due to modified conffiles which where not modified by
+    the user" Removed question about configuration password.
+    (Closes: #582020)
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 03 Jun 2010 10:47:22 +0200
+
+ldap-account-manager (3.0.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 21 Mar 2010 18:32:14 +0100
+
+ldap-account-manager (2.9.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 16 Dec 2009 19:26:14 +0100
+
+ldap-account-manager (2.8.0-1) unstable; urgency=low
+
+  * new upstream release
+  * Fix "[INTL:fr] French debconf templates translation update"
+    updated translation (Closes: #540505)
+  * Fix "[INTL:ru] Russian debconf templates translation"
+    added translation (Closes: #543182)
+  * Fix "[INTL:ja] Update po-debconf template translation (ja.po)"
+    added translation (Closes: #545404)
+  * Fix "[INTL:vi] Vietnamese debconf templates translation update"
+    added translation (Closes: #548018)
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 27 Oct 2009 19:29:37 +0100
+
+ldap-account-manager (2.7.0-1) unstable; urgency=low
+
+  * new upstream release
+  * Fix "[INTL:sv] Swedish strings for ldap-account-manager debconf"
+    updated translation (Closes: #539208)
+  * Fix "[l10n] Updated Czech translation of ldap-account-manager
+    debconf messages"
+		updated translation (Closes: #539437)
+  * Fix "[INTL:it] Italian debconf templates translation" 
+	  updated translation (Closes: #539501)
+  * Fix "[INTL:es] Spanish debconf template translation for  ldap-
+    account-manager"
+		updated translation (Closes: #539645)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 02 Aug 2009 19:06:04 +0200
+
+ldap-account-manager (2.6.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 4 Apr 2009 19:38:50 +0100
+
+ldap-account-manager (2.5.0-1) unstable; urgency=low
+
+  * new upstream release
+  * [INTL:ja] Update po-debconf template translation (ja.po) (Closes:
+    #510706)
+  * [INTL:es] Spanish debconf template translation for ldap-account-
+    manager (Closes: #511917)
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 15 Jan 2009 20:06:43 +0100
+
+ldap-account-manager (2.4.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 13 Oct 2008 19:47:20 +0200
+
+ldap-account-manager (2.3.0-1) unstable; urgency=low
+
+  * Installation fails if php4 is not installed (Closes: #471953)
+  * password quality checking (Closes: #462336)
+
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 28 Apr 2008 16:44:55 +0200
+
+ldap-account-manager (2.2.0-2) unstable; urgency=low
+
+  * overwrites config files on upgrade (Closes: #462192)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 16 Feb 2008 12:31:38 +0100
+
+ldap-account-manager (2.2.0-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 20 Jan 2008 18:44:10 +0100
+
+ldap-account-manager (2.1.0-1) unstable; urgency=low
+
+  * new upstream release
+  * debian/watch fails to report upstream version (Closes:
+    #450281)
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 07 Nov 2007 18:48:59 +0100
+
+ldap-account-manager (2.0.0-1) unstable; urgency=low
+
+  * New upstream release
+  * LAM no longer supports PHP4
+  * ldap-account-manager has wrong dependencies on php5 (Closes:
+    #427551)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 6 Aug 2007 15:21:24 +0200
+
+ldap-account-manager (1.3.0-2) unstable; urgency=low
+
+  * depends on non-essential package debconf in postrm (Closes: #416886)
+  * [INTL:nl] Dutch po-debconf translation (Closes: #421409)
+  * [INTL:it] Italian debconf templates translation (Closes: #422914)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 24 Jun 2007 11:58:00 +0200
+
+ldap-account-manager (1.3.0-1) unstable; urgency=low
+
+  * New upstream release
+  * quoting of user description field broken (Closes: #415379)
+  * [INTL:pt] Portuguese translation for debconf messages (Closes:
+    #414374)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 26 Mar 2007 20:30:52 +0100
+
+ldap-account-manager (1.2.0-1) unstable; urgency=low
+
+  *  New upstream release (1.2.0)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 14 Jan 2007 19:05:33 +0100
+
+ldap-account-manager (1.1.1-2) testing; urgency=high
+
+  * security fix
+  * quoting of user description field broken (Closes: #415379)
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 21 Mar 2007 14:11:42 +0100
+
+ldap-account-manager (1.1.1-1) unstable; urgency=medium
+
+  * new upstream release
+  * [l10n] Updated Czech translation of ldap-account-manager debconf
+    mesages (Closes: #389624)
+  * urgency set to medium to get 1.1.1 into Etch
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 22 Oct 2006 20:30:19 +0200
+
+ldap-account-manager (1.1.0-1) unstable; urgency=low
+
+  * New upstream release (1.1.0)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat,  9 Sep 2006 13:50:43 +0200
+
+ldap-account-manager (1.0.4-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 30 Jul 2006 14:36:16 +0200
+
+ldap-account-manager (1.0.3-1) unstable; urgency=high
+
+  * Updated to new upstream release.
+  * Account expiration date wierdness (Closes: #368806)
+  * Incorrect display of password encryption (Closes: #368805)
+  * [intl:fr] ldap-account-manager debconf templates translation
+    (Closes: #373181)
+  * Invalid/Lock password auto reverts (Closes: #375453)
+  * Invalid/Lock password options conflict (Closes: #375452)
+  * Ack NMU. (Closes: #368804)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon,  3 Jul 2006 22:01:54 +0200
+
+ldap-account-manager (1.0.2-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Make the "Invalid password" option set the hash to "{CRYPT}*" (which is an
+    invalid hash) instead of "*" (which means the plaintext password "*").
+    (Closes: #368804)
+
+ -- Steinar H. Gunderson <sesse@debian.org>  Thu, 15 Jun 2006 22:20:21 +0200
+
+ldap-account-manager (1.0.2-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 14 May 2006 14:00:29 +0200
+
+ldap-account-manager (1.0.1-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+  * [intl:fr] ldap-account-manager debconf template translation (Closes:
+    #356839)
+  * [l10n] Updated Czech translation of ldap-account-manager debconf
+    messages (Closes: #360951)
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed,  5 Apr 2006 19:43:05 +0200
+
+ldap-account-manager (1.0.0-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+  * Please consider adding php5 on dependecies (Closes: #351683)
+
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 21 Feb 2006 19:53:41 +0100
+
+ldap-account-manager (1.0.rc2-1) experimental; urgency=low
+
+  * Updated to new upstream release.
+  * [INTL:pt_BR] Brazilian Portuguese debconf templates translation
+    (Closes: #348624)
+  * [INTL:sv] Swedish debconf templates translation (Closes: #348922)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 22 Jan 2006 12:58:46 +0100
+
+ldap-account-manager (1.0.rc1-1) experimental; urgency=low
+
+  * Updated to new upstream release.
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon,  9 Jan 2006 15:42:17 +0100
+
+ldap-account-manager (0.5.3-1) unstable; urgency=low
+
+  * Updated to new upstream release 0.5.3.
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon,  5 Dec 2005 20:09:40 +0100
+
+ldap-account-manager (0.5.2-1) unstable; urgency=low
+
+  * Updated to new upstream release 0.5.2.
+  * [intl:fr] ldap-account-manager debconf templates translation
+    (Closes: #338372)
+  * Debconf templates do not follow Developer's Reference
+    recommendations (Closes: #335646)
+  * [l10n] Initial Czech translation of ldap-account-manager debconf
+    messages (Closes: #338840)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 13 Nov 2005 15:08:20 +0100
+
+ldap-account-manager (0.5.1-1) unstable; urgency=low
+
+  * Updated to new upstream release 0.5.1.
+  * Experiencing long delays on session_start (Closes: #332908)
+  * ldap-account-manager depends on debconf without | debconf-2.0
+    alternate; blocks cdebconf transition (Closes: #331886)
+  * Configuration wizard fails silently when samba.schema is not present
+    (Closes: #332868)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 16 Oct 2005 13:27:55 +0200
+
+ldap-account-manager (0.5.0-1) unstable; urgency=low
+
+  * Updated to new upstream release 0.5.0.
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 26 Sep 2005 13:58:33 +0200
+
+ldap-account-manager (0.4.10+0.5.rc3-1) experimental; urgency=low
+
+  * Updated to new upstream release 0.5.rc3.
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu,  8 Sep 2005 14:14:40 +0200
+
+ldap-account-manager (0.4.10+0.5.rc2-1) experimental; urgency=low
+
+  * Updated to new upstream release 0.5.rc2.
+
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 16 Aug 2005 14:10:37 +0200
+
+ldap-account-manager (0.4.10+0.5.rc1-1) experimental; urgency=low
+
+  * Updated to new upstream release 0.5.rc1
+  * Closes: #273403: Includes a copy of fpdf which is part of php-fpdf
+    package
+  * Closes: #308829: Configure for apache2
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon,  8 Aug 2005 16:39:22 +0200
+
+ldap-account-manager (0.4.10-2) unstable; urgency=low
+
+  * fixed debconf dependency
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed,  3 Aug 2005 15:25:29 +0200
+
+ldap-account-manager (0.4.10-1) unstable; urgency=low
+
+  * Updated to new upstream release 0.4.10.
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 27 Jul 2005 11:39:53 +0200
+
+ldap-account-manager (0.4.9+0.5.alpha2-1) experimental; urgency=low
+
+  * Updated to new upstream release 0.5.alpha2
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 29 Jun 2005 20:04:11 +0200
+
+ldap-account-manager (0.4.9+0.5.alpha1-1) experimental; urgency=low
+
+  * Updated to new upstream release 0.5.alpha1
+  * Added configuration options for Apache2
+  * Added template for webserver restart
+  * Translatable templates 
+
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 10 May 2005 11:38:00 +0200
+
+ldap-account-manager (0.4.9-3) stable; urgency=high
+
+  * security fix
+  * quoting of user description field broken (Closes: #415379)
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 21 Mar 2007 16:07:55 +0100
+
+ldap-account-manager (0.4.9-2) unstable; urgency=low
+
+  * Closes: #300007: fixed typo
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu,  17 Mar 2005 19:20:29 +0100
+
+ldap-account-manager (0.4.9-1) unstable; urgency=low
+
+  * Updated to new upstream release
+  * Closes: #296498: added documentation for samba.schema
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed,  2 Mar 2005 19:52:29 +0100
+
+ldap-account-manager (0.4.8-1) unstable; urgency=low
+
+  * Updated to new upstream version 0.4.8.
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 23 Jan 2005 20:03:36 +0100
+
+ldap-account-manager (0.4.7-1) unstable; urgency=low
+
+  * Updated to new upstream version 0.4.7.
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 16 Dec 2004 21:06:58 +0100
+
+ldap-account-manager (0.4.6-3) unstable; urgency=low
+
+  * Closes: #281781: syntax error in apache.conf fixed
+  * added watch file
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 21 Nov 2004 13:18:43 +0100
+
+ldap-account-manager (0.4.6-2) unstable; urgency=low
+
+  * Added template to change master configuration password.
+  * Closes: #257137: Interface configuration has a default password
+  * Closes: #260733: expanded PHP dependency with libapache2-mod-php4
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 23 Jul 2004 14:50:56 +0200
+
+ldap-account-manager (0.4.6-1) unstable; urgency=low
+
+  * Updated to new upstream version 0.4.6.
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 20 May 2004 19:37:53 +0200
+
+ldap-account-manager (0.4.5-1) unstable; urgency=low
+
+  * Updated to new upstream version 0.4.5.
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat, 20 Mar 2004 16:52:00 +0100
+
+ldap-account-manager (0.4.4-1) unstable; urgency=low
+
+  * Updated to new upstream version (0.4.4)
+  * Closes: #232820: config/shells is no longer a symbolic link
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 25 Feb 2004 21:07:36 +0100
+
+ldap-account-manager (0.4.3-1) unstable; urgency=low
+
+  * Updated to new upstream version (0.4.3)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun,  8 Feb 2004 17:15:47 +0100
+
+ldap-account-manager (0.4.2-1) unstable; urgency=low
+
+  * Updated to new upstream version (0.4.2)
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 15 Jan 2004 16:22:15 +0100
+
+ldap-account-manager (0.4.1-1) unstable; urgency=low
+
+  * Updated to new upstream version (0.4.1)
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 29 Dec 2003 21:19:27 +0100
+
+ldap-account-manager (0.4-4) unstable; urgency=low
+
+  * added debconf template for alias name
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 16 Nov 2003 16:03:55 +0100
+
+ldap-account-manager (0.4-3) unstable; urgency=low
+
+  * copied access control from .htaccess files to apache.conf
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat,  1 Nov 2003 13:22:56 +0100
+
+ldap-account-manager (0.4-2) unstable; urgency=low
+
+  * fixed error in postinst script
+  * added dependency php4-mhash
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 30 Oct 2003 16:19:45 +0100
+
+ldap-account-manager (0.4-1) unstable; urgency=low
+
+  * Updated to Beta 1 release (0.4)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 13 Oct 2003 20:23:29 +0200
+
+ldap-account-manager (0.3-1) unstable; urgency=low
+
+  * Updated to Alpha 3 Release.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Fri,  29 August 2003 17:04:00 +0200
+
+ldap-account-manager (0.2-1) unstable; urgency=low
+
+  * Updated to Alpha 2 Release.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Sat,  2 July 2003 18:42:00 +0200
+
+ldap-account-manager (0.1-2) unstable; urgency=low
+
+  * Fixed missing directory config/profiles/groups.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Sat,  4 June 2003 18:19:00 +0200
+
+ldap-account-manager (0.1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Sat,  3 May 2003 21:14:23 +0200
+
