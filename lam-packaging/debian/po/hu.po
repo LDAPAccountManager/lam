@@ -10,32 +10,34 @@
 #         or http://www.debian.org/intl/l10n/po-debconf/README-trans
 #
 #    Developers do not need to manually edit POT or PO files.
+# Dr. Nagy Elemér Károly <eknagy@omikk.bme.hu>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: LAM 0.4.2\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
 "POT-Creation-Date: 2010-06-03 12:36+0200\n"
-"PO-Revision-Date: 2005-08-25 23:12+0100\n"
-"Last-Translator: Kakasy Gergely <kakasy@citromail.hu>\n"
-"Language-Team: Hungarian <LL@li.org>\n"
+"PO-Revision-Date: 2013-05-14 18:57+0200\n"
+"Last-Translator: Dr. Nagy Elemér Károly <eknagy@omikk.bme.hu>\n"
+"Language-Team: Hungarian <debian-l10n-hungarian@lists.d.o>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: UTF-8\n"
 "X-Poedit-Language: Hungarian\n"
 "X-Poedit-Country: HUNGARY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: ???\n"
 
 #. Type: multiselect
 #. Description
 #: ../templates:1001
 msgid "Web server configuration:"
-msgstr ""
+msgstr "Web szolgáltató beállítás:"
 
 #. Type: multiselect
 #. Description
 #: ../templates:1001
-#, fuzzy
 #| msgid ""
 #| "LDAP Account Manager supports any webserver that supports PHP4, but this "
 #| "automatic configuration process only supports Apache and Apache2. If you "
@@ -46,40 +48,39 @@ msgid ""
 "automatic configuration process only supports Apache2. If you choose to "
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"Az LDAP Account Manager bármely olyan webszervert támogat, ameiyik a PHP4-et "
-"támogatja, de ez az automatikus beállítási művelet csak az Apache-ot és az "
-"Apache2-t támogatja. Ha az Apache2 beállítását választja, akkor a LAM-ot a "
-"http(s)://localhost/lam címen érheti el."
+"Az LDAP Account Manager bármely PHP5-képes webszervert támogat, de az "
+"automatikus beállítási művelet csak az Apache2-ben támogatott. Ha az Apache2 "
+"beállítását választja, akkor a LAM-ot a http(s)://localhost/lam címen érheti "
+"el."
 
 #. Type: string
 #. Description
 #: ../templates:2001
 msgid "Alias name:"
-msgstr ""
+msgstr "Alias:"
 
 #. Type: string
 #. Description
 #: ../templates:2001
-#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"A LAM egy alias-t ad az Ön httpd.conf file-jához, ezzel lehetővé téve, hogy "
-"elérhesse a LAM-ot a http(s)://localhost/lam címen. Ha a \"lam\"-on kívül "
-"más alias-t is szeretne, kérem, itt adja meg."
+"A LAM egy aliast rak a httpd.conf fájlodba, és így elérheted a LAM-ot a http"
+"(s)://localhost/lam címen. Választhatsz másik aliast a \"lam\" helyett."
 
 #. Type: boolean
 #. Description
 #: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
-msgstr "Szeretné a webszerver(eket) most újraindítani?"
+msgstr "Szeretnéd most újraindítani a webszervert?"
 
 #. Type: boolean
 #. Description
 #: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
+"A webszerveredet újra kell indítanod a változások érvénybe léptetéséhez."
 
 #, fuzzy
 #~ msgid "Master configuration password (clear text):"
