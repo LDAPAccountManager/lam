@@ -1429,64 +1429,10 @@ Have fun!
     LDAP entries in your directory.</para>
 
     <para>Please note that not all account types are manageable with the free
-    LAM release. LAM Pro provides some more account types and modules to
-    support additional LDAP object classes.</para>
-
-    <para><emphasis role="bold">Additional types:</emphasis></para>
-
-    <itemizedlist>
-      <listitem>
-        <para>Group of names</para>
-      </listitem>
-
-      <listitem>
-        <para>Aliases</para>
-      </listitem>
-
-      <listitem>
-        <para>NIS objects</para>
-      </listitem>
-
-      <listitem>
-        <para>Sudo roles</para>
-      </listitem>
-    </itemizedlist>
-
-    <para><emphasis role="bold">Additional modules:</emphasis></para>
-
-    <itemizedlist>
-      <listitem>
-        <para>Group of names (groupOfNames)</para>
-      </listitem>
-
-      <listitem>
-        <para>Group of unique names (groupOfUniqueNames)</para>
-      </listitem>
-
-      <listitem>
-        <para>Unix (rfc2307bisPosixGroup)</para>
-      </listitem>
-
-      <listitem>
-        <para>Alias (aliasEntry)</para>
-      </listitem>
-
-      <listitem>
-        <para>User name (uidObject)</para>
-      </listitem>
-
-      <listitem>
-        <para>NIS object (nisObject)</para>
-      </listitem>
-
-      <listitem>
-        <para>Custom scripts (customScripts)</para>
-      </listitem>
-
-      <listitem>
-        <para>Sudo role (sudoRole)</para>
-      </listitem>
-    </itemizedlist>
+    LAM release. LAM Pro provides some more account types (e.g. group of
+    names, aliases, ...) and modules (e.g. Zarafa, custom scripts, ...) to
+    support additional LDAP object classes. All LAM Pro features are marked in
+    this manual.</para>
 
     <para><emphasis role="bold">Basic page layout:</emphasis></para>
 
@@ -1539,6 +1485,151 @@ Have fun!
         </imageobject>
       </mediaobject>
     </screenshot>
+
+    <section>
+      <title>Typical usage scenarios</title>
+
+      <para>Here is a list of typical usage scenarios and what account types
+      and modules you need to configure.</para>
+
+      <para><emphasis role="bold">Address book entries:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Unix accounts:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Unix)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix (posixGroup))</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Suse users may need to use Group (Group of names + Unix
+      (rfc2307bisPosixGroup)) because of Suse's special LDAP schema.</para>
+
+      <para><emphasis role="bold">Samba 3 accounts:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + User + Samba 3)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix + Samba 3)</para>
+        </listitem>
+
+        <listitem>
+          <para>Hosts (Account + Unix + Samba 3)</para>
+        </listitem>
+
+        <listitem>
+          <para>Samba domains (Samba domain)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Samba 4:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Windows)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Windows)</para>
+        </listitem>
+
+        <listitem>
+          <para>Hosts (Windows)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Please note that must change the attributes that are shown in the
+      account lists. Otherwise, the account tables will show empty lines. See
+      the documentation for the Windows user/group/host modules.</para>
+
+      <para>For Samba 4 with Zarafa use the following modules:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Windows + Zarafa (+ Zarafa contact))</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Windows + Zarafa)</para>
+        </listitem>
+
+        <listitem>
+          <para>Hosts (Windows + Zarafa)</para>
+        </listitem>
+
+        <listitem>
+          <para>Zarafa dynamic groups (Zarafa dynamic group)</para>
+        </listitem>
+
+        <listitem>
+          <para>Zarafa address lists (Zarafa address list)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>See also the <link linkend="s_zarafa">Zarafa</link> section for
+      additional settings (e.g. using Zarafa AD schema).</para>
+
+      <para><emphasis role="bold">Asterisk:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Asterisk)</para>
+        </listitem>
+
+        <listitem>
+          <para>Asterisk extensions (Asterisk extension)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Zarafa:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Unix + Zarafa (+ Zarafa contact))</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix + Zarafa)</para>
+        </listitem>
+
+        <listitem>
+          <para>Zarafa dynamic groups (Zarafa dynamic group)</para>
+        </listitem>
+
+        <listitem>
+          <para>Zarafa address lists (Zarafa address list)</para>
+        </listitem>
+
+        <listitem>
+          <para>Hosts (Device + Zarafa + IP Address)</para>
+        </listitem>
+      </itemizedlist>
+    </section>
 
     <section>
       <title>Users</title>
@@ -3093,7 +3184,7 @@ Have fun!
       </screenshot>
     </section>
 
-    <section>
+    <section id="s_zarafa">
       <title>Zarafa (LAM Pro)</title>
 
       <para>Zarafa is an OpenSource collaboration software. LAM Pro provides
@@ -4263,102 +4354,6 @@ Run slapindex to rebuild the index.
       <para><emphasis role="bold">Show internal attributes:</emphasis> Shows
       internal attributes of the current entry. This includes information
       about the creator and creation time of the entry.</para>
-    </section>
-
-    <section>
-      <title>Typical usage scenarios</title>
-
-      <para>Here is a list of typical usage scenarios and what account types
-      and modules you need to configure.</para>
-
-      <para><emphasis role="bold">Address book entries:</emphasis></para>
-
-      <para>Account types:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Users (Personal)</para>
-        </listitem>
-      </itemizedlist>
-
-      <para><emphasis role="bold">Unix accounts:</emphasis></para>
-
-      <para>Account types:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Users (Personal + Unix)</para>
-        </listitem>
-
-        <listitem>
-          <para>Groups (Unix (posixGroup))</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Suse users may need to use Group (Group of names + Unix
-      (rfc2307bisPosixGroup)) because of Suse's special LDAP schema.</para>
-
-      <para><emphasis role="bold">Samba accounts:</emphasis></para>
-
-      <para>Account types:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Users (Personal + User + Samba 3)</para>
-        </listitem>
-
-        <listitem>
-          <para>Groups (Unix + Samba 3)</para>
-        </listitem>
-
-        <listitem>
-          <para>Hosts (Account + Unix + Samba 3)</para>
-        </listitem>
-
-        <listitem>
-          <para>Samba domains (Samba domain)</para>
-        </listitem>
-      </itemizedlist>
-
-      <para><emphasis role="bold">Asterisk:</emphasis></para>
-
-      <para>Account types:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Users (Personal + Asterisk)</para>
-        </listitem>
-
-        <listitem>
-          <para>Asterisk extensions (Asterisk extension)</para>
-        </listitem>
-      </itemizedlist>
-
-      <para><emphasis role="bold">Zarafa:</emphasis></para>
-
-      <para>Account types:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Users (Personal + Unix + Zarafa (+ Zarafa contact))</para>
-        </listitem>
-
-        <listitem>
-          <para>Groups (Unix + Zarafa)</para>
-        </listitem>
-
-        <listitem>
-          <para>Zarafa dynamic groups (Zarafa dynamic group)</para>
-        </listitem>
-
-        <listitem>
-          <para>Zarafa address lists (Zarafa address list)</para>
-        </listitem>
-
-        <listitem>
-          <para>Hosts (Device + Zarafa + IP Address)</para>
-        </listitem>
-      </itemizedlist>
     </section>
   </chapter>
 
