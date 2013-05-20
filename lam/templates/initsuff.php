@@ -74,6 +74,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 				$dn = $suff;
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
 					$fail[] = $suff;
+					$error[] = ldap_error($_SESSION['ldap']->server());
 					continue;
 				}
 			}
