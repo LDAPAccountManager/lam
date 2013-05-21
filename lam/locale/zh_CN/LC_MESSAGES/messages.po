@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LAM 1.3\n"
-"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
+"Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
 "PO-Revision-Date: 2013-05-14 01:28+0800\n"
 "Last-Translator: Alan Needham <needham@sina.com>\n"
@@ -468,9 +468,9 @@ msgstr ""
 msgid "Account was created successfully."
 msgstr "新增帐号成功"
 
-#: ../templates/lists/changePassword.php:668
-#: ../templates/lists/changePassword.php:720
-#: ../templates/lists/changePassword.php:766 ../lib/modules.inc:1284
+#: ../templates/lists/changePassword.php:673
+#: ../templates/lists/changePassword.php:725
+#: ../templates/lists/changePassword.php:771 ../lib/modules.inc:1284
 msgid "Account was modified successfully."
 msgstr "帐号修改成功"
 
@@ -483,6 +483,7 @@ msgid "Activate DynDNS"
 msgstr "活动的动态DNS"
 
 #: ../templates/config/confmain.php:243
+#: ../templates/selfService/adminMain.php:413
 msgid "Activate TLS"
 msgstr "激活TLS"
 
@@ -540,9 +541,10 @@ msgstr "激活帐号类型"
 #: ../templates/serverInfo.php:307 ../templates/serverInfo.php:384
 #: ../templates/config/profmanage.php:251
 #: ../templates/config/confmodules.php:295
-#: ../templates/config/conftypes.php:223 ../templates/pdfedit/pdfpage.php:561
-#: ../templates/pdfedit/pdfpage.php:571 ../templates/pdfedit/pdfpage.php:581
-#: ../templates/pdfedit/pdfpage.php:595
+#: ../templates/config/conftypes.php:223
+#: ../templates/selfService/profManage.php:209
+#: ../templates/pdfedit/pdfpage.php:561 ../templates/pdfedit/pdfpage.php:571
+#: ../templates/pdfedit/pdfpage.php:581 ../templates/pdfedit/pdfpage.php:595
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1206
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1210
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:78
@@ -656,7 +658,7 @@ msgstr "为DNS增加一个固定的IP地址"
 msgid "Add host extension"
 msgstr "增加 host 扩展"
 
-#: ../help/help.inc:210
+#: ../templates/selfService/adminMain.php:550 ../help/help.inc:210
 msgid "Add input field"
 msgstr "增加输入栏目"
 
@@ -690,7 +692,7 @@ msgstr "新增binary属性."
 msgid "Add new field"
 msgstr "增加新域"
 
-#: ../help/help.inc:208
+#: ../templates/selfService/adminMain.php:542 ../help/help.inc:208
 msgid "Add new group"
 msgstr "新增组"
 
@@ -717,7 +719,9 @@ msgid "Add photo"
 msgstr "新增照片"
 
 #: ../templates/config/profmanage.php:239
-#: ../templates/config/profmanage.php:252 ../help/help.inc:124
+#: ../templates/config/profmanage.php:252
+#: ../templates/selfService/profManage.php:202
+#: ../templates/selfService/profManage.php:210 ../help/help.inc:124
 msgid "Add profile"
 msgstr "增加配置文件"
 
@@ -741,7 +745,7 @@ msgstr "添加中"
 msgid "Adding the range failed because errors occured."
 msgstr "因为发生了错误致使增加范围失败"
 
-#: ../help/help.inc:214
+#: ../templates/selfService/adminMain.php:460 ../help/help.inc:214
 msgid "Additional CSS links"
 msgstr "附加的CSS连接"
 
@@ -886,7 +890,8 @@ msgstr "别名"
 msgid "All accounts (%s)"
 msgstr "所有帐号 %s:"
 
-#: ../templates/initsuff.php:157
+#: ../templates/selfService/selfServiceMain.php:349
+#: ../templates/initsuff.php:158
 msgid "All changes were successful."
 msgstr "修改成功."
 
@@ -917,6 +922,10 @@ msgstr "允许改变密码"
 #: ../lib/modules/sambaSamAccount.inc:1890
 msgid "Allow terminal server login"
 msgstr "允许终端服务登录"
+
+#: ../templates/selfService/adminMain.php:522
+msgid "Allow user input for this field."
+msgstr "允许用户在此域输入。"
 
 #: ../lib/modules/asteriskAccount.inc:194
 #: ../lib/modules/asteriskAccount.inc:287
@@ -1309,6 +1318,9 @@ msgstr "返回列表"
 #: ../templates/config/index.php:133 ../templates/config/conflogin.php:117
 #: ../templates/config/conflogin.php:196 ../templates/config/mainlogin.php:122
 #: ../templates/config/mainlogin.php:176
+#: ../templates/selfService/selfServiceSP.php:120
+#: ../templates/selfService/adminLogin.php:114
+#: ../templates/selfService/adminLogin.php:191
 msgid "Back to login"
 msgstr "返回到登录界面"
 
@@ -1318,6 +1330,8 @@ msgstr "返回到策略列表"
 
 #: ../templates/config/profmanage.php:188
 #: ../templates/config/profmanage.php:324
+#: ../templates/selfService/profManage.php:144
+#: ../templates/selfService/profManage.php:262
 msgid "Back to profile login"
 msgstr "返回到配置文件登录"
 
@@ -1561,10 +1575,14 @@ msgstr "可能呼叫转移"
 #: ../templates/config/confmodules.php:227
 #: ../templates/config/confmain.php:452
 #: ../templates/config/moduleSettings.php:238
-#: ../templates/config/conftypes.php:321 ../templates/pdfedit/pdfpage.php:603
-#: ../templates/pdfedit/pdfmain.php:195 ../templates/pdfedit/pdfmain.php:202
-#: ../templates/pdfedit/pdfmain.php:208 ../templates/delete.php:121
-#: ../templates/profedit/profilepage.php:241
+#: ../templates/config/conftypes.php:321
+#: ../templates/selfService/profManage.php:211
+#: ../templates/selfService/profManage.php:227
+#: ../templates/selfService/profManage.php:240
+#: ../templates/selfService/adminMain.php:663
+#: ../templates/pdfedit/pdfpage.php:603 ../templates/pdfedit/pdfmain.php:195
+#: ../templates/pdfedit/pdfmain.php:202 ../templates/pdfedit/pdfmain.php:208
+#: ../templates/delete.php:121 ../templates/profedit/profilepage.php:241
 #: ../templates/profedit/profilemain.php:197
 #: ../templates/profedit/profilemain.php:203
 #: ../templates/profedit/profilemain.php:209
@@ -1573,7 +1591,7 @@ msgstr "可能呼叫转移"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:136
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:121
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:119
-#: ../templates/initsuff.php:189 ../lib/types/automountType.inc:234
+#: ../templates/initsuff.php:190 ../lib/types/automountType.inc:234
 #: ../lib/types/user.inc:304 ../lib/modules/mitKerberos.inc:691
 #: ../lib/modules/qmailUser.inc:914 ../lib/modules/zarafaContact.inc:380
 #: ../lib/modules/windowsHost.inc:219 ../lib/modules/zarafaGroup.inc:449
@@ -1592,7 +1610,13 @@ msgid "Cancel"
 msgstr "取消"
 
 #: ../templates/login.php:558 ../templates/login.php:616
-#: ../templates/login.php:621 ../lib/modules/selfRegistration.inc:588
+#: ../templates/login.php:621
+#: ../templates/selfService/selfServiceLogin.php:106
+#: ../templates/selfService/selfServiceLogin.php:142
+#: ../templates/selfService/selfServiceLogin.php:147
+#: ../templates/selfService/selfServiceMain.php:168
+#: ../templates/selfService/selfServiceMain.php:182
+#: ../lib/modules/selfRegistration.inc:588
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "无法连接指定的LDAP服务器,请再试一次."
 
@@ -1611,6 +1635,10 @@ msgstr "不能修改配额"
 msgid "Capacity"
 msgstr "容量"
 
+#: ../templates/selfService/adminMain.php:461
+msgid "Captions and labels"
+msgstr "标题和标签"
+
 #: ../lib/modules/inetOrgPerson.inc:144 ../lib/modules/inetOrgPerson.inc:340
 #: ../lib/modules/inetOrgPerson.inc:592 ../lib/modules/inetOrgPerson.inc:662
 #: ../lib/modules/inetOrgPerson.inc:856 ../lib/modules/inetOrgPerson.inc:1907
@@ -1626,6 +1654,7 @@ msgstr "欧洲中央时间,巴黎,柏林"
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "中央时间(美国和加拿大),墨西哥市 "
 
+#: ../templates/selfService/adminMain.php:479
 #: ../templates/pdfedit/pdfpage.php:502 ../templates/pdfedit/pdfpage.php:511
 #: ../lib/modules/mitKerberos.inc:378 ../lib/modules/mitKerberos.inc:389
 #: ../lib/modules/mitKerberos.inc:687 ../lib/modules/qmailUser.inc:654
@@ -2048,6 +2077,7 @@ msgid "Could not perform ldap_modify operation."
 msgstr "无法执行ldap_modify命令"
 
 #: ../templates/config/profmanage.php:100
+#: ../templates/selfService/profManage.php:74
 msgid "Could not rename file!"
 msgstr "不能更改文件名"
 
@@ -2065,7 +2095,7 @@ msgstr "无法保存PDF结构,存取拒绝."
 #: ../templates/profedit/profilemain.php:167
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1185
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1189
-#: ../templates/initsuff.php:188 ../lib/modules/sambaSamAccount.inc:1595
+#: ../templates/initsuff.php:189 ../lib/modules/sambaSamAccount.inc:1595
 #: ../lib/modules/posixAccount.inc:1476
 msgid "Create"
 msgstr "建立"
@@ -2191,6 +2221,7 @@ msgid "Created new automount map."
 msgstr "建立新的自动挂接映射."
 
 #: ../templates/config/profmanage.php:77
+#: ../templates/selfService/profManage.php:55
 msgid "Created new profile."
 msgstr "新增配置文件"
 
@@ -2401,6 +2432,7 @@ msgstr "代理(Delegates)"
 
 #: ../templates/serverInfo.php:321 ../templates/serverInfo.php:390
 #: ../templates/ou_edit.php:120 ../templates/config/profmanage.php:272
+#: ../templates/selfService/profManage.php:238
 #: ../templates/pdfedit/pdfmain.php:194 ../templates/pdfedit/pdfmain.php:195
 #: ../templates/delete.php:120 ../templates/profedit/profilemain.php:196
 #: ../templates/profedit/profilemain.php:197
@@ -2455,7 +2487,9 @@ msgid "Delete photo"
 msgstr "删除照片"
 
 #: ../templates/config/profmanage.php:270
-#: ../templates/config/profmanage.php:273 ../help/help.inc:128
+#: ../templates/config/profmanage.php:273
+#: ../templates/selfService/profManage.php:232
+#: ../templates/selfService/profManage.php:239 ../help/help.inc:128
 msgid "Delete profile"
 msgstr "删除配置文件"
 
@@ -3416,7 +3450,7 @@ msgstr "失败"
 msgid "Failed logins"
 msgstr "登录失败."
 
-#: ../templates/initsuff.php:151
+#: ../templates/initsuff.php:152
 msgid "Failed to create entry!"
 msgstr "新增条目失败!"
 
@@ -3716,6 +3750,7 @@ msgstr "一般信息"
 #: ../templates/config/confmain.php:205
 #: ../templates/config/moduleSettings.php:163
 #: ../templates/config/conftypes.php:182
+#: ../templates/selfService/adminMain.php:396
 #: ../templates/profedit/profilepage.php:215
 msgid "General settings"
 msgstr "通用设置"
@@ -3780,6 +3815,7 @@ msgid "Grace inode period"
 msgstr "节点限制宽限期"
 
 #: ../templates/config/confmain.php:312
+#: ../templates/selfService/adminMain.php:589
 msgid "Group"
 msgstr "组"
 
@@ -3940,7 +3976,8 @@ msgstr "H-节点 (0x08)"
 msgid "HTML format"
 msgstr "HTML格式"
 
-#: ../templates/config/confmain.php:430 ../help/help.inc:120
+#: ../templates/config/confmain.php:430
+#: ../templates/selfService/adminMain.php:428 ../help/help.inc:120
 msgid "HTTP authentication"
 msgstr "HTTP认证"
 
@@ -4907,6 +4944,10 @@ msgstr "inode软配额包含非法字符,只能使用自然数."
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "inode软配额必须小于硬配额."
 
+#: ../templates/selfService/adminMain.php:604
+msgid "Input fields"
+msgstr "输入框"
+
 #: ../lib/modules/asteriskAccount.inc:146
 #: ../lib/modules/asteriskAccount.inc:263
 #: ../lib/modules/asteriskAccount.inc:339
@@ -5198,6 +5239,10 @@ msgstr ""
 msgid "LDAP operation successful."
 msgstr "LDAP操作成功."
 
+#: ../templates/selfService/adminMain.php:421
+msgid "LDAP password"
+msgstr "LDAP 密码"
+
 #: ../templates/3rdParty/pla/lib/functions.php:1894
 msgid "LDAP said"
 msgstr "LDAP说"
@@ -5206,7 +5251,7 @@ msgstr "LDAP说"
 msgid "LDAP search"
 msgstr "LDAP搜索"
 
-#: ../help/help.inc:200
+#: ../templates/selfService/adminMain.php:426 ../help/help.inc:200
 msgid "LDAP search attribute"
 msgstr "LDAP搜索属性"
 
@@ -5227,6 +5272,7 @@ msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "超过LDAP限制的大小,无法显示所有条目."
 
 #: ../templates/config/confmain.php:416 ../templates/config/conftypes.php:252
+#: ../templates/selfService/adminMain.php:415
 #: ../templates/profedit/profilepage.php:202 ../help/help.inc:71
 #: ../help/help.inc:196
 msgid "LDAP suffix"
@@ -5235,6 +5281,10 @@ msgstr "LDAP后缀"
 #: ../templates/massDoUpload.php:86
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP上传中,请稍等..."
+
+#: ../templates/selfService/adminMain.php:419
+msgid "LDAP user"
+msgstr "LDAP用户"
 
 #: ../help/help.inc:198
 msgid "LDAP user and password"
@@ -5380,6 +5430,10 @@ msgstr "行结尾"
 #: ../lib/modules/passwordSelfReset.inc:193
 msgid "Link text"
 msgstr "链接文本"
+
+#: ../templates/selfService/adminMain.php:357
+msgid "Link to self service login page for your users"
+msgstr "对用户自助服务登录界面的链接."
 
 #: ../templates/config/conftypes.php:263 ../help/help.inc:83
 msgid "List attributes"
@@ -5571,15 +5625,18 @@ msgstr "日志"
 
 #: ../templates/login.php:422 ../templates/config/conflogin.php:62
 #: ../templates/config/mainlogin.php:70
+#: ../templates/selfService/selfServiceLogin.php:179
+#: ../templates/selfService/selfServiceLogin.php:285
+#: ../templates/selfService/adminLogin.php:64
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:530 ../help/help.inc:56
 msgid "Login"
 msgstr "登录"
 
-#: ../help/help.inc:202
+#: ../templates/selfService/adminMain.php:437 ../help/help.inc:202
 msgid "Login attribute label"
 msgstr "登录属性标签"
 
-#: ../help/help.inc:204
+#: ../templates/selfService/adminMain.php:442 ../help/help.inc:204
 msgid "Login caption"
 msgstr "登录标题"
 
@@ -5640,6 +5697,8 @@ msgstr "登录脚本"
 msgid "Logon script is invalid!"
 msgstr "登录脚本非法!"
 
+#: ../templates/selfService/selfServiceMain.php:63
+#: ../templates/selfService/selfServiceMain.php:400
 #: ../templates/main_header.php:133
 msgid "Logout"
 msgstr "退出"
@@ -5755,7 +5814,7 @@ msgstr "邮件转发."
 msgid "Main"
 msgstr "主要设置"
 
-#: ../help/help.inc:206
+#: ../templates/selfService/adminMain.php:448 ../help/help.inc:206
 msgid "Main page caption"
 msgstr "主页标题"
 
@@ -5778,6 +5837,10 @@ msgstr "管理已有的设置"
 #: ../lib/modules/sambaSamAccount.inc:1199
 msgid "Manage profile directory"
 msgstr "管理配置所在的目录"
+
+#: ../templates/selfService/adminLogin.php:182
+msgid "Manage self service profiles"
+msgstr "管理自助服务设置"
 
 #: ../templates/config/conflogin.php:187
 msgid "Manage server profiles"
@@ -5849,15 +5912,17 @@ msgid "Mass delete"
 msgstr "批量删除"
 
 #: ../templates/config/profmanage.php:309
-#: ../templates/config/mainlogin.php:156 ../templates/pdfedit/pdfmain.php:252
-#: ../templates/pdfedit/pdfmain.php:299
+#: ../templates/config/mainlogin.php:156
+#: ../templates/selfService/profManage.php:247
+#: ../templates/pdfedit/pdfmain.php:252 ../templates/pdfedit/pdfmain.php:299
 #: ../templates/profedit/profilemain.php:255
 #: ../templates/profedit/profilemain.php:303 ../help/help.inc:136
 msgid "Master password"
 msgstr "管理员密码"
 
-#: ../templates/config/profmanage.php:54 ../templates/pdfedit/pdfmain.php:106
-#: ../templates/pdfedit/pdfmain.php:114
+#: ../templates/config/profmanage.php:54
+#: ../templates/selfService/profManage.php:40
+#: ../templates/pdfedit/pdfmain.php:106 ../templates/pdfedit/pdfmain.php:114
 #: ../templates/profedit/profilemain.php:121
 #: ../templates/profedit/profilemain.php:129
 msgid "Master password is wrong!"
@@ -6185,6 +6250,7 @@ msgstr "修改中"
 #: ../templates/config/confmain.php:217
 #: ../templates/config/moduleSettings.php:175
 #: ../templates/config/conftypes.php:194
+#: ../templates/selfService/adminMain.php:398
 msgid "Module settings"
 msgstr "模块设置"
 
@@ -6498,6 +6564,7 @@ msgid "New policy"
 msgstr "新策略"
 
 #: ../templates/config/profmanage.php:260
+#: ../templates/selfService/profManage.php:222
 msgid "New profile name"
 msgstr "新配置文件名"
 
@@ -6640,7 +6707,7 @@ msgstr "未发现自动挂接条目!"
 msgid "No binary data available"
 msgstr "没有可用的二进制数据"
 
-#: ../templates/initsuff.php:163
+#: ../templates/initsuff.php:164
 msgid "No changes were made."
 msgstr "未做任何修改."
 
@@ -6956,6 +7023,12 @@ msgstr "办公室名"
 #: ../templates/config/profmanage.php:302
 #: ../templates/config/mainmanage.php:260
 #: ../templates/config/conflogin.php:172 ../templates/config/mainlogin.php:163
+#: ../templates/selfService/profManage.php:211
+#: ../templates/selfService/profManage.php:227
+#: ../templates/selfService/profManage.php:240
+#: ../templates/selfService/adminLogin.php:165
+#: ../templates/selfService/adminMain.php:545
+#: ../templates/selfService/adminMain.php:598
 #: ../templates/pdfedit/pdfmain.php:195 ../templates/pdfedit/pdfmain.php:202
 #: ../templates/pdfedit/pdfmain.php:208
 #: ../templates/profedit/profilemain.php:197
@@ -7205,9 +7278,13 @@ msgstr ""
 "如果数据包的接收者不在同一个网络,数据包将会发往缺省网关.缺省网关将数据包转向"
 "目标网络."
 
-#: ../help/help.inc:212
+#: ../templates/selfService/adminMain.php:454 ../help/help.inc:212
 msgid "Page header"
 msgstr "页首"
+
+#: ../templates/selfService/adminMain.php:397
+msgid "Page layout"
+msgstr "页布局"
 
 #: ../lib/modules/asteriskVoicemail.inc:102
 #: ../lib/modules/asteriskVoicemail.inc:132
@@ -7244,6 +7321,7 @@ msgid "Parse error"
 msgstr "解析错误"
 
 #: ../templates/lists/changePassword.php:328 ../templates/login.php:369
+#: ../templates/selfService/selfServiceLogin.php:268
 #: ../lib/selfService.inc:373 ../lib/modules/mitKerberos.inc:149
 #: ../lib/modules/mitKerberos.inc:235 ../lib/modules/mitKerberos.inc:250
 #: ../lib/modules/mitKerberos.inc:796 ../lib/modules/mitKerberos.inc:799
@@ -8288,6 +8366,13 @@ msgid ""
 "Please enter your Puppet variables for this node (e.g. config_exim=true)."
 msgstr "请为本节点输入您的Puppet变量(比如:config_exim=true)."
 
+#: ../templates/selfService/adminLogin.php:133
+#, fuzzy
+msgid ""
+"Please enter your master configuration password to change the self service "
+"profile:"
+msgstr "请输入配置名称并新建一个服务器配置"
+
 #: ../templates/config/conflogin.php:132
 msgid "Please enter your password to change the server preferences:"
 msgstr "改变服务器配置,请输入密码:"
@@ -8340,6 +8425,7 @@ msgid "Please set up all required attributes on page: %s"
 msgstr "请在页面%s上输入必须的属性."
 
 #: ../templates/config/profmanage.php:220
+#: ../templates/selfService/profManage.php:160
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr "请先主配置文件(config/config.cfg)!"
 
@@ -8512,6 +8598,7 @@ msgid "Proceed"
 msgstr "处理完毕"
 
 #: ../templates/config/profmanage.php:112
+#: ../templates/selfService/profManage.php:85
 msgid "Profile deleted."
 msgstr "配置文件被删除."
 
@@ -8521,7 +8608,9 @@ msgid "Profile editor"
 msgstr "配置文件编辑器"
 
 #: ../templates/config/profmanage.php:159
-#: ../templates/config/profmanage.php:236 ../help/help.inc:124
+#: ../templates/config/profmanage.php:236
+#: ../templates/selfService/profManage.php:101
+#: ../templates/selfService/profManage.php:199 ../help/help.inc:124
 #: ../help/help.inc:126 ../help/help.inc:128 ../help/help.inc:130
 #: ../help/help.inc:132
 msgid "Profile management"
@@ -8532,6 +8621,9 @@ msgstr "配置文件管理"
 #: ../templates/config/profmanage.php:271
 #: ../templates/config/profmanage.php:280
 #: ../templates/config/profmanage.php:299
+#: ../templates/selfService/profManage.php:203
+#: ../templates/selfService/profManage.php:217
+#: ../templates/selfService/profManage.php:233
 #: ../templates/profedit/profilepage.php:186
 #: ../templates/profedit/profilemain.php:275
 #: ../templates/profedit/profilemain.php:319 ../help/help.inc:166
@@ -8542,6 +8634,8 @@ msgstr "配置文件名"
 #: ../templates/config/profmanage.php:107
 #: ../templates/config/profmanage.php:137
 #: ../templates/config/profmanage.php:148
+#: ../templates/selfService/profManage.php:61
+#: ../templates/selfService/profManage.php:76
 msgid "Profile name is invalid!"
 msgstr "配置文件名非法!"
 
@@ -8993,6 +9087,7 @@ msgid "Remove/replace photo"
 msgstr "删除/更改照片"
 
 #: ../templates/config/profmanage.php:263
+#: ../templates/selfService/profManage.php:225
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1152
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1153
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1155
@@ -9009,7 +9104,9 @@ msgid "Rename <b>%s</b> to a new object."
 msgstr "将<b>%s</b> 重新命名到新的对象"
 
 #: ../templates/config/profmanage.php:258
-#: ../templates/config/profmanage.php:264 ../help/help.inc:126
+#: ../templates/config/profmanage.php:264
+#: ../templates/selfService/profManage.php:216
+#: ../templates/selfService/profManage.php:226 ../help/help.inc:126
 msgid "Rename profile"
 msgstr "配置文件重命名"
 
@@ -9023,6 +9120,7 @@ msgid "Rename this entry"
 msgstr "重命名这个条目"
 
 #: ../templates/config/profmanage.php:98
+#: ../templates/selfService/profManage.php:72
 msgid "Renamed profile."
 msgstr "已更名的配置文件."
 
@@ -9348,7 +9446,10 @@ msgstr "星期六"
 #: ../templates/config/confmodules.php:224
 #: ../templates/config/confmain.php:449
 #: ../templates/config/moduleSettings.php:235
-#: ../templates/config/conftypes.php:318 ../templates/pdfedit/pdfpage.php:601
+#: ../templates/config/conftypes.php:318
+#: ../templates/selfService/selfServiceMain.php:397
+#: ../templates/selfService/adminMain.php:660
+#: ../templates/pdfedit/pdfpage.php:601
 #: ../templates/profedit/profilepage.php:238
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1243
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1247
@@ -9539,6 +9640,22 @@ msgstr "已选择的模块"
 msgid "Selected users"
 msgstr "已选择的用户"
 
+#: ../templates/selfService/adminMain.php:298
+msgid "Self service configuration"
+msgstr "自助服务配置"
+
+#: ../templates/selfService/adminMain.php:352
+msgid "Self service configuration editor"
+msgstr "自助服务配置编辑器"
+
+#: ../templates/selfService/adminMain.php:358
+msgid "Self service login"
+msgstr "自助服务登录"
+
+#: ../templates/selfService/adminMain.php:344
+msgid "Self service profile"
+msgstr "自助服务配置"
+
 #: ../lib/modules/passwordSelfReset.inc:118
 #: ../lib/modules/passwordSelfReset.inc:222
 msgid "Send confirmation mail"
@@ -9611,7 +9728,8 @@ msgstr "序列号"
 msgid "Server"
 msgstr "服务器"
 
-#: ../templates/config/confmain.php:238 ../lib/modules/qmailUser.inc:111
+#: ../templates/config/confmain.php:238
+#: ../templates/selfService/adminMain.php:409 ../lib/modules/qmailUser.inc:111
 #: ../lib/modules/qmailUser.inc:156 ../lib/modules/qmailUser.inc:236
 #: ../lib/modules/qmailUser.inc:351 ../lib/modules/qmailUser.inc:420
 #: ../lib/modules/qmailUser.inc:585 ../lib/modules/qmailUser.inc:1195
@@ -9621,6 +9739,7 @@ msgid "Server address"
 msgstr "服务器地址"
 
 #: ../templates/config/confmain.php:482
+#: ../templates/selfService/adminMain.php:187
 msgid "Server address is invalid!"
 msgstr "服务器地址非法!"
 
@@ -9640,6 +9759,7 @@ msgid "Server profile"
 msgstr "服务器设置文件"
 
 #: ../templates/config/confmain.php:267
+#: ../templates/selfService/adminMain.php:429
 msgid "Server settings"
 msgstr "服务器设置"
 
@@ -9710,6 +9830,10 @@ msgstr "设置特定的密码"
 #: ../templates/3rdParty/pla/lib/QueryRender.php:171
 msgid "Set the search results to 0 to retrieve all available records."
 msgstr "设置搜索条件为0,来获取所有的记录"
+
+#: ../templates/selfService/adminMain.php:526
+msgid "Set this field read-only."
+msgstr "将此域设为只读。"
 
 #: ../lib/modules/groupOfNames.inc:85
 msgid ""
@@ -10391,6 +10515,11 @@ msgstr "此帐号的Radius域"
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "您的Samba服务器的SID,可以通过使用\"net getlocalsid\"命令获取."
 
+#: ../templates/selfService/selfServiceLogin.php:106
+#: ../templates/selfService/selfServiceMain.php:168
+msgid "The TLS encryption could not be started."
+msgstr "TLS加密失败."
+
 #: ../lib/modules/posixAccount.inc:81
 msgid ""
 "The UID ranges for users and hosts overlap! This is a problem because LAM "
@@ -10463,6 +10592,7 @@ msgid "The class names may only contain ASCII characters."
 msgstr "类名仅包含ASCII字符."
 
 #: ../templates/config/confmain.php:176
+#: ../templates/selfService/adminMain.php:367
 msgid "The config file is not writable."
 msgstr "配置文件不可写."
 
@@ -10564,7 +10694,7 @@ msgid ""
 "setting"
 msgstr "您上传的文件太大,请检查PHP.INI文件中upload_max_size的设置"
 
-#: ../templates/initsuff.php:179
+#: ../templates/initsuff.php:180
 msgid ""
 "The following suffixes are missing in LDAP. LAM can create them for you."
 msgstr "LDAP中没有下列后缀,LAM会自动建立."
@@ -10808,7 +10938,7 @@ msgstr "在你的LDAP服务器中对象类%s不被支持。"
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "用户的办公室名(比如:某某公司,人力资源部)"
 
-#: ../lib/modules.inc:1767
+#: ../templates/selfService/selfServiceMain.php:312 ../lib/modules.inc:1767
 msgid "The operation was stopped because of the above errors."
 msgstr "由于发生了以上错误，操作中止."
 
@@ -10839,6 +10969,7 @@ msgstr "参数 @@principal@@ 会被主要的名字代替."
 
 #: ../templates/config/confsave.php:71 ../templates/config/confmain.php:73
 #: ../templates/config/mainlogin.php:59
+#: ../templates/selfService/adminLogin.php:54
 msgid "The password is invalid! Please try again."
 msgstr "密码无效,请重试!"
 
@@ -12099,6 +12230,7 @@ msgstr "树状结构后缀非法!"
 msgid "Tuesday"
 msgstr "星期二"
 
+#: ../templates/selfService/profManage.php:206
 #: ../templates/schema/schema.php:348 ../lib/modules/zarafaUser.inc:109
 #: ../lib/modules/zarafaUser.inc:198 ../lib/modules/zarafaUser.inc:279
 #: ../lib/modules/zarafaUser.inc:402 ../lib/modules/zarafaUser.inc:567
@@ -12183,6 +12315,19 @@ msgstr "无法修改kerberos密码"
 msgid "Unable to change password."
 msgstr "无法修改密码"
 
+#: ../templates/selfService/selfServiceMain.php:319
+msgid ""
+"Unable to change your account. Maybe you do not have enough rights to change "
+"the settings."
+msgstr "无法改变您的帐号,可以没有足够的权限改变设置."
+
+#: ../templates/selfService/selfServiceMain.php:316
+#, fuzzy
+msgid ""
+"Unable to change your account. Your changes might violate the password "
+"policy."
+msgstr "无法改变您的帐号,可以没有足够的权限改变设置."
+
 #: ../templates/tests/lamdaemonTest.php:261 ../lib/lamdaemon.inc:76
 #: ../lib/lamdaemon.inc:81
 msgid "Unable to connect to remote server!"
@@ -12210,6 +12355,7 @@ msgid "Unable to create new automount map."
 msgstr "无法建立新的自动映射"
 
 #: ../templates/config/profmanage.php:82
+#: ../templates/selfService/profManage.php:59
 msgid "Unable to create new profile!"
 msgstr "无法建立新的配置文件!"
 
@@ -12231,6 +12377,7 @@ msgid "Unable to delete mailbox from IMAP server."
 msgstr "无法在IMAP服务器上删除邮箱."
 
 #: ../templates/config/profmanage.php:123
+#: ../templates/selfService/profManage.php:87
 #: ../templates/profedit/profilemain.php:108 ../lib/config.inc:127
 #: ../lib/config.inc:139 ../lib/config.inc:146 ../lib/config.inc:154
 msgid "Unable to delete profile!"
@@ -12291,6 +12438,7 @@ msgstr "无法获取图像"
 msgid "Unable to retrieve schema!"
 msgstr "无法获取schema!"
 
+#: ../templates/selfService/adminMain.php:245
 #: ../templates/profedit/profilepage.php:124
 msgid "Unable to save profile!"
 msgstr "无法存储配置文件!"
@@ -12852,9 +13000,9 @@ msgstr "无法创建DN: %s."
 msgid "Was unable to delete DN: %s."
 msgstr "无法删除DN: %s."
 
-#: ../templates/lists/changePassword.php:673
-#: ../templates/lists/changePassword.php:711
-#: ../templates/lists/changePassword.php:757 ../templates/delete.php:225
+#: ../templates/lists/changePassword.php:678
+#: ../templates/lists/changePassword.php:716
+#: ../templates/lists/changePassword.php:762 ../templates/delete.php:225
 #, php-format
 msgid "Was unable to modify attributes from DN: %s."
 msgstr "无法修改DN: %s的属性"
@@ -13004,6 +13152,8 @@ msgid "Write access"
 msgstr "写权限"
 
 #: ../templates/login.php:568 ../templates/login.php:626
+#: ../templates/selfService/selfServiceLogin.php:121
+#: ../templates/selfService/selfServiceLogin.php:138
 msgid "Wrong password/user name combination. Please try again."
 msgstr "错误的密码和用户组合,请重试!"
 
@@ -13173,6 +13323,7 @@ msgid ""
 msgstr "您的PHP.INI没有file_uploads = on,在PHP中打开文件上传."
 
 #: ../templates/config/confmain.php:176
+#: ../templates/selfService/adminMain.php:367
 msgid ""
 "Your changes cannot be saved until you make the file writable for the "
 "webserver user."
@@ -13188,7 +13339,7 @@ msgstr "你的新账号已经成功建立.请返回后登录并修改用户数�
 msgid "Your session expired, click here to go back to the login page."
 msgstr "超时,请点此外返回到登录界面."
 
-#: ../templates/login.php:289
+#: ../templates/login.php:289 ../templates/selfService/selfServiceLogin.php:78
 msgid "Your session expired, please log in again."
 msgstr "超时,请重新登录."
 
@@ -13717,59 +13868,17 @@ msgstr "是"
 #~ msgid "Invalid account"
 #~ msgstr "无效的帐号"
 
-#~ msgid "Allow user input for this field."
-#~ msgstr "允许用户在此域输入。"
-
-#~ msgid "Captions and labels"
-#~ msgstr "标题和标签"
-
-#~ msgid "Input fields"
-#~ msgstr "输入框"
-
-#~ msgid "LDAP password"
-#~ msgstr "LDAP 密码"
-
-#~ msgid "LDAP user"
-#~ msgstr "LDAP用户"
-
-#~ msgid "Link to self service login page for your users"
-#~ msgstr "对用户自助服务登录界面的链接."
-
-#~ msgid "Manage self service profiles"
-#~ msgstr "管理自助服务设置"
-
-#~ msgid "Page layout"
-#~ msgstr "页布局"
-
 #~ msgid ""
 #~ "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 #~ "and #*,.;:_-+!%&/|?{[()]}=@$ !"
 #~ msgstr ""
 #~ "密码包括无效字符,合法字符为a-z, A-Z, 0-9 和 #*,.;:_-+!%&/|?{[()]}=@$ !"
 
-#~ msgid "Self service configuration"
-#~ msgstr "自助服务配置"
-
-#~ msgid "Self service configuration editor"
-#~ msgstr "自助服务配置编辑器"
-
-#~ msgid "Self service login"
-#~ msgstr "自助服务登录"
-
-#~ msgid "Self service profile"
-#~ msgstr "自助服务配置"
-
-#~ msgid "Set this field read-only."
-#~ msgstr "将此域设为只读。"
-
 #~ msgid "Sync Asterisk voicemail password with Unix password"
 #~ msgstr "同步Asterisk语音邮件和Unix的密码"
 
 #~ msgid "Sync Kerberos password with Unix password"
 #~ msgstr "同步Asterisk和Unix的密码"
-
-#~ msgid "The TLS encryption could not be started."
-#~ msgstr "TLS加密失败."
 
 #~ msgid "The domain name needs to have at least 3 characters."
 #~ msgstr "域名最少需要3个字符."
@@ -13778,11 +13887,6 @@ msgstr "是"
 #~ "To disable login use /bin/false. The list of shells is read from lam/"
 #~ "config/shells"
 #~ msgstr "使用/bin/false来禁止用户登录.shells列表来自/lam/config/shells."
-
-#~ msgid ""
-#~ "Unable to change your account. Maybe you do not have enough rights to "
-#~ "change the settings."
-#~ msgstr "无法改变您的帐号,可以没有足够的权限改变设置."
 
 #~ msgid "Unable to read sambaSID attribute."
 #~ msgstr "读取sambaSID属性失败."
