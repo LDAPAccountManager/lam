@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2013-05-10 18:18+0200\n"
+"PO-Revision-Date: 2013-05-21 18:02+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -481,9 +481,9 @@ msgstr ""
 msgid "Account was created successfully."
 msgstr "Account wurde erfolgreich erstellt."
 
-#: ../templates/lists/changePassword.php:668
-#: ../templates/lists/changePassword.php:720
-#: ../templates/lists/changePassword.php:766 ../lib/modules.inc:1284
+#: ../templates/lists/changePassword.php:673
+#: ../templates/lists/changePassword.php:725
+#: ../templates/lists/changePassword.php:771 ../lib/modules.inc:1284
 msgid "Account was modified successfully."
 msgstr "Account wurde erfolgreich geändert."
 
@@ -496,6 +496,7 @@ msgid "Activate DynDNS"
 msgstr "DynDNS aktivieren"
 
 #: ../templates/config/confmain.php:243
+#: ../templates/selfService/adminMain.php:413
 msgid "Activate TLS"
 msgstr "TLS aktivieren"
 
@@ -563,9 +564,10 @@ msgstr "Aktive Accounttypen"
 #: ../templates/serverInfo.php:307 ../templates/serverInfo.php:384
 #: ../templates/config/profmanage.php:251
 #: ../templates/config/confmodules.php:295
-#: ../templates/config/conftypes.php:223 ../templates/pdfedit/pdfpage.php:561
-#: ../templates/pdfedit/pdfpage.php:571 ../templates/pdfedit/pdfpage.php:581
-#: ../templates/pdfedit/pdfpage.php:595
+#: ../templates/config/conftypes.php:223
+#: ../templates/selfService/profManage.php:209
+#: ../templates/pdfedit/pdfpage.php:561 ../templates/pdfedit/pdfpage.php:571
+#: ../templates/pdfedit/pdfpage.php:581 ../templates/pdfedit/pdfpage.php:595
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1206
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1210
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:78
@@ -679,7 +681,7 @@ msgstr "Feste IP-Adressen zum DNS hinzufügen"
 msgid "Add host extension"
 msgstr "Host-Erweiterung hinzufügen"
 
-#: ../help/help.inc:210
+#: ../templates/selfService/adminMain.php:550 ../help/help.inc:210
 msgid "Add input field"
 msgstr "Feld hinzufügen"
 
@@ -713,7 +715,7 @@ msgstr "Neues Binärattribut hinzufügen"
 msgid "Add new field"
 msgstr "Feld hinzufügen"
 
-#: ../help/help.inc:208
+#: ../templates/selfService/adminMain.php:542 ../help/help.inc:208
 msgid "Add new group"
 msgstr "Gruppe hinzufügen"
 
@@ -740,7 +742,9 @@ msgid "Add photo"
 msgstr "Foto hinzufügen"
 
 #: ../templates/config/profmanage.php:239
-#: ../templates/config/profmanage.php:252 ../help/help.inc:124
+#: ../templates/config/profmanage.php:252
+#: ../templates/selfService/profManage.php:202
+#: ../templates/selfService/profManage.php:210 ../help/help.inc:124
 msgid "Add profile"
 msgstr "Neues Profil"
 
@@ -764,7 +768,7 @@ msgstr "Füge hinzu"
 msgid "Adding the range failed because errors occured."
 msgstr "Hinzufügen des Adressbereiches schlug fehl."
 
-#: ../help/help.inc:214
+#: ../templates/selfService/adminMain.php:460 ../help/help.inc:214
 msgid "Additional CSS links"
 msgstr "Zusätzliche CSS-Links"
 
@@ -911,7 +915,8 @@ msgstr "Aliase"
 msgid "All accounts (%s)"
 msgstr "Alle Accounts (%s)"
 
-#: ../templates/initsuff.php:157
+#: ../templates/selfService/selfServiceMain.php:349
+#: ../templates/initsuff.php:158
 msgid "All changes were successful."
 msgstr "Alle Änderungen waren erfolgreich."
 
@@ -942,6 +947,10 @@ msgstr "Passwortänderung erlauben"
 #: ../lib/modules/sambaSamAccount.inc:1890
 msgid "Allow terminal server login"
 msgstr "Terminalserver-Login erlauben"
+
+#: ../templates/selfService/adminMain.php:522
+msgid "Allow user input for this field."
+msgstr "Benutzereingaben für dieses Feld erlauben."
 
 #: ../lib/modules/asteriskAccount.inc:194
 #: ../lib/modules/asteriskAccount.inc:287
@@ -1341,6 +1350,9 @@ msgstr "Zurück zur Liste"
 #: ../templates/config/index.php:133 ../templates/config/conflogin.php:117
 #: ../templates/config/conflogin.php:196 ../templates/config/mainlogin.php:122
 #: ../templates/config/mainlogin.php:176
+#: ../templates/selfService/selfServiceSP.php:120
+#: ../templates/selfService/adminLogin.php:114
+#: ../templates/selfService/adminLogin.php:191
 msgid "Back to login"
 msgstr "Zurück zum Login"
 
@@ -1350,6 +1362,8 @@ msgstr "Zurück zur Richtlinienliste"
 
 #: ../templates/config/profmanage.php:188
 #: ../templates/config/profmanage.php:324
+#: ../templates/selfService/profManage.php:144
+#: ../templates/selfService/profManage.php:262
 msgid "Back to profile login"
 msgstr "Zurück zum Konfigurationslogin"
 
@@ -1599,10 +1613,14 @@ msgstr "Kann weiterleiten"
 #: ../templates/config/confmodules.php:227
 #: ../templates/config/confmain.php:452
 #: ../templates/config/moduleSettings.php:238
-#: ../templates/config/conftypes.php:321 ../templates/pdfedit/pdfpage.php:603
-#: ../templates/pdfedit/pdfmain.php:195 ../templates/pdfedit/pdfmain.php:202
-#: ../templates/pdfedit/pdfmain.php:208 ../templates/delete.php:121
-#: ../templates/profedit/profilepage.php:241
+#: ../templates/config/conftypes.php:321
+#: ../templates/selfService/profManage.php:211
+#: ../templates/selfService/profManage.php:227
+#: ../templates/selfService/profManage.php:240
+#: ../templates/selfService/adminMain.php:663
+#: ../templates/pdfedit/pdfpage.php:603 ../templates/pdfedit/pdfmain.php:195
+#: ../templates/pdfedit/pdfmain.php:202 ../templates/pdfedit/pdfmain.php:208
+#: ../templates/delete.php:121 ../templates/profedit/profilepage.php:241
 #: ../templates/profedit/profilemain.php:197
 #: ../templates/profedit/profilemain.php:203
 #: ../templates/profedit/profilemain.php:209
@@ -1611,7 +1629,7 @@ msgstr "Kann weiterleiten"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:136
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:121
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:119
-#: ../templates/initsuff.php:189 ../lib/types/automountType.inc:234
+#: ../templates/initsuff.php:190 ../lib/types/automountType.inc:234
 #: ../lib/types/user.inc:304 ../lib/modules/mitKerberos.inc:691
 #: ../lib/modules/qmailUser.inc:914 ../lib/modules/zarafaContact.inc:380
 #: ../lib/modules/windowsHost.inc:219 ../lib/modules/zarafaGroup.inc:449
@@ -1630,7 +1648,13 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: ../templates/login.php:558 ../templates/login.php:616
-#: ../templates/login.php:621 ../lib/modules/selfRegistration.inc:588
+#: ../templates/login.php:621
+#: ../templates/selfService/selfServiceLogin.php:106
+#: ../templates/selfService/selfServiceLogin.php:142
+#: ../templates/selfService/selfServiceLogin.php:147
+#: ../templates/selfService/selfServiceMain.php:168
+#: ../templates/selfService/selfServiceMain.php:182
+#: ../lib/modules/selfRegistration.inc:588
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr ""
 "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
@@ -1650,6 +1674,10 @@ msgstr "Kann Quota nicht ändern."
 msgid "Capacity"
 msgstr "Kapazität"
 
+#: ../templates/selfService/adminMain.php:461
+msgid "Captions and labels"
+msgstr "Überschriften und Beschriftungen"
+
 #: ../lib/modules/inetOrgPerson.inc:144 ../lib/modules/inetOrgPerson.inc:340
 #: ../lib/modules/inetOrgPerson.inc:592 ../lib/modules/inetOrgPerson.inc:662
 #: ../lib/modules/inetOrgPerson.inc:856 ../lib/modules/inetOrgPerson.inc:1907
@@ -1665,6 +1693,7 @@ msgstr "Mitteleuropäische Zeit, Paris, Berlin"
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Central Time (USA & Kanada), Mexiko Stadt"
 
+#: ../templates/selfService/adminMain.php:479
 #: ../templates/pdfedit/pdfpage.php:502 ../templates/pdfedit/pdfpage.php:511
 #: ../lib/modules/mitKerberos.inc:378 ../lib/modules/mitKerberos.inc:389
 #: ../lib/modules/mitKerberos.inc:687 ../lib/modules/qmailUser.inc:654
@@ -2095,6 +2124,7 @@ msgid "Could not perform ldap_modify operation."
 msgstr "Konnte LDAP-Änderung nicht ausführen."
 
 #: ../templates/config/profmanage.php:100
+#: ../templates/selfService/profManage.php:74
 msgid "Could not rename file!"
 msgstr "Konnte Datei nicht umbenennen!"
 
@@ -2112,7 +2142,7 @@ msgstr "Konnte PDF-Struktur nicht speichern, Zugriff verweigert."
 #: ../templates/profedit/profilemain.php:167
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1185
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1189
-#: ../templates/initsuff.php:188 ../lib/modules/sambaSamAccount.inc:1595
+#: ../templates/initsuff.php:189 ../lib/modules/sambaSamAccount.inc:1595
 #: ../lib/modules/posixAccount.inc:1476
 msgid "Create"
 msgstr "Erstellen"
@@ -2238,6 +2268,7 @@ msgid "Created new automount map."
 msgstr "Neue Automount-Map wurde angelegt."
 
 #: ../templates/config/profmanage.php:77
+#: ../templates/selfService/profManage.php:55
 msgid "Created new profile."
 msgstr "Neues Profil wurde erstellt."
 
@@ -2456,6 +2487,7 @@ msgstr "Vollmachten"
 
 #: ../templates/serverInfo.php:321 ../templates/serverInfo.php:390
 #: ../templates/ou_edit.php:120 ../templates/config/profmanage.php:272
+#: ../templates/selfService/profManage.php:238
 #: ../templates/pdfedit/pdfmain.php:194 ../templates/pdfedit/pdfmain.php:195
 #: ../templates/delete.php:120 ../templates/profedit/profilemain.php:196
 #: ../templates/profedit/profilemain.php:197
@@ -2510,7 +2542,9 @@ msgid "Delete photo"
 msgstr "Foto löschen"
 
 #: ../templates/config/profmanage.php:270
-#: ../templates/config/profmanage.php:273 ../help/help.inc:128
+#: ../templates/config/profmanage.php:273
+#: ../templates/selfService/profManage.php:232
+#: ../templates/selfService/profManage.php:239 ../help/help.inc:128
 msgid "Delete profile"
 msgstr "Lösche Profil"
 
@@ -3484,7 +3518,7 @@ msgstr "Fehlgeschlagen"
 msgid "Failed logins"
 msgstr "Fehlgeschlagene Anmeldungen"
 
-#: ../templates/initsuff.php:151
+#: ../templates/initsuff.php:152
 msgid "Failed to create entry!"
 msgstr "Konnte Eintrag nicht erstellen!"
 
@@ -3795,6 +3829,7 @@ msgstr "Allgemeine Informationen"
 #: ../templates/config/confmain.php:205
 #: ../templates/config/moduleSettings.php:163
 #: ../templates/config/conftypes.php:182
+#: ../templates/selfService/adminMain.php:396
 #: ../templates/profedit/profilepage.php:215
 msgid "General settings"
 msgstr "Allgemeine Einstellungen"
@@ -3861,6 +3896,7 @@ msgid "Grace inode period"
 msgstr "Inode-Frist"
 
 #: ../templates/config/confmain.php:312
+#: ../templates/selfService/adminMain.php:589
 msgid "Group"
 msgstr "Gruppe"
 
@@ -4028,7 +4064,8 @@ msgstr "H-Knoten (0x08)"
 msgid "HTML format"
 msgstr "HTML Format"
 
-#: ../templates/config/confmain.php:430 ../help/help.inc:120
+#: ../templates/config/confmain.php:430
+#: ../templates/selfService/adminMain.php:428 ../help/help.inc:120
 msgid "HTTP authentication"
 msgstr "HTTP-Authentifizierung"
 
@@ -5115,6 +5152,10 @@ msgstr ""
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "Das weiche Inode-Quota muss kleiner sein als das harte Inode-Quota."
 
+#: ../templates/selfService/adminMain.php:604
+msgid "Input fields"
+msgstr "Eingabefelder"
+
 #: ../lib/modules/asteriskAccount.inc:146
 #: ../lib/modules/asteriskAccount.inc:263
 #: ../lib/modules/asteriskAccount.inc:339
@@ -5417,6 +5458,10 @@ msgstr ""
 msgid "LDAP operation successful."
 msgstr "LDAP-Operation war erfolgreich."
 
+#: ../templates/selfService/adminMain.php:421
+msgid "LDAP password"
+msgstr "LDAP-Passwort"
+
 #: ../templates/3rdParty/pla/lib/functions.php:1894
 msgid "LDAP said"
 msgstr "LDAP meldet"
@@ -5425,7 +5470,7 @@ msgstr "LDAP meldet"
 msgid "LDAP search"
 msgstr "LDAP-Suche"
 
-#: ../help/help.inc:200
+#: ../templates/selfService/adminMain.php:426 ../help/help.inc:200
 msgid "LDAP search attribute"
 msgstr "LDAP-Suchattribut"
 
@@ -5448,6 +5493,7 @@ msgstr ""
 "angezeigt."
 
 #: ../templates/config/confmain.php:416 ../templates/config/conftypes.php:252
+#: ../templates/selfService/adminMain.php:415
 #: ../templates/profedit/profilepage.php:202 ../help/help.inc:71
 #: ../help/help.inc:196
 msgid "LDAP suffix"
@@ -5456,6 +5502,10 @@ msgstr "LDAP-Suffix"
 #: ../templates/massDoUpload.php:86
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP-Upload läuft. Bitte warten."
+
+#: ../templates/selfService/adminMain.php:419
+msgid "LDAP user"
+msgstr "LDAP-Benutzer"
 
 #: ../help/help.inc:198
 msgid "LDAP user and password"
@@ -5604,6 +5654,10 @@ msgstr "Zeilenenden"
 #: ../lib/modules/passwordSelfReset.inc:193
 msgid "Link text"
 msgstr "Linktext"
+
+#: ../templates/selfService/adminMain.php:357
+msgid "Link to self service login page for your users"
+msgstr "Link zum SelfService für Ihre Benutzer"
 
 #: ../templates/config/conftypes.php:263 ../help/help.inc:83
 msgid "List attributes"
@@ -5799,15 +5853,18 @@ msgstr "Logging"
 
 #: ../templates/login.php:422 ../templates/config/conflogin.php:62
 #: ../templates/config/mainlogin.php:70
+#: ../templates/selfService/selfServiceLogin.php:179
+#: ../templates/selfService/selfServiceLogin.php:285
+#: ../templates/selfService/adminLogin.php:64
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:530 ../help/help.inc:56
 msgid "Login"
 msgstr "Login"
 
-#: ../help/help.inc:202
+#: ../templates/selfService/adminMain.php:437 ../help/help.inc:202
 msgid "Login attribute label"
 msgstr "Beschriftung des Login-Attributs"
 
-#: ../help/help.inc:204
+#: ../templates/selfService/adminMain.php:442 ../help/help.inc:204
 msgid "Login caption"
 msgstr "Login-Überschrift"
 
@@ -5868,6 +5925,8 @@ msgstr "Anmeldeskript"
 msgid "Logon script is invalid!"
 msgstr "Anmeldeskript ist ungültig!"
 
+#: ../templates/selfService/selfServiceMain.php:63
+#: ../templates/selfService/selfServiceMain.php:400
 #: ../templates/main_header.php:133
 msgid "Logout"
 msgstr "Abmelden"
@@ -5983,7 +6042,7 @@ msgstr "Mails an diesen Namen werden an die Empfänger weitergeleitet."
 msgid "Main"
 msgstr "Allgemein"
 
-#: ../help/help.inc:206
+#: ../templates/selfService/adminMain.php:448 ../help/help.inc:206
 msgid "Main page caption"
 msgstr "Überschrift der Hauptseite"
 
@@ -6007,6 +6066,10 @@ msgstr "Profile verwalten"
 #: ../lib/modules/sambaSamAccount.inc:1199
 msgid "Manage profile directory"
 msgstr "Profilverzeichnis verwalten"
+
+#: ../templates/selfService/adminLogin.php:182
+msgid "Manage self service profiles"
+msgstr "SelfService-Profile verwalten"
 
 #: ../templates/config/conflogin.php:187
 msgid "Manage server profiles"
@@ -6080,15 +6143,17 @@ msgid "Mass delete"
 msgstr "Mehrfaches Löschen"
 
 #: ../templates/config/profmanage.php:309
-#: ../templates/config/mainlogin.php:156 ../templates/pdfedit/pdfmain.php:252
-#: ../templates/pdfedit/pdfmain.php:299
+#: ../templates/config/mainlogin.php:156
+#: ../templates/selfService/profManage.php:247
+#: ../templates/pdfedit/pdfmain.php:252 ../templates/pdfedit/pdfmain.php:299
 #: ../templates/profedit/profilemain.php:255
 #: ../templates/profedit/profilemain.php:303 ../help/help.inc:136
 msgid "Master password"
 msgstr "Hauptpasswort"
 
-#: ../templates/config/profmanage.php:54 ../templates/pdfedit/pdfmain.php:106
-#: ../templates/pdfedit/pdfmain.php:114
+#: ../templates/config/profmanage.php:54
+#: ../templates/selfService/profManage.php:40
+#: ../templates/pdfedit/pdfmain.php:106 ../templates/pdfedit/pdfmain.php:114
 #: ../templates/profedit/profilemain.php:121
 #: ../templates/profedit/profilemain.php:129
 msgid "Master password is wrong!"
@@ -6420,6 +6485,7 @@ msgstr "Ändere"
 #: ../templates/config/confmain.php:217
 #: ../templates/config/moduleSettings.php:175
 #: ../templates/config/conftypes.php:194
+#: ../templates/selfService/adminMain.php:398
 msgid "Module settings"
 msgstr "Moduleinstellungen"
 
@@ -6735,6 +6801,7 @@ msgid "New policy"
 msgstr "Neue Richtlinie"
 
 #: ../templates/config/profmanage.php:260
+#: ../templates/selfService/profManage.php:222
 msgid "New profile name"
 msgstr "Neuer Profilname"
 
@@ -6877,7 +6944,7 @@ msgstr "Keine Automount-Einträge gefunden!"
 msgid "No binary data available"
 msgstr "Keine Binärdaten verfügbar"
 
-#: ../templates/initsuff.php:163
+#: ../templates/initsuff.php:164
 msgid "No changes were made."
 msgstr "Keine Änderungen vorgenommen."
 
@@ -7210,6 +7277,12 @@ msgstr "Büroname"
 #: ../templates/config/profmanage.php:302
 #: ../templates/config/mainmanage.php:260
 #: ../templates/config/conflogin.php:172 ../templates/config/mainlogin.php:163
+#: ../templates/selfService/profManage.php:211
+#: ../templates/selfService/profManage.php:227
+#: ../templates/selfService/profManage.php:240
+#: ../templates/selfService/adminLogin.php:165
+#: ../templates/selfService/adminMain.php:545
+#: ../templates/selfService/adminMain.php:598
 #: ../templates/pdfedit/pdfmain.php:195 ../templates/pdfedit/pdfmain.php:202
 #: ../templates/pdfedit/pdfmain.php:208
 #: ../templates/profedit/profilemain.php:197
@@ -7462,9 +7535,13 @@ msgstr ""
 "Pakete an den Default-Gateway gesendet. Dieser routet sie in das "
 "Zielnetzwerk."
 
-#: ../help/help.inc:212
+#: ../templates/selfService/adminMain.php:454 ../help/help.inc:212
 msgid "Page header"
 msgstr "Seitenkopf"
+
+#: ../templates/selfService/adminMain.php:397
+msgid "Page layout"
+msgstr "Seitenlayout"
 
 #: ../lib/modules/asteriskVoicemail.inc:102
 #: ../lib/modules/asteriskVoicemail.inc:132
@@ -7501,6 +7578,7 @@ msgid "Parse error"
 msgstr "Einlesefehler"
 
 #: ../templates/lists/changePassword.php:328 ../templates/login.php:369
+#: ../templates/selfService/selfServiceLogin.php:268
 #: ../lib/selfService.inc:373 ../lib/modules/mitKerberos.inc:149
 #: ../lib/modules/mitKerberos.inc:235 ../lib/modules/mitKerberos.inc:250
 #: ../lib/modules/mitKerberos.inc:796 ../lib/modules/mitKerberos.inc:799
@@ -8602,6 +8680,13 @@ msgstr ""
 "Bitte geben Sie die Puppet Variablen für diesen Knoten (z.B. "
 "config_exim=true) ein."
 
+#: ../templates/selfService/adminLogin.php:133
+msgid ""
+"Please enter your master configuration password to change the self service "
+"profile:"
+msgstr ""
+"Bitte geben Sie das Hauptpasswort ein um das SelfService-Profil zu ändern:"
+
 #: ../templates/config/conflogin.php:132
 msgid "Please enter your password to change the server preferences:"
 msgstr ""
@@ -8664,6 +8749,7 @@ msgid "Please set up all required attributes on page: %s"
 msgstr "Bitte setzen Sie alle erforderlichen Werte auf der Seite: %s"
 
 #: ../templates/config/profmanage.php:220
+#: ../templates/selfService/profManage.php:160
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr ""
 "Bitte konfigurieren Sie zuerst die Haupteinstellungsdatei (config/config."
@@ -8843,6 +8929,7 @@ msgid "Proceed"
 msgstr "Fortfahren"
 
 #: ../templates/config/profmanage.php:112
+#: ../templates/selfService/profManage.php:85
 msgid "Profile deleted."
 msgstr "Profil gelöscht."
 
@@ -8852,7 +8939,9 @@ msgid "Profile editor"
 msgstr "Profileditor"
 
 #: ../templates/config/profmanage.php:159
-#: ../templates/config/profmanage.php:236 ../help/help.inc:124
+#: ../templates/config/profmanage.php:236
+#: ../templates/selfService/profManage.php:101
+#: ../templates/selfService/profManage.php:199 ../help/help.inc:124
 #: ../help/help.inc:126 ../help/help.inc:128 ../help/help.inc:130
 #: ../help/help.inc:132
 msgid "Profile management"
@@ -8863,6 +8952,9 @@ msgstr "Profilverwaltung"
 #: ../templates/config/profmanage.php:271
 #: ../templates/config/profmanage.php:280
 #: ../templates/config/profmanage.php:299
+#: ../templates/selfService/profManage.php:203
+#: ../templates/selfService/profManage.php:217
+#: ../templates/selfService/profManage.php:233
 #: ../templates/profedit/profilepage.php:186
 #: ../templates/profedit/profilemain.php:275
 #: ../templates/profedit/profilemain.php:319 ../help/help.inc:166
@@ -8873,6 +8965,8 @@ msgstr "Profilname"
 #: ../templates/config/profmanage.php:107
 #: ../templates/config/profmanage.php:137
 #: ../templates/config/profmanage.php:148
+#: ../templates/selfService/profManage.php:61
+#: ../templates/selfService/profManage.php:76
 msgid "Profile name is invalid!"
 msgstr "Profilname ist ungültig!"
 
@@ -9326,6 +9420,7 @@ msgid "Remove/replace photo"
 msgstr "Foto ersetzen/entfernen"
 
 #: ../templates/config/profmanage.php:263
+#: ../templates/selfService/profManage.php:225
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1152
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1153
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1155
@@ -9342,7 +9437,9 @@ msgid "Rename <b>%s</b> to a new object."
 msgstr "<b>%s</b> umbenennen."
 
 #: ../templates/config/profmanage.php:258
-#: ../templates/config/profmanage.php:264 ../help/help.inc:126
+#: ../templates/config/profmanage.php:264
+#: ../templates/selfService/profManage.php:216
+#: ../templates/selfService/profManage.php:226 ../help/help.inc:126
 msgid "Rename profile"
 msgstr "Profil umbenennen"
 
@@ -9356,6 +9453,7 @@ msgid "Rename this entry"
 msgstr "Diesen Eintrag umbenennen"
 
 #: ../templates/config/profmanage.php:98
+#: ../templates/selfService/profManage.php:72
 msgid "Renamed profile."
 msgstr "Profil umbenannt."
 
@@ -9681,7 +9779,10 @@ msgstr "Samstag"
 #: ../templates/config/confmodules.php:224
 #: ../templates/config/confmain.php:449
 #: ../templates/config/moduleSettings.php:235
-#: ../templates/config/conftypes.php:318 ../templates/pdfedit/pdfpage.php:601
+#: ../templates/config/conftypes.php:318
+#: ../templates/selfService/selfServiceMain.php:397
+#: ../templates/selfService/adminMain.php:660
+#: ../templates/pdfedit/pdfpage.php:601
 #: ../templates/profedit/profilepage.php:238
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1243
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1247
@@ -9874,6 +9975,22 @@ msgstr "Ausgewählte Module"
 msgid "Selected users"
 msgstr "Ausgewählte Benutzer"
 
+#: ../templates/selfService/adminMain.php:298
+msgid "Self service configuration"
+msgstr "SelfService-Einstellungen"
+
+#: ../templates/selfService/adminMain.php:352
+msgid "Self service configuration editor"
+msgstr "SelfService-Einstellungsassistent"
+
+#: ../templates/selfService/adminMain.php:358
+msgid "Self service login"
+msgstr "SelfService-Login"
+
+#: ../templates/selfService/adminMain.php:344
+msgid "Self service profile"
+msgstr "SelfService-Profil"
+
 #: ../lib/modules/passwordSelfReset.inc:118
 #: ../lib/modules/passwordSelfReset.inc:222
 msgid "Send confirmation mail"
@@ -9952,7 +10069,8 @@ msgstr "Seriennummer"
 msgid "Server"
 msgstr "Server"
 
-#: ../templates/config/confmain.php:238 ../lib/modules/qmailUser.inc:111
+#: ../templates/config/confmain.php:238
+#: ../templates/selfService/adminMain.php:409 ../lib/modules/qmailUser.inc:111
 #: ../lib/modules/qmailUser.inc:156 ../lib/modules/qmailUser.inc:236
 #: ../lib/modules/qmailUser.inc:351 ../lib/modules/qmailUser.inc:420
 #: ../lib/modules/qmailUser.inc:585 ../lib/modules/qmailUser.inc:1195
@@ -9962,6 +10080,7 @@ msgid "Server address"
 msgstr "Serveradresse"
 
 #: ../templates/config/confmain.php:482
+#: ../templates/selfService/adminMain.php:187
 msgid "Server address is invalid!"
 msgstr "Die Server-Adresse ist ungültig!"
 
@@ -9981,6 +10100,7 @@ msgid "Server profile"
 msgstr "Serverprofil"
 
 #: ../templates/config/confmain.php:267
+#: ../templates/selfService/adminMain.php:429
 msgid "Server settings"
 msgstr "Servereinstellungen"
 
@@ -10052,6 +10172,10 @@ msgstr "Eigenes Passwort setzen"
 #: ../templates/3rdParty/pla/lib/QueryRender.php:171
 msgid "Set the search results to 0 to retrieve all available records."
 msgstr "Setzen Sie den Wert auf 0 um alle möglichen Ergebnisse zu erhalten."
+
+#: ../templates/selfService/adminMain.php:526
+msgid "Set this field read-only."
+msgstr "Dieses Feld schreibschützen."
 
 #: ../lib/modules/groupOfNames.inc:85
 msgid ""
@@ -10781,6 +10905,11 @@ msgstr "Der Radius-Bereich für dieses Konto."
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "Die Domänen-SID des Samba-Servers. Auszulesen mit \"net getlocalsid\"."
 
+#: ../templates/selfService/selfServiceLogin.php:106
+#: ../templates/selfService/selfServiceMain.php:168
+msgid "The TLS encryption could not be started."
+msgstr "Die TLS-Verschlüsselung konnte nicht gestartet werden."
+
 #: ../lib/modules/posixAccount.inc:81
 msgid ""
 "The UID ranges for users and hosts overlap! This is a problem because LAM "
@@ -10857,6 +10986,7 @@ msgid "The class names may only contain ASCII characters."
 msgstr "Der Klassenname darf nur ASCII-Zeichen enthalten."
 
 #: ../templates/config/confmain.php:176
+#: ../templates/selfService/adminMain.php:367
 msgid "The config file is not writable."
 msgstr "Die Konfigurationsdatei ist nicht schreibbar."
 
@@ -10966,7 +11096,7 @@ msgstr ""
 "Die hochgeladene Datei ist zu groß. Bitte prüfen Sie den Parameter "
 "upload_max_size in der php.ini."
 
-#: ../templates/initsuff.php:179
+#: ../templates/initsuff.php:180
 msgid ""
 "The following suffixes are missing in LDAP. LAM can create them for you."
 msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
@@ -11234,7 +11364,7 @@ msgstr "Die Objektklasse %s wird von Ihrem LDAP-Server nicht unterstützt."
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "Der Büroname des Benutzers (z.B. IhreFirma, Personalabteilung)."
 
-#: ../lib/modules.inc:1767
+#: ../templates/selfService/selfServiceMain.php:312 ../lib/modules.inc:1767
 msgid "The operation was stopped because of the above errors."
 msgstr "Die Operation wurde aufgrund obiger Fehler gestoppt."
 
@@ -11265,6 +11395,7 @@ msgstr "Der Parameter @@principal@@ wird durch den Benutzernamen ersetzt."
 
 #: ../templates/config/confsave.php:71 ../templates/config/confmain.php:73
 #: ../templates/config/mainlogin.php:59
+#: ../templates/selfService/adminLogin.php:54
 msgid "The password is invalid! Please try again."
 msgstr "Das Passwort ist falsch! Bitte erneut eingeben."
 
@@ -12680,6 +12811,7 @@ msgstr "BaumSuffix ist ungültig!"
 msgid "Tuesday"
 msgstr "Dienstag"
 
+#: ../templates/selfService/profManage.php:206
 #: ../templates/schema/schema.php:348 ../lib/modules/zarafaUser.inc:109
 #: ../lib/modules/zarafaUser.inc:198 ../lib/modules/zarafaUser.inc:279
 #: ../lib/modules/zarafaUser.inc:402 ../lib/modules/zarafaUser.inc:567
@@ -12773,6 +12905,22 @@ msgstr "Konnte Kerberos-Passwort nicht ändern."
 msgid "Unable to change password."
 msgstr "Konnte Passwort nicht ändern."
 
+#: ../templates/selfService/selfServiceMain.php:319
+msgid ""
+"Unable to change your account. Maybe you do not have enough rights to change "
+"the settings."
+msgstr ""
+"Ihr Konto konnte nicht verändert werden. Vielleicht fehlen Ihnen die nötigen "
+"Rechte zur Änderung?"
+
+#: ../templates/selfService/selfServiceMain.php:316
+msgid ""
+"Unable to change your account. Your changes might violate the password "
+"policy."
+msgstr ""
+"Ihr Konto konnte nicht verändert werden. Ihre Änderungen verletzen u.U. die "
+"Passwortrichtlinie."
+
 #: ../templates/tests/lamdaemonTest.php:261 ../lib/lamdaemon.inc:76
 #: ../lib/lamdaemon.inc:81
 msgid "Unable to connect to remote server!"
@@ -12800,6 +12948,7 @@ msgid "Unable to create new automount map."
 msgstr "Kann neue Automount-Map nicht erstellen."
 
 #: ../templates/config/profmanage.php:82
+#: ../templates/selfService/profManage.php:59
 msgid "Unable to create new profile!"
 msgstr "Kann das Profil nicht erstellen!"
 
@@ -12821,6 +12970,7 @@ msgid "Unable to delete mailbox from IMAP server."
 msgstr "Das Postfach konnte nicht gelöscht werden."
 
 #: ../templates/config/profmanage.php:123
+#: ../templates/selfService/profManage.php:87
 #: ../templates/profedit/profilemain.php:108 ../lib/config.inc:127
 #: ../lib/config.inc:139 ../lib/config.inc:146 ../lib/config.inc:154
 msgid "Unable to delete profile!"
@@ -12881,6 +13031,7 @@ msgstr "Konnte Bild nicht auslesen."
 msgid "Unable to retrieve schema!"
 msgstr "Konnte Schema nicht auslesen!"
 
+#: ../templates/selfService/adminMain.php:245
 #: ../templates/profedit/profilepage.php:124
 msgid "Unable to save profile!"
 msgstr "Kann das Profil nicht speichern!"
@@ -13468,9 +13619,9 @@ msgstr "Konnte DN nicht erstellen: %s."
 msgid "Was unable to delete DN: %s."
 msgstr "Konnte DN nicht löschen: %s."
 
-#: ../templates/lists/changePassword.php:673
-#: ../templates/lists/changePassword.php:711
-#: ../templates/lists/changePassword.php:757 ../templates/delete.php:225
+#: ../templates/lists/changePassword.php:678
+#: ../templates/lists/changePassword.php:716
+#: ../templates/lists/changePassword.php:762 ../templates/delete.php:225
 #, php-format
 msgid "Was unable to modify attributes from DN: %s."
 msgstr "Konnte die Attribute von DN %s nicht ändern."
@@ -13629,6 +13780,8 @@ msgid "Write access"
 msgstr "Schreibzugriff"
 
 #: ../templates/login.php:568 ../templates/login.php:626
+#: ../templates/selfService/selfServiceLogin.php:121
+#: ../templates/selfService/selfServiceLogin.php:138
 msgid "Wrong password/user name combination. Please try again."
 msgstr "Falsche Benutzername/Passwort-Kombination. Bitte erneut eingeben."
 
@@ -13824,6 +13977,7 @@ msgid ""
 msgstr "Sie müssen Dateiuploads in der php.ini (file_uploads=ON) aktivieren."
 
 #: ../templates/config/confmain.php:176
+#: ../templates/selfService/adminMain.php:367
 msgid ""
 "Your changes cannot be saved until you make the file writable for the "
 "webserver user."
@@ -13845,7 +13999,7 @@ msgstr ""
 "Ihre Sitzung ist abgelaufen, klicken Sie hier, um zur Anmeldeseite "
 "zurückzukehren."
 
-#: ../templates/login.php:289
+#: ../templates/login.php:289 ../templates/selfService/selfServiceLogin.php:78
 msgid "Your session expired, please log in again."
 msgstr "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an."
 
@@ -14388,30 +14542,6 @@ msgstr "ja"
 #~ msgid "Invalid account"
 #~ msgstr "Ungültiger Account"
 
-#~ msgid "Allow user input for this field."
-#~ msgstr "Benutzereingaben für dieses Feld erlauben."
-
-#~ msgid "Captions and labels"
-#~ msgstr "Überschriften und Beschriftungen"
-
-#~ msgid "Input fields"
-#~ msgstr "Eingabefelder"
-
-#~ msgid "LDAP password"
-#~ msgstr "LDAP-Passwort"
-
-#~ msgid "LDAP user"
-#~ msgstr "LDAP-Benutzer"
-
-#~ msgid "Link to self service login page for your users"
-#~ msgstr "Link zum SelfService für Ihre Benutzer"
-
-#~ msgid "Manage self service profiles"
-#~ msgstr "SelfService-Profile verwalten"
-
-#~ msgid "Page layout"
-#~ msgstr "Seitenlayout"
-
 #~ msgid ""
 #~ "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 #~ "and #*,.;:_-+!%&/|?{[()]}=@$ !"
@@ -14419,26 +14549,11 @@ msgstr "ja"
 #~ "Passwort enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 #~ "und #*,.;:_-+!%&/|?{[()]}=@$ !"
 
-#~ msgid "Self service configuration"
-#~ msgstr "SelfService-Einstellungen"
-
-#~ msgid "Self service configuration editor"
-#~ msgstr "SelfService-Einstellungsassistent"
-
-#~ msgid "Self service login"
-#~ msgstr "SelfService-Login"
-
-#~ msgid "Set this field read-only."
-#~ msgstr "Dieses Feld schreibschützen."
-
 #~ msgid "Sync Asterisk voicemail password with Unix password"
 #~ msgstr "Asterisk-Anrufbeantworterpasswort mit Unix synchronisieren"
 
 #~ msgid "Sync Kerberos password with Unix password"
 #~ msgstr "Kerberos-Passwort mit Unix synchronisieren"
-
-#~ msgid "The TLS encryption could not be started."
-#~ msgstr "Die TLS-Verschlüsselung konnte nicht gestartet werden."
 
 #~ msgid "The domain name needs to have at least 3 characters."
 #~ msgstr "Der Domänenname muss mindestens drei Zeichen lang sein."
@@ -14449,13 +14564,6 @@ msgstr "ja"
 #~ msgstr ""
 #~ "Verwenden Sie /bin/false um den Login zu deaktivieren. Die Shellliste "
 #~ "wird von lam/config/shells gelesen."
-
-#~ msgid ""
-#~ "Unable to change your account. Maybe you do not have enough rights to "
-#~ "change the settings."
-#~ msgstr ""
-#~ "Ihr Konto konnte nicht verändert werden. Vielleicht fehlen Ihnen die "
-#~ "nötigen Rechte zur Änderung?"
 
 #~ msgid "Unable to read sambaSID attribute."
 #~ msgstr "Konnte das Attribut sambaSID nicht lesen."
