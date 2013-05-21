@@ -640,7 +640,7 @@ class htmlInputField extends htmlElement {
 	 */
 	public function enableAutocompletion($values, $minLength = 1, $multiValue = false, $multiSeparatorExp = ',\s*', $multiSeparator = ', ') {
 		for ($i = 0; $i < sizeof($values); $i++) {
-			$values[$i] = '"' . htmlspecialchars($values[$i]) . '"';
+			$values[$i] = '"' . htmlspecialchars(str_replace(array('"', "\r", "\n"), array('', '', ''), $values[$i])) . '"';
 		}
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
