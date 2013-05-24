@@ -634,7 +634,7 @@ class htmlInputField extends htmlElement {
 	 * 
 	 * @param array $values list of values to suggest
 	 * @param int $minLength autocompletion starts after this number of caracters entered (default 1; 0 means immediate start)
-	 * @param boolean $multiValue allow multiple autocompletion values in the same fields
+	 * @param boolean $multiValue allow multiple autocompletion values in the same fields (default: false)
 	 * @param String $multiSeparator separator expression if multiple autocompletion values are allowed (default ",\s*")
 	 * @param String $multiSeparator separator for two values (default ", ")
 	 */
