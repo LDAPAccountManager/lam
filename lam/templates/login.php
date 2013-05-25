@@ -343,7 +343,11 @@ function display_LoginPage($config_object) {
 										$adminList[$text[0]] = $admins[$i];
 									}
 								}
-								$userSelect = new htmlSelect('username', $adminList);
+								$selectedAdmin = array();
+								if (isset($_POST['username']) && in_array($_POST['username'], $adminList)) {
+									$selectedAdmin = array($_POST['username']);
+								}
+								$userSelect = new htmlSelect('username', $adminList, $selectedAdmin);
 								$userSelect->setHasDescriptiveElements(true);
 								$userSelect->alignment = htmlElement::ALIGN_LEFT;
 								$table->addElement($userSelect);
