@@ -1035,9 +1035,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$this->attributes['description'] = array_values($this->attributes['description']);
 		}
-		$this->attributes['sn'][0] = $_POST['sn'];
+		$this->attributes['sn'][0] = trim($_POST['sn']);
 		if (!get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
-		$this->attributes['givenName'][0] = $_POST['givenName'];
+		$this->attributes['givenName'][0] = trim($_POST['givenName']);
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			$titleCounter = 0;
@@ -1059,7 +1059,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$mailCounter = 0;
 			while (isset($_POST['mail' . $mailCounter])) {
-				$this->attributes['mail'][$mailCounter] = $_POST['mail' . $mailCounter];
+				$this->attributes['mail'][$mailCounter] = trim($_POST['mail' . $mailCounter]);
 				if (($_POST['mail' . $mailCounter] != '') && !get_preg($this->attributes['mail'][$mailCounter], 'email')) $errors[] = $this->messages['email'][0];
 				if ($this->attributes['mail'][$mailCounter] == '') {
 					unset($this->attributes['mail'][$mailCounter]);
@@ -1074,7 +1074,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephoneNumberCounter = 0;
 			while (isset($_POST['telephoneNumber' . $telephoneNumberCounter])) {
-				$this->attributes['telephoneNumber'][$telephoneNumberCounter] = $_POST['telephoneNumber' . $telephoneNumberCounter];
+				$this->attributes['telephoneNumber'][$telephoneNumberCounter] = trim($_POST['telephoneNumber' . $telephoneNumberCounter]);
 				if (!get_preg($this->attributes['telephoneNumber'][$telephoneNumberCounter], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
 				if ($this->attributes['telephoneNumber'][$telephoneNumberCounter] == '') {
 					unset($this->attributes['telephoneNumber'][$telephoneNumberCounter]);
@@ -1089,7 +1089,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
 			$mobileCounter = 0;
 			while (isset($_POST['mobile' . $mobileCounter])) {
-				$this->attributes['mobile'][$mobileCounter] = $_POST['mobile' . $mobileCounter];
+				$this->attributes['mobile'][$mobileCounter] = trim($_POST['mobile' . $mobileCounter]);
 				if (!get_preg($this->attributes['mobile'][$mobileCounter], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
 				if ($this->attributes['mobile'][$mobileCounter] == '') {
 					unset($this->attributes['mobile'][$mobileCounter]);
@@ -1104,7 +1104,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$facsimileTelephoneNumberCounter = 0;
 			while (isset($_POST['facsimileTelephoneNumber' . $facsimileTelephoneNumberCounter])) {
-				$this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter] = $_POST['facsimileTelephoneNumber' . $facsimileTelephoneNumberCounter];
+				$this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter] = trim($_POST['facsimileTelephoneNumber' . $facsimileTelephoneNumberCounter]);
 				if (!get_preg($this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
 				if ($this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter] == '') {
 					unset($this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter]);
@@ -1119,7 +1119,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
 			$homePhoneCounter = 0;
 			while (isset($_POST['homePhone' . $homePhoneCounter])) {
-				$this->attributes['homePhone'][$homePhoneCounter] = $_POST['homePhone' . $homePhoneCounter];
+				$this->attributes['homePhone'][$homePhoneCounter] = trim($_POST['homePhone' . $homePhoneCounter]);
 				if (!get_preg($this->attributes['homePhone'][$homePhoneCounter], 'telephone')) $errors[] = $this->messages['homePhone'][0];
 				if ($this->attributes['homePhone'][$homePhoneCounter] == '') {
 					unset($this->attributes['homePhone'][$homePhoneCounter]);
@@ -1193,7 +1193,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
 			$labeledURICounter = 0;
 			while (isset($_POST['labeledURI' . $labeledURICounter])) {
-				$this->attributes['labeledURI'][$labeledURICounter] = $_POST['labeledURI' . $labeledURICounter];
+				$this->attributes['labeledURI'][$labeledURICounter] = trim($_POST['labeledURI' . $labeledURICounter]);
 				if ($this->attributes['labeledURI'][$labeledURICounter] == '') {
 					unset($this->attributes['labeledURI'][$labeledURICounter]);
 				}
@@ -2543,7 +2543,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
 			// last name
 			if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_lastName']], 'realname')) {
-				$partialAccounts[$i]['sn'] = $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
+				$partialAccounts[$i]['sn'] = trim($rawAccounts[$i][$ids['inetOrgPerson_lastName']]);
 			}
 			else {
 				$errMsg = $this->messages['lastname'][1];
@@ -2553,7 +2553,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// first name
 			if ($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
-					$partialAccounts[$i]['givenName'] = $rawAccounts[$i][$ids['inetOrgPerson_firstName']];
+					$partialAccounts[$i]['givenName'] = trim($rawAccounts[$i][$ids['inetOrgPerson_firstName']]);
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
@@ -2711,7 +2711,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// telephone
 			if (isset($ids['inetOrgPerson_telephone']) && ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "")) {
-				$telephoneList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_telephone']]);
+				$telephoneList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_telephone']]));
 				$partialAccounts[$i]['telephoneNumber'] = $telephoneList;
 				for ($x = 0; $x < sizeof($telephoneList); $x++) {
 					if (!get_preg($telephoneList[$x], 'telephone')) {
@@ -2724,7 +2724,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// home telephone
 			if (isset($ids['inetOrgPerson_homePhone']) && ($rawAccounts[$i][$ids['inetOrgPerson_homePhone']] != "")) {
-				$homePhoneList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_homePhone']]);
+				$homePhoneList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_homePhone']]));
 				$partialAccounts[$i]['homePhone'] = $homePhoneList;
 				for ($x = 0; $x < sizeof($homePhoneList); $x++) {
 					if (!get_preg($homePhoneList[$x], 'telephone')) {
@@ -2737,7 +2737,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// mobile
 			if (isset($ids['inetOrgPerson_mobile']) && ($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "")) {
-				$mobileList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_mobile']]);
+				$mobileList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_mobile']]));
 				$partialAccounts[$i]['mobile'] = $mobileList;
 				for ($x = 0; $x < sizeof($mobileList); $x++) {
 					if (!get_preg($mobileList[$x], 'telephone')) {
@@ -2750,7 +2750,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// facsimile
 			if (isset($ids['inetOrgPerson_fax']) && ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "")) {
-				$facsimileTelephoneNumberList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_fax']]);
+				$facsimileTelephoneNumberList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_fax']]));
 				$partialAccounts[$i]['facsimileTelephoneNumber'] = $facsimileTelephoneNumberList;
 				for ($x = 0; $x < sizeof($facsimileTelephoneNumberList); $x++) {
 					if (!get_preg($facsimileTelephoneNumberList[$x], 'telephone')) {
@@ -2763,7 +2763,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// eMail
 			if (isset($ids['inetOrgPerson_email']) && ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "")) {
-				$mailList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_email']]);
+				$mailList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_email']]));
 				$partialAccounts[$i]['mail'] = $mailList;
 				for ($x = 0; $x < sizeof($mailList); $x++) {
 					if (!get_preg($mailList[$x], 'email')) {
@@ -2783,7 +2783,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// labeledURI
 			if (isset($ids['inetOrgPerson_labeledURI']) && ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "")) {
-				$partialAccounts[$i]['labeledURI'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_labeledURI']]);
+				$partialAccounts[$i]['labeledURI'] = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']]));
 			}
 			if (!in_array('posixAccount', $selectedModules)) {
 				// cn

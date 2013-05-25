@@ -910,7 +910,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
 			if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
 		}
-		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($_POST['uid'] != $this->attributes['uid'][0])) {
+		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && (trim($_POST['uid']) != $this->attributes['uid'][0])) {
 			$errors[] = $this->messages['uid'][0];
 		}
 		if (isset($this->orig['gidNumber'][0]) && ($this->orig['gidNumber'][0] != '') && ($_POST['gidNumber'] != $this->attributes['gidNumber'][0])) {
@@ -918,7 +918,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
 			$errors[] = $errorMessage;
 		}
-		if (isset($this->orig['uidNumber'][0]) && $this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0]) {
+		if (isset($this->orig['uidNumber'][0]) && $this->orig['uidNumber'][0]!='' && trim($_POST['uidNumber'])!=$this->attributes['uidNumber'][0]) {
 			$errorMessage = $this->messages['uidNumber'][5];
 			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
 			$errors[] = $errorMessage;
@@ -958,7 +958,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (!get_preg($this->attributes['cn'][0], 'cn')) {
 			$errors[] = $this->messages['cn'][0];
 		}
-		$this->attributes['uidNumber'][0] = $_POST['uidNumber'];
+		$this->attributes['uidNumber'][0] = trim($_POST['uidNumber']);
 		$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
 		if ($this->get_scope()=='user') {
 			if (($this->attributes['uid'][0] != $_POST['uid']) && !get_preg($_POST['uid'], '!upper')) {
@@ -968,7 +968,7 @@ class posixAccount extends baseModule implements passwordService {
 				$errors[] = $this->messages['homeDirectory'][0];
 			}
 		}
-		$this->attributes['uid'][0] = $_POST['uid'];
+		$this->attributes['uid'][0] = trim($_POST['uid']);
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
 		if ($this->get_scope()=='user') {
@@ -1031,7 +1031,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		// Show warning if LAM has changed username
-		if ($this->attributes['uid'][0] != $_POST['uid']) {
+		if ($this->attributes['uid'][0] != trim($_POST['uid'])) {
 			if ($this->get_scope()=='user') $errors[] = $this->messages['uid'][5];
 			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
 		}
@@ -1787,7 +1787,7 @@ class posixAccount extends baseModule implements passwordService {
 				if ($this->get_scope() == 'user') {
 					if (($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
 						($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
-						$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+						$partialAccounts[$i]['uidNumber'] = trim($rawAccounts[$i][$ids['posixAccount_uid']]);
 					}
 					else {
 						$errMsg = $this->messages['uidNumber'][4];
@@ -1798,7 +1798,7 @@ class posixAccount extends baseModule implements passwordService {
 				elseif ($this->get_scope() == 'host') {
 					if (($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
 						($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
-						$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+						$partialAccounts[$i]['uidNumber'] = trim($rawAccounts[$i][$ids['posixAccount_uid']]);
 					}
 					else {
 						$errMsg = $this->messages['uidNumber'][4];
