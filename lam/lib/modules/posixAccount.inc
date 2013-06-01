@@ -2723,7 +2723,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * This is the case if a hashed password is set ("{" at the beginning).
 	 */
 	public function isLockable() {
-		if (isset($this->attributes['userPassword'][0]) && ((substr($this->attributes['userPassword'][0], 0, 1) == "{") || (substr($this->attributes['userPassword'][0], 1, 1) == "{"))) {
+		if (isset($this->attributes['userPassword'][0]) && pwd_is_lockable($this->attributes['userPassword'][0])) {
 			return true;
 		}
 		return false;

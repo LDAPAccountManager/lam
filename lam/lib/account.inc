@@ -269,6 +269,20 @@ function pwd_disable($hash) {
 }
 
 /**
+ * Checks if a Unix password can be locked.
+ * This checks if the password is not plain text but e.g. contains {SSHA}.
+ * 
+ * @param String $password password value
+ * @return boolean can be locked
+ */
+function pwd_is_lockable($password) {
+	if (($password == null) || (strlen($password) < 5)) {
+		return false;
+	}
+	return ((substr($password, 0, 1) == "{") || (substr($password, 1, 1) == "{")) && (strpos($password, "}") > 3);
+}
+
+/**
 * Checks if a password hash is enabled/disabled
 *
 * @param string $hash password hash to check
