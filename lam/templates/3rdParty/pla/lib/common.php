@@ -40,18 +40,19 @@ $app['direct_scripts'] = array('cmd.php','index.php',
 
 # Which script was invoked.
 $app['script_running'] = $_SERVER['SCRIPT_NAME'];
+$app['script_request_uri'] = $_SERVER['REQUEST_URI'];
 
 foreach ($app['direct_scripts'] as $script) {
 	$app['scriptOK'] = false;
 
-	if (preg_match('/'.$script.'$/',$app['script_running'])) {
+	if (preg_match('/'.$script.'$/',$app['script_running']) || preg_match('/[^\\?]*'.$script.'/',$app['script_request_uri'])) {
 		$app['scriptOK'] = true;
 		break;
 	}
 }
 
 # Anything in the tools dir or cron dir can be executed directly.
-if ((! $app['scriptOK'] && preg_match('/^\/[cron|tools]/',$app['script_running'])) || ! isset($_SERVER['SERVER_SOFTWARE']))
+if ((! $app['scriptOK'] && (preg_match('/^\/[cron|tools]/',$app['script_running']) || preg_match('/^\/[cron|tools]/',$app['script_request_uri']))) || ! isset($_SERVER['SERVER_SOFTWARE']))
 	$app['scriptOK'] = true;
 
 if (! $app['scriptOK']) {
