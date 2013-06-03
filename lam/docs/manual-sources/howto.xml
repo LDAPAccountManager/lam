@@ -1963,7 +1963,64 @@ Have fun!
         <para>The Unix module manages Unix user accounts including group
         memberships.</para>
 
-        <para></para>
+        <para>There are several configuration options for this module:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>UID generator: LAM will suggest UID numbers for your
+            accounts. Please note that it may happen that there are duplicate
+            IDs assigned if users create accounts at the same time. Use an
+            <ulink
+            url="http://www.openldap.org/doc/admin24/overlays.html">overlay</ulink>
+            like "Attribute Uniqueness" if you have lots of LAM admins
+            creating accounts.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Fixed range: LAM searches for free numbers within the
+                given limits. LAM always tries to use a free UID that is
+                greater than the existing UIDs to prevent collisions with
+                deleted accounts.</para>
+              </listitem>
+
+              <listitem>
+                <para>Samba ID pool: This uses a special LDAP entry that
+                includes attributes that store a counter for the last used
+                UID/GID. Please note that this requires that you install the
+                Samba schema and create an LDAP entry of object class
+                "sambaUnixIdPool".</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Password hash type: If possible use CRYPT-SHA512 or SSHA to
+            protect your user's passwords.</para>
+          </listitem>
+
+          <listitem>
+            <para>Login shells: List of valid login shells that can be
+            selected when editing an account.</para>
+          </listitem>
+
+          <listitem>
+            <para>Hidden options: Some input fields can be hidden to simplify
+            the GUI if you do not need them.</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixUserConfig.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The user name is automatically filled as specified in the
+        configuration (default smiller for Steve Miller). Of course, the
+        suggested value can be changed any time. Common name is also filled
+        with first/last name by default.</para>
 
         <screenshot>
           <mediaobject>
@@ -2708,10 +2765,55 @@ Have fun!
         default module to manage Unix groups and uses the nis.schema. Suse
         users who use the rfc2307bis.schema need to use LAM Pro.</para>
 
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>GID generator: LAM will suggest GID numbers for your accounts.
+        Please note that it may happen that there are duplicate IDs assigned
+        if users create groups at the same time. Use an <ulink
+        url="http://www.openldap.org/doc/admin24/overlays.html">overlay</ulink>
+        like "Attribute Uniqueness" if you have lots of LAM admins creating
+        groups.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Fixed range: LAM searches for free numbers within the given
+            limits. LAM always tries to use a free GID that is greater than
+            the existing GIDs to prevent collisions with deleted
+            groups.</para>
+          </listitem>
+
+          <listitem>
+            <para>Samba ID pool: This uses a special LDAP entry that includes
+            attributes that store a counter for the last used UID/GID. Please
+            note that this requires that you install the Samba schema and
+            create an LDAP entry of object class "sambaUnixIdPool".</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixGroupConfig.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Group management:</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_unixGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Group membership management:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixGroup2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -6864,10 +6966,13 @@ Run slapindex to rebuild the index.
     <title>Setup for home directory and quota management</title>
 
     <para>Lamdaemon.pl is used to modify quota and home directories on a
-    remote or local host via SSH. If you want wo use it you have to set up the
-    following things to get it to work:</para>
+    remote or local host via SSH (even if homedirs are located on
+    localhost).</para>
 
-    <section>
+    <para>If you want wo use it you have to set up the following things to get
+    it to work:</para>
+
+    <section id="a_lamdaemonConf">
       <title>LDAP Account Manager configuration</title>
 
       <itemizedlist>
@@ -6890,9 +6995,32 @@ Run slapindex to rebuild the index.
           server. Do not create a second local account but change your system
           to accept LDAP users. You can use LAM to add the Unix account part
           to your admin user or create a new account. Please do not forget to
-          setup LDAP write access (ACLs) if you create a new account.</para>
+          setup LDAP write access (<ulink
+          url="http://www.openldap.org/doc/admin24/access-control.html">ACLs</ulink>)
+          if you create a new account.</para>
         </listitem>
       </itemizedlist>
+
+      <para></para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lamdaemon.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Note that the builtin admin/manager entries do not work for
+      lamdaemon. You need to login with a Unix account.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lamdaemon1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
       <para><emphasis role="bold">OpenLDAP ACL location:</emphasis></para>
 
@@ -6990,12 +7118,13 @@ Run slapindex to rebuild the index.
 
           <para>Now check /var/log/syslog for messages from sshd.</para>
         </listitem>
-
-        <listitem>
-          <para>Update Openssh. A Suse Linux user reported that upgrading
-          Openssh solved the problem.</para>
-        </listitem>
       </itemizedlist>
+
+      <para>Error message <emphasis role="bold">"Your LAM admin user (...)
+      must be a valid Unix account to work with lamdaemon!"</emphasis>: This
+      happens if you use the default LDAP admin/manager user to login to LAM.
+      Please see <link linkend="a_lamdaemonConf">here</link> and setup a Unix
+      account.</para>
     </section>
   </appendix>
 
