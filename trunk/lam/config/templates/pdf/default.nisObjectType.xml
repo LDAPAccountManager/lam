@@ -1,7 +1,0 @@
-<pdf type="nisObjectType" filename="printLogo.jpg" headline="LDAP Account Manager">
-	<section name="_nisObject_cn">
-		<entry name="nisObject_nisMapName" />
-		<entry name="nisObject_nisMapEntry" />
-		<entry name="nisObject_description" />
-	</section>
-</pdf>

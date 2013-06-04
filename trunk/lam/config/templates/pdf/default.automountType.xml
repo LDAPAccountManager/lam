@@ -1,6 +1,0 @@
-<pdf type="automountType" filename="printLogo.jpg" headline="Automount information">
-	<section name="_automount_cn">
-		<entry name="automount_description" />
-		<entry name="automount_automountInformation" />
-	</section>
-</pdf>
