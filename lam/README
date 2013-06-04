@@ -1,0 +1,35 @@
+
+LAM - Readme
+============
+
+  LDAP Account Manager (LAM) manages user, group and host accounts in an LDAP
+  directory. LAM runs on any webserver with PHP5 support and connects to your
+  LDAP server unencrypted or via SSL/TLS.
+  Currently LAM supports these account types: Samba 3/4, Unix, Kolab 2,
+  address book entries, NIS mail aliases and MAC addresses. There is a tree
+  viewer included to allow access to the raw LDAP attributes. You can use
+  templates for account creation and use multiple configuration profiles.
+  LAM is translated to Catalan, Chinese (Traditional + Simplified), Czech,
+  Dutch, English, French, German, Hungarian, Italian, Japanese, Polish,
+  Portuguese, Russian, Slovak and Spanish.
+
+  https://www.ldap-account-manager.org/
+
+    Copyright (C) 2003 - 2013 Roland Gruber <post@rolandgruber.de>
+
+  Installation and documentation:
+    Please see the LAM manual in docs/manual/index.html.
+
+  Default password:
+    The default password to edit the configuration options is "lam".
+
+  Download:
+    You can get the newest version at https://www.ldap-account-manager.org/.
+
+  License:
+    LAM is published under the GNU General Public License.
+    The complete list of licenses can be found in the copyright file.
+
+
+    Have fun!
+        The LAM development team

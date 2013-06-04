@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>PDF (pdf.inc, pdfstruct.inc)</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+<h1 style="text-align: center;">PDF (pdf.inc, pdfstruct.inc)<br>
+</h1>
+<br>
+These files control the management of PDF structures and creation of
+PDF files.<br>
+<br>
+<br>
+<h2>pdfstruct.inc</h2>
+This file includes all functions which are needed to manage the PDF
+structures. You can load/save/delete structures, get a list of
+available structures and logos.<br>
+<br>
+<br>
+<h2>pdf.inc</h2>
+The pdf.inc library is used to create a PDF file. <br>
+<br>
+<span style="font-weight: bold;">createModulePDF()</span> takes a list
+of <span style="font-style: italic;">accountContainer</span> objects
+and a PDF structure as parameters. The function then creates a PDF
+file, saves it to the <span style="font-style: italic;">tmp</span>
+folder and returns the file name.<br>
+<br>
+<br>
+The <span style="font-weight: bold;">lamPDF</span> class extends the <span
+ style="font-style: italic;">UFPDF</span> class and adds the LAM
+specific header and footer.<br>
+It also defines the used font. Currently only Bitstream-Vera is
+supported.<br>
+<br>
+</body>
+</html>
