@@ -1,0 +1,84 @@
+#!/bin/bash
+# $Id$
+#
+# Copyright (C) 2004 - 2011  Roland Gruber
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+
+# This script is run to create archives of all messages.po files.
+
+echo "Generating POT"
+./make_po
+mv messages.po messages.pot
+tar -czf messages.pot.tar.gz messages.pot
+rm messages.pot
+echo " "
+
+echo "Generating Catalan translation template"
+./make_po_ca
+tar -czf messages.po_ca.tar.gz messages.po
+echo " "
+
+echo "Generating Chinese (Traditional) translation template"
+./make_po_zh_TW
+tar -czf messages.po_zh_TW.tar.gz messages.po
+echo " "
+
+echo "Generating Chinese (Simplified) translation template"
+./make_po_zh_CN
+tar -czf messages.po_zh_CN.tar.gz messages.po
+echo " "
+
+echo "Generating Czech translation template"
+./make_po_cs
+tar -czf messages.po_cs.tar.gz messages.po
+echo " "
+
+echo "Generating Dutch translation template"
+./make_po_nl
+tar -czf messages.po_nl.tar.gz messages.po
+echo " "
+
+echo "Generating Spanish translation template"
+./make_po_es
+tar -czf messages.po_es.tar.gz messages.po
+echo " "
+
+echo "Generating French translation template"
+./make_po_fr
+tar -czf messages.po_fr.tar.gz messages.po
+echo " "
+
+echo "Generating Hungarian translation template"
+./make_po_hu
+tar -czf messages.po_hu.tar.gz messages.po
+echo " "
+
+echo "Generating Italian translation template"
+./make_po_it
+tar -czf messages.po_it.tar.gz messages.po
+echo " "
+
+echo "Generating Japanese translation template"
+./make_po_jp
+tar -czf messages.po_jp.tar.gz messages.po
+echo " "
+
+echo "Generating Polish translation template"
+./make_po_pl
+tar -czf messages.po_pl.tar.gz messages.po
+echo " "
+
+echo "Generating Portuguese translation template"
+./make_po_pt
+tar -czf messages.po_pt.tar.gz messages.po
+echo " "
+
+echo "Generating Russian translation template"
+./make_po_ru
+tar -czf messages.po_ru.tar.gz messages.po
+
+echo "Generating Slovakian translation template"
+./make_po_sk
+tar -czf messages.po_sk.tar.gz messages.po
+
+rm messages.po
