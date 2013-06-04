@@ -1,0 +1,78 @@
+# Portuguese translation for ldap-account-manager's debconf messages
+# Copyright (C) 2009 Luís Picciochi
+# This file is distributed under the same license as the ldap-account-manager package.
+# Luís Picciochi, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ldap-account-manager\n"
+"Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
+"POT-Creation-Date: 2010-06-03 12:36+0200\n"
+"PO-Revision-Date: 2009-07-30 15:32+0000\n"
+"Last-Translator: Luís Picciochi <Pitxyoki@Gmail.com>\n"
+"Language-Team: Portuguese <traduz@debianpt.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: multiselect
+#. Description
+#: ../templates:1001
+msgid "Web server configuration:"
+msgstr "Configuração do servidor web:"
+
+#. Type: multiselect
+#. Description
+#: ../templates:1001
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"automatic configuration process only supports Apache2. If you choose to "
+"configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"O Gestor de Contas LDAP (LAM) suporta qualquer servidor web que suporte "
+"PHP5, mas este processo de configuração automático suporta apenas Apache2. "
+"Se escolher configurar o Apache2, o LAM pode ser acedido em http(s)://"
+"localhost/lam"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Alias name:"
+msgstr "Nome alternativo (alias):"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
+msgstr ""
+"O LAM irá adicionar um nome alternativo (alias) ao seu httpd.conf, que lhe "
+"permite aceder ao LAM através de http(s)://localhost/lam. Pode escolher um "
+"nome alternativo (alias) que não seja \"lam\"."
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Would you like to restart your webserver(s) now?"
+msgstr "Reiniciar o(s) seu(s) servidor(es) web agora?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Your webserver(s) need to be restarted in order to apply the changes."
+msgstr ""
+"O(s) seu(s) servidor(es) web necessitam de ser reiniciados para aplicar as "
+"alterações."
+
+#~ msgid "Master configuration password (clear text):"
+#~ msgstr "Password para a configuração principal (texto simples):"
+
+#~ msgid ""
+#~ "The configuration profiles are secured by a master password. You will "
+#~ "need it to create and delete profiles. As default it is set to \"lam\" "
+#~ "and can be changed directly in LAM."
+#~ msgstr ""
+#~ "Os perfis de configuração são protegidos por uma palavra-chave principal. "
+#~ "Irá necessitar dela para criar e apagar perfis. Por omissão, esta palavra-"
+#~ "chave é \"lam\" e pode ser alterada directamente no LAM."

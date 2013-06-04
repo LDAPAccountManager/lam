@@ -1,0 +1,19 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Password reset page</title><link rel="stylesheet" href="style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="LDAP Account Manager Pro - HowTo"><link rel="up" href="ch03.html" title="Chapter 3. Access levels and passwort reset"><link rel="prev" href="ch03.html" title="Chapter 3. Access levels and passwort reset"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Password reset page</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Access levels and passwort reset</th><td width="20%" align="right"> </td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="s_pwdReset"></a>Password reset page</h2></div></div></div><p>This special page allows your deskside support staff to reset the
+      Unix and Samba passwords of your users. If you set the <a class="link" href="ch03.html#s_accessLevel">access level</a> to "Change passwords" then
+      LAM will not allow any changes to the LDAP database except password
+      changes via this page. The account pages will be still available in
+      read-only mode.</p><p>You can open the password reset page by clicking on the key symbol
+      on each user account:</p><div class="screenshot"><div class="mediaobject"><img src="images/passwordReset1.png"></div></div><p>There are three different options to set a new
+      password:</p><div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><strong>set random password and display it on
+          screen</strong></span></p><p>This will set the user's password to a random value. The
+          password will be 11 characters long with a random combination of
+          letters, digits and ".-_".</p><p>You may want to use this method to tell users their new
+          passwords via phone.</p></li><li><p><span class="bold"><strong>set random password and mail it to
+          user</strong></span></p><p>If the user account has set the mail attribute then LAM can
+          send your user a mail with the new password. You can change the mail
+          template to fit your needs. See the help link for further
+          details.</p><p>Using this method will prevent that your support staff knows
+          the new password.</p></li><li><p><span class="bold"><strong>set specific password</strong></span></p><p>Here you can specify your own password.</p></li></ul></div><div class="screenshot"><div class="mediaobject"><img src="images/passwordReset2.png"></div></div><p>LAM will display contact information about the user like the
+      user's name, email address and telephone number. This will help your
+      deskside support to easily contact your users.</p><p>If a user account has Samba passwords set then LAM will offer to
+      synchronize the passwords.</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> </td></tr><tr><td width="40%" align="left" valign="top">Chapter 3. Access levels and passwort reset </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> </td></tr></table></div></body></html>

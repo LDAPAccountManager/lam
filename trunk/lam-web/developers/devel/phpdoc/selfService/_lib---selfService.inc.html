@@ -1,0 +1,450 @@
+<html>
+<head>
+<title>Docs for page selfService.inc</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">selfService</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                                                                                                                                        
+                                                                                          		  [ <a href="../classtrees_selfService.html" class="menu">class tree: selfService</a> ]
+		  [ <a href="../elementindex_selfService.html" class="menu">index: selfService</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+					<p><a href="../ric_README.html">README</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../selfService/_lib---selfService.inc.html">		selfService.inc
+		</a><br>
+	  </div><br />
+
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../selfService/selfServiceProfile.html">selfServiceProfile</a><br />
+	  </div>
+
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: selfService.inc</h1>
+Source Location: /lib/selfService.inc<br /><br />
+
+<br>
+<br>
+
+<div class="contents">
+<h2>Classes:</h2>
+<dt><a href="../selfService/selfServiceProfile.html">selfServiceProfile</a></dt>
+	<dd>Includes all settings of a self service profile.</dd>
+</div><br /><br />
+
+<h2>Page Details:</h2>
+Interface between modules and self service pages.<br /><br /><p>This file also includes the self service profile class and helper functions.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Roland Gruber</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<h4>Includes:</h4>
+<div class="tags">
+include_once(<a href="../modules/_lib---modules.inc.html">"modules.inc"</a>) [line 34]<br />
+modules<br /><br />include_once(<a href="../types/_lib---types.inc.html">"types.inc"</a>) [line 36]<br />
+account types<br /><br /></div>
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functioncheckSelfServiceOptions"></a>
+	<h3>checkSelfServiceOptions <span class="smalllinenumber">[line 116]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array checkSelfServiceOptions(
+string $scope, string $fields, array $attributes)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Checks if all input values are correct and returns the LDAP commands which should be executed.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>messages and LDAP commands (array('messages' =&gt; array(), 'add' =&gt; array(), 'del' =&gt; array(), 'mod' =&gt; array()))</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$fields</b>&nbsp;&nbsp;</td>
+        <td>input fields (array(&lt;moduleName&gt; =&gt; array(&lt;field1&gt;, &lt;field2&gt;, ...)))</td>
+      </tr>
+		      <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$attributes</b>&nbsp;&nbsp;</td>
+        <td>LDAP attributes</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functioncheckSelfServiceSettings"></a>
+	<h3>checkSelfServiceSettings <span class="smalllinenumber">[line 238]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array checkSelfServiceSettings(
+string $scope, array $options)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Checks if the self service settings are valid<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>list of error messages</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+		      <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$options</b>&nbsp;&nbsp;</td>
+        <td>hash array containing all options (name =&gt; array(...))</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetSelfServiceFieldSettings"></a>
+	<h3>getSelfServiceFieldSettings <span class="smalllinenumber">[line 75]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getSelfServiceFieldSettings(
+string $scope)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns the field settings for the self service.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>settings</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetSelfServiceOptions"></a>
+	<h3>getSelfServiceOptions <span class="smalllinenumber">[line 95]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getSelfServiceOptions(
+string $scope, array $fields, array $attributes)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns meta HTML code for each self service field.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>meta HTML code (array(&lt;moduleName&gt; =&gt; array(&lt;field1&gt; =&gt; array(&lt;meta HTML&gt;))))</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+		      <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$fields</b>&nbsp;&nbsp;</td>
+        <td>input fields (array(&lt;moduleName&gt; =&gt; array(&lt;field1&gt;, &lt;field2&gt;, ...)))</td>
+      </tr>
+		      <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$attributes</b>&nbsp;&nbsp;</td>
+        <td>LDAP attributes (attribute names in lower case)</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetSelfServiceProfiles"></a>
+	<h3>getSelfServiceProfiles <span class="smalllinenumber">[line 137]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getSelfServiceProfiles(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns a list of all available self service profiles (without .conf)<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>profile names (array(&lt;account type&gt; =&gt; array(&lt;profile1&gt;, &lt;profile2&gt;, ...)))</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetSelfServiceSearchAttributes"></a>
+	<h3>getSelfServiceSearchAttributes <span class="smalllinenumber">[line 55]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getSelfServiceSearchAttributes(
+string $scope)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns a list of possible search attributes for the self service.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>attributes</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functiongetSelfServiceSettings"></a>
+	<h3>getSelfServiceSettings <span class="smalllinenumber">[line 221]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getSelfServiceSettings(
+string $scope)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns a hash array (module name =&gt; elements) of all module options for the configuration page.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>configuration options</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionisLAMProVersion"></a>
+	<h3>isLAMProVersion <span class="smalllinenumber">[line 43]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean isLAMProVersion(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns if this is a LAM Pro installation.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>LAM Pro installation</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionloadSelfServiceProfile"></a>
+	<h3>loadSelfServiceProfile <span class="smalllinenumber">[line 161]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../selfService/selfServiceProfile.html">selfServiceProfile</a> loadSelfServiceProfile(
+string $name, string $scope)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Loads all settings of a self service profile.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>true if file was readable</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$name</b>&nbsp;&nbsp;</td>
+        <td>profile name</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionsaveSelfServiceProfile"></a>
+	<h3>saveSelfServiceProfile <span class="smalllinenumber">[line 194]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean saveSelfServiceProfile(
+string $name, string $scope, <a href="../selfService/selfServiceProfile.html">selfServiceProfile</a> $profile)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Saves a self service profile.<br /><br /><p>File is created, if needed</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>true, if saving succeeded</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$name</b>&nbsp;&nbsp;</td>
+        <td>name of the account profile</td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$scope</b>&nbsp;&nbsp;</td>
+        <td>account type</td>
+      </tr>
+		      <tr>
+        <td class="type"><a href="../selfService/selfServiceProfile.html">selfServiceProfile</a>&nbsp;&nbsp;</td>
+        <td><b>$profile</b>&nbsp;&nbsp;</td>
+        <td>self service profile</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Thu, 07 Feb 2008 20:26:55 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.0</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

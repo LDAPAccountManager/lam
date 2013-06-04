@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Module HowTo - General module options</title>
+
+
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css"></head><body>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+<div style="text-align: center;">
+<h1>Module HowTo - General module options<br>
+</h1>
+<br>
+<br>
+<div style="text-align: left;"><br>
+<h2>1. Account types<br>
+</h2>
+LAM currently provides three account types: <span style="font-weight: bold;">users, groups, hosts<br>
+</span>A module can manage one or more account types.<br>
+<br>
+The types are specified with <span style="font-weight: bold;">can_manage()</span>
+or <span style="font-weight: bold;">meta['account_types']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+Our <span style="font-style: italic;">ieee802Device</span>
+module will be used only for host accounts.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // manages host accounts<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; $return["account_types"] = array("host");</span><br style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>2. Base modules<br>
+</h2>
+In LDAP every entry needs exactly one <span style="font-style: italic;">structural
+object class</span>. Therefore all modules which provide a <span style="font-style: italic;">structural object class</span> are marked
+as <span style="font-weight: bold;">base module</span>.<br>
+<br>
+This is done with <span style="font-weight: bold;">is_base_module()</span>
+or <span style="font-weight: bold;">meta['is_base']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">inetOrgPerson</span>
+module manages the structural object class "inetOrgPerson" and
+therefore is a <span style="font-weight: bold;">base module</span>.<br>
+If your module is not a base module you can skip the meta data for
+this, default is <span style="font-style: italic;">false</span>.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // base module<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; $return["is_base"] = true;</span><br style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>3. Alias name</h2>
+The module name is very limited, therefore every module has an <span style="font-style: italic;">alias name</span>. This <span style="font-style: italic;">alias name</span> has no limitations and
+can be translated. It may contain special characters but make sure that
+it does not contain HTML special characters like "&lt;".<br>
+The <span style="font-style: italic;">alias name </span>can be the
+same for all managed <span style="font-style: italic;">account types</span>
+or differ for each type.<br>
+<br>
+The <span style="font-style: italic;">alias name</span> is specified
+with <span style="font-weight: bold;">get_alias()</span>
+or <span style="font-weight: bold;">meta['alias']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+Our <span style="font-style: italic;">ieee802Device</span>
+module will get the alias MAC address.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // alias name<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return["alias"] = _("MAC address");</span><br style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>4. Dependencies</h2>
+Modules can depend on eachother. This is useful if you need to access
+attributes from other modules or the managed object classes of your
+module are not structural.<br>
+<br>
+The dependencies are specified with <span style="font-weight: bold;">get_dependencies()</span>
+or <span style="font-weight: bold;">meta['dependencies']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+Our <span style="font-style: italic;">ieee802Device</span>
+module depends on the account module (because it is the only structural
+module at this time).<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // module dependencies<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return['dependencies'] = array('depends' =&gt;
+array('account'), 'conflicts' =&gt; array());</span><br style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>5. Messages</h2>
+There are many situations where you will display messages to the user.
+The modules should define such messages at a common place to make it
+easier to modify them without searching the complete file.<br>
+The <span style="font-style: italic;">baseModule</span> offers the $<span style="font-weight: bold;">messages</span> variable for this. It
+should be filled by a function called <span style="font-weight: bold;">load_Messages()</span>.<br>
+The <span style="font-style: italic;">baseModule</span> will
+automatically check if you have implemented this function and call it
+at construction time.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+Now let our <span style="font-style: italic;">ieee802Device</span>
+module define a message.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This function fills the error message array with
+messages<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">load_Messages</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;messages['mac'][0] =
+array('ERROR', 'MAC address is invalid!');&nbsp; // third array value
+is set dynamically<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>6. Managed object classes<br>
+</h2>
+<h2></h2>
+You can tell LAM what object classes are managed by your module.<br>
+LAM will then check the spelling of the objectClass attributes and
+correct it automatically. This is useful if other applications (e.g.
+smbldap-tools) also create accounts and the spelling is differnt.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+<br>
+The <span style="font-style: italic;">ieee802Device</span> module
+manages one object class.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // managed object classes<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return['objectClasses'] = array('ieee802Device');</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>7. Known LDAP aliases<br>
+</h2>
+LDAP attributes can have several names (e.g. "cn" and "commonName" are
+the same). If you manage such attributes then tell LAM about the alias
+names.<br>
+LAM will then convert all alias names to the given attribute names
+automatically.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+<br>
+The <span style="font-style: italic;">posixGroup</span> module manages
+the "cn" attribute. This attribute is also known under the alias
+"commonName".<br>
+This way the module will never see attributes called "commonName"
+because LAM renames them as soon as the LDAP entry is loaded.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // LDAP aliases<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return['LDAPaliases'] = array('commonName' =&gt;
+'cn');</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+</div>
+</div>
+<h2>8. Icon<br>
+</h2>
+You can specify a icon for you module. It will be displayed on the
+account pages and other module specific places (e.g. file upload).<br>
+The icons must be 32x32 pixels in size. The location is relative to the <span style="font-style: italic;">graphics</span> directory.<br>
+
+<br>
+
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+
+<br>
+
+The <span style="font-style: italic;">posixGroup</span> module uses the "tux.png" from the graphics directory.<br>
+
+<br>
+
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // icon<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color: rgb(255, 0, 0);">$return['icon'] = 'tux.png';</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<br>
+
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+
+
+
+</body></html>

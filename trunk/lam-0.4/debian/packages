@@ -1,0 +1,266 @@
+## debian/packages for ldap-account-manager
+
+Source: ldap-account-manager
+Section: web
+Priority: extra
+Maintainer: Roland Gruber <post@rolandgruber.de>
+Standards-Version: 3.6.2
+Home-Page: <URL:http://lam.sf.net>
+Upstream-Source: <URL:http://www.sourceforge.net/projects/lam>
+Description: Webfrontend to manage Samba and Unix accounts
+Copyright: GPL
+ This software is copyright (c) 2003 - 2004 by Tilo Lutz, Roland Gruber
+ and Michael Duergner.
+ .
+ .
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+ .
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+ .
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ .
+ .
+ Some parts of this package have other, compatible licences. These are:
+ .
+ A: GNU Lesser General Public License
+ .
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+ .
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+ .
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License can be found in /usr/share/common-licenses/LGPL file.
+ .
+ B: Freeware
+ .
+  You may use, modify and redistribute this software as you wish.
+ .
+ .
+ Programs and licenses with other licenses and/or authors than the
+ main license and authors:
+ .
+ lib/blowfish.inc  A  2002-2003  Mike Cochrane
+ lib/fpdf.php  B  2003  Olivier Plathey
+Major-Changes:
+
+Package: ldap-account-manager
+Architecture: all
+Depends: php4 | php4-cgi | libapache2-mod-php4, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf | debconf-2.0
+Recommends: php4-mhash
+Suggests: ldap-server, sudo, php4-mcrypt
+Conflicts: php4-apc
+Description: webfrontend for managing Unix and Samba accounts in an LDAP directory
+ LDAP Account Manager (LAM) runs on an existing webserver. LAM
+ supports LDAP connections via SSL and TLS. It uses the
+ Samba 2.x or Samba 3 schema and manages user, group and host
+ accounts. You can use templates for account creation and use
+ multiple configuration profiles. Account information can be
+ exported as PDF file. There is also a script
+ included which manages quota and homedirectories, you have to
+ setup sudo if you want to use it. LAM is translated to
+ English, French, German, Hungarian and Japanese.
+ .
+ Homepage: http://lam.sourceforge.net/
+Install: sh
+ yada install -data -into /usr/share/ldap-account-manager index.html
+ yada install -data -into /var/lib/ldap-account-manager/tmp tmp/.htaccess
+ yada install -data -into /var/lib/ldap-account-manager/config config/.htaccess
+ yada install -data -into /var/lib/ldap-account-manager/config config/language
+ yada install -data -into /var/lib/ldap-account-manager/config config/shells
+ yada install -data -into /var/lib/ldap-account-manager/config config/lam.conf_sample
+ yada install -conffile -subdir ldap-account-manager -as config.cfg config/config.cfg_sample
+ ln -s /etc/ldap-account-manager/config.cfg $ROOT/var/lib/ldap-account-manager/config/config.cfg
+ yada install -dir /var/lib/ldap-account-manager/config/profiles
+ yada install -data -into /var/lib/ldap-account-manager/config/profiles/users config/profiles/users/*.pru
+ yada install -data -into /var/lib/ldap-account-manager/config/profiles/groups config/profiles/groups/*.prg
+ yada install -data -into /var/lib/ldap-account-manager/config/profiles/hosts config/profiles/hosts/*.prh
+ yada install -dir /var/lib/ldap-account-manager/config/pdf
+ yada install -doc docs/README.*
+ yada install -data -into /usr/share/ldap-account-manager/graphics graphics/*.jpg
+ yada install -data -into /usr/share/ldap-account-manager/graphics graphics/*.png
+ yada install -data -into /usr/share/ldap-account-manager/help help/help.inc
+ yada install -data -into /usr/share/ldap-account-manager/lib lib/.htaccess
+ yada install -data -into /usr/share/ldap-account-manager/lib lib/*.inc
+ yada install -data -into /usr/share/ldap-account-manager/lib lib/*.php
+ yada install -data -into /usr/share/ldap-account-manager/lib lib/*.js
+ yada install -exec -into /usr/share/ldap-account-manager/lib lib/*.pl
+ yada install -data -into /usr/share/ldap-account-manager/lib/font lib/font/*.php
+ yada install -dir /usr/share/ldap-account-manager/locale
+ yada install -dir /usr/share/ldap-account-manager/locale/de_DE
+ yada install -data -into /usr/share/ldap-account-manager/locale/de_DE/LC_MESSAGES locale/de_DE/LC_MESSAGES/messages.?o
+ yada install -dir /usr/share/ldap-account-manager/locale/hu_HU
+ yada install -data -into /usr/share/ldap-account-manager/locale/hu_HU/LC_MESSAGES locale/hu_HU/LC_MESSAGES/messages.?o
+ yada install -dir /usr/share/ldap-account-manager/locale/ja_JP
+ yada install -data -into /usr/share/ldap-account-manager/locale/ja_JP/LC_MESSAGES locale/ja_JP/LC_MESSAGES/messages.?o
+ yada install -dir /usr/share/ldap-account-manager/locale/fr_FR
+ yada install -data -into /usr/share/ldap-account-manager/locale/fr_FR/LC_MESSAGES locale/fr_FR/LC_MESSAGES/messages.?o
+ yada install -data -into /var/lib/ldap-account-manager/sess sess/.htaccess
+ yada install -data -into /usr/share/ldap-account-manager/style style/*.css
+ yada install -data -into /usr/share/ldap-account-manager/templates templates/*.php
+ yada install -data -into /usr/share/ldap-account-manager/templates/account templates/account/*.php
+ yada install -data -into /usr/share/ldap-account-manager/templates/config templates/config/*.php
+ yada install -data -into /usr/share/ldap-account-manager/templates/lists templates/lists/*.php
+ yada install -data -into /usr/share/ldap-account-manager/templates/profedit templates/profedit/*.php
+ yada install -data -into /usr/share/ldap-account-manager/templates/confwiz templates/confwiz/*.php
+ yada install -conffile -subdir ldap-account-manager -as apache.conf debian/lam.apache.conf
+ yada install -doc -as changelog HISTORY
+ yada install -doc -as changelog.Debian debian/changelog
+ yada install -doc TODO
+ yada install -doc debian/README.Debian
+ yada install -doc README
+Templates:
+ Template: ldap-account-manager/webserver
+ Type: select
+ Choices: Apache, Apache-SSL, Both, None
+ Default: ${webserver}
+ Description: Which webserver would you like to configure automatically?
+  LDAP Account Manager supports any webserver that supports PHP4, but this
+  automatic configuration process only supports Apache and Apache-SSL. Selecting
+  Apache without SSL can be a security risk and is not recommended.
+  If you choose to configure Apache(-SSL) LAM can be accessed at http(s)://localhost/lam
+ .
+ Template: ldap-account-manager/alias
+ Type: string
+ Default: lam
+ Description: Enter alias:
+  LAM will add an alias to your httpd.conf which allows you to
+  access LAM at http(s)://localhost/lam. If you want an alias other than
+  "lam" please specify it here.
+ .
+ Template: ldap-account-manager/passwd
+ Type: string
+ Default: lam
+ Description: Enter master configuration password (clear text):
+  The configuration profiles are secured by a master password.
+  You will need it to create and delete profiles. As default it is
+  set to "lam" and can be changed directly in LAM. But you can also
+  change it now.
+Config: bash
+ db_subst "ldap-account-manager/webserver" "webserver" "Apache" || true
+ db_input medium "ldap-account-manager/webserver" || true
+ db_go
+ db_input low "ldap-account-manager/alias" || true
+ db_go
+ db_input low "ldap-account-manager/passwd" || true
+ db_go
+Preinst: bash
+ if [ ! -d /var/lib/ldap-account-manager ]; then \
+   mkdir /var/lib/ldap-account-manager; fi
+ if [ ! -h /usr/share/ldap-account-manager/config ]&&[ -d /usr/share/ldap-account-manager/config ]; \
+   then mv /usr/share/ldap-account-manager/config /var/lib/ldap-account-manager/config; fi
+ if [ ! -h /usr/share/ldap-account-manager/sess ]&&[ -d /usr/share/ldap-account-manager/sess ]; \
+   then mv /usr/share/ldap-account-manager/sess /var/lib/ldap-account-manager/sess; fi
+Postinst: bash
+ if [ ! -h /usr/share/ldap-account-manager/config ]; then\
+   ln -s /var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config; fi
+ if [ ! -h /usr/share/ldap-account-manager/sess ]; then\
+   ln -s /var/lib/ldap-account-manager/sess /usr/share/ldap-account-manager/sess; fi
+ if [ ! -h /usr/share/ldap-account-manager/tmp ]; then\
+   ln -s /var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp; fi
+ chown www-data /etc/ldap-account-manager/config.cfg
+ chmod 600 /etc/ldap-account-manager/config.cfg
+ chown www-data /var/lib/ldap-account-manager/sess
+ chown www-data /var/lib/ldap-account-manager/tmp
+ chown -R www-data /var/lib/ldap-account-manager/config
+ chown www-data /var/lib/ldap-account-manager/tmp
+ if [ ! -f /var/lib/ldap-account-manager/config/lam.conf ]; \
+    then cp /var/lib/ldap-account-manager/config/lam.conf_sample /var/lib/ldap-account-manager/config/lam.conf; \
+	chown www-data /var/lib/ldap-account-manager/config/lam.conf; fi
+ chmod 600 /var/lib/ldap-account-manager/config/*.conf
+ if [ "$1" = "configure" ]; then
+     db_get "ldap-account-manager/alias"
+     alias="$RET"
+	 perl -pi -e "s/Alias \/.* \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
+         /etc/ldap-account-manager/apache.conf
+     db_get "ldap-account-manager/passwd"
+     passwd="$RET"
+	 perl -pi -e "s/password: .*/password: $passwd/g" /etc/ldap-account-manager/config.cfg
+     db_get "ldap-account-manager/webserver"
+     webserver="$RET"
+     case "$webserver" in
+         Apache)        webservers="apache";;
+ 	 Apache-SSL)	webservers="apache-ssl";;
+ 	 Both)		webservers="apache apache-ssl";;
+ 	 *)		webservers="";;
+     esac
+ .
+     . /usr/share/wwwconfig-common/php.get
+ .
+     for server in $webservers; do
+ 	 if [ "$phpver" = "php4" ]; then
+ 	     extension=".php"
+             typestr="application/x-httpd-php"
+             . /usr/share/wwwconfig-common/apache-addtype_all.sh
+ 	     [ "$status" = "uncommented" -o "$status" = "added" -o "$status" = "lineadded" ] && restart="$server $restart"
+ 	 fi
+ .
+         . /usr/share/wwwconfig-common/apache-php.sh
+ 	 [ "$status" = "uncomment" ] && restart="$server $restart"
+ .
+ 	 includefile=/etc/ldap-account-manager/apache.conf
+ 	 . /usr/share/wwwconfig-common/apache-include_all.sh
+ 	 [ "$status" = "uncomment" -o "$status" = "include" ] && restart="$server $restart"
+ .
+ 	 index=index.php
+ 	 . /usr/share/wwwconfig-common/apache-index_all.sh
+ 	 [ "$status" = "added" ] && restart="$server $restart"
+     done
+ .
+     servers="apache-ssl apache"
+     . /usr/share/wwwconfig-common/restart.sh
+ fi
+Postrm: bash
+ if [ -f /etc/apache/httpd.conf \
+   -a -f /usr/share/wwwconfig-common/apache-uninclude_all.sh ]; then
+     db_get "ldap-account-manager/webserver" || true
+     webserver="$RET"
+     case "$webserver" in
+         Apache)	webservers="apache";;
+         Apache-SSL)	webservers="apache-ssl";;
+         Both)		webservers="apache apache-ssl";;
+         *)		webservers="";;
+     esac
+     includefile=/etc/ldap-account-manager/apache.conf
+ .
+     if [ "$1" = "purge" ]; then
+         for server in $webservers; do
+             . /usr/share/wwwconfig-common/apache-uninclude_all.sh
+ 	     if [ "$status" = "purge" ]; then
+ 	         restart="$restart $server"
+ 	     fi
+         done
+         test -d /etc/ldap-account-manager && rm -rf /etc/ldap-account-manager
+     fi
+ .
+     if [ "$1" = "remove" ]; then
+         for server in $webservers; do
+             . /usr/share/wwwconfig-common/apache-cominclude_all.sh
+ 	     if [ "$status" = "comment" ]; then
+ 	         restart="$restart $server"
+ 	     fi
+         done
+     fi
+ .
+     servers="apache-ssl apache"
+     . /usr/share/wwwconfig-common/restart.sh
+ fi
+ if [ "$1" = "purge" ]; then
+   rm -r -f /usr/share/ldap-account-manager; rm -r -f /var/lib/ldap-account-manager; fi

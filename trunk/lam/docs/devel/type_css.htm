@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Type HowTo - CSS file</title>
+
+
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
+<div style="text-align: center;">
+<h1>Type HowTo - CSS file</h1>
+<br>
+<div style="text-align: left;"><br>
+Every account type has its own style sheet where it can define colors
+and fonts.<br>
+<br>
+<br>
+<h2>1. File name</h2>
+The CSS files are saved in <span style="font-weight: bold;">style/</span>.
+Your file must be named <span style="font-weight: bold;">600_type_&lt;your
+type&gt;.css</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">myType</span> type has the
+CSS file <span style="font-weight: bold;">style/600_type_myType.css</span>.<br>
+<br>
+<br>
+<h2>2. Contents</h2>There are three colors that are defined for each type:<br>
+<pre>.&lt;your type&gt;-border { border-color:#af8800; }</pre>
+<pre>.&lt;your type&gt;-bright { background-color:#fff3c8 !important; }</pre>
+<pre>.&lt;your type&gt;-dark { background-color:#ffe27f !important; }</pre>
+Border is used for e.g. table borders, bright and dark are used as background colors for tables and fieldsets.<br>
+<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+<pre>.smbDomain-border { border-color:#1d993e; }</pre>
+<pre>.smbDomain-bright { background-color:#c9ddd2 !important; }</pre>
+<pre>.smbDomain-dark { background-color:#a8ddbf !important; }</pre>
+The colors for LAM's included types can be found in 500_layout.css.<br>
+</div>
+</div>
+</body></html>

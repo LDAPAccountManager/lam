@@ -1,0 +1,8 @@
+<pdf type="gon" headline="Group information">
+	<section name="_groupOfNames_name">
+		<entry name="main_dn" />
+		<entry name="groupOfNames_description" />
+		<entry name="groupOfNames_owner" />
+		<entry name="groupOfNames_members" />
+	</section>
+</pdf>
