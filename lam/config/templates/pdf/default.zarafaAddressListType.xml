@@ -1,8 +1,0 @@
-<pdf type="zarafaAddressListType" filename="printLogo.jpg" headline="LDAP Account Manager">
-	<section name="_zarafaAddressList_cn">
-		<entry name="zarafaAddressList_zarafaBase" />
-		<entry name="zarafaAddressList_zarafaFilter" />
-		<entry name="zarafaAddressList_zarafaAccount" />
-		<entry name="zarafaAddressList_zarafaHidden" />
-	</section>
-</pdf>

@@ -1,6 +1,0 @@
-<Files *>
-  Options +FollowSymLinks
-  Order allow,deny
-  Allow from all
-  DirectoryIndex index.html
-</Files>
