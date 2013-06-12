@@ -12290,7 +12290,7 @@ msgid ""
 msgstr ""
 "Das ist eine Liste von Attributen, die in den Account-Listen angezeigt wird. "
 "Die Einträge können entweder vordefinierte Werte \"#Wert\" oder eigne Werte "
-"\"#Wert:Beschreibung\" sein. Mehrere Werte werden durch Strichpunkte "
+"\"Wert:Beschreibung\" sein. Mehrere Werte werden durch Strichpunkte "
 "getrennt."
 
 #: ../lib/modules/posixAccount.inc:454
