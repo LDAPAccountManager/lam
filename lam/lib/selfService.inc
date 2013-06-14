@@ -188,7 +188,7 @@ function loadSelfServiceProfile($name, $scope) {
 	if (is_file($file) === True) {
 		$file = @fopen($file, "r");
 		if ($file) {
-			$data = fread($file, 100000);
+			$data = fread($file, 10000000);
 			$profile = unserialize($data);
 			fclose($file);
 		}
