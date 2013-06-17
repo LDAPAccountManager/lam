@@ -484,6 +484,7 @@ class quota extends baseModule {
 			for ($i = 0; $i < sizeof($dirs); $i++) {
 				if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
 					unset($dirs[$i]);
+					$dirs = array_values($dirs);
 					$i--;
 					continue;
 				}
