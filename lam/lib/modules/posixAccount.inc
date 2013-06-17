@@ -66,6 +66,12 @@ class posixAccount extends baseModule implements passwordService {
 	private $cachedUIDList = null;
 	/** caches the list of known user names */
 	private $cachedUserNameList = null;
+	
+	/** replacements for common umlauts */
+	private $umlautReplacements = array(
+		'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
+		'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
+	);
 
 	/**
 	 *  This function fills the error message array with messages.
@@ -1081,14 +1087,11 @@ class posixAccount extends baseModule implements passwordService {
 	* @return string attribute value with replaced non-ASCII characters
 	*/
 	function checkASCII($attribute) {
-		// convert UTF8 to ASCII
-		$convert = array ( 'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
-			'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
-			);
-		// replace special characters
-		foreach ($convert as $key => $value) {
-			$attribute = str_replace($key, $value, $attribute);
+		if ($attribute == null) {
+			return '';
 		}
+		// replace special characters
+		$attribute = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), $attribute);
 		// remove remaining UTF-8 characters
 		for ($c = 0; $c < strlen($attribute); $c++) {
 			if (ord($attribute[$c]) > 127) {
@@ -2715,7 +2718,7 @@ class posixAccount extends baseModule implements passwordService {
 				$format = str_replace('%' . $wc . '%', $value, $format);
 			}
 		}
-		return $format;
+		return str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($format));
 	}
 	
 	/**
