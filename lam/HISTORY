@@ -1,3 +1,9 @@
+18.06.2013 4.2.1
+  - fixed bugs:
+   -> Unix: suggested user name must be lower case
+   -> Quota: profile editor does not work in some cases
+
+
 04.06.2013 4.2
   - Samba 4 support: users, groups, hosts
   - Unix: allow to change format for suggested user name
