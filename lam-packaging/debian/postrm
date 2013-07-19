@@ -22,8 +22,8 @@ if [ -f /usr/share/debconf/confmodule ]; then
 				case "$server" in
 						apache2)
 								rm -f /etc/$server/conf.d/ldap-account-manager
-								rm -f /etc/$server/conf-available/ldap-account-manager
-								rm -f /etc/$server/conf-enabled/ldap-account-manager
+								rm -f /etc/$server/conf-available/ldap-account-manager.conf
+								rm -f /etc/$server/conf-enabled/ldap-account-manager.conf
 								test -x /usr/sbin/$server || continue
 								restart="$restart $server"
 								;;
