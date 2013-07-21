@@ -1,3 +1,13 @@
+ldap-account-manager (4.2.1-2) unstable; urgency=low
+
+  * Apache 2.4 support
+  * Fix "transition towards Apache 2.4" 
+    support conf-enabled (Closes: #669824)
+  * Fix "[ldap-account-manager] Can't install ldap-account-manager"
+    support conf-enabled (Closes: #711778)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 21 Jul 2013 11:15:58 +0200
+
 ldap-account-manager (4.2.1-1) unstable; urgency=low
 
   * new upstream release
