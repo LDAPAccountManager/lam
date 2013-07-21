@@ -1972,8 +1972,9 @@ Have fun!
             IDs assigned if users create accounts at the same time. Use an
             <ulink
             url="http://www.openldap.org/doc/admin24/overlays.html">overlay</ulink>
-            like "Attribute Uniqueness" if you have lots of LAM admins
-            creating accounts.</para>
+            like "Attribute Uniqueness" (<link
+            linkend="a_openldap_unique">example</link>) if you have lots of
+            LAM admins creating accounts.</para>
 
             <itemizedlist>
               <listitem>
@@ -2771,8 +2772,9 @@ Have fun!
         Please note that it may happen that there are duplicate IDs assigned
         if users create groups at the same time. Use an <ulink
         url="http://www.openldap.org/doc/admin24/overlays.html">overlay</ulink>
-        like "Attribute Uniqueness" if you have lots of LAM admins creating
-        groups.</para>
+        like "Attribute Uniqueness" (<link
+        linkend="a_openldap_unique">example</link>) if you have lots of LAM
+        admins creating groups.</para>
 
         <itemizedlist>
           <listitem>
@@ -6926,18 +6928,59 @@ Run slapindex to rebuild the index.
   </appendix>
 
   <appendix>
-    <title>Recommended OpenLDAP settings</title>
+    <title>Typical OpenLDAP settings</title>
 
     <para>Some basic hints to configure the OpenLDAP server:</para>
 
-    <para><emphasis role="bold">Size limit:</emphasis> OpenLDAP allows by
-    default 500 return values per search, if you have more users/groups/hosts
-    change this in slapd.conf: e.g. "sizelimit 10000" or "sizelimit -1" for
-    unlimited return values.</para>
+    <para><emphasis role="bold">Size limit:</emphasis></para>
 
-    <para><emphasis role="bold">Indices:</emphasis> Indices will improve the
-    performance when searching for entries in the LDAP directory. The
-    following indices are recommended:</para>
+    <para>You will get a message like "LDAP sizelimit exceeded, not all
+    entries are shown." when you hit the LDAP search limit.</para>
+
+    <para>OpenLDAP allows by default 500 return values per search, if you have
+    more users/groups/hosts please change this:</para>
+
+    <para>slapd.conf:</para>
+
+    <para>e.g. "sizelimit 10000" or "sizelimit -1" for unlimited return
+    values</para>
+
+    <para>slapd.d:</para>
+
+    <para>e.g. "olcSizeLimit: 10000" or "olcSizeLimit: -1" for unlimited
+    return values in etc/ldap/slapd.d/cn=config.ldif</para>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis id="a_openldap_unique" role="bold">Unique
+    attributes:</emphasis></para>
+
+    <para>There are cases where you do not want that same attribute values
+    exist multiple times in your database. A good example are UID/GID
+    numbers.</para>
+
+    <para>OpenLDAP provides the <ulink
+    url="http://www.openldap.org/doc/admin24/overlays.html">attribute
+    uniqueness overlay</ulink> for this task.</para>
+
+    <para>Example to force unique UID numbers:</para>
+
+    <para>In
+    <emphasis>/etc/ldap/slapd.d/cn=config/cn=module{0}.ldif</emphasis> add
+    "olcModuleLoad: {3}unique" (replace "3" with the highest existing number
+    plus one).</para>
+
+    <para>Now in /etc/ldap/slapd.d/cn=config/olcDatabase={1}bdb.ldif add e.g.
+    "olcUniqueURI: ldap:///?uidNumber?sub"</para>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">Indices:</emphasis></para>
+
+    <para>Indices will improve the performance when searching for entries in
+    the LDAP directory. The following indices are recommended:</para>
 
     <simplelist>
       <member>index objectClass eq</member>
