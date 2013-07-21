@@ -693,7 +693,7 @@ class LAMConfig {
 	public function set_Passwd($value) {
 		if (is_string($value)) {
 			mt_srand((microtime() * 1000000));
-			$rand = mt_rand();
+			$rand = getRandomNumber();
 			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 			$salt = substr(pack("H*", sha1($salt0 . $value)), 0, 4);
 			$this->Passwd = $this->hashPassword($value, $salt);
@@ -1482,7 +1482,7 @@ class LAMCfgMain {
 	 */
 	public function setPassword($password) {
 		mt_srand((microtime() * 1000000));
-		$rand = mt_rand();
+		$rand = getRandomNumber();
 		$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 		$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
 		$this->password = $this->hashPassword($password, $salt);	

@@ -148,14 +148,6 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 	if (! $password || ($password == "")) {
 		return "";
 	}
-	// calculate new random number
-	if (isset($_SESSION['ldap'])) {
-		$rand = $_SESSION['ldap']->new_rand();
-	}
-	else {
-		mt_srand((microtime() * 1000000));
-		$rand = mt_rand();
-	}
 	$hash = "";
 	switch ($hashType) {
 		case 'CRYPT':
@@ -212,7 +204,7 @@ function generateSalt($len) {
 	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890./';
 	$salt = '';
 	for ($i = 0; $i < $len; $i++) {
-		$pos= mt_rand(0, strlen($chars)-1);
+		$pos= getRandomNumber() % strlen($chars);
 		$salt .= $chars{$pos};
 	}
 	return $salt;
@@ -316,7 +308,7 @@ function generateRandomPassword() {
 	for ($x = 0; $x < 10000; $x++) {
 		$password = '';
 		for ($i = 0; $i < $length; $i++) {
-			$rand = $_SESSION['ldap']->new_rand() % 65;
+			$rand = getRandomNumber() % 65;
 			$password .= $list[$rand];
 		}
 		if (checkPasswordStrength($password) === true) {
@@ -992,6 +984,15 @@ class moduleCache {
 		}
 	}
 	
+}
+
+/**
+ * Returns a random number.
+ * 
+ * @return int random number
+ */
+function getRandomNumber() {
+	return mt_rand();
 }
 
 ?>

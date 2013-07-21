@@ -147,7 +147,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	$pdf->Close();
 	if (!$returnAsString) {
 		// use timestamp and random number from ldap.inc as filename so it should be unique.
-		$filename = '../../tmp/' . $_SESSION['ldap']->new_rand() . time() .'.pdf';
+		$filename = '../../tmp/' . getRandomNumber() . time() .'.pdf';
 		// Save PDF
 		$pdf->Output($filename);
 		chmod($filename, 0600);

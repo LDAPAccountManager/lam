@@ -605,7 +605,7 @@ class lamUserList extends lamList {
 					}
 				}
 			}
-			$imgNumber = $_SESSION['ldap']->new_rand(); 
+			$imgNumber = getRandomNumber(); 
 			$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $entry[$attribute][0]);

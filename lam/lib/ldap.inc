@@ -63,9 +63,6 @@ class Ldap{
 	/** LDAP password used for bind */
 	private $password;
 
-	/** Random number (changes on every page request) */
-	private $rand;
-
 	/**
 	* Creates a new LDAP object.
 	* 
@@ -73,10 +70,12 @@ class Ldap{
 	*/
 	function __construct($config) {
 		setlanguage();
-		if (is_object($config)) $this->conf = $config;
-		else return false;
-		mt_srand((double)microtime()*1000000);
-		$this->rand = mt_rand();
+		if (is_object($config)) {
+			$this->conf = $config;
+		}
+		else {
+			return false;
+		}
 		return true;
 	}
 
@@ -148,15 +147,12 @@ class Ldap{
 	function __sleep() {
 		$this->close();
 		// define which attributes to save
-		return array("conf", "username", "password", "rand");
+		return array("conf", "username", "password");
 	}
 
 	/** Reconnects to LDAP server when deserialized */
 	function __wakeup() {
 		$this->is_connected = false;
-		// change random number
-		mt_srand($this->rand + (microtime() * 1000000));
-		$this->rand = mt_rand();
 		// delete PDF files and images which are older than 15 min
 		$tmpDir = dirname(__FILE__) . '/../tmp/';
 		$time = time();
@@ -187,19 +183,6 @@ class Ldap{
 			$file = @readdir($dir);
 		}
 		@closedir($dir);
-	}
-
-	/**
-	* Calculates a new value for rand
-	*
-	* @return int New random value
-	*/
-	function new_rand() {
-		// change random number
-		mt_srand($this->rand + (microtime() * 1000000));
-		$r = mt_rand();
-		$this->rand = $r;
-		return $r;
 	}
 
 	/**

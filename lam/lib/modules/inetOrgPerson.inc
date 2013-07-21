@@ -2094,7 +2094,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$photoFile = '../../graphics/userDefault.png';
 		$noPhoto = true;
 		if (isset($this->attributes['jpegPhoto'][0])) {
-			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
+			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 			fclose ($outjpeg);
@@ -2260,7 +2260,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$table = new htmlTable();
 			$table->colspan = 10;
 			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
-				$filename = 'userCertificate' . $_SESSION['ldap']->new_rand() . '.der';
+				$filename = 'userCertificate' . getRandomNumber() . '.der';
 				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
 				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
 				fclose ($out);
@@ -3226,7 +3226,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (sizeof($userCertificates) > 0) {
 			$certTable = new htmlTable();
 			for ($i = 0; $i < sizeof($userCertificates); $i++) {
-				$filename = 'userCertificate' . mt_rand() . '.der';
+				$filename = 'userCertificate' . getRandomNumber() . '.der';
 				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
 				fwrite($out, $userCertificates[$i]);
 				fclose ($out);
