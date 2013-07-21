@@ -60,13 +60,18 @@ session_regenerate_id(true);
 $profiles = getConfigProfiles();
 
 // save last selected login profile
-if(isset($_GET['useProfile'])) {
+if (isset($_GET['useProfile'])) {
 	if (in_array($_GET['useProfile'], $profiles)) {
 		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24);
 	}
 	else {
 		unset($_GET['useProfile']);
 	}
+}
+
+// save last selected language
+if (isset($_POST['language'])) {
+	setcookie('lam_last_language', $_POST['language'], time() + 365*60*60*24);
 }
 
 // init some session variables
@@ -97,7 +102,10 @@ if (!isset($default_Config->default) || !in_array($default_Config->default, $pro
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
 }
 
-if (!empty($_SESSION["config"])) {
+if (isset($_COOKIE['lam_last_language'])) {
+	$_SESSION['language'] = $_COOKIE['lam_last_language'];
+}
+elseif (!empty($_SESSION["config"])) {
 	$_SESSION['language'] = $_SESSION["config"]->get_defaultLanguage();
 }
 else {
