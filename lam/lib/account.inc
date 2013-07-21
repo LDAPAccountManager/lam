@@ -992,6 +992,9 @@ class moduleCache {
  * @return int random number
  */
 function getRandomNumber() {
+	if (function_exists('openssl_random_pseudo_bytes')) {
+		return hexdec(bin2hex(openssl_random_pseudo_bytes(5)));
+	}
 	return mt_rand();
 }
 
