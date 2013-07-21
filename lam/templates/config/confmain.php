@@ -186,7 +186,7 @@ if (sizeof($errorsToDisplay) > 0) {
 }
 
 // display formular
-echo ("<form action=\"confmain.php\" method=\"post\">\n");
+echo ("<form action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n");
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
@@ -516,10 +516,13 @@ function checkInput() {
 	$conf->setLoginMethod($_POST['loginMethod']);
 	$conf->setLoginSearchFilter($_POST['loginSearchFilter']);
 	$conf->setLoginSearchSuffix($_POST['loginSearchSuffix']);
-	if (!$conf->setLoginSearchDN($_POST['loginSearchDN'])) {
-		$errors[] = array("ERROR", _("Please enter a valid bind user."));
-	}
 	$conf->setLoginSearchPassword($_POST['loginSearchPassword']);
+	$conf->setLoginSearchDN($_POST['loginSearchDN']);
+	if ($_POST['loginMethod'] == LAMConfig::LOGIN_SEARCH) { // check only if search method 
+		if (!$conf->setLoginSearchDN($_POST['loginSearchDN'])) {
+			$errors[] = array("ERROR", _("Please enter a valid bind user."));
+		}
+	}
 	if (isset($_POST['httpAuthentication']) && ($_POST['httpAuthentication'] == 'on')) {
 		$conf->setHttpAuthentication('true');
 	}

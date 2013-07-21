@@ -144,7 +144,7 @@ foreach ($jsFiles as $jsEntry) {
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
-echo ("<form action=\"moduleSettings.php\" method=\"post\">\n");
+echo ("<form action=\"moduleSettings.php\" method=\"post\" autocomplete=\"off\">\n");
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
