@@ -95,7 +95,7 @@ class windowsGroup extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType', 'otherMailbox');
+		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType', 'otherMailbox', 'managedBy');
 		// help Entries
 		$return['help'] = array(
 			'hiddenOptions' => array(
@@ -142,6 +142,10 @@ class windowsGroup extends baseModule {
 				"Headline" => _('Group scope'), 'attr' => 'groupType',
 				"Text" => _('Please specify the group scope.')
 			),
+			'managedBy' => array(
+				"Headline" => _('Managed by'), 'attr' => 'managedBy',
+				"Text" => _('The group is managed by this contact person.')
+			),
 		);
 		// configuration settings
 		$configContainer = new htmlTable();
@@ -153,6 +157,8 @@ class windowsGroup extends baseModule {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemail', false, _('Email address'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hideotherMailbox', false, _('Email alias'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemanagedBy', false, _('Managed by'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		// upload fields
@@ -215,6 +221,14 @@ class windowsGroup extends baseModule {
 				'example' => _('group@company.com'),
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsGroup_managedBy',
+				'description' => _('Managed by'),
+				'help' => 'managedBy',
+				'example' => 'cn=user1,o=test',
+			);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'cn' => _('Group name'),
@@ -229,6 +243,9 @@ class windowsGroup extends baseModule {
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hideotherMailbox')) {
 			$return['PDF_fields']['otherMailbox'] = _('Email alias');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
+			$return['PDF_fields']['managedBy'] = _('Managed by');
 		}
 		return $return;
 	}
@@ -307,6 +324,24 @@ class windowsGroup extends baseModule {
 			$info = $this->attributes['info'][0];
 		}
 		$container->addElement(new htmlTableExtendedInputTextarea('info', $info, 30, 5, _('Notes'), 'info'), true);
+		// managed by
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
+			$container->addElement(new htmlOutputText(_('Managed by')));
+			$managedBy = '-';
+			if (isset($this->attributes['managedBy'][0])) {
+				$managedBy = $this->attributes['managedBy'][0];
+			}
+			$container->addElement(new htmlOutputText(getAbstractDN($managedBy)));
+			$container->addElement(new htmlHelpLink('managedBy'), true);
+			$container->addElement(new htmlOutputText(''));
+			$managedByButtons = new htmlGroup();
+			$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'managedBy', 'edit', _('Change')));
+			if (isset($this->attributes['managedBy'][0])) {
+				$managedByButtons->addElement(new htmlSpacer('5px', null));
+				$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManagedBy', _('Remove')));
+			}
+			$container->addElement($managedByButtons, true);
+		}
 		// group members
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		$container->addElement(new htmlOutputText(_("Group members")));
@@ -378,9 +413,68 @@ class windowsGroup extends baseModule {
 		}
 		// notes
 		$this->attributes['info'][0] = $_POST['info'];
+		// managed by
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
+			if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManagedBy'])) {
+				unset($this->attributes['managedBy']);
+			}
+		}
 		return $return;
 	}
 	
+	/**
+	* This function will create the meta HTML code to show a page to change the member attribute.
+	* 
+	* @return htmlElement HTML meta data
+	*/
+	function display_html_managedBy() {
+		$return = new htmlTable();
+		// show possible managers
+		$options = array();
+		$filter = get_ldap_filter('user');
+		$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
+		for ($i = 0; $i < sizeof($entries); $i++) {
+			$entries[$i] = $entries[$i]['dn'];
+		}
+		// sort by DN
+		usort($entries, 'compareDN');
+		for ($i = 0; $i < sizeof($entries); $i++) {
+			$options[getAbstractDN($entries[$i])] = $entries[$i];
+		}
+		$selected = array();
+		if (isset($this->attributes['managedBy'][0])) {
+			$selected = array($this->attributes['managedBy'][0]);
+			if (!in_array($selected[0], $options)) {
+				$options[getAbstractDN($selected[0])] = $selected[0];
+			}
+		}
+		$membersSelect = new htmlSelect('managedBy', $options, $selected);
+		$membersSelect->setHasDescriptiveElements(true);
+		$membersSelect->setRightToLeftTextDirection(true);
+		$membersSelect->setSortElements(false);
+		$membersSelect->setTransformSingleSelect(false);
+		$return->addElement($membersSelect, true);
+		$buttonTable = new htmlTable();
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'set', _('Change')));
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+		$return->addElement($buttonTable);
+		return $return;
+	}
+	
+	/**
+	* Processes user input of the members page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_managedBy() {
+		$return = array();
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
+			$this->attributes['managedBy'][] = $_POST['managedBy'];
+		}
+		return $return;
+	}
+
 	/**
 	* This function will create the meta HTML code to show a page to change the member attribute.
 	* 
@@ -559,6 +653,10 @@ class windowsGroup extends baseModule {
 					}
 				}
 			}
+			// managed by
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy') && $rawAccounts[$i][$ids['windowsGroup_managedBy']] != "") {
+				$partialAccounts[$i]['managedBy'] = $rawAccounts[$i][$ids['windowsGroup_managedBy']];
+			}
 			// add members
 			if ($rawAccounts[$i][$ids['windowsGroup_members']] != "") {
 				$partialAccounts[$i]['member'] = explode(";", $rawAccounts[$i][$ids['windowsGroup_members']]);
@@ -643,6 +741,12 @@ class windowsGroup extends baseModule {
 		$groupScope = $groupScopeLabels[$groupScope];
 		$return[get_class($this) . '_groupScope'] = array('<block><key>' . _('Group scope') . '</key><value>' . $groupScope . '</value></block>');
 		$return[get_class($this) . '_groupType'] = array('<block><key>' . _('Group type') . '</key><value>' . $groupType . '</value></block>');
+		// managed by
+		$managedBy = '';
+		if (isset($this->attributes['managedBy'][0])) {
+			$managedBy = getAbstractDN($this->attributes['managedBy'][0]);
+			$return[get_class($this) . '_managedBy'] = array('<block><key>' . _('Managed by') . '</key><value>' . $managedBy . '</value></block>');
+		}
 		// members
 		if (sizeof($this->attributes['member']) > 0) {
 			$memberList = array();
