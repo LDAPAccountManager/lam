@@ -196,6 +196,11 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
+.downButton {
+	background-image: url(../graphics/down.gif) !important;
+	background-position: 0px 0px !important;
+}
+
 .backButton {
 	background-image: url(../graphics/back.gif) !important;
 	background-position: 0px 0px !important;
