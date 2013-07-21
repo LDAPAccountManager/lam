@@ -115,16 +115,19 @@ function SubmitForm(id, e) {
 }
 
 function addResizeHandler(item, min, max) {
-	jQuery(item).toggle(
-		function(){
-			jQuery(item).animate({
-				height: max
-			});
-		},
-		function(){
-			jQuery(item).animate({
-				height: min
-			});
+	jQuery(item).click(
+		function() {
+			if (jQuery(item).hasClass('imgExpanded')) {
+				jQuery(item).animate({
+					height: min
+				});
+			}
+			else {
+				jQuery(item).animate({
+					height: max
+				});
+			}
+			jQuery(item).toggleClass('imgExpanded');
 		}
 	);	
 }
