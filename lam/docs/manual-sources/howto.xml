@@ -358,14 +358,14 @@ Have fun!
       </section>
 
       <section>
-        <title>Installing the tar.gz</title>
+        <title>Installing the tar.bz2</title>
 
         <section>
           <title>Extract the archive</title>
 
           <para>Please extract the archive with the following command:</para>
 
-          <para>tar xzf ldap-account-manager-&lt;version&gt;.tar.gz</para>
+          <para>tar xjf ldap-account-manager-&lt;version&gt;.tar.bz2</para>
         </section>
 
         <section>
@@ -617,7 +617,7 @@ Have fun!
       <title>Upgrading LAM or migrate from LAM to LAM Pro</title>
 
       <para>Upgrading from LAM to LAM Pro is like installing a new LAM
-      version. Simply install the LAM Pro packages/tar.gz instead of the LAM
+      version. Simply install the LAM Pro packages/tar.bz2 instead of the LAM
       ones.</para>
 
       <section>
@@ -626,7 +626,7 @@ Have fun!
         <para><emphasis role="bold">Backup configuration
         files</emphasis></para>
 
-        <para>Configuration files need only to be backed up for .tar.gz
+        <para>Configuration files need only to be backed up for .tar.bz
         installations. DEB/RPM installations do not require this step.</para>
 
         <para>LAM stores all configuration files in the "config" folder.
@@ -690,6 +690,13 @@ Have fun!
 
       <section id="a_versUpgrade">
         <title>Version specific upgrade instructions</title>
+
+        <section>
+          <title>4.2.1 -&gt; 4.3</title>
+
+          <para>LAM is no more shipped as tar.gz package but as tar.bz2 which
+          allows smaller file sizes.</para>
+        </section>
 
         <section>
           <title>4.1 -&gt; 4.2/4.2.1</title>
@@ -890,7 +897,7 @@ Have fun!
 
     <para>Please point you browser to the location where you installed LAM.
     E.g. for Debian/RPM this is http://yourServer/lam. If you installed LAM
-    via the tar.gz then this may vary. You should see the following
+    via the tar.bz2 then this may vary. You should see the following
     page:</para>
 
     <screenshot>
