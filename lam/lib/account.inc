@@ -935,12 +935,12 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 	if ($mailReplyTo != '') {
 		$headerLines .= 'Reply-To: ' . $mailReplyTo . "\r\n";
 	}
+	$headerLines .= "MIME-Version: 1.0\r\n";
 	if ($mailIsHTML == 'true') {
-		$headerLines .= "MIME-Version: 1.0\r\n";
 		$headerLines .= "Content-type: text/html; charset=UTF-8\r\n";
 	}
 	else {
-		$headerLines .= "Content-type: text; charset=UTF-8\r\n";
+		$headerLines .= "Content-type: text/plain; charset=UTF-8\r\n";
 	}
 	$success = mail($mailTo, $subject, $body, $headerLines);
 	if ($success) {
