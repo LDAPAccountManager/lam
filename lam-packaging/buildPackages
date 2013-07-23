@@ -155,6 +155,24 @@ rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager
 mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
 cd ..
 
+# generate checksum files
+sha256sum *.tar.bz2 >> checksums.txt
+cd RPM
+sha256sum *.rpm >> ../checksums.txt
+cd ../Debian
+sha256sum *.deb >> ../checksums.txt
+cd ..
+
+# generate checksum files for LAM Pro
+cd LAMPro
+sha256sum *.tar.bz2 >> checksums.txt
+cd RPM
+sha256sum *.rpm >> ../checksums.txt
+cd ../Debian
+sha256sum *.deb >> ../checksums.txt
+cd ../..
+
+
 # clean up
 rm -r lam-packaging
 rm getVersion
