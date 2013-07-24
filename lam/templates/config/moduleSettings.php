@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2012  Roland Gruber
+  Copyright (C) 2009 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ foreach ($jsFiles as $jsEntry) {
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
-echo ("<form action=\"moduleSettings.php\" method=\"post\" autocomplete=\"off\">\n");
+echo ("<form id=\"inputForm\" action=\"moduleSettings.php\" method=\"post\" autocomplete=\"off\" onSubmit=\"saveScrollPosition('inputForm')\">\n");
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
@@ -240,6 +240,16 @@ $cancelButton->setIconClass('cancelButton');
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
+
+if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+	// scroll to last position
+	echo '<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery(window).scrollTop(' . $_POST['scrollPositionTop'] . ');
+			jQuery(window).scrollLeft('. $_POST['scrollPositionLeft'] . ');
+	});
+	</script>';
+}
 
 echo "</form>\n";
 echo "</body>\n";

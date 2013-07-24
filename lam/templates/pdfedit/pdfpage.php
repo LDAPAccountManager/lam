@@ -88,7 +88,7 @@ if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDe
 if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
 	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
 }
-if ((isset($_GET['foldingmarks'])) && ($_GET['foldingmarks'] != $_SESSION['currentPageDefinitions']['foldingmarks'])) {
+if ((isset($_GET['foldingmarks'])) && (!isset($_SESSION['currentPageDefinitions']['foldingmarks']) || ($_GET['foldingmarks'] != $_SESSION['currentPageDefinitions']['foldingmarks']))) {
 	$_SESSION['currentPageDefinitions']['foldingmarks'] = $_GET['foldingmarks'];
 }
 
@@ -439,7 +439,7 @@ if (isset($_SESSION['currentPageDefinitions']['filename'])) {
 }
 
 ?>
-	<form action="pdfpage.php" method="post">
+	<form id="inputForm" action="pdfpage.php" method="post" onSubmit="saveScrollPosition('inputForm')">
 <?php
 $sectionElements = array(_('Beginning') => 0);
 $nonTextSectionElements = array();
@@ -611,6 +611,16 @@ $container->addElement($buttonContainer, true);
 
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, $_GET['type']);
+
+if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+	// scroll to last position
+	echo '<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery(window).scrollTop(' . $_POST['scrollPositionTop'] . ');
+			jQuery(window).scrollLeft('. $_POST['scrollPositionLeft'] . ');
+	});
+	</script>';
+}
 
 echo '</form>';
 include '../main_footer.php';
