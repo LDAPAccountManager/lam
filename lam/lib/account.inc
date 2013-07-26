@@ -319,6 +319,57 @@ function generateRandomPassword() {
 }
 
 /**
+ * Checks if the given password mathes the crypto hash.
+ * 
+ * @param String type hash type (must be one of getSupportedHashTypes())
+ * @param unknown_type $hash password hash value
+ * @param unknown_type $password plain text password to check
+ * @see getSupportedHashTypes()
+ */
+function checkPasswordHash($type, $hash, $password) {
+	switch ($type) {
+		case 'SSHA':
+			$bin = base64_decode($hash);
+			$salt = substr($bin, 20);
+			$pwdHash = base64_encode(convertHex2bin(sha1($password . $salt)) . $salt);
+			return (strcmp($hash, $pwdHash) == 0);
+			break;
+		case 'SHA':
+			return (strcmp($hash, base64_encode(convertHex2bin(sha1($password)))) == 0);
+			break;
+		case 'SMD5':
+			$bin = base64_decode($hash);
+			$salt = substr($bin, 16);
+			$pwdHash = base64_encode(convertHex2bin(md5($password . $salt)) . $salt);
+			return (strcmp($hash, $pwdHash) == 0);
+			break;
+		case 'MD5':
+			return (strcmp($hash, base64_encode(convertHex2bin(md5($password)))) == 0);
+			break;
+		case 'CRYPT':
+			$parts = explode('$', $hash);
+			if (sizeof($parts) == 4) {
+				$version = $parts[1];
+				$salt = $parts[2];
+				$pwdHash = crypt($password, '$' . $version . '$' . $salt);
+				return (strcmp($hash, $pwdHash) == 0);
+			}
+			elseif (sizeof($parts) == 5) {
+				$version = $parts[1];
+				$rounds = $parts[2];
+				$salt = $parts[3];
+				$pwdHash = crypt($password, '$' . $version . '$' . $rounds . '$' . $salt);
+				return (strcmp($hash, $pwdHash) == 0);
+			}
+			return false;
+			break;
+		default:
+			return false;
+	}
+	return false;
+}
+
+/**
 * Returns an array with all Samba 3 domain entries under the given suffix
 *
 * @param handle LDAP handle (if null then $_SESSION['ldap']->server() is used)
