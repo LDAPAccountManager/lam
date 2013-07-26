@@ -979,21 +979,8 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 		$body = str_replace('@@' . $attr . '@@', $value, $body);
 		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
 	}
-	$headerLines = "X-Mailer: LDAP Account Manager\r\n";
-	if ($mailFrom != '') {
-		$headerLines .= 'From: ' . $mailFrom . "\r\n";
-	}
-	if ($mailReplyTo != '') {
-		$headerLines .= 'Reply-To: ' . $mailReplyTo . "\r\n";
-	}
-	$headerLines .= "MIME-Version: 1.0\r\n";
-	if ($mailIsHTML == 'true') {
-		$headerLines .= "Content-type: text/html; charset=UTF-8\r\n";
-	}
-	else {
-		$headerLines .= "Content-type: text/plain; charset=UTF-8\r\n";
-	}
-	$success = mail($mailTo, $subject, $body, $headerLines);
+	$headerLines = createEMailHeaders($mailFrom, ($mailIsHTML == 'true'), $mailReplyTo);
+	$success = mail($mailTo, base64EncodeForEMail($subject), $body, $headerLines);
 	if ($success) {
 		logNewMessage(LOG_DEBUG, 'Sent password mail to ' . $mailTo);
 		return array(
@@ -1006,6 +993,47 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 			array('ERROR', _('Unable to send mail!'))
 		);
 	}
+}
+
+/**
+ * Generates the email header text for the given parameters.
+ * 
+ * @param String $from FROM address
+ * @param boolean $isHTML mail is formatted as HTML or plain text
+ * @param String $replyTo reply-to address (optional)
+ */
+function createEMailHeaders($from, $isHTML, $replyTo = null) {
+	$headerLines = "X-Mailer: LDAP Account Manager\r\n";
+	if (!empty($from)) {
+		if (preg_match('/^(.*)<(.*)>$/', $from, $matchesFrom)) {
+			$from = base64EncodeForEMail($matchesFrom[1]) . ' <' . $matchesFrom[2] . '>';
+		}
+		$headerLines .= 'From: ' . $from . "\r\n";
+	}
+	if (!empty($replyTo)) {
+		if (preg_match('/^(.*)<(.*)>$/', $replyTo, $matchesReplyTo)) {
+			$replyTo = base64EncodeForEMail($matchesReplyTo[1]) . ' <' . $matchesReplyTo[2] . '>';
+		}
+		$headerLines .= 'Reply-To: ' . $replyTo . "\r\n";
+	}
+	$headerLines .= "MIME-Version: 1.0\r\n";
+	if ($isHTML) {
+		$headerLines .= "Content-type: text/html; charset=UTF-8\r\n";
+	}
+	else {
+		$headerLines .= "Content-type: text/plain; charset=UTF-8\r\n";
+	}
+	return $headerLines;
+}
+
+/**
+ * Returns a base64 encoded string of the given values in a fomat that is used in emails.
+ * 
+ * @param String $value value to encode
+ * @return String base64 encoded value
+ */
+function base64EncodeForEMail($value) {
+	return '=?UTF-8?B?' . base64_encode($value) . '?=';
 }
 
 /**
