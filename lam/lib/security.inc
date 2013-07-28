@@ -40,10 +40,11 @@ checkClientIP();
  * Starts a session and checks the environment.
  * The script is stopped if one of the checks fail (timeout redirection may be overriden).
  * 
- * @param boolean $redirectToLogin redirect user to login page
+ * @param boolean $redirectToLogin redirect user to login page (default: true)
+ * @param boolean $initSecureData init verification data like session ID and client IP (default: false)
  * @return boolean true if all ok, false if session expired
  */
-function startSecureSession($redirectToLogin = true) {
+function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	// start session
 	if (isset($_SESSION)) unset($_SESSION);
 	if (strtolower(session_module_name()) == 'files') {
@@ -55,6 +56,13 @@ function startSecureSession($redirectToLogin = true) {
 		}
 	}
 	@session_start();
+	// init secure data if needed
+	if ($initSecureData && !isset($_SESSION["sec_session_id"])) {
+		$_SESSION["sec_session_id"] = session_id();
+		$_SESSION["sec_client_ip"] = $_SERVER['REMOTE_ADDR'];
+		$_SESSION['sec_sessionTime'] = time();
+		$_SESSION['cfgMain'] = new LAMCfgMain();
+	}
 	// check session id
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
@@ -126,7 +134,7 @@ function logoffAndBackToLoginPage() {
 		// close LDAP connection
 		@$_SESSION["ldap"]->destroy();
 	}
-	elseif (isset($_SESSION['selfService_clientDN'])) {
+	elseif (isset($_SESSION['selfService_clientDN']) || (strpos($_SERVER['REQUEST_URI'], '/selfService/') !== false)) {
 		logNewMessage(LOG_WARNING, 'Self service session of DN ' . Ldap::decrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
 	}
 	// delete key and iv in cookie
@@ -138,7 +146,7 @@ function logoffAndBackToLoginPage() {
 	$paths = array('./', '../', '../../', '../../../', '../../../../');
 	$page = 'login.php';
 	$pageSuffix = '?expired=yes';
-	if (isset($_SESSION['selfService_clientDN'])) {
+	if (isset($_SESSION['selfService_clientDN']) || (strpos($_SERVER['REQUEST_URI'], '/selfService/') !== false)) {
 		$scope = $_GET['scope'];
 		$name = $_GET['name'];
 		if (!preg_match('/^[0-9a-zA-Z _-]+$/', $scope) || !preg_match('/^[0-9a-zA-Z _-]+$/', $name)) {
