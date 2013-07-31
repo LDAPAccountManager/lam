@@ -197,10 +197,6 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->manageDescriptionAttribute) {
 			$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		}
-		// group members
-		$return->addElement(new htmlOutputText(_("Group members")));
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
-		$return->addElement(new htmlHelpLink('members'), true);
 		// password buttons
 		if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
 			$return->addElement(new htmlOutputText(_('Password')));
@@ -216,8 +212,29 @@ class posixGroup extends baseModule implements passwordService {
 			$return->addElement($pwdContainer, true);
 		}
 		if (isset($this->orig['gidNumber'][0]) && $this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0]) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'));
+			$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), true);
 		}
+		// group members
+		$return->addElement(new htmlOutputText(_("Group members")));
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+		$return->addElement(new htmlHelpLink('members'), true);
+		$return->addElement(new htmlOutputText(''));
+		$users = $this->getUsers();
+		$members = array();
+		if (isset($this->attributes['memberUid'][0])) {
+			foreach ($this->attributes['memberUid'] as $uid) {
+				if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
+					$members[] = $uid . ' (' . $users[$uid]['cn'] . ')';
+				}
+				else {
+					$members[] = $uid;
+				}
+			}
+		}
+		$members = array_unique($members);
+		natcasesort($members);
+		$members = array_map('htmlspecialchars', $members);
+		$return->addElement(new htmlOutputText(implode('<br>', $members), false), true);
 		return $return;
 	}
 
