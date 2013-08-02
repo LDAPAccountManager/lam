@@ -1065,7 +1065,7 @@ class myldap extends DS {
 		# Record the forward and reverse entries in the cache.
 		foreach ($result as $key => $value) {
 			# translate hex code into ascii for display
-			$result[$key] = $this->unescapeDN($value);
+			$result[$key] = dn_unescape($value);
 
 			$CACHE['explode'][implode(',',$result[0])][$key] = $result[$key];
 			$CACHE['explode'][implode(',',array_reverse($result[0]))][$key] = array_reverse($result[$key]);
@@ -1097,24 +1097,6 @@ class myldap extends DS {
 			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$dn);
 
 		return $dn;
-	}
-
-	/**
-	 * Parse a DN and unescape any special characters
-	 */
-	private function unescapeDN($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (is_array($dn)) {
-			$a = array();
-			foreach ($dn as $key => $rdn)
-				$a[$key] = preg_replace('/\\\([0-9A-Fa-f]{2})/e',"''.chr(hexdec('\\1')).''",$rdn);
-
-			return $a;
-
-		} else
-			return preg_replace('/\\\([0-9A-Fa-f]{2})/e',"''.chr(hexdec('\\1')).''",$dn);
 	}
 
 	public function getRootDSE($method=null) {
