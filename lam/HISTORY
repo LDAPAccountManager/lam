@@ -1,6 +1,13 @@
-18.06.2013 4.2.1
+September 2013 4.3
   - LAM Pro:
    -> PPolicy: check password history for password reuse
+   -> Custom fields: read-only fields for admin interface and file upload for binary data
+  - fixed bugs:
+   -> Custom fields: auto-adding object classes via profile editor fixed
+   -> PHP 5.5 compatibility
+
+
+18.06.2013 4.2.1
   - fixed bugs:
    -> Unix: suggested user name must be lower case
    -> Quota: profile editor does not work in some cases
