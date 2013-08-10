@@ -38,6 +38,20 @@ include_once("modules.inc");
 include_once("types.inc");
 
 /**
+ * Sets the environment variables for custom SSL CA certificates.
+ */
+function setSSLCaCert() {
+	// set SSL certificate if set
+	if (isset($_SESSION['cfgMain'])) {
+		$sslCaPath = $_SESSION['cfgMain']->getSSLCaCertPath();
+		if ($sslCaPath != null) {
+			putenv('LDAPTLS_CACERT=' . $sslCaPath);
+			putenv('TLS_CACERT=' . $sslCaPath);
+		}
+	}
+}
+
+/**
 * Sets language settings for automatic translation
 */
 function setlanguage() {
@@ -233,13 +247,13 @@ class LAMConfig {
 	
 	/** line separator */
 	const LINE_SEPARATOR = '+::+';
-
+	
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
 	
 	/** enables/disables TLS encryption */
 	private $useTLS;
-
+	
 	/** Array of string: users with admin rights */
 	private $Admins;
 
@@ -545,15 +559,16 @@ class LAMConfig {
 				}
 			}
 			$file = @fopen($conffile, "w");
+			$saveResult = LAMConfig::SAVE_OK;
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 				fclose($file);
-				@chmod ($conffile, 0600);
-				return LAMConfig::SAVE_OK;
+				@chmod($conffile, 0600);
 			}
 			else {
-				return LAMConfig::SAVE_FAIL;
+				$saveResult = LAMConfig::SAVE_FAIL;
 			}
+			return $saveResult;
 		}
 	}
 	
@@ -1326,7 +1341,7 @@ class LAMConfig {
 	public function setLamProMailText($lamProMailText) {
 		$this->lamProMailText = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $lamProMailText));
 	}
-
+	
 }
 
 
@@ -1375,6 +1390,12 @@ class LAMCfgMain {
 	
 	/** path to config file */
 	private $conffile;
+
+	/** uploaded SSL certificate that is stored to disk on save() */
+	private $uploadedSSLCaCert = null;
+	
+	/** SSL certificate should be deleted on save() */
+	private $delSSLCaCert = false;
 
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
@@ -1473,6 +1494,27 @@ class LAMCfgMain {
 		else {
 			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $this->conffile . ")");
 		}
+		// store SSL certificate
+		if ($this->uploadedSSLCaCert != null) {
+			$sslPath = $this->getInternalSSLCaCertFileName();
+			$file = @fopen($sslPath, "w");
+			if ($file) {
+				fputs($file, $this->uploadedSSLCaCert);
+				fclose($file);
+				@chmod($sslPath, 0600);
+			}
+			else {
+				StatusMessage("ERROR", _("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
+			}
+		}
+		// delete SSL certificate
+		if ($this->delSSLCaCert === true) {
+			$sslPath = $this->getInternalSSLCaCertFileName();
+			$result = @unlink($sslPath);
+			if (!$result) {
+				StatusMessage("ERROR", _("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
+			}
+		}
 	}
 	
 	/**
@@ -1537,6 +1579,187 @@ class LAMCfgMain {
 		return file_exists($this->conffile);
 	}
 	
+	/**
+	 * Returns the path to the SSL CA certificate file that overrides the system certificates.
+	 * 
+	 * @return String path to certificate file or null if certificate is not overridden
+	 */
+	public function getSSLCaCertPath() {
+		$path = $this->getInternalSSLCaCertFileName();
+		if (file_exists($path)) {
+			return $path;
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the file name that will be used internally to store the CA file.
+	 * 
+	 * @return String file name
+	 */
+	private function getInternalSSLCaCertFileName() {
+		return dirname(__FILE__) . '/../config/serverCerts.pem';
+	}
+	
+	/**
+	 * Uploads a new SSL CA cert.
+	 * 
+	 * @param String $cert file content in DER/PEM format
+	 * @return mixed TRUE if format is correct, error message if file is not accepted
+	 */
+	public function uploadSSLCaCert($cert) {
+		if (strpos($cert, '-----BEGIN CERTIFICATE-----') !== 0) {
+			$pem = @chunk_split(@base64_encode($cert), 64, "\n");
+			$cert = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
+		}
+		$pemData = @openssl_x509_parse($cert);
+		if ($pemData === false) {
+			return _('Please provide a file in DER or PEM format.');
+		}
+		$existingCerts = $this->getSSLCaCertificateContent();
+		if (!empty($existingCerts)) {
+			// merge with existing certificates
+			$existingList = $this->splitSSLCaCertificateContent($existingCerts);
+			$newList = $this->splitSSLCaCertificateContent($cert);
+			$this->uploadedSSLCaCert = implode("\n", array_unique(array_merge($existingList, $newList)));
+		}
+		else {
+			$this->uploadedSSLCaCert = $cert;
+		}
+		$this->delSSLCaCert = false;
+		return true;
+	}
+	
+	/**
+	 * Returns the name of a temporary file in tmp that contains the SSL certificate.
+	 * The file contains either the stored data in serverCerts or the uploaded data.
+	 * 
+	 * @return String file name or null if no certificate was set
+	 */
+	public function getSSLCaCertTempFileName() {
+		if ($this->delSSLCaCert) {
+			return null;
+		}
+		// get certificate data
+		$content = $this->getSSLCaCertificateContent();
+		if ($content == null) {
+			return null;
+		}
+		// write to temp file
+		$fileName = time() . getRandomNumber() . '.pem';
+		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$handle = @fopen($path, "wb");
+		@chmod($path, 0600);
+		if ($handle) {
+			$content = fputs($handle, $content);
+			fclose($handle);
+		}
+		else {
+			return null;
+		}
+		return $fileName;
+	}
+	
+	/**
+	 * Marks a single or all SSL CA certificate files for deletion.
+	 * The changes take effect on save().
+	 * 
+	 * @param int $index certificate index, null deletes all certificates (default: null)
+	 */
+	public function deleteSSLCaCert($index = null) {
+		if ($index == null) {
+			// delete all
+			$this->delSSLCaCert = true;
+			return;
+		}
+		$content = $this->getSSLCaCertificateContent();
+		$list = $this->splitSSLCaCertificateContent($content);
+		unset($list[$index]);
+		if (sizeof($list) < 1) {
+			$this->delSSLCaCert = true;
+			$this->uploadedSSLCaCert = null;
+		}
+		else {
+			$this->uploadedSSLCaCert = implode("\n", $list);
+		}
+	}
+	
+	/**
+	 * Returns a list of all CA certificates.
+	 * 
+	 * @return array list of certificates as output of openssl_x509_parse()
+	 */
+	public function getSSLCaCertificates() {
+		if ($this->delSSLCaCert) {
+			return array();
+		}
+		$content = $this->getSSLCaCertificateContent();
+		if (empty($content)) {
+			return array();
+		}
+		$list = $this->splitSSLCaCertificateContent($content);
+		for ($i = 0; $i < sizeof($list); $i++) {
+			$list[$i] = @openssl_x509_parse($list[$i]);
+		}
+		return $list;
+	}
+
+	/**
+	 * Returns the content of the certificate file or uploaded data.
+	 * 
+	 * @return String null or certificate content
+	 */
+	private function getSSLCaCertificateContent() {
+		$content = null;
+		if ($this->delSSLCaCert) {
+			return null;
+		}
+		if ($this->uploadedSSLCaCert != null) {
+			$content = $this->uploadedSSLCaCert;
+		}
+		elseif ($this->getSSLCaCertPath() != null) {
+			$path = $this->getSSLCaCertPath();
+			$handle = @fopen($path, "r");
+			if ($handle) {
+				$content = fread($handle, 10000000);
+				fclose($handle);
+			}
+		}
+		return $content;
+	}
+	
+	/**
+	 * Splits the certificate content into single PEM data chunks.
+	 * 
+	 * @param String $content PEM file content
+	 * @return array one element for each certificate chunk
+	 */
+	private function splitSSLCaCertificateContent($content) {
+		if (empty($content)) {
+			return array();
+		}
+		$content = str_replace("\n\n", "\n", $content);
+		if (empty($content)) {
+			return array();
+		}
+		if (!(strpos($content, '-----BEGIN CERTIFICATE-----') === 0)) {
+			return array();
+		}
+		$lines = explode("\n", $content);
+		$list = array();
+		$pos = -1;
+		foreach ($lines as $line) {
+			if (strpos($line, '-----BEGIN CERTIFICATE-----') === 0) {
+				$pos++;
+			}
+			if (!isset($list[$pos])) {
+				$list[$pos] = '';
+			}
+			$list[$pos] .= $line . "\n";
+		}
+		return $list;
+	}
+
 }
 
 ?>

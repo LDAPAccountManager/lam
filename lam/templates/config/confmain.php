@@ -186,7 +186,7 @@ if (sizeof($errorsToDisplay) > 0) {
 }
 
 // display formular
-echo ("<form action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n");
+echo ("<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n");
 
 // hidden submit buttons which are clicked by tabs
 echo "<div style=\"display: none;\">\n";
@@ -264,6 +264,7 @@ if (isLAMProVersion()) {
 	$accessSelect->setHasDescriptiveElements(true);
 	$serverSettingsContent->addElement($accessSelect, true);
 }
+
 $serverSettings = new htmlFieldset($serverSettingsContent, _("Server settings"), '../../graphics/profiles.png');
 $container->addElement($serverSettings, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);

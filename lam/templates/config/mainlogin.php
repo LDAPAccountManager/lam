@@ -46,7 +46,9 @@ setlanguage();
 
 // remove settings from session
 if (isset($_SESSION["mainconf_password"])) unset($_SESSION["mainconf_password"]);
-
+if (isset($_SESSION['cfgMain'])) {
+	unset($_SESSION['cfgMain']);
+}
 $cfgMain = new LAMCfgMain();
 // check if user entered a password
 if (isset($_POST['passwd'])) {

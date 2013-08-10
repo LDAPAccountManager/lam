@@ -523,7 +523,8 @@ if(!empty($_POST['checklogin'])) {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
-
+	setSSLCaCert();
+	
 	$clientSource = $_SERVER['REMOTE_ADDR'];
 	if (isset($_SERVER['REMOTE_HOST'])) {
 		$clientSource .= '/' . $_SERVER['REMOTE_HOST'];

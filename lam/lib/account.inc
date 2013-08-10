@@ -1077,4 +1077,39 @@ function getRandomNumber() {
 	return mt_rand();
 }
 
+/**
+ * Connects to the LDAP server and extracts the certificates.
+ * 
+ * @param String $server server name
+ * @param String $port server port
+ * @return mixed false on error and certificate if extracted successfully 
+ */
+function getLDAPSSLCertificate($server, $port) {
+	$stream = @stream_context_create(array("ssl" => array("capture_peer_cert_chain" => true)));
+	if (!$stream) {
+		return false;
+	}
+	$client = @stream_socket_client('ssl://' . $server . ':' . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $stream);
+	if (!$client) {
+		return false;
+	}
+	$context = stream_context_get_params($client);
+	if (!isset($context['options']['ssl']['peer_certificate_chain'])) {
+		return false;
+	}
+	$finalPEM = '';
+	for ($i = 0; $i < sizeof($context['options']['ssl']['peer_certificate_chain']); $i++) {
+		$cert = $context['options']['ssl']['peer_certificate_chain'][$i];
+		$pemData = null;
+		$pemResult = @openssl_x509_export($cert, $pemData);
+		if ($pemResult) {
+			$finalPEM .= $pemData;
+		}
+		else {
+			return false;
+		}
+	}
+	return $finalPEM;
+}
+
 ?>

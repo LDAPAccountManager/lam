@@ -2261,7 +2261,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$table->colspan = 10;
 			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
 				$filename = 'userCertificate' . getRandomNumber() . '.der';
-				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
+				$pathOut = dirname(__FILE__) . '/../../tmp/' . $filename;
+				$out = @fopen($pathOut, "wb");
+				@chmod($pathOut, 0600);
 				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
 				fclose ($out);
 				$path = '../../tmp/' . $filename;

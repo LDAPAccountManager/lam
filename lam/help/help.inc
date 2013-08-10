@@ -80,6 +80,8 @@ $helpArray = array (
 						_("Example").
 						":</b><br><br>".
 						_("dc=yourcompany,dc=com")),
+				"204" => array ("Headline" => _("SSL certificate"),
+					"Text" => _("This is only needed for TLS/SSL connections. By default, LAM will use the certificate authorities installed on your system. If you have a private CA in your company you can upload your CA certificates here and override the system certificates.")),
 				"206" => array ("Headline" => _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are separated by semicolons.") .
 						"<br><br><br><big><b>" .

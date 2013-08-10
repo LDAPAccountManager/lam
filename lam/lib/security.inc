@@ -87,6 +87,7 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	else {
 		return false;
 	}
+	setSSLCaCert();
 	return true;
 }
 

@@ -70,6 +70,10 @@ if (! function_exists('ldap_search')) {
 if (! function_exists('gettext') || !function_exists('_')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
 }
+// check if PHP has openssl support
+if (! function_exists('openssl_x509_parse')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no openssl support!", "Please install openssl for PHP.");
+}
 // check if PHP has XML support
 if (! function_exists('utf8_decode')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
