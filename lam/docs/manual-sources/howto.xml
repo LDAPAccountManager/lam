@@ -188,7 +188,8 @@ Have fun!
         <itemizedlist>
           <listitem>
             <para>Apache webserver (SSL recommended) with PHP module (PHP 5
-            (&gt;= 5.2.4) with ldap, gettext, xml and optional mcrypt)</para>
+            (&gt;= 5.2.4) with ldap, gettext, xml, openssl and optional
+            mcrypt)</para>
           </listitem>
 
           <listitem>
@@ -955,6 +956,39 @@ Have fun!
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para id="conf_sslCert"><emphasis role="bold">SSL certificate
+        setup:</emphasis></para>
+
+        <para>By default, LAM uses the CA certificates that are preinstalled
+        on your system. This will work if you connect via SSL/TLS to an LDAP
+        server that uses a certificate signed by a well-known CA. In case you
+        use your own CA (e.g. company internal CA) you can import the CA
+        certificates here.</para>
+
+        <para>Please note that this can affect other web applications on the
+        same server if they require different certificates. In case of any
+        problems please delete the uploaded certificates and use the <link
+        linkend="ssl_certSystem">system setup</link>.</para>
+
+        <para>You can either upload a DER/PEM formatted certificate file or
+        import the certificates directly from an LDAP server that is available
+        with LDAP+SSL (ldaps://). LAM will automatically override system
+        certificates if at least one certificate is uploaded/imported.</para>
+
+        <para>The whole certificate list can be downloaded in PEM format. You
+        can also delete single certificates from the list.</para>
+
+        <para>Please note that you might need to restart your webserver if you
+        do any changes to this configuration.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>
@@ -1000,6 +1034,14 @@ Have fun!
 
         <para>If you would like to change the master configuration password
         then enter a new password here.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
     </section>
 
@@ -6766,23 +6808,46 @@ Run slapindex to rebuild the index.
       configuration profile. TLS can be activated with the "Activate TLS"
       option.</para>
 
-      <para>You will need to setup ldap.conf to trust your server certificate.
-      Some installations use /etc/ldap.conf and some use /etc/ldap/ldap.conf.
-      It is a good idea to symlink /etc/ldap.conf to /etc/ldap/ldap.conf.
-      Specify the server CA certificate with the following option:</para>
+      <para>If your LDAP server uses a SSL certificate of a well-know
+      certificate authority (CA) then you probably need no changes. If you use
+      a custom CA in your company then there are two ways to setup the CA
+      certificates.</para>
 
-      <programlisting>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</programlisting>
+      <section>
+        <title>Setup SSL certificates in LAM general settings</title>
 
-      <para>This needs to be the public part of the signing certificate
-      authority. See "man ldap.conf" for additional options.</para>
+        <para>This is much easier than system level setup and will only affect
+        LAM. There might be some cases where other web applications on the
+        same web server are influenced.</para>
 
-      <literallayout>
+        <para>See <link linkend="conf_sslCert">here</link> for details.</para>
+      </section>
+
+      <section id="ssl_certSystem">
+        <title>Setup SSL certificates on system level</title>
+
+        <para>This will make the CA certificates available also to other
+        applications on your system (e.g. other web applications).</para>
+
+        <para>You will need to setup ldap.conf to trust your server
+        certificate. Some installations use /etc/ldap.conf and some use
+        /etc/ldap/ldap.conf. It is a good idea to symlink /etc/ldap.conf to
+        /etc/ldap/ldap.conf. Specify the server CA certificate with the
+        following option:</para>
+
+        <programlisting>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</programlisting>
+
+        <para>This needs to be the public part of the signing certificate
+        authority. See "man ldap.conf" for additional options.</para>
+
+        <literallayout>
 </literallayout>
 
-      <para>You may also need to specify the CA certificate in your Apache
-      configuration by using the option "LDAPTrustedGlobalCert":</para>
+        <para>You may also need to specify the CA certificate in your Apache
+        configuration by using the option "LDAPTrustedGlobalCert":</para>
 
-      <programlisting>LDAPTrustedGlobalCert CA_BASE64 /etc/ldap/ca/myCA/cacert.pem</programlisting>
+        <programlisting>LDAPTrustedGlobalCert CA_BASE64 /etc/ldap/ca/myCA/cacert.pem</programlisting>
+      </section>
     </section>
 
     <section>

@@ -263,7 +263,7 @@ $securityTable->addElement(new htmlOutputText(_('SSL certificates')));
 $sslMethod = _('use system certificates');
 $sslFileName = $cfg->getSSLCaCertTempFileName();
 if ($sslFileName != null) {
-	$sslMethod = _('use custom CA certificate');
+	$sslMethod = _('use custom CA certificates');
 }
 $sslDelSaveGroup = new htmlGroup();
 $sslDelSaveGroup->addElement(new htmlOutputText($sslMethod));
@@ -287,7 +287,7 @@ $sslButtonTable->colspan = 3;
 $sslButtonTable->addElement(new htmlInputFileUpload('sslCaCert'));
 $sslUploadBtn = new htmlButton('sslCaCertUpload', _('Upload'));
 $sslUploadBtn->setIconClass('upButton');
-$sslUploadBtn->setTitle(_('Upload CA certificate'));
+$sslUploadBtn->setTitle(_('Upload CA certificate in DER/PEM format.'));
 $sslButtonTable->addElement($sslUploadBtn, true);
 if (function_exists('stream_socket_client')) {
 	$sslImportGroup = new htmlGroup();
