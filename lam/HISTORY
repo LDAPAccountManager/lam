@@ -3,6 +3,7 @@ September 2013 4.3
   - LAM Pro:
    -> PPolicy: check password history for password reuse
    -> Custom fields: read-only fields for admin interface and file upload for binary data
+   -> Password self reset: Samba 3 sync, identification with login attribute
   - fixed bugs:
    -> Custom fields: auto-adding object classes via profile editor fixed
    -> PHP 5.5 compatibility
