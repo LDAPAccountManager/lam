@@ -2166,11 +2166,32 @@ Have fun!
         security questions in both self service profile(s) and server
         profile(s).</para>
 
-        <para><emphasis role="bold">Schema</emphasis></para>
+        <para><emphasis role="bold">Schema installation</emphasis></para>
 
-        <para>Please install the schema that comes with LAM Pro:
-        docs/schema/passwordSelfReset.schema or
-        docs/schema/passwordSelfReset.ldif</para>
+        <para>Please install the schema that comes with LAM Pro.</para>
+
+        <para><emphasis role="underline">OpenLDAP:</emphasis></para>
+
+        <para>Install docs/schema/passwordSelfReset.schema for slapd.conf
+        configuration or docs/schema/passwordSelfReset.ldif for slapd.d
+        configuration.</para>
+
+        <para><emphasis role="underline">Samba 4:</emphasis></para>
+
+        <para>The schema files are
+        docs/schema/passwordSelfReset-Samba4-attributes.ldif and
+        docs/schema/passwordSelfReset-Samba4-objectClass.ldif.</para>
+
+        <para>First, you need to edit them and replace "DOMAIN_TOP_DN" with
+        your LDAP suffix (e.g. dc=samba4,dc=test).</para>
+
+        <para>Then install the attribute and afterwards the object class
+        schema file:</para>
+
+        <literallayout>ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-attributes.ldif --option="dsdb:schema update allowed"=true
+ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass.ldif --option="dsdb:schema update allowed"=true
+
+</literallayout>
 
         <para>This allows to set a security question + answer for each
         account.</para>
