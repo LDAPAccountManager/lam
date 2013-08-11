@@ -174,6 +174,8 @@ class htmlTable extends htmlElement {
 	private $rowOpen = false;
 	/** table width */
 	private $width = null;
+	/** HTML ID */
+	private $id = null;
 	
 	/**
 	 * Constructor
@@ -181,8 +183,9 @@ class htmlTable extends htmlElement {
 	 * @param String $width table width (e.g. 100%)
 	 * @see htmlElement
 	 */
-	function __construct($width = null) {
+	function __construct($width = null, $id = null) {
 		$this->width = $width;
+		$this->id = $id;
 	}
 
 	/**
@@ -262,11 +265,15 @@ class htmlTable extends htmlElement {
 		if ($this->width != null) {
 			$width = ' width="' . htmlspecialchars($this->width) . '"';
 		}
+		$id = '';
+		if (!empty($this->id)) {
+			$id = ' id="' . $this->id . '"';
+		}
 		$classAttr = '';
 		if (sizeof($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo "<table" . $width . $classAttr . ">\n";
+		echo "<table" . $width . $id . $classAttr . ">\n";
 		// print all contained elements
 		for ($i = 0; $i < sizeof($this->elements); $i++) {
 			// print htmlElement objects
