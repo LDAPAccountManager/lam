@@ -77,6 +77,8 @@ if (isset($_POST['language'])) {
 // init some session variables
 $default_Config = new LAMCfgMain();
 $_SESSION["cfgMain"] = $default_Config;
+setSSLCaCert();
+
 $default_Profile = $default_Config->default;
 if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
@@ -523,7 +525,6 @@ if(!empty($_POST['checklogin'])) {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
-	setSSLCaCert();
 	
 	$clientSource = $_SERVER['REMOTE_ADDR'];
 	if (isset($_SERVER['REMOTE_HOST'])) {
