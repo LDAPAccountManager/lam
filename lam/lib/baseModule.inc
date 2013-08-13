@@ -1535,20 +1535,22 @@ abstract class baseModule {
 	 * 
 	 * An error message should be printed if the function returns false.
 	 * 
+	 * @param boolean $newAccount is new account or existing one
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return boolean true, if no problems occured
 	 */
-	public function preModifySelfService($attributes) {
+	public function preModifySelfService($newAccount, $attributes) {
 		return true;
 	}
 	
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
 	 *
+	 * @param boolean $newAccount is new account or existing one
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return boolean true, if no problems occured
 	 */
-	public function postModifySelfService($attributes) {
+	public function postModifySelfService($newAccount, $attributes) {
 		return true;
 	}
 	
