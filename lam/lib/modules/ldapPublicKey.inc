@@ -35,6 +35,9 @@ $Id$
 */
 class ldapPublicKey extends baseModule {
 
+	/** session variable for existing keys in self service */
+	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -65,7 +68,11 @@ class ldapPublicKey extends baseModule {
 			'keyList' => array(
 				"Headline" => _("SSH public key"), 'attr' => 'sshPublicKey',
 				"Text" => _("Please a comma separated list of your public SSH keys.")
-			)
+			),
+			'upload' => array(
+				"Headline" => _("File upload"), 'attr' => 'sshPublicKey',
+				"Text" => _("Upload a file with one or more keys. Each line contains one key.")
+			),
 		);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -89,6 +96,13 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
+	* This function fills the message array.
+	**/
+	function load_Messages() {
+		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
+	}
+
+	/**
 	 * Returns the HTML meta data for the main account page.
 	 * 
 	 * @return htmlElement HTML meta data
@@ -103,7 +117,7 @@ class ldapPublicKey extends baseModule {
 				$return->addElement(new htmlOutputText(_('SSH public key')));
 				$sshInput = new htmlInputField('sshPublicKey' . $i, $this->attributes['sshPublicKey'][$i]);
 				$sshInput->setFieldSize(50);
-				$sshInput->setFieldMaxLength(4096);
+				$sshInput->setFieldMaxLength(16384);
 				$return->addElement($sshInput);
 				$return->addElement(new htmlButton('delKey' . $i, 'del.png', true));
 				$return->addElement(new htmlHelpLink('key'), true);
@@ -117,7 +131,17 @@ class ldapPublicKey extends baseModule {
 		$return->addElement($sshNewKey);
 		$return->addElement(new htmlButton('addKey', 'add.png', true));
 		$return->addElement(new htmlHelpLink('key'));
-		$return->addElement(new htmlHiddenInput('key_number', $keyCount));
+		$return->addElement(new htmlHiddenInput('key_number', $keyCount), true);
+		// file upload
+		$return->addElement(new htmlSpacer(null, '20px'), true);
+		$return->addElement(new htmlOutputText(_('Upload file')));
+		$uploadGroup = new htmlGroup();
+		$uploadGroup->addElement(new htmlInputFileUpload('sshPublicKeyFile'));
+		$uploadGroup->addElement(new htmlSpacer('1px', null));
+		$uploadGroup->addElement(new htmlButton('sshPublicKeyFileSubmit', _('Upload')));
+		$return->addElement($uploadGroup);
+		$return->addElement(new htmlOutputText(''));
+		$return->addElement(new htmlHelpLink('upload'));
 		return $return;
 	}
 
@@ -128,6 +152,7 @@ class ldapPublicKey extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		$messages = array();
 		$this->attributes['sshPublicKey'] = array();
 		// check old keys
 		if (isset($_POST['key_number'])) {
@@ -142,8 +167,27 @@ class ldapPublicKey extends baseModule {
 		if (isset($_POST['sshPublicKey']) && ($_POST['sshPublicKey'] != "")) {
 			$this->attributes['sshPublicKey'][] = $_POST['sshPublicKey'];
 		}
-		$this->attributes['sshPublicKey'] = array_unique($this->attributes['sshPublicKey']);
-		return array();
+		// file upload
+		if (isset($_POST['sshPublicKeyFileSubmit'])) {
+			if ($_FILES['sshPublicKeyFile'] && ($_FILES['sshPublicKeyFile']['size'] > 0)) {
+				$handle = fopen($_FILES['sshPublicKeyFile']['tmp_name'], "r");
+				$data = fread($handle, 10000000);
+				fclose($handle);
+				$data = str_replace("\r\n", "\n", $data);
+				$data = str_replace("\r", "\n", $data);
+				$lines = explode("\n", $data);
+				foreach ($lines as $line) {
+					if (!empty($line) && !(strpos($line, '#') === 0)) {
+						$this->attributes['sshPublicKey'][] = $line;
+					}
+				}
+			}
+			else {
+				$messages[] = $this->messages['file'][0];
+			}
+		}
+		$this->attributes['sshPublicKey'] = array_values(array_unique($this->attributes['sshPublicKey']));
+		return $messages;
 	}
 
 	/**
@@ -207,24 +251,151 @@ class ldapPublicKey extends baseModule {
 			if (isset($attributes['sshPublicKey'][0])) {
 				$sshPublicKeys = $attributes['sshPublicKey'];
 			}
-			$sshPublicKeyField = new htmlInputTextarea('ldapPublicKey_sshPublicKey', implode("\r\n", $sshPublicKeys), 100, 4);
-			if (in_array('sshPublicKey', $readOnlyFields)) {
-				$text = '';
-				for ($i = 0; $i < sizeof($sshPublicKeys); $i++) {
-					if ($i > 0) {
-						$text .= '<br>';
-					}
-					$text .= htmlspecialchars($sshPublicKeys[$i]);
-				}
-				$sshPublicKeyField = new htmlOutputText($text, false);
-			}
-			$label = new htmlOutputText(_('SSH public keys'));
-			$label->alignment = htmlElement::ALIGN_TOP;
-			$return['sshPublicKey'] = new htmlTableRow(array(
-				$label, $sshPublicKeyField
-			));
+			$_SESSION[self::SESS_KEY_LIST] = $sshPublicKeys;
+			$keyTable = new htmlTable();
+			// JavaScript functions
+			$keyTable->addElement($this->getSelfServiceKeysJSBlock(), true);
+			// input fields
+			$keyTable->addElement(new htmlDiv('sshPublicKeyDiv', $this->getSelfServiceKeys()), true);
+			// upload status
+			$uploadStatus = new htmlDiv('ldapPublicKey_upload_status_key', new htmlOutputText(''));
+			$uploadStatus->setCSSClasses(array('qq-upload-list'));
+			$uploadStatus->colspan = 7;
+			$keyTable->addElement($uploadStatus, true);
+			$keyLabel = new htmlOutputText(_('SSH public keys'));
+			$keyLabel->alignment = htmlElement::ALIGN_TOP;
+			$keyCells = array($keyLabel, $keyTable);
+			$keyRow = new htmlTableRow($keyCells);
+			$return['sshPublicKey'] = $keyRow;
 		}
 		return $return;
+	}
+
+	/**
+	 * Returns the meta HTML code to display the key area.
+	 * This also includes the file upload.
+	 * 
+	 * @return htmlTable key content
+	 */
+	private function getSelfServiceKeys() {
+		$keys = $_SESSION[self::SESS_KEY_LIST];
+		$content = new htmlTable();
+		if (sizeof($keys) > 0) {
+			$keyTable = new htmlTable();
+			for ($i = 0; $i < sizeof($keys); $i++) {
+				$keyInput = new htmlInputField('sshPublicKey_' . $i, $keys[$i]);
+				$keyInput->setFieldMaxLength(16384);
+				$keyTable->addElement($keyInput);
+				$delLink = new htmlLink('', '#', '../../graphics/del.png');
+				$delLink->setTitle(_('Delete'));
+				$delLink->setOnClick('ldapPublicKeyDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
+				$keyTable->addElement($delLink);
+				if ($i == (sizeof($keys) - 1)) {
+					$addLink = new htmlLink('', '#', '../../graphics/add.png');
+					$addLink->setTitle(_('Add'));
+					$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
+					$keyTable->addElement($addLink);
+				}
+				$keyTable->addNewLine();
+			}
+			$content->addElement($keyTable, true);
+		}
+		else {
+			$addLink = new htmlLink('', '#', '../../graphics/add.png');
+			$addLink->setTitle(_('Add'));
+			$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
+			$content->addElement($addLink, true);
+		}
+		// upload button
+		$uploadButtons = new htmlGroup();
+		$uploadButtons->addElement(new htmlDiv('ldapPublicKeyKeyUploadId', new htmlOutputText('')), true);
+		$keyUpload = new htmlJavaScript('ldapPublicKeyUploadKey(\'ldapPublicKeyKeyUploadId\', ' . sizeof($keys) . ');');
+		$uploadButtons->addElement($keyUpload);
+		$content->addElement($uploadButtons, true);
+		return $content;
+	}
+	
+	/**
+	 * Returns the Java Script functions to manage the keys.
+	 * 
+	 * @return htmlJavaScript JS block
+	 */
+	private static function getSelfServiceKeysJSBlock() {
+		$content = '
+			function ldapPublicKeyDeleteKey(id, count) {
+				var actionJSON = {
+					"action": "deleteKey",
+					"id": id
+				};
+				for (c = 0; c < count; c++) {
+					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
+				}
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
+			}
+			
+			function ldapPublicKeyDeleteKeyHandleReply(data) {
+				if (data.errorsOccured == "false") {
+					jQuery(\'#sshPublicKeyDiv\').html(data.html);
+				}
+				else {
+					alert(data.errormessage);
+				}
+			}
+			
+			function ldapPublicKeyAddKey(count) {
+				var actionJSON = {
+					"action": "addKey"
+				};
+				for (c = 0; c < count; c++) {
+					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
+				}
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
+			}
+			
+			function ldapPublicKeyAddKeyHandleReply(data) {
+				if (data.errorsOccured == "false") {
+					jQuery(\'#sshPublicKeyDiv\').html(data.html);
+				}
+				else {
+					alert(data.errormessage);
+				}
+			}
+			
+			function ldapPublicKeyUploadKey(elementID, count) {
+				var uploadStatus = document.getElementById(\'ldapPublicKey_upload_status_key\');
+				var parameters = {
+					action: \'ajaxKeyUpload\'
+				};
+				for (c = 0; c < count; c++) {
+					parameters["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
+				}
+				var uploader = new qq.FineUploader({
+					element: document.getElementById(elementID),
+					listElement: uploadStatus,
+					request: {
+						endpoint: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
+						forceMultipart: true,
+						paramsInBody: true,
+						params: parameters
+					},
+					multiple: false,
+					callbacks: {
+						onComplete: function(id, fileName, data) {
+							if (data.success) {
+								if (data.html) {
+									jQuery(\'#sshPublicKeyDiv\').html(data.html);
+								}
+							}
+							else {
+								alert(data.error);
+							}
+						}
+					}
+				});		
+			}
+			
+			';
+		return new htmlJavaScript($content);
 	}
 
 	/**
@@ -250,7 +421,12 @@ class ldapPublicKey extends baseModule {
 			return $return; // skip processing if only a password change is done
 		}
 		if (in_array('sshPublicKey', $fields)) {
-			$newKeys = explode("\r\n", trim($_POST['ldapPublicKey_sshPublicKey']));
+			$newKeys = array();
+			$counter = 0;
+			while (isset($_POST['sshPublicKey_' . $counter])) {
+				$newKeys[] = $_POST['sshPublicKey_' . $counter];
+				$counter++;
+			}
 			$count = sizeof($newKeys);
 			for ($i = 0; $i < $count; $i++) {
 				if (trim($newKeys[$i]) == '') {
@@ -287,6 +463,119 @@ class ldapPublicKey extends baseModule {
 			}
 		}
 		return $return;
+	}
+
+	/**
+	 * Manages AJAX requests.
+	 * This function may be called with or without an account container.
+	 */
+	public function handleAjaxRequest() {
+		$x = $_POST;
+		$y = $_GET;
+		// AJAX uploads are non-JSON
+		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxKeyUpload')) {
+			$this->ajaxUpload();
+			return;
+		}
+		$jsonInput = $_POST['jsonInput'];
+		$jsonReturn = self::invalidAjaxRequest();
+		if (isset($jsonInput['action'])) {
+			if ($jsonInput['action'] == 'deleteKey') {
+				$jsonReturn = $this->ajaxDeleteSelfServiceKey($jsonInput);
+			}
+			elseif ($jsonInput['action'] == 'addKey') {
+				$_SESSION[self::SESS_KEY_LIST][] = '';
+				ob_start();
+				$contentElement = $this->getSelfServiceKeys();
+				ob_end_clean();
+				ob_start();
+				$tabindex = 999;
+				parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+				$content = ob_get_contents();
+				ob_end_clean();
+				$jsonReturn = array(
+					'errorsOccured' => 'false',
+					'html' => $content,
+				);
+			}
+		}
+		echo json_encode($jsonReturn);
+	}
+	
+	/**
+	 * Handles an AJAX file upload and prints the JSON result.
+	 */
+	private function ajaxUpload() {
+		$x = $_GET;
+		$y = $_FILES;
+		$result = array('success' => true);
+		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 10)) {
+			$result = array('error' => _('No file received.'));
+		}
+		else {
+			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
+			$data = fread($handle, 100000000);
+			fclose($handle);
+			$data = str_replace("\r\n", "\n", $data);
+			$data = str_replace("\r", "\n", $data);
+			$lines = explode("\n", $data);
+			foreach ($lines as $line) {
+				if (!empty($line) && !(strpos($line, '#') === 0)) {
+					$_SESSION[self::SESS_KEY_LIST][] = $line;
+				}
+			}
+			$_SESSION[self::SESS_KEY_LIST] = array_values(array_unique($_SESSION[self::SESS_KEY_LIST]));
+			ob_start();
+			$contentElement = $this->getSelfServiceKeys();
+			ob_end_clean();
+			ob_start();
+			$tabindex = 999;
+			parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+			$content = ob_get_contents();
+			ob_end_clean();
+			$result['html'] = $content;
+		}
+		echo json_encode($result);
+	}
+
+	/**
+	 * Manages the deletion of a key.
+	 * 
+	 * @param array $data JSON data
+	 */
+	private function ajaxDeleteSelfServiceKey($data) {
+		if (!isset($data['id'])) {
+			return self::invalidAjaxRequest();
+		}
+		$index = $data['id'];
+		if (array_key_exists($index, $_SESSION[self::SESS_KEY_LIST])) {
+			unset($_SESSION[self::SESS_KEY_LIST][$index]);
+			$_SESSION[self::SESS_KEY_LIST] = array_values($_SESSION[self::SESS_KEY_LIST]);
+		}
+		ob_start();
+		$contentElement = $this->getSelfServiceKeys();
+		ob_end_clean();
+		ob_start();
+		$tabindex = 999;
+		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		$content = ob_get_contents();
+		ob_end_clean();
+		return array(
+			'errorsOccured' => 'false',
+			'html' => $content,
+		);
+	}
+	
+	/**
+	 * Invalid AJAX request received.
+	 * 
+	 * @param String $message error message
+	 */
+	public static function invalidAjaxRequest($message = null) {
+		if ($message == null) {
+			$message = _('Invalid request');
+		}
+		return array('errorsOccured' => 'true', 'errormessage' => $message);
 	}
 
 }
