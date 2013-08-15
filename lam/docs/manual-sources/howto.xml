@@ -967,9 +967,10 @@ Have fun!
         certificates here.</para>
 
         <para>Please note that this can affect other web applications on the
-        same server if they require different certificates. In case of any
-        problems please delete the uploaded certificates and use the <link
-        linkend="ssl_certSystem">system setup</link>.</para>
+        same server if they require different certificates. You may also need
+        to restart Apache. In case of any problems please delete the uploaded
+        certificates and use the <link linkend="ssl_certSystem">system
+        setup</link>.</para>
 
         <para>You can either upload a DER/PEM formatted certificate file or
         import the certificates directly from an LDAP server that is available
