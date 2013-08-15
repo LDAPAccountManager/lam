@@ -3222,7 +3222,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * 
 	 * @return htmlTable certificate content
 	 */
-	private static function getSelfServiceUserCertificates() {
+	private function getSelfServiceUserCertificates() {
 		$userCertificates = $_SESSION[self::SESS_CERTIFICATES_LIST];
 		$content = new htmlTable();
 		if (sizeof($userCertificates) > 0) {
@@ -3239,7 +3239,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$certTable->addElement($saveLink);
 				$delLink = new htmlLink('', '#', '../../graphics/del.png');
 				$delLink->setTitle(_('Delete'));
-				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . ')');
+				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . '); return false;');
 				$certTable->addElement($delLink);
 				if (function_exists('openssl_x509_parse')) {
 					$pem = @chunk_split(@base64_encode($userCertificates[$i]), 64, "\n");
