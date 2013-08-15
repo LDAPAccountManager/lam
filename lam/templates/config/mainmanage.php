@@ -289,7 +289,7 @@ $sslUploadBtn = new htmlButton('sslCaCertUpload', _('Upload'));
 $sslUploadBtn->setIconClass('upButton');
 $sslUploadBtn->setTitle(_('Upload CA certificate in DER/PEM format.'));
 $sslButtonTable->addElement($sslUploadBtn, true);
-if (function_exists('stream_socket_client')) {
+if (function_exists('stream_socket_client') && function_exists('stream_context_get_params')) {
 	$sslImportGroup = new htmlGroup();
 	$sslImportGroup->addElement(new htmlOutputText('ldaps://'));
 	$sslImportServerUrl = !empty($_POST['serverurl']) ? $_POST['serverurl'] :  '';
