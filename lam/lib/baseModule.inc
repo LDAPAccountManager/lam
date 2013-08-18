@@ -1213,8 +1213,9 @@ abstract class baseModule {
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
+	 * @param boolean $isTextArea show as text area (default false)
 	 */
-	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null) {
+	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false) {
 			$values = array();
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
@@ -1227,7 +1228,16 @@ abstract class baseModule {
 			$container->addElement($labelTextOut);
 			$subContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($values); $i++) {
-				$subContainer->addElement(new htmlInputField($attrName . '_' . $i, $values[$i]));
+				if (!$isTextArea) {
+					$subContainer->addElement(new htmlInputField($attrName . '_' . $i, $values[$i]));
+				}
+				else {
+					$cols = 30;
+					if ($length != null) {
+						$cols = $length;
+					}
+					$subContainer->addElement(new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3));
+				}
 				if ($i < (sizeof($values) - 1)) {
 					$subContainer->addElement(new htmlOutputText('<br>', false));
 				}
