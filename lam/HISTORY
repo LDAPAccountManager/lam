@@ -1,5 +1,6 @@
 September 2013 4.3
   - Custom SSL CA certificates can be setup in LAM main configuration
+  - Unix user and group support for Samba 4
   - LAM Pro:
    -> PPolicy: check password history for password reuse
    -> Custom fields: read-only fields for admin interface and file upload for binary data
