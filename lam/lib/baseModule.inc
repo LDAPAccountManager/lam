@@ -91,8 +91,8 @@ abstract class baseModule {
 		// initialize module
 		$this->scope = $scope;
 		$this->load_Messages();
-		$this->meta = $this->get_metaData();
 		$this->autoAddObjectClasses = true;
+		$this->meta = $this->get_metaData();
 	}
 
 	/**

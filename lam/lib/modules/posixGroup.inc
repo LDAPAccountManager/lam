@@ -169,72 +169,85 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		// group name
-		if ($this->manageCnAttribute) {
-			$cn = '';
-			if (isset($this->attributes['cn'][0])) {
-				$cn = $this->attributes['cn'][0];
+		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
+			// group name
+			if ($this->manageCnAttribute) {
+				$cn = '';
+				if (isset($this->attributes['cn'][0])) {
+					$cn = $this->attributes['cn'][0];
+				}
+				$cnInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $cn, 'cn');
+				$cnInput->setRequired(true);
+				$cnInput->setFieldMaxLength(100);
+				$return->addElement($cnInput, true);
 			}
-			$cnInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $cn, 'cn');
-			$cnInput->setRequired(true);
-			$cnInput->setFieldMaxLength(100);
-			$return->addElement($cnInput, true);
-		}
-		// GID number
-		$gidNumber = '';
-		if (isset($this->attributes['gidNumber'][0])) {
-			$gidNumber = $this->attributes['gidNumber'][0];
-		}
-		$gidNumberInput = new htmlTableExtendedInputField(_('GID number'), 'gidNumber', $gidNumber, 'gidNumber');
-		$gidNumberInput->setFieldMaxLength(20);
-		$gidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($gidNumberInput, true);
-		// description
-		$description = '';
-		if (isset($this->attributes['description'][0])) {
-			$description = $this->attributes['description'][0];
-		}
-		if ($this->manageDescriptionAttribute) {
-			$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
-		}
-		// password buttons
-		if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
-			$return->addElement(new htmlOutputText(_('Password')));
-			$pwdContainer = new htmlTable();
-			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
-				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
+			// GID number
+			$gidNumber = '';
+			if (isset($this->attributes['gidNumber'][0])) {
+				$gidNumber = $this->attributes['gidNumber'][0];
 			}
-			else {
-				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
+			$gidNumberInput = new htmlTableExtendedInputField(_('GID number'), 'gidNumber', $gidNumber, 'gidNumber');
+			$gidNumberInput->setFieldMaxLength(20);
+			$gidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$return->addElement($gidNumberInput, true);
+			// description
+			$description = '';
+			if (isset($this->attributes['description'][0])) {
+				$description = $this->attributes['description'][0];
 			}
-			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
-			$pwdContainer->colspan = 2;
-			$return->addElement($pwdContainer, true);
-		}
-		if (isset($this->orig['gidNumber'][0]) && $this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0]) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), true);
-		}
-		// group members
-		$return->addElement(new htmlOutputText(_("Group members")));
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
-		$return->addElement(new htmlHelpLink('members'), true);
-		$return->addElement(new htmlOutputText(''));
-		$users = $this->getUsers();
-		$members = array();
-		if (isset($this->attributes['memberUid'][0])) {
-			foreach ($this->attributes['memberUid'] as $uid) {
-				if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
-					$members[] = $uid . ' (' . $users[$uid]['cn'] . ')';
+			if ($this->manageDescriptionAttribute) {
+				$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
+			}
+			// password buttons
+			if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
+				$return->addElement(new htmlOutputText(_('Password')));
+				$pwdContainer = new htmlTable();
+				if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+					$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 				}
 				else {
-					$members[] = $uid;
+					$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
+				}
+				$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
+				$pwdContainer->colspan = 2;
+				$return->addElement($pwdContainer, true);
+			}
+			if (isset($this->orig['gidNumber'][0]) && $this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0]) {
+				$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), true);
+			}
+			// group members
+			$return->addElement(new htmlOutputText(_("Group members")));
+			$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+			$return->addElement(new htmlHelpLink('members'), true);
+			$return->addElement(new htmlOutputText(''));
+			$users = $this->getUsers();
+			$members = array();
+			if (isset($this->attributes['memberUid'][0])) {
+				foreach ($this->attributes['memberUid'] as $uid) {
+					if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
+						$members[] = $uid . ' (' . $users[$uid]['cn'] . ')';
+					}
+					else {
+						$members[] = $uid;
+					}
 				}
 			}
+			$members = array_unique($members);
+			natcasesort($members);
+			$members = array_map('htmlspecialchars', $members);
+			$return->addElement(new htmlOutputText(implode('<br>', $members), false), true);
+			// remove button
+			if (!$this->autoAddObjectClasses) {
+				$return->addElement(new htmlSpacer(null, '20px'), true);
+				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
+				$remButton->colspan = 5;
+				$return->addElement($remButton);
+			}
 		}
-		$members = array_unique($members);
-		natcasesort($members);
-		$members = array_map('htmlspecialchars', $members);
-		$return->addElement(new htmlOutputText(implode('<br>', $members), false), true);
+		else {
+			// add button
+			$return->addElement(new htmlButton('addObjectClass', _('Add Unix extension')));
+		}
 		return $return;
 	}
 
@@ -357,6 +370,12 @@ class posixGroup extends baseModule implements passwordService {
 		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// managed attributes
 		$return['attributes'] = array('cn', 'gidNumber', 'userPassword', 'memberUid', 'description');
+		// profile options
+		if (!$this->autoAddObjectClasses) {
+			$profileContainer = new htmlTable();
+			$profileContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+			$return['profile_options'] = $profileContainer;
+		}
 		// configuration options
 		$configContainer = new htmlTable();
 		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
@@ -485,6 +504,10 @@ class posixGroup extends baseModule implements passwordService {
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
 					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
 			),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
+			),
 		);
 
 		return $return;
@@ -606,6 +629,29 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function process_attributes() {
 		$errors = array();
+		if (isset($_POST['addObjectClass'])) {
+			if (!isset($this->attributes['objectClass'])) {
+				$this->attributes['objectClass'] = array();
+			}
+			if (!in_array('posixGroup', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'posixGroup';
+			}
+			return $errors;
+		}
+		if (isset($_POST['remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('posixGroup'), $this->attributes['objectClass']);
+			$attrs = $this->getManagedAttributes();
+			foreach ($attrs as $name) {
+				if (isset($this->attributes[$name])) {
+					unset($this->attributes[$name]);
+				}
+			}
+			return $errors;
+		}
+		// skip processing if object class is not set
+		if (!$this->autoAddObjectClasses && (!isset($this->attributes['objectClass']) || !in_array('posixGroup', $this->attributes['objectClass']))) {
+			return $errors;
+		}
 		if ($this->manageDescriptionAttribute) {
 			$this->attributes['description'][0] = $_POST['description'];
 		}
@@ -759,7 +805,11 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
-		if (!$this->getAccountContainer()->isNewAccount && !in_array('posixGroup', $this->getAccountContainer()->attributes_orig['objectClass'])) {
+		if ($this->is_base_module() && !$this->getAccountContainer()->isNewAccount && !in_array('posixGroup', $this->getAccountContainer()->attributes_orig['objectClass'])) {
+			return array();
+		}
+		if (!in_array('posixGroup', $this->attributes['objectClass']) && !in_array('posixGroup', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
 			return array();
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
@@ -776,6 +826,22 @@ class posixGroup extends baseModule implements passwordService {
 		return $return;
 	}
 
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// add extension
+		if (isset($profile['posixGroup_addExt'][0]) && ($profile['posixGroup_addExt'][0] == "true")) {
+			if (!in_array('posixGroup', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'posixGroup';
+			}
+		}
+	}
+	
 	/**
 	* Checks input values of module settings.
 	* 
