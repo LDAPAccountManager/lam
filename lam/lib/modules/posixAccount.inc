@@ -74,6 +74,18 @@ class posixAccount extends baseModule implements passwordService {
 	);
 
 	/**
+	* Creates a new windowsPosixGroup object.
+	*
+	* @param string $scope account type (user, group, host)
+	*/
+	public function __construct($scope) {
+		// call parent constructor
+		parent::__construct($scope);
+		// make optional if needed
+		$this->autoAddObjectClasses = !$this->isOptional();
+	}
+	
+	/**
 	 *  This function fills the error message array with messages.
 	**/
 	function load_Messages() {
@@ -154,8 +166,11 @@ class posixAccount extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'userid' => 'uid');
 		// managed attributes
-		$return['attributes'] = array('cn', 'uid', 'uidNumber', 'gidNumber', 'homeDirectory',
+		$return['attributes'] = array('uid', 'uidNumber', 'gidNumber', 'homeDirectory',
 			'userPassword', 'loginShell', 'gecos', 'INFO.userPasswordClearText');
+		if ($this->manageCn()) {
+			$return['attributes'][] = 'cn';
+		}
 		if ($this->get_scope() == "user") {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
@@ -265,12 +280,6 @@ class posixAccount extends baseModule implements passwordService {
 				'unique' => true
 			),
 			array(
-				'name' => 'posixAccount_cn',
-				'description' => _('Common name'),
-				'help' => 'cn',
-				'example' => _('Steve Miller')
-			),
-			array(
 				'name' => 'posixAccount_uid',
 				'description' => _('UID number'),
 				'help' => 'uidNumber',
@@ -326,6 +335,14 @@ class posixAccount extends baseModule implements passwordService {
 				'default' => 'false'
 			),
 			);
+			if ($this->manageCn()) {
+				array_unshift($return['upload_columns'], array(
+					'name' => 'posixAccount_cn',
+					'description' => _('Common name'),
+					'help' => 'cn',
+					'example' => _('Steve Miller')
+				));
+			}
 			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
 				$return['upload_columns'][] = array(
 					'name' => 'posixAccount_gecos',
@@ -391,9 +408,11 @@ class posixAccount extends baseModule implements passwordService {
 			'additionalGroups' => _('Additional groups'),
 			'homeDirectory' => _('Home directory'),
 			'loginShell' => _('Login shell'),
-			'cn' => _('Common name'),
 			'userPassword' => _('Password')
 		));
+		if ($this->manageCn()) {
+			$return['PDF_fields']['cn'] = _('Common name');
+		}
 		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
 			$return['PDF_fields']['gecos'] = _('Gecos');
 		}
@@ -402,6 +421,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// help Entries
 		$return['help'] = array(
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
+			),
 			'userNameSuggestion' => array(
 				"Headline" => _("User name suggestion"),
 				"Text" => _("LAM will suggest a user name based on e.g. first and last name. Here you can specify the suggestion. %sn% will be replaced by the last name. @givenname@ will be replaced by the first character of first name. Only attributes of tab Personal may be used.")
@@ -557,6 +580,10 @@ class posixAccount extends baseModule implements passwordService {
 	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
+		if (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass'])) {
+			// no checks if object class is not set
+			return true;
+		}
 		if (!isset($this->attributes['uid'][0]) || ($this->attributes['uid'][0] == '')) return false;
 		if (!isset($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] == '')) return false;
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) return false;
@@ -607,6 +634,10 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+		if (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
+			return array();
+		}
 		// add information about clear text password and password status change
 		$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		if (isset($this->orig['userPassword'][0]) && isset($this->attributes['userPassword'][0])) {
@@ -621,50 +652,60 @@ class posixAccount extends baseModule implements passwordService {
 				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unlocked';
 			}
 		}
-		// Remove primary group from additional groups
-		if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
-			|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
-			for ($i=0; $i<count($this->groups); $i++) {
-				if ($this->groups[$i] == $this->getGroupName($this->attributes['gidNumber'][0])) {
-					unset($this->groups[$i]);
+		if (in_array('posixAccount', $this->attributes['objectClass'])) {
+			// Remove primary group from additional groups
+			if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
+				|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
+				for ($i=0; $i<count($this->groups); $i++) {
+					if ($this->groups[$i] == $this->getGroupName($this->attributes['gidNumber'][0])) {
+						unset($this->groups[$i]);
+					}
+				}
+			}
+			else {
+				// add user as memberuid in primary group
+				if (!in_array($this->getGroupName($this->attributes['gidNumber'][0]), $this->groups)) {
+					$this->groups[] = $this->getGroupName($this->attributes['gidNumber'][0]);
+				}
+			}
+	
+			// Set additional group memberships
+			if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($this->attributes['uid'][0] != $this->orig['uid'][0])) {
+				// find affected groups
+				$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', array('dn'), array('group'));
+				for ($i = 0; $i < sizeof($groupList); $i++) {
+					// replace old user name with new one
+					$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
+					$return[$groupList[$i]['dn']]['add']['memberUid'][] = $this->attributes['uid'][0];
+				}
+			}
+			else {
+				// update groups.
+				$add = array_delete($this->groups_orig, $this->groups);
+				$remove = array_delete($this->groups, $this->groups_orig);
+				$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', array('cn', 'dn'), array('group'));
+				$dn2cn = array();
+				for ($i = 0; $i < sizeof($groupList); $i++) {
+					$cn2dn[$groupList[$i]['cn'][0]] = $groupList[$i]['dn'];
+				}
+				for ($i = 0; $i < sizeof($add); $i++) {
+					if (isset($cn2dn[$add[$i]])) {
+						$return[$cn2dn[$add[$i]]]['add']['memberUid'][] = $this->attributes['uid'][0];
+					}
+				}
+				for ($i = 0; $i < sizeof($remove); $i++) {
+					if (isset($cn2dn[$remove[$i]])) {
+						$return[$cn2dn[$remove[$i]]]['remove']['memberUid'][] = $this->attributes['uid'][0];
+					}
 				}
 			}
 		}
-		else {
-			// add user as memberuid in primary group
-			if (!in_array($this->getGroupName($this->attributes['gidNumber'][0]), $this->groups)) {
-				$this->groups[] = $this->getGroupName($this->attributes['gidNumber'][0]);
-			}
-		}
-
-		// Set additional group memberships
-		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($this->attributes['uid'][0] != $this->orig['uid'][0])) {
-			// find affected groups
+		elseif (in_array('posixAccount', $this->orig['objectClass']) && !empty($this->orig['uid'][0])) {
+			// Unix extension was removed, clean group memberships
 			$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', array('dn'), array('group'));
 			for ($i = 0; $i < sizeof($groupList); $i++) {
-				// replace old user name with new one
+				// remove user name
 				$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
-				$return[$groupList[$i]['dn']]['add']['memberUid'][] = $this->attributes['uid'][0];
-			}
-		}
-		else {
-			// update groups.
-			$add = array_delete($this->groups_orig, $this->groups);
-			$remove = array_delete($this->groups, $this->groups_orig);
-			$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', array('cn', 'dn'), array('group'));
-			$dn2cn = array();
-			for ($i = 0; $i < sizeof($groupList); $i++) {
-				$cn2dn[$groupList[$i]['cn'][0]] = $groupList[$i]['dn'];
-			}
-			for ($i = 0; $i < sizeof($add); $i++) {
-				if (isset($cn2dn[$add[$i]])) {
-					$return[$cn2dn[$add[$i]]]['add']['memberUid'][] = $this->attributes['uid'][0];
-				}
-			}
-			for ($i = 0; $i < sizeof($remove); $i++) {
-				if (isset($cn2dn[$remove[$i]])) {
-					$return[$cn2dn[$remove[$i]]]['remove']['memberUid'][] = $this->attributes['uid'][0];
-				}
 			}
 		}
 		return $return;
@@ -905,6 +946,29 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function process_attributes() {
 		$errors = array();
+		if (isset($_POST['addObjectClass'])) {
+			if (!isset($this->attributes['objectClass'])) {
+				$this->attributes['objectClass'] = array();
+			}
+			if (!in_array('posixAccount', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'posixAccount';
+			}
+			return $errors;
+		}
+		if (isset($_POST['remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('posixAccount'), $this->attributes['objectClass']);
+			$attrs = $this->getManagedAttributes();
+			foreach ($attrs as $name) {
+				if (isset($this->attributes[$name])) {
+					unset($this->attributes[$name]);
+				}
+			}
+			return $errors;
+		}
+		// skip processing if object class is not set
+		if ($this->isOptional() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
+			return $errors;
+		}
 		$groups = $this->findGroups(); // list of all groupnames
 		if (count($groups)==0) {
 			// abort if no groups were found
@@ -960,9 +1024,11 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($_POST['removePassword'])) {
 			unset($this->attributes['userPassword']);
 		}
-		$this->attributes['cn'][0] = $_POST['cn'];
-		if (!get_preg($this->attributes['cn'][0], 'cn')) {
-			$errors[] = $this->messages['cn'][0];
+		if ($this->manageCn()) {
+			$this->attributes['cn'][0] = $_POST['cn'];
+			if (!get_preg($this->attributes['cn'][0], 'cn')) {
+				$errors[] = $this->messages['cn'][0];
+			}
 		}
 		$this->attributes['uidNumber'][0] = trim($_POST['uidNumber']);
 		$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
@@ -1207,135 +1273,150 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		$groupList = $this->findGroups(); // list of all group names
-		$groups = array();
-		for ($i = 0; $i < sizeof($groupList); $i++) {
-			$groups[$groupList[$i][1]] = $groupList[$i][0];
-		}
-		if (count($groups)==0) {
-			$return->addElement(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')));
-			return $return;
-		}
-		$shelllist = $this->getShells(); // list of all valid shells
-
-		// set default values
-		if (!isset($this->attributes['uid'][0]) && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
-			// fill default value for user ID with first/last name
-			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
-		}
-		if (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == '')) {
-			// set a default value for common name
-			if (($this->get_scope() == 'host') && isset($_POST['uid']) && (substr($_POST['uid'], -1, 1) == '$')) {
-				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
+		if (!$this->isOptional() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
+			$groupList = $this->findGroups(); // list of all group names
+			$groups = array();
+			for ($i = 0; $i < sizeof($groupList); $i++) {
+				$groups[$groupList[$i][1]] = $groupList[$i][0];
 			}
-			elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+			if (count($groups)==0) {
+				$return->addElement(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')));
+				return $return;
+			}
+			$shelllist = $this->getShells(); // list of all valid shells
+	
+			// set default values
+			if (!isset($this->attributes['uid'][0]) && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
+				// fill default value for user ID with first/last name
 				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-				if ($attrs['givenName'][0]) {
-					$this->attributes['cn'][0] = $attrs['givenName'][0] . " " . $attrs['sn'][0];
+				$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
+			}
+			if ($this->manageCn() && (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == ''))) {
+				// set a default value for common name
+				if (($this->get_scope() == 'host') && isset($_POST['uid']) && (substr($_POST['uid'], -1, 1) == '$')) {
+					$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 				}
-				elseif ($attrs['sn'][0]) {
-					$this->attributes['cn'][0] = $attrs['sn'][0];
+				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+					if ($attrs['givenName'][0]) {
+						$this->attributes['cn'][0] = $attrs['givenName'][0] . " " . $attrs['sn'][0];
+					}
+					elseif ($attrs['sn'][0]) {
+						$this->attributes['cn'][0] = $attrs['sn'][0];
+					}
+					else {
+						$this->attributes['cn'][0] = $_POST['uid'];
+					}
 				}
-				else {
+				elseif (isset($_POST['uid'])) {
 					$this->attributes['cn'][0] = $_POST['uid'];
 				}
 			}
-			elseif (isset($_POST['uid'])) {
-				$this->attributes['cn'][0] = $_POST['uid'];
+			
+			$userName = '';
+			if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
+			$uidLabel = _("User name");
+			if ($this->get_scope() == 'host') {
+				$uidLabel = _("Host name");
 			}
-		}
-		
-		$userName = '';
-		if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
-		$uidLabel = _("User name");
-		if ($this->get_scope() == 'host') {
-			$uidLabel = _("Host name");
-		}
-		$uidInput = new htmlTableExtendedInputField($uidLabel, 'uid', $userName, 'uid');
-		$uidInput->setRequired(true);
-		$uidInput->setFieldMaxLength(100);
-		$return->addElement($uidInput, true);
-		$commonName = '';
-		if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
-		$return->addElement(new htmlTableExtendedInputField(_("Common name"), 'cn', $commonName, 'cn'), true);
-		$uidNumber = '';
-		if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
-		$uidNumberInput = new htmlTableExtendedInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
-		$uidNumberInput->setFieldMaxLength(20);
-		$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($uidNumberInput, true);
-		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
-			$gecos = '';
-			if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
-			$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
-		}
-		$primaryGroup = array();
-		if (isset($this->attributes['gidNumber'][0])) {
-			$primaryGroup[] = $this->attributes['gidNumber'][0];
-		}
-		$gidNumberSelect = new htmlTableExtendedSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
-		$gidNumberSelect->setHasDescriptiveElements(true);
-		$return->addElement($gidNumberSelect, true);
-
-		if ($this->get_scope()=='user') {
-			// additional groups
-			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
-				$return->addElement(new htmlOutputText(_('Additional groups')));
-				$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
-				$return->addElement(new htmlHelpLink('addgroup'), true);
+			$uidInput = new htmlTableExtendedInputField($uidLabel, 'uid', $userName, 'uid');
+			$uidInput->setRequired(true);
+			$uidInput->setFieldMaxLength(100);
+			$return->addElement($uidInput, true);
+			if ($this->manageCn()) {
+				$commonName = '';
+				if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
+				$return->addElement(new htmlTableExtendedInputField(_("Common name"), 'cn', $commonName, 'cn'), true);
 			}
-			// home directory
-			$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $this->attributes['homeDirectory'][0], 'homeDirectory');
-			$homedirInput->setRequired(true);
-			$return->addElement($homedirInput, true);
-			if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
-				if ($this->getAccountContainer()->isNewAccount) {
-					// get list of lamdaemon servers
-					$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-					for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-						$temp = explode(":", $lamdaemonServers[$i]);
-						if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-						else $lamdaemonServers[$i] = $temp[0];
+			$uidNumber = '';
+			if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
+			$uidNumberInput = new htmlTableExtendedInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
+			$uidNumberInput->setFieldMaxLength(20);
+			$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$return->addElement($uidNumberInput, true);
+			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+				$gecos = '';
+				if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
+				$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
+			}
+			$primaryGroup = array();
+			if (isset($this->attributes['gidNumber'][0])) {
+				$primaryGroup[] = $this->attributes['gidNumber'][0];
+			}
+			$gidNumberSelect = new htmlTableExtendedSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
+			$gidNumberSelect->setHasDescriptiveElements(true);
+			$return->addElement($gidNumberSelect, true);
+	
+			if ($this->get_scope()=='user') {
+				// additional groups
+				if (!$this->isBooleanConfigOptionSet('posixAccount_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+					$return->addElement(new htmlOutputText(_('Additional groups')));
+					$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
+					$return->addElement(new htmlHelpLink('addgroup'), true);
+				}
+				// home directory
+				$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $this->attributes['homeDirectory'][0], 'homeDirectory');
+				$homedirInput->setRequired(true);
+				$return->addElement($homedirInput, true);
+				if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
+					if ($this->getAccountContainer()->isNewAccount) {
+						// get list of lamdaemon servers
+						$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+						for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+							$temp = explode(":", $lamdaemonServers[$i]);
+							if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+							else $lamdaemonServers[$i] = $temp[0];
+						}
+						$homeDirLabel = new htmlOutputText(_('Create home directory'));
+						$homeDirLabel->alignment = htmlElement::ALIGN_TOP;
+						$return->addElement($homeDirLabel);
+						$homeServerContainer = new htmlTable();
+						for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false), true);
+						}
+						$return->addElement($homeServerContainer);
+						$homeDirHelp = new htmlHelpLink('createhomedir');
+						$homeDirHelp->alignment = htmlElement::ALIGN_TOP;
+						$return->addElement($homeDirHelp, true);
 					}
-					$homeDirLabel = new htmlOutputText(_('Create home directory'));
-					$homeDirLabel->alignment = htmlElement::ALIGN_TOP;
-					$return->addElement($homeDirLabel);
-					$homeServerContainer = new htmlTable();
-					for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-						$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false), true);
+					else {
+						$return->addElement(new htmlOutputText(''));
+						$return->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'open', _('Check home directories')), true);
 					}
-					$return->addElement($homeServerContainer);
-					$homeDirHelp = new htmlHelpLink('createhomedir');
-					$homeDirHelp->alignment = htmlElement::ALIGN_TOP;
-					$return->addElement($homeDirHelp, true);
+				}
+				$selectedShell = array();
+				if (isset($this->attributes['loginShell'][0])) {
+					$selectedShell = array($this->attributes['loginShell'][0]);
+				}
+				$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
+			}
+			// password buttons
+			if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
+				$return->addElement(new htmlOutputText(_('Password')));
+				$pwdContainer = new htmlTable();
+				if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+					$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 				}
 				else {
-					$return->addElement(new htmlOutputText(''));
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'open', _('Check home directories')), true);
+					$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 				}
+				$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
+				$pwdContainer->colspan = 2;
+				$return->addElement($pwdContainer);
 			}
-			$selectedShell = array();
-			if (isset($this->attributes['loginShell'][0])) {
-				$selectedShell = array($this->attributes['loginShell'][0]);
+			// remove button
+			if ($this->isOptional()) {
+				$return->addElement(new htmlSpacer(null, '20px'), true);
+				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
+				$remButton->colspan = 5;
+				$return->addElement($remButton);
 			}
-			$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
 		}
-		// password buttons
-		if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
-			$return->addElement(new htmlOutputText(_('Password')));
-			$pwdContainer = new htmlTable();
-			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
-				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
-			}
-			else {
-				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
-			}
-			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
-			$pwdContainer->colspan = 2;
-			$return->addElement($pwdContainer);
+		else {
+			// add button
+			$return->addElement(new htmlButton('addObjectClass', _('Add Unix extension')));
 		}
-	return $return;
+		return $return;
 	}
 
 	/**
@@ -1592,6 +1673,9 @@ class posixAccount extends baseModule implements passwordService {
 			// primary Unix group
 			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'));
 		}
+		if ($this->isOptional()) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('posixAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		}
 		return $return;
 	}
 
@@ -1632,6 +1716,12 @@ class posixAccount extends baseModule implements passwordService {
 				if (isset($profile['posixAccount_createHomedir_' . $h][0]) && ($profile['posixAccount_createHomedir_' . $h][0] == 'true')) {
 					$this->lamdaemonServers[] = $lamdaemonServers[$h];
 				}
+			}
+		}
+		// add extension
+		if (isset($profile['posixAccount_addExt'][0]) && ($profile['posixAccount_addExt'][0] == "true")) {
+			if (!in_array('posixAccount', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'posixAccount';
 			}
 		}
 	}
@@ -1951,25 +2041,27 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// cn
-				if ($rawAccounts[$i][$ids['posixAccount_cn']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['posixAccount_cn']], 'cn')) {
-						$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_cn']];
+				if ($this->manageCn()) {
+					if ($rawAccounts[$i][$ids['posixAccount_cn']] != "") {
+						if (get_preg($rawAccounts[$i][$ids['posixAccount_cn']], 'cn')) {
+							$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_cn']];
+						}
+						else {
+							$errMsg = $this->messages['cn'][1];
+							array_push($errMsg, array($i));
+							$errors[] = $errMsg;
+						}
 					}
 					else {
-						$errMsg = $this->messages['cn'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
-				else {
-					if ($partialAccounts[$i]['givenName']) {
-						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
-					}
-					elseif ($partialAccounts[$i]['sn']) {
-						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
-					}
-					else {
-						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['uid'];
+						if ($partialAccounts[$i]['givenName']) {
+							$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
+						}
+						elseif ($partialAccounts[$i]['sn']) {
+							$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
+						}
+						else {
+							$partialAccounts[$i]['cn'] = $partialAccounts[$i]['uid'];
+						}
 					}
 				}
 			}
@@ -2860,6 +2952,34 @@ class posixAccount extends baseModule implements passwordService {
 		);
 	}
 	
+	/**
+	 * Returns if the cn attribute should be managed.
+	 * If Windows modules are active then cn will not be managed.
+	 * 
+	 * @return boolean manage cn attribute
+	 */
+	private function manageCn() {
+		if (isset($_SESSION['config'])) {
+			$conf = $_SESSION['config'];
+			if (in_array('windowsUser', $conf->get_AccountModules($this->get_scope()))) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns if the Unix part can be added and removed.
+	 * 
+	 * @return boolean is optional
+	 */
+	private function isOptional() {
+		return !$this->manageCn();
+	}
+
 }
 
 ?>
