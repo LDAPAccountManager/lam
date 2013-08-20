@@ -505,6 +505,9 @@ function get_preg($argument, $regexp) {
 		case "digit":		// Normal number
 					$pregexpr = '/^[[:digit:]]*$/';
 					break;
+		case "float":		// float value
+					$pregexpr = '/^[[:digit:]]+(\\.[[:digit:]]+)?$/';
+					break;
 		case "UNC":			// UNC Path, e.g. \\server\share\folder\...
 					$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9%\\.-])+)([\\\]([[:alnum:]%\\.\\$\\ \\_-])+)+$/u';
 					break;

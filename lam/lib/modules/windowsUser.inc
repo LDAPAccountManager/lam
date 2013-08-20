@@ -251,7 +251,7 @@ class windowsUser extends baseModule implements passwordService {
 				'name' => 'windowsUser_description',
 				'description' => _('Description'),
 				'help' => 'description',
-				'example' => _('Temp, contract til December'),
+				'example' => _('Temp, contract till December'),
 			),
 			array(
 				'name' => 'windowsUser_streetAddress',

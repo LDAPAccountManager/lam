@@ -426,6 +426,8 @@ class htmlInputField extends htmlElement {
 	protected $showCalendar = false;
 	/** calendar format */
 	protected $calendarFormat = '';
+	/** title attribute */
+	protected $title = null;
 	
 	/**
 	 * Constructor
@@ -509,7 +511,11 @@ class htmlInputField extends htmlElement {
 		if ($this->onKeyPress != null) {
 			$onKeyPress = ' onkeypress="' . $this->onKeyPress . '"';
 		}
-		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $onKeyPress . $disabled . '>';
+		$title = '';
+		if (!empty($this->title)) {
+			$title = ' title="' . $this->title . '"';
+		}
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $onKeyPress . $title . $disabled . '>';
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
@@ -676,6 +682,15 @@ class htmlInputField extends htmlElement {
 		$this->calendarFormat = $format;
 	}
 
+	/**
+	 * Sets the title for the input field.
+	 * 
+	 * @param String $title title value
+	 */
+	public function setTitle($title) {
+		$this->title = htmlspecialchars($title);
+	}
+	
 }
 
 /**

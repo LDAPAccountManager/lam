@@ -397,7 +397,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'name' => 'inetOrgPerson_description',
 				'description' => _('Description'),
 				'help' => 'description',
-				'example' => _('Temp, contract til December')
+				'example' => _('Temp, contract till December')
 			);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
