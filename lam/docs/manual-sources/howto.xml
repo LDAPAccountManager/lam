@@ -4976,10 +4976,8 @@ Run slapindex to rebuild the index.
         <listitem>
           <para><emphasis role="bold">Update Samba password
           timestamps:</emphasis> This will set the timestamps when the
-          password was changed (sambaPwdLastSet), may be changed again
-          (sambaPwdCanChange) and must be changed again (sambaPwdMustChange).
-          Only existing attributes are updated. No new attributes are
-          added.</para>
+          password was changed (sambaPwdLastSet). Only existing attributes are
+          updated. No new attributes are added.</para>
         </listitem>
 
         <listitem>
