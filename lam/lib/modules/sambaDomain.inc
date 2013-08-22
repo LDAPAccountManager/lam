@@ -323,7 +323,7 @@ class sambaDomain extends baseModule {
 			$sambaMaxPwdAge = $this->attributes['sambaMaxPwdAge'][0];
 		}
 		$sambaMaxPwdAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'maxPwdAge', $sambaMaxPwdAge, 'maxPwdAge');
-		$sambaMaxPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$sambaMaxPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC_WITH_NEGATIVE);
 		$return->addElement($sambaMaxPwdAgeInput, true);
 		// Lockout duration
 		$sambaLockoutDuration = '';
@@ -488,7 +488,9 @@ class sambaDomain extends baseModule {
 		}
 		// Minimum password age
 		if (! isset($_POST['minPwdAge']) || ($_POST['minPwdAge'] == '')) {
-			if (isset($this->attributes['sambaMinPwdAge'])) unset($this->attributes['sambaMinPwdAge'][0]);
+			if (isset($this->attributes['sambaMinPwdAge'])) {
+				unset($this->attributes['sambaMinPwdAge'][0]);
+			}
 		}
 		else {
 			if (is_numeric($_POST['minPwdAge']) && ($_POST['minPwdAge'] > -2)) {
@@ -500,13 +502,15 @@ class sambaDomain extends baseModule {
 		}
 		// Maximum password age
 		if (! isset($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] == '')) {
-			if (isset($this->attributes['sambaMaxPwdAge'])) unset($this->attributes['sambaMaxPwdAge'][0]);
+			if (isset($this->attributes['sambaMaxPwdAge'])) {
+				unset($this->attributes['sambaMaxPwdAge'][0]);
+			}
 		}
 		else {
 			if (!is_numeric($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] < -1)) {
 				$errors[] = $this->messages['pwdAgeMax'][0];
 			}
-			elseif ($_POST['maxPwdAge'] < $_POST['minPwdAge']) {
+			elseif (($_POST['maxPwdAge'] > 1) && ($_POST['maxPwdAge'] < $_POST['minPwdAge'])) {
 				$errors[] = $this->messages['pwdAge_cmp'][0];
 			}
 			else {
