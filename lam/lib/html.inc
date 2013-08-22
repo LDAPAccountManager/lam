@@ -49,6 +49,8 @@ abstract class htmlElement {
 	
 	/** validation rule to allow only numbers ([0-9]+) */
 	const VALIDATE_NUMERIC = 'numeric';
+	/** validation rule to allow positive/negative numbers ([-]?[0-9]+) */
+	const VALIDATE_NUMERIC_WITH_NEGATIVE = 'numericWithNegative';
 	
 	/** alignment when inside a table */
 	public $alignment = null;
