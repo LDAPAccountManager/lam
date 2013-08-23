@@ -2474,6 +2474,11 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
         suffix of the "Password policies" type. When you set the policy to
         "default" then OpenLDAP will use the default policy as defined in your
         slapd.conf file.</para>
+
+        <para><emphasis role="bold">Attention:</emphasis> Locking and
+        unlocking requires that you also activate the option "Lockout users"
+        in the assigned <link linkend="a_ppolicy">password policy</link>.
+        Otherwise, it will have no effect.</para>
       </section>
 
       <section>
