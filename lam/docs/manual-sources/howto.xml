@@ -2230,6 +2230,13 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
         can activate/remove the password self reset function for each user.
         You can also change the security question and answer.</para>
 
+        <para><emphasis role="bold">Samba 4 note:</emphasis> Due to a <ulink
+        url="https://bugzilla.samba.org/show_bug.cgi?id=10094">bug</ulink> in
+        Samba 4 you need to add the extension, save, and then select a
+        question and set the answer. If you add the extension, set
+        question/answer and then save all together this will cause an LDAP
+        error and no changes will be saved. </para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
