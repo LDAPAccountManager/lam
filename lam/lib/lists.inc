@@ -839,6 +839,7 @@ class lamList {
 		$attr_string = $_SESSION["config"]->get_listAttributes($this->type);
 		$temp_array = explode(";", $attr_string);
 		$hash_table = getListAttributeDescriptions($this->type);
+		$hash_table = array_change_key_case($hash_table, CASE_LOWER);
 		// generate column attributes and descriptions
 		for ($i = 0; $i < sizeof($temp_array); $i++) {
 			// if value is predifined, look up description in hash_table
