@@ -46,7 +46,9 @@ class sambaGroupMapping extends baseModule {
 	private $sambaGroupTypes;
 	/** cache for domain list */
 	private $cachedDomainList = null;
-
+	/** cache for existing Samba entries (array(dn => cn)) */
+	private $sidCache = null;
+	
 	/**
 	* Creates a new module for Samba 3 groups.
 	*
@@ -73,6 +75,97 @@ class sambaGroupMapping extends baseModule {
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
+	}
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	* 
+	* @see baseModule::get_metaData()
+	*/
+	function get_metaData() {
+		$return = array();
+		// icon
+		$return['icon'] = 'samba.png';
+		// manages group accounts
+		$return["account_types"] = array("group");
+		// alias name
+		$return["alias"] = _('Samba 3');
+		// module dependencies
+		$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('sambaGroupMapping');
+		// managed attributes
+		$return['attributes'] = array('gidNumber', 'sambaSID', 'sambaGroupType', 'displayName', 'sambaSIDList', 'description');
+		// available PDF fields
+		$return['PDF_fields'] = array(
+			'gidNumber' => _('GID number'),
+			'sambaSID' => _('Windows group'),
+			'displayName' => _('Display name'),
+			'sambaGroupType' => _('Samba group type'),
+			'description' => _('Description'),
+			'sambaSIDList' => _('Local members'),
+		);
+		// upload fields
+		// search existing Samba 3 domains
+		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
+			$return['upload_columns'] = array(
+				array(
+					'name' => 'sambaGroupMapping_name',
+					'description' => _('Samba display name'),
+					'help' => 'displayName',
+					'example' => _('Domain administrators')
+				),
+				array(
+					'name' => 'sambaGroupMapping_rid',
+					'description' => _('Samba RID number'),
+					'help' => 'rid',
+					'example' => _('Domain admins')
+				),
+				array(
+					'name' => 'sambaGroupMapping_groupType',
+					'description' => _('Samba group type'),
+					'help' => 'type',
+					'values' => implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes),
+					'example' => '2'
+				)
+			);
+			$return['upload_preDepends'] = array('posixGroup', 'rfc2307bisPosixGroup');
+		}
+		// help Entries
+		$return['help'] = array(
+			'displayName' => array(
+				"Headline" => _("Display name"), 'attr' => 'displayName',
+				"Text" => _("This is the group name which will be shown in Windows.")
+			),
+			'sambaSID' => array(
+				"Headline" => _("Windows group name"), 'attr' => 'sambaSID',
+				"Text" => _("If you want to use a well known RID you can select a well known group.")
+			),
+			'rid' => array(
+				"Headline" => _("Samba RID number"),
+				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(", ", array_keys($this->rids))
+			),
+			'sambaDomainName' => array(
+				"Headline" => _("Domain"),
+				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")
+			),
+			'type' => array(
+				"Headline" => _("Samba group type"), 'attr' => 'sambaGroupType',
+				"Text" => _("Windows group type.")
+			),
+			'sambaSIDList' => array(
+				"Headline" => _('Local members'), 'attr' => 'sambaSIDList',
+				"Text" => _("Use this to specify other groups or accounts from other domains as group members.")
+			),
+			'filter' => array(
+				"Headline" => _("Filter"),
+				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
+					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
+			),
+		);
+		return $return;
 	}
 
 	/**
@@ -284,6 +377,39 @@ class sambaGroupMapping extends baseModule {
 			$selectedDomain = array();
 			if (isset($sel_domain)) $selectedDomain = array($sel_domain);
 			$return->addElement(new htmlTableExtendedSelect('sambaDomainName', $sambaDomainNames, $selectedDomain, _('Domain'), 'sambaDomainName'), true);
+			// local group members
+			$memberLabel = new htmlOutputText(_('Local members'));
+			$memberLabel->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($memberLabel);
+			$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.png', true);
+			$addMemberButton->setTitle(_('Add'));
+			$addMemberButton->alignment = htmlElement::ALIGN_TOP;
+			if (!empty($this->attributes['sambaSIDList'][0])) {
+				$this->loadSIDCache();
+				$memberTable = new htmlTable();
+				$memberTable->alignment = htmlElement::ALIGN_TOP;
+				for ($i = 0; $i < sizeof($this->attributes['sambaSIDList']); $i++) {
+					$member = $this->attributes['sambaSIDList'][$i];
+					if (isset($this->sidCache[$member])) {
+						$member = $this->sidCache[$member];
+					}
+					$memberTable->addElement(new htmlOutputText($member));
+					$delButton = new htmlButton('sambaSIDListDel_' . $i, 'del.png', true);
+					$delButton->setTitle(_('Delete'));
+					$memberTable->addElement($delButton);
+					if ($i == (sizeof($this->attributes['sambaSIDList']) - 1)) {
+						$memberTable->addElement($addMemberButton);
+					}
+					$memberTable->addNewLine();
+				}
+				$return->addElement($memberTable);
+			}
+			else {
+				$return->addElement($addMemberButton);
+			}
+			$memberHelp = new htmlHelpLink('sambaSIDList');
+			$memberHelp->alignment = htmlElement::ALIGN_TOP;
+			$return->addElement($memberHelp, true);
 		}
 		else {
 			$return->addElement(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
@@ -292,87 +418,102 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
+	* This function will create the meta HTML code to show a page to add members.
 	* 
-	* @see baseModule::get_metaData()
+	* @return htmlElement HTML meta data
 	*/
-	function get_metaData() {
-		$return = array();
-		// icon
-		$return['icon'] = 'samba.png';
-		// manages group accounts
-		$return["account_types"] = array("group");
-		// alias name
-		$return["alias"] = _('Samba 3');
-		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
-		// managed object classes
-		$return['objectClasses'] = array('sambaGroupMapping');
-		// managed attributes
-		$return['attributes'] = array('gidNumber', 'sambaSID', 'sambaGroupType', 'displayName', 'sambaSIDList', 'description');
-		// available PDF fields
-		$return['PDF_fields'] = array(
-			'gidNumber' => _('GID number'),
-			'sambaSID' => _('Windows group'),
-			'displayName' => _('Display name'),
-			'sambaGroupType' => _('Samba group type'),
-			'description' => _('Description')
-		);
-		// upload fields
-		// search existing Samba 3 domains
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
-			$return['upload_columns'] = array(
-				array(
-					'name' => 'sambaGroupMapping_name',
-					'description' => _('Samba display name'),
-					'help' => 'displayName',
-					'example' => _('Domain administrators')
-				),
-				array(
-					'name' => 'sambaGroupMapping_rid',
-					'description' => _('Samba RID number'),
-					'help' => 'rid',
-					'example' => _('Domain admins')
-				),
-				array(
-					'name' => 'sambaGroupMapping_groupType',
-					'description' => _('Samba group type'),
-					'help' => 'type',
-					'values' => implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes),
-					'example' => '2'
-				)
-			);
-			$return['upload_preDepends'] = array('posixGroup', 'rfc2307bisPosixGroup');
+	function display_html_members() {
+		$return = new htmlTable();
+		// show list of possible new members
+		if ((isset($_POST['form_subpage_' . get_class($this) . '_members_select']) || isset($_POST['setFilter'])) && isset($_POST['type'])) {
+			$this->loadSIDCache();
+			$userFilter = '';
+			$userFilterRegex = '';
+			if (isset($_POST['newFilter'])) {
+				$userFilter = $_POST['newFilter'];
+				$userFilterRegex = '/' . str_replace(array('*', '(', ')'), array('.*', '\(', '\)'), $_POST['newFilter']) . '/ui';
+			}
+			$options = array();
+			$filter = get_ldap_filter($_POST['type']);
+			$entries = searchLDAPByFilter($filter, array('dn', 'cn', 'uid', 'sambaSID'), array($_POST['type']));
+			$entryCount = sizeof($entries);
+			for ($i = 0; $i < $entryCount; $i++) {
+				// require SID
+				if (empty($entries[$i]['sambasid'][0])) {
+					continue;
+				}
+				$sid = $entries[$i]['sambasid'][0];
+				// get label
+				if (!empty($this->sidCache[$sid])) {
+					$label = $this->sidCache[$sid];
+				}
+				else {
+					$label = $sid;
+				}
+				// check filter
+				if (!empty($userFilter) && !preg_match($userFilterRegex, $label)) {
+					continue;
+				}
+				if (empty($this->attributes['sambaSIDList'][0]) || !in_array($sid, $this->attributes['sambaSIDList'])) {
+					$options[$label] = $sid;
+				}
+			}
+			$size = 20;
+			if (sizeof($options) < 20) $size = sizeof($options);
+			$membersSelect = new htmlSelect('members', $options, array(), $size);
+			$membersSelect->setHasDescriptiveElements(true);
+			$membersSelect->setMultiSelect(true);
+			$membersSelect->setTransformSingleSelect(false);
+			$return->addElement($membersSelect, true);
+			$filterGroup = new htmlGroup();
+			$filterGroup->addElement(new htmlInputField('newFilter', $userFilter));
+			$filterGroup->addElement(new htmlButton('setFilter', _('Filter')));
+			$filterGroup->addElement(new htmlHelpLink('filter'));
+			$filterGroup->addElement(new htmlHiddenInput('type', $_POST['type']));
+			$return->addElement($filterGroup, true);
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$buttonTable = new htmlTable();
+			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'addMembers', _('Add')));
+			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+			$return->addElement($buttonTable);
+			return $return;
 		}
-		// help Entries
-		$return['help'] = array(
-			'displayName' => array(
-				"Headline" => _("Display name"), 'attr' => 'displayName',
-				"Text" => _("This is the group name which will be shown in Windows.")
-			),
-			'sambaSID' => array(
-				"Headline" => _("Windows group name"), 'attr' => 'sambaSID',
-				"Text" => _("If you want to use a well known RID you can select a well known group.")
-			),
-			'rid' => array(
-				"Headline" => _("Samba RID number"),
-				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(", ", array_keys($this->rids))
-			),
-			'sambaDomainName' => array(
-				"Headline" => _("Domain"),
-				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")
-			),
-			'type' => array(
-				"Headline" => _("Samba group type"), 'attr' => 'sambaGroupType',
-				"Text" => _("Windows group type.")
-			)
-		);
-
+		$types = array('user', 'group', 'host');
+		$options = array();
+		$optionsSelected = array();
+		for ($i = 0; $i < sizeof($types); $i++) {
+			$options[getTypeAlias($types[$i])] = $types[$i];
+			if ($types[$i] == 'group') {
+				$optionsSelected[] = $types[$i];
+			}
+		}
+		$typeTable = new htmlTable();
+		$typeTable->addElement(new htmlOutputText(_('Add entries of this type:') . ' '));
+		$typeSelect = new htmlSelect('type', $options, $optionsSelected);
+		$typeSelect->setHasDescriptiveElements(true);
+		$typeTable->addElement($typeSelect);
+		$typeTable->addElement(new htmlAccountPageButton(get_class($this), 'members', 'select', _('Ok')));
+		$return->addElement($typeTable, true);
+		$return->addElement(new htmlOutputText('&nbsp;', false), true);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')));
 		return $return;
 	}
-
+	
+	/**
+	* Processes user input of the members page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_members() {
+		$return = array();
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addMembers']) && isset($_POST['members'])) {
+			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
+				$this->attributes['sambaSIDList'][] = $_POST['members'][$i];
+			}
+		}
+		return $return;
+	}
 
 	/**
 	* Returns the PDF entries for this module.
@@ -386,6 +527,20 @@ class sambaGroupMapping extends baseModule {
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
 		$this->addSimplePDFField($return, 'sambaGroupType', _('Samba group type'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
+		// local members
+		if (!empty($this->attributes['sambaSIDList'][0])) {
+			$this->loadSIDCache();
+			$members = array();
+			foreach ($this->attributes['sambaSIDList'] as $member) {
+				if (!empty($this->sidCache[$member])) {
+					$members[] = $this->sidCache[$member];
+				}
+				else {
+					$members[] = $member;
+				}
+			}
+			$return[get_class($this) . '_sambaSIDList'] = array('<block><key>' . _('Local members') . '</key><value>' . implode(', ', $members) . '</value></block>');
+		}
 		return $return;
 	}
 
@@ -517,6 +672,15 @@ class sambaGroupMapping extends baseModule {
 		if (!$wrid) {
 			$this->attributes['sambaSID'][0] = $SID . "-" . ($this->getGID()*2+$RIDbase+1);
 		}
+		// delete local members
+		foreach ($_POST as $key => $value) {
+			if (strpos($key, 'sambaSIDListDel_') === 0) {
+				$index = substr($key, strlen('sambaSIDListDel_'));
+				unset($this->attributes['sambaSIDList'][$index]);
+				$this->attributes['sambaSIDList'] = array_values($this->attributes['sambaSIDList']);
+				break;
+			}
+		}
 		// Return error-messages
 		return $errors;
 	}
@@ -554,6 +718,34 @@ class sambaGroupMapping extends baseModule {
 		return $this->cachedDomainList;
 	}
 
+	/**
+	 * Loads the list of Samba accounts into the cache.
+	 */
+	private function loadSIDCache() {
+		if ($this->sidCache != null) {
+			return;
+		}
+		$results = searchLDAPByFilter('(|(objectClass=sambaSamAccount)(objectClass=sambaGroupMapping))', array('cn', 'uid', 'sambaSID'), array('user', 'group', 'host'));
+		$this->sidCache = array();
+		foreach ($results as $result) {
+			// require SID
+			if (empty($result['sambasid'][0])) {
+				continue;
+			}
+			// get label
+			if (isset($result['cn'][0])) {
+				$label = $result['cn'][0];
+			}
+			elseif (isset($result['uid'][0])) {
+				$label = $result['uid'][0];
+			}
+			else {
+				$label = $result['sambasid'][0];
+			}
+			$this->sidCache[$result['sambasid'][0]] = $label;
+		}
+	}
+	
 }
 
 ?>
