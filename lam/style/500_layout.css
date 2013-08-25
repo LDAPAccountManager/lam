@@ -547,5 +547,8 @@ h4.schema_oclass_sub {
 .zarafaDynamicGroupType-bright { background:#d6e3ff !important; }
 .zarafaDynamicGroupType-dark { background-color:#a8c3ff !important; }
 
+.pykotaPrinterType-border { border-color:#911a1a; }
+.pykotaPrinterType-bright { background:#ffe2dd !important; }
+.pykotaPrinterType-dark { background-color:#ffc4ba !important; }
 
 
