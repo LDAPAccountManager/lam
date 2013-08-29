@@ -78,7 +78,8 @@ class kolabUser extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('kolabInetOrgPerson');
 		// managed attributes
-		$return['attributes'] = array('alias', 'mailHost', 'kolabDelegate', 'kolabInvitationPolicy', 'kolabDeleteflag');
+		$return['attributes'] = array('alias', 'mailHost', 'kolabDelegate', 'kolabInvitationPolicy', 'kolabDeleteflag',
+										'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender');
 		// profile options
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_mailHost', null, 'mailHost'), true);
@@ -129,6 +130,24 @@ class kolabUser extends baseModule {
 				"Headline" => _("Mailbox home server"), 'attr' => 'mailHost',
 				"Text" => _("The name of the server where the mailbox is located.")
 			),
+			'kolabAllowSMTPRecipient' => array (
+				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
+				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
+			),
+			'kolabAllowSMTPRecipientList' => array (
+				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
+				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
+							. ' ' . _("Multiple values are separated by semicolon.")
+			),
+			'kolabAllowSMTPSender' => array (
+				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
+				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
+			),
+			'kolabAllowSMTPSenderList' => array (
+				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
+				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
+							. ' ' . _("Multiple values are separated by semicolon.")
+			),
 			'deleteFlag' => array(
 				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
 				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
@@ -160,6 +179,18 @@ class kolabUser extends baseModule {
 				'help' => 'delegateList',
 				'example' => 'user@domain,user2@domain'
 			),
+			array(
+				'name' => 'kolabUser_kolabAllowSMTPRecipient',
+				'description' => _('Allowed recepients'),
+				'help' => 'kolabAllowSMTPRecipientList',
+				'example' => '.com; -.net',
+			),
+			array(
+				'name' => 'kolabUser_kolabAllowSMTPSender',
+				'description' => _('Allowed senders'),
+				'help' => 'kolabAllowSMTPSenderList',
+				'example' => '.com; -.net',
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -167,6 +198,8 @@ class kolabUser extends baseModule {
 			'mailHost' => _('Mailbox home server'),
 			'aliases' => _('Email aliases'),
 			'delegate' => _('Delegates'),
+			'kolabAllowSMTPRecipient' => _('Allowed recepients'),
+			'kolabAllowSMTPSender' => _('Allowed senders'),
 		);
 		return $return;
 	}
@@ -183,6 +216,10 @@ class kolabUser extends baseModule {
 		$this->messages['mailHost'][1] = array('ERROR', _('Account %s:') . ' kolabUser_mailHost', _('Mailbox home server name is invalid!'));
 		$this->messages['mailHost'][2] = array('ERROR', _('Mailbox home server name is empty!'));
 		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegate', _('Unknown delegate address: %s'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recepients'), _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
+		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
 	}
 
 	/**
@@ -219,7 +256,6 @@ class kolabUser extends baseModule {
 				$return->addElement(new htmlOutputText(_('This account is marked for deletion.')));
 				return $return;
 			}
-			$basicPartContainer = new htmlTable();
 			// mailbox server
 			if (!isset($this->orig['mailHost'][0])) {  // value currently not set
 				$mailHost = '';
@@ -228,17 +264,17 @@ class kolabUser extends baseModule {
 				}
 				$serverInput = new htmlTableExtendedInputField(_('Mailbox home server'), 'mailHost', $mailHost, 'mailHost');
 				$serverInput->setRequired(true);
-				$basicPartContainer->addElement($serverInput, true);
+				$return->addElement($serverInput, true);
 			}
 			else {  // input is unchangable when set
-				$basicPartContainer->addElement(new htmlOutputText(_('Mailbox home server')));
-				$basicPartContainer->addElement(new htmlOutputText($this->attributes['mailHost'][0]));
-				$basicPartContainer->addElement(new htmlHelpLink('mailHost'), true);
+				$return->addElement(new htmlOutputText(_('Mailbox home server')));
+				$return->addElement(new htmlOutputText($this->attributes['mailHost'][0]));
+				$return->addElement(new htmlHelpLink('mailHost'), true);
 			}
-			$return->addElement($basicPartContainer, true);
 			// invitation policies
 			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);
 			$invitationContainer = new htmlTable();
+			$invitationContainer->colspan = 3;
 			// default invitation policy
 			$defaultInvPol = $this->invitationPolicies['ACT_MANUAL'];
 			if (isset($this->attributes['kolabInvitationPolicy'])) {
@@ -274,6 +310,7 @@ class kolabUser extends baseModule {
 			// mail aliases
 			$return->addElement(new htmlSubTitle(_('Email aliases')), true);
 			$mailAliasContainer = new htmlTable();
+			$mailAliasContainer->colspan = 3;
 			if (isset($this->attributes['alias'])) {
 				for ($i = 0; $i < sizeof($this->attributes['alias']); $i++) {
 					$mailAliasContainer->addElement(new htmlInputField('alias' . $i, $this->attributes['alias'][$i]));
@@ -294,6 +331,7 @@ class kolabUser extends baseModule {
 			sort($delegates);
 			$return->addElement(new htmlSubTitle(_('Delegates')), true);
 			$delegatesContainer = new htmlTable();
+			$delegatesContainer->colspan = 3;
 			if (isset($this->attributes['kolabDelegate'])) {
 				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
 					$delegatesContainer->addElement(new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i])));
@@ -306,6 +344,11 @@ class kolabUser extends baseModule {
 			$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.png', true));
 			$delegatesContainer->addElement(new htmlHelpLink('delegate'), true);
 			$return->addElement($delegatesContainer, true);
+			$return->addElement(new htmlSubTitle(_('Options')), true);
+			// allowed recepients
+			$this->addMultiValueInputTextField($return, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
+			// allowed senders
+			$this->addMultiValueInputTextField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 			// delete flag
 			if (!$this->getAccountContainer()->isNewAccount) {
 				$deleteContainer = new htmlTable();
@@ -436,6 +479,10 @@ class kolabUser extends baseModule {
 				$this->attributes['kolabDelegate'][] = $_POST['delegate'];
 			}
 			$this->attributes['kolabDelegate'] = array_unique($this->attributes['kolabDelegate']);
+			// allowed recepients
+			$this->processMultiValueInputTextField('kolabAllowSMTPRecipient', $errors, 'kolabEmailPrefix');
+			// allowed senders
+			$this->processMultiValueInputTextField('kolabAllowSMTPSender', $errors, 'kolabEmailPrefix');
 		}
 		return $errors;
 	}
@@ -610,6 +657,36 @@ class kolabUser extends baseModule {
 					}
 				}
 			}
+			// allowed recipients
+			if (!empty($rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPRecipient']])) {
+				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPRecipient']]);
+				for ($m = 0; $m < sizeof($mails); $m++) {
+					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
+						$partialAccounts[$i]['kolabAllowSMTPRecipient'][] = $mails[$m];
+					}
+					else {
+						$errMsg = $this->messages['kolabAllowSMTPRecipient'][1];
+						array_push($errMsg, array($i));
+						$messages[] = $errMsg;
+						break;
+					}
+				}
+			}
+			// allowed senders
+			if (!empty($rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPSender']])) {
+				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPSender']]);
+				for ($m = 0; $m < sizeof($mails); $m++) {
+					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
+						$partialAccounts[$i]['kolabAllowSMTPSender'][] = $mails[$m];
+					}
+					else {
+						$errMsg = $this->messages['kolabAllowSMTPSender'][1];
+						array_push($errMsg, array($i));
+						$messages[] = $errMsg;
+						break;
+					}
+				}
+			}
 		}
 		return $messages;
 	}
@@ -642,6 +719,8 @@ class kolabUser extends baseModule {
 		}
 		$this->addSimplePDFField($return, 'aliases', _('Email aliases'), 'alias');
 		$this->addSimplePDFField($return, 'delegate', _('Delegates'), 'kolabDelegate');
+		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
+		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		return $return;
 	}
 
