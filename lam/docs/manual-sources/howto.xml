@@ -11,7 +11,7 @@
     an LDAP directory. LAM runs on any webserver with PHP5 support and
     connects to your LDAP server unencrypted or via SSL/TLS.</para>
 
-    <para>LAM supports Samba 3, Unix, Zarafa, Kolab 2, address book entries,
+    <para>LAM supports Samba 3, Unix, Zarafa, Kolab 2/3, address book entries,
     NIS mail aliases, MAC addresses and much more. There is a tree viewer
     included to allow access to the raw LDAP attributes. You can use templates
     for account creation and use multiple configuration profiles.</para>
@@ -967,10 +967,10 @@ Have fun!
         certificates here.</para>
 
         <para>Please note that this can affect other web applications on the
-        same server if they require different certificates. You may also need
-        to restart Apache. In case of any problems please delete the uploaded
-        certificates and use the <link linkend="ssl_certSystem">system
-        setup</link>.</para>
+        same server if they require different certificates. There seem to be
+        problems on Debian systems and you may also need to restart Apache. In
+        case of any problems please delete the uploaded certificates and use
+        the <link linkend="ssl_certSystem">system setup</link>.</para>
 
         <para>You can either upload a DER/PEM formatted certificate file or
         import the certificates directly from an LDAP server that is available
@@ -2235,7 +2235,7 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
         Samba 4 you need to add the extension, save, and then select a
         question and set the answer. If you add the extension, set
         question/answer and then save all together this will cause an LDAP
-        error and no changes will be saved. </para>
+        error and no changes will be saved.</para>
 
         <screenshot>
           <mediaobject>
@@ -2408,6 +2408,17 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
 
         <para>This module supports to manage Kolab accounts with LAM. E.g. you
         can set the user's mail quota and define invitation policies.</para>
+
+        <para>Please add the Kolab user module in your LAM server profile to
+        activate Kolab support.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_kolab2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
         <para>Please enter an email address at the Personal page and set a
         Unix password first. Both are required that Kolab accepts the
@@ -3022,6 +3033,32 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_windowsGroup2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Kolab</title>
+
+        <para>Please activate the Kolab group module in your LAM server
+        profile to activate Kolab support.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_kolab3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can specify the email address and also set allowed sender
+        and recipient addresses.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_kolab4.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

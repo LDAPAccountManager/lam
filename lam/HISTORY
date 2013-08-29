@@ -2,6 +2,7 @@ September 2013 4.3
   - Custom SSL CA certificates can be setup in LAM main configuration
   - Unix user and group support for Samba 4
   - Samba 3 groups: support local members
+  - Kolab: support for Kolab group accounts
   - SSH public key: support file upload and self service enhancements (RFE 101)
   - LAM Pro:
    -> PPolicy: check password history for password reuse
