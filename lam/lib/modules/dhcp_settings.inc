@@ -80,6 +80,8 @@ class dhcp_settings extends baseModule {
 
 	/** all netbios node types */
 	private $all_netbios_node_types;
+	/** unknown-client options */
+	private $allowDenyOptions;
 	/** LDAP attributes */
 	public $attributes;
 	
@@ -95,6 +97,11 @@ class dhcp_settings extends baseModule {
 			"2" => _("P-Node (0x02)"),
 			"4" => _("M-Node (0x04)"),
 			"8" => _("H-Node (0x08)")
+		);
+		$this->allowDenyOptions = array(
+			'-' => '',
+			'allow' => _("Allow"),
+			'deny' => _("Deny"),
 		);
 		// call parent constructor
 		parent::__construct($scope);
@@ -182,7 +189,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'description' => array(
 				"Headline" => _("Description"), 'attr' => 'dhcpComments',
 				"Text" => _("Here you can enter a description for this DHCP entry.")
-			)
+			),
+			'unknownClients' => array(
+				"Headline" => _("Unknown clients"), 'attr' => 'dhcpStatements',
+				"Text" => _("Specifies if unknown clients are allowed.")
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -196,7 +207,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'netbiosType' => _('Netbios node type'),
 			'subnetMask' => _('Subnet mask'),
 			'netMask' => _('Net mask'),
-			'description' => _('Description')
+			'description' => _('Description'),
+			'unknownClients' => _('Unknown clients'),
 		);
 		// profile elements
 		$profileContainer = new htmlTable();
@@ -214,6 +226,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'), true);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
+		$uploadAllowDenyOption = $this->allowDenyOptions;
+		unset($uploadAllowDenyOption['-']);
+		$uploadAllowDenyOption = implode(', ', $uploadAllowDenyOption);
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'dhcp_settings_subnet',
@@ -268,6 +283,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'values' => 'B, H, M, P'
 			),
 			array(
+				'name' => 'dhcp_settings_unknownClients',
+				'description' => _('Unknown clients'),
+				'help' => 'unknownClients',
+				'values' => $uploadAllowDenyOption
+			),
+			array(
 				'name' => 'dhcp_settings_subnetMask',
 				'description' => _('Subnet mask'),
 				'help' => 'subnetmask',
@@ -300,6 +321,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['netbios'][0] = array('ERROR', _('The Netbios server is invalid.'));
 		$this->messages['netbios'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_netbiosServer', _('The Netbios server is invalid.'));
 		$this->messages['netbios_node_type'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_netbiosType', _('The entered Netbios node type does not exist.'));
+		$this->messages['unknownClients'][0] = array('ERROR', _('Account %s:') . ' dhcp_settings_unknownClients', _('Please enter a valid option.'));
 		$this->messages['max_lease_time'][0] = array('ERROR', _('The maximum lease time is invalid.'));
 		$this->messages['max_lease_time'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_maxLeaseTime', _('The maximum lease time is invalid.'));
 		$this->messages['subnet'][0] = array('ERROR', _('The subnet mask is invalid.'));
@@ -373,6 +395,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	            if ($this->getAccountContainer()->getAccountModule('fixed_ip')->reload_ips())
 	            	$errors[] = $this->messages['ips_reload'][0];
 			}
+			$this->setUnknownClients($_POST['unknownClients']);
 		}
 		
 		// Check domainname:
@@ -561,8 +584,17 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$nodeSelect = new htmlTableExtendedSelect('netbios_node_type', $nodeOptions, array($nodeType), _('Netbios node type'), 'netbios_type');
 		$nodeSelect->setHasDescriptiveElements(true);
 		$return->addElement($nodeSelect, true);
-
+		
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+			// unknown clients
+			$unknownClients = $this->getUnknownClients();
+			if (empty($unknownClients)) {
+				$unknownClients = '-';
+			}
+			$unknownClientsOptions = array_flip($this->allowDenyOptions);
+			$unknownClientsSelect = new htmlTableExtendedSelect('unknownClients', $unknownClientsOptions, array($unknownClients), _('Unknown clients'), 'unknownClients');
+			$unknownClientsSelect->setHasDescriptiveElements(true);
+			$return->addElement($unknownClientsSelect, true);
 			// subnetmask
 			$subnetMaskInput = new htmlTableExtendedInputField(_('Subnet mask'), 'subnet', $this->getDHCPOption('subnet-mask'), 'subnetmask');
 			$subnetMaskInput->setRequired(true);
@@ -626,6 +658,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (isset($this->all_netbios_node_types[$nodeType])) {
 			$nodeTypeValue = $this->all_netbios_node_types[$nodeType];
 		}
+		$unknownClients = '';
+		$unknownClientsVal = $this->getUnknownClients();
+		if (!empty($unknownClientsVal)) {
+			$unknownClients = $this->allowDenyOptions[$unknownClientsVal];
+		}
 		$return = array(
 			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->getDHCPOption('domain-name') . '</value></block>'),
 			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->getDefaultLeaseTime() . '</value></block>'),
@@ -635,7 +672,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name servers') . '</key><value>' . $this->getDHCPOption('netbios-name-servers') . '</value></block>'),
 			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $nodeTypeValue . '</value></block>'),
 			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->getDHCPOption('subnet-mask') . '</value></block>'),
-		);
+			get_class($this) . '_unknownClients' => array('<block><key>' . _('Unknown clients') . '</key><value>' . $unknownClients . '</value></block>'),
+			);
 		$this->addSimplePDFField($return, 'description', _('Description'), 'dhcpComments');
 		$this->addSimplePDFField($return, 'subnet', _('Subnet'), 'cn');
 		$this->addSimplePDFField($return, 'netMask', _('Net mask'), 'dhcpNetMask');
@@ -652,8 +690,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return = null;
 		if (is_array($this->attributes['dhcpOption'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpOption']); $i++) {
-				if (substr($this->attributes['dhcpOption'][$i], 0, strlen($name) + 1) == ($name . ' ')) {
-					$return = substr($this->attributes['dhcpOption'][$i], strlen($name) + 1);
+				$val = $this->attributes['dhcpOption'][$i];
+				if (substr($val, 0, strlen($name) + 1) == ($name . ' ')) {
+					$return = substr($val, strlen($name) + 1);
 					$return = str_replace('"', '', $return);
 					break;
 				}
@@ -718,6 +757,46 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		if (($time != null) && ($time != '')) {
 			$this->attributes['dhcpStatements'][] = 'default-lease-time ' . $time;
+		}
+	}
+
+	/**
+	 * Returns the unknown clients option.
+	 * 
+	 * @return String unknown clients value
+	 */
+	private function getUnknownClients() {
+		$return = null;
+		if (is_array($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				$val = $this->attributes['dhcpStatements'][$i];
+				if (strpos($val, 'unknown-clients') === (strlen($val) - strlen('unknown-clients'))) {
+					$return = substr($val,0, (strlen($val) - strlen('unknown-clients') - 1));
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Sets the unknown clients option.
+	 * 
+	 * @param String $option allow/deny
+	 */
+	private function setUnknownClients($option) {
+		if (!is_array($this->attributes['dhcpStatements'])) {
+			$this->attributes['dhcpStatements'] = array();
+		}
+		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			$val = $this->attributes['dhcpStatements'][$i];
+			if (strpos($val, 'unknown-clients') === (strlen($val) - strlen('unknown-clients'))) {
+				unset($this->attributes['dhcpStatements'][$i]);
+				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+			}
+		}
+		if (!empty($option) && ($option != '-')) {
+			$this->attributes['dhcpStatements'][] = $option . ' unknown-clients';
 		}
 	}
 
@@ -887,6 +966,19 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			else {
 				$partialAccounts[$i]['dhcpOption'][] = "netbios-node-type 8"; // default H
+			}
+			// unknown clients
+			if (!empty($rawAccounts[$i][$ids['dhcp_settings_unknownClients']])) {
+				$unknownClients = $rawAccounts[$i][$ids['dhcp_settings_unknownClients']];
+				if (in_array($unknownClients, $this->allowDenyOptions)) {
+					$allowDenyOptions = array_flip($this->allowDenyOptions);
+					$partialAccounts[$i]['dhcpStatements'][] = $allowDenyOptions[$unknownClients] . ' unknown-clients';
+				}
+				else {
+					$error = $this->messages['unknownClients'][0];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
 			}
 			// subnet mask
 			if (check_ip($rawAccounts[$i][$ids['dhcp_settings_subnetMask']],true)) {

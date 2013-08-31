@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2012  Roland Gruber
+                2009 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -188,12 +188,16 @@ class lamDHCPList extends lamList {
 			if (sizeof($entries) > 0) {
 				echo "<table border=\"0\" width=\"100%\">";
 				for ($i = 0; $i < sizeof($entries); $i++) {
-					echo "<tr>";
-					$dhcpstatements = array('');
+					$dhcpstatements = array();
 					if (isset($entries[$i]['dhcpstatements'][0])) {
-						$dhcpstatements = explode(" ",$entries[$i]['dhcpstatements'][0]);
+						$dhcpstatements = $entries[$i]['dhcpstatements'];
 					}
-					echo "<td width=\"25%\">".array_pop($dhcpstatements)."</td>";
+					$style = '';
+					if (!fixed_ip::isActive($dhcpstatements)) {
+						$style = 'style="text-decoration: line-through;"';
+					}
+					echo "<tr " . $style . ">";
+					echo "<td width=\"25%\">" . fixed_ip::extractIP($dhcpstatements) . "</td>";
 					$dhcphwaddress = explode(" ",$entries[$i]['dhcphwaddress'][0]);
 					echo "<td width=\"35%\">".array_pop($dhcphwaddress)."</td>";
 					echo "<td width=\"40%\">".$entries[$i]['cn'][0]."</td>";

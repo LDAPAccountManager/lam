@@ -4,6 +4,7 @@ September 2013 4.3
   - Samba 3 groups: support local members
   - Kolab: support group accounts and allowed senders/receivers for users
   - SSH public key: support file upload and self service enhancements (RFE 101)
+  - DHCP: support more options (RFE 99)
   - LAM Pro:
    -> PPolicy: check password history for password reuse
    -> Custom fields: read-only fields for admin interface and file upload for binary data
