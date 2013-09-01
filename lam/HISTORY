@@ -1,4 +1,4 @@
-September 2013 4.3
+25.09.2013 4.3
   - Custom SSL CA certificates can be setup in LAM main configuration
   - Unix user and group support for Samba 4
   - Samba 3 groups: support local members
