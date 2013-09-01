@@ -1,0 +1,20 @@
+<pdf type="dhcp" filename="printLogo.jpg" headline="LDAP Account Manager">
+	<section name="_dhcp_settings_subnet">
+		<entry name="dhcp_settings_domainName" />
+		<entry name="dhcp_settings_leaseTime" />
+		<entry name="dhcp_settings_maxLeaseTime" />
+		<entry name="dhcp_settings_DNSserver" />
+		<entry name="dhcp_settings_gateway" />
+		<entry name="dhcp_settings_netbiosServer" />
+		<entry name="dhcp_settings_netbiosType" />
+		<entry name="dhcp_settings_subnetMask" />
+		<entry name="dhcp_settings_netMask" />
+		<entry name="ddns_DNSserver" />
+		<entry name="ddns_zone" />
+		<entry name="ddns_reverseZone" />
+		<entry name="range_ranges" />
+	</section>
+	<section name="Fixed IPs">
+		<entry name="fixed_ip_IPlist" />
+	</section>
+</pdf>

@@ -1,0 +1,6 @@
+<pdf type="smbDomain" filename="printLogo.jpg" headline="Samba domain information">
+	<section name="_sambaDomain_domainName">
+		<entry name="sambaDomain_domainSID" />
+		<entry name="sambaDomain_RIDbase" />
+	</section>
+</pdf>
