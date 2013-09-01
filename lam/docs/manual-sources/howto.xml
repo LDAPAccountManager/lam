@@ -6357,13 +6357,13 @@ Run slapindex to rebuild the index.
                 </imageobject>
               </inlinemediaobject></entry>
 
-            <entry>Kolab 2 users</entry>
+            <entry>Kolab 2/3 users</entry>
 
             <entry>kolabUser</entry>
 
-            <entry>kolab2.schema, rfc2739.schema</entry>
+            <entry>kolab2/3.schema, rfc2739.schema</entry>
 
-            <entry>Part of Kolab 2 installation</entry>
+            <entry>Part of Kolab 2/3 installation</entry>
 
             <entry></entry>
           </row>
