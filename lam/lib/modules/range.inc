@@ -240,10 +240,10 @@ class range extends baseModule {
 	 *
 	 **/
 	public function reload_ranges() {
-	    // Only run it, when ranges already exists:
+		$range_edit = false;        // Range were edited?
+		// Only run it, when ranges already exists:
 	    if(is_array($this->ranges)) {
 		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
-		    $range_edit = false;        // Range were edit?
 		    $dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
 		    $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
 		    foreach ($this->ranges AS $id=>$arr) {

@@ -184,10 +184,10 @@ class fixed_ip extends baseModule {
 	 *
 	 **/
 	public function reload_ips() {
-	    // Only run it, when ranges already exists:
+		$ip_edit = false;        // IPs were edited?
+		// Only run it, when ranges already exists:
 	    if(is_array($this->fixed_ip)) {
 		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
-		    $ip_edit = false;        // Range were edit?
 		    foreach ($this->fixed_ip AS $id=>$arr) {
 		        if (!empty($this->fixed_ip[$id]['ip']) && !range::check_subnet_range($this->fixed_ip[$id]['ip'],
 		        																	$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
