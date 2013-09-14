@@ -223,7 +223,7 @@ class lamDHCPList extends lamList {
             if (isset($entry['dhcprange'])) {
                 echo"<table cellspacing=\"0\">";
 				foreach($entry['dhcprange'] AS $id=>$value) {
-					if (!is_numeric($value)) {
+					if (!empty($value) && !is_numeric($value)) {
 						$ex = explode(" ", $value);
 						echo "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
 					}
