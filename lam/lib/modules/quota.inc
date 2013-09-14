@@ -305,7 +305,7 @@ class quota extends baseModule {
 			$server = $servers[$q];
 			$i=0;
 			$quotastring = "";
-			while ($this->quota[$server][$i][0]) {
+			while (isset($this->quota[$server][$i][0])) {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 				}
