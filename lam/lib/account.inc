@@ -1118,4 +1118,19 @@ function getLDAPSSLCertificate($server, $port) {
 	return $finalPEM;
 }
 
+/**
+ * Returns the extended LDAP error message if any.
+ * 
+ * @param handle $server LDAP server handle
+ * @return String error message
+ */
+function getExtendedLDAPErrorMessage($server) {
+	$ldapMsg = null;
+	ldap_get_option($server, LDAP_OPT_ERROR_STRING, $ldapMsg);
+	if (empty($ldapMsg)) {
+		return null;
+	}
+	return _('LDAP error, server says:') . ' ' . $ldapMsg;
+}
+
 ?>
