@@ -551,4 +551,8 @@ h4.schema_oclass_sub {
 .pykotaPrinterType-bright { background:#ffe2dd !important; }
 .pykotaPrinterType-dark { background-color:#ffc4ba !important; }
 
+.pykotaBillingCodeType-border { border-color:#527510; }
+.pykotaBillingCodeType-bright { background:#d4f19b !important; }
+.pykotaBillingCodeType-dark { background-color:#9fc653 !important; }
+
 
