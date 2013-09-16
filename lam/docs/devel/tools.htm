@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+
+  <meta content="text/html; charset=ISO-8859-15" http-equiv="content-type"><title>Tools</title>
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
+<h1 style="text-align: center;">Tools<br>
+</h1>
+
+LAM includes a "Tools" page which contains various tools like the
+profile editor or the file upload. The content of this page is dynamic.
+LAM includes all *.inc files in the directory lib/tools. Each found
+class which implements the LAMtool interface is a candidate for this
+page. The different tools are displayed and ordered based on their
+security level and ordering preferences.<br>
+<br>
+<span style="font-weight: bold;">Example:</span><br>
+<br>
+The profile editor implements the LAMtool interface.<br>
+<br>
+
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">/**<br>
+&nbsp;* Profile editor<br>
+&nbsp;* <br>
+&nbsp;* @package tools<br>
+&nbsp;*/ <br>
+class <span style="font-weight: bold;">toolProfileEditor</span> implements <span style="font-weight: bold;">LAMTool</span> {<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns the name of the tool.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return string name<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; &nbsp;function <span style="font-weight: bold;">getName</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; return _("Profile editor");<br>
+&nbsp;&nbsp;&nbsp; &nbsp;}<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* returns a description text for the tool.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return string description<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function <span style="font-weight: bold;">getDescription</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return _("Here you can manage your account profiles.");<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns a link to the tool page (relative to templates/).<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return string link<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function <span style="font-weight: bold;">getLink</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return "profedit/profilemain.php";<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /** <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns if the tool requires write access to LDAP.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return boolean true if write access is needed<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function <span style="font-weight: bold;">getRequiresWriteAccess</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return true;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns if the tool requires password change rights.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* <br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return boolean true if password change rights are needed<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function <span style="font-weight: bold;">getRequiresPasswordChangeRights</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return true;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns the link to the tool image (relative to graphics/)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return string image URL<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function <span style="font-weight: bold;">getImageLink</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 'edit.png';<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Returns the prefered position of this tool on the tools page.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* The position may be between 0 and 1000. 0 is the top position.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return int prefered position<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function <span style="font-weight: bold;">getPosition</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 100;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+
+</body></html>

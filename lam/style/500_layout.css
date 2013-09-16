@@ -1,0 +1,554 @@
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+  Copyright (C) 2003  Leonhard Walchshaeusl
+  Copyright (C) 2005 - 2013  Roland Gruber
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more detaexils.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+/* CSS layout for LAM */
+
+
+/**
+ * global page layout
+ *
+ */
+
+h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
+  font-family:Arial,Tahoma,Verdana,sans-serif;
+}
+
+h1,h2,h3 { color:black; }
+
+body {
+  background-color:#F5F5F5;
+}
+
+.defaultBackground {
+  background: #F5F5F5 !important;
+}
+
+/* links */
+a {
+color: #222222;
+text-decoration: none;
+}
+
+a:link {
+color: #222222;
+text-decoration: none;
+}
+
+a:visited {
+color: #222222;
+text-decoration: none;
+}
+
+a:hover {
+color: red;
+text-decoration: none;
+}
+
+a:active {
+color: red;
+text-decoration: none;
+}
+
+a img {
+	border: 0px;
+}
+
+a.classicBold {
+	color: blue;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+fieldset {
+background-color:#fff3c8;
+border:1px solid #af8800;
+padding:10px;
+}
+
+div.filled {
+background-color:#fff3c8;
+border:1px solid #af8800;
+padding:10px;
+}
+
+legend {
+color:black;
+}
+
+/* color for active page digit */
+td.activepage {
+ color:red;
+}
+
+select {
+	background:#F5F5F5 none repeat-x scroll 50% 50%;
+	border:1px solid #AAAAAA;
+	color:#222222;
+	margin: 1px;
+}
+
+input {
+	margin: 1px;	
+}
+
+.margin2 {
+	margin: 2px;	
+}
+
+.align-middle {
+	vertical-align: middle;
+}
+
+table.lamHeader {
+  background-image: url(lam-images/headerLine.png);
+  padding: 0px;
+  margin: 0px;
+  height: 35px;
+}
+
+/* table preferences */
+table.accountlist {
+  border-width:1px;
+  border-style:solid;
+}
+
+table.collapse {
+	border-collapse:collapse;
+}
+
+.rightToLeftText {
+	text-align: right;
+}
+
+/** buttons */
+.saveButton {
+	background-image: url(../graphics/save.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.cancelButton {
+	background-image: url(../graphics/del.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.logoutButton {
+	background-image: url(../graphics/exit.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.undoButton {
+	background-image: url(../graphics/undo.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.passwordButton {
+	background-image: url(../graphics/key.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.loadProfileButton {
+	background-image: url(../graphics/loadProfile.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.deleteButton {
+	background-image: url(../graphics/del.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.createButton {
+	background-image: url(../graphics/add.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.editButton {
+	background-image: url(../graphics/edit.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.settingsButton {
+	background-image: url(../graphics/tools.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.upButton {
+	background-image: url(../graphics/up.gif) !important;
+	background-position: 0px 0px !important;
+}
+
+.downButton {
+	background-image: url(../graphics/down.gif) !important;
+	background-position: 0px 0px !important;
+}
+
+.backButton {
+	background-image: url(../graphics/back.gif) !important;
+	background-position: 0px 0px !important;
+}
+
+.pdfButton {
+	background-image: url(../graphics/pdf.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.smallPadding span {
+	padding: 0.1em 0.4em !important;
+}
+
+.smallPaddingContent {
+	padding: 0.5em;
+}
+
+/** titles */
+.titleText {
+	color: black;
+}
+
+/** subtitles */
+.subTitle {
+	margin: 20px 0px 15px 0px;
+	border-bottom: 1px dotted black;
+}
+
+.subTitleText {
+	margin: 0px 0px 0px 10px;
+	color: black;
+}
+
+.hidden {
+	display: none;
+}
+
+.nowrap {
+	white-space: nowrap;
+}
+
+hr.dotted {
+	border-bottom: 1px dotted black;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+}
+
+div.ui-progressbar-value {
+	background-image: url(images/pbar-ani.gif);
+}
+
+.fullwidth {
+	width: 100%;
+}
+
+.halfwidth {
+	width: 50%;
+}
+
+.sortableList { list-style-type: none; margin: 0; padding: 0; }
+.sortableList li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; }
+.sortableList li span { position: absolute; margin-left: -1.3em; }
+
+
+/**
+ * table style for delete.php
+ *
+ */
+
+/* table preferences */
+table.account {
+  border-width:0px;
+  border-style:solid;
+  border-color:#000000;
+}
+
+/* color of entry rows */
+tr.account {
+  background-color:#FFFFEE;
+}
+
+/* --- workaround for vertical tabs --- */
+
+#lamVerticalTabs .ui-tabs-nav li {
+	margin: 0 -1px .2em 0;
+	clear: left;
+	width: 100%;
+	border-bottom-width: 1px !important;
+	border-right-width: 0 !important;
+	border-bottom: 1px solid #AAAAAA !important;
+}
+
+#lamVerticalTabs .ui-tabs-nav li.ui-tabs-selected {
+	border-right-width: 1px;
+	border-right-width: 1px;
+	padding-bottom: 0;
+	padding-right: .1em;
+}
+
+#lamVerticalTabs .ui-tabs-nav {
+	float: left;
+	padding: .2em .1em .2em .2em !IMPORTANT;
+}
+
+#lamVerticalTabs .ui-tabs-panel {
+	padding: 1em;
+	float: left;
+}
+
+#lamVerticalTabs .ui-widget-header { 
+	background: #CCCCCC url(images/ui-bg_highlight-soft_75_cccccc_1x150-vertical.png) repeat-y;
+}
+
+#lamVerticalTabs .ui-tabs-nav li button  {
+	width: 100%;
+	text-align: left;
+	display:block;
+	color: #555555;
+}
+
+/* --- end of workaround for vertical tabs --- */
+
+.tabs-hover {
+	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x !important;
+}
+
+/* title bar */
+.titleBar {
+	background: #AAAAAA url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) repeat-x scroll 50% 50%;
+	border-top: 1px solid #AAAAAA;
+	border-left: 1px solid #AAAAAA;
+	border-right: 1px solid #AAAAAA;
+	padding: 5px 5px 5px 15px;
+}
+
+.titleBarTitle {
+	font: bold 1em Arial,Tahoma,Verdana,sans-serif;
+}
+
+.titleBarSubtitle {
+/*	font-style: italic;*/
+	padding: 0px 5px 0px 10px;
+}
+
+/**
+ * Color and font definitions for templates/status.php
+ *
+ */
+
+/* Background olor for the different Status Messages */
+div.statusInfo {
+  background-color:#a8c3ff;
+  border: 1px solid blue;
+}
+
+div.statusWarn {
+  background-color:#fff2a3;
+  border: 1px solid #f59d00;
+}
+
+div.statusError {
+  background-color:#ffc4ba;
+  border: 1px solid red;
+}
+
+/* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
+div.statusTitle {
+	font-size: 12pt;
+	font-weight: bold;
+	margin: 3px 3px 3px 15px;
+}
+
+/* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
+p.statusText {
+  font-size: 10pt;
+  margin: 3px 3px 3px 25px;
+}
+
+input.smallImageButton {
+  background-position: 2px center;
+  background-repeat: no-repeat;
+  height:24px;
+  border: 0px;
+  background-color: transparent;
+  cursor:pointer;
+}
+
+
+/* schema browser */
+
+table.schema_oclasses {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	border-top: 0;
+	margin-bottom: 10px;
+	background-color: #eee;
+}
+
+table.schema_oclasses td {
+	vertical-align: top;
+	text-align: left;
+	padding-left: 5px;
+}
+
+table.schema_attr {
+	border: 1px solid black;
+}
+
+table.schema_attr th {
+	background-color: #F3F3F3;
+	padding: 5px;
+	color: black;
+	font-weight: bold;
+	font-size: 125%;
+}
+
+table.schema_attr td {
+	padding: 5px;
+	vertical-align: top;
+}
+
+table.schema_attr tr.even {
+	background-color: #eee;
+}
+
+table.schema_attr tr.odd {
+	background-color: #ccc;
+}
+
+table.schema_attr tr.highlight{
+	background-color: #bcd;
+	font-weight: Bold;
+}
+
+ul.schema {
+	margin: 5px;
+	margin-left: 0px;
+	padding-left: 20px;
+}
+
+ul.schema li {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+ul.schema li small {
+	font-size: 75%;
+	color: #777;
+}
+
+ul.schema li small a {
+	color: #77c;
+}
+
+h4.schema_oclass {
+	background: #F3F3F3;
+	padding: 5px;
+	margin: 0px;
+	margin-top: 8px;
+	font-weight: normal;
+	border: 1px solid black;
+	font-size: 140%;
+	color: black;
+}
+
+h4.schema_oclass_sub {
+	background: #dde;
+	border: 1px solid black;
+	border-top: 0px;
+	font-weight: normal;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 5px;
+	font-size: 80%;
+}
+
+
+/** colors for account types */
+
+.alias-border { border-color:#af8800; }
+.alias-bright { background:#fff3c8 !important; }
+.alias-dark { background-color:#ffe27f !important; }
+
+.asteriskExt-border { border-color:#af8800; }
+.asteriskExt-bright { background:#fff3c8 !important; }
+.asteriskExt-dark { background-color:#ffe27f !important; }
+
+.automountType-border { border-color:#7167bf; }
+.automountType-bright { background:#d6e3ff !important; }
+.automountType-dark { background-color:#a8c3ff !important; }
+
+.dhcp-border { border-color:#527510; }
+.dhcp-bright { background:#d4f19b !important; }
+.dhcp-dark { background-color:#9fc653 !important; }
+
+.gon-border { border-color:#7167bf; }
+.gon-bright { background:#d6e3ff !important; }
+.gon-dark { background-color:#a8c3ff !important; }
+
+.group-border { border-color:#7167bf; }
+.group-bright { background:#d6e3ff !important; }
+.group-dark { background-color:#a8c3ff !important; }
+
+.host-border { border-color:#911a1a; }
+.host-bright { background:#ffe2dd !important; }
+.host-dark { background-color:#ffc4ba !important; }
+
+.mailAlias-border { border-color:#af8800; }
+.mailAlias-bright { background:#fff3c8 !important; }
+.mailAlias-dark { background-color:#ffe27f !important; }
+
+.netgroup-border { border-color:#7167bf; }
+.netgroup-bright { background:#d6e3ff !important; }
+.netgroup-dark { background-color:#a8c3ff !important; }
+
+.nisObjectType-border { border-color:#7167bf; }
+.nisObjectType-bright { background:#d6e3ff !important; }
+.nisObjectType-dark { background-color:#a8c3ff !important; }
+
+.ppolicyType-border { border-color:#af8800; }
+.ppolicyType-bright { background:#fff3c8 !important; }
+.ppolicyType-dark { background-color:#ffe27f !important; }
+
+.smbDomain-border { border-color:#1d993e; }
+.smbDomain-bright { background:#c9ddd2 !important; }
+.smbDomain-dark { background-color:#a8ddbf !important; }
+
+.sudo-border { border-color:#9b8523; }
+.sudo-bright { background:#fffde2 !important; }
+.sudo-dark { background-color:#fff2a3 !important; }
+
+.user-border { border-color:#9b8523; }
+.user-bright { background: #fffde2 !important; }
+.user-dark { background-color:#fff2a3 !important; }
+
+.zarafaAddressListType-border { border-color:#7167bf; }
+.zarafaAddressListType-bright { background:#d6e3ff !important; }
+.zarafaAddressListType-dark { background-color:#a8c3ff !important; }
+
+.zarafaDynamicGroupType-border { border-color:#7167bf; }
+.zarafaDynamicGroupType-bright { background:#d6e3ff !important; }
+.zarafaDynamicGroupType-dark { background-color:#a8c3ff !important; }
+
+.pykotaPrinterType-border { border-color:#911a1a; }
+.pykotaPrinterType-bright { background:#ffe2dd !important; }
+.pykotaPrinterType-dark { background-color:#ffc4ba !important; }
+
+

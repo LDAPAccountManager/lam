@@ -1,0 +1,54 @@
+# LDAP Account Manager language configuration file
+#
+# Do not modify!
+
+# Each line consists of a ":"-seperated entry. The first part is the locale name,
+# the second is the character encoding and the third the language name.
+
+# Catalan
+ca_ES.utf8:UTF-8:Català (Catalunya)
+
+# Czech
+cs_CZ.utf8:UTF-8:Čeština (Česko)
+
+# German
+de_DE.utf8:UTF-8:Deutsch (Deutschland)
+
+# English
+en_GB.utf8:UTF-8:English (Great Britain)
+
+# Spanish
+es_ES.utf8:UTF-8:Español (España)
+
+# French
+fr_FR.utf8:UTF-8:Français (France)
+
+# Italian
+it_IT.utf8:UTF-8:Italiano (Italia)
+
+# Hungarian
+hu_HU.utf8:UTF-8:Magyar (Magyarország)
+
+# Dutch
+nl_NL.utf8:UTF-8:Nederlands (Nederland)
+
+# Polish
+pl_PL.utf8:UTF-8:Polski (Polska)
+
+# Portuguese
+pt_BR.utf8:UTF-8:Português (Brasil)
+
+# Russian
+ru_RU.utf8:UTF-8:Русский (Россия)
+
+# Slovakian
+sk_SK.utf8:UTF-8:Slovenčina (Slovensko)
+
+# Japanese
+ja_JP.utf8:UTF-8:日本語 (日本)
+
+# Chinese (Traditional)
+zh_TW.utf8:UTF-8:繁體中文 (台灣)
+
+# Chinese (Simplified)
+zh_CN.utf8:UTF-8:简体中文 (中国)
