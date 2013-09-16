@@ -13,6 +13,7 @@
   - fixed bugs:
    -> Custom fields: auto-adding object classes via profile editor fixed
    -> PHP 5.5 compatibility
+   -> Lamdaemon: do not show message if home directory to delete was not found (154)
 
 
 18.06.2013 4.2.1

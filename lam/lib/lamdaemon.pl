@@ -267,7 +267,8 @@ sub removeHomedir {
 		}
 	}
 	else {
-		$return = "INFO,Lamdaemon ($hostname),The directory which should be deleted was not found (skipped).";
+		$return = "Ok";
+		logMessage(LOG_INFO, "The directory " . $vals[3] . " which should be deleted was not found (skipped).");
 	}
 	($<, $>) = ($>, $<); # Give up root previleges
 }
