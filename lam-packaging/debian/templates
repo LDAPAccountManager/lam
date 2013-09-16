@@ -1,0 +1,23 @@
+Template: ldap-account-manager/config-webserver
+Type: multiselect
+Choices: apache2
+Default: apache2
+_Description: Web server configuration:
+ LDAP Account Manager supports any webserver that supports PHP5, but this
+ automatic configuration process only supports Apache2.
+ If you choose to configure Apache2 then LAM can be accessed at http(s)://localhost/lam
+
+Template: ldap-account-manager/alias
+Type: string
+Default: lam
+_Description: Alias name:
+ LAM will add an alias to your httpd.conf which allows you to
+ access LAM at http(s)://localhost/lam. You may select an alias other than
+ "lam".
+
+Template: ldap-account-manager/restart-webserver
+Type: boolean
+Default: true
+_Description: Would you like to restart your webserver(s) now?
+ Your webserver(s) need to be restarted in order to apply the changes.
+

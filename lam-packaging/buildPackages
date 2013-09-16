@@ -1,0 +1,180 @@
+#!/bin/bash
+#
+# Builds LDAP Account Manager packages from SVN.
+
+if [ $# -lt 1 ]
+then
+echo -e "Usage: buildPackage <SVN tag>"
+exit
+fi
+
+set -e
+
+cd /daten/projekte/lam/pakete
+
+if [ "$1" = "trunk" ]
+then
+	export SVN_TAG="trunk"
+else
+	export SVN_TAG="tags/$1"
+fi
+
+echo "Get files from SVN..."
+svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam lam &
+svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam-packaging lam-packaging &
+svn export -q file:///daten/projekte/SVNROOT/$SVN_TAG/lamPro lamPro &
+
+wait
+
+cp lam-packaging/getVersion ./
+export VERSION=`./getVersion`
+
+# remove files which are not in the final release
+rm -r lam/po
+rm -r lam/tests
+rm lam/lib/font/*.ttf
+find . -name .svnignore -exec rm {} \;
+mv lam ldap-account-manager-$VERSION
+
+# create LAM manual
+cd ldap-account-manager-$VERSION/docs/manual-sources
+./make.sh
+cd ../../..
+rm -r ldap-account-manager-$VERSION/docs/manual-sources
+
+# create LAM Pro build directory
+mkdir LAMPro
+cp -a ldap-account-manager-$VERSION LAMPro/ldap-account-manager-$VERSION
+cp -a lamPro/* LAMPro/ldap-account-manager-$VERSION
+rm -r lamPro
+
+# create PHPdoc
+echo "Build PHPDoc..."
+cd LAMPro/ldap-account-manager-$VERSION
+./phpdoc.sh > /dev/null &
+cd ../..
+cd ldap-account-manager-$VERSION
+./phpdoc.sh > /dev/null &
+cd ..
+wait
+rm ldap-account-manager-$VERSION/phpdoc.sh
+rm LAMPro/ldap-account-manager-$VERSION/phpdoc.sh
+
+# tar.bz2
+cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
+cp lam-packaging/autoconf/Makefile.in ldap-account-manager-$VERSION/
+cd ldap-account-manager-$VERSION
+touch install.sh
+perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
+autoconf
+rm -r autom4te.cache
+cd ..
+tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
+
+# tar.bz2 of LAM Pro
+cd LAMPro
+cp ../lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
+cp ../lam-packaging/autoconf/Makefile.in ldap-account-manager-$VERSION/
+cd ldap-account-manager-$VERSION
+touch install.sh
+perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
+autoconf
+rm -r autom4te.cache
+cd ..
+tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
+cd ..
+
+# Debian
+mkdir Debian
+cp ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
+mv ldap-account-manager-$VERSION Debian/
+cp -r lam-packaging/debian Debian/ldap-account-manager-$VERSION/
+cd Debian/ldap-account-manager-$VERSION
+debuild
+cd ..
+rm -r ldap-account-manager-$VERSION
+cd ..
+
+# Debian for LAM Pro
+cd LAMPro
+mkdir Debian
+cp ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
+mv ldap-account-manager-$VERSION Debian/
+cp -r ../lam-packaging/debian Debian/ldap-account-manager-$VERSION/
+cd Debian/ldap-account-manager-$VERSION
+debuild
+cd ..
+rm -r ldap-account-manager-$VERSION
+cd ..
+cd ..
+
+# RPM
+perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" lam-packaging/RPM/ldap-account-manager.spec
+
+cp lam-packaging/RPM/ldap-account-manager.spec lam-packaging/RPM/ldap-account-manager-fedora.spec
+perl -pi -e "s/\\@\\@DISTRIBUTION\\@\\@/fedora/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
+perl -pi -e "s/\\@\\@USER\\@\\@/apache/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
+perl -pi -e "s/\\@\\@GROUP\\@\\@/apache/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
+perl -pi -e "s/\\@\\@HTTP_CONF_DIR\\@\\@/\\/etc\\/httpd\\/conf.d/g" lam-packaging/RPM/ldap-account-manager-fedora.spec
+
+cp lam-packaging/RPM/ldap-account-manager.spec lam-packaging/RPM/ldap-account-manager-suse.spec
+perl -pi -e "s/\\@\\@DISTRIBUTION\\@\\@/suse/g" lam-packaging/RPM/ldap-account-manager-suse.spec
+perl -pi -e "s/\\@\\@USER\\@\\@/wwwrun/g" lam-packaging/RPM/ldap-account-manager-suse.spec
+perl -pi -e "s/\\@\\@GROUP\\@\\@/www/g" lam-packaging/RPM/ldap-account-manager-suse.spec
+perl -pi -e "s/\\@\\@HTTP_CONF_DIR\\@\\@/\\/etc\\/apache2\\/conf.d/g" lam-packaging/RPM/ldap-account-manager-suse.spec
+
+mkdir RPM
+mkdir LAMPro/RPM
+
+
+# Fedora RPM
+cp ldap-account-manager-$VERSION.tar.bz2 ~/rpmbuild/SOURCES
+cp lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
+rpmbuild --sign --clean --rmsource -bb lam-packaging/RPM/ldap-account-manager-fedora.spec
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+
+# Fedora RPM for LAM Pro
+cd LAMPro
+cp ldap-account-manager-$VERSION.tar.bz2 ~/rpmbuild/SOURCES/ldap-account-manager-$VERSION.tar.bz2
+cp ../lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
+rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager-fedora.spec
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+cd ..
+
+# Suse RPM
+cp ldap-account-manager-$VERSION.tar.bz2 ~/rpmbuild/SOURCES
+cp lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
+rpmbuild --sign --clean --rmsource -bb lam-packaging/RPM/ldap-account-manager-suse.spec
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+
+# Suse RPM for LAM Pro
+cd LAMPro
+cp ldap-account-manager-$VERSION.tar.bz2 ~/rpmbuild/SOURCES/ldap-account-manager-$VERSION.tar.bz2
+cp ../lam-packaging/RPM/lam.apache.conf ~/rpmbuild/SOURCES
+rpmbuild --sign --clean --rmsource -bb ../lam-packaging/RPM/ldap-account-manager-suse.spec
+mv ~/rpmbuild/RPMS/noarch/ldap-account-manager*-$VERSION-*1.noarch.rpm RPM/
+cd ..
+
+# generate checksum files
+sha256sum *.tar.bz2 >> checksums.txt
+cd RPM
+sha256sum *.rpm >> ../checksums.txt
+cd ../Debian
+sha256sum *.deb >> ../checksums.txt
+cd ..
+
+# generate checksum files for LAM Pro
+cd LAMPro
+sha256sum *.tar.bz2 >> checksums.txt
+cd RPM
+sha256sum *.rpm >> ../checksums.txt
+cd ../Debian
+sha256sum *.deb >> ../checksums.txt
+cd ../..
+
+
+# clean up
+rm -r lam-packaging
+rm getVersion
+rm *.log
+rm buildPackages
