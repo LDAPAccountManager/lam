@@ -176,5 +176,5 @@ cd ../..
 # clean up
 rm -r lam-packaging
 rm getVersion
-rm *.log
+rm -f *.log
 rm buildPackages
