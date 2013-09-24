@@ -369,7 +369,13 @@ class posixGroup extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// managed attributes
-		$return['attributes'] = array('cn', 'gidNumber', 'userPassword', 'memberUid', 'description');
+		$return['attributes'] = array('gidNumber', 'userPassword', 'memberUid');
+		if ($this->manageCnAttribute) {
+			$return['attributes'][] = 'cn';
+		}
+		if ($this->manageDescriptionAttribute) {
+			$return['attributes'][] = 'description';
+		}
 		// profile options
 		if (!$this->autoAddObjectClasses) {
 			$profileContainer = new htmlTable();
