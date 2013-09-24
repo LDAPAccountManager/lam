@@ -61,7 +61,7 @@ abstract class baseModule {
 	/** configuration settings of all modules */
 	protected $moduleSettings;
 
-	/** self service settings of all modules */
+	/** self service profile with settings of all modules */
 	protected $selfServiceSettings;
 
 	/** name of parent accountContainer ($_SESSION[$base]) */
