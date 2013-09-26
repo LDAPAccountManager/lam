@@ -3999,7 +3999,7 @@ Run slapindex to rebuild the index.
 
         <listitem>
           <para>Field type: text, password, text area, checkbox, radio
-          buttons, select list</para>
+          buttons, select list, file upload</para>
         </listitem>
 
         <listitem>
@@ -4018,14 +4018,6 @@ Run slapindex to rebuild the index.
       <itemizedlist>
         <listitem>
           <para>structural object classes</para>
-        </listitem>
-
-        <listitem>
-          <para>(binary) attributes that require file uploads</para>
-        </listitem>
-
-        <listitem>
-          <para>multi-value attributes</para>
         </listitem>
 
         <listitem>
@@ -4313,6 +4305,34 @@ Run slapindex to rebuild the index.
       ")"</para>
 
       <para>E.g. /^[a-z0-9\.]$/i</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">File upload:</emphasis></para>
+
+      <para>This is used for binary data. You can restrict uploaded data to a
+      given file extension and set the maximum file size.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields21.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Presentation:</para>
+
+      <para>The uploaded data may also be downloaded via LAM.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields22.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section>
@@ -5980,7 +6000,7 @@ Run slapindex to rebuild the index.
 
             <listitem>
               <para>Field type: text, password, text area, checkbox, radio
-              buttons, select list</para>
+              buttons, select list, file upload</para>
             </listitem>
 
             <listitem>
@@ -6199,6 +6219,34 @@ Run slapindex to rebuild the index.
           "(", ")"</para>
 
           <para>E.g. /^[a-z0-9\.]$/i</para>
+
+          <literallayout>
+</literallayout>
+
+          <para><emphasis role="bold">File upload:</emphasis></para>
+
+          <para>This is used for binary data. You can restrict uploaded data
+          to a given file extension and set the maximum file size.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields23.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Presentation:</para>
+
+          <para>The uploaded data may also be downloaded via LAM.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/customFields24.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
         </section>
       </section>
     </section>
