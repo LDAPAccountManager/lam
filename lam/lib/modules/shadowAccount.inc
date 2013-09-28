@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2012  Roland Gruber
+  Copyright (C) 2007 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -228,6 +228,8 @@ class shadowAccount extends baseModule implements passwordService {
 				'example' => '17-07-2011'
 			)
 		);
+		// self service fields
+		$return['selfServiceFieldSettings'] = array('shadowLastChange' => _('Last password change (read-only)'));
 		return $return;
 	}
 
@@ -665,6 +667,35 @@ class shadowAccount extends baseModule implements passwordService {
 			intval($year))/3600/24);
 	}
 		
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account
+	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param array $readOnlyFields list of read-only fields
+	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 */
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = array();
+		if ($passwordChangeOnly) {
+			return $return; // no fields as long no LDAP content can be read
+		}
+		if (in_array('shadowLastChange', $fields)) {
+			$shadowLastChange = '';
+			if (isset($attributes['shadowLastChange'][0])) {
+				$date = getdate($attributes['shadowLastChange'][0] * 3600 * 24);
+				$shadowLastChange = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+			}
+			$return['shadowLastChange'] = new htmlTableRow(array(
+				new htmlOutputText(_('Last password change')), new htmlOutputText($shadowLastChange)
+			));
+		}
+		return $return;
+	}
+
 }
 
 ?>

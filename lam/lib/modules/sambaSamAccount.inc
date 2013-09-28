@@ -241,6 +241,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'syncLMPassword' => _('Sync Samba LM password with Unix password'),
 			'syncSambaPwdLastSet' => _('Update attribute "sambaPwdLastSet" on password change'),
 			'password' => _('Password'),
+			'sambaPwdLastSet' => _('Last password change (read-only)'),
 		);
 		// help Entries
 		$return['help'] = array (
@@ -382,6 +383,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'lmHash' => array (
 				"Headline" => _("Disable LM hashes"),
 				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them.")),
+			'sambaPwdLastSet' => array (
+				"Headline" => _("Last password change"), 'attr' => 'sambaPwdLastSet',
+				"Text" => _("This is the date when the user changed his password.")),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")),
@@ -585,6 +589,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideProfilePath', false, _('Profile path'), null, false));
 		$hiddenContainer->addElement(new htmlOutputText(' '));
 		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonScript', false, _('Logon script'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideSambaPwdLastSet', false, _('Last password change'), null, false));
 		$hiddenContainer->addNewLine();
 		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideWorkstations', false, _('Samba workstations'), null, false));
 		$hiddenContainer->addElement(new htmlOutputText(' '));
@@ -1137,7 +1143,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 				$return->addElement(new htmlTableExtendedInputCheckbox('sambaAcctFlagsL', $locked, _('Account is locked'), 'locked'), true);
 				// password change at next login
-				$return->addElement(new htmlTableExtendedInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), true);	
+				$return->addElement(new htmlTableExtendedInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), true);
+				// last password change
+				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideSambaPwdLastSet')) {
+					$sambaPwdLastSet = '';
+					if (!empty($this->attributes['sambaPwdLastSet'][0])) {
+						$sambaPwdLastSet = date('d.m.Y H:i', $this->attributes['sambaPwdLastSet'][0]);
+					}
+					$return->addElement(new htmlOutputText(_('Last password change')));
+					$return->addElement(new htmlOutputText($sambaPwdLastSet));
+					$return->addElement(new htmlHelpLink('sambaPwdLastSet'), true);
+				}
 				// password can be changed
 				$return->addElement(new htmlOutputText(_('User can change password')));
 				$tempTable = new htmlTable();
@@ -2295,6 +2311,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$pwdTable->addElement($pwd2);
 			$return['password'] = new htmlTableRow(array(
 				$pwdTable
+			));
+		}
+		if (in_array('sambaPwdLastSet', $fields)) {
+			$sambaPwdLastSet = '';
+			if (isset($attributes['sambaPwdLastSet'][0])) {
+				$sambaPwdLastSet = date('d.m.Y H:i', $attributes['sambaPwdLastSet'][0]);
+			}
+			$return['sambaPwdLastSet'] = new htmlTableRow(array(
+				new htmlOutputText(_('Last password change')), new htmlOutputText($sambaPwdLastSet)
 			));
 		}
 		return $return;
