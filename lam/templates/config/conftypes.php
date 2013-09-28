@@ -281,6 +281,15 @@ if (sizeof($activeTypes) > 0) {
 			$hidden = $typeSettings['hidden_' . $activeTypes[$i]];
 		}
 		$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeTypes[$i], $hidden, _('Hidden'), '261'), true);
+		// custom label
+		$customLabel = '';
+		if (isset($typeSettings['customLabel_' . $activeTypes[$i]])) {
+			$customLabel = $typeSettings['customLabel_' . $activeTypes[$i]];
+		}
+		$customLabelInput = new htmlTableExtendedInputField(_('Custom label'), 'customLabel_' . $activeTypes[$i], $customLabel, '264');
+		$customLabelInput->setFieldSize(40);
+		$advancedOptionsContent->addElement($customLabelInput);
+		$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
 		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
 			// hide button to create new accounts
 			$hideNewButton = false;
@@ -375,7 +384,11 @@ function checkInput() {
 			}
 		}
 		// set filter
-		elseif (substr($key, 0, 7) == "filter_") {
+		elseif (substr($key, 0, strlen('filter_')) == "filter_") {
+			$typeSettings[$key] = $_POST[$key];
+		}
+		// set custom label
+		elseif (strpos($key, 'customLabel_') === 0) {
 			$typeSettings[$key] = $_POST[$key];
 		}
 	}

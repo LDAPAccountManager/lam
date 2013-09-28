@@ -1,3 +1,9 @@
+December 2013 4.4
+  - allow to set a custom label for each account type
+  - LAM Pro:
+   -> Samba/Shadow: display password change date in self service
+
+
 25.09.2013 4.3
   - Custom SSL CA certificates can be setup in LAM main configuration
   - Unix user and group support for Samba 4

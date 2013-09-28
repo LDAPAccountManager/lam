@@ -161,6 +161,8 @@ $helpArray = array (
 					"Text" => _('If checked then the user will not be able to create new entries of this account type.')),
 				"263" => array ("Headline" => _("Disallow delete"),
 					"Text" => _('If checked then the user will not be able to delete entries of this account type.')),
+				"264" => array ("Headline" => _('Custom label'),
+					"Text" => _('Here you can overwrite the display name for this account type.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

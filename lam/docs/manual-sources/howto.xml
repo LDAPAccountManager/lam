@@ -1298,6 +1298,13 @@ Have fun!
             </listitem>
 
             <listitem>
+              <para><emphasis role="bold">Custom label:</emphasis> Here you
+              can set a custom label for the account types. Use this if the
+              standard label does not fit for you (e.g. enter "Servers" for
+              hosts).</para>
+            </listitem>
+
+            <listitem>
               <para><emphasis role="bold">No new entries (LAM Pro
               only):</emphasis> Use this if you want to prevent that new
               accounts of this type are created by your users. The GUI will
@@ -5554,7 +5561,7 @@ Run slapindex to rebuild the index.
             </tr>
 
             <tr>
-              <th align="left" rowspan="4"><inlinemediaobject>
+              <th align="left" rowspan="5"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_samba.png" />
                   </imageobject>
@@ -5585,6 +5592,26 @@ Run slapindex to rebuild the index.
 
               <td>Updates the password timestamp when password is synchronized
               with Unix.</td>
+            </tr>
+
+            <tr>
+              <td>Last password change (read-only)</td>
+
+              <td>Displays the date and time of the user's last password
+              change.</td>
+            </tr>
+
+            <tr>
+              <th align="left"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_ssh.png" />
+                  </imageobject>
+                </inlinemediaobject>Shadow</th>
+
+              <td>Last password change (read-only)</td>
+
+              <td>Displays the date and time of the user's last password
+              change (Unix).</td>
             </tr>
 
             <tr>

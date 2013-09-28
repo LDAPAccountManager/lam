@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2006  Roland Gruber
+  Copyright (C) 2005 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,6 +73,12 @@ function getTypes() {
 * @return string type alias
 */
 function getTypeAlias($type) {
+	if (!empty($_SESSION['config'])) {
+		$typeSettings = $_SESSION['config']->get_typeSettings();
+		if (!empty($typeSettings['customLabel_' . $type])) {
+			return $typeSettings['customLabel_' . $type];
+		}
+	}
 	$obj = new $type();
 	return $obj->getAlias();
 }
