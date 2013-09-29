@@ -217,6 +217,8 @@ $helpArray = array (
 					"Text" => _("This HTML code will be placed on top of all self service pages. E.g. you can use this to place your custom logo. Any HTML code is permitted.")),
 				"510" => array ("Headline" => _("Additional CSS links"),
 					"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line.")),
+				"511" => array ("Headline" => _("Password field label"),
+					"Text" => _('This text is placed as label for the password field on the login page. LAM will use "Password" if you do not enter any text.')),				
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				"550" => array ("Headline" => _("From address"),

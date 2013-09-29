@@ -5288,6 +5288,14 @@ Run slapindex to rebuild the index.
               </row>
 
               <row>
+                <entry>Password field label</entry>
+
+                <entry>This text is placed as label for the password field on
+                the login page. LAM will use "Password" if you do not enter
+                any text.</entry>
+              </row>
+
+              <row>
                 <entry>Login caption</entry>
 
                 <entry>This text is displayed at the login page. You can input

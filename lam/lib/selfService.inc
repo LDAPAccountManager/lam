@@ -322,6 +322,9 @@ class selfServiceProfile {
 
 	/** describing text for user login */
 	public $loginCaption;
+	
+	/** label for password input */
+	public $passwordLabel;
 
 	/** describing text for search attribute */
 	public $loginAttributeText;
@@ -364,6 +367,7 @@ class selfServiceProfile {
 		$this->additionalCSS = '';
 		$this->loginCaption = '<b>' . _("Welcome to LAM self service. Please enter your user name and password.") . '</b>';
 		$this->loginAttributeText = _('User name');
+		$this->passwordLabel = '';
 		$this->mainPageText = "<h1>LAM self service</h1>\n" . _("Here you can change your personal settings.");
 		$this->inputFields = array(
 			array('name' => _('Personal data'),
