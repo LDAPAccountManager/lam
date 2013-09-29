@@ -329,6 +329,9 @@ class selfServiceProfile {
 	/** describing text for search attribute */
 	public $loginAttributeText;
 
+	/** additional LDAP filter for accounts */
+	public $additionalLDAPFilter;
+	
 	/** describing text for self service main page */
 	public $mainPageText;
 
@@ -362,6 +365,7 @@ class selfServiceProfile {
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
 		$this->searchAttribute = "uid";
+		$this->additionalLDAPFilter = '';
 		$this->httpAuthentication = false;
 		$this->pageHeader = '<table border=0 width="100%" class="lamHeader ui-corner-all"><tr><td align="left" height="30"><a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">&nbsp;<img src="../../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager</a></td></tr></table><br>';
 		$this->additionalCSS = '';

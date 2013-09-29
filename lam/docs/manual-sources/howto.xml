@@ -5269,6 +5269,14 @@ Run slapindex to rebuild the index.
               </row>
 
               <row>
+                <entry>Additional LDAP filter</entry>
+
+                <entry>Use this to enter an additional LDAP filter (e.g.
+                "(objectClass=passwordSelfReset)") to reduce the number of
+                accounts who may use self service.</entry>
+              </row>
+
+              <row>
                 <entry>HTTP authentication</entry>
 
                 <entry>You can enable HTTP authentication for your users. This
