@@ -1626,8 +1626,8 @@ abstract class baseModule {
 	
 	/**
 	 * Returns the path to the module icon.
-	 * The path must be releative to graphics (e.g. key.png). You can also set $this->meta['icon'].
-	 * The preferred size is 32x32px.
+	 * The path must be releative to graphics (e.g. key.png) or an URL (/icons/icon.png or http://server/icon.png).
+	 * You can also set $this->meta['icon']. The preferred size is 32x32px.
 	 *
 	 * @return unknown
 	 * 

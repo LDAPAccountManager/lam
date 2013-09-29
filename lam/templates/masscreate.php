@@ -171,7 +171,10 @@ for ($i = 0; $i < sizeof($types); $i++) {
 			echo $innerTable->addNewLine();
 		}
 		$module = moduleCache::getModule($modules[$m], $types[$i]);
-		$iconImage = '../graphics/' . $module->getIcon();
+		$iconImage = $module->getIcon();
+		if (!is_null($iconImage) && !(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
+			$iconImage = '../graphics/' . $iconImage;
+		}
 		$innerTable->addElement(new htmlImage($iconImage));
 		$enabled = true;
 		if (is_base_module($modules[$m], $types[$i])) {
@@ -348,11 +351,10 @@ function showMainPage($scope, $selectedModules) {
 			continue;
 		}
 		$columnContainer->addElement(new htmlSpacer(null, '10px'), true);
-		$icon = '';
 		$module = moduleCache::getModule($modules[$m], $scope);
-		$iconImage = $module->getIcon();
-		if ($iconImage != null) {
-			$icon = '../graphics/' . $iconImage;
+		$icon = $module->getIcon();
+		if (($icon != null) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
+			$icon = '../graphics/' . $icon;
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($modules[$m], $scope), $icon);
 		$moduleTitle->colspan = 20;

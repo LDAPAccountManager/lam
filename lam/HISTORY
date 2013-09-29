@@ -2,6 +2,7 @@ December 2013 4.4
   - allow to set a custom label for each account type
   - LAM Pro:
    -> Samba/Shadow: display password change date in self service
+   -> Custom fields: support custom label and icon
 
 
 25.09.2013 4.3

@@ -1073,7 +1073,10 @@ class accountContainer {
 				$printContainer = true;
 				$buttonImage = $module->getIcon();
 				if ($buttonImage != null) {
-					$moduleContainer->addElement(new htmlImage('../../graphics/' . $buttonImage, null, null, getModuleAlias($name, $this->type)));
+					if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
+						$buttonImage = '../../graphics/' . $buttonImage;
+					}
+					$moduleContainer->addElement(new htmlImage($buttonImage, null, null, getModuleAlias($name, $this->type)));
 				}
 				$moduleContainer->addElement(new htmlTableExtendedInputCheckbox('password_cb_' . $name, true, getModuleAlias($name, $this->type), null, false));
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
@@ -1382,7 +1385,10 @@ class accountContainer {
 			if ($buttonStatus == 'disabled') echo " disabled";
 			echo ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 			if ($buttonImage != null) {
-				echo "<img height=32 width=32 class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"../../graphics/$buttonImage\">&nbsp;";
+				if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
+					$buttonImage = '../../graphics/' . $buttonImage;
+				}
+				echo "<img height=32 width=32 class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"$buttonImage\">&nbsp;";
 			}
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "&nbsp;</button>\n";

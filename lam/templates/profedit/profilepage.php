@@ -224,7 +224,7 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	if (sizeof($options[$modules[$m]]) < 1) continue;
 	$module = new $modules[$m]($type);
 	$icon = $module->getIcon();
-	if ($icon != null) {
+	if (($icon != null) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 		$icon = '../../graphics/' . $icon;
 	}
 	$container = new htmlTable();

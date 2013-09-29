@@ -217,7 +217,10 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	$module = moduleCache::getModule($modules[$i], 'none');
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
-		$icon = '<img align="middle" src="../../graphics/' . $iconImage . '" alt="' . $iconImage . '"> ';
+		if (!(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
+			$iconImage = '../../graphics/' . $iconImage;
+		}
+		$icon = '<img align="middle" src="' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon" . getModuleAlias($modules[$i], "none") . "</legend>\n";
 	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, false, $tabindex, 'user');

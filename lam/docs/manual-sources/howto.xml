@@ -4050,6 +4050,24 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
+      <para><emphasis role="bold">Setting label and icon:</emphasis></para>
+
+      <para>You may set the label that is displayed e.g. on the tab when
+      editing an account. It is also possible to specify an icon (must be a
+      valid URL like "/images/icon.png" or "http://server/images/icon.png").
+      The icon size should be 32x32 pixels.</para>
+
+      <para>LAM will display a default icon and "Custom fields" as label if
+      you do not enter any values.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields25.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
       <para><emphasis role="bold">Defining groups:</emphasis></para>
 
       <para>All input fields are devided into groups. A group may contain one
