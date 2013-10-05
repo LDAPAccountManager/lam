@@ -565,6 +565,9 @@ function get_preg($argument, $regexp) {
 		case 'ip': // IP address
 					$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
 					break;
+		case 'ip6': // IPv6 address (only basic check)
+					$pregexpr = '/^[0-9a-f:]+$/i';
+					break;
 		case 'ascii': // ASCII
 					$pregexpr = '/^[' . chr(1) . '-' . chr(128) . ']*$/';
 					break;
