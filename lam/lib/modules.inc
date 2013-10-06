@@ -1778,8 +1778,20 @@ class accountContainer {
 		if (strtolower($this->finalDN) != strtolower($this->dn_orig)) {
 			// move existing DN
 			if ($this->dn_orig!='') {
+				$removeOldRDN = false;
+				if (isset($attributes[$this->finalDN]['modify'])) {
+					$attributes[$this->finalDN]['modify'] = array_change_key_case($attributes[$this->finalDN]['modify'], CASE_LOWER);
+				}
+				$rdnAttr = strtolower(extractRDNAttribute($this->finalDN));
+				if (isset($attributes[$this->finalDN]['modify'][$rdnAttr])
+						&& (sizeof($attributes[$this->finalDN]['modify'][$rdnAttr]) == 1)
+						&& ($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))) {
+					// remove old RDN if attribute is single valued
+					$removeOldRDN = true;
+					unset($attributes[$this->finalDN]['modify'][$this->getRDN($this->finalDN)]);
+				}
 				logNewMessage(LOG_DEBUG, 'Rename ' . $this->dn_orig . ' to ' . $this->finalDN);
-				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), false);
+				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), $removeOldRDN);
 				if ($success) {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->finalDN);
 				}
