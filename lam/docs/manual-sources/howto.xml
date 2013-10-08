@@ -4773,9 +4773,8 @@ Run slapindex to rebuild the index.
 
       <para>When you export accounts to PDF then each account will get its own
       page inside the PDF. There is a headline on each page where you can show
-      a page title. You may also add a logo to each page. To add more possible
-      logos simply copy the images to config/pdf/&lt;server profile
-      name&gt;/logos.</para>
+      a page title. You may also add a logo to each page. To add more logos
+      please use the logo management on the PDF editor main page.</para>
 
       <screenshot>
         <mediaobject>
@@ -4832,6 +4831,20 @@ Run slapindex to rebuild the index.
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/pdfEditor5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Logo management:</emphasis></para>
+
+      <para>You can upload image files to put a custom logo on the PDF files.
+      The image file name must end with .png or .jpg and the size must not
+      exceed 2000x300px.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/pdfEditor6.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
