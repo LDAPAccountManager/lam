@@ -88,10 +88,10 @@ class user extends baseType {
 	*/
 	function getListAttributeDescriptions() {
 		return array (
-			"uid" => _("User ID"),
+			"uid" => _("User name"),
 			"uidnumber" => _("UID number"),
 			"gidnumber" => _("GID number"),
-			"cn" => _("User name"),
+			"cn" => _("Common name"),
 			"host" => _("Allowed hosts"),
 			"givenname" => _("First name"),
 			"sn" => _("Last name"),
