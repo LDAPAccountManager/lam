@@ -123,6 +123,19 @@ if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
 	}
 }
 
+// upload logo file
+if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
+	$file = $_FILES['logoUpload']['tmp_name'];
+	$filename = $_FILES['logoUpload']['name'];
+	$container->addElement(uploadPDFLogo($file, $filename), true);
+}
+
+// delete logo file
+if (isset($_POST['delLogo'])) {
+	$toDel = $_POST['logo'];
+	$container->addElement(deletePDFLogo($toDel), true);
+}
+
 // get list of account types
 $availableScopes = '';
 $templateClasses = array();
@@ -149,7 +162,7 @@ for ($i = 0; $i < sizeof($templateClasses); $i++) {
 include '../main_header.php';
 ?>
 <div class="user-bright smallPaddingContent">
-<form action="pdfmain.php" method="post" name="pdfmainForm" >
+<form enctype="multipart/form-data" action="pdfmain.php" method="post" name="pdfmainForm" >
 	<?php
 		if (isset($_GET['savedSuccessfully'])) {
 			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
@@ -210,8 +223,31 @@ include '../main_header.php';
 			$existingContainer->addNewLine();
 		}
 		$container->addElement($existingContainer, true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
 
+		// manage logos
+		$logoContainer = new htmlTable();
+		$logoContainer->addElement(new htmlSpacer(null, '30px'), true);
+		$logoContainer->addElement(new htmlSubTitle(_('Manage logos')), true);
+		$logos = getAvailableLogos();
+		$logoOptions = array();
+		foreach ($logos as $logo) {
+			$file = $logo['filename'];
+			$label = $file . ' (' . $logo['infos'][0] . ' x ' . $logo['infos'][1] . ")";
+			$logoOptions[$label] = $file;
+		}
+		$logoSelect = new htmlSelect('logo', $logoOptions, null);
+		$logoSelect->setHasDescriptiveElements(true);
+		$logoContainer->addElement($logoSelect);
+		$delLogo = new htmlButton('delLogo', _('Delete'));
+		$delLogo->setIconClass('deleteButton');
+		$logoContainer->addElement($delLogo, true);
+		$logoContainer->addElement(new htmlInputFileUpload('logoUpload'));
+		$logoUpload = new htmlButton('uploadLogo', _('Upload'));
+		$logoUpload->setIconClass('upButton');
+		$logoContainer->addElement($logoUpload);
+		$container->addElement($logoContainer, true);
+
+		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// generate content
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, 'user');

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                       2011  Roland Gruber
+                2011 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -235,6 +235,73 @@ function copyPdfProfiles($pdfProfiles, $scope, $dests = array()) {
 	}
 
 	return $state;
+}
+
+/**
+ * Uploads a PDF logo file for the current server profile.
+ * 
+ * @param String $file full path of temporary file
+ * @param String $name file name
+ * @return StatusMessage status message to display
+ */
+function uploadPDFLogo($file, $name) {
+	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/', $name)) {
+		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
+	}
+	$infos = getimagesize($file);
+	if ($infos[0] <= 2000 && $infos[1] <= 300) {
+		$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+		$success = copy($file, $dirPath . '/' . $name);
+		if ($success) {
+			return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
+		}
+		else {
+			return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), $name);
+		}
+	}
+	return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file must not exeed 2000x300px.'));
+}
+
+/**
+ * Deletes a PDF logo file.
+ * 
+ * @param String $name file name
+ * @return StatusMessage status message to display
+ */
+function deletePDFLogo($name) {
+	// check if valid file
+	$found = false;
+	$logos = getAvailableLogos();
+	foreach ($logos as $logo) {
+		if ($logo['filename'] === $name) {
+			$found = true;
+			break;
+		}
+	}
+	if (!$found) {
+		return new htmlStatusMessage('ERROR', _('File does not exist.'), htmlspecialchars($name));
+	}
+	// check if still in use
+	$activeTypes = $_SESSION['config']->get_ActiveTypes();
+	foreach ($activeTypes as $type) {
+		$structures = getPDFStructureDefinitions($type);
+		foreach ($structures as $structure) {
+			$data = loadPDFStructureDefinitions($type, $structure);
+			if ($data['page_definitions']['filename'] == $name) {
+				return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
+					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, getTypeAlias($type)));
+			}
+		}
+	}
+	// delete file
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$success = @unlink($dirPath . '/' . $name);
+	if ($success) {
+		return new htmlStatusMessage('INFO', _('Logo file deleted.'), $name);
+	}
+	else {
+		return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'), $name);
+	}
 }
 
 ?>
