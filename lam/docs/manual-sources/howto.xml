@@ -627,7 +627,7 @@ Have fun!
         <para><emphasis role="bold">Backup configuration
         files</emphasis></para>
 
-        <para>Configuration files need only to be backed up for .tar.bz
+        <para>Configuration files need only to be backed up for .tar.bz2
         installations. DEB/RPM installations do not require this step.</para>
 
         <para>LAM stores all configuration files in the "config" folder.
