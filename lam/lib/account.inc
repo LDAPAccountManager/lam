@@ -1136,4 +1136,26 @@ function getExtendedLDAPErrorMessage($server) {
 	return _('LDAP error, server says:') . ' ' . $ldapMsg;
 }
 
+/**
+ * Returns the URL under which the page was loaded.
+ * This includes any GET parameters set.
+ * 
+ * @return String URL
+ */
+function getCallingURL() {
+	$url = null;
+	if (!empty($_SERVER['HTTP_REFERER'])) {
+		$url = $_SERVER['HTTP_REFERER'];
+	}
+	else {
+		$proto = 'http://';
+		if (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) {
+			$proto = 'https://';
+		}
+		$url = $proto . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	}
+	logNewMessage(LOG_DEBUG, 'Calling URL detected as ' . $url);
+	return $url;
+}
+
 ?>
