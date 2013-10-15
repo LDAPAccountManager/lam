@@ -1686,6 +1686,28 @@ Have fun!
           <para>Hosts (Device + Zarafa + IP Address)</para>
         </listitem>
       </itemizedlist>
+
+      <para><emphasis role="bold">PyKota:</emphasis></para>
+
+      <para>Account types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Users (Personal + Unix + PyKota)</para>
+        </listitem>
+
+        <listitem>
+          <para>Groups (Unix + PyKota)</para>
+        </listitem>
+
+        <listitem>
+          <para>Printers (PyKota)</para>
+        </listitem>
+
+        <listitem>
+          <para>Billing codes (PyKota)</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
@@ -2475,6 +2497,68 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
       </section>
 
       <section>
+        <title>PyKota</title>
+
+        <para>There are two LAM user modules depending if your user entries
+        should be built on object class "pykotaObject" or a different
+        structural object class (e.g. "inetOrgPerson"). For "pykotaObject"
+        please select "PyKota (pykotaUserStructural(*))" and "PyKota
+        (pykotaUser)" in all other cases.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaUser1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>To display the job history please setup the job DN on tab
+        "Module settings":</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaUser2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you can add the PyKota extension to your user accounts. Here
+        you can setup the printing options and add payments for this
+        user.</para>
+
+        <para>For LAM Pro there are also self service fields to allow users
+        e.g. to view their current balance and job history.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaUser3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You may also view the payment and job history.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaUser4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaUser5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Password policy (LAM Pro)</title>
 
         <para>OpenLDAP supports the <ulink
@@ -3083,6 +3167,34 @@ ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_quotaGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>PyKota</title>
+
+        <para>There are two LAM group modules depending if your group entries
+        should be built on object class "pykotaObject" or a different
+        structural object class (e.g. "posixGroup"). For "pykotaObject" please
+        select "PyKota (pykotaGroupStructural(*))" and "PyKota (pykotaGroup)"
+        in all other cases.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaGroup1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you can add the PyKota extension to your groups.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_pykotaGroup2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3978,6 +4090,111 @@ Run slapindex to rebuild the index.
       configuration and activate the <ulink
       url="http://linux.die.net/man/5/slapo-ppolicy">ppolicy</ulink> overlay
       module in slapd.conf to use this feature.</para>
+    </section>
+
+    <section>
+      <title>PyKota printers</title>
+
+      <para>Please add the account type "Printers (PyKota printers)" on tab
+      "Account types" in your server profile and setup the LDAP suffix where
+      printers are stored.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaPrinter1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaPrinter2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then add the PyKota printer module on tab "Account
+      modules".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaPrinter3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Next you can start managing printers inside LAM. Here you can
+      setup the costs for a print job. LAM will also show if the printer is
+      member of any printer groups.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaPrinter4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You can also setup printer groups. Just add some members to your
+      new group.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaPrinter5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>PyKota billing codes</title>
+
+      <para>Please add the account type "Billing codes" on tab "Account types"
+      in your server profile and setup the LDAP suffix where billing codes are
+      stored.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaCode1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaCode2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then add the PyKota billing code module on tab "Account
+      modules".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaCode3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now login to LAM and you will see the billing code tab where you
+      can manage your entries. If jobs were printed with a billing code then
+      you will also see the balance and page count.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_pykotaCode4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
 
     <section>
@@ -5763,6 +5980,36 @@ Run slapindex to rebuild the index.
 
               <td>Email aliases</td>
             </tr>
+
+            <tr>
+              <th align="left" rowspan="4"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_pykota.png" />
+                  </imageobject>
+                </inlinemediaobject> PyKota</th>
+
+              <td>Balance (read-only)</td>
+
+              <td>Current balance for printing</td>
+            </tr>
+
+            <tr>
+              <td>Total paid (read-only)</td>
+
+              <td>Total money paid</td>
+            </tr>
+
+            <tr>
+              <td>Payment history</td>
+
+              <td>History of user payments</td>
+            </tr>
+
+            <tr>
+              <td>Job history</td>
+
+              <td>History of printed jobs</td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -6511,6 +6758,25 @@ Run slapindex to rebuild the index.
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_pykota.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>PyKota users, groups, printers and billing codes</entry>
+
+            <entry>pykotaObject, pykotaAccount, pykotaAccountBalance,
+            pykotaGroup, pykotaPrinter, pykotaBilling</entry>
+
+            <entry>pykota.schema</entry>
+
+            <entry>Part of PyKota installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_mailAlias.png" />
                 </imageobject>
               </inlinemediaobject></entry>
@@ -6652,6 +6918,25 @@ Run slapindex to rebuild the index.
             <entry><ulink
             url="https://github.com/puppetlabs/puppet/blob/master/ext/ldap/puppet.schema">Puppet
             on GitHub</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_eduPerson.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>EDU person</entry>
+
+            <entry>eduPerson</entry>
+
+            <entry>eduperson.schema</entry>
+
+            <entry><ulink
+            url="http://middleware.internet2.edu/eduperson/">http://middleware.internet2.edu</ulink></entry>
 
             <entry></entry>
           </row>
