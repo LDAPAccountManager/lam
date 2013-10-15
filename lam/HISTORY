@@ -1,4 +1,5 @@
 December 2013 4.4
+  - PyKota support: users, groups, printers, billing codes
   - allow to set a custom label for each account type
   - LAM Pro:
    -> Samba/Shadow: display password change date in self service
