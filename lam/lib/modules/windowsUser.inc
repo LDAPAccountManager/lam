@@ -815,8 +815,8 @@ class windowsUser extends baseModule implements passwordService {
 			if (in_array($toAdd[$i], $groups)) {
 				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array('member' => array($this->getAccountContainer()->finalDN)));
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), ldap_error($_SESSION['ldap']->server()));
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 				else {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
@@ -828,8 +828,8 @@ class windowsUser extends baseModule implements passwordService {
 			if (in_array($toRem[$i], $groups)) {
 				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->dn_orig)));
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), ldap_error($_SESSION['ldap']->server()));
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 				else {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
@@ -841,8 +841,8 @@ class windowsUser extends baseModule implements passwordService {
 			$attrs = array('pwdLastSet' => array($this->pwdLastSet));
 			$success = @ldap_modify($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to change pwdLastSet for ' . $this->getAccountContainer()->finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), ldap_error($_SESSION['ldap']->server()));
+				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to change pwdLastSet for ' . $this->getAccountContainer()->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 		}
 		return $messages;
@@ -1163,7 +1163,7 @@ class windowsUser extends baseModule implements passwordService {
 				$errors[] = array(
 					"ERROR",
 					_("LAM was unable to modify group memberships for group: %s"),
-					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
+					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
 					array($group)
 				);
 			}
@@ -1186,7 +1186,7 @@ class windowsUser extends baseModule implements passwordService {
 				$errors[] = array(
 					"ERROR",
 					_("Was unable to modify attributes of DN: %s."),
-					ldap_errno($_SESSION['ldap']->server()) . ": " . ldap_error($_SESSION['ldap']->server()),
+					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
 					array($dn)
 				);
 			}

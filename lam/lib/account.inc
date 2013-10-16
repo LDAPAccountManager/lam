@@ -1150,7 +1150,23 @@ function getExtendedLDAPErrorMessage($server) {
 	if (empty($ldapMsg)) {
 		return null;
 	}
-	return _('LDAP error, server says:') . ' ' . $ldapMsg;
+	return $ldapMsg;
+}
+
+/**
+ * Returns the default error message to display on the web page.
+ * HTML special characters are already escaped.
+ * 
+ * @param handle $server LDAP server handle
+ * @return String error message
+ */
+function getDefaultLDAPErrorString($server) {
+	$extError = getExtendedLDAPErrorMessage($server);
+	$message = _('LDAP error, server says:') . ' ' . ldap_error($server);
+	if (!empty($extError)) {
+		$message .= ' - ' . $extError;
+	}
+	return htmlspecialchars($message);
 }
 
 /**

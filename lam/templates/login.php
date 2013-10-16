@@ -569,7 +569,7 @@ if(!empty($_POST['checklogin'])) {
 		$searchLDAPResult = $searchLDAP->connect($searchDN, $searchPassword, true);
 		if (! ($searchLDAPResult == 0)) {
 			$searchSuccess = false;
-			$searchError = _('Cannot connect to specified LDAP server. Please try again.') . ' ' . @ldap_error($searchLDAP->server());
+			$searchError = _('Cannot connect to specified LDAP server. Please try again.') . ' ' . getDefaultLDAPErrorString($searchLDAP->server());
 		}
 		else {
 			$searchResult = @ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
@@ -592,13 +592,13 @@ if(!empty($_POST['checklogin'])) {
 				else {
 					$searchSuccess = false;
 					$searchError = _('Unable to find the user name in LDAP.');
-					if (ldap_errno($searchLDAP->server()) != 0) $searchError .= ' ' . ldap_error($searchLDAP->server());
+					if (ldap_errno($searchLDAP->server()) != 0) $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
 				}
 			}
 			else {
 				$searchSuccess = false;
 				$searchError = _('Unable to find the user name in LDAP.');
-				if (ldap_errno($searchLDAP->server()) != 0) $searchError .= ' ' . ldap_error($searchLDAP->server());
+				if (ldap_errno($searchLDAP->server()) != 0) $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
 			}
 		}
 		if (!$searchSuccess) {

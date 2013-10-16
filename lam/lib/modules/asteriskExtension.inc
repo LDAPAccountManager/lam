@@ -901,7 +901,7 @@ class asteriskExtension extends baseModule {
             $is_rename_success = false;
             $is_rename_success = @ldap_rename($_SESSION['ldap']->server(), $oldDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
             if (!$is_rename_success) {
-                $errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->getAccountContainer()->dn_orig), ldap_error($_SESSION['ldap']->server()));
+                $errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->getAccountContainer()->dn_orig), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
                 logNewMessage(LOG_ERR, 'Unable to rename ' . $oldDN . ' to ' . $newRDN . ',' . $this->getAccountContainer()->dnSuffix);
             }
         }        

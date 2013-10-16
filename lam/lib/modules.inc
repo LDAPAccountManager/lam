@@ -1495,11 +1495,11 @@ class accountContainer {
 			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime');
 		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
-			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
+			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())));
 		}
 		$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 		if (!$entry) {
-			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), ldap_error($_SESSION['ldap']->server())));
+			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())));
 		}
 		$this->dnSuffix = extractDNSuffix($dn);
 		$this->dn_orig = $dn;
@@ -1796,8 +1796,9 @@ class accountContainer {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->finalDN);
 				}
 				else {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to rename DN: ' . $this->dn_orig . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-					$errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to rename DN: ' . $this->dn_orig . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
+						. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+					$errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->dn_orig), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 					$stopprocessing = true;
 				}
 			}
@@ -1813,10 +1814,11 @@ class accountContainer {
 				if (isset($attributes[$this->finalDN]['modify']) && is_array($attributes[$this->finalDN]['modify'])) {
 					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['modify']);
 				}
-				$success = ldap_add($_SESSION['ldap']->server(), $this->finalDN, $attr);
+				$success = @ldap_add($_SESSION['ldap']->server(), $this->finalDN, $attr);
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $this->finalDN . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->finalDN), ldap_error($_SESSION['ldap']->server()));
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create DN: ' . $this->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
+						. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->finalDN), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 					$stopprocessing = true;
 				}
 				else {
@@ -1833,8 +1835,9 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
+							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+						$errors[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
 					else {
@@ -1850,8 +1853,9 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
+							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+						$errors[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
 					else {
@@ -1862,8 +1866,9 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attributes from DN: ' . $DNs[$i] . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
-						$errors[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attributes from DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
+							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+						$errors[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
 					else {
