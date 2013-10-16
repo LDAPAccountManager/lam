@@ -1396,12 +1396,15 @@ class LAMCfgMain {
 	
 	/** SSL certificate should be deleted on save() */
 	private $delSSLCaCert = false;
+	
+	/** EOL for emails (default/unix) */
+	public $mailEOL = 'default';
 
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
-		"passwordMinClasses", "passwordMinSymbol");
+		"passwordMinClasses", "passwordMinSymbol", "mailEOL");
 
 	/**
 	* Loads preferences from config file
@@ -1486,6 +1489,7 @@ class LAMCfgMain {
 		if (!in_array("passwordMinNumeric", $saved)) array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
 		if (!in_array("passwordMinSymbol", $saved)) array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
 		if (!in_array("passwordMinClasses", $saved)) array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
+		if (!in_array("mailEOL", $saved)) array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -1759,7 +1763,7 @@ class LAMCfgMain {
 		}
 		return $list;
 	}
-
+	
 }
 
 ?>

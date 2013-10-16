@@ -170,6 +170,10 @@ if (isset($_POST['submitFormData'])) {
 			$cfg->deleteSSLCaCert($index);
 		}
 	}
+	// mail EOL
+	if (isLAMProVersion()) {
+		$cfg->mailEOL = $_POST['mailEOL'];
+	}
 	// save settings
 	if (isset($_POST['submit'])) {
 		$cfg->save();
@@ -369,6 +373,21 @@ $loggingTable->addElement(new htmlOutputText(''));
 $loggingTable->addElement(new htmlInputField('logFile', $destinationPath), true);
 $container->addElement($loggingTable, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);
+
+// additional options
+if (isLAMProVersion()) {
+	$container->addElement(new htmlSubTitle(_('Additional options')), true);
+	$additionalTable = new htmlTable();
+	$mailEOLOptions = array(
+		_('Default (\r\n)') => 'default',
+		_('Non-standard (\n)') => 'unix'
+	);
+	$mailEOLSelect = new htmlTableExtendedSelect('mailEOL', $mailEOLOptions, array($cfg->mailEOL), _('Email format'), '243');
+	$mailEOLSelect->setHasDescriptiveElements(true);
+	$additionalTable->addElement($mailEOLSelect, true);
+	$container->addElement($additionalTable, true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+}
 
 // change master password
 $container->addElement(new htmlSubTitle(_("Change master password")), true);

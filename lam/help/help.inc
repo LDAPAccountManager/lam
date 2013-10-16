@@ -149,6 +149,8 @@ $helpArray = array (
 					"Text" => _("This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*).")),
 				"242" => array ("Headline" => _("Password policy"),
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
+				"243" => array ("Headline" => _('Email format'),
+					"Text" => _('Please change this setting only if you experience problems in receiving emails from LAM. This defines the line ending of emails.')),
 				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),

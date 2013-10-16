@@ -1031,6 +1031,28 @@ Have fun!
       </section>
 
       <section>
+        <title>Additional options</title>
+
+        <para id="mailEOL"><emphasis role="bold">Email
+        format</emphasis></para>
+
+        <para>Some email servers are not standards compatible. If you receive
+        mails that look broken you can change the line endings for sent mails
+        here. Default is to use "\r\n".</para>
+
+        <para>At the moment, this option is only available in LAM Pro as there
+        is no mail sending in the free version.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
         <title>Change master password</title>
 
         <para>If you would like to change the master configuration password
@@ -5255,7 +5277,9 @@ Run slapindex to rebuild the index.
           <para>If the user account has set the mail attribute then LAM can
           send your user a mail with the new password. You can change the mail
           template to fit your needs. Please configure your LAM server profile
-          to setup the sender address, subject and mail body.</para>
+          to setup the sender address, subject and mail body. Please see <link
+          linkend="mailEOL">email format option</link> in case of broken
+          mails.</para>
 
           <para>Using this method will prevent that your support staff knows
           the new password.</para>
@@ -6083,7 +6107,9 @@ Run slapindex to rebuild the index.
           change. The mail can include the new password by using the special
           wildcard "@@newPassword@@". Additionally, you may want to insert
           other wildcards that are replaced by the corresponding LDAP
-          attributes. E.g. "@@uid@@" will be replaced by the user name.</para>
+          attributes. E.g. "@@uid@@" will be replaced by the user name. Please
+          see <link linkend="mailEOL">email format option</link> in case of
+          broken mails.</para>
 
           <literallayout> </literallayout>
 
@@ -6292,6 +6318,9 @@ Run slapindex to rebuild the index.
           valid for 24 hours. When he clicks on this link then the account
           will be created in the self service user suffix. The DN will look
           like this: <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
+
+          <para>Please see <link linkend="mailEOL">email format
+          option</link> in case of broken mails.</para>
         </section>
 
         <section>

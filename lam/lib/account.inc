@@ -989,7 +989,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
 	}
 	$headerLines = createEMailHeaders($mailFrom, ($mailIsHTML == 'true'), $mailReplyTo);
-	$success = mail($mailTo, base64EncodeForEMail($subject), $body, $headerLines);
+	$success = sendEMail($mailTo, $subject, $body, $headerLines);
 	if ($success) {
 		logNewMessage(LOG_DEBUG, 'Sent password mail to ' . $mailTo);
 		return array(
@@ -1043,6 +1043,23 @@ function createEMailHeaders($from, $isHTML, $replyTo = null) {
  */
 function base64EncodeForEMail($value) {
 	return '=?UTF-8?B?' . base64_encode($value) . '?=';
+}
+
+/**
+ * Sends out an email.
+ * 
+ * @param String $to TO address
+ * @param String $subject email subject
+ * @param String $text mail body (with \r\n EOL)
+ * @param String $headers header lines (with \r\n EOL)
+ */
+function sendEMail($to, $subject, $text, $headers) {
+	if (!empty($_SESSION['cfgMain']->mailEOL) && ($_SESSION['cfgMain']->mailEOL === 'unix')) {
+		$text = str_replace("\r\n", "\n", $text);
+		$headers = str_replace("\r\n", "\n", $headers);
+	}
+	logNewMessage(LOG_WARNING, $text);
+	return mail($to, base64EncodeForEMail($subject), $text, $headers);
 }
 
 /**
