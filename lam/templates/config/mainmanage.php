@@ -174,6 +174,7 @@ if (isset($_POST['submitFormData'])) {
 	if (isLAMProVersion()) {
 		$cfg->mailEOL = $_POST['mailEOL'];
 	}
+	$cfg->errorReporting = $_POST['errorReporting'];
 	// save settings
 	if (isset($_POST['submit'])) {
 		$cfg->save();
@@ -371,6 +372,14 @@ elseif ($cfg->logDestination == 'SYSLOG') {
 $loggingTable->addElement(new htmlTableExtendedRadio(_("Log destination"), 'logDestination', $destinationOptions, $destinationSelected, '240'), true);
 $loggingTable->addElement(new htmlOutputText(''));
 $loggingTable->addElement(new htmlInputField('logFile', $destinationPath), true);
+$loggingTable->addElement(new htmlSpacer(null, '10px'), true);
+$errorLogOptions = array(
+	_('PHP system setting') => LAMCfgMain::ERROR_REPORTING_SYSTEM,
+	_('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT
+);
+$errorLogSelect = new htmlTableExtendedSelect('errorReporting', $errorLogOptions, array($cfg->errorReporting), _('PHP error reporting'), '244');
+$errorLogSelect->setHasDescriptiveElements(true);
+$loggingTable->addElement($errorLogSelect, true);
 $container->addElement($loggingTable, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);
 

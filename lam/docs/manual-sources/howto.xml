@@ -1018,8 +1018,12 @@ Have fun!
         <para>LAM can log events (e.g. user logins). You can use system
         logging (syslog for Unix, event viewer for Windows) or log to a
         separate file. Please note that LAM may log sensitive data (e.g.
-        passwords) at log level "Debug". Production system should be set to
+        passwords) at log level "Debug". Production systems should be set to
         "Warning" or "Error".</para>
+
+        <para>The PHP error reporting is only for developers. By default LAM
+        does not show PHP notice messages in the web pages. You can select to
+        use the php.ini setting here.</para>
 
         <screenshot>
           <mediaobject>

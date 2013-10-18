@@ -1352,6 +1352,11 @@ class LAMConfig {
 */
 class LAMCfgMain {
 
+	/** PHP error reporting setting as E_ALL & ~E_NOTICE */
+	const ERROR_REPORTING_DEFAULT = 'default';
+	/** PHP error reporting setting from php.ini */
+	const ERROR_REPORTING_SYSTEM = 'system';
+	
 	/** Default profile */
 	public $default;
 
@@ -1399,12 +1404,15 @@ class LAMCfgMain {
 	
 	/** EOL for emails (default/unix) */
 	public $mailEOL = 'default';
+	
+	/** error reporting */
+	public $errorReporting = self::ERROR_REPORTING_DEFAULT;
 
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
-		"passwordMinClasses", "passwordMinSymbol", "mailEOL");
+		"passwordMinClasses", "passwordMinSymbol", "mailEOL", 'errorReporting');
 
 	/**
 	* Loads preferences from config file
@@ -1490,6 +1498,7 @@ class LAMCfgMain {
 		if (!in_array("passwordMinSymbol", $saved)) array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
 		if (!in_array("passwordMinClasses", $saved)) array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
 		if (!in_array("mailEOL", $saved)) array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
+		if (!in_array("errorReporting", $saved)) array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
