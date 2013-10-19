@@ -90,7 +90,7 @@ class eduPerson extends baseModule {
 				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.") . " " .
 							_('Multiple values are separated by comma.')
 			),
-			'nickName' => array(
+			'eduPersonNickname' => array(
 				"Headline" => _("Nick names"), 'attr' => 'eduPersonNickname',
 				"Text" => _("This is a list of nick names for this user.")
 			),
@@ -103,11 +103,11 @@ class eduPerson extends baseModule {
 				"Text" => _("Specifies the person's relationships to the institution in broad categories such as student, faculty, staff, alum, etc.") . " " .
 							_('Multiple values are separated by comma.')
 			),
-			'principalName' => array(
+			'eduPersonPrincipalName' => array(
 				"Headline" => _("Principal name"), 'attr' => 'eduPersonPrincipalName',
 				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication. It should be represented in the form \"user@scope\" where scope defines a local security domain.")
 			),
-			'entitlement' => array(
+			'eduPersonEntitlement' => array(
 				"Headline" => _("Entitlements"), 'attr' => 'eduPersonEntitlement',
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.")
 			),
@@ -115,15 +115,15 @@ class eduPerson extends baseModule {
 				"Headline" => _("Entitlements"), 'attr' => 'eduPersonEntitlement',
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.") . " " . _('Multiple values are separated by comma.')
 			),
-			'orgDN' => array(
+			'eduPersonOrgDN' => array(
 				"Headline" => _("Organisation"), 'attr' => 'eduPersonOrgDN',
 				"Text" => _("The DN of the directory entry representing the institution with which the person is associated.")
 			),
-			'primaryOrgUnitDN' => array(
+			'eduPersonPrimaryOrgUnitDN' => array(
 				"Headline" => _("Primary organisational unit"), 'attr' => 'eduPersonPrimaryOrgUnitDN',
 				"Text" => _("The DN of the directory entry representing the person's primary organisational unit.")
 			),
-			'orgUnitDN' => array(
+			'eduPersonOrgUnitDN' => array(
 				"Headline" => _("Organisational units"), 'attr' => 'eduPersonOrgUnitDN',
 				"Text" => _("The DNs of the directory entries representing the person's organisational units.")
 			),
@@ -152,7 +152,7 @@ class eduPerson extends baseModule {
 			array(
 				'name' => 'eduPerson_principalName',
 				'description' => _('Principal name'),
-				'help' => 'principalName',
+				'help' => 'eduPersonPrincipalName',
 				'example' => _('user@company.com'),
 				'unique' => 'true'
 			),
@@ -179,7 +179,7 @@ class eduPerson extends baseModule {
 			array(
 				'name' => 'eduPerson_nickname',
 				'description' => _('Nick names'),
-				'help' => 'nickName',
+				'help' => 'eduPersonNickname',
 				'example' => _('Steve, Stevo')
 			),
 			array(
@@ -191,13 +191,13 @@ class eduPerson extends baseModule {
 			array(
 				'name' => 'eduPerson_orgDN',
 				'description' => _('Organisation'),
-				'help' => 'orgDN',
+				'help' => 'eduPersonOrgDN',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
 			),
 			array(
 				'name' => 'eduPerson_primaryOrgUnitDN',
 				'description' => _('Primary organisational unit'),
-				'help' => 'primaryOrgUnitDN',
+				'help' => 'eduPersonPrimaryOrgUnitDN',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
 			),
 			array(
@@ -233,14 +233,14 @@ class eduPerson extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['principalName'][0] = array('ERROR', _('Principal name is invalid!'));
-		$this->messages['principalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!'));
-		$this->messages['orgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organisation"));
-		$this->messages['orgDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgDN', _('This is not a valid DN!'));
-		$this->messages['primaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organisational unit"));
-		$this->messages['primaryOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_primaryOrgUnitDN', _('This is not a valid DN!'));
-		$this->messages['orgUnitDN'][0] = array('ERROR', _('Organisational units contains an invalid entry.'));
-		$this->messages['orgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgUnitDN', _('This is not a valid list of DNs!'));
+		$this->messages['eduPersonPrincipalName'][0] = array('ERROR', _('Principal name is invalid!'));
+		$this->messages['eduPersonPrincipalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!'));
+		$this->messages['eduPersonOrgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organisation"));
+		$this->messages['eduPersonOrgDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgDN', _('This is not a valid DN!'));
+		$this->messages['eduPersonPrimaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organisational unit"));
+		$this->messages['eduPersonPrimaryOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_primaryOrgUnitDN', _('This is not a valid DN!'));
+		$this->messages['eduPersonOrgUnitDN'][0] = array('ERROR', _('Organisational units contains an invalid entry.'));
+		$this->messages['eduPersonOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgUnitDN', _('This is not a valid list of DNs!'));
 		$this->messages['primaryAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_primaryAffiliation', _('Please enter a valid primary affiliation.'));
 		$this->messages['scopedAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_scopedAffiliation', _('Please enter a valid scoped affiliation.'));
 		$this->messages['affiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_affiliation', _('Please enter a valid list of affiliations.'));
@@ -267,11 +267,7 @@ class eduPerson extends baseModule {
 		$return = new htmlTable();
 		if (in_array('eduPerson', $this->attributes['objectClass'])) {
 			// principal name
-			$principal = '';
-			if (isset($this->attributes['eduPersonPrincipalName'][0])) {
-				$principal = $this->attributes['eduPersonPrincipalName'][0];
-			}
-			$return->addElement(new htmlTableExtendedInputField(_('Principal name'), 'principalName', $principal, 'principalName'), true);
+			$this->addSimpleInputTextField($return, 'eduPersonPrincipalName', _('Principal name'));
 			// primary affiliation
 			$primaryAffiliation = array();
 			if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
@@ -336,141 +332,17 @@ class eduPerson extends baseModule {
 			$return->addElement($newAffiliationContainer);
 			$return->addElement(new htmlOutputText(''), true);
 			// nick names
-			$nickNames = array();
-			if (isset($this->attributes['eduPersonNickname'][0])) {
-				$nickNames = $this->attributes['eduPersonNickname'];
-			}
-			if (sizeof($nickNames) == 0) {
-				$nickNames[] = '';
-			}
-			$nickNameLabel = new htmlOutputText(_('Nick names'));
-			$nickNameLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($nickNameLabel);
-			$nickNameContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($nickNames); $i++) {
-				$nickNameField = new htmlInputField('eduPersonNickname' . $i, $nickNames[$i]);
-				$nickNameField->setFieldSize(40);
-				$nickNameContainer->addElement($nickNameField);
-				if ($nickNames[$i] != '') {
-					$nickNameContainer->addElement(new htmlButton('deleduPersonNickname' . $i, 'del.png', true));
-				}
-				if ($i < (sizeof($nickNames) - 1)) {
-					$nickNameContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$nickNameContainer->addElement(new htmlButton('addeduPersonNickname', 'add.png', true));
-				}
-			}
-			$return->addElement($nickNameContainer);
-			$nickNameHelp = new htmlHelpLink('nickName');
-			$nickNameHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($nickNameHelp, true);
+			$this->addMultiValueInputTextField($return, 'eduPersonNickname', _('Nick names'));
 			// entitlements
-			$entitlements = array();
-			if (isset($this->attributes['eduPersonEntitlement'][0])) {
-				$entitlements = $this->attributes['eduPersonEntitlement'];
-			}
-			if (sizeof($entitlements) == 0) {
-				$entitlements[] = '';
-			}
-			$entitlementLabel = new htmlOutputText(_('Entitlements'));
-			$entitlementLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($entitlementLabel);
-			$entitlementContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($entitlements); $i++) {
-				$entitlementField = new htmlInputField('eduPersonEntitlement' . $i, $entitlements[$i]);
-				$entitlementField->setFieldSize(40);
-				$entitlementContainer->addElement($entitlementField);
-				if ($entitlements[$i] != '') {
-					$entitlementContainer->addElement(new htmlButton('deleduPersonEntitlement' . $i, 'del.png', true));
-				}
-				if ($i < (sizeof($entitlements) - 1)) {
-					$entitlementContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$entitlementContainer->addElement(new htmlButton('addeduPersonEntitlement', 'add.png', true));
-				}
-			}
-			$return->addElement($entitlementContainer);
-			$entitlementHelp = new htmlHelpLink('entitlement');
-			$entitlementHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($entitlementHelp, true);
+			$this->addMultiValueInputTextField($return, 'eduPersonEntitlement', _('Entitlements'));
 			// org DN
-			$orgDN = '';
-			if (isset($this->attributes['eduPersonOrgDN'][0])) {
-				$orgDN = $this->attributes['eduPersonOrgDN'][0];
-			}
-			$orgDNInput = new htmlTableExtendedInputField(_('Organisation'), 'orgDN', $orgDN, 'orgDN');
-			$orgDNInput->setFieldSize(40);
-			$return->addElement($orgDNInput, true);
+			$this->addSimpleInputTextField($return, 'eduPersonOrgDN', _('Organisation'));
 			// primary OU DN
-			$primaryOrgUnitDN = '';
-			if (isset($this->attributes['eduPersonPrimaryOrgUnitDN'][0])) {
-				$primaryOrgUnitDN = $this->attributes['eduPersonPrimaryOrgUnitDN'][0];
-			}
-			$primaryOUInput = new htmlTableExtendedInputField(_('Primary organisational unit'), 'primaryOrgUnitDN', $primaryOrgUnitDN, 'primaryOrgUnitDN');
-			$primaryOUInput->setFieldSize(40);
-			$return->addElement($primaryOUInput, true);
+			$this->addSimpleInputTextField($return, 'eduPersonPrimaryOrgUnitDN', _('Primary organisational unit'));
 			// OUs
-			$orgUnitDNs = array();
-			if (isset($this->attributes['eduPersonOrgUnitDN'][0])) {
-				$orgUnitDNs = $this->attributes['eduPersonOrgUnitDN'];
-			}
-			if (sizeof($orgUnitDNs) == 0) {
-				$orgUnitDNs[] = '';
-			}
-			$orgUnitDNLabel = new htmlOutputText(_('Organisational units'));
-			$orgUnitDNLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($orgUnitDNLabel);
-			$orgUnitDNContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($orgUnitDNs); $i++) {
-				$orgUnitDNField = new htmlInputField('eduPersonOrgUnitDN' . $i, $orgUnitDNs[$i]);
-				$orgUnitDNField->setFieldSize(40);
-				$orgUnitDNContainer->addElement($orgUnitDNField);
-				if ($orgUnitDNs[$i] != '') {
-					$orgUnitDNContainer->addElement(new htmlButton('deleduPersonOrgUnitDN' . $i, 'del.png', true));
-				}
-				if ($i < (sizeof($orgUnitDNs) - 1)) {
-					$orgUnitDNContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$orgUnitDNContainer->addElement(new htmlButton('addeduPersonOrgUnitDN', 'add.png', true));
-				}
-			}
-			$return->addElement($orgUnitDNContainer);
-			$orgUnitDNHelp = new htmlHelpLink('orgUnitDN');
-			$orgUnitDNHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($orgUnitDNHelp, true);
+			$this->addMultiValueInputTextField($return, 'eduPersonOrgUnitDN', _('Organisational units'));
 			// assurance profiles
-			$assurances = array();
-			if (isset($this->attributes['eduPersonAssurance'][0])) {
-				$assurances = $this->attributes['eduPersonAssurance'];
-			}
-			if (sizeof($assurances) == 0) {
-				$assurances[] = '';
-			}
-			$assuranceLabel = new htmlOutputText(_('Assurance profiles'));
-			$assuranceLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($assuranceLabel);
-			$assuranceContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($assurances); $i++) {
-				$assuranceField = new htmlInputField('eduPersonAssurance' . $i, $assurances[$i]);
-				$assuranceField->setFieldSize(40);
-				$assuranceContainer->addElement($assuranceField);
-				if ($assurances[$i] != '') {
-					$assuranceContainer->addElement(new htmlButton('deleduPersonAssurance' . $i, 'del.png', true));
-				}
-				if ($i < (sizeof($assurances) - 1)) {
-					$assuranceContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$assuranceContainer->addElement(new htmlButton('addeduPersonAssurance', 'add.png', true));
-				}
-			}
-			$return->addElement($assuranceContainer);
-			$assuranceHelp = new htmlHelpLink('eduPersonAssurance');
-			$assuranceHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($assuranceHelp, true);
+			$this->addMultiValueInputTextField($return, 'eduPersonAssurance', _('Assurance profiles'));
 			// remove button
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 			$addButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
@@ -523,10 +395,10 @@ class eduPerson extends baseModule {
 		}
 		$this->attributes['eduPersonScopedAffiliation'] = array_values(array_unique($this->attributes['eduPersonScopedAffiliation']));
 		// principal name
-		$this->attributes['eduPersonPrincipalName'][0] = $_POST['principalName'];
-		if ($_POST['principalName'] != '') {
-			if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $_POST['principalName'])) {
-				$errors[] = $this->messages['principalName'][0];
+		$this->attributes['eduPersonPrincipalName'][0] = $_POST['eduPersonPrincipalName'];
+		if ($_POST['eduPersonPrincipalName'] != '') {
+			if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $_POST['eduPersonPrincipalName'])) {
+				$errors[] = $this->messages['eduPersonPrincipalName'][0];
 			}
 		}
 		// affiliations
@@ -543,75 +415,27 @@ class eduPerson extends baseModule {
 		}
 		$this->attributes['eduPersonAffiliation'] = array_unique($this->attributes['eduPersonAffiliation']);
 		// nick names
-		$nickNameCounter = 0;
-		while (isset($_POST['eduPersonNickname' . $nickNameCounter])) {
-			$this->attributes['eduPersonNickname'][$nickNameCounter] = $_POST['eduPersonNickname' . $nickNameCounter];
-			if (($this->attributes['eduPersonNickname'][$nickNameCounter] == '') || isset($_POST['deleduPersonNickname' . $nickNameCounter])) {
-				unset($this->attributes['eduPersonNickname'][$nickNameCounter]);
-			}
-			$nickNameCounter++;
-		}
-		if (isset($_POST['addeduPersonNickname'])) {
-			$this->attributes['eduPersonNickname'][] = '';
-		}
-		$this->attributes['eduPersonNickname'] = array_values(array_unique($this->attributes['eduPersonNickname']));
+		$this->processMultiValueInputTextField('eduPersonNickname', $errors);
 		// entitlements
-		$entitlementCounter = 0;
-		while (isset($_POST['eduPersonEntitlement' . $entitlementCounter])) {
-			$this->attributes['eduPersonEntitlement'][$entitlementCounter] = $_POST['eduPersonEntitlement' . $entitlementCounter];
-			if (($this->attributes['eduPersonEntitlement'][$entitlementCounter] == '') || isset($_POST['deleduPersonEntitlement' . $entitlementCounter])) {
-				unset($this->attributes['eduPersonEntitlement'][$entitlementCounter]);
-			}
-			$entitlementCounter++;
-		}
-		if (isset($_POST['addeduPersonEntitlement'])) {
-			$this->attributes['eduPersonEntitlement'][] = '';
-		}
-		$this->attributes['eduPersonEntitlement'] = array_values(array_unique($this->attributes['eduPersonEntitlement']));
+		$this->processMultiValueInputTextField('eduPersonEntitlement', $errors);
 		// org DN
-		$this->attributes['eduPersonOrgDN'][0] = $_POST['orgDN'];
-		if ($_POST['orgDN'] != '') {
-			if (!get_preg($_POST['orgDN'], 'dn')) {
-				$errors[] = $this->messages['orgDN'][0];
+		$this->attributes['eduPersonOrgDN'][0] = $_POST['eduPersonOrgDN'];
+		if ($_POST['eduPersonOrgDN'] != '') {
+			if (!get_preg($_POST['eduPersonOrgDN'], 'dn')) {
+				$errors[] = $this->messages['eduPersonOrgDN'][0];
 			}
 		}
 		// primary OU
-		$this->attributes['eduPersonPrimaryOrgUnitDN'][0] = $_POST['primaryOrgUnitDN'];
-		if ($_POST['primaryOrgUnitDN'] != '') {
-			if (!get_preg($_POST['primaryOrgUnitDN'], 'dn')) {
-				$errors[] = $this->messages['primaryOrgUnitDN'][0];
+		$this->attributes['eduPersonPrimaryOrgUnitDN'][0] = $_POST['eduPersonPrimaryOrgUnitDN'];
+		if ($_POST['eduPersonPrimaryOrgUnitDN'] != '') {
+			if (!get_preg($_POST['eduPersonPrimaryOrgUnitDN'], 'dn')) {
+				$errors[] = $this->messages['eduPersonPrimaryOrgUnitDN'][0];
 			}
 		}
 		// OUs
-		$orgUnitDNCounter = 0;
-		while (isset($_POST['eduPersonOrgUnitDN' . $orgUnitDNCounter])) {
-			$this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter] = $_POST['eduPersonOrgUnitDN' . $orgUnitDNCounter];
-			if (($this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter] == '') || isset($_POST['deleduPersonOrgUnitDN' . $orgUnitDNCounter])) {
-				unset($this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter]);
-			}
-			elseif (!get_preg($this->attributes['eduPersonOrgUnitDN'][$orgUnitDNCounter], 'dn')) {
-				$errors[] = $this->messages['eduPersonOrgUnitDN'][0];
-			}
-			$orgUnitDNCounter++;
-		}
-		if (isset($_POST['addeduPersonOrgUnitDN'])) {
-			$this->attributes['eduPersonOrgUnitDN'][] = '';
-		}
-		$this->attributes['eduPersonOrgUnitDN'] = array_values(array_unique($this->attributes['eduPersonOrgUnitDN']));
+		$this->processMultiValueInputTextField('eduPersonOrgUnitDN', $errors, 'dn');
 		// assurance profiles
-		$this->attributes['eduPersonAssurance'] = array();
-		$assuranceCounter = 0;
-		while (isset($_POST['eduPersonAssurance' . $assuranceCounter])) {
-			$this->attributes['eduPersonAssurance'][$assuranceCounter] = $_POST['eduPersonAssurance' . $assuranceCounter];
-			if (($this->attributes['eduPersonAssurance'][$assuranceCounter] == '') || isset($_POST['deleduPersonAssurance' . $assuranceCounter])) {
-				unset($this->attributes['eduPersonAssurance'][$assuranceCounter]);
-			}
-			$assuranceCounter++;
-		}
-		if (isset($_POST['addeduPersonAssurance'])) {
-			$this->attributes['eduPersonAssurance'][] = '';
-		}
-		$this->attributes['eduPersonAssurance'] = array_values(array_unique($this->attributes['eduPersonAssurance']));
+		$this->processMultiValueInputTextField('eduPersonAssurance', $errors);
 		return $errors;
 	}
 
@@ -647,7 +471,7 @@ class eduPerson extends baseModule {
 			// principal name
 			if ($rawAccounts[$i][$ids['eduPerson_principalName']] != "") {
 				if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $rawAccounts[$i][$ids['eduPerson_principalName']])) {
-					$error = $this->messages['principalName'][1];
+					$error = $this->messages['eduPersonPrincipalName'][1];
 					array_push($error, $i);
 					$messages[] = $error;
 				}
@@ -711,7 +535,7 @@ class eduPerson extends baseModule {
 			// organisation
 			if ($rawAccounts[$i][$ids['eduPerson_orgDN']] != "") {
 				if (!get_preg($rawAccounts[$i][$ids['eduPerson_orgDN']], 'dn')) {
-					$error = $this->messages['orgDN'][1];
+					$error = $this->messages['eduPersonOrgDN'][1];
 					array_push($error, $i);
 					$messages[] = $error;
 				}
@@ -722,7 +546,7 @@ class eduPerson extends baseModule {
 			// primary OU
 			if ($rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']] != "") {
 				if (!get_preg($rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']], 'dn')) {
-					$error = $this->messages['primaryOrgUnitDN'][1];
+					$error = $this->messages['eduPersonPrimaryOrgUnitDN'][1];
 					array_push($error, $i);
 					$messages[] = $error;
 				}
@@ -737,7 +561,7 @@ class eduPerson extends baseModule {
 				for ($a = 0; $a < sizeof($parts); $a++) {
 					if (!get_preg($parts[$a], 'dn')) {
 						$valid = false;
-						$error = $this->messages['orgUnitDN'][1];
+						$error = $this->messages['eduPersonOrgUnitDN'][1];
 						array_push($error, $i);
 						$messages[] = $error;
 						break;

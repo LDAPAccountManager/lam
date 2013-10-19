@@ -1217,7 +1217,7 @@ abstract class baseModule {
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
 	 */
-	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false) {
+	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
 			$values = array();
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
@@ -1225,13 +1225,19 @@ abstract class baseModule {
 			if (sizeof($values) == 0) {
 				$values[] = '';
 			}
+			natcasesort($values);
+			$values = array_values($values);
 			$labelTextOut = new htmlOutputText($label);
 			$labelTextOut->alignment = htmlElement::ALIGN_TOP;
 			$container->addElement($labelTextOut);
 			$subContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($values); $i++) {
 				if (!$isTextArea) {
-					$subContainer->addElement(new htmlInputField($attrName . '_' . $i, $values[$i]));
+					$input = new htmlInputField($attrName . '_' . $i, $values[$i]);
+					if (!empty($autoCompleteValues)) {
+						$input->enableAutocompletion($autoCompleteValues);
+					}
+					$subContainer->addElement($input);
 				}
 				else {
 					$cols = 30;
@@ -1240,11 +1246,12 @@ abstract class baseModule {
 					}
 					$subContainer->addElement(new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3));
 				}
-				if ($i < (sizeof($values) - 1)) {
+				if ($i > 0) {
 					$subContainer->addElement(new htmlOutputText('<br>', false));
 				}
 				else {
 					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
+					$subContainer->addElement(new htmlOutputText('<br>', false));
 				}
 			}
 			$container->addElement($subContainer);
@@ -1277,7 +1284,7 @@ abstract class baseModule {
 		if (isset($_POST['add_' . $attrName])) {
 			$this->attributes[$attrName][] = '';
 		}
-		$this->attributes[$attrName] = array_values($this->attributes[$attrName]);
+		$this->attributes[$attrName] = array_values(array_unique($this->attributes[$attrName]));
 	}
 	
 	/**

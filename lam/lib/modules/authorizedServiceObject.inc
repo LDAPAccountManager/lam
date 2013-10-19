@@ -158,34 +158,7 @@ class authorizedServiceObject extends baseModule {
 			if (isset($this->moduleSettings['authorizedServiceObject_services'])) {
 				$autocompleteValues = $this->moduleSettings['authorizedServiceObject_services'];
 			}
-			$ASCount = 0;
-			// list current authorizedService's
-			if (isset($this->attributes['authorizedService'])) {
-				$ASCount = sizeof($this->attributes['authorizedService']);
-				for ($i = 0; $i < sizeof($this->attributes['authorizedService']); $i++) {
-					if ($i == 0) {
-						$return->addElement(new htmlOutputText(_('Authorized Services')));
-					}
-					else {
-						$return->addElement(new htmlOutputText(''));
-					}
-					$ASInput = new htmlInputField('authorizedService' . $i, $this->attributes['authorizedService'][$i]);
-					$ASInput->enableAutocompletion($autocompleteValues, 0);
-					$return->addElement($ASInput);
-					$return->addElement(new htmlButton('delAS' . $i, 'del.png', true));
-					$return->addElement(new htmlHelpLink('authorizedService'), true);
-				}
-			}
-			// input box for new Service
-			$return->addElement(new htmlOutputText(_('New Authorized Service')));
-			$newASInput = new htmlInputField('authorizedService', '');
-			$newASInput->enableAutocompletion($autocompleteValues, 0);
-			$return->addElement($newASInput);
-			$return->addElement(new htmlButton('addAS', 'add.png', true));
-			$return->addElement(new htmlHelpLink('authorizedService'));
-			$return->addElement(new htmlHiddenInput('as_number', $ASCount));
-			$return->addElement(new htmlOutputText(''), true);
-
+			$this->addMultiValueInputTextField($return, 'authorizedService', _('Authorized Services'), false, null, false, $autocompleteValues);
 			$return->addElement(new htmlSpacer(null, '10px'),true);
 			$remButton = new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'remObjectClass', _('Remove Authorized Service extension'));
 			$remButton->colspan = 4;
@@ -215,37 +188,8 @@ class authorizedServiceObject extends baseModule {
 			return array();
 		}
 
-
 		$errors = array();
-		$this->attributes['authorizedService'] = array();
-		// check old services
-		if (isset($_POST['as_number'])) {
-			for ($i = 0; $i < $_POST['as_number']; $i++) {
-				if (isset($_POST['delAS' . $i])) continue;
-				if (isset($_POST['authorizedService' . $i]) && ($_POST['authorizedService' . $i] != "")) {
-					// check if service has correct format
-					if (!get_preg($_POST['authorizedService' . $i], 'ascii')) {
-						$message = $this->messages['authorizedService'][0];
-						$message[] = $_POST['authorizedService' . $i];
-						$errors[] = $message;
-					}
-					$this->attributes['authorizedService'][] = $_POST['authorizedService' . $i];
-				}
-			}
-		}
-		// check new authorizedService
-		if (isset($_POST['authorizedService']) && ($_POST['authorizedService'] != "")) {
-			// check if service has correct format
-			if (get_preg($_POST['authorizedService'], 'ascii')) {
-				$this->attributes['authorizedService'][] = $_POST['authorizedService'];
-			}
-			else {
-				$message = $this->messages['authorizedService'][0];
-				$message[] = $_POST['authorizedService'];
-				$errors[] = $message;
-			}
-		}
-		$this->attributes['authorizedService'] = array_unique($this->attributes['authorizedService']);
+		$this->processMultiValueInputTextField('authorizedService', $errors, 'ascii');
 		return $errors;
 	}
 
