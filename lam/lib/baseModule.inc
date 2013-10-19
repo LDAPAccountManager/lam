@@ -1178,8 +1178,9 @@ abstract class baseModule {
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
+	 * @return mixed reference to htmlTableExtendedInputField/htmlTableExtendedInputTextarea
 	 */
-	protected function addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false) {
+	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false) {
 		$value = '';
 		if (isset($this->attributes[$attrName][0])) {
 			$value = $this->attributes[$attrName][0];
@@ -1199,6 +1200,7 @@ abstract class baseModule {
 		}
 		$input->setRequired($required);
 		$container->addElement($input, true);
+		return $input;
 	}
 	
 	/**

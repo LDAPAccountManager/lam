@@ -229,54 +229,22 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				$return->addElement($message, true);
 			}
 			// mailbox
-			$mailbox = '';
-			if (isset($this->attributes['AstVoicemailMailbox'][0])) {
-				$mailbox = $this->attributes['AstVoicemailMailbox'][0];
-			}
-			$mailboxInput = new htmlTableExtendedInputField(_("Mailbox"), 'AstVoicemailMailbox', $mailbox, 'AstVoicemailMailbox');
-			$mailboxInput->setRequired(true);
-			$return->addElement($mailboxInput, true);
+			$this->addSimpleInputTextField($return, 'AstVoicemailMailbox', _("Mailbox"), true);
 			// account context
-			$acctContext = '';
-			if (isset($this->attributes['AstContext'][0])) {
-				$acctContext = $this->attributes['AstContext'][0];
-			}
-			$acctContextInput = new htmlTableExtendedInputField(_("Account context"), 'AstContext', $acctContext, 'AstContext');
-			$acctContextInput->setRequired(true);
-			$return->addElement($acctContextInput, true);
+			$this->addSimpleInputTextField($return, 'AstContext', _("Account context"), true);
 			
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 
 			// full name
-			$name = '';
-			if (isset($this->attributes['AstVoicemailFullname'][0])) {
-				$name = $this->attributes['AstVoicemailFullname'][0];
-			}
-			$return->addElement(new htmlTableExtendedInputField(_("Full name"), 'AstVoicemailFullname', $name, 'AstVoicemailFullname'), true);
+			$this->addSimpleInputTextField($return, 'AstVoicemailFullname', _("Full name"));
 			// email
-			$email = '';
-			if (isset($this->attributes['AstVoicemailEmail'][0])) {
-				$email = $this->attributes['AstVoicemailEmail'][0];
-			}
-			$return->addElement(new htmlTableExtendedInputField(_("Email address"), 'AstVoicemailEmail', $email, 'AstVoicemailEmail'), true);
+			$this->addSimpleInputTextField($return, 'AstVoicemailEmail', _("Email address"));
 			// pager
-			$pager = '';
-			if (isset($this->attributes['AstVoicemailPager'][0])) {
-				$pager = $this->attributes['AstVoicemailPager'][0];
-			}
-			$return->addElement(new htmlTableExtendedInputField(_("Pager"), 'AstVoicemailPager', $pager, 'AstVoicemailPager'), true);
+			$this->addSimpleInputTextField($return, 'AstVoicemailPager', _("Pager"));
 			// options
-			$options = '';
-			if (isset($this->attributes['AstVoicemailOptions'][0])) {
-				$options = $this->attributes['AstVoicemailOptions'][0];
-			}
-			$return->addElement(new htmlTableExtendedInputField(_("Options"), 'AstVoicemailOptions', $options, 'AstVoicemailOptions'), true);
+			$this->addSimpleInputTextField($return, 'AstVoicemailOptions', _("Options"));
 			// voicemail context
-			$voiceContext = '';
-			if (isset($this->attributes['AstVoicemailContext'][0])) {
-				$voiceContext = $this->attributes['AstVoicemailContext'][0];
-			}
-			$return->addElement(new htmlTableExtendedInputField(_("Voicemail context"), 'AstVoicemailContext', $voiceContext, 'AstVoicemailContext'), true);
+			$this->addSimpleInputTextField($return, 'AstVoicemailContext', _("Voicemail context"));
 			// remove button
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 			$remButton = new htmlButton('remVoicemailObjectClass', _('Remove Asterisk voicemail extension'));
