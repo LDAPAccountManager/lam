@@ -135,24 +135,7 @@ class hostObject extends baseModule {
 		}
 		$return = new htmlTable();
 		if (in_array('hostObject', $this->attributes['objectClass'])) {
-			$hostCount = 0;
-			// list current hosts
-			if (isset($this->attributes['host'])) {
-				$hostCount = sizeof($this->attributes['host']);
-				for ($i = 0; $i < sizeof($this->attributes['host']); $i++) {
-					$return->addElement(new htmlOutputText(_('Host')));
-					$return->addElement(new htmlInputField('host' . $i, $this->attributes['host'][$i]));
-					$return->addElement(new htmlButton('delHost' . $i, 'del.png', true));
-					$return->addElement(new htmlHelpLink('host'), true);
-				}
-			}
-			// input box for new host
-			$return->addElement(new htmlOutputText(_('New host')));
-			$return->addElement(new htmlInputField('host', ''));
-			$return->addElement(new htmlButton('addHost', 'add.png', true));
-			$return->addElement(new htmlHelpLink('host'));
-			$return->addElement(new htmlHiddenInput('host_number', $hostCount), true);
-
+			$this->addMultiValueInputTextField($return, 'host', _('Host'));
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 			$remButton = new htmlButton('remObjectClass', _('Remove host extension'));
 			$remButton->colspan = 4;
@@ -180,35 +163,7 @@ class hostObject extends baseModule {
 			return array();
 		}
 		$errors = array();
-		$this->attributes['host'] = array();
-		// check old hosts
-		if (isset($_POST['host_number'])) {
-			for ($i = 0; $i < $_POST['host_number']; $i++) {
-				if (isset($_POST['delHost' . $i])) continue;
-				if (isset($_POST['host' . $i]) && ($_POST['host' . $i] != "")) {
-					// check if host has correct format
-					if (!get_preg($_POST['host' . $i], 'hostObject')) {
-						$message = $this->messages['host'][0];
-						$message[] = $_POST['host' . $i];
-						$errors[] = $message;
-					}
-					$this->attributes['host'][] = $_POST['host' . $i];
-				}
-			}
-		}
-		// check new host
-		if (isset($_POST['host']) && ($_POST['host'] != "")) {
-			// check if host has correct format
-			if (get_preg($_POST['host'], 'hostObject')) {
-				$this->attributes['host'][] = $_POST['host'];
-			}
-			else {
-					$message = $this->messages['host'][0];
-					$message[] = $_POST['host'];
-					$errors[] = $message;
-			}
-		}
-		$this->attributes['host'] = array_unique($this->attributes['host']);
+		$this->processMultiValueInputTextField('host', $errors, 'hostObject');
 		return $errors;
 	}
 

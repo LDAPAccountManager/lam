@@ -263,64 +263,24 @@ class freeRadius extends baseModule {
 		if (in_array('radiusprofile', $this->attributes['objectClass'])) {
 			// realm
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
-				$radiusRealm = '';
-				if (isset($this->attributes['radiusRealm'][0])) {
-					$radiusRealm = $this->attributes['radiusRealm'][0];
-				}
-				$return->addElement(new htmlTableExtendedInputField(_('Realm'), 'radiusRealm', $radiusRealm, 'radiusRealm'), true);
+				$this->addSimpleInputTextField($return, 'radiusRealm', _('Realm'));
 			}
 			// group names
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-				$groups = array();
-				if (isset($this->attributes['radiusGroupName'][0])) {
-					$groups = $this->attributes['radiusGroupName'];
-				}
-				if (sizeof($groups) == 0) {
-					$groups[] = '';
-				}
-				$groupLabel = new htmlOutputText(_('Group names'));
-				$groupLabel->alignment = htmlElement::ALIGN_TOP;
-				$return->addElement($groupLabel);
-				$groupContainer = new htmlGroup();
-				for ($i = 0; $i < sizeof($groups); $i++) {
-					$groupContainer->addElement(new htmlInputField('radiusGroupName' . $i, $groups[$i]));
-					if ($i < (sizeof($groups) - 1)) {
-						$groupContainer->addElement(new htmlOutputText('<br>', false));
-					}
-					else {
-						$groupContainer->addElement(new htmlButton('addRadiusGroupName', 'add.png', true));
-					}
-				}
-				$return->addElement($groupContainer);
-				$groupHelp = new htmlHelpLink('radiusGroupName');
-				$groupHelp->alignment = htmlElement::ALIGN_TOP;
-				$return->addElement($groupHelp, true);
+				$this->addMultiValueInputTextField($return, 'radiusGroupName', _('Group names'));
 			}
 			// IP address
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
-				$radiusFramedIPAddress = '';
-				if (isset($this->attributes['radiusFramedIPAddress'][0])) {
-					$radiusFramedIPAddress = $this->attributes['radiusFramedIPAddress'][0];
-				}
-				$return->addElement(new htmlTableExtendedInputField(_('IP address'), 'radiusFramedIPAddress', $radiusFramedIPAddress, 'radiusFramedIPAddress'), true);
+				$this->addSimpleInputTextField($return, 'radiusFramedIPAddress', _('IP address'));
 			}
 			// net mask
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
-				$radiusFramedIPNetmask = '';
-				if (isset($this->attributes['radiusFramedIPNetmask'][0])) {
-					$radiusFramedIPNetmask = $this->attributes['radiusFramedIPNetmask'][0];
-				}
-				$return->addElement(new htmlTableExtendedInputField(_('Net mask'), 'radiusFramedIPNetmask', $radiusFramedIPNetmask, 'radiusFramedIPNetmask'), true);
+				$this->addSimpleInputTextField($return, 'radiusFramedIPNetmask', _('Net mask'));
 			}
 			// idle timeout
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
-				$radiusIdleTimeout = '';
-				if (isset($this->attributes['radiusIdleTimeout'][0])) {
-					$radiusIdleTimeout = $this->attributes['radiusIdleTimeout'][0];
-				}
-				$radiusIdleTimeoutInput = new htmlTableExtendedInputField(_('Idle timeout'), 'radiusIdleTimeout', $radiusIdleTimeout, 'radiusIdleTimeout');
+				$radiusIdleTimeoutInput = $this->addSimpleInputTextField($return, 'radiusIdleTimeout', _('Idle timeout'));
 				$radiusIdleTimeoutInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-				$return->addElement($radiusIdleTimeoutInput, true);
 			}
 			// expiration date
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusExpiration')) {
@@ -395,21 +355,7 @@ class freeRadius extends baseModule {
 		}
 		// group names
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-			$groupCounter = 0;
-			while (isset($_POST['radiusGroupName' . $groupCounter])) {
-				$this->attributes['radiusGroupName'][$groupCounter] = $_POST['radiusGroupName' . $groupCounter];
-				if ($this->attributes['radiusGroupName'][$groupCounter] == '') {
-					unset($this->attributes['radiusGroupName'][$groupCounter]);
-				}
-				elseif (!get_preg($this->attributes['radiusGroupName'][$groupCounter], 'groupname')) {
-					$errors[] = $this->messages['radiusGroupName'][0];
-				}
-				$groupCounter++;
-			}
-			if (isset($_POST['addRadiusGroupName'])) {
-				$this->attributes['radiusGroupName'][] = '';
-			}
-			$this->attributes['radiusGroupName'] = array_values(array_unique($this->attributes['radiusGroupName']));
+			$this->processMultiValueInputTextField('radiusGroupName', $errors, 'groupname');
 		}
 		// idle timeout
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {

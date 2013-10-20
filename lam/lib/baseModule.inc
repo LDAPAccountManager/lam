@@ -1230,7 +1230,8 @@ abstract class baseModule {
 			$labelTextOut = new htmlOutputText($label);
 			$labelTextOut->alignment = htmlElement::ALIGN_TOP;
 			$container->addElement($labelTextOut);
-			$subContainer = new htmlGroup();
+			$subContainer = new htmlTable();
+			$subContainer->alignment = htmlElement::ALIGN_TOP;
 			for ($i = 0; $i < sizeof($values); $i++) {
 				if (!$isTextArea) {
 					$input = new htmlInputField($attrName . '_' . $i, $values[$i]);
@@ -1246,13 +1247,11 @@ abstract class baseModule {
 					}
 					$subContainer->addElement(new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3));
 				}
-				if ($i > 0) {
-					$subContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
+				$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
+				if ($i == 0) {
 					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
-					$subContainer->addElement(new htmlOutputText('<br>', false));
 				}
+				$subContainer->addNewLine();
 			}
 			$container->addElement($subContainer);
 			$help = new htmlHelpLink($attrName);
@@ -1273,11 +1272,11 @@ abstract class baseModule {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = $_POST[$attrName . '_' . $counter];
-			if (($validationID != null) && ($this->attributes[$attrName][$counter] != '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
-				$errors[] = $this->messages[$attrName][0];
-			}
-			if ($this->attributes[$attrName][$counter] == '') {
+			if (($this->attributes[$attrName][$counter] == '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
 				unset($this->attributes[$attrName][$counter]);
+			}
+			elseif (($validationID != null) && ($this->attributes[$attrName][$counter] != '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
+				$errors[] = $this->messages[$attrName][0];
 			}
 			$counter++;
 		}

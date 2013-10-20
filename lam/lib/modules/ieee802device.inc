@@ -57,7 +57,7 @@ class ieee802device extends baseModule {
 		$return['attributes'] = array('macAddress');
 		// help Entries
 		$return['help'] = array(
-			'mac' => array(
+			'macAddress' => array(
 				"Headline" => _("MAC address"), 'attr' => 'macAddress',
 				"Text" => _("This is the MAC address of the network card of the device (e.g. 00:01:02:DE:EF:18).")
 			),
@@ -85,8 +85,8 @@ class ieee802device extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['mac'][0] = array('ERROR', 'MAC address is invalid!');  // third array value is set dynamically
-		$this->messages['mac'][1] = array('ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!');
+		$this->messages['macAddress'][0] = array('ERROR', 'MAC address is invalid!');  // third array value is set dynamically
+		$this->messages['macAddress'][1] = array('ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!');
 	}
 
 	/**
@@ -96,29 +96,7 @@ class ieee802device extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		$macCount = 0;
-		// list current MACs
-		if (isset($this->attributes['macAddress'])) {
-			$macCount = sizeof($this->attributes['macAddress']);
-			for ($i = 0; $i < sizeof($this->attributes['macAddress']); $i++) {
-				$return->addElement(new htmlOutputText(_('MAC address')));
-				$macInput = new htmlInputField('macAddress' . $i, $this->attributes['macAddress'][$i]);
-				$macInput->setFieldSize(17);
-				$macInput->setFieldMaxLength(17);
-				$return->addElement($macInput);
-				$return->addElement(new htmlButton('delMAC' . $i, 'del.png', true));
-				$return->addElement(new htmlHelpLink('mac'), true);
-			}
-		}
-		// input box for new MAC
-		$return->addElement(new htmlOutputText(_('New MAC address')));
-		$newMacInput = new htmlInputField('macAddress', '');
-		$newMacInput->setFieldSize(17);
-		$newMacInput->setFieldMaxLength(17);
-		$return->addElement($newMacInput);
-		$return->addElement(new htmlButton('addMAC', 'add.png', true));
-		$return->addElement(new htmlHelpLink('mac'));
-		$return->addElement(new htmlHiddenInput('mac_number', $macCount));
+		$this->addMultiValueInputTextField($return, 'macAddress', _('MAC address'), false, 17);
 		return $return;
 	}
 
@@ -130,35 +108,7 @@ class ieee802device extends baseModule {
 	*/
 	function process_attributes() {
 		$errors = array();
-		$this->attributes['macAddress'] = array();
-		// check old MACs
-		if (isset($_POST['mac_number'])) {
-			for ($i = 0; $i < $_POST['mac_number']; $i++) {
-				if (isset($_POST['delMAC' . $i])) continue;
-				if (isset($_POST['macAddress' . $i]) && ($_POST['macAddress' . $i] != "")) {
-					// check if address has correct format
-					if (!get_preg($_POST['macAddress' . $i], 'macAddress')) {
-						$message = $this->messages['mac'][0];
-						$message[] = $_POST['macAddress' . $i];
-						$errors[] = $message;
-					}
-					$this->attributes['macAddress'][] = $_POST['macAddress' . $i];
-				}
-			}
-		}
-		// check new MAC
-		if (isset($_POST['macAddress']) && ($_POST['macAddress'] != "")) {
-			// check if address has correct format
-			if (get_preg($_POST['macAddress'], 'macAddress')) {
-				$this->attributes['macAddress'][] = $_POST['macAddress'];
-			}
-			else {
-					$message = $this->messages['mac'][0];
-					$message[] = $_POST['macAddress'];
-					$errors[] = $message;
-			}
-		}
-		$this->attributes['macAddress'] = array_unique($this->attributes['macAddress']);
+		$this->processMultiValueInputTextField('macAddress', $errors, 'macAddress');
 		return $errors;
 	}
 
@@ -185,7 +135,7 @@ class ieee802device extends baseModule {
 						$partialAccounts[$i]['macAddress'][] = $macs[$m];
 					}
 					else {
-						$errMsg = $this->messages['mac'][1];
+						$errMsg = $this->messages['macAddress'][1];
 						array_push($errMsg, array($i));
 						$messages[] = $errMsg;
 					}
