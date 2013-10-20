@@ -426,3 +426,19 @@ function saveScrollPosition(formName) {
 	}).appendTo(jQuery('#' + formName));
 } 
 
+jQuery(document).ready(
+	function() {
+		jQuery(document).tooltip({
+			items: "[helpdata]",
+			content: function() {
+				var element = $(this);
+				var helpString = "<table><tr><th class=\"help\">";
+				helpString += element.attr("helptitle");
+				helpString += "</th></tr><td class=\"help\">";
+				helpString += element.attr("helpdata");
+				helpString += "</td></tr></table>";
+				return helpString;
+			}
+		})
+	}
+);

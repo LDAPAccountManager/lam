@@ -297,13 +297,12 @@ class user extends baseType {
 			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
 			$tipContent .= _('Please click to lock/unlock this account.');
 		}
-		$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
 		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked);
 		$onClick = '';
 		if (checkIfWriteAccessIsAllowed()) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
 		}
-		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' onmouseout="UnTip()" onmouseover="Tip(' . $tooltip . ')" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
+		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
 	}
 	
 	/**
@@ -845,8 +844,7 @@ class lamUserList extends lamList {
 				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
-			$tooltip = "'" . $tipContent . "', TITLE, '" . _('Account status') . "'";
-			echo '<img alt="status" onmouseout="UnTip()" onmouseover="Tip(' . $tooltip . ')" height=16 width=16 src="../../graphics/' . $icon . '">';
+			echo '<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';
 		}
 		else {
 			echo '<img alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';

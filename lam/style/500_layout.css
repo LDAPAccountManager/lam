@@ -390,6 +390,16 @@ input.smallImageButton {
   cursor:pointer;
 }
 
+/* help tooltip */
+th.help {
+	text-align: left;
+	padding-bottom: 10px;
+	font-size: 9pt;
+}
+td.help {
+	font-size: 10pt;
+}
+
 
 /* schema browser */
 

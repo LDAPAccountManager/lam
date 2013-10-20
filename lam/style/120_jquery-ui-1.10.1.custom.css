@@ -775,9 +775,10 @@ button.ui-button::-moz-focus-inner {
 	padding: 8px;
 	position: absolute;
 	z-index: 9999;
-	max-width: 300px;
+	max-width: 600px;
 	-webkit-box-shadow: 0 0 5px #aaa;
 	box-shadow: 0 0 5px #aaa;
+	background-color: #F5F5F5 !important;
 }
 body .ui-tooltip {
 	border-width: 2px;
