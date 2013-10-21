@@ -1,3 +1,10 @@
+ldap-account-manager (4.4-1) unstable; urgency=low
+
+  * Fix "Pre-Authentication Cross-Site-Scripting in current_language
+    parameter" by updating templates/login.php (Closes: #726976)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 21 Oct 2013 19:47:35 +0200
+
 ldap-account-manager (4.3-1) unstable; urgency=low
 
   * new upstream release
