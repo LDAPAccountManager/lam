@@ -71,7 +71,7 @@ if (isset($_GET['useProfile'])) {
 
 // save last selected language
 if (isset($_POST['language'])) {
-	setcookie('lam_last_language', $_POST['language'], time() + 365*60*60*24);
+	setcookie('lam_last_language', htmlspecialchars($_POST['language']), time() + 365*60*60*24);
 }
 
 // init some session variables
