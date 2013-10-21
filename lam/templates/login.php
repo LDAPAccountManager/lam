@@ -114,7 +114,7 @@ else {
 	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 }
 if (isset($_POST['language'])) {
-	$_SESSION['language'] = $_POST['language']; // Write selected language in session
+	$_SESSION['language'] = htmlspecialchars($_POST['language']); // Write selected language in session
 }
 $current_language = explode(":",$_SESSION['language']);
 $_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
