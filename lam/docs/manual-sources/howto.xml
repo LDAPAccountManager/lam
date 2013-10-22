@@ -2253,8 +2253,15 @@ Have fun!
 
 </literallayout>
 
-        <para>For slapd.d configurations copy passwordSelfReset.ldif to
-        /etc/ldap/slapd.d/cn=config/cn=schema/.</para>
+        <para>For slapd.d configurations you need to upload the schema file
+        passwordSelfReset.ldif via ldapadd command:</para>
+
+        <para> ldapadd -x -W -H ldap://localhost -D "cn=admin,o=test,c=de" -f
+        /daten/dev/lamPro/docs/schema/passwordSelfReset.ldif</para>
+
+        <para>Please replace "localhost" with your LDAP server and
+        "cn=admin,o=test,c=de" with your LDAP admin user (usually starts with
+        cn=admin or cn=manager).</para>
 
         <literallayout>
 </literallayout>
