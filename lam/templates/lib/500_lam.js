@@ -323,6 +323,26 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, 
 }
 
 /**
+ * Shows a simple confirmation dialog.
+ * If the user presses Cancel then the current action is stopped (event.preventDefault()).
+ * 
+ * @param text dialog text
+ * @param e event
+ */
+function confirmOrStopProcessing(text, e) {
+	if (!confirm(text)) {
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		if (e.returnValue) {
+			e.returnValue = false;
+		}
+		return false;
+	}
+	return true;
+}
+
+/**
  * Alines the elements with the given IDs to the same width.
  * 
  * @param elementIDs IDs

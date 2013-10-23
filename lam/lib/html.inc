@@ -831,6 +831,8 @@ class htmlButton extends htmlElement {
 	private $iconClass = null;
 	/** onclick event */
 	private $onClick = null;
+	/** button type (default: "submit" if no onClick and "button" with onClick) */
+	private $type = null;
 	
 	/**
 	 * Constructor.
@@ -889,10 +891,17 @@ class htmlButton extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		$type = ' type="submit"';
+		if ($this->type == null) {
+			$type = ' type="submit"';
+		}
+		else {
+			$type = ' type="' . $this->type . '"';
+		}
 		$onClick = '';
 		if ($this->onClick != null) {
-			$type = ' type="button"';
+			if ($this->type == null) {
+				$type = ' type="button"';
+			}
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
@@ -951,7 +960,13 @@ class htmlButton extends htmlElement {
 		$this->onClick = $onClick;
 	}
 
-
+	/**
+	 * Allows to override the default button type ("submit" if no onClick and "button" with onClick).
+	 */
+	public function setType($type) {
+		$this->type = $type;
+	}
+	
 }
 
 /**

@@ -1212,6 +1212,10 @@ class accountContainer {
 			$rightGroup->addElement(new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile)));
 			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
 			$profileButton->setIconClass('loadProfileButton');
+			if (!$this->isNewAccount) {
+				$profileButton->setType('submit');
+				$profileButton->setOnClick('confirmOrStopProcessing(\'' . _('This may overwrite existing values with profile data. Continue?') . '\', event);');
+			}
 			$rightGroup->addElement($profileButton);
 			$rightGroup->addElement(new htmlSpacer('1px', null));
 			$rightGroup->addElement(new htmlHelpLink('401'));
