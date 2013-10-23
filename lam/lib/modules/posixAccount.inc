@@ -988,6 +988,15 @@ class posixAccount extends baseModule implements passwordService {
 			$errorMessage = $this->messages['gidNumber'][2];
 			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
 			$errors[] = $errorMessage;
+			if ($this->isBooleanConfigOptionSet('posixAccount_primaryGroupAsSecondary') && !empty($this->attributes['gidNumber'][0])) {
+				// change primary group in $this->groups
+				$oldGroupName = $this->getGroupName($this->attributes['gidNumber'][0]);
+				$newGroupName = $this->getGroupName($_POST['gidNumber']);
+				if (!empty($oldGroupName) && !empty($newGroupName)) {
+					$this->groups = array_delete(array($oldGroupName), $this->groups);
+					$this->groups[] = $newGroupName;
+				}
+			}
 		}
 		if (isset($this->orig['uidNumber'][0]) && $this->orig['uidNumber'][0]!='' && trim($_POST['uidNumber'])!=$this->attributes['uidNumber'][0]) {
 			$errorMessage = $this->messages['uidNumber'][5];
