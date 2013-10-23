@@ -1,6 +1,7 @@
 December 2013 4.4
   - PyKota support: users, groups, printers, billing codes
   - allow to set a custom label for each account type
+  - Unix: switch also additional membership if primary group is changed (RFE 108)
   - LAM Pro:
    -> Samba/Shadow: display password change date in self service
    -> Custom fields: support custom label and icon
