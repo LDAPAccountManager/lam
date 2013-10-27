@@ -565,4 +565,7 @@ h4.schema_oclass_sub {
 .pykotaBillingCodeType-bright { background:#d4f19b !important; }
 .pykotaBillingCodeType-dark { background-color:#9fc653 !important; }
 
+.bind-border { border-color:#32768b; }
+.bind-bright { background:#b6eeff !important; }
+.bind-dark { background-color:#80e0e1 !important; }
 
