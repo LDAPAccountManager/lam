@@ -5909,6 +5909,18 @@ Run slapindex to rebuild the index.
             </tr>
 
             <tr>
+              <th align="left"><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_ssh.png" />
+                  </imageobject>
+                </inlinemediaobject> Password policy</th>
+
+              <td>Last password change</td>
+
+              <td>read-only</td>
+            </tr>
+
+            <tr>
               <th align="left" rowspan="2"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_ssh.png" />
