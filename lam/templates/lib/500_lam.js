@@ -446,6 +446,28 @@ function saveScrollPosition(formName) {
 	}).appendTo(jQuery('#' + formName));
 } 
 
+/**
+ * Shows the dialog to create a DNS zone.
+ * 
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+function bindShowNewZoneDialog(title, okText, cancelText) {
+	var buttonList = {};
+	buttonList[okText] = function() { document.forms["newBindZoneDialogForm"].submit(); };
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	jQuery('#newBindZoneDialog').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+
+
 jQuery(document).ready(
 	function() {
 		jQuery(document).tooltip({
