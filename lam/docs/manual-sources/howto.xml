@@ -2256,7 +2256,7 @@ Have fun!
         <para>For slapd.d configurations you need to upload the schema file
         passwordSelfReset.ldif via ldapadd command:</para>
 
-        <para> ldapadd -x -W -H ldap://localhost -D "cn=admin,o=test,c=de" -f
+        <para>ldapadd -x -W -H ldap://localhost -D "cn=admin,o=test,c=de" -f
         /daten/dev/lamPro/docs/schema/passwordSelfReset.ldif</para>
 
         <para>Please replace "localhost" with your LDAP server and
@@ -3982,6 +3982,184 @@ Run slapindex to rebuild the index.
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/ddns.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Bind DLZ (LAM Pro)</title>
+
+      <para><ulink url="http://bind-dlz.sourceforge.net">Bind DLZ</ulink> is
+      an extension to the DNS server <ulink
+      url="http://www.isc.org/software/bind">Bind</ulink> that allows to store
+      DNS entries inside LDAP. Please install the Bind DLZ schema file on your
+      LDAP server. It is part of the DLZ patch.</para>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>First, you need to add the Bind DNS account type and the Bind DLZ
+      module:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Please set the LDAP suffix either to an existing DNS zone
+      (dlzZone) or an organizational unit that should include your DNS
+      zones.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Zone management</emphasis></para>
+
+      <para>If you do not yet have a DNS zone then LAM can create one for you.
+      In list view switch the suffix to an organizational unit DN. Now you
+      will see a button "New zone".</para>
+
+      <para>This will create the zone container entry and a default DNS entry
+      "@" for authoritative information. Now switch the suffix to your new
+      zone and start adding DNS entries.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">DNS entries</emphasis></para>
+
+      <para>LAM supports the following DNS record types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>SOA: authoritative information</para>
+        </listitem>
+
+        <listitem>
+          <para>NS: name servers</para>
+        </listitem>
+
+        <listitem>
+          <para>A/AAAA: IP addresses</para>
+        </listitem>
+
+        <listitem>
+          <para>PTR: reverse DNS entries</para>
+        </listitem>
+
+        <listitem>
+          <para>CNAME: alias names</para>
+        </listitem>
+
+        <listitem>
+          <para>MX: mail servers</para>
+        </listitem>
+      </itemizedlist>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Authoritative (SOA) and name server (NS)
+      records</emphasis></para>
+
+      <para>Here you can manage general information about the zone like
+      timeouts and name servers. Please note that name servers must be
+      inserted in a special format (dot at the end).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">IP addresses (A/AAAA)</emphasis></para>
+
+      <para>LAM will automatically set the correct type (A/AAAA) depending if
+      you enter an IPv4 or IPv6 address.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind6.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Reverse DNS entries</emphasis></para>
+
+      <para>Reverse DNS entries are important when you need to find the DNS
+      name that is associated with a given IP address. Reverse DNS entries are
+      stored in a separate DNS zone.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind7.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Alias names (CNAME)</emphasis></para>
+
+      <para>Sometimes a DNS entry should simply point to a different DNS entry
+      (e.g. for migrations). This can be done by adding an alias name.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind8.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Mail servers (MX)</emphasis></para>
+
+      <para>The mail server entries define where mails to a domain should be
+      delivered. The server with the lowest preference has the highest
+      priority.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind9.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -7113,6 +7291,26 @@ Run slapindex to rebuild the index.
 
             <entry>The LDAP suffix should be set to your dhcpServer
             entry.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_bind.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Bind DLZ DNS</entry>
+
+            <entry>dlzZone, dlzHost, dlzSOARecord, dlzNSRecord, dlzARecord,
+            dlzMXRecord, dlzCNameRecord, dlzPTRRecord</entry>
+
+            <entry>dlz.schema</entry>
+
+            <entry>part of <ulink url="http://bind-dlz.sourceforge.net/">Bind
+            DLZ patch</ulink></entry>
+
+            <entry>LAM Pro only</entry>
           </row>
 
           <row>
