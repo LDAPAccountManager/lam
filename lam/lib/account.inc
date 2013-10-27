@@ -831,10 +831,10 @@ function getAbstractDN($dn) {
 * @param string $b second argument to compare
 * @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
 */
-function compareDN($a, $b) {
+function compareDN(&$a, &$b) {
 	// split DNs
-	$array_a = explode(",", $a);
-	$array_b = explode(",", $b);
+	$array_a = explode(",", strtolower($a));
+	$array_b = explode(",", strtolower($b));
 	$len_a = sizeof($array_a);
 	$len_b = sizeof($array_b);
 	// check how many parts to compare
@@ -842,8 +842,12 @@ function compareDN($a, $b) {
 	// compare from last part on
 	for ($i = 0; $i < $len; $i++) {
 		// get parts to compare
-		$part_a = strtolower($array_a[$len_a - $i - 1]);
-		$part_b = strtolower($array_b[$len_b - $i - 1]);
+		$part_a = $array_a[$len_a - $i - 1];
+		$part_a = explode('=', $part_a);
+		$part_a = $part_a[1];
+		$part_b = $array_b[$len_b - $i - 1];
+		$part_b = explode('=', $part_b);
+		$part_b = $part_b[1];
 		// compare parts
 		if ($part_a == $part_b) { // part is identical
 			if ($i == ($len - 1)) {
