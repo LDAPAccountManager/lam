@@ -480,10 +480,10 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';
 					break;
 		case "email":
-					$pregexpr = '/^([0-9a-zA-Z!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
+					$pregexpr = '/^([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
 					break;
 		case "emailWithName":
-					$pregexpr = '/^([[:alnum:] !~#+*%\\$\\(\\)_-])+ <([0-9a-zA-Z!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
+					$pregexpr = '/^([[:alnum:] \'!~#+*%\\$\\(\\)_-])+ <([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
 					break;
 		case "mailLocalAddress":
 					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
@@ -654,6 +654,9 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 		// search LDAP
 		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
 							$filter, $attributes, 0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
+		}
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
@@ -685,6 +688,9 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 		// search LDAP
 		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
 							$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
+		}
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if ($entries) {
@@ -709,6 +715,9 @@ function searchLDAP($suffix, $filter, $attributes) {
 	$return = array();
 	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($suffix), $filter, $attributes,
 						0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+	if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+		logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
+	}
 	if ($sr) {
 		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($entries) {
