@@ -94,6 +94,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
+		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
+		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
@@ -2121,9 +2123,31 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+			$name = $_FILES['photoFile']['name'];
+			$extension = strtolower(substr($name, strpos($name, '.') + 1));
+			if (!extension_loaded('imagick') && !($extension == '.jpg') && !($extension == '.jpeg')) {
+				$messages[] = $this->messages['file'][1];
+				return $messages;
+			}
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
-			$data = fread($handle, 1000000);
+			$data = fread($handle, 10000000);
 			fclose($handle);
+			if (extension_loaded('imagick')) {
+				// convert to JPG if imagick extension is available
+				$image = new Imagick();
+				try {
+				$image->readImageBlob($data);
+				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+				$image->setImageFormat('jpeg');
+				$data = $image->getimageblob();
+				}
+				catch (Exception $e) {
+					$msg =  $this->messages['file'][2];
+					$msg[] = htmlspecialchars($e->getMessage());
+					$messages[] = $msg;
+					return $messages;
+				}
+			}
 			$this->attributes['jpegPhoto'][0] = $data;
 		}
 		else {
