@@ -5710,7 +5710,7 @@ Run slapindex to rebuild the index.
     <section>
       <title>Edit your new profile</title>
 
-      <section>
+      <section id="selfServiceBasicSettings">
         <title>Basic settings</title>
 
         <para>On top of the page you see the link to the user login page. Copy
@@ -8042,6 +8042,76 @@ Run slapindex to rebuild the index.
       Please see <link linkend="a_lamdaemonConf">here</link> and setup a Unix
       account.</para>
     </section>
+  </appendix>
+
+  <appendix>
+    <title>Adapt LAM to your corporate design</title>
+
+    <para>There are cases where you might want to change LAM's default
+    look'n'feel to better integrate it in your company network. Changes can be
+    done like this:</para>
+
+    <para><emphasis role="bold">Change colors, fonts and other parts with
+    custom CSS</emphasis></para>
+
+    <para>You can integrate custom CSS files in LAM. It is recommended to
+    write a separate CSS file instead of modifying LAM's default files.</para>
+
+    <para>The CSS files are located in</para>
+
+    <literallayout> DEB/RPM: /usr/share/ldap-account-manager/style
+ tar.bz2: style
+</literallayout>
+
+    <para>LAM will automatically integrate all CSS files in alphabetical
+    order. E.g. you can create a file called "900_myCompany.css" which will be
+    added as last file.</para>
+
+    <para>Example:</para>
+
+    <para>This will change the background color of all pages to turquoise. See
+    500_layout.css for LAM's default settings.</para>
+
+    <programlisting>body {
+  background-color: #b6eeff;
+}
+</programlisting>
+
+    <para>You can use the same way to change fonts, sizes and more.</para>
+
+    <para><emphasis role="bold">Custom logo and other images</emphasis></para>
+
+    <para>All images are located in</para>
+
+    <literallayout> DEB/RPM: /usr/share/ldap-account-manager/graphics
+ tar.bz2: graphics</literallayout>
+
+    <para>Please note that if you replace images then you need to reapply your
+    changes every time you upgrade LAM.</para>
+
+    <para><emphasis role="bold">Special changes with custom
+    JavaScript</emphasis></para>
+
+    <para>In rare cases it might not be sufficient to write custom CSS or
+    replace some image files. E.g. you might want to add custom content to all
+    pages.</para>
+
+    <para>For these cases you can add a custom JavaScript file that contains
+    your code.</para>
+
+    <para>The JavaScript files are located in</para>
+
+    <literallayout> DEB/RPM: /usr/share/ldap-account-manager/templates/lib
+ tar.bz2: templates/lib</literallayout>
+
+    <para>LAM will automatically integrate all .js files in alphabetical
+    order. E.g. you can create a file called "900_myCompany.js" which will be
+    added as last file.</para>
+
+    <para><emphasis role="bold">Self service</emphasis></para>
+
+    <para>See <link linkend="selfServiceBasicSettings">here</link> for self
+    service customisations.</para>
   </appendix>
 
   <appendix>
