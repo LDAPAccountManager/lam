@@ -1247,7 +1247,9 @@ abstract class baseModule {
 					}
 					$subContainer->addElement(new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3));
 				}
-				$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
+				if (!empty($values[$i])) {
+					$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
+				}
 				if ($i == 0) {
 					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
 				}

@@ -1024,18 +1024,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// load and check attributes
 		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$descriptionCounter = 0;
-			while (isset($_POST['description' . $descriptionCounter])) {
-				$this->attributes['description'][$descriptionCounter] = $_POST['description' . $descriptionCounter];
-				if ($this->attributes['description'][$descriptionCounter] == '') {
-					unset($this->attributes['description'][$descriptionCounter]);
-				}
-				$descriptionCounter++;
-			}
-			if (isset($_POST['addDescription'])) {
-				$this->attributes['description'][] = '';
-			}
-			$this->attributes['description'] = array_values($this->attributes['description']);
+			$this->processMultiValueInputTextField('description', $errors);
 		}
 		$this->attributes['sn'][0] = trim($_POST['sn']);
 		if (!get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
@@ -1134,48 +1123,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['homePhone'] = array_values($this->attributes['homePhone']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
-			$streetCounter = 0;
-			while (isset($_POST['street' . $streetCounter])) {
-				$this->attributes['street'][$streetCounter] = $_POST['street' . $streetCounter];
-				if (!get_preg($this->attributes['street'][$streetCounter], 'street')) $errors[] = $this->messages['street'][0];
-				if ($this->attributes['street'][$streetCounter] == '') {
-					unset($this->attributes['street'][$streetCounter]);
-				}
-				$streetCounter++;
-			}
-			if (isset($_POST['addStreet'])) {
-				$this->attributes['street'][] = '';
-			}
-			$this->attributes['street'] = array_values($this->attributes['street']);
+			$this->processMultiValueInputTextField('street', $errors, 'street');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
-			$postOfficeBoxCounter = 0;
-			while (isset($_POST['postOfficeBox' . $postOfficeBoxCounter])) {
-				$this->attributes['postOfficeBox'][$postOfficeBoxCounter] = $_POST['postOfficeBox' . $postOfficeBoxCounter];
-				if ($this->attributes['postOfficeBox'][$postOfficeBoxCounter] == '') {
-					unset($this->attributes['postOfficeBox'][$postOfficeBoxCounter]);
-				}
-				$postOfficeBoxCounter++;
-			}
-			if (isset($_POST['addPostOfficeBox'])) {
-				$this->attributes['postOfficeBox'][] = '';
-			}
-			$this->attributes['postOfficeBox'] = array_values($this->attributes['postOfficeBox']);
+			$this->processMultiValueInputTextField('postOfficeBox', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
-			$postalCodeCounter = 0;
-			while (isset($_POST['postalCode' . $postalCodeCounter])) {
-				$this->attributes['postalCode'][$postalCodeCounter] = $_POST['postalCode' . $postalCodeCounter];
-				if (!get_preg($this->attributes['postalCode'][$postalCodeCounter], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
-				if ($this->attributes['postalCode'][$postalCodeCounter] == '') {
-					unset($this->attributes['postalCode'][$postalCodeCounter]);
-				}
-				$postalCodeCounter++;
-			}
-			if (isset($_POST['addPostalCode'])) {
-				$this->attributes['postalCode'][] = '';
-			}
-			$this->attributes['postalCode'] = array_values($this->attributes['postalCode']);
+			$this->processMultiValueInputTextField('postalCode', $errors, 'postalCode');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$addressCounter = 0;
@@ -1229,49 +1183,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$lCounter = 0;
-			while (isset($_POST['l' . $lCounter])) {
-				$this->attributes['l'][$lCounter] = $_POST['l' . $lCounter];
-				if ($this->attributes['l'][$lCounter] == '') {
-					unset($this->attributes['l'][$lCounter]);
-				}
-				$lCounter++;
-			}
-			if (isset($_POST['addL'])) {
-				$this->attributes['l'][] = '';
-			}
-			$this->attributes['l'] = array_values($this->attributes['l']);
+			$this->processMultiValueInputTextField('l', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$stCounter = 0;
-			while (isset($_POST['st' . $stCounter])) {
-				$this->attributes['st'][$stCounter] = $_POST['st' . $stCounter];
-				if ($this->attributes['st'][$stCounter] == '') {
-					unset($this->attributes['st'][$stCounter]);
-				}
-				$stCounter++;
-			}
-			if (isset($_POST['addSt'])) {
-				$this->attributes['st'][] = '';
-			}
-			$this->attributes['st'] = array_values($this->attributes['st']);
+			$this->processMultiValueInputTextField('st', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$physicalDeliveryOfficeNameCounter = 0;
-			while (isset($_POST['physicalDeliveryOfficeName' . $physicalDeliveryOfficeNameCounter])) {
-				$this->attributes['physicalDeliveryOfficeName'][$physicalDeliveryOfficeNameCounter] = $_POST['physicalDeliveryOfficeName' . $physicalDeliveryOfficeNameCounter];
-				if ($this->attributes['physicalDeliveryOfficeName'][$physicalDeliveryOfficeNameCounter] == '') {
-					unset($this->attributes['physicalDeliveryOfficeName'][$physicalDeliveryOfficeNameCounter]);
-				}
-				$physicalDeliveryOfficeNameCounter++;
-			}
-			if (isset($_POST['addPhysicalDeliveryOfficeName'])) {
-				$this->attributes['physicalDeliveryOfficeName'][] = '';
-			}
-			$this->attributes['physicalDeliveryOfficeName'] = array_values($this->attributes['physicalDeliveryOfficeName']);
+			$this->processMultiValueInputTextField('physicalDeliveryOfficeName', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$businessCategoryCounter = 0;
@@ -1343,12 +1264,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!in_array('posixAccount', $modules)) {
 			// uid
 			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
-				if (isset($_POST['userName']) && ($_POST['userName'] != '')) {
-					if (!get_preg($_POST['userName'], 'username')) {
+				if (isset($_POST['uid']) && ($_POST['uid'] != '')) {
+					if (!get_preg($_POST['uid'], 'username')) {
 						$errors[] = $this->messages['uid'][0];
 					}
 					else {
-						$this->attributes['uid'][0] = $_POST['userName'];
+						$this->attributes['uid'][0] = $_POST['uid'];
 					}
 				}
 				elseif (isset($this->attributes['uid'][0])) {
@@ -1405,62 +1326,32 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->addElement($imageContainer, false);
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules) && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
-			$uid = '';
-			if (isset($this->attributes['uid'][0])) $uid = $this->attributes['uid'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('User name'), 'userName', $uid, 'uid'), true);
-			$equalWidthElements[] = 'userName';
+			$this->addSimpleInputTextField($fieldContainer, 'uid', _('User name'));
+			$equalWidthElements[] = 'uid';
 		}
-		$firstName = '';
-		if (isset($this->attributes['givenName'][0])) $firstName = $this->attributes['givenName'][0];
-		$fieldContainer->addElement(new htmlTableExtendedInputField(_('First name'), 'givenName', $firstName, 'givenName'), true);
+		$this->addSimpleInputTextField($fieldContainer, 'givenName', _('First name'));
 		$equalWidthElements[] = 'givenName';
-		$lastName = '';
-		if (isset($this->attributes['sn'][0])) $lastName = $this->attributes['sn'][0];
-		$lastNameElement = new htmlTableExtendedInputField(_('Last name'), 'sn', $lastName, 'sn');
-		$lastNameElement->setRequired(true);
-		$fieldContainer->addElement($lastNameElement, true);
+		$this->addSimpleInputTextField($fieldContainer, 'sn', _('Last name'), true);
 		$equalWidthElements[] = 'sn';
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
-			$initials = '';
-			if (isset($this->attributes['initials'][0])) $initials = implode('; ', $this->attributes['initials']);
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Initials'), 'initials', $initials, 'initials'), true);
+			$this->addSimpleInputTextField($fieldContainer, 'initials', _('Initials'));
 			$equalWidthElements[] = 'initials';
 		}
 		if (!in_array('posixAccount', $modules)) {
-			$cn = '';
-			if (isset($this->attributes['cn'][0])) $cn = $this->attributes['cn'][0];
-			$cnElement = new htmlTableExtendedInputField(_('Common name'), 'cn', $cn, 'cn');
-			$cnElement->setRequired(true);
-			$fieldContainer->addElement($cnElement, true);
+			$this->addSimpleInputTextField($fieldContainer, 'cn', _('Common name'), true);
 			$equalWidthElements[] = 'cn';
 		}
 		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$descriptions = array();
-			if (isset($this->attributes['description'][0])) {
-				$descriptions = $this->attributes['description'];
-			}
-			if (sizeof($descriptions) == 0) {
-				$descriptions[] = '';
-			}
-			$descriptionLabel = new htmlOutputText(_('Description'));
-			$descriptionLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($descriptionLabel);
-			$descriptionContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($descriptions); $i++) {
-				$descriptionContainer->addElement(new htmlInputField('description' . $i, $descriptions[$i]));
-				$equalWidthElements[] = 'description' . $i;
-				if ($i < (sizeof($descriptions) - 1)) {
-					$descriptionContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$descriptionContainer->addElement(new htmlButton('addDescription', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'description', _('Description'));
+			if (!empty($this->attributes['description'])) {
+				for ($i = 0; $i < sizeof($this->attributes['description']); $i++) {
+					$equalWidthElements[] = 'description_' . $i;
 				}
 			}
-			$fieldContainer->addElement($descriptionContainer);
-			$descriptionHelp = new htmlHelpLink('description');
-			$descriptionHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($descriptionHelp, true);
+			else {
+				$equalWidthElements[] = 'description_0';
+			}
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')
@@ -1472,139 +1363,59 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
-			$streets = array();
-			if (isset($this->attributes['street'][0])) {
-				$streets = $this->attributes['street'];
-			}
-			if (sizeof($streets) == 0) {
-				$streets[] = '';
-			}
-			$streetLabel = new htmlOutputText(_('Street'));
-			$streetLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($streetLabel);
-			$streetContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($streets); $i++) {
-				$streetContainer->addElement(new htmlInputField('street' . $i, $streets[$i]));
-				$equalWidthElements[] = 'street' . $i;
-				if ($i < (sizeof($streets) - 1)) {
-					$streetContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$streetContainer->addElement(new htmlButton('addStreet', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'street', _('Street'));
+			if (!empty($this->attributes['street'])) {
+				for ($i = 0; $i < sizeof($this->attributes['street']); $i++) {
+					$equalWidthElements[] = 'street_' . $i;
 				}
 			}
-			$fieldContainer->addElement($streetContainer);
-			$streetHelp = new htmlHelpLink('street');
-			$streetHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($streetHelp, true);
+			else {
+				$equalWidthElements[] = 'street_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
-			$postOfficeBoxes = array();
-			if (isset($this->attributes['postOfficeBox'][0])) {
-				$postOfficeBoxes = $this->attributes['postOfficeBox'];
-			}
-			if (sizeof($postOfficeBoxes) == 0) {
-				$postOfficeBoxes[] = '';
-			}
-			$postOfficeBoxLabel = new htmlOutputText(_('Post office box'));
-			$postOfficeBoxLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($postOfficeBoxLabel);
-			$postOfficeBoxContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($postOfficeBoxes); $i++) {
-				$postOfficeBoxContainer->addElement(new htmlInputField('postOfficeBox' . $i, $postOfficeBoxes[$i]));
-				$equalWidthElements[] = 'postOfficeBox' . $i;
-				if ($i < (sizeof($postOfficeBoxes) - 1)) {
-					$postOfficeBoxContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$postOfficeBoxContainer->addElement(new htmlButton('addPostOfficeBox', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'postOfficeBox', _('Post office box'));
+			if (!empty($this->attributes['postOfficeBox'])) {
+				for ($i = 0; $i < sizeof($this->attributes['postOfficeBox']); $i++) {
+					$equalWidthElements[] = 'postOfficeBox_' . $i;
 				}
 			}
-			$fieldContainer->addElement($postOfficeBoxContainer);
-			$postOfficeBoxHelp = new htmlHelpLink('postOfficeBox');
-			$postOfficeBoxHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($postOfficeBoxHelp, true);
+			else {
+				$equalWidthElements[] = 'postOfficeBox_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
-			$postalCodes = array();
-			if (isset($this->attributes['postalCode'][0])) {
-				$postalCodes = $this->attributes['postalCode'];
-			}
-			if (sizeof($postalCodes) == 0) {
-				$postalCodes[] = '';
-			}
-			$postalCodeLabel = new htmlOutputText(_('Postal code'));
-			$postalCodeLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($postalCodeLabel);
-			$postalCodeContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($postalCodes); $i++) {
-				$postalCodeContainer->addElement(new htmlInputField('postalCode' . $i, $postalCodes[$i]));
-				$equalWidthElements[] = 'postalCode' . $i;
-				if ($i < (sizeof($postalCodes) - 1)) {
-					$postalCodeContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$postalCodeContainer->addElement(new htmlButton('addPostalCode', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'postalCode', _('Postal code'));
+			if (!empty($this->attributes['postalCode'])) {
+				for ($i = 0; $i < sizeof($this->attributes['postalCode']); $i++) {
+					$equalWidthElements[] = 'postalCode_' . $i;
 				}
 			}
-			$fieldContainer->addElement($postalCodeContainer);
-			$postalCodeHelp = new htmlHelpLink('postalCode');
-			$postalCodeHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($postalCodeHelp, true);
+			else {
+				$equalWidthElements[] = 'postalCode_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$locations = array();
-			if (isset($this->attributes['l'][0])) {
-				$locations = $this->attributes['l'];
-			}
-			if (sizeof($locations) == 0) {
-				$locations[] = '';
-			}
-			$locationLabel = new htmlOutputText(_('Location'));
-			$locationLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($locationLabel);
-			$locationContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($locations); $i++) {
-				$locationContainer->addElement(new htmlInputField('l' . $i, $locations[$i]));
-				$equalWidthElements[] = 'l' . $i;
-				if ($i < (sizeof($locations) - 1)) {
-					$locationContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$locationContainer->addElement(new htmlButton('addL', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'l', _('Location'));
+			if (!empty($this->attributes['l'])) {
+				for ($i = 0; $i < sizeof($this->attributes['l']); $i++) {
+					$equalWidthElements[] = 'l_' . $i;
 				}
 			}
-			$fieldContainer->addElement($locationContainer);
-			$locationHelp = new htmlHelpLink('l');
-			$locationHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($locationHelp, true);
+			else {
+				$equalWidthElements[] = 'l_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$states = array();
-			if (isset($this->attributes['st'][0])) {
-				$states = $this->attributes['st'];
-			}
-			if (sizeof($states) == 0) {
-				$states[] = '';
-			}
-			$stateLabel = new htmlOutputText(_('State'));
-			$stateLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($stateLabel);
-			$stateContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($states); $i++) {
-				$stateContainer->addElement(new htmlInputField('st' . $i, $states[$i]));
-				$equalWidthElements[] = 'st' . $i;
-				if ($i < (sizeof($states) - 1)) {
-					$stateContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$stateContainer->addElement(new htmlButton('addSt', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'st', _('State'));
+			if (!empty($this->attributes['st'])) {
+				for ($i = 0; $i < sizeof($this->attributes['st']); $i++) {
+					$equalWidthElements[] = 'st_' . $i;
 				}
 			}
-			$fieldContainer->addElement($stateContainer);
-			$stateHelp = new htmlHelpLink('st');
-			$stateHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($stateHelp, true);
+			else {
+				$equalWidthElements[] = 'st_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$postalAddresses = array();
@@ -1665,36 +1476,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($registeredAddressHelp, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$physicalDeliveryOfficeNames = array();
-			if (isset($this->attributes['physicalDeliveryOfficeName'][0])) {
-				$physicalDeliveryOfficeNames = $this->attributes['physicalDeliveryOfficeName'];
-			}
-			if (sizeof($physicalDeliveryOfficeNames) == 0) {
-				$physicalDeliveryOfficeNames[] = '';
-			}
-			$physicalDeliveryOfficeNameLabel = new htmlOutputText(_('Office name'));
-			$physicalDeliveryOfficeNameLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($physicalDeliveryOfficeNameLabel);
-			$physicalDeliveryOfficeNameContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($physicalDeliveryOfficeNames); $i++) {
-				$physicalDeliveryOfficeNameContainer->addElement(new htmlInputField('physicalDeliveryOfficeName' . $i, $physicalDeliveryOfficeNames[$i]));
-				$equalWidthElements[] = 'physicalDeliveryOfficeName' . $i;
-				if ($i < (sizeof($physicalDeliveryOfficeNames) - 1)) {
-					$physicalDeliveryOfficeNameContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$physicalDeliveryOfficeNameContainer->addElement(new htmlButton('addPhysicalDeliveryOfficeName', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'));
+			if (!empty($this->attributes['physicalDeliveryOfficeName'])) {
+				for ($i = 0; $i < sizeof($this->attributes['physicalDeliveryOfficeName']); $i++) {
+					$equalWidthElements[] = 'physicalDeliveryOfficeName_' . $i;
 				}
 			}
-			$fieldContainer->addElement($physicalDeliveryOfficeNameContainer);
-			$physicalDeliveryOfficeNameHelp = new htmlHelpLink('physicalDeliveryOfficeName');
-			$physicalDeliveryOfficeNameHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($physicalDeliveryOfficeNameHelp, true);
+			else {
+				$equalWidthElements[] = 'physicalDeliveryOfficeName_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
-			$roomNumber = '';
-			if (isset($this->attributes['roomNumber'][0])) $roomNumber = $this->attributes['roomNumber'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Room number'), 'roomNumber', $roomNumber, 'roomNumber'), true);
+			$this->addSimpleInputTextField($fieldContainer, 'roomNumber', _('Room number'));
 			$equalWidthElements[] = 'roomNumber';
 		}
 
