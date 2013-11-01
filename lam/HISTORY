@@ -5,7 +5,7 @@ December 2013 4.4
   - LAM Pro:
    -> Bind DLZ support
    -> Samba/Shadow: display password change date in self service
-   -> Custom fields: support custom label and icon
+   -> Custom fields: support custom label and icon, auto-completion
 
 
 25.09.2013 4.3

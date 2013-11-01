@@ -4620,6 +4620,11 @@ Run slapindex to rebuild the index.
       linkend="customFields_validation_expressions_admin">validation
       expression</link> and error message.</para>
 
+      <para>You can also enable auto-completion. In this case LAM will search
+      all accounts for the given attribute and provide auto-completion hints
+      when the user edits this field. This should only be used if there is a
+      limited number of different values for this attribute.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
@@ -6631,6 +6636,12 @@ Run slapindex to rebuild the index.
           <para>Text fields allow to specify a <link
           linkend="customFields_validation_expressions">validation
           expression</link> and error message.</para>
+
+          <para>You can also enable auto-completion. In this case LAM will
+          search all accounts for the given attribute and provide
+          auto-completion hints when the user edits this field. This should
+          only be used if there is a limited number of different values for
+          this attribute.</para>
 
           <screenshot>
             <mediaobject>
