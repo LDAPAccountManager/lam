@@ -354,6 +354,10 @@ function equalWidth(elementIDs) {
 			maxWidth = jQuery(elementIDs[i]).width();
 		};
 	}
+	if (maxWidth < 5) {
+		// no action if invalid width value (e.g. because of hidden tab)
+		return;
+	}
 	for (var i = 0; i < elementIDs.length; ++i) {
 		jQuery(elementIDs[i]).css({'width': maxWidth - (jQuery(elementIDs[i]).outerWidth() - jQuery(elementIDs[i]).width())});
 	}

@@ -225,6 +225,8 @@ $helpArray = array (
 					"Text" => _('This text is placed as label for the password field on the login page. LAM will use "Password" if you do not enter any text.')),
 				"512" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=passwordSelfReset)") to reduce the number of accounts who may use self service.')),
+				"513" => array ("Headline" => _('Use for all operations'),
+					"Text" => _('By default all modifications are done as the user that authenticated in self service. If active then LAM will use the connection user for all LDAP modifications and searches.')),
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				"550" => array ("Headline" => _("From address"),

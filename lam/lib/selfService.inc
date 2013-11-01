@@ -307,6 +307,9 @@ class selfServiceProfile {
 
 	/** LDAP password */
 	public $LDAPPassword;
+	
+	/** use bind user also for read/modify operations */
+	public $useForAllOperations;
 
 	/** LDAP search attribute */
 	public $searchAttribute;
@@ -364,6 +367,7 @@ class selfServiceProfile {
 		$this->LDAPSuffix = "dc=my-domain,dc=com";
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
+		$this->useForAllOperations = false;
 		$this->searchAttribute = "uid";
 		$this->additionalLDAPFilter = '';
 		$this->httpAuthentication = false;

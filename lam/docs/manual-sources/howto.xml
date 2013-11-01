@@ -5615,6 +5615,10 @@ Run slapindex to rebuild the index.
         the LDAP database. Before your users may change their settings you
         must allow them to change their LDAP data.</para>
 
+        <para>Hint: The ACLs below are not required if you decide to run all
+        operations as the LDAP bind user (option "Use for all
+        operations").</para>
+
         <para>This can be done by adding ACLs to your slapd.conf or
         slapd.d/cn=config/olcDatabase={1}bdb.ldif which look similar to
         these:</para>
@@ -5722,7 +5726,7 @@ Run slapindex to rebuild the index.
           </mediaobject>
         </screenshot>
 
-        <table>
+        <table border="0">
           <title>General options</title>
 
           <tgroup cols="2">
@@ -5730,7 +5734,15 @@ Run slapindex to rebuild the index.
               <row>
                 <entry>Server address</entry>
 
-                <entry>The address of your LDAP server</entry>
+                <entry>The address of your LDAP server. For LDAP+SSL use
+                "ldaps://myserver"</entry>
+              </row>
+
+              <row>
+                <entry>Activate TLS</entry>
+
+                <entry>Activates TLS encryption. Please note that this cannot
+                be combined with LDAP+SSL ("ldaps://").</entry>
               </row>
 
               <row>
@@ -5738,6 +5750,13 @@ Run slapindex to rebuild the index.
 
                 <entry>The part of the LDAP tree where LAM should search for
                 users</entry>
+              </row>
+
+              <row>
+                <entry>LDAP search attribute</entry>
+
+                <entry>Here you can specify if your users can login with user
+                name + password, email + password or other attributes.</entry>
               </row>
 
               <row>
@@ -5750,10 +5769,15 @@ Run slapindex to rebuild the index.
               </row>
 
               <row>
-                <entry>LDAP search attribute</entry>
+                <entry>Use for all operations</entry>
 
-                <entry>Here you can specify if your users can login with user
-                name + password, email + password or other attributes.</entry>
+                <entry>By default LAM will use the credentials of the user
+                that logged in to self service for read/modify operations. If
+                you select this box then the connection user specified before
+                will be used instead. Please note that this can be a security
+                risk because the user requires write access to all users. You
+                need to make sure that your LAM server is well
+                protected.</entry>
               </row>
 
               <row>

@@ -251,6 +251,15 @@ class htmlTable extends htmlElement {
 	}
 	
 	/**
+	 * Adds an htmlSpacer with the given width.
+	 * 
+	 * @param String $width width (e.g. 10px)
+	 */
+	public function addSpace($width) {
+		$this->addElement(new htmlSpacer($width, null));
+	}
+	
+	/**
 	 * Prints the HTML code for this element.
 	 * 
 	 * @param string $module Name of account module
