@@ -2163,7 +2163,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function display_html_photo() {
 		$container = new htmlTable();
-		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Photo file (JPG format)'), 'photoUpload'), true);
+		$label = _('Photo file (JPG format)');
+		if (extension_loaded('imagick')) {
+			$label = _('Photo file');
+		}
+		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
 		$buttonContainer = new htmlTable();
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Add photo')));
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
