@@ -21,26 +21,24 @@ $Id$
 */
 
 /**
-* Manages Kolab group accounts.
+* Manages Kolab shared folders.
 *
 * @package modules
 * @author Roland Gruber
 */
 
 /**
-* Manages Kolab group accounts.
+* Manages Kolab shared folders.
 *
 * @package modules
 */
-class kolabGroup extends baseModule {
+class kolabSharedFolder extends baseModule {
 	
-	/** cache for mail attribute */
-	private $mailCache = null;
 	/** cache for mailHost values */
 	private $mailHostCache = null;
 	
 	/**
-	* Creates a new kolabGroup object.
+	* Creates a new kolabSharedFolder object.
 	*
 	* @param string $scope account type (user, group, host)
 	*/
@@ -64,26 +62,16 @@ class kolabGroup extends baseModule {
 		// manages host accounts
 		$return["account_types"] = array('group');
 		// alias name
-		$return["alias"] = _("Kolab");
+		$return["alias"] = _("Kolab shared folder");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
-		$return['objectClasses'] = array('kolabGroupOfUniqueNames');
+		$return['objectClasses'] = array('kolabSharedFolder');
 		// managed attributes
-		$return['attributes'] = array('kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'kolabDeleteflag');
-		if ($this->manageMail()) {
-			$return['attributes'][] = 'mail';
-		}
+		$return['attributes'] = array('kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'kolabDeleteflag', 'acl',
+			'alias', 'kolabDelegate', 'kolabFolderType', 'kolabTargetFolder', 'mailHost');
 		// help Entries
 		$return['help'] = array(
-			'mail' => array(
-				"Headline" => _("Email address"), 'attr' => 'mail',
-				"Text" => _("The list's email address.")
-			),
-			'mailList' => array(
-				"Headline" => _("Email address"), 'attr' => 'mail',
-				"Text" => _("The list's email address.") . ' ' . _("Multiple values are separated by semicolon.")
-			),
 			'kolabAllowSMTPRecipient' => array (
 				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
@@ -106,23 +94,15 @@ class kolabGroup extends baseModule {
 				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
 				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
 			),
-			'autoAdd' => array(
-				"Headline" => _("Automatically add this extension"),
-				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
 			'addExtension' => array(
 				"Headline" => _("Add Kolab extension"),
 				"Text" => _("Adds this Kolab extension.")
 			),
 		);
-		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('kolabGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
-		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
-				'name' => 'kolabGroup_addExtension',
+				'name' => 'kolabSharedFolder_addExtension',
 				'description' => _('Add Kolab extension'),
 				'help' => 'addExtension',
 				'example' => 'false',
@@ -130,36 +110,23 @@ class kolabGroup extends baseModule {
 				'values' => 'true, false'
 			),
 			array(
-				'name' => 'kolabGroup_kolabAllowSMTPRecipient',
+				'name' => 'kolabSharedFolder_kolabAllowSMTPRecipient',
 				'description' => _('Allowed recepients'),
 				'help' => 'kolabAllowSMTPRecipientList',
 				'example' => '.com; -.net',
 			),
 			array(
-				'name' => 'kolabGroup_kolabAllowSMTPSender',
+				'name' => 'kolabSharedFolder_kolabAllowSMTPSender',
 				'description' => _('Allowed senders'),
 				'help' => 'kolabAllowSMTPSenderList',
 				'example' => '.com; -.net',
 			),
 		);
-		if ($this->manageMail()) {
-			$return['upload_columns'][] = array(
-				'name' => 'kolabGroup_mail',
-				'description' => _('Email address'),
-				'help' => 'mailList',
-				'example' => 'list@company.com',
-				'required' => true,
-				'unique' => true,
-			);
-		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'kolabAllowSMTPRecipient' => _('Allowed recepients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
 		);
-		if ($this->manageMail()) {
-			$return['PDF_fields']['mail'] = _('Email address');
-		}
 		return $return;
 	}
 
@@ -167,14 +134,11 @@ class kolabGroup extends baseModule {
 	* This function fills the $messages variable with output messages from this module.
 	*/
 	function load_Messages() {
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Please enter a valid email address!'));
-		$this->messages['mail'][2] = array('ERROR', _('Email address'), _('Email address already exists.'));
-		$this->messages['mail'][3] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Email address already exists.'));
 		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recepients'), _('Please enter a valid recepient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
-		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
+		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
+		$this->messages['extension'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_addExtension', _('You cannot add the Kolab group and shared folder extension at the same time.'));
 	}
 
 	/**
@@ -184,15 +148,11 @@ class kolabGroup extends baseModule {
 	 */
 	function display_html_attributes() {
 		$container = new htmlTable();
-		if (isset($this->attributes['objectClass']) && in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
+		if (isset($this->attributes['objectClass']) && in_array('kolabSharedFolder', $this->attributes['objectClass'])) {
 			// check if account is marked for deletion
 			if (isset($this->attributes['kolabDeleteflag'])) {
 				$container->addElement(new htmlOutputText(_('This account is marked for deletion.')));
 				return $container;
-			}
-			// mail
-			if ($this->manageMail()) {
-				$this->addSimpleInputTextField($container, 'mail', _('Email address'), true);
 			}
 			// allowed recepients
 			$this->addMultiValueInputTextField($container, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
@@ -224,11 +184,11 @@ class kolabGroup extends baseModule {
 	function process_attributes() {
 		$errors = array();
 		if (isset($_POST['addObjectClass'])) {
-			$this->attributes['objectClass'][] = 'kolabGroupOfUniqueNames';
+			$this->attributes['objectClass'][] = 'kolabSharedFolder';
 			return $errors;
 		}
 		if (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('kolabGroupOfUniqueNames'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(array('kolabSharedFolder'), $this->attributes['objectClass']);
 			$attrs = $this->meta['attributes'];
 			foreach ($attrs as $name) {
 				if (isset($this->attributes[$name])) {
@@ -238,28 +198,8 @@ class kolabGroup extends baseModule {
 			return $errors;
 		}
 		// skip processing if object class is not set
-		if (!isset($this->attributes['objectClass']) || !in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
+		if (!isset($this->attributes['objectClass']) || !in_array('kolabSharedFolder', $this->attributes['objectClass'])) {
 			return $errors;
-		}
-		// mail
-		if ($this->manageMail()) {
-			if (!empty($_POST['mail'])) {
-				$this->attributes['mail'][0] = $_POST['mail'];
-				// check format
-				if (!get_preg($_POST['mail'], 'email')) {
-					$errors[] = $this->messages['mail'][0];
-				}
-				// check if unique
-				if ($this->getAccountContainer()->isNewAccount || (!empty($this->orig['mail'][0]) && ($this->orig['mail'][0] != $this->attributes['mail'][0]))) {
-					$this->loadMailCache();
-					if (in_array_ignore_case($_POST['mail'], $this->mailCache)) {
-						$errors[] = $this->messages['mail'][2];
-					}
-				}
-			}
-			elseif (isset($this->attributes['mail'])) {
-				unset($this->attributes['mail']);
-			}
 		}
 		// allowed recepients
 		$this->processMultiValueInputTextField('kolabAllowSMTPRecipient', $errors, 'kolabEmailPrefix');
@@ -293,7 +233,7 @@ class kolabGroup extends baseModule {
 	* Write variables into object and do some regex checks
 	*/
 	function process_deleteFlag() {
-		if (isset($_POST['form_subpage_kolabGroup_attributes_confirm'])) {
+		if (isset($_POST['form_subpage_kolabSharedFolder_attributes_confirm'])) {
 			// set delete flag
 			$this->attributes['kolabDeleteflag'][0] = $_POST['deletionServer'];
 		}
@@ -312,29 +252,13 @@ class kolabGroup extends baseModule {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
-		if (!in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass']) && !in_array('kolabGroupOfUniqueNames', $this->orig['objectClass'])) {
+		if (!in_array('kolabSharedFolder', $this->attributes['objectClass']) && !in_array('kolabSharedFolder', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
 			return array();
 		}
 		return parent::save_attributes();
 	}
 
-	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
-	function load_profile($profile) {
-		// profile mappings in meta data
-		parent::load_profile($profile);
-		// add extension
-		if (isset($profile['kolabGroup_addExt'][0]) && ($profile['kolabGroup_addExt'][0] == "true")) {
-			if (!in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'kolabGroupOfUniqueNames';
-			}
-		}
-	}
-	
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -348,35 +272,24 @@ class kolabGroup extends baseModule {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// check if extension should be added
-			if (isset($rawAccounts[$i][$ids['kolabGroup_addExtension']]) && ($rawAccounts[$i][$ids['kolabGroup_addExtension']] != 'true')) {
+			if (isset($rawAccounts[$i][$ids['kolabSharedFolder_addExtension']]) && ($rawAccounts[$i][$ids['kolabSharedFolder_addExtension']] != 'true')) {
+				continue;
+			}
+			// check if both group and shared folder enxtension should be added
+			if (isset($rawAccounts[$i][$ids['kolabSharedFolder_addExtension']]) && ($rawAccounts[$i][$ids['kolabSharedFolder_addExtension']] == 'true')
+					&& isset($rawAccounts[$i][$ids['kolabGroup_addExtension']]) && ($rawAccounts[$i][$ids['kolabGroup_addExtension']] == 'true')) {
+				$errMsg = $this->messages['extension'][1];
+				array_push($errMsg, array($i));
+				$messages[] = $errMsg;
 				continue;
 			}
 			// add object classes
-			if (!in_array('kolabGroupOfUniqueNames', $partialAccounts[$i]['objectClass'])) {
-				$partialAccounts[$i]['objectClass'][] = 'kolabGroupOfUniqueNames';
-			}
-			// mail
-			if ($this->manageMail() && !empty($rawAccounts[$i][$ids['kolabGroup_mail']])) {
-				if (get_preg($rawAccounts[$i][$ids['kolabGroup_mail']], 'email')) {
-					$this->loadMailCache();
-					if (!in_array_ignore_case(trim($rawAccounts[$i][$ids['kolabGroup_mail']]), $this->mailCache)) {
-						$partialAccounts[$i]['mail'] = trim($rawAccounts[$i][$ids['kolabGroup_mail']]);
-					}
-					else {
-						$errMsg = $this->messages['mail'][3];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
-				else {
-					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
+			if (!in_array('kolabSharedFolder', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'kolabSharedFolder';
 			}
 			// allowed recipients
-			if (!empty($rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPRecipient']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPRecipient']]);
+			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPRecipient']])) {
+				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPRecipient']]);
 				for ($m = 0; $m < sizeof($mails); $m++) {
 					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
 						$partialAccounts[$i]['kolabAllowSMTPRecipient'][] = $mails[$m];
@@ -390,8 +303,8 @@ class kolabGroup extends baseModule {
 				}
 			}
 			// allowed senders
-			if (!empty($rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPSender']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPSender']]);
+			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPSender']])) {
+				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPSender']]);
 				for ($m = 0; $m < sizeof($mails); $m++) {
 					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
 						$partialAccounts[$i]['kolabAllowSMTPSender'][] = $mails[$m];
@@ -413,44 +326,9 @@ class kolabGroup extends baseModule {
 	*/
 	function get_pdfEntries() {
 		$return = array();
-		$this->addSimplePDFField($return, 'mail', _('Email address'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		return $return;
-	}
-	
-	/**
-	 * Returns if the mail attribute should be managed.
-	 * 
-	 * @return boolean manage mail attribute
-	 */
-	private function manageMail() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('qmailGroup', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Loads the list of email addresses into the cache.
-	 */
-	private function loadMailCache() {
-		if ($this->mailCache != null) {
-			return;
-		}
-		$results = searchLDAPByFilter('(mail=*)', array('mail'), array($this->get_scope()));
-		$this->mailCache = array();
-		foreach ($results as $result) {
-			if (isset($result['mail'][0])) {
-				$this->mailCache[] = $result['mail'][0];
-			}
-		}
 	}
 	
 	/**
@@ -484,7 +362,7 @@ class kolabGroup extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-		$module = $this->getAccountContainer()->getAccountModule('kolabSharedFolder');
+		$module = $this->getAccountContainer()->getAccountModule('kolabGroup');
 		if ($module != null) {
 			if ($module->extensionIsEnabled()) {
 				return 'disabled';
@@ -499,7 +377,7 @@ class kolabGroup extends baseModule {
 	 * @return boolean enabled (= object class added to entry)
 	 */
 	public function extensionIsEnabled() {
-		if (isset($this->attributes['objectClass']) && in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
+		if (isset($this->attributes['objectClass']) && in_array('kolabSharedFolder', $this->attributes['objectClass'])) {
 			return true;
 		}
 		return false;
