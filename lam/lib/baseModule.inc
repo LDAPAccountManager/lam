@@ -1220,8 +1220,10 @@ abstract class baseModule {
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
+	 * @param array $autoCompleteValues values for auto-completion
+	 * @param integer $fieldSize field size
 	 */
-	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
+	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null, $fieldSize = null) {
 			$values = array();
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
@@ -1231,14 +1233,22 @@ abstract class baseModule {
 			}
 			natcasesort($values);
 			$values = array_values($values);
-			$labelTextOut = new htmlOutputText($label);
-			$labelTextOut->alignment = htmlElement::ALIGN_TOP;
-			$container->addElement($labelTextOut);
+			if ($label !== null) {
+				$labelTextOut = new htmlOutputText($label);
+				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
+				$container->addElement($labelTextOut);
+			}
 			$subContainer = new htmlTable();
 			$subContainer->alignment = htmlElement::ALIGN_TOP;
 			for ($i = 0; $i < sizeof($values); $i++) {
 				if (!$isTextArea) {
 					$input = new htmlInputField($attrName . '_' . $i, $values[$i]);
+					if (!empty($length)) {
+						$input->setFieldMaxLength($length);
+					}
+					if (!empty($fieldSize)) {
+						$input->setFieldSize($fieldSize);
+					}
 					if (!empty($autoCompleteValues)) {
 						$input->enableAutocompletion($autoCompleteValues);
 					}
@@ -1282,7 +1292,11 @@ abstract class baseModule {
 				unset($this->attributes[$attrName][$counter]);
 			}
 			elseif (($validationID != null) && ($this->attributes[$attrName][$counter] != '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
-				$errors[] = $this->messages[$attrName][0];
+				$msg = $this->messages[$attrName][0];
+				if (sizeof($msg) < 3) {
+					$msg[] = htmlspecialchars($this->attributes[$attrName][$counter]);
+				}
+				$errors[] = $msg;
 			}
 			$counter++;
 		}

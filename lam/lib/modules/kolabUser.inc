@@ -258,13 +258,7 @@ class kolabUser extends baseModule {
 			}
 			// mailbox server
 			if (!isset($this->orig['mailHost'][0])) {  // value currently not set
-				$mailHost = '';
-				if (isset($this->attributes['mailHost'][0])) {
-					$mailHost = $this->attributes['mailHost'][0];
-				}
-				$serverInput = new htmlTableExtendedInputField(_('Mailbox home server'), 'mailHost', $mailHost, 'mailHost');
-				$serverInput->setRequired(true);
-				$return->addElement($serverInput, true);
+				$this->addSimpleInputTextField($return, 'mailHost', _('Mailbox home server'), true);
 			}
 			else {  // input is unchangable when set
 				$return->addElement(new htmlOutputText(_('Mailbox home server')));
@@ -309,20 +303,7 @@ class kolabUser extends baseModule {
 			$return->addElement($invitationContainer, true);
 			// mail aliases
 			$return->addElement(new htmlSubTitle(_('Email aliases')), true);
-			$mailAliasContainer = new htmlTable();
-			$mailAliasContainer->colspan = 3;
-			if (isset($this->attributes['alias'])) {
-				for ($i = 0; $i < sizeof($this->attributes['alias']); $i++) {
-					$mailAliasContainer->addElement(new htmlInputField('alias' . $i, $this->attributes['alias'][$i]));
-					$mailAliasContainer->addElement(new htmlButton('delAlias' . $i, 'del.png', true));
-					$mailAliasContainer->addElement(new htmlHelpLink('alias'), true);
-				}
-			}
-			// input box for new mail alias
-			$mailAliasContainer->addElement(new htmlInputField('alias'));
-			$mailAliasContainer->addElement(new htmlButton('addAlias', 'add.png', true));
-			$mailAliasContainer->addElement(new htmlHelpLink('alias'), true);
-			$return->addElement($mailAliasContainer, true);
+			$this->addMultiValueInputTextField($return, 'alias');
 			// delegates
 			$delegates = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('mail'), array('user'));
 			for ($i = 0; $i < sizeof($delegates); $i++) {
@@ -431,38 +412,8 @@ class kolabUser extends baseModule {
 			if (isset($_POST['defaultInvPol']) && ($_POST['defaultInvPol'] != "")) {
 				$this->attributes['kolabInvitationPolicy'][] = $policies[$_POST['defaultInvPol']];
 			}
-			// check old mail aliases
-			$this->attributes['alias'] = array();
-			$i = 0;
-			while (isset($_POST['alias' . $i])) {
-				if (isset($_POST['delAlias' . $i])) {
-					$i++;
-					continue;
-				}
-				if (isset($_POST['alias' . $i]) && ($_POST['alias' . $i] != "") && !in_array($_POST['alias' . $i], $this->attributes['alias'])) {
-					// check mail alias
-					if (!get_preg($_POST['alias' . $i], 'email')) {
-						$message = $this->messages['alias'][0];
-						$message[] = $_POST['alias' . $i];
-						$errors[] = $message;
-					}
-					$this->attributes['alias'][] = $_POST['alias' . $i];
-				}
-				$i++;
-			}
-			// check new mail alias
-			if (isset($_POST['alias']) && ($_POST['alias'] != "")) {
-				// check new mail alias
-				if (!get_preg($_POST['alias'], 'email')) {
-					$message = $this->messages['alias'][0];
-					$message[] = $_POST['alias'];
-					$errors[] = $message;
-				}
-				else {
-					$this->attributes['alias'][] = $_POST['alias'];
-				}
-			}
-			$this->attributes['alias'] = array_unique($this->attributes['alias']);
+			// mail aliases
+			$this->processMultiValueInputTextField('alias', $errors, 'email');
 			// check old delegates
 			$this->attributes['kolabDelegate'] = array();
 			$i = 0;

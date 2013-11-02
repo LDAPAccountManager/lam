@@ -61,7 +61,7 @@ class ldapPublicKey extends baseModule {
 		$return['attributes'] = array('sshPublicKey');
 		// help Entries
 		$return['help'] = array(
-			'key' => array(
+			'sshPublicKey' => array(
 				"Headline" => _("SSH public key"), 'attr' => 'sshPublicKey',
 				"Text" => _("Please enter your public SSH key.")
 			),
@@ -109,29 +109,7 @@ class ldapPublicKey extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		$keyCount = 0;
-		// list current keys
-		if (isset($this->attributes['sshPublicKey'])) {
-			$keyCount = sizeof($this->attributes['sshPublicKey']);
-			for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
-				$return->addElement(new htmlOutputText(_('SSH public key')));
-				$sshInput = new htmlInputField('sshPublicKey' . $i, $this->attributes['sshPublicKey'][$i]);
-				$sshInput->setFieldSize(50);
-				$sshInput->setFieldMaxLength(16384);
-				$return->addElement($sshInput);
-				$return->addElement(new htmlButton('delKey' . $i, 'del.png', true));
-				$return->addElement(new htmlHelpLink('key'), true);
-			}
-		}
-		// input box for new key
-		$return->addElement(new htmlOutputText(_('New SSH public key')));
-		$sshNewKey = new htmlInputField('sshPublicKey');
-		$sshNewKey->setFieldSize(50);
-		$sshNewKey->setFieldMaxLength(4096);
-		$return->addElement($sshNewKey);
-		$return->addElement(new htmlButton('addKey', 'add.png', true));
-		$return->addElement(new htmlHelpLink('key'));
-		$return->addElement(new htmlHiddenInput('key_number', $keyCount), true);
+		$this->addMultiValueInputTextField($return, 'sshPublicKey', _('SSH public key'), false, '16384', false, null, '50');
 		// file upload
 		$return->addElement(new htmlSpacer(null, '20px'), true);
 		$return->addElement(new htmlOutputText(_('Upload file')));
@@ -139,9 +117,9 @@ class ldapPublicKey extends baseModule {
 		$uploadGroup->addElement(new htmlInputFileUpload('sshPublicKeyFile'));
 		$uploadGroup->addElement(new htmlSpacer('1px', null));
 		$uploadGroup->addElement(new htmlButton('sshPublicKeyFileSubmit', _('Upload')));
+		$uploadGroup->addElement(new htmlSpacer('5px', null));
+		$uploadGroup->addElement(new htmlHelpLink('upload'));
 		$return->addElement($uploadGroup);
-		$return->addElement(new htmlOutputText(''));
-		$return->addElement(new htmlHelpLink('upload'));
 		return $return;
 	}
 
@@ -153,20 +131,7 @@ class ldapPublicKey extends baseModule {
 	*/
 	function process_attributes() {
 		$messages = array();
-		$this->attributes['sshPublicKey'] = array();
-		// check old keys
-		if (isset($_POST['key_number'])) {
-			for ($i = 0; $i < $_POST['key_number']; $i++) {
-				if (isset($_POST['delKey' . $i])) continue;
-				if (isset($_POST['sshPublicKey' . $i]) && ($_POST['sshPublicKey' . $i] != "")) {
-					$this->attributes['sshPublicKey'][] = $_POST['sshPublicKey' . $i];
-				}
-			}
-		}
-		// check new key
-		if (isset($_POST['sshPublicKey']) && ($_POST['sshPublicKey'] != "")) {
-			$this->attributes['sshPublicKey'][] = $_POST['sshPublicKey'];
-		}
+		$this->processMultiValueInputTextField('sshPublicKey', $messages);
 		// file upload
 		if (isset($_POST['sshPublicKeyFileSubmit'])) {
 			if ($_FILES['sshPublicKeyFile'] && ($_FILES['sshPublicKeyFile']['size'] > 0)) {
