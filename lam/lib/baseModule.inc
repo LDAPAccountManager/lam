@@ -1178,9 +1178,10 @@ abstract class baseModule {
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
+	 * @param array $autoCompleteValues values for auto-completion
 	 * @return mixed reference to htmlTableExtendedInputField/htmlTableExtendedInputTextarea
 	 */
-	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false) {
+	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
 		$value = '';
 		if (isset($this->attributes[$attrName][0])) {
 			$value = $this->attributes[$attrName][0];
@@ -1196,6 +1197,9 @@ abstract class baseModule {
 			$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
 			if ($length != null) {
 				$input->setFieldSize($length);
+			}
+			if (!empty($autoCompleteValues)) {
+				$input->enableAutocompletion($autoCompleteValues);
 			}
 		}
 		$input->setRequired($required);
@@ -1273,7 +1277,7 @@ abstract class baseModule {
 	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null) {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
-			$this->attributes[$attrName][$counter] = $_POST[$attrName . '_' . $counter];
+			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
 			if (($this->attributes[$attrName][$counter] == '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
 				unset($this->attributes[$attrName][$counter]);
 			}

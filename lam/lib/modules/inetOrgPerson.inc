@@ -69,11 +69,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_telephone', _('Please enter a valid telephone number!'));
 		$this->messages['homePhone'][0] = array('ERROR', _('Home telephone number'), _('Please enter a valid telephone number!'));
 		$this->messages['homePhone'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_homePhone', _('Please enter a valid telephone number!'));
-		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+		$this->messages['mobile'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 		$this->messages['mobileTelephone'][1] = array('ERROR', _('Account %s:') . " inetOrgPerson_mobile", _('Please enter a valid mobile number!'));
-		$this->messages['facsimileNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		$this->messages['facsimileTelephoneNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		$this->messages['facsimileNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_fax', _('Please enter a valid fax number!'));
-		$this->messages['email'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
+		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['email'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_email', _('Please enter a valid email address!'));
 		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		$this->messages['street'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_street', _('Please enter a valid street name!'));
@@ -771,7 +771,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _("Telephone number"), 'attr' => 'telephoneNumber',
 				"Text" => _("The user's telephone number.") . ' ' . _('Multiple values are separated by semicolon.')
 			),
-			'mobileTelephoneNumber' => array (
+			'mobile' => array (
 				"Headline" => _("Mobile number"), 'attr' => 'mobile',
 				"Text" => _("The user's mobile number.")
 			),
@@ -1031,96 +1031,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->attributes['givenName'][0] = trim($_POST['givenName']);
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$titleCounter = 0;
-			while (isset($_POST['title' . $titleCounter])) {
-				$this->attributes['title'][$titleCounter] = $_POST['title' . $titleCounter];
-				if ($this->attributes['title'][$titleCounter] == '') {
-					unset($this->attributes['title'][$titleCounter]);
-				}
-				elseif (!get_preg($this->attributes['title'][$titleCounter], 'title')) {
-					$errors[] = $this->messages['title'][0];
-				}
-				$titleCounter++;
-			}
-			if (isset($_POST['addtitle'])) {
-				$this->attributes['title'][] = '';
-			}
-			$this->attributes['title'] = array_values($this->attributes['title']);
+			$this->processMultiValueInputTextField('title', $errors, 'title');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
-			$mailCounter = 0;
-			while (isset($_POST['mail' . $mailCounter])) {
-				$this->attributes['mail'][$mailCounter] = trim($_POST['mail' . $mailCounter]);
-				if (($_POST['mail' . $mailCounter] != '') && !get_preg($this->attributes['mail'][$mailCounter], 'email')) $errors[] = $this->messages['email'][0];
-				if ($this->attributes['mail'][$mailCounter] == '') {
-					unset($this->attributes['mail'][$mailCounter]);
-				}
-				$mailCounter++;
-			}
-			if (isset($_POST['addMail'])) {
-				$this->attributes['mail'][] = '';
-			}
-			$this->attributes['mail'] = array_values($this->attributes['mail']);
+			$this->processMultiValueInputTextField('mail', $errors, 'email');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
-			$telephoneNumberCounter = 0;
-			while (isset($_POST['telephoneNumber' . $telephoneNumberCounter])) {
-				$this->attributes['telephoneNumber'][$telephoneNumberCounter] = trim($_POST['telephoneNumber' . $telephoneNumberCounter]);
-				if (!get_preg($this->attributes['telephoneNumber'][$telephoneNumberCounter], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
-				if ($this->attributes['telephoneNumber'][$telephoneNumberCounter] == '') {
-					unset($this->attributes['telephoneNumber'][$telephoneNumberCounter]);
-				}
-				$telephoneNumberCounter++;
-			}
-			if (isset($_POST['addTelephoneNumber'])) {
-				$this->attributes['telephoneNumber'][] = '';
-			}
-			$this->attributes['telephoneNumber'] = array_values($this->attributes['telephoneNumber']);
+			$this->processMultiValueInputTextField('telephoneNumber', $errors, 'telephone');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
-			$mobileCounter = 0;
-			while (isset($_POST['mobile' . $mobileCounter])) {
-				$this->attributes['mobile'][$mobileCounter] = trim($_POST['mobile' . $mobileCounter]);
-				if (!get_preg($this->attributes['mobile'][$mobileCounter], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
-				if ($this->attributes['mobile'][$mobileCounter] == '') {
-					unset($this->attributes['mobile'][$mobileCounter]);
-				}
-				$mobileCounter++;
-			}
-			if (isset($_POST['addMobile'])) {
-				$this->attributes['mobile'][] = '';
-			}
-			$this->attributes['mobile'] = array_values($this->attributes['mobile']);
+			$this->processMultiValueInputTextField('mobile', $errors, 'telephone');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$facsimileTelephoneNumberCounter = 0;
-			while (isset($_POST['facsimileTelephoneNumber' . $facsimileTelephoneNumberCounter])) {
-				$this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter] = trim($_POST['facsimileTelephoneNumber' . $facsimileTelephoneNumberCounter]);
-				if (!get_preg($this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
-				if ($this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter] == '') {
-					unset($this->attributes['facsimileTelephoneNumber'][$facsimileTelephoneNumberCounter]);
-				}
-				$facsimileTelephoneNumberCounter++;
-			}
-			if (isset($_POST['addFacsimileTelephoneNumber'])) {
-				$this->attributes['facsimileTelephoneNumber'][] = '';
-			}
-			$this->attributes['facsimileTelephoneNumber'] = array_values($this->attributes['facsimileTelephoneNumber']);
+			$this->processMultiValueInputTextField('facsimileTelephoneNumber', $errors, 'telephone');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
-			$homePhoneCounter = 0;
-			while (isset($_POST['homePhone' . $homePhoneCounter])) {
-				$this->attributes['homePhone'][$homePhoneCounter] = trim($_POST['homePhone' . $homePhoneCounter]);
-				if (!get_preg($this->attributes['homePhone'][$homePhoneCounter], 'telephone')) $errors[] = $this->messages['homePhone'][0];
-				if ($this->attributes['homePhone'][$homePhoneCounter] == '') {
-					unset($this->attributes['homePhone'][$homePhoneCounter]);
-				}
-				$homePhoneCounter++;
-			}
-			if (isset($_POST['addHomePhone'])) {
-				$this->attributes['homePhone'][] = '';
-			}
-			$this->attributes['homePhone'] = array_values($this->attributes['homePhone']);
+			$this->processMultiValueInputTextField('homePhone', $errors, 'telephone');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
 			$this->processMultiValueInputTextField('street', $errors, 'street');
@@ -1147,18 +1073,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['postalAddress'] = array_values($this->attributes['postalAddress']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$labeledURICounter = 0;
-			while (isset($_POST['labeledURI' . $labeledURICounter])) {
-				$this->attributes['labeledURI'][$labeledURICounter] = trim($_POST['labeledURI' . $labeledURICounter]);
-				if ($this->attributes['labeledURI'][$labeledURICounter] == '') {
-					unset($this->attributes['labeledURI'][$labeledURICounter]);
-				}
-				$labeledURICounter++;
-			}
-			if (isset($_POST['addLabeledURI'])) {
-				$this->attributes['labeledURI'][] = '';
-			}
-			$this->attributes['labeledURI'] = array_values($this->attributes['labeledURI']);
+			$this->processMultiValueInputTextField('labeledURI', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
 			$addressCounter = 0;
@@ -1195,66 +1110,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->processMultiValueInputTextField('physicalDeliveryOfficeName', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-			$businessCategoryCounter = 0;
-			while (isset($_POST['businessCategory' . $businessCategoryCounter])) {
-				$this->attributes['businessCategory'][$businessCategoryCounter] = $_POST['businessCategory' . $businessCategoryCounter];
-				if ($this->attributes['businessCategory'][$businessCategoryCounter] == '') {
-					unset($this->attributes['businessCategory'][$businessCategoryCounter]);
-				}
-				elseif (!get_preg($this->attributes['businessCategory'][$businessCategoryCounter], 'businessCategory')) {
-					$errors[] = $this->messages['businessCategory'][0];
-				}
-				$businessCategoryCounter++;
-			}
-			if (isset($_POST['addbusinessCategory'])) {
-				$this->attributes['businessCategory'][] = '';
-			}
-			$this->attributes['businessCategory'] = array_values($this->attributes['businessCategory']);
+			$this->processMultiValueInputTextField('businessCategory', $errors, 'businessCategory');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$departmentNumberCounter = 0;
-			while (isset($_POST['departmentNumber' . $departmentNumberCounter])) {
-				$this->attributes['departmentNumber'][$departmentNumberCounter] = $_POST['departmentNumber' . $departmentNumberCounter];
-				if ($this->attributes['departmentNumber'][$departmentNumberCounter] == '') {
-					unset($this->attributes['departmentNumber'][$departmentNumberCounter]);
-				}
-				$departmentNumberCounter++;
-			}
-			if (isset($_POST['addDepartmentNumber'])) {
-				$this->attributes['departmentNumber'][] = '';
-			}
-			$this->attributes['departmentNumber'] = array_values($this->attributes['departmentNumber']);
+			$this->processMultiValueInputTextField('departmentNumber', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
 			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
-			$ouCounter = 0;
-			while (isset($_POST['ou' . $ouCounter])) {
-				$this->attributes['ou'][$ouCounter] = $_POST['ou' . $ouCounter];
-				if ($this->attributes['ou'][$ouCounter] == '') {
-					unset($this->attributes['ou'][$ouCounter]);
-				}
-				$ouCounter++;
-			}
-			if (isset($_POST['addOu'])) {
-				$this->attributes['ou'][] = '';
-			}
-			$this->attributes['ou'] = array_values($this->attributes['ou']);
+			$this->processMultiValueInputTextField('ou', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
-			$oCounter = 0;
-			while (isset($_POST['o' . $oCounter])) {
-				$this->attributes['o'][$oCounter] = $_POST['o' . $oCounter];
-				if ($this->attributes['o'][$oCounter] == '') {
-					unset($this->attributes['o'][$oCounter]);
-				}
-				$oCounter++;
-			}
-			if (isset($_POST['addO'])) {
-				$this->attributes['o'][] = '';
-			}
-			$this->attributes['o'] = array_values($this->attributes['o']);
+			$this->processMultiValueInputTextField('o', $errors);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$this->attributes['initials'] = preg_split('/;[ ]*/', $_POST['initials']);
@@ -1498,166 +1366,70 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
-			$telephoneNumbers = array();
-			if (isset($this->attributes['telephoneNumber'][0])) {
-				$telephoneNumbers = $this->attributes['telephoneNumber'];
-			}
-			if (sizeof($telephoneNumbers) == 0) {
-				$telephoneNumbers[] = '';
-			}
-			$telephoneNumberLabel = new htmlOutputText(_('Telephone number'));
-			$telephoneNumberLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($telephoneNumberLabel);
-			$telephoneNumberContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($telephoneNumbers); $i++) {
-				$telephoneNumberContainer->addElement(new htmlInputField('telephoneNumber' . $i, $telephoneNumbers[$i]));
-				$equalWidthElements[] = 'telephoneNumber' . $i;
-				if ($i < (sizeof($telephoneNumbers) - 1)) {
-					$telephoneNumberContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$telephoneNumberContainer->addElement(new htmlButton('addTelephoneNumber', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'telephoneNumber', _('Telephone number'));
+			if (!empty($this->attributes['telephoneNumber'])) {
+				for ($i = 0; $i < sizeof($this->attributes['telephoneNumber']); $i++) {
+					$equalWidthElements[] = 'telephoneNumber_' . $i;
 				}
 			}
-			$fieldContainer->addElement($telephoneNumberContainer);
-			$telephoneNumberHelp = new htmlHelpLink('telephoneNumber');
-			$telephoneNumberHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($telephoneNumberHelp, true);
+			else {
+				$equalWidthElements[] = 'telephoneNumber_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
-			$homePhones = array();
-			if (isset($this->attributes['homePhone'][0])) {
-				$homePhones = $this->attributes['homePhone'];
-			}
-			if (sizeof($homePhones) == 0) {
-				$homePhones[] = '';
-			}
-			$homePhoneLabel = new htmlOutputText(_('Home telephone number'));
-			$homePhoneLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($homePhoneLabel);
-			$homePhoneContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($homePhones); $i++) {
-				$homePhoneContainer->addElement(new htmlInputField('homePhone' . $i, $homePhones[$i]));
-				$equalWidthElements[] = 'homePhone' . $i;
-				if ($i < (sizeof($homePhones) - 1)) {
-					$homePhoneContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$homePhoneContainer->addElement(new htmlButton('addHomePhone', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'homePhone', _('Home telephone number'));
+			if (!empty($this->attributes['homePhone'])) {
+				for ($i = 0; $i < sizeof($this->attributes['homePhone']); $i++) {
+					$equalWidthElements[] = 'homePhone_' . $i;
 				}
 			}
-			$fieldContainer->addElement($homePhoneContainer);
-			$homePhoneHelp = new htmlHelpLink('homePhone');
-			$homePhoneHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($homePhoneHelp, true);
+			else {
+				$equalWidthElements[] = 'homePhone_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
-			$mobiles = array();
-			if (isset($this->attributes['mobile'][0])) {
-				$mobiles = $this->attributes['mobile'];
-			}
-			if (sizeof($mobiles) == 0) {
-				$mobiles[] = '';
-			}
-			$mobileLabel = new htmlOutputText(_('Mobile number'));
-			$mobileLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($mobileLabel);
-			$mobileContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($mobiles); $i++) {
-				$mobileContainer->addElement(new htmlInputField('mobile' . $i, $mobiles[$i]));
-				$equalWidthElements[] = 'mobile' . $i;
-				if ($i < (sizeof($mobiles) - 1)) {
-					$mobileContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$mobileContainer->addElement(new htmlButton('addMobile', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'mobile', _('Mobile number'));
+			if (!empty($this->attributes['mobile'])) {
+				for ($i = 0; $i < sizeof($this->attributes['mobile']); $i++) {
+					$equalWidthElements[] = 'mobile_' . $i;
 				}
 			}
-			$fieldContainer->addElement($mobileContainer);
-			$mobileHelp = new htmlHelpLink('mobileTelephoneNumber');
-			$mobileHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($mobileHelp, true);
+			else {
+				$equalWidthElements[] = 'mobile_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$facsimileTelephoneNumbers = array();
-			if (isset($this->attributes['facsimileTelephoneNumber'][0])) {
-				$facsimileTelephoneNumbers = $this->attributes['facsimileTelephoneNumber'];
-			}
-			if (sizeof($facsimileTelephoneNumbers) == 0) {
-				$facsimileTelephoneNumbers[] = '';
-			}
-			$facsimileTelephoneNumberLabel = new htmlOutputText(_('Fax number'));
-			$facsimileTelephoneNumberLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($facsimileTelephoneNumberLabel);
-			$facsimileTelephoneNumberContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($facsimileTelephoneNumbers); $i++) {
-				$facsimileTelephoneNumberContainer->addElement(new htmlInputField('facsimileTelephoneNumber' . $i, $facsimileTelephoneNumbers[$i]));
-				$equalWidthElements[] = 'facsimileTelephoneNumber' . $i;
-				if ($i < (sizeof($facsimileTelephoneNumbers) - 1)) {
-					$facsimileTelephoneNumberContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$facsimileTelephoneNumberContainer->addElement(new htmlButton('addFacsimileTelephoneNumber', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'));
+			if (!empty($this->attributes['facsimileTelephoneNumber'])) {
+				for ($i = 0; $i < sizeof($this->attributes['facsimileTelephoneNumber']); $i++) {
+					$equalWidthElements[] = 'facsimileTelephoneNumber_' . $i;
 				}
 			}
-			$fieldContainer->addElement($facsimileTelephoneNumberContainer);
-			$facsimileTelephoneNumberHelp = new htmlHelpLink('facsimileTelephoneNumber');
-			$facsimileTelephoneNumberHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($facsimileTelephoneNumberHelp, true);
+			else {
+				$equalWidthElements[] = 'facsimileTelephoneNumber_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
-			$mails = array();
-			if (isset($this->attributes['mail'][0])) {
-				$mails = $this->attributes['mail'];
-			}
-			if (sizeof($mails) == 0) {
-				$mails[] = '';
-			}
-			$mailLabel = new htmlOutputText(_('Email address'));
-			$mailLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($mailLabel);
-			$mailContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($mails); $i++) {
-				$mailContainer->addElement(new htmlInputField('mail' . $i, $mails[$i]));
-				$equalWidthElements[] = 'mail' . $i;
-				if ($i < (sizeof($mails) - 1)) {
-					$mailContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$mailContainer->addElement(new htmlButton('addMail', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'mail', _('Email address'));
+			if (!empty($this->attributes['mail'])) {
+				for ($i = 0; $i < sizeof($this->attributes['mail']); $i++) {
+					$equalWidthElements[] = 'mail_' . $i;
 				}
 			}
-			$fieldContainer->addElement($mailContainer);
-			$mailHelp = new htmlHelpLink('mail');
-			$mailHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($mailHelp, true);
+			else {
+				$equalWidthElements[] = 'mail_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$labeledURI = array();
-			if (isset($this->attributes['labeledURI'][0])) {
-				$labeledURI = $this->attributes['labeledURI'];
-			}
-			if (sizeof($labeledURI) == 0) {
-				$labeledURI[] = '';
-			}
-			$labeledURILabel = new htmlOutputText(_('Web site'));
-			$labeledURILabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($labeledURILabel);
-			$labeledURIContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($labeledURI); $i++) {
-				$labeledURIContainer->addElement(new htmlInputField('labeledURI' . $i, $labeledURI[$i]));
-				$equalWidthElements[] = 'labeledURI' . $i;
-				if ($i < (sizeof($labeledURI) - 1)) {
-					$labeledURIContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$labeledURIContainer->addElement(new htmlButton('addLabeledURI', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'labeledURI', _('Web site'));
+			if (!empty($this->attributes['labeledURI'])) {
+				for ($i = 0; $i < sizeof($this->attributes['labeledURI']); $i++) {
+					$equalWidthElements[] = 'labeledURI_' . $i;
 				}
 			}
-			$fieldContainer->addElement($labeledURIContainer);
-			$labeledURIHelp = new htmlHelpLink('labeledURI');
-			$labeledURIHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($labeledURIHelp, true);
+			else {
+				$equalWidthElements[] = 'labeledURI_0';
+			}
 		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')
@@ -1668,171 +1440,73 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$titles = array();
-			if (isset($this->attributes['title'][0])) {
-				$titles = $this->attributes['title'];
-			}
-			if (sizeof($titles) == 0) {
-				$titles[] = '';
-			}
-			$titleLabel = new htmlOutputText(_('Job title'));
-			$titleLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($titleLabel);
-			$titleContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($titles); $i++) {
-				$titleInput = new htmlInputField('title' . $i, $titles[$i]);
-				$titleInput->enableAutocompletion($this->titleCache);
-				$titleContainer->addElement($titleInput);
-				$equalWidthElements[] = 'title' . $i;
-				if ($i < (sizeof($titles) - 1)) {
-					$titleContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$titleContainer->addElement(new htmlButton('addtitle', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'));
+			if (!empty($this->attributes['title'])) {
+				for ($i = 0; $i < sizeof($this->attributes['title']); $i++) {
+					$equalWidthElements[] = 'title_' . $i;
 				}
 			}
-			$fieldContainer->addElement($titleContainer);
-			$titleHelp = new htmlHelpLink('title');
-			$titleHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($titleHelp, true);
+			else {
+				$equalWidthElements[] = 'title_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
-			$carLicense = '';
-			if (isset($this->attributes['carLicense'][0])) $carLicense = $this->attributes['carLicense'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Car license'), 'carLicense', $carLicense, 'carLicense'), true);
+			$this->addSimpleInputTextField($fieldContainer, 'carLicense', _('Car license'));
 			$equalWidthElements[] = 'carLicense';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
-			$employeeNumber = '';
-			if (isset($this->attributes['employeeNumber'][0])) $employeeNumber = $this->attributes['employeeNumber'][0];
-			$fieldContainer->addElement(new htmlTableExtendedInputField(_('Employee number'), 'employeeNumber', $employeeNumber, 'employeeNumber'), true);
+			$this->addSimpleInputTextField($fieldContainer, 'employeeNumber', _('Employee number'));
 			$equalWidthElements[] = 'employeeNumber';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
-			$employeeType = '';
-			if (isset($this->attributes['employeeType'][0])) $employeeType = $this->attributes['employeeType'][0];
-			$employeeTypeInput = new htmlTableExtendedInputField(_('Employee type'), 'employeeType', $employeeType, 'employeeType');
-			$employeeTypeInput->enableAutocompletion($this->employeeTypeCache);
-			$fieldContainer->addElement($employeeTypeInput, true);
+			$this->addSimpleInputTextField($fieldContainer, 'employeeType', _('Employee type'), false, null, false, $this->employeeTypeCache);
 			$equalWidthElements[] = 'employeeType';
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-			$businessCategories = array();
-			if (isset($this->attributes['businessCategory'][0])) {
-				$businessCategories = $this->attributes['businessCategory'];
-			}
-			if (sizeof($businessCategories) == 0) {
-				$businessCategories[] = '';
-			}
-			$businessCategoryLabel = new htmlOutputText(_('Business category'));
-			$businessCategoryLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($businessCategoryLabel);
-			$businessCategoryContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($businessCategories); $i++) {
-				$businessCategoryInput = new htmlInputField('businessCategory' . $i, $businessCategories[$i]);
-				$businessCategoryInput->enableAutocompletion($this->businessCategoryCache);
-				$businessCategoryContainer->addElement($businessCategoryInput);
-				$equalWidthElements[] = 'businessCategory' . $i;
-				if ($i < (sizeof($businessCategories) - 1)) {
-					$businessCategoryContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$businessCategoryContainer->addElement(new htmlButton('addbusinessCategory', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, $this->businessCategoryCache);
+			if (!empty($this->attributes['businessCategory'])) {
+				for ($i = 0; $i < sizeof($this->attributes['businessCategory']); $i++) {
+					$equalWidthElements[] = 'businessCategory_' . $i;
 				}
 			}
-			$fieldContainer->addElement($businessCategoryContainer);
-			$businessCategoryHelp = new htmlHelpLink('businessCategory');
-			$businessCategoryHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($businessCategoryHelp, true);
+			else {
+				$equalWidthElements[] = 'businessCategory_0';
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$departmentNumbers = array();
-			if (isset($this->attributes['departmentNumber'][0])) {
-				$departmentNumbers = $this->attributes['departmentNumber'];
-			}
-			if (sizeof($departmentNumbers) == 0) {
-				$departmentNumbers[] = '';
-			}
-			$departmentNumberLabel = new htmlOutputText(_('Department'));
-			$departmentNumberLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($departmentNumberLabel);
-			$departmentNumberContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($departmentNumbers); $i++) {
-				$departmentInput = new htmlInputField('departmentNumber' . $i, $departmentNumbers[$i]);
-				$departmentInput->enableAutocompletion($this->departmentCache);
-				$departmentNumberContainer->addElement($departmentInput);
-				$equalWidthElements[] = 'departmentNumber' . $i;
-				if ($i < (sizeof($departmentNumbers) - 1)) {
-					$departmentNumberContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$departmentNumberContainer->addElement(new htmlButton('addDepartmentNumber', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, $this->departmentCache);
+			if (!empty($this->attributes['departmentNumber'])) {
+				for ($i = 0; $i < sizeof($this->attributes['departmentNumber']); $i++) {
+					$equalWidthElements[] = 'departmentNumber_' . $i;
 				}
 			}
-			$fieldContainer->addElement($departmentNumberContainer);
-			$departmentNumberHelp = new htmlHelpLink('departmentNumber');
-			$departmentNumberHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($departmentNumberHelp, true);
+			else {
+				$equalWidthElements[] = 'departmentNumber_0';
+			}
 		}
 		// organisational unit
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
-			$ous = array();
-			if (isset($this->attributes['ou'][0])) {
-				$ous = $this->attributes['ou'];
-			}
-			if (sizeof($ous) == 0) {
-				$ous[] = '';
-			}
-			$ouLabel = new htmlOutputText(_('Organisational unit'));
-			$ouLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($ouLabel);
-			$ouContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($ous); $i++) {
-				$ouInput = new htmlInputField('ou' . $i, $ous[$i]);
-				$ouInput->enableAutocompletion($this->ouCache);
-				$ouContainer->addElement($ouInput);
-				$equalWidthElements[] = 'ou' . $i;
-				if ($i < (sizeof($ous) - 1)) {
-					$ouContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$ouContainer->addElement(new htmlButton('addOu', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, $this->ouCache);
+			if (!empty($this->attributes['ou'])) {
+				for ($i = 0; $i < sizeof($this->attributes['ou']); $i++) {
+					$equalWidthElements[] = 'ou_' . $i;
 				}
 			}
-			$fieldContainer->addElement($ouContainer);
-			$ouHelp = new htmlHelpLink('ou');
-			$ouHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($ouHelp, true);
+			else {
+				$equalWidthElements[] = 'ou_0';
+			}
 		}
 		// organisation
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
-			$os = array();
-			if (isset($this->attributes['o'][0])) {
-				$os = $this->attributes['o'];
-			}
-			if (sizeof($os) == 0) {
-				$os[] = '';
-			}
-			$oLabel = new htmlOutputText(_('Organisation'));
-			$oLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($oLabel);
-			$oContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($os); $i++) {
-				$oInput = new htmlInputField('o' . $i, $os[$i]);
-				$oInput->enableAutocompletion($this->oCache);
-				$oContainer->addElement($oInput);
-				$equalWidthElements[] = 'o' . $i;
-				if ($i < (sizeof($os) - 1)) {
-					$oContainer->addElement(new htmlOutputText('<br>', false));
-				}
-				else {
-					$oContainer->addElement(new htmlButton('addO', 'add.png', true));
+			$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, $this->oCache);
+			if (!empty($this->attributes['o'])) {
+				for ($i = 0; $i < sizeof($this->attributes['o']); $i++) {
+					$equalWidthElements[] = 'o_' . $i;
 				}
 			}
-			$fieldContainer->addElement($oContainer);
-			$oHelp = new htmlHelpLink('o');
-			$oHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($oHelp, true);
+			else {
+				$equalWidthElements[] = 'o_0';
+			}
 		}
 		// user certificates
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
@@ -2292,7 +1966,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$facsimileTelephoneNumberList = preg_split('/;[ ]*/', $options['inetOrgPerson_facsimileTelephoneNumber'][0]);
 			for ($i = 0; $i < sizeof($facsimileTelephoneNumberList); $i++) {
 				if (!get_preg($facsimileTelephoneNumberList[$i], 'telephone')) {
-					$messages[] = $this->messages['facsimileNumber'][0];
+					$messages[] = $this->messages['facsimileTelephoneNumber'][0];
 					break;
 				}
 			}
