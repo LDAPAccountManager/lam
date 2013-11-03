@@ -569,3 +569,7 @@ h4.schema_oclass_sub {
 .bind-bright { background:#b6eeff !important; }
 .bind-dark { background-color:#80e0e1 !important; }
 
+.kolabSharedFolderType-border { border-color:#32768b; }
+.kolabSharedFolderType-bright { background:#b6eeff !important; }
+.kolabSharedFolderType-dark { background-color:#80e0e1 !important; }
+

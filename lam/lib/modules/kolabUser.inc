@@ -77,9 +77,15 @@ class kolabUser extends baseModule {
 		$return["ldap_filter"] = array('or' => "(objectClass=kolabInetOrgPerson)");
 		// managed object classes
 		$return['objectClasses'] = array('kolabInetOrgPerson');
+		if ($this->manageMailrecipient()) {
+			$return['objectClasses'][] = 'mailrecipient';
+		}
 		// managed attributes
 		$return['attributes'] = array('alias', 'mailHost', 'kolabDelegate', 'kolabInvitationPolicy', 'kolabDeleteflag',
 										'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender');
+		if ($this->manageMailrecipient()) {
+			$return['attributes'][] = 'mailQuota';
+		}
 		// profile options
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_mailHost', null, 'mailHost'), true);
@@ -93,6 +99,10 @@ class kolabUser extends baseModule {
 		$return['profile_mappings'] = array(
 			'kolab_mailHost' => 'mailHost',
 		);
+		// config options
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlTableExtendedInputCheckbox('kolabUser_mailrecipient', true, _('Manage object class "mailrecipient"'), 'mailrecipient'), true);
+		$return['config_options']['all'] = $configContainer;
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array(
 			'kolabDelegate' => _('Delegates'),
@@ -148,10 +158,15 @@ class kolabUser extends baseModule {
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
 			),
+			'mailrecipient' => array(
+				"Headline" => _('Manage object class "mailrecipient"'),
+				"Text" => _('Adds the object class "mailrecipient" to all user accounts.')
+			),
 			'deleteFlag' => array(
 				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
 				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
-			));
+			),
+		);
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -215,7 +230,7 @@ class kolabUser extends baseModule {
 		$this->messages['mailHost'][0] = array('ERROR', _('Mailbox home server name is invalid!'));  // third array value is set dynamically
 		$this->messages['mailHost'][1] = array('ERROR', _('Account %s:') . ' kolabUser_mailHost', _('Mailbox home server name is invalid!'));
 		$this->messages['mailHost'][2] = array('ERROR', _('Mailbox home server name is empty!'));
-		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegate', _('Unknown delegate address: %s'));
+		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegates', _('Unknown delegate address: %s'));
 		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recepients'), _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
@@ -317,13 +332,18 @@ class kolabUser extends baseModule {
 				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
 					$delegatesContainer->addElement(new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i])));
 					$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.png', true));
-					$delegatesContainer->addElement(new htmlHelpLink('delegate'), true);
+					if ($i == 0) {
+						$delegatesContainer->addElement(new htmlHelpLink('delegate'));
+					}
+					$delegatesContainer->addNewLine();
 				}
 			}
 			// input box for new delegate
 			$delegatesContainer->addElement(new htmlSelect('delegate', $delegates));
 			$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.png', true));
-			$delegatesContainer->addElement(new htmlHelpLink('delegate'), true);
+			if (empty($this->attributes['kolabDelegate'])) {
+				$delegatesContainer->addElement(new htmlHelpLink('delegate'));
+			}
 			$return->addElement($delegatesContainer, true);
 			$return->addElement(new htmlSubTitle(_('Options')), true);
 			// allowed recepients
@@ -355,6 +375,9 @@ class kolabUser extends baseModule {
 		$errors = array();
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'kolabInetOrgPerson';
+			if ($this->manageMailrecipient()) {
+				$this->attributes['objectClass'][] = 'mailrecipient';
+			}
 		}
 		else {
 			if (isset($_POST['form_subpage_kolabUser_deleteUser_open']))  return array();
@@ -525,7 +548,12 @@ class kolabUser extends baseModule {
 		}
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("kolabInetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "kolabInetOrgPerson";
+			if (!in_array("kolabInetOrgPerson", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "kolabInetOrgPerson";
+			}
+			if ($this->manageMailrecipient() && !in_array("mailrecipient", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "mailrecipient";
+			}
 			// mailbox server
 			if ($rawAccounts[$i][$ids['kolabUser_mailHost']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['kolabUser_mailHost']], 'DNSname')) {
@@ -913,6 +941,23 @@ class kolabUser extends baseModule {
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	 * Returns if the object class "mailrecipient" is managed by this module.
+	 * 
+	 * @return boolean manage mailrecipient object class
+	 */
+	private function manageMailrecipient() {
+		// abort if configuration is not available
+		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings)) {
+			return true;
+		}
+		if (isset($this->moduleSettings['kolabUser_mailrecipient'][0]) && ($this->moduleSettings['kolabUser_mailrecipient'][0] == 'false')) {
+			return false;
+		}
+		return true;
+		
 	}
 
 }

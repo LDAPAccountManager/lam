@@ -469,42 +469,6 @@ class kolabGroup extends baseModule {
 		}
 	}
 	
-	/**
-	* Controls if the module button the account page is visible and activated.
-	* 
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* <b>Possible return values:</b>
-	* <ul>
-	* <li><b>enabled:</b> button is visible and active</li>
-	* <li><b>disabled:</b> button is visible and deactivated (greyed)</li>
-	* <li><b>hidden:</b> no button will be shown</li>
-	* </ul>
-	*
-	* @return string status ("enabled", "disabled", "hidden")
-	*/
-	public function getButtonStatus() {
-		$module = $this->getAccountContainer()->getAccountModule('kolabSharedFolder');
-		if ($module != null) {
-			if ($module->extensionIsEnabled()) {
-				return 'disabled';
-			}
-		}
-		return "enabled";
-	}
-
-	/**
-	 * Returns if the extension is enabled for this LDAP entry.
-	 * 
-	 * @return boolean enabled (= object class added to entry)
-	 */
-	public function extensionIsEnabled() {
-		if (isset($this->attributes['objectClass']) && in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
-			return true;
-		}
-		return false;
-	}
-	
 }
 
 
