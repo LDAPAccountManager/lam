@@ -105,6 +105,10 @@ class pykotaUser extends baseModule {
 				"Headline" => _("User name"), 'attr' => 'uid',
 				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
 			),
+			'mail' => array (
+				"Headline" => _("Email address"), 'attr' => 'mail',
+				"Text" => _("The user's email address.")
+			),
 			'description' => array (
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("User description.")
