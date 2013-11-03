@@ -3854,6 +3854,52 @@ Attention: If the Active Directory schema is used then LAM will always use dn an
     </section>
 
     <section>
+      <title>Kolab shared folders</title>
+
+      <para>Please add the account type "Kolab shared folders" in your LAM
+      server profile and set the correct LDAP suffix.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kolab6.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kolab7.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then add the "Kolab shared folder" module on tab "Modules".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kolab8.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now you can start to add shared folders inside LAM.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kolab9.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
       <title>DHCP</title>
 
       <para>You can mange your DHCP server with LAM. It supports to manage

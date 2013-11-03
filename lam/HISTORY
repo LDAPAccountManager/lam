@@ -1,5 +1,6 @@
 December 2013 4.4
   - PyKota support: users, groups, printers, billing codes
+  - Kolab shared folder support
   - allow to set a custom label for each account type
   - Unix: switch also additional membership if primary group is changed (RFE 108)
   - LAM Pro:
