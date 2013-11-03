@@ -260,6 +260,15 @@ class htmlTable extends htmlElement {
 	}
 	
 	/**
+	 * Adds an htmlSpacer with the given height and ends the row.
+	 * 
+	 * @param String $height height (e.g. 10px)
+	 */
+	public function addVerticalSpace($height) {
+		$this->addElement(new htmlSpacer(null, $height), true);
+	}
+	
+	/**
 	 * Prints the HTML code for this element.
 	 * 
 	 * @param string $module Name of account module

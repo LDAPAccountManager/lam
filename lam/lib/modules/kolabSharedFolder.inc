@@ -32,7 +32,7 @@ $Id$
 *
 * @package modules
 */
-class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFolder
+class kolabSharedFolder extends baseModule { // TODO folder type
 	
 	/** cache for mailHost values */
 	private $mailHostCache = null;
@@ -50,11 +50,11 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 		parent::__construct($scope);
 		$this->folderTypes = array(
 			// TODO reactivate types when stable 3.1 is released
-			/*_('Shared Address Book') => 'addressbook',
-			_('Shared Calendar') => 'calendar',
-			_('Shared Journal') => 'journal',
-			_('Shared Tasks') => 'task',*/
-			_('Shared Mail Folder') => 'mail',
+			/*_('Shared address book') => 'addressbook',
+			_('Shared calendar') => 'calendar',
+			_('Shared journal') => 'journal',
+			_('Shared tasks') => 'task',*/
+			_('Shared mail folder') => 'mail',
 		);
 	}
 
@@ -147,6 +147,14 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 				"Headline" => _("Mailbox home server"), 'attr' => 'mailHost',
 				"Text" => _("The name of the server where the mailbox is located.")
 			),
+			'kolabTargetFolder' => array(
+				"Headline" => _("Target IMAP folder"), 'attr' => 'kolabTargetFolder',
+				"Text" => _("The folder on the server where the shared folder is located (e.g. user/myfolder@example.com).")
+			),
+			'kolabFolderType' => array(
+				"Headline" => _("Type"), 'attr' => 'kolabFolderType',
+				"Text" => _("Specifies the folder type (e.g. shared mail folder).")
+			),
 			'deleteFlag' => array(
 				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
 				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
@@ -173,6 +181,19 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 				'description' => _('Mailbox home server'),
 				'help' => 'mailHost',
 				'example' => 'localhost',
+			),
+			array(
+				'name' => 'kolabSharedFolder_kolabTargetFolder',
+				'description' => _('Target IMAP folder'),
+				'help' => 'kolabTargetFolder',
+				'example' => 'user/myfolder@example.com',
+				'required' => true
+			),
+			array(
+				'name' => 'kolabSharedFolder_kolabFolderType',
+				'description' => _('Type'),
+				'help' => 'kolabFolderType',
+				'example' => 'mail',
 				'required' => true
 			),
 			array(
@@ -209,6 +230,8 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 			'delegate' => _('Delegates'),
 			'mailHost' => _('Mailbox home server'),
 			'mail' => _('Email address'),
+			'kolabTargetFolder' => _('Target IMAP folder'),
+			'kolabFolderType' => _('Type'),
 		);
 		return $return;
 	}
@@ -227,9 +250,10 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_delegates', _('Unknown delegate address: %s'));
 		$this->messages['mailHost'][0] = array('ERROR', _('Mailbox home server name is invalid!'));  // third array value is set dynamically
 		$this->messages['mailHost'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_mailHost', _('Mailbox home server name is invalid!'));
-		$this->messages['mailHost'][2] = array('ERROR', _('Mailbox home server name is empty!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_mail', _('Please enter a valid email address!'));
+		$this->messages['cn'][0] = array('ERROR', _('Name'), _('Please enter a name.'));
+		$this->messages['kolabTargetFolder'][0] = array('ERROR', _('Target IMAP folder'), _('Please enter a target folder.'));
 	}
 
 	/**
@@ -251,13 +275,28 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 		$this->addSimpleInputTextField($baseContainer, 'mail', _('Email address'), true);
 		// mailbox server
 		if (!isset($this->orig['mailHost'][0])) {  // value currently not set
-			$this->addSimpleInputTextField($baseContainer, 'mailHost', _('Mailbox home server'), true);
+			$this->addSimpleInputTextField($baseContainer, 'mailHost', _('Mailbox home server'));
 		}
 		else {  // input is unchangable when set
 			$baseContainer->addElement(new htmlOutputText(_('Mailbox home server')));
 			$baseContainer->addElement(new htmlOutputText($this->attributes['mailHost'][0]));
 			$baseContainer->addElement(new htmlHelpLink('mailHost'), true);
 		}
+		// target folder
+		$this->addSimpleInputTextField($baseContainer, 'kolabTargetFolder', _('Target IMAP folder'), true);
+		// folder type
+		$possibleTypes = $this->folderTypes;
+		$selectedTypes = array('mail');
+		if (!empty($this->attributes['kolabFolderType'])) {
+			$selectedTypes = $this->attributes['kolabFolderType'];
+			if (!in_array($this->attributes['kolabFolderType'][0], $possibleTypes)) {
+				$possibleTypes[$this->attributes['kolabFolderType'][0]] = $this->attributes['kolabFolderType'][0];
+			}
+		}
+		$typeSelect = new htmlTableExtendedSelect('kolabFolderType', $possibleTypes, $selectedTypes, _('Type'), 'kolabFolderType');
+		$typeSelect->setHasDescriptiveElements(true);
+		$baseContainer->addElement($typeSelect, true);
+		$baseContainer->addVerticalSpace('10px');
 		// allowed recepients
 		$this->addMultiValueInputTextField($baseContainer, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
 		// allowed senders
@@ -314,6 +353,9 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 		$errors = array();
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
+		if (empty($_POST['cn'])) {
+			$errors[] = $this->messages['cn'][0];
+		}
 		// mail
 		$this->attributes['mail'][0] = $_POST['mail'];
 		if (empty($_POST['mail']) || !get_preg($_POST['mail'], 'email')) {
@@ -321,18 +363,27 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 		}
 		// mailbox server
 		if (isset($_POST['mailHost'])) {
-			if ($_POST['mailHost'] == "") {
-				$errors[] = $this->messages['mailHost'][2];
+			if (($_POST['mailHost'] == "") && isset($this->attributes['mailHost'])) {
+				unset($this->attributes['mailHost']);
 			}
-			elseif (get_preg($_POST['mailHost'], 'DNSname')) {
-				$this->attributes['mailHost'][0] = $_POST['mailHost'];
-			}
-			else {
-				$message = $this->messages['mailHost'][0];
-				$message[] = $_POST['mailHost'];
-				$errors[] = $message;
+			elseif (!empty($_POST['mailHost'])) {
+				if (get_preg($_POST['mailHost'], 'DNSname')) {
+					$this->attributes['mailHost'][0] = $_POST['mailHost'];
+				}
+				else {
+					$message = $this->messages['mailHost'][0];
+					$message[] = $_POST['mailHost'];
+					$errors[] = $message;
+				}
 			}
 		}
+		// target folder
+		$this->attributes['kolabTargetFolder'][0] = $_POST['kolabTargetFolder'];
+		if (empty($_POST['kolabTargetFolder'])) {
+			$errors[] = $this->messages['kolabTargetFolder'][0];
+		}
+		// folder type
+		$this->attributes['kolabFolderType'][0] = $_POST['kolabFolderType'];
 		// allowed recepients
 		$this->processMultiValueInputTextField('kolabAllowSMTPRecipient', $errors, 'kolabEmailPrefix');
 		// allowed senders
@@ -426,7 +477,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 				$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['kolabSharedFolder_mail']];
 			}
 			// mailbox server
-			if ($rawAccounts[$i][$ids['kolabSharedFolder_mailHost']] != "") {
+			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_mailHost']])) {
 				if (get_preg($rawAccounts[$i][$ids['kolabSharedFolder_mailHost']], 'DNSname')) {
 					$partialAccounts[$i]['mailHost'] = $rawAccounts[$i][$ids['kolabSharedFolder_mailHost']];
 				}
@@ -436,6 +487,10 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 					$messages[] = $errMsg;
 				}
 			}
+			// target folder
+			$partialAccounts[$i]['kolabTargetFolder'] = $rawAccounts[$i][$ids['kolabSharedFolder_kolabTargetFolder']];
+			// folder type
+			$partialAccounts[$i]['kolabFolderType'] = $rawAccounts[$i][$ids['kolabSharedFolder_kolabFolderType']];
 			// allowed recipients
 			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPRecipient']])) {
 				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPRecipient']]);
@@ -510,10 +565,19 @@ class kolabSharedFolder extends baseModule { // TODO folder type + kolabTargetFo
 		$this->addSimplePDFField($return, 'cn', _('Name'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
 		$this->addSimplePDFField($return, 'mailHost', _('Mailbox home server'));
+		$this->addSimplePDFField($return, 'kolabTargetFolder', _('Target IMAP folder'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		$this->addSimplePDFField($return, 'aliases', _('Email aliases'), 'alias');
 		$this->addSimplePDFField($return, 'delegate', _('Delegates'), 'kolabDelegate');
+		if (!empty($this->attributes['kolabFolderType'])) {
+			$type = $this->attributes['kolabFolderType'][0];
+			$typeList = array_flip($this->folderTypes);
+			if (isset($typeList[$type])) {
+				$type = $typeList[$type];
+			}
+			$return[get_class($this) . '_kolabFolderType'] = array('<block><key>' . _('Type') . '</key><value>' . $type . '</value></block>');
+		}
 		return $return;
 	}
 	
