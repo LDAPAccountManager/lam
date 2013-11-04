@@ -66,7 +66,14 @@ if (isset($_GET['DN'])) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type);
 		die();
 	}
-	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
+	if ($_GET['DN'] == $DN) {
+		if (substr($DN, 0, 1) === "'") {
+			$DN = substr($DN, 1);
+		}
+		if (substr($DN, -1, 1) === "'") {
+			$DN = substr($DN, 0, -1);
+		}
+	}
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {

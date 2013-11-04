@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2010  Roland Gruber
+  Copyright (C) 2007 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -52,7 +52,12 @@ if (!preg_match('/^[a-z0-9_]+$/i', $type)) {
 
 if (isset($dn) && isset($type)) {
 	$dn = str_replace("\\", '',$dn);
-	$dn = str_replace("'", '',$dn);
+	if (substr($dn, 0, 1) === "'") {
+		$dn = substr($dn, 1);
+	}
+	if (substr($dn, -1, 1) === "'") {
+		$dn = substr($dn, 0, -1);
+	}
 	$_SESSION['delete_dn'] = array($dn);
 	// redirect to delete.php
 	metaRefresh("../delete.php?type=" . htmlspecialchars($type));
