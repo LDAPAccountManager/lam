@@ -98,7 +98,11 @@ fi
 /etc/init.d/apache2 reload
 %endif
 %if %is_fedora
-/etc/init.d/httpd reload
+if [ -e /etc/init.d/httpd ]; then
+	/etc/init.d/httpd reload
+else
+	/bin/systemctl reload httpd.service
+fi
 %endif
 
 %postun
@@ -106,7 +110,11 @@ fi
 /etc/init.d/apache2 reload
 %endif
 %if %is_fedora
-/etc/init.d/httpd reload
+if [ -e /etc/init.d/httpd ]; then
+	/etc/init.d/httpd reload
+else
+	/bin/systemctl reload httpd.service
+fi
 %endif
 
 %files
