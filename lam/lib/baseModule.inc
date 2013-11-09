@@ -1696,18 +1696,16 @@ abstract class baseModule {
 	 * Returns if the given configuration option is set.
 	 * This function returns false if the configuration options cannot be read.
 	 *
-	 * @param String $optionName name of the option 
+	 * @param String $optionName name of the option
+	 * @param boolean $default default value if config option is not set at all (default: false)
 	 * @return boolean true if option is set
 	 */
-	protected function isBooleanConfigOptionSet($optionName) {
+	protected function isBooleanConfigOptionSet($optionName, $default = false) {
 		// abort if configuration is not available
-		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings)) {
-			return false;
+		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings) || !isset($this->moduleSettings[$optionName][0])) {
+			return $default;
 		}
-		if (isset($this->moduleSettings[$optionName][0]) && ($this->moduleSettings[$optionName][0] == 'true')) {
-			return true;
-		}
-		return false;
+		return ($this->moduleSettings[$optionName][0] == 'true');
 	}
 
 }

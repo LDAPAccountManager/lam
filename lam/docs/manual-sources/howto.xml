@@ -698,6 +698,10 @@ Have fun!
           <para>Kolab: User accounts get the object class "mailrecipient" by
           default. You can change this behaviour in the module settings
           section of your LAM server profile.</para>
+
+          <para>Windows: sAMAccountName is no longer set by default. Enable it
+          in server profile if needed. The possible domains for the user name
+          can also be set in server profile.</para>
         </section>
 
         <section>
@@ -2441,8 +2445,21 @@ Have fun!
           </mediaobject>
         </screenshot>
 
-        <para>Now you can manage your Windows users and e.g. assign
-        groups.</para>
+        <para>On tab "Module settings" you can specify the possible Windows
+        domain names and if pre-Windows 2000 user names should be
+        managed.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsUser5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you can manage your Windows users and e.g. assign groups.
+        You might want to set the default domain name in the <link
+        linkend="a_accountProfile">profile editor</link>.</para>
 
         <para><emphasis role="bold">Attention:</emphasis> Password changes
         require a secure connection via ldaps://. Check your LAM server

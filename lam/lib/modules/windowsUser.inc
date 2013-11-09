@@ -85,15 +85,27 @@ class windowsUser extends baseModule implements passwordService {
 		// managed object classes
 		$return['objectClasses'] = array('user', 'securityPrincipal');
 		// managed attributes
-		$return['attributes'] = array('cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
+		$return['attributes'] = array('userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox');
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
-				"Headline" => _('User name'), 'attr' => 'cn, sAMAccountName',
+				"Headline" => _('Common name'), 'attr' => 'cn',
+				"Text" => _('This is the natural name of the user. If empty, the first and last name or user name is used.')
+			),
+			'userPrincipalName' => array(
+				"Headline" => _('User name'), 'attr' => 'userPrincipalName',
 				"Text" => _('Please enter the user\'s name.')
+			),
+			'userPrincipalNameDomain' => array(
+				"Headline" => _('Domain'), 'attr' => 'userPrincipalName',
+				"Text" => _('Windows domain name of account.')
+			),
+			'sAMAccountName' => array(
+				"Headline" => _('User name (pre W2K)'), 'attr' => 'sAMAccountName',
+				"Text" => _('Please enter the user\'s name.') . ' ' . _('This user name is only used for old Windows versions (e.g. NT4, W98).')
 			),
 			'description' => array(
 				"Headline" => _('Description'), 'attr' => 'description',
@@ -206,13 +218,21 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
 				"Text" => _("Email alias for this account.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
+			'hiddenOptions' => array(
+				"Headline" => _("Hidden options"),
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
+			),
+			'domains' => array(
+				"Headline" => _('Domains'),
+				"Text" => _('Please enter a list of Windows domains that can be selected for your user accounts.')
+			),
 		);
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
-				'name' => 'windowsUser_name',
+				'name' => 'windowsUser_userPrincipalName',
 				'description' => _('User name'),
-				'help' => 'cn',
+				'help' => 'userPrincipalName',
 				'example' => _('smiller'),
 				'required' => true,
 				'unique' => true,
@@ -234,6 +254,12 @@ class windowsUser extends baseModule implements passwordService {
 				'description' => _('Last name'),
 				'help' => 'sn',
 				'example' => _('Miller'),
+			),
+			array(
+				'name' => 'windowsUser_cn',
+				'description' => _('Common name'),
+				'help' => 'cn',
+				'example' => _('Steve Miller'),
 			),
 			array(
 				'name' => 'windowsUser_displayName',
@@ -375,9 +401,19 @@ class windowsUser extends baseModule implements passwordService {
 				'help' => 'groupsUpload',
 			),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_sAMAccountName',
+				'description' => _('User name (pre W2K)'),
+				'help' => 'sAMAccountName',
+				'example' => _('smiller'),
+				'unique' => true,
+			);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'cn' => _('User name'),
+			'userPrincipalName' => _('User name'),
+			'cn' => _('Common name'),
 			'description' => _('Description'),
 			'displayName' => _('Display name'),
 			'givenName' => _('First name'),
@@ -404,6 +440,9 @@ class windowsUser extends baseModule implements passwordService {
 			'groups' => _('Groups'),
 			'password' => _('Password'),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
+			$return['PDF_fields']['sAMAccountName'] = _('User name (pre W2K)');
+		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('sAMAccountName');
 		// self service field settings
@@ -421,6 +460,20 @@ class windowsUser extends baseModule implements passwordService {
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
 			'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox', 'postalCode');
+		// configuration options
+		$configContainer = new htmlTable();
+		$configContainerHead = new htmlTable();
+		$configContainerHead->addElement(new htmlTableExtendedInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'));
+		$configContainer->addElement($configContainerHead, true);
+		$configContainer->addVerticalSpace('10px');
+		$configHiddenGroup = new htmlGroup();
+		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
+		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainer->addElement($configHiddenGroup, true);
+		$configContainerOptions = new htmlTable();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
+		$configContainer->addElement($configContainerOptions, true);
+		$return['config_options']['all'] = $configContainer;
 		return $return;
 	}
 	
@@ -440,8 +493,12 @@ class windowsUser extends baseModule implements passwordService {
 	* This function fills the $messages variable with output messages from this module.
 	*/
 	public function load_Messages() {
-		$this->messages['cn'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_cn', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['userPrincipalName'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['userPrincipalName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
+		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_cn', _('Please enter a valid common name!'));
+		$this->messages['sAMAccountName'][0] = array('ERROR', _('User name (pre W2K)'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['sAMAccountName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_sAMAccountName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['displayName'][0] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
 		$this->messages['displayName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_displayName', _('Please enter a valid display name!'));
 		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
@@ -516,9 +573,35 @@ class windowsUser extends baseModule implements passwordService {
 			$this->attributes['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 		}
 		$containerLeft->addElement(new htmlSubTitle(_('General')), true);
-		$this->addSimpleInputTextField($containerLeft, 'cn', _('User name'), true);
+		// user name
+		$userPrincipalName = '';
+		$userPrincipalNameDomain = '';
+		$domains = $this->getDomains();
+		$domains[] = '';
+		if (!empty($this->attributes['userPrincipalName'][0])) {
+			$parts = explode('@', $this->attributes['userPrincipalName'][0]);
+			$userPrincipalName = $parts[0];
+			if (!empty($parts[1])) {
+				$userPrincipalNameDomain = $parts[1];
+				if (!in_array($userPrincipalNameDomain, $domains)) {
+					$domains[] = $userPrincipalNameDomain;
+				}
+			}
+		}
+		$userPrincipalNameLabel = new htmlOutputText(_('User name'));
+		$userPrincipalNameLabel->setMarkAsRequired(true);
+		$containerLeft->addElement($userPrincipalNameLabel);
+		$userPrincipalNameGroup = new htmlGroup();
+		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, '15'));
+		$userPrincipalNameGroup->addElement(new htmlSelect('userPrincipalNameDomain', $domains, array($userPrincipalNameDomain)));
+		$containerLeft->addElement($userPrincipalNameGroup);
+		$containerLeft->addElement(new htmlHelpLink('userPrincipalName'), true);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
+			$this->addSimpleInputTextField($containerLeft, 'sAMAccountName', _('User name (pre W2K)'));
+		}
 		$this->addSimpleInputTextField($containerLeft, 'givenName', _('First name'));
 		$this->addSimpleInputTextField($containerLeft, 'sn', _('Last name'));
+		$this->addSimpleInputTextField($containerLeft, 'cn', _('Common name'), true);
 		$this->addSimpleInputTextField($containerLeft, 'displayName', _('Display name'));
 		$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
 		$this->addSimpleInputTextField($containerLeft, 'description', _('Description'));
@@ -608,11 +691,41 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	public function process_attributes() {
 		$return = array();
+		// user name
+		$userPrincipalName = $_POST['userPrincipalName'];
+		if (!get_preg($userPrincipalName, 'username')) {
+			$return[] = $this->messages['userPrincipalName'][0];
+		}
+		if (!empty($_POST['userPrincipalNameDomain'])) {
+			$userPrincipalName .= '@' . $_POST['userPrincipalNameDomain'];
+		}
+		$this->attributes['userPrincipalName'][0] = $userPrincipalName;
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
-		$this->attributes['sAMAccountName'][0] = $_POST['cn'];
-		if (!get_preg($_POST['cn'], 'username')) {
+		if (empty($this->attributes['cn'][0])) {
+			$cn = '';
+			if (!empty($_POST['givenName'])) {
+				$cn = $_POST['givenName'];
+			}
+			if (!empty($_POST['sn'])) {
+				$cn .= ' ' . $_POST['sn'];
+			}
+			$this->attributes['cn'][0] = trim($cn);
+		}
+		if (!get_preg($this->attributes['cn'][0], 'cn')) {
 			$return[] = $this->messages['cn'][0];
+		}
+		// sAMAccountName
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
+			if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['sAMAccountName']) && empty($_POST['sAMAccountName'])) {
+				$this->attributes['sAMAccountName'][0] = $_POST['userPrincipalName'];
+			}
+			else {
+				$this->attributes['sAMAccountName'][0] = $_POST['sAMAccountName'];
+			}
+			if (!empty($this->attributes['sAMAccountName'][0]) && !get_preg($this->attributes['sAMAccountName'][0], 'username')) {
+				$return[] = $this->messages['sAMAccountName'][0];
+			}
 		}
 		// description
 		$this->attributes['description'][0] = $_POST['description'];
@@ -620,6 +733,9 @@ class windowsUser extends baseModule implements passwordService {
 		$this->attributes['displayName'][0] = $_POST['displayName'];
 		if (!empty($this->attributes['displayName'][0]) && !get_preg($_POST['displayName'], 'realname')) {
 			$return[] = $this->messages['displayName'][0];
+		}
+		if (empty($this->attributes['displayName'][0]) && !empty($this->attributes['cn'][0])) {
+			$this->attributes['displayName'][0] = $this->attributes['cn'][0];
 		}
 		// first name
 		$this->attributes['givenName'][0] = $_POST['givenName'];
@@ -869,16 +985,54 @@ class windowsUser extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('user', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'user';
-			// cn + sAMAccountName
-			if ($rawAccounts[$i][$ids['windowsUser_name']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['windowsUser_name']], 'username')) {
-					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_name']];
-					$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsUser_name']];
+			// userPrincipalName
+			if (get_preg($rawAccounts[$i][$ids['windowsUser_userPrincipalName']], 'username')) {
+				$partialAccounts[$i]['userPrincipalName'] = $rawAccounts[$i][$ids['windowsUser_userPrincipalName']];
+			}
+			else {
+				$errMsg = $this->messages['userPrincipalName'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// cn
+			if ($rawAccounts[$i][$ids['windowsUser_cn']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_cn']], 'cn')) {
+					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_cn']];
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
+				}
+			}
+			else {
+				$cn = '';
+				if (!empty($rawAccounts[$i][$ids['windowsUser_firstName']])) {
+					$cn = $rawAccounts[$i][$ids['windowsUser_firstName']];
+				}
+				if (!empty($rawAccounts[$i][$ids['windowsUser_lastName']])) {
+					$cn .= ' ' . $rawAccounts[$i][$ids['windowsUser_lastName']];
+				}
+				$cn = trim($cn);
+				if (!empty($cn)) {
+					$partialAccounts[$i]['cn'] = $cn;
+				}
+			}
+			// sAMAccountName
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
+				if (!empty($rawAccounts[$i][$ids['windowsUser_sAMAccountName']])) {
+					if (get_preg($rawAccounts[$i][$ids['windowsUser_sAMAccountName']], 'username')) {
+						$partialAccounts[$i]['sAMAccountName'] = $rawAccounts[$i][$ids['windowsUser_sAMAccountName']];
+					}
+					else {
+						$errMsg = $this->messages['sAMAccountName'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
+				}
+				else {
+					$samUser = explode('@', $partialAccounts[$i]['userPrincipalName']);
+					$partialAccounts[$i]['sAMAccountName'] = $samUser[0];
 				}
 			}
 			// password
@@ -917,6 +1071,9 @@ class windowsUser extends baseModule implements passwordService {
 			// display name
 			if ($rawAccounts[$i][$ids['windowsUser_displayName']] != "") {
 				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['windowsUser_displayName']];
+			}
+			elseif (!empty($partialAccounts[$i]['cn'])) {
+				$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
 			}
 			// initials
 			if ($rawAccounts[$i][$ids['windowsUser_initials']] != "") {
@@ -1212,7 +1369,9 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	public function get_pdfEntries() {
 		$return = array();
-		$this->addSimplePDFField($return, 'cn', _('User name'));
+		$this->addSimplePDFField($return, 'userPrincipalName', _('User name'));
+		$this->addSimplePDFField($return, 'cn', _('Common name'));
+		$this->addSimplePDFField($return, 'sAMAccountName', _('User name (pre W2K)'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
 		$this->addSimplePDFField($return, 'givenName', _('First name'));
@@ -1274,6 +1433,11 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	function get_profileOptions() {
 		$return = new htmlTable();
+		// domain
+		$domains = $this->getDomains();
+		$domains[] = '';
+		$return->addElement(new htmlTableExtendedSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'), true);
+		// group memberships
 		$groups = $this->findGroups();
 		$groupList = array();
 		foreach ($groups as $dn) {
@@ -1294,6 +1458,13 @@ class windowsUser extends baseModule implements passwordService {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
+		// load domain
+		if (isset($profile['windowsUser_userPrincipalNameDomain'][0])) {
+			$user = empty($this->attributes['userPrincipalName'][0]) ? '' : $this->attributes['userPrincipalName'][0];
+			$user = explode('@', $user);
+			$user = $user[0] . '@' . $profile['windowsUser_userPrincipalNameDomain'][0];
+			$this->attributes['userPrincipalName'][0] = $user;
+		}
 		// load groups
 		if (isset($profile['windowsUser_groups'][0])) {
 			$this->groupList = $profile['windowsUser_groups'];
@@ -1684,6 +1855,24 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$this->groupCache = $return;
 		return $return;
+	}
+	
+	/**
+	 * Gets the list of possible domains from the config setting.
+	 * 
+	 * @return array domain list
+	 */
+	private function getDomains() {
+		$domains = array();
+		if (!empty($this->moduleSettings['windowsUser_domains'])) {
+			foreach ($this->moduleSettings['windowsUser_domains'] as $domain) {
+				$domain = trim(str_replace('@', '', $domain));
+				if (!empty($domain)) {
+					$domains[] = $domain;
+				}
+			}
+		}
+		return array_values(array_unique($domains));
 	}
 	
 }
