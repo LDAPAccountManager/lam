@@ -127,7 +127,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['shell'][0] = array('ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!'));
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be "true" or "false".'));
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
+		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' posixAccount_cn', _('Please enter a valid common name!'));
 		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
 	}
 
