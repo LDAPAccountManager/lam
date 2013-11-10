@@ -6620,24 +6620,100 @@ Run slapindex to rebuild the index.
           password and email address are mandatory anyway and need not be
           specified.</para>
 
-          <para>Each line represents one LDAP attribute. The options are
-          separated by "::". The first option specifies if the attribute is
-          mandatory. It can have the values "optional" and "required". The
-          second option is the LDAP attribute name and the third one is a
-          descriptive label for it. Options four and five are used for input
-          validation. Please enter the regular expression (e.g.
-          "/^[0-9a-zA-Z]+$/") and an error message if the value does not match
-          it. For a syntax description see <ulink
-          url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation
-          is optional.</para>
+          <para>Each line represents one LDAP attribute. The settings are
+          separated by "::". The first setting specifies the field type. The
+          second setting is the LDAP attribute name. Depending on the field
+          type you can enter additional options:</para>
 
-          <para>Example:</para>
+          <table>
+            <title></title>
+
+            <tgroup cols="6">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+
+                  <entry><emphasis role="bold">Type</emphasis></entry>
+
+                  <entry><emphasis role="bold">Attribute
+                  name</emphasis></entry>
+
+                  <entry><emphasis role="bold">First option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Second
+                  option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Third option</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>An optional input field that is displayed on the
+                  registration page.</entry>
+
+                  <entry>optional</entry>
+
+                  <entry>e.g. "givenName"</entry>
+
+                  <entry>Label that is displayed on page</entry>
+
+                  <entry>optional regular expression for validation (e.g.
+                  "/^[0-9a-zA-Z]+$/")</entry>
+
+                  <entry>validation message if value does not match validation
+                  expression</entry>
+                </row>
+
+                <row>
+                  <entry>A required input field that is displayed on the
+                  registration page. Self registration cannot be done if such
+                  a field is left empty by the user.</entry>
+
+                  <entry>required</entry>
+
+                  <entry>e.g. "sn"</entry>
+
+                  <entry>Label that is displayed on page</entry>
+
+                  <entry>optional regular expression for validation (e.g.
+                  "/^[0-9a-zA-Z]+$/")</entry>
+
+                  <entry>validation message if value does not match validation
+                  expression</entry>
+                </row>
+
+                <row>
+                  <entry>Constant attribute value, not visible for the user.
+                  Can be used to set some initial values or data that must not
+                  be edited by the user.</entry>
+
+                  <entry>constant</entry>
+
+                  <entry>e.g. "homeDirectory"</entry>
+
+                  <entry>attribute value, supports wirldcards to insert other
+                  attribute values (e.g. "@@uid@@")</entry>
+
+                  <entry></entry>
+
+                  <entry></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <para>For a syntax description of validation expressions see <ulink
+          url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation
+          is optional, you can leave these options blank.</para>
+
+          <para><emphasis role="bold">Example:</emphasis></para>
 
           <para>optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
           enter a valid first name.</para>
 
           <para>required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
           valid last name.</para>
+
+          <para>constant::homeDirectory::/home/@@uid@@</para>
 
           <para>If you use the object class "inetOrgPerson" and do not provide
           the "cn" attribute then LAM will set it to the user name
