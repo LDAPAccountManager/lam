@@ -1,6 +1,11 @@
 <Files *>
   Options +FollowSymLinks
-  Order allow,deny
-  Allow from all
+  <IfVersion < 2.3>
+    Order allow,deny
+    Allow from all
+  </IfVersion>
+  <IfVersion >= 2.3>
+    Require all granted
+  </IfVersion>
   DirectoryIndex index.html
 </Files>
