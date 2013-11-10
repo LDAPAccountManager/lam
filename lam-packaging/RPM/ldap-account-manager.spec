@@ -95,6 +95,7 @@ if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 	fi
 fi
 %if %is_suse
+/usr/sbin/a2enmod version > /dev/null
 /etc/init.d/apache2 reload
 %endif
 %if %is_fedora
