@@ -698,6 +698,11 @@ Have fun!
         <section>
           <title>4.3 -&gt; 4.4</title>
 
+          <para>Apache configuration: LAM supports Apache 2.2 and 2.4. This
+          requires that your Apache server has enabled the "version" module.
+          For Debian and Fedora this is the default setup. The Suse RPM will
+          try to enable the version module during installation.</para>
+
           <para>Kolab: User accounts get the object class "mailrecipient" by
           default. You can change this behaviour in the module settings
           section of your LAM server profile.</para>
