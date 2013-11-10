@@ -230,6 +230,9 @@ Have fun!
         <para>MCrypt will be used to store your LDAP password encrypted in the
         session file.</para>
 
+        <para>Please note that LAM does not ship with a selinux policy. Please
+        disable selinux or create your own policy.</para>
+
         <para>See <link linkend="a_schema">LDAP schema fles</link> for
         information about used LDAP schema files.</para>
       </section>
