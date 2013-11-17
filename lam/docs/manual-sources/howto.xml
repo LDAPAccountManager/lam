@@ -4256,6 +4256,133 @@ Run slapindex to rebuild the index.
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">File upload</emphasis></para>
+
+      <para>You can upload complete DNS zones via LAM's file upload. Here is
+      an example for a zone file and the corresponding CSV file.</para>
+
+      <table>
+        <title>Zone file</title>
+
+        <tgroup cols="4">
+          <tbody>
+            <row>
+              <entry>@</entry>
+
+              <entry>IN</entry>
+
+              <entry>SOA</entry>
+
+              <entry>ns1.example.com admin.ns1.example.com (1 360000 3600
+              3600000 370000)</entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry>IN</entry>
+
+              <entry>NS</entry>
+
+              <entry>ns1.example.com.</entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry>IN</entry>
+
+              <entry>NS</entry>
+
+              <entry>ns2.example.com.</entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry>IN</entry>
+
+              <entry>MX</entry>
+
+              <entry>10 mail1.example.com</entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry>IN</entry>
+
+              <entry>MX</entry>
+
+              <entry>20 mail2.example.com</entry>
+            </row>
+
+            <row>
+              <entry>foo</entry>
+
+              <entry>IN</entry>
+
+              <entry>A</entry>
+
+              <entry>123.123.123.100</entry>
+            </row>
+
+            <row>
+              <entry>foo2</entry>
+
+              <entry>IN</entry>
+
+              <entry>CNAME</entry>
+
+              <entry>foo.example.com</entry>
+            </row>
+
+            <row>
+              <entry>bar</entry>
+
+              <entry>IN</entry>
+
+              <entry>A</entry>
+
+              <entry>123.123.123.101</entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry>IN</entry>
+
+              <entry>AAAA</entry>
+
+              <entry>1:2:3:4:5</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>Please check that you have an existing zone entry that can be used
+      for the file upload. See above to create a new zone. </para>
+
+      <para>Hint: If you use the function above to create a new zone then
+      please skip the "@" entry in the CSV file below. LAM creates this entry
+      with sample data.</para>
+
+      <para>In this example we assume that the following zone extry
+      exists:</para>
+
+      <literallayout>dn: dlzZoneName=example.com,ou=bind,dc=example,dc=com
+dlzzonename: example.com
+objectclass: dlzZone
+objectclass: top
+
+</literallayout>
+
+      <para>Here is the corresponding CSV file: <ulink
+      url="resources/bindUpload.csv">bindUpload.csv</ulink></para>
     </section>
 
     <section>
