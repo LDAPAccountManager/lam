@@ -96,7 +96,7 @@ class toolFileUpload implements LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition() {
-		return 200;
+		return 300;
 	}
 	
 	/**

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2011  Roland Gruber
+  Copyright (C) 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,18 +22,18 @@ $Id$
 */
 
 /**
-* This file includes the server information tool specification.
+* Multi edit tool that allows LDAP operations on multiple entries.
 *
 * @author Roland Gruber
 * @package tools
 */
 
 /**
- * Server information
+ * Multi edit tool that allows LDAP operations on multiple entries.
  * 
  * @package tools
  */ 
-class toolServerInformation implements LAMTool {
+class toolMultiEdit implements LAMTool {
 	
 	/**
 	 * Returns the name of the tool.
@@ -41,7 +41,7 @@ class toolServerInformation implements LAMTool {
 	 * @return string name
 	 */
 	 function getName() {
-	 	return _("Server information");
+	 	return _("Multi edit");
 	 }
 	
 	/**
@@ -50,7 +50,7 @@ class toolServerInformation implements LAMTool {
 	 * @return string description
 	 */
 	function getDescription() {
-		return _("Information about the LDAP server.");
+		return _("Performs modifications on multiple LDAP entries.");
 	}
 	
 	/**
@@ -59,7 +59,7 @@ class toolServerInformation implements LAMTool {
 	 * @return string link
 	 */
 	function getLink() {
-		return "serverInfo.php";
+		return "multiEdit.php";
 	}
 	
 	/** 
@@ -68,7 +68,7 @@ class toolServerInformation implements LAMTool {
 	 * @return boolean true if write access is needed
 	 */
 	function getRequiresWriteAccess() {
-		return false;
+		return true;
 	}
 	
 	/**
@@ -86,7 +86,7 @@ class toolServerInformation implements LAMTool {
 	 * @return string image URL
 	 */
 	function getImageLink() {
-		return 'tree_info.png';
+		return 'edit.png';
 	}
 	
 	/**
@@ -96,7 +96,7 @@ class toolServerInformation implements LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition() {
-		return 700;
+		return 400;
 	}
 	
 	/**

@@ -96,7 +96,7 @@ class toolOUEditor implements LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition() {
-		return 300;
+		return 500;
 	}
 	
 	/**

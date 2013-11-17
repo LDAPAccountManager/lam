@@ -96,7 +96,7 @@ class toolPDFEditor implements LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition() {
-		return 400;
+		return 200;
 	}
 	
 	/**

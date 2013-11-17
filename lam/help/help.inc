@@ -248,7 +248,14 @@ $helpArray = array (
 					"Text" => _("This will create a new organisational unit under the selected one.")),
 				"602" => array ("Headline" => _("OU-Editor") . " - " . _("Delete organisational unit"),
 					"Text" => _("This will delete the selected organisational unit. The OU has to be empty.")),
-
+				// 700 - 799
+				// multi edit tool
+				"700" => array ("Headline" => _('LDAP suffix'),
+					"Text" => _('Please select the suffix where changes should be done.')),
+				"701" => array ("Headline" => _('LDAP filter'),
+					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of entries to modify.')),
+				"702" => array ("Headline" => _('Operations'),
+					"Text" => _('Please specify which attributes should be changed. The modify operation will also add an value if the attribute does not yet exist. To delete all values of an attribute please leave the value field empty.')),
 );
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

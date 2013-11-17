@@ -96,7 +96,7 @@ class toolSchemaBrowser implements LAMTool {
 	 * @return int prefered position
 	 */
 	function getPosition() {
-		return 500;
+		return 600;
 	}
 	
 	/**

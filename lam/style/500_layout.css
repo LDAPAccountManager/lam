@@ -211,6 +211,11 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
+.dryRunButton {
+	background-image: url(../graphics/dryRun.png) !important;
+	background-position: 0px 0px !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
