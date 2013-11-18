@@ -95,7 +95,7 @@ class windowsGroup extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType', 'otherMailbox', 'managedBy');
+		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType', 'managedBy');
 		// help Entries
 		$return['help'] = array(
 			'hiddenOptions' => array(
@@ -117,14 +117,6 @@ class windowsGroup extends baseModule {
 			'mail' => array(
 				"Headline" => _('Email address'), 'attr' => 'mail',
 				"Text" => _('The list\'s email address.')
-			),
-			'otherMailbox' => array(
-				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
-				"Text" => _("Email alias for this account.")
-			),
-			'otherMailboxList' => array(
-				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
-				"Text" => _("Email alias for this account.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'member' => array(
 				"Headline" => _('Members'), 'attr' => 'member',
@@ -155,8 +147,6 @@ class windowsGroup extends baseModule {
 		$configContainerOptions = new htmlTable();
 		$configContainer->addElement($configContainerHead, true);
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemail', false, _('Email address'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hideotherMailbox', false, _('Email alias'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemanagedBy', false, _('Managed by'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
@@ -213,14 +203,6 @@ class windowsGroup extends baseModule {
 				'example' => _('group@company.com'),
 			);
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsGroup_hideotherMailbox')) {
-			$return['upload_columns'][] = array(
-				'name' => 'windowsGroup_otherMailbox',
-				'description' => _('Email alias'),
-				'help' => 'otherMailboxList',
-				'example' => _('group@company.com'),
-			);
-		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsGroup_managedBy',
@@ -241,9 +223,6 @@ class windowsGroup extends baseModule {
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
 			$return['PDF_fields']['mail'] = _('Email address');
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsGroup_hideotherMailbox')) {
-			$return['PDF_fields']['otherMailbox'] = _('Email alias');
-		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
 			$return['PDF_fields']['managedBy'] = _('Managed by');
 		}
@@ -258,8 +237,6 @@ class windowsGroup extends baseModule {
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_mail', _('Please enter a valid email address!'));
-		$this->messages['otherMailbox'][0] = array('ERROR', _('Email alias'), _('Email alias is invalid!'));
-		$this->messages['otherMailbox'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_otherMailbox', _('Email alias is invalid!'));
 		$this->messages['groupScope'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupScope', _('Please enter a valid group scope.'));
 		$this->messages['groupType'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupType', _('Please enter a valid group type.'));
 	}
@@ -275,9 +252,6 @@ class windowsGroup extends baseModule {
 		$this->addSimpleInputTextField($container, 'description', _('Description'), false);
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
 			$this->addSimpleInputTextField($container, 'mail', _('Email address'), false);
-		}
-		if (!$this->isBooleanConfigOptionSet('windowsGroup_hideotherMailbox')) {
-			$this->addMultiValueInputTextField($container, 'otherMailbox', _('Email alias'));
 		}
 		// group type
 		$groupType = windowsGroup::TYPE_SECURITY;
@@ -390,10 +364,6 @@ class windowsGroup extends baseModule {
 			if (!empty($_POST['mail']) && !get_preg($_POST['mail'], 'email')) {
 				$return[] = $this->messages['mail'][0];
 			}
-		}
-		// email aliases
-		if (!$this->isBooleanConfigOptionSet('windowsGroup_hideotherMailbox')) {
-			$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
 		}
 		// group scope
 		switch ($_POST['groupScope']) {
@@ -640,19 +610,6 @@ class windowsGroup extends baseModule {
 					$errors[] = $errMsg;
 				}
 			}
-			// email aliases
-			if (!$this->isBooleanConfigOptionSet('windowsGroup_hideotherMailbox') && isset($ids['windowsGroup_otherMailbox']) && ($rawAccounts[$i][$ids['windowsGroup_otherMailbox']] != "")) {
-				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsGroup_otherMailbox']]);
-				$partialAccounts[$i]['otherMailbox'] = $valueList;
-				for ($x = 0; $x < sizeof($valueList); $x++) {
-					if (!get_preg($valueList[$x], 'email')) {
-						$errMsg = $this->messages['otherMailbox'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
 			// managed by
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy') && $rawAccounts[$i][$ids['windowsGroup_managedBy']] != "") {
 				$partialAccounts[$i]['managedBy'] = $rawAccounts[$i][$ids['windowsGroup_managedBy']];
@@ -714,7 +671,6 @@ class windowsGroup extends baseModule {
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'info', _('Notes'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
-		$this->addSimplePDFField($return, 'otherMailbox', _('Email alias'));
 		// group type
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
