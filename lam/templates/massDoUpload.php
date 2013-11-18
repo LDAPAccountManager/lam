@@ -141,8 +141,8 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	$progress = ($_SESSION['mass_counter'] * 100) / sizeof($accounts);
 	?>
 		<script type="text/javascript">
-			$(function() {
-				$( "#progressbarGeneral" ).progressbar({
+			jQuery(function() {
+				jQuery( "#progressbarGeneral" ).progressbar({
 					value: <?php echo $progress; ?>
 				});
 			});
@@ -161,8 +161,8 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		?>
 			<div id="progressbar<?php echo $return['module']; ?>"></div>
 			<script type="text/javascript">
-				$(function() {
-					$( "#progressbar<?php echo $return['module']; ?>" ).progressbar({
+				jQuery(function() {
+					jQuery( "#progressbar<?php echo $return['module']; ?>" ).progressbar({
 						value: <?php echo $return['progress']; ?>
 					});
 				});
@@ -203,8 +203,8 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 			?>
 				<div id="progressbarPDF"></div>
 				<script type="text/javascript">
-					$(function() {
-						$( "#progressbarPDF" ).progressbar({
+					jQuery(function() {
+						jQuery( "#progressbarPDF" ).progressbar({
 							value: <?php echo $progress; ?>
 						});
 					});

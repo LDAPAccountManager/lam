@@ -51,6 +51,12 @@ const ADD = 'add';
 const MOD = 'mod';
 const DEL = 'del';
 
+const STAGE_START = 'start';
+const STAGE_READ_FINISHED = 'readFinished';
+const STAGE_ACTIONS_CALCULATED = 'actionsCalculated';
+const STAGE_WRITING = 'writing';
+const STAGE_FINISHED = 'finished';
+
 if (isset($_GET['ajaxStatus'])) {
 	runAjaxActions();
 }
@@ -200,7 +206,7 @@ function runActions(&$container) {
 	$operations = array();
 	for ($i = 0; $i < sizeof($_POST['opcount']); $i++) {
 		if (!empty($_POST['attr_' . $i])) {
-			$operations[] = array($_POST['op_' . $i], $_POST['attr_' . $i], $_POST['val_' . $i]);
+			$operations[] = array($_POST['op_' . $i], strtolower(trim($_POST['attr_' . $i])), trim($_POST['val_' . $i]));
 		}
 	}
 	if (sizeof($operations) == 0) {
@@ -212,7 +218,8 @@ function runActions(&$container) {
 	$_SESSION['multiEdit_suffix'] = $suffix;
 	$_SESSION['multiEdit_filter'] = $filter;
 	$_SESSION['multiEdit_operations'] = $operations;
-	$_SESSION['multiEdit_status'] = null;
+	$_SESSION['multiEdit_status'] = array('stage' => STAGE_START);
+	$_SESSION['multiEdit_dryRun'] = isset($_POST['dryRun']);
 	// disable all input elements
 	$jsContent = '
 		jQuery(\'input\').attr(\'disabled\', true);
@@ -222,6 +229,9 @@ function runActions(&$container) {
 	$container->addElement(new htmlJavaScript($jsContent), true);
 	// progress area
 	$container->addElement(new htmlSubTitle(_('Progress')), true);
+	$progressBarDiv = new htmlDiv('progressBar', '');
+	$progressBarDiv->colspan = 5;
+	$container->addElement($progressBarDiv, true);
 	$progressDiv = new htmlDiv('progressArea', '');
 	$progressDiv->colspan = 5;
 	$container->addElement($progressDiv, true);
@@ -230,6 +240,7 @@ function runActions(&$container) {
 		jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
 		
 		function handleReply(data) {
+			jQuery(\'#progressBar\').progressbar({value: data.progress, max: 120});
 			jQuery(\'#progressArea\').html(data.content);
 			if (data.status != "finished") {
 				jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
@@ -238,6 +249,7 @@ function runActions(&$container) {
 				jQuery(\'input\').removeAttr(\'disabled\');
 				jQuery(\'select\').removeAttr(\'disabled\');
 				jQuery(\'button\').removeAttr(\'disabled\');
+				jQuery(\'#progressBar\').hide();
 			}
 		}
 	';
@@ -249,9 +261,120 @@ function runActions(&$container) {
  */
 function runAjaxActions() {
 	$jsonReturn = array(
-		'status' => 'finished',
-		'content' => 'content'
+		'status' => STAGE_START,
+		'progress' => 0,
+		'content' => ''
 	);
+	switch ($_SESSION['multiEdit_status']['stage']) {
+		case STAGE_START:
+			$jsonReturn = readLDAPData();
+			break;
+		case STAGE_READ_FINISHED:
+			$jsonReturn = generateActions();
+			break;
+		case STAGE_ACTIONS_CALCULATED:
+			if ($_SESSION['multiEdit_dryRun']) {
+				$jsonReturn = dryRun();
+			}
+			else {
+				$jsonReturn = doModify();
+			}
+			break;
+	}
 	echo json_encode($jsonReturn);
+}
+
+/**
+ * Reads the LDAP entries from the directory.
+ * 
+ * @return array status
+ */
+function readLDAPData() {
+	$suffix = $_SESSION['multiEdit_suffix'];
+	$filter = $_SESSION['multiEdit_filter'];
+	if (empty($filter)) {
+		$filter = '(objectClass=*)';
+	}
+	$operations = $_SESSION['multiEdit_operations'];
+	$attributes = array();
+	foreach ($operations as $op) {
+		if (!in_array(strtolower($op[1]), $attributes)) {
+			$attributes[] = strtolower($op[1]);
+		}
+	}
+	// run LDAP query
+	$results = searchLDAP($suffix, $filter, $attributes);
+	// print error message if no data returned
+	if (empty($results)) {
+		$code = ldap_errno($_SESSION['ldap']->server());
+		if ($code !== 0) {
+			$msg = new htmlStatusMessage('ERROR', _('Encountered an error while performing search.'), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+		}
+		else {
+			$msg = new htmlStatusMessage('ERROR', _('No objects found!'));
+		}
+		$tabindex = 0;
+		ob_start();
+		parseHtml(null, $msg, array(), true, $tabindex, 'user');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return array(
+			'status' => STAGE_FINISHED,
+			'progress' => 120,
+			'content' => $content
+		);
+	}
+	// save LDAP data
+	$_SESSION['multiEdit_status']['entries'] = $results;
+	$_SESSION['multiEdit_status']['stage'] = STAGE_READ_FINISHED;
+	return array(
+		'status' => STAGE_READ_FINISHED,
+		'progress' => 10,
+		'content' => ''
+	);
+}
+
+/**
+ * Generates the required actions based on the read LDAP data.
+ * 
+ * @return array status
+ */
+function generateActions() {
+	$actions = array();
+	foreach ($_SESSION['multiEdit_status']['entries'] as $entry) {
+		foreach ($_SESSION['multiEdit_operations'] as $op) {
+			$opType = $op[0];
+			$attr = $op[1];
+			$val = $op[2];
+			switch ($opType) {
+				case ADD:
+					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {
+						$actions[] = array(ADD, $attr, $val);
+					}
+					break;
+				case MOD:
+					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {
+						$actions[] = array(ADD, $attr, $val);
+					}
+					break;
+				case DEL:
+					if (empty($val) && !empty($entry[$attr])) {
+						$actions[] = array(MOD, $attr, array());
+					}
+					elseif (!empty($val) && in_array($val, $entry[$attr])) {
+						$actions[] = array(DEL, $attr, array($val));
+					}
+					break;
+			}
+		}
+	}
+	// save actions
+	$_SESSION['multiEdit_status']['actions'] = $actions;
+	$_SESSION['multiEdit_status']['stage'] = STAGE_ACTIONS_CALCULATED;
+	return array(
+		'status' => STAGE_ACTIONS_CALCULATED,
+		'progress' => 20,
+		'content' => ''
+	);
 }
 
