@@ -204,7 +204,7 @@ function runActions(&$container) {
 	$filter = trim($_POST['filter']);
 	// operations
 	$operations = array();
-	for ($i = 0; $i < sizeof($_POST['opcount']); $i++) {
+	for ($i = 0; $i < $_POST['opcount']; $i++) {
 		if (!empty($_POST['attr_' . $i])) {
 			$operations[] = array($_POST['op_' . $i], strtolower(trim($_POST['attr_' . $i])), trim($_POST['val_' . $i]));
 		}
@@ -342,6 +342,7 @@ function readLDAPData() {
 function generateActions() {
 	$actions = array();
 	foreach ($_SESSION['multiEdit_status']['entries'] as $entry) {
+		$dn = $entry['dn'];
 		foreach ($_SESSION['multiEdit_operations'] as $op) {
 			$opType = $op[0];
 			$attr = $op[1];
@@ -349,20 +350,25 @@ function generateActions() {
 			switch ($opType) {
 				case ADD:
 					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {
-						$actions[] = array(ADD, $attr, $val);
+						$actions[] = array(ADD, $dn, $attr, $val);
 					}
 					break;
 				case MOD:
-					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {
-						$actions[] = array(ADD, $attr, $val);
+					if (empty($entry[$attr])) {
+						// attribute not yet exists, add it
+						$actions[] = array(ADD, $dn, $attr, $val);
+					}
+					elseif (!empty($entry[$attr]) && !in_array_ignore_case($val, $entry[$attr])) {
+						// attribute exists and value is not included, replace old values
+						$actions[] = array(MOD, $dn, $attr, $val);
 					}
 					break;
 				case DEL:
 					if (empty($val) && !empty($entry[$attr])) {
-						$actions[] = array(MOD, $attr, array());
+						$actions[] = array(DEL, $dn, $attr, null);
 					}
 					elseif (!empty($val) && in_array($val, $entry[$attr])) {
-						$actions[] = array(DEL, $attr, array($val));
+						$actions[] = array(DEL, $dn, $attr, $val);
 					}
 					break;
 			}
@@ -378,3 +384,81 @@ function generateActions() {
 	);
 }
 
+/**
+ * Prints the dryRun output.
+ * 
+ * @return array status
+ */
+function dryRun() {
+	$ldif = '';
+	$log = '';
+	// fill LDIF and log file
+	$lastDN = '';
+	foreach ($_SESSION['multiEdit_status']['actions'] as $action) {
+		$opType = $action[0];
+		$dn = $action[1];
+		$attr = $action[2];
+		$val = $action[3];
+		if ($lastDN != $dn) {
+			if ($lastDN != '') {
+				$log .= "\r\n";
+			}
+			$lastDN = $dn;
+			$log .= $dn . "\r\n";
+		}
+		if ($lastDN != '') {
+			$ldif .= "\n";
+		}
+		$ldif .= 'dn: ' . $dn . "\n";
+		$ldif .= 'changetype: modify' . "\n";
+		switch ($opType) {
+			case ADD:
+				$log .= '+' . $attr . '=' . $val . "\r\n";
+				$ldif .= 'add: ' . $attr . "\n";
+				$ldif .= $attr . ': ' . $val . "\n";
+				break;
+			case DEL:
+				$ldif .= 'delete: ' . $attr . "\n";
+				if (empty($val)) {
+					$log .= '-' . $attr . "\r\n";	
+				}
+				else {
+					$log .= '-' . $attr . '=' . $val . "\r\n";
+					$ldif .= $attr . ': ' . $val . "\n";
+				}
+				break;
+			case MOD:
+				$log .= '*' . $attr . '=' . $val . "\r\n";
+				$ldif .= 'replace: ' . $attr . "\n";
+				$ldif .= $attr . ': ' . $val . "\n";
+				break;
+		}
+	}
+	// build meta HTML
+	$container = new htmlTable();
+	$container->addElement(new htmlOutputText(_('DryRun finished.')), true);
+	$container->addVerticalSpace('20px');
+	// store LDIF
+	$filename = 'ldif' . getRandomNumber() . '.ldif';
+	$out = @fopen(dirname(__FILE__) . '/../tmp/' . $filename, "wb");
+	fwrite($out, $ldif);
+	$container->addElement(new htmlOutputText(_('LDIF file')), true);
+	$ldifLink = new htmlLink($filename, '../tmp/' . $filename);
+	$ldifLink->setTargetWindow('_blank');
+	$container->addElement($ldifLink, true);
+	$container->addVerticalSpace('20px');
+	$container->addElement(new htmlOutputText(_('Log output')), true);
+	$container->addElement(new htmlInputTextarea('log', $log, 100, 30), true);
+	// generate HTML
+	fclose ($out);
+	ob_start();
+	$tabindex = 1;
+	parseHtml(null, $container, array(), true, $tabindex, 'user');
+	$content = ob_get_contents();
+	ob_end_clean();
+	return array(
+		'status' => STAGE_FINISHED,
+		'progress' => 120,
+		'content' => $content
+	);
+}
