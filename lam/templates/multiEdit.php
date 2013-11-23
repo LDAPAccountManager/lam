@@ -95,7 +95,7 @@ function displayStartPage() {
 	$suffixes = array_flip($suffixes);
 	natcasesort($suffixes);
 	$suffixes = array_flip($suffixes);
-	$suffixes[_('other')] = '-';
+	$suffixes[_('Other')] = '-';
 	$suffixValues = array_values($suffixes);
 	$valSuffix = empty($_POST['suffix']) ? $suffixValues[0] : $_POST['suffix'];
 	$suffixSelect = new htmlSelect('suffix', $suffixes, array($valSuffix));

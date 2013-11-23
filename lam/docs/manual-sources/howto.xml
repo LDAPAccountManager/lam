@@ -2230,7 +2230,8 @@ Have fun!
       </section>
 
       <section>
-        <title>Password self reset (LAM Pro)</title>
+        <title id="passwordSelfResetUser">Password self reset (LAM
+        Pro)</title>
 
         <para>LAM Pro allows your users to reset their passwords by answering
         a security question. The reset link is displayed on the <link
@@ -2351,6 +2352,10 @@ Have fun!
         users. You will see a new tab called "Password self reset". Here you
         can activate/remove the password self reset function for each user.
         You can also change the security question and answer.</para>
+
+        <para><emphasis role="bold">Hint:</emphasis> You can add the
+        passwordSelfReset object class to all your users with the <link
+        linkend="toolMultiEdit">multi edit</link> tool.</para>
 
         <para><emphasis role="bold">Samba 4 note:</emphasis> Due to a <ulink
         url="https://bugzilla.samba.org/show_bug.cgi?id=10094">bug</ulink> in
@@ -4365,7 +4370,7 @@ Run slapindex to rebuild the index.
       </table>
 
       <para>Please check that you have an existing zone entry that can be used
-      for the file upload. See above to create a new zone. </para>
+      for the file upload. See above to create a new zone.</para>
 
       <para>Hint: If you use the function above to create a new zone then
       please skip the "@" entry in the CSV file below. LAM creates this entry
@@ -5429,6 +5434,93 @@ objectclass: top
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/fileUpload2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title id="toolMultiEdit">Multi edit</title>
+
+      <para>This tool allows you to modify a large list of LDAP entries in
+      batch mode. You can add new attributes/object classes, remove attributes
+      and set attributes to a specific value.</para>
+
+      <para>At the beginning, you need to specify where the entries are stored
+      that should be changed. You can select an account suffix, the tree
+      suffix or enter your own DN by selecting "Other".</para>
+
+      <para>Next, enter an additional LDAP filter to limit the entries that
+      should be changed. E.g. use "(objectclass=inetOrgPerson)" to filter for
+      users. You may also enter e.g. "(!(objectClass=passwordSelfReset))" to
+      match all accounts that do not yet have the <link
+      linkend="passwordSelfResetUser">password self reset</link>
+      feature.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>Now, it is time to define the changes that should be done. The
+      following operations are possible:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Add: Adds an attribute value if not yet existing. Please do
+          not use for single-value attributes that already have a
+          value.</para>
+        </listitem>
+
+        <listitem>
+          <para>Modify: Sets an attribute to the given value. If the attribute
+          does not yet exist then it is added. If the attribute has multiple
+          values then all other values are removed.</para>
+        </listitem>
+
+        <listitem>
+          <para>Delete: Deletes the specified value from this attribute. If
+          you leave the value field blank then all attribute values are
+          removed.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Please note that all actions are run as separate LDAP commands.
+      You cannot add an object class and a required attribute at the same
+      time.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/multiEdit1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Dry run</emphasis></para>
+
+      <para>You should always start with a dry run. It will not do any changes
+      to your LDAP directory but print out all modifications that will be
+      done. You will also be able to download the changes in LDIF format to
+      use with ldapmodify. This is useful if you want to adjust some actions
+      manually.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/multiEdit2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Apply changes</emphasis></para>
+
+      <para>This will run the actions against your LDAP directory. You will
+      see which accounts are edited in the progress area and also if any
+      errors occured.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/multiEdit3.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
