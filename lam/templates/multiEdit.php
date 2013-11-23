@@ -111,7 +111,7 @@ function displayStartPage() {
 	$container->addElement($suffixGroup);
 	$container->addElement(new htmlHelpLink('700'), true);
 	// LDAP filter
-	$valFilter = empty($_POST['filter']) ? '' : $_POST['filter'];
+	$valFilter = empty($_POST['filter']) ? '(objectClass=inetOrgPerson)' : $_POST['filter'];
 	$container->addElement(new htmlTableExtendedInputField(_('LDAP filter'), 'filter', $valFilter, '701'), true);
 	// operation fields
 	$container->addElement(new htmlSubTitle(_('Operations')), true);
@@ -273,6 +273,7 @@ function runAjaxActions() {
 			$jsonReturn = generateActions();
 			break;
 		case STAGE_ACTIONS_CALCULATED:
+		case STAGE_WRITING:
 			if ($_SESSION['multiEdit_dryRun']) {
 				$jsonReturn = dryRun();
 			}
@@ -313,11 +314,7 @@ function readLDAPData() {
 		else {
 			$msg = new htmlStatusMessage('ERROR', _('No objects found!'));
 		}
-		$tabindex = 0;
-		ob_start();
-		parseHtml(null, $msg, array(), true, $tabindex, 'user');
-		$content = ob_get_contents();
-		ob_end_clean();
+		$content = getMessageHTML($msg);
 		return array(
 			'status' => STAGE_FINISHED,
 			'progress' => 120,
@@ -390,7 +387,8 @@ function generateActions() {
  * @return array status
  */
 function dryRun() {
-	$ldif = '';
+	$pro = isLAMProVersion() ? ' Pro' : '';
+	$ldif = '# LDAP Account Manager' . $pro . ' ' . LAMVersion() . "\n\nversion: 1\n\n";
 	$log = '';
 	// fill LDIF and log file
 	$lastDN = '';
@@ -461,4 +459,84 @@ function dryRun() {
 		'progress' => 120,
 		'content' => $content
 	);
+}
+
+/**
+ * Runs the actual modifications.
+ * 
+ * @return array status
+ */
+function doModify() {
+	// initial action index
+	if (!isset($_SESSION['multiEdit_status']['index'])) {
+		$_SESSION['multiEdit_status']['index'] = 0;
+	}
+	// initial content
+	if (!isset($_SESSION['multiEdit_status']['modContent'])) {
+		$_SESSION['multiEdit_status']['modContent'] = '';
+	}
+	// run 10 modifications in each call
+	$localCount = 0;
+	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < sizeof($_SESSION['multiEdit_status']['actions']))) {
+		$action = $_SESSION['multiEdit_status']['actions'][$_SESSION['multiEdit_status']['index']];
+		$opType = $action[0];
+		$dn = $action[1];
+		$attr = $action[2];
+		$val = $action[3];
+		$_SESSION['multiEdit_status']['modContent'] .= htmlspecialchars($dn) . "<br>";
+		// run LDAP commands
+		$success = false;
+		switch ($opType) {
+			case ADD:
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+				break;
+			case DEL:
+				if (empty($val)) {
+					$success = ldap_modify($_SESSION['ldap']->server(), $dn, array($attr => array()));
+				}
+				else {
+					$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+				}
+				break;
+			case MOD:
+				$success = ldap_modify($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+				break;
+		}
+		if (!$success) {
+			$msg = new htmlStatusMessage('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+			$_SESSION['multiEdit_status']['modContent'] .= getMessageHTML($msg);
+		}
+		$localCount++;
+		$_SESSION['multiEdit_status']['index']++;
+	}
+	// check if finished
+	if ($_SESSION['multiEdit_status']['index'] == sizeof($_SESSION['multiEdit_status']['actions'])) {
+		$_SESSION['multiEdit_status']['modContent'] .= '<br><br>' . _('Finished all operations.');
+		return array(
+			'status' => STAGE_FINISHED,
+			'progress' => 120,
+			'content' => $_SESSION['multiEdit_status']['modContent']
+		);
+	}
+	// return current status
+	return array(
+		'status' => STAGE_WRITING,
+		'progress' => 20 + (($_SESSION['multiEdit_status']['index'] / sizeof($_SESSION['multiEdit_status']['actions'])) * 100),
+		'content' => $_SESSION['multiEdit_status']['modContent']
+	);
+}
+
+/**
+ * Returns the HTML code for a htmlStatusMessage
+ * 
+ * @param htmlStatusMessage $msg message
+ * @return String HTML code
+ */
+function getMessageHTML($msg) {
+	$tabindex = 0;
+	ob_start();
+	parseHtml(null, $msg, array(), true, $tabindex, 'user');
+	$content = ob_get_contents();
+	ob_end_clean();
+	return $content;
 }

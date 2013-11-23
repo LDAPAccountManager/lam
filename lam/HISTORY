@@ -1,7 +1,8 @@
 December 2013 4.4
   - PyKota support: users, groups, printers, billing codes
   - Kolab shared folder support
-  - allow to set a custom label for each account type
+  - New tool "Multi edit" allows LDAP operations on a large number of entries (e.g. adding attributes)
+  - Allow to set a custom label for each account type
   - Unix: switch also additional membership if primary group is changed (RFE 108)
   - Windows: fixed user name handling, sAMAccountName now optional
   - Apache 2.4 support (requires Apache "version" module)
