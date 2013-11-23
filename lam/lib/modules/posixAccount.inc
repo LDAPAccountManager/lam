@@ -463,7 +463,7 @@ class posixAccount extends baseModule implements passwordService {
 				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
 			),
 			'homeDirectory_upload' => array(
-				"Headline" => _("Home directory"),
+				"Headline" => _("Home directory"), 'attr' => $this->getHomedirAttrName(),
 				"Text" => _("Please enter the path to the user's home directory.")
 			),
 			'deletehomedir' => array(
@@ -504,7 +504,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("The primary group the user should be member of.")
 				),
 				'homeDirectory' => array(
-					"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
+					"Headline" => _("Home directory"), 'attr' => $this->getHomedirAttrName(),
 					"Text" => _('$user and $group will be replaced with user name and primary group name.')
 				),
 				'userPassword' => array(
