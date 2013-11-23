@@ -88,7 +88,7 @@ class windowsUser extends baseModule implements passwordService {
 		$return['attributes'] = array('userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
-			'pwdLastSet', 'otherMailbox');
+			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive');
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -226,6 +226,12 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _('Domains'),
 				"Text" => _('Please enter a list of Windows domains that can be selected for your user accounts.')
 			),
+			"homeDrive" => array(
+				"Headline" => _("Home drive"), 'attr' => 'homeDrive',
+				"Text" => _("The home directory will be connected under this drive letter.")),
+			"homeDirectory" => array(
+				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
+				"Text" => _('UNC-path (\\\\server\\share\) of home directory. If no home drive is set then this directory must start with a drive letter (e.g. "c:\dir\user").')),
 		);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -396,6 +402,18 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => 'logon.bat',
 			),
 			array(
+				'name' => 'windowsUser_homeDrive',
+				'description' => _('Home drive'),
+				'help' => 'homeDrive',
+				'example' => 'K:'
+			),
+			array(
+				'name' => 'windowsUser_homeDirectory',
+				'description' => _('Home directory'),
+				'help' => 'homeDirectory',
+				'example' => _('\\\\server\\homes\\smiller')
+			),
+			array(
 				'name' => 'windowsUser_groups',
 				'description' => _('Groups'),
 				'help' => 'groupsUpload',
@@ -439,6 +457,8 @@ class windowsUser extends baseModule implements passwordService {
 			'pwdMustChange' => _('Password change at next login'),
 			'groups' => _('Groups'),
 			'password' => _('Password'),
+			'homeDrive' => _('Home drive'),
+			'homeDirectory' => _('Home directory'),
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['PDF_fields']['sAMAccountName'] = _('User name (pre W2K)');
@@ -521,6 +541,9 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['scriptPath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_scriptPath', _('Logon script is invalid!'));
 		$this->messages['unicodePwd'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
 		$this->messages['unicodePwd'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
+		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' windowsUser_homeDrive', _('Please enter a valid drive letter.'));
+		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
+		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.'));
 	}
 	
 	/**
@@ -656,6 +679,18 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
 		// logon script
 		$this->addSimpleInputTextField($containerLeft, 'scriptPath', _('Logon script'));
+		// home drive
+		$drives = array('-');
+		for ($i=90; $i>67; $i--) $drives[] = chr($i) . ':';
+		if (!empty($this->attributes['homeDrive'][0])) {
+			$selected = array(strtoupper($this->attributes['homeDrive'][0]));
+		}
+		else {
+			$selected = array('-');
+		}
+		$containerLeft->addElement(new htmlTableExtendedSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
+		// home directory
+		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
 		
 		$containerLeft->addElement(new htmlEqualWidth(array('streetAddress', 'cn')));
 		
@@ -822,6 +857,19 @@ class windowsUser extends baseModule implements passwordService {
 		if (($this->attributes['scriptPath'][0] != '') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript'))) {
 			$return[] = $this->messages['scriptPath'][0];
 		}
+		// home drive
+		if ($_POST['homeDrive'] == "-") {
+			$this->attributes['homeDrive'][0] = '';
+		}
+		else {
+			$this->attributes['homeDrive'][0] = $_POST['homeDrive'];
+		}
+		// home directory
+		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
+		if (!empty($this->attributes['homeDrive'][0]) && !get_preg($this->attributes['homeDirectory'][0], 'UNC')) {
+			$return[] = $this->messages['homeDirectory'][0];
+		}
+		
 		return $return;
 	}
 	
@@ -1231,6 +1279,28 @@ class windowsUser extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
+			// home drive
+			if (!empty($rawAccounts[$i][$ids['windowsUser_homeDrive']])) {
+				if (preg_match("/[d-z]:/i", $rawAccounts[$i][$ids['windowsUser_homeDrive']])) {
+					$partialAccounts[$i]['homeDrive'] = strtoupper($rawAccounts[$i][$ids['windowsUser_homeDrive']]);
+				}
+				else {
+					$errMsg = $this->messages['homeDrive'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// home directory
+			if ($rawAccounts[$i][$ids['windowsUser_homeDirectory']] != "") {
+				if (empty($partialAccounts[$i]['homeDrive']) || get_preg($rawAccounts[$i][$ids['windowsUser_homeDirectory']], 'UNC')) {
+					$partialAccounts[$i]['homeDirectory'] = $rawAccounts[$i][$ids['windowsUser_homeDirectory']];
+				}
+				else {
+					$errMsg = $this->messages['homeDirectory'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
 			// groups
 			if (isset($ids['windowsUser_groups']) && ($rawAccounts[$i][$ids['windowsUser_groups']] != "")) {
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_groups']]);
@@ -1411,6 +1481,8 @@ class windowsUser extends baseModule implements passwordService {
 		$return[get_class($this) . '_pwdMustChange'] = array('<block><key>' . _('Password change at next login') . '</key><value>' . $pwdMustChange . '</value></block>');
 		$this->addSimplePDFField($return, 'profilePath', _('Profile path'));
 		$this->addSimplePDFField($return, 'scriptPath', _('Logon script'));
+		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
+		$this->addSimplePDFField($return, 'homeDrive', _('Home drive'));
 		$groups = array();
 		foreach ($this->groupList as $group) {
 			$groups[] = extractRDNValue($group);
