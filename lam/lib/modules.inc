@@ -654,10 +654,8 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 		$message .= '<br><br><hr class="dotted">' . _('Technical name') . ': <i>' . $entry['attr'] . '</i>';
 	}
 	// replace special characters
-	$message = preg_replace('/[\\\\]{2}/', '&#92;&#92;&#92;&#92;', $message);
-	$title = preg_replace('/[\\\\]{2}/', '&#92;&#92;&#92;&#92;', $title);
-	$message = str_replace(array('\\', '"', "\n"), array('\\\\', '&quot;', ''), $message);
-	$title = str_replace(array('\\', "'", '"', "\n"), array('\\\\', "\\'", '&quot;', ''), $title);
+	$message = htmlspecialchars($message);
+	$title = htmlspecialchars($title);
 	echo "<a class=\"margin2\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\">";
 		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle\" width=16 height=16 src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\">";
