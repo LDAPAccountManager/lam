@@ -1111,9 +1111,9 @@ class moduleCache {
  */
 function getRandomNumber() {
 	if (function_exists('openssl_random_pseudo_bytes')) {
-		return hexdec(bin2hex(openssl_random_pseudo_bytes(5)));
+		return abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5))));
 	}
-	return mt_rand();
+	return abs(mt_rand());
 }
 
 /**
