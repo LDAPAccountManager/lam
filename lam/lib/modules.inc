@@ -1789,7 +1789,7 @@ class accountContainer {
 						&& ($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))) {
 					// remove old RDN if attribute is single valued
 					$removeOldRDN = true;
-					unset($attributes[$this->finalDN]['modify'][$this->getRDN($this->finalDN)]);
+					unset($attributes[$this->finalDN]['modify'][extractRDNAttribute($this->finalDN)]);
 				}
 				logNewMessage(LOG_DEBUG, 'Rename ' . $this->dn_orig . ' to ' . $this->finalDN);
 				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), $removeOldRDN);
