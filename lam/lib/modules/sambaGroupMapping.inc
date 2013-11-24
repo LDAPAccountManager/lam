@@ -410,6 +410,12 @@ class sambaGroupMapping extends baseModule {
 			$memberHelp = new htmlHelpLink('sambaSIDList');
 			$memberHelp->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($memberHelp, true);
+			
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			
+			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
+			$remButton->colspan = 3;
+			$return->addElement($remButton);
 		}
 		else {
 			$return->addElement(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
@@ -589,6 +595,7 @@ class sambaGroupMapping extends baseModule {
 		$this->messages['sambaSID'][0] = array('ERROR', _('There can be only one group of this type.'));  // third parameter must be set dynamically
 		$this->messages['sambaSID'][1] = array('ERROR', _("Account %s:") . " (sambaGroupMapping_domain): " . _("LAM was unable to find a Samba 3 domain with this name!"));  // third parameter must be set dynamically
 		$this->messages['groupType'][0] = array('ERROR', _("Account %s:") . " (sambaGroupMapping_type): " . _("This is not a valid Samba 3 group type!"), _("Possible values") . ": %s");
+		$this->messages['primaryGroup'][0] = array('ERROR', _('There are still users who have this group as their primary group.'));
 	}
 
 
@@ -629,6 +636,26 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		// remove extension
+		if (isset($_POST['remObjectClass'])) {
+			// check for users that have this group as primary group
+			$result = searchLDAPByAttribute('sambaPrimaryGroupSID', $this->attributes['sambaSID'][0], 'sambaSamAccount', array('dn'), array('user', 'host'));
+			if (sizeof($result) > 0) {
+				return array($this->messages['primaryGroup'][0]);
+			}
+			// remove attributes
+			$this->attributes['objectClass'] = array_delete(array('sambaGroupMapping'), $this->attributes['objectClass']);
+			$attrKeys = array_keys($this->attributes);
+			for ($k = 0; $k < sizeof($attrKeys); $k++) {
+				if (strpos($attrKeys[$k], 'samba') > -1) {
+					unset($this->attributes[$attrKeys[$k]]);
+				}
+			}
+			if (isset($this->attributes['displayName'])) {
+				unset($this->attributes['displayName']);
+			}
+			return array();
+		}
 		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
 			return array();
 		}
@@ -699,7 +726,7 @@ class sambaGroupMapping extends baseModule {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
-		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
+		if (!in_array('sambaGroupMapping', $this->attributes['objectClass']) && !in_array('sambaGroupMapping', $this->orig['objectClass'])) {
 			return array();
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
