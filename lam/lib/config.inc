@@ -58,9 +58,13 @@ function setlanguage() {
 	if (!isset($_SESSION['language'])) {
 		$_SESSION['language'] = "en_GB.utf8:UTF-8:English (Great Britain)";
 	}
-	$language = explode(":", $_SESSION['language']);
+	$language = explode(":", trim($_SESSION['language']));
 	putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
-	setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
+	setlocale(LC_ALL, $language[0]);  // set LC_ALL
+	// workaround for buggy PHP with Turkish
+	if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+		setlocale(LC_CTYPE, 'en_GB');
+	}
 	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 	bindtextdomain("messages", $locdir);
 	bind_textdomain_codeset("messages", $language[1]);

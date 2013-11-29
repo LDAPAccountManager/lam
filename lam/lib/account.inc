@@ -446,11 +446,14 @@ class samba3domain {
 * @return boolean true if matches, otherwise false
 */
 function get_preg($argument, $regexp) {
-	/* Bug in php preg_match doesn't work correct with utf8
-	*/
+	/* Bug in php preg_match doesn't work correct with utf8 */
 	$language = explode(":", $_SESSION['language']);
 	$language2 = explode ('.', $language[0]);
 	setlocale(LC_ALL, $language2[0]);
+	// workaround for buggy PHP with Turkish
+	if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+		setlocale(LC_CTYPE, 'en_GB');
+	}
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
@@ -577,9 +580,12 @@ function get_preg($argument, $regexp) {
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
-			/* Bug in php preg_match doesn't work correct with utf8
-			*/
+			/* Bug in php preg_match doesn't work correct with utf8 */
 			setlocale(LC_ALL, $language[0]);
+			// workaround for buggy PHP with Turkish
+			if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+				setlocale(LC_CTYPE, 'en_GB');
+			}
 			return true;
 		}
 	// Now we check "negative" cases, characters which are not allowed
@@ -597,14 +603,20 @@ function get_preg($argument, $regexp) {
 	}
 	if ($pregexpr!='')
 		if (!preg_match($pregexpr, $argument)) {
-			/* Bug in php preg_match doesn't work correct with utf8
-			*/
+			/* Bug in php preg_match doesn't work correct with utf8 */
 			setlocale(LC_ALL, $language[0]);
+			// workaround for buggy PHP with Turkish
+			if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+				setlocale(LC_CTYPE, 'en_GB');
+			}
 			return true;
 		}
-	/* Bug in php preg_match doesn't work correct with utf8
-	*/
+	/* Bug in php preg_match doesn't work correct with utf8 */
 	setlocale(LC_ALL, $language[0]);
+	// workaround for buggy PHP with Turkish
+	if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+		setlocale(LC_CTYPE, 'en_GB');
+	}
 	return false;
 }
 
