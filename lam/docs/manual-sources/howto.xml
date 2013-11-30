@@ -602,6 +602,12 @@ Have fun!
 
                   <entry>es_ES.utf8</entry>
                 </row>
+
+                <row>
+                  <entry>Turkish</entry>
+
+                  <entry>tr_TR.utf8</entry>
+                </row>
               </tbody>
             </tgroup>
           </table>
