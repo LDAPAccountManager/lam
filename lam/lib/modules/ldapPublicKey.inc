@@ -227,7 +227,7 @@ class ldapPublicKey extends baseModule {
 			$uploadStatus->setCSSClasses(array('qq-upload-list'));
 			$uploadStatus->colspan = 7;
 			$keyTable->addElement($uploadStatus, true);
-			$keyLabel = new htmlOutputText(_('SSH public keys'));
+			$keyLabel = new htmlOutputText($this->getSelfServiceLabel('sshPublicKey', _('SSH public keys')));
 			$keyLabel->alignment = htmlElement::ALIGN_TOP;
 			$keyCells = array($keyLabel, $keyTable);
 			$keyRow = new htmlTableRow($keyCells);

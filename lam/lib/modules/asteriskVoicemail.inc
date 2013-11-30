@@ -76,6 +76,8 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$return['selfServiceFieldSettings'] = array(
 			'syncAsteriskVoicemailPassword' => _('Sync Asterisk password with Unix password'),
 		);
+		// self service: fields that cannot be relabeled
+		$return['selfServiceNoRelabelFields'] = array('syncAsteriskVoicemailPassword');
 		// help
 		$return['help'] = array(
 			'AstContext' => array(

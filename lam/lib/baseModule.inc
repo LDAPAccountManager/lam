@@ -1342,7 +1342,7 @@ abstract class baseModule {
 			}
 		}
 		$container[$name] = new htmlTableRow(array(
-			new htmlOutputText($label), $field
+			new htmlOutputText($this->getSelfServiceLabel($name, $label)), $field
 		));
 	}
 	
@@ -1476,12 +1476,42 @@ abstract class baseModule {
 	 * 
 	 * @param String $fieldID field identifier
 	 * @param selfServiceProfile $profile currently edited profile
+	 * @return boolean may be set read-only
 	 */
 	public function canSelfServiceFieldBeReadOnly($fieldID, $profile) {
 		if (isset($this->meta['selfServiceReadOnlyFields']) && is_array($this->meta['selfServiceReadOnlyFields'])) {
 			return in_array($fieldID, $this->meta['selfServiceReadOnlyFields']);
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns if a self service field can be relabeled.
+	 * 
+	 * @param String $fieldID field ID
+	 * @param selfServiceProfile $profile currently edited profile
+	 * @return boolean may be relabeled
+	 */
+	public function canSelfServiceFieldBeRelabeled($fieldID, $profile) {
+		if (isset($this->meta['selfServiceNoRelabelFields']) && is_array($this->meta['selfServiceNoRelabelFields'])) {
+			return !in_array($fieldID, $this->meta['selfServiceNoRelabelFields']);
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns the field label. This can be either the given default label or an override value from profile.
+	 * 
+	 * @param String $fieldID field ID
+	 * @param String $defaultLabel default label text
+	 * @return String label
+	 */
+	protected function getSelfServiceLabel($fieldID, $defaultLabel) {
+		if (!$this->canSelfServiceFieldBeRelabeled($fieldID, $this->selfServiceSettings)) {
+			return $defaultLabel;
+		}
+		$key = get_class($this) . '_' . $fieldID;
+		return empty($this->selfServiceSettings->relabelFields[$key]) ? $defaultLabel : $this->selfServiceSettings->relabelFields[$key];
 	}
 
 	/**

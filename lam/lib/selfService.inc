@@ -352,6 +352,9 @@ class selfServiceProfile {
 	 */
 	public $readOnlyFields;
 	
+	/** List of override values for field labels: array(<field ID> => label) */
+	public $relabelFields;
+	
 	/** configuration settings of modules */
 	public $moduleSettings;
 
@@ -386,6 +389,7 @@ class selfServiceProfile {
 				'fields' => array('posixAccount_password'))
 		);
 		$this->readOnlyFields = array();
+		$this->relabelFields = array();
 	}
 
 }

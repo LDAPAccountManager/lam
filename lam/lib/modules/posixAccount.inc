@@ -2432,7 +2432,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (in_array('password', $fields)) {
 			$pwdTable = new htmlTable();
 			$pwdTable->colspan = 3;
-			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'posixAccount_password');
+			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('password', _('New password')), 'posixAccount_password');
 			$pwd1->setIsPassword(true);
 			$pwdTable->addElement($pwd1, true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'posixAccount_password2');
@@ -2453,7 +2453,7 @@ class posixAccount extends baseModule implements passwordService {
 				$cnField = new htmlOutputText($cn);
 			}
 			$return['cn'] = new htmlTableRow(array(
-				new htmlOutputText(_('Common name')), $cnField
+				new htmlOutputText($this->getSelfServiceLabel('cn', _('Common name'))), $cnField
 			));
 		}
 		if (in_array('loginShell', $fields)) {
@@ -2465,7 +2465,7 @@ class posixAccount extends baseModule implements passwordService {
 				$loginShellField = new htmlOutputText($loginShell);
 			}
 			$return['loginShell'] = new htmlTableRow(array(
-				new htmlOutputText(_('Login shell')), $loginShellField
+				new htmlOutputText($this->getSelfServiceLabel('loginShell', _('Login shell'))), $loginShellField
 			));
 		}
 		return $return;

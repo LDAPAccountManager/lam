@@ -2417,7 +2417,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$firstNameField = new htmlOutputText($firstName);
 			}
 			$return['firstName'] = new htmlTableRow(array(
-				new htmlOutputText(_('First name')), $firstNameField
+				new htmlOutputText($this->getSelfServiceLabel('firstName', _('First name'))), $firstNameField
 			));
 		}
 		if (in_array('lastName', $fields)) {
@@ -2428,7 +2428,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$lastNameField = new htmlOutputText($lastName);
 			}
 			$return['lastName'] = new htmlTableRow(array(
-				new htmlOutputText(_('Last name')), $lastNameField
+				new htmlOutputText($this->getSelfServiceLabel('lastName', _('Last name'))), $lastNameField
 			));
 		}
 		if (in_array('mail', $fields)) {
@@ -2439,7 +2439,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$mailField = new htmlOutputText($mail);
 			}
 			$return['mail'] = new htmlTableRow(array(
-				new htmlOutputText(_('Email address')), $mailField
+				new htmlOutputText($this->getSelfServiceLabel('mail', _('Email address'))), $mailField
 			));
 		}
 		if (in_array('labeledURI', $fields)) {
@@ -2450,7 +2450,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$labeledURIField = new htmlOutputText($labeledURI);
 			}
 			$return['labeledURI'] = new htmlTableRow(array(
-				new htmlOutputText(_('Web site')), $labeledURIField
+				new htmlOutputText($this->getSelfServiceLabel('labeledURI', _('Web site'))), $labeledURIField
 			));
 		}
 		if (in_array('telephoneNumber', $fields)) {
@@ -2461,7 +2461,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$telephoneNumberField = new htmlOutputText($telephoneNumber);
 			}
 			$return['telephoneNumber'] = new htmlTableRow(array(
-				new htmlOutputText(_('Telephone number')), $telephoneNumberField
+				new htmlOutputText($this->getSelfServiceLabel('telephoneNumber', _('Telephone number'))), $telephoneNumberField
 			));
 		}
 		if (in_array('homePhone', $fields)) {
@@ -2472,7 +2472,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$homePhoneField = new htmlOutputText($homePhone);
 			}
 			$return['homePhone'] = new htmlTableRow(array(
-				new htmlOutputText(_('Home telephone number')), $homePhoneField
+				new htmlOutputText($this->getSelfServiceLabel('homePhone', _('Home telephone number'))), $homePhoneField
 			));
 		}
 		if (in_array('mobile', $fields)) {
@@ -2483,7 +2483,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$mobileField = new htmlOutputText($mobile);
 			}
 			$return['mobile'] = new htmlTableRow(array(
-				new htmlOutputText(_('Mobile telephone number')), $mobileField
+				new htmlOutputText($this->getSelfServiceLabel('mobile', _('Mobile telephone number'))), $mobileField
 			));
 		}
 		if (in_array('faxNumber', $fields)) {
@@ -2494,7 +2494,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$faxNumberField = new htmlOutputText($faxNumber);
 			}
 			$return['faxNumber'] = new htmlTableRow(array(
-				new htmlOutputText(_('Fax number')), $faxNumberField
+				new htmlOutputText($this->getSelfServiceLabel('faxNumber', _('Fax number'))), $faxNumberField
 			));
 		}
 		if (in_array('street', $fields)) {
@@ -2505,7 +2505,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$streetField = new htmlOutputText($street);
 			}
 			$return['street'] = new htmlTableRow(array(
-				new htmlOutputText(_('Street')), $streetField
+				new htmlOutputText($this->getSelfServiceLabel('street', _('Street'))), $streetField
 			));
 		}
 		if (in_array('postalAddress', $fields)) {
@@ -2516,7 +2516,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$postalAddressField = new htmlOutputText($postalAddress);
 			}
 			$return['postalAddress'] = new htmlTableRow(array(
-				new htmlOutputText(_('Postal address')), $postalAddressField
+				new htmlOutputText($this->getSelfServiceLabel('postalAddress', _('Postal address'))), $postalAddressField
 			));
 		}
 		if (in_array('registeredAddress', $fields)) {
@@ -2538,7 +2538,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$postalCodeField = new htmlOutputText($postalCode);
 			}
 			$return['postalCode'] = new htmlTableRow(array(
-				new htmlOutputText(_('Postal code')), $postalCodeField
+				new htmlOutputText($this->getSelfServiceLabel('postalCode', _('Postal code'))), $postalCodeField
 			));
 		}
 		if (in_array('postOfficeBox', $fields)) {
@@ -2549,7 +2549,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$postOfficeBoxField = new htmlOutputText($postOfficeBox);
 			}
 			$return['postOfficeBox'] = new htmlTableRow(array(
-				new htmlOutputText(_('Post office box')), $postOfficeBoxField
+				new htmlOutputText($this->getSelfServiceLabel('postOfficeBox', _('Post office box'))), $postOfficeBoxField
 			));
 		}
 		if (in_array('roomNumber', $fields)) {
@@ -2560,7 +2560,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$roomNumberField = new htmlOutputText($roomNumber);
 			}
 			$return['roomNumber'] = new htmlTableRow(array(
-				new htmlOutputText(_('Room number')), $roomNumberField
+				new htmlOutputText($this->getSelfServiceLabel('roomNumber', _('Room number'))), $roomNumberField
 			));
 		}
 		if (in_array('location', $fields)) {
@@ -2571,7 +2571,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$lField = new htmlOutputText($l);
 			}
 			$return['location'] = new htmlTableRow(array(
-				new htmlOutputText(_('Location')), $lField
+				new htmlOutputText($this->getSelfServiceLabel('location', _('Location'))), $lField
 			));
 		}
 		if (in_array('state', $fields)) {
@@ -2582,7 +2582,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$stField = new htmlOutputText($st);
 			}
 			$return['state'] = new htmlTableRow(array(
-				new htmlOutputText(_('State')), $stField
+				new htmlOutputText($this->getSelfServiceLabel('state', _('State'))), $stField
 			));
 		}
 		if (in_array('carLicense', $fields)) {
@@ -2593,7 +2593,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$carLicenseField = new htmlOutputText($carLicense);
 			}
 			$return['carLicense'] = new htmlTableRow(array(
-				new htmlOutputText(_('Car license')), $carLicenseField
+				new htmlOutputText($this->getSelfServiceLabel('carLicense', _('Car license'))), $carLicenseField
 			));
 		}
 		if (in_array('officeName', $fields)) {
@@ -2604,7 +2604,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$physicalDeliveryOfficeNameField = new htmlOutputText($physicalDeliveryOfficeName);
 			}
 			$return['officeName'] = new htmlTableRow(array(
-				new htmlOutputText(_('Office name')), $physicalDeliveryOfficeNameField
+				new htmlOutputText($this->getSelfServiceLabel('officeName', _('Office name'))), $physicalDeliveryOfficeNameField
 			));
 		}
 		if (in_array('businessCategory', $fields)) {
@@ -2615,7 +2615,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$businessCategoryField = new htmlOutputText($businessCategory);
 			}
 			$return['businessCategory'] = new htmlTableRow(array(
-				new htmlOutputText(_('Business category')), $businessCategoryField
+				new htmlOutputText($this->getSelfServiceLabel('businessCategory', _('Business category'))), $businessCategoryField
 			));
 		}
 		if (in_array('jpegPhoto', $fields)) {
@@ -2633,14 +2633,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$photoSubSub->addElement(new htmlInputFileUpload('replacePhotoFile'));
 					$photoSub->addElement($photoSubSub);
 				}
-				$photoRowCells = array(new htmlOutputText(_('Photo')), $photoSub);
+				$photoRowCells = array(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
 				$photoRow = new htmlTableRow($photoRowCells);
 				$return['jpegPhoto'] = $photoRow;
 			}
 			elseif (!in_array('jpegPhoto', $readOnlyFields)) {
 				$photoSub = new htmlTable();
 				$photoSub->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Add photo')));
-				$photoRowCells = array(new htmlOutputText(_('Photo')), $photoSub);
+				$photoRowCells = array(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
 				$photoRow = new htmlTableRow($photoRowCells);
 				$return['jpegPhoto'] = $photoRow;
 			}
@@ -2653,7 +2653,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$departmentNumberField = new htmlOutputText($departmentNumber);
 			}
 			$return['departmentNumber'] = new htmlTableRow(array(
-				new htmlOutputText(_('Department')), $departmentNumberField
+				new htmlOutputText($this->getSelfServiceLabel('departmentNumber', _('Department'))), $departmentNumberField
 			));
 		}
 		if (in_array('initials', $fields)) {
@@ -2664,7 +2664,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$initialsField = new htmlOutputText($initials);
 			}
 			$return['initials'] = new htmlTableRow(array(
-				new htmlOutputText(_('Initials')), $initialsField
+				new htmlOutputText($this->getSelfServiceLabel('initials', _('Initials'))), $initialsField
 			));
 		}
 		if (in_array('title', $fields)) {
@@ -2675,7 +2675,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$titleField = new htmlOutputText($title);
 			}
 			$return['title'] = new htmlTableRow(array(
-				new htmlOutputText(_('Job title')), $titleField
+				new htmlOutputText($this->getSelfServiceLabel('title', _('Job title'))), $titleField
 			));
 		}
 		if (in_array('userCertificate', $fields)) {
@@ -2702,7 +2702,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$uploadStatus->setCSSClasses(array('qq-upload-list'));
 			$uploadStatus->colspan = 7;
 			$certTable->addElement($uploadStatus, true);
-			$certLabel = new htmlOutputText(_('User certificates'));
+			$certLabel = new htmlOutputText($this->getSelfServiceLabel('userCertificate', _('User certificates')));
 			$certLabel->alignment = htmlElement::ALIGN_TOP;
 			$userCertificatesCells = array($certLabel, $certTable);
 			$userCertificatesRow = new htmlTableRow($userCertificatesCells);

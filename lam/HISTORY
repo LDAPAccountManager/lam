@@ -12,6 +12,7 @@ December 2013 4.4
    -> Samba/Shadow: display password change date in self service
    -> Custom fields: support custom label and icon, auto-completion
    -> User self registration: support constant attribute values
+   -> Self service: allow to set custom field labels
   - fixed bugs:
    -> Format of photo in Personal tab (158)
 

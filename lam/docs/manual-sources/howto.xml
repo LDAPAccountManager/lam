@@ -6176,6 +6176,10 @@ objectclass: top
         used to show your users additional data on the self service page that
         must not be changed by themselves (e.g. first/last name).</para>
 
+        <para>Sometimes, you may want to set a custom label for an input
+        field. Click on the edit icon to set your own label text (Personal:
+        Department is relabeled as "Business unit" here).</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>

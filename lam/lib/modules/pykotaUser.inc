@@ -945,14 +945,14 @@ class pykotaUser extends baseModule {
 			$pykotaBalance = '';
 			if (isset($attributes['pykotaBalance'][0])) $pykotaBalance = $attributes['pykotaBalance'][0];
 			$return['pykotaBalance'] = new htmlTableRow(array(
-				new htmlOutputText(_('Balance')), new htmlOutputText($pykotaBalance)
+				new htmlOutputText($this->getSelfServiceLabel('pykotaBalance', _('Balance'))), new htmlOutputText($pykotaBalance)
 			));
 		}
 		if (in_array('pykotaLifeTimePaid', $fields)) {
 			$pykotaLifeTimePaid = '';
 			if (isset($attributes['pykotaLifeTimePaid'][0])) $pykotaLifeTimePaid = $attributes['pykotaLifeTimePaid'][0];
 			$return['pykotaLifeTimePaid'] = new htmlTableRow(array(
-				new htmlOutputText(_('Total paid')), new htmlOutputText($pykotaLifeTimePaid)
+				new htmlOutputText($this->getSelfServiceLabel('pykotaLifeTimePaid', _('Total paid'))), new htmlOutputText($pykotaLifeTimePaid)
 			));
 		}
 		// payment history
@@ -981,7 +981,7 @@ class pykotaUser extends baseModule {
 					$pykotaPayments->addNewLine();
 				}
 			}
-			$pykotaPaymentsLabel = new htmlOutputText(_('Payment history'));
+			$pykotaPaymentsLabel = new htmlOutputText($this->getSelfServiceLabel('pykotaPayments', _('Payment history')));
 			$pykotaPaymentsLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['pykotaPayments'] = new htmlTableRow(array(
 				$pykotaPaymentsLabel, $pykotaPayments
@@ -1019,7 +1019,7 @@ class pykotaUser extends baseModule {
 				$pykotaJobs->addElement($spacer);
 				$pykotaJobs->addElement(new htmlOutputText($job['pykotatitle'][0]), true);
 			}
-			$pykotaJobsLabel = new htmlOutputText(_('Job history'));
+			$pykotaJobsLabel = new htmlOutputText($this->getSelfServiceLabel('pykotaJobHistory', _('Job history')));
 			$pykotaJobsLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['pykotaJobHistory'] = new htmlTableRow(array(
 				$pykotaJobsLabel, $pykotaJobs

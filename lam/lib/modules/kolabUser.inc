@@ -764,7 +764,7 @@ class kolabUser extends baseModule {
 				$delegateContainer->addElement(new htmlSelect('new_delegate_value', $delegates));
 				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
 			}
-			$delegateLabel = new htmlOutputText(_('Delegates'));
+			$delegateLabel = new htmlOutputText($this->getSelfServiceLabel('kolabDelegate', _('Delegates')));
 			$delegateLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['kolabDelegate'] = new htmlTableRow(array(
 				$delegateLabel, $delegateContainer
@@ -812,7 +812,7 @@ class kolabUser extends baseModule {
 				$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
 				$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('addInvPol', false, _("Add"), null, false), true);
 			}
-			$invitationLabel = new htmlOutputText(_('Invitation policy'));
+			$invitationLabel = new htmlOutputText($this->getSelfServiceLabel('kolabInvitationPolicy', _('Invitation policy')));
 			$invitationLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['kolabInvitationPolicy'] = new htmlTableRow(array(
 				$invitationLabel, $invitationContainer

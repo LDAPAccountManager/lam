@@ -243,6 +243,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'password' => _('Password'),
 			'sambaPwdLastSet' => _('Last password change (read-only)'),
 		);
+		// self service: fields that cannot be relabeled
+		$return['selfServiceNoRelabelFields'] = array('syncNTPassword', 'syncLMPassword', 'syncSambaPwdLastSet');
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
@@ -2303,7 +2305,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (in_array('password', $fields)) {
 			$pwdTable = new htmlTable();
 			$pwdTable->colspan = 3;
-			$pwd1 = new htmlTableExtendedInputField(_('New password'), 'sambaSamAccount_password');
+			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('password', _('New password')), 'sambaSamAccount_password');
 			$pwd1->setIsPassword(true);
 			$pwdTable->addElement($pwd1, true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'sambaSamAccount_password2');
@@ -2319,7 +2321,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$sambaPwdLastSet = date('d.m.Y H:i', $attributes['sambaPwdLastSet'][0]);
 			}
 			$return['sambaPwdLastSet'] = new htmlTableRow(array(
-				new htmlOutputText(_('Last password change')), new htmlOutputText($sambaPwdLastSet)
+				new htmlOutputText($this->getSelfServiceLabel('sambaPwdLastSet', _('Last password change'))), new htmlOutputText($sambaPwdLastSet)
 			));
 		}
 		return $return;
