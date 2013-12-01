@@ -110,11 +110,11 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 				"Text" => _("The folder's email address.")
 			),
 			'kolabAllowSMTPRecipient' => array (
-				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
+				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
 			),
 			'kolabAllowSMTPRecipientList' => array (
-				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
+				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
 			),
@@ -198,7 +198,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 			),
 			array(
 				'name' => 'kolabSharedFolder_kolabAllowSMTPRecipient',
-				'description' => _('Allowed recepients'),
+				'description' => _('Allowed recipients'),
 				'help' => 'kolabAllowSMTPRecipientList',
 				'example' => '.com; -.net',
 			),
@@ -224,7 +224,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'cn' => _('Name'),
-			'kolabAllowSMTPRecipient' => _('Allowed recepients'),
+			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
 			'aliases' => _('Email aliases'),
 			'delegate' => _('Delegates'),
@@ -240,7 +240,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 	* This function fills the $messages variable with output messages from this module.
 	*/
 	function load_Messages() {
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recepients'), _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
 		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
@@ -297,8 +297,8 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		$typeSelect->setHasDescriptiveElements(true);
 		$baseContainer->addElement($typeSelect, true);
 		$baseContainer->addVerticalSpace('10px');
-		// allowed recepients
-		$this->addMultiValueInputTextField($baseContainer, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
+		// allowed recipients
+		$this->addMultiValueInputTextField($baseContainer, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 		// allowed senders
 		$this->addMultiValueInputTextField($baseContainer, 'kolabAllowSMTPSender', _('Allowed senders'));
 		$container->addElement($baseContainer, true);
@@ -384,7 +384,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		}
 		// folder type
 		$this->attributes['kolabFolderType'][0] = $_POST['kolabFolderType'];
-		// allowed recepients
+		// allowed recipients
 		$this->processMultiValueInputTextField('kolabAllowSMTPRecipient', $errors, 'kolabEmailPrefix');
 		// allowed senders
 		$this->processMultiValueInputTextField('kolabAllowSMTPSender', $errors, 'kolabEmailPrefix');
@@ -566,7 +566,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
 		$this->addSimplePDFField($return, 'mailHost', _('Mailbox home server'));
 		$this->addSimplePDFField($return, 'kolabTargetFolder', _('Target IMAP folder'));
-		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
+		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		$this->addSimplePDFField($return, 'aliases', _('Email aliases'), 'alias');
 		$this->addSimplePDFField($return, 'delegate', _('Delegates'), 'kolabDelegate');

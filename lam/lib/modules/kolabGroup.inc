@@ -85,11 +85,11 @@ class kolabGroup extends baseModule {
 				"Text" => _("The list's email address.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'kolabAllowSMTPRecipient' => array (
-				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
+				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
 			),
 			'kolabAllowSMTPRecipientList' => array (
-				"Headline" => _('Allowed recepients'), 'attr' => 'kolabAllowSMTPRecipient',
+				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
 			),
@@ -131,7 +131,7 @@ class kolabGroup extends baseModule {
 			),
 			array(
 				'name' => 'kolabGroup_kolabAllowSMTPRecipient',
-				'description' => _('Allowed recepients'),
+				'description' => _('Allowed recipients'),
 				'help' => 'kolabAllowSMTPRecipientList',
 				'example' => '.com; -.net',
 			),
@@ -154,7 +154,7 @@ class kolabGroup extends baseModule {
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'kolabAllowSMTPRecipient' => _('Allowed recepients'),
+			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
 		);
 		if ($this->manageMail()) {
@@ -171,7 +171,7 @@ class kolabGroup extends baseModule {
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Please enter a valid email address!'));
 		$this->messages['mail'][2] = array('ERROR', _('Email address'), _('Email address already exists.'));
 		$this->messages['mail'][3] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Email address already exists.'));
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recepients'), _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
 		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
@@ -194,8 +194,8 @@ class kolabGroup extends baseModule {
 			if ($this->manageMail()) {
 				$this->addSimpleInputTextField($container, 'mail', _('Email address'), true);
 			}
-			// allowed recepients
-			$this->addMultiValueInputTextField($container, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
+			// allowed recipients
+			$this->addMultiValueInputTextField($container, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 			// allowed senders
 			$this->addMultiValueInputTextField($container, 'kolabAllowSMTPSender', _('Allowed senders'));
 			// delete flag
@@ -261,7 +261,7 @@ class kolabGroup extends baseModule {
 				unset($this->attributes['mail']);
 			}
 		}
-		// allowed recepients
+		// allowed recipients
 		$this->processMultiValueInputTextField('kolabAllowSMTPRecipient', $errors, 'kolabEmailPrefix');
 		// allowed senders
 		$this->processMultiValueInputTextField('kolabAllowSMTPSender', $errors, 'kolabEmailPrefix');
@@ -414,7 +414,7 @@ class kolabGroup extends baseModule {
 	function get_pdfEntries() {
 		$return = array();
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
-		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recepients'));
+		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		return $return;
 	}

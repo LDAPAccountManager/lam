@@ -14,8 +14,11 @@ cs_CZ.utf8:UTF-8:Čeština (Česko)
 # German
 de_DE.utf8:UTF-8:Deutsch (Deutschland)
 
-# English
+# GB English
 en_GB.utf8:UTF-8:English (Great Britain)
+
+# US English
+en_US.utf8:UTF-8:English (USA)
 
 # Spanish
 es_ES.utf8:UTF-8:Español (España)

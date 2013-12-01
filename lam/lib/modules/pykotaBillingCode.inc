@@ -131,7 +131,7 @@ class pykotaBillingCode extends baseModule {
 	function display_html_attributes() {
 		$container = new htmlTable();
 		// pykotaBillingCode
-		$this->addSimpleInputTextField($container, 'pykotaBillingCode', _('BillingCode'), true);
+		$this->addSimpleInputTextField($container, 'pykotaBillingCode', _('Billing code'), true);
 		// balance
 		$container->addElement(new htmlOutputText(_('Balance')));
 		$pykotaBalance = '';
