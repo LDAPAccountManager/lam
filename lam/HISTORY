@@ -6,7 +6,7 @@ December 2013 4.4
   - Unix: switch also additional membership if primary group is changed (RFE 108)
   - Windows: fixed user name handling, sAMAccountName now optional
   - Apache 2.4 support (requires Apache "version" module)
-  - Turkish translation
+  - added Turkish and US English translation
   - LAM Pro:
    -> Bind DLZ support
    -> Samba/Shadow: display password change date in self service
