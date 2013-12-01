@@ -1,0 +1,496 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
+  
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
+<h1>Upgrade notes</h1>
+
+This is a list of API changes for all LAM releases.
+<br>
+
+<br>
+
+<h2>4.2 -&gt; 4.3</h2><span style="font-weight: bold;">Ldap::new_rand()</span> was replaced by <span style="font-weight: bold;">getRandomNumber()</span> in lib/account.inc.<br>
+Module interface:<br>
+<ul>
+  <li><span style="font-weight: bold;">preModifySelfService/postModifySelfService:</span> new parameter <span style="font-style: italic;">$newAccount</span>. The user self registration now supports preCreate/postCreate events.<br>
+  </li>
+</ul>
+
+<br>
+<h2>4.1 -&gt; 4.2</h2>
+New meta HTML classes: htmlEqualHeight, htmlAccordion<br>
+New functions in baseModule to reduce code:<br>
+<ul>
+  <li>addSimpleInputTextField() to add text fields to the edit page</li>
+  <li>addMultiValueInputTextField()/processMultiValueInputTextField() to add multi-value text fields to the edit page</li>
+  <li>addSimpleSelfServiceTextField()/checkSimpleSelfServiceTextField() adds and checks a text field in self service</li>
+  <li>addSimplePDFField() to create the PDF code for a simple text value<br>
+  </li>
+</ul>
+
+<br>
+<h2>4.0 -&gt; 4.1</h2>
+CSS changes:<br>
+<ul>
+  <li>type specific "td.{TYPE}nav-activepage" was replaced by common "td.activepage" in layout.css</li>
+  <li>renamed ".{TYPE}list-bright" to ".{TYPE}-bright" and ".{TYPE}list-dark" to ".{TYPE}-dark"</li>
+  <li>removed "table.{TYPE}list input", "table.{TYPE}list select",
+"table.{TYPE}list button", "fieldset.{TYPE}edit input",
+"fieldset.{TYPE}edit select", "fieldset.{TYPE}edit button"</li>
+  <li>removed "input.{TYPE}" and "select.{TYPE}"</li>
+  <li>removed "table.{TYPE}nav" and "table.{TYPE}nav input"</li>
+  <li>removed "table.{TYPE}list td,th"</li>
+  <li>new ".{TYPE}-border"</li>
+  <li>replaced "table.{TYPE}list" by ".{TYPE}-border" and "table.accountlist"<br>
+  </li>
+  <li>replaced "fieldset.{TYPE}edit" by ".{TYPE}-border" and ".{TYPE}-bright"</li>
+  <li>moved type styles from 600_type_{TYPE}.css to 500_layout.css<br>
+  </li>
+
+</ul>
+Updated jQuery and jQueryUI versions.<br>
+<br>
+<h2>3.9 -&gt; 4.0</h2>
+Module interface:<br>
+<ul>
+  <li>new function: <span style="font-weight: bold;">doUploadPreActions()</span></li>
+  <li>function <span style="font-weight: bold;">doUploadPostActions() </span>contains attributes by reference<span style="font-weight: bold;"><br>
+    </span></li>
+</ul>
+List interface:<br>
+<ul>
+  <li>new function: <span style="font-weight: bold;">addExtraInputElementsToTopArea()</span></li>
+  <li><span style="font-weight: bold;">listShowOUSelection()</span> now returns a <span style="font-style: italic;">htmlGroup</span><br>
+  </li>
+</ul>
+<br>
+<h2>3.8 -&gt; 3.9</h2>
+Module interface:<br>
+
+<ul>
+<li>new function <span style="font-weight: bold;">supportsAdminInterface()</span>: Can be used to mark modules that only support the self service.</li>
+  <li>new function <span style="font-weight: bold;">canSelfServiceFieldBeReadOnly()</span>: Specifies if a certain self service field can be set in read-only mode.</li>
+  <li><span style="font-weight: bold;">getSelfServiceOptions()</span>: new parameter <span style="font-style: italic;">$readOnlyFields</span> that contains read-only fields</li>
+  <li><span style="font-weight: bold;">checkSelfServiceOptions()</span>: new parameter <span style="font-style: italic;">$readOnlyFields </span>that contains read-only fields</li>
+
+</ul>
+Meta HTML:<br>
+<ul>
+  <li>Input fields support autocompletion<br>
+  </li>
+</ul>
+<br>
+<h2>3.7 -&gt; 3.8<br>
+</h2>
+Type interface:<br>
+<ul>
+  <li><span style="font-weight: bold;">getTitleBarTitle()/getTitleBarSubtitle(): </span>changed
+parameter from attribute array to accountContainer object.
+Additionally, the functions are now called on each page refresh.<br>
+  </li>
+</ul>
+<br>
+<h2>3.6 -&gt; 3.7</h2>
+Module interface:<br>
+<ul>
+  <li><span style="font-weight: bold;">postModifyActions()</span>: Must return an array containing any messages to display</li>
+  <li><span style="font-weight: bold;">preModifyActions():</span> Changed return value from boolean to array of message arrays</li>
+  <li><span style="font-weight: bold;">passwordService interface:</span>
+new function supportsForcePasswordChange() and changed function
+passwordChangeRequested() to support password change at next login <br>
+</li>
+  <li><span style="font-weight: bold;">getSelfServiceOptions()/checkSelfServiceOptions():</span> added parameter to specify if only password changes are allowed</li>
+  <li><span style="font-weight: bold;">handleAjaxRequest():</span> This new function allows AJAX requests to be answered by modules</li>
+  <li><span style="font-weight: bold;">getSelfServiceSettings():</span> New parameter $profile that contains the full self service profile object<br>
+  </li>
+
+
+
+
+</ul>
+
+<br>
+<h2>3.5.0 -&gt; 3.6</h2>
+LAM now supports client-side validation (required + numeric fields). See htmlInputField::setValidationRule().<br>
+<br>
+<h2>3.4.0 -&gt; 3.5.0</h2>
+The old meta HTML code is no longer supported. Please use the new solution based on htmlElement (see lib/html.inc).<br>
+<br>
+<h2>3.3.0 -&gt; 3.4.0</h2>
+
+
+Module interface:<br>
+
+<ul>
+
+  <li><span style="font-weight: bold;">save_attributes():</span> Can
+now contain a return value 'info' =&gt; array() with values for
+pre/postModify actions</li>
+  <li><span style="font-weight: bold;">checkSelfServiceOptions():</span> Can now contain a return value 'info' =&gt; array() with values for
+pre/postModify actions</li>
+  <li><span style="font-weight: bold;">getSelfServiceOptions():</span> This function no longer supports the old meta HTML. Additionally, the module name must be specified for all help links.<br>
+</li>
+</ul>
+
+<br>
+
+<h2>3.2.0 -&gt; 3.3.0</h2>
+
+The cache class was removed. Please use local caching and the functions
+searchLDAP... instead of get_cache().<br>
+
+The return values for baseModule::pre/postDeleteActions() were changed
+to an array of StatusMessage parameters.
+<br>
+
+CSS class TYPElist-sort removed without replacement.<br>
+
+<br>
+
+<h2>3.1.0 -&gt; 3.2.0</h2>
+
+<span style="font-weight: bold;">Account types: </span>The CSS classes
+have changed.
+<ul>
+
+  <li>tr.TYPElist-over: removed without replacement</li>
+  <li>tr.TYPElist-checked: removed without replacement</li>
+  <li>tr.TYPElist: renamed to .TYPElist-bright</li>
+  <li>tr.TYPElist-head: renamed to .TYPElist-dark</li>
+  <li>th.TYPElist-sort: renamed to .TYPElist-sort</li>
+  <li>td.TYPEnav-text: removed without replacement </li>
+</ul>
+
+<br>
+
+<br>
+
+<h2>3.0.0 -&gt; 3.1.0</h2>
+
+<span style="font-weight: bold;">Module interface:</span> There is a
+new object-oriented library to
+generate HTML for the account modules (e.g. used for
+display_html_attributes()). This will allow additional functionality
+like client side validation. Please see lib/html.inc or package
+metaHTML in the phpdoc documentation.<br>
+
+<span style="color: red; font-weight: bold;">Attention: </span><span style="color: red; font-weight: bold;">The getSelfServiceOptions()
+function no longer supports the old meta HTML. </span><span style="color: red; font-weight: bold;">The other functions will
+support the old array-based meta HTML elements only until Q2/2011! </span><br>
+
+<br>
+
+The PDF editor now supports descriptive PDF
+fields. You can use this by returning an associative array for the PDF
+fields (e.g. array('macAddress' =&gt; _('MAC address'))) in <span style="font-weight: bold;">get_pdfFields()</span> or the meta data.<br>
+
+The old format is still supported. LAM will continue to show the field
+name as label in this case.<br>
+
+<br>
+
+<br>
+
+<h2>2.9.0 -&gt; 3.0.0</h2>
+
+You can now integrate JavaScript libraries by simply putting the files
+into templates/lib. All files with the name *.js are automatically
+included on all pages.<br>
+
+There is a new log level LOG_DEBUG available for logNewMessage().
+<br>
+
+<h3>Module interface:</h3>
+
+The function
+<span style="font-weight: bold;">build_uploadAccounts()</span>
+has a new parameter
+<span style="font-weight: bold;">$selectedModules</span>.<br>
+
+<h3>Type interface:</h3>
+
+The new function <span style="font-weight: bold;">supportsFileUpload()</span>
+specifies if file uploads are supported (default true).<br>
+
+<br>
+
+<br>
+
+<h2>2.8.0 -&gt; 2.9.0</h2>
+
+Several functions of the <span style="font-weight: bold;">cache</span>
+class were removed.<br>
+
+<br>
+
+<br>
+
+<h2>2.5.0 -&gt; 2.6.0</h2>
+
+The class <span style="font-weight: bold; font-style: italic;">baseType</span>
+has two new member variables:<br>
+
+<ul>
+
+  <li>$LABEL_CREATE_ANOTHER_ACCOUNT</li>
+  <li>$LABEL_BACK_TO_ACCOUNT_LIST</li>
+</ul>
+
+They can be used to show a more specific text when the user is asked to
+create another account or return back to the account list.<br>
+
+<br>
+
+The meta HTML code now supports image buttons.<br>
+
+<br>
+
+<br>
+
+<h2>2.4.0 -&gt; 2.5.0</h2>
+
+<h3>Self service</h3>
+
+<span style="font-weight: bold;">$selfServiceSettings</span> in class <span style="font-style: italic;">baseModule</span> is now an object of the
+class <span style="font-style: italic;">selfServiceProfile.</span>
+This way all profile settings can be read. To access the module
+settings use <span style="font-weight: bold;">$this-&gt;selfServiceSettings-&gt;moduleSettings</span>.<br>
+
+<br>
+
+<br>
+
+<h2>2.2.0 -&gt; 2.3.0</h2>
+
+<h3>Style changes</h3>
+
+If you have defined your own account types then you need to update your
+CSS files (style/type_&lt;type&gt;.css).<br>
+
+Please change "table.&lt;type&gt;list input,select" to
+"table.&lt;type&gt;list input,select,button" and
+"fieldset.&lt;type&gt;edit input" to "fieldset.&lt;type&gt;edit
+input,select,button". "fieldset.&lt;type&gt;edit select" may be deleted
+afterwards.<br>
+
+<br>
+
+<br>
+
+<h2>2.1.0 -&gt; 2.2.0</h2>
+
+<h3>Account lists</h3>
+
+Account lists now support to define tools. These are displayed as
+linked images like the edit and delete links in the list.<br>
+
+Overwrite <span style="font-weight: bold;">lamList::getAdditionalTools()</span>
+to use this feature.<br>
+
+<br>
+
+The definition of account list options changed. The function <span style="font-weight: bold;">lamList::getAdditionalTools()</span> is no
+longer available. Use these functions instead: <span style="font-weight: bold;">lamList::listGetAllConfigOptions()</span>
+and <span style="font-weight: bold;">lamList::listConfigurationChanged()</span>.<br>
+
+All options are now saved in cookies for one year.<br>
+
+<br>
+
+<h3>Base module</h3>
+
+The <span style="font-weight: bold;">baseModule</span> class has a new
+protected option: <span style="font-weight: bold;">$autoAddObjectClasses
+</span>You can set it to false if you do not want that your module's
+object classes are added when creating or loading an account.<br>
+
+<br>
+
+Account modules can now have icons. See <span style="font-weight: bold;">baseModule-&gt;getIcon()</span>.<br>
+
+<br>
+
+<h3>Constructors</h3>
+
+LAM now uses the PHP5 syntax for constructors: <span style="font-weight: bold;">__construct()<br>
+<br>
+</span>
+<h3>Extended security model</h3>
+
+Each server profile now defines an access level.<br>
+
+<br>
+
+Currently these are:<br>
+
+<ul>
+
+  <li>write access</li>
+  <li>password changes</li>
+  <li>read access<br>
+  </li>
+</ul>
+
+<span style="font-weight: bold;"></span> Please check your code and
+prohibit any actions which do not fit the current access level.<br>
+
+There are two new functions in <span style="font-style: italic;">security.inc</span>:
+<span style="font-weight: bold;">checkIfWriteAccessIsAllowed()</span>
+and <span style="font-weight: bold;">checkIfPasswordChangeIsAllowed()</span><br>
+
+Only LAM Pro allows to change the access level from <span style="font-style: italic;">write access</span> to a smaller level.<br>
+
+<br>
+
+<br>
+
+<h2>2.0.0 -&gt; 2.1.0</h2>
+
+<h3><span style="font-weight: bold;">Style changes</span></h3>
+
+<ul>
+
+  <li>"fieldset.&lt;type&gt;edit fieldset" and
+"fieldset.&lt;type&gt;edit fieldset fieldset" were removed.</li>
+  <li>"table.&lt;type&gt;list input" changed to "table.&lt;type&gt;list
+input,select"</li>
+</ul>
+
+<h3><span style="font-weight: bold;">baseModule</span></h3>
+
+&nbsp; The class variable<span style="font-style: italic;"> $base</span>
+is no longer visible in child classes. Please use <span style="font-style: italic;">$this-&gt;getAccountContainer()</span> to
+access the accountContainer object.<br>
+
+<br>
+
+Several other class variables in accountContainer etc. are now private.
+Use the new access methods.<br>
+
+<br>
+
+<br>
+
+<h2>1.3.0 -&gt; 2.0.0</h2>
+
+LAM is now PHP5 only. Several variables are now private and need to be
+accessed via functions.<br>
+
+<br>
+
+<br>
+
+<h2>1.2.0 -&gt; 1.3.0</h2>
+
+<h3><span style="font-weight: bold;">New lamList functions</span></h3>
+
+<ul>
+
+  <li><span style="font-weight: bold;">listPrintTableCellContent():</span>
+This function allows you to control how the LDAP attributes are
+displayed in the table. This can be used to display links or binary
+data.</li>
+  <li><span style="font-weight: bold;">listPrintAdditionalOptions():</span>
+If you want to display additional conrols for a list please use this
+function. The controls will be placed under the account table.<br>
+  </li>
+</ul>
+
+No more lamdaemon commands via delete_attributes() and
+save_attributes() in account modules.<br>
+
+Please use these new functions to call lamdaemon directly:<br>
+
+<ul>
+
+  <li>preModifyActions()</li>
+  <li>postModifyActions()</li>
+  <li>preDeleteActions()</li>
+  <li>postDeleteActions()</li>
+</ul>
+
+<br>
+
+<h2>1.1.x -&gt; 1.2.0</h2>
+
+<h3><span style="font-weight: bold;">API changes</span></h3>
+
+<ul>
+
+  <li>removed get_configDescription() from module interface</li>
+</ul>
+
+<br>
+
+<h2>1.0.4 -&gt; 1.1.0</h2>
+
+<h3><span style="font-weight: bold;">API changes</span></h3>
+
+<ul>
+
+  <li>removed $post parameters from module functions
+(delete_attributes(), process_...(), display_html_...()). Use $_POST
+instead.</li>
+  <li>process_...()
+functions: returned messages are no longer grouped (e.g. return:
+array(array('INFO', 'headline', 'text'), array('INFO', 'headline2',
+'text2')))</li>
+</ul>
+
+<br>
+
+<h2>1.0.0 -&gt; 1.0.2</h2>
+
+<h3><span style="font-weight: bold;">New module functions</span></h3>
+
+<ul>
+
+  <li>getRequiredExtensions: Allows to define required PHP extensions</li>
+  <li>getManagedObjectClasses: Definition of managed object classes for
+this module</li>
+  <li>getLDAPAliases: list of LDAP alias names which are replaced by LAM</li>
+  <li>getManagedAttributes: list of LDAP attributes which are managed
+by this module</li>
+</ul>
+
+The LDAP attributes are no longer loaded by reading the LDAP schema. If
+your module does not implement the load_attributes() function then you
+have to use getManagedAttributes() or the meta data to specify them.<br>
+
+<br>
+
+The class variable "triggered_messages" in baseModule was removed.<br>
+
+<br>
+
+</body></html>
