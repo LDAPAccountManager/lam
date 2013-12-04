@@ -1833,7 +1833,7 @@ class accountContainer {
 			if (!$stopprocessing) {
 				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
 				// modify attributesabnahme
-				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
+				if (!empty($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
@@ -1851,7 +1851,7 @@ class accountContainer {
 					}
 				}
 				// add attributes
-				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
+				if (!empty($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add attributes to DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
@@ -1864,7 +1864,7 @@ class accountContainer {
 					}
 				}
 				// remove attributes
-				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
+				if (!empty($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete attributes from DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
