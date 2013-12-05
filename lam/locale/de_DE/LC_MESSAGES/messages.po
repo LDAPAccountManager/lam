@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2013-12-04 22:19+0100\n"
+"PO-Revision-Date: 2013-12-05 20:37+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -2871,8 +2871,8 @@ msgid ""
 "are useful only for developers."
 msgstr ""
 "Definiert ob die PHP-Fehlerberichtseinstellungen aus der php.ini verwendet "
-"werden oder die von LAM präferierte Einstellung (\"E_ALL & ~E_NOTICE\"). Wenn "
-"Sie keine LAM-Module entwickeln verwenden Sie bitte den Standard. Damit "
+"werden oder die von LAM präferierte Einstellung (\"E_ALL & ~E_NOTICE\"). "
+"Wenn Sie keine LAM-Module entwickeln verwenden Sie bitte den Standard. Damit "
 "unterdrücken Sie Meldungen für Entwickler."
 
 #: ../lib/modules/sambaDomain.inc:111
@@ -5738,6 +5738,8 @@ msgid ""
 "In passthrough mode, users are allowed to print without any impact on their "
 "quota or account balance."
 msgstr ""
+"Im Durchlaufmodus können Benutzer ohne Veränderung ihres Kontostandes oder "
+"Quotas drucken."
 
 #: ../lib/modules/fixed_ip.inc:101
 msgid "Inactive hosts will not be able to get an address from the DHCP server."
@@ -5767,9 +5769,8 @@ msgid "Inherits from"
 msgstr "Erbt von"
 
 #: ../lib/modules/pykotaUser.inc:242
-#, fuzzy
 msgid "Initial payment"
-msgstr "Startprogramm"
+msgstr "Initialzahlung"
 
 #: ../lib/modules/sambaSamAccount.inc:227
 #: ../lib/modules/sambaSamAccount.inc:356
@@ -5924,15 +5925,13 @@ msgstr ""
 
 #: ../lib/modules/pykotaUser.inc:277 ../lib/modules/pykotaUser.inc:380
 #: ../lib/modules/pykotaUser.inc:1022
-#, fuzzy
 msgid "Job history"
-msgstr "Berufsbezeichnung"
+msgstr "Jobhistorie"
 
 #: ../lib/modules/pykotaUser.inc:149 ../lib/modules/pykotaUser.inc:282
 #: ../lib/modules/pykotaUser.inc:288 ../lib/modules/pykotaUser.inc:320
-#, fuzzy
 msgid "Job suffix"
-msgstr "DN-Suffix"
+msgstr "Job-Suffix"
 
 #: ../lib/modules/inetOrgPerson.inc:86 ../lib/modules/inetOrgPerson.inc:148
 #: ../lib/modules/inetOrgPerson.inc:211 ../lib/modules/inetOrgPerson.inc:340
@@ -5986,15 +5985,15 @@ msgstr "Kolab"
 
 #: ../lib/modules/kolabSharedFolder.inc:75
 msgid "Kolab shared folder"
-msgstr ""
+msgstr "Kolab gemeinsamer Ordner"
 
 #: ../lib/types/kolabSharedFolderType.inc:53
 msgid "Kolab shared folders"
-msgstr ""
+msgstr "Kolab gemeinsame Ordner"
 
 #: ../lib/types/kolabSharedFolderType.inc:62
 msgid "Kolab shared folders (e.g. mail folders)"
-msgstr ""
+msgstr "Kolab gemeinsame Ordner (z.B. email-Ordner)"
 
 #: ../lib/modules/posixGroup.inc:498
 msgid ""
@@ -6233,9 +6232,8 @@ msgid "LDIF Export"
 msgstr "LDIF-Export"
 
 #: ../templates/multiEdit.php:443
-#, fuzzy
 msgid "LDIF file"
-msgstr "Zeige LDIF-Datei"
+msgstr "LDIF-Datei"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:149
 #: ../templates/3rdParty/pla/htdocs/import.php:71
@@ -6350,9 +6348,8 @@ msgid "Last password change"
 msgstr "Letzte Passwortänderung"
 
 #: ../lib/modules/sambaSamAccount.inc:244 ../lib/modules/shadowAccount.inc:232
-#, fuzzy
 msgid "Last password change (read-only)"
-msgstr "Letzte Passwortänderung"
+msgstr "Letzte Passwortänderung (nur lesen)"
 
 #: ../lib/modules/asteriskAccount.inc:232
 #: ../lib/modules/asteriskAccount.inc:307
@@ -6376,7 +6373,7 @@ msgstr "Lease-Zeit"
 #: ../lib/modules/pykotaUser.inc:226 ../lib/modules/pykotaUser.inc:254
 #: ../lib/modules/pykotaUser.inc:390 ../lib/modules/pykotaUser.inc:899
 msgid "Limit type"
-msgstr ""
+msgstr "Limittyp"
 
 #: ../templates/3rdParty/pla/htdocs/import.php:102
 msgid "Line"
@@ -6589,7 +6586,7 @@ msgstr "Log-Level"
 
 #: ../templates/multiEdit.php:448
 msgid "Log output"
-msgstr ""
+msgstr "Logausgaben"
 
 #: ../templates/main_header.php:126
 #, php-format
@@ -6639,14 +6636,13 @@ msgid "Logo"
 msgstr "Logo"
 
 #: ../lib/pdfstruct.inc:300
-#, fuzzy
 msgid "Logo file deleted."
-msgstr "Profil gelöscht."
+msgstr "Logodatei gelöscht."
 
 #: ../lib/pdfstruct.inc:292
 #, php-format
 msgid "Logo is still in use by PDF structure \"%s\" in account type \"%s\"."
-msgstr ""
+msgstr "Logo wird noch verwendet von PDF-Struktur \"%s\" im Kontotyp \"%s\"."
 
 #: ../lib/modules/sambaDomain.inc:102 ../lib/modules/sambaDomain.inc:185
 #: ../lib/modules/sambaDomain.inc:283 ../lib/modules/sambaDomain.inc:655
@@ -6717,12 +6713,12 @@ msgstr "Befehl für Passwortänderung bei MIT Kerberos"
 #: ../lib/modules/bindDLZ.inc:211 ../lib/modules/bindDLZ.inc:218
 #: ../lib/modules/bindDLZ.inc:356 ../lib/modules/bindDLZ.inc:371
 msgid "MX record"
-msgstr ""
+msgstr "MX-Eintrag"
 
 #: ../lib/modules/bindDLZ.inc:306 ../lib/modules/bindDLZ.inc:323
 #: ../lib/modules/bindDLZ.inc:1093
 msgid "MX records"
-msgstr ""
+msgstr "MX-Einträge"
 
 #: ../lib/modules/sambaSamAccount.inc:568
 msgid "Magadan, Solomon Islands"
@@ -6763,7 +6759,7 @@ msgstr "Mailserver"
 
 #: ../lib/modules/bindDLZ.inc:744
 msgid "Mail servers (\"MX\" records)"
-msgstr ""
+msgstr "Mailserver (\"MX\"-Einträge)"
 
 #: ../lib/account.inc:1021
 #, php-format
@@ -6849,13 +6845,12 @@ msgid "Manage existing profiles"
 msgstr "Profile verwalten"
 
 #: ../templates/pdfedit/pdfmain.php:230
-#, fuzzy
 msgid "Manage logos"
-msgstr "Verwalten"
+msgstr "Logos verwalten"
 
 #: ../lib/modules/kolabUser.inc:104 ../lib/modules/kolabUser.inc:162
 msgid "Manage object class \"mailrecipient\""
-msgstr ""
+msgstr "Objektklasse \"mailrecipient\" verwalten"
 
 #: ../lib/modules/sambaSamAccount.inc:1217
 msgid "Manage profile directory"
@@ -7025,9 +7020,8 @@ msgstr ""
 #: ../lib/modules/pykotaPrinter.inc:128 ../lib/modules/pykotaPrinter.inc:152
 #: ../lib/modules/pykotaPrinter.inc:188 ../lib/modules/pykotaPrinter.inc:206
 #: ../lib/modules/pykotaPrinter.inc:226 ../lib/modules/pykotaPrinter.inc:592
-#, fuzzy
 msgid "Maximum job size"
-msgstr "Maximale Dateigröße"
+msgstr "Maximale Jobgröße"
 
 #: ../lib/modules/dhcp_settings.inc:150 ../lib/modules/dhcp_settings.inc:203
 #: ../lib/modules/dhcp_settings.inc:218 ../lib/modules/dhcp_settings.inc:255
@@ -7208,9 +7202,8 @@ msgstr "Minimale Anzahl von Sonderzeichen"
 #: ../lib/modules/bindDLZ.inc:151 ../lib/modules/bindDLZ.inc:250
 #: ../lib/modules/bindDLZ.inc:312 ../lib/modules/bindDLZ.inc:385
 #: ../lib/modules/bindDLZ.inc:843 ../lib/modules/bindDLZ.inc:1129
-#, fuzzy
 msgid "Minimum time"
-msgstr "Minimale GID-Nummer"
+msgstr "Minimale Zeit"
 
 #: ../templates/config/mainmanage.php:347
 msgid "Minimum uppercase characters"
@@ -7352,9 +7345,8 @@ msgid "Move up"
 msgstr "Nach oben"
 
 #: ../templates/multiEdit.php:78 ../lib/tools/multiEdit.inc:44
-#, fuzzy
 msgid "Multi edit"
-msgstr "Mehrfachwert"
+msgstr "Multieditor"
 
 #: ../lib/modules/customFields.inc:1750 ../lib/modules/customFields.inc:2907
 msgid "Multi value"
@@ -7479,7 +7471,7 @@ msgstr "NIS-Objekte"
 #: ../lib/modules/bindDLZ.inc:102 ../lib/modules/bindDLZ.inc:288
 #: ../lib/modules/bindDLZ.inc:294 ../lib/modules/bindDLZ.inc:362
 msgid "NS record"
-msgstr ""
+msgstr "NS-Eintrag"
 
 #: ../templates/serverInfo.php:147 ../templates/masscreate.php:291
 #: ../templates/masscreate.php:365 ../templates/schema/schema.php:268
@@ -7513,18 +7505,16 @@ msgstr "Name der der erstellenden Adressliste."
 
 #: ../lib/modules/bindDLZ.inc:127 ../lib/modules/bindDLZ.inc:288
 #: ../lib/modules/bindDLZ.inc:375 ../lib/modules/bindDLZ.inc:985
-#, fuzzy
 msgid "Name server"
-msgstr "Mailserver"
+msgstr "Name-Server"
 
 #: ../lib/modules/bindDLZ.inc:316 ../lib/modules/bindDLZ.inc:1146
-#, fuzzy
 msgid "Name servers"
-msgstr "Netbios-Name-Server"
+msgstr "Name-Server"
 
 #: ../lib/modules/bindDLZ.inc:983
 msgid "Name servers (\"NS\" records)"
-msgstr ""
+msgstr "Name-Server (\"NS\"-Einträge)"
 
 #: ../help/help.inc:175
 msgid ""
@@ -7564,9 +7554,8 @@ msgid "New DHCP"
 msgstr "Neuer DHCP"
 
 #: ../lib/types/bind.inc:100 ../lib/types/bind.inc:161
-#, fuzzy
 msgid "New DNS entry"
-msgstr "Neues NIS-Objekt"
+msgstr "Neuer DNS-Eintrag"
 
 #: ../lib/types/nisObjectType.inc:102 ../lib/types/nisObjectType.inc:157
 msgid "New NIS object"
@@ -7601,7 +7590,7 @@ msgstr "Neue Automount-Map"
 #: ../lib/types/pykotaBillingCodeType.inc:116
 #: ../lib/types/pykotaBillingCodeType.inc:165
 msgid "New billing code"
-msgstr ""
+msgstr "Neuer Rechnungscode"
 
 #: ../templates/config/profmanage.php:146
 msgid "New default profile set successfully."
@@ -7668,9 +7657,8 @@ msgstr "Neue Richtlinie"
 
 #: ../lib/types/pykotaPrinterType.inc:117
 #: ../lib/types/pykotaPrinterType.inc:166
-#, fuzzy
 msgid "New printer"
-msgstr "Neuer Adressbereich"
+msgstr "Neuer Drucker"
 
 #: ../templates/config/profmanage.php:260
 #: ../templates/selfService/profManage.php:222
@@ -7696,9 +7684,8 @@ msgstr "Neuer Abschnitt"
 
 #: ../lib/types/kolabSharedFolderType.inc:114
 #: ../lib/types/kolabSharedFolderType.inc:143
-#, fuzzy
 msgid "New shared folder"
-msgstr "Neue Sudo-Rolle"
+msgstr "Neuer gemeinsamer Ordner"
 
 #: ../lib/types/sudo.inc:106 ../lib/types/sudo.inc:161
 msgid "New sudo role"
@@ -7718,9 +7705,8 @@ msgid "New value"
 msgstr "Neuer Wert"
 
 #: ../lib/types/bind.inc:174 ../lib/types/bind.inc:175
-#, fuzzy
 msgid "New zone"
-msgstr "Zeitzone"
+msgstr "Neue Zone"
 
 #: ../lib/modules/sambaDomain.inc:78 ../lib/modules/sambaDomain.inc:158
 #: ../lib/modules/sambaDomain.inc:179 ../lib/modules/sambaDomain.inc:354
@@ -7792,9 +7778,8 @@ msgid "No DHCPs found!"
 msgstr "Keine DHCPs gefunden!"
 
 #: ../lib/types/bind.inc:160
-#, fuzzy
 msgid "No DNS entries found!"
-msgstr "Keine NIS-Objekte gefunden!"
+msgstr "Keine DNS-Einträge gefunden!"
 
 #: ../lib/types/nisObjectType.inc:156
 msgid "No NIS objects found!"
@@ -7831,9 +7816,8 @@ msgid "No automount entries found!"
 msgstr "Keine Automount-Einträge gefunden!"
 
 #: ../lib/types/pykotaBillingCodeType.inc:164
-#, fuzzy
 msgid "No billing codes found!"
-msgstr "Keine Richtlinien gefunden!"
+msgstr "Keine Rechnungscodes gefunden!"
 
 #: ../templates/3rdParty/pla/htdocs/download_binary_attr.php:36
 msgid "No binary data available"
@@ -7962,9 +7946,8 @@ msgid "No policies found!"
 msgstr "Keine Richtlinien gefunden!"
 
 #: ../lib/types/pykotaPrinterType.inc:165
-#, fuzzy
 msgid "No printers found!"
-msgstr "Keine Benutzer gefunden!"
+msgstr "Keine Drucker gefunden!"
 
 #: ../templates/tests/schemaTest.php:70
 msgid "No problems found."
@@ -7975,9 +7958,8 @@ msgid "No program delivery"
 msgstr "Keine Auslieferung mit Programm"
 
 #: ../lib/modules/pykotaGroup.inc:63 ../lib/modules/pykotaUser.inc:63
-#, fuzzy
 msgid "No quota"
-msgstr "Block-Quota"
+msgstr "Kein Quota"
 
 #: ../lib/modules/customScripts.inc:208
 msgid "No scripts to run."
@@ -7996,9 +7978,8 @@ msgid "No server profiles found. Please create one."
 msgstr "Keine Serverprofile gefunden, bitte erstellen Sie eines."
 
 #: ../lib/types/kolabSharedFolderType.inc:142
-#, fuzzy
 msgid "No shared folders found!"
-msgstr "Keine Sudo-Rollen gefunden!"
+msgstr "Keine gemeinsamen Ordner gefunden!"
 
 #: ../templates/pdfedit/pdfpage.php:125
 msgid "No static text specified"
@@ -8033,7 +8014,7 @@ msgstr "Keine Benutzer gefunden!"
 
 #: ../templates/config/mainmanage.php:392
 msgid "Non-standard (\\n)"
-msgstr ""
+msgstr "Nicht-Standard (\\n)"
 
 #: ../lib/modules/qmailUser.inc:58
 msgid "None"
@@ -8108,7 +8089,7 @@ msgstr ""
 
 #: ../lib/modules/pykotaBillingCode.inc:83
 msgid "Number of pages printed with this billing code."
-msgstr ""
+msgstr "Die Anzahl Seiten, die mit diesem Rechnungscode gedruckt wurden."
 
 #: ../lib/modules/customFields.inc:122
 msgid "Number of rows in text area."
@@ -8275,9 +8256,8 @@ msgid "Operation successful. DN <b>%s</b> has been created."
 msgstr "Operation erfolgreich. DN <b>%s</b> wurde erzeugt."
 
 #: ../templates/multiEdit.php:117 ../help/help.inc:257
-#, fuzzy
 msgid "Operations"
-msgstr "Optionen"
+msgstr "Operationen"
 
 #: ../templates/schema/schema.php:384
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1575
@@ -8378,15 +8358,16 @@ msgstr "Ausgabe des Kommandos \"%s\" mit Returncode %s"
 #: ../lib/modules/pykotaUser.inc:246 ../lib/modules/pykotaUser.inc:256
 #: ../lib/modules/pykotaUser.inc:317 ../lib/modules/pykotaUser.inc:395
 #: ../lib/modules/pykotaUser.inc:900
-#, fuzzy
 msgid "Overcharge factor"
-msgstr "Zeichen"
+msgstr "Überberechnungsfaktor"
 
 #: ../lib/modules/pykotaUser.inc:138
 msgid ""
 "Overcharge factor that is applied when computing the cost of a print job. "
 "The number of pages is not changed."
 msgstr ""
+"Der Überberechnungsfaktor wird angewendet wenn die Druckkosten eines Jobs "
+"berechnet werden. Die Anzahl Seiten wird nicht verändert."
 
 #: ../templates/serverInfo.php:168
 msgid "Overlays"
@@ -8453,12 +8434,11 @@ msgstr "PDUs gesendet"
 
 #: ../templates/config/mainmanage.php:380 ../help/help.inc:154
 msgid "PHP error reporting"
-msgstr ""
+msgstr "PHP Fehlerberichtseinstellungen"
 
 #: ../templates/config/mainmanage.php:377
-#, fuzzy
 msgid "PHP system setting"
-msgstr "DHCP-Einstellungen"
+msgstr "PHP Systemeinstellung"
 
 #: ../lib/modules/zarafaUser.inc:347 ../lib/modules/zarafaUser.inc:677
 #: ../lib/modules/zarafaUser.inc:1400
@@ -8474,12 +8454,12 @@ msgstr "PPolicy"
 #: ../lib/modules/bindDLZ.inc:97 ../lib/modules/bindDLZ.inc:225
 #: ../lib/modules/bindDLZ.inc:231 ../lib/modules/bindDLZ.inc:358
 msgid "PTR record"
-msgstr ""
+msgstr "PTR-Eintrag"
 
 #: ../lib/modules/bindDLZ.inc:307 ../lib/modules/bindDLZ.inc:324
 #: ../lib/modules/bindDLZ.inc:1073
 msgid "PTR records"
-msgstr ""
+msgstr "PTR-Einträge"
 
 #: ../lib/modules/sambaSamAccount.inc:549
 msgid "Pacific Time (US & Canada)"
@@ -8499,9 +8479,8 @@ msgstr ""
 #: ../lib/modules/pykotaBillingCode.inc:111
 #: ../lib/modules/pykotaBillingCode.inc:144
 #: ../lib/modules/pykotaBillingCode.inc:259
-#, fuzzy
 msgid "Page count"
-msgstr "Seitenlayout"
+msgstr "Seitenzahl"
 
 #: ../templates/selfService/adminMain.php:502 ../help/help.inc:220
 msgid "Page header"
@@ -8549,7 +8528,7 @@ msgstr "Einlesefehler"
 #: ../lib/modules/pykotaPrinter.inc:189 ../lib/modules/pykotaPrinter.inc:236
 #: ../lib/modules/pykotaPrinter.inc:601
 msgid "Passthrough"
-msgstr ""
+msgstr "Durchlauf"
 
 #: ../templates/lists/changePassword.php:340 ../templates/login.php:383
 #: ../templates/selfService/selfServiceLogin.php:279
@@ -8655,9 +8634,8 @@ msgid "Password expiration must be are natural number or -1."
 msgstr "Passwortablauf muss eine natürliche Zahl oder -1 sein."
 
 #: ../templates/selfService/adminMain.php:486 ../help/help.inc:224
-#, fuzzy
 msgid "Password field label"
-msgstr "Passwortrücksetzung"
+msgstr "Passwortfeldbezeichner"
 
 #: ../lib/modules/asteriskVoicemail.inc:93
 msgid "Password for voicemail mailbox."
@@ -8819,28 +8797,25 @@ msgstr "Pfad zur Mailbox im Mailsystem."
 #: ../lib/modules/pykotaUser.inc:145 ../lib/modules/pykotaUser.inc:319
 #: ../lib/modules/pykotaUser.inc:362
 msgid "Payment"
-msgstr ""
+msgstr "Zahlung"
 
 #: ../lib/modules/pykotaUser.inc:141
 msgid "Payment and job history"
-msgstr ""
+msgstr "Zahlungs- und Jobhistorie"
 
 #: ../lib/modules/pykotaUser.inc:142
-#, fuzzy
 msgid "Payment and job history for this user."
-msgstr "Bitte geben Sie einen Alias für diese Gruppe ein."
+msgstr "Zahlungs- und Jobhistorie für diesen Benutzer."
 
 #: ../lib/modules/pykotaUser.inc:258 ../lib/modules/pykotaUser.inc:276
 #: ../lib/modules/pykotaUser.inc:377 ../lib/modules/pykotaUser.inc:584
 #: ../lib/modules/pykotaUser.inc:984
-#, fuzzy
 msgid "Payment history"
-msgstr "Elter von"
+msgstr "Zahlungshistorie"
 
 #: ../lib/tools/multiEdit.inc:53
-#, fuzzy
 msgid "Performs modifications on multiple LDAP entries."
-msgstr "Der angegebene Benutzername passt auf mehrere LDAP-Einträge."
+msgstr "Führt Modifikationen auf mehreren LDAP-Einträgen durch."
 
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:41
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:64
@@ -8871,9 +8846,8 @@ msgid "Photo"
 msgstr "Foto"
 
 #: ../lib/modules/inetOrgPerson.inc:1635
-#, fuzzy
 msgid "Photo file"
-msgstr "Foto"
+msgstr "Fotodatei"
 
 #: ../lib/modules/inetOrgPerson.inc:1633
 msgid "Photo file (JPG format)"
@@ -8910,6 +8884,8 @@ msgid ""
 "Please change this setting only if you experience problems in receiving "
 "emails from LAM. This defines the line ending of emails."
 msgstr ""
+"Bitte ändern Sie diese Option nur wenn Sie Probleme beim email-Versand aus "
+"LAM heraus haben. Diese Einstellung legt die Zeilenenden von emails fest."
 
 #: ../lib/modules/qmailGroup.inc:324
 msgid "Please check if this email should be sent."
@@ -8929,16 +8905,15 @@ msgstr ""
 
 #: ../lib/modules/passwordSelfReset.inc:234
 msgid "Please click here to continue: @@resetLink@@"
-msgstr ""
+msgstr "Bitte klicken Sie zum Fortfahren hier: @@resetLink@@"
 
 #: ../lib/types/user.inc:298
 msgid "Please click to lock/unlock this account."
 msgstr "Zum (Ent)Sperren bitte klicken."
 
 #: ../lib/modules/pykotaPrinter.inc:212
-#, fuzzy
 msgid "Please enter \"Yes\" or \"No\"."
-msgstr "Bitte geben Sie entweder ja oder nein ein."
+msgstr "Bitte geben Sie entweder \"Ja\" oder \"Nein\" ein."
 
 #: ../lib/modules/sambaSamAccount.inc:108
 msgid "Please enter a RID number or the name of a special account!"
@@ -8996,12 +8971,12 @@ msgid "Please enter a group name!"
 msgstr "Bitte geben Sie einen Gruppennamen ein!"
 
 #: ../lib/modules/windowsUser.inc:227
-#, fuzzy
 msgid ""
 "Please enter a list of Windows domains that can be selected for your user "
 "accounts."
 msgstr ""
-"Bitte geben Sie eine Liste von Objektklassen für die neuen Accounts an."
+"Bitte geben Sie eine Liste von Windowsdomänen an die bei den Benutzern "
+"ausgewählt werden können."
 
 #: ../lib/modules/selfRegistration.inc:160
 msgid "Please enter a list of object classes for the new accounts."
@@ -9017,9 +8992,8 @@ msgid "Please enter a name for this device."
 msgstr "Bitte geben Sie einen Namen für das Gerät ein."
 
 #: ../lib/modules/kolabSharedFolder.inc:106
-#, fuzzy
 msgid "Please enter a name for this folder."
-msgstr "Bitte geben Sie einen Namen für das Gerät ein."
+msgstr "Bitte geben Sie einen Namen für diesen Ordner ein."
 
 #: ../lib/modules/ppolicy.inc:158
 msgid "Please enter a name for this policy."
@@ -9027,9 +9001,8 @@ msgstr ""
 "Bitte geben Sie einen eindeutigen Namen für diese Passwortrichtlinie ein."
 
 #: ../lib/modules/kolabSharedFolder.inc:255
-#, fuzzy
 msgid "Please enter a name."
-msgstr "Bitte geben Sie einen Zahl ein."
+msgstr "Bitte geben Sie einen Namen ein."
 
 #: ../lib/modules/customFields.inc:2249
 msgid "Please enter a natural number for column count."
@@ -9114,9 +9087,8 @@ msgid "Please enter a subject for the confirmation mails."
 msgstr "Bitte geben Sie einen Betreff für die Bestätigungsmails an."
 
 #: ../lib/modules/kolabSharedFolder.inc:256
-#, fuzzy
 msgid "Please enter a target folder."
-msgstr "Bitte geben Sie eine Anrufer-ID ein."
+msgstr "Bitte geben Sie ein Zielverzeichnis ein."
 
 #: ../lib/modules/selfRegistration.inc:159
 msgid ""
@@ -9145,9 +9117,8 @@ msgid "Please enter a valid DN in the field:"
 msgstr "Bitte geben Sie einen gültigen DN ein. Feld:"
 
 #: ../lib/types/bind.inc:205
-#, fuzzy
 msgid "Please enter a valid DNS name."
-msgstr "Bitte geben Sie einen gültigen Nachnamen ein."
+msgstr "Bitte geben Sie einen gültigen DNS-Namen ein."
 
 #: ../lib/modules/customFields.inc:1137 ../lib/modules/customFields.inc:1591
 msgid ""
@@ -9158,24 +9129,23 @@ msgstr ""
 "0-9 und -_."
 
 #: ../templates/selfService/adminMain.php:217
-#, fuzzy
 msgid "Please enter a valid LDAP suffix."
-msgstr "Bitte geben Sie eine gültige Option ein."
+msgstr "Bitte geben Sie einen gültigen LDAP-Suffix ein."
 
 #: ../templates/selfService/adminMain.php:221
-#, fuzzy
 msgid ""
 "Please enter a valid LDAP user if you want to use it for all operations."
-msgstr "Bitte geben Sie das Passwort für diesen Account ein."
+msgstr ""
+"Bitte geben Sie einen gültigen LDAP-Benutzer an wenn Sie ihn für alle "
+"Operationen nutzen möchten."
 
 #: ../lib/modules/qmailUser.inc:447
 msgid "Please enter a valid account status."
 msgstr "Bitte geben Sie einen gültigen Kontostatus ein."
 
 #: ../lib/modules/bindDLZ.inc:389 ../lib/modules/bindDLZ.inc:390
-#, fuzzy
 msgid "Please enter a valid admin email address."
-msgstr "Bitte geben Sie eine gültige EMail Adresse ein!"
+msgstr "Bitte geben Sie eine gültige Admin-EMail-Adresse ein."
 
 #: ../templates/config/confmain.php:524
 msgid "Please enter a valid bind user."
@@ -9311,9 +9281,8 @@ msgid "Please enter a valid group type."
 msgstr "Bitte geben Sie einen gültigen Gruppentyp ein."
 
 #: ../lib/modules/pykotaUser.inc:320
-#, fuzzy
 msgid "Please enter a valid job suffix."
-msgstr "Bitte geben Sie eine gültige Berufsbezeichnung ein!"
+msgstr "Bitte geben Sie einen gültigen Jobsuffix an."
 
 #: ../lib/modules/inetOrgPerson.inc:86 ../lib/modules/inetOrgPerson.inc:87
 msgid "Please enter a valid job title!"
@@ -9325,9 +9294,8 @@ msgid "Please enter a valid last name."
 msgstr "Bitte geben Sie einen gültigen Nachnamen ein."
 
 #: ../lib/modules/pykotaGroup.inc:198 ../lib/modules/pykotaUser.inc:314
-#, fuzzy
 msgid "Please enter a valid limit type."
-msgstr "Bitte geben Sie einen gültigen Gruppentyp ein."
+msgstr "Bitte geben Sie einen gültigen Limittyp ein."
 
 #: ../lib/modules/eduPerson.inc:246
 msgid "Please enter a valid list of affiliations."
@@ -9354,14 +9322,12 @@ msgstr "Bitte geben Sie eine gültige Mobiltelefonnummer ein!"
 #: ../lib/modules/pykotaUser.inc:315 ../lib/modules/pykotaUser.inc:316
 #: ../lib/modules/pykotaUser.inc:317 ../lib/modules/pykotaUser.inc:318
 #: ../lib/modules/pykotaUser.inc:319
-#, fuzzy
 msgid "Please enter a valid number (e.g. \"1.5\")."
-msgstr "Bitte geben Sie eine gültige Portnummer ein."
+msgstr "Bitte geben Sie eine gültige Zahl (z.B. \"1.5\") ein."
 
 #: ../lib/modules/pykotaPrinter.inc:206 ../lib/modules/pykotaPrinter.inc:207
-#, fuzzy
 msgid "Please enter a valid number."
-msgstr "Bitte geben Sie eine gültige Portnummer ein."
+msgstr "Bitte geben Sie eine gültige Zahl ein."
 
 #: ../lib/modules/customFields.inc:175
 msgid "Please enter a valid object class."
@@ -9458,14 +9424,12 @@ msgid "Please enter a value for status \"unchecked\"."
 msgstr "Bitte geben Sie einen Wert für den Status \"nicht ausgewählt\" an."
 
 #: ../templates/multiEdit.php:140
-#, fuzzy
 msgid "Please enter a value to add."
-msgstr "Bitte geben Sie eine gültige Option ein."
+msgstr "Bitte geben Sie einen Wert zum Hinzufügen an."
 
 #: ../templates/multiEdit.php:143
-#, fuzzy
 msgid "Please enter a value to modify."
-msgstr "Bitte geben Sie einen gültige Quelldomäne ein."
+msgstr "Bitte geben Sie einen Wert zum Editieren ein."
 
 #: ../lib/modules/customFields.inc:70
 msgid "Please enter an alias for this group."
@@ -9481,9 +9445,9 @@ msgid "Please enter an email address on this page: %s"
 msgstr "Bitte geben Sie eine e-mail Adresse auf dieser Seite ein: %s"
 
 #: ../lib/modules/pykotaUser.inc:346
-#, fuzzy, php-format
+#, php-format
 msgid "Please enter an user name on this page: %s"
-msgstr "Bitte geben Sie eine e-mail Adresse auf dieser Seite ein: %s"
+msgstr "Bitte geben Sie einen Benutzernamen auf dieser Seite ein: %s"
 
 #: ../lib/modules/windowsUser.inc:1227 ../lib/modules/windowsUser.inc:1236
 #: ../lib/modules/windowsUser.inc:1245 ../lib/modules/windowsUser.inc:1256
@@ -9540,9 +9504,8 @@ msgstr ""
 "\"sambaUnixIdPool\" ein."
 
 #: ../lib/modules/bindDLZ.inc:75 ../lib/modules/bindDLZ.inc:79
-#, fuzzy
 msgid "Please enter the IP address for this entry."
-msgstr "Bitte geben Sie die IP-Adresse Ihres DNS-Servers ein."
+msgstr "Bitte geben Sie die IP-Adresse für diesen Eintrag ein."
 
 #: ../lib/modules/ddns.inc:92
 msgid "Please enter the IP address of your DNS server."
@@ -9579,6 +9542,8 @@ msgid ""
 "Please enter the LDAP suffix where the PyKota job entries are stored "
 "(configuration option \"jobbase\")."
 msgstr ""
+"Bitte geben Sie den LDAP-Suffix ein unter dem die PyKota Jobeinträge liegen "
+"(Konfigurationsoption \"jobbase\")."
 
 #: ../lib/modules/asteriskExtension.inc:181
 #: ../lib/modules/asteriskVoicemail.inc:206
@@ -9869,9 +9834,8 @@ msgid "Please select the field type (e.g. text field)."
 msgstr "Bitte wählen Sie den Feldtyp (z.B. Textfeld)."
 
 #: ../help/help.inc:254
-#, fuzzy
 msgid "Please select the suffix where changes should be done."
-msgstr "Bitte prüfen Sie ob diese email gesendet werden soll."
+msgstr "Bitte wählen Sie den Suffix wo Änderungen stattfinden sollen."
 
 #: ../help/help.inc:145
 msgid ""
@@ -9908,9 +9872,8 @@ msgstr ""
 "Objektklasse \"dhcpService\" oder \"dhcpServer\"."
 
 #: ../templates/multiEdit.php:213
-#, fuzzy
 msgid "Please specify at least one operation."
-msgstr "Bitte geben Sie einen Gruppenbereich ein."
+msgstr "Bitte geben Sie mindestens eine Operation ein."
 
 #: ../lib/modules/passwordSelfReset.inc:134
 msgid "Please specify how your users need to identify themselves."
@@ -9934,11 +9897,14 @@ msgid ""
 "also add an value if the attribute does not yet exist. To delete all values "
 "of an attribute please leave the value field empty."
 msgstr ""
+"Bitte geben Sie an welche Attribute geändert werden sollen. Die "
+"Änderungsoperation wird auch Werte hinzufügen wenn das Attribut derzeit nicht "
+"existiert. Um alle Werte eines Attributes zu löschen, lassen Sie das "
+"Wertefeld leer."
 
 #: ../lib/modules/inetOrgPerson.inc:97
-#, fuzzy
 msgid "Please upload a .jpg/.jpeg file."
-msgstr "Hier können Sie eine neue Datei hochladen."
+msgstr "Bitte laden Sie eine .jpg/.jpeg-Datei hoch."
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:172
 msgid "Please wait"
@@ -10046,7 +10012,7 @@ msgstr "Vordefinierte Werte"
 #: ../lib/modules/bindDLZ.inc:211 ../lib/modules/bindDLZ.inc:371
 #: ../lib/modules/bindDLZ.inc:750 ../lib/modules/bindDLZ.inc:1097
 msgid "Preference"
-msgstr ""
+msgstr "Präferenz"
 
 #: ../lib/modules/imapAccess.inc:88 ../lib/modules/imapAccess.inc:121
 msgid "Prefix for mailboxes"
@@ -10058,21 +10024,21 @@ msgstr "Präsident"
 
 #: ../lib/modules/pykotaUser.inc:643 ../lib/modules/pykotaUser.inc:1000
 msgid "Price"
-msgstr ""
+msgstr "Preis"
 
 #: ../lib/types/pykotaPrinterType.inc:94 ../lib/modules/pykotaPrinter.inc:104
 #: ../lib/modules/pykotaPrinter.inc:167 ../lib/modules/pykotaPrinter.inc:190
 #: ../lib/modules/pykotaPrinter.inc:208 ../lib/modules/pykotaPrinter.inc:228
 #: ../lib/modules/pykotaPrinter.inc:593
 msgid "Price per job"
-msgstr ""
+msgstr "Preis je Job"
 
 #: ../lib/types/pykotaPrinterType.inc:93 ../lib/modules/pykotaPrinter.inc:108
 #: ../lib/modules/pykotaPrinter.inc:173 ../lib/modules/pykotaPrinter.inc:191
 #: ../lib/modules/pykotaPrinter.inc:210 ../lib/modules/pykotaPrinter.inc:230
 #: ../lib/modules/pykotaPrinter.inc:594
 msgid "Price per page"
-msgstr ""
+msgstr "Preis je Seite"
 
 #: ../lib/modules/eduPerson.inc:81 ../lib/modules/eduPerson.inc:161
 #: ../lib/modules/eduPerson.inc:222 ../lib/modules/eduPerson.inc:276
@@ -10090,14 +10056,13 @@ msgstr "Primäre Gruppe"
 
 #: ../lib/modules/bindDLZ.inc:164
 msgid "Primary master DNS server for this zone (e.g. \"ns1.example.com.\")."
-msgstr ""
+msgstr "Primärer Master-DNS-Server für diese Zone (z.B. \"ns1.beispiel.de\")."
 
 #: ../lib/modules/bindDLZ.inc:163 ../lib/modules/bindDLZ.inc:269
 #: ../lib/modules/bindDLZ.inc:314 ../lib/modules/bindDLZ.inc:391
 #: ../lib/modules/bindDLZ.inc:863 ../lib/modules/bindDLZ.inc:1131
-#, fuzzy
 msgid "Primary name server"
-msgstr "Netbios-Name-Server"
+msgstr "Primärer Master-DNS-Server"
 
 #: ../lib/modules/eduPerson.inc:123 ../lib/modules/eduPerson.inc:199
 #: ../lib/modules/eduPerson.inc:225 ../lib/modules/eduPerson.inc:240
@@ -10117,59 +10082,53 @@ msgstr "Der Benutzername ist ungültig!"
 
 #: ../lib/modules/pykotaUser.inc:641 ../lib/modules/pykotaUser.inc:998
 msgid "Printer"
-msgstr ""
+msgstr "Drucker"
 
 #: ../lib/types/pykotaPrinterType.inc:164
-#, fuzzy, php-format
+#, php-format
 msgid "Printer count: %s"
-msgstr "Anzahl Benutzer: %s"
+msgstr "Anzahl Drucker: %s"
 
 #: ../lib/modules/pykotaPrinter.inc:93
-#, fuzzy
 msgid "Printer description."
-msgstr "Hostbeschreibung"
+msgstr "Druckerbeschreibung"
 
 #: ../lib/modules/pykotaPrinter.inc:193 ../lib/modules/pykotaPrinter.inc:251
 #: ../lib/modules/pykotaPrinter.inc:627
-#, fuzzy
 msgid "Printer groups"
-msgstr "Primäre Gruppe"
+msgstr "Druckergruppen"
 
 #: ../lib/types/pykotaPrinterType.inc:91 ../lib/modules/pykotaPrinter.inc:88
 #: ../lib/modules/pykotaPrinter.inc:139 ../lib/modules/pykotaPrinter.inc:186
 #: ../lib/modules/pykotaPrinter.inc:202 ../lib/modules/pykotaPrinter.inc:204
 #: ../lib/modules/pykotaPrinter.inc:224 ../lib/modules/pykotaPrinter.inc:590
 #: ../lib/modules/pykotaBillingCode.inc:94
-#, fuzzy
 msgid "Printer name"
-msgstr "Profilname"
+msgstr "Druckername"
 
 #: ../lib/modules/pykotaPrinter.inc:204 ../lib/modules/pykotaPrinter.inc:205
-#, fuzzy
 msgid "Printer name already exists!"
-msgstr "Benutzername besteht schon!"
+msgstr "Druckername besteht schon!"
 
 #: ../lib/modules/pykotaPrinter.inc:202 ../lib/modules/pykotaPrinter.inc:203
-#, fuzzy
 msgid ""
 "Printer name contains invalid characters. Valid characters are: a-z, A-Z, "
 "0-9 and .-_ !"
 msgstr ""
-"Benutzername enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
+"Druckername enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und .-_ !"
 
 #: ../lib/modules/pykotaPrinter.inc:89
-#, fuzzy
 msgid ""
 "Printer name of the printer which should be created. Valid characters are: a-"
 "z, A-Z, 0-9 and .-_ ."
 msgstr ""
-"Gruppenname der zu erstellenden Gruppe. Gültige Zeichen sind: a-z, A-Z, 0-9 "
+"Druckername des zu erstellenden Druckers. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und .-_."
 
 #: ../lib/types/pykotaPrinterType.inc:53
 msgid "Printers"
-msgstr ""
+msgstr "Drucker"
 
 #: ../lib/modules/asteriskExtension.inc:99
 #: ../lib/modules/asteriskExtension.inc:818
@@ -10271,9 +10230,8 @@ msgid "Program to execute for all incoming mails."
 msgstr "Programm, das für alle eingehenden Nachrichten ausgeführt wird."
 
 #: ../templates/multiEdit.php:231
-#, fuzzy
 msgid "Progress"
-msgstr "Absenderadresse"
+msgstr "Fortschritt"
 
 #: ../lib/modules/zarafaServer.inc:77 ../lib/modules/zarafaServer.inc:121
 #: ../lib/modules/zarafaServer.inc:134 ../lib/modules/zarafaServer.inc:156
@@ -10294,40 +10252,35 @@ msgstr "Puppet"
 #: ../lib/modules/pykotaPrinter.inc:72 ../lib/modules/pykotaGroup.inc:86
 #: ../lib/modules/pykotaUser.inc:86 ../lib/modules/pykotaBillingCode.inc:54
 msgid "PyKota"
-msgstr ""
+msgstr "PyKota"
 
 #: ../lib/types/pykotaBillingCodeType.inc:62
-#, fuzzy
 msgid "PyKota billing codes"
-msgstr "Postleitzahl"
+msgstr "PyKota Rechnungscodes"
 
 #: ../lib/modules/pykotaGroup.inc:114 ../lib/modules/pykotaGroup.inc:141
 #: ../lib/modules/pykotaGroup.inc:174 ../lib/modules/pykotaGroup.inc:194
 #: ../lib/modules/pykotaGroup.inc:196 ../lib/modules/pykotaGroup.inc:462
-#, fuzzy
 msgid "PyKota group name"
-msgstr "Windows-Gruppenname"
+msgstr "PyKota Gruppenname"
 
 #: ../lib/types/pykotaPrinterType.inc:62
 msgid "PyKota printers"
-msgstr ""
+msgstr "PyKota Drucker"
 
 #: ../lib/modules/pykotaUser.inc:117 ../lib/modules/pykotaUser.inc:183
 #: ../lib/modules/pykotaUser.inc:253 ../lib/modules/pykotaUser.inc:308
 #: ../lib/modules/pykotaUser.inc:310 ../lib/modules/pykotaUser.inc:892
-#, fuzzy
 msgid "PyKota user name"
-msgstr "Benutzername"
+msgstr "PyKota Benutzername"
 
 #: ../lib/modules/pykotaGroup.inc:214
-#, fuzzy
 msgid "Pykota group name"
-msgstr "Windows-Gruppenname"
+msgstr "PyKota Gruppenname"
 
 #: ../lib/modules/pykotaUser.inc:352
-#, fuzzy
 msgid "Pykota user name"
-msgstr "Benutzername"
+msgstr "PyKota Benutzername"
 
 #: ../lib/modules/qmailUser.inc:80 ../lib/modules/qmailGroup.inc:49
 msgid "Qmail"
@@ -10569,9 +10522,8 @@ msgstr "Eintrag aktualisieren"
 #: ../lib/modules/bindDLZ.inc:143 ../lib/modules/bindDLZ.inc:244
 #: ../lib/modules/bindDLZ.inc:309 ../lib/modules/bindDLZ.inc:381
 #: ../lib/modules/bindDLZ.inc:838 ../lib/modules/bindDLZ.inc:1126
-#, fuzzy
 msgid "Refresh time"
-msgstr "Aktualisiere Baum"
+msgstr "Aktualisierungszeit"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:247
 msgid "Refreshing tree"
@@ -10673,9 +10625,8 @@ msgid "Remove Puppet extension"
 msgstr "Puppet-Erweiterung entfernen"
 
 #: ../lib/modules/pykotaGroup.inc:231 ../lib/modules/pykotaUser.inc:411
-#, fuzzy
 msgid "Remove PyKota extension"
-msgstr "Host-Erweiterung entfernen"
+msgstr "PyKota-Erweiterung entfernen"
 
 #: ../lib/modules/sambaSamAccount.inc:1299
 #: ../lib/modules/sambaGroupMapping.inc:416
@@ -10877,7 +10828,7 @@ msgstr "Rücksetzzeit muss eine natürliche Zahl sein."
 
 #: ../lib/modules/pykotaBillingCode.inc:87
 msgid "Resets the billing code's balance and page counter to 0."
-msgstr ""
+msgstr "Den Kontostand des Rechnungscodes und Seitenzähler auf 0 zurücksetzen."
 
 #: ../lib/modules/zarafaUser.inc:555
 msgid "Resource settings"
@@ -10908,13 +10859,12 @@ msgstr "Lade DN"
 #: ../lib/modules/bindDLZ.inc:147 ../lib/modules/bindDLZ.inc:256
 #: ../lib/modules/bindDLZ.inc:310 ../lib/modules/bindDLZ.inc:383
 #: ../lib/modules/bindDLZ.inc:851 ../lib/modules/bindDLZ.inc:1127
-#, fuzzy
 msgid "Retry time"
-msgstr "Startzeit"
+msgstr "Zeit für neuen Versuch"
 
 #: ../lib/modules/bindDLZ.inc:583
 msgid "Reverse DNS entries (\"PTR\" records)"
-msgstr ""
+msgstr "Reverse-DNS-Einträge (\"PTR\"-Einträge)"
 
 #: ../lib/modules/ddns.inc:99 ../lib/modules/ddns.inc:107
 #: ../lib/modules/ddns.inc:128 ../lib/modules/ddns.inc:390
@@ -11016,7 +10966,7 @@ msgstr "SIP-Benutzeragentenidentifizierung."
 #: ../lib/modules/bindDLZ.inc:385 ../lib/modules/bindDLZ.inc:387
 #: ../lib/modules/bindDLZ.inc:389
 msgid "SOA record"
-msgstr ""
+msgstr "SOA-Eintrag"
 
 #: ../templates/tests/lamdaemonTest.php:243
 msgid "SSH connection"
@@ -11561,6 +11511,7 @@ msgid ""
 "Sets the default timeout (in seconds) for entries without explicit timeout "
 "value."
 msgstr ""
+"Setzt das Standardzeitlimit (in Sekunden) für Einträge ohne eigenes Zeitlimit."
 
 #: ../lib/modules/qmailUser.inc:209
 msgid "Sets the delivery mode (e.g. disable mail forwarding)."
@@ -11574,6 +11525,7 @@ msgstr "Setzt das Gruppenpasswort."
 msgid ""
 "Sets the preference for the mail server. Lower values have higher priority."
 msgstr ""
+"Setzt die Präferenz für den Mailserver. Kleinere Werte haben höhere Priorität."
 
 #: ../lib/modules/shadowAccount.inc:84
 msgid "Shadow"
@@ -11587,13 +11539,13 @@ msgid "Shadowing"
 msgstr "Spiegeln"
 
 #: ../lib/types/kolabSharedFolderType.inc:141
-#, fuzzy, php-format
+#, php-format
 msgid "Shared folder count: %s"
-msgstr "Anzahl Sudo-Rollen: %s"
+msgstr "Anzahl gemeinsame Ordner: %s"
 
 #: ../lib/modules/kolabSharedFolder.inc:57
 msgid "Shared mail folder"
-msgstr ""
+msgstr "Gemeinsamer EMailordner"
 
 #: ../lib/modules/zarafaUser.inc:105 ../lib/modules/zarafaUser.inc:196
 #: ../lib/modules/zarafaUser.inc:306 ../lib/modules/zarafaUser.inc:399
@@ -11644,7 +11596,7 @@ msgstr "Einzelwert"
 
 #: ../lib/modules/pykotaUser.inc:645 ../lib/modules/pykotaUser.inc:1002
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #: ../lib/modules/qmailUser.inc:221
 msgid "Size limit in bytes for a single mail. Larger mails will be bounced."
@@ -11727,7 +11679,7 @@ msgstr "Gibt den Filter für die Mitglieder an (z.B. \"(mail=*@zarafa.nl)\")."
 
 #: ../lib/modules/groupOfNames.inc:112
 msgid "Specifies how members and owners are displayed."
-msgstr ""
+msgstr "Legt fest wie Mitglieder und Besitzer angezeigt werden."
 
 #: ../help/help.inc:242
 msgid "Specifies if the mail should be sent as text or HTML."
@@ -11784,9 +11736,8 @@ msgid "Specifies the capacity of this resource."
 msgstr "Gibt die Kapazität der Ressource an."
 
 #: ../lib/modules/kolabSharedFolder.inc:156
-#, fuzzy
 msgid "Specifies the folder type (e.g. shared mail folder)."
-msgstr "Damit setzen Sie den Liefermodus (z.B. keine Weiterleitung)."
+msgstr "Legt den Ordnertyp fest (z.B. gemeinsamer EMailordner)."
 
 #: ../lib/modules/customFields.inc:146
 msgid "Specifies the maximum allowed file size in bytes."
@@ -11886,6 +11837,8 @@ msgid ""
 "Specifies the type of limit for printing if any. Please note that in "
 "contrast to \"Free printing\" the option \"No quota\" includes accounting."
 msgstr ""
+"Legt den Limittyp für das Drucken fest. Achtung, im Gegensatz zu \"Freies "
+"Drucken\" rechnet die Option \"Kein Quota\" Kosten ab."
 
 #: ../lib/modules/asteriskAccount.inc:169
 msgid "Specifies the user's pickup group."
@@ -12059,9 +12012,8 @@ msgstr "Suffix für UID/Benutzernamenprüfung"
 
 #: ../lib/modules/selfRegistration.inc:67
 #: ../lib/modules/selfRegistration.inc:146
-#, fuzzy
 msgid "Suffix for new users"
-msgstr "Suche Benutzer im Suffix für Baumansicht"
+msgstr "Suffix für neue Benutzer"
 
 #: ../lib/modules/sambaSamAccount.inc:1369
 msgid "Sunday"
@@ -12069,7 +12021,7 @@ msgstr "Sonntag"
 
 #: ../templates/selfService/adminMain.php:583
 msgid "Switch back to default label."
-msgstr ""
+msgstr "Zum Standardbezeichner zurückkehren."
 
 #: ../templates/3rdParty/pla/htdocs/compare.php:72
 msgid "Switch entries"
@@ -12137,7 +12089,7 @@ msgstr "TLS kann nicht mit ldaps:// kombiniert werden."
 #: ../lib/modules/kolabSharedFolder.inc:286
 #: ../lib/modules/kolabSharedFolder.inc:568
 msgid "Target IMAP folder"
-msgstr ""
+msgstr "IMAP-Zielordner"
 
 #: ../lib/modules/kolabUser.inc:226
 msgid "Target of invitation policy is invalid!"
@@ -12257,9 +12209,9 @@ msgstr ""
 "die neue ID umstellen."
 
 #: ../lib/modules/bindDLZ.inc:364 ../lib/modules/bindDLZ.inc:365
-#, fuzzy, php-format
+#, php-format
 msgid "The IP address \"%s\" is invalid."
-msgstr "Die IP-Adresse %s ist ungültig!"
+msgstr "Die IP-Adresse \"%s\" ist ungültig."
 
 #: ../templates/config/mainmanage.php:100
 #, php-format
@@ -12404,14 +12356,13 @@ msgid "The account will be saved under this LDAP suffix."
 msgstr "Der Account wird unter diesem LDAP-Suffix gespeichert."
 
 #: ../lib/modules/bindDLZ.inc:366 ../lib/modules/bindDLZ.inc:367
-#, fuzzy, php-format
+#, php-format
 msgid "The alias name \"%s\" is invalid."
-msgstr "Der Wert für den vollständigen Namen ist ungültig."
+msgstr "Der Aliasname \"%s\" ist ungültig."
 
 #: ../lib/modules/bindDLZ.inc:108
-#, fuzzy
 msgid "The alias name for this entry."
-msgstr "Die Gruppennamen für diesen Account."
+msgstr "Der Aliasname für diesen Eintrag."
 
 #: ../lib/modules/passwordSelfReset.inc:273
 #, php-format
@@ -12532,9 +12483,9 @@ msgstr ""
 "Bitte geben Sie ein gültiges Ablaufdatum im Format TT.MM.JJJJ HH:MM ein."
 
 #: ../lib/modules/bindDLZ.inc:379 ../lib/modules/bindDLZ.inc:380
-#, fuzzy, php-format
+#, php-format
 msgid "The expiration time \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Die Ablaufzeit \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules/asteriskAccount.inc:624
 #: ../lib/modules/asteriskAccount.inc:625
@@ -12543,11 +12494,11 @@ msgstr "Der Erweiterungskontext ist ungültig."
 
 #: ../lib/pdfstruct.inc:262
 msgid "The file must not exeed 2000x300px."
-msgstr ""
+msgstr "Die Datei darf nicht größer als 2000x300px sein."
 
 #: ../lib/pdfstruct.inc:249
 msgid "The file name must end with \".png\" or \".jpg\"."
-msgstr ""
+msgstr "Der Dateiname muss mit \".png\" oder \".jpg\" enden."
 
 #: ../templates/3rdParty/pla/lib/Template.php:474
 msgid "The file you chose is either empty or does not exist."
@@ -12578,6 +12529,8 @@ msgid ""
 "The folder on the server where the shared folder is located (e.g. user/"
 "myfolder@example.com)."
 msgstr ""
+"Der Ordner am Server wo der gemeinsame Ordner liegt (z.B. "
+"benutzer/meinordner@beispiel.de)."
 
 #: ../lib/modules/kolabSharedFolder.inc:110
 #, fuzzy
