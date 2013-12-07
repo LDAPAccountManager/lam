@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2013-12-05 20:37+0100\n"
+"PO-Revision-Date: 2013-12-06 23:56+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -379,11 +379,10 @@ msgstr "Account"
 #: ../lib/modules/sudoRole.inc:230 ../lib/modules/sudoRole.inc:232
 #: ../lib/modules/sudoRole.inc:234 ../lib/modules/kolabSharedFolder.inc:244
 #: ../lib/modules/kolabSharedFolder.inc:246
-#: ../lib/modules/kolabSharedFolder.inc:247
+#: ../lib/modules/kolabSharedFolder.inc:248
 #: ../lib/modules/kolabSharedFolder.inc:249
-#: ../lib/modules/kolabSharedFolder.inc:250
-#: ../lib/modules/kolabSharedFolder.inc:252
-#: ../lib/modules/kolabSharedFolder.inc:254
+#: ../lib/modules/kolabSharedFolder.inc:251
+#: ../lib/modules/kolabSharedFolder.inc:253
 #: ../lib/modules/zarafaServer.inc:167 ../lib/modules/zarafaServer.inc:169
 #: ../lib/modules/zarafaServer.inc:171 ../lib/modules/zarafaServer.inc:172
 #: ../lib/modules/asteriskVoicemail.inc:208
@@ -1104,8 +1103,8 @@ msgstr "Erlaubte PCs"
 #: ../lib/modules/kolabSharedFolder.inc:201
 #: ../lib/modules/kolabSharedFolder.inc:227
 #: ../lib/modules/kolabSharedFolder.inc:243
-#: ../lib/modules/kolabSharedFolder.inc:301
-#: ../lib/modules/kolabSharedFolder.inc:569
+#: ../lib/modules/kolabSharedFolder.inc:300
+#: ../lib/modules/kolabSharedFolder.inc:568
 msgid "Allowed recipients"
 msgstr "Erlaubte Empfänger"
 
@@ -1121,8 +1120,8 @@ msgstr "Erlaubte Empfänger"
 #: ../lib/modules/kolabSharedFolder.inc:207
 #: ../lib/modules/kolabSharedFolder.inc:228
 #: ../lib/modules/kolabSharedFolder.inc:245
-#: ../lib/modules/kolabSharedFolder.inc:303
-#: ../lib/modules/kolabSharedFolder.inc:570
+#: ../lib/modules/kolabSharedFolder.inc:302
+#: ../lib/modules/kolabSharedFolder.inc:569
 msgid "Allowed senders"
 msgstr "Erlaubte Absender"
 
@@ -1945,7 +1944,7 @@ msgstr "Kann weiterleiten"
 #: ../lib/modules/kolabUser.inc:476 ../lib/modules/sambaGroupMapping.inc:483
 #: ../lib/modules/shadowAccount.inc:471 ../lib/modules/nisnetgroup.inc:483
 #: ../lib/modules/inetOrgPerson.inc:1681 ../lib/modules/freeRadius.inc:424
-#: ../lib/modules/kolabSharedFolder.inc:428 ../lib/modules/aliasEntry.inc:140
+#: ../lib/modules/kolabSharedFolder.inc:427 ../lib/modules/aliasEntry.inc:140
 #: ../lib/modules/aliasEntry.inc:160 ../lib/modules/qmailGroup.inc:816
 #: ../lib/modules/heimdalKerberos.inc:593 ../lib/modules/windowsGroup.inc:429
 #: ../lib/modules/windowsGroup.inc:481 ../lib/modules/groupOfNames.inc:368
@@ -2895,8 +2894,8 @@ msgstr ""
 #: ../lib/modules/kolabSharedFolder.inc:135
 #: ../lib/modules/kolabSharedFolder.inc:219
 #: ../lib/modules/kolabSharedFolder.inc:230
-#: ../lib/modules/kolabSharedFolder.inc:314
-#: ../lib/modules/kolabSharedFolder.inc:572
+#: ../lib/modules/kolabSharedFolder.inc:313
+#: ../lib/modules/kolabSharedFolder.inc:571
 msgid "Delegates"
 msgstr "Vollmachten"
 
@@ -3400,7 +3399,7 @@ msgid "Do you really want to delete this profile?"
 msgstr "Soll dieses Profil gelöscht werden?"
 
 #: ../lib/modules/kolabGroup.inc:278 ../lib/modules/kolabUser.inc:471
-#: ../lib/modules/kolabSharedFolder.inc:419
+#: ../lib/modules/kolabSharedFolder.inc:418
 msgid "Do you really want to mark this account for deletion?"
 msgstr "Soll dieser Account wirklich zum Löschen markiert werden?"
 
@@ -3667,9 +3666,9 @@ msgstr "EMail"
 #: ../lib/modules/kolabSharedFolder.inc:109
 #: ../lib/modules/kolabSharedFolder.inc:174
 #: ../lib/modules/kolabSharedFolder.inc:232
-#: ../lib/modules/kolabSharedFolder.inc:253
-#: ../lib/modules/kolabSharedFolder.inc:275
-#: ../lib/modules/kolabSharedFolder.inc:566
+#: ../lib/modules/kolabSharedFolder.inc:252
+#: ../lib/modules/kolabSharedFolder.inc:274
+#: ../lib/modules/kolabSharedFolder.inc:565
 #: ../lib/modules/asteriskVoicemail.inc:100
 #: ../lib/modules/asteriskVoicemail.inc:133
 #: ../lib/modules/asteriskVoicemail.inc:171
@@ -3725,7 +3724,7 @@ msgstr "EMail-Alias für diesen Account."
 #: ../lib/modules/zarafaContact.inc:178 ../lib/modules/zarafaContact.inc:179
 #: ../lib/modules/zarafaUser.inc:449 ../lib/modules/zarafaUser.inc:450
 #: ../lib/modules/windowsUser.inc:536 ../lib/modules/windowsUser.inc:537
-#: ../lib/modules/kolabUser.inc:228 ../lib/modules/kolabSharedFolder.inc:248
+#: ../lib/modules/kolabUser.inc:228 ../lib/modules/kolabSharedFolder.inc:247
 msgid "Email alias is invalid!"
 msgstr "EMail-Alias ist ungültig!"
 
@@ -3733,7 +3732,7 @@ msgstr "EMail-Alias ist ungültig!"
 msgid "Email alias list"
 msgstr "EMail-Aliasliste"
 
-#: ../lib/modules/kolabUser.inc:229 ../lib/modules/kolabSharedFolder.inc:249
+#: ../lib/modules/kolabUser.inc:229 ../lib/modules/kolabSharedFolder.inc:248
 msgid "Email alias list has invalid format!"
 msgstr "EMail-Aliasliste hat ungültiges Format!"
 
@@ -3757,8 +3756,8 @@ msgstr "EMail-Aliasliste hat ungültiges Format!"
 #: ../lib/modules/kolabUser.inc:214 ../lib/modules/kolabUser.inc:320
 #: ../lib/modules/kolabUser.inc:699 ../lib/modules/kolabSharedFolder.inc:213
 #: ../lib/modules/kolabSharedFolder.inc:229
-#: ../lib/modules/kolabSharedFolder.inc:306
-#: ../lib/modules/kolabSharedFolder.inc:571
+#: ../lib/modules/kolabSharedFolder.inc:305
+#: ../lib/modules/kolabSharedFolder.inc:570
 msgid "Email aliases"
 msgstr "EMail-Aliase"
 
@@ -6795,9 +6794,9 @@ msgstr "Das Postfach existiert noch nicht auf dem IMAP-Server."
 #: ../lib/modules/kolabSharedFolder.inc:147
 #: ../lib/modules/kolabSharedFolder.inc:181
 #: ../lib/modules/kolabSharedFolder.inc:231
-#: ../lib/modules/kolabSharedFolder.inc:278
-#: ../lib/modules/kolabSharedFolder.inc:281
-#: ../lib/modules/kolabSharedFolder.inc:567
+#: ../lib/modules/kolabSharedFolder.inc:277
+#: ../lib/modules/kolabSharedFolder.inc:280
+#: ../lib/modules/kolabSharedFolder.inc:566
 msgid "Mailbox home server"
 msgstr "Mailserver"
 
@@ -6806,8 +6805,8 @@ msgid "Mailbox home server name is empty!"
 msgstr "Mailservername ist leer!"
 
 #: ../lib/modules/kolabUser.inc:230 ../lib/modules/kolabUser.inc:231
+#: ../lib/modules/kolabSharedFolder.inc:250
 #: ../lib/modules/kolabSharedFolder.inc:251
-#: ../lib/modules/kolabSharedFolder.inc:252
 msgid "Mailbox home server name is invalid!"
 msgstr "Mailservername ist ungültig!"
 
@@ -6924,8 +6923,8 @@ msgstr "Abbildungsname"
 
 #: ../lib/modules/kolabGroup.inc:206 ../lib/modules/kolabGroup.inc:286
 #: ../lib/modules/kolabUser.inc:357 ../lib/modules/kolabUser.inc:475
-#: ../lib/modules/kolabSharedFolder.inc:339
-#: ../lib/modules/kolabSharedFolder.inc:427
+#: ../lib/modules/kolabSharedFolder.inc:338
+#: ../lib/modules/kolabSharedFolder.inc:426
 msgid "Mark account for deletion"
 msgstr "Account als gelöscht markieren"
 
@@ -7490,9 +7489,9 @@ msgstr "NS-Eintrag"
 #: ../lib/modules/kolabSharedFolder.inc:105
 #: ../lib/modules/kolabSharedFolder.inc:167
 #: ../lib/modules/kolabSharedFolder.inc:226
-#: ../lib/modules/kolabSharedFolder.inc:255
-#: ../lib/modules/kolabSharedFolder.inc:273
-#: ../lib/modules/kolabSharedFolder.inc:565
+#: ../lib/modules/kolabSharedFolder.inc:254
+#: ../lib/modules/kolabSharedFolder.inc:272
+#: ../lib/modules/kolabSharedFolder.inc:564
 #: ../lib/modules/asteriskExtension.inc:815 ../lib/modules/customFields.inc:77
 #: ../lib/modules/customFields.inc:995 ../lib/modules/customFields.inc:1538
 #: ../lib/modules/groupOfNames.inc:225
@@ -9000,7 +8999,7 @@ msgid "Please enter a name for this policy."
 msgstr ""
 "Bitte geben Sie einen eindeutigen Namen für diese Passwortrichtlinie ein."
 
-#: ../lib/modules/kolabSharedFolder.inc:255
+#: ../lib/modules/kolabSharedFolder.inc:254
 msgid "Please enter a name."
 msgstr "Bitte geben Sie einen Namen ein."
 
@@ -9086,7 +9085,7 @@ msgstr "Bitte geben Sie eine Antwort auf die Sicherheitsfrage ein."
 msgid "Please enter a subject for the confirmation mails."
 msgstr "Bitte geben Sie einen Betreff für die Bestätigungsmails an."
 
-#: ../lib/modules/kolabSharedFolder.inc:256
+#: ../lib/modules/kolabSharedFolder.inc:255
 msgid "Please enter a target folder."
 msgstr "Bitte geben Sie ein Zielverzeichnis ein."
 
@@ -9203,8 +9202,8 @@ msgstr "Bitte geben Sie einen gültigen Laufwerksbuchstaben ein."
 #: ../lib/modules/windowsUser.inc:535 ../lib/modules/pykotaUser.inc:312
 #: ../lib/modules/pykotaUser.inc:313 ../lib/modules/inetOrgPerson.inc:76
 #: ../lib/modules/inetOrgPerson.inc:77
-#: ../lib/modules/kolabSharedFolder.inc:253
-#: ../lib/modules/kolabSharedFolder.inc:254 ../lib/modules/qmailGroup.inc:413
+#: ../lib/modules/kolabSharedFolder.inc:252
+#: ../lib/modules/kolabSharedFolder.inc:253 ../lib/modules/qmailGroup.inc:413
 #: ../lib/modules/qmailGroup.inc:414 ../lib/modules/qmailGroup.inc:415
 #: ../lib/modules/qmailGroup.inc:416 ../lib/modules/qmailGroup.inc:418
 #: ../lib/modules/qmailGroup.inc:419 ../lib/modules/qmailGroup.inc:420
@@ -9898,8 +9897,8 @@ msgid ""
 "of an attribute please leave the value field empty."
 msgstr ""
 "Bitte geben Sie an welche Attribute geändert werden sollen. Die "
-"Änderungsoperation wird auch Werte hinzufügen wenn das Attribut derzeit nicht "
-"existiert. Um alle Werte eines Attributes zu löschen, lassen Sie das "
+"Änderungsoperation wird auch Werte hinzufügen wenn das Attribut derzeit "
+"nicht existiert. Um alle Werte eines Attributes zu löschen, lassen Sie das "
 "Wertefeld leer."
 
 #: ../lib/modules/inetOrgPerson.inc:97
@@ -10123,8 +10122,8 @@ msgid ""
 "Printer name of the printer which should be created. Valid characters are: a-"
 "z, A-Z, 0-9 and .-_ ."
 msgstr ""
-"Druckername des zu erstellenden Druckers. Gültige Zeichen sind: a-z, A-Z, 0-9 "
-"und .-_."
+"Druckername des zu erstellenden Druckers. Gültige Zeichen sind: a-z, A-Z, "
+"0-9 und .-_."
 
 #: ../lib/types/pykotaPrinterType.inc:53
 msgid "Printers"
@@ -11386,7 +11385,7 @@ msgstr "Seriennummer"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:110
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:54
 #: ../templates/3rdParty/pla/htdocs/export_form.php:56
-#: ../lib/modules/kolabGroup.inc:282 ../lib/modules/kolabSharedFolder.inc:423
+#: ../lib/modules/kolabGroup.inc:282 ../lib/modules/kolabSharedFolder.inc:422
 msgid "Server"
 msgstr "Server"
 
@@ -11511,7 +11510,8 @@ msgid ""
 "Sets the default timeout (in seconds) for entries without explicit timeout "
 "value."
 msgstr ""
-"Setzt das Standardzeitlimit (in Sekunden) für Einträge ohne eigenes Zeitlimit."
+"Setzt das Standardzeitlimit (in Sekunden) für Einträge ohne eigenes "
+"Zeitlimit."
 
 #: ../lib/modules/qmailUser.inc:209
 msgid "Sets the delivery mode (e.g. disable mail forwarding)."
@@ -11525,7 +11525,8 @@ msgstr "Setzt das Gruppenpasswort."
 msgid ""
 "Sets the preference for the mail server. Lower values have higher priority."
 msgstr ""
-"Setzt die Präferenz für den Mailserver. Kleinere Werte haben höhere Priorität."
+"Setzt die Präferenz für den Mailserver. Kleinere Werte haben höhere "
+"Priorität."
 
 #: ../lib/modules/shadowAccount.inc:84
 msgid "Shadow"
@@ -12085,9 +12086,9 @@ msgstr "TLS kann nicht mit ldaps:// kombiniert werden."
 #: ../lib/modules/kolabSharedFolder.inc:151
 #: ../lib/modules/kolabSharedFolder.inc:187
 #: ../lib/modules/kolabSharedFolder.inc:233
-#: ../lib/modules/kolabSharedFolder.inc:256
-#: ../lib/modules/kolabSharedFolder.inc:286
-#: ../lib/modules/kolabSharedFolder.inc:568
+#: ../lib/modules/kolabSharedFolder.inc:255
+#: ../lib/modules/kolabSharedFolder.inc:285
+#: ../lib/modules/kolabSharedFolder.inc:567
 msgid "Target IMAP folder"
 msgstr "IMAP-Zielordner"
 
@@ -12208,12 +12209,8 @@ msgstr ""
 "Die ID dieser Gruppe wurde verändert. Sie können alle Benutzer und Hosts auf "
 "die neue ID umstellen."
 
-#: ../lib/modules/bindDLZ.inc:364 ../lib/modules/bindDLZ.inc:365
-#, php-format
-msgid "The IP address \"%s\" is invalid."
-msgstr "Die IP-Adresse \"%s\" ist ungültig."
-
-#: ../templates/config/mainmanage.php:100
+#: ../templates/config/mainmanage.php:100 ../lib/modules/bindDLZ.inc:364
+#: ../lib/modules/bindDLZ.inc:365
 #, php-format
 msgid "The IP address %s is invalid!"
 msgstr "Die IP-Adresse %s ist ungültig!"
@@ -12529,13 +12526,12 @@ msgid ""
 "The folder on the server where the shared folder is located (e.g. user/"
 "myfolder@example.com)."
 msgstr ""
-"Der Ordner am Server wo der gemeinsame Ordner liegt (z.B. "
-"benutzer/meinordner@beispiel.de)."
+"Der Ordner am Server wo der gemeinsame Ordner liegt (z.B. benutzer/"
+"meinordner@beispiel.de)."
 
 #: ../lib/modules/kolabSharedFolder.inc:110
-#, fuzzy
 msgid "The folder's email address."
-msgstr "Die email-Adresse des Benutzers."
+msgstr "Die email-Adresse des Ordners."
 
 #: ../templates/initsuff.php:180
 msgid ""
@@ -12606,15 +12602,14 @@ msgstr "Der Server wird von dieser Kontaktperson verwaltet."
 
 #: ../lib/modules/bindDLZ.inc:373 ../lib/modules/bindDLZ.inc:374
 #: ../lib/modules/bindDLZ.inc:391 ../lib/modules/bindDLZ.inc:392
-#, fuzzy, php-format
+#, php-format
 msgid "The host name \"%s\" is invalid."
-msgstr "Der Hostname ist ungültig."
+msgstr "Der Hostname \"%s\" ist ungültig."
 
 #: ../lib/modules/bindDLZ.inc:71 ../lib/modules/bindDLZ.inc:120
 #: ../lib/modules/bindDLZ.inc:124
-#, fuzzy
 msgid "The host name for this entry."
-msgstr "Die Gruppennamen für diesen Account."
+msgstr "Der Hostname für diesen Eintrag."
 
 #: ../lib/modules/asteriskAccount.inc:627
 #: ../lib/modules/asteriskAccount.inc:628 ../lib/modules/bindDLZ.inc:350
@@ -12699,21 +12694,19 @@ msgstr ""
 "löschen darf."
 
 #: ../lib/modules/bindDLZ.inc:112 ../lib/modules/bindDLZ.inc:116
-#, fuzzy
 msgid "The mail server for this entry."
-msgstr "Dies ist der Mailserver des Benutzers."
+msgstr "Dies ist der Mailserver für diesen Eintrag."
 
 #: ../lib/modules/qmailUser.inc:237
 msgid "The mail server that contains the message store."
 msgstr "Dies ist der Mailserver des Benutzers."
 
 #: ../lib/modules/passwordSelfReset.inc:276
-#, fuzzy
 msgid ""
 "The mail text for confirmation mails must include the wildcard @@resetLink@@."
 msgstr ""
-"Bitte geben Sie einen Text für die Bestätigungsmails an der den "
-"Erstellungslink enthält."
+"Der Text für die Bestätigungsmails muss den Rücksetzlink @@resetLink@@ "
+"enthalten."
 
 #: ../help/help.inc:237
 msgid "The mail text of all password mails."
@@ -12749,16 +12742,17 @@ msgid "The maximum number of mails that can be stored in the user's mailbox."
 msgstr "Die max. Anzahl von Nachrichten für die Mailbox des Benutzers."
 
 #: ../lib/modules/pykotaPrinter.inc:97
-#, fuzzy
 msgid ""
 "The maximum number of pages per job allowed on the printer. 0 means "
 "unlimited."
-msgstr "Die max. Anzahl von Nachrichten für die Mailbox des Benutzers."
+msgstr ""
+"Das ist die max. Anzahl an Seiten pro Job, die für diesen Drucker erlaubt "
+"sind. 0 bedeutet ohne Limit."
 
 #: ../lib/modules/bindDLZ.inc:385 ../lib/modules/bindDLZ.inc:386
-#, fuzzy, php-format
+#, php-format
 msgid "The minimum time \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Die minimale Zeit \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules.inc:921
 #, php-format
@@ -12802,14 +12796,13 @@ msgid "The name of your Windows domain or workgroup."
 msgstr "Der Name ihrer Windows-Domäne oder Arbeitsgruppe."
 
 #: ../lib/modules/bindDLZ.inc:375 ../lib/modules/bindDLZ.inc:376
-#, fuzzy, php-format
+#, php-format
 msgid "The name server \"%s\" is invalid."
-msgstr "Der Netbios-Server ist ungültig."
+msgstr "Der Name-Server \"%s\" ist ungültig."
 
 #: ../lib/modules/bindDLZ.inc:128
-#, fuzzy
 msgid "The name server for this zone."
-msgstr "Die Gruppennamen für diesen Account."
+msgstr "Der Name-Server für diese Zone."
 
 #: ../lib/modules/freeRadius.inc:82
 msgid "The net mask for the IP address."
@@ -12963,17 +12956,17 @@ msgid "The postal code of the user's address."
 msgstr "Die Postleitzahl der Benutzeradresse."
 
 #: ../lib/modules/bindDLZ.inc:371 ../lib/modules/bindDLZ.inc:372
-#, fuzzy, php-format
+#, php-format
 msgid "The preference \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Die Präferenz \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules/pykotaPrinter.inc:109
 msgid "The price for each page of a print job."
-msgstr ""
+msgstr "Dies ist der Preis pro Seite für einen Druckjob."
 
 #: ../lib/modules/pykotaPrinter.inc:105
 msgid "The price for each print job."
-msgstr ""
+msgstr "Dies ist der Preis pro Druckjob."
 
 #: ../lib/modules/posixAccount.inc:459
 msgid ""
@@ -13008,14 +13001,14 @@ msgid "The range end needs to be greater than the range start."
 msgstr "Das Ende des Adressbereichs muss größer als der Anfang sein."
 
 #: ../lib/modules/bindDLZ.inc:381 ../lib/modules/bindDLZ.inc:382
-#, fuzzy, php-format
+#, php-format
 msgid "The refresh time \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Die Aktualisierungszeit \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules/bindDLZ.inc:383 ../lib/modules/bindDLZ.inc:384
-#, fuzzy, php-format
+#, php-format
 msgid "The retry time \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Die Zeit für neuen Versuch \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules/inetOrgPerson.inc:831
 msgid "The room number of the employee's office."
@@ -13048,18 +13041,18 @@ msgstr ""
 "Anzahl angezeigter Eingabefelder reduzieren."
 
 #: ../lib/modules/bindDLZ.inc:387 ../lib/modules/bindDLZ.inc:388
-#, fuzzy, php-format
+#, php-format
 msgid "The serial number \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Die Seriennummer \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules/bindDLZ.inc:156
 msgid "The serial number should be updated after each zone change."
-msgstr ""
+msgstr "Die Seriennummer sollte nach jeder Zonenänderung geändert werden."
 
 #: ../lib/modules/bindDLZ.inc:369 ../lib/modules/bindDLZ.inc:370
-#, fuzzy, php-format
+#, php-format
 msgid "The server name \"%s\" is invalid."
-msgstr "Der Hostname ist ungültig."
+msgstr "Der Servername \"%s\" ist ungültig."
 
 #: ../templates/3rdParty/pla/htdocs/copy.php:38
 msgid "The source and destination DN are the same."
@@ -13124,18 +13117,24 @@ msgid ""
 "The time (in seconds) a secondary server should wait before retrying a zone "
 "refresh."
 msgstr ""
+"Die Zeit (in Sekunden), die ein sekundärer Server bis zum nächsten Versuch "
+"einer Zonenaktualisierung warten sollte."
 
 #: ../lib/modules/bindDLZ.inc:144
 msgid ""
 "The time (in seconds) that a secondary server should wait before checking "
 "for zone updates."
 msgstr ""
+"Die Zeit (in Sekunden), die ein sekundärer Server bis zur Prüfung auf "
+"Zonenänderungen warten sollte."
 
 #: ../lib/modules/bindDLZ.inc:140
 msgid ""
 "The time (in seconds) that zone data is kept on a secondary server without "
 "receiving a zone refresh."
 msgstr ""
+"Die Zeit (in Sekunden), wie lange Zonendaten auf einem sekundären Server "
+"ohne Zonenaktualisierung gehalten werden."
 
 #: ../lib/modules/bindDLZ.inc:352 ../lib/modules/bindDLZ.inc:353
 #: ../lib/modules/bindDLZ.inc:354 ../lib/modules/bindDLZ.inc:355
@@ -13143,9 +13142,9 @@ msgstr ""
 #: ../lib/modules/bindDLZ.inc:358 ../lib/modules/bindDLZ.inc:359
 #: ../lib/modules/bindDLZ.inc:360 ../lib/modules/bindDLZ.inc:361
 #: ../lib/modules/bindDLZ.inc:362 ../lib/modules/bindDLZ.inc:363
-#, fuzzy, php-format
+#, php-format
 msgid "The timeout \"%s\" must be a number."
-msgstr "Ticketlaufzeit muss eine Zahl sein."
+msgstr "Das Zeitlimit \"%s\" muss eine Zahl sein."
 
 #: ../lib/modules/bindDLZ.inc:84 ../lib/modules/bindDLZ.inc:88
 #: ../lib/modules/bindDLZ.inc:93 ../lib/modules/bindDLZ.inc:98
@@ -13154,6 +13153,8 @@ msgid ""
 "The timeout specifies how long (in seconds) a record can be cached by "
 "caching DNS servers."
 msgstr ""
+"Das Zeitlimit (in Sekunden) legt fest wie lange ein Eintrag bei Cache-DNS-"
+"Servern vorgehalten wird."
 
 #: ../lib/modules/customFields.inc:3158 ../lib/modules/customFields.inc:3245
 #, php-format
@@ -13391,7 +13392,7 @@ msgid "This PC name already exists."
 msgstr "Der PC-Name existiert bereits."
 
 #: ../lib/modules/kolabGroup.inc:190 ../lib/modules/kolabUser.inc:271
-#: ../lib/modules/kolabSharedFolder.inc:268
+#: ../lib/modules/kolabSharedFolder.inc:267
 msgid "This account is marked for deletion."
 msgstr "Dieser Account wurde zum Löschen markiert."
 
@@ -13860,6 +13861,8 @@ msgid ""
 "This is the identifier for the relative DN value. LAM will use \"uid\" by "
 "default."
 msgstr ""
+"Das ist der Bezeichner für den relativen DN-Wert. LAM nimmt standardmäßig "
+"\"uid\"."
 
 #: ../lib/modules/passwordSelfReset.inc:90
 msgid ""
@@ -13924,9 +13927,8 @@ msgstr ""
 "Dies ist der übliche Name des Hosts, falls leer wird der Hostname verwendet."
 
 #: ../lib/modules/pykotaUser.inc:102
-#, fuzzy
 msgid "This is the natural name of the user."
-msgstr "Dies ist der Mailserver des Benutzers."
+msgstr "Dies ist der natürliche Name des Benutzers."
 
 #: ../lib/modules/inetOrgPerson.inc:811
 msgid ""
@@ -14113,6 +14115,8 @@ msgstr "Dieses Postfach wird erstellt/gelöscht."
 #: ../lib/modules.inc:1215
 msgid "This may overwrite existing values with profile data. Continue?"
 msgstr ""
+"Damit überschreiben Sie evtl. existierende Daten mit denen aus dem Profil. "
+"Fortfahren?"
 
 #: ../lib/modules/customFields.inc:102
 msgid ""
@@ -14205,6 +14209,8 @@ msgid ""
 "This text is placed as label for the password field on the login page. LAM "
 "will use \"Password\" if you do not enter any text."
 msgstr ""
+"Dieser Text wird als Beschreibung für das Passwortfeld auf der Loginseite "
+"angezeigt. LAM verwendet \"Passwort\" wenn Sie nichts eingeben."
 
 #: ../help/help.inc:211
 msgid ""
@@ -14234,6 +14240,8 @@ msgstr "Dieser Benutzer wird nicht unterstützt oder wurde nicht gefunden."
 #: ../lib/modules/windowsUser.inc:108
 msgid "This user name is only used for old Windows versions (e.g. NT4, W98)."
 msgstr ""
+"Dieser Benutzername wird nur in alten Windows-Versionen (z.B. NT4, W98) "
+"verwendet."
 
 #: ../templates/lists/userlink.php:61
 msgid "This user was not found!"
@@ -14308,6 +14316,8 @@ msgid ""
 "This will hide the custom scripts tab when you edit an account. Manual "
 "actions are not possible when the tab is not visible."
 msgstr ""
+"Damit verhindern Sie die Anzeige des Tabs \"Eigene Felder\" beim Editieren "
+"eines Eintrags. Manuelle Aktionen sind in diesem Fall nicht möglich."
 
 #: ../lib/modules/sambaSamAccount.inc:258
 msgid "This will reset the host's password to a default value."
@@ -14398,18 +14408,16 @@ msgstr "Zeitzone"
 #: ../lib/modules/bindDLZ.inc:989 ../lib/modules/bindDLZ.inc:1057
 #: ../lib/modules/bindDLZ.inc:1077 ../lib/modules/bindDLZ.inc:1098
 #: ../lib/modules/bindDLZ.inc:1132
-#, fuzzy
 msgid "Timeout"
-msgstr "RTP-Timeout"
+msgstr "Zeitlimit"
 
 #: ../lib/modules/bindDLZ.inc:320
-#, fuzzy
 msgid "Timeouts"
-msgstr "RTP-Timeout"
+msgstr "Zeitlimits"
 
 #: ../lib/modules/pykotaUser.inc:647 ../lib/modules/pykotaUser.inc:1004
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:45
 msgid "To"
@@ -14445,18 +14453,17 @@ msgstr "Anzahl Einträge"
 
 #: ../lib/modules/pykotaUser.inc:134
 msgid "Total money paid by the user."
-msgstr ""
+msgstr "Vom Benutzer bezahlter Gesamtbetrag."
 
 #: ../lib/modules/pykotaUser.inc:133 ../lib/modules/pykotaUser.inc:257
 #: ../lib/modules/pykotaUser.inc:579 ../lib/modules/pykotaUser.inc:902
 #: ../lib/modules/pykotaUser.inc:955
-#, fuzzy
 msgid "Total paid"
-msgstr "Insgesamt"
+msgstr "Gesamtbetrag"
 
 #: ../lib/modules/pykotaUser.inc:275
 msgid "Total paid (read-only)"
-msgstr ""
+msgstr "Gesamtbetrag (nur lesen)"
 
 #: ../lib/types/user.inc:681
 msgid "Translate GID number to group name"
@@ -14485,8 +14492,8 @@ msgstr "Dienstag"
 #: ../lib/modules/zarafaUser.inc:1317 ../lib/modules/kolabSharedFolder.inc:155
 #: ../lib/modules/kolabSharedFolder.inc:194
 #: ../lib/modules/kolabSharedFolder.inc:234
-#: ../lib/modules/kolabSharedFolder.inc:296
-#: ../lib/modules/kolabSharedFolder.inc:579 ../lib/modules/customFields.inc:89
+#: ../lib/modules/kolabSharedFolder.inc:295
+#: ../lib/modules/kolabSharedFolder.inc:578 ../lib/modules/customFields.inc:89
 #: ../lib/modules/customFields.inc:1024 ../lib/modules/customFields.inc:1552
 msgid "Type"
 msgstr "Typ"
@@ -14556,6 +14563,9 @@ msgid ""
 "UNC-path (\\\\server\\share\\) of home directory. If no home drive is set "
 "then this directory must start with a drive letter (e.g. \"c:\\dir\\user\")."
 msgstr ""
+"UNC-Pfad (\\\\server\\freigabe\\) des Heimatverzeichnisses. Wenn kein "
+"Heimatlaufwerk gesetzt ist dann muss das Verzeichnis mit einem "
+"Laufwerksbuchstaben (z.B. \"c:\\verzeichnis\\benutzer\") beginnen."
 
 #: ../lib/modules/eduPerson.inc:112 ../lib/modules/eduPerson.inc:116
 msgid ""
@@ -14569,9 +14579,8 @@ msgid "URL"
 msgstr "URL"
 
 #: ../lib/modules/bindDLZ.inc:1213 ../lib/modules/bindDLZ.inc:1683
-#, fuzzy
 msgid "Unable to add DNS record."
-msgstr "Kann den LDAP-Eintrag nicht einlesen:"
+msgstr "Kann den DNS-Eintrag nicht hinzufügen."
 
 #: ../lib/modules/imapAccess.inc:160
 msgid "Unable to change ACL on IMAP server for mailbox deletion."
@@ -14635,14 +14644,13 @@ msgid "Unable to create new profile!"
 msgstr "Kann das Profil nicht erstellen!"
 
 #: ../lib/types/bind.inc:215
-#, fuzzy
 msgid "Unable to create new zone."
-msgstr "Kann neue OU nicht erstellen!"
+msgstr "Kann neue Zone nicht erstellen."
 
 #: ../lib/modules/bindDLZ.inc:1203
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to delete DNS record \"%s\"."
-msgstr "Konnte DN nicht löschen: %s."
+msgstr "Konnte DNS-Eintrag \"%s\" nicht löschen."
 
 #: ../templates/ou_edit.php:97
 msgid "Unable to delete OU!"
@@ -14658,9 +14666,8 @@ msgid "Unable to delete entry, it does not exist"
 msgstr "Konnte Eintrag nicht löschen. Er existiert nicht."
 
 #: ../lib/pdfstruct.inc:291 ../lib/pdfstruct.inc:303
-#, fuzzy
 msgid "Unable to delete logo file."
-msgstr "Kann das Profil nicht löschen!"
+msgstr "Konnte die Logodatei nicht löschen."
 
 #: ../lib/modules/imapAccess.inc:161
 msgid "Unable to delete mailbox from IMAP server."
@@ -14674,9 +14681,9 @@ msgid "Unable to delete profile!"
 msgstr "Kann das Profil nicht löschen!"
 
 #: ../lib/modules/pykotaPrinter.inc:213
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to find a printer with name \"%s\"."
-msgstr "Kann den Benutzernamen nicht in LDAP finden."
+msgstr "Konnte keinen Drucker namens \"%s\" finden."
 
 #: ../lib/modules/posixAccount.inc:1977 ../lib/modules/posixAccount.inc:1986
 #: ../lib/modules/posixAccount.inc:2252 ../lib/modules/nisnetgroup.inc:538
@@ -14722,9 +14729,8 @@ msgid "Unable to locate mailbox on IMAP."
 msgstr "Das Postfach wurde nicht gefunden."
 
 #: ../lib/modules/inetOrgPerson.inc:98
-#, fuzzy
 msgid "Unable to process this file."
-msgstr "Kann Datei nicht lesen."
+msgstr "Kann diese Datei nicht verarbeiten."
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:388
 #: ../templates/3rdParty/pla/lib/import_functions.php:393
@@ -14764,14 +14770,13 @@ msgid "Unable to send mail!"
 msgstr "Kann die mail nicht versenden!"
 
 #: ../lib/modules/bindDLZ.inc:1231
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to update DNS record \"%s\"."
-msgstr "Konnte DN nicht erstellen: %s."
+msgstr "Konnte DNS-Eintrag \"%s\" nicht aktualisieren."
 
 #: ../lib/pdfstruct.inc:249 ../lib/pdfstruct.inc:259 ../lib/pdfstruct.inc:262
-#, fuzzy
 msgid "Unable to upload logo file."
-msgstr "Kann das Profil nicht laden!"
+msgstr "Konnte Logodatei nicht hochladen."
 
 #: ../lib/modules/passwordSelfReset.inc:897
 #: ../lib/modules/passwordSelfReset.inc:1141
@@ -14816,7 +14821,7 @@ msgstr "Unix-Gruppen"
 msgid "Unknown clients"
 msgstr "Unbekannte Clients"
 
-#: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabSharedFolder.inc:250
+#: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabSharedFolder.inc:249
 #, php-format
 msgid "Unknown delegate address: %s"
 msgstr "Unbekannte Adresse für Delegation: %s"
@@ -14920,9 +14925,8 @@ msgid "Upload was stopped after errors in %s module!"
 msgstr "Upload wurde nach Fehlern im Modul %s gestoppt!"
 
 #: ../lib/pdfstruct.inc:256
-#, fuzzy
 msgid "Uploaded logo file."
-msgstr "Datei hochladen"
+msgstr "Logodatei hochgeladen."
 
 #: ../templates/serverInfo.php:222
 msgid "Uptime"
@@ -14944,9 +14948,8 @@ msgid "Use Unix password"
 msgstr "Unix-Passwort verwenden"
 
 #: ../templates/selfService/adminMain.php:466 ../help/help.inc:228
-#, fuzzy
 msgid "Use for all operations"
-msgstr "Verwenden Sie * für alle Dienste."
+msgstr "Für alle Operationen verwenden"
 
 #: ../lib/modules/sambaSamAccount.inc:266
 #: ../lib/modules/sambaSamAccount.inc:269
@@ -14957,13 +14960,12 @@ msgid "Use no password"
 msgstr "Kein Passwort setzen"
 
 #: ../help/help.inc:256
-#, fuzzy
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. \"(cn!=admin)\") to reduce "
 "the number of entries to modify."
 msgstr ""
 "Mit dem zusätzlichen LDAP-Filter (z.B. \"(cn!=admin)\") können Sie die "
-"Anzahl sichtbarer Einträge für diesen Accounttyp reduzieren."
+"Anzahl zu editierender Einträge reduzieren."
 
 #: ../help/help.inc:159
 msgid ""
@@ -14974,14 +14976,13 @@ msgstr ""
 "Anzahl sichtbarer Einträge für diesen Accounttyp reduzieren."
 
 #: ../help/help.inc:227
-#, fuzzy
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. "
 "\"(objectClass=passwordSelfReset)\") to reduce the number of accounts who "
 "may use self service."
 msgstr ""
-"Mit dem zusätzlichen LDAP-Filter (z.B. \"(cn!=admin)\") können Sie die "
-"Anzahl sichtbarer Einträge für diesen Accounttyp reduzieren."
+"Mit dem zusätzlichen LDAP-Filter (z.B. \"(objectClass=passwordSelfReset)\") "
+"können Sie die Anzahl Einträge reduzieren die den SelfService nutzen dürfen."
 
 #: ../lib/modules/asteriskAccount.inc:181
 msgid "Use this to hide the caller ID."
@@ -15004,7 +15005,7 @@ msgstr ""
 
 #: ../lib/modules/pykotaBillingCode.inc:79
 msgid "Used balance for the billing code."
-msgstr ""
+msgstr "Verbrauchter Betrag für den Rechnungscode."
 
 #: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:393
 msgid "Used blocks"
@@ -15095,9 +15096,8 @@ msgid "User count: %s"
 msgstr "Anzahl Benutzer: %s"
 
 #: ../lib/modules/pykotaUser.inc:114
-#, fuzzy
 msgid "User description."
-msgstr "Hostbeschreibung"
+msgstr "Benutzerbeschreibung"
 
 #: ../lib/modules/posixAccount.inc:500
 msgid "User description. If left empty first and last name will be used."
@@ -15173,9 +15173,8 @@ msgstr "Benutzername"
 #: ../lib/modules/windowsUser.inc:464 ../lib/modules/windowsUser.inc:494
 #: ../lib/modules/windowsUser.inc:520 ../lib/modules/windowsUser.inc:623
 #: ../lib/modules/windowsUser.inc:1444
-#, fuzzy
 msgid "User name (pre W2K)"
-msgstr "Benutzername oder Email-Adresse"
+msgstr "Benutzername (vor W2K)"
 
 #: ../lib/modules/selfRegistration.inc:440 ../lib/modules/posixAccount.inc:121
 #: ../lib/modules/pykotaUser.inc:306 ../lib/modules/pykotaUser.inc:307
@@ -15254,7 +15253,7 @@ msgstr "Vorschlag für Benutzername"
 
 #: ../lib/modules/pykotaUser.inc:118
 msgid "User name that is used for PyKota."
-msgstr ""
+msgstr "Benutzername für PyKota."
 
 #: ../lib/modules/windowsUser.inc:677
 msgid "User profile"
@@ -15697,14 +15696,6 @@ msgstr ""
 "Attribut gleichen Namens ersetzt werden. Attribute mit mehreren Werten "
 "werden mit Komma getrennt aufgelöst."
 
-#: ../lib/modules/kolabSharedFolder.inc:247
-#, fuzzy
-msgid ""
-"You cannot add the Kolab group and shared folder extension at the same time."
-msgstr ""
-"Sie können die Zarafa- und Zarafa-Kontakt-Erweiterung nicht gleichzeitig "
-"aktivieren."
-
 #: ../lib/modules/zarafaContact.inc:184
 msgid ""
 "You cannot add the Zarafa and Zarafa contact extension at the same time."
@@ -15858,9 +15849,8 @@ msgstr ""
 "zurück um Ihre persönlichen Daten zu ändern."
 
 #: ../lib/modules/passwordSelfReset.inc:254
-#, fuzzy
 msgid "Your password was changed to @@newPassword@@."
-msgstr "Der Platzhalter für das neue Passwort ist @@newPassword@@."
+msgstr "Ihr Passwort wurde auf @@newPassword@@ geändert."
 
 #: ../lib/security.inc:181
 msgid "Your session expired, click here to go back to the login page."
@@ -15967,7 +15957,7 @@ msgstr "sichereRootDateisystem"
 
 #: ../lib/modules/pykotaBillingCode.inc:96
 msgid "billingCode01"
-msgstr ""
+msgstr "rechnungscode01"
 
 #: ../templates/3rdParty/pla/lib/functions.php:2298
 msgid "browse"
@@ -16261,12 +16251,11 @@ msgstr "Pixel"
 
 #: ../lib/modules/pykotaPrinter.inc:141
 msgid "printer01"
-msgstr ""
+msgstr "drucker01"
 
 #: ../lib/modules/pykotaPrinter.inc:181
-#, fuzzy
 msgid "printergroup1"
-msgstr "Primäre Gruppe"
+msgstr "druckergruppe1"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:54
 msgid "read only"
@@ -16419,6 +16408,16 @@ msgstr "mit"
 #: ../lib/modules/fixed_ip.inc:568
 msgid "yes"
 msgstr "ja"
+
+#~ msgid ""
+#~ "You cannot add the Kolab group and shared folder extension at the same "
+#~ "time."
+#~ msgstr ""
+#~ "Sie können die Kolab-Gruppen- und Kolab-GemeinsameOrdner-Erweiterung "
+#~ "nicht gleichzeitig aktivieren."
+
+#~ msgid "The IP address \"%s\" is invalid."
+#~ msgstr "Die IP-Adresse \"%s\" ist ungültig."
 
 #~ msgid ""
 #~ "Each line represents one LDAP attribute. The options are separated by \"::"

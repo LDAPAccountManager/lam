@@ -231,8 +231,8 @@ class kolabUser extends baseModule {
 		$this->messages['mailHost'][1] = array('ERROR', _('Account %s:') . ' kolabUser_mailHost', _('Mailbox home server name is invalid!'));
 		$this->messages['mailHost'][2] = array('ERROR', _('Mailbox home server name is empty!'));
 		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegates', _('Unknown delegate address: %s'));
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recepient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
 		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
 	}

@@ -463,7 +463,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'name' => 'inetOrgPerson_address',
 				'description' => _('Postal address'),
 				'help' => 'postalAddress',
-				'example' => _('Mycity')
+				'example' => _('MyCity')
 			);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
@@ -471,7 +471,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'name' => 'inetOrgPerson_registeredAddress',
 				'description' => _('Registered address'),
 				'help' => 'registeredAddress',
-				'example' => _('Mycity')
+				'example' => _('MyCity')
 			);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {

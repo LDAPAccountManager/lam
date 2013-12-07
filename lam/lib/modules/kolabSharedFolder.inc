@@ -240,11 +240,10 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 	* This function fills the $messages variable with output messages from this module.
 	*/
 	function load_Messages() {
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recepient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
 		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
-		$this->messages['extension'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_addExtension', _('You cannot add the Kolab group and shared folder extension at the same time.'));
 		$this->messages['alias'][0] = array('ERROR', _('Email alias is invalid!'));  // third array value is set dynamically
 		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_aliases', _('Email alias list has invalid format!'));
 		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_delegates', _('Unknown delegate address: %s'));

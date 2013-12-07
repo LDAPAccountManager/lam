@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LAM\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
-"PO-Revision-Date: 2013-11-30 23:02+0100\n"
+"PO-Revision-Date: 2013-12-07 17:46+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -374,11 +374,10 @@ msgstr "Account"
 #: ../lib/modules/sudoRole.inc:230 ../lib/modules/sudoRole.inc:232
 #: ../lib/modules/sudoRole.inc:234 ../lib/modules/kolabSharedFolder.inc:244
 #: ../lib/modules/kolabSharedFolder.inc:246
-#: ../lib/modules/kolabSharedFolder.inc:247
+#: ../lib/modules/kolabSharedFolder.inc:248
 #: ../lib/modules/kolabSharedFolder.inc:249
-#: ../lib/modules/kolabSharedFolder.inc:250
-#: ../lib/modules/kolabSharedFolder.inc:252
-#: ../lib/modules/kolabSharedFolder.inc:254
+#: ../lib/modules/kolabSharedFolder.inc:251
+#: ../lib/modules/kolabSharedFolder.inc:253
 #: ../lib/modules/zarafaServer.inc:167 ../lib/modules/zarafaServer.inc:169
 #: ../lib/modules/zarafaServer.inc:171 ../lib/modules/zarafaServer.inc:172
 #: ../lib/modules/asteriskVoicemail.inc:208
@@ -1089,11 +1088,10 @@ msgstr "Allowed hosts"
 #: ../lib/modules/kolabSharedFolder.inc:201
 #: ../lib/modules/kolabSharedFolder.inc:227
 #: ../lib/modules/kolabSharedFolder.inc:243
-#: ../lib/modules/kolabSharedFolder.inc:301
-#: ../lib/modules/kolabSharedFolder.inc:569
-#, fuzzy
-msgid "Allowed recepients"
-msgstr "Allowed recepients"
+#: ../lib/modules/kolabSharedFolder.inc:300
+#: ../lib/modules/kolabSharedFolder.inc:568
+msgid "Allowed recipients"
+msgstr "Allowed recipients"
 
 #: ../lib/modules/kolabGroup.inc:97 ../lib/modules/kolabGroup.inc:101
 #: ../lib/modules/kolabGroup.inc:140 ../lib/modules/kolabGroup.inc:158
@@ -1107,8 +1105,8 @@ msgstr "Allowed recepients"
 #: ../lib/modules/kolabSharedFolder.inc:207
 #: ../lib/modules/kolabSharedFolder.inc:228
 #: ../lib/modules/kolabSharedFolder.inc:245
-#: ../lib/modules/kolabSharedFolder.inc:303
-#: ../lib/modules/kolabSharedFolder.inc:570
+#: ../lib/modules/kolabSharedFolder.inc:302
+#: ../lib/modules/kolabSharedFolder.inc:569
 msgid "Allowed senders"
 msgstr "Allowed senders"
 
@@ -1651,6 +1649,7 @@ msgstr "Beijing, Perth, Singapore"
 #: ../lib/modules/pykotaBillingCode.inc:108
 #: ../lib/modules/pykotaBillingCode.inc:120
 #: ../lib/modules/pykotaBillingCode.inc:122
+#: ../lib/modules/pykotaBillingCode.inc:134
 #: ../lib/modules/pykotaBillingCode.inc:256
 msgid "Billing code"
 msgstr "Billing code"
@@ -1689,10 +1688,6 @@ msgstr ""
 #: ../lib/types/pykotaBillingCodeType.inc:53
 msgid "Billing codes"
 msgstr "Billing codes"
-
-#: ../lib/modules/pykotaBillingCode.inc:134
-msgid "BillingCode"
-msgstr "BillingCode"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:644
 #: ../templates/3rdParty/pla/lib/PageRender.php:648
@@ -1934,7 +1929,7 @@ msgstr "Can call forward"
 #: ../lib/modules/kolabUser.inc:476 ../lib/modules/sambaGroupMapping.inc:483
 #: ../lib/modules/shadowAccount.inc:471 ../lib/modules/nisnetgroup.inc:483
 #: ../lib/modules/inetOrgPerson.inc:1681 ../lib/modules/freeRadius.inc:424
-#: ../lib/modules/kolabSharedFolder.inc:428 ../lib/modules/aliasEntry.inc:140
+#: ../lib/modules/kolabSharedFolder.inc:427 ../lib/modules/aliasEntry.inc:140
 #: ../lib/modules/aliasEntry.inc:160 ../lib/modules/qmailGroup.inc:816
 #: ../lib/modules/heimdalKerberos.inc:593 ../lib/modules/windowsGroup.inc:429
 #: ../lib/modules/windowsGroup.inc:481 ../lib/modules/groupOfNames.inc:368
@@ -2882,8 +2877,8 @@ msgstr ""
 #: ../lib/modules/kolabSharedFolder.inc:135
 #: ../lib/modules/kolabSharedFolder.inc:219
 #: ../lib/modules/kolabSharedFolder.inc:230
-#: ../lib/modules/kolabSharedFolder.inc:314
-#: ../lib/modules/kolabSharedFolder.inc:572
+#: ../lib/modules/kolabSharedFolder.inc:313
+#: ../lib/modules/kolabSharedFolder.inc:571
 msgid "Delegates"
 msgstr "Delegates"
 
@@ -3383,7 +3378,7 @@ msgid "Do you really want to delete this profile?"
 msgstr "Do you really want to delete this profile?"
 
 #: ../lib/modules/kolabGroup.inc:278 ../lib/modules/kolabUser.inc:471
-#: ../lib/modules/kolabSharedFolder.inc:419
+#: ../lib/modules/kolabSharedFolder.inc:418
 msgid "Do you really want to mark this account for deletion?"
 msgstr "Do you really want to mark this account for deletion?"
 
@@ -3650,9 +3645,9 @@ msgstr "Email"
 #: ../lib/modules/kolabSharedFolder.inc:109
 #: ../lib/modules/kolabSharedFolder.inc:174
 #: ../lib/modules/kolabSharedFolder.inc:232
-#: ../lib/modules/kolabSharedFolder.inc:253
-#: ../lib/modules/kolabSharedFolder.inc:275
-#: ../lib/modules/kolabSharedFolder.inc:566
+#: ../lib/modules/kolabSharedFolder.inc:252
+#: ../lib/modules/kolabSharedFolder.inc:274
+#: ../lib/modules/kolabSharedFolder.inc:565
 #: ../lib/modules/asteriskVoicemail.inc:100
 #: ../lib/modules/asteriskVoicemail.inc:133
 #: ../lib/modules/asteriskVoicemail.inc:171
@@ -3708,7 +3703,7 @@ msgstr "Email alias for this account."
 #: ../lib/modules/zarafaContact.inc:178 ../lib/modules/zarafaContact.inc:179
 #: ../lib/modules/zarafaUser.inc:449 ../lib/modules/zarafaUser.inc:450
 #: ../lib/modules/windowsUser.inc:536 ../lib/modules/windowsUser.inc:537
-#: ../lib/modules/kolabUser.inc:228 ../lib/modules/kolabSharedFolder.inc:248
+#: ../lib/modules/kolabUser.inc:228 ../lib/modules/kolabSharedFolder.inc:247
 msgid "Email alias is invalid!"
 msgstr "Email alias is invalid!"
 
@@ -3716,7 +3711,7 @@ msgstr "Email alias is invalid!"
 msgid "Email alias list"
 msgstr "Email alias list"
 
-#: ../lib/modules/kolabUser.inc:229 ../lib/modules/kolabSharedFolder.inc:249
+#: ../lib/modules/kolabUser.inc:229 ../lib/modules/kolabSharedFolder.inc:248
 msgid "Email alias list has invalid format!"
 msgstr "Email alias list has invalid format!"
 
@@ -3740,8 +3735,8 @@ msgstr "Email alias list has invalid format!"
 #: ../lib/modules/kolabUser.inc:214 ../lib/modules/kolabUser.inc:320
 #: ../lib/modules/kolabUser.inc:699 ../lib/modules/kolabSharedFolder.inc:213
 #: ../lib/modules/kolabSharedFolder.inc:229
-#: ../lib/modules/kolabSharedFolder.inc:306
-#: ../lib/modules/kolabSharedFolder.inc:571
+#: ../lib/modules/kolabSharedFolder.inc:305
+#: ../lib/modules/kolabSharedFolder.inc:570
 msgid "Email aliases"
 msgstr "Email aliases"
 
@@ -6729,9 +6724,9 @@ msgstr "Mailbox does not exist on IMAP server."
 #: ../lib/modules/kolabSharedFolder.inc:147
 #: ../lib/modules/kolabSharedFolder.inc:181
 #: ../lib/modules/kolabSharedFolder.inc:231
-#: ../lib/modules/kolabSharedFolder.inc:278
-#: ../lib/modules/kolabSharedFolder.inc:281
-#: ../lib/modules/kolabSharedFolder.inc:567
+#: ../lib/modules/kolabSharedFolder.inc:277
+#: ../lib/modules/kolabSharedFolder.inc:280
+#: ../lib/modules/kolabSharedFolder.inc:566
 msgid "Mailbox home server"
 msgstr "Mailbox home server"
 
@@ -6740,8 +6735,8 @@ msgid "Mailbox home server name is empty!"
 msgstr "Mailbox home server name is empty!"
 
 #: ../lib/modules/kolabUser.inc:230 ../lib/modules/kolabUser.inc:231
+#: ../lib/modules/kolabSharedFolder.inc:250
 #: ../lib/modules/kolabSharedFolder.inc:251
-#: ../lib/modules/kolabSharedFolder.inc:252
 msgid "Mailbox home server name is invalid!"
 msgstr "Mailbox home server name is invalid!"
 
@@ -6754,57 +6749,46 @@ msgid "Mails to this name are forwarded to the recipients."
 msgstr "Mails to this name are forwarded to the recipients."
 
 #: ../templates/pdfedit/pdfpage.php:367 ../templates/pdfedit/pdfpage.php:678
-#, fuzzy
 msgid "Main"
 msgstr "Main"
 
 #: ../templates/selfService/adminMain.php:496 ../help/help.inc:214
-#, fuzzy
 msgid "Main page caption"
 msgstr "Main page caption"
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:79
-#, fuzzy
 msgid "Make sure your filter (above) will select all child records."
 msgstr "Make sure your filter (above) will select all child records."
 
 #: ../lib/modules/inetOrgPerson.inc:1521
-#, fuzzy
 msgid "Manage"
 msgstr "Manage"
 
 #: ../templates/pdfedit/pdfmain.php:188
-#, fuzzy
 msgid "Manage existing PDF structures"
 msgstr "Manage existing PDF structures"
 
 #: ../templates/profedit/profilemain.php:173
-#, fuzzy
 msgid "Manage existing profiles"
 msgstr "Manage existing profiles"
 
 #: ../templates/pdfedit/pdfmain.php:230
-#, fuzzy
 msgid "Manage logos"
 msgstr "Manage logos"
 
 #: ../lib/modules/kolabUser.inc:104 ../lib/modules/kolabUser.inc:162
-#, fuzzy
 msgid "Manage object class \"mailrecipient\""
 msgstr "Manage object class \"mailrecipient\""
 
 #: ../lib/modules/sambaSamAccount.inc:1217
-#, fuzzy
 msgid "Manage profile directory"
 msgstr "Manage profile directory"
 
 #: ../templates/selfService/adminLogin.php:182
-#, fuzzy
 msgid "Manage self service profiles"
 msgstr "Manage self service profiles"
 
 #: ../templates/config/conflogin.php:187
-#, fuzzy
 msgid "Manage server profiles"
 msgstr "Manage server profiles"
 
@@ -6814,12 +6798,10 @@ msgstr "Manage server profiles"
 #: ../lib/modules/windowsGroup.inc:151 ../lib/modules/windowsGroup.inc:209
 #: ../lib/modules/windowsGroup.inc:227 ../lib/modules/windowsGroup.inc:303
 #: ../lib/modules/windowsGroup.inc:704
-#, fuzzy
 msgid "Managed by"
 msgstr "Managed by"
 
 #: ../templates/serverInfo.php:105
-#, fuzzy
 msgid "Managed suffixes"
 msgstr "Managed suffixes"
 
@@ -6829,27 +6811,22 @@ msgstr "Managed suffixes"
 #: ../lib/modules/inetOrgPerson.inc:432 ../lib/modules/inetOrgPerson.inc:676
 #: ../lib/modules/inetOrgPerson.inc:727 ../lib/modules/inetOrgPerson.inc:731
 #: ../lib/modules/inetOrgPerson.inc:1527 ../lib/modules/inetOrgPerson.inc:1857
-#, fuzzy
 msgid "Manager"
 msgstr "Manager"
 
 #: ../lib/tools/ouEditor.inc:53
-#, fuzzy
 msgid "Manages OU objects in your LDAP tree."
 msgstr "Manages OU objects in your LDAP tree."
 
 #: ../lib/modules/kolabUser.inc:52
-#, fuzzy
 msgid "Manual"
 msgstr "Manual"
 
 #: ../lib/modules/kolabUser.inc:54
-#, fuzzy
 msgid "Manual if conflicts"
 msgstr "Manual if conflicts"
 
 #: ../lib/modules/customScripts.inc:165
-#, fuzzy
 msgid "Manual scripts"
 msgstr "Manual scripts"
 
@@ -6857,12 +6834,10 @@ msgstr "Manual scripts"
 #: ../lib/modules/nisObject.inc:89 ../lib/modules/nisObject.inc:105
 #: ../lib/modules/nisObject.inc:116 ../lib/modules/nisObject.inc:142
 #: ../lib/modules/nisObject.inc:211
-#, fuzzy
 msgid "Mapping entry"
 msgstr "Mapping entry"
 
 #: ../lib/modules/nisObject.inc:116 ../lib/modules/nisObject.inc:117
-#, fuzzy
 msgid ""
 "Mapping entry contains invalid characters. Only ASCII characters are allowed."
 msgstr ""
@@ -6871,26 +6846,22 @@ msgstr ""
 #: ../lib/types/nisObjectType.inc:79 ../lib/modules/nisObject.inc:62
 #: ../lib/modules/nisObject.inc:82 ../lib/modules/nisObject.inc:106
 #: ../lib/modules/nisObject.inc:136 ../lib/modules/nisObject.inc:212
-#, fuzzy
 msgid "Mapping name"
 msgstr "Mapping name"
 
 #: ../lib/modules/kolabGroup.inc:206 ../lib/modules/kolabGroup.inc:286
 #: ../lib/modules/kolabUser.inc:357 ../lib/modules/kolabUser.inc:475
-#: ../lib/modules/kolabSharedFolder.inc:339
-#: ../lib/modules/kolabSharedFolder.inc:427
-#, fuzzy
+#: ../lib/modules/kolabSharedFolder.inc:338
+#: ../lib/modules/kolabSharedFolder.inc:426
 msgid "Mark account for deletion"
 msgstr "Mark account for deletion"
 
 #: ../lib/modules/kolabGroup.inc:106 ../lib/modules/kolabUser.inc:166
 #: ../lib/modules/kolabSharedFolder.inc:159
-#, fuzzy
 msgid "Mark for deletion"
 msgstr "Mark for deletion"
 
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:44
-#, fuzzy
 msgid "Mass delete"
 msgstr "Mass delete"
 
@@ -6900,7 +6871,6 @@ msgstr "Mass delete"
 #: ../templates/pdfedit/pdfmain.php:288 ../templates/pdfedit/pdfmain.php:335
 #: ../templates/profedit/profilemain.php:255
 #: ../templates/profedit/profilemain.php:303 ../help/help.inc:138
-#, fuzzy
 msgid "Master password"
 msgstr "Master password"
 
@@ -6909,79 +6879,65 @@ msgstr "Master password"
 #: ../templates/pdfedit/pdfmain.php:106 ../templates/pdfedit/pdfmain.php:114
 #: ../templates/profedit/profilemain.php:121
 #: ../templates/profedit/profilemain.php:129
-#, fuzzy
 msgid "Master password is wrong!"
 msgstr "Master password is wrong!"
 
 #: ../templates/config/mainmanage.php:82
-#, fuzzy
 msgid "Master passwords are different or empty!"
 msgstr "Master passwords are different or empty!"
 
 #: ../templates/schema/schema.php:268
-#, fuzzy
 msgid "Matching rule OID"
 msgstr "Matching rule OID"
 
 #: ../templates/schema/schema.php:77 ../templates/schema/schema.php:78
-#, fuzzy
 msgid "Matching rules"
 msgstr "Matching rules"
 
 #: ../templates/serverInfo.php:173
-#, fuzzy
 msgid "Max. file descriptors"
 msgstr "Max. file descriptors"
 
 #: ../lib/modules/posixGroup.inc:396 ../lib/modules/posixGroup.inc:581
 #: ../lib/modules/posixGroup.inc:582
-#, fuzzy
 msgid "Maximum GID number"
 msgstr "Maximum GID number"
 
 #: ../lib/modules/posixGroup.inc:581
-#, fuzzy
 msgid "Maximum GID number is invalid or empty!"
 msgstr "Maximum GID number is invalid or empty!"
 
 #: ../lib/modules/posixGroup.inc:582
-#, fuzzy
 msgid "Maximum GID number must be greater than minimum GID number!"
 msgstr "Maximum GID number must be greater than minimum GID number!"
 
 #: ../lib/modules/posixAccount.inc:94 ../lib/modules/posixAccount.inc:96
 #: ../lib/modules/posixAccount.inc:97 ../lib/modules/posixAccount.inc:98
 #: ../lib/modules/posixAccount.inc:214 ../lib/modules/posixAccount.inc:232
-#, fuzzy
 msgid "Maximum UID number"
 msgstr "Maximum UID number"
 
 #: ../lib/modules/posixAccount.inc:94 ../lib/modules/posixAccount.inc:96
-#, fuzzy
 msgid "Maximum UID number is invalid!"
 msgstr "Maximum UID number is invalid!"
 
 #: ../lib/modules/posixAccount.inc:97 ../lib/modules/posixAccount.inc:98
-#, fuzzy
 msgid "Maximum UID number must be greater than minimum UID number!"
 msgstr "Maximum UID number must be greater than minimum UID number!"
 
 #: ../lib/types/ppolicyType.inc:84 ../lib/modules/ppolicy.inc:101
 #: ../lib/modules/ppolicy.inc:145 ../lib/modules/ppolicy.inc:165
 #: ../lib/modules/ppolicy.inc:265 ../lib/modules/ppolicy.inc:470
-#, fuzzy
 msgid "Maximum failure count"
 msgstr "Maximum failure count"
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:128
 #: ../templates/3rdParty/pla/htdocs/import_form.php:36
 #: ../lib/modules/customFields.inc:145 ../lib/modules/customFields.inc:2902
-#, fuzzy
 msgid "Maximum file size"
 msgstr "Maximum file size"
 
 #: ../lib/modules/customFields.inc:2934
-#, fuzzy
 msgid "Maximum file size must be a number. Please enter 0 for no limit."
 msgstr "Maximum file size must be a number. Please enter 0 for no limit."
 
@@ -6989,29 +6945,24 @@ msgstr "Maximum file size must be a number. Please enter 0 for no limit."
 #: ../lib/modules/pykotaPrinter.inc:128 ../lib/modules/pykotaPrinter.inc:152
 #: ../lib/modules/pykotaPrinter.inc:188 ../lib/modules/pykotaPrinter.inc:206
 #: ../lib/modules/pykotaPrinter.inc:226 ../lib/modules/pykotaPrinter.inc:592
-#, fuzzy
 msgid "Maximum job size"
 msgstr "Maximum job size"
 
 #: ../lib/modules/dhcp_settings.inc:150 ../lib/modules/dhcp_settings.inc:203
 #: ../lib/modules/dhcp_settings.inc:218 ../lib/modules/dhcp_settings.inc:255
 #: ../lib/modules/dhcp_settings.inc:566 ../lib/modules/dhcp_settings.inc:669
-#, fuzzy
 msgid "Maximum lease time"
 msgstr "Maximum lease time"
 
 #: ../templates/schema/schema.php:214
-#, fuzzy
 msgid "Maximum length"
 msgstr "Maximum length"
 
 #: ../lib/lists.inc:1004 ../help/help.inc:95
-#, fuzzy
 msgid "Maximum list entries"
 msgstr "Maximum list entries"
 
 #: ../lib/modules/asteriskAccount.inc:189
-#, fuzzy
 msgid ""
 "Maximum number of seconds of inactivity before terminating a call on hold."
 msgstr ""
@@ -7028,7 +6979,6 @@ msgstr ""
 #: ../lib/modules/sambaDomain.inc:190 ../lib/modules/sambaDomain.inc:213
 #: ../lib/modules/sambaDomain.inc:215 ../lib/modules/sambaDomain.inc:325
 #: ../lib/modules/sambaDomain.inc:648
-#, fuzzy
 msgid "Maximum password age"
 msgstr "Maximum password age"
 
@@ -7036,7 +6986,6 @@ msgstr "Maximum password age"
 #: ../lib/modules/qmailGroup.inc:201 ../lib/modules/qmailGroup.inc:330
 #: ../lib/modules/qmailGroup.inc:395 ../lib/modules/qmailGroup.inc:418
 #: ../lib/modules/qmailGroup.inc:507 ../lib/modules/qmailGroup.inc:1060
-#, fuzzy
 msgid "Member email addresses"
 msgstr "Member email addresses"
 
@@ -7044,7 +6993,6 @@ msgstr "Member email addresses"
 #: ../lib/modules/qmailGroup.inc:153 ../lib/modules/qmailGroup.inc:272
 #: ../lib/modules/qmailGroup.inc:374 ../lib/modules/qmailGroup.inc:509
 #: ../lib/modules/qmailGroup.inc:776 ../lib/modules/qmailGroup.inc:1059
-#, fuzzy
 msgid "Member entries"
 msgstr "Member entries"
 
@@ -7052,7 +7000,6 @@ msgstr "Member entries"
 #: ../lib/modules/qmailGroup.inc:177 ../lib/modules/qmailGroup.inc:296
 #: ../lib/modules/qmailGroup.inc:383 ../lib/modules/qmailGroup.inc:508
 #: ../lib/modules/qmailGroup.inc:1061
-#, fuzzy
 msgid "Member filter"
 msgstr "Member filter"
 
@@ -7066,19 +7013,16 @@ msgstr "Member filter"
 #: ../lib/modules/groupOfNames.inc:144 ../lib/modules/groupOfNames.inc:152
 #: ../lib/modules/groupOfNames.inc:161 ../lib/modules/groupOfNames.inc:240
 #: ../lib/modules/groupOfNames.inc:546 ../lib/modules/groupOfNames.inc:711
-#, fuzzy
 msgid "Members"
 msgstr "Members"
 
 #: ../lib/modules/groupOfNames.inc:102 ../lib/modules/groupOfNames.inc:172
-#, fuzzy
 msgid "Members are optional"
 msgstr "Members are optional"
 
 #: ../lib/modules/qmailGroup.inc:87 ../lib/modules/qmailGroup.inc:189
 #: ../lib/modules/qmailGroup.inc:312 ../lib/modules/qmailGroup.inc:389
 #: ../lib/modules/qmailGroup.inc:610 ../lib/modules/qmailGroup.inc:1072
-#, fuzzy
 msgid "Members only"
 msgstr "Members only"
 
@@ -7086,7 +7030,6 @@ msgstr "Members only"
 #: ../lib/modules/qmailUser.inc:216 ../lib/modules/qmailUser.inc:309
 #: ../lib/modules/qmailUser.inc:405 ../lib/modules/qmailUser.inc:679
 #: ../lib/modules/qmailUser.inc:1192
-#, fuzzy
 msgid "Message count limit"
 msgstr "Message count limit"
 
@@ -7094,7 +7037,6 @@ msgstr "Message count limit"
 #: ../lib/modules/qmailUser.inc:220 ../lib/modules/qmailUser.inc:317
 #: ../lib/modules/qmailUser.inc:408 ../lib/modules/qmailUser.inc:690
 #: ../lib/modules/qmailUser.inc:1193
-#, fuzzy
 msgid "Message size limit"
 msgstr "Message size limit"
 
@@ -7104,70 +7046,57 @@ msgstr "Message size limit"
 #: ../lib/modules/qmailUser.inc:1196 ../lib/modules/qmailGroup.inc:132
 #: ../lib/modules/qmailGroup.inc:247 ../lib/modules/qmailGroup.inc:365
 #: ../lib/modules/qmailGroup.inc:501 ../lib/modules/qmailGroup.inc:1055
-#, fuzzy
 msgid "Message store"
 msgstr "Message store"
 
 #: ../lib/modules/sambaSamAccount.inc:555
-#, fuzzy
 msgid "Mid-Atlantic"
 msgstr "Mid-Atlantic"
 
 #: ../lib/modules/sambaSamAccount.inc:546
-#, fuzzy
 msgid "Midway Island, Samoa"
 msgstr "Midway Island, Samoa"
 
 #: ../lib/modules/windowsUser.inc:262 ../lib/modules/inetOrgPerson.inc:385
-#, fuzzy
 msgid "Miller"
 msgstr "Miller"
 
 #: ../lib/modules/sambaDomain.inc:94 ../lib/modules/sambaDomain.inc:183
 #: ../lib/modules/sambaDomain.inc:269 ../lib/modules/sambaDomain.inc:644
-#, fuzzy
 msgid "Minimal password length"
 msgstr "Minimal password length"
 
 #: ../lib/modules/posixGroup.inc:393 ../lib/modules/posixGroup.inc:580
-#, fuzzy
 msgid "Minimum GID number"
 msgstr "Minimum GID number"
 
 #: ../lib/modules/posixGroup.inc:580
-#, fuzzy
 msgid "Minimum GID number is invalid or empty!"
 msgstr "Minimum GID number is invalid or empty!"
 
 #: ../lib/modules/posixAccount.inc:93 ../lib/modules/posixAccount.inc:95
 #: ../lib/modules/posixAccount.inc:211 ../lib/modules/posixAccount.inc:229
-#, fuzzy
 msgid "Minimum UID number"
 msgstr "Minimum UID number"
 
 #: ../lib/modules/posixAccount.inc:93 ../lib/modules/posixAccount.inc:95
-#, fuzzy
 msgid "Minimum UID number is invalid!"
 msgstr "Minimum UID number is invalid!"
 
 #: ../lib/modules/passwordSelfReset.inc:81
 #: ../lib/modules/passwordSelfReset.inc:205
-#, fuzzy
 msgid "Minimum answer length"
 msgstr "Minimum answer length"
 
 #: ../templates/config/mainmanage.php:350
-#, fuzzy
 msgid "Minimum character classes"
 msgstr "Minimum character classes"
 
 #: ../templates/config/mainmanage.php:346
-#, fuzzy
 msgid "Minimum lowercase characters"
 msgstr "Minimum lowercase characters"
 
 #: ../templates/config/mainmanage.php:348
-#, fuzzy
 msgid "Minimum numeric characters"
 msgstr "Minimum numeric characters"
 
@@ -7180,7 +7109,6 @@ msgstr "Minimum numeric characters"
 #: ../lib/modules/ppolicy.inc:465 ../lib/modules/sambaDomain.inc:118
 #: ../lib/modules/sambaDomain.inc:189 ../lib/modules/sambaDomain.inc:214
 #: ../lib/modules/sambaDomain.inc:317 ../lib/modules/sambaDomain.inc:647
-#, fuzzy
 msgid "Minimum password age"
 msgstr "Minimum password age"
 
@@ -7188,34 +7116,28 @@ msgstr "Minimum password age"
 #: ../lib/modules/ppolicy.inc:113 ../lib/modules/ppolicy.inc:140
 #: ../lib/modules/ppolicy.inc:168 ../lib/modules/ppolicy.inc:243
 #: ../lib/modules/ppolicy.inc:473
-#, fuzzy
 msgid "Minimum password length"
 msgstr "Minimum password length"
 
 #: ../templates/config/mainmanage.php:349
-#, fuzzy
 msgid "Minimum symbolic characters"
 msgstr "Minimum symbolic characters"
 
 #: ../lib/modules/bindDLZ.inc:151 ../lib/modules/bindDLZ.inc:250
 #: ../lib/modules/bindDLZ.inc:312 ../lib/modules/bindDLZ.inc:385
 #: ../lib/modules/bindDLZ.inc:843 ../lib/modules/bindDLZ.inc:1129
-#, fuzzy
 msgid "Minimum time"
 msgstr "Minimum time"
 
 #: ../templates/config/mainmanage.php:347
-#, fuzzy
 msgid "Minimum uppercase characters"
 msgstr "Minimum uppercase characters"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:429
-#, fuzzy
 msgid "Missing attributes for"
 msgstr "Missing attributes for"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:443
-#, fuzzy
 msgid "Missing modify command add, delete or replace"
 msgstr "Missing modify command add, delete or replace"
 
@@ -7224,12 +7146,10 @@ msgstr "Missing modify command add, delete or replace"
 #: ../lib/modules/inetOrgPerson.inc:504 ../lib/modules/inetOrgPerson.inc:649
 #: ../lib/modules/inetOrgPerson.inc:775 ../lib/modules/inetOrgPerson.inc:779
 #: ../lib/modules/inetOrgPerson.inc:1391 ../lib/modules/inetOrgPerson.inc:1865
-#, fuzzy
 msgid "Mobile number"
 msgstr "Mobile number"
 
 #: ../lib/modules/inetOrgPerson.inc:2486
-#, fuzzy
 msgid "Mobile telephone number"
 msgstr "Mobile telephone number"
 
@@ -7237,7 +7157,6 @@ msgstr "Mobile telephone number"
 #: ../lib/modules/qmailGroup.inc:209 ../lib/modules/qmailGroup.inc:338
 #: ../lib/modules/qmailGroup.inc:398 ../lib/modules/qmailGroup.inc:420
 #: ../lib/modules/qmailGroup.inc:510 ../lib/modules/qmailGroup.inc:1063
-#, fuzzy
 msgid "Moderator email addresses"
 msgstr "Moderator email addresses"
 
@@ -7245,7 +7164,6 @@ msgstr "Moderator email addresses"
 #: ../lib/modules/qmailGroup.inc:161 ../lib/modules/qmailGroup.inc:280
 #: ../lib/modules/qmailGroup.inc:377 ../lib/modules/qmailGroup.inc:511
 #: ../lib/modules/qmailGroup.inc:779 ../lib/modules/qmailGroup.inc:1062
-#, fuzzy
 msgid "Moderator entries"
 msgstr "Moderator entries"
 
@@ -7253,12 +7171,10 @@ msgstr "Moderator entries"
 #: ../lib/modules/qmailGroup.inc:193 ../lib/modules/qmailGroup.inc:322
 #: ../lib/modules/qmailGroup.inc:392 ../lib/modules/qmailGroup.inc:596
 #: ../lib/modules/qmailGroup.inc:1058
-#, fuzzy
 msgid "Moderator text"
 msgstr "Moderator text"
 
 #: ../lib/modules/qmailGroup.inc:194
-#, fuzzy
 msgid ""
 "Moderator text that is used to specify an own approval text used if the list "
 "is moderated. The usual %HEADER% magic of qmail-reply etc. can be used here."
@@ -7267,50 +7183,41 @@ msgstr ""
 "is moderated. The usual %HEADER% magic of qmail-reply etc. can be used here."
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:61
-#, fuzzy
 msgid "Modification not successful!"
 msgstr "Modification not successful!"
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:59
-#, fuzzy
 msgid "Modification successful!"
 msgstr "Modification successful!"
 
 #: ../lib/modules/generalInformation.inc:85
-#, fuzzy
 msgid "Modification time"
 msgstr "Modification time"
 
 #: ../lib/modules/generalInformation.inc:81
-#, fuzzy
 msgid "Modified by"
 msgstr "Modified by"
 
 #: ../templates/serverInfo.php:314 ../templates/serverInfo.php:387
 #: ../templates/multiEdit.php:126
-#, fuzzy
 msgid "Modify"
 msgstr "Modify"
 
 #: ../templates/serverInfo.php:328 ../templates/serverInfo.php:393
-#, fuzzy
 msgid "Modify RDN"
 msgstr "Modify RDN"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:57
-#, fuzzy
 msgid "Modify group"
 msgstr "Modify group"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2110
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2111
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2114
-#, fuzzy
 msgid "Modify group members"
 msgstr "Modify group members"
 
 #: ../templates/3rdParty/pla/htdocs/import.php:32
-#, fuzzy
 msgid "Modifying"
 msgstr "Modifying"
 
@@ -7319,7 +7226,6 @@ msgstr "Modifying"
 #: ../templates/config/moduleSettings.php:175
 #: ../templates/config/conftypes.php:194
 #: ../templates/selfService/adminMain.php:432
-#, fuzzy
 msgid "Module settings"
 msgstr "Module settings"
 
@@ -7327,17 +7233,14 @@ msgstr "Module settings"
 #: ../templates/config/confmain.php:213
 #: ../templates/config/moduleSettings.php:171
 #: ../templates/config/conftypes.php:190
-#, fuzzy
 msgid "Modules"
 msgstr "Modules"
 
 #: ../lib/modules/sambaSamAccount.inc:1368
-#, fuzzy
 msgid "Monday"
 msgstr "Monday"
 
 #: ../lib/modules/sambaSamAccount.inc:550
-#, fuzzy
 msgid "Mountain Time (US & Canada)"
 msgstr "Mountain Time (US & Canada)"
 
@@ -7345,42 +7248,34 @@ msgstr "Mountain Time (US & Canada)"
 #: ../lib/modules/quota.inc:499 ../lib/modules/quota.inc:626
 #: ../lib/modules/systemQuotas.inc:90 ../lib/modules/systemQuotas.inc:115
 #: ../lib/modules/systemQuotas.inc:375
-#, fuzzy
 msgid "Mountpoint"
 msgstr "Mountpoint"
 
 #: ../lib/modules/systemQuotas.inc:90 ../lib/modules/systemQuotas.inc:91
-#, fuzzy
 msgid "Mountpoint contains invalid characters."
 msgstr "Mountpoint contains invalid characters."
 
 #: ../lib/modules/quota.inc:99
-#, fuzzy
 msgid "Mountpoint of device with enabled quotas."
 msgstr "Mountpoint of device with enabled quotas."
 
 #: ../lib/modules/customFields.inc:589
-#, fuzzy
 msgid "Move down"
 msgstr "Move down"
 
 #: ../lib/modules/customFields.inc:583
-#, fuzzy
 msgid "Move up"
 msgstr "Move up"
 
 #: ../templates/multiEdit.php:78 ../lib/tools/multiEdit.inc:44
-#, fuzzy
 msgid "Multi edit"
 msgstr "Multi edit"
 
 #: ../lib/modules/customFields.inc:1750 ../lib/modules/customFields.inc:2907
-#, fuzzy
 msgid "Multi value"
 msgstr "Multi value"
 
 #: ../lib/modules/customFields.inc:2770
-#, fuzzy
 msgid "Multi-select fields must not contain empty values."
 msgstr "Multi-select fields must not contain empty values."
 
@@ -7392,7 +7287,6 @@ msgstr "Multi-select fields must not contain empty values."
 #: ../lib/modules/sudoRole.inc:89 ../lib/modules/sudoRole.inc:94
 #: ../lib/modules/sudoRole.inc:99 ../lib/modules/sudoRole.inc:104
 #: ../lib/modules/sudoRole.inc:109 ../lib/modules/sudoRole.inc:114
-#, fuzzy
 msgid "Multiple values are separated by comma."
 msgstr "Multiple values are separated by comma."
 
@@ -7425,7 +7319,6 @@ msgstr "Multiple values are separated by comma."
 #: ../lib/modules/qmailGroup.inc:186 ../lib/modules/qmailGroup.inc:202
 #: ../lib/modules/qmailGroup.inc:210 ../lib/modules/qmailGroup.inc:218
 #: ../lib/modules/groupOfNames.inc:91
-#, fuzzy
 msgid "Multiple values are separated by semicolon."
 msgstr "Multiple values are separated by semicolon."
 
@@ -7435,29 +7328,21 @@ msgstr "Multiple values are separated by semicolon."
 #: ../lib/modules/asteriskAccount.inc:550
 #: ../lib/modules/asteriskAccount.inc:781
 #: ../lib/modules/asteriskAccount.inc:1070
-#, fuzzy
 msgid "Music on hold"
 msgstr "Music on hold"
 
 #: ../lib/modules/asteriskAccount.inc:201
-#, fuzzy
 msgid "Music to play on hold."
 msgstr "Music to play on hold."
 
 #: ../lib/modules/ipHost.inc:86 ../lib/modules/windowsHost.inc:101
 #: ../lib/modules/device.inc:104 ../lib/modules/windowsUser.inc:310
+#: ../lib/modules/inetOrgPerson.inc:466 ../lib/modules/inetOrgPerson.inc:474
 #: ../lib/modules/inetOrgPerson.inc:580
-#, fuzzy
 msgid "MyCity"
 msgstr "MyCity"
 
-#: ../lib/modules/inetOrgPerson.inc:466 ../lib/modules/inetOrgPerson.inc:474
-#, fuzzy
-msgid "Mycity"
-msgstr "Mycity"
-
 #: ../lib/modules/windowsUser.inc:292 ../lib/modules/inetOrgPerson.inc:450
-#, fuzzy
 msgid "Mystreetname 42"
 msgstr "Mystreetname 42"
 
@@ -7467,53 +7352,44 @@ msgstr "Mystreetname 42"
 #: ../lib/modules/asteriskAccount.inc:470
 #: ../lib/modules/asteriskAccount.inc:733
 #: ../lib/modules/asteriskAccount.inc:1059
-#, fuzzy
 msgid "NAT"
 msgstr "NAT"
 
 #: ../lib/modules/asteriskAccount.inc:157
-#, fuzzy
 msgid "NAT setting for this account."
 msgstr "NAT setting for this account."
 
 #: ../lib/modules/nisnetgroup.inc:60
-#, fuzzy
 msgid "NIS net group"
 msgstr "NIS net group"
 
 #: ../lib/types/netgroup.inc:62
-#, fuzzy
 msgid "NIS netgroup entries"
 msgstr "NIS netgroup entries"
 
 #: ../lib/types/netgroup.inc:53
-#, fuzzy
 msgid "NIS netgroups"
 msgstr "NIS netgroups"
 
 #: ../lib/modules/nisObject.inc:40
-#, fuzzy
 msgid "NIS object"
 msgstr "NIS object"
 
 #: ../lib/types/nisObjectType.inc:155
-#, fuzzy, php-format
+#, php-format
 msgid "NIS object count: %s"
 msgstr "NIS object count: %s"
 
 #: ../lib/types/nisObjectType.inc:48
-#, fuzzy
 msgid "NIS object entries"
 msgstr "NIS object entries"
 
 #: ../lib/types/nisObjectType.inc:39
-#, fuzzy
 msgid "NIS objects"
 msgstr "NIS objects"
 
 #: ../lib/modules/bindDLZ.inc:102 ../lib/modules/bindDLZ.inc:288
 #: ../lib/modules/bindDLZ.inc:294 ../lib/modules/bindDLZ.inc:362
-#, fuzzy
 msgid "NS record"
 msgstr "NS record"
 
@@ -7534,39 +7410,33 @@ msgstr "NS record"
 #: ../lib/modules/kolabSharedFolder.inc:105
 #: ../lib/modules/kolabSharedFolder.inc:167
 #: ../lib/modules/kolabSharedFolder.inc:226
-#: ../lib/modules/kolabSharedFolder.inc:255
-#: ../lib/modules/kolabSharedFolder.inc:273
-#: ../lib/modules/kolabSharedFolder.inc:565
+#: ../lib/modules/kolabSharedFolder.inc:254
+#: ../lib/modules/kolabSharedFolder.inc:272
+#: ../lib/modules/kolabSharedFolder.inc:564
 #: ../lib/modules/asteriskExtension.inc:815 ../lib/modules/customFields.inc:77
 #: ../lib/modules/customFields.inc:995 ../lib/modules/customFields.inc:1538
 #: ../lib/modules/groupOfNames.inc:225
-#, fuzzy
 msgid "Name"
 msgstr "Name"
 
 #: ../lib/modules/zarafaAddressList.inc:57
-#, fuzzy
 msgid "Name of the address list which should be created."
 msgstr "Name of the address list which should be created."
 
 #: ../lib/modules/bindDLZ.inc:127 ../lib/modules/bindDLZ.inc:288
 #: ../lib/modules/bindDLZ.inc:375 ../lib/modules/bindDLZ.inc:985
-#, fuzzy
 msgid "Name server"
 msgstr "Name server"
 
 #: ../lib/modules/bindDLZ.inc:316 ../lib/modules/bindDLZ.inc:1146
-#, fuzzy
 msgid "Name servers"
 msgstr "Name servers"
 
 #: ../lib/modules/bindDLZ.inc:983
-#, fuzzy
 msgid "Name servers (\"NS\" records)"
 msgstr "Name servers (\"NS\" records)"
 
 #: ../help/help.inc:175
-#, fuzzy
 msgid ""
 "Name under which the profile will be saved. If a profile with the same name "
 "exists, it will be overwritten."
@@ -7575,7 +7445,6 @@ msgstr ""
 "exists, it will be overwritten."
 
 #: ../lib/modules/namedObject.inc:38
-#, fuzzy
 msgid "Named object"
 msgstr "Named object"
 
@@ -7585,94 +7454,77 @@ msgstr "Named object"
 #: ../lib/modules/freeRadius.inc:131 ../lib/modules/freeRadius.inc:194
 #: ../lib/modules/freeRadius.inc:221 ../lib/modules/freeRadius.inc:278
 #: ../lib/modules/freeRadius.inc:563
-#, fuzzy
 msgid "Net mask"
 msgstr "Net mask"
 
 #: ../lib/modules/dhcp_settings.inc:162 ../lib/modules/dhcp_settings.inc:206
 #: ../lib/modules/dhcp_settings.inc:221 ../lib/modules/dhcp_settings.inc:273
 #: ../lib/modules/dhcp_settings.inc:574 ../lib/modules/dhcp_settings.inc:672
-#, fuzzy
 msgid "Netbios name servers"
 msgstr "Netbios name servers"
 
 #: ../lib/modules/dhcp_settings.inc:166 ../lib/modules/dhcp_settings.inc:207
 #: ../lib/modules/dhcp_settings.inc:223 ../lib/modules/dhcp_settings.inc:279
 #: ../lib/modules/dhcp_settings.inc:584 ../lib/modules/dhcp_settings.inc:673
-#, fuzzy
 msgid "Netbios node type"
 msgstr "Netbios node type"
 
 #: ../lib/types/dhcp.inc:118 ../lib/types/dhcp.inc:172
-#, fuzzy
 msgid "New DHCP"
 msgstr "New DHCP"
 
 #: ../lib/types/bind.inc:100 ../lib/types/bind.inc:161
-#, fuzzy
 msgid "New DNS entry"
 msgstr "New DNS entry"
 
 #: ../lib/types/nisObjectType.inc:102 ../lib/types/nisObjectType.inc:157
-#, fuzzy
 msgid "New NIS object"
 msgstr "New NIS object"
 
 #: ../templates/ou_edit.php:77
-#, fuzzy
 msgid "New OU created successfully."
 msgstr "New OU created successfully."
 
 #: ../lib/modules/windowsUser.inc:316 ../lib/modules/inetOrgPerson.inc:588
-#, fuzzy
 msgid "New York"
 msgstr "New York"
 
 #: ../lib/types/zarafaAddressListType.inc:117
 #: ../lib/types/zarafaAddressListType.inc:146
-#, fuzzy
 msgid "New address list"
 msgstr "New address list"
 
 #: ../lib/types/mailAlias.inc:114 ../lib/types/mailAlias.inc:143
 #: ../lib/types/alias.inc:114 ../lib/types/alias.inc:143
-#, fuzzy
 msgid "New alias"
 msgstr "New alias"
 
 #: ../lib/types/automountType.inc:110 ../lib/types/automountType.inc:217
-#, fuzzy
 msgid "New automount entry"
 msgstr "New automount entry"
 
 #: ../lib/types/automountType.inc:233 ../lib/types/automountType.inc:234
-#, fuzzy
 msgid "New automount map"
 msgstr "New automount map"
 
 #: ../lib/types/pykotaBillingCodeType.inc:116
 #: ../lib/types/pykotaBillingCodeType.inc:165
-#, fuzzy
 msgid "New billing code"
 msgstr "New billing code"
 
 #: ../templates/config/profmanage.php:146
-#, fuzzy
 msgid "New default profile set successfully."
 msgstr "New default profile set successfully."
 
 #: ../lib/types/smbDomain.inc:114 ../lib/types/smbDomain.inc:169
-#, fuzzy
 msgid "New domain"
 msgstr "New domain"
 
 #: ../lib/types/asteriskExt.inc:117 ../lib/types/asteriskExt.inc:145
-#, fuzzy
 msgid "New extension"
 msgstr "New extension"
 
 #: ../templates/pdfedit/pdfpage.php:620
-#, fuzzy
 msgid "New field"
 msgstr "New field"
 
@@ -7681,37 +7533,30 @@ msgstr "New field"
 #: ../lib/types/zarafaDynamicGroupType.inc:167 ../lib/types/group.inc:138
 #: ../lib/types/group.inc:212 ../lib/types/netgroup.inc:116
 #: ../lib/types/netgroup.inc:171
-#, fuzzy
 msgid "New group"
 msgstr "New group"
 
 #: ../lib/types/host.inc:128 ../lib/types/host.inc:195
-#, fuzzy
 msgid "New host"
 msgstr "New host"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:160
-#, fuzzy
 msgid "New local address"
 msgstr "New local address"
 
 #: ../templates/config/mainmanage.php:404
-#, fuzzy
 msgid "New master password"
 msgstr "New master password"
 
 #: ../templates/config/mainmanage.php:79
-#, fuzzy
 msgid "New master password set successfully."
 msgstr "New master password set successfully."
 
 #: ../lib/lists.inc:114
-#, fuzzy
 msgid "New object"
 msgstr "New object"
 
 #: ../templates/ou_edit.php:183 ../help/help.inc:247
-#, fuzzy
 msgid "New organisational unit"
 msgstr "New organisational unit"
 
@@ -7719,140 +7564,115 @@ msgstr "New organisational unit"
 #: ../lib/modules/sambaSamAccount.inc:2308
 #: ../lib/modules/posixAccount.inc:2435 ../lib/modules/windowsUser.inc:1562
 #: ../lib/modules/passwordSelfReset.inc:957
-#, fuzzy
 msgid "New password"
 msgstr "New password"
 
 #: ../templates/config/profmanage.php:133
-#, fuzzy
 msgid "New password set successfully."
 msgstr "New password set successfully."
 
 #: ../lib/types/ppolicyType.inc:122 ../lib/types/ppolicyType.inc:151
-#, fuzzy
 msgid "New policy"
 msgstr "New policy"
 
 #: ../lib/types/pykotaPrinterType.inc:117
 #: ../lib/types/pykotaPrinterType.inc:166
-#, fuzzy
 msgid "New printer"
 msgstr "New printer"
 
 #: ../templates/config/profmanage.php:260
 #: ../templates/selfService/profManage.php:222
-#, fuzzy
 msgid "New profile name"
 msgstr "New profile name"
 
 #: ../lib/modules/range.inc:94 ../lib/modules/range.inc:108
 #: ../lib/modules/range.inc:446
-#, fuzzy
 msgid "New range"
 msgstr "New range"
 
 #: ../lib/modules/nisMailAlias.inc:177
-#, fuzzy
 msgid "New recipient"
 msgstr "New recipient"
 
 #: ../templates/3rdParty/pla/htdocs/add_oclass_form.php:81
-#, fuzzy
 msgid "New required attributes"
 msgstr "New required attributes"
 
 #: ../templates/pdfedit/pdfpage.php:588
-#, fuzzy
 msgid "New section"
 msgstr "New section"
 
 #: ../lib/types/kolabSharedFolderType.inc:114
 #: ../lib/types/kolabSharedFolderType.inc:143
-#, fuzzy
 msgid "New shared folder"
 msgstr "New shared folder"
 
 #: ../lib/types/sudo.inc:106 ../lib/types/sudo.inc:161
-#, fuzzy
 msgid "New sudo role"
 msgstr "New sudo role"
 
 #: ../lib/types/user.inc:172 ../lib/types/user.inc:531
-#, fuzzy
 msgid "New user"
 msgstr "New user"
 
 #: ../lib/modules/inetOrgPerson.inc:1794
-#, fuzzy
 msgid "New user certificate"
 msgstr "New user certificate"
 
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:55
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:81
-#, fuzzy
 msgid "New value"
 msgstr "New value"
 
 #: ../lib/types/bind.inc:174 ../lib/types/bind.inc:175
-#, fuzzy
 msgid "New zone"
 msgstr "New zone"
 
 #: ../lib/modules/sambaDomain.inc:78 ../lib/modules/sambaDomain.inc:158
 #: ../lib/modules/sambaDomain.inc:179 ../lib/modules/sambaDomain.inc:354
 #: ../lib/modules/sambaDomain.inc:640
-#, fuzzy
 msgid "Next RID"
 msgstr "Next RID"
 
 #: ../lib/modules/sambaDomain.inc:205 ../lib/modules/sambaDomain.inc:206
-#, fuzzy
 msgid "Next RID is not a number!"
 msgstr "Next RID is not a number!"
 
 #: ../lib/modules/sambaDomain.inc:79
-#, fuzzy
 msgid "Next RID to use when creating accounts (only used by Winbind)."
 msgstr "Next RID to use when creating accounts (only used by Winbind)."
 
 #: ../lib/modules/sambaDomain.inc:87
-#, fuzzy
 msgid "Next RID to use when creating group accounts (only used by Winbind)."
 msgstr "Next RID to use when creating group accounts (only used by Winbind)."
 
 #: ../lib/modules/sambaDomain.inc:83
-#, fuzzy
 msgid "Next RID to use when creating user accounts (only used by Winbind)."
 msgstr "Next RID to use when creating user accounts (only used by Winbind)."
 
 #: ../lib/modules/sambaDomain.inc:86 ../lib/modules/sambaDomain.inc:170
 #: ../lib/modules/sambaDomain.inc:181 ../lib/modules/sambaDomain.inc:370
 #: ../lib/modules/sambaDomain.inc:642
-#, fuzzy
 msgid "Next group RID"
 msgstr "Next group RID"
 
 #: ../lib/modules/sambaDomain.inc:209 ../lib/modules/sambaDomain.inc:210
-#, fuzzy
 msgid "Next group RID is not a number!"
 msgstr "Next group RID is not a number!"
 
 #: ../lib/modules/sambaDomain.inc:82 ../lib/modules/sambaDomain.inc:164
 #: ../lib/modules/sambaDomain.inc:180 ../lib/modules/sambaDomain.inc:362
 #: ../lib/modules/sambaDomain.inc:641
-#, fuzzy
 msgid "Next user RID"
 msgstr "Next user RID"
 
 #: ../lib/modules/sambaDomain.inc:207 ../lib/modules/sambaDomain.inc:208
-#, fuzzy
 msgid "Next user RID is not a number!"
 msgstr "Next user RID is not a number!"
 
 #: ../lib/modules/eduPerson.inc:94 ../lib/modules/eduPerson.inc:181
 #: ../lib/modules/eduPerson.inc:219 ../lib/modules/eduPerson.inc:335
 #: ../lib/modules/eduPerson.inc:593
-#, fuzzy
 msgid "Nick names"
 msgstr "Nick names"
 
@@ -7866,320 +7686,261 @@ msgstr "Nick names"
 #: ../lib/modules/qmailGroup.inc:358 ../lib/modules/qmailGroup.inc:1027
 #: ../lib/modules/qmailGroup.inc:1068 ../lib/modules/qmailGroup.inc:1074
 #: ../lib/modules/imapAccess.inc:112
-#, fuzzy
 msgid "No"
 msgstr "No"
 
 #: ../lib/types/asteriskExt.inc:144
-#, fuzzy
 msgid "No Asterisk extensions found."
 msgstr "No Asterisk extensions found."
 
 #: ../lib/types/dhcp.inc:171
-#, fuzzy
 msgid "No DHCPs found!"
 msgstr "No DHCPs found!"
 
 #: ../lib/types/bind.inc:160
-#, fuzzy
 msgid "No DNS entries found!"
 msgstr "No DNS entries found!"
 
 #: ../lib/types/nisObjectType.inc:156
-#, fuzzy
 msgid "No NIS objects found!"
 msgstr "No NIS objects found!"
 
 #: ../templates/3rdParty/pla/lib/Template.php:558
 #: ../templates/3rdParty/pla/lib/Template.php:559
-#, fuzzy
 msgid "No RDN attribute was selected."
 msgstr "No RDN attribute was selected."
 
 #: ../lib/modules/sambaSamAccount.inc:1096
 #: ../lib/modules/sambaGroupMapping.inc:334
-#, fuzzy
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "No Samba 3 domains found in LDAP! Please create one first."
 
 #: ../lib/modules/posixAccount.inc:570 ../lib/modules/posixAccount.inc:1294
-#, fuzzy
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "No Unix groups found in LDAP! Please create one first."
 
 #: ../lib/modules/qmailUser.inc:42
-#, fuzzy
 msgid "No access"
 msgstr "No access"
 
 #: ../lib/types/zarafaAddressListType.inc:145
-#, fuzzy
 msgid "No address list found!"
 msgstr "No address list found!"
 
 #: ../lib/types/mailAlias.inc:142 ../lib/types/alias.inc:142
-#, fuzzy
 msgid "No aliases found!"
 msgstr "No aliases found!"
 
 #: ../lib/types/automountType.inc:216
-#, fuzzy
 msgid "No automount entries found!"
 msgstr "No automount entries found!"
 
 #: ../lib/types/pykotaBillingCodeType.inc:164
-#, fuzzy
 msgid "No billing codes found!"
 msgstr "No billing codes found!"
 
 #: ../templates/3rdParty/pla/htdocs/download_binary_attr.php:36
-#, fuzzy
 msgid "No binary data available"
 msgstr "No binary data available"
 
 #: ../templates/initsuff.php:164
-#, fuzzy
 msgid "No changes were made."
 msgstr "No changes were made."
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:83
-#, fuzzy, php-format
+#, php-format
 msgid "No current value for attribute <b>%s</b>."
 msgstr "No current value for attribute <b>%s</b>."
 
 #: ../templates/login.php:104
-#, fuzzy
 msgid ""
 "No default profile set. Please set it in the server profile configuration."
 msgstr ""
 "No default profile set. Please set it in the server profile configuration."
 
 #: ../templates/schema/schema.php:144
-#, fuzzy
 msgid "No description"
 msgstr "No description"
 
 #: ../lib/types/smbDomain.inc:168
-#, fuzzy
 msgid "No domains found!"
 msgstr "No domains found!"
 
 #: ../lib/modules/passwordSelfReset.inc:1425
-#, fuzzy
 msgid "No email address found."
 msgstr "No email address found."
 
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:20
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:21
-#, fuzzy
 msgid "No entry was selected to delete"
 msgstr "No entry was selected to delete"
 
 #: ../lib/modules/ldapPublicKey.inc:478 ../lib/modules/inetOrgPerson.inc:3127
 #: ../lib/modules/customFields.inc:3238
-#, fuzzy
 msgid "No file received."
 msgstr "No file received."
 
 #: ../templates/config/mainmanage.php:127 ../lib/modules/ldapPublicKey.inc:102
 #: ../lib/modules/inetOrgPerson.inc:96 ../lib/modules/customFields.inc:3173
-#, fuzzy
 msgid "No file selected."
 msgstr "No file selected."
 
 #: ../lib/modules/qmailUser.inc:48
-#, fuzzy
 msgid "No forwarding"
 msgstr "No forwarding"
 
 #: ../lib/modules/posixGroup.inc:578 ../lib/modules/posixAccount.inc:104
-#, fuzzy
 msgid "No free ID-Number!"
 msgstr "No free ID-Number!"
 
 #: ../lib/types/gon.inc:181 ../lib/types/zarafaDynamicGroupType.inc:166
 #: ../lib/types/group.inc:211 ../lib/types/netgroup.inc:170
-#, fuzzy
 msgid "No groups found!"
 msgstr "No groups found!"
 
 #: ../lib/types/host.inc:194
-#, fuzzy
 msgid "No hosts found!"
 msgstr "No hosts found!"
 
 #: ../templates/3rdParty/pla/htdocs/view_jpeg_photo.php:59
-#, fuzzy
 msgid "No image available"
 msgstr "No image available"
 
 #: ../templates/3rdParty/pla/lib/import_functions.php:94
-#, fuzzy
 msgid "No import input"
 msgstr "No import input"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1354
-#, fuzzy
 msgid "No internal attributes"
 msgstr "No internal attributes"
 
 #: ../templates/tests/lamdaemonTest.php:195
-#, fuzzy
 msgid "No lamdaemon path set, please update your LAM configuration settings."
 msgstr "No lamdaemon path set, please update your LAM configuration settings."
 
 #: ../templates/tests/lamdaemonTest.php:97
 #: ../templates/tests/lamdaemonTest.php:190
-#, fuzzy
 msgid "No lamdaemon server set, please update your LAM configuration settings."
 msgstr ""
 "No lamdaemon server set, please update your LAM configuration settings."
 
 #: ../lib/modules/qmailUser.inc:49
-#, fuzzy
 msgid "No local delivery"
 msgstr "No local delivery"
 
 #: ../templates/config/mainmanage.php:361
-#, fuzzy
 msgid "No logging"
 msgstr "No logging"
 
 #: ../templates/pdfedit/pdfpage.php:429
-#, fuzzy
 msgid "No logo"
 msgstr "No logo"
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:157
-#, fuzzy
 msgid "No new attributes available for this entry"
 msgstr "No new attributes available for this entry"
 
 #: ../templates/config/conftypes.php:299 ../help/help.inc:164
-#, fuzzy
 msgid "No new entries"
 msgstr "No new entries"
 
 #: ../templates/multiEdit.php:315 ../lib/lists.inc:113
-#, fuzzy
 msgid "No objects found!"
 msgstr "No objects found!"
 
 #: ../templates/config/confmodules.php:406
-#, fuzzy
 msgid "No or more than one base module selected!"
 msgstr "No or more than one base module selected!"
 
 #: ../templates/config/confsave.php:53 ../templates/config/confmain.php:55
 #: ../lib/modules/passwordSelfReset.inc:1064
-#, fuzzy
 msgid "No password was entered!"
 msgstr "No password was entered!"
 
 #: ../lib/types/ppolicyType.inc:150
-#, fuzzy
 msgid "No policies found!"
 msgstr "No policies found!"
 
 #: ../lib/types/pykotaPrinterType.inc:165
-#, fuzzy
 msgid "No printers found!"
 msgstr "No printers found!"
 
 #: ../templates/tests/schemaTest.php:70
-#, fuzzy
 msgid "No problems found."
 msgstr "No problems found."
 
 #: ../lib/modules/qmailUser.inc:50
-#, fuzzy
 msgid "No program delivery"
 msgstr "No program delivery"
 
 #: ../lib/modules/pykotaGroup.inc:63 ../lib/modules/pykotaUser.inc:63
-#, fuzzy
 msgid "No quota"
 msgstr "No quota"
 
 #: ../lib/modules/customScripts.inc:208
-#, fuzzy
 msgid "No scripts to run."
 msgstr "No scripts to run."
 
 #: ../templates/pdfedit/pdfpage.php:137
-#, fuzzy
 msgid "No section text specified"
 msgstr "No section text specified"
 
 #: ../lib/modules/passwordSelfReset.inc:1086
-#, fuzzy
 msgid "No security answer found."
 msgstr "No security answer found."
 
 #: ../templates/config/conflogin.php:137
-#, fuzzy
 msgid "No server profiles found. Please create one."
 msgstr "No server profiles found. Please create one."
 
 #: ../lib/types/kolabSharedFolderType.inc:142
-#, fuzzy
 msgid "No shared folders found!"
 msgstr "No shared folders found!"
 
 #: ../templates/pdfedit/pdfpage.php:125
-#, fuzzy
 msgid "No static text specified"
 msgstr "No static text specified"
 
 #: ../lib/modules/dhcp_settings.inc:311
-#, fuzzy
 msgid "No subnet entered."
 msgstr "No subnet entered."
 
 #: ../templates/3rdParty/pla/htdocs/template_engine.php:45
-#, fuzzy
 msgid "No such entry"
 msgstr "No such entry"
 
 #: ../templates/3rdParty/pla/htdocs/compare.php:24
 #: ../templates/3rdParty/pla/htdocs/compare.php:27
 #: ../templates/3rdParty/pla/htdocs/delete.php:19
-#, fuzzy
 msgid "No such entry."
 msgstr "No such entry."
 
 #: ../templates/schema/schema.php:438
-#, fuzzy, php-format
+#, php-format
 msgid "No such schema item: \"%s\""
 msgstr "No such schema item: \"%s\""
 
 #: ../lib/types/sudo.inc:160
-#, fuzzy
 msgid "No sudo roles found!"
 msgstr "No sudo roles found!"
 
 #: ../lib/types/user.inc:530
-#, fuzzy
 msgid "No users found!"
 msgstr "No users found!"
 
 #: ../templates/config/mainmanage.php:392
-#, fuzzy
 msgid "Non-standard (\\n)"
 msgstr "Non-standard (\\n)"
 
 #: ../lib/modules/qmailUser.inc:58
-#, fuzzy
 msgid "None"
 msgstr "None"
 
 #: ../help/help.inc:68
-#, fuzzy
 msgid "Note"
 msgstr "Note"
 
 #: ../templates/3rdParty/pla/htdocs/add_value_form.php:125
-#, fuzzy
 msgid ""
 "Note: You may be required to enter new attributes that these object classes "
 "require"
@@ -8190,39 +7951,32 @@ msgstr ""
 #: ../lib/modules/windowsGroup.inc:114 ../lib/modules/windowsGroup.inc:171
 #: ../lib/modules/windowsGroup.inc:218 ../lib/modules/windowsGroup.inc:300
 #: ../lib/modules/windowsGroup.inc:672
-#, fuzzy
 msgid "Notes"
 msgstr "Notes"
 
 #: ../templates/3rdParty/pla/lib/export_functions.php:450
-#, fuzzy
 msgid "Nothing to export"
 msgstr "Nothing to export"
 
 #: ../templates/config/mainmanage.php:357
-#, fuzzy
 msgid "Notice"
 msgstr "Notice"
 
 #: ../templates/delete.php:103
-#, fuzzy
 msgid "Number of child entries"
 msgstr "Number of child entries"
 
 #: ../lib/modules/customFields.inc:118
-#, fuzzy
 msgid "Number of columns in text area."
 msgstr "Number of columns in text area."
 
 #: ../lib/modules/shadowAccount.inc:175
-#, fuzzy
 msgid ""
 "Number of days a user can login even his password has expired. -1=always."
 msgstr ""
 "Number of days a user can login even his password has expired. -1=always."
 
 #: ../lib/modules/shadowAccount.inc:179
-#, fuzzy
 msgid ""
 "Number of days a user has to wait until he is allowed to change his password "
 "again. If set value must be >0."
@@ -8231,7 +7985,6 @@ msgstr ""
 "again. If set value must be >0."
 
 #: ../lib/modules/shadowAccount.inc:183
-#, fuzzy
 msgid ""
 "Number of days after a user has to change his password again. If set value "
 "must be >0."
@@ -8240,69 +7993,56 @@ msgstr ""
 "must be >0."
 
 #: ../lib/modules/mitKerberos.inc:122
-#, fuzzy
 msgid "Number of failed logins."
 msgstr "Number of failed logins."
 
 #: ../lib/modules/sambaDomain.inc:131
-#, fuzzy
 msgid "Number of minutes after which the bad logon attempts are reset."
 msgstr "Number of minutes after which the bad logon attempts are reset."
 
 #: ../lib/modules/pykotaBillingCode.inc:83
-#, fuzzy
 msgid "Number of pages printed with this billing code."
 msgstr "Number of pages printed with this billing code."
 
 #: ../lib/modules/customFields.inc:122
-#, fuzzy
 msgid "Number of rows in text area."
 msgstr "Number of rows in text area."
 
 #: ../lib/modules/ppolicy.inc:78 ../lib/modules/sambaDomain.inc:119
-#, fuzzy
 msgid ""
 "Number of seconds after the user is allowed to change his password again."
 msgstr ""
 "Number of seconds after the user is allowed to change his password again."
 
 #: ../lib/modules/ppolicy.inc:82 ../lib/modules/sambaDomain.inc:123
-#, fuzzy
 msgid "Number of seconds after which the user must change his password."
 msgstr "Number of seconds after which the user must change his password."
 
 #: ../templates/schema/schema.php:147 ../templates/schema/schema.php:344
-#, fuzzy
 msgid "OID"
 msgstr "OID"
 
 #: ../templates/ou_edit.php:83
-#, fuzzy
 msgid "OU already exists!"
 msgstr "OU already exists!"
 
 #: ../templates/ou_edit.php:94
-#, fuzzy
 msgid "OU deleted successfully."
 msgstr "OU deleted successfully."
 
 #: ../templates/ou_edit.php:152 ../lib/tools/ouEditor.inc:44
-#, fuzzy
 msgid "OU editor"
 msgstr "OU editor"
 
 #: ../templates/ou_edit.php:87
-#, fuzzy
 msgid "OU is invalid!"
 msgstr "OU is invalid!"
 
 #: ../templates/ou_edit.php:131
-#, fuzzy
 msgid "OU is not empty or invalid!"
 msgstr "OU is not empty or invalid!"
 
 #: ../help/help.inc:247 ../help/help.inc:249
-#, fuzzy
 msgid "OU-Editor"
 msgstr "OU-Editor"
 
@@ -8311,24 +8051,21 @@ msgstr "OU-Editor"
 #: ../lib/modules/selfRegistration.inc:69
 #: ../lib/modules/selfRegistration.inc:118 ../lib/modules/customFields.inc:73
 #: ../lib/modules/customFields.inc:527
-#, fuzzy
 msgid "Object classes"
 msgstr "Object classes"
 
 #: ../lib/lists.inc:112
-#, fuzzy, php-format
+#, php-format
 msgid "Object count: %s"
 msgstr "Object count: %s"
 
 #: ../templates/schema/schema.php:152 ../templates/schema/schema.php:283
-#, fuzzy
 msgid "Obsolete"
 msgstr "Obsolete"
 
 #: ../lib/modules/sambaDomain.inc:282 ../lib/modules/sambaDomain.inc:291
 #: ../lib/modules/sambaDomain.inc:300 ../lib/modules/sambaDomain.inc:653
 #: ../lib/modules/sambaDomain.inc:658 ../lib/modules/sambaDomain.inc:663
-#, fuzzy
 msgid "Off"
 msgstr "Off"
 
@@ -8341,7 +8078,6 @@ msgstr "Off"
 #: ../lib/modules/inetOrgPerson.inc:862 ../lib/modules/inetOrgPerson.inc:866
 #: ../lib/modules/inetOrgPerson.inc:1347 ../lib/modules/inetOrgPerson.inc:1874
 #: ../lib/modules/inetOrgPerson.inc:2607
-#, fuzzy
 msgid "Office name"
 msgstr "Office name"
 
@@ -8385,20 +8121,17 @@ msgstr "Office name"
 #: ../lib/modules/groupOfNames.inc:542 ../lib/modules/nisMailAlias.inc:275
 #: ../lib/modules/nisMailAlias.inc:283 ../lib/lists.inc:703
 #: ../lib/lists.inc:785 ../lib/modules.inc:1199
-#, fuzzy
 msgid "Ok"
 msgstr "Ok"
 
 #: ../templates/3rdParty/pla/htdocs/mass_update.php:98
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:55
-#, fuzzy
 msgid "Old value"
 msgstr "Old value"
 
 #: ../lib/modules/sambaDomain.inc:282 ../lib/modules/sambaDomain.inc:291
 #: ../lib/modules/sambaDomain.inc:300 ../lib/modules/sambaDomain.inc:654
 #: ../lib/modules/sambaDomain.inc:659 ../lib/modules/sambaDomain.inc:664
-#, fuzzy
 msgid "On"
 msgstr "On"
 
@@ -8406,46 +8139,40 @@ msgstr "On"
 #: ../lib/modules/sambaSamAccount.inc:377
 #: ../lib/modules/sambaSamAccount.inc:1545
 #: ../lib/modules/sambaSamAccount.inc:1955
-#, fuzzy
 msgid "On broken or timed out connection"
 msgstr "On broken or timed out connection"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:139
 #: ../templates/3rdParty/pla/htdocs/export_form.php:32
-#, fuzzy
 msgid "One (one level beneath base)"
 msgstr "One (one level beneath base)"
 
 #: ../lib/modules/range.inc:107 ../lib/modules/fixed_ip.inc:113
-#, fuzzy
 msgid "One or more errors occured. The invalid fields are marked."
 msgstr "One or more errors occured. The invalid fields are marked."
 
 #: ../templates/3rdParty/pla/htdocs/copy.php:98
 #: ../templates/3rdParty/pla/htdocs/copy.php:155
-#, fuzzy, php-format
+#, php-format
 msgid "Operation not successful. DN <b>%s</b> has not been created."
 msgstr "Operation not successful. DN <b>%s</b> has not been created."
 
 #: ../templates/serverInfo.php:277 ../templates/serverInfo.php:367
-#, fuzzy
 msgid "Operation statistics"
 msgstr "Operation statistics"
 
 #: ../templates/3rdParty/pla/htdocs/copy.php:95
 #: ../templates/3rdParty/pla/htdocs/copy.php:153
-#, fuzzy, php-format
+#, php-format
 msgid "Operation successful. DN <b>%s</b> has been created."
 msgstr "Operation successful. DN <b>%s</b> has been created."
 
 #: ../templates/multiEdit.php:117 ../help/help.inc:257
-#, fuzzy
 msgid "Operations"
 msgstr "Operations"
 
 #: ../templates/schema/schema.php:384
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1575
-#, fuzzy
 msgid "Optional attributes"
 msgstr "Optional attributes"
 
@@ -8465,27 +8192,22 @@ msgstr "Optional attributes"
 #: ../lib/modules/asteriskVoicemail.inc:247
 #: ../lib/modules/asteriskVoicemail.inc:364 ../lib/modules/qmailGroup.inc:604
 #: ../lib/modules/heimdalKerberos.inc:332
-#, fuzzy
 msgid "Options"
 msgstr "Options"
 
 #: ../lib/modules/asteriskVoicemail.inc:109
-#, fuzzy
 msgid "Options for Asterisk voicemail account (e.g. sendvoicemail=yes)."
 msgstr "Options for Asterisk voicemail account (e.g. sendvoicemail=yes)."
 
 #: ../templates/3rdParty/pla/htdocs/import_form.php:39
-#, fuzzy
 msgid "Or paste your LDIF here"
 msgstr "Or paste your LDIF here"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:166
-#, fuzzy
 msgid "Order by"
 msgstr "Order by"
 
 #: ../templates/schema/schema.php:171
-#, fuzzy
 msgid "Ordering"
 msgstr "Ordering"
 
@@ -8496,32 +8218,27 @@ msgstr "Ordering"
 #: ../lib/modules/inetOrgPerson.inc:570 ../lib/modules/inetOrgPerson.inc:679
 #: ../lib/modules/inetOrgPerson.inc:894 ../lib/modules/inetOrgPerson.inc:898
 #: ../lib/modules/inetOrgPerson.inc:1501 ../lib/modules/inetOrgPerson.inc:1879
-#, fuzzy
 msgid "Organisation"
-msgstr "Organisation"
+msgstr "Organization"
 
 #: ../lib/modules/inetOrgPerson.inc:205 ../lib/modules/inetOrgPerson.inc:352
 #: ../lib/modules/inetOrgPerson.inc:562 ../lib/modules/inetOrgPerson.inc:682
 #: ../lib/modules/inetOrgPerson.inc:886 ../lib/modules/inetOrgPerson.inc:890
 #: ../lib/modules/inetOrgPerson.inc:1489 ../lib/modules/inetOrgPerson.inc:1878
-#, fuzzy
 msgid "Organisational unit"
-msgstr "Organisational unit"
+msgstr "Organizational unit"
 
 #: ../lib/modules/eduPerson.inc:127 ../lib/modules/eduPerson.inc:131
 #: ../lib/modules/eduPerson.inc:205 ../lib/modules/eduPerson.inc:221
 #: ../lib/modules/eduPerson.inc:343 ../lib/modules/eduPerson.inc:598
-#, fuzzy
 msgid "Organisational units"
-msgstr "Organisational units"
+msgstr "Organizational units"
 
 #: ../lib/modules/eduPerson.inc:242
-#, fuzzy
 msgid "Organisational units contains an invalid entry."
-msgstr "Organisational units contains an invalid entry."
+msgstr "Organizational units contains an invalid entry."
 
 #: ../templates/multiEdit.php:98 ../templates/config/confmain.php:317
-#, fuzzy
 msgid "Other"
 msgstr "Other"
 
@@ -8529,25 +8246,22 @@ msgstr "Other"
 #: ../lib/modules/windowsUser.inc:344 ../lib/modules/windowsUser.inc:442
 #: ../lib/modules/windowsUser.inc:530 ../lib/modules/windowsUser.inc:644
 #: ../lib/modules/windowsUser.inc:1452
-#, fuzzy
 msgid "Other telephone numbers"
 msgstr "Other telephone numbers"
 
 #: ../lib/modules/windowsUser.inc:171 ../lib/modules/windowsUser.inc:175
 #: ../lib/modules/windowsUser.inc:356 ../lib/modules/windowsUser.inc:450
 #: ../lib/modules/windowsUser.inc:646 ../lib/modules/windowsUser.inc:1460
-#, fuzzy
 msgid "Other web sites"
 msgstr "Other web sites"
 
 #: ../lib/modules/customScripts.inc:77 ../lib/modules/customScripts.inc:93
 #: ../lib/modules/customScripts.inc:103
-#, fuzzy
 msgid "Output may contain HTML"
 msgstr "Output may contain HTML"
 
 #: ../lib/modules/customScripts.inc:257 ../lib/modules/customScripts.inc:547
-#, fuzzy, php-format
+#, php-format
 msgid "Output of command \"%s\" with return code %s"
 msgstr "Output of command \"%s\" with return code %s"
 
@@ -8555,12 +8269,10 @@ msgstr "Output of command \"%s\" with return code %s"
 #: ../lib/modules/pykotaUser.inc:246 ../lib/modules/pykotaUser.inc:256
 #: ../lib/modules/pykotaUser.inc:317 ../lib/modules/pykotaUser.inc:395
 #: ../lib/modules/pykotaUser.inc:900
-#, fuzzy
 msgid "Overcharge factor"
 msgstr "Overcharge factor"
 
 #: ../lib/modules/pykotaUser.inc:138
-#, fuzzy
 msgid ""
 "Overcharge factor that is applied when computing the cost of a print job. "
 "The number of pages is not changed."
@@ -8569,18 +8281,15 @@ msgstr ""
 "The number of pages is not changed."
 
 #: ../templates/serverInfo.php:168
-#, fuzzy
 msgid "Overlays"
 msgstr "Overlays"
 
 #: ../lib/modules/zarafaUser.inc:82
-#, fuzzy
 msgid "Override default quota settings."
 msgstr "Override default quota settings."
 
 #: ../templates/config/confmain.php:309 ../lib/types/asteriskExt.inc:96
 #: ../lib/types/asteriskExt.inc:158
-#, fuzzy
 msgid "Owner"
 msgstr "Owner"
 
@@ -8592,100 +8301,82 @@ msgstr "Owner"
 #: ../lib/modules/groupOfNames.inc:167 ../lib/modules/groupOfNames.inc:190
 #: ../lib/modules/groupOfNames.inc:233 ../lib/modules/groupOfNames.inc:391
 #: ../lib/modules/groupOfNames.inc:699
-#, fuzzy
 msgid "Owners"
 msgstr "Owners"
 
 #: ../lib/modules/dhcp_settings.inc:97
-#, fuzzy
 msgid "P-Node (0x02)"
 msgstr "P-Node (0x02)"
 
 #: ../lib/modules/fixed_ip.inc:88 ../lib/modules/fixed_ip.inc:354
 #: ../lib/modules/fixed_ip.inc:559
-#, fuzzy
 msgid "PC name"
 msgstr "PC name"
 
 #: ../lib/modules/windowsHost.inc:89
-#, fuzzy
 msgid "PC01"
 msgstr "PC01"
 
 #: ../templates/pdfedit/pdfpage.php:445 ../templates/pdfedit/pdfmain.php:84
 #: ../lib/tools/pdfEdit.inc:44
-#, fuzzy
 msgid "PDF editor"
 msgstr "PDF editor"
 
 #: ../templates/masscreate.php:272 ../templates/pdfedit/pdfmain.php:308
 #: ../lib/lists.inc:681 ../help/help.inc:190
-#, fuzzy
 msgid "PDF structure"
 msgstr "PDF structure"
 
 #: ../templates/pdfedit/pdfpage.php:108
-#, fuzzy
 msgid "PDF structure name not valid"
 msgstr "PDF structure name not valid"
 
 #: ../templates/pdfedit/pdfmain.php:168
-#, fuzzy
 msgid "PDF structure was successfully saved."
 msgstr "PDF structure was successfully saved."
 
 #: ../templates/pdfedit/pdfmain.php:275
-#, fuzzy
 msgid "PDF structures"
 msgstr "PDF structures"
 
 #: ../templates/serverInfo.php:264
-#, fuzzy
 msgid "PDUs sent"
 msgstr "PDUs sent"
 
 #: ../templates/config/mainmanage.php:380 ../help/help.inc:154
-#, fuzzy
 msgid "PHP error reporting"
 msgstr "PHP error reporting"
 
 #: ../templates/config/mainmanage.php:377
-#, fuzzy
 msgid "PHP system setting"
 msgstr "PHP system setting"
 
 #: ../lib/modules/zarafaUser.inc:347 ../lib/modules/zarafaUser.inc:677
 #: ../lib/modules/zarafaUser.inc:1400
-#, fuzzy
 msgid "POP3"
 msgstr "POP3"
 
 #: ../templates/lists/changePassword.php:382
 #: ../templates/lists/changePassword.php:413 ../lib/types/user.inc:376
 #: ../lib/types/user.inc:408
-#, fuzzy
 msgid "PPolicy"
 msgstr "PPolicy"
 
 #: ../lib/modules/bindDLZ.inc:97 ../lib/modules/bindDLZ.inc:225
 #: ../lib/modules/bindDLZ.inc:231 ../lib/modules/bindDLZ.inc:358
-#, fuzzy
 msgid "PTR record"
 msgstr "PTR record"
 
 #: ../lib/modules/bindDLZ.inc:307 ../lib/modules/bindDLZ.inc:324
 #: ../lib/modules/bindDLZ.inc:1073
-#, fuzzy
 msgid "PTR records"
 msgstr "PTR records"
 
 #: ../lib/modules/sambaSamAccount.inc:549
-#, fuzzy
 msgid "Pacific Time (US & Canada)"
 msgstr "Pacific Time (US & Canada)"
 
 #: ../lib/modules/dhcp_settings.inc:159
-#, fuzzy
 msgid ""
 "Packets are sent to the default gateway if the receiver does not reside in "
 "the same network. The default gateway routes them to the target network."
@@ -8698,17 +8389,14 @@ msgstr ""
 #: ../lib/modules/pykotaBillingCode.inc:111
 #: ../lib/modules/pykotaBillingCode.inc:144
 #: ../lib/modules/pykotaBillingCode.inc:259
-#, fuzzy
 msgid "Page count"
 msgstr "Page count"
 
 #: ../templates/selfService/adminMain.php:502 ../help/help.inc:220
-#, fuzzy
 msgid "Page header"
 msgstr "Page header"
 
 #: ../templates/selfService/adminMain.php:431
-#, fuzzy
 msgid "Page layout"
 msgstr "Page layout"
 
@@ -8717,46 +8405,38 @@ msgstr "Page layout"
 #: ../lib/modules/asteriskVoicemail.inc:177
 #: ../lib/modules/asteriskVoicemail.inc:245
 #: ../lib/modules/asteriskVoicemail.inc:362
-#, fuzzy
 msgid "Pager"
 msgstr "Pager"
 
 #: ../lib/modules/asteriskVoicemail.inc:105
-#, fuzzy
 msgid "Pager number for Asterisk voicemail."
 msgstr "Pager number for Asterisk voicemail."
 
 #: ../templates/3rdParty/pla/htdocs/entry_chooser.php:35
-#, fuzzy
 msgid "Parent DN"
 msgstr "Parent DN"
 
 #: ../lib/modules/puppetClient.inc:81 ../lib/modules/puppetClient.inc:127
 #: ../lib/modules/puppetClient.inc:147 ../lib/modules/puppetClient.inc:258
 #: ../lib/modules/puppetClient.inc:424 ../lib/modules/puppetClient.inc:459
-#, fuzzy
 msgid "Parent node"
 msgstr "Parent node"
 
 #: ../lib/modules/puppetClient.inc:183
-#, fuzzy
 msgid "Parent node not found."
 msgstr "Parent node not found."
 
 #: ../templates/schema/schema.php:366
-#, fuzzy
 msgid "Parent to"
 msgstr "Parent to"
 
 #: ../templates/3rdParty/pla/htdocs/import.php:98
-#, fuzzy
 msgid "Parse error"
 msgstr "Parse error"
 
 #: ../lib/modules/pykotaPrinter.inc:100 ../lib/modules/pykotaPrinter.inc:159
 #: ../lib/modules/pykotaPrinter.inc:189 ../lib/modules/pykotaPrinter.inc:236
 #: ../lib/modules/pykotaPrinter.inc:601
-#, fuzzy
 msgid "Passthrough"
 msgstr "Passthrough"
 
@@ -8793,7 +8473,6 @@ msgstr "Passthrough"
 #: ../lib/modules/heimdalKerberos.inc:688
 #: ../lib/modules/heimdalKerberos.inc:691 ../lib/modules.inc:1037
 #: ../help/help.inc:188
-#, fuzzy
 msgid "Password"
 msgstr "Password"
 
@@ -8801,44 +8480,37 @@ msgstr "Password"
 #: ../lib/modules/sambaSamAccount.inc:1148 ../lib/modules/windowsUser.inc:201
 #: ../lib/modules/windowsUser.inc:386 ../lib/modules/windowsUser.inc:457
 #: ../lib/modules/windowsUser.inc:1481
-#, fuzzy
 msgid "Password change at next login"
 msgstr "Password change at next login"
 
 #: ../lib/modules/mitKerberos.inc:141 ../lib/modules/mitKerberos.inc:254
 #: ../lib/modules/heimdalKerberos.inc:111
 #: ../lib/modules/heimdalKerberos.inc:220
-#, fuzzy
 msgid "Password change command"
 msgstr "Password change command"
 
 #: ../templates/lists/changePassword.php:293
-#, fuzzy
 msgid "Password change options"
 msgstr "Password change options"
 
 #: ../lib/modules/ppolicyUser.inc:52 ../lib/modules/ppolicyUser.inc:67
 #: ../lib/modules/ppolicyUser.inc:125 ../lib/modules/ppolicyUser.inc:258
-#, fuzzy
 msgid "Password change required"
 msgstr "Password change required"
 
 #: ../lib/types/ppolicyType.inc:91 ../lib/modules/ppolicy.inc:129
 #: ../lib/modules/ppolicy.inc:149 ../lib/modules/ppolicy.inc:293
 #: ../lib/modules/ppolicy.inc:503
-#, fuzzy
 msgid "Password change requires old password"
 msgstr "Password change requires old password"
 
 #: ../lib/modules/mitKerberos.inc:182 ../lib/modules/mitKerberos.inc:460
 #: ../lib/modules/heimdalKerberos.inc:147
 #: ../lib/modules/heimdalKerberos.inc:386
-#, fuzzy
 msgid "Password change service"
 msgstr "Password change service"
 
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:30
-#, fuzzy
 msgid "Password check"
 msgstr "Password check"
 
@@ -8847,7 +8519,6 @@ msgstr "Password check"
 #: ../lib/modules/sambaSamAccount.inc:107 ../lib/modules/posixAccount.inc:110
 #: ../lib/modules/posixAccount.inc:111 ../lib/modules/windowsUser.inc:543
 #: ../lib/modules/inetOrgPerson.inc:101
-#, fuzzy
 msgid "Password contains invalid characters. Valid characters are:"
 msgstr "Password contains invalid characters. Valid characters are:"
 
@@ -8858,7 +8529,6 @@ msgstr "Password contains invalid characters. Valid characters are:"
 #: ../lib/modules/sambaSamAccount.inc:1730 ../lib/modules/windowsUser.inc:189
 #: ../lib/modules/windowsUser.inc:370 ../lib/modules/windowsUser.inc:453
 #: ../lib/modules/windowsUser.inc:672 ../lib/modules/windowsUser.inc:1471
-#, fuzzy
 msgid "Password does not expire"
 msgstr "Password does not expire"
 
@@ -8866,22 +8536,18 @@ msgstr "Password does not expire"
 #: ../lib/modules/shadowAccount.inc:106 ../lib/modules/shadowAccount.inc:163
 #: ../lib/modules/shadowAccount.inc:174 ../lib/modules/shadowAccount.inc:208
 #: ../lib/modules/shadowAccount.inc:317 ../lib/modules/shadowAccount.inc:495
-#, fuzzy
 msgid "Password expiration"
 msgstr "Password expiration"
 
 #: ../lib/modules/shadowAccount.inc:61 ../lib/modules/shadowAccount.inc:62
-#, fuzzy
 msgid "Password expiration must be are natural number or -1."
 msgstr "Password expiration must be are natural number or -1."
 
 #: ../templates/selfService/adminMain.php:486 ../help/help.inc:224
-#, fuzzy
 msgid "Password field label"
 msgstr "Password field label"
 
 #: ../lib/modules/asteriskVoicemail.inc:93
-#, fuzzy
 msgid "Password for voicemail mailbox."
 msgstr "Password for voicemail mailbox."
 
@@ -8890,7 +8556,6 @@ msgstr "Password for voicemail mailbox."
 #: ../lib/modules/posixAccount.inc:450 ../lib/modules/inetOrgPerson.inc:301
 #: ../lib/modules/inetOrgPerson.inc:882 ../lib/modules/customFields.inc:125
 #: ../lib/modules/customFields.inc:2089
-#, fuzzy
 msgid "Password hash type"
 msgstr "Password hash type"
 
@@ -8899,50 +8564,41 @@ msgstr "Password hash type"
 #: ../lib/modules/ppolicy.inc:223 ../lib/modules/ppolicy.inc:467
 #: ../lib/modules/sambaDomain.inc:98 ../lib/modules/sambaDomain.inc:184
 #: ../lib/modules/sambaDomain.inc:276 ../lib/modules/sambaDomain.inc:645
-#, fuzzy
 msgid "Password history length"
 msgstr "Password history length"
 
 #: ../templates/config/confmain.php:350
-#, fuzzy
 msgid "Password mail settings"
 msgstr "Password mail settings"
 
 #: ../lib/modules/shadowAccount.inc:59 ../lib/modules/shadowAccount.inc:60
 #: ../lib/modules/ppolicy.inc:160 ../lib/modules/sambaDomain.inc:215
-#, fuzzy
 msgid "Password maximum age must be are natural number."
 msgstr "Password maximum age must be are natural number."
 
 #: ../lib/modules/shadowAccount.inc:66
-#, fuzzy
 msgid "Password maximum age must be bigger as password minimum age."
 msgstr "Password maximum age must be bigger as password minimum age."
 
 #: ../lib/modules/shadowAccount.inc:65 ../lib/modules/ppolicy.inc:161
 #: ../lib/modules/sambaDomain.inc:213
-#, fuzzy
 msgid "Password maximum age must be bigger than password minimum age."
 msgstr "Password maximum age must be bigger than password minimum age."
 
 #: ../lib/modules/shadowAccount.inc:57 ../lib/modules/shadowAccount.inc:58
 #: ../lib/modules/ppolicy.inc:159 ../lib/modules/sambaDomain.inc:214
-#, fuzzy
 msgid "Password minimum age must be are natural number."
 msgstr "Password minimum age must be are natural number."
 
 #: ../lib/modules/imapAccess.inc:85 ../lib/modules/imapAccess.inc:270
-#, fuzzy
 msgid "Password of IMAP admin user"
 msgstr "Password of IMAP admin user"
 
 #: ../lib/types/ppolicyType.inc:39
-#, fuzzy
 msgid "Password policies"
 msgstr "Password policies"
 
 #: ../lib/types/ppolicyType.inc:48
-#, fuzzy
 msgid "Password policies (ppolicy)"
 msgstr "Password policies (ppolicy)"
 
@@ -8953,36 +8609,30 @@ msgstr "Password policies (ppolicy)"
 #: ../lib/modules/ppolicyUser.inc:253 ../lib/modules/ppolicyUser.inc:286
 #: ../lib/modules/ppolicy.inc:55 ../lib/modules/sambaDomain.inc:259
 #: ../help/help.inc:150
-#, fuzzy
 msgid "Password policy"
 msgstr "Password policy"
 
 #: ../lib/types/ppolicyType.inc:81 ../lib/modules/ppolicy.inc:89
 #: ../lib/modules/ppolicy.inc:139 ../lib/modules/ppolicy.inc:235
 #: ../lib/modules/ppolicy.inc:483
-#, fuzzy
 msgid "Password quality check"
 msgstr "Password quality check"
 
 #: ../lib/modules/passwordSelfReset.inc:230
-#, fuzzy
 msgid "Password reset confirmation"
 msgstr "Password reset confirmation"
 
 #: ../lib/modules/passwordSelfReset.inc:250
-#, fuzzy
 msgid "Password reset notification"
 msgstr "Password reset notification"
 
 #: ../lib/modules/passwordSelfReset.inc:59
 #: ../lib/modules/passwordSelfReset.inc:775
 #: ../lib/modules/passwordSelfReset.inc:994
-#, fuzzy
 msgid "Password self reset"
 msgstr "Password self reset"
 
 #: ../lib/modules/passwordSelfReset.inc:1479
-#, fuzzy
 msgid "Password successfully reset."
 msgstr "Password successfully reset."
 
@@ -8990,34 +8640,28 @@ msgstr "Password successfully reset."
 #: ../lib/modules/shadowAccount.inc:161 ../lib/modules/shadowAccount.inc:170
 #: ../lib/modules/shadowAccount.inc:202 ../lib/modules/shadowAccount.inc:309
 #: ../lib/modules/shadowAccount.inc:494
-#, fuzzy
 msgid "Password warning"
 msgstr "Password warning"
 
 #: ../lib/modules/shadowAccount.inc:63 ../lib/modules/shadowAccount.inc:64
-#, fuzzy
 msgid "Password warning must be are natural number."
 msgstr "Password warning must be are natural number."
 
 #: ../templates/config/confmain.php:580
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:61
 #: ../lib/modules/passwordSelfReset.inc:1069 ../lib/modules.inc:1116
-#, fuzzy
 msgid "Passwords are different!"
 msgstr "Passwords are different!"
 
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:59
-#, fuzzy
 msgid "Passwords match."
 msgstr "Passwords match."
 
 #: ../lib/types/nisObjectType.inc:77
-#, fuzzy
 msgid "Path"
 msgstr "Path"
 
 #: ../lib/modules/windowsUser.inc:196
-#, fuzzy
 msgid ""
 "Path of the user profile (UNC-path, e.g. \\\\server\\share\\user). $user is "
 "replaced with user name."
@@ -9026,12 +8670,10 @@ msgstr ""
 "replaced with user name."
 
 #: ../lib/modules/sambaSamAccount.inc:351
-#, fuzzy
 msgid "Path of the user profile."
 msgstr "Path of the user profile."
 
 #: ../lib/modules/sambaSamAccount.inc:302
-#, fuzzy
 msgid ""
 "Path of the user profile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user and group name."
@@ -9040,22 +8682,18 @@ msgstr ""
 "\\server\\share). $user and $group are replaced with user and group name."
 
 #: ../lib/modules/imapAccess.inc:103 ../lib/modules/imapAccess.inc:127
-#, fuzzy
 msgid "Path separator"
 msgstr "Path separator"
 
 #: ../templates/config/confmain.php:300
-#, fuzzy
 msgid "Path to external script"
 msgstr "Path to external script"
 
 #: ../lib/modules/ddns.inc:86 ../lib/modules/ddns.inc:364
-#, fuzzy
 msgid "Path to key for DNS updates"
 msgstr "Path to key for DNS updates"
 
 #: ../lib/modules/qmailGroup.inc:133
-#, fuzzy
 msgid ""
 "Path to the maildir/mbox on the mail system for sender confirmation and "
 "moderation."
@@ -9064,41 +8702,34 @@ msgstr ""
 "moderation."
 
 #: ../lib/modules/qmailUser.inc:241
-#, fuzzy
 msgid "Path to the maildir/mbox on the mail system."
 msgstr "Path to the maildir/mbox on the mail system."
 
 #: ../lib/modules/pykotaUser.inc:145 ../lib/modules/pykotaUser.inc:319
 #: ../lib/modules/pykotaUser.inc:362
-#, fuzzy
 msgid "Payment"
 msgstr "Payment"
 
 #: ../lib/modules/pykotaUser.inc:141
-#, fuzzy
 msgid "Payment and job history"
 msgstr "Payment and job history"
 
 #: ../lib/modules/pykotaUser.inc:142
-#, fuzzy
 msgid "Payment and job history for this user."
 msgstr "Payment and job history for this user."
 
 #: ../lib/modules/pykotaUser.inc:258 ../lib/modules/pykotaUser.inc:276
 #: ../lib/modules/pykotaUser.inc:377 ../lib/modules/pykotaUser.inc:584
 #: ../lib/modules/pykotaUser.inc:984
-#, fuzzy
 msgid "Payment history"
 msgstr "Payment history"
 
 #: ../lib/tools/multiEdit.inc:53
-#, fuzzy
 msgid "Performs modifications on multiple LDAP entries."
 msgstr "Performs modifications on multiple LDAP entries."
 
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:41
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:64
-#, fuzzy
 msgid "Permanently delete all children also?"
 msgstr "Permanently delete all children also?"
 
@@ -9108,34 +8739,28 @@ msgstr "Permanently delete all children also?"
 #: ../lib/modules/asteriskAccount.inc:486
 #: ../lib/modules/asteriskAccount.inc:742
 #: ../lib/modules/asteriskAccount.inc:1061
-#, fuzzy
 msgid "Permit"
 msgstr "Permit"
 
 #: ../lib/modules/inetOrgPerson.inc:119
-#, fuzzy
 msgid "Personal"
 msgstr "Personal"
 
 #: ../lib/selfService.inc:384
-#, fuzzy
 msgid "Personal data"
 msgstr "Personal data"
 
 #: ../lib/types/user.inc:102 ../lib/types/user.inc:619
 #: ../lib/modules/inetOrgPerson.inc:145 ../lib/modules/inetOrgPerson.inc:2636
 #: ../lib/modules/inetOrgPerson.inc:2643
-#, fuzzy
 msgid "Photo"
 msgstr "Photo"
 
 #: ../lib/modules/inetOrgPerson.inc:1635
-#, fuzzy
 msgid "Photo file"
 msgstr "Photo file"
 
 #: ../lib/modules/inetOrgPerson.inc:1633
-#, fuzzy
 msgid "Photo file (JPG format)"
 msgstr "Photo file (JPG format)"
 
@@ -9145,17 +8770,14 @@ msgstr "Photo file (JPG format)"
 #: ../lib/modules/asteriskAccount.inc:493
 #: ../lib/modules/asteriskAccount.inc:746
 #: ../lib/modules/asteriskAccount.inc:1062
-#, fuzzy
 msgid "Pickup group"
 msgstr "Pickup group"
 
 #: ../lib/modules/ldapPublicKey.inc:70
-#, fuzzy
 msgid "Please a comma separated list of your public SSH keys."
 msgstr "Please a comma separated list of your public SSH keys."
 
 #: ../lib/modules/customScripts.inc:78
-#, fuzzy
 msgid ""
 "Please activate this option if your scripts may generate HTML output. "
 "Otherwise, the output is treated as plain text."
@@ -9164,12 +8786,10 @@ msgstr ""
 "Otherwise, the output is treated as plain text."
 
 #: ../lib/modules/asteriskExtension.inc:186
-#, fuzzy
 msgid "Please add at least one extension owner."
 msgstr "Please add at least one extension owner."
 
 #: ../help/help.inc:153
-#, fuzzy
 msgid ""
 "Please change this setting only if you experience problems in receiving "
 "emails from LAM. This defines the line ending of emails."
@@ -9178,17 +8798,14 @@ msgstr ""
 "emails from LAM. This defines the line ending of emails."
 
 #: ../lib/modules/qmailGroup.inc:324
-#, fuzzy
 msgid "Please check if this email should be sent."
 msgstr "Please check if this email should be sent."
 
 #: ../lib/modules/sambaSamAccount.inc:1086
-#, fuzzy
 msgid "Please check your settings on the Unix page!"
 msgstr "Please check your settings on the Unix page!"
 
 #: ../lib/modules/imapAccess.inc:95
-#, fuzzy
 msgid ""
 "Please choose the attribute to get the IMAP user name. The default is \"mail"
 "\" but you can also use \"uid\"."
@@ -9197,32 +8814,26 @@ msgstr ""
 "\" but you can also use \"uid\"."
 
 #: ../lib/modules/passwordSelfReset.inc:234
-#, fuzzy
 msgid "Please click here to continue: @@resetLink@@"
 msgstr "Please click here to continue: @@resetLink@@"
 
 #: ../lib/types/user.inc:298
-#, fuzzy
 msgid "Please click to lock/unlock this account."
 msgstr "Please click to lock/unlock this account."
 
 #: ../lib/modules/pykotaPrinter.inc:212
-#, fuzzy
 msgid "Please enter \"Yes\" or \"No\"."
 msgstr "Please enter \"Yes\" or \"No\"."
 
 #: ../lib/modules/sambaSamAccount.inc:108
-#, fuzzy
 msgid "Please enter a RID number or the name of a special account!"
 msgstr "Please enter a RID number or the name of a special account!"
 
 #: ../lib/modules/asteriskAccount.inc:619
-#, fuzzy
 msgid "Please enter a caller ID."
 msgstr "Please enter a caller ID."
 
 #: ../lib/modules/imapAccess.inc:92
-#, fuzzy
 msgid ""
 "Please enter a comma separated list of domain names (e.g. \"company.com,"
 "example.com\"). LAM will only manage mailboxes from these domains."
@@ -9232,53 +8843,43 @@ msgstr ""
 
 #: ../lib/modules/sambaSamAccount.inc:103
 #: ../lib/modules/sambaSamAccount.inc:104
-#, fuzzy
 msgid "Please enter a comma separated list of host names!"
 msgstr "Please enter a comma separated list of host names!"
 
 #: ../lib/modules/asteriskExtension.inc:178
-#, fuzzy
 msgid "Please enter a common name."
 msgstr "Please enter a common name."
 
 #: ../lib/modules/imapAccess.inc:159
-#, fuzzy
 msgid "Please enter a correct list of valid mail domains."
 msgstr "Please enter a correct list of valid mail domains."
 
 #: ../lib/modules/customFields.inc:82
-#, fuzzy
 msgid "Please enter a descriptive label for this field."
 msgstr "Please enter a descriptive label for this field."
 
 #: ../lib/modules/nisObject.inc:55 ../lib/modules/automount.inc:58
 #: ../lib/modules/sudoRole.inc:56
-#, fuzzy
 msgid "Please enter a descriptive name for this entry."
 msgstr "Please enter a descriptive name for this entry."
 
 #: ../lib/modules/windowsGroup.inc:111
-#, fuzzy
 msgid "Please enter a descriptive text for this group."
 msgstr "Please enter a descriptive text for this group."
 
 #: ../lib/modules/windowsHost.inc:72
-#, fuzzy
 msgid "Please enter a descriptive text for this host."
 msgstr "Please enter a descriptive text for this host."
 
 #: ../lib/modules/windowsUser.inc:112
-#, fuzzy
 msgid "Please enter a descriptive text for this user."
 msgstr "Please enter a descriptive text for this user."
 
 #: ../lib/modules/groupOfNames.inc:202
-#, fuzzy
 msgid "Please enter a group name!"
 msgstr "Please enter a group name!"
 
 #: ../lib/modules/windowsUser.inc:227
-#, fuzzy
 msgid ""
 "Please enter a list of Windows domains that can be selected for your user "
 "accounts."
@@ -9287,67 +8888,54 @@ msgstr ""
 "accounts."
 
 #: ../lib/modules/selfRegistration.inc:160
-#, fuzzy
 msgid "Please enter a list of object classes for the new accounts."
 msgstr "Please enter a list of object classes for the new accounts."
 
 #: ../lib/modules/asteriskVoicemail.inc:202
-#, fuzzy
 msgid "Please enter a mailbox."
 msgstr "Please enter a mailbox."
 
 #: ../lib/modules/device.inc:55
-#, fuzzy
 msgid "Please enter a name for this device."
 msgstr "Please enter a name for this device."
 
 #: ../lib/modules/kolabSharedFolder.inc:106
-#, fuzzy
 msgid "Please enter a name for this folder."
 msgstr "Please enter a name for this folder."
 
 #: ../lib/modules/ppolicy.inc:158
-#, fuzzy
 msgid "Please enter a name for this policy."
 msgstr "Please enter a name for this policy."
 
-#: ../lib/modules/kolabSharedFolder.inc:255
-#, fuzzy
+#: ../lib/modules/kolabSharedFolder.inc:254
 msgid "Please enter a name."
 msgstr "Please enter a name."
 
 #: ../lib/modules/customFields.inc:2249
-#, fuzzy
 msgid "Please enter a natural number for column count."
 msgstr "Please enter a natural number for column count."
 
 #: ../lib/modules/customFields.inc:2259
-#, fuzzy
 msgid "Please enter a natural number for row count."
 msgstr "Please enter a natural number for row count."
 
 #: ../lib/modules/qmailUser.inc:458 ../lib/modules/qmailUser.inc:460
-#, fuzzy
 msgid "Please enter a number for GID number."
 msgstr "Please enter a number for GID number."
 
 #: ../lib/modules/qmailUser.inc:455 ../lib/modules/qmailUser.inc:457
-#, fuzzy
 msgid "Please enter a number for UID number."
 msgstr "Please enter a number for UID number."
 
 #: ../lib/modules/qmailUser.inc:451 ../lib/modules/qmailUser.inc:452
-#, fuzzy
 msgid "Please enter a number for message count limit."
 msgstr "Please enter a number for message count limit."
 
 #: ../lib/modules/qmailUser.inc:453 ../lib/modules/qmailUser.inc:454
-#, fuzzy
 msgid "Please enter a number for message size limit."
 msgstr "Please enter a number for message size limit."
 
 #: ../lib/modules/qmailUser.inc:449 ../lib/modules/qmailUser.inc:450
-#, fuzzy
 msgid "Please enter a number for quota size."
 msgstr "Please enter a number for quota size."
 
@@ -9358,72 +8946,58 @@ msgstr "Please enter a number for quota size."
 #: ../lib/modules/zarafaUser.inc:443 ../lib/modules/zarafaUser.inc:444
 #: ../lib/modules/zarafaUser.inc:445 ../lib/modules/zarafaUser.inc:447
 #: ../lib/modules/zarafaUser.inc:448 ../lib/modules/bindDLZ.inc:349
-#, fuzzy
 msgid "Please enter a number."
 msgstr "Please enter a number."
 
 #: ../lib/modules/ppolicy.inc:167
-#, fuzzy
 msgid "Please enter a numeric value for the expire warning."
 msgstr "Please enter a numeric value for the expire warning."
 
 #: ../lib/modules/ppolicy.inc:166
-#, fuzzy
 msgid "Please enter a numeric value for the failure count interval."
 msgstr "Please enter a numeric value for the failure count interval."
 
 #: ../lib/modules/ppolicy.inc:163
-#, fuzzy
 msgid "Please enter a numeric value for the grace authentication limit."
 msgstr "Please enter a numeric value for the grace authentication limit."
 
 #: ../lib/modules/freeRadius.inc:252 ../lib/modules/freeRadius.inc:253
-#, fuzzy
 msgid "Please enter a numeric value for the idle timeout."
 msgstr "Please enter a numeric value for the idle timeout."
 
 #: ../lib/modules/ppolicy.inc:164
-#, fuzzy
 msgid "Please enter a numeric value for the lockout duration."
 msgstr "Please enter a numeric value for the lockout duration."
 
 #: ../lib/modules/ppolicy.inc:165
-#, fuzzy
 msgid "Please enter a numeric value for the maximum failure count."
 msgstr "Please enter a numeric value for the maximum failure count."
 
 #: ../lib/modules/ppolicy.inc:168
-#, fuzzy
 msgid "Please enter a numeric value for the minimum password length."
 msgstr "Please enter a numeric value for the minimum password length."
 
 #: ../lib/modules/ppolicy.inc:162
-#, fuzzy
 msgid "Please enter a numeric value for the password history length."
 msgstr "Please enter a numeric value for the password history length."
 
 #: ../lib/modules/sudoRole.inc:221
-#, fuzzy
 msgid "Please enter a role name."
 msgstr "Please enter a role name."
 
 #: ../lib/modules/passwordSelfReset.inc:1090
-#, fuzzy
 msgid "Please enter a security answer."
 msgstr "Please enter a security answer."
 
 #: ../lib/modules/selfRegistration.inc:158
-#, fuzzy
 msgid "Please enter a subject for the confirmation mails."
 msgstr "Please enter a subject for the confirmation mails."
 
-#: ../lib/modules/kolabSharedFolder.inc:256
-#, fuzzy
+#: ../lib/modules/kolabSharedFolder.inc:255
 msgid "Please enter a target folder."
 msgstr "Please enter a target folder."
 
 #: ../lib/modules/selfRegistration.inc:159
-#, fuzzy
 msgid ""
 "Please enter a text for the confirmation mails that includes the creation "
 "link."
@@ -9432,33 +9006,27 @@ msgstr ""
 "link."
 
 #: ../lib/modules/customFields.inc:78
-#, fuzzy
 msgid "Please enter a unique name for this field."
 msgstr "Please enter a unique name for this field."
 
 #: ../lib/modules/ppolicy.inc:74
-#, fuzzy
 msgid "Please enter a unique name for this password policy."
 msgstr "Please enter a unique name for this password policy."
 
 #: ../lib/modules/kolabUser.inc:253 ../lib/modules/kolabUser.inc:259
-#, fuzzy
 msgid "Please enter a user password."
 msgstr "Please enter a user password."
 
 #: ../lib/modules/zarafaDynamicGroup.inc:191 ../lib/modules/eduPerson.inc:238
 #: ../lib/modules/eduPerson.inc:240 ../lib/modules/zarafaAddressList.inc:162
-#, fuzzy
 msgid "Please enter a valid DN in the field:"
 msgstr "Please enter a valid DN in the field:"
 
 #: ../lib/types/bind.inc:205
-#, fuzzy
 msgid "Please enter a valid DNS name."
 msgstr "Please enter a valid DNS name."
 
 #: ../lib/modules/customFields.inc:1137 ../lib/modules/customFields.inc:1591
-#, fuzzy
 msgid ""
 "Please enter a valid LDAP attribute name. Allowed characters are a-z, 0-9, _ "
 "and -."
@@ -9467,46 +9035,38 @@ msgstr ""
 "and -."
 
 #: ../templates/selfService/adminMain.php:217
-#, fuzzy
 msgid "Please enter a valid LDAP suffix."
 msgstr "Please enter a valid LDAP suffix."
 
 #: ../templates/selfService/adminMain.php:221
-#, fuzzy
 msgid ""
 "Please enter a valid LDAP user if you want to use it for all operations."
 msgstr ""
 "Please enter a valid LDAP user if you want to use it for all operations."
 
 #: ../lib/modules/qmailUser.inc:447
-#, fuzzy
 msgid "Please enter a valid account status."
 msgstr "Please enter a valid account status."
 
 #: ../lib/modules/bindDLZ.inc:389 ../lib/modules/bindDLZ.inc:390
-#, fuzzy
 msgid "Please enter a valid admin email address."
 msgstr "Please enter a valid admin email address."
 
 #: ../templates/config/confmain.php:524
-#, fuzzy
 msgid "Please enter a valid bind user."
 msgstr "Please enter a valid bind user."
 
 #: ../lib/modules/inetOrgPerson.inc:99 ../lib/modules/inetOrgPerson.inc:100
-#, fuzzy
 msgid "Please enter a valid business category!"
 msgstr "Please enter a valid business category!"
 
 #: ../lib/modules/posixAccount.inc:129 ../lib/modules/posixAccount.inc:130
 #: ../lib/modules/windowsUser.inc:518 ../lib/modules/windowsUser.inc:519
 #: ../lib/modules/inetOrgPerson.inc:90 ../lib/modules/inetOrgPerson.inc:91
-#, fuzzy
 msgid "Please enter a valid common name!"
 msgstr "Please enter a valid common name!"
 
 #: ../lib/modules/qmailUser.inc:464
-#, fuzzy
 msgid "Please enter a valid configuration type."
 msgstr "Please enter a valid configuration type."
 
@@ -9514,30 +9074,25 @@ msgstr "Please enter a valid configuration type."
 #: ../lib/modules/qmailUser.inc:463 ../lib/modules/sambaSamAccount.inc:116
 #: ../lib/modules/heimdalKerberos.inc:248
 #: ../lib/modules/heimdalKerberos.inc:249
-#, fuzzy
 msgid "Please enter a valid date in format DD-MM-YYYY."
 msgstr "Please enter a valid date in format DD-MM-YYYY."
 
 #: ../lib/modules/asteriskAccount.inc:640
 #: ../lib/modules/asteriskAccount.inc:641
-#, fuzzy
 msgid "Please enter a valid default user."
 msgstr "Please enter a valid default user."
 
 #: ../lib/modules/qmailUser.inc:448
-#, fuzzy
 msgid "Please enter a valid delivery mode."
 msgstr "Please enter a valid delivery mode."
 
 #: ../lib/modules/sambaSamAccount.inc:110
 #: ../lib/modules/sambaSamAccount.inc:111 ../lib/modules/windowsUser.inc:522
 #: ../lib/modules/windowsUser.inc:523
-#, fuzzy
 msgid "Please enter a valid display name!"
 msgstr "Please enter a valid display name!"
 
 #: ../lib/modules/sambaSamAccount.inc:117 ../lib/modules/windowsUser.inc:544
-#, fuzzy
 msgid "Please enter a valid drive letter."
 msgstr "Please enter a valid drive letter."
 
@@ -9553,8 +9108,8 @@ msgstr "Please enter a valid drive letter."
 #: ../lib/modules/windowsUser.inc:535 ../lib/modules/pykotaUser.inc:312
 #: ../lib/modules/pykotaUser.inc:313 ../lib/modules/inetOrgPerson.inc:76
 #: ../lib/modules/inetOrgPerson.inc:77
-#: ../lib/modules/kolabSharedFolder.inc:253
-#: ../lib/modules/kolabSharedFolder.inc:254 ../lib/modules/qmailGroup.inc:413
+#: ../lib/modules/kolabSharedFolder.inc:252
+#: ../lib/modules/kolabSharedFolder.inc:253 ../lib/modules/qmailGroup.inc:413
 #: ../lib/modules/qmailGroup.inc:414 ../lib/modules/qmailGroup.inc:415
 #: ../lib/modules/qmailGroup.inc:416 ../lib/modules/qmailGroup.inc:418
 #: ../lib/modules/qmailGroup.inc:419 ../lib/modules/qmailGroup.inc:420
@@ -9565,35 +9120,29 @@ msgstr "Please enter a valid drive letter."
 #: ../lib/modules/passwordSelfReset.inc:1017
 #: ../lib/modules/windowsGroup.inc:238 ../lib/modules/windowsGroup.inc:239
 #: ../lib/modules.inc:1161
-#, fuzzy
 msgid "Please enter a valid email address!"
 msgstr "Please enter a valid email address!"
 
 #: ../lib/modules/zarafaDynamicGroup.inc:195
 #: ../lib/modules/zarafaDynamicGroup.inc:196
 #: ../lib/modules/zarafaGroup.inc:210 ../lib/modules/zarafaGroup.inc:211
-#, fuzzy
 msgid "Please enter a valid email alias."
 msgstr "Please enter a valid email alias."
 
 #: ../lib/modules/passwordSelfReset.inc:805
 #: ../lib/modules/passwordSelfReset.inc:1024
-#, fuzzy
 msgid "Please enter a valid employee number."
 msgstr "Please enter a valid employee number."
 
 #: ../lib/modules/inetOrgPerson.inc:88 ../lib/modules/inetOrgPerson.inc:89
-#, fuzzy
 msgid "Please enter a valid employee type!"
 msgstr "Please enter a valid employee type!"
 
 #: ../lib/modules/inetOrgPerson.inc:74 ../lib/modules/inetOrgPerson.inc:75
-#, fuzzy
 msgid "Please enter a valid fax number!"
 msgstr "Please enter a valid fax number!"
 
 #: ../lib/modules/customFields.inc:172
-#, fuzzy
 msgid ""
 "Please enter a valid field name. Only letters, numbers, dash and underline "
 "are allowed."
@@ -9602,7 +9151,6 @@ msgstr ""
 "are allowed."
 
 #: ../lib/lists.inc:229
-#, fuzzy
 msgid ""
 "Please enter a valid filter. Only letters, numbers and \" _*$.@-\" are "
 "allowed."
@@ -9612,60 +9160,49 @@ msgstr ""
 
 #: ../lib/modules/selfRegistration.inc:73
 #: ../lib/modules/selfRegistration.inc:127
-#, fuzzy
 msgid "Please enter a valid first name."
 msgstr "Please enter a valid first name."
 
 #: ../lib/modules/asteriskAccount.inc:634
 #: ../lib/modules/asteriskAccount.inc:635
-#, fuzzy
 msgid "Please enter a valid from domain."
 msgstr "Please enter a valid from domain."
 
 #: ../lib/modules/asteriskAccount.inc:632
 #: ../lib/modules/asteriskAccount.inc:633
-#, fuzzy
 msgid "Please enter a valid from user."
 msgstr "Please enter a valid from user."
 
 #: ../lib/modules/sambaSamAccount.inc:121
-#, fuzzy
 msgid "Please enter a valid group name!"
 msgstr "Please enter a valid group name!"
 
 #: ../lib/modules/windowsGroup.inc:240
-#, fuzzy
 msgid "Please enter a valid group scope."
 msgstr "Please enter a valid group scope."
 
 #: ../lib/modules/windowsGroup.inc:241
-#, fuzzy
 msgid "Please enter a valid group type."
 msgstr "Please enter a valid group type."
 
 #: ../lib/modules/pykotaUser.inc:320
-#, fuzzy
 msgid "Please enter a valid job suffix."
 msgstr "Please enter a valid job suffix."
 
 #: ../lib/modules/inetOrgPerson.inc:86 ../lib/modules/inetOrgPerson.inc:87
-#, fuzzy
 msgid "Please enter a valid job title!"
 msgstr "Please enter a valid job title!"
 
 #: ../lib/modules/selfRegistration.inc:74
 #: ../lib/modules/selfRegistration.inc:128
-#, fuzzy
 msgid "Please enter a valid last name."
 msgstr "Please enter a valid last name."
 
 #: ../lib/modules/pykotaGroup.inc:198 ../lib/modules/pykotaUser.inc:314
-#, fuzzy
 msgid "Please enter a valid limit type."
 msgstr "Please enter a valid limit type."
 
 #: ../lib/modules/eduPerson.inc:246
-#, fuzzy
 msgid "Please enter a valid list of affiliations."
 msgstr "Please enter a valid list of affiliations."
 
@@ -9675,17 +9212,14 @@ msgid "Please enter a valid list of group names."
 msgstr "Please enter a valid list of group names."
 
 #: ../lib/modules/hostObject.inc:104
-#, fuzzy
 msgid "Please enter a valid list of host names."
 msgstr "Please enter a valid list of host names."
 
 #: ../lib/modules/authorizedServiceObject.inc:123
-#, fuzzy
 msgid "Please enter a valid list of service names."
 msgstr "Please enter a valid list of service names."
 
 #: ../lib/modules/inetOrgPerson.inc:72 ../lib/modules/inetOrgPerson.inc:73
-#, fuzzy
 msgid "Please enter a valid mobile number!"
 msgstr "Please enter a valid mobile number!"
 
@@ -9694,27 +9228,22 @@ msgstr "Please enter a valid mobile number!"
 #: ../lib/modules/pykotaUser.inc:315 ../lib/modules/pykotaUser.inc:316
 #: ../lib/modules/pykotaUser.inc:317 ../lib/modules/pykotaUser.inc:318
 #: ../lib/modules/pykotaUser.inc:319
-#, fuzzy
 msgid "Please enter a valid number (e.g. \"1.5\")."
 msgstr "Please enter a valid number (e.g. \"1.5\")."
 
 #: ../lib/modules/pykotaPrinter.inc:206 ../lib/modules/pykotaPrinter.inc:207
-#, fuzzy
 msgid "Please enter a valid number."
 msgstr "Please enter a valid number."
 
 #: ../lib/modules/customFields.inc:175
-#, fuzzy
 msgid "Please enter a valid object class."
 msgstr "Please enter a valid object class."
 
 #: ../lib/modules/dhcp_settings.inc:324
-#, fuzzy
 msgid "Please enter a valid option."
 msgstr "Please enter a valid option."
 
 #: ../lib/modules/zarafaServer.inc:170 ../lib/modules/zarafaServer.inc:171
-#, fuzzy
 msgid "Please enter a valid path."
 msgstr "Please enter a valid path."
 
@@ -9722,28 +9251,23 @@ msgstr "Please enter a valid path."
 #: ../lib/modules/asteriskAccount.inc:637 ../lib/modules/zarafaServer.inc:166
 #: ../lib/modules/zarafaServer.inc:167 ../lib/modules/zarafaServer.inc:168
 #: ../lib/modules/zarafaServer.inc:169
-#, fuzzy
 msgid "Please enter a valid port number."
 msgstr "Please enter a valid port number."
 
 #: ../lib/modules/inetOrgPerson.inc:80 ../lib/modules/inetOrgPerson.inc:81
-#, fuzzy
 msgid "Please enter a valid postal address!"
 msgstr "Please enter a valid postal address!"
 
 #: ../lib/modules/windowsUser.inc:532 ../lib/modules/windowsUser.inc:533
 #: ../lib/modules/inetOrgPerson.inc:84 ../lib/modules/inetOrgPerson.inc:85
-#, fuzzy
 msgid "Please enter a valid postal code!"
 msgstr "Please enter a valid postal code!"
 
 #: ../lib/modules/eduPerson.inc:244
-#, fuzzy
 msgid "Please enter a valid primary affiliation."
 msgstr "Please enter a valid primary affiliation."
 
 #: ../lib/modules/freeRadius.inc:246 ../lib/modules/freeRadius.inc:247
-#, fuzzy
 msgid "Please enter a valid realm."
 msgstr "Please enter a valid realm."
 
@@ -9751,17 +9275,14 @@ msgstr "Please enter a valid realm."
 #: ../lib/modules/kolabUser.inc:234 ../lib/modules/kolabUser.inc:235
 #: ../lib/modules/kolabSharedFolder.inc:243
 #: ../lib/modules/kolabSharedFolder.inc:244
-#, fuzzy
 msgid "Please enter a valid recepient expression."
 msgstr "Please enter a valid recepient expression."
 
 #: ../lib/modules/inetOrgPerson.inc:82 ../lib/modules/inetOrgPerson.inc:83
-#, fuzzy
 msgid "Please enter a valid registered address."
 msgstr "Please enter a valid registered address."
 
 #: ../lib/modules/eduPerson.inc:245
-#, fuzzy
 msgid "Please enter a valid scoped affiliation."
 msgstr "Please enter a valid scoped affiliation."
 
@@ -9769,18 +9290,15 @@ msgstr "Please enter a valid scoped affiliation."
 #: ../lib/modules/kolabUser.inc:236 ../lib/modules/kolabUser.inc:237
 #: ../lib/modules/kolabSharedFolder.inc:245
 #: ../lib/modules/kolabSharedFolder.inc:246
-#, fuzzy
 msgid "Please enter a valid sender expression."
 msgstr "Please enter a valid sender expression."
 
 #: ../lib/modules/qmailUser.inc:461 ../lib/modules/qmailUser.inc:462
 #: ../lib/modules/imapAccess.inc:158
-#, fuzzy
 msgid "Please enter a valid server name where the mailboxes reside."
 msgstr "Please enter a valid server name where the mailboxes reside."
 
 #: ../lib/modules/inetOrgPerson.inc:78 ../lib/modules/inetOrgPerson.inc:79
-#, fuzzy
 msgid "Please enter a valid street name!"
 msgstr "Please enter a valid street name!"
 
@@ -9788,105 +9306,88 @@ msgstr "Please enter a valid street name!"
 #: ../lib/modules/windowsUser.inc:530 ../lib/modules/windowsUser.inc:531
 #: ../lib/modules/inetOrgPerson.inc:68 ../lib/modules/inetOrgPerson.inc:69
 #: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:71
-#, fuzzy
 msgid "Please enter a valid telephone number!"
 msgstr "Please enter a valid telephone number!"
 
 #: ../lib/modules/passwordSelfReset.inc:819
 #: ../lib/modules/passwordSelfReset.inc:1038
-#, fuzzy
 msgid "Please enter a valid user name or email address."
 msgstr "Please enter a valid user name or email address."
 
 #: ../lib/modules/posixGroup.inc:701 ../lib/modules/posixAccount.inc:1087
 #: ../lib/modules/posixAccount.inc:1092
-#, fuzzy, php-format
+#, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "Please enter a value between %s and %s!"
 
 #: ../lib/modules/customFields.inc:2398
-#, fuzzy
 msgid "Please enter a value for status \"checked\"."
 msgstr "Please enter a value for status \"checked\"."
 
 #: ../lib/modules/customFields.inc:2405
-#, fuzzy
 msgid "Please enter a value for status \"unchecked\"."
 msgstr "Please enter a value for status \"unchecked\"."
 
 #: ../templates/multiEdit.php:140
-#, fuzzy
 msgid "Please enter a value to add."
 msgstr "Please enter a value to add."
 
 #: ../templates/multiEdit.php:143
-#, fuzzy
 msgid "Please enter a value to modify."
 msgstr "Please enter a value to modify."
 
 #: ../lib/modules/customFields.inc:70
-#, fuzzy
 msgid "Please enter an alias for this group."
 msgstr "Please enter an alias for this group."
 
 #: ../lib/modules/customFields.inc:174
-#, fuzzy
 msgid "Please enter an alias name."
 msgstr "Please enter an alias name."
 
 #: ../lib/modules/kolabUser.inc:265 ../lib/modules/imapAccess.inc:188
-#, fuzzy, php-format
+#, php-format
 msgid "Please enter an email address on this page: %s"
 msgstr "Please enter an email address on this page: %s"
 
 #: ../lib/modules/pykotaUser.inc:346
-#, fuzzy, php-format
+#, php-format
 msgid "Please enter an user name on this page: %s"
 msgstr "Please enter an user name on this page: %s"
 
 #: ../lib/modules/windowsUser.inc:1227 ../lib/modules/windowsUser.inc:1236
 #: ../lib/modules/windowsUser.inc:1245 ../lib/modules/windowsUser.inc:1256
-#, fuzzy
 msgid "Please enter either yes or no."
 msgstr "Please enter either yes or no."
 
 #: ../lib/modules/sudoRole.inc:227 ../lib/modules/sudoRole.inc:228
-#, fuzzy
 msgid "Please enter only ASCII characters for the commands."
 msgstr "Please enter only ASCII characters for the commands."
 
 #: ../lib/modules/sudoRole.inc:225 ../lib/modules/sudoRole.inc:226
-#, fuzzy
 msgid "Please enter only ASCII characters for the host names."
 msgstr "Please enter only ASCII characters for the host names."
 
 #: ../lib/modules/sudoRole.inc:233 ../lib/modules/sudoRole.inc:234
-#, fuzzy
 msgid "Please enter only ASCII characters for the options."
 msgstr "Please enter only ASCII characters for the options."
 
 #: ../lib/modules/sudoRole.inc:231 ../lib/modules/sudoRole.inc:232
-#, fuzzy
 msgid "Please enter only ASCII characters for the run groups."
 msgstr "Please enter only ASCII characters for the run groups."
 
 #: ../lib/modules/sudoRole.inc:229 ../lib/modules/sudoRole.inc:230
-#, fuzzy
 msgid "Please enter only ASCII characters for the run users."
 msgstr "Please enter only ASCII characters for the run users."
 
 #: ../lib/modules/device.inc:133 ../lib/modules/device.inc:134
-#, fuzzy
 msgid "Please enter only ASCII characters for the serial number."
 msgstr "Please enter only ASCII characters for the serial number."
 
 #: ../lib/modules/sudoRole.inc:223 ../lib/modules/sudoRole.inc:224
-#, fuzzy
 msgid "Please enter only ASCII characters for the user names."
 msgstr "Please enter only ASCII characters for the user names."
 
 #: ../lib/modules/passwordSelfReset.inc:274
-#, fuzzy
 msgid ""
 "Please enter the DN and password of the administrative password self reset "
 "account."
@@ -9895,7 +9396,6 @@ msgstr ""
 "account."
 
 #: ../lib/modules/selfRegistration.inc:157
-#, fuzzy
 msgid ""
 "Please enter the DN and password of the administrative self registration "
 "account."
@@ -9904,39 +9404,32 @@ msgstr ""
 "account."
 
 #: ../lib/modules/posixGroup.inc:506 ../lib/modules/posixAccount.inc:491
-#, fuzzy
 msgid ""
 "Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\"."
 msgstr ""
 "Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\"."
 
 #: ../lib/modules/bindDLZ.inc:75 ../lib/modules/bindDLZ.inc:79
-#, fuzzy
 msgid "Please enter the IP address for this entry."
 msgstr "Please enter the IP address for this entry."
 
 #: ../lib/modules/ddns.inc:92
-#, fuzzy
 msgid "Please enter the IP address of your DNS server."
 msgstr "Please enter the IP address of your DNS server."
 
 #: ../lib/modules/selfRegistration.inc:106
-#, fuzzy
 msgid "Please enter the LDAP DN that should be used to create new users."
 msgstr "Please enter the LDAP DN that should be used to create new users."
 
 #: ../lib/modules/passwordSelfReset.inc:94
-#, fuzzy
 msgid "Please enter the LDAP DN that should be used to reset passwords."
 msgstr "Please enter the LDAP DN that should be used to reset passwords."
 
 #: ../lib/modules/customFields.inc:86
-#, fuzzy
 msgid "Please enter the LDAP attribute name for this field."
 msgstr "Please enter the LDAP attribute name for this field."
 
 #: ../help/help.inc:119
-#, fuzzy
 msgid ""
 "Please enter the LDAP suffix where LAM should start to search for users. The "
 "LDAP filter needs to match the given user name to exactly one DN. The value "
@@ -9947,7 +9440,6 @@ msgstr ""
 "\"%USER%\" will be replaced by the user name from the login page."
 
 #: ../lib/modules/pykotaUser.inc:150
-#, fuzzy
 msgid ""
 "Please enter the LDAP suffix where the PyKota job entries are stored "
 "(configuration option \"jobbase\")."
@@ -9957,49 +9449,40 @@ msgstr ""
 
 #: ../lib/modules/asteriskExtension.inc:181
 #: ../lib/modules/asteriskVoicemail.inc:206
-#, fuzzy
 msgid "Please enter the account context."
 msgstr "Please enter the account context."
 
 #: ../lib/modules.inc:922
-#, fuzzy
 msgid "Please enter the account information on the other pages first."
 msgstr "Please enter the account information on the other pages first."
 
 #: ../lib/modules/asteriskAccount.inc:629
-#, fuzzy
 msgid "Please enter the account type."
 msgstr "Please enter the account type."
 
 #: ../lib/modules/asteriskAccount.inc:113
-#, fuzzy
 msgid "Please enter the account's type (e.g. \"friend\")."
 msgstr "Please enter the account's type (e.g. \"friend\")."
 
 #: ../lib/modules/asteriskExtension.inc:180
-#, fuzzy
 msgid "Please enter the application data."
 msgstr "Please enter the application data."
 
 #: ../lib/modules/asteriskExtension.inc:179
-#, fuzzy
 msgid "Please enter the application."
 msgstr "Please enter the application."
 
 #: ../lib/modules/automount.inc:62
-#, fuzzy
 msgid ""
 "Please enter the automount entry (e.g. \"-fstype=nfs,rw server:/home\")."
 msgstr ""
 "Please enter the automount entry (e.g. \"-fstype=nfs,rw server:/home\")."
 
 #: ../templates/login.php:295
-#, fuzzy
 msgid "Please enter the configuration and create a server profile."
 msgstr "Please enter the configuration and create a server profile."
 
 #: ../help/help.inc:57
-#, fuzzy
 msgid ""
 "Please enter the configuration password. This is NOT your LDAP password. It "
 "is stored in your .conf-file. If this is the first time you log in, enter "
@@ -10010,32 +9493,26 @@ msgstr ""
 "\"lam\"."
 
 #: ../lib/modules/puppetClient.inc:74 ../lib/modules/puppetClient.inc:78
-#, fuzzy
 msgid "Please enter the environment name for this node (e.g. production)."
 msgstr "Please enter the environment name for this node (e.g. production)."
 
 #: ../lib/modules/asteriskAccount.inc:623
-#, fuzzy
 msgid "Please enter the extension context."
 msgstr "Please enter the extension context."
 
 #: ../lib/modules/asteriskExtension.inc:182
-#, fuzzy
 msgid "Please enter the extension name."
 msgstr "Please enter the extension name."
 
 #: ../lib/modules/windowsGroup.inc:107
-#, fuzzy
 msgid "Please enter the group name."
 msgstr "Please enter the group name."
 
 #: ../lib/modules/asteriskAccount.inc:626 ../lib/modules/windowsHost.inc:68
-#, fuzzy
 msgid "Please enter the host name."
 msgstr "Please enter the host name."
 
 #: ../lib/modules/customScripts.inc:53
-#, fuzzy
 msgid ""
 "Please enter the list of scripts which should be run. Each line has the "
 "following format: [account type] [action] [script and arguments]"
@@ -10044,7 +9521,6 @@ msgstr ""
 "following format: [account type] [action] [script and arguments]"
 
 #: ../lib/modules/customScripts.inc:67
-#, fuzzy
 msgid ""
 "Please enter the list of scripts which should be run. Each line has the "
 "following format: [action] [script and arguments]"
@@ -10053,19 +9529,16 @@ msgstr ""
 "following format: [action] [script and arguments]"
 
 #: ../lib/modules/nisObject.inc:59
-#, fuzzy
 msgid ""
 "Please enter the mapping entry (e.g. \"-fstype=nfs,rw server:/projects\")."
 msgstr ""
 "Please enter the mapping entry (e.g. \"-fstype=nfs,rw server:/projects\")."
 
 #: ../lib/modules/nisObject.inc:63
-#, fuzzy
 msgid "Please enter the mapping name for this entry (e.g. auto.home)."
 msgstr "Please enter the mapping name for this entry (e.g. auto.home)."
 
 #: ../help/help.inc:139
-#, fuzzy
 msgid ""
 "Please enter the master configuration password. This is NOT your LDAP "
 "password. It is stored in your config.cfg file. If this is the first time "
@@ -10076,17 +9549,14 @@ msgstr ""
 "you log in, enter \"lam\"."
 
 #: ../templates/config/mainlogin.php:145
-#, fuzzy
 msgid "Please enter the master password to change the general preferences:"
 msgstr "Please enter the master password to change the general preferences:"
 
 #: ../lib/modules/qmailGroup.inc:417
-#, fuzzy
 msgid "Please enter the message store."
 msgstr "Please enter the message store."
 
 #: ../help/help.inc:127
-#, fuzzy
 msgid ""
 "Please enter the name of the new profile and the password to change its "
 "settings. Profile names may contain letters, numbers and -/_."
@@ -10095,7 +9565,6 @@ msgstr ""
 "settings. Profile names may contain letters, numbers and -/_."
 
 #: ../help/help.inc:129
-#, fuzzy
 msgid ""
 "Please enter the new name of the profile. The name may contain letters, "
 "numbers and -/_."
@@ -10105,7 +9574,6 @@ msgstr ""
 
 #: ../lib/modules/selfRegistration.inc:110
 #: ../lib/modules/passwordSelfReset.inc:98
-#, fuzzy
 msgid ""
 "Please enter the password for the admin DN. Please note that this is saved "
 "as clear-text in the self service profile."
@@ -10115,12 +9583,10 @@ msgstr ""
 
 #: ../lib/modules/asteriskAccount.inc:109 ../lib/modules/posixAccount.inc:512
 #: ../lib/modules/windowsUser.inc:211 ../lib/modules/inetOrgPerson.inc:911
-#, fuzzy
 msgid "Please enter the password which you want to set for this account."
 msgstr "Please enter the password which you want to set for this account."
 
 #: ../help/help.inc:189
-#, fuzzy
 msgid ""
 "Please enter the password which you want to set for this account. You may "
 "also generate a random password (12 characters) which will be displayed on "
@@ -10131,39 +9597,32 @@ msgstr ""
 "your screen."
 
 #: ../lib/modules/posixAccount.inc:467
-#, fuzzy
 msgid "Please enter the path to the user's home directory."
 msgstr "Please enter the path to the user's home directory."
 
 #: ../lib/modules/zarafaServer.inc:62
-#, fuzzy
 msgid "Please enter the port number for (unencrypted) HTTP connections."
 msgstr "Please enter the port number for (unencrypted) HTTP connections."
 
 #: ../lib/modules/zarafaServer.inc:66
-#, fuzzy
 msgid "Please enter the port number for encrypted connections."
 msgstr "Please enter the port number for encrypted connections."
 
 #: ../lib/modules/passwordSelfReset.inc:74
-#, fuzzy
 msgid ""
 "Please enter the possible security questions for the password self reset."
 msgstr ""
 "Please enter the possible security questions for the password self reset."
 
 #: ../lib/modules/asteriskExtension.inc:184
-#, fuzzy
 msgid "Please enter the priority."
 msgstr "Please enter the priority."
 
 #: ../lib/modules/imapAccess.inc:101
-#, fuzzy
 msgid "Please enter the quota limit of this mailbox in kilobytes."
 msgstr "Please enter the quota limit of this mailbox in kilobytes."
 
 #: ../lib/modules/quota.inc:147
-#, fuzzy
 msgid ""
 "Please enter the quota settings for this mount point. The syntax is: {soft "
 "block limit},{hard block limit},{soft inode limit},{hard inode limit}"
@@ -10172,7 +9631,6 @@ msgstr ""
 "block limit},{hard block limit},{soft inode limit},{hard inode limit}"
 
 #: ../lib/modules/systemQuotas.inc:62
-#, fuzzy
 msgid ""
 "Please enter the quota settings for this user. The syntax is: {mount point},"
 "{soft block limit},{hard block limit},{soft inode limit},{hard inode limit}."
@@ -10181,7 +9639,7 @@ msgstr ""
 "{soft block limit},{hard block limit},{soft inode limit},{hard inode limit}."
 
 #: ../lib/modules/customFields.inc:98
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Please enter the regular expression (e.g. \"/^[0-9a-zA-Z]+$/\") to validate "
 "this field. For a syntax description see <a href=\"%s\">here</a>."
@@ -10193,34 +9651,28 @@ msgstr ""
 #: ../lib/modules/selfRegistration.inc:450
 #: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:109
 #: ../lib/modules/windowsUser.inc:542 ../lib/modules/customFields.inc:2156
-#, fuzzy
 msgid "Please enter the same password in both password fields."
 msgstr "Please enter the same password in both password fields."
 
 #: ../lib/modules/passwordSelfReset.inc:70
-#, fuzzy
 msgid "Please enter the security question for the password self reset."
 msgstr "Please enter the security question for the password self reset."
 
 #: ../lib/modules/sambaSamAccount.inc:363
-#, fuzzy
 msgid "Please enter the time limit in minutes. 0 means unlimited."
 msgstr "Please enter the time limit in minutes. 0 means unlimited."
 
 #: ../lib/modules/windowsUser.inc:100 ../lib/modules/windowsUser.inc:108
-#, fuzzy
 msgid "Please enter the user's name."
 msgstr "Please enter the user's name."
 
 #: ../lib/modules/puppetClient.inc:94 ../lib/modules/puppetClient.inc:98
-#, fuzzy
 msgid ""
 "Please enter your Puppet variables for this node (e.g. config_exim=true)."
 msgstr ""
 "Please enter your Puppet variables for this node (e.g. config_exim=true)."
 
 #: ../templates/selfService/adminLogin.php:133
-#, fuzzy
 msgid ""
 "Please enter your master configuration password to change the self service "
 "profile:"
@@ -10229,27 +9681,22 @@ msgstr ""
 "profile:"
 
 #: ../templates/config/conflogin.php:132
-#, fuzzy
 msgid "Please enter your password to change the server preferences:"
 msgstr "Please enter your password to change the server preferences:"
 
 #: ../lib/modules/ldapPublicKey.inc:66
-#, fuzzy
 msgid "Please enter your public SSH key."
 msgstr "Please enter your public SSH key."
 
 #: ../lib/modules/range.inc:394 ../lib/modules/fixed_ip.inc:348
-#, fuzzy
 msgid "Please fill out the DHCP settings first."
 msgstr "Please fill out the DHCP settings first."
 
 #: ../templates/3rdParty/pla/lib/Template.php:474
-#, fuzzy
 msgid "Please go back and try again."
 msgstr "Please go back and try again."
 
 #: ../templates/masscreate.php:243
-#, fuzzy
 msgid ""
 "Please provide a CSV formated file with your account data. The cells in the "
 "first row must be filled with the column identifiers. The following rows "
@@ -10260,34 +9707,28 @@ msgstr ""
 "represent one account for each row."
 
 #: ../lib/config.inc:1634
-#, fuzzy
 msgid "Please provide a file in DER or PEM format."
 msgstr "Please provide a file in DER or PEM format."
 
 #: ../templates/massBuildAccounts.php:256
-#, fuzzy
 msgid "Please provide a file to upload."
 msgstr "Please provide a file to upload."
 
 #: ../lib/modules/inetOrgPerson.inc:819
-#, fuzzy
 msgid ""
 "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
 msgstr ""
 "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
 
 #: ../lib/modules/customFields.inc:90
-#, fuzzy
 msgid "Please select the field type (e.g. text field)."
 msgstr "Please select the field type (e.g. text field)."
 
 #: ../help/help.inc:254
-#, fuzzy
 msgid "Please select the suffix where changes should be done."
 msgstr "Please select the suffix where changes should be done."
 
 #: ../help/help.inc:145
-#, fuzzy
 msgid ""
 "Please select your prefered log level. Messages with a lower level will not "
 "be logged."
@@ -10296,24 +9737,21 @@ msgstr ""
 "be logged."
 
 #: ../lib/modules/asteriskVoicemail.inc:217
-#, fuzzy
 msgid "Please set the voicemail password with \"Set password\" before saving."
 msgstr "Please set the voicemail password with \"Set password\" before saving."
 
 #: ../lib/modules.inc:871
-#, fuzzy, php-format
+#, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "Please set up all required attributes on page: %s"
 
 #: ../templates/config/profmanage.php:220
 #: ../templates/selfService/profManage.php:160
-#, fuzzy
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr ""
 "Please set up your master configuration file (config/config.cfg) first!"
 
 #: ../lib/modules/dhcp_settings.inc:544 ../lib/modules/ddns.inc:355
-#, fuzzy
 msgid ""
 "Please set your LDAP suffix to an LDAP entry with object class \"dhcpService"
 "\" or \"dhcpServer\"."
@@ -10322,22 +9760,18 @@ msgstr ""
 "\" or \"dhcpServer\"."
 
 #: ../templates/multiEdit.php:213
-#, fuzzy
 msgid "Please specify at least one operation."
 msgstr "Please specify at least one operation."
 
 #: ../lib/modules/passwordSelfReset.inc:134
-#, fuzzy
 msgid "Please specify how your users need to identify themselves."
 msgstr "Please specify how your users need to identify themselves."
 
 #: ../lib/modules/windowsGroup.inc:135
-#, fuzzy
 msgid "Please specify the group scope."
 msgstr "Please specify the group scope."
 
 #: ../lib/modules/customFields.inc:130
-#, fuzzy
 msgid ""
 "Please specify the possible values for this field. Each value can have a "
 "descriptive label that is displayed to the user."
@@ -10346,7 +9780,6 @@ msgstr ""
 "descriptive label that is displayed to the user."
 
 #: ../help/help.inc:258
-#, fuzzy
 msgid ""
 "Please specify which attributes should be changed. The modify operation will "
 "also add an value if the attribute does not yet exist. To delete all values "
@@ -10357,22 +9790,19 @@ msgstr ""
 "of an attribute please leave the value field empty."
 
 #: ../lib/modules/inetOrgPerson.inc:97
-#, fuzzy
 msgid "Please upload a .jpg/.jpeg file."
 msgstr "Please upload a .jpg/.jpeg file."
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:172
-#, fuzzy
 msgid "Please wait"
 msgstr "Please wait"
 
 #: ../lib/types/ppolicyType.inc:149
-#, fuzzy, php-format
+#, php-format
 msgid "Policy count: %s"
 msgstr "Policy count: %s"
 
 #: ../lib/modules/kolabUser.inc:227
-#, fuzzy
 msgid "Policy list has invalid format!"
 msgstr "Policy list has invalid format!"
 
@@ -10382,18 +9812,15 @@ msgstr "Policy list has invalid format!"
 #: ../lib/modules/asteriskAccount.inc:500
 #: ../lib/modules/asteriskAccount.inc:750
 #: ../lib/modules/asteriskAccount.inc:1063
-#, fuzzy
 msgid "Port"
 msgstr "Port"
 
 #: ../lib/modules/asteriskAccount.inc:173
-#, fuzzy
 msgid "Port number."
 msgstr "Port number."
 
 #: ../templates/pdfedit/pdfpage.php:592 ../templates/pdfedit/pdfpage.php:602
 #: ../templates/pdfedit/pdfpage.php:612 ../templates/pdfedit/pdfpage.php:627
-#, fuzzy
 msgid "Position"
 msgstr "Position"
 
@@ -10401,14 +9828,12 @@ msgstr "Position"
 #: ../lib/modules/customScripts.inc:118 ../lib/modules/customScripts.inc:120
 #: ../lib/modules/customScripts.inc:122
 #: ../lib/modules/sambaGroupMapping.inc:597
-#, fuzzy
 msgid "Possible values"
 msgstr "Possible values"
 
 #: ../lib/modules/pykotaPrinter.inc:123 ../lib/modules/posixGroup.inc:511
 #: ../lib/modules/sambaGroupMapping.inc:165
 #: ../lib/modules/groupOfNames.inc:108
-#, fuzzy
 msgid ""
 "Possible wildcards are: \"*\" = any character, \"^\" = line start, \"$\" = "
 "line end"
@@ -10425,7 +9850,6 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:743 ../lib/modules/inetOrgPerson.inc:747
 #: ../lib/modules/inetOrgPerson.inc:1245 ../lib/modules/inetOrgPerson.inc:1859
 #: ../lib/modules/inetOrgPerson.inc:2552
-#, fuzzy
 msgid "Post office box"
 msgstr "Post office box"
 
@@ -10434,12 +9858,10 @@ msgstr "Post office box"
 #: ../lib/modules/inetOrgPerson.inc:464 ../lib/modules/inetOrgPerson.inc:631
 #: ../lib/modules/inetOrgPerson.inc:759 ../lib/modules/inetOrgPerson.inc:1298
 #: ../lib/modules/inetOrgPerson.inc:1861 ../lib/modules/inetOrgPerson.inc:2519
-#, fuzzy
 msgid "Postal address"
 msgstr "Postal address"
 
 #: ../lib/modules/inetOrgPerson.inc:760
-#, fuzzy
 msgid "Postal address, city"
 msgstr "Postal address, city"
 
@@ -10453,50 +9875,41 @@ msgstr "Postal address, city"
 #: ../lib/modules/inetOrgPerson.inc:751 ../lib/modules/inetOrgPerson.inc:755
 #: ../lib/modules/inetOrgPerson.inc:1256 ../lib/modules/inetOrgPerson.inc:1860
 #: ../lib/modules/inetOrgPerson.inc:2541
-#, fuzzy
 msgid "Postal code"
 msgstr "Postal code"
 
 #: ../lib/modules/puppetClient.inc:105
-#, fuzzy
 msgid "Predefined classes"
 msgstr "Predefined classes"
 
 #: ../lib/modules/puppetClient.inc:109 ../lib/modules/puppetClient.inc:115
-#, fuzzy
 msgid "Predefined environments"
 msgstr "Predefined environments"
 
 #: ../lib/modules/authorizedServiceObject.inc:86
 #: ../lib/modules/authorizedServiceObject.inc:92
-#, fuzzy
 msgid "Predefined services"
 msgstr "Predefined services"
 
 #: ../help/help.inc:89
-#, fuzzy
 msgid "Predefined values"
 msgstr "Predefined values"
 
 #: ../lib/modules/bindDLZ.inc:131 ../lib/modules/bindDLZ.inc:135
 #: ../lib/modules/bindDLZ.inc:211 ../lib/modules/bindDLZ.inc:371
 #: ../lib/modules/bindDLZ.inc:750 ../lib/modules/bindDLZ.inc:1097
-#, fuzzy
 msgid "Preference"
 msgstr "Preference"
 
 #: ../lib/modules/imapAccess.inc:88 ../lib/modules/imapAccess.inc:121
-#, fuzzy
 msgid "Prefix for mailboxes"
 msgstr "Prefix for mailboxes"
 
 #: ../lib/modules/inetOrgPerson.inc:410
-#, fuzzy
 msgid "President"
 msgstr "President"
 
 #: ../lib/modules/pykotaUser.inc:643 ../lib/modules/pykotaUser.inc:1000
-#, fuzzy
 msgid "Price"
 msgstr "Price"
 
@@ -10504,7 +9917,6 @@ msgstr "Price"
 #: ../lib/modules/pykotaPrinter.inc:167 ../lib/modules/pykotaPrinter.inc:190
 #: ../lib/modules/pykotaPrinter.inc:208 ../lib/modules/pykotaPrinter.inc:228
 #: ../lib/modules/pykotaPrinter.inc:593
-#, fuzzy
 msgid "Price per job"
 msgstr "Price per job"
 
@@ -10512,14 +9924,12 @@ msgstr "Price per job"
 #: ../lib/modules/pykotaPrinter.inc:173 ../lib/modules/pykotaPrinter.inc:191
 #: ../lib/modules/pykotaPrinter.inc:210 ../lib/modules/pykotaPrinter.inc:230
 #: ../lib/modules/pykotaPrinter.inc:594
-#, fuzzy
 msgid "Price per page"
 msgstr "Price per page"
 
 #: ../lib/modules/eduPerson.inc:81 ../lib/modules/eduPerson.inc:161
 #: ../lib/modules/eduPerson.inc:222 ../lib/modules/eduPerson.inc:276
 #: ../lib/modules/eduPerson.inc:590
-#, fuzzy
 msgid "Primary affiliation"
 msgstr "Primary affiliation"
 
@@ -10528,59 +9938,50 @@ msgstr "Primary affiliation"
 #: ../lib/modules/posixAccount.inc:503 ../lib/modules/posixAccount.inc:541
 #: ../lib/modules/posixAccount.inc:1357 ../lib/modules/posixAccount.inc:1640
 #: ../lib/modules/posixAccount.inc:1686 ../lib/modules/posixAccount.inc:1752
-#, fuzzy
 msgid "Primary group"
 msgstr "Primary group"
 
 #: ../lib/modules/bindDLZ.inc:164
-#, fuzzy
 msgid "Primary master DNS server for this zone (e.g. \"ns1.example.com.\")."
 msgstr "Primary master DNS server for this zone (e.g. \"ns1.example.com.\")."
 
 #: ../lib/modules/bindDLZ.inc:163 ../lib/modules/bindDLZ.inc:269
 #: ../lib/modules/bindDLZ.inc:314 ../lib/modules/bindDLZ.inc:391
 #: ../lib/modules/bindDLZ.inc:863 ../lib/modules/bindDLZ.inc:1131
-#, fuzzy
 msgid "Primary name server"
 msgstr "Primary name server"
 
 #: ../lib/modules/eduPerson.inc:123 ../lib/modules/eduPerson.inc:199
 #: ../lib/modules/eduPerson.inc:225 ../lib/modules/eduPerson.inc:240
 #: ../lib/modules/eduPerson.inc:341 ../lib/modules/eduPerson.inc:597
-#, fuzzy
 msgid "Primary organisational unit"
-msgstr "Primary organisational unit"
+msgstr "Primary organizational unit"
 
 #: ../lib/modules/eduPerson.inc:107 ../lib/modules/eduPerson.inc:154
 #: ../lib/modules/eduPerson.inc:223 ../lib/modules/eduPerson.inc:270
 #: ../lib/modules/eduPerson.inc:592
-#, fuzzy
 msgid "Principal name"
 msgstr "Principal name"
 
 #: ../lib/modules/eduPerson.inc:236 ../lib/modules/eduPerson.inc:237
-#, fuzzy
 msgid "Principal name is invalid!"
 msgstr "Principal name is invalid!"
 
 #: ../lib/modules/pykotaUser.inc:641 ../lib/modules/pykotaUser.inc:998
-#, fuzzy
 msgid "Printer"
 msgstr "Printer"
 
 #: ../lib/types/pykotaPrinterType.inc:164
-#, fuzzy, php-format
+#, php-format
 msgid "Printer count: %s"
 msgstr "Printer count: %s"
 
 #: ../lib/modules/pykotaPrinter.inc:93
-#, fuzzy
 msgid "Printer description."
 msgstr "Printer description."
 
 #: ../lib/modules/pykotaPrinter.inc:193 ../lib/modules/pykotaPrinter.inc:251
 #: ../lib/modules/pykotaPrinter.inc:627
-#, fuzzy
 msgid "Printer groups"
 msgstr "Printer groups"
 
@@ -10589,17 +9990,14 @@ msgstr "Printer groups"
 #: ../lib/modules/pykotaPrinter.inc:202 ../lib/modules/pykotaPrinter.inc:204
 #: ../lib/modules/pykotaPrinter.inc:224 ../lib/modules/pykotaPrinter.inc:590
 #: ../lib/modules/pykotaBillingCode.inc:94
-#, fuzzy
 msgid "Printer name"
 msgstr "Printer name"
 
 #: ../lib/modules/pykotaPrinter.inc:204 ../lib/modules/pykotaPrinter.inc:205
-#, fuzzy
 msgid "Printer name already exists!"
 msgstr "Printer name already exists!"
 
 #: ../lib/modules/pykotaPrinter.inc:202 ../lib/modules/pykotaPrinter.inc:203
-#, fuzzy
 msgid ""
 "Printer name contains invalid characters. Valid characters are: a-z, A-Z, "
 "0-9 and .-_ !"
@@ -10608,7 +10006,6 @@ msgstr ""
 "0-9 and .-_ !"
 
 #: ../lib/modules/pykotaPrinter.inc:89
-#, fuzzy
 msgid ""
 "Printer name of the printer which should be created. Valid characters are: a-"
 "z, A-Z, 0-9 and .-_ ."
@@ -10617,32 +10014,27 @@ msgstr ""
 "z, A-Z, 0-9 and .-_ ."
 
 #: ../lib/types/pykotaPrinterType.inc:53
-#, fuzzy
 msgid "Printers"
 msgstr "Printers"
 
 #: ../lib/modules/asteriskExtension.inc:99
 #: ../lib/modules/asteriskExtension.inc:818
-#, fuzzy
 msgid "Priority"
 msgstr "Priority"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1537
 #: ../templates/3rdParty/pla/htdocs/import_form.php:44
 #: ../templates/3rdParty/pla/htdocs/export_form.php:135
-#, fuzzy
 msgid "Proceed"
 msgstr "Proceed"
 
 #: ../templates/config/profmanage.php:112
 #: ../templates/selfService/profManage.php:85
-#, fuzzy
 msgid "Profile deleted."
 msgstr "Profile deleted."
 
 #: ../templates/profedit/profilepage.php:182
 #: ../templates/profedit/profilemain.php:94 ../lib/tools/profileEditor.inc:44
-#, fuzzy
 msgid "Profile editor"
 msgstr "Profile editor"
 
@@ -10652,7 +10044,6 @@ msgstr "Profile editor"
 #: ../templates/selfService/profManage.php:199 ../help/help.inc:126
 #: ../help/help.inc:128 ../help/help.inc:130 ../help/help.inc:132
 #: ../help/help.inc:134
-#, fuzzy
 msgid "Profile management"
 msgstr "Profile management"
 
@@ -10667,7 +10058,6 @@ msgstr "Profile management"
 #: ../templates/profedit/profilepage.php:186
 #: ../templates/profedit/profilemain.php:275
 #: ../templates/profedit/profilemain.php:319 ../help/help.inc:174
-#, fuzzy
 msgid "Profile name"
 msgstr "Profile name"
 
@@ -10677,19 +10067,16 @@ msgstr "Profile name"
 #: ../templates/config/profmanage.php:148
 #: ../templates/selfService/profManage.php:61
 #: ../templates/selfService/profManage.php:76
-#, fuzzy
 msgid "Profile name is invalid!"
 msgstr "Profile name is invalid!"
 
 #: ../templates/config/profmanage.php:243
 #: ../templates/config/profmanage.php:281
-#, fuzzy
 msgid "Profile password"
 msgstr "Profile password"
 
 #: ../templates/config/profmanage.php:86
 #: ../templates/config/profmanage.php:135
-#, fuzzy
 msgid "Profile passwords are different or empty!"
 msgstr "Profile passwords are different or empty!"
 
@@ -10709,97 +10096,80 @@ msgstr "Profile passwords are different or empty!"
 #: ../lib/modules/windowsUser.inc:394 ../lib/modules/windowsUser.inc:455
 #: ../lib/modules/windowsUser.inc:538 ../lib/modules/windowsUser.inc:679
 #: ../lib/modules/windowsUser.inc:1482
-#, fuzzy
 msgid "Profile path"
 msgstr "Profile path"
 
 #: ../lib/modules/sambaSamAccount.inc:97 ../lib/modules/sambaSamAccount.inc:99
 #: ../lib/modules/windowsUser.inc:538 ../lib/modules/windowsUser.inc:539
-#, fuzzy
 msgid "Profile path is invalid!"
 msgstr "Profile path is invalid!"
 
 #: ../templates/profedit/profilemain.php:149
-#, fuzzy
 msgid "Profile was saved."
 msgstr "Profile was saved."
 
 #: ../templates/profedit/profilemain.php:242
-#, fuzzy
 msgid "Profiles"
 msgstr "Profiles"
 
 #: ../lib/modules/qmailUser.inc:245
-#, fuzzy
 msgid "Program to execute for all incoming mails."
 msgstr "Program to execute for all incoming mails."
 
 #: ../templates/multiEdit.php:231
-#, fuzzy
 msgid "Progress"
 msgstr "Progress"
 
 #: ../lib/modules/zarafaServer.inc:77 ../lib/modules/zarafaServer.inc:121
 #: ../lib/modules/zarafaServer.inc:134 ../lib/modules/zarafaServer.inc:156
 #: ../lib/modules/zarafaServer.inc:205 ../lib/modules/zarafaServer.inc:376
-#, fuzzy
 msgid "Proxy URL"
 msgstr "Proxy URL"
 
 #: ../lib/modules/zarafaServer.inc:73 ../lib/modules/zarafaServer.inc:111
 #: ../lib/modules/zarafaServer.inc:131 ../lib/modules/zarafaServer.inc:218
 #: ../lib/modules/zarafaServer.inc:381
-#, fuzzy
 msgid "Public store"
 msgstr "Public store"
 
 #: ../lib/modules/puppetClient.inc:63
-#, fuzzy
 msgid "Puppet"
 msgstr "Puppet"
 
 #: ../lib/modules/pykotaPrinter.inc:72 ../lib/modules/pykotaGroup.inc:86
 #: ../lib/modules/pykotaUser.inc:86 ../lib/modules/pykotaBillingCode.inc:54
-#, fuzzy
 msgid "PyKota"
 msgstr "PyKota"
 
 #: ../lib/types/pykotaBillingCodeType.inc:62
-#, fuzzy
 msgid "PyKota billing codes"
 msgstr "PyKota billing codes"
 
 #: ../lib/modules/pykotaGroup.inc:114 ../lib/modules/pykotaGroup.inc:141
 #: ../lib/modules/pykotaGroup.inc:174 ../lib/modules/pykotaGroup.inc:194
 #: ../lib/modules/pykotaGroup.inc:196 ../lib/modules/pykotaGroup.inc:462
-#, fuzzy
 msgid "PyKota group name"
 msgstr "PyKota group name"
 
 #: ../lib/types/pykotaPrinterType.inc:62
-#, fuzzy
 msgid "PyKota printers"
 msgstr "PyKota printers"
 
 #: ../lib/modules/pykotaUser.inc:117 ../lib/modules/pykotaUser.inc:183
 #: ../lib/modules/pykotaUser.inc:253 ../lib/modules/pykotaUser.inc:308
 #: ../lib/modules/pykotaUser.inc:310 ../lib/modules/pykotaUser.inc:892
-#, fuzzy
 msgid "PyKota user name"
 msgstr "PyKota user name"
 
 #: ../lib/modules/pykotaGroup.inc:214
-#, fuzzy
 msgid "Pykota group name"
 msgstr "Pykota group name"
 
 #: ../lib/modules/pykotaUser.inc:352
-#, fuzzy
 msgid "Pykota user name"
 msgstr "Pykota user name"
 
 #: ../lib/modules/qmailUser.inc:80 ../lib/modules/qmailGroup.inc:49
-#, fuzzy
 msgid "Qmail"
 msgstr "Qmail"
 
@@ -10809,7 +10179,6 @@ msgstr "Qmail"
 #: ../lib/modules/asteriskAccount.inc:507
 #: ../lib/modules/asteriskAccount.inc:755
 #: ../lib/modules/asteriskAccount.inc:1064
-#, fuzzy
 msgid "Qualify"
 msgstr "Qualify"
 
@@ -10822,7 +10191,6 @@ msgstr "Qualify"
 #: ../lib/modules/passwordSelfReset.inc:409
 #: ../lib/modules/passwordSelfReset.inc:582
 #: ../lib/modules/passwordSelfReset.inc:941
-#, fuzzy
 msgid "Question"
 msgstr "Question"
 
@@ -10835,12 +10203,11 @@ msgstr "Question"
 #: ../lib/modules/systemQuotas.inc:61 ../lib/modules/systemQuotas.inc:68
 #: ../lib/modules/systemQuotas.inc:74 ../lib/modules/systemQuotas.inc:81
 #: ../lib/modules/imapAccess.inc:100 ../lib/modules/imapAccess.inc:145
-#, fuzzy
 msgid "Quota"
 msgstr "Quota"
 
 #: ../lib/modules/quota.inc:691
-#, fuzzy, php-format
+#, php-format
 msgid "Quota for %s on %s"
 msgstr "Quota for %s on %s"
 
@@ -10848,17 +10215,14 @@ msgstr "Quota for %s on %s"
 #: ../lib/modules/zarafaUser.inc:271 ../lib/modules/zarafaUser.inc:393
 #: ../lib/modules/zarafaUser.inc:444 ../lib/modules/zarafaUser.inc:548
 #: ../lib/modules/zarafaUser.inc:1297 ../lib/modules/zarafaUser.inc:1380
-#, fuzzy
 msgid "Quota hard limit"
 msgstr "Quota hard limit"
 
 #: ../lib/modules/quota.inc:63
-#, fuzzy
 msgid "Quota has wrong format!"
 msgstr "Quota has wrong format!"
 
 #: ../lib/modules/imapAccess.inc:299 ../lib/modules/imapAccess.inc:308
-#, fuzzy
 msgid "Quota limit (kB)"
 msgstr "Quota limit (kB)"
 
@@ -10866,7 +10230,6 @@ msgstr "Quota limit (kB)"
 #: ../lib/modules/zarafaUser.inc:245 ../lib/modules/zarafaUser.inc:384
 #: ../lib/modules/zarafaUser.inc:520 ../lib/modules/zarafaUser.inc:1308
 #: ../lib/modules/zarafaUser.inc:1371
-#, fuzzy
 msgid "Quota override"
 msgstr "Quota override"
 
@@ -10874,7 +10237,6 @@ msgstr "Quota override"
 #: ../lib/modules/qmailUser.inc:212 ../lib/modules/qmailUser.inc:301
 #: ../lib/modules/qmailUser.inc:402 ../lib/modules/qmailUser.inc:668
 #: ../lib/modules/qmailUser.inc:1191
-#, fuzzy
 msgid "Quota size"
 msgstr "Quota size"
 
@@ -10882,7 +10244,6 @@ msgstr "Quota size"
 #: ../lib/modules/zarafaUser.inc:263 ../lib/modules/zarafaUser.inc:390
 #: ../lib/modules/zarafaUser.inc:442 ../lib/modules/zarafaUser.inc:538
 #: ../lib/modules/zarafaUser.inc:1296 ../lib/modules/zarafaUser.inc:1377
-#, fuzzy
 msgid "Quota soft limit"
 msgstr "Quota soft limit"
 
@@ -10890,7 +10251,6 @@ msgstr "Quota soft limit"
 #: ../lib/modules/zarafaUser.inc:255 ../lib/modules/zarafaUser.inc:387
 #: ../lib/modules/zarafaUser.inc:440 ../lib/modules/zarafaUser.inc:528
 #: ../lib/modules/zarafaUser.inc:1295 ../lib/modules/zarafaUser.inc:1374
-#, fuzzy
 msgid "Quota warning limit"
 msgstr "Quota warning limit"
 
@@ -10898,24 +10258,20 @@ msgstr "Quota warning limit"
 #: ../lib/modules/selfRegistration.inc:65
 #: ../lib/modules/selfRegistration.inc:142 ../lib/modules.inc:998
 #: ../help/help.inc:172
-#, fuzzy
 msgid "RDN identifier"
 msgstr "RDN identifier"
 
 #: ../lib/types/host.inc:93
-#, fuzzy
 msgid "RID (Windows UID)"
 msgstr "RID (Windows UID)"
 
 #: ../lib/modules/sambaDomain.inc:90 ../lib/modules/sambaDomain.inc:151
 #: ../lib/modules/sambaDomain.inc:182 ../lib/modules/sambaDomain.inc:376
 #: ../lib/modules/sambaDomain.inc:382 ../lib/modules/sambaDomain.inc:643
-#, fuzzy
 msgid "RID base"
 msgstr "RID base"
 
 #: ../lib/modules/sambaDomain.inc:345
-#, fuzzy
 msgid "RID settings"
 msgstr "RID settings"
 
@@ -10925,7 +10281,6 @@ msgstr "RID settings"
 #: ../lib/modules/asteriskAccount.inc:529
 #: ../lib/modules/asteriskAccount.inc:768
 #: ../lib/modules/asteriskAccount.inc:1067
-#, fuzzy
 msgid "RTP hold timeout"
 msgstr "RTP hold timeout"
 
@@ -10935,44 +10290,36 @@ msgstr "RTP hold timeout"
 #: ../lib/modules/asteriskAccount.inc:522
 #: ../lib/modules/asteriskAccount.inc:763
 #: ../lib/modules/asteriskAccount.inc:1066
-#, fuzzy
 msgid "RTP timeout"
 msgstr "RTP timeout"
 
 #: ../lib/modules/customFields.inc:2541
-#, fuzzy
 msgid "Radio buttons"
 msgstr "Radio buttons"
 
 #: ../lib/modules/range.inc:85 ../lib/modules/range.inc:419
-#, fuzzy
 msgid "Range from"
 msgstr "Range from"
 
 #: ../lib/modules/range.inc:88 ../lib/modules/range.inc:432
-#, fuzzy
 msgid "Range to"
 msgstr "Range to"
 
 #: ../lib/types/dhcp.inc:95 ../lib/modules/range.inc:67
 #: ../lib/modules/range.inc:99 ../lib/modules/range.inc:487
-#, fuzzy
 msgid "Ranges"
 msgstr "Ranges"
 
 #: ../templates/config/confmain.php:306
-#, fuzzy
 msgid "Read"
 msgstr "Read"
 
 #: ../templates/config/confmain.php:261 ../lib/modules/customFields.inc:93
 #: ../lib/modules/customFields.inc:1567
-#, fuzzy
 msgid "Read-only"
 msgstr "Read-only"
 
 #: ../lib/modules/customFields.inc:94
-#, fuzzy
 msgid ""
 "Read-only fields cannot be changed by the user. Use this if you want to show "
 "an attribute just for information."
@@ -10981,7 +10328,6 @@ msgstr ""
 "an attribute just for information."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:2289
-#, fuzzy
 msgid "Really delete value from this attribute?"
 msgstr "Really delete value from this attribute?"
 
@@ -10993,24 +10339,20 @@ msgstr "Really delete value from this attribute?"
 #: ../lib/modules/heimdalKerberos.inc:91
 #: ../lib/modules/heimdalKerberos.inc:150
 #: ../lib/modules/heimdalKerberos.inc:156
-#, fuzzy
 msgid "Realm"
 msgstr "Realm"
 
 #: ../lib/modules/nisMailAlias.inc:74 ../lib/modules/nisMailAlias.inc:163
-#, fuzzy
 msgid "Recipient"
 msgstr "Recipient"
 
 #: ../lib/modules/nisMailAlias.inc:116 ../lib/modules/nisMailAlias.inc:117
-#, fuzzy
 msgid "Recipient is invalid!"
 msgstr "Recipient is invalid!"
 
 #: ../lib/types/mailAlias.inc:92 ../lib/modules/nisMailAlias.inc:78
 #: ../lib/modules/nisMailAlias.inc:97 ../lib/modules/nisMailAlias.inc:105
 #: ../lib/modules/nisMailAlias.inc:378
-#, fuzzy
 msgid "Recipient list"
 msgstr "Recipient list"
 
@@ -11018,27 +10360,22 @@ msgstr "Recipient list"
 #: ../lib/modules/sambaSamAccount.inc:380
 #: ../lib/modules/sambaSamAccount.inc:1553
 #: ../lib/modules/sambaSamAccount.inc:1963
-#, fuzzy
 msgid "Reconnect if disconnected"
 msgstr "Reconnect if disconnected"
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:63
-#, fuzzy
 msgid "Recursive copy"
 msgstr "Recursive copy"
 
 #: ../templates/3rdParty/pla/htdocs/copy.php:49
-#, fuzzy
 msgid "Recursive copy progress"
 msgstr "Recursive copy progress"
 
 #: ../templates/3rdParty/pla/htdocs/rdelete.php:31
-#, fuzzy
 msgid "Recursive delete progress"
 msgstr "Recursive delete progress"
 
 #: ../templates/3rdParty/pla/htdocs/copy_form.php:65
-#, fuzzy
 msgid "Recursively copy all children of this object as well."
 msgstr "Recursively copy all children of this object as well."
 
@@ -11048,12 +10385,10 @@ msgstr "Recursively copy all children of this object as well."
 #: ../lib/modules/selfRegistration.inc:383
 #: ../lib/modules/sambaSamAccount.inc:2311
 #: ../lib/modules/posixAccount.inc:2438 ../lib/modules/windowsUser.inc:1565
-#, fuzzy
 msgid "Reenter password"
 msgstr "Reenter password"
 
 #: ../templates/serverInfo.php:187
-#, fuzzy
 msgid "Referrals"
 msgstr "Referrals"
 
@@ -11063,30 +10398,25 @@ msgstr "Referrals"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1055
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:249
 #: ../lib/modules/asteriskExtension.inc:447 ../lib/lists.inc:781
-#, fuzzy
 msgid "Refresh"
 msgstr "Refresh"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1052
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1055
-#, fuzzy
 msgid "Refresh this entry"
 msgstr "Refresh this entry"
 
 #: ../lib/modules/bindDLZ.inc:143 ../lib/modules/bindDLZ.inc:244
 #: ../lib/modules/bindDLZ.inc:309 ../lib/modules/bindDLZ.inc:381
 #: ../lib/modules/bindDLZ.inc:838 ../lib/modules/bindDLZ.inc:1126
-#, fuzzy
 msgid "Refresh time"
 msgstr "Refresh time"
 
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:247
-#, fuzzy
 msgid "Refreshing tree"
 msgstr "Refreshing tree"
 
 #: ../lib/modules/selfRegistration.inc:308
-#, fuzzy
 msgid "Register new account"
 msgstr "Register new account"
 
@@ -11095,12 +10425,10 @@ msgstr "Register new account"
 #: ../lib/modules/inetOrgPerson.inc:472 ../lib/modules/inetOrgPerson.inc:634
 #: ../lib/modules/inetOrgPerson.inc:763 ../lib/modules/inetOrgPerson.inc:1327
 #: ../lib/modules/inetOrgPerson.inc:1862 ../lib/modules/inetOrgPerson.inc:2530
-#, fuzzy
 msgid "Registered address"
 msgstr "Registered address"
 
 #: ../lib/modules/inetOrgPerson.inc:764
-#, fuzzy
 msgid "Registered address, city"
 msgstr "Registered address, city"
 
@@ -11110,7 +10438,6 @@ msgstr "Registered address, city"
 #: ../lib/modules/asteriskAccount.inc:565
 #: ../lib/modules/asteriskAccount.inc:789
 #: ../lib/modules/asteriskAccount.inc:1072
-#, fuzzy
 msgid "Registration context"
 msgstr "Registration context"
 
@@ -11120,7 +10447,6 @@ msgstr "Registration context"
 #: ../lib/modules/asteriskAccount.inc:572
 #: ../lib/modules/asteriskAccount.inc:793
 #: ../lib/modules/asteriskAccount.inc:1073
-#, fuzzy
 msgid "Registration extension"
 msgstr "Registration extension"
 
@@ -11130,22 +10456,18 @@ msgstr "Registration extension"
 #: ../lib/modules/asteriskAccount.inc:601
 #: ../lib/modules/asteriskAccount.inc:818
 #: ../lib/modules/asteriskAccount.inc:1077
-#, fuzzy
 msgid "Registration server"
 msgstr "Registration server"
 
 #: ../lib/modules/kolabUser.inc:53
-#, fuzzy
 msgid "Reject if conflicts"
 msgstr "Reject if conflicts"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1052
-#, fuzzy
 msgid "Reloading"
 msgstr "Reloading"
 
 #: ../templates/login.php:430
-#, fuzzy
 msgid "Remember user name"
 msgstr "Remember user name"
 
@@ -11158,105 +10480,85 @@ msgstr "Remember user name"
 #: ../lib/modules/sudoRole.inc:320 ../lib/modules/sudoRole.inc:347
 #: ../lib/modules/sudoRole.inc:374 ../lib/modules/sudoRole.inc:401
 #: ../lib/modules/heimdalKerberos.inc:591 ../lib/modules/windowsGroup.inc:315
-#, fuzzy
 msgid "Remove"
 msgstr "Remove"
 
 #: ../lib/modules/asteriskVoicemail.inc:252
-#, fuzzy
 msgid "Remove Asterisk voicemail extension"
 msgstr "Remove Asterisk voicemail extension"
 
 #: ../lib/modules/authorizedServiceObject.inc:163
-#, fuzzy
 msgid "Remove Authorized Service extension"
 msgstr "Remove Authorized Service extension"
 
 #: ../lib/modules/eduPerson.inc:348
-#, fuzzy
 msgid "Remove EDU person extension"
 msgstr "Remove EDU person extension"
 
 #: ../lib/modules/freeRadius.inc:300
-#, fuzzy
 msgid "Remove FreeRadius extension"
 msgstr "Remove FreeRadius extension"
 
 #: ../lib/modules/ipHost.inc:150
-#, fuzzy
 msgid "Remove IP address extension"
 msgstr "Remove IP address extension"
 
 #: ../lib/modules/mitKerberos.inc:465 ../lib/modules/heimdalKerberos.inc:390
-#, fuzzy
 msgid "Remove Kerberos extension"
 msgstr "Remove Kerberos extension"
 
 #: ../lib/modules/puppetClient.inc:273
-#, fuzzy
 msgid "Remove Puppet extension"
 msgstr "Remove Puppet extension"
 
 #: ../lib/modules/pykotaGroup.inc:231 ../lib/modules/pykotaUser.inc:411
-#, fuzzy
 msgid "Remove PyKota extension"
 msgstr "Remove PyKota extension"
 
 #: ../lib/modules/sambaSamAccount.inc:1299
 #: ../lib/modules/sambaGroupMapping.inc:416
-#, fuzzy
 msgid "Remove Samba 3 extension"
 msgstr "Remove Samba 3 extension"
 
 #: ../lib/modules/shadowAccount.inc:368
-#, fuzzy
 msgid "Remove Shadow account extension"
 msgstr "Remove Shadow account extension"
 
 #: ../lib/modules/posixGroup.inc:242 ../lib/modules/posixAccount.inc:1422
-#, fuzzy
 msgid "Remove Unix extension"
 msgstr "Remove Unix extension"
 
 #: ../lib/modules/zarafaContact.inc:251 ../lib/modules/zarafaGroup.inc:300
 #: ../lib/modules/zarafaUser.inc:687 ../lib/modules/zarafaServer.inc:225
-#, fuzzy
 msgid "Remove Zarafa extension"
 msgstr "Remove Zarafa extension"
 
 #: ../lib/modules/customFields.inc:425
-#, fuzzy
 msgid "Remove extension"
 msgstr "Remove extension"
 
 #: ../lib/types/user.inc:384
-#, fuzzy
 msgid "Remove from all Unix groups"
 msgstr "Remove from all Unix groups"
 
 #: ../lib/types/user.inc:388
-#, fuzzy
 msgid "Remove from all group of (unique) names"
 msgstr "Remove from all group of (unique) names"
 
 #: ../lib/modules/hostObject.inc:140
-#, fuzzy
 msgid "Remove host extension"
 msgstr "Remove host extension"
 
 #: ../lib/modules/posixGroup.inc:211 ../lib/modules/posixAccount.inc:1415
 #: ../lib/modules/inetOrgPerson.inc:1558
-#, fuzzy
 msgid "Remove password"
 msgstr "Remove password"
 
 #: ../lib/modules/passwordSelfReset.inc:318
-#, fuzzy
 msgid "Remove password self reset extension"
 msgstr "Remove password self reset extension"
 
 #: ../lib/modules/qmailUser.inc:699 ../lib/modules/qmailGroup.inc:620
-#, fuzzy
 msgid "Remove qmail extension"
 msgstr "Remove qmail extension"
 
@@ -11266,17 +10568,14 @@ msgstr "Remove qmail extension"
 #: ../lib/modules/inetOrgPerson.inc:1708 ../lib/modules/qmailGroup.inc:843
 #: ../lib/modules/windowsGroup.inc:508 ../lib/modules/groupOfNames.inc:433
 #: ../lib/modules/groupOfNames.inc:588
-#, fuzzy
 msgid "Remove selected entries"
 msgstr "Remove selected entries"
 
 #: ../templates/config/conftypes.php:248
-#, fuzzy
 msgid "Remove this account type"
 msgstr "Remove this account type"
 
 #: ../lib/modules/inetOrgPerson.inc:2632
-#, fuzzy
 msgid "Remove/replace photo"
 msgstr "Remove/replace photo"
 
@@ -11289,12 +10588,11 @@ msgstr "Remove/replace photo"
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:24
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:35
 #: ../templates/3rdParty/pla/htdocs/rename.php:53
-#, fuzzy
 msgid "Rename"
 msgstr "Rename"
 
 #: ../templates/3rdParty/pla/htdocs/rename_form.php:28
-#, fuzzy, php-format
+#, php-format
 msgid "Rename <b>%s</b> to a new object."
 msgstr "Rename <b>%s</b> to a new object."
 
@@ -11302,30 +10600,25 @@ msgstr "Rename <b>%s</b> to a new object."
 #: ../templates/config/profmanage.php:264
 #: ../templates/selfService/profManage.php:216
 #: ../templates/selfService/profManage.php:226 ../help/help.inc:128
-#, fuzzy
 msgid "Rename profile"
 msgstr "Rename profile"
 
 #: ../templates/3rdParty/pla/htdocs/rename.php:48
-#, fuzzy
 msgid "Rename successful!"
 msgstr "Rename successful!"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1153
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1156
-#, fuzzy
 msgid "Rename this entry"
 msgstr "Rename this entry"
 
 #: ../templates/config/profmanage.php:98
 #: ../templates/selfService/profManage.php:72
-#, fuzzy
 msgid "Renamed profile."
 msgstr "Renamed profile."
 
 #: ../templates/3rdParty/pla/htdocs/import.php:30
 #: ../templates/3rdParty/pla/htdocs/import.php:31
-#, fuzzy
 msgid "Renaming"
 msgstr "Renaming"
 
@@ -11338,112 +10631,93 @@ msgstr "Renaming"
 #: ../lib/modules/heimdalKerberos.inc:215
 #: ../lib/modules/heimdalKerberos.inc:306
 #: ../lib/modules/heimdalKerberos.inc:684
-#, fuzzy
 msgid "Renewable lifetime"
 msgstr "Renewable lifetime"
 
 #: ../lib/modules/mitKerberos.inc:288 ../lib/modules/mitKerberos.inc:289
 #: ../lib/modules/heimdalKerberos.inc:252
 #: ../lib/modules/heimdalKerberos.inc:253
-#, fuzzy
 msgid "Renewable lifetime must be a number."
 msgstr "Renewable lifetime must be a number."
 
 #: ../templates/lists/changePassword.php:343
 #: ../lib/modules/passwordSelfReset.inc:964 ../lib/modules.inc:1042
-#, fuzzy
 msgid "Repeat password"
 msgstr "Repeat password"
 
 #: ../lib/modules/posixAccount.inc:101 ../lib/modules/posixAccount.inc:1126
-#, fuzzy
 msgid "Replaced $user or $group in homedir."
 msgstr "Replaced $user or $group in homedir."
 
 #: ../templates/config/confmain.php:335 ../help/help.inc:243
-#, fuzzy
 msgid "Reply-to address"
 msgstr "Reply-to address"
 
 #: ../templates/config/confmain.php:499
-#, fuzzy
 msgid "Reply-to address for password mails is invalid."
 msgstr "Reply-to address for password mails is invalid."
 
 #: ../lib/types/ppolicyType.inc:89 ../lib/modules/ppolicy.inc:121
 #: ../lib/modules/ppolicy.inc:147 ../lib/modules/ppolicy.inc:281
 #: ../lib/modules/ppolicy.inc:493
-#, fuzzy
 msgid "Require password change on first login"
 msgstr "Require password change on first login"
 
 #: ../lib/modules/windowsUser.inc:192 ../lib/modules/windowsUser.inc:378
 #: ../lib/modules/windowsUser.inc:454 ../lib/modules/windowsUser.inc:675
 #: ../lib/modules/windowsUser.inc:1476
-#, fuzzy
 msgid "Require smartcard"
 msgstr "Require smartcard"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:445
-#, fuzzy
 msgid "Required attribute for object classes"
 msgstr "Required attribute for object classes"
 
 #: ../templates/schema/schema.php:383
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1567
-#, fuzzy
 msgid "Required attributes"
 msgstr "Required attributes"
 
 #: ../lib/modules/mitKerberos.inc:173 ../lib/modules/mitKerberos.inc:455
-#, fuzzy
 msgid "Requires hardware authentication"
 msgstr "Requires hardware authentication"
 
 #: ../lib/modules/mitKerberos.inc:170 ../lib/modules/mitKerberos.inc:450
 #: ../lib/modules/heimdalKerberos.inc:144
 #: ../lib/modules/heimdalKerberos.inc:381
-#, fuzzy
 msgid "Requires preauthentication"
 msgstr "Requires preauthentication"
 
 #: ../lib/modules/sambaSamAccount.inc:1293
 #: ../lib/modules/pykotaBillingCode.inc:86
 #: ../lib/modules/pykotaBillingCode.inc:156
-#, fuzzy
 msgid "Reset"
 msgstr "Reset"
 
 #: ../lib/modules.inc:1190
-#, fuzzy
 msgid "Reset changes"
 msgstr "Reset changes"
 
 #: ../lib/modules/sambaSamAccount.inc:257
 #: ../lib/modules/sambaSamAccount.inc:1292
-#, fuzzy
 msgid "Reset password"
 msgstr "Reset password"
 
 #: ../lib/modules/sambaDomain.inc:130 ../lib/modules/sambaDomain.inc:192
 #: ../lib/modules/sambaDomain.inc:217 ../lib/modules/sambaDomain.inc:341
 #: ../lib/modules/sambaDomain.inc:650
-#, fuzzy
 msgid "Reset time after lockout"
 msgstr "Reset time after lockout"
 
 #: ../lib/modules/sambaDomain.inc:217
-#, fuzzy
 msgid "Reset time after lockout must be are natural number."
 msgstr "Reset time after lockout must be are natural number."
 
 #: ../lib/modules/pykotaBillingCode.inc:87
-#, fuzzy
 msgid "Resets the billing code's balance and page counter to 0."
 msgstr "Resets the billing code's balance and page counter to 0."
 
 #: ../lib/modules/zarafaUser.inc:555
-#, fuzzy
 msgid "Resource settings"
 msgstr "Resource settings"
 
@@ -11453,7 +10727,6 @@ msgstr "Resource settings"
 #: ../lib/modules/asteriskAccount.inc:514
 #: ../lib/modules/asteriskAccount.inc:759
 #: ../lib/modules/asteriskAccount.inc:1065
-#, fuzzy
 msgid "Restrict caller ID"
 msgstr "Restrict caller ID"
 
@@ -11467,43 +10740,36 @@ msgstr "Restrict caller ID"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:137
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:122
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:137
-#, fuzzy
 msgid "Retrieving DN"
 msgstr "Retrieving DN"
 
 #: ../lib/modules/bindDLZ.inc:147 ../lib/modules/bindDLZ.inc:256
 #: ../lib/modules/bindDLZ.inc:310 ../lib/modules/bindDLZ.inc:383
 #: ../lib/modules/bindDLZ.inc:851 ../lib/modules/bindDLZ.inc:1127
-#, fuzzy
 msgid "Retry time"
 msgstr "Retry time"
 
 #: ../lib/modules/bindDLZ.inc:583
-#, fuzzy
 msgid "Reverse DNS entries (\"PTR\" records)"
 msgstr "Reverse DNS entries (\"PTR\" records)"
 
 #: ../lib/modules/ddns.inc:99 ../lib/modules/ddns.inc:107
 #: ../lib/modules/ddns.inc:128 ../lib/modules/ddns.inc:390
 #: ../lib/modules/ddns.inc:419
-#, fuzzy
 msgid "Reverse zone name"
 msgstr "Reverse zone name"
 
 #: ../templates/config/confmain.php:302 ../help/help.inc:114
-#, fuzzy
 msgid "Rights for the home directory"
 msgstr "Rights for the home directory"
 
 #: ../lib/types/sudo.inc:77 ../lib/modules/sudoRole.inc:55
 #: ../lib/modules/sudoRole.inc:121 ../lib/modules/sudoRole.inc:171
 #: ../lib/modules/sudoRole.inc:247 ../lib/modules/sudoRole.inc:682
-#, fuzzy
 msgid "Role name"
 msgstr "Role name"
 
 #: ../lib/modules/zarafaUser.inc:560 ../lib/modules/zarafaUser.inc:1312
-#, fuzzy
 msgid "Room"
 msgstr "Room"
 
@@ -11512,7 +10778,6 @@ msgstr "Room"
 #: ../lib/modules/inetOrgPerson.inc:640 ../lib/modules/inetOrgPerson.inc:830
 #: ../lib/modules/inetOrgPerson.inc:1358 ../lib/modules/inetOrgPerson.inc:1869
 #: ../lib/modules/inetOrgPerson.inc:2563
-#, fuzzy
 msgid "Room number"
 msgstr "Room number"
 
@@ -11521,28 +10786,23 @@ msgstr "Room number"
 #: ../lib/modules/inetLocalMailRecipient.inc:112
 #: ../lib/modules/inetLocalMailRecipient.inc:139
 #: ../lib/modules/inetLocalMailRecipient.inc:303
-#, fuzzy
 msgid "Routing address"
 msgstr "Routing address"
 
 #: ../lib/modules/customFields.inc:121 ../lib/modules/customFields.inc:2230
-#, fuzzy
 msgid "Rows"
 msgstr "Rows"
 
 #: ../lib/modules/asteriskExtension.inc:132
 #: ../lib/modules/asteriskExtension.inc:304
-#, fuzzy
 msgid "Rules"
 msgstr "Rules"
 
 #: ../lib/modules/customScripts.inc:180
-#, fuzzy
 msgid "Run"
 msgstr "Run"
 
 #: ../lib/types/sudo.inc:82
-#, fuzzy
 msgid "Run group"
 msgstr "Run group"
 
@@ -11550,12 +10810,10 @@ msgstr "Run group"
 #: ../lib/modules/sudoRole.inc:158 ../lib/modules/sudoRole.inc:177
 #: ../lib/modules/sudoRole.inc:186 ../lib/modules/sudoRole.inc:372
 #: ../lib/modules/sudoRole.inc:688
-#, fuzzy
 msgid "Run groups"
 msgstr "Run groups"
 
 #: ../lib/types/sudo.inc:81
-#, fuzzy
 msgid "Run user"
 msgstr "Run user"
 
@@ -11563,27 +10821,22 @@ msgstr "Run user"
 #: ../lib/modules/sudoRole.inc:152 ../lib/modules/sudoRole.inc:176
 #: ../lib/modules/sudoRole.inc:185 ../lib/modules/sudoRole.inc:345
 #: ../lib/modules/sudoRole.inc:687
-#, fuzzy
 msgid "Run users"
 msgstr "Run users"
 
 #: ../lib/modules/windowsUser.inc:280
-#, fuzzy
 msgid "S.M."
 msgstr "S.M."
 
 #: ../templates/serverInfo.php:129
-#, fuzzy
 msgid "SASL mechanisms"
 msgstr "SASL mechanisms"
 
 #: ../lib/modules/asteriskAccount.inc:145
-#, fuzzy
 msgid "SIP URI for a realtime peer."
 msgstr "SIP URI for a realtime peer."
 
 #: ../lib/modules/asteriskAccount.inc:121
-#, fuzzy
 msgid "SIP user agent identification."
 msgstr "SIP user agent identification."
 
@@ -11599,53 +10852,44 @@ msgstr "SIP user agent identification."
 #: ../lib/modules/bindDLZ.inc:381 ../lib/modules/bindDLZ.inc:383
 #: ../lib/modules/bindDLZ.inc:385 ../lib/modules/bindDLZ.inc:387
 #: ../lib/modules/bindDLZ.inc:389
-#, fuzzy
 msgid "SOA record"
 msgstr "SOA record"
 
 #: ../templates/tests/lamdaemonTest.php:243
-#, fuzzy
 msgid "SSH connection"
 msgstr "SSH connection"
 
 #: ../templates/tests/lamdaemonTest.php:256
-#, fuzzy
 msgid "SSH connection could be established."
 msgstr "SSH connection could be established."
 
 #: ../lib/modules/ldapPublicKey.inc:55 ../lib/modules/ldapPublicKey.inc:65
 #: ../lib/modules/ldapPublicKey.inc:69 ../lib/modules/ldapPublicKey.inc:81
 #: ../lib/modules/ldapPublicKey.inc:112
-#, fuzzy
 msgid "SSH public key"
 msgstr "SSH public key"
 
 #: ../lib/modules/ldapPublicKey.inc:88 ../lib/modules/ldapPublicKey.inc:92
 #: ../lib/modules/ldapPublicKey.inc:190 ../lib/modules/ldapPublicKey.inc:230
-#, fuzzy
 msgid "SSH public keys"
 msgstr "SSH public keys"
 
 #: ../help/help.inc:83
-#, fuzzy
 msgid "SSL certificate"
 msgstr "SSL certificate"
 
 #: ../templates/config/mainmanage.php:267
-#, fuzzy
 msgid "SSL certificates"
 msgstr "SSL certificates"
 
 #: ../lib/modules/zarafaServer.inc:65 ../lib/modules/zarafaServer.inc:99
 #: ../lib/modules/zarafaServer.inc:129 ../lib/modules/zarafaServer.inc:168
 #: ../lib/modules/zarafaServer.inc:196 ../lib/modules/zarafaServer.inc:374
-#, fuzzy
 msgid "SSL port"
 msgstr "SSL port"
 
 #: ../templates/lists/changePassword.php:378
 #: ../templates/lists/changePassword.php:409
-#, fuzzy
 msgid "Samba"
 msgstr "Samba"
 
@@ -11653,23 +10897,19 @@ msgstr "Samba"
 #: ../lib/types/user.inc:404 ../lib/types/user.inc:828
 #: ../lib/modules/sambaSamAccount.inc:139
 #: ../lib/modules/sambaGroupMapping.inc:94
-#, fuzzy
 msgid "Samba 3"
 msgstr "Samba 3"
 
 #: ../lib/modules/sambaDomain.inc:203 ../lib/modules/sambaDomain.inc:204
-#, fuzzy
 msgid "Samba 3 domain SID is invalid!"
 msgstr "Samba 3 domain SID is invalid!"
 
 #: ../lib/types/smbDomain.inc:62
-#, fuzzy
 msgid "Samba 3 domain entries"
 msgstr "Samba 3 domain entries"
 
 #: ../lib/modules/posixGroup.inc:388 ../lib/modules/posixAccount.inc:203
 #: ../lib/modules/posixAccount.inc:221
-#, fuzzy
 msgid "Samba ID pool"
 msgstr "Samba ID pool"
 
@@ -11677,7 +10917,6 @@ msgstr "Samba ID pool"
 #: ../lib/modules/posixGroup.inc:590 ../lib/modules/posixAccount.inc:131
 #: ../lib/modules/posixAccount.inc:208 ../lib/modules/posixAccount.inc:226
 #: ../lib/modules/posixAccount.inc:490
-#, fuzzy
 msgid "Samba ID pool DN"
 msgstr "Samba ID pool DN"
 
@@ -11685,33 +10924,27 @@ msgstr "Samba ID pool DN"
 #: ../lib/modules/sambaSamAccount.inc:326
 #: ../lib/modules/sambaSamAccount.inc:470
 #: ../lib/modules/sambaSamAccount.inc:536
-#, fuzzy
 msgid "Samba RID"
 msgstr "Samba RID"
 
 #: ../lib/modules/sambaGroupMapping.inc:122
 #: ../lib/modules/sambaGroupMapping.inc:147
-#, fuzzy
 msgid "Samba RID number"
 msgstr "Samba RID number"
 
 #: ../lib/modules/sambaGroupMapping.inc:116
-#, fuzzy
 msgid "Samba display name"
 msgstr "Samba display name"
 
 #: ../lib/modules/sambaDomain.inc:51
-#, fuzzy
 msgid "Samba domain"
 msgstr "Samba domain"
 
 #: ../lib/modules/sambaGroupMapping.inc:238
-#, fuzzy
 msgid "Samba domain name"
 msgstr "Samba domain name"
 
 #: ../lib/types/smbDomain.inc:53
-#, fuzzy
 msgid "Samba domains"
 msgstr "Samba domains"
 
@@ -11719,12 +10952,10 @@ msgstr "Samba domains"
 #: ../lib/modules/sambaGroupMapping.inc:128
 #: ../lib/modules/sambaGroupMapping.inc:155
 #: ../lib/modules/sambaGroupMapping.inc:534
-#, fuzzy
 msgid "Samba group type"
 msgstr "Samba group type"
 
 #: ../lib/modules/sambaSamAccount.inc:254
-#, fuzzy
 msgid "Samba password"
 msgstr "Samba password"
 
@@ -11737,12 +10968,10 @@ msgstr "Samba password"
 #: ../lib/modules/sambaSamAccount.inc:1233
 #: ../lib/modules/sambaSamAccount.inc:1759
 #: ../lib/modules/sambaSamAccount.inc:1897
-#, fuzzy
 msgid "Samba workstations"
 msgstr "Samba workstations"
 
 #: ../lib/modules/sambaSamAccount.inc:1369
-#, fuzzy
 msgid "Saturday"
 msgstr "Saturday"
 
@@ -11758,77 +10987,63 @@ msgstr "Saturday"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1247
 #: ../lib/modules/inetOrgPerson.inc:2732 ../lib/modules/customFields.inc:3052
 #: ../lib/modules.inc:1184
-#, fuzzy
 msgid "Save"
 msgstr "Save"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1082
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1085
-#, fuzzy
 msgid "Save a dump of this object"
 msgstr "Save a dump of this object"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1244
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1248
-#, fuzzy
 msgid "Save a dump of this object and all of its children"
 msgstr "Save a dump of this object and all of its children"
 
 #: ../templates/3rdParty/pla/htdocs/export_form.php:90
-#, fuzzy
 msgid "Save as file"
 msgstr "Save as file"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:172
-#, fuzzy
 msgid "Save changes"
 msgstr "Save changes"
 
 #: ../lib/tools/schemaBrowser.inc:44
-#, fuzzy
 msgid "Schema browser"
 msgstr "Schema browser"
 
 #: ../templates/serverInfo.php:119
-#, fuzzy
 msgid "Schema suffix"
 msgstr "Schema suffix"
 
 #: ../templates/tests/schemaTest.php:55 ../templates/tests/index.php:58
 #: ../lib/tools/tests.inc:116
-#, fuzzy
 msgid "Schema test"
 msgstr "Schema test"
 
 #: ../lib/modules/eduPerson.inc:85 ../lib/modules/eduPerson.inc:89
 #: ../lib/modules/eduPerson.inc:168 ../lib/modules/eduPerson.inc:226
 #: ../lib/modules/eduPerson.inc:278 ../lib/modules/eduPerson.inc:591
-#, fuzzy
 msgid "Scoped affiliations"
 msgstr "Scoped affiliations"
 
 #: ../help/help.inc:99
-#, fuzzy
 msgid "Script path"
 msgstr "Script path"
 
 #: ../templates/config/confmain.php:543
-#, fuzzy
 msgid "Script path is invalid!"
 msgstr "Script path is invalid!"
 
 #: ../templates/config/confmain.php:562
-#, fuzzy
 msgid "Script rights are invalid!"
 msgstr "Script rights are invalid!"
 
 #: ../templates/config/confmain.php:546
-#, fuzzy
 msgid "Script server is invalid!"
 msgstr "Script server is invalid!"
 
 #: ../help/help.inc:110
-#, fuzzy
 msgid "Script servers"
 msgstr "Script servers"
 
@@ -11837,47 +11052,39 @@ msgstr "Script servers"
 #: ../templates/3rdParty/pla/lib/QueryRender.php:180
 #: ../templates/3rdParty/pla/lib/ds_ldap_pla.php:619
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:235
-#, fuzzy
 msgid "Search"
 msgstr "Search"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:171
 #: ../templates/3rdParty/pla/lib/QueryRender.php:190
-#, fuzzy
 msgid "Search Results"
 msgstr "Search Results"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:150
 #: ../templates/3rdParty/pla/lib/export_functions.php:201
 #: ../templates/3rdParty/pla/htdocs/export_form.php:81
-#, fuzzy
 msgid "Search filter"
 msgstr "Search filter"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:293
-#, fuzzy
 msgid "Search returned no results"
 msgstr "Search returned no results"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:130
 #: ../templates/3rdParty/pla/lib/export_functions.php:200
 #: ../templates/3rdParty/pla/htdocs/export_form.php:67
-#, fuzzy
 msgid "Search scope"
 msgstr "Search scope"
 
 #: ../lib/modules/asteriskExtension.inc:450
-#, fuzzy
 msgid "Search tree suffix for users"
 msgstr "Search tree suffix for users"
 
 #: ../templates/pdfedit/pdfpage.php:608
-#, fuzzy
 msgid "Section"
 msgstr "Section"
 
 #: ../lib/modules/windowsGroup.inc:60
-#, fuzzy
 msgid "Security"
 msgstr "Security"
 
@@ -11887,19 +11094,16 @@ msgstr "Security"
 #: ../templates/3rdParty/pla/lib/Template.php:484
 #: ../templates/3rdParty/pla/lib/Template.php:509
 #: ../templates/3rdParty/pla/lib/Template.php:514
-#, fuzzy
 msgid "Security error: The file being uploaded may be malicious."
 msgstr "Security error: The file being uploaded may be malicious."
 
 #: ../lib/modules/zarafaGroup.inc:74 ../lib/modules/zarafaGroup.inc:171
 #: ../lib/modules/zarafaGroup.inc:196 ../lib/modules/zarafaGroup.inc:278
 #: ../lib/modules/zarafaGroup.inc:656
-#, fuzzy
 msgid "Security group"
 msgstr "Security group"
 
 #: ../lib/modules/windowsGroup.inc:131
-#, fuzzy
 msgid ""
 "Security groups are used for permission management and distribution groups "
 "as email lists."
@@ -11910,128 +11114,104 @@ msgstr ""
 #: ../lib/modules/passwordSelfReset.inc:73
 #: ../lib/modules/passwordSelfReset.inc:176
 #: ../lib/modules/passwordSelfReset.inc:218
-#, fuzzy
 msgid "Security questions"
 msgstr "Security questions"
 
 #: ../templates/config/mainmanage.php:261 ../templates/config/confmain.php:440
-#, fuzzy
 msgid "Security settings"
 msgstr "Security settings"
 
 #: ../templates/help.php:94
-#, fuzzy
 msgid "See also"
 msgstr "See also"
 
 #: ../lib/account.inc:786
-#, fuzzy
 msgid "See the manual for instructions to solve this problem."
 msgstr "See the manual for instructions to solve this problem."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:494
-#, fuzzy
 msgid "Select a template for the creation process"
 msgstr "Select a template for the creation process"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:498
-#, fuzzy
 msgid "Select a template to edit the entry"
 msgstr "Select a template to edit the entry"
 
 #: ../lib/lists.inc:468
-#, fuzzy
 msgid "Select all"
 msgstr "Select all"
 
 #: ../templates/3rdParty/pla/htdocs/import_form.php:31
-#, fuzzy
 msgid "Select an LDIF file"
 msgstr "Select an LDIF file"
 
 #: ../lib/modules/nisnetgroup.inc:233 ../lib/modules/nisnetgroup.inc:262
-#, fuzzy
 msgid "Select host"
 msgstr "Select host"
 
 #: ../lib/modules/customFields.inc:2734
-#, fuzzy
 msgid "Select list"
 msgstr "Select list"
 
 #: ../lib/modules/nisMailAlias.inc:170 ../lib/modules/nisMailAlias.inc:185
-#, fuzzy
 msgid "Select mail"
 msgstr "Select mail"
 
 #: ../lib/modules/nisnetgroup.inc:239 ../lib/modules/nisnetgroup.inc:268
-#, fuzzy
 msgid "Select user"
 msgstr "Select user"
 
 #: ../lib/modules/posixAccount.inc:1472 ../lib/modules/posixAccount.inc:1505
 #: ../lib/modules/windowsUser.inc:890 ../lib/modules/nisnetgroup.inc:377
 #: ../lib/modules/groupOfNamesUser.inc:111
-#, fuzzy
 msgid "Selected groups"
 msgstr "Selected groups"
 
 #: ../templates/masscreate.php:158 ../templates/config/confmodules.php:299
-#, fuzzy
 msgid "Selected modules"
 msgstr "Selected modules"
 
 #: ../lib/modules/posixGroup.inc:291 ../lib/modules/asteriskExtension.inc:454
-#, fuzzy
 msgid "Selected users"
 msgstr "Selected users"
 
 #: ../templates/selfService/adminMain.php:332
-#, fuzzy
 msgid "Self service configuration"
 msgstr "Self service configuration"
 
 #: ../templates/selfService/adminMain.php:386
-#, fuzzy
 msgid "Self service configuration editor"
 msgstr "Self service configuration editor"
 
 #: ../templates/selfService/adminMain.php:392
-#, fuzzy
 msgid "Self service login"
 msgstr "Self service login"
 
 #: ../lib/modules/passwordSelfReset.inc:195
-#, fuzzy
 msgid "Self service login attribute"
 msgstr "Self service login attribute"
 
 #: ../templates/selfService/adminMain.php:378
-#, fuzzy
 msgid "Self service profile"
 msgstr "Self service profile"
 
 #: ../lib/modules/passwordSelfReset.inc:119
 #: ../lib/modules/passwordSelfReset.inc:222
-#, fuzzy
 msgid "Send confirmation mail"
 msgstr "Send confirmation mail"
 
 #: ../lib/modules/passwordSelfReset.inc:101
 #: ../lib/modules/passwordSelfReset.inc:242
-#, fuzzy
 msgid "Send notification mail"
 msgstr "Send notification mail"
 
 #: ../lib/modules/inetOrgPerson.inc:527 ../lib/modules/inetOrgPerson.inc:799
-#, fuzzy
 msgid "Send password via mail"
 msgstr "Send password via mail"
 
 #: ../templates/lists/changePassword.php:317
 #: ../templates/lists/changePassword.php:347 ../lib/modules.inc:1059
 #: ../help/help.inc:194
-#, fuzzy
 msgid "Send via mail"
 msgstr "Send via mail"
 
@@ -12039,7 +11219,6 @@ msgstr "Send via mail"
 #: ../lib/modules/qmailGroup.inc:217 ../lib/modules/qmailGroup.inc:346
 #: ../lib/modules/qmailGroup.inc:401 ../lib/modules/qmailGroup.inc:422
 #: ../lib/modules/qmailGroup.inc:512 ../lib/modules/qmailGroup.inc:1065
-#, fuzzy
 msgid "Sender email addresses"
 msgstr "Sender email addresses"
 
@@ -12047,7 +11226,6 @@ msgstr "Sender email addresses"
 #: ../lib/modules/qmailGroup.inc:169 ../lib/modules/qmailGroup.inc:288
 #: ../lib/modules/qmailGroup.inc:380 ../lib/modules/qmailGroup.inc:514
 #: ../lib/modules/qmailGroup.inc:783 ../lib/modules/qmailGroup.inc:1064
-#, fuzzy
 msgid "Sender entries"
 msgstr "Sender entries"
 
@@ -12055,17 +11233,14 @@ msgstr "Sender entries"
 #: ../lib/modules/qmailGroup.inc:185 ../lib/modules/qmailGroup.inc:304
 #: ../lib/modules/qmailGroup.inc:386 ../lib/modules/qmailGroup.inc:513
 #: ../lib/modules/qmailGroup.inc:1066
-#, fuzzy
 msgid "Sender filter"
 msgstr "Sender filter"
 
 #: ../lib/modules/passwordSelfReset.inc:102
-#, fuzzy
 msgid "Sends a mail to the user to inform him about the password change."
 msgstr "Sends a mail to the user to inform him about the password change."
 
 #: ../lib/modules/passwordSelfReset.inc:120
-#, fuzzy
 msgid ""
 "Sends a mail to the user to validate his email address before the password "
 "change."
@@ -12074,7 +11249,6 @@ msgstr ""
 "change."
 
 #: ../lib/modules/inetOrgPerson.inc:800 ../help/help.inc:195
-#, fuzzy
 msgid ""
 "Sends the password to the user via mail. Please edit your LAM server profile "
 "to setup the mail settings."
@@ -12088,7 +11262,6 @@ msgstr ""
 #: ../lib/modules/bindDLZ.inc:155 ../lib/modules/bindDLZ.inc:281
 #: ../lib/modules/bindDLZ.inc:308 ../lib/modules/bindDLZ.inc:387
 #: ../lib/modules/bindDLZ.inc:871 ../lib/modules/bindDLZ.inc:1125
-#, fuzzy
 msgid "Serial number"
 msgstr "Serial number"
 
@@ -12098,8 +11271,7 @@ msgstr "Serial number"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:110
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:54
 #: ../templates/3rdParty/pla/htdocs/export_form.php:56
-#: ../lib/modules/kolabGroup.inc:282 ../lib/modules/kolabSharedFolder.inc:423
-#, fuzzy
+#: ../lib/modules/kolabGroup.inc:282 ../lib/modules/kolabSharedFolder.inc:422
 msgid "Server"
 msgstr "Server"
 
@@ -12110,23 +11282,19 @@ msgstr "Server"
 #: ../lib/modules/qmailUser.inc:585 ../lib/modules/qmailUser.inc:1195
 #: ../lib/modules/imapAccess.inc:70 ../lib/modules/imapAccess.inc:108
 #: ../help/help.inc:58
-#, fuzzy
 msgid "Server address"
 msgstr "Server address"
 
 #: ../templates/config/confmain.php:483
 #: ../templates/selfService/adminMain.php:213
-#, fuzzy
 msgid "Server address is invalid!"
 msgstr "Server address is invalid!"
 
 #: ../templates/serverInfo.php:103 ../lib/tools/serverInfo.inc:44
-#, fuzzy
 msgid "Server information"
 msgstr "Server information"
 
 #: ../templates/config/confmain.php:299
-#, fuzzy
 msgid "Server list"
 msgstr "Server list"
 
@@ -12134,43 +11302,35 @@ msgstr "Server list"
 #: ../templates/config/confmain.php:167
 #: ../templates/config/moduleSettings.php:136
 #: ../templates/config/conftypes.php:155
-#, fuzzy
 msgid "Server profile"
 msgstr "Server profile"
 
 #: ../templates/config/confmain.php:268
 #: ../templates/selfService/adminMain.php:472
-#, fuzzy
 msgid "Server settings"
 msgstr "Server settings"
 
 #: ../templates/serverInfo.php:180
-#, fuzzy
 msgid "Server statistics"
 msgstr "Server statistics"
 
 #: ../templates/serverInfo.php:205 ../templates/serverInfo.php:211
-#, fuzzy
 msgid "Server time"
 msgstr "Server time"
 
 #: ../lib/modules/zarafaServer.inc:138
-#, fuzzy
 msgid "Servers"
 msgstr "Servers"
 
 #: ../lib/modules/authorizedServiceObject.inc:75
-#, fuzzy
 msgid "Service name (e.g. sshd, imap, ftp). Enter one service per entry."
 msgstr "Service name (e.g. sshd, imap, ftp). Enter one service per entry."
 
 #: ../templates/config/mainmanage.php:264 ../help/help.inc:142
-#, fuzzy
 msgid "Session timeout"
 msgstr "Session timeout"
 
 #: ../lib/modules/aliasEntry.inc:101
-#, fuzzy
 msgid "Set"
 msgstr "Set"
 
@@ -12179,61 +11339,50 @@ msgstr "Set"
 #: ../lib/modules/sambaSamAccount.inc:1466
 #: ../lib/modules/shadowAccount.inc:457 ../lib/modules/shadowAccount.inc:460
 #: ../lib/modules/shadowAccount.inc:463
-#, fuzzy
 msgid "Set also for Kerberos"
 msgstr "Set also for Kerberos"
 
 #: ../lib/modules/mitKerberos.inc:675 ../lib/modules/shadowAccount.inc:454
 #: ../lib/modules/heimdalKerberos.inc:585
-#, fuzzy
 msgid "Set also for Samba 3"
 msgstr "Set also for Samba 3"
 
 #: ../lib/modules/mitKerberos.inc:672 ../lib/modules/sambaSamAccount.inc:1457
 #: ../lib/modules/heimdalKerberos.inc:582
-#, fuzzy
 msgid "Set also for Shadow"
 msgstr "Set also for Shadow"
 
 #: ../lib/modules.inc:1197 ../lib/modules.inc:1199
-#, fuzzy
 msgid "Set password"
 msgstr "Set password"
 
 #: ../lib/modules/posixAccount.inc:262 ../lib/modules/posixAccount.inc:438
-#, fuzzy
 msgid "Set primary group as memberUid"
 msgstr "Set primary group as memberUid"
 
 #: ../templates/config/profmanage.php:279
 #: ../templates/config/profmanage.php:289
 #: ../templates/config/profmanage.php:290 ../help/help.inc:132
-#, fuzzy
 msgid "Set profile password"
 msgstr "Set profile password"
 
 #: ../lib/modules.inc:1200
-#, fuzzy
 msgid "Set random password"
 msgstr "Set random password"
 
 #: ../templates/lists/changePassword.php:331
-#, fuzzy
 msgid "Set specific password"
 msgstr "Set specific password"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:171
-#, fuzzy
 msgid "Set the search results to 0 to retrieve all available records."
 msgstr "Set the search results to 0 to retrieve all available records."
 
 #: ../templates/selfService/adminMain.php:574
-#, fuzzy
 msgid "Set this field read-only."
 msgstr "Set this field read-only."
 
 #: ../lib/modules/groupOfNames.inc:103
-#, fuzzy
 msgid ""
 "Set this only if your LDAP schema allows that groups may not have any "
 "members (e.g. if you use OpenDJ)."
@@ -12242,7 +11391,6 @@ msgstr ""
 "members (e.g. if you use OpenDJ)."
 
 #: ../lib/modules/bindDLZ.inc:152
-#, fuzzy
 msgid ""
 "Sets the default timeout (in seconds) for entries without explicit timeout "
 "value."
@@ -12251,24 +11399,20 @@ msgstr ""
 "value."
 
 #: ../lib/modules/qmailUser.inc:209
-#, fuzzy
 msgid "Sets the delivery mode (e.g. disable mail forwarding)."
 msgstr "Sets the delivery mode (e.g. disable mail forwarding)."
 
 #: ../lib/modules/posixGroup.inc:478
-#, fuzzy
 msgid "Sets the group password."
 msgstr "Sets the group password."
 
 #: ../lib/modules/bindDLZ.inc:132 ../lib/modules/bindDLZ.inc:136
-#, fuzzy
 msgid ""
 "Sets the preference for the mail server. Lower values have higher priority."
 msgstr ""
 "Sets the preference for the mail server. Lower values have higher priority."
 
 #: ../lib/modules/shadowAccount.inc:84
-#, fuzzy
 msgid "Shadow"
 msgstr "Shadow"
 
@@ -12276,128 +11420,105 @@ msgstr "Shadow"
 #: ../lib/modules/sambaSamAccount.inc:374
 #: ../lib/modules/sambaSamAccount.inc:1537
 #: ../lib/modules/sambaSamAccount.inc:1947
-#, fuzzy
 msgid "Shadowing"
 msgstr "Shadowing"
 
 #: ../lib/types/kolabSharedFolderType.inc:141
-#, fuzzy, php-format
+#, php-format
 msgid "Shared folder count: %s"
 msgstr "Shared folder count: %s"
 
 #: ../lib/modules/kolabSharedFolder.inc:57
-#, fuzzy
 msgid "Shared mail folder"
 msgstr "Shared mail folder"
 
 #: ../lib/modules/zarafaUser.inc:105 ../lib/modules/zarafaUser.inc:196
 #: ../lib/modules/zarafaUser.inc:306 ../lib/modules/zarafaUser.inc:399
 #: ../lib/modules/zarafaUser.inc:617 ../lib/modules/zarafaUser.inc:1334
-#, fuzzy
 msgid "Shared store only"
 msgstr "Shared store only"
 
 #: ../lib/modules/ddns.inc:75
-#, fuzzy
 msgid "Should DDNS (Dynamic DNS) be activated?"
 msgstr "Should DDNS (Dynamic DNS) be activated?"
 
 #: ../lib/modules/ddns.inc:79
-#, fuzzy
 msgid "Should fix IP addresses be added to the DNS server?"
 msgstr "Should fix IP addresses be added to the DNS server?"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1121
-#, fuzzy
 msgid "Show"
 msgstr "Show"
 
 #: ../templates/massBuildAccounts.php:243
-#, fuzzy
 msgid "Show LDIF file"
 msgstr "Show LDIF file"
 
 #: ../lib/types/user.inc:682
-#, fuzzy
 msgid "Show account status"
 msgstr "Show account status"
 
 #: ../templates/3rdParty/pla/lib/QueryRender.php:159
 #: ../templates/3rdParty/pla/htdocs/export_form.php:84
-#, fuzzy
 msgid "Show attributes"
 msgstr "Show attributes"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1122
-#, fuzzy
 msgid "Show internal attributes"
 msgstr "Show internal attributes"
 
 #: ../lib/modules/asteriskExtension.inc:446
-#, fuzzy
 msgid "Show only Asterisk accounts"
 msgstr "Show only Asterisk accounts"
 
 #: ../lib/types/group.inc:343
-#, fuzzy
 msgid "Show primary group members as normal group members"
 msgstr "Show primary group members as normal group members"
 
 #: ../templates/schema/schema.php:194
-#, fuzzy
 msgid "Single valued"
 msgstr "Single valued"
 
 #: ../lib/modules/pykotaUser.inc:645 ../lib/modules/pykotaUser.inc:1002
-#, fuzzy
 msgid "Size"
 msgstr "Size"
 
 #: ../lib/modules/qmailUser.inc:221
-#, fuzzy
 msgid "Size limit in bytes for a single mail. Larger mails will be bounced."
 msgstr "Size limit in bytes for a single mail. Larger mails will be bounced."
 
 #: ../templates/3rdParty/pla/htdocs/update_confirm.php:55
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:81
-#, fuzzy
 msgid "Skip"
 msgstr "Skip"
 
 #: ../lib/modules/quota.inc:627 ../lib/modules/systemQuotas.inc:376
-#, fuzzy
 msgid "Soft block"
 msgstr "Soft block"
 
 #: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:394
 #: ../lib/modules/quota.inc:500 ../lib/modules/systemQuotas.inc:117
-#, fuzzy
 msgid "Soft block limit"
 msgstr "Soft block limit"
 
 #: ../lib/modules/quota.inc:107
-#, fuzzy
 msgid "Soft block limit."
 msgstr "Soft block limit."
 
 #: ../lib/modules/quota.inc:629 ../lib/modules/systemQuotas.inc:378
-#, fuzzy
 msgid "Soft inode"
 msgstr "Soft inode"
 
 #: ../lib/modules/quota.inc:129
-#, fuzzy
 msgid "Soft inode (files) limit."
 msgstr "Soft inode (files) limit."
 
 #: ../lib/modules/quota.inc:128 ../lib/modules/quota.inc:398
 #: ../lib/modules/quota.inc:502 ../lib/modules/systemQuotas.inc:121
-#, fuzzy
 msgid "Soft inode limit"
 msgstr "Soft inode limit"
 
 #: ../lib/modules/imapAccess.inc:89
-#, fuzzy
 msgid ""
 "Some IMAP servers store mailboxes with a prefix (e.g. \"user\" for Cyrus "
 "which results in \"user.username\")."
@@ -12406,17 +11527,16 @@ msgstr ""
 "which results in \"user.username\")."
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1019
-#, fuzzy, php-format
+#, php-format
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "Some attributes (%s) were modified and are highlighted below."
 
 #: ../lib/modules.inc:870
-#, fuzzy
 msgid "Some required information is missing"
 msgstr "Some required information is missing"
 
 #: ../templates/help.php:123
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Sorry this help id ({bold}%s{endbold}) is not available for this module "
 "({bold}%s{endbold})."
@@ -12425,46 +11545,39 @@ msgstr ""
 "({bold}%s{endbold})."
 
 #: ../templates/help.php:136
-#, fuzzy, php-format
+#, php-format
 msgid "Sorry this help number ({bold}%s{endbold}) is not available."
 msgstr "Sorry this help number ({bold}%s{endbold}) is not available."
 
 #: ../lib/modules/sambaSamAccount.inc:319
 #: ../lib/modules/sambaSamAccount.inc:1270
-#, fuzzy
 msgid "Special user"
 msgstr "Special user"
 
 #: ../lib/modules/zarafaDynamicGroup.inc:85
 #: ../lib/modules/zarafaAddressList.inc:73
-#, fuzzy
 msgid ""
 "Specifies a filter that matches the members (e.g. \"(mail=*@zarafa.nl)\")."
 msgstr ""
 "Specifies a filter that matches the members (e.g. \"(mail=*@zarafa.nl)\")."
 
 #: ../lib/modules/groupOfNames.inc:112
-#, fuzzy
 msgid "Specifies how members and owners are displayed."
 msgstr "Specifies how members and owners are displayed."
 
 #: ../help/help.inc:242
-#, fuzzy
 msgid "Specifies if the mail should be sent as text or HTML."
 msgstr "Specifies if the mail should be sent as text or HTML."
 
 #: ../lib/modules/asteriskAccount.inc:217
-#, fuzzy
 msgid "Specifies if the user can call forward."
 msgstr "Specifies if the user can call forward."
 
 #: ../lib/modules/zarafaGroup.inc:75
-#, fuzzy
 msgid "Specifies if this group has security possibilities."
 msgstr "Specifies if this group has security possibilities."
 
 #: ../lib/modules/zarafaServer.inc:74
-#, fuzzy
 msgid ""
 "Specifies if this server contains the public store. This may be changed only "
 "for new entries."
@@ -12473,18 +11586,15 @@ msgstr ""
 "for new entries."
 
 #: ../lib/modules/dhcp_settings.inc:195
-#, fuzzy
 msgid "Specifies if unknown clients are allowed."
 msgstr "Specifies if unknown clients are allowed."
 
 #: ../lib/modules/ppolicy.inc:126
-#, fuzzy
 msgid "Specifies if users are allowed to change their own passwords or not."
 msgstr "Specifies if users are allowed to change their own passwords or not."
 
 #: ../lib/modules/zarafaDynamicGroup.inc:81
 #: ../lib/modules/zarafaAddressList.inc:69
-#, fuzzy
 msgid ""
 "Specifies the LDAP base where to search for members (e.g. \"ou=zarafa,"
 "dc=company,dc=com\")."
@@ -12493,13 +11603,11 @@ msgstr ""
 "dc=company,dc=com\")."
 
 #: ../lib/modules/customFields.inc:150
-#, fuzzy
 msgid "Specifies the allowed file extension. This is checked at upload time."
 msgstr "Specifies the allowed file extension. This is checked at upload time."
 
 #: ../lib/modules/zarafaContact.inc:89 ../lib/modules/zarafaGroup.inc:91
 #: ../lib/modules/zarafaUser.inc:138
-#, fuzzy
 msgid ""
 "Specifies the attribute that should be used to reference the entries. If you "
 "would like to reference also groups then this must be set to \"dn\"."
@@ -12508,17 +11616,14 @@ msgstr ""
 "would like to reference also groups then this must be set to \"dn\"."
 
 #: ../lib/modules/zarafaUser.inc:114
-#, fuzzy
 msgid "Specifies the capacity of this resource."
 msgstr "Specifies the capacity of this resource."
 
 #: ../lib/modules/kolabSharedFolder.inc:156
-#, fuzzy
 msgid "Specifies the folder type (e.g. shared mail folder)."
 msgstr "Specifies the folder type (e.g. shared mail folder)."
 
 #: ../lib/modules/customFields.inc:146
-#, fuzzy
 msgid "Specifies the maximum allowed file size in bytes."
 msgstr "Specifies the maximum allowed file size in bytes."
 
@@ -12924,9 +12029,9 @@ msgstr "TLS cannot be combined with ldaps://."
 #: ../lib/modules/kolabSharedFolder.inc:151
 #: ../lib/modules/kolabSharedFolder.inc:187
 #: ../lib/modules/kolabSharedFolder.inc:233
-#: ../lib/modules/kolabSharedFolder.inc:256
-#: ../lib/modules/kolabSharedFolder.inc:286
-#: ../lib/modules/kolabSharedFolder.inc:568
+#: ../lib/modules/kolabSharedFolder.inc:255
+#: ../lib/modules/kolabSharedFolder.inc:285
+#: ../lib/modules/kolabSharedFolder.inc:567
 #, fuzzy
 msgid "Target IMAP folder"
 msgstr "Target IMAP folder"
@@ -13067,12 +12172,8 @@ msgstr ""
 "The ID of this group was changed. You can update all user and host entries "
 "to the new group ID."
 
-#: ../lib/modules/bindDLZ.inc:364 ../lib/modules/bindDLZ.inc:365
-#, fuzzy, php-format
-msgid "The IP address \"%s\" is invalid."
-msgstr "The IP address \"%s\" is invalid."
-
-#: ../templates/config/mainmanage.php:100
+#: ../templates/config/mainmanage.php:100 ../lib/modules/bindDLZ.inc:364
+#: ../lib/modules/bindDLZ.inc:365
 #, fuzzy, php-format
 msgid "The IP address %s is invalid!"
 msgstr "The IP address %s is invalid!"
@@ -14420,7 +13521,7 @@ msgid "This PC name already exists."
 msgstr "This PC name already exists."
 
 #: ../lib/modules/kolabGroup.inc:190 ../lib/modules/kolabUser.inc:271
-#: ../lib/modules/kolabSharedFolder.inc:268
+#: ../lib/modules/kolabSharedFolder.inc:267
 #, fuzzy
 msgid "This account is marked for deletion."
 msgstr "This account is marked for deletion."
@@ -15681,8 +14782,8 @@ msgstr "Tuesday"
 #: ../lib/modules/zarafaUser.inc:1317 ../lib/modules/kolabSharedFolder.inc:155
 #: ../lib/modules/kolabSharedFolder.inc:194
 #: ../lib/modules/kolabSharedFolder.inc:234
-#: ../lib/modules/kolabSharedFolder.inc:296
-#: ../lib/modules/kolabSharedFolder.inc:579 ../lib/modules/customFields.inc:89
+#: ../lib/modules/kolabSharedFolder.inc:295
+#: ../lib/modules/kolabSharedFolder.inc:578 ../lib/modules/customFields.inc:89
 #: ../lib/modules/customFields.inc:1024 ../lib/modules/customFields.inc:1552
 #, fuzzy
 msgid "Type"
@@ -16055,7 +15156,7 @@ msgstr "Unix groups"
 msgid "Unknown clients"
 msgstr "Unknown clients"
 
-#: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabSharedFolder.inc:250
+#: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabSharedFolder.inc:249
 #, fuzzy, php-format
 msgid "Unknown delegate address: %s"
 msgstr "Unknown delegate address: %s"
@@ -17045,13 +16146,6 @@ msgstr ""
 "LDAP attribute with the same name. For multi-value attributes the values "
 "will be separated by commas."
 
-#: ../lib/modules/kolabSharedFolder.inc:247
-#, fuzzy
-msgid ""
-"You cannot add the Kolab group and shared folder extension at the same time."
-msgstr ""
-"You cannot add the Kolab group and shared folder extension at the same time."
-
 #: ../lib/modules/zarafaContact.inc:184
 #, fuzzy
 msgid ""
@@ -17887,3 +16981,20 @@ msgstr "with "
 msgid "yes"
 msgstr "yes"
 
+#~ msgid "Mycity"
+#~ msgstr "Mycity"
+
+#~ msgid "BillingCode"
+#~ msgstr "BillingCode"
+
+#, fuzzy
+#~ msgid "The IP address \"%s\" is invalid."
+#~ msgstr "The IP address \"%s\" is invalid."
+
+#, fuzzy
+#~ msgid ""
+#~ "You cannot add the Kolab group and shared folder extension at the same "
+#~ "time."
+#~ msgstr ""
+#~ "You cannot add the Kolab group and shared folder extension at the same "
+#~ "time."

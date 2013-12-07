@@ -171,8 +171,8 @@ class kolabGroup extends baseModule {
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Please enter a valid email address!'));
 		$this->messages['mail'][2] = array('ERROR', _('Email address'), _('Email address already exists.'));
 		$this->messages['mail'][3] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Email address already exists.'));
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recepient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPRecipient', _('Please enter a valid recepient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.'));
+		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
 		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
 	}
