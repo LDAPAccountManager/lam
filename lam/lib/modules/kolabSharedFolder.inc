@@ -303,7 +303,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		$container->addElement($baseContainer, true);
 		// mail aliases
 		$container->addElement(new htmlSubTitle(_('Email aliases')), true);
-		$this->addMultiValueInputTextField($container, 'alias');
+		$this->addMultiValueInputTextField($container, 'alias', null);
 		// delegates
 		$delegates = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('mail'), array('user'));
 		for ($i = 0; $i < sizeof($delegates); $i++) {

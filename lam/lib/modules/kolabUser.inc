@@ -318,7 +318,7 @@ class kolabUser extends baseModule {
 			$return->addElement($invitationContainer, true);
 			// mail aliases
 			$return->addElement(new htmlSubTitle(_('Email aliases')), true);
-			$this->addMultiValueInputTextField($return, 'alias');
+			$this->addMultiValueInputTextField($return, 'alias', null);
 			// delegates
 			$delegates = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('mail'), array('user'));
 			for ($i = 0; $i < sizeof($delegates); $i++) {
