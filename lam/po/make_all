@@ -85,4 +85,8 @@ echo "Generating Turkish translation template"
 ./make_po_tr
 tar -czf messages.po_tr.tar.gz messages.po
 
+echo "Generating Ukrainian translation template"
+./make_po_uk
+tar -czf messages.po_uk.tar.gz messages.po
+
 rm messages.po

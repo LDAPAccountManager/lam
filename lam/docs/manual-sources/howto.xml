@@ -538,9 +538,15 @@ Have fun!
                 </row>
 
                 <row>
-                  <entry>English</entry>
+                  <entry>English - Great Britain</entry>
 
                   <entry>no extra locale needed</entry>
+                </row>
+
+                <row>
+                  <entry>English - USA</entry>
+
+                  <entry>en_US.utf8</entry>
                 </row>
 
                 <row>
@@ -607,6 +613,12 @@ Have fun!
                   <entry>Turkish</entry>
 
                   <entry>tr_TR.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Ukrainian</entry>
+
+                  <entry>uk_UA.utf8</entry>
                 </row>
               </tbody>
             </tgroup>
@@ -8203,7 +8215,8 @@ objectclass: top
 
     <para>Some basic hints to configure the OpenLDAP server:</para>
 
-    <para><emphasis role="bold">Size limit:</emphasis></para>
+    <para><emphasis id="size_limit_exceeded" role="bold">Size
+    limit:</emphasis></para>
 
     <para>You will get a message like "LDAP sizelimit exceeded, not all
     entries are shown." when you hit the LDAP search limit.</para>
@@ -8219,7 +8232,7 @@ objectclass: top
     <para>slapd.d:</para>
 
     <para>e.g. "olcSizeLimit: 10000" or "olcSizeLimit: -1" for unlimited
-    return values in etc/ldap/slapd.d/cn=config.ldif</para>
+    return values in /etc/ldap/slapd.d/cn=config.ldif</para>
 
     <literallayout>
 </literallayout>
@@ -8587,9 +8600,23 @@ objectclass: top
   <appendix>
     <title>Troubleshooting</title>
 
+    <para><emphasis role="bold">Size limit</emphasis></para>
+
+    <para>You will get a message like "LDAP sizelimit exceeded, not all
+    entries are shown." when you hit the LDAP search limit. See the <link
+    linkend="size_limit_exceeded">OpenLDAP settings</link> to fix this.</para>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">Invalid syntax errors:</emphasis></para>
+
     <para>If you get any strange errors like "Invalid syntax" or "Invalid DN
     syntax" please check if your LDAP schema matches LAM's
     requirements.</para>
+
+    <literallayout>
+</literallayout>
 
     <para><emphasis role="bold">Schema test:</emphasis></para>
 
@@ -8609,10 +8636,14 @@ objectclass: top
       </mediaobject>
     </screenshot>
 
-    <para><emphasis role="bold">Logging:</emphasis></para>
+    <para><literallayout>
+</literallayout><emphasis role="bold">Logging:</emphasis></para>
 
     <para>If your schema is correct you can turn on LDAP logging to get more
     detailed error messages from your LDAP server.</para>
+
+    <literallayout>
+</literallayout>
 
     <para><emphasis role="bold">OpenLDAP logging:</emphasis></para>
 
