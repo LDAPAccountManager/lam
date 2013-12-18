@@ -1,4 +1,4 @@
-December 2013 4.4
+18.12.2013 4.4
   - PyKota support: users, groups, printers, billing codes
   - Kolab shared folder support
   - New tool "Multi edit" allows LDAP operations on a large number of entries (e.g. adding attributes)
