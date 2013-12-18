@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Type HowTo - Custom list view</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+<div style="text-align: center;">
+<h1>Type HowTo - Custom list view<br>
+</h1>
+<br>
+<br>
+<div style="text-align: left;"><br>
+<h2>1. Default list attributes<br>
+</h2>
+Here you can specify what attributes are shown as default in the list
+view.<br>
+<br>
+The <span style="font-style: italic;">default attributes</span> are
+specified
+with <span style="font-weight: bold;">getDefaultListAttributes()</span><span
+ style="font-weight: bold;"></span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+Our <span style="font-style: italic;">smbDomain</span> type will show
+the attributes "#sambaDomainName;#sambaSID" by default.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns the default attribute list for this
+account type.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return string attribute list<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">getDefaultListAttributes()</span> {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
+"#sambaDomainName;#sambaSID";<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>2. Pretranslated attribute descriptions<br>
+</h2>
+You can provide translated descriptions for common attributes. This way
+the user only specifies the attributes and LAM will show a description
+for each language.<br>
+<br>
+The descriptions are specified with <span style="font-weight: bold;">getListAttributeDescriptions()</span><span
+ style="font-weight: bold;"></span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+Our <span style="font-style: italic;">smbDomain</span> type has
+descriptions for sambaSID and sambaDomainName.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns a list of attributes which have a
+translated description.<br>
+&nbsp;&nbsp;&nbsp; * This is used for the head row in the list view.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array list of descriptions<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">getListAttributeDescriptions()</span> {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return array(<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; "sambaSID"
+=&gt; _("Domain SID"),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+"sambaDomainName" =&gt; _("Domain name")<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+<h2>3. Specifying a custom list view</h2>
+The default list view has only very generic labels for the buttons and
+navigation bar. So you should at least provide some new labels which
+fit to your type.<br>
+<br>
+The class name of your list view is specified with <span
+ style="font-weight: bold;">getListClassName()</span><span
+ style="font-weight: bold;"></span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+Our <span style="font-style: italic;">smbDomain</span> type sets the
+list view class to <span style="font-style: italic;">lamSmbDomainList</span>.
+The list class is defined in the same file as your type class
+(smbDomain.inc in this case).<br>
+The labels are set in the constructor. Do not forget to call the parent
+constructor first.<br>
+<br>
+If you want to change more than just the labels, take a look at <span
+ style="font-weight: bold;">lib/lists.inc</span> and <span
+ style="font-weight: bold;">lib/types/user.inc</span>. When a list is
+displayed then the <span style="font-weight: bold;">showPage()</span>
+function is called. You can overwrite this function to display a
+completly new list or just one of the other functions.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">/**<br>
+* Returns the class name for the list object.<br>
+*<br>
+* @return string class name<br>
+*/<br>
+function <span style="color: rgb(255, 0, 0);">getListClassName()</span>
+{<br>
+&nbsp;&nbsp;&nbsp; return "lamSmbDomainList";<br>
+}<br>
+      <br>
+      <br>
+/**<br>
+&nbsp;* Generates the list view.<br>
+&nbsp;*<br>
+&nbsp;* @package lists<br>
+&nbsp;* @author Roland Gruber<br>
+&nbsp;* <br>
+&nbsp;*/<br>
+class <span style="color: rgb(255, 0, 0);">lamSmbDomainList</span>
+extends <span style="font-weight: bold;">lamList</span> {<br>
+      <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Constructor<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @param string $type account type<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @return lamList list object<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; function lamSmbDomainList($type) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; parent::lamList($type);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;labels = array(<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'nav' =&gt;
+_("%s domain(s) found"),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+'error_noneFound' =&gt; _("No domains found!"),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'newEntry'
+=&gt; _("New domain"),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'deleteEntry'
+=&gt; _("Delete domain"),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'createPDF'
+=&gt; _("Create PDF for selected domain(s)"),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'createPDFAll'
+=&gt; _("Create PDF for all domains"));<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
+}<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+</div>
+</div>
+</body>
+</html>

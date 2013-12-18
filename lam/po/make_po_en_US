@@ -1,0 +1,13 @@
+#!/bin/bash
+# $Id: make_po_it 5135 2013-11-29 19:47:29Z gruberroland $
+#
+# Copyright (C) 2013  Roland Gruber
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+
+# This script is run after make_po to merge the existing US English translations to messages.po
+
+./make_po
+msgen messages.po | msgattrib --set-fuzzy -o messages2.po
+rm messages.po
+mv messages2.po messages.po
+msgmerge -v ../locale/en_US/LC_MESSAGES/messages.po messages.po -o messages.po
