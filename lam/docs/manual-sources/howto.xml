@@ -8207,6 +8207,61 @@ objectclass: top
         url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">Apache
         documentation</ulink> for more details.</para>
       </section>
+
+      <section>
+        <title>Self Service behind proxy in DMZ (LAM Pro)</title>
+
+        <para>In some cases you might want to make the self service accessible
+        via the internet. Here is an Apache config to forward only the
+        required URLs via a proxy server (lamproxy.company.com) in your DMZ to
+        the internal LAM server (lam.company.com).</para>
+
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/selfServiceProxy.png" />
+            </imageobject>
+          </inlinemediaobject></para>
+
+        <para>This configuration allows your users to open
+        https://lamproxy.company.com which will then proxy the self service on
+        the internal server.</para>
+
+        <programlisting>&lt;VirtualHost lamproxy.company.com:443&gt;
+        ServerName lamproxy.company.com
+        ErrorLog /var/log/apache2/lam-proxy-error.log
+        CustomLog /var/log/apache2/lam-proxy-access.log combined
+        DocumentRoot /var/www/lam-proxy
+        &lt;Proxy *&gt;
+            Order deny,allow
+            Allow from all
+        &lt;/Proxy&gt;
+        SSLProxyEngine on
+        SSLEngine on
+        SSLCertificateFile /etc/apache2/ssl/apache.pem
+        ProxyPreserveHost On
+        ProxyRequests off
+        loglevel info
+
+        # redirect front page to self service login page
+        RewriteEngine on
+        RedirectMatch ^/$ /templates/selfService/selfServiceLogin.php?scope=user\&amp;name=lam
+
+        # proxy required URLs
+        ProxyPass /tmp https://lam.company.com/lam/tmp
+        ProxyPass /sess https://lam.company.com/lam/sess
+        ProxyPass /templates/lib https://lam.company.com/lam/templates/lib
+        ProxyPass /templates/selfService https://lam.company.com/lam/templates/selfService
+        ProxyPass /style https://lam.company.com/lam/style
+        ProxyPass /graphics https://lam.company.com/lam/graphics
+
+        ProxyPassReverse /tmp https://lam.company.com/lam/tmp
+        ProxyPassReverse /sess https://lam.company.com/lam/sess
+        ProxyPassReverse /templates/lib https://lam.company.com/lam/templates/lib
+        ProxyPassReverse /templates/selfService https://lam.company.com/lam/templates/selfService
+        ProxyPassReverse /style https://lam.company.com/lam/style
+        ProxyPassReverse /graphics https://lam.company.com/lam/graphics
+&lt;/VirtualHost&gt;</programlisting>
+      </section>
     </section>
   </appendix>
 
