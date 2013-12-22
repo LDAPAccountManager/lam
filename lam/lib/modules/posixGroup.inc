@@ -1056,6 +1056,8 @@ class posixGroup extends baseModule implements passwordService {
 		for ($i = 0; $i < $resultCount; $i++) {
 			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array('gid' => $result[$i]['gidnumber'][0], 'cn' => $result[$i]['cn'][0]);
 		}
+		logNewMessage(LOG_DEBUG, 'Found ' . $resultCount . ' Unix users.');
+		logNewMessage(LOG_DEBUG, print_r($result, true));
 		return $this->cachedUserToGIDList;
 	}
 	
