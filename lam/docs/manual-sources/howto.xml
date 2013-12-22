@@ -8545,6 +8545,21 @@ objectclass: top
 
     <para>You can use the same way to change fonts, sizes and more.</para>
 
+    <para>E.g. this will reduce the default font size to 80%:</para>
+
+    <programlisting>body {
+  font-size: 80%;
+}
+
+.ui-button-text-only {
+  font-size: 100%;
+}
+
+.ui-button-text-icon-primary {
+  font-size: 100%;
+}
+</programlisting>
+
     <para><emphasis role="bold">Custom logo and other images</emphasis></para>
 
     <para>All images are located in</para>
