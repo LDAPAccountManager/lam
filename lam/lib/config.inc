@@ -1625,9 +1625,14 @@ class LAMCfgMain {
 	 * @return mixed TRUE if format is correct, error message if file is not accepted
 	 */
 	public function uploadSSLCaCert($cert) {
-		if (strpos($cert, '-----BEGIN CERTIFICATE-----') !== 0) {
+		if (strpos($cert, '-----BEGIN CERTIFICATE-----') === false) {
 			$pem = @chunk_split(@base64_encode($cert), 64, "\n");
 			$cert = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
+		}
+		else {
+			// remove any junk before first "-----BEGIN CERTIFICATE-----"
+			$pos = strpos($cert, '-----BEGIN CERTIFICATE-----');
+			$cert = substr($cert, $pos);
 		}
 		$pemData = @openssl_x509_parse($cert);
 		if ($pemData === false) {
