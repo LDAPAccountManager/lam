@@ -77,7 +77,7 @@ abstract class baseModule {
 	protected $messages;
 	
 	/** if true, managed object classes are added when an account is created or loaded (default: true) */
-	protected $autoAddObjectClasses;
+	protected $autoAddObjectClasses = true;
 
 	/**
 	* Creates a new base module class
@@ -91,7 +91,6 @@ abstract class baseModule {
 		// initialize module
 		$this->scope = $scope;
 		$this->load_Messages();
-		$this->autoAddObjectClasses = true;
 		$this->meta = $this->get_metaData();
 	}
 
