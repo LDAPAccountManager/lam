@@ -1791,6 +1791,10 @@ class accountContainer {
 					$removeOldRDN = true;
 					unset($attributes[$this->finalDN]['modify'][extractRDNAttribute($this->finalDN)]);
 				}
+				if (isset($attributes[$this->finalDN]['notchanged'][$rdnAttr])) {
+					// fix for AD which requires to remove RDN even if not changed
+					$removeOldRDN = true;
+				}
 				logNewMessage(LOG_DEBUG, 'Rename ' . $this->dn_orig . ' to ' . $this->finalDN);
 				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), $removeOldRDN);
 				if ($success) {
