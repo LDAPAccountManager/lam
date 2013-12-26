@@ -43,8 +43,6 @@ class windowsPosixGroup extends posixGroup {
 	* @param string $scope account type (user, group, host)
 	*/
 	public function __construct($scope) {
-		// call parent constructor
-		parent::__construct($scope);
 		// do not manage cn and description (managed by windowsGroup)
 		$this->manageCnAttribute = false;
 		$this->manageDescriptionAttribute = false;
@@ -52,6 +50,8 @@ class windowsPosixGroup extends posixGroup {
 		$this->passwordAttrName = 'unixUserPassword';
 		// make optional
 		$this->autoAddObjectClasses = false;
+		// call parent constructor
+		parent::__construct($scope);
 	}
 	
 	/**
