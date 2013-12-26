@@ -127,6 +127,8 @@ class ObjectClass extends SchemaItem
 	{
 		$this->initVars();
 		$class = $raw_ldap_schema_string;
+		$class = preg_replace('/\\(([a-z])/i', '( $1', $class);
+		$class = preg_replace('/([a-z])\\)/i', '$1 )', $class);
 		$strings = preg_split ('/[\s,]+/', $class, -1,PREG_SPLIT_DELIM_CAPTURE);
 		for($i=0; $i<count($strings); $i++) {
 			switch($strings[$i]) {
