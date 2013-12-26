@@ -48,6 +48,8 @@ class windowsPosixGroup extends posixGroup {
 		// do not manage cn and description (managed by windowsGroup)
 		$this->manageCnAttribute = false;
 		$this->manageDescriptionAttribute = false;
+		// different password attribute name
+		$this->passwordAttrName = 'unixUserPassword';
 		// make optional
 		$this->autoAddObjectClasses = false;
 	}
@@ -67,8 +69,6 @@ class windowsPosixGroup extends posixGroup {
 		$return["is_base"] = false;
 		// no RDN attribute setting
 		$return["RDN"] = array();
-		// managed attributes
-		$return['attributes'] = array('gidNumber', 'userPasswordUnix', 'memberUid');
 		return $return;
 	}
 

@@ -45,6 +45,8 @@ class posixGroup extends baseModule implements passwordService {
 	protected $manageCnAttribute = true;
 	/** specifies if the description attribute should be managed by this module */
 	protected $manageDescriptionAttribute = true;
+	/** password attribute */
+	protected $passwordAttrName = 'userPassword';
 	/** cache for existing GID numbers */
 	private $cachedGIDList = null;
 	/** cache for existing users and their GIDs */
@@ -113,7 +115,7 @@ class posixGroup extends baseModule implements passwordService {
 			// password
 			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['posixGroup_password']], 'password')) {
-					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i][$this->passwordAttrName] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				else {
 					$error_messages[] = $this->messages['userPassword'][1];
@@ -199,10 +201,10 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 			}
 			// password buttons
-			if (checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
+			if (checkIfWriteAccessIsAllowed() && isset($this->attributes[$this->passwordAttrName][0])) {
 				$return->addElement(new htmlOutputText(_('Password')));
 				$pwdContainer = new htmlTable();
-				if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+				if (pwd_is_enabled($this->attributes[$this->passwordAttrName][0])) {
 					$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 				}
 				else {
@@ -369,7 +371,7 @@ class posixGroup extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// managed attributes
-		$return['attributes'] = array('gidNumber', 'userPassword', 'memberUid');
+		$return['attributes'] = array('gidNumber', $this->passwordAttrName, 'memberUid');
 		if ($this->manageCnAttribute) {
 			$return['attributes'][] = 'cn';
 		}
@@ -474,7 +476,7 @@ class posixGroup extends baseModule implements passwordService {
 				"Text" => _("Users who will become member of the current group. User names are separated by semicolons.")
 			),
 			'password' => array(
-				"Headline" => _("Group password"), 'attr' => 'userPassword',
+				"Headline" => _("Group password"), 'attr' => $this->passwordAttrName,
 				"Text" => _("Sets the group password.")
 			),
 			'minMaxGID' => array(
@@ -662,13 +664,13 @@ class posixGroup extends baseModule implements passwordService {
 			$this->attributes['description'][0] = $_POST['description'];
 		}
 		if (isset($_POST['lockPassword'])) {
-			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+			$this->attributes[$this->passwordAttrName][0] = pwd_disable($this->attributes[$this->passwordAttrName][0]);
 		}
 		if (isset($_POST['unlockPassword'])) {
-			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+			$this->attributes[$this->passwordAttrName][0] = pwd_enable($this->attributes[$this->passwordAttrName][0]);
 		}
 		if (isset($_POST['removePassword'])) {
-			unset($this->attributes['userPassword']);
+			unset($this->attributes[$this->passwordAttrName]);
 		}
 		if (isset($_POST['changegids'])) $this->changegids=true;
 		else $this->changegids=false;
@@ -1013,7 +1015,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
-		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		$this->attributes[$this->passwordAttrName][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
 	
