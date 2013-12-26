@@ -8,6 +8,7 @@ time.
 * templates/selfService/*
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
+* lib/modules/bindDLZ.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc
@@ -36,6 +37,7 @@ time.
 * lib/modules/zarafaServer.inc
 * lib/modules/zarafaUser.inc
 * lib/types/alias.inc
+* lib/types/bind.inc
 * lib/types/automountType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
@@ -172,5 +174,7 @@ templates/lib/*wz_tooltip.js                C        Walter Zorn
 lib/3rdParty/phpseclib                      C        Jim Wigginton
 templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
 templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
+templates/lib/*jquery-fineuploader-*.js     D  2010  Andrew Valums
+templates/lib/*jquery-chosen-*.js           D  2013  Patrick Filler
 
 
