@@ -96,6 +96,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
 		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
+		$this->messages['file'][3] = array('ERROR', _('File is too large. Maximum allowed size is %s kB.'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
@@ -360,6 +361,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLabeledURI', false, _('Web site'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidejpegPhoto', false, _('Photo'), null, false));
 		if (isset($_SESSION['conf_config'])) {
 			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
 			// option to hide uid
@@ -369,6 +372,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		$configContainer->addElement($configContainerOptions, true);
+		$advancedOptions = new htmlTable();
+		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
+		$advancedOptions->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'), true);
+		$advancedOptions->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'), true);
+		$advancedOptions->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
+		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
+		$advancedOptionsAccordion->colspan = 5;
+		$configContainer->addElement($advancedOptionsAccordion);
 		$return['config_options']['all'] = $configContainer;
 		// upload fields
 		$return['upload_columns'] = array(
@@ -1170,7 +1181,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		
-		if (isset($_POST['delPhoto'])) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') && isset($_POST['delPhoto'])) {
 			$this->attributes['jpegPhoto'] = array();
 		}
 		// Return error-messages
@@ -1187,11 +1198,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$equalWidthElements = array();
 		$container = new htmlTable();
 		$fieldContainer = new htmlTable();
-		$imageContainer = new htmlTable();
-		$imageContainer->alignment = htmlElement::ALIGN_TOP;
 		$container->addElement($fieldContainer);
-		$container->addElement(new htmlSpacer('50px', null));
-		$container->addElement($imageContainer, false);
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules) && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
 			$this->addSimpleInputTextField($fieldContainer, 'uid', _('User name'));
@@ -1560,22 +1567,28 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($pwdContainer);
 		}
 		// photo
-		$photoFile = '../../graphics/userDefault.png';
-		$noPhoto = true;
-		if (isset($this->attributes['jpegPhoto'][0])) {
-			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
-			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
-			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
-			fclose ($outjpeg);
-			$photoFile = '../../tmp/' . $jpeg_filename;
-			$noPhoto = false;
-		}
-		$imageContainer->addElement(new htmlImage($photoFile), true);
-		if ($noPhoto) {
-			$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
-		}
-		else {
-			$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto')) {
+			$imageContainer = new htmlTable();
+			$imageContainer->alignment = htmlElement::ALIGN_TOP;
+			$photoFile = '../../graphics/userDefault.png';
+			$noPhoto = true;
+			if (isset($this->attributes['jpegPhoto'][0])) {
+				$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+				$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
+				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
+				fclose ($outjpeg);
+				$photoFile = '../../tmp/' . $jpeg_filename;
+				$noPhoto = false;
+			}
+			$imageContainer->addElement(new htmlImage($photoFile), true);
+			if ($noPhoto) {
+				$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
+			}
+			else {
+				$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
+			}
+			$container->addElement(new htmlSpacer('50px', null));
+			$container->addElement($imageContainer, false);
 		}
 		$container->addElement(new htmlEqualWidth($equalWidthElements));
 		return $container; 
@@ -1598,12 +1611,24 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 10000000);
+			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {
+				$errMsg = $this->messages['file'][3];
+				$errMsg[] = null;
+				$errMsg[] = array($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
+				return array($errMsg);
+			}
 			fclose($handle);
 			if (extension_loaded('imagick')) {
 				// convert to JPG if imagick extension is available
 				$image = new Imagick();
 				try {
 				$image->readImageBlob($data);
+				// resize if maximum values specified
+				if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+					$image->thumbnailimage($maxWidth, $maxHeight, true);
+				}
 				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
 				$image->setImageFormat('jpeg');
 				$data = $image->getimageblob();
