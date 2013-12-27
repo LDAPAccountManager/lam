@@ -89,16 +89,17 @@ class kolabUser extends baseModule {
 		// profile options
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_mailHost', null, 'mailHost'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mailbox quota'), 'kolab_mailQuota', null, 'mailQuota'), true);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['kolab_mailHost'] = array(
 			'type' => 'ext_preg',
 			'regex' => 'DNSname',
 			'error_message' => $this->messages['mailHost'][0]);
-		// profile mappings
-		$return['profile_mappings'] = array(
-			'kolab_mailHost' => 'mailHost',
-		);
+		$return['profile_checks']['kolab_mailQuota'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'error_message' => $this->messages['mailQuota'][0]);
 		// config options
 		$configContainer = new htmlTable();
 		$configContainer->addElement(new htmlTableExtendedInputCheckbox('kolabUser_mailrecipient', true, _('Manage object class "mailrecipient"'), 'mailrecipient'), true);
@@ -162,6 +163,10 @@ class kolabUser extends baseModule {
 				"Headline" => _('Manage object class "mailrecipient"'),
 				"Text" => _('Adds the object class "mailrecipient" to all user accounts.')
 			),
+			'mailQuota' => array(
+				"Headline" => _('Mailbox quota'), 'attr' => 'mailQuota',
+				"Text" => _('The maximum mailbox size in MB.')
+			),
 			'deleteFlag' => array(
 				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
 				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
@@ -181,6 +186,12 @@ class kolabUser extends baseModule {
 				'help' => 'mailHost',
 				'example' => 'localhost',
 				'required' => true
+			),
+			array(
+				'name' => 'kolabUser_mailQuota',
+				'description' => _('Mailbox quota'),
+				'help' => 'mailQuota',
+				'example' => '2000',
 			),
 			array(
 				'name' => 'kolabUser_aliases',
@@ -211,6 +222,7 @@ class kolabUser extends baseModule {
 		$return['PDF_fields'] = array(
 			'invPol' => _('Invitation policy'),
 			'mailHost' => _('Mailbox home server'),
+			'mailQuota' => _('Mailbox quota'),
 			'aliases' => _('Email aliases'),
 			'delegate' => _('Delegates'),
 			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
@@ -235,6 +247,8 @@ class kolabUser extends baseModule {
 		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
 		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
 		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
+		$this->messages['mailQuota'][0] = array('ERROR', _('Mailbox quota'), _('Please enter a number.'));
+		$this->messages['mailQuota'][1] = array('ERROR', _('Account %s:') . ' kolabUser_mailQuota', _('Please enter a number.'));
 	}
 
 	/**
@@ -279,6 +293,16 @@ class kolabUser extends baseModule {
 				$return->addElement(new htmlOutputText(_('Mailbox home server')));
 				$return->addElement(new htmlOutputText($this->attributes['mailHost'][0]));
 				$return->addElement(new htmlHelpLink('mailHost'), true);
+			}
+			// mailbox quota
+			if ($this->manageMailrecipient()) {
+				$mailQuota = '';
+				if (!empty($this->attributes['mailQuota'][0])) {
+					$mailQuota = $this->attributes['mailQuota'][0] / 1024;
+				}
+				$mailQuotaField = new htmlTableExtendedInputField(_('Mailbox quota'), 'mailQuota', $mailQuota, 'mailQuota');
+				$mailQuotaField->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$return->addElement($mailQuotaField, true);
 			}
 			// invitation policies
 			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);
@@ -457,6 +481,19 @@ class kolabUser extends baseModule {
 			$this->processMultiValueInputTextField('kolabAllowSMTPRecipient', $errors, 'kolabEmailPrefix');
 			// allowed senders
 			$this->processMultiValueInputTextField('kolabAllowSMTPSender', $errors, 'kolabEmailPrefix');
+			// mailbox quota
+			if ($this->manageMailrecipient()) {
+				if (!empty($_POST['mailQuota']) && !get_preg($_POST['mailQuota'], 'digit')) {
+					$errors[] = $this->messages['mailQuota'][0];
+				}
+				else {
+					$mailQuota = array();
+					if (!empty($_POST['mailQuota'])) {
+						$mailQuota = array($_POST['mailQuota'] * 1024);
+					}
+					$this->attributes['mailQuota'] = $mailQuota;
+				}
+			}
 		}
 		return $errors;
 	}
@@ -530,6 +567,24 @@ class kolabUser extends baseModule {
 	}
 
 	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// mail server
+		if (!isset($this->orig['mailHost'][0]) && !empty($profile['kolab_mailHost'][0])) {
+			$this->attributes['mailHost'][0] = $profile['kolab_mailHost'][0];
+		}
+		// mailbox quota
+		if (!empty($profile['kolab_mailQuota'][0])) {
+			$this->attributes['mailQuota'][0] = $profile['kolab_mailQuota'][0] * 1024;
+		}
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -561,6 +616,17 @@ class kolabUser extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['mailHost'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			// mailbox quota
+			if (!empty($rawAccounts[$i][$ids['kolabUser_mailQuota']])) {
+				if (get_preg($rawAccounts[$i][$ids['kolabUser_mailQuota']], 'digit')) {
+					$partialAccounts[$i]['mailQuota'] = $rawAccounts[$i][$ids['kolabUser_mailQuota']] * 1024;
+				}
+				else {
+					$errMsg = $this->messages['mailQuota'][1];
 					array_push($errMsg, array($i));
 					$messages[] = $errMsg;
 				}
@@ -700,6 +766,11 @@ class kolabUser extends baseModule {
 		$this->addSimplePDFField($return, 'delegate', _('Delegates'), 'kolabDelegate');
 		$this->addSimplePDFField($return, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
+		$mailQuota = '';
+		if (!empty($this->attributes['mailQuota'][0])) {
+			$mailQuota = ($this->attributes['mailQuota'][0] / 1024) . 'MB';
+		}
+		$return[get_class($this) . '_mailQuota'] = array('<block><key>' . _('Mailbox quota') . '</key><value>' . $mailQuota . '</value></block>');
 		return $return;
 	}
 
