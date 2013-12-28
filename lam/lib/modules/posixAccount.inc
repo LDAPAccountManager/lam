@@ -1297,10 +1297,20 @@ class posixAccount extends baseModule implements passwordService {
 			$shelllist = $this->getShells(); // list of all valid shells
 	
 			// set default values
-			if (!isset($this->attributes['uid'][0]) && ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null)) {
-				// fill default value for user ID with first/last name
-				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-				$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
+			if (empty($this->attributes['uid'][0])) {
+				if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+					// fill default value for user ID with first/last name
+					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+					$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
+				}
+				elseif ($this->getAccountContainer()->getAccountModule('windowsUser') != null) {
+					// fill default value for user ID with AD user name
+					$attrs = $this->getAccountContainer()->getAccountModule('windowsUser')->getAttributes();
+					if (!empty($attrs['userPrincipalName'][0])) {
+						$parts = explode('@', $attrs['userPrincipalName'][0]);
+						$this->attributes['uid'][0] = $parts[0];
+					}
+				}
 			}
 			if ($this->manageCn() && (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == ''))) {
 				// set a default value for common name
