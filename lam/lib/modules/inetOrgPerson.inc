@@ -800,11 +800,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'mail' => array (
 				"Headline" => _("Email address"), 'attr' => 'mail',
-				"Text" => _("The user's email address.")
+				"Text" => _("The user's email address.") . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			'mailList' => array (
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The user's email address.") . ' ' . _('Multiple values are separated by semicolon.')
+							 . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			"mailPassword" => array (
 				"Headline" => _("Send password via mail"),
@@ -985,6 +986,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('inetOrgPerson', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return array();
 		}
+		// replace $user in email
+		if (!empty($this->attributes['mail'][0])) {
+			$user = null;
+			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+				$user = $attrs['uid'][0];
+			}
+			elseif (!empty($this->attributes['uid'][0])) {
+				$user = $this->attributes['uid'][0];
+			}
+			if (!empty($user)) {
+				foreach ($this->attributes['mail'] as &$mail) {
+					$mail = str_replace('$user', $user, $mail);
+				}
+			}
+		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// postalAddress, registeredAddress, facsimileTelephoneNumber and jpegPhoto need special removing
 		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['postalAddress'])) {
@@ -1023,6 +1040,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function process_attributes() {
 		$errors = array();
+		$replacements = array('$lastname' => 'sn', '$firstname' => 'givenName');
 		// add parent object classes
 		if ($this->getAccountContainer()->isNewAccount) {
 			if (!in_array('organizationalPerson', $this->attributes['objectClass'])) {
@@ -1046,6 +1064,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
 			$this->processMultiValueInputTextField('mail', $errors, 'email');
+			if (!empty($this->attributes['mail'])) {
+				foreach ($this->attributes['mail'] as &$mail) {
+					foreach ($replacements as $wildcard => $key) {
+						if (!empty($this->attributes[$key][0])) {
+							$mail = str_replace($wildcard, $this->attributes[$key][0], $mail);
+						}
+					}
+				}			
+			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$this->processMultiValueInputTextField('telephoneNumber', $errors, 'telephone');
@@ -2056,6 +2083,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
+		$replacements = array();
 		// get list of existing users
 		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', array('uid'), array('user'));
 		for ($e = 0; $e < sizeof($existingUsers); $e++) {
@@ -2066,6 +2094,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// last name
 			if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_lastName']], 'realname')) {
 				$partialAccounts[$i]['sn'] = trim($rawAccounts[$i][$ids['inetOrgPerson_lastName']]);
+				$replacements['$lastname'] = $partialAccounts[$i]['sn'];
 			}
 			else {
 				$errMsg = $this->messages['lastname'][1];
@@ -2076,11 +2105,31 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
 					$partialAccounts[$i]['givenName'] = trim($rawAccounts[$i][$ids['inetOrgPerson_firstName']]);
+					$replacements['$firstname'] = $partialAccounts[$i]['givenName'];
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
+				}
+			}
+			if (!in_array('posixAccount', $selectedModules)) {
+				// uid
+				if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
+					if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
+						$errMsg = $this->messages['uid'][3];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
+					elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
+						$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
+						$replacements['$user'] = $partialAccounts[$i]['uid'];
+					}
+					else {
+						$errMsg = $this->messages['uid'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 			}
 			// initials
@@ -2285,6 +2334,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// eMail
 			if (isset($ids['inetOrgPerson_email']) && ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "")) {
+				foreach ($replacements as $wildcard => $value) {
+					$rawAccounts[$i][$ids['inetOrgPerson_email']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['inetOrgPerson_email']]);
+				}
 				$mailList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_email']]));
 				$partialAccounts[$i]['mail'] = $mailList;
 				for ($x = 0; $x < sizeof($mailList); $x++) {
@@ -2325,22 +2377,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 					else {
 						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
-					}
-				}
-				// uid
-				if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
-					if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
-						$errMsg = $this->messages['uid'][3];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-					elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
-						$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
-					}
-					else {
-						$errMsg = $this->messages['uid'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
 					}
 				}
 				// password
