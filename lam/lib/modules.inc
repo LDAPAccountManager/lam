@@ -361,11 +361,12 @@ function checkConfigOptions($scopes, &$options) {
 * @return array help entry
 */
 function getHelp($module,$helpID,$scope='') {
+	global $helpArray;
 	if (!isset($module) || ($module == '') || ($module == 'main')) {
 		$helpPath = "../help/help.inc";
 		if (is_file("../../help/help.inc")) $helpPath = "../../help/help.inc";
 		if (!isset($helpArray)) {
-			include($helpPath);
+			include_once($helpPath);
 		}
 		return $helpArray[$helpID];
 	}
@@ -658,7 +659,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	$title = htmlspecialchars($title);
 	echo "<a class=\"margin2\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\">";
-		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle\" width=16 height=16 src=\"../$helpPath/graphics/help.png\" alt=\"" . _('Help') . "\">";
+		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle\" width=16 height=16 src=\"../${helpPath}graphics/help.png\" alt=\"" . _('Help') . "\">";
 	echo "</a>";
 }
 
