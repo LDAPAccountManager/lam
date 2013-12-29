@@ -3024,10 +3024,19 @@ Have fun!
         can specify the IMAP server name, encryption options, the
         authentication for the IMAP connection and the valid mail domains. LAM
         can use either your LAM login password for the IMAP connection or
-        display a dialog where you need to enter the password. The mail
-        domains specify for which accounts mailboxes may be created/deleted.
-        E.g. if you enter "lam-demo.org" then mailboxes can be managed for
-        "user@lam-demo.org" but not for "user@example.com".</para>
+        display a dialog where you need to enter the password. It is also
+        possible to store the admin password in your server profile. This is
+        not recommended for security reasons.</para>
+
+        <para>The user name can either be a fixed name (e.g. "admin") or it
+        can be generated with LDAP attributes of the LAM admn user. E.g. $uid$
+        will be transformed to "myUser" if you login with
+        "uid=myUser,ou=people,dc=example,dc=com".</para>
+
+        <para>The mail domains specify for which accounts mailboxes may be
+        created/deleted. E.g. if you enter "lam-demo.org" then mailboxes can
+        be managed for "user@lam-demo.org" but not for "user@example.com". Use
+        "*" for any domain.</para>
 
         <para>You need to install the SSL certificate of the CA that signed
         your server certificate. This is usually done by installing the
@@ -3038,6 +3047,11 @@ Have fun!
 
         <para>It is not recommended to disable the validation of IMAP server
         certificates.</para>
+
+        <para>The prefix, user name attribute and path separator specifies how
+        your mailboxes are named (e.g. "user.myUser@localhost" or
+        "user/myUser"). Select the values depending on your IMAP server
+        settings.</para>
 
         <screenshot>
           <mediaobject>

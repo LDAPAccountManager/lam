@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2011  Roland Gruber
+                2010 - 2013  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -77,10 +77,12 @@ class imapAccess extends baseModule {
 				"Text" => _("This option allows you to disable the certificate check of your IMAP server certificate. Disabling the certificate check is not recommended.")),
 			'ImapAdmin' => array(
 				"Headline" => _("IMAP admin user"),
-				"Text" => _("The login name of your IMAP user who has rights to create/delete mailboxes.")),
+				"Text" => _("The login name of your IMAP user who has rights to create/delete mailboxes.") . ' ' . _('Use wildcards like $uid$ for LDAP attributes of the current LAM admin user.')),
 			'ImapAdminPasswordSelect' => array(
 				"Headline" => _("IMAP password input"),
-				"Text" => _("Choose the way how to provide the IMAP admin password. You can use the same password as for the LAM login or LAM will ask you for a password when it is required.")),
+				"Text" => _("Choose the way how to provide the IMAP admin password. You can use the same password as for the LAM login or LAM will ask you for a password when it is required.")
+							. ' ' . _('Storing the password in your server profile is also possible but not recommended.')
+			),
 			'ImapAdminPassword_Sess' => array(
 				"Headline" => _("Password of IMAP admin user"),
 				"Text" => _("The password of your IMAP admin user. The login name for the IMAP admin user is stored in the LAM server profile.")),
@@ -115,13 +117,23 @@ class imapAccess extends baseModule {
 		$configUser = new htmlTableExtendedInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
 		$configUser->setRequired(true);
 		$configContainer->addElement($configUser, true);
-		$configPasswordType = new htmlTableExtendedSelect('ImapAccess_ImapAdminPasswordSelect', array(_('LAM user password') => 'lam_user_pass', _('Ask') => 'ask_pass'), array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
+		$pwdSelectOptions = array(
+			_('LAM user password') => 'lam_user_pass',
+			_('Ask') => 'ask_pass',
+			_('Server profile') => 'config');
+		$configPasswordType = new htmlTableExtendedSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
 		$configPasswordType->setHasDescriptiveElements(true);
+		$configPasswordType->setTableRowsToShow(array('config' => array('ImapAccess_ImapAdminPassword')));
+		$configPasswordType->setTableRowsToHide(array('lam_user_pass' => array('ImapAccess_ImapAdminPassword'), 'ask_pass' => array('ImapAccess_ImapAdminPassword')));
 		$configContainer->addElement($configPasswordType, true);
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
+		$adminPwdInput = new htmlTableExtendedInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
+		$adminPwdInput->setIsPassword(true);
+		$adminPwdInput->setObfuscate(true);
+		$configContainer->addElement($adminPwdInput, true);
 		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
 		$mailDomainsInput->setRequired(true);
 		$configContainer->addElement($mailDomainsInput, true);
+		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
 		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
 		$configContainer->addElement($configUserName, true);
 		$configPathSeparator = new htmlTableExtendedSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
@@ -157,6 +169,7 @@ class imapAccess extends baseModule {
 	function load_Messages() {
 		$this->messages['config'][0] = array('ERROR', _('Please enter a valid server name where the mailboxes reside.'));
 		$this->messages['config'][1] = array('ERROR', _('Please enter a correct list of valid mail domains.'));
+		$this->messages['config'][2] = array('ERROR', _('The IMAP admin password is empty.'));
 		$this->messages['managemailbox'][0] = array('ERROR', _('Unable to change ACL on IMAP server for mailbox deletion.'));
 		$this->messages['managemailbox'][1] = array('ERROR', _('Unable to delete mailbox from IMAP server.'));
 		$this->messages['managemailbox'][2] = array('ERROR', _('Unable to create mailbox on IMAP server.'));
@@ -213,7 +226,7 @@ class imapAccess extends baseModule {
 		$return->addElement(new htmlOutputText($email), true);
 
 		$imap_server_address = $this->getServerAddress();
-		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
+		$imap_admin_user = $this->getAdminUser();
 		$imap_admin_password = $this->getAdminPassword();
 		$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 		if (!$mbox) {
@@ -328,7 +341,7 @@ class imapAccess extends baseModule {
 		$prefix = $this->getMailboxPrefix();
 		
 		$imap_server_address = $this->getServerAddress();
-		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
+		$imap_admin_user = $this->getAdminUser();
 		
 		if (isset($_POST['ImapAdminPassword']) && isset($_POST['enterPasswordButton'])) {
 			$errors = $this->doLogin();
@@ -364,7 +377,7 @@ class imapAccess extends baseModule {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					if (!imap_setacl($mbox, $prefix . $this->getSep() . $email_username, $this->moduleSettings['ImapAccess_ImapAdmin'][0], "c")) {
+					if (!imap_setacl($mbox, $prefix . $this->getSep() . $email_username, $imap_admin_user, "c")) {
 						$errors[] = $this->messages['managemailbox'][0];
 					}
 					
@@ -401,7 +414,8 @@ class imapAccess extends baseModule {
 				}
 				else {
 					if (!isset($_POST['ImapUserQuotaLimit']) || ($_POST['ImapUserQuotaLimit'] == '')) {
-/*						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, -1)) {
+/* deactivated because -1 is not accepted, no possibility to remove quota
+ * 						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, -1)) {
 							$message = $this->messages['managemailbox'][7];
 							$message[] = imap_last_error();
 							$errors[] = $message;
@@ -439,11 +453,82 @@ class imapAccess extends baseModule {
 	}
 	
 	/**
+	* Checks input values of module settings.
+	* 
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
+	* <br>If no errors occured the function returns an empty array.
+	*
+	* @param array $scopes list of account types which are used
+	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	* @return array list of error messages
+	* 
+	* @see baseModule::get_metaData()
+	*/
+	public function check_configOptions($scopes, &$options) {
+		$errors = parent::check_configOptions($scopes, $options);
+		if ($options['ImapAccess_ImapAdminPasswordSelect'][0] == 'config') {
+			if (empty($options['ImapAccess_ImapAdminPassword'][0])) {
+				$errors[] = $this->messages['config'][2];
+			}
+		}
+		return $errors;
+	}
+	
+	/**
+	 * Returns the user name of the IMAP admin.
+	 * 
+	 * @return String admin user name
+	 */
+	private function getAdminUser() {
+		if (isset($_SESSION['imapAdmUser'])) {
+			return $_SESSION['imapAdmUser'];
+		}
+		$user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
+		// check if user name contains any wildcards that need to be replaced with LDAP attribute values
+		$matches = array();
+		preg_match_all('/\\$[a-z0-9_-]+\\$/i', $this->moduleSettings['ImapAccess_ImapAdmin'][0], $matches);
+		if (sizeof($matches) > 0) {
+			// find wildcards
+			$attrNames = array();
+			foreach ($matches as $match) {
+				foreach ($match as $attr) {
+					$attrNames[] = substr($attr, 1, -1);
+				}
+			}
+			$attrNames = array_values(array_unique($attrNames));
+			$attrNames = array_change_key_case($attrNames, CASE_LOWER);
+			// read LAM login user data
+			$data = $_SESSION['ldap']->decrypt_login();
+			$dn = $data[0];
+			$sr = @ldap_read($_SESSION['ldap']->server(), $dn, '(objectclass=*)', $attrNames);
+			if ($sr) {
+				$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+				if ($info) {
+					cleanLDAPResult($info);
+					$info = $info[0];
+				}
+			}
+			// replace wildcards
+			foreach ($attrNames as $attr) {
+				if (empty($info[$attr])) {
+					continue;
+				}
+				$user = preg_replace('/\\$' . $attr . '\\$/i', $info[$attr][0], $user);
+			}
+		}
+		logNewMessage(LOG_DEBUG, 'IMAP admin user: ' . $user);
+		$_SESSION['imapAdmUser'] = $user;
+		return $user;
+	}
+	
+	/**
 	 * Returns the admin password.
 	 *
 	 * @return String password
 	 */
-	function getAdminPassword() {
+	private function getAdminPassword() {
 		//perform admin password
 		$imap_admin_password = null; //default value is null, it can be changed during the work
 		if (isset($_SESSION['imapAdmPass'])) {
@@ -452,6 +537,10 @@ class imapAccess extends baseModule {
 		elseif (isset($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass")) {
 			$credentials = $_SESSION['ldap']->decrypt_login();
 			$imap_admin_password = $credentials[1];
+		}
+		elseif (!empty($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "config")
+			&& !empty($this->moduleSettings['ImapAccess_ImapAdminPassword'][0])) {
+			$imap_admin_password = deobfuscateText($this->moduleSettings['ImapAccess_ImapAdminPassword'][0]);
 		}
 		return $imap_admin_password;
 	}
@@ -464,7 +553,7 @@ class imapAccess extends baseModule {
 	function doLogin() {
 		$errors = array();
 		$imap_server_address = $this->getServerAddress();
-		$imap_admin_user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
+		$imap_admin_user = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
 			$imap_admin_password = $_POST['ImapAdminPassword'];
 			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);

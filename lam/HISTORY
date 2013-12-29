@@ -1,5 +1,5 @@
 March 2014 4.5
-
+  - IMAP: allow dynamic admin user names by replacing wildcards with LDAP attributes
 
 18.12.2013 4.4
   - PyKota support: users, groups, printers, billing codes
