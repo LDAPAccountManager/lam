@@ -1056,7 +1056,7 @@ class accountContainer {
 			$container->addElement(new htmlTableExtendedInputCheckbox('lamForcePasswordChange', false, _('Force password change')));
 			$container->addElement(new htmlHelpLink('406'), true);
 		}
-		if (isLAMProVersion() && isset($this->attributes_orig['mail'][0])) {
+		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
 			$pwdMailCheckbox = new htmlTableExtendedInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'));
 			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeSendMailAddress'));
 			$container->addElement($pwdMailCheckbox);
@@ -1171,6 +1171,19 @@ class accountContainer {
 		return $return;		
 	}
 	
+	/**
+	 * Returns if any module manages the mail attribute.
+	 * 
+	 * @return boolean mail is managed
+	 */
+	private function anyModuleManagesMail() {
+		foreach ($this->module as $mod) {
+			if (in_array('mail', $mod->getManagedAttributes())) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Prints common controls like the save button and the ou selection.

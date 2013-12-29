@@ -989,6 +989,12 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 	if (!empty($recipient)) {
 		$mailTo = $recipient;
 	}
+	if (empty($mailTo)) {
+		logNewMessage(LOG_ERR, 'Unable to send password mail, no TO address set.');
+		return array(
+			array('ERROR', _('Unable to send mail!'))
+		);
+	}
 	$mailFrom = $_SESSION['config']->getLamProMailFrom();
 	$mailReplyTo = $_SESSION['config']->getLamProMailReplyTo();
 	$mailSubject = $_SESSION['config']->getLamProMailSubject();
