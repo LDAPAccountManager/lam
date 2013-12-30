@@ -5156,33 +5156,39 @@ objectclass: top
             <row>
               <entry>postCreate</entry>
 
-              <entry>executed after creating a new account</entry>
+              <entry>executed after creating a new account (does <emphasis
+              role="bold">not</emphasis> run if preCreate or LDAP operations
+              fail)</entry>
             </row>
 
             <row>
               <entry>preModify</entry>
 
-              <entry>executed before the account is modified (cancels
-              operation if a script returns an exit code &gt; 0)</entry>
+              <entry>executed before an account is modified (cancels operation
+              if a script returns an exit code &gt; 0)</entry>
             </row>
 
             <row>
               <entry>postModify</entry>
 
-              <entry>executed after an account was modified</entry>
+              <entry>executed after an account was modified (does <emphasis
+              role="bold">not</emphasis> run if preModify or LDAP operations
+              fail)</entry>
             </row>
 
             <row>
               <entry>preDelete</entry>
 
-              <entry>executed before an account was modified (cancels
-              operation if a script returns an exit code &gt; 0)</entry>
+              <entry>executed before an account is modified (cancels operation
+              if a script returns an exit code &gt; 0)</entry>
             </row>
 
             <row>
               <entry>postDelete</entry>
 
-              <entry>executed after an account was modified</entry>
+              <entry>executed after an account was modified (does <emphasis
+              role="bold">not</emphasis> run if preDelete or LDAP operations
+              fail)</entry>
             </row>
 
             <row>
