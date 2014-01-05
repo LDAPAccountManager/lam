@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -158,7 +158,12 @@ echo $_SESSION['header'];
 						$fieldsEnabled = false;
 						if (sizeof($files) > 0) {
 							$profiles = $files;
-							$selectedProfile[] = $conf->default;
+							if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
+								$selectedProfile[] = $_COOKIE["lam_default_profile"];
+							}
+							else {
+								$selectedProfile[] = $conf->default;
+							}
 							$fieldsEnabled = true;
 						}
 						$select = new htmlSelect('filename', $profiles, $selectedProfile);
