@@ -373,10 +373,48 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$configContainer->addElement($configContainerOptions, true);
 		$advancedOptions = new htmlTable();
+		$advancedOptions->addElement(new htmlSubTitle(_('Read-only fields')), true);
+		$readOnlyOptions = array(
+			_('Description') => 'inetOrgPerson_readOnly_description', _('Street') => 'inetOrgPerson_readOnly_street',
+			_('First name') => 'inetOrgPerson_readOnly_givenName', _('Last name') => 'inetOrgPerson_readOnly_sn',
+			_('Post office box') => 'inetOrgPerson_readOnly_postOfficeBox', _('Postal code') => 'inetOrgPerson_readOnly_postalCode',
+			_('Location') => 'inetOrgPerson_readOnly_l', _('State') => 'inetOrgPerson_readOnly_st',
+			_('Postal address') => 'inetOrgPerson_readOnly_postalAddress', _('Registered address') => 'inetOrgPerson_readOnly_registeredAddress',
+			_('Office name') => 'inetOrgPerson_readOnly_physicalDeliveryOfficeName', _('Room number') => 'inetOrgPerson_readOnly_roomNumber',
+			_('Telephone number') => 'inetOrgPerson_readOnly_telephoneNumber', _('Home telephone number') => 'inetOrgPerson_readOnly_homePhone',
+			_('Mobile number') => 'inetOrgPerson_readOnly_mobile', _('Fax number') => 'inetOrgPerson_readOnly_facsimileTelephoneNumber',
+			_('Email address') => 'inetOrgPerson_readOnly_mail', _('Web site') => 'inetOrgPerson_readOnly_labeledURI',
+			_('Job title') => 'inetOrgPerson_readOnly_title', _('Car license') => 'inetOrgPerson_readOnly_carLicense',
+			_('Employee type') => 'inetOrgPerson_readOnly_employeeType', _('Business category') => 'inetOrgPerson_readOnly_businessCategory',
+			_('Department') => 'inetOrgPerson_readOnly_departmentNumber', _('Manager') => 'inetOrgPerson_readOnly_manager',
+			_('Organisation') => 'inetOrgPerson_readOnly_o', _('Organisational unit') => 'inetOrgPerson_readOnly_ou',
+			_('Employee number') => 'inetOrgPerson_readOnly_employeeNumber', _('Initials') => 'inetOrgPerson_readOnly_initials',
+			_('Photo') => 'inetOrgPerson_readOnly_jpegPhoto', _('Password') => 'inetOrgPerson_readOnly_userPassword'
+		);
+		if (isset($_SESSION['conf_config'])) {
+			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			$readOnlyOptions[_('User name')] = 'inetOrgPerson_readOnly_uid';
+			$readOnlyOptions[_('Common name')] = 'inetOrgPerson_readOnly_cn';
+		}
+		ksort($readOnlyOptions);
+		$readOnlyCounter = 0;
+		$readOnlyOptionsTable = new htmlTable();
+		$readOnlyOptionsTable->colspan = 5;
+		foreach ($readOnlyOptions as $label => $id) {
+			$readOnlyOptionsTable->addElement(new htmlTableExtendedInputCheckbox($id, false, $label, null, false));
+			$readOnlyCounter++;
+			if (($readOnlyCounter % 5) == 0) {
+				$readOnlyOptionsTable->addNewLine();
+			}
+		}
+		$advancedOptions->addElement($readOnlyOptionsTable, true);
 		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
-		$advancedOptions->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'), true);
-		$advancedOptions->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'), true);
-		$advancedOptions->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
+		$photoTable = new htmlTable();
+		$photoTable->colspan = 2;
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'), true);
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'), true);
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
+		$advancedOptions->addElement($photoTable, true);
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$advancedOptionsAccordion->colspan = 5;
 		$configContainer->addElement($advancedOptionsAccordion);
@@ -1052,17 +1090,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// load and check attributes
 		// description
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription') && !$this->isAdminReadOnly('description')) {
 			$this->processMultiValueInputTextField('description', $errors);
 		}
-		$this->attributes['sn'][0] = trim($_POST['sn']);
-		if (!get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
-		$this->attributes['givenName'][0] = trim($_POST['givenName']);
-		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
+		// last name
+		if (!$this->isAdminReadOnly('sn')) {
+			$this->attributes['sn'][0] = trim($_POST['sn']);
+			if (!get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
+		}
+		// first name
+		if (!$this->isAdminReadOnly('givenName')) {
+			$this->attributes['givenName'][0] = trim($_POST['givenName']);
+			if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle') && !$this->isAdminReadOnly('title')) {
 			$this->processMultiValueInputTextField('title', $errors, 'title');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') && !$this->isAdminReadOnly('mail')) {
 			$this->processMultiValueInputTextField('mail', $errors, 'email');
 			if (!empty($this->attributes['mail'])) {
 				foreach ($this->attributes['mail'] as &$mail) {
@@ -1074,28 +1118,28 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}			
 			}
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') && !$this->isAdminReadOnly('telephoneNumber')) {
 			$this->processMultiValueInputTextField('telephoneNumber', $errors, 'telephone');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber') && !$this->isAdminReadOnly('mobile')) {
 			$this->processMultiValueInputTextField('mobile', $errors, 'telephone');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber') && !$this->isAdminReadOnly('facsimileTelephoneNumber')) {
 			$this->processMultiValueInputTextField('facsimileTelephoneNumber', $errors, 'telephone');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber') && !$this->isAdminReadOnly('homePhone')) {
 			$this->processMultiValueInputTextField('homePhone', $errors, 'telephone');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet') && !$this->isAdminReadOnly('street')) {
 			$this->processMultiValueInputTextField('street', $errors, 'street');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox') && !$this->isAdminReadOnly('postOfficeBox')) {
 			$this->processMultiValueInputTextField('postOfficeBox', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode') && !$this->isAdminReadOnly('postalCode')) {
 			$this->processMultiValueInputTextField('postalCode', $errors, 'postalCode');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress') && !$this->isAdminReadOnly('postalAddress')) {
 			$addressCounter = 0;
 			while (isset($_POST['postalAddress' . $addressCounter])) {
 				$this->attributes['postalAddress'][$addressCounter] = implode('$', preg_split('/[\r][\n]/', $_POST['postalAddress' . $addressCounter]));
@@ -1110,10 +1154,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$this->attributes['postalAddress'] = array_values($this->attributes['postalAddress']);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI') && !$this->isAdminReadOnly('labeledURI')) {
 			$this->processMultiValueInputTextField('labeledURI', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress') && !$this->isAdminReadOnly('registeredAddress')) {
 			$addressCounter = 0;
 			while (isset($_POST['registeredAddress' . $addressCounter])) {
 				$this->attributes['registeredAddress'][$addressCounter] = implode('$', preg_split('/[\r][\n]/', $_POST['registeredAddress' . $addressCounter]));
@@ -1128,48 +1172,48 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$this->attributes['registeredAddress'] = array_values($this->attributes['registeredAddress']);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') && !$this->isAdminReadOnly('employeeType')) {
 			$this->attributes['employeeType'][0] = $_POST['employeeType'];
 			if (!get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber') && !$this->isAdminReadOnly('roomNumber')) {
 			$this->attributes['roomNumber'][0] = $_POST['roomNumber'];
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation') && !$this->isAdminReadOnly('l')) {
 			$this->processMultiValueInputTextField('l', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState') && !$this->isAdminReadOnly('st')) {
 			$this->processMultiValueInputTextField('st', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense') && !$this->isAdminReadOnly('carLicense')) {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName') && !$this->isAdminReadOnly('physicalDeliveryOfficeName')) {
 			$this->processMultiValueInputTextField('physicalDeliveryOfficeName', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory') && !$this->isAdminReadOnly('businessCategory')) {
 			$this->processMultiValueInputTextField('businessCategory', $errors, 'businessCategory');
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') && !$this->isAdminReadOnly('departmentNumber')) {
 			$this->processMultiValueInputTextField('departmentNumber', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber') && !$this->isAdminReadOnly('employeeNumber')) {
 			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu') && !$this->isAdminReadOnly('ou')) {
 			$this->processMultiValueInputTextField('ou', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO') && !$this->isAdminReadOnly('o')) {
 			$this->processMultiValueInputTextField('o', $errors);
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials') && !$this->isAdminReadOnly('initials')) {
 			$this->attributes['initials'] = preg_split('/;[ ]*/', $_POST['initials']);
 		}
 		
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			// uid
-			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
+			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID') && !$this->isAdminReadOnly('uid')) {
 				if (isset($_POST['uid']) && ($_POST['uid'] != '')) {
 					if (!get_preg($_POST['uid'], 'username')) {
 						$errors[] = $this->messages['uid'][0];
@@ -1183,32 +1227,36 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// cn
-			if ($_POST['cn'] == '') {
-				if ($_POST['givenName'] != '') {
-					$this->attributes['cn'][0] = $_POST['givenName'] . " " . $_POST['sn'];
+			if (!$this->isAdminReadOnly('cn')) {
+				if ($_POST['cn'] == '') {
+					if ($_POST['givenName'] != '') {
+						$this->attributes['cn'][0] = $_POST['givenName'] . " " . $_POST['sn'];
+					}
+					else {
+						$this->attributes['cn'][0] = $_POST['sn'];
+					}
 				}
 				else {
-					$this->attributes['cn'][0] = $_POST['sn'];
+					$this->attributes['cn'][0] = $_POST['cn'];
+				}
+				if (!get_preg($this->attributes['cn'][0], 'cn')) {
+					$errors[] = $this->messages['cn'][0];
 				}
 			}
-			else {
-				$this->attributes['cn'][0] = $_POST['cn'];
-			}
-			if (!get_preg($this->attributes['cn'][0], 'cn')) {
-				$errors[] = $this->messages['cn'][0];
-			}
-			if (isset($_POST['lockPassword'])) {
-				$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
-			}
-			if (isset($_POST['unlockPassword'])) {
-				$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
-			}
-			if (isset($_POST['removePassword'])) {
-				unset($this->attributes['userPassword']);
+			if (!$this->isAdminReadOnly('userPassword')) {
+				if (isset($_POST['lockPassword'])) {
+					$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+				}
+				if (isset($_POST['unlockPassword'])) {
+					$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+				}
+				if (isset($_POST['removePassword'])) {
+					unset($this->attributes['userPassword']);
+				}
 			}
 		}
 		
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') && isset($_POST['delPhoto'])) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') && isset($_POST['delPhoto']) && !$this->isAdminReadOnly('jpegPhoto')) {
 			$this->attributes['jpegPhoto'] = array();
 		}
 		// Return error-messages
@@ -1227,32 +1275,59 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$fieldContainer = new htmlTable();
 		$container->addElement($fieldContainer);
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		// uid
 		if (!in_array('posixAccount', $modules) && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
-			$this->addSimpleInputTextField($fieldContainer, 'uid', _('User name'));
-			$equalWidthElements[] = 'uid';
+			if ($this->isAdminReadOnly('uid')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'uid', _('User name'));
+			}
+			else {
+				$this->addSimpleInputTextField($fieldContainer, 'uid', _('User name'));
+				$equalWidthElements[] = 'uid';
+			}
 		}
-		$this->addSimpleInputTextField($fieldContainer, 'givenName', _('First name'));
-		$equalWidthElements[] = 'givenName';
-		$this->addSimpleInputTextField($fieldContainer, 'sn', _('Last name'), true);
-		$equalWidthElements[] = 'sn';
+		// first name
+		if ($this->isAdminReadOnly('givenName')) {
+			$this->addSimpleReadOnlyField($fieldContainer, 'givenName', _('First name'));
+		}
+		else {
+			$this->addSimpleInputTextField($fieldContainer, 'givenName', _('First name'));
+			$equalWidthElements[] = 'givenName';
+		}
+		// last name
+		if ($this->isAdminReadOnly('sn')) {
+			$this->addSimpleReadOnlyField($fieldContainer, 'sn', _('Last name'));
+		}
+		else {
+			$this->addSimpleInputTextField($fieldContainer, 'sn', _('Last name'), true);
+			$equalWidthElements[] = 'sn';
+		}
+		// initials
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
-			$this->addSimpleInputTextField($fieldContainer, 'initials', _('Initials'));
-			$equalWidthElements[] = 'initials';
+			if ($this->isAdminReadOnly('initials')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'initials', _('Initials'));
+			}
+			else {
+				$this->addSimpleInputTextField($fieldContainer, 'initials', _('Initials'));
+				$equalWidthElements[] = 'initials';
+			}
 		}
+		// common name
 		if (!in_array('posixAccount', $modules)) {
-			$this->addSimpleInputTextField($fieldContainer, 'cn', _('Common name'), true);
-			$equalWidthElements[] = 'cn';
+			if ($this->isAdminReadOnly('cn')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'cn', _('Common name'));
+			}
+			else {
+				$this->addSimpleInputTextField($fieldContainer, 'cn', _('Common name'), true);
+				$equalWidthElements[] = 'cn';
+			}
 		}
 		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'description', _('Description'));
-			if (!empty($this->attributes['description'])) {
-				for ($i = 0; $i < sizeof($this->attributes['description']); $i++) {
-					$equalWidthElements[] = 'description_' . $i;
-				}
+			if ($this->isAdminReadOnly('description')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'description', _('Description'));
 			}
 			else {
-				$equalWidthElements[] = 'description_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'description', _('Description'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 
@@ -1264,61 +1339,52 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement(new htmlSubTitle(_('Address')), true);
 		}
 
+		// street
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'street', _('Street'));
-			if (!empty($this->attributes['street'])) {
-				for ($i = 0; $i < sizeof($this->attributes['street']); $i++) {
-					$equalWidthElements[] = 'street_' . $i;
-				}
+			if ($this->isAdminReadOnly('street')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'street', _('Street'));
 			}
 			else {
-				$equalWidthElements[] = 'street_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'street', _('Street'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
+		// post office box
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'postOfficeBox', _('Post office box'));
-			if (!empty($this->attributes['postOfficeBox'])) {
-				for ($i = 0; $i < sizeof($this->attributes['postOfficeBox']); $i++) {
-					$equalWidthElements[] = 'postOfficeBox_' . $i;
-				}
+			if ($this->isAdminReadOnly('postOfficeBox')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'postOfficeBox', _('Post office box'));
 			}
 			else {
-				$equalWidthElements[] = 'postOfficeBox_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'postOfficeBox', _('Post office box'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
+		// postal code
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'postalCode', _('Postal code'));
-			if (!empty($this->attributes['postalCode'])) {
-				for ($i = 0; $i < sizeof($this->attributes['postalCode']); $i++) {
-					$equalWidthElements[] = 'postalCode_' . $i;
-				}
+			if ($this->isAdminReadOnly('postalCode')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'postalCode', _('Postal code'));
 			}
 			else {
-				$equalWidthElements[] = 'postalCode_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'postalCode', _('Postal code'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
+		// location
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'l', _('Location'));
-			if (!empty($this->attributes['l'])) {
-				for ($i = 0; $i < sizeof($this->attributes['l']); $i++) {
-					$equalWidthElements[] = 'l_' . $i;
-				}
+			if ($this->isAdminReadOnly('l')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'l', _('Location'));
 			}
 			else {
-				$equalWidthElements[] = 'l_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'l', _('Location'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
+		// state
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'st', _('State'));
-			if (!empty($this->attributes['st'])) {
-				for ($i = 0; $i < sizeof($this->attributes['st']); $i++) {
-					$equalWidthElements[] = 'st_' . $i;
-				}
+			if ($this->isAdminReadOnly('st')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'st', _('State'));
 			}
 			else {
-				$equalWidthElements[] = 'st_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'st', _('State'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
+		// postal address
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$postalAddresses = array();
 			if (isset($this->attributes['postalAddress'][0])) {
@@ -1334,20 +1400,35 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($addressLabel);
 			$addressContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($postalAddresses); $i++) {
-				$addressContainer->addElement(new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3));
-				$equalWidthElements[] = 'postalAddress' . $i;
-				if ($i < (sizeof($postalAddresses) - 1)) {
-					$addressContainer->addElement(new htmlOutputText('<br>', false));
+				if ($this->isAdminReadOnly('postalAddress')) {
+					$val = str_replace("\r\n", '<br>', htmlspecialchars($postalAddresses[$i]));
+					$addressContainer->addElement(new htmlOutputText($val, false));
+					if ($i < (sizeof($postalAddresses) - 1)) {
+						$addressContainer->addElement(new htmlOutputText('<br>', false));
+					}
 				}
 				else {
-					$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.png', true));
+					$addressContainer->addElement(new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3));
+					$equalWidthElements[] = 'postalAddress' . $i;
+					if ($i < (sizeof($postalAddresses) - 1)) {
+						$addressContainer->addElement(new htmlOutputText('<br>', false));
+					}
+					else {
+						$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.png', true));
+					}
 				}
 			}
 			$fieldContainer->addElement($addressContainer);
-			$addressHelp = new htmlHelpLink('postalAddress');
-			$addressHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($addressHelp, true);
+			if ($this->isAdminReadOnly('postalAddress')) {
+				$fieldContainer->addNewLine();
+			}
+			else {
+				$addressHelp = new htmlHelpLink('postalAddress');
+				$addressHelp->alignment = htmlElement::ALIGN_TOP;
+				$fieldContainer->addElement($addressHelp, true);
+			}
 		}
+		// registered address
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
 			$registeredAddresses = array();
 			if (isset($this->attributes['registeredAddress'][0])) {
@@ -1363,34 +1444,51 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fieldContainer->addElement($registeredAddressLabel);
 			$registeredAddressContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($registeredAddresses); $i++) {
-				$registeredAddressContainer->addElement(new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3));
-				$equalWidthElements[] = 'registeredAddress' . $i;
-				if ($i < (sizeof($registeredAddresses) - 1)) {
-					$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
+				if ($this->isAdminReadOnly('registeredAddress')) {
+					$val = str_replace("\r\n", '<br>', htmlspecialchars($registeredAddresses[$i]));
+					$registeredAddressContainer->addElement(new htmlOutputText($val, false));
+					if ($i < (sizeof($registeredAddresses) - 1)) {
+						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
+					}
 				}
 				else {
-					$registeredAddressContainer->addElement(new htmlButton('addRegisteredAddress', 'add.png', true));
+					$registeredAddressContainer->addElement(new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3));
+					$equalWidthElements[] = 'registeredAddress' . $i;
+					if ($i < (sizeof($registeredAddresses) - 1)) {
+						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
+					}
+					else {
+						$registeredAddressContainer->addElement(new htmlButton('addRegisteredAddress', 'add.png', true));
+					}
 				}
 			}
 			$fieldContainer->addElement($registeredAddressContainer);
-			$registeredAddressHelp = new htmlHelpLink('registeredAddress');
-			$registeredAddressHelp->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($registeredAddressHelp, true);
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'));
-			if (!empty($this->attributes['physicalDeliveryOfficeName'])) {
-				for ($i = 0; $i < sizeof($this->attributes['physicalDeliveryOfficeName']); $i++) {
-					$equalWidthElements[] = 'physicalDeliveryOfficeName_' . $i;
-				}
+			if ($this->isAdminReadOnly('registeredAddress')) {
+				$fieldContainer->addNewLine();
 			}
 			else {
-				$equalWidthElements[] = 'physicalDeliveryOfficeName_0';
+				$registeredAddressHelp = new htmlHelpLink('registeredAddress');
+				$registeredAddressHelp->alignment = htmlElement::ALIGN_TOP;
+				$fieldContainer->addElement($registeredAddressHelp, true);
+			}
+		}
+		// office name
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
+			if ($this->isAdminReadOnly('physicalDeliveryOfficeName')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'));
+			}
+			else {
+				$this->addMultiValueInputTextField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
-			$this->addSimpleInputTextField($fieldContainer, 'roomNumber', _('Room number'));
-			$equalWidthElements[] = 'roomNumber';
+			if ($this->isAdminReadOnly('roomNumber')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'roomNumber', _('Room number'));
+			}
+			else {
+				$this->addSimpleInputTextField($fieldContainer, 'roomNumber', _('Room number'));
+				$equalWidthElements[] = 'roomNumber';
+			}
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')
@@ -1400,69 +1498,51 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'telephoneNumber', _('Telephone number'));
-			if (!empty($this->attributes['telephoneNumber'])) {
-				for ($i = 0; $i < sizeof($this->attributes['telephoneNumber']); $i++) {
-					$equalWidthElements[] = 'telephoneNumber_' . $i;
-				}
+			if ($this->isAdminReadOnly('telephoneNumber')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'telephoneNumber', _('Telephone number'));
 			}
 			else {
-				$equalWidthElements[] = 'telephoneNumber_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'telephoneNumber', _('Telephone number'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'homePhone', _('Home telephone number'));
-			if (!empty($this->attributes['homePhone'])) {
-				for ($i = 0; $i < sizeof($this->attributes['homePhone']); $i++) {
-					$equalWidthElements[] = 'homePhone_' . $i;
-				}
+			if ($this->isAdminReadOnly('homePhone')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'homePhone', _('Home telephone number'));
 			}
 			else {
-				$equalWidthElements[] = 'homePhone_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'homePhone', _('Home telephone number'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'mobile', _('Mobile number'));
-			if (!empty($this->attributes['mobile'])) {
-				for ($i = 0; $i < sizeof($this->attributes['mobile']); $i++) {
-					$equalWidthElements[] = 'mobile_' . $i;
-				}
+			if ($this->isAdminReadOnly('mobile')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'mobile', _('Mobile number'));
 			}
 			else {
-				$equalWidthElements[] = 'mobile_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'mobile', _('Mobile number'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'));
-			if (!empty($this->attributes['facsimileTelephoneNumber'])) {
-				for ($i = 0; $i < sizeof($this->attributes['facsimileTelephoneNumber']); $i++) {
-					$equalWidthElements[] = 'facsimileTelephoneNumber_' . $i;
-				}
+			if ($this->isAdminReadOnly('facsimileTelephoneNumber')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'));
 			}
 			else {
-				$equalWidthElements[] = 'facsimileTelephoneNumber_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'mail', _('Email address'));
-			if (!empty($this->attributes['mail'])) {
-				for ($i = 0; $i < sizeof($this->attributes['mail']); $i++) {
-					$equalWidthElements[] = 'mail_' . $i;
-				}
+			if ($this->isAdminReadOnly('mail')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'mail', _('Email address'));
 			}
 			else {
-				$equalWidthElements[] = 'mail_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'mail', _('Email address'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'labeledURI', _('Web site'));
-			if (!empty($this->attributes['labeledURI'])) {
-				for ($i = 0; $i < sizeof($this->attributes['labeledURI']); $i++) {
-					$equalWidthElements[] = 'labeledURI_' . $i;
-				}
+			if ($this->isAdminReadOnly('labeledURI')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'labeledURI', _('Web site'));
 			}
 			else {
-				$equalWidthElements[] = 'labeledURI_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'labeledURI', _('Web site'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		
@@ -1474,72 +1554,72 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'));
-			if (!empty($this->attributes['title'])) {
-				for ($i = 0; $i < sizeof($this->attributes['title']); $i++) {
-					$equalWidthElements[] = 'title_' . $i;
-				}
+			if ($this->isAdminReadOnly('title')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'title', _('Job title'));
 			}
 			else {
-				$equalWidthElements[] = 'title_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
-			$this->addSimpleInputTextField($fieldContainer, 'carLicense', _('Car license'));
-			$equalWidthElements[] = 'carLicense';
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
-			$this->addSimpleInputTextField($fieldContainer, 'employeeNumber', _('Employee number'));
-			$equalWidthElements[] = 'employeeNumber';
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
-			$this->addSimpleInputTextField($fieldContainer, 'employeeType', _('Employee type'), false, null, false, $this->employeeTypeCache);
-			$equalWidthElements[] = 'employeeType';
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, $this->businessCategoryCache);
-			if (!empty($this->attributes['businessCategory'])) {
-				for ($i = 0; $i < sizeof($this->attributes['businessCategory']); $i++) {
-					$equalWidthElements[] = 'businessCategory_' . $i;
-				}
+			if ($this->isAdminReadOnly('carLicense')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'carLicense', _('Car license'));
 			}
 			else {
-				$equalWidthElements[] = 'businessCategory_0';
+				$this->addSimpleInputTextField($fieldContainer, 'carLicense', _('Car license'));
+				$equalWidthElements[] = 'carLicense';
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+			if ($this->isAdminReadOnly('employeeNumber')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'employeeNumber', _('Employee number'));
+			}
+			else {
+				$this->addSimpleInputTextField($fieldContainer, 'employeeNumber', _('Employee number'));
+				$equalWidthElements[] = 'employeeNumber';
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
+			if ($this->isAdminReadOnly('employeeType')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'employeeType', _('Employee type'));
+			}
+			else {
+				$this->addSimpleInputTextField($fieldContainer, 'employeeType', _('Employee type'), false, null, false, $this->employeeTypeCache);
+				$equalWidthElements[] = 'employeeType';
+			}
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			if ($this->isAdminReadOnly('businessCategory')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'businessCategory', _('Business category'));
+			}
+			else {
+				$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, $this->businessCategoryCache, null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, $this->departmentCache);
-			if (!empty($this->attributes['departmentNumber'])) {
-				for ($i = 0; $i < sizeof($this->attributes['departmentNumber']); $i++) {
-					$equalWidthElements[] = 'departmentNumber_' . $i;
-				}
+			if ($this->isAdminReadOnly('departmentNumber')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'departmentNumber', _('Department'));
 			}
 			else {
-				$equalWidthElements[] = 'departmentNumber_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, $this->departmentCache, null, $equalWidthElements);
 			}
 		}
 		// organisational unit
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, $this->ouCache);
-			if (!empty($this->attributes['ou'])) {
-				for ($i = 0; $i < sizeof($this->attributes['ou']); $i++) {
-					$equalWidthElements[] = 'ou_' . $i;
-				}
+			if ($this->isAdminReadOnly('ou')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'ou', _('Organisational unit'));
 			}
 			else {
-				$equalWidthElements[] = 'ou_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, $this->ouCache, null, $equalWidthElements);
 			}
 		}
 		// organisation
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
-			$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, $this->oCache);
-			if (!empty($this->attributes['o'])) {
-				for ($i = 0; $i < sizeof($this->attributes['o']); $i++) {
-					$equalWidthElements[] = 'o_' . $i;
-				}
+			if ($this->isAdminReadOnly('o')) {
+				$this->addSimpleReadOnlyField($fieldContainer, 'o', _('Organisation'));
 			}
 			else {
-				$equalWidthElements[] = 'o_0';
+				$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, $this->oCache, null, $equalWidthElements);
 			}
 		}
 		// user certificates
@@ -1552,15 +1632,27 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$userCertificateGroup->addElement(new htmlOutputText($userCertificateCount));
 			$userCertificateGroup->addElement(new htmlSpacer('10px', null));
-			$userCertificateGroup->addElement(new htmlAccountPageButton(get_class($this), 'userCertificate', 'manage', _('Manage')));
+			if (!$this->isAdminReadOnly('manager')) {
+				$userCertificateGroup->addElement(new htmlAccountPageButton(get_class($this), 'userCertificate', 'manage', _('Manage')));
+			}
 			$fieldContainer->addElement($userCertificateGroup);
-			$fieldContainer->addElement(new htmlHelpLink('userCertificate'), true);
+			if ($this->isAdminReadOnly('manager')) {
+				$fieldContainer->addNewLine();
+			}
+			else {
+				$fieldContainer->addElement(new htmlHelpLink('userCertificate'), true);
+			}
 		}
 		// manager
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
 			$fieldContainer->addElement(new htmlOutputText(_('Manager')));
-			$fieldContainer->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
-			$fieldContainer->addElement(new htmlHelpLink('manager'), true);
+			if ($this->isAdminReadOnly('manager')) {
+				$fieldContainer->addNewLine();
+			}
+			else {
+				$fieldContainer->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
+				$fieldContainer->addElement(new htmlHelpLink('manager'), true);
+			}
 			if (isset($this->attributes['manager'][0])) {
 				$managerList = array();
 				for ($i = 0; $i < sizeof($this->attributes['manager']); $i++) {
@@ -1580,7 +1672,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		// password buttons
-		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0])) {
+		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Password')), true);
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
@@ -1608,11 +1700,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$noPhoto = false;
 			}
 			$imageContainer->addElement(new htmlImage($photoFile), true);
-			if ($noPhoto) {
-				$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
-			}
-			else {
-				$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
+			if (!$this->isAdminReadOnly('jpegPhoto')) {
+				if ($noPhoto) {
+					$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
+				}
+				else {
+					$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
+				}
 			}
 			$container->addElement(new htmlSpacer('50px', null));
 			$container->addElement($imageContainer, false);
@@ -1629,6 +1723,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			return array();
 		}
 		$messages = array();
+		if ($this->isAdminReadOnly('jpegPhoto')) {
+			return $messages;
+		}
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$name = $_FILES['photoFile']['name'];
 			$extension = strtolower(substr($name, strpos($name, '.') + 1));
@@ -1778,6 +1875,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function process_manager() {
 		$return = array();
+		if ($this->isAdminReadOnly('manager')) {
+			return $return;
+		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_remove']) && isset($_POST['manager'])) {
 			$managers = array_flip($this->attributes['manager']);
 			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
@@ -1858,9 +1958,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 	
 	/**
 	* Sets a new certificate or deletes old ones.
+	*
+	* @return array list of info/error messages
 	*/
 	function process_userCertificate() {
 		$messages = array();
+		if ($this->isAdminReadOnly('userCertificate')) {
+			return $messages;
+		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_userCertificate_submit'])) {
 			if ($_FILES['userCertificateUpload'] && ($_FILES['userCertificateUpload']['size'] > 0)) {
 				$handle = fopen($_FILES['userCertificateUpload']['tmp_name'], "r");
@@ -3265,7 +3370,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	public function managesPasswordAttributes() {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
-			return true;
+			return !$this->isAdminReadOnly('userPassword');
 		}
 		return false;
 	}
@@ -3382,6 +3487,42 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->titleCache = array_values(array_unique($titles));
 		$this->employeeTypeCache = array_values(array_unique($employeeTypes));
 		$this->businessCategoryCache = array_values(array_unique($businessCategories));
+	}
+	
+	/**
+	 * Returns if the attribute is read-only in admin interface.
+	 * 
+	 * @param String $attrName attribute name
+	 * @return boolean attribute is read-only
+	 */
+	private function isAdminReadOnly($attrName) {
+		// for new accounts all fields can be edited
+		if ($this->getAccountContainer()->isNewAccount) {
+			return false;
+		}
+		return $this->isBooleanConfigOptionSet('inetOrgPerson_readOnly_' . $attrName);
+	}
+	
+	/**
+	 * Adds a simple read-only field to the given container.
+	 * 
+	 * @param htmlTable $container parent container
+	 * @param String $attrName attribute name
+	 * @param String $label field label
+	 */
+	private function addSimpleReadOnlyField(&$container, $attrName, $label) {
+		$val = '';
+		if (!empty($this->attributes[$attrName][0])) {
+			$values = $this->attributes[$attrName];
+			array_map('htmlspecialchars', $values);
+			$val = implode('<br>', $values);
+		}
+		$labelBox = new htmlOutputText($label);
+		if (!empty($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 1)) {
+			$labelBox->alignment = htmlElement::ALIGN_TOP;
+		}
+		$container->addElement($labelBox);
+		$container->addElement(new htmlOutputText($val, false), true);
 	}
 
 }

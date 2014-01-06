@@ -1178,9 +1178,10 @@ abstract class baseModule {
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
 	 * @param array $autoCompleteValues values for auto-completion
+	 * @param boolean $readOnly this field is read-only
 	 * @return mixed reference to htmlTableExtendedInputField/htmlTableExtendedInputTextarea
 	 */
-	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
+	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null, $readOnly = false) {
 		$value = '';
 		if (isset($this->attributes[$attrName][0])) {
 			$value = $this->attributes[$attrName][0];
@@ -1221,8 +1222,10 @@ abstract class baseModule {
 	 * @param boolean $isTextArea show as text area (default false)
 	 * @param array $autoCompleteValues values for auto-completion
 	 * @param integer $fieldSize field size
+	 * @param array $htmlIDs reference to array where to add the generated HTML IDs of the input fields
 	 */
-	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null, $fieldSize = null) {
+	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false,
+				$autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null) {
 			$values = array();
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
@@ -1259,6 +1262,9 @@ abstract class baseModule {
 						$cols = $length;
 					}
 					$subContainer->addElement(new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3));
+				}
+				if (!empty($htmlIDs)) {
+					$htmlIDs[] = $attrName . '_' . $i;
 				}
 				if (!empty($values[$i])) {
 					$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
