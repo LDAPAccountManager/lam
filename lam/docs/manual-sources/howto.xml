@@ -1878,6 +1878,38 @@ Have fun!
         manage all attributes then you can deactivate them in your server
         profile.</para>
 
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>Please activate the module "Personal (inetOrgPerson)" for
+        users.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_personal3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The module manages lots of fields. Probably, you will not need
+        all of them. You can hide fields in module settings.</para>
+
+        <para>In advanced options you may also set fields to read-only (for
+        existing accounts) and define limits for photo files.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_personal4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">User management</emphasis></para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
