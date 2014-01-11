@@ -1201,7 +1201,7 @@ Have fun!
           </listitem>
         </itemizedlist>
 
-        <section>
+        <section id="general_settings">
           <title>General settings</title>
 
           <para>Here you can specify the LDAP server and some security
@@ -8368,7 +8368,7 @@ objectclass: top
     <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Indices:</emphasis></para>
+    <para id="indices"><emphasis role="bold">Indices:</emphasis></para>
 
     <para>Indices will improve the performance when searching for entries in
     the LDAP directory. The following indices are recommended:</para>
@@ -8647,7 +8647,7 @@ objectclass: top
     service customisations.</para>
   </appendix>
 
-  <appendix>
+  <appendix id="clustering">
     <title>Clustering LAM</title>
 
     <para>LAM is a web application based on PHP. Therefore, clustering is not
@@ -8722,67 +8722,159 @@ objectclass: top
   <appendix>
     <title>Troubleshooting</title>
 
-    <para><emphasis role="bold">Size limit</emphasis></para>
+    <section>
+      <title>Functional issues</title>
 
-    <para>You will get a message like "LDAP sizelimit exceeded, not all
-    entries are shown." when you hit the LDAP search limit. See the <link
-    linkend="size_limit_exceeded">OpenLDAP settings</link> to fix this.</para>
+      <para><emphasis role="bold">Size limit</emphasis></para>
 
-    <literallayout>
+      <para>You will get a message like "LDAP sizelimit exceeded, not all
+      entries are shown." when you hit the LDAP search limit. See the <link
+      linkend="size_limit_exceeded">OpenLDAP settings</link> to fix
+      this.</para>
+
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Invalid syntax errors:</emphasis></para>
+      <para><emphasis role="bold">Invalid syntax errors:</emphasis></para>
 
-    <para>If you get any strange errors like "Invalid syntax" or "Invalid DN
-    syntax" please check if your LDAP schema matches LAM's
-    requirements.</para>
+      <para>If you get any strange errors like "Invalid syntax" or "Invalid DN
+      syntax" please check if your LDAP schema matches LAM's
+      requirements.</para>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Schema test:</emphasis></para>
+      <para><emphasis role="bold">Schema test:</emphasis></para>
 
-    <para>This can be done by running "Tools" -&gt; "Tests" -&gt; "Schema
-    test" inside LAM.</para>
+      <para>This can be done by running "Tools" -&gt; "Tests" -&gt; "Schema
+      test" inside LAM.</para>
 
-    <para>If there are any object classes or attributes missing you will get a
-    notice. See <link linkend="a_schema">LDAP schema files</link> for a list
-    of used schemas. You may also want to deactive unused modules in your LAM
-    server profile (tab "Modules").</para>
+      <para>If there are any object classes or attributes missing you will get
+      a notice. See <link linkend="a_schema">LDAP schema files</link> for a
+      list of used schemas. You may also want to deactive unused modules in
+      your LAM server profile (tab "Modules").</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/schemaTest.png" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/schemaTest.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <para><literallayout>
+      <para><literallayout>
 </literallayout><emphasis role="bold">Logging:</emphasis></para>
 
-    <para>If your schema is correct you can turn on LDAP logging to get more
-    detailed error messages from your LDAP server.</para>
+      <para>If your schema is correct you can turn on LDAP logging to get more
+      detailed error messages from your LDAP server.</para>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">OpenLDAP logging:</emphasis></para>
+      <para><emphasis role="bold">OpenLDAP logging:</emphasis></para>
 
-    <itemizedlist>
-      <listitem>
-        <para>slapd.conf: In /etc/ldap/slapd.conf turn logging on with the
-        line "loglevel 256".</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para>slapd.conf: In /etc/ldap/slapd.conf turn logging on with the
+          line "loglevel 256".</para>
+        </listitem>
 
-      <listitem>
-        <para>slapd.d: In /etc/ldap/slapd.d/cn=config.ldif please change the
-        attribute "olcLogLevel" to "Stats". Please add a line "olcLogLevel:
-        Stats" if the attribute is missing.</para>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <para>slapd.d: In /etc/ldap/slapd.d/cn=config.ldif please change the
+          attribute "olcLogLevel" to "Stats". Please add a line "olcLogLevel:
+          Stats" if the attribute is missing.</para>
+        </listitem>
+      </itemizedlist>
 
-    <para>After changing the configuration please restart OpenLDAP. It usually
-    uses /var/log/syslog for log output.</para>
+      <para>After changing the configuration please restart OpenLDAP. It
+      usually uses /var/log/syslog for log output.</para>
+    </section>
+
+    <section>
+      <title>Performance issues</title>
+
+      <para>LAM is tested to work with 10000 users with acceptable
+      performance. If you have a larger directory or slow hardware then here
+      are some points to increase performance.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>The first step is to check if performance problems are caused by
+      the LAM web server or the LDAP server. Please check which machine
+      suffers from high system load (CPU/memory consumption).</para>
+
+      <para>High network latency may also be a problem. For large
+      installations please make sure that LAM web server and LDAP server are
+      located in the same building/server room.</para>
+
+      <para>If you run LAM on multiple nodes (DNS load balancing/hardware load
+      balancer) then also check the <link linkend="clustering">clustering
+      section</link>.</para>
+
+      <section>
+        <title>LDAP server</title>
+
+        <para><emphasis role="bold">Use indices</emphasis></para>
+
+        <para>Depending on the queries it may help to add some more indices on
+        the LDAP server. Depending on your LDAP software it may already
+        suggest indices in its log files. See <link
+        linkend="indices">here</link> for typical OpenLDAP indices.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">Reduce query results by splitting LDAP
+        management into multiple server profiles</emphasis></para>
+
+        <para>If you manage a very large directory then it might already be
+        separated into multiple subtrees (e.g. by country, subsidiary, ...).
+        Do not use a single LAM server profile to manage your whole directory.
+        Use different server profiles for each separated LDAP subtree where
+        possible (e.g. one for German users and one for French ones).</para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">Limit query results</emphasis></para>
+
+        <para>LAM allows to set an <ulink url="general_settings">LDAP search
+        limit</ulink> for each server profile. This will limit the number of
+        entries returned by your LDAP server. Use with caution because it can
+        cause problems (e.g. with automatic UID generation) when LAM is not
+        able to read all entries.</para>
+      </section>
+
+      <section>
+        <title>LAM web server</title>
+
+        <para><emphasis role="bold">Install a PHP
+        accelerator</emphasis></para>
+
+        <para>There are tools like <ulink
+        url="http://www.php.net/manual/en/book.apc.php">APC</ulink> (free) or
+        <ulink url="http://www.zend.com/en/products/server/">Zend
+        Server</ulink> (commercial) that provide caching of PHP pages to
+        improve performance. They will reduce the time for parsing the PHP
+        pages and IO load.</para>
+
+        <para>This is a simply way to enhance performance since APC is part of
+        most Linux distributions.</para>
+
+        <para>If you use APC then make sure that it uses enough memory (e.g.
+        "apc.shm_size=128M"). You can check the memory usage with the file
+        apc.php that is shipped with APC.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">Disable session
+        encryption</emphasis></para>
+
+        <para>LAM encrypts sensitive data in your session files. You can
+        prevent this by disabling the PHP MCrypt module (if installed).</para>
+      </section>
+    </section>
   </appendix>
 </book>
