@@ -8864,6 +8864,14 @@ objectclass: top
         entries returned by your LDAP server. Use with caution because it can
         cause problems (e.g. with automatic UID generation) when LAM is not
         able to read all entries.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>
@@ -8886,6 +8894,14 @@ objectclass: top
         "apc.shm_size=128M"). You can check the memory usage with the file
         apc.php that is shipped with APC.</para>
 
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/apc.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
         <literallayout>
 </literallayout>
 
@@ -8895,6 +8911,14 @@ objectclass: top
         <para>LAM encrypts sensitive data in your session files. You can <link
         linkend="sessionEncryption">disable</link> it to reduce CPU
         load.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
     </section>
   </appendix>
