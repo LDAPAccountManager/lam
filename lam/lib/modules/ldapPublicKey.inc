@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2013  Roland Gruber
+  Copyright (C) 2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -435,8 +435,6 @@ class ldapPublicKey extends baseModule {
 	 * This function may be called with or without an account container.
 	 */
 	public function handleAjaxRequest() {
-		$x = $_POST;
-		$y = $_GET;
 		// AJAX uploads are non-JSON
 		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxKeyUpload')) {
 			$this->ajaxUpload();
