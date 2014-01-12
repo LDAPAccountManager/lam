@@ -1099,7 +1099,9 @@ Have fun!
         here. Default is to use "\r\n".</para>
 
         <para>At the moment, this option is only available in LAM Pro as there
-        is no mail sending in the free version.</para>
+        is no mail sending in the free version. See <link
+        linkend="mailSetup">here</link> for setting up your SMTP
+        server.</para>
 
         <screenshot>
           <mediaobject>
@@ -5915,7 +5917,8 @@ objectclass: top
           template to fit your needs. Please configure your LAM server profile
           to setup the sender address, subject and mail body. Please see <link
           linkend="mailEOL">email format option</link> in case of broken
-          mails.</para>
+          mails. See <link linkend="mailSetup">here</link> for setting up your
+          SMTP server.</para>
 
           <para>Using this method will prevent that your support staff knows
           the new password.</para>
@@ -6785,7 +6788,8 @@ objectclass: top
           other wildcards that are replaced by the corresponding LDAP
           attributes. E.g. "@@uid@@" will be replaced by the user name. Please
           see <link linkend="mailEOL">email format option</link> in case of
-          broken mails.</para>
+          broken mails. See <link linkend="mailSetup">here</link> for setting
+          up your SMTP server.</para>
 
           <literallayout> </literallayout>
 
@@ -6900,7 +6904,8 @@ objectclass: top
           <para>With LAM Pro your users can create their own accounts if you
           like. LAM Pro will display an additional link on the self service
           login page that allows you users to create a new account including
-          email validation.</para>
+          email validation (see <link linkend="mailSetup">here</link> for
+          setting up your SMTP server).</para>
 
           <para>You enable this feature in your self service profile. Just
           activate the checkbox "Enable self registration link".</para>
@@ -8414,6 +8419,31 @@ objectclass: top
 
       <member>index sambaDomainName eq</member>
     </simplelist>
+  </appendix>
+
+  <appendix id="mailSetup">
+    <title>Setup of email (SMTP) server</title>
+
+    <para>LAM always uses a local SMTP email server on the machine where LAM
+    is installed. Therefore, there is no need to configure any SMTP settings
+    inside LAM itself.</para>
+
+    <para>The local email server should be configured to forward all emails to
+    your company mail server (so-called smarthost). You can use any SMTP
+    software that ships with a Sendmail wrapper (e.g. Exim, Postfix, QMail or
+    Sendmail itself).</para>
+
+    <literallayout>
+
+</literallayout>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/lam_mail.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
   </appendix>
 
   <appendix id="a_lamdaemon">
