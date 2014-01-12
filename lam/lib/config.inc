@@ -1400,6 +1400,9 @@ class LAMCfgMain {
 	/** list of hosts which may access LAM */
 	public $allowedHosts;
 	
+	/** session encryption */
+	public $encryptSession;
+	
 	/** minimum length for passwords */
 	public $passwordMinLength = 0;
 	
@@ -1437,7 +1440,8 @@ class LAMCfgMain {
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
-		"passwordMinClasses", "passwordMinSymbol", "mailEOL", 'errorReporting');
+		"passwordMinClasses", "passwordMinSymbol", "mailEOL", 'errorReporting',
+		'encryptSession');
 
 	/**
 	* Loads preferences from config file
@@ -1449,6 +1453,7 @@ class LAMCfgMain {
 		$this->logLevel = LOG_NOTICE;
 		$this->logDestination = "SYSLOG";
 		$this->allowedHosts = "";
+		$this->encryptSession = 'true';
 		$this->reload();
 	}
 
@@ -1516,6 +1521,7 @@ class LAMCfgMain {
 		if (!in_array("logLevel", $saved)) array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
 		if (!in_array("logDestination", $saved)) array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
 		if (!in_array("allowedHosts", $saved)) array_push($file_array, "\n\n# list of hosts which may access LAM\n" . "allowedHosts: " . $this->allowedHosts);
+		if (!in_array("encryptSession", $saved)) array_push($file_array, "\n\n# encrypt session data\n" . "encryptSession: " . $this->encryptSession);
 		if (!in_array("passwordMinLength", $saved)) array_push($file_array, "\n\n# Password: minimum password length\n" . "passwordMinLength: " . $this->passwordMinLength);
 		if (!in_array("passwordMinUpper", $saved)) array_push($file_array, "\n\n# Password: minimum uppercase characters\n" . "passwordMinUpper: " . $this->passwordMinUpper);
 		if (!in_array("passwordMinLower", $saved)) array_push($file_array, "\n\n# Password: minimum lowercase characters\n" . "passwordMinLower: " . $this->passwordMinLower);

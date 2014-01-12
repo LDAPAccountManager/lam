@@ -155,6 +155,8 @@ $helpArray = array (
 					"Text" => _('Please change this setting only if you experience problems in receiving emails from LAM. This defines the line ending of emails.')),
 				"244" => array ("Headline" => _('PHP error reporting'),
 					"Text" => _('Defines if the PHP error reporting setting from php.ini is used or the setting preferred by LAM ("E_ALL & ~E_NOTICE"). If you do not develop LAM modules please use the default. This will prevent displaying messages that are useful only for developers.')),
+				"245" => array ("Headline" => _('Encrypt session'),
+					"Text" => _('Encrypts sensitive data like passwords in your session. This requires the PHP MCrypt extension.')),
 				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),

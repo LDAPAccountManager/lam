@@ -996,6 +996,13 @@ Have fun!
         or with the "*" wildcard (e.g. 123.123.123.*). Users which try to
         access LAM via an untrusted IP only get blank pages.</para>
 
+        <para id="sessionEncryption">Session encryption will encrypt sensitive
+        data like passwords in your session files. This is only available when
+        PHP <ulink url="http://php.net/mcrypt">MCrypt</ulink> is active. This
+        adds extra security but also costs performance. If you manage a large
+        directory you might want to disable this and take other actions to
+        secure your LAM server.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -8885,8 +8892,9 @@ objectclass: top
         <para><emphasis role="bold">Disable session
         encryption</emphasis></para>
 
-        <para>LAM encrypts sensitive data in your session files. You can
-        prevent this by disabling the PHP MCrypt module (if installed).</para>
+        <para>LAM encrypts sensitive data in your session files. You can <link
+        linkend="sessionEncryption">disable</link> it to reduce CPU
+        load.</para>
       </section>
     </section>
   </appendix>

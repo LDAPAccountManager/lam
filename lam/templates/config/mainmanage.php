@@ -104,6 +104,14 @@ if (isset($_POST['submitFormData'])) {
 	}
 	else $allowedHosts = "";
 	$cfg->allowedHosts = $allowedHosts;
+	// set session encryption
+	if (function_exists('mcrypt_create_iv')) {
+		$encryptSession = 'false';
+		if (isset($_POST['encryptSession']) && ($_POST['encryptSession'] == 'on')) {
+			$encryptSession = 'true';
+		}
+		$cfg->encryptSession = $encryptSession;
+	}
 	// set log level
 	$cfg->logLevel = $_POST['logLevel'];
 	// set log destination
@@ -263,6 +271,10 @@ $securityTable = new htmlTable();
 $options = array(5, 10, 20, 30, 60, 90, 120, 240);
 $securityTable->addElement(new htmlTableExtendedSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), true);
 $securityTable->addElement(new htmlTableExtendedInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'), true);
+$encryptSession = ($cfg->encryptSession === 'true');
+$encryptSessionBox = new htmlTableExtendedInputCheckbox('encryptSession', $encryptSession, _('Encrypt session'), '245');
+$encryptSessionBox->setIsEnabled(function_exists('mcrypt_create_iv'));
+$securityTable->addElement($encryptSessionBox, true);
 // SSL certificate
 $securityTable->addElement(new htmlOutputText(_('SSL certificates')));
 $sslMethod = _('use system certificates');

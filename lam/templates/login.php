@@ -125,14 +125,15 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 /**
 * Displays the login window.
 *
-* @param object $config_object current active configuration
+* @param LAMConfig $config_object current active configuration
+* @param LAMCfgMain $cfgMain main configuration
 */
-function display_LoginPage($config_object) {
+function display_LoginPage($config_object, $cfgMain) {
 	logNewMessage(LOG_DEBUG, "Display login page");
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/urandom otherwise use rand()
-	if(function_exists('mcrypt_create_iv')) {
+	if(function_exists('mcrypt_create_iv') && ($cfgMain->encryptSession == 'true')) {
 		$key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
 		if (! $key) {
 			srand((double)microtime()*1234567);
@@ -651,5 +652,5 @@ if(!empty($_POST['checklogin'])) {
 }
 
 //displays the login window
-display_LoginPage($_SESSION["config"]);
+display_LoginPage($_SESSION["config"], $_SESSION["cfgMain"]);
 ?>
