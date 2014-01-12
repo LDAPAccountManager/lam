@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2013  Roland Gruber
+                2009 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1208,15 +1208,15 @@ function getDefaultLDAPErrorString($server) {
  */
 function getCallingURL() {
 	$url = null;
-	if (!empty($_SERVER['HTTP_REFERER'])) {
-		$url = $_SERVER['HTTP_REFERER'];
-	}
-	else {
+	if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['REQUEST_URI'])) {
 		$proto = 'http://';
 		if (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) {
 			$proto = 'https://';
 		}
 		$url = $proto . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	}
+	elseif (!empty($_SERVER['HTTP_REFERER'])) {
+		$url = $_SERVER['HTTP_REFERER'];
 	}
 	logNewMessage(LOG_DEBUG, 'Calling URL detected as ' . $url);
 	return $url;
