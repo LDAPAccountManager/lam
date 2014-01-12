@@ -253,6 +253,7 @@ $searchLimitOptions = array(
 $limitSelect = new htmlTableExtendedSelect('searchLimit', $searchLimitOptions, array($conf->get_searchLimit()), _("LDAP search limit"), '222');
 $limitSelect->setHasDescriptiveElements(true);
 $serverSettingsContent->addElement($limitSelect, true);
+
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
 	$accessOptions = array(
@@ -264,6 +265,17 @@ if (isLAMProVersion()) {
 	$accessSelect->setHasDescriptiveElements(true);
 	$serverSettingsContent->addElement($accessSelect, true);
 }
+
+// advanced options
+$advancedOptionsContent = new htmlTable();
+// referrals
+$followReferrals = ($conf->getFollowReferrals() === 'true');
+$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('followReferrals',$followReferrals , _('Follow referrals'), '205'), true);
+
+// build advanced options box
+$advancedOptions = new htmlAccordion('advancedOptions_server', array(_('Advanced options') => $advancedOptionsContent), false);
+$advancedOptions->colspan = 15;
+$serverSettingsContent->addElement($advancedOptions, true);
 
 $serverSettings = new htmlFieldset($serverSettingsContent, _("Server settings"), '../../graphics/profiles.png');
 $container->addElement($serverSettings, true);
@@ -485,6 +497,12 @@ function checkInput() {
 	$conf->setUseTLS($_POST['useTLS']);
 	if ((strpos($_POST['serverurl'], 'ldaps://') !== false) && ($_POST['useTLS'] == 'yes')) {
 		$errors[] = array("ERROR", _('You cannot use SSL and TLS encryption at the same time. Please use either "ldaps://" or TLS.'));
+	}
+	if (isset($_POST['followReferrals']) && ($_POST['followReferrals'] == 'on')) {
+		$conf->setFollowReferrals('true');
+	}
+	else {
+		$conf->setFollowReferrals('false');
 	}
 /*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));

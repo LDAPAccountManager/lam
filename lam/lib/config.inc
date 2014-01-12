@@ -258,6 +258,9 @@ class LAMConfig {
 	/** enables/disables TLS encryption */
 	private $useTLS;
 	
+	/** automatically follow referrals */
+	private $followReferrals = 'false';
+	
 	/** Array of string: users with admin rights */
 	private $Admins;
 
@@ -349,7 +352,7 @@ class LAMConfig {
 	private $lamProMailText = '';
 
 	/** List of all settings in config file */
-	private $settings = array("ServerURL", "useTLS", "Passwd", "Admins", "treesuffix",
+	private $settings = array("ServerURL", "useTLS", "followReferrals", "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
@@ -516,6 +519,7 @@ class LAMConfig {
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 			if (!in_array("ServerURL", $saved)) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
 			if (!in_array("useTLS", $saved)) array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
+			if (!in_array("followReferrals", $saved)) array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
 			if (!in_array("Passwd", $saved)) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
 			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 								"# names have to be seperated by semicolons\n" .
@@ -638,7 +642,7 @@ class LAMConfig {
 	/**
 	 * Sets if TLS is activated.
 	 * 
-	 * @param String yes or no
+	 * @param String $useTLS yes or no
 	 * @return boolean true if $useTLS has correct format
 	 */
 	public function setUseTLS($useTLS) {
@@ -649,6 +653,23 @@ class LAMConfig {
 		return false;
 	}
 
+	/**
+	 * Returns if referrals should be followed.
+	 * 
+	 * @return String true or false
+	 */
+	public function getFollowReferrals() {
+		return $this->followReferrals;
+	}
+	
+	/**
+	 * Sets if referrals should be followed.
+	 * 
+	 * @param String $followReferrals true or false
+	 */
+	public function setFollowReferrals($followReferrals) {
+		$this->followReferrals = $followReferrals;
+	}
 
 	/**
 	* Returns an array of string with all admin names

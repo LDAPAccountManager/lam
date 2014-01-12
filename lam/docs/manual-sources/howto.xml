@@ -714,6 +714,15 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>4.4 -&gt; 4.5</title>
+
+          <para>LAM will no longer follow referrals by default. This is ok for
+          most installations. If you use LDAP referrals please activate
+          referral following for your server profile (tab General settings
+          -&gt; Server settings -&gt; Advanced options).</para>
+        </section>
+
+        <section>
           <title>4.3 -&gt; 4.4</title>
 
           <para>Apache configuration: LAM supports Apache 2.2 and 2.4. This
@@ -1233,6 +1242,10 @@ Have fun!
           releases use write access. See <link
           linkend="a_accessLevelPasswordReset">this page</link> for details on
           the different access levels.</para>
+
+          <para>By default LAM will not follow LDAP referrals. This is ok for
+          most installations. If you use LDAP referrals please activate the
+          referral option in advanced settings.</para>
 
           <screenshot>
             <mediaobject>

@@ -100,6 +100,9 @@ class Ldap{
 		if ($this->server) {
 			// use LDAPv3
 			ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
+			// referral following
+			$followReferrals = ($this->conf->getFollowReferrals() === 'true') ? 1 : 0;
+			ldap_set_option($this->server,LDAP_OPT_REFERRALS, $followReferrals);
 			// start TLS if specified
 			$useTLS = $this->conf->getUseTLS();
 			if (isset($useTLS) && ($useTLS == "yes")) {
