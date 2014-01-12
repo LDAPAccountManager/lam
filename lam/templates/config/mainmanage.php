@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,6 +104,29 @@ if (isset($_POST['submitFormData'])) {
 	}
 	else $allowedHosts = "";
 	$cfg->allowedHosts = $allowedHosts;
+	// set allowed hosts for self service
+	if (isLAMProVersion()) {
+		if (isset($_POST['allowedHostsSelfService'])) {
+			$allowedHostsSelfService = $_POST['allowedHostsSelfService'];
+			$allowedHostsSelfServiceList = explode("\n", $allowedHostsSelfService);
+			for ($i = 0; $i < sizeof($allowedHostsSelfServiceList); $i++) {
+				$allowedHostsSelfServiceList[$i] = trim($allowedHostsSelfServiceList[$i]);
+				// ignore empty lines
+				if ($allowedHostsSelfServiceList[$i] == "") {
+					unset($allowedHostsSelfServiceList[$i]);
+					continue;
+				}
+				// check each line
+				$ipRegex = '/^[0-9a-f\\.:\\*]+$/i';
+				if (!preg_match($ipRegex, $allowedHostsSelfServiceList[$i]) || (strlen($allowedHostsSelfServiceList[$i]) > 15)) {
+					$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsSelfServiceList[$i])));
+				}
+			}
+			$allowedHostsSelfService = implode(",", $allowedHostsSelfServiceList);
+		}
+		else $allowedHostsSelfService = "";
+		$cfg->allowedHostsSelfService = $allowedHostsSelfService;
+	}
 	// set session encryption
 	if (function_exists('mcrypt_create_iv')) {
 		$encryptSession = 'false';
@@ -271,6 +294,9 @@ $securityTable = new htmlTable();
 $options = array(5, 10, 20, 30, 60, 90, 120, 240);
 $securityTable->addElement(new htmlTableExtendedSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), true);
 $securityTable->addElement(new htmlTableExtendedInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'), true);
+if (isLAMProVersion()) {
+	$securityTable->addElement(new htmlTableExtendedInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), '30', '7', _("Allowed hosts (self service)"), '241'), true);
+}
 $encryptSession = ($cfg->encryptSession === 'true');
 $encryptSessionBox = new htmlTableExtendedInputCheckbox('encryptSession', $encryptSession, _('Encrypt session'), '245');
 $encryptSessionBox->setIsEnabled(function_exists('mcrypt_create_iv'));

@@ -720,6 +720,10 @@ Have fun!
           most installations. If you use LDAP referrals please activate
           referral following for your server profile (tab General settings
           -&gt; Server settings -&gt; Advanced options).</para>
+
+          <para>The self service pages now have an own option for allowed IPs.
+          If your LAM installation uses IP restrictions please update the LAM
+          main configuration.</para>
         </section>
 
         <section>
@@ -994,7 +998,8 @@ Have fun!
         <para>You may also set a list of IP addresses which are allowed to
         access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
         or with the "*" wildcard (e.g. 123.123.123.*). Users which try to
-        access LAM via an untrusted IP only get blank pages.</para>
+        access LAM via an untrusted IP only get blank pages. There is a
+        separate field for LAM Pro self service.</para>
 
         <para id="sessionEncryption">Session encryption will encrypt sensitive
         data like passwords in your session files. This is only available when

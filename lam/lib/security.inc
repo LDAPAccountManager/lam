@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2013  Roland Gruber
+  Copyright (C) 2006 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ $Id$
 include_once('config.inc');
 /** ldap connection */
 include_once('ldap.inc');
+/** common functions */
+include_once('account.inc');
 
 // check client IP address
 checkClientIP();
@@ -104,6 +106,11 @@ function checkClientIP() {
 	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
 	else $cfg = new LAMCfgMain();
 	$allowedHosts = $cfg->allowedHosts;
+	$url = getCallingURL();
+	if ((strpos($url, '/selfService/selfService') !== false) || ((strpos($url, '/misc/ajax.php?') !== false) && strpos($url, 'selfservice=1') !== false)) {
+		// self service pages have separate IP list
+		$allowedHosts = $cfg->allowedHostsSelfService;
+	}
 	// skip test if no hosts are defined
 	if ($allowedHosts == "") return;
 	$allowedHosts = explode(",", $allowedHosts);
