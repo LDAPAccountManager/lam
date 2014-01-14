@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@ class nisMailAlias extends baseModule {
 
 	/** mail cache */
 	private $cachedMailList = null;
+	/** user cache */
+	private $cachedUserList = null;
 	
 	/**
 	* Returns meta data that is interpreted by parent class
@@ -154,21 +156,25 @@ class nisMailAlias extends baseModule {
 		$return->addElement($nameInput, true);
 		// list current recipients
 		$mailList = $this->getMailList();
+		$userList = $this->getUserList();
+		$autoList = array();
+		if ((sizeof($userList) + sizeof($mailList)) < 300) {
+			$autoList = array_merge($userList, $mailList);
+		}
 		$recipientCount = 0;
 		if (isset($this->attributes['rfc822MailMember'])) {
 			natcasesort($this->attributes['rfc822MailMember']);
 			$this->attributes['rfc822MailMember'] = array_values($this->attributes['rfc822MailMember']);
 			$recipientCount = sizeof($this->attributes['rfc822MailMember']);
-			for ($i = 0; $i < sizeof($this->attributes['rfc822MailMember']); $i++) {
+			for ($i = 0; $i < $recipientCount; $i++) {
 				$return->addElement(new htmlOutputText(_('Recipient')));
 				$mailField = new htmlInputField('rfc822MailMember' . $i, $this->attributes['rfc822MailMember'][$i]);
-				if (sizeof($mailList) <= 200) {
-					$mailField->enableAutocompletion($mailList);
+				if (sizeof($autoList) > 0) {
+					$mailField->enableAutocompletion($autoList);
 				}
 				$return->addElement($mailField);
-				$aliasButton = new htmlAccountPageButton(get_class($this), 'select', 'recipient' . $i, 'mailAlias.png', true);
-				$aliasButton->setTitle(_('Select mail'));
-				$return->addElement($aliasButton);
+				$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mailAlias.png', true, _('Select mail')));
+				$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
 				$return->addElement(new htmlButton('delRec' . $i, 'del.png', true));
 				$return->addElement(new htmlHelpLink('recipient'), true);
 			}
@@ -177,13 +183,12 @@ class nisMailAlias extends baseModule {
 		$return->addElement(new htmlOutputText(_('New recipient')));
 		$newMailField = new htmlInputField('rfc822MailMember');
 		$newMailField->setOnKeyPress('SubmitForm(\'addRec\', event);');
-		if (sizeof($mailList) <= 200) {
-			$newMailField->enableAutocompletion($mailList);
+		if (sizeof($autoList) > 0) {
+			$newMailField->enableAutocompletion($autoList);
 		}
 		$return->addElement($newMailField);
-		$aliasButton = new htmlAccountPageButton(get_class($this), 'select', 'recipient' . 'New', 'mailAlias.png', true);
-		$aliasButton->setTitle(_('Select mail'));
-		$return->addElement($aliasButton);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mailAlias.png', true, _('Select mail')));
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
 		$return->addElement(new htmlButton('addRec', 'add.png', true));
 		$return->addElement(new htmlHelpLink('recipient'));
 		$return->addElement(new htmlHiddenInput('rec_number', $recipientCount));
@@ -242,11 +247,63 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	* Displays the host/user selection.
+	* Displays the mail selection.
 	*
 	* @return htmlElement meta HTML code
 	*/
-	function display_html_select() {
+	function display_html_selectMail() {
+		return $this->display_html_select(true);
+	}
+	
+	/**
+	* Processes user input of the host/user selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_selectMail() {
+		return $this->process_select();
+	}
+	
+	/**
+	* Displays the user selection.
+	*
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_selectUser() {
+		return $this->display_html_select(false);
+	}
+	
+	/**
+	* Processes user input of the host/user selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_selectUser() {
+		return $this->process_select();
+	}
+	
+	/**
+	* Displays the user/mail selection.
+	*
+	* @param boolean $isMail mail selection (user selection if false)
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_select($isMail) {
+		$options = array();
+		if ($isMail) {
+			$regex = 'email';
+			$options = $this->getMailList();
+			$suffix = 'Mail';
+			$label = _('Email');
+		}
+		else {
+			$regex = 'username';
+			$options = $this->getUserList();
+			$suffix = 'User';
+			$label = _('User');
+		}
 		$return = new htmlTable();
 		$postKeys = array_keys($_POST);
 		$position = 'New';
@@ -255,17 +312,15 @@ class nisMailAlias extends baseModule {
 			$filter = $_POST['filter'];
 		}
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if 	(strpos($postKeys[$i], 'form_subpage_' . get_class($this) . '_select_recipient') === 0) {
-				$position = substr($postKeys[$i], strlen('form_subpage_' . get_class($this) . '_select_recipient'));
+			if 	(strpos($postKeys[$i], 'form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient') === 0) {
+				$position = substr($postKeys[$i], strlen('form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient'));
 				break;
 			}
 		}
-		$options = array();
 		// load list with all mail addresses
-		$options = $this->getMailList();
 		$count = sizeof($options);
 		for ($i = 0; $i < $count; $i++) {
-			if (!get_preg($options[$i], 'email') || (($filter != '') && (strpos($options[$i], $filter) === false))) {
+			if (!get_preg($options[$i], $regex) || (($filter != '') && (strpos($options[$i], $filter) === false))) {
 				unset($options[$i]);
 			}
 		}
@@ -274,8 +329,9 @@ class nisMailAlias extends baseModule {
 		$return->addElement(new htmlInputField('filter', $filter));
 		$return->addElement(new htmlButton('dofilter', _('Ok')));
 		$return->addElement(new htmlHelpLink('filter'), true);
-		$return->addElement(new htmlOutputText(_('Email')));
-		$mailSelect = new htmlSelect('selectBox', $options);
+		$return->addElement(new htmlOutputText($label));
+		$mailSelect = new htmlSelect('selectBox', $options, array(), 15);
+		$mailSelect->setMultiSelect($position === 'New');
 		$mailSelect->colspan = 5;
 		$return->addElement($mailSelect, true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
@@ -296,9 +352,12 @@ class nisMailAlias extends baseModule {
 	*/
 	function process_select() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_select'])) {
+			if (!isset($this->attributes['rfc822MailMember'])) {
+				$this->attributes['rfc822MailMember'] = array();
+			}
 			$position = $_POST['position'];
 			if ($position == 'New') {
-				$this->attributes['rfc822MailMember'][] = $_POST['selectBox'];
+				$this->attributes['rfc822MailMember'] = array_merge($this->attributes['rfc822MailMember'], $_POST['selectBox']);
 			}
 			else {
 				$this->attributes['rfc822MailMember'][$_POST['position']] = $_POST['selectBox'];
@@ -394,6 +453,28 @@ class nisMailAlias extends baseModule {
 		}
 		$this->cachedMailList = array_values(array_unique($this->cachedMailList));
 		return $this->cachedMailList;
+	}
+
+	/**
+	 * Returns a list of existing user names.
+	 *
+	 * @return array user names
+	 */
+	private function getUserList() {
+		if ($this->cachedUserList != null) {
+			return $this->cachedUserList;
+		}
+		$this->cachedUserList = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', array('uid'), array('user'));
+		$count = sizeof($this->cachedUserList);
+		for ($i = 0; $i < $count; $i++) {
+			if (empty($this->cachedUserList[$i]['uid'][0])) {
+				unset($this->cachedUserList[$i]);
+				continue;
+			}
+			$this->cachedUserList[$i] = $this->cachedUserList[$i]['uid'][0];
+		}
+		$this->cachedUserList = array_values(array_unique($this->cachedUserList));
+		return $this->cachedUserList;
 	}
 
 }
