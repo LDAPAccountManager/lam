@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2013  Roland Gruber
+    Copyright (C) 2005 - 2014  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -474,6 +474,10 @@ class posixAccount extends baseModule implements passwordService {
 				"Headline" => _("Home directory"),
 				"Text" => _("This will create the user's home directory on the specified server.")
 			),
+			'deleteSudoers' => array(
+				"Headline" => _("Delete sudo rights"),
+				"Text" => _("Deletes the user from all existing sudo rights.")
+			),
 			'uidCheckSuffix' => array (
 				"Headline" => _("Suffix for UID/user name check"),
 				"Text" => _("LAM checks if the entered user name and UID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique user names or UIDs.")
@@ -902,7 +906,8 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function preDeleteActions() {
 		$return = array();
-		if (isset($_POST['deletehomedir'])) {
+		// delete home directory
+		if (isset($_POST['deletehomedir']) && ($_POST['deletehomedir'] == 'on')) {
 			// get list of lamdaemon servers
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -933,6 +938,17 @@ class posixAccount extends baseModule implements passwordService {
 							}
 						}
 					}
+				}
+			}
+		}
+		// delete sudo rights
+		if (isset($_POST['deleteSudoers']) && ($_POST['deleteSudoers'] == 'on')) {
+			$result = searchLDAPByAttribute('sudoUser', $this->attributes['uid'][0], 'sudoRole', array('dn'), array('sudo'));
+			foreach ($result as $attrs) {
+				$dn = $attrs['dn'];
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, array('sudoUser' => array($this->attributes['uid'][0])));
+				if (!$success) {
+					$return[] = array('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 			}
 		}
@@ -1450,7 +1466,10 @@ class posixAccount extends baseModule implements passwordService {
 		$return = null;
 		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
 			$return = new htmlTable();
-			$return->addElement(new htmlTableExtendedInputCheckbox('deletehomedir', false, _('Delete home directory'), 'deletehomedir'));
+			$return->addElement(new htmlTableExtendedInputCheckbox('deletehomedir', true, _('Delete home directory'), 'deletehomedir'), true);
+		}
+		if (($this->get_scope() == 'user') && in_array('sudo', $_SESSION['config']->get_ActiveTypes())) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('deleteSudoers', true, _('Delete sudo rights'), 'deleteSudoers'), true);
 		}
 		return $return;
 	}
