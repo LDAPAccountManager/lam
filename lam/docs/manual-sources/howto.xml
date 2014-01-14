@@ -4526,8 +4526,22 @@ objectclass: top
         </mediaobject>
       </screenshot>
 
-      <para>The mail aliases will appear as separate tab inside LAM. You may
-      then manage the aliases with their names and recipient addresses.</para>
+      <para>You need to select the Mail aliases module on the next tab.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisMailAlias3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The mail aliases will then appear as separate tab inside LAM. You
+      may then manage the aliases with their names and recipient
+      addresses.</para>
+
+      <para>There are mail/user icons that allow to select a mail address/user
+      name from the existing users.</para>
 
       <screenshot>
         <mediaobject>
