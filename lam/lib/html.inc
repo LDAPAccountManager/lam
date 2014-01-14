@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2013  Roland Gruber
+  Copyright (C) 2010 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1003,10 +1003,13 @@ class htmlAccountPageButton extends htmlButton {
 	 * @param String $value button text or image (16x16px, relative to graphics folder)
 	 * @param String $isImageButton image or text button (default text)
 	 */
-	function __construct($targetModule, $targetPage, $identifier, $value, $isImageButton = false) {
+	function __construct($targetModule, $targetPage, $identifier, $value, $isImageButton = false, $title = null) {
 		$this->name = htmlspecialchars('form_subpage_' . $targetModule . '_' . $targetPage . '_' . $identifier);
 		$this->value = $value;
 		$this->isImageButton = $isImageButton;
+		if ($title != null) {
+			$this->setTitle($title);
+		}
 	}
 	
 }
