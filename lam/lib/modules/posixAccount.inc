@@ -1429,7 +1429,7 @@ class posixAccount extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
 			}
 			// password buttons
-			if (checkIfWriteAccessIsAllowed() && isset($this->attributes[$this->getPasswordAttrName()][0])) {
+			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->getPasswordAttrName()][0])) {
 				$return->addElement(new htmlOutputText(_('Password')));
 				$pwdContainer = new htmlTable();
 				if (pwd_is_enabled($this->attributes[$this->getPasswordAttrName()][0])) {
@@ -2172,7 +2172,7 @@ class posixAccount extends baseModule implements passwordService {
 	* <br> )
 	*/
 	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
-		if (!checkIfWriteAccessIsAllowed()) {
+		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
 		// on first call generate list of ldap operations

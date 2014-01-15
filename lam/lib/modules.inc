@@ -843,7 +843,7 @@ class accountContainer {
 				exit;
 			}
 			// module actions
-			if ((sizeof($_POST) > 0) && checkIfWriteAccessIsAllowed()) {
+			if ((sizeof($_POST) > 0) && checkIfWriteAccessIsAllowed($this->type)) {
 				$result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
 				if (is_array($result)) {  // messages were returned, check for errors
 					for ($i = 0; $i < sizeof($result); $i++) {
@@ -965,7 +965,7 @@ class accountContainer {
 		}
 		echo '<div id="passwordMessageArea"></div>';
 		echo "<table class=\"".$this->type."-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		if (checkIfWriteAccessIsAllowed()) {
+		if (checkIfWriteAccessIsAllowed($this->type)) {
 			echo "<tr class=\"".$this->type."-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
 			$this->printCommonControls($tabindex);
 			echo "</td></tr>\n";
@@ -1673,7 +1673,7 @@ class accountContainer {
 	* @return array list of status messages
 	*/
 	function save_account() {
-		if (!checkIfWriteAccessIsAllowed()) {
+		if (!checkIfWriteAccessIsAllowed($this->type)) {
 			die();
 		}
 		$this->finalDN = $this->dn_orig;

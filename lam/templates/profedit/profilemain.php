@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ $types = $_SESSION['config']->get_ActiveTypes();
 $profileClasses = array();
 $profileClassesTemp = array();
 for ($i = 0; $i < sizeof($types); $i++) {
-	if (isAccountTypeHidden($types[$i])) {
+	if (isAccountTypeHidden($types[$i]) || !checkIfWriteAccessIsAllowed($types[$i])) {
 		continue;
 	}
 	$profileClassesTemp[getTypeAlias($types[$i])] = array(
@@ -152,20 +152,22 @@ if (isset($_GET['savedSuccessfully'])) {
 }
 
 // new profile
-$container->addElement(new htmlSubTitle(_('Create a new profile')), true);
-$sortedTypes = array();
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	$sortedTypes[$profileClasses[$i]['title']] = $profileClasses[$i]['scope'];
+if (!empty($profileClasses)) {
+	$container->addElement(new htmlSubTitle(_('Create a new profile')), true);
+	$sortedTypes = array();
+	for ($i = 0; $i < sizeof($profileClasses); $i++) {
+		$sortedTypes[$profileClasses[$i]['title']] = $profileClasses[$i]['scope'];
+	}
+	natcasesort($sortedTypes);
+	$newContainer = new htmlTable();
+	$newProfileSelect = new htmlSelect('createProfile', $sortedTypes);
+	$newProfileSelect->setHasDescriptiveElements(true);
+	$newProfileSelect->setWidth('15em');
+	$newContainer->addElement($newProfileSelect);
+	$newContainer->addElement(new htmlSpacer('10px', null));
+	$newContainer->addElement(new htmlButton('createProfileButton', _('Create')), true);
+	$container->addElement($newContainer, true);
 }
-natcasesort($sortedTypes);
-$newContainer = new htmlTable();
-$newProfileSelect = new htmlSelect('createProfile', $sortedTypes);
-$newProfileSelect->setHasDescriptiveElements(true);
-$newProfileSelect->setWidth('15em');
-$newContainer->addElement($newProfileSelect);
-$newContainer->addElement(new htmlSpacer('10px', null));
-$newContainer->addElement(new htmlButton('createProfileButton', _('Create')), true);
-$container->addElement($newContainer, true);
 
 $container->addElement(new htmlSpacer(null, '10px'), true);
 

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2013 Roland Gruber
+                2003 - 2014 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -171,6 +171,8 @@ $helpArray = array (
 					"Text" => _('If checked then the user will not be able to delete entries of this account type.')),
 				"264" => array ("Headline" => _('Custom label'),
 					"Text" => _('Here you can overwrite the display name for this account type.')),
+				"265" => array ("Headline" => _('Read-only'),
+					"Text" => _('Sets this account type to read-only.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

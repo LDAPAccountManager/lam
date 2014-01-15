@@ -4,7 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2013  Roland Gruber
+              2007 - 2014  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -201,7 +201,7 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 			}
 			// password buttons
-			if (checkIfWriteAccessIsAllowed() && isset($this->attributes[$this->passwordAttrName][0])) {
+			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->passwordAttrName][0])) {
 				$return->addElement(new htmlOutputText(_('Password')));
 				$pwdContainer = new htmlTable();
 				if (pwd_is_enabled($this->attributes[$this->passwordAttrName][0])) {

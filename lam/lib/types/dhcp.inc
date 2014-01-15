@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2013  Roland Gruber
+                2009 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -244,7 +244,7 @@ class lamDHCPList extends lamList {
 	 * @param htmlGroup $right right part
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
-		if (checkIfWriteAccessIsAllowed()) {
+		if (checkIfWriteAccessIsAllowed($this->type)) {
 			$left->addElement(new htmlSpacer('20px', null));
 			$dhcpButton = new htmlButton('dhcpDefaults', $this->labels['dhcpDefaults']);
 			$dhcpButton->setIconClass('settingsButton');

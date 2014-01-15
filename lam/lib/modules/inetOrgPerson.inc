@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2013  Roland Gruber
+                2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1672,7 +1672,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		// password buttons
-		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed() && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
+		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Password')), true);
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
@@ -2516,7 +2516,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* <br> )
 	*/
 	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
-		if (!checkIfWriteAccessIsAllowed()) {
+		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
 		// mail sending is LAM Pro only

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2013  Roland Gruber
+                2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ if(isset($_POST['createNewTemplate'])) {
 $scopes = $_SESSION['config']->get_ActiveTypes();
 $sortedScopes = array();
 for ($i = 0; $i < sizeof($scopes); $i++) {
-	if (isAccountTypeHidden($scopes[$i])) {
+	if (isAccountTypeHidden($scopes[$i]) || !checkIfWriteAccessIsAllowed($scopes[$i])) {
 		continue;
 	}
 	$sortedScopes[$scopes[$i]] = getTypeAlias($scopes[$i]);
@@ -171,16 +171,18 @@ include '../main_header.php';
 		}
 
 		// new template
-		$container->addElement(new htmlSubTitle(_('Create a new PDF structure')), true);
-		$newPDFContainer = new htmlTable();
-		$newScopeSelect = new htmlSelect('scope', $availableScopes);
-		$newScopeSelect->setHasDescriptiveElements(true);
-		$newScopeSelect->setWidth('15em');
-		$newPDFContainer->addElement($newScopeSelect);
-		$newPDFContainer->addElement(new htmlSpacer('10px', null));
-		$newPDFContainer->addElement(new htmlButton('createNewTemplate', _('Create')));
-		$container->addElement($newPDFContainer, true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
+		if (!empty($availableScopes)) {
+			$container->addElement(new htmlSubTitle(_('Create a new PDF structure')), true);
+			$newPDFContainer = new htmlTable();
+			$newScopeSelect = new htmlSelect('scope', $availableScopes);
+			$newScopeSelect->setHasDescriptiveElements(true);
+			$newScopeSelect->setWidth('15em');
+			$newPDFContainer->addElement($newScopeSelect);
+			$newPDFContainer->addElement(new htmlSpacer('10px', null));
+			$newPDFContainer->addElement(new htmlButton('createNewTemplate', _('Create')));
+			$container->addElement($newPDFContainer, true);
+			$container->addElement(new htmlSpacer(null, '10px'), true);
+		}
 
 		// existing templates
 		$configProfiles = getConfigProfiles();

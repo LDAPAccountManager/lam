@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -280,7 +280,18 @@ if (sizeof($activeTypes) > 0) {
 		if (isset($typeSettings['hidden_' . $activeTypes[$i]])) {
 			$hidden = $typeSettings['hidden_' . $activeTypes[$i]];
 		}
-		$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeTypes[$i], $hidden, _('Hidden'), '261'), true);
+		$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeTypes[$i], $hidden, _('Hidden'), '261'));
+		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
+			$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
+			$isReadOnly = false;
+			if (isset($typeSettings['readOnly_' . $activeTypes[$i]])) {
+				$isReadOnly = $typeSettings['readOnly_' . $activeTypes[$i]];
+			}
+			$readOnly = new htmlTableExtendedInputCheckbox('readOnly_' . $activeTypes[$i], $isReadOnly, _('Read-only'), '265');
+			$readOnly->setElementsToDisable(array('hideNewButton_' . $activeTypes[$i], 'hideDeleteButton_' . $activeTypes[$i]));
+			$advancedOptionsContent->addElement($readOnly);
+		}
+		$advancedOptionsContent->addNewLine();
 		// custom label
 		$customLabel = '';
 		if (isset($typeSettings['customLabel_' . $activeTypes[$i]])) {
@@ -402,6 +413,9 @@ function checkInput() {
 			$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
 			// set if deletion of entries is allowed
 			$key = "hideDeleteButton_" . $accountTypes[$i];
+			$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
+			// set if account type is read-only
+			$key = "readOnly_" . $accountTypes[$i];
 			$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
 		}
 	}

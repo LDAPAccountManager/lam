@@ -164,7 +164,7 @@ function display_main($message, $error) {
 	$types = array();
 	$typeList = $_SESSION['config']->get_ActiveTypes();
 	for ($i = 0; $i < sizeof($typeList); $i++) {
-		if (isAccountTypeHidden($typeList[$i])) {
+		if (isAccountTypeHidden($typeList[$i]) || !checkIfWriteAccessIsAllowed($typeList[$i])) {
 			continue;
 		}
 		$types[$typeList[$i]] = getTypeAlias($typeList[$i]);
@@ -179,31 +179,34 @@ function display_main($message, $error) {
 		}
 		$options[$title] = $elements;
 	}
-	// new OU
-	$container->addElement(new htmlOutputText(_("New organisational unit")));
-	$parentOUSelect = new htmlSelect('parentOU', $options, array());
-	$parentOUSelect->setContainsOptgroups(true);
-	$parentOUSelect->setHasDescriptiveElements(true);
-	$parentOUSelect->setRightToLeftTextDirection(true);
-	$parentOUSelect->setSortElements(false);
-	$container->addElement($parentOUSelect);
-	$container->addElement(new htmlInputField('newOU'));
-	$container->addElement(new htmlButton('createOU', _("Ok")));
-	$container->addElement(new htmlHelpLink('601'), true);
 	
-	$container->addElement(new htmlSpacer(null, '10px'), true);
-
-	// delete OU
-	$container->addElement(new htmlOutputText(_("Delete organisational unit")));
-	$deleteableOUSelect = new htmlSelect('deleteableOU', $options, array());
-	$deleteableOUSelect->setContainsOptgroups(true);
-	$deleteableOUSelect->setHasDescriptiveElements(true);
-	$deleteableOUSelect->setRightToLeftTextDirection(true);
-	$deleteableOUSelect->setSortElements(false);
-	$container->addElement($deleteableOUSelect);
-	$container->addElement(new htmlOutputText(''));
-	$container->addElement(new htmlButton('deleteOU', _("Ok")));
-	$container->addElement(new htmlHelpLink('602'), true);
+	if (!empty($options)) {
+		// new OU
+		$container->addElement(new htmlOutputText(_("New organisational unit")));
+		$parentOUSelect = new htmlSelect('parentOU', $options, array());
+		$parentOUSelect->setContainsOptgroups(true);
+		$parentOUSelect->setHasDescriptiveElements(true);
+		$parentOUSelect->setRightToLeftTextDirection(true);
+		$parentOUSelect->setSortElements(false);
+		$container->addElement($parentOUSelect);
+		$container->addElement(new htmlInputField('newOU'));
+		$container->addElement(new htmlButton('createOU', _("Ok")));
+		$container->addElement(new htmlHelpLink('601'), true);
+		
+		$container->addElement(new htmlSpacer(null, '10px'), true);
+	
+		// delete OU
+		$container->addElement(new htmlOutputText(_("Delete organisational unit")));
+		$deleteableOUSelect = new htmlSelect('deleteableOU', $options, array());
+		$deleteableOUSelect->setContainsOptgroups(true);
+		$deleteableOUSelect->setHasDescriptiveElements(true);
+		$deleteableOUSelect->setRightToLeftTextDirection(true);
+		$deleteableOUSelect->setSortElements(false);
+		$container->addElement($deleteableOUSelect);
+		$container->addElement(new htmlOutputText(''));
+		$container->addElement(new htmlButton('deleteOU', _("Ok")));
+		$container->addElement(new htmlHelpLink('602'), true);
+	}
 	
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");

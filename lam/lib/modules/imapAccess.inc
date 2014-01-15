@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2013  Roland Gruber
+                2010 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -188,7 +188,7 @@ class imapAccess extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		if (!checkIfWriteAccessIsAllowed()) {
+		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $return;
 		}
 		$prefix = $this->getMailboxPrefix();
@@ -335,7 +335,7 @@ class imapAccess extends baseModule {
 	 */
 	function process_attributes() {
 		$errors = array();
-		if (!checkIfWriteAccessIsAllowed()) {
+		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $errors;
 		}
 		$prefix = $this->getMailboxPrefix();

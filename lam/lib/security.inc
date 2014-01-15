@@ -236,14 +236,22 @@ function logNewMessage($level, $message) {
 /**
  * Checks if write access to LDAP is allowed.
  *
+ * @param String $scope account type (e.g. user)
  * @return boolean true, if allowed
  */
-function checkIfWriteAccessIsAllowed() {
+function checkIfWriteAccessIsAllowed($scope = null) {
 	if (!isset($_SESSION['config'])) {
 		return false;
 	}
 	if ($_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_ALL) {
-		return true;
+		$typeSettings = $_SESSION['config']->get_typeSettings();
+		if ($scope == null) {
+			return true;
+		}
+		elseif (!isset($typeSettings['readOnly_' . $scope]) || !$typeSettings['readOnly_' . $scope]) {
+			// check if write for this type is allowed
+			return true;
+		}
 	}
 	return false;
 }

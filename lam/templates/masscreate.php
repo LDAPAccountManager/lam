@@ -81,7 +81,8 @@ $types = $_SESSION['config']->get_ActiveTypes();
 $count = sizeof($types);
 for ($i = 0; $i < $count; $i++) {
 	$myType = new $types[$i]();
-	if (!$myType->supportsFileUpload() || isAccountTypeHidden($types[$i]) || !checkIfNewEntriesAreAllowed($types[$i])) {
+	if (!$myType->supportsFileUpload() || isAccountTypeHidden($types[$i])
+			|| !checkIfNewEntriesAreAllowed($types[$i]) || !checkIfWriteAccessIsAllowed($types[$i])) {
 		unset($types[$i]);
 	}
 }
@@ -145,7 +146,7 @@ $selectedType = array();
 if (isset($_REQUEST['type'])) {
 	$selectedType[] = $_REQUEST['type'];
 }
-else {
+elseif (!empty($types)) {
 	$selectedType[] = $types[0];
 }
 $typeSelect = new htmlTableExtendedSelect('type', $typeList, $selectedType, _("Account type"));
@@ -206,7 +207,9 @@ $table->addElement($moduleGroup, true);
 
 // ok button
 $table->addElement(new htmlSpacer(null, '20px'), true);
-$table->addElement(new htmlButton('submit', _('Ok')), true);
+if (!empty($types)) {
+	$table->addElement(new htmlButton('submit', _('Ok')), true);
+}
 
 parseHtml(null, $table, array(), false, $tabindex, 'user');
 ?>

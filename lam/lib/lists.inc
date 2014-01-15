@@ -486,7 +486,7 @@ class lamList {
 		$group->addElement($editLink);
 		$toolCount++;
 		// delete link
-		if (checkIfWriteAccessIsAllowed() && checkIfDeleteEntriesIsAllowed($this->type)) {
+		if (checkIfWriteAccessIsAllowed($this->type) && checkIfDeleteEntriesIsAllowed($this->type)) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
 			$group->addElement($deleteLink);
@@ -539,7 +539,7 @@ class lamList {
 	protected function listDoPost() {
 		// check if button was pressed and if we have to add/delete an account or call file upload
 		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['fileUpload'])){
-			if (!checkIfWriteAccessIsAllowed()) {
+			if (!checkIfWriteAccessIsAllowed($this->type)) {
 				die();
 			}
 			// add new account
@@ -748,7 +748,7 @@ class lamList {
 		$left = new htmlGroup();
 		// button part
 		$left->alignment = htmlElement::ALIGN_LEFT;
-		if (checkIfWriteAccessIsAllowed()) {
+		if (checkIfWriteAccessIsAllowed($this->type)) {
 			// add button
 			if (checkIfNewEntriesAreAllowed($this->type)) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);

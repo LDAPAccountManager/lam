@@ -72,7 +72,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		logNewMessage(LOG_ERR, 'Invalid type: ' . $_GET['type']);
 		die();
 	}
-	if (!checkIfDeleteEntriesIsAllowed($_GET['type'])) {
+	if (!checkIfDeleteEntriesIsAllowed($_GET['type']) || !checkIfWriteAccessIsAllowed($_GET['type'])) {
 		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_GET['type']);
 		die();
 	}
@@ -142,7 +142,7 @@ elseif (isset($_POST['cancelAllOk'])) {
 }
 
 if (isset($_POST['delete'])) {
-	if (!checkIfDeleteEntriesIsAllowed($_POST['type'])) {
+	if (!checkIfDeleteEntriesIsAllowed($_POST['type']) || !checkIfWriteAccessIsAllowed($_GET['type'])) {
 		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_POST['type']);
 		die();
 	}

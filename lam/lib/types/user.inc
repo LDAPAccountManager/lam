@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2013  Roland Gruber
+  Copyright (C) 2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -293,13 +293,13 @@ class user extends baseType {
 		}
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;
-		if (checkIfWriteAccessIsAllowed()) {
+		if (checkIfWriteAccessIsAllowed('user')) {
 			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
 			$tipContent .= _('Please click to lock/unlock this account.');
 		}
 		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked);
 		$onClick = '';
-		if (checkIfWriteAccessIsAllowed()) {
+		if (checkIfWriteAccessIsAllowed('user')) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
 		}
 		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
@@ -664,7 +664,7 @@ class lamUserList extends lamList {
 	 * @return lamListTool[] tools
 	 */
 	protected function getAdditionalTools() {
-		if (isLAMProVersion() && checkIfPasswordChangeIsAllowed()) {
+		if (isLAMProVersion() && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed('user')) {
 			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
 			return array($passwordTool);
 		}

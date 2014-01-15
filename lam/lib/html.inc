@@ -1728,6 +1728,10 @@ class htmlInputCheckbox extends htmlElement {
 	protected $tableRowsToShow = array();
 	/** indicates that this field should not automatically be saved in the self service or server profile */
 	private $transient = false;
+	/** list of input elements to enable when checked */
+	protected $elementsToEnable = array();
+	/** list of input elements to disable when checked */
+	protected $elementsToDisable = array();
 	
 	
 	/**
@@ -1776,7 +1780,6 @@ class htmlInputCheckbox extends htmlElement {
 		$script = '';
 		if ((sizeof($this->tableRowsToShow) > 0) || (sizeof($this->tableRowsToHide) > 0)) {
 			// build onChange listener
-			$onChange = ' onChange="';
 			$onChange .= 'if (jQuery(\'#' . $this->name . ':checked\').val() !== undefined) {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
 				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
@@ -1793,7 +1796,6 @@ class htmlInputCheckbox extends htmlElement {
 				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
 			}
 			$onChange .= '};';
-			$onChange .= '"';
 			// build script to set initial state
 			$script = '<script type="text/javascript">jQuery(document).ready(function() {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
@@ -1811,6 +1813,46 @@ class htmlInputCheckbox extends htmlElement {
 				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
 			}
 			$script .= '});</script>';
+		}
+		// build Java script to enable/disable elements
+		if ((sizeof($this->elementsToEnable) > 0) || (sizeof($this->elementsToDisable) > 0)) {
+			// build onChange listener
+			$onChange .= 'if (jQuery(\'#' . $this->name . ':checked\').val() !== undefined) {';
+			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->elementsToEnable[$i] . '\').prop(\'disabled\', false);';
+			}
+			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->elementsToDisable[$i] . '\').prop(\'disabled\', true);';
+			}
+			$onChange .= '}';
+			$onChange .= 'else {';
+			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->elementsToEnable[$i] . '\').prop(\'disabled\', true);';
+			}
+			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
+				$onChange .= 'jQuery(\'#' . $this->elementsToDisable[$i] . '\').prop(\'disabled\', false);';
+			}
+			$onChange .= '};';
+			// build script to set initial state
+			$script = '<script type="text/javascript">jQuery(document).ready(function() {';
+			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
+				$classType = 'true';
+				if ($this->checked) {
+					$classType = 'false';
+				}
+				$script .= 'jQuery(\'#' . $this->elementsToEnable[$i] . '\').prop(\'disabled\', ' . $classType . ');';
+			}
+			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
+				$classType = 'false';
+				if ($this->checked) {
+					$classType = 'true';
+				}
+				$script .= 'jQuery(\'#' . $this->elementsToDisable[$i] . '\').prop(\'disabled\', ' . $classType . ');';
+			}
+			$script .= '});</script>';
+		}
+		if (!empty($onChange)) {
+			$onChange = ' onChange="' . $onChange . '"';
 		}
 		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $onChange . $checked . $disabled . '>';
 		echo $script;
@@ -1866,6 +1908,26 @@ class htmlInputCheckbox extends htmlElement {
 	 */
 	public function setTransient($transient) {
 		$this->transient = $transient;
+	}
+
+	/**
+	 * This will disable the given input elements when the checkbox is checked.
+	 * The given IDs can be of any input element (e.g. select, checkbox, ...).
+	 * 
+	 * @param array $elements IDs of elements to disable
+	 */
+	public function setElementsToDisable($elements) {
+		$this->elementsToDisable = $elements;
+	}
+	
+	/**
+	 * This will enable the given input elements when the checkbox is checked.
+	 * The given IDs can be of any input element (e.g. select, checkbox, ...).
+	 * 
+	 * @param array $elements IDs of elements to enable
+	 */
+	public function setElementsToEnable($elements) {
+		$this->elementsToEnable = $elements;
 	}
 
 }

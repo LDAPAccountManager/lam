@@ -68,7 +68,7 @@ if (isAccountTypeHidden($scope)) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
 	die();
 }
-if (!checkIfNewEntriesAreAllowed($scope)) {
+if (!checkIfNewEntriesAreAllowed($scope) || !checkIfWriteAccessIsAllowed($scope)) {
 	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $scope);
 	die();
 }

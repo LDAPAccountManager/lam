@@ -19,7 +19,7 @@
     <para><ulink
     url="https://www.ldap-account-manager.org/">https://www.ldap-account-manager.org/</ulink></para>
 
-    <para>Copyright (C) 2003 - 2013 Roland Gruber
+    <para>Copyright (C) 2003 - 2014 Roland Gruber
     &lt;post@rolandgruber.de&gt;</para>
 
     <para><emphasis role="bold">Key features:</emphasis></para>
@@ -1386,6 +1386,15 @@ Have fun!
               by other account types. E.g. you can hide the Samba domains
               account type and still assign domains when you edit your
               users.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis role="bold">Read-only (LAM Pro only):</emphasis>
+              This allows to set a single account type to read-only mode.
+              Please note that this is a restriction on functional level (e.g.
+              group memberships can be changed on user page even if groups are
+              read-only) and is no replacement for setting up proper ACLs on
+              your LDAP server.</para>
             </listitem>
 
             <listitem>
