@@ -492,7 +492,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 	$partialAccounts = array();
 	for ($i = 0; $i < sizeof($data); $i++) $partialAccounts[$i]['objectClass'] = array();
 	for ($i = 0; $i < sizeof($ordered); $i++) {
-		$module = moduleCache::getModule($ordered[$i], $scope);
+		$module = new $ordered[$i]($scope);
 		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules);
 		if (sizeof($errors) > 0) {
 			array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
@@ -1542,7 +1542,7 @@ class accountContainer {
 
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
-				$this->module[$module] = moduleCache::getModule($module, $this->type);
+				$this->module[$module] = new $module($this->type);
 				$this->module[$module]->init($this->base);
 			}
 			$this->module[$module]->load_attributes($attr);
@@ -1643,7 +1643,7 @@ class accountContainer {
 		$this->lastLoadedProfile = 'default';
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		foreach ($modules as $module) {
-			$this->module[$module] = moduleCache::getModule($module, $this->type);
+			$this->module[$module] = new $module($this->type);
 			$this->module[$module]->init($this->base);
 		}
 		// sort module buttons
