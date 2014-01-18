@@ -199,7 +199,9 @@ class lamGroupList extends lamList {
 	const TRANS_PRIMARY_OPTION_NAME = "LG_TP";
 	/** specifies if primary group members are visible */
 	private $include_primary = false;
-
+	/** LDAP suffix of membership types */
+	private $suffixList = array();
+	
 	/**
 	 * Constructor
 	 *
@@ -213,6 +215,23 @@ class lamGroupList extends lamList {
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
 			'deleteEntry' => _("Delete selected groups"));
+		// build suffix list for account types
+		$types = array('user', 'gon', 'group');
+		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		foreach ($types as $type) {
+			if (!in_array($type, $activeTypes)) {
+				continue;
+			}
+			$suffix = $_SESSION['config']->get_Suffix($type);
+			// stop if suffixes are not unique
+			if (isset($this->suffixList[$suffix])) {
+				$this->suffixList = array();
+				break;
+			}
+			if (!empty($suffix)) {
+				$this->suffixList[$suffix] = $type;
+			}
+		}
 	}
 	
 	/**
@@ -294,6 +313,31 @@ class lamGroupList extends lamList {
 				}
 			}
 			echo implode("; ", $linklist);
+		}
+		// pretty print member DNs
+		if (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant'))) {
+			echo '<div class="rightToLeftText">';
+			$values = $entry[$attribute];
+			if (!empty($values)) {
+				usort($values, 'compareDN');
+			}
+			$count = sizeof($values);
+			for ($i = 0; $i < $count; $i++) {
+				$replaced = false;
+				foreach ($this->suffixList as $suffix => $type) {
+					if (stripos($values[$i], $suffix) > 0) {
+						if (!isAccountTypeHidden($type)) {
+							$values[$i] = '<a href="../account/edit.php?type=' . $type . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
+							$replaced = true;
+						}
+					}
+				}
+				if (!$replaced) {
+					$values[$i] = getAbstractDN($values[$i]);
+				}
+			}
+			echo implode('<br>', $values);
+			echo '</div>';
 		}
 		// print all other attributes
 		else {
