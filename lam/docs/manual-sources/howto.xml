@@ -2308,7 +2308,7 @@ Have fun!
       </section>
 
       <section id="organizationalRoleUser">
-        <title>Organizational roles</title>
+        <title>Organizational roles (LAM Pro)</title>
 
         <para>LAM can manage role memberships in <link
         linkend="organizationalRole">organizationalRole</link> objects. To
@@ -3775,7 +3775,7 @@ Have fun!
     </section>
 
     <section id="organizationalRole">
-      <title>Organizational roles</title>
+      <title>Organizational roles (LAM Pro)</title>
 
       <para>This module manages roles via the organizationalRole object class.
       There is also a <link linkend="organizationalRoleUser">user
