@@ -101,8 +101,8 @@ if (ini_get("session.auto_start") == "1") {
 // check memory limit
 $memLimit = ini_get('memory_limit');
 if (isset($memLimit) && ($memLimit != '') && (substr(strtoupper($memLimit), strlen($memLimit) - 1) == 'M')) {
-	if (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 64) {
-		$criticalErrors[] = array("ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"64M\".",
+	if (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 128) {
+		$criticalErrors[] = array("ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"128M\".",
 			"Your current memory limit is $memLimit.");	
 	}
 }
