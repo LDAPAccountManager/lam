@@ -2286,6 +2286,14 @@ Have fun!
         is active. In this case group memberships may be managed with the Unix
         module.</para>
 
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_groupOfNamesUser2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
         <para>The module automatically detects if groups are based on
         "groupOfNames" or "groupOfUniqueNames" and sets the correct
         attribute.</para>
@@ -2294,6 +2302,34 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_groupOfNamesUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section id="organizationalRoleUser">
+        <title>Organizational roles</title>
+
+        <para>LAM can manage role memberships in <link
+        linkend="organizationalRole">organizationalRole</link> objects. To
+        activate this feature please add the user module "Roles
+        (organizationalRoleUser)" to your LAM server profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_organizationalRoleUser1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now, there will be a new tab "Roles" when you edit your user
+        accounts. Here you can select the role memberships.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_organizationalRoleUser2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3655,9 +3691,55 @@ Have fun!
       <title>Group of (unique) names (LAM Pro)</title>
 
       <para>These classes can be used to represent group relations. Since they
-      allow DNs as members you can also use them to represent nested groups.
-      Activate the account type "Group of names" in your LAM server profile to
-      use these account modules.</para>
+      allow DNs as members you can also use them to represent nested
+      groups.</para>
+
+      <para><emphasis role="bold">Configuration:</emphasis></para>
+
+      <para>Activate the account type "Group of names" in your LAM server
+      profile to use these account modules. Alternatively, you can use the
+      account type "Groups".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/groupOfNames3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/groupOfNames2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then add the module "Group of names (groupOfNames)" or "Group of
+      unique names (groupOfUniqueNames)".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/groupOfNames4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>On the module settings tab you set some options like the display
+      format for members/owners and if fields like description should not be
+      displayed.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/groupOfNames5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Group management:</emphasis></para>
 
       <para>Group of (unique) names have four basic attributes:</para>
 
@@ -3687,6 +3769,71 @@ Have fun!
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/groupOfNames1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section id="organizationalRole">
+      <title>Organizational roles</title>
+
+      <para>This module manages roles via the organizationalRole object class.
+      There is also a <link linkend="organizationalRoleUser">user
+      module</link> to manage memberships on the user edit page.</para>
+
+      <para><emphasis role="bold">Configuration:</emphasis></para>
+
+      <para>Activate the account type "Groups" in your LAM server profile to
+      use this account module. Alternatively, you can use the account type
+      "Group of names".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_organizationalRole1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_organizationalRole2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then add the module "Role (organizationalRole)".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_organizationalRole3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>On the module settings tab you set some options like the display
+      format for members and if description should not be displayed.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_organizationalRole4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Role management:</emphasis></para>
+
+      <para>You can add any accounts as members. This includes other roles
+      which leads to nested roles (needs to be supported by LDAP client
+      applications).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_organizationalRole5.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
