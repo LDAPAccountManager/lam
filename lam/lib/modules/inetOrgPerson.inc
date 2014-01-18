@@ -1729,7 +1729,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$name = $_FILES['photoFile']['name'];
 			$extension = strtolower(substr($name, strpos($name, '.') + 1));
-			if (!extension_loaded('imagick') && !($extension == '.jpg') && !($extension == '.jpeg')) {
+			if (!extension_loaded('imagick') && !($extension == 'jpg') && !($extension == 'jpeg')) {
 				$messages[] = $this->messages['file'][1];
 				return $messages;
 			}
