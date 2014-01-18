@@ -662,7 +662,11 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	elseif (sizeof($filterParts) > 1) {
 		$filter = '(& ' . implode(' ', $filterParts) . ')';
 	}
+	$activeTypes = $_SESSION['config']->get_ActiveTypes();
 	for ($s = 0; $s < sizeof($scopes); $s++) {
+		if (!in_array($scopes[$s], $activeTypes)) {
+			continue;  // skip non-active account types
+		}
 		// search LDAP
 		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
 							$filter, $attributes, 0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
