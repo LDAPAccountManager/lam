@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2013  Roland Gruber
+  Copyright (C) 2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,6 +43,13 @@ class group extends baseType {
 		parent::__construct();
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another group');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to group list');
+		if (isset($_SESSION['config'])) {
+			$modules = $_SESSION['config']->get_AccountModules('group');
+			if (in_array('organizationalRole', $modules)) {
+				$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another role');
+				$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to role list');
+			}
+		}
 	}
 	
 	/**
@@ -51,6 +58,12 @@ class group extends baseType {
 	* @return string alias name
 	*/
 	function getAlias() {
+		if (isset($_SESSION['loggedIn']) && isset($_SESSION['config'])) {
+		$modules = $_SESSION['config']->get_AccountModules('group');
+			if (in_array('organizationalRole', $modules)) {
+				return _('Roles');
+			}
+		}
 		return _("Groups");
 	}
 	
@@ -88,15 +101,20 @@ class group extends baseType {
 	* @return array list of descriptions
 	*/
 	function getListAttributeDescriptions() {
-		return array (
+		$return = array (
 			"cn" => _("Group name"),
 			"gidnumber" => _("GID number"),
 			"memberuid" => _("Group members"),
 			"member" => _("Group member DNs"),
 			"uniqueMember" => _("Group member DNs"),
-			"roleOccupant" => _("Group member DNs"),
+			"roleOccupant" => _("Role member DNs"),
 			"description" => _("Group description")
-			);
+		);
+		$modules = $_SESSION['config']->get_AccountModules('group');
+		if (in_array('organizationalRole', $modules)) {
+			$return['cn'] = _('Role name');
+		}
+		return $return;
 	}
 
 	/**
@@ -123,6 +141,9 @@ class group extends baseType {
 		}
 		elseif ($container->getAccountModule('groupOfUniqueNames') != null) {
 			$gonAttributes = $container->getAccountModule('groupOfUniqueNames')->getAttributes();
+		}
+		elseif ($container->getAccountModule('organizationalRole') != null) {
+			$gonAttributes = $container->getAccountModule('organizationalRole')->getAttributes();
 		}
 		// check if a group name is set
 		if (isset($attributes['gid'][0])) {
@@ -167,6 +188,9 @@ class group extends baseType {
 		}
 		elseif ($container->getAccountModule('groupOfUniqueNames') != null) {
 			$gonAttributes = $container->getAccountModule('groupOfUniqueNames')->getAttributes();
+		}
+		elseif ($container->getAccountModule('organizationalRole') != null) {
+			$gonAttributes = $container->getAccountModule('organizationalRole')->getAttributes();
 		}
 		// check if an description can be shown
 		if (($attributes != null) && isset($attributes['description'][0])) {
@@ -215,6 +239,14 @@ class lamGroupList extends lamList {
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
 			'deleteEntry' => _("Delete selected groups"));
+		$modules = $_SESSION['config']->get_AccountModules('group');
+		if (in_array('organizationalRole', $modules)) {
+			$this->labels = array(
+				'nav' => _("Role count: %s"),
+				'error_noneFound' => _("No roles found!"),
+				'newEntry' => _("New role"),
+				'deleteEntry' => _("Delete selected roles"));
+		}
 		// build suffix list for account types
 		$types = array('user', 'gon', 'group');
 		$activeTypes = $_SESSION['config']->get_ActiveTypes();
@@ -315,7 +347,7 @@ class lamGroupList extends lamList {
 			echo implode("; ", $linklist);
 		}
 		// pretty print member DNs
-		if (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant'))) {
+		if (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
 			echo '<div class="rightToLeftText">';
 			$values = $entry[$attribute];
 			if (!empty($values)) {
