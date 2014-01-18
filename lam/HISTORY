@@ -4,6 +4,7 @@ March 2014 4.5
   - Added option to server profile if referrals should be followed (fixes problems with Samba 4 and AD)
   - LAM Pro:
    -> Allow to set single account types read-only
+   -> Support for organizationalRole entries
    -> Separate IP restriction list for self service
 
 

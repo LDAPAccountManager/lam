@@ -93,6 +93,8 @@ class group extends baseType {
 			"gidnumber" => _("GID number"),
 			"memberuid" => _("Group members"),
 			"member" => _("Group member DNs"),
+			"uniqueMember" => _("Group member DNs"),
+			"roleOccupant" => _("Group member DNs"),
 			"description" => _("Group description")
 			);
 	}
