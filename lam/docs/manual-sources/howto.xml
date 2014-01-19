@@ -7968,13 +7968,31 @@ objectclass: top
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
-                  <imagedata fileref="images/schema_groupOfNames.png" />
+                  <imagedata fileref="images/schema_group.png" />
                 </imageobject>
               </inlinemediaobject></entry>
 
             <entry>Group of (unique) names</entry>
 
             <entry>groupOfNames, groupOfUniqueNames</entry>
+
+            <entry>core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_group.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Groups</entry>
+
+            <entry>organizationalRole</entry>
 
             <entry>core.schema</entry>
 
