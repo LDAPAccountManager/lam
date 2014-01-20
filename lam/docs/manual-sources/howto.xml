@@ -1910,9 +1910,11 @@ Have fun!
 
         <para>The Personal module provides support for managing various
         personal data of your users including mail addresses and telephone
-        numbers. You can also add photos of your users. If you do not need to
-        manage all attributes then you can deactivate them in your server
-        profile.</para>
+        numbers. You can also add photos of your users (please install <ulink
+        url="http://www.php.net/manual/en/book.imagick.php">PHP
+        Imagick/ImageMagick</ulink> for full file format support). If you do
+        not need to manage all attributes then you can deactivate them in your
+        server profile.</para>
 
         <para><emphasis role="bold">Configuration</emphasis></para>
 
