@@ -1,3 +1,9 @@
+ldap-account-manager (4.4.1-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 20 Jan 2014 17:50:45 +0100
+
 ldap-account-manager (4.4-1) unstable; urgency=low
 
   * Fix "Pre-Authentication Cross-Site-Scripting in current_language
