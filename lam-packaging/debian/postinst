@@ -69,14 +69,19 @@ if [ "$1" = "configure" ]; then
                    if [ ! -f /etc/$server/mods-enabled/actions.load -a ! -h /etc/$server/mods-enabled/actions.load ]; then
                        ln -s /etc/$server/mods-available/actions.load /etc/$server/mods-enabled/actions.load
                    fi
-                   if [ -f /etc/apache2/mods-available/php5.load ]; then
+                   if [ -f /etc/$server/mods-available/php5.load ]; then
                        if [ ! -f /etc/$server/mods-enabled/php5.load -a ! -h /etc/$server/mods-enabled/php5.load ]; then
                            ln -s /etc/$server/mods-available/php5.load /etc/$server/mods-enabled/php5.load
                        fi
                    fi
-                   if [ -f /etc/apache2/mods-available/php5.conf ]; then
+                   if [ -f /etc/$server/mods-available/php5.conf ]; then
                        if [ ! -f /etc/$server/mods-enabled/php5.conf -a ! -h /etc/$server/mods-enabled/php5.conf ]; then
                            ln -s /etc/$server/mods-available/php5.conf /etc/$server/mods-enabled/php5.conf
+                       fi
+                   fi
+                   if [ -f /etc/$server/mods-available/version.load ]; then
+                       if [ ! -f /etc/$server/mods-enabled/version.load -a ! -h /etc/$server/mods-enabled/version.load ]; then
+                           ln -s /etc/$server/mods-available/version.load /etc/$server/mods-enabled/version.load
                        fi
                    fi
                fi
