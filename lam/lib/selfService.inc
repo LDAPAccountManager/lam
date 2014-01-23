@@ -390,6 +390,7 @@ class selfServiceProfile {
 		);
 		$this->readOnlyFields = array();
 		$this->relabelFields = array();
+		$this->moduleSettings = array();
 	}
 
 }
