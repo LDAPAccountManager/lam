@@ -285,140 +285,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
 			$return['profile_mappings']['inetOrgPerson_roomNumber'] = 'roomNumber';
 		}
-		// configuration settings
-		$configContainer = new htmlTable();
-		if (isset($_SESSION['conf_config'])) {
-			// add password hash type if posixAccount is inactive
-			$confActiveUnixModules = $_SESSION['conf_config']->get_AccountModules('user');
-			if (in_array('host', $_SESSION['conf_config']->get_ActiveTypes())) {
-				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('host'));
-			}
-			if (in_array('group', $_SESSION['conf_config']->get_ActiveTypes())) {
-				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('group'));
-			}
-			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
-				$optionsSelected = array('SSHA');
-				$hashOption = new htmlTable();
-				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
-				$configContainer->addElement($hashOption, true);
-			}
-		}
-		$configContainerHead = new htmlTable();
-		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
-		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainerOptions = new htmlTable();
-		$configContainer->addElement($configContainerHead, true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDescription', false, _('Description'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideStreet', false, _('Street'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostOfficeBox', false, _('Post office box'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalCode', false, _('Postal code'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLocation', false, _('Location'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideState', false, _('State'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalAddress', false, _('Postal address'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRegisteredAddress', false, _('Registered address'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideOfficeName', false, _('Office name'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRoomNumber', false, _('Room number'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideTelephoneNumber', false, _('Telephone number'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideHomeTelephoneNumber', false, _('Home telephone number'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideMobileNumber', false, _('Mobile number'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideFaxNumber', false, _('Fax number'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEMailAddress', false, _('Email address'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideJobTitle', false, _('Job title'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideCarLicense', false, _('Car license'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeType', false, _('Employee type'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideBusinessCategory', false, _('Business category'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDepartments', false, _('Department'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideManager', false, _('Manager'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideOu', false, _('Organisational unit'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideO', false, _('Organisation'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeNumber', false, _('Employee number'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideInitials', false, _('Initials'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLabeledURI', false, _('Web site'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidejpegPhoto', false, _('Photo'), null, false));
-		if (isset($_SESSION['conf_config'])) {
-			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
-			// option to hide uid
-			if (!in_array('posixAccount', $confActiveUnixUserModules)) {
-				$configContainerOptions->addElement(new htmlOutputText(' '));
-				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideUID', false, _('User name'), null, false));
-			}
-		}
-		$configContainer->addElement($configContainerOptions, true);
-		$advancedOptions = new htmlTable();
-		$advancedOptions->addElement(new htmlSubTitle(_('Read-only fields')), true);
-		$readOnlyOptions = array(
-			_('Description') => 'inetOrgPerson_readOnly_description', _('Street') => 'inetOrgPerson_readOnly_street',
-			_('First name') => 'inetOrgPerson_readOnly_givenName', _('Last name') => 'inetOrgPerson_readOnly_sn',
-			_('Post office box') => 'inetOrgPerson_readOnly_postOfficeBox', _('Postal code') => 'inetOrgPerson_readOnly_postalCode',
-			_('Location') => 'inetOrgPerson_readOnly_l', _('State') => 'inetOrgPerson_readOnly_st',
-			_('Postal address') => 'inetOrgPerson_readOnly_postalAddress', _('Registered address') => 'inetOrgPerson_readOnly_registeredAddress',
-			_('Office name') => 'inetOrgPerson_readOnly_physicalDeliveryOfficeName', _('Room number') => 'inetOrgPerson_readOnly_roomNumber',
-			_('Telephone number') => 'inetOrgPerson_readOnly_telephoneNumber', _('Home telephone number') => 'inetOrgPerson_readOnly_homePhone',
-			_('Mobile number') => 'inetOrgPerson_readOnly_mobile', _('Fax number') => 'inetOrgPerson_readOnly_facsimileTelephoneNumber',
-			_('Email address') => 'inetOrgPerson_readOnly_mail', _('Web site') => 'inetOrgPerson_readOnly_labeledURI',
-			_('Job title') => 'inetOrgPerson_readOnly_title', _('Car license') => 'inetOrgPerson_readOnly_carLicense',
-			_('Employee type') => 'inetOrgPerson_readOnly_employeeType', _('Business category') => 'inetOrgPerson_readOnly_businessCategory',
-			_('Department') => 'inetOrgPerson_readOnly_departmentNumber', _('Manager') => 'inetOrgPerson_readOnly_manager',
-			_('Organisation') => 'inetOrgPerson_readOnly_o', _('Organisational unit') => 'inetOrgPerson_readOnly_ou',
-			_('Employee number') => 'inetOrgPerson_readOnly_employeeNumber', _('Initials') => 'inetOrgPerson_readOnly_initials',
-			_('Photo') => 'inetOrgPerson_readOnly_jpegPhoto', _('Password') => 'inetOrgPerson_readOnly_userPassword'
-		);
-		if (isset($_SESSION['conf_config'])) {
-			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
-			$readOnlyOptions[_('User name')] = 'inetOrgPerson_readOnly_uid';
-			$readOnlyOptions[_('Common name')] = 'inetOrgPerson_readOnly_cn';
-		}
-		ksort($readOnlyOptions);
-		$readOnlyCounter = 0;
-		$readOnlyOptionsTable = new htmlTable();
-		$readOnlyOptionsTable->colspan = 5;
-		foreach ($readOnlyOptions as $label => $id) {
-			$readOnlyOptionsTable->addElement(new htmlTableExtendedInputCheckbox($id, false, $label, null, false));
-			$readOnlyCounter++;
-			if (($readOnlyCounter % 5) == 0) {
-				$readOnlyOptionsTable->addNewLine();
-			}
-		}
-		$advancedOptions->addElement($readOnlyOptionsTable, true);
-		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
-		$photoTable = new htmlTable();
-		$photoTable->colspan = 2;
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'), true);
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'), true);
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
-		$advancedOptions->addElement($photoTable, true);
-		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
-		$advancedOptionsAccordion->colspan = 5;
-		$configContainer->addElement($advancedOptionsAccordion);
-		$return['config_options']['all'] = $configContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -3523,6 +3389,159 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$container->addElement($labelBox);
 		$container->addElement(new htmlOutputText($val, false), true);
+	}
+	
+	/**
+	* Returns a list of configuration options.
+	* 
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	* @return mixed htmlElement or array of htmlElement
+	* 
+	* @see htmlElement
+	*/
+	public function get_configOptions($scopes, $allScopes) {
+		$return = parent::get_configOptions($scopes, $allScopes);
+		// configuration settings
+		$configContainer = new htmlTable();
+		if (isset($_SESSION['conf_config'])) {
+			// add password hash type if posixAccount is inactive
+			$confActiveUnixModules = $_SESSION['conf_config']->get_AccountModules('user');
+			if (in_array('host', $_SESSION['conf_config']->get_ActiveTypes())) {
+				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('host'));
+			}
+			if (in_array('group', $_SESSION['conf_config']->get_ActiveTypes())) {
+				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('group'));
+			}
+			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
+				$optionsSelected = array('SSHA');
+				$hashOption = new htmlTable();
+				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
+				$configContainer->addElement($hashOption, true);
+			}
+		}
+		$configContainerHead = new htmlTable();
+		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
+		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainerOptions = new htmlTable();
+		$configContainer->addElement($configContainerHead, true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDescription', false, _('Description'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideStreet', false, _('Street'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostOfficeBox', false, _('Post office box'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalCode', false, _('Postal code'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLocation', false, _('Location'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideState', false, _('State'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidePostalAddress', false, _('Postal address'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRegisteredAddress', false, _('Registered address'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideOfficeName', false, _('Office name'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideRoomNumber', false, _('Room number'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideTelephoneNumber', false, _('Telephone number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideHomeTelephoneNumber', false, _('Home telephone number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideMobileNumber', false, _('Mobile number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideFaxNumber', false, _('Fax number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEMailAddress', false, _('Email address'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideJobTitle', false, _('Job title'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideCarLicense', false, _('Car license'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeType', false, _('Employee type'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideBusinessCategory', false, _('Business category'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideDepartments', false, _('Department'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideManager', false, _('Manager'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideOu', false, _('Organisational unit'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideO', false, _('Organisation'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideEmployeeNumber', false, _('Employee number'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideInitials', false, _('Initials'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideLabeledURI', false, _('Web site'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hidejpegPhoto', false, _('Photo'), null, false));
+		if (isset($_SESSION['conf_config'])) {
+			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			// option to hide uid
+			if (!in_array('posixAccount', $confActiveUnixUserModules)) {
+				$configContainerOptions->addElement(new htmlOutputText(' '));
+				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_hideUID', false, _('User name'), null, false));
+			}
+		}
+		$configContainer->addElement($configContainerOptions, true);
+		$advancedOptions = new htmlTable();
+		$advancedOptions->addElement(new htmlSubTitle(_('Read-only fields')), true);
+		$readOnlyOptions = array(
+			_('Description') => 'inetOrgPerson_readOnly_description', _('Street') => 'inetOrgPerson_readOnly_street',
+			_('First name') => 'inetOrgPerson_readOnly_givenName', _('Last name') => 'inetOrgPerson_readOnly_sn',
+			_('Post office box') => 'inetOrgPerson_readOnly_postOfficeBox', _('Postal code') => 'inetOrgPerson_readOnly_postalCode',
+			_('Location') => 'inetOrgPerson_readOnly_l', _('State') => 'inetOrgPerson_readOnly_st',
+			_('Postal address') => 'inetOrgPerson_readOnly_postalAddress', _('Registered address') => 'inetOrgPerson_readOnly_registeredAddress',
+			_('Office name') => 'inetOrgPerson_readOnly_physicalDeliveryOfficeName', _('Room number') => 'inetOrgPerson_readOnly_roomNumber',
+			_('Telephone number') => 'inetOrgPerson_readOnly_telephoneNumber', _('Home telephone number') => 'inetOrgPerson_readOnly_homePhone',
+			_('Mobile number') => 'inetOrgPerson_readOnly_mobile', _('Fax number') => 'inetOrgPerson_readOnly_facsimileTelephoneNumber',
+			_('Email address') => 'inetOrgPerson_readOnly_mail', _('Web site') => 'inetOrgPerson_readOnly_labeledURI',
+			_('Job title') => 'inetOrgPerson_readOnly_title', _('Car license') => 'inetOrgPerson_readOnly_carLicense',
+			_('Employee type') => 'inetOrgPerson_readOnly_employeeType', _('Business category') => 'inetOrgPerson_readOnly_businessCategory',
+			_('Department') => 'inetOrgPerson_readOnly_departmentNumber', _('Manager') => 'inetOrgPerson_readOnly_manager',
+			_('Organisation') => 'inetOrgPerson_readOnly_o', _('Organisational unit') => 'inetOrgPerson_readOnly_ou',
+			_('Employee number') => 'inetOrgPerson_readOnly_employeeNumber', _('Initials') => 'inetOrgPerson_readOnly_initials',
+			_('Photo') => 'inetOrgPerson_readOnly_jpegPhoto', _('Password') => 'inetOrgPerson_readOnly_userPassword'
+		);
+		if (isset($_SESSION['conf_config'])) {
+			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			$readOnlyOptions[_('User name')] = 'inetOrgPerson_readOnly_uid';
+			$readOnlyOptions[_('Common name')] = 'inetOrgPerson_readOnly_cn';
+		}
+		ksort($readOnlyOptions);
+		$readOnlyCounter = 0;
+		$readOnlyOptionsTable = new htmlTable();
+		$readOnlyOptionsTable->colspan = 5;
+		foreach ($readOnlyOptions as $label => $id) {
+			$readOnlyOptionsTable->addElement(new htmlTableExtendedInputCheckbox($id, false, $label, null, false));
+			$readOnlyCounter++;
+			if (($readOnlyCounter % 5) == 0) {
+				$readOnlyOptionsTable->addNewLine();
+			}
+		}
+		$advancedOptions->addElement($readOnlyOptionsTable, true);
+		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
+		$photoTable = new htmlTable();
+		$photoTable->colspan = 2;
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'), true);
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'), true);
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
+		$advancedOptions->addElement($photoTable, true);
+		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
+		$advancedOptionsAccordion->colspan = 5;
+		$configContainer->addElement($advancedOptionsAccordion);
+		$return[] = $configContainer;
+		return $return;
 	}
 
 }
