@@ -6,6 +6,7 @@ March 2014 4.5
    -> Allow to set single account types read-only
    -> Support for organizationalRole entries
    -> Separate IP restriction list for self service
+   -> Bind DLZ: support TXT/SRV records
   - fixed bugs:
    -> PDF export for multiple entries does not work
    -> Personal: fixed photo upload if Imagick is not installed

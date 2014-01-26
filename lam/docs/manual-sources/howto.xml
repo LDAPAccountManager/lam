@@ -4425,6 +4425,14 @@ Run slapindex to rebuild the index.
         <listitem>
           <para>MX: mail servers</para>
         </listitem>
+
+        <listitem>
+          <para>TXT: text records</para>
+        </listitem>
+
+        <listitem>
+          <para>SRV: service entries</para>
+        </listitem>
       </itemizedlist>
 
       <literallayout>
@@ -4507,6 +4515,54 @@ Run slapindex to rebuild the index.
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/mod_bind9.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Text records (TXT)</emphasis></para>
+
+      <para>Text records can be added to store a description or other data
+      (e.g. SPF information).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind10.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Services (SRV)</emphasis></para>
+
+      <para>Service records can be used to specify which servers provide
+      common services such as LDAP. Please note that the host name must be
+      _SERVICE._PROTOCOL (e.g. _ldap._tcp).</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>Priority: The priority of the target host, lower value means more
+      preferred.</para>
+
+      <para>Weight: A relative weight for records with the same priority. E.g.
+      weights 20 and 80 for a service will result in 20% queries to the one
+      server and 80% to the other.</para>
+
+      <para>Port: The port number that is used for your service.</para>
+
+      <para>Server: DNS name where service can be reached (with dot at the
+      end).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind11.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
