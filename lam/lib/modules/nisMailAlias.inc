@@ -38,6 +38,8 @@ class nisMailAlias extends baseModule {
 	private $cachedMailList = null;
 	/** user cache */
 	private $cachedUserList = null;
+	/** display limit */
+	const DISPLAY_LIMIT = 50;
 	
 	/**
 	* Returns meta data that is interpreted by parent class
@@ -73,8 +75,8 @@ class nisMailAlias extends baseModule {
 				"Text" => _("Mails to this name are forwarded to the recipients.")
 			),
 			'recipient' => array(
-				"Headline" => _("Recipient"), 'attr' => 'rfc822MailMember',
-				"Text" => _("This is one recipient for this alias.")
+				"Headline" => _("Recipients"), 'attr' => 'rfc822MailMember',
+				"Text" => _("Please enter the recipients for this alias.")
 			),
 			'recipientList' => array(
 				"Headline" => _("Recipient list"), 'attr' => 'rfc822MailMember',
@@ -166,32 +168,49 @@ class nisMailAlias extends baseModule {
 			natcasesort($this->attributes['rfc822MailMember']);
 			$this->attributes['rfc822MailMember'] = array_values($this->attributes['rfc822MailMember']);
 			$recipientCount = sizeof($this->attributes['rfc822MailMember']);
-			for ($i = 0; $i < $recipientCount; $i++) {
-				$return->addElement(new htmlOutputText(_('Recipient')));
-				$mailField = new htmlInputField('rfc822MailMember' . $i, $this->attributes['rfc822MailMember'][$i]);
-				if (sizeof($autoList) > 0) {
-					$mailField->enableAutocompletion($autoList);
+			if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
+				for ($i = 0; $i < $recipientCount; $i++) {
+					if (($i == 0) && ($recipientCount == 1)) {
+						$return->addElement(new htmlOutputText(_('Recipient')));
+					}
+					elseif (($i == 0) && ($recipientCount > 1)) {
+						$return->addElement(new htmlOutputText(_('Recipients')));
+					}
+					else {
+						$return->addElement(new htmlOutputText(''));
+					}
+					$mailField = new htmlInputField('rfc822MailMember' . $i, $this->attributes['rfc822MailMember'][$i]);
+					if (sizeof($autoList) > 0) {
+						$mailField->enableAutocompletion($autoList);
+					}
+					$return->addElement($mailField);
+					$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mailAlias.png', true, _('Select mail')));
+					$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
+					$return->addElement(new htmlButton('delRec' . $i, 'del.png', true));
+					$return->addElement(new htmlHelpLink('recipient'), true);
 				}
-				$return->addElement($mailField);
-				$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mailAlias.png', true, _('Select mail')));
-				$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
-				$return->addElement(new htmlButton('delRec' . $i, 'del.png', true));
-				$return->addElement(new htmlHelpLink('recipient'), true);
+			}
+			else {
+				$memberText = implode("\r\n", $this->attributes['rfc822MailMember']);
+				$return->addElement(new htmlTableExtendedInputTextarea('rfc822MailMember', $memberText, 50, 30, _('Recipients'), 'recipient'), true);
+				$return->addElement(new htmlEqualWidth(array('cn', 'rfc822MailMember')), true);
 			}
 		}
-		// input box for new recipient
-		$return->addElement(new htmlOutputText(_('New recipient')));
-		$newMailField = new htmlInputField('rfc822MailMember');
-		$newMailField->setOnKeyPress('SubmitForm(\'addRec\', event);');
-		if (sizeof($autoList) > 0) {
-			$newMailField->enableAutocompletion($autoList);
+		if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
+			// input box for new recipient
+			$return->addElement(new htmlOutputText(_('New recipient')));
+			$newMailField = new htmlInputField('rfc822MailMember');
+			$newMailField->setOnKeyPress('SubmitForm(\'addRec\', event);');
+			if (sizeof($autoList) > 0) {
+				$newMailField->enableAutocompletion($autoList);
+			}
+			$return->addElement($newMailField);
+			$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mailAlias.png', true, _('Select mail')));
+			$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
+			$return->addElement(new htmlButton('addRec', 'add.png', true));
+			$return->addElement(new htmlHelpLink('recipient'));
+			$return->addElement(new htmlHiddenInput('rec_number', $recipientCount));
 		}
-		$return->addElement($newMailField);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mailAlias.png', true, _('Select mail')));
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
-		$return->addElement(new htmlButton('addRec', 'add.png', true));
-		$return->addElement(new htmlHelpLink('recipient'));
-		$return->addElement(new htmlHiddenInput('rec_number', $recipientCount));
 		return $return;
 	}
 
@@ -204,6 +223,7 @@ class nisMailAlias extends baseModule {
 	function process_attributes() {
 		$errors = array();
 		$this->attributes['cn'] = array();
+		$recipientCount = !empty($this->attributes['rfc822MailMember']) ? sizeof($this->attributes['rfc822MailMember']) : 0;
 		$this->attributes['rfc822MailMember'] = array();
 		// check alias name
 		if (isset($_POST['cn']) && ($_POST['cn'] != "") && get_preg($_POST['cn'], 'nis_alias')) {
@@ -215,31 +235,49 @@ class nisMailAlias extends baseModule {
 				$message[] = $_POST['cn'];
 				$errors[] = $message;
 		}
-		// check old recipients
-		if (isset($_POST['rec_number'])) {
-			for ($i = 0; $i < $_POST['rec_number']; $i++) {
-				if (isset($_POST['delRec' . $i])) continue;
-				if (isset($_POST['rfc822MailMember' . $i]) && ($_POST['rfc822MailMember' . $i] != "")) {
-					// check if address has correct format
-					if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient') && !get_preg($_POST['rfc822MailMember' . $i], 'email')) {
-						$message = $this->messages['recipient'][0];
-						$message[] = $_POST['rfc822MailMember' . $i];
-						$errors[] = $message;
+		if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
+			// check old recipients
+			if (isset($_POST['rec_number'])) {
+				for ($i = 0; $i < $_POST['rec_number']; $i++) {
+					if (isset($_POST['delRec' . $i])) continue;
+					if (isset($_POST['rfc822MailMember' . $i]) && ($_POST['rfc822MailMember' . $i] != "")) {
+						// check if address has correct format
+						if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient') && !get_preg($_POST['rfc822MailMember' . $i], 'email')) {
+							$message = $this->messages['recipient'][0];
+							$message[] = $_POST['rfc822MailMember' . $i];
+							$errors[] = $message;
+						}
+						$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember' . $i];
 					}
-					$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember' . $i];
+				}
+			}
+			// check new recipient
+			if (isset($_POST['rfc822MailMember']) && ($_POST['rfc822MailMember'] != "")) {
+				// check if recipient has correct format
+				if (get_preg($_POST['rfc822MailMember'], 'nis_recipient') || get_preg($_POST['rfc822MailMember'], 'email')) {
+					$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember'];
+				}
+				else {
+						$message = $this->messages['recipient'][0];
+						$message[] = $_POST['rfc822MailMember'];
+						$errors[] = $message;
 				}
 			}
 		}
-		// check new recipient
-		if (isset($_POST['rfc822MailMember']) && ($_POST['rfc822MailMember'] != "")) {
-			// check if address has correct format
-			if (get_preg($_POST['rfc822MailMember'], 'nis_recipient') || get_preg($_POST['rfc822MailMember'], 'email')) {
-				$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember'];
-			}
-			else {
+		else {
+			$recipients = explode("\r\n", $_POST['rfc822MailMember']);
+			foreach ($recipients as $recipient) {
+				$recipient = trim($recipient);
+				if (empty($recipient)) {
+					continue;
+				}
+				$this->attributes['rfc822MailMember'][] = $recipient;
+				// check if recipient has correct format
+				if (!get_preg($recipient, 'nis_recipient') && !get_preg($recipient, 'email')) {
 					$message = $this->messages['recipient'][0];
-					$message[] = $_POST['rfc822MailMember'];
+					$message[] = htmlspecialchars($recipient);
 					$errors[] = $message;
+				}
 			}
 		}
 		$this->attributes['rfc822MailMember'] = array_unique($this->attributes['rfc822MailMember']);
