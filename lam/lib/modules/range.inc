@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2013  Roland Gruber
+                2008 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -222,6 +222,7 @@ class range extends baseModule {
 
 			// Load DHCP Options:
 	        if (isset($attr['dhcpRange']) && is_array($attr['dhcpRange'])) {
+	        	natcasesort($attr['dhcpRange']);
 				foreach($attr['dhcpRange'] AS $id=>$value) {
 				    $ex = explode(" ", $value);
 

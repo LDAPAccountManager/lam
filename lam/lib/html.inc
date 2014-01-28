@@ -1636,10 +1636,12 @@ class htmlOutputText extends htmlElement {
 	 * 
 	 * @param String $string output text
 	 * @param boolean $escapeHTML escape HTML code (default yes)
+	 * @param boolean $markAsRequired mark text like a required field
 	 */
-	function __construct($string, $escapeHTML = true) {
+	function __construct($string, $escapeHTML = true, $markAsRequired = false) {
 		$this->string = $string;
 		$this->escapeHTML = $escapeHTML;
+		$this->markAsRequired = $markAsRequired;
 	}
 
 	/**

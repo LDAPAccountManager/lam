@@ -186,8 +186,17 @@ class lamDHCPList extends lamList {
         	// find all fixed addresses:
 			$entries = searchLDAP($entry['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
 			if (sizeof($entries) > 0) {
-				echo "<table border=\"0\" width=\"100%\">";
+				// sort by IP
+				$order = array();
 				for ($i = 0; $i < sizeof($entries); $i++) {
+					$order[$i] = '';
+					if (!empty($entries[$i]['dhcpstatements'])) {
+						$order[$i] = fixed_ip::extractIP($entries[$i]['dhcpstatements']);
+					}
+				}
+				natcasesort($order);
+				echo "<table border=\"0\" width=\"100%\">";
+				foreach ($order as $i => $sortval) {
 					$dhcpstatements = array();
 					if (isset($entries[$i]['dhcpstatements'][0])) {
 						$dhcpstatements = $entries[$i]['dhcpstatements'];
@@ -210,7 +219,7 @@ class lamDHCPList extends lamList {
         elseif ($attribute=="dhcpstatements") {
 			// Search after the fixed ip entry
 			if (is_array($entry['dhcpstatements'])) {
-				foreach($entry['dhcpstatements'] AS $id=>$value) {
+				foreach($entry['dhcpstatements'] AS $id => $value) {
 				
 					if (!is_array($value) && array_shift( explode(" ", $value) ) == "fixed-address") {
 					    $ip = explode(" ", $value);
@@ -222,12 +231,15 @@ class lamDHCPList extends lamList {
         elseif ($attribute=="dhcprange") { // DHCP Range
             if (isset($entry['dhcprange'])) {
                 echo"<table cellspacing=\"0\">";
-				foreach($entry['dhcprange'] AS $id=>$value) {
+                $ranges = array();
+				foreach($entry['dhcprange'] AS $id => $value) {
 					if (!empty($value) && !is_numeric($value)) {
 						$ex = explode(" ", $value);
-						echo "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
+						$ranges[] = "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
 					}
 				}
+				natcasesort($ranges);
+				echo implode('', $ranges);
 				echo"</table>";
 			}
         }
