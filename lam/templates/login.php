@@ -545,7 +545,7 @@ if(!empty($_POST['checklogin'])) {
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
 			$error_message = _("Empty password submitted. Please try again.");
-			display_LoginPage($_SESSION['config']); // Empty password submitted. Return to login page.
+			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"]); // Empty password submitted. Return to login page.
 			exit();
 		}
 		if (get_magic_quotes_gpc() == 1) {
@@ -606,7 +606,7 @@ if(!empty($_POST['checklogin'])) {
 			$error_message = $searchError;
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. ' . $searchError . '');
 			$searchLDAP->close();
-			display_LoginPage($_SESSION['config']);
+			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"]);
 			exit();
 		}
 		$searchLDAP->close();
@@ -646,7 +646,7 @@ if(!empty($_POST['checklogin'])) {
 			$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 		}
-		display_LoginPage($_SESSION['config']);
+		display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"]);
 		exit();
 	}
 }
