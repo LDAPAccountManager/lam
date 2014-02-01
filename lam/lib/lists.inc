@@ -348,7 +348,10 @@ class lamList {
 		$filter = $this->getFilterAsTextForURL();
 		// print table header
 		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
-		echo "<tr class=\"" . $this->type . "-dark\">\n<th width=22 height=34></th>\n<th></th>\n";
+		echo "<tr class=\"" . $this->type . "-dark\">\n";
+		echo "<th width=22 height=34><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/selectDown.png\" alt=\"select all\"></a></th>\n";
+		echo "<td>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
+			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
 		// table header
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {
 			if (strtolower($this->attrArray[$k]) == $this->sortColumn) {
@@ -465,7 +468,7 @@ class lamList {
 		echo "<tr class=\"" . $this->type . "-bright\">\n";
 		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
-			"<font color=\"black\">" . _("Select all") . "</font></a></td>\n";
+			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
 		echo "</tr>\n";
 		echo "</tbody>\n";
 		echo "</table>\n";
