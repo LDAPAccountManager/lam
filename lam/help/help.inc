@@ -100,6 +100,8 @@ $helpArray = array (
 					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("Headline" => _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.")),
+				"211" => array ("Headline" => _("Enforce language"),
+					"Text" => _("If enabled then the default language will be enforced and cannot be chosen by the user.")),
 				"212" => array ("Headline" => _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"214" => array ("Headline" => _("Cache timeout"),

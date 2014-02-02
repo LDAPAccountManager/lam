@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2013  Roland Gruber
+  Copyright (C) 2006 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -357,6 +357,11 @@ class selfServiceProfile {
 	
 	/** configuration settings of modules */
 	public $moduleSettings;
+	
+	/** language for self service */
+	public $language = 'en_GB.utf8';
+	/** disallow user to change language */
+	public $enforceLanguage = false;
 
 	/**
 	 * Constructor
@@ -391,6 +396,8 @@ class selfServiceProfile {
 		$this->readOnlyFields = array();
 		$this->relabelFields = array();
 		$this->moduleSettings = array();
+		$this->language = 'en_GB.utf8';
+		$this->enforceLanguage = true;
 	}
 
 }
