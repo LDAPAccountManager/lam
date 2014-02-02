@@ -7,6 +7,7 @@ March 2014 4.5
    -> Support for organizationalRole entries
    -> Separate IP restriction list for self service
    -> Bind DLZ: support TXT/SRV records
+   -> Self Service: added language selection
   - fixed bugs:
    -> PDF export for multiple entries does not work
    -> Personal: fixed photo upload if Imagick is not installed
