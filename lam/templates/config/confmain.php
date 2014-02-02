@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -284,18 +284,17 @@ $container->addElement(new htmlSpacer(null, '10px'), true);
 // language
 $languageSettingsContent = new htmlTable();
 // read available languages
-$languagefile = "../../config/language";
-if(is_file($languagefile)) {
-	$file = fopen($languagefile, "r");
-	while(!feof($file)) {
-		$line = fgets($file, 1024);
-		if($line == "\n" || $line[0] == "#" || $line == "") continue; // ignore comment and empty lines
-		$line = chop($line);
-		$entry = explode(":", $line);
-		$languages[$entry[2]] = $line;
+$possibleLanguages = getLanguages();
+$defaultLanguage = array('en_GB.utf8');
+if(!empty($possibleLanguages)) {
+	foreach ($possibleLanguages as $lang) {
+		$languages[$lang->description] = $lang->code;
+		if (strpos($conf->get_defaultLanguage(), $lang->code) === 0) {
+			$defaultLanguage = array($lang->code);
+			break;
+		}
 	}
-	fclose($file);
-	$languageSelect = new htmlTableExtendedSelect('lang', $languages, array($conf->get_defaultLanguage()), _("Default language"), '209');
+	$languageSelect = new htmlTableExtendedSelect('lang', $languages, $defaultLanguage, _("Default language"), '209');
 	$languageSelect->setHasDescriptiveElements(true);
 	$languageSettingsContent->addElement($languageSelect, true);
 }

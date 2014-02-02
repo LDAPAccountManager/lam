@@ -447,11 +447,11 @@ class samba3domain {
 */
 function get_preg($argument, $regexp) {
 	/* Bug in php preg_match doesn't work correct with utf8 */
-	$language = explode(":", $_SESSION['language']);
-	$language2 = explode ('.', $language[0]);
+	$language = $_SESSION['language'];
+	$language2 = explode ('.', $language);
 	setlocale(LC_ALL, $language2[0]);
 	// workaround for buggy PHP with Turkish
-	if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+	if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
 		setlocale(LC_CTYPE, 'en_GB');
 	}
 	// First we check "positive" cases
@@ -581,9 +581,9 @@ function get_preg($argument, $regexp) {
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
 			/* Bug in php preg_match doesn't work correct with utf8 */
-			setlocale(LC_ALL, $language[0]);
+			setlocale(LC_ALL, $language);
 			// workaround for buggy PHP with Turkish
-			if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+			if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
 				setlocale(LC_CTYPE, 'en_GB');
 			}
 			return true;
@@ -604,17 +604,17 @@ function get_preg($argument, $regexp) {
 	if ($pregexpr!='')
 		if (!preg_match($pregexpr, $argument)) {
 			/* Bug in php preg_match doesn't work correct with utf8 */
-			setlocale(LC_ALL, $language[0]);
+			setlocale(LC_ALL, $language);
 			// workaround for buggy PHP with Turkish
-			if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+			if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
 				setlocale(LC_CTYPE, 'en_GB');
 			}
 			return true;
 		}
 	/* Bug in php preg_match doesn't work correct with utf8 */
-	setlocale(LC_ALL, $language[0]);
+	setlocale(LC_ALL, $language);
 	// workaround for buggy PHP with Turkish
-	if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+	if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
 		setlocale(LC_CTYPE, 'en_GB');
 	}
 	return false;

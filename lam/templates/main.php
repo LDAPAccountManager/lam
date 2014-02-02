@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ $Id$
 */
 
 /**
-* This is the main window. The user and group lists will be shown in this frameset.
+* This page redirects to the correct start page after login.
 *
 * @package main
 * @author Roland Gruber
@@ -46,10 +46,6 @@ for ($i = 0; $i < sizeof($types); $i++) {
 	$res = @ldap_get_entries($_SESSION['ldap']->server(), $info);
 	if (!$res && !in_array($conf->get_Suffix($types[$i]), $new_suffs)) $new_suffs[] = $conf->get_Suffix($types[$i]);
 }
-
-// get encoding
-$lang = explode(":",$_SESSION['language']);
-$lang = $lang[1];
 
 // display page to add suffixes, if needed
 if ((sizeof($new_suffs) > 0) && checkIfWriteAccessIsAllowed()) {

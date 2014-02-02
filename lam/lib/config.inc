@@ -55,21 +55,30 @@ function setSSLCaCert() {
 * Sets language settings for automatic translation
 */
 function setlanguage() {
+	$code = 'en_GB.utf8';
+	$encoding = 'UTF-8';
 	if (!isset($_SESSION['language'])) {
-		$_SESSION['language'] = "en_GB.utf8:UTF-8:English (Great Britain)";
+		$_SESSION['language'] = "en_GB.utf8";
 	}
-	$language = explode(":", trim($_SESSION['language']));
-	putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
-	setlocale(LC_ALL, $language[0]);  // set LC_ALL
+	$possibleLanguages = getLanguages();
+	foreach ($possibleLanguages as $lang) {
+		if ($lang->code == $_SESSION['language']) {
+			$code = $lang->code;
+			$encoding = $lang->encoding;
+			break;
+		}
+	}
+	putenv("LANG=" . $code);  // e.g. LANG=de_DE
+	setlocale(LC_ALL, $code);  // set LC_ALL
 	// workaround for buggy PHP with Turkish
-	if (($language[0] == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
+	if (($code == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
 		setlocale(LC_CTYPE, 'en_GB');
 	}
 	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 	bindtextdomain("messages", $locdir);
-	bind_textdomain_codeset("messages", $language[1]);
+	bind_textdomain_codeset("messages", $encoding);
 	textdomain("messages");
-	header("Content-type: text/html; charset=" . $language[1], true);
+	header("Content-type: text/html; charset=" . $encoding, true);
 }
 
 /**
@@ -227,6 +236,56 @@ function metaRefresh($page) {
 function isAccountTypeHidden($type) {
 	$typeSettings = $_SESSION['config']->get_typeSettings();
 	return isset($typeSettings['hidden_' . $type]) && ($typeSettings['hidden_' . $type] == true);
+}
+
+/**
+ * Returns a list of all supported languages.
+ * 
+ * @return array languages
+ */
+function getLanguages() {
+	$languages = array();
+	// loading available languages from language.conf file
+	$languagefile = dirname(__FILE__) . "/../config/language";
+	if(is_file($languagefile) == true) {
+		$file = fopen($languagefile, "r");
+		while(!feof($file)) {
+			$line = fgets($file, 1024);
+			if($line == "" || $line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
+			$value = explode(":", $line);
+			$languages[] = new LAMLanguage($value[0], $value[1], $value[2]);
+		}
+		fclose($file);
+	}
+	return $languages;
+}
+
+/**
+ * Represents a supported language.
+ * 
+ * @package configuration
+ */
+class LAMLanguage {
+	/** language code (e.g. en_GB.utf8) */
+	public $code;
+	/** character encoding (e.g. UTF-8) */
+	public $encoding;
+	/** description for GUI */
+	public $description;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param String $code language code (e.g. en_GB.utf8)
+	 * @param String $encoding character encoding (e.g. UTF-8)
+	 * @param String $description description for GUI
+	 */
+	public function __construct($code, $encoding, $description) {
+		$this->code = $code;
+		$this->encoding = $encoding;
+		$this->description = $description;
+	}
+
 }
 
 /**

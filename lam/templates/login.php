@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2013  Roland Gruber
+                2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,22 +104,43 @@ if (!isset($default_Config->default) || !in_array($default_Config->default, $pro
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
 }
 
+$possibleLanguages = getLanguages();
+$encoding = 'UTF-8';
 if (isset($_COOKIE['lam_last_language'])) {
-	$_SESSION['language'] = $_COOKIE['lam_last_language'];
+	foreach ($possibleLanguages as $lang) {
+		if (strpos($_COOKIE['lam_last_language'], $lang->code) === 0) {
+			$_SESSION['language'] = $lang->code;
+			$encoding = $lang->encoding;
+			break;
+		}
+	}
 }
 elseif (!empty($_SESSION["config"])) {
-	$_SESSION['language'] = $_SESSION["config"]->get_defaultLanguage();
+	$defaultLang = $_SESSION["config"]->get_defaultLanguage();
+	foreach ($possibleLanguages as $lang) {
+		if (strpos($defaultLang, $lang->code) === 0) {
+			$_SESSION['language'] = $lang->code;
+			$encoding = $lang->encoding;
+			break;
+		}
+	}
 }
 else {
-	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
+	$_SESSION['language'] = 'en_GB.utf8';
 }
 if (isset($_POST['language'])) {
-	$_SESSION['language'] = htmlspecialchars($_POST['language']); // Write selected language in session
+	foreach ($possibleLanguages as $lang) {
+		if (strpos($_POST['language'], $lang->code) === 0) {
+			$_SESSION['language'] = $lang->code;
+			$encoding = $lang->encoding;
+			break;
+		}
+	}
 }
-$current_language = explode(":",$_SESSION['language']);
+
 $_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 $_SESSION['header'] .= "<html>\n<head>\n";
-$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
+$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $encoding . "\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
 
 /**
@@ -148,32 +169,7 @@ function display_LoginPage($config_object, $cfgMain) {
 		setcookie("Key", base64_encode($key), 0, "/");
 		setcookie("IV", base64_encode($iv), 0, "/");
 	}
-	// loading available languages from language.conf file
-	$languagefile = "../config/language";
-	if(is_file($languagefile) == True)
-	{
-		$file = fopen($languagefile, "r");
-		$i = 0;
-		while(!feof($file))
-		{
-			$line = fgets($file, 1024);
-			if($line == "" || $line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
-			$value = explode(":", $line);
-			$languages[$i]["link"] = $value[0] . ":" . $value[1];
-			$languages[$i]["descr"] = $value[2];
-			if(trim($line) == trim($_SESSION["language"]))
-			{
-				$languages[$i]["default"] = "YES";
-			}
-			else
-			{
-				$languages[$i]["default"] = "NO";
-			}
-			$i++;
-		}
-		fclose($file);
-	}
-
+	
 	$profiles = getConfigProfiles();
 
 	setlanguage(); // setting correct language
@@ -403,12 +399,13 @@ function display_LoginPage($config_object, $cfgMain) {
 							$languageLabel->alignment = htmlElement::ALIGN_RIGHT;
 							$table->addElement($languageLabel);
 							$table->addElement($gap);
+							$possibleLanguages = getLanguages();
 							$languageList = array();
 							$defaultLanguage = array();
-							for($i = 0; $i < count($languages); $i++) {
-								$languageList[$languages[$i]["descr"]] = $languages[$i]["link"] . ":" . $languages[$i]["descr"];
-								if($languages[$i]["default"] == "YES") {
-									$defaultLanguage[] = $languages[$i]["link"] . ":" . $languages[$i]["descr"];
+							foreach ($possibleLanguages as $lang) {
+								$languageList[$lang->description] = $lang->code;
+								if (strpos(trim($_SESSION["language"]), $lang->code) === 0) {
+									$defaultLanguage[] = $lang->code;
 								}
 							}
 							$languageSelect = new htmlSelect('language', $languageList, $defaultLanguage);
