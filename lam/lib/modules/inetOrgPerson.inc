@@ -53,6 +53,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 	private $employeeTypeCache = null;
 	/** business category cache */
 	private $businessCategoryCache = null;
+	/** cache for email duplication checks */
+	private $emailCheckCache = array();
 	
 	/** session variable for existing user certificates in self service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
@@ -74,6 +76,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['facsimileTelephoneNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		$this->messages['facsimileNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_fax', _('Please enter a valid fax number!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
+		$this->messages['mail'][1] = array('WARN', _('Email address'), _('Email "%s" already in use.'));
 		$this->messages['email'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_email', _('Please enter a valid email address!'));
 		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		$this->messages['street'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_street', _('Please enter a valid street name!'));
@@ -979,6 +982,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 					foreach ($replacements as $wildcard => $key) {
 						if (!empty($this->attributes[$key][0])) {
 							$mail = str_replace($wildcard, $this->attributes[$key][0], $mail);
+						}
+					}
+					if (empty($this->orig['mail']) || !in_array($mail, $this->orig['mail'])) {
+						if ($this->emailExists($mail)) {
+							$msg = $this->messages['mail'][1];
+							$msg[] = array(htmlspecialchars($mail));
+							$errors[] = $msg;
 						}
 					}
 				}			
@@ -3544,6 +3554,24 @@ class inetOrgPerson extends baseModule implements passwordService {
 		return $return;
 	}
 
+	/**
+	 * Checks if the given email address already exists in LDAP.
+	 * 
+	 * @param String $mail email address
+	 * @return boolean true if already exists
+	 */
+	private function emailExists($mail) {
+		if (empty($mail)) {
+			return false;
+		}
+		if (isset($this->emailCheckCache[$mail])) {
+			return $this->emailCheckCache[$mail];
+		}
+		$result = searchLDAPByAttribute('mail', $mail, 'inetOrgPerson', array('dn'), array('user'));
+		$this->emailCheckCache[$mail] = (sizeof($result) > 0);
+		return $this->emailCheckCache[$mail];
+	}
+	
 }
 
 ?>
