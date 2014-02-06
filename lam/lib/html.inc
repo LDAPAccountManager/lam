@@ -813,7 +813,7 @@ class htmlHelpLink extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		// overwrite module and scop if needed
+		// overwrite module and scope if needed
 		if ($this->module != null) {
 			$module = $this->module;
 		}

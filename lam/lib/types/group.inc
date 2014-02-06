@@ -110,9 +110,11 @@ class group extends baseType {
 			"roleOccupant" => _("Role member DNs"),
 			"description" => _("Group description")
 		);
-		$modules = $_SESSION['config']->get_AccountModules('group');
-		if (in_array('organizationalRole', $modules)) {
-			$return['cn'] = _('Role name');
+		if (!empty($_SESSION['config'])) {
+			$modules = $_SESSION['config']->get_AccountModules('group');
+			if (in_array('organizationalRole', $modules)) {
+				$return['cn'] = _('Role name');
+			}
 		}
 		return $return;
 	}
