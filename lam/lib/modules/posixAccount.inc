@@ -2855,6 +2855,11 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$format = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($format));
 		$format = str_replace(array(' ', '_', '-'), array('', '', ''), $format);
+		if (!empty($format) && $this->userNameExists($format)) {
+			while ($this->userNameExists($format)) {
+				$format = $this->getNextUserName($format);
+			}
+		}
 		return $format;
 	}
 	
