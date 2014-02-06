@@ -5013,6 +5013,10 @@ objectclass: top
         </listitem>
 
         <listitem>
+          <para>Help text</para>
+        </listitem>
+
+        <listitem>
           <para>Read-only display</para>
         </listitem>
 
@@ -7332,6 +7336,10 @@ objectclass: top
 
             <listitem>
               <para>Unique name for field</para>
+            </listitem>
+
+            <listitem>
+              <para>Help text</para>
             </listitem>
 
             <listitem>
