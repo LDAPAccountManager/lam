@@ -1318,6 +1318,14 @@ class posixAccount extends baseModule implements passwordService {
 					// fill default value for user ID with first/last name
 					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 					$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
+					if (!empty($this->attributes['uid'][0]) && $this->userNameExists($this->attributes['uid'][0])) {
+						while ($this->userNameExists($this->attributes['uid'][0])) {
+							$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
+						}
+						$msg = new htmlStatusMessage($this->messages['uid'][5][0], $this->messages['uid'][5][1], $this->messages['uid'][5][2]);
+						$msg->colspan = 10;
+						$return->addElement($msg, true);
+					}
 				}
 				elseif ($this->getAccountContainer()->getAccountModule('windowsUser') != null) {
 					// fill default value for user ID with AD user name
@@ -2855,11 +2863,6 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$format = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($format));
 		$format = str_replace(array(' ', '_', '-'), array('', '', ''), $format);
-		if (!empty($format) && $this->userNameExists($format)) {
-			while ($this->userNameExists($format)) {
-				$format = $this->getNextUserName($format);
-			}
-		}
 		return $format;
 	}
 	
