@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2011  Roland Gruber
+	Copyright (C) 2007 - 2014  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -142,7 +142,7 @@ elseif (isset($_POST['cancelAllOk'])) {
 }
 
 if (isset($_POST['delete'])) {
-	if (!checkIfDeleteEntriesIsAllowed($_POST['type']) || !checkIfWriteAccessIsAllowed($_GET['type'])) {
+	if (!checkIfDeleteEntriesIsAllowed($_POST['type']) || !checkIfWriteAccessIsAllowed($_POST['type'])) {
 		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_POST['type']);
 		die();
 	}
