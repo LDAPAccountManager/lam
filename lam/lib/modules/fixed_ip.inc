@@ -55,6 +55,7 @@ class fixed_ip extends baseModule {
 	/** LDAP attributes */
 	public $attributes;
 	
+	/** cached host entries (list of array('cn' => ..., 'iphostnumber' => ..., 'macaddress' => ...)) */
 	private $hostCache = null;
 
 	/**
@@ -97,6 +98,10 @@ class fixed_ip extends baseModule {
 			'ip' => array(
 				"Headline" => _("IP address"), 'attr' => 'dhcpStatements, fixed-address',
 				"Text" => _("The IP address of the PC.")
+			),
+			'description' => array(
+				"Headline" => _("Description"), 'attr' => 'dhcpComments',
+				"Text" => _("Optional description for the PC.")
 			),
 			'active' => array(
 				"Headline" => _("Active"), 'attr' => 'dhcpStatements, booting',
@@ -213,7 +218,8 @@ class fixed_ip extends baseModule {
 	 */
 	function load_attributes($attr) {
 	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', array('cn', 'dhcphwaddress', 'dhcpstatements'));
+	    	$attributes = array('cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments');
+	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $attributes);
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				$dhcphwaddress = explode(" ", $entries[$i]['dhcphwaddress'][0]);
 				$dhcphwaddress = array_pop($dhcphwaddress);
@@ -226,12 +232,18 @@ class fixed_ip extends baseModule {
 				$this->fixed_ip[$i]['ip'] = self::extractIP($dhcpstatements);
 				$this->fixed_ip[$i]['active'] = self::isActive($dhcpstatements);
 				$this->fixed_ip[$i]['dhcpstatements'] = $dhcpstatements;
+				$description = '';
+				if (isset($entries[$i]['dhcpcomments'][0])) {
+					$description = $entries[$i]['dhcpcomments'][0];
+				}
+				$this->fixed_ip[$i]['description'] = $description;
 				
 				$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
 				$this->orig_ips[$i]['mac'] = $dhcphwaddress;
 				$this->orig_ips[$i]['ip'] = self::extractIP($dhcpstatements);
 				$this->orig_ips[$i]['active'] = self::isActive($dhcpstatements);
 				$this->orig_ips[$i]['dhcpstatements'] = $dhcpstatements;
+				$this->orig_ips[$i]['description'] = $description;
 			}
 			$this->orderByIP();
 		}
@@ -292,6 +304,15 @@ class fixed_ip extends baseModule {
 					}
 					$this->fixed_ip[$id]['mac'] = $_POST['mac_'.$id];
 
+					// description
+					if (!get_preg($_POST['description_'.$id], 'ascii')) {
+					    $error = true;
+					}
+					$this->fixed_ip[$id]['description'] = $_POST['description_'.$id];
+					
+					// active
+					$this->fixed_ip[$id]['active'] = (isset($_POST['active_' . $id]) && ($_POST['active_' . $id] == 'on'));
+
 					// Ip address
 					if (!empty($_POST['ip_'.$id])) {
 						$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
@@ -346,12 +367,17 @@ class fixed_ip extends baseModule {
 			// Add new IP
 			if (isset($_POST['add_ip']) || ($_POST['pc_add'] != '') || ($_POST['mac_add'] != '')) {
 			    // Add IP:
+			    $active = (isset($_POST['active_add']) && ($_POST['active_add'] == 'on'));
+			    $dhcpstatements = array();
+			    $this->setActive($dhcpstatements, $active);
+			    $this->setIP($dhcpstatements, $_POST['ip_add']);
 				$this->fixed_ip[] = array(
 					'cn' => $_POST['pc_add'],
 					'mac' => $_POST['mac_add'],
+					'description' => $_POST['description_add'],
 					'ip' => $_POST['ip_add'],
-					'dhcpstatements' => array(),
-					'active' => (isset($_POST['active_add']) && ($_POST['active_add'] == 'on')),
+					'dhcpstatements' => $dhcpstatements,
+					'active' => $active,
 				);
 				$this->orderByIP();
 			}
@@ -396,7 +422,12 @@ class fixed_ip extends baseModule {
         	$macContainer->addElement(new htmlOutputText(_('MAC address'), true, true));
         	$macContainer->addElement(new htmlHelpLink('mac'));
         	$return->addElement($macContainer);
+        	$commentContainer = new htmlTable();
+        	$commentContainer->addElement(new htmlOutputText(_('Description'), true));
+        	$commentContainer->addElement(new htmlHelpLink('description'));
+        	$return->addElement($commentContainer);
         	$activeContainer = new htmlTable();
+        	$activeContainer->colspan = 2;
         	$activeContainer->addElement(new htmlOutputText(_('Active')));
         	$activeContainer->addElement(new htmlHelpLink('active'));
         	$return->addElement($activeContainer, true);
@@ -437,6 +468,15 @@ class fixed_ip extends baseModule {
 				    $macError = _("Invalid MAC address.");
 				}
                     
+				// descripton
+				$descriptionError = "";
+				if (!$this->processed) {
+                	$descriptionError = "";
+				}
+				elseif (!get_preg($this->fixed_ip[$id]['description'], 'ascii')) {
+				    $descriptionError = _("Invalid description.");
+				}
+                    
 				// fixed ip
 				$ipError = "";
 				if (!$this->processed || ($this->fixed_ip[$id]['ip'] == '')) {
@@ -463,30 +503,109 @@ class fixed_ip extends baseModule {
 				if ($ipError != '') {
 					$error .= ' ' . $ipError;
 				}
-				$return->addElement(new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip']));
-				$pcInput = new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn']);
+				if ($descriptionError != '') {
+					$error .= ' ' . $descriptionError;
+				}
+				$return->addElement(new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip'], 20));
+				$pcInput = new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn'], 20);
 				if (!empty($autoNames)) {
 					$pcInput->enableAutocompletion($autoNames);
 				}
 				$return->addElement($pcInput);
-				$return->addElement(new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac']));
-				$return->addElement(new htmlInputCheckbox('active', $this->fixed_ip[$id]['active']));
+				$return->addElement(new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac'], 20));
+				$return->addElement(new htmlInputField('description_'.$id, $this->fixed_ip[$id]['description'], 20));
+				$return->addElement(new htmlInputCheckbox('active_'.$id, $this->fixed_ip[$id]['active']));
 				$return->addElement(new htmlButton('drop_ip_'.$id, 'del.png', true));
 				$return->addElement(new htmlOutputText($error), true);
 			}
 			$return->addElement(new htmlSpacer(null, '10px'), true);
-			// add host:
-			$return->addElement(new htmlInputField('ip_add', ''));
-			$newPCInput = new htmlInputField('pc_add', '');
+			// add host
+			$return->addElement(new htmlInputField('ip_add', '', 20));
+			$newPCInput = new htmlInputField('pc_add', '', 20);
 			if (!empty($autoNames)) {
 				$newPCInput->enableAutocompletion($autoNames);
 			}
 			$return->addElement($newPCInput);
-			$return->addElement(new htmlInputField('mac_add', ''));
+			$return->addElement(new htmlInputField('mac_add', '', 20));
+			$return->addElement(new htmlInputField('description_add', '', 20));
 			$return->addElement(new htmlInputCheckbox('active_add', true));
-			$return->addElement(new htmlButton('add_ip', 'add.png', true));
+			$return->addElement(new htmlButton('add_ip', 'add.png', true), true);
+			
+			// add existing host entry
+			if (!empty($this->hostCache)) {
+				$return->addVerticalSpace('20px');
+				$addHostButton = new htmlAccountPageButton(get_class($this), 'addHost', 'add', _('Add existing host'));
+				$addHostButton->setIconClass('createButton');
+				$return->addElement($addHostButton , true);
+			}
 		}
 		return $return;
+	}
+	
+	/**
+	 * Returns the HTML meta data for the add host page.
+	 * 
+	 * @return htmlElement HTML meta data
+	 */
+	public function display_html_addHost() {
+		$return = new htmlTable();
+		$this->initCache();
+		$hostNames = array();
+		$spacer = '####';
+		foreach ($this->hostCache as $host) {
+			if (!empty($host['cn'][0])) {
+				$val = $host['cn'][0];
+				if (!empty($host['iphostnumber'][0])) {
+					$val .= $spacer . $host['iphostnumber'][0];
+				}
+				else {
+					$val .= $spacer;
+				}
+				if (!empty($host['macaddress'][0])) {
+					$val .= $spacer . $host['macaddress'][0];
+				}
+				else {
+					$val .= $spacer;
+				}
+				$hostNames[$host['cn'][0]] = $val;
+			}
+		}
+		$select = new htmlTableExtendedSelect('host', $hostNames, array(), _('Host'));
+		$select->setHasDescriptiveElements(true);
+		$return->addElement($select, true);
+		$return->addVerticalSpace('20px');
+		$buttonContainer = new htmlTable();
+		$buttonContainer->colspan = 3;
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'addHost', _('Add')));
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+		$return->addElement($buttonContainer, true);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the add host page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	public function process_addHost() {
+		$errors = array();
+		if (isset($_POST['form_subpage_fixed_ip_attributes_addHost'])) {
+			$val = explode('####', $_POST['host']);
+		    $dhcpstatements = array();
+		    $this->setActive($dhcpstatements, true);
+		    $this->setIP($dhcpstatements, $val[1]);
+			$this->fixed_ip[] = array(
+				'cn' => $val[0],
+				'mac' => $val[2],
+				'description' => '',
+				'ip' => $val[1],
+				'dhcpstatements' => $dhcpstatements,
+				'active' => true,
+			);
+			$this->orderByIP();
+		}
+		return $errors;
 	}
 	
 	/**
@@ -532,9 +651,18 @@ class fixed_ip extends baseModule {
 							$this->setIP($this->fixed_ip[$idB]['dhcpstatements'], $this->fixed_ip[$idB]['ip']);
 							$mod['cn=' . $this->orig_ips[$id]['cn'] . $ldapSuffix]['dhcpstatements'] = $this->fixed_ip[$idB]['dhcpstatements'];
 						}
+						// check if active changed
+						if($this->orig_ips[$id]['active'] != $this->fixed_ip[$idB]['active']) {
+							$this->setActive($this->fixed_ip[$idB]['dhcpstatements'], $this->fixed_ip[$idB]['active']);
+							$mod['cn=' . $this->orig_ips[$id]['cn'] . $ldapSuffix]['dhcpstatements'] = $this->fixed_ip[$idB]['dhcpstatements'];
+						}
 						// check if MAC changed
-						elseif($this->orig_ips[$id]['mac'] != $this->fixed_ip[$idB]['mac']) {
+						if($this->orig_ips[$id]['mac'] != $this->fixed_ip[$idB]['mac']) {
 							$mod['cn=' . $this->orig_ips[$id]['cn'] . $ldapSuffix]['dhcpHWAddress'] = array('ethernet ' . $this->fixed_ip[$idB]['mac']);
+						}
+						// check if description changed
+						if($this->orig_ips[$id]['description'] != $this->fixed_ip[$idB]['description']) {
+							$mod['cn=' . $this->orig_ips[$id]['cn'] . $ldapSuffix]['dhcpComments'][] = $this->fixed_ip[$idB]['description'];
 						}
 						break;
 				    }
@@ -577,8 +705,12 @@ class fixed_ip extends baseModule {
 					$attr['dhcpStatements'][] = 'deny booting';
 				}
 				$attr['dhcpOption'] = 'host-name "' . $add[$id]['cn'] . '"';
-				if ($attr['cn'] != "")
+				if (!empty($arr['description'])) {
+					$attr['dhcpComments'][] = $arr['description'];
+				}
+				if ($attr['cn'] != "") {
 					ldap_add($_SESSION['ldap']->server(), 'cn=' . $add[$id]['cn'] . $ldapSuffix, $attr);
+				}
 		    }
 		    // entries to modify
 		    foreach ($mod as $dn => $attrs) {
@@ -601,7 +733,8 @@ class fixed_ip extends baseModule {
 				'<td width="20%" align=\"L\"><b>' . _('PC name') . "</b></td>" .
 				"<td width=\"20%\" align=\"L\"><b>" . _('IP address') . "</b></td>" .
 				"<td width=\"20%\" align=\"L\"><b>" . _('MAC address') . '</b></td>' .
-				"<td width=\"20%\" align=\"L\"><b>" . _('Active') . '</b></td>' .
+				"<td width=\"10%\" align=\"L\"><b>" . _('Active') . '</b></td>' .
+				"<td width=\"30%\" align=\"L\"><b>" . _('Description') . '</b></td>' .
 			'</tr></block>');
 			for ($i = 0; $i < sizeof($this->fixed_ip); $i++) {
 				$name = $this->fixed_ip[$i]['cn'];
@@ -611,11 +744,13 @@ class fixed_ip extends baseModule {
 				if (!$this->fixed_ip[$i]['active']) {
 					$active = _('no');
 				}
+				$description = $this->fixed_ip[$i]['description'];
 				$return[get_class($this) . '_IPlist'][] = '<block><tr>' .
 					'<td width="20%" align=\"L\">' . $name . "</td>" .
 					"<td width=\"20%\" align=\"L\">" . $ip . " </td>" .
 					"<td width=\"20%\" align=\"L\">" . $mac . '</td>'. 
-					"<td width=\"20%\" align=\"L\">" . $active . '</td>'. 
+					"<td width=\"10%\" align=\"L\">" . $active . '</td>'. 
+					"<td width=\"30%\" align=\"L\">" . $description . ' </td>'. 
 				'</tr></block>';
 			}
 		}
@@ -686,13 +821,16 @@ class fixed_ip extends baseModule {
 	 */
 	private function setActive(&$dhcpStatements, $active) {
 		for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
-			if (strpos($dhcpStatements[$i], ' booting') === (strlen($dhcpStatements[$i]) - strlen(' booting'))) {
+			if (strpos($dhcpStatements[$i], ' booting') !== false) {
 				unset($dhcpStatements[$i]);
 				$dhcpStatements = array_values($dhcpStatements);
 			}
 		}
-		if (!$active) {
-			$dhcpStatements[] = 'allow booting ';
+		if ($active) {
+			$dhcpStatements[] = 'allow booting';
+		}
+		else {
+			$dhcpStatements[] = 'deny booting';
 		}
 	}
 	
