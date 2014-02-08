@@ -454,7 +454,7 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param String $fieldName unique field name
 	 * @param String $fieldValue value of input field (optional)
-	 * @param String $fieldSize maximum input length
+	 * @param String $fieldSize input field length (default 30)
 	 */
 	function __construct($fieldName, $fieldValue = null, $fieldSize = null) {
 		if (isObfuscatedText($fieldValue)) {
