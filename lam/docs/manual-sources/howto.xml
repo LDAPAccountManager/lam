@@ -4971,7 +4971,7 @@ Used parameter files:
 /home/oracle/app/oracle/product/12.1.0/dbhome_1/network/admin/sqlnet.ora
 
 Used <emphasis role="bold">LDAP</emphasis> adapter to resolve the alias
-Attempting to contact (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=mydbdb.example.com)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)))
+Attempting to contact (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=mydb.example.com)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)))
 OK (10 msec)</programlisting>
     </section>
 
