@@ -8295,6 +8295,27 @@ OK (10 msec)</programlisting>
           <row>
             <entry><inlinemediaobject>
                 <imageobject>
+                  <imagedata fileref="images/schema_oracle.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Oracle databases</entry>
+
+            <entry>orclNetService</entry>
+
+            <entry>oidbase.schema, oidnet.schema, oidrdbms.schema,
+            alias.schema</entry>
+
+            <entry>Preinstalled on Oracle directory server, OpenLDAP schemas
+            can be downloaded e.g. <ulink
+            url="http://www.idevelopment.info/data/Oracle/DBA_tips/LDAP/LDAP_8.shtml">here</ulink></entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
                   <imagedata fileref="images/schema_ppolicy.png" />
                 </imageobject>
               </inlinemediaobject></entry>
