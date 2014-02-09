@@ -187,17 +187,19 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
 }
 
 /**
- * Shows the dialog to create an automount map.
+ * Shows a simple dialog.
  * 
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
+ * @param formID form ID
+ * @param dialogDivID ID of div that contains dialog content
  */
-function automountShowNewMapDialog(title, okText, cancelText) {
+function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
 	var buttonList = {};
-	buttonList[okText] = function() { document.forms["newAutomountMapDialogForm"].submit(); };
+	buttonList[okText] = function() { document.forms[formID].submit(); };
 	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#newAutomountMapDialog').dialog({
+	jQuery('#' + dialogDivID).dialog({
 		modal: true,
 		title: title,
 		dialogClass: 'defaultBackground',

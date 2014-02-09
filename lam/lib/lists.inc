@@ -676,7 +676,11 @@ class lamList {
 
 		echo "<div class=\"ui-tabs-nav " . $this->type . "-bright\">";
 		echo "<div class=\"smallPaddingContent\">\n";
-		echo "<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		$refresh = '&amp;norefresh=true';
+		if (isset($_GET['refresh']) && ($_GET['refresh'] == 'true')) {
+			$refresh = '&amp;refresh=true';
+		}
+		echo "<form action=\"list.php?type=" . $this->type . $refresh . "\" method=\"post\">\n";
 		
 		$container = new htmlTable();
 		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
