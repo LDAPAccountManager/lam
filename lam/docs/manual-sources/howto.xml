@@ -4861,6 +4861,120 @@ objectclass: top
       </itemizedlist>
     </section>
 
+    <section>
+      <title>Oracle databases (LAM Pro)</title>
+
+      <para>Oracle allows to manage connection data that is stored in
+      tnsnames.ora to be stored in an LDAP directory.</para>
+
+      <para><emphasis role="bold">Initial setup</emphasis></para>
+
+      <para>LDAP server setup:</para>
+
+      <para>You will need to install the correct Oracle LDAP schema files on
+      your LDAP server. If you run no Oracle LDAP server then you can get them
+      (oidbase.schema, oidnet.schema, oidrdbms.schema, alias.schema) e.g. from
+      <ulink
+      url="http://www.idevelopment.info/data/Oracle/DBA_tips/LDAP/LDAP_8.shtml">here</ulink>.</para>
+
+      <para>Next you need to create the root entry for Oracle. It should look
+      like this:</para>
+
+      <programlisting>dn: cn=OracleContext,dc=example,dc=com
+objectclass: orclContext
+cn: OracleContext</programlisting>
+
+      <para>You can create it with LAM's tree view. Please note that "cn" must
+      be set to "OracleContext".</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>LAM setup:</para>
+
+      <para>Edit your LAM server profile and add the Oracle account
+      type:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_oracle1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>In case you manage a single Oracle context just enter the
+      cn=OracleContext entry as LDAP suffix. If you manage multiple Oracle
+      context entries then set the LDAP suffix to a parent entry of
+      them.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_oracle2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Next, add the Oracle module:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_oracle3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now you can login to LAM and start to add database
+      entries.<literallayout>
+</literallayout></para>
+
+      <para><emphasis role="bold">Managing database entries</emphasis></para>
+
+      <para>Each database has a service name, the connection string and an
+      optional description.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_oracle4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Database client setup for
+      LDAP</emphasis></para>
+
+      <para>You need to activate the LDAP adapter to make the database tools
+      reading LDAP. Edit network/admin/sqlnet.ora like this:</para>
+
+      <programlisting>NAMES.DIRECTORY_PATH= (TNSNAMES, LDAP)</programlisting>
+
+      <para>Then add a file called ldap.ora next to your sqlnet.ora and set
+      the LDAP server and DN suffix where cn=OracleContext is stored:</para>
+
+      <programlisting>DIRECTORY_SERVERS= (ldap.example.com:389:636)
+DEFAULT_ADMIN_CONTEXT = "ou=ctx1,ou=oracle,o=test,c=de"
+DIRECTORY_SERVER_TYPE = OID</programlisting>
+
+      <para>This will allow e.g. tnsping to get the connection data from
+      LDAP:</para>
+
+      <programlisting>[oracle@oracle bin]$ tnsping mydb
+
+TNS Ping Utility for Linux: Version 12.1.0.1.0 - Production on 09-FEB-2014 18:06:54
+
+Copyright (c) 1997, 2013, Oracle.  All rights reserved.
+
+Used parameter files:
+/home/oracle/app/oracle/product/12.1.0/dbhome_1/network/admin/sqlnet.ora
+
+Used <emphasis role="bold">LDAP</emphasis> adapter to resolve the alias
+Attempting to contact (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=mydbdb.example.com)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)))
+OK (10 msec)</programlisting>
+    </section>
+
     <section id="a_ppolicy">
       <title>Password policies (LAM Pro)</title>
 
