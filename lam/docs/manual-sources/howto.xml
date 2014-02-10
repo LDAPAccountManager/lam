@@ -1289,6 +1289,21 @@ Have fun!
           <screenshot>
             <mediaobject>
               <imageobject>
+                <imagedata fileref="images/configProfiles9.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM Pro users can send out changed passwords to their users.
+          Here you can specify the options for these mails.</para>
+
+          <para>If you select "Allow alternate address" then password mails
+          can be sent to any address (e.g. a secondary address if the user
+          account is also bound to the mailbox).</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
                 <imagedata fileref="images/configProfiles8.png" />
               </imageobject>
             </mediaobject>

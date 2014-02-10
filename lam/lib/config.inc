@@ -407,6 +407,9 @@ class LAMConfig {
 	/** treat password reset mail body as HTML */
 	private $lamProMailIsHTML = 'false';
 	
+	/** allow sending mails to an alternative address */
+	private $lamProMailAllowAlternateAddress = 'true';
+	
 	/** mail body for password reset mails */
 	private $lamProMailText = '';
 
@@ -415,7 +418,8 @@ class LAMConfig {
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
-		'lamProMailText', 'lamProMailIsHTML', 'httpAuthentication', 'loginSearchDN', 'loginSearchPassword');
+		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
+		'loginSearchPassword');
 
 
 	/**
@@ -603,6 +607,7 @@ class LAMConfig {
 			if (!in_array("lamProMailReplyTo", $saved)) array_push($file_array, "\n\n# Password mail reply-to\n" . "lamProMailReplyTo: " . $this->lamProMailReplyTo . "\n");
 			if (!in_array("lamProMailSubject", $saved)) array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
 			if (!in_array("lamProMailIsHTML", $saved)) array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
+			if (!in_array("lamProMailAllowAlternateAddress", $saved)) array_push($file_array, "\n\n# Allow alternate address\n" . "lamProMailAllowAlternateAddress: " . $this->lamProMailAllowAlternateAddress . "\n");
 			if (!in_array("lamProMailText", $saved)) array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
@@ -1402,10 +1407,28 @@ class LAMConfig {
 	/**
 	 * Sets if the password reset mail content should be treated as HTML.
 	 * 
-	 * @param boolean $lamProMailIsHTML
+	 * @param boolean $lamProMailIsHTML true if HTML
 	 */
 	public function setLamProMailIsHTML($lamProMailIsHTML) {
 		$this->lamProMailIsHTML = $lamProMailIsHTML;
+	}
+	
+	/**
+	 * Returns if sending to an alternate address is allowed.
+	 * 
+	 * @return boolean alternate address allowed
+	 */
+	public function getLamProMailAllowAlternateAddress() {
+		return $this->lamProMailAllowAlternateAddress;
+	}
+
+	/**
+	 * Sets if sending to an alternate address is allowed.
+	 * 
+	 * @param boolean $lamProMailAllowAlternateAddress alternate address allowed
+	 */
+	public function setLamProMailAllowAlternateAddress($lamProMailAllowAlternateAddress) {
+		$this->lamProMailAllowAlternateAddress = $lamProMailAllowAlternateAddress;
 	}
 	
 	/**

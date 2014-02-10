@@ -1061,7 +1061,9 @@ class accountContainer {
 			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeSendMailAddress'));
 			$container->addElement($pwdMailCheckbox);
 			$container->addElement(new htmlHelpLink('407'), true);
-			$container->addElement(new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeSendMailAddress', '', '410'));
+			if (($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false')) {
+				$container->addElement(new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeSendMailAddress', '', '410'));
+			}
 		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		// password modules
@@ -1157,7 +1159,7 @@ class accountContainer {
 		}
 		if (isLAMProVersion() && $sendMail) {
 			$this->sendPasswordViaMail = $password1;
-			if (!empty($input['sendMailAlternateAddress'])) {
+			if (($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') && !empty($input['sendMailAlternateAddress'])) {
 				if (!get_preg($input['sendMailAlternateAddress'], 'email')) {
 					$return['messages'] .= StatusMessage('ERROR', _('Alternate recipient'), _('Please enter a valid email address!'), array(), true);
 					$return['errorsOccured'] = 'true';

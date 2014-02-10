@@ -355,6 +355,12 @@ if (isLAMProVersion()) {
 	}
 	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_isHTML',$pwdMailIsHTML , _('HTML format'), '553'), true);
 	
+	$pwdMailAllowAlternate = true;
+	if ($conf->getLamProMailAllowAlternateAddress() == 'false') {
+		$pwdMailAllowAlternate = false;
+	}
+	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_allowAlternate',$pwdMailAllowAlternate , _('Allow alternate address'), '555'), true);
+	
 	$pwdMailBody = new htmlTableExtendedInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
 	$pwdMailContent->addElement($pwdMailBody, true);
 	
@@ -521,6 +527,12 @@ function checkInput() {
 		}
 		else {
 			$conf->setLamProMailIsHTML('false');
+		}
+		if (isset($_POST['pwdResetMail_allowAlternate']) && ($_POST['pwdResetMail_allowAlternate'] == 'on')) {
+			$conf->setLamProMailAllowAlternateAddress('true');
+		}
+		else {
+			$conf->setLamProMailAllowAlternateAddress('false');
 		}
 		$conf->setLamProMailText($_POST['pwdResetMail_body']);
 	}

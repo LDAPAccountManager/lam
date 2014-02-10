@@ -250,6 +250,8 @@ $helpArray = array (
 					"Text" => _('Specifies if the mail should be sent as text or HTML.')),
 				"554" => array ("Headline" => _("Reply-to address"),
 					"Text" => _("This email address will be set as reply-to address of all password mails.")),
+				"555" => array ("Headline" => _("Allow alternate address"),
+					"Text" => _('Specifies if password mails may be sent to mail addresses other than the user\'s LDAP mail address.')),
 				// 600 - 699
 				// OU-editor, domain page
 				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organisational unit"),
