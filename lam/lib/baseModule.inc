@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -911,6 +911,33 @@ abstract class baseModule {
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		// must be implemented in sub modules
 		return array();
+	}
+	
+	/**
+	* Maps simple upload fields directly to LDAP attribute values.
+	*
+	* @param array $rawAccounts the user input data, contains one subarray for each account.
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param String $position current position in CSV
+	* @param String $colName column name
+	* @param String $attrName LDAP attribute name
+	* @param String $regexID for get_preg() (e.g. 'ascii')
+	* @param array $message error message to add if regex does not match
+	* @param array $errors list of error messages if any
+	*/
+	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, &$message = array(), &$errors = array()) {
+		if (!isset($ids[$colName])) {
+			return;
+		}
+		if (!empty($rawAccounts[$position][$ids[$colName]])) {
+			if (!empty($regex) && !get_preg($rawAccounts[$position][$ids[$colName]], $regex)) {
+				$errMsg = $message;
+				array_push($errMsg, array($position));
+				$errors[] = $errMsg;
+			}
+			$partialAccounts[$position][$attrName] = $rawAccounts[$position][$ids[$colName]];
+		}
 	}
 
 	/**
