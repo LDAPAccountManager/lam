@@ -1713,7 +1713,7 @@ Have fun!
         </listitem>
       </itemizedlist>
 
-      <para><emphasis role="bold">Samba 4:</emphasis></para>
+      <para><emphasis role="bold">Samba 4/Active Directory:</emphasis></para>
 
       <para>Account types:</para>
 
@@ -2601,6 +2601,9 @@ Have fun!
         domain names and if pre-Windows 2000 user names should be
         managed.</para>
 
+        <para>NIS support is deactivated by default. Enable it if
+        needed.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -3356,6 +3359,17 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_windowsGroup1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>NIS support is deactivated by default. Enable it if needed on
+        tab "Module settings".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsGroup4.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

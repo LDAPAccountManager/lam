@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -95,7 +95,8 @@ class windowsGroup extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType', 'managedBy');
+		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType',
+			'managedBy', 'msSFU30Name', 'msSFU30NisDomain');
 		// help Entries
 		$return['help'] = array(
 			'hiddenOptions' => array(
@@ -138,6 +139,14 @@ class windowsGroup extends baseModule {
 				"Headline" => _('Managed by'), 'attr' => 'managedBy',
 				"Text" => _('The group is managed by this contact person.')
 			),
+			'msSFU30Name' => array(
+				"Headline" => _('NIS name'), 'attr' => 'msSFU30Name',
+				"Text" => _('Group name for NIS.')
+			),
+			'msSFU30NisDomain' => array(
+				"Headline" => _('NIS domain'), 'attr' => 'msSFU30NisDomain',
+				"Text" => _('NIS domain name.')
+			),
 		);
 		// configuration settings
 		$configContainer = new htmlTable();
@@ -149,6 +158,8 @@ class windowsGroup extends baseModule {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemail', false, _('Email address'), null, false));
 		$configContainerOptions->addElement(new htmlOutputText(' '));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemanagedBy', false, _('Managed by'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemsSFU30Name', true, _('NIS name'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsGroup_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		// upload fields
@@ -211,6 +222,29 @@ class windowsGroup extends baseModule {
 				'example' => 'cn=user1,o=test',
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsGroup_msSFU30Name',
+				'description' => _('NIS name'),
+				'help' => 'msSFU30Name',
+				'example' => _('adminstrators'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsGroup_msSFU30NisDomain',
+				'description' => _('NIS domain'),
+				'help' => 'msSFU30NisDomain',
+				'example' => _('domain'),
+			);
+		}
+		// profile options
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
+			$profileContainer = new htmlTable();
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsGroup_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
+			$return['profile_options'] = $profileContainer;
+			$return['profile_mappings']['windowsGroup_msSFU30NisDomain'] = 'msSFU30NisDomain';
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'cn' => _('Group name'),
@@ -226,6 +260,12 @@ class windowsGroup extends baseModule {
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
 			$return['PDF_fields']['managedBy'] = _('Managed by');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
+			$return['PDF_fields']['msSFU30Name'] = _('NIS name');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
+			$return['PDF_fields']['msSFU30NisDomain'] = _('NIS domain');
+		}
 		return $return;
 	}
 
@@ -239,6 +279,8 @@ class windowsGroup extends baseModule {
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_mail', _('Please enter a valid email address!'));
 		$this->messages['groupScope'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupScope', _('Please enter a valid group scope.'));
 		$this->messages['groupType'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupType', _('Please enter a valid group type.'));
+		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	}
 
 	/**
@@ -316,6 +358,17 @@ class windowsGroup extends baseModule {
 			}
 			$container->addElement($managedByButtons, true);
 		}
+		// NIS
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
+			$container->addElement(new htmlSubTitle(_('NIS')), true);
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
+				$this->addSimpleInputTextField($container, 'msSFU30Name', _('NIS name'));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
+				$this->addSimpleInputTextField($container, 'msSFU30NisDomain', _('NIS domain'));
+			}
+			$container->addVerticalSpace('20px');
+		}
 		// group members
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		$container->addElement(new htmlOutputText(_("Group members")));
@@ -388,6 +441,22 @@ class windowsGroup extends baseModule {
 			if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManagedBy'])) {
 				unset($this->attributes['managedBy']);
 			}
+		}
+		// NIS name
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
+			if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['msSFU30Name']) && empty($_POST['msSFU30Name'])) {
+				$this->attributes['msSFU30Name'][0] = $_POST['cn'];
+			}
+			else {
+				$this->attributes['msSFU30Name'][0] = $_POST['msSFU30Name'];
+			}
+			if (!empty($this->attributes['msSFU30Name'][0]) && !get_preg($this->attributes['msSFU30Name'][0], 'groupname')) {
+				$return[] = $this->messages['msSFU30Name'][0];
+			}
+		}
+		// NIS domain
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
+			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
 		return $return;
 	}
@@ -658,6 +727,25 @@ class windowsGroup extends baseModule {
 			else {
 				$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
 			}
+			// NIS name
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
+				if (!empty($rawAccounts[$i][$ids['windowsGroup_msSFU30Name']])) {
+					if (get_preg($rawAccounts[$i][$ids['windowsGroup_msSFU30Name']], 'groupname')) {
+						$partialAccounts[$i]['msSFU30Name'] = $rawAccounts[$i][$ids['windowsGroup_msSFU30Name']];
+					}
+					else {
+						$errMsg = $this->messages['msSFU30Name'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
+				}
+			}
+			// NIS domain
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
+				if (!empty($rawAccounts[$i][$ids['windowsGroup_msSFU30NisDomain']])) {
+					$partialAccounts[$i]['msSFU30NisDomain'] = $rawAccounts[$i][$ids['windowsGroup_msSFU30NisDomain']];
+				}
+			}
 		}
 		return $errors;
 	}
@@ -671,6 +759,8 @@ class windowsGroup extends baseModule {
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'info', _('Notes'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
+		$this->addSimplePDFField($return, 'msSFU30Name', _('NIS name'));
+		$this->addSimplePDFField($return, 'msSFU30NisDomain', _('NIS domain'));
 		// group type
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;

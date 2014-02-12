@@ -88,7 +88,7 @@ class windowsUser extends baseModule implements passwordService {
 		$return['attributes'] = array('userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
-			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive');
+			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain');
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -240,6 +240,14 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 				"Text" => _('UNC-path (\\\\server\\share\) of home directory. If no home drive is set then this directory must start with a drive letter (e.g. "c:\dir\user").')
 							. ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
+			),
+			'msSFU30Name' => array(
+				"Headline" => _('NIS name'), 'attr' => 'msSFU30Name',
+				"Text" => _('User name for NIS.')
+			),
+			'msSFU30NisDomain' => array(
+				"Headline" => _('NIS domain'), 'attr' => 'msSFU30NisDomain',
+				"Text" => _('NIS domain name.')
 			),
 		);
 		// upload fields
@@ -437,6 +445,22 @@ class windowsUser extends baseModule implements passwordService {
 				'unique' => true,
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_msSFU30Name',
+				'description' => _('NIS name'),
+				'help' => 'msSFU30Name',
+				'example' => _('smiller'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_msSFU30NisDomain',
+				'description' => _('NIS domain'),
+				'help' => 'msSFU30NisDomain',
+				'example' => _('domain'),
+			);
+		}
 		// profile options
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), true);
@@ -446,6 +470,9 @@ class windowsUser extends baseModule implements passwordService {
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), true);
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'), true);
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'), true);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
+		}
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(
@@ -456,6 +483,9 @@ class windowsUser extends baseModule implements passwordService {
 			'windowsUser_profilePath' => 'profilePath',
 			'windowsUser_homeDirectory' => 'homeDirectory',
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'userPrincipalName' => _('User name'),
@@ -491,6 +521,12 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['PDF_fields']['sAMAccountName'] = _('User name (pre W2K)');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
+			$return['PDF_fields']['msSFU30Name'] = _('NIS name');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+			$return['PDF_fields']['msSFU30NisDomain'] = _('NIS domain');
+		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('sAMAccountName');
 		// self service field settings
@@ -520,6 +556,8 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainer->addElement($configHiddenGroup, true);
 		$configContainerOptions = new htmlTable();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		return $return;
@@ -572,6 +610,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' windowsUser_homeDrive', _('Please enter a valid drive letter.'));
 		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.'));
+		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	}
 	
 	/**
@@ -718,9 +758,20 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$containerLeft->addElement(new htmlTableExtendedSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
 		// home directory
-		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
+		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'), true);
 		
-		$containerLeft->addElement(new htmlEqualWidth(array('streetAddress', 'cn')));
+		// NIS attributes
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+			$containerLeft->addElement(new htmlSubTitle(_('NIS')), true);
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'msSFU30Name', _('NIS name'));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'msSFU30NisDomain', _('NIS domain'));
+			}
+		}
+		
+		$containerLeft->addElement(new htmlEqualWidth(array('streetAddress', 'cn')), true);
 		
 		$containerRight = new htmlTable();
 		$containerRight->alignment = htmlElement::ALIGN_TOP;
@@ -934,6 +985,22 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		if (!empty($this->attributes['homeDrive'][0]) && !get_preg($this->attributes['homeDirectory'][0], 'UNC')) {
 			$return[] = $this->messages['homeDirectory'][0];
+		}
+		// NIS name
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
+			if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['msSFU30Name']) && empty($_POST['msSFU30Name'])) {
+				$this->attributes['msSFU30Name'][0] = $_POST['userPrincipalName'];
+			}
+			else {
+				$this->attributes['msSFU30Name'][0] = $_POST['msSFU30Name'];
+			}
+			if (!empty($this->attributes['msSFU30Name'][0]) && !get_preg($this->attributes['msSFU30Name'][0], 'username')) {
+				$return[] = $this->messages['msSFU30Name'][0];
+			}
+		}
+		// NIS domain
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
+			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
 		
 		return $return;
@@ -1407,6 +1474,25 @@ class windowsUser extends baseModule implements passwordService {
 						_('LAM was unable to find a group with this name!') . '<br>' . htmlspecialchars(implode('; ', $invalidGroups)));
 				}
 			}
+			// NIS name
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
+				if (!empty($rawAccounts[$i][$ids['windowsUser_msSFU30Name']])) {
+					if (get_preg($rawAccounts[$i][$ids['windowsUser_msSFU30Name']], 'username')) {
+						$partialAccounts[$i]['msSFU30Name'] = $rawAccounts[$i][$ids['windowsUser_msSFU30Name']];
+					}
+					else {
+						$errMsg = $this->messages['msSFU30Name'][1];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
+				}
+			}
+			// NIS domain
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+				if (!empty($rawAccounts[$i][$ids['windowsUser_msSFU30NisDomain']])) {
+					$partialAccounts[$i]['msSFU30NisDomain'] = $rawAccounts[$i][$ids['windowsUser_msSFU30NisDomain']];
+				}
+			}
 		}
 		return $errors;
 	}
@@ -1551,6 +1637,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
 		$this->addSimplePDFField($return, 'url', _('Other web sites'));
 		$this->addSimplePDFField($return, 'wWWHomePage', _('Web site'));
+		$this->addSimplePDFField($return, 'msSFU30Name', _('NIS name'));
+		$this->addSimplePDFField($return, 'msSFU30NisDomain', _('NIS domain'));
 		$deactivated = _('no');
 		if ($this->isDeactivated($this->attributes)) {
 			$deactivated = _('yes');

@@ -2,6 +2,7 @@ March 2014 4.5
   - IMAP: allow dynamic admin user names by replacing wildcards with LDAP attributes
   - Personal: allow to set fields read-only
   - Added option to server profile if referrals should be followed (fixes problems with Samba 4 and AD)
+  - Windows user/group: NIS support (msSFU30NisDomain, msSFU30Name)
   - LAM Pro:
    -> Allow to set single account types read-only
    -> Support for organizationalRole entries
