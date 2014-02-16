@@ -724,6 +724,11 @@ Have fun!
           <para>The self service pages now have an own option for allowed IPs.
           If your LAM installation uses IP restrictions please update the LAM
           main configuration.</para>
+
+          <para>Password self reset (LAM Pro) allows to set a backup email
+          address. You need to <link
+          linkend="passwordSelfResetSchema_update">update</link> the LDAP
+          schema if you want to use this feature.</para>
         </section>
 
         <section>
@@ -2384,80 +2389,8 @@ Have fun!
 
         <para><emphasis role="bold">Schema installation</emphasis></para>
 
-        <para>Please install the schema that comes with LAM Pro. The schema
-        files are located in:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>tar.bz2: docs/schema</para>
-          </listitem>
-
-          <listitem>
-            <para>DEB: /usr/share/doc/ldap-account-manager/docs/schema</para>
-          </listitem>
-
-          <listitem>
-            <para>RPM:
-            /usr/share/doc/ldap-account-manager-{VERSION}/schema</para>
-          </listitem>
-        </itemizedlist>
-
-        <para><literallayout>
-</literallayout><emphasis role="underline">OpenLDAP:</emphasis></para>
-
-        <para>For a configuration with slapd.conf-file copy
-        passwordSelfReset.schema to /etc/ldap/schema/ and add this line to
-        slapd.conf:</para>
-
-        <literallayout>  include         /etc/ldap/schema/passwordSelfReset.schema
-
-</literallayout>
-
-        <para>For slapd.d configurations you need to upload the schema file
-        passwordSelfReset.ldif via ldapadd command:</para>
-
-        <para>ldapadd -x -W -H ldap://localhost -D "cn=admin,o=test,c=de" -f
-        /daten/dev/lamPro/docs/schema/passwordSelfReset.ldif</para>
-
-        <para>Please replace "localhost" with your LDAP server and
-        "cn=admin,o=test,c=de" with your LDAP admin user (usually starts with
-        cn=admin or cn=manager).</para>
-
-        <literallayout>
-</literallayout>
-
-        <para><emphasis role="underline">Samba 4:</emphasis></para>
-
-        <para>The schema files are passwordSelfReset-Samba4-attributes.ldif
-        and passwordSelfReset-Samba4-objectClass.ldif.</para>
-
-        <para>First, you need to edit them and replace "DOMAIN_TOP_DN" with
-        your LDAP suffix (e.g. dc=samba4,dc=test).</para>
-
-        <para>Then install the attribute and afterwards the object class
-        schema file:</para>
-
-        <literallayout>  ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-attributes.ldif --option="dsdb:schema update allowed"=true
-  ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass.ldif --option="dsdb:schema update allowed"=true
-
-</literallayout>
-
-        <para><emphasis role="underline">Windows:</emphasis></para>
-
-        <para>The schema file is passwordSelfReset-Windows.ldif.</para>
-
-        <para>First, you need to edit it and replace "DOMAIN_TOP_DN" with your
-        LDAP suffix (e.g. dc=windows,dc=test).</para>
-
-        <para>Then install the schema file as administrator on a command
-        line:</para>
-
-        <literallayout>  ldifde -v -i -f passwordSelfReset-Windows.ldif
-
-</literallayout>
-
-        <para>This allows to set a security question + answer for each
-        account.</para>
+        <para>Please install the LDAP schema as described <link
+        linkend="a_passwordSelfResetSchema">here</link>.</para>
 
         <para><emphasis role="bold">Activate password self reset
         module</emphasis></para>
@@ -2491,6 +2424,11 @@ Have fun!
         users. You will see a new tab called "Password self reset". Here you
         can activate/remove the password self reset function for each user.
         You can also change the security question and answer.</para>
+
+        <para>If you set a backup email address then confirmation emails will
+        also be sent to this address. This is useful if the user password
+        grants access to the user's primary mailbox. So passwords can be
+        unlocked with an external email address.</para>
 
         <para><emphasis role="bold">Hint:</emphasis> You can add the
         passwordSelfReset object class to all your users with the <link
@@ -6739,7 +6677,7 @@ OK (10 msec)</programlisting>
             </tr>
 
             <tr>
-              <th align="left" rowspan="2"><inlinemediaobject>
+              <th align="left" rowspan="3"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_ssh.png" />
                   </imageobject>
@@ -6754,6 +6692,13 @@ OK (10 msec)</programlisting>
               <td>Answer</td>
 
               <td>Security answer</td>
+            </tr>
+
+            <tr>
+              <td>Backup email</td>
+
+              <td>(External) backup email address that has no relation to user
+              password.</td>
             </tr>
 
             <tr>
@@ -7114,6 +7059,11 @@ OK (10 msec)</programlisting>
         <section id="PasswordSelfReset">
           <title>Password self reset</title>
 
+          <para><emphasis role="bold">Schema installation</emphasis></para>
+
+          <para>Please install the LDAP schema as described <link
+          linkend="a_passwordSelfResetSchema">here</link>.</para>
+
           <para><emphasis role="bold">Settings</emphasis></para>
 
           <para>You can allow your users to reset their passwords themselves.
@@ -7176,11 +7126,11 @@ OK (10 msec)</programlisting>
           <para>LAM Pro can send your users an email with a confirmation link
           to validate their email address. Of course, this should only be used
           if the email account is independent from the user password (e.g. at
-          external provider). The mail must include the confirmation link by
-          using the special wildcard "@@resetLink@@". Additionally, you may
-          want to insert other wildcards that are replaced by the
-          corresponding LDAP attributes. E.g. "@@uid@@" will be replaced by
-          the user name.</para>
+          external provider) or you use the backup email address feature. The
+          mail body must include the confirmation link by using the special
+          wildcard "@@resetLink@@". Additionally, you may want to insert other
+          wildcards that are replaced by the corresponding LDAP attributes.
+          E.g. "@@uid@@" will be replaced by the user name.</para>
 
           <para>There is also an option to skip the security question at all
           if email verification is enabled. In this case the password can be
@@ -7214,9 +7164,10 @@ OK (10 msec)</programlisting>
           <para><emphasis role="bold">New fields for self service
           page</emphasis></para>
 
-          <para>There are two new fields that you may put on the self service
+          <para>There are special fields that you may put on the self service
           page for your users. These fields allow them to change the reset
-          question and its answer.</para>
+          question and its answer. It is also possible to set a backup email
+          address to reset passwords with an external email address.</para>
 
           <screenshot>
             <mediaobject>
@@ -9032,6 +8983,208 @@ OK (10 msec)</programlisting>
       happens if you use the default LDAP admin/manager user to login to LAM.
       Please see <link linkend="a_lamdaemonConf">here</link> and setup a Unix
       account.</para>
+    </section>
+  </appendix>
+
+  <appendix id="a_passwordSelfResetSchema">
+    <title>Setup password self reset schema (LAM Pro)</title>
+
+    <section id="passwordSelfResetSchema_new">
+      <title>New installation</title>
+
+      <para>Please see <link
+      linkend="passwordSelfResetSchema_update">here</link> if you want to
+      upgrade an existing schema version.</para>
+
+      <para><emphasis role="bold">Schema installation</emphasis></para>
+
+      <para>Please install the schema that comes with LAM Pro. The schema
+      files are located in:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>tar.bz2: docs/schema</para>
+        </listitem>
+
+        <listitem>
+          <para>DEB: /usr/share/doc/ldap-account-manager/docs/schema</para>
+        </listitem>
+
+        <listitem>
+          <para>RPM:
+          /usr/share/doc/ldap-account-manager-{VERSION}/schema</para>
+        </listitem>
+      </itemizedlist>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">OpenLDAP with slapd.conf
+      configuration</emphasis></para>
+
+      <para>For a configuration with slapd.conf-file copy
+      passwordSelfReset.schema to /etc/ldap/schema/ and add this line to
+      slapd.conf:</para>
+
+      <literallayout>  include         /etc/ldap/schema/passwordSelfReset.schema
+
+</literallayout>
+
+      <para><emphasis role="bold">OpenLDAP with slapd.d
+      configuration</emphasis></para>
+
+      <para>For slapd.d configurations you need to upload the schema file
+      passwordSelfReset.ldif via ldapadd command:</para>
+
+      <para>ldapadd -x -W -H ldap://localhost -D "cn=admin,o=test,c=de" -f
+      passwordSelfReset.ldif</para>
+
+      <para>Please replace "localhost" with your LDAP server and
+      "cn=admin,o=test,c=de" with your LDAP admin user (usually starts with
+      cn=admin or cn=manager).</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Samba 4</emphasis></para>
+
+      <para>The schema files are passwordSelfReset-Samba4-attributes.ldif and
+      passwordSelfReset-Samba4-objectClass.ldif.</para>
+
+      <para>First, you need to edit them and replace "DOMAIN_TOP_DN" with your
+      LDAP suffix (e.g. dc=samba4,dc=test).</para>
+
+      <para>Then install the attribute and afterwards the object class schema
+      file:</para>
+
+      <literallayout>  ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-attributes.ldif --option="dsdb:schema update allowed"=true
+  ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass.ldif --option="dsdb:schema update allowed"=true
+
+</literallayout>
+
+      <para><emphasis role="bold">Windows</emphasis></para>
+
+      <para>The schema file is passwordSelfReset-Windows.ldif.</para>
+
+      <para>First, you need to edit it and replace "DOMAIN_TOP_DN" with your
+      LDAP suffix (e.g. dc=windows,dc=test).</para>
+
+      <para>Then install the schema file as administrator on a command
+      line:</para>
+
+      <literallayout>  ldifde -v -i -f passwordSelfReset-Windows.ldif
+
+</literallayout>
+
+      <para>This allows to set a security question + answer for each
+      account.</para>
+    </section>
+
+    <section id="passwordSelfResetSchema_update">
+      <title>Schema update</title>
+
+      <para>The schema files are located in:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>tar.bz2: docs/schema/updates</para>
+        </listitem>
+
+        <listitem>
+          <para>DEB:
+          /usr/share/doc/ldap-account-manager/docs/schema/updates</para>
+        </listitem>
+
+        <listitem>
+          <para>RPM:
+          /usr/share/doc/ldap-account-manager-{VERSION}/schema/updates</para>
+        </listitem>
+      </itemizedlist>
+
+      <literallayout>
+</literallayout>
+
+      <para>Schema versions:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Initial version (LAM Pro 3.6)</para>
+        </listitem>
+
+        <listitem>
+          <para>Added passwordSelfResetBackupMail (LAM Pro 4.5)</para>
+        </listitem>
+      </orderedlist>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">OpenLDAP with slapd.conf
+      configuration</emphasis></para>
+
+      <para>Install the schema file like a <link
+      linkend="passwordSelfResetSchema_new">new install</link> (skip
+      modification of slapd.conf file).</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">OpenLDAP with slapd.d
+      configuration</emphasis></para>
+
+      <para>The upgrade requires to stop the LDAP server.</para>
+
+      <para>Steps:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Stop OpenLDAP with e.g. "/etc/init.d/slapd stop"</para>
+        </listitem>
+
+        <listitem>
+          <para>Delete the old schema file. It is located in e.g.
+          "/etc/ldap/slapd.d/cn=config/cn=schema" and called
+          "cn={XX}passwordselfreset.ldif" (XX can be any number)</para>
+        </listitem>
+
+        <listitem>
+          <para>Start OpenLDAP with e.g. "/etc/init.d/slapd start"</para>
+        </listitem>
+
+        <listitem>
+          <para>Install the schema file like a <link
+          linkend="passwordSelfResetSchema_new">new install</link></para>
+        </listitem>
+      </orderedlist>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Samba 4</emphasis></para>
+
+      <para>Install the these update files by following the install
+      instructions in the file:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>samba4_version_1_to_2_attributes.ldif</para>
+        </listitem>
+
+        <listitem>
+          <para>samba4_version_1_to_2_objectClass.ldif</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Please note that attributes file needs to be installed
+      first.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Windows</emphasis></para>
+
+      <para>Install the file "windows_version_1_to_2.ldif" by following the
+      install instructions in the file.</para>
     </section>
   </appendix>
 
