@@ -580,6 +580,7 @@ class lamUserList extends lamList {
 	protected function listPrintTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
 		if (($attribute != self::ATTR_ACCOUNT_STATUS) && (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1))) {
+			parent::listPrintTableCellContent($entry, $attribute);
 			return;
 		}
 		// translate GID to group name
