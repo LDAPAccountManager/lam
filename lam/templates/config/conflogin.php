@@ -120,7 +120,7 @@ echo $_SESSION['header'];
 		</table>
 		<br><br>
 		<!-- form to change existing profiles -->
-		<form action="confmain.php" method="post">
+		<form action="confmain.php" method="post" autocomplete="off">
 		<table align="center"><tr><td>
 		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all">
 			<tr>

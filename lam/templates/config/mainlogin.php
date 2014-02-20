@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ echo $_SESSION['header'];
 		?>
 		<br>
 		<!-- form to change main options -->
-		<form action="mainlogin.php" method="post">
+		<form action="mainlogin.php" method="post" autocomplete="off">
 		<table align="center">
 		<tr><td>
 		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all" style="padding: 20px;">
