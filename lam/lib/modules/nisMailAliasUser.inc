@@ -41,6 +41,8 @@ class nisMailAliasUser extends baseModule {
 	private $receipientsToDelete = array();
 	/** complete alias entries to delete */
 	private $aliasesToDelete = array();
+	/** new alias entries (list of arrays: dn => attributes) */
+	private $aliasesToAdd = array();
 	
 	/**
 	* Returns meta data that is interpreted by parent class
@@ -77,23 +79,18 @@ class nisMailAliasUser extends baseModule {
 				"Headline" => _("Alias names with email address"),
 				"Text" => _('Sets the alias names linked to the user\'s email address.') . ' ' . _("Multiple values are separated by semicolon.")
 			),
+			'suffix' => array(
+				"Headline" => _("Suffix"),
+				"Text" => _("Location where new alias is stored.")
+			),
+			'newAlias' => array(
+				"Headline" => _("Alias name"), 'attr' => 'cn',
+				"Text" => _("Name of new alias entry.")
+			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
 			),
-		);
-		// upload fields
-		$return['upload_columns'] = array(
-			array(
-				'name' => 'nisMailAliasUser_usernameAliases',
-				'description' => _('Aliases for user name'),
-				'help' => 'aliasUserList',
-			),
-			array(
-				'name' => 'nisMailAliasUser_mailAliases',
-				'description' => _('Aliases for email'),
-				'help' => 'aliasMailList',
-			)
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -106,8 +103,8 @@ class nisMailAliasUser extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' nisMailAliasUser_usernameAliases', _('Unable to create alias %s.'));
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' nisMailAliasUser_mailAliases', _('Unable to create alias %s.'));
+		$this->messages['alias'][0] = array('ERROR', _('Alias name is invalid.'));
+		$this->messages['alias'][1] = array('ERROR', _('Alias name already exists.'));
 	}
 
 	/**
@@ -144,6 +141,11 @@ class nisMailAliasUser extends baseModule {
 					$userTable->addElement($buttonGroup, true);
 				}
 			}
+			$userTable->addVerticalSpace('5px');
+			$addButton = new htmlAccountPageButton(get_class($this), 'add', 'user', _('Add'));
+			$addButton->setIconClass('createButton');
+			$addButton->colspan = 5;
+			$userTable->addElement($addButton, true);
 			$return->addElement($userTable, true);
 		}
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && !empty($mails)) {
@@ -178,6 +180,11 @@ class nisMailAliasUser extends baseModule {
 						$mailTable->addElement($buttonGroup, true);
 					}
 				}
+				$mailTable->addVerticalSpace('5px');
+				$addButton = new htmlAccountPageButton(get_class($this), 'add', 'mail' . $m, _('Add'));
+				$addButton->setIconClass('createButton');
+				$addButton->colspan = 5;
+				$mailTable->addElement($addButton, true);
 				if ((sizeof($mails) > 1) && ($m < (sizeof($mails) - 1))) {
 					$mailTable->addVerticalSpace('20px');
 				}
@@ -199,23 +206,169 @@ class nisMailAliasUser extends baseModule {
 		foreach ($_POST as $key => $value) {
 			if (strpos($key, 'rem_') === 0) {
 				$index = substr($key, strlen('rem_'));
-				$this->receipientsToDelete[$this->cachedAliasList[$index]['dn']][] = $this->getUserName();
+				$dn = $this->cachedAliasList[$index]['dn'];
+				$this->removeRecipient($this->getUserName(), $dn);
 			}
 			elseif (strpos($key, 'del_') === 0) {
 				$index = substr($key, strlen('del_'));
-				$this->aliasesToDelete[] = $this->cachedAliasList[$index]['dn'];
+				$dn = $this->cachedAliasList[$index]['dn'];
+				$this->deleteAlias($dn);
 			}
 			elseif (strpos($key, 'remMail_') === 0) {
 				$parts = substr($key, strlen('remMail_'));
 				$parts = explode('_', $parts);
-				$this->receipientsToDelete[$this->cachedAliasList[$parts[0]]['dn']][] = $mails[$parts[1]];
+				$this->removeRecipient($mails[$parts[1]], $this->cachedAliasList[$parts[0]]['dn']);
 			}
 			elseif (strpos($key, 'delMail_') === 0) {
 				$parts = substr($key, strlen('remMail_'));
 				$parts = explode('_', $parts);
-				$this->aliasesToDelete[] = $this->cachedAliasList[$parts[0]]['dn'];
+				$this->deleteAlias($this->cachedAliasList[$parts[0]]['dn']);
 			}
 		}
+		return $errors;
+	}
+	
+	/**
+	 * Removes a recipient from the given DN.
+	 * 
+	 * @param String $recipient recipient as user name or email
+	 * @param String $dn alias DN
+	 */
+	private function removeRecipient($recipient, $dn) {
+		if (!isset($this->aliasesToAdd[$dn])) {
+			// no new entry update existing
+			$this->receipientsToDelete[$dn][] = $this->getUserName();
+		}
+		else {
+			if (sizeof($this->aliasesToAdd[$dn]['rfc822mailmember']) == 1) {
+				// single recipient in new entry, do not create new entry at all
+				unset($this->aliasesToAdd[$dn]);
+				foreach ($this->cachedAliasList as $index => $attrs) {
+					if ($dn == $attrs['dn']) {
+						unset($this->cachedAliasList[$index]);
+						$this->cachedAliasList = array_values($this->cachedAliasList);
+					}
+				}
+			}
+			else {
+				$this->aliasesToAdd[$dn]['rfc822mailmember'] = array_delete(array($this->getUserName()), $this->aliasesToAdd[$dn]['rfc822mailmember']);
+				foreach ($this->cachedAliasList as $index => &$attrs) {
+					if ($dn == $attrs['dn']) {
+						$attrs['rfc822mailmember'] = array_delete(array($this->getUserName()), $attrs['rfc822mailmember']);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Removes an alias with the given DN.
+	 * 
+	 * @param String $dn alias DN
+	 */
+	private function deleteAlias($dn) {
+		if (!isset($this->aliasesToAdd[$dn])) {
+			// no new entry, delete existing entry
+			$this->aliasesToDelete[] = $dn;
+		}
+		else {
+			unset($this->aliasesToAdd[$dn]);
+			foreach ($this->cachedAliasList as $index => $attrs) {
+				if ($dn == $attrs['dn']) {
+					unset($this->cachedAliasList[$index]);
+					$this->cachedAliasList = array_values($this->cachedAliasList);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Returns the HTML meta data for the add page.
+	 * 
+	 * @return htmlElement HTML meta data
+	 */
+	function display_html_add() {
+		$return = new htmlTable();
+		$aliases = $this->getMailAliasList();
+		$count = sizeof($aliases);
+		$userName = $this->getUserName();
+		$mails = $this->getMailAddresses();
+		$recipient = null;
+		// get recipient value to add
+		if (isset($_POST['recipient'])) {
+			$recipient = $_POST['recipient'];
+		}
+		elseif (isset($_POST['form_subpage_' . get_class($this) . '_add_user'])) {
+			$recipient = $userName;
+		}
+		else {
+			for ($m = 0; $m < sizeof($mails); $m++) {
+				if (isset($_POST['form_subpage_' . get_class($this) . '_add_mail' . $m])) {
+					$recipient = $mails[$m];
+					break;
+				}
+			}
+		}
+		$return->addElement(new htmlOutputText(_('Recipient')));
+		$return->addElement(new htmlOutputText($recipient), true);
+		$return->addElement(new htmlHiddenInput('recipient', $recipient), true);
+		// new mail alias
+		$return->addElement(new htmlSubTitle(_('Create new alias')), true);
+		$typeObj = new mailAlias();
+        $ous = $typeObj->getSuffixList();
+        $return->addElement(new htmlTableExtendedSelect('new_ou', $ous, array(), _('Suffix'), 'suffix'), true);
+        $newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
+        $return->addElement(new htmlTableExtendedInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), true);
+        $return->addElement(new htmlEqualWidth(array('new_ou', 'new_cn')));
+		$return->addVerticalSpace('5px');
+		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'create', _('Create'));
+		$addButton->setIconClass('createButton');
+		$addButton->colspan = 5;
+		$return->addElement($addButton, true);
+		
+		return $return;
+	}
+
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_add() {
+		$errors = array();
+		$mails = $this->getMailAddresses();
+		// create new alias entry
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_create'])) {
+			if (empty($_POST['new_cn']) || !get_preg($_POST['new_cn'], 'nis_alias')) {
+				$errors[] = $this->messages['alias'][0];
+			}
+			else {
+				// build new alias entry
+				$newDN = 'cn=' . $_POST['new_cn'] . ',' . $_POST['new_ou'];
+				$found = false;
+				foreach ($this->cachedAliasList as $key => $attrs) {
+					if ($attrs['dn'] == $newDN) {
+						$found = true;
+						break;
+					}
+				}
+				if ($found) {
+					$errors[] = $this->messages['alias'][1];
+				}
+				else {
+					$newAttrs = array(
+						'dn' => $newDN,
+						'cn' => array($_POST['new_cn']),
+						'objectclass' => array('nisMailAlias'),
+						'rfc822mailmember' => array($_POST['recipient'])
+					);
+					$this->aliasesToAdd[$newDN] = $newAttrs;
+					$this->cachedAliasList[] = $newAttrs;
+				}
+			}
+		}
+		
 		return $errors;
 	}
 	
@@ -254,50 +407,19 @@ class nisMailAliasUser extends baseModule {
 				logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed recipients ' . implode(', ', $recipients) . ' from ' . $dn);
 			}
 		}
-		return $errors;
-	}
-
-	/**
-	* In this function the LDAP account is built up.
-	*
-	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	* @param array $selectedModules list of selected account modules
-	* @return array list of error messages if any
-	*/
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
-		$messages = array();
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-			// add object class
-			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "nisMailAlias";
-			// add alias name
-			// check format
-			if (get_preg($rawAccounts[$i][$ids['nisMailAlias_alias']], 'nis_alias')) {
-				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['nisMailAlias_alias']];
+		// create new aliases
+		foreach ($this->aliasesToAdd as $dn => $attrs) {
+			unset($attrs['dn']);
+			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+			if (!$success) {
+				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create mail alias ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 			else {
-				$errMsg = $this->messages['alias'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
-			// add recipients
-			if ($rawAccounts[$i][$ids['nisMailAlias_recipients']] != "") {
-				$aliases = explode(',', $rawAccounts[$i][$ids['nisMailAlias_recipients']]);
-				// check format
-				for ($a = 0; $a < sizeof($aliases); $a++) {
-					if (get_preg($aliases[$a], 'nis_recipient') || get_preg($aliases[$a], 'email')) {
-						$partialAccounts[$i]['rfc822MailMember'][] = $aliases[$a];
-					}
-					else {
-						$errMsg = $this->messages['recipient'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
+				logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added mail alias with recipients ' . implode(', ', $attrs['rfc822mailmember']) . ' and DN ' . $dn);
 			}
 		}
-		return $messages;
+		return $errors;
 	}
 
 	/**
