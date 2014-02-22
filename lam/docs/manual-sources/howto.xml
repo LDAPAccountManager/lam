@@ -70,7 +70,8 @@
       </listitem>
 
       <listitem>
-        <para>Openldap (2.0 or greater)</para>
+        <para>Any standard LDAP server (e.g. OpenLDAP, Active Directory, Samba
+        4, OpenDJ, 389 Directory Server, Apache DS, ...)</para>
       </listitem>
 
       <listitem>
@@ -2946,6 +2947,65 @@ Have fun!
         </screenshot>
       </section>
 
+      <section id="mailAliasesUser">
+        <title>Mail aliases</title>
+
+        <para>This module allows to add/remove the user in mail alias
+        entries.</para>
+
+        <para><emphasis role="bold">Note:</emphasis> You need to activate the
+        <link linkend="mailAliases">mail alias type</link> for this
+        module.</para>
+
+        <para>To activate mail aliases for users please select the module
+        "Mail aliases (nisMailAliasUser)":</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/nisMailAliasUser1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>On tab Module settings you can select if you want to set the
+        user name or email as recipient in alias entries.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/nisMailAliasUser4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you will see the mail aliases tab when editing an
+        user.</para>
+
+        <para>The red cross will only remove the user from the alias entry. If
+        you click the trash can button then the whole alias entry (which may
+        contain other users) will be deleted.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/nisMailAliasUser2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can add the user to existing alias entries or create
+        completly new ones.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/nisMailAliasUser3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
       <section>
         <title>Qmail (LAM Pro)</title>
 
@@ -4690,11 +4750,14 @@ objectclass: top
       </screenshot>
     </section>
 
-    <section>
+    <section id="mailAliases">
       <title>Mail aliases</title>
 
       <para>You can manage mail aliases (e.g. for NIS) inside LAM. This can be
       used to replace local /etc/aliases files with LDAP.</para>
+
+      <para>Note: Use the <link linkend="mailAliasesUser">mail alias user
+      module</link> to manage mail aliases on user pages.</para>
 
       <para>All accounts of this type are based on the "nisMailAlias" object
       class and may have "cn" and "rfc822MailMember" attributes. To activate
