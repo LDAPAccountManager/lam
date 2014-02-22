@@ -202,7 +202,8 @@ Have fun!
           </listitem>
 
           <listitem>
-            <para>OpenLDAP (&gt;2.0)</para>
+            <para>Any standard LDAP server (e.g. OpenLDAP, Active Directory,
+            Samba 4, OpenDJ, 389 Directory Server, Apache DS, ...)</para>
           </listitem>
 
           <listitem>
