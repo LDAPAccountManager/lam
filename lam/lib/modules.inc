@@ -2043,7 +2043,7 @@ class accountContainer {
 	 *
 	 * @return array OU list
 	 */
-	private function getOUs() {
+	public function getOUs() {
 		if ($this->cachedOUs != null) {
 			return $this->cachedOUs;
 		}
