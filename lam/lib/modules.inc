@@ -107,7 +107,12 @@ function get_ldap_filter($scope) {
 	// add type filter
 	$typeSettings = $_SESSION['config']->get_typeSettings();
 	if (isset($typeSettings['filter_' . $scope]) && ($typeSettings['filter_' . $scope] != '')) {
-		$filters['and'][] = $typeSettings['filter_' . $scope];
+		if (strpos($typeSettings['filter_' . $scope], '(') === 0) {
+			$filters['and'][] = $typeSettings['filter_' . $scope];
+		}
+		else {
+			$filters['and'][] = '(' . $typeSettings['filter_' . $scope] . ')';
+		}
 	}
 	// collapse AND filters
 	$finalFilter = '';
