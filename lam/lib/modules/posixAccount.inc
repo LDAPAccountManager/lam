@@ -603,18 +603,40 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
+		$typeSettings = $_SESSION['config']->get_typeSettings();
 		// get additional group memberships
-		if (!isset($attr['uid'][0])) return;
-		$groupList = searchLDAPByAttribute('memberUid', $attr['uid'][0], 'posixGroup', array('cn'), array('group'));
+		if (!isset($attr['uid'][0])) {
+			return;
+		}
+		$groupFilter = '(&(objectClass=posixGroup)(memberUid=' . $attr['uid'][0] . '))';
+		if (!empty($typeSettings['filter_group'])) {
+			$typeFilter = $typeSettings['filter_group'];
+			if (strpos($typeFilter, '(') !== 0) {
+				$typeFilter = '(' . $typeFilter . ')';
+			}
+			$groupFilter = '(&' . $groupFilter . $typeFilter . ')';
+		}
+		$groupList = searchLDAPByFilter($groupFilter, array('cn'), array('group'));
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			$this->groups[] = $groupList[$i]['cn'][0];
 		}
 		$this->groups_orig = $this->groups;
 		// get additional group of names memberships
 		if (self::areGroupOfNamesActive()) {
-			$gonList1 = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'groupOfNames', array('dn'), array('gon', 'group'));
-			$gonList2 = searchLDAPByAttribute('uniqueMember', $this->getAccountContainer()->dn_orig, 'groupOfUniqueNames', array('dn'), array('gon', 'group'));
-			$gonList = array_merge($gonList1, $gonList2);
+			$types = array('gon', 'group');
+			$gonList = array();
+			foreach ($types as $type) {
+				$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . $this->getAccountContainer()->dn_orig . ')))';
+				if (!empty($typeSettings['filter_' . $type])) {
+					$typeFilter = $typeSettings['filter_' . $type];
+					if (strpos($typeFilter, '(') !== 0) {
+						$typeFilter = '(' . $typeFilter . ')';
+					}
+					$gonFilter = '(&' . $gonFilter . $typeFilter . ')';
+				}
+				$gonListPart = searchLDAPByFilter($gonFilter, array('dn'), array($type));
+				$gonList = array_merge($gonList, $gonListPart);
+			}
 			$this->gonList_orig = array();
 			for ($i = 0; $i < sizeof($gonList); $i++) {
 				$this->gonList_orig[] = $gonList[$i]['dn'];
@@ -2669,7 +2691,16 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
-		$results = searchLDAPByAttribute(null, null, 'posixGroup', array('cn', 'gidnumber'), array('group'));
+		$typeSettings = $_SESSION['config']->get_typeSettings();
+		$filter = '(objectClass=posixGroup)';
+		if (!empty($typeSettings['filter_group'])) {
+			$typeFilter = $typeSettings['filter_group'];
+			if (strpos($typeFilter, '(') !== 0) {
+				$typeFilter = '(' . $typeFilter . ')';
+			}
+			$filter = '(&' . $filter . $typeFilter . ')';
+		}
+		$results = searchLDAPByFilter($filter, array('cn', 'gidnumber'), array('group'));
 		$return = array();
 		for ($i = 0; $i < sizeof($results); $i++) {
 			if (isset($results[$i]['cn'][0]) && isset($results[$i]['gidnumber'][0])) {
@@ -2697,11 +2728,22 @@ class posixAccount extends baseModule implements passwordService {
 		if (in_array('gon', $_SESSION['config']->get_ActiveTypes())) {
 			$types[] = 'gon';
 		}
+		$typeSettings = $_SESSION['config']->get_typeSettings();
 		if (sizeof($types) > 0) {
-			$results = searchLDAPByFilter('(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))', array('cn', 'dn', 'objectClass'), $types);
-			for ($i = 0; $i < sizeof($results); $i++) {
-				if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
-					$return[$results[$i]['dn']] = $results[$i];
+			foreach ($types as $type) {
+				$filter = '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))';
+				if (!empty($typeSettings['filter_' . $type])) {
+					$typeFilter = $typeSettings['filter_' . $type];
+					if (strpos($typeFilter, '(') !== 0) {
+						$typeFilter = '(' . $typeFilter . ')';
+					}
+					$filter = '(&' . $filter . $typeFilter . ')';
+				}
+				$results = searchLDAPByFilter($filter, array('cn', 'dn', 'objectClass'), array($type));
+				for ($i = 0; $i < sizeof($results); $i++) {
+					if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
+						$return[$results[$i]['dn']] = $results[$i];
+					}
 				}
 			}
 		}
