@@ -1052,7 +1052,16 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->cachedUserToGIDList != null) {
 			return $this->cachedUserToGIDList;
 		}
-		$result = searchLDAPByAttribute('gidNumber', '*', 'posixAccount', array('uid', 'gidNumber', 'cn'), array('user'));
+		$typeSettings = $_SESSION['config']->get_typeSettings();
+		$filter = '(&(objectClass=posixAccount)(gidNumber=*))';
+		if (!empty($typeSettings['filter_user'])) {
+			$typeFilter = $typeSettings['filter_user'];
+			if (strpos($typeFilter, '(') !== 0) {
+				$typeFilter = '(' . $typeFilter . ')';
+			}
+			$filter = '(&' . $filter . $typeFilter . ')';
+		}
+		$result = searchLDAPByFilter($filter, array('uid', 'gidNumber', 'cn'), array('user'));
 		$this->cachedUserToGIDList = array();
 		$resultCount = sizeof($result);
 		for ($i = 0; $i < $resultCount; $i++) {
