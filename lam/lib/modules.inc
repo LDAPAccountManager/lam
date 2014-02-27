@@ -1283,7 +1283,7 @@ class accountContainer {
 					jQuery("#inputForm").validationEngine();
 				});
 			</script>';
-		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\">\n";		
+		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";		
 	}
 	
 	/**
