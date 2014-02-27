@@ -1196,12 +1196,16 @@ function getExtendedLDAPErrorMessage($server) {
  * @return String error message
  */
 function getDefaultLDAPErrorString($server) {
-	$extError = getExtendedLDAPErrorMessage($server);
+	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
+	// Active Directory message translations
+	if ((strpos($extError, 'DSID-031A120C') !== false) && (strpos($extError, '5003') !== false)) {
+		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $extError;
+	}
 	$message = _('LDAP error, server says:') . ' ' . ldap_error($server);
 	if (!empty($extError)) {
 		$message .= ' - ' . $extError;
 	}
-	return htmlspecialchars($message);
+	return $message;
 }
 
 /**

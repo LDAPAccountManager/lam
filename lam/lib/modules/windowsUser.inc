@@ -1890,8 +1890,13 @@ class windowsUser extends baseModule implements passwordService {
 		fclose($pipes[1]);
 		$returnCode = proc_close($process);
 		if ($returnCode != 0) {
+			$outputMessages = htmlspecialchars($outputMessages);
+			// Active Directory message translations
+			if ((strpos($outputMessages, 'DSID-03190F80') !== false) && (strpos($outputMessages, 'unicodePwd') !== false)) {
+				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;
+			}
 			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
-			$return['messages'][] = array('ERROR', _('Unable to change password.'), htmlspecialchars($outputMessages));
+			$return['messages'][] = array('ERROR', _('Unable to change password.'), $outputMessages);
 			return;
 		}
 		else {
