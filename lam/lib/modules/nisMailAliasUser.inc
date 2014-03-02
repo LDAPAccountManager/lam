@@ -121,7 +121,7 @@ class nisMailAliasUser extends baseModule {
 	function display_html_attributes() {
 		$return = new htmlTable();
 		if (!$this->isMailAliasTypeActive()) {
-			$return->addElement(new htmlStatusMessage('ERROR', _('Please active the mail aliases type for this server profile.')));
+			$return->addElement(new htmlStatusMessage('ERROR', _('Please activate the mail aliases type for this server profile.')));
 			return $return;
 		}
 		$aliases = $this->getMailAliasList();
