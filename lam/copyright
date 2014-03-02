@@ -22,6 +22,8 @@ time.
 * lib/modules/namedObject.inc
 * lib/modules/nisObject.inc
 * lib/modules/passwordSelfReset.inc
+* lib/modules/oracleService.inc
+* lib/modules/organizationalRole*.inc
 * lib/modules/ppolicy.inc
 * lib/modules/ppolicyUser.inc
 * lib/modules/qmailUser.inc
@@ -41,6 +43,7 @@ time.
 * lib/types/automountType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
+* lib/types/oracleContextType.inc
 * lib/types/ppolicyType.inc
 * lib/types/sudo.inc
 * lib/types/zarafaAddressListType.inc
@@ -175,6 +178,5 @@ lib/3rdParty/phpseclib                      C        Jim Wigginton
 templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
 templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
 templates/lib/*jquery-fineuploader-*.js     D  2010  Andrew Valums
-templates/lib/*jquery-chosen-*.js           D  2013  Patrick Filler
 
 
