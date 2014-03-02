@@ -1,4 +1,4 @@
-This software is copyright (c) 2003 - 2013 by Roland Gruber
+This software is copyright (c) 2003 - 2014 by Roland Gruber
 
 If you purchased a copy of LDAP Account Manager Pro then the following
 files are licensed under the conditions which you accepted at purchase
@@ -8,6 +8,7 @@ time.
 * templates/selfService/*
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
+* lib/modules/bindDLZ.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc
@@ -23,7 +24,6 @@ time.
 * lib/modules/passwordSelfReset.inc
 * lib/modules/ppolicy.inc
 * lib/modules/ppolicyUser.inc
-* lib/modules/qmailGroup.inc
 * lib/modules/qmailUser.inc
 * lib/modules/rfc2307bisAutomount.inc
 * lib/modules/rfc2307bisPosixGroup.inc
@@ -37,6 +37,7 @@ time.
 * lib/modules/zarafaServer.inc
 * lib/modules/zarafaUser.inc
 * lib/types/alias.inc
+* lib/types/bind.inc
 * lib/types/automountType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
@@ -63,7 +64,7 @@ All other files are licensed under the conditions below.
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-The complete license can be found in the file /usr/share/common-licenses/GPL-2.
+The complete license can be found in the file COPYING.
 
 
 Some parts of this package have other, compatible licences. These are:
@@ -141,8 +142,6 @@ C:
    For more details on the GNU Lesser General Public License,
    see http://www.gnu.org/copyleft/lesser.html
 
-   See also /usr/share/common-licenses/LGPL-2.   
-   
 
 D:
 
@@ -175,5 +174,6 @@ templates/lib/*wz_tooltip.js                C        Walter Zorn
 lib/3rdParty/phpseclib                      C        Jim Wigginton
 templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
 templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
+templates/lib/*jquery-fineuploader-*.js     D  2010  Andrew Valums
 
 

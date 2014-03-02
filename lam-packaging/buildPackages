@@ -48,15 +48,6 @@ cp -a ldap-account-manager-$VERSION LAMPro/ldap-account-manager-$VERSION
 cp -a lamPro/* LAMPro/ldap-account-manager-$VERSION
 rm -r lamPro
 
-# create PHPdoc
-echo "Build PHPDoc..."
-cd LAMPro/ldap-account-manager-$VERSION
-./phpdoc.sh > /dev/null &
-cd ../..
-cd ldap-account-manager-$VERSION
-./phpdoc.sh > /dev/null &
-cd ..
-wait
 rm ldap-account-manager-$VERSION/phpdoc.sh
 rm LAMPro/ldap-account-manager-$VERSION/phpdoc.sh
 
