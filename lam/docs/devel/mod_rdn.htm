@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Module HowTo - Defining the RDN</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+<div style="text-align: center;">
+<h1>Module HowTo - Defining the RDN<br>
+</h1>
+<div style="text-align: left;"><br>
+Every LDAP DN starts with a RDN (relative DN). This is the value of a
+LDAP attribute. Users usually use "uid", groups use "cn".<br>
+You can provide a list of suitable RDN attributes for your module and
+give them a priority, too.<br>
+<br>
+</div>
+<div style="text-align: left;">You will need to implement the function <span
+ style="font-weight: bold;">get_RDNAttributes()</span> or use <span
+ style="font-weight: bold;">meta['RDN']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">posixAccount</span> module
+offers to create accounts with DNs uid=foo,dc=.... and cn=foo,dc=...<br>
+The uid attribute has a higher priority as it is the usual attribute
+for Unix accounts.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;"> function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // RDN attributes<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return["RDN"] = array("uid"
+=&gt; "normal", "cn" =&gt; "low");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<Files *>
+  <IfVersion < 2.3>
+    Order allow,deny
+    Deny from all
+  </IfVersion>
+  <IfVersion >= 2.3>
+    Require all denied
+  </IfVersion>
+</Files>
