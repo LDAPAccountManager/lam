@@ -1164,9 +1164,6 @@ class htmlSelect extends htmlElement {
 		elseif (sizeof($this->elements) == 0) {
 			echo '</div>';
 		}
-/*		if (!$this->multiSelect && !($this->size > 1)) {
-			echo '<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'#' . $this->name . '\').chosen({search_contains: "true"})});</script>';
-		}*/
 		if ($this->transient) {
 			return array();
 		}
