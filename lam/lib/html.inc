@@ -2683,10 +2683,7 @@ class htmlLink extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$image = '';
 		if ($this->image != null) {
-			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->text . '">';
-			if (!empty($this->text)) {
-				$image .= '&nbsp;';
-			}
+			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->text . '">&nbsp;';
 		}
 		$title = '';
 		if ($this->title != null) {
