@@ -1,6 +1,8 @@
-ldap-account-manager (4.5.RC1-1) unstable; urgency=low
+ldap-account-manager (4.5-1) unstable; urgency=low
 
   * new upstream release
+  * Fix "[src:ldap-account-manager] Sourceless file" by minifying JS
+    files during build (Closes: #736737)
 
  -- Roland Gruber <post@rolandgruber.de>  Sun, 02 Mar 2014 19:50:45 +0100
 
