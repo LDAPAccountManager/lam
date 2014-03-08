@@ -5221,6 +5221,12 @@ OK (10 msec)</programlisting>
       <para>LAM will display a default icon and "Custom fields" as label if
       you do not enter any values.</para>
 
+      <para>You may also specify how LAM displays cutom fields when there are
+      multiple field groups. The default is accordion view where you can
+      switch field groups by clicking on the title. You may also deactivate
+      this mode. Then all field groups are displayed one below the
+      other.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
