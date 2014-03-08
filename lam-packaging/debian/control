@@ -3,7 +3,7 @@ Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: extra
 Standards-Version: 3.9.5
-Build-Depends: debhelper (>= 7), po-debconf
+Build-Depends: debhelper (>= 7), po-debconf, yui-compressor
 Homepage: https://www.ldap-account-manager.org/
 
 Package: ldap-account-manager
