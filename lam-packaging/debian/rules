@@ -11,6 +11,9 @@ build: build-arch build-indep
 build-arch: build-stamp
 
 build-indep: build-stamp
+	yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o templates/lib/500_lam.js-TMP templates/lib/500_lam.js
+	rm templates/lib/500_lam.js
+	mv templates/lib/500_lam.js-TMP templates/lib/500_lam.js
 
 build-stamp:
 
