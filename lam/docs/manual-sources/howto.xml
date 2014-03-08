@@ -7125,6 +7125,7 @@ OK (10 msec)</programlisting>
             </imageobject>
           </mediaobject>
         </screenshot>
+    </section>
 
         <section id="PasswordSelfReset">
           <title>Password self reset</title>
@@ -7767,7 +7768,6 @@ OK (10 msec)</programlisting>
           </screenshot>
         </section>
       </section>
-    </section>
 
     <section>
       <title>Adapt the self service to your corporate design</title>
