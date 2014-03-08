@@ -22,7 +22,19 @@ fi
 # minifies the JavaScript files
 function minify {
 	local dir="$1"
-	echo "Minify JS files in " $dir
+	echo "Minify JS files in $dir"
+	local files=`ls $dir/*.js`
+	for file in $files; do
+		# skip dropmenu file, incompatible with YUI compressor
+		if [[ $file =~ .*dropmenu.* ]]; then
+			continue
+		fi
+		yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o ${file}-MIN $file
+		rm $file
+		mv ${file}-MIN $file
+		# add final new line to supress Debian warnings
+		echo "" >> $file
+	done
 }
 
 echo "Get files from SVN..."
@@ -73,9 +85,11 @@ cd ..
 # Debian gets orig.tar.bz2 with original JS files 
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
+cp -ar ldap-account-manager-$VERSION Debian/
 # build other packages with minified JS files
-minify ldap-account-manager-$VERSION
+minify ldap-account-manager-$VERSION/templates/lib
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
+rm -r ldap-account-manager-$VERSION
 
 # tar.bz2 of LAM Pro
 cd LAMPro
@@ -90,13 +104,14 @@ cd ..
 # Debian gets orig.tar.bz2 with original JS files 
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
+cp -ar ldap-account-manager-$VERSION Debian/
 # build other packages with minified JS files
-minify ldap-account-manager-$VERSION
+minify ldap-account-manager-$VERSION/templates/lib
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
+rm -r ldap-account-manager-$VERSION
 cd ..
 
 # Debian
-mv ldap-account-manager-$VERSION Debian/
 cp -r lam-packaging/debian Debian/ldap-account-manager-$VERSION/
 cd Debian/ldap-account-manager-$VERSION
 debuild
@@ -106,7 +121,6 @@ cd ..
 
 # Debian for LAM Pro
 cd LAMPro
-mv ldap-account-manager-$VERSION Debian/
 cp -r ../lam-packaging/debian Debian/ldap-account-manager-$VERSION/
 cd Debian/ldap-account-manager-$VERSION
 debuild
