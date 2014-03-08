@@ -168,4 +168,3 @@ cd ../..
 rm -r lam-packaging
 rm getVersion
 rm -f *.log
-rm buildPackages
