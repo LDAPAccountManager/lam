@@ -19,6 +19,12 @@ else
 	export SVN_TAG="tags/$1"
 fi
 
+# minifies the JavaScript files
+function minify {
+	local dir="$1"
+	echo "Minify JS files in " $dir
+}
+
 echo "Get files from SVN..."
 svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam lam &
 svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam-packaging lam-packaging &
@@ -48,6 +54,10 @@ cp -a ldap-account-manager-$VERSION LAMPro/ldap-account-manager-$VERSION
 cp -a lamPro/* LAMPro/ldap-account-manager-$VERSION
 rm -r lamPro
 
+# create Debian build dirs
+mkdir Debian
+mkdir LAMPro/Debian
+
 rm ldap-account-manager-$VERSION/phpdoc.sh
 rm LAMPro/ldap-account-manager-$VERSION/phpdoc.sh
 
@@ -60,6 +70,11 @@ perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
 rm -r autom4te.cache
 cd ..
+# Debian gets orig.tar.bz2 with original JS files 
+tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
+mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
+# build other packages with minified JS files
+minify ldap-account-manager-$VERSION
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 
 # tar.bz2 of LAM Pro
@@ -72,12 +87,15 @@ perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
 rm -r autom4te.cache
 cd ..
+# Debian gets orig.tar.bz2 with original JS files 
+tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
+mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
+# build other packages with minified JS files
+minify ldap-account-manager-$VERSION
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 cd ..
 
 # Debian
-mkdir Debian
-cp ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
 mv ldap-account-manager-$VERSION Debian/
 cp -r lam-packaging/debian Debian/ldap-account-manager-$VERSION/
 cd Debian/ldap-account-manager-$VERSION
@@ -88,8 +106,6 @@ cd ..
 
 # Debian for LAM Pro
 cd LAMPro
-mkdir Debian
-cp ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
 mv ldap-account-manager-$VERSION Debian/
 cp -r ../lam-packaging/debian Debian/ldap-account-manager-$VERSION/
 cd Debian/ldap-account-manager-$VERSION
