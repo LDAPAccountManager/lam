@@ -11,7 +11,7 @@ build: build-arch build-indep
 build-arch: build-stamp
 
 build-indep: build-stamp
-	minify
+	./minify
 
 build-stamp:
 
