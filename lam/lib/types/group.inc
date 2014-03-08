@@ -349,7 +349,7 @@ class lamGroupList extends lamList {
 			echo implode("; ", $linklist);
 		}
 		// pretty print member DNs
-		if (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
+		elseif (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
 			echo '<div class="rightToLeftText">';
 			$values = $entry[$attribute];
 			if (!empty($values)) {
