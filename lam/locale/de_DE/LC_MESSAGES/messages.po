@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2014-03-02 12:34+0100\n"
+"PO-Revision-Date: 2014-03-10 18:01+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -525,8 +525,8 @@ msgstr "Accountstatus"
 #: ../lib/modules/asteriskAccount.inc:262
 #: ../lib/modules/asteriskAccount.inc:324
 #: ../lib/modules/asteriskAccount.inc:588
-#: ../lib/modules/asteriskAccount.inc:978 ../lib/modules/customFields.inc:521
-#: ../lib/modules/customFields.inc:563
+#: ../lib/modules/asteriskAccount.inc:978 ../lib/modules/customFields.inc:517
+#: ../lib/modules/customFields.inc:559
 msgid "Account type"
 msgstr "Accounttyp"
 
@@ -666,8 +666,8 @@ msgstr "Aktive Accounttypen"
 #: ../lib/modules/sudoRole.inc:269 ../lib/modules/sudoRole.inc:296
 #: ../lib/modules/sudoRole.inc:323 ../lib/modules/sudoRole.inc:350
 #: ../lib/modules/sudoRole.inc:377 ../lib/modules/sudoRole.inc:404
-#: ../lib/modules/customFields.inc:1080 ../lib/modules/customFields.inc:2088
-#: ../lib/modules/customFields.inc:2098 ../lib/modules/qmailGroup.inc:815
+#: ../lib/modules/customFields.inc:1076 ../lib/modules/customFields.inc:2084
+#: ../lib/modules/customFields.inc:2094 ../lib/modules/qmailGroup.inc:815
 #: ../lib/modules/organizationalRole.inc:310 ../lib/modules/fixed_ip.inc:579
 #: ../lib/modules/windowsGroup.inc:549 ../lib/modules/groupOfNames.inc:367
 #: ../lib/modules/groupOfNames.inc:522
@@ -775,7 +775,7 @@ msgstr "Einträge diesen Typs hinzufügen:"
 msgid "Add existing host"
 msgstr "Bestehenden Host hinzufügen"
 
-#: ../lib/modules/customFields.inc:440
+#: ../lib/modules/customFields.inc:432
 msgid "Add extension"
 msgstr "Erweiterung hinzufügen"
 
@@ -795,7 +795,7 @@ msgstr "Feld hinzufügen"
 msgid "Add more fields"
 msgstr "Zusätzliche Felder hinzufügen"
 
-#: ../lib/modules/customFields.inc:2969
+#: ../lib/modules/customFields.inc:2965
 msgid "Add more mapping fields"
 msgstr "Zusätzliche Optionen hinzufügen"
 
@@ -821,7 +821,7 @@ msgstr "Neues Attribut zu diesem Eintrag hinzufügen"
 msgid "Add new binary attribute"
 msgstr "Neues Binärattribut hinzufügen"
 
-#: ../lib/modules/customFields.inc:1079 ../lib/modules/customFields.inc:1080
+#: ../lib/modules/customFields.inc:1075 ../lib/modules/customFields.inc:1076
 msgid "Add new field"
 msgstr "Feld hinzufügen"
 
@@ -1017,8 +1017,8 @@ msgstr "Alaska"
 msgid "Algorithmic RID base is not a number!"
 msgstr "RID-Basisnummer ist keine Zahl!"
 
-#: ../lib/modules/customFields.inc:69 ../lib/modules/customFields.inc:525
-#: ../lib/modules/customFields.inc:566 ../lib/modules/aliasEntry.inc:38
+#: ../lib/modules/customFields.inc:69 ../lib/modules/customFields.inc:521
+#: ../lib/modules/customFields.inc:562 ../lib/modules/aliasEntry.inc:38
 msgid "Alias"
 msgstr "Alias"
 
@@ -1129,7 +1129,7 @@ msgid "Allow machine password changes"
 msgstr "PC-Passwortänderungen erlauben"
 
 #: ../lib/modules/customFields.inc:137 ../lib/modules/customFields.inc:141
-#: ../lib/modules/customFields.inc:3136
+#: ../lib/modules/customFields.inc:3132
 msgid "Allow multiple values"
 msgstr "Mehrere Werte erlauben"
 
@@ -1274,7 +1274,7 @@ msgstr "Antwort"
 msgid "Anyone"
 msgstr "Jeder"
 
-#: ../lib/modules/customFields.inc:507
+#: ../lib/modules/customFields.inc:499
 msgid "Appearance"
 msgstr "Aussehen"
 
@@ -1392,7 +1392,7 @@ msgid "Attribute doesn't exist"
 msgstr "Attribut existiert nicht"
 
 #: ../templates/multiEdit.php:119 ../lib/modules/customFields.inc:85
-#: ../lib/modules/customFields.inc:1057 ../lib/modules/customFields.inc:1707
+#: ../lib/modules/customFields.inc:1053 ../lib/modules/customFields.inc:1703
 msgid "Attribute name"
 msgstr "Attributname"
 
@@ -1448,7 +1448,7 @@ msgstr "Erlaubte Dienste"
 msgid "Authorized services are invalid."
 msgstr "Erlaubte Dienste sind ungültig."
 
-#: ../lib/modules/customFields.inc:145 ../lib/modules/customFields.inc:1914
+#: ../lib/modules/customFields.inc:145 ../lib/modules/customFields.inc:1910
 msgid "Auto-completion"
 msgstr "Autovervollständigung"
 
@@ -1468,7 +1468,7 @@ msgstr "Automatische Skripte"
 #: ../lib/modules/posixAccount.inc:1748 ../lib/modules/zarafaUser.inc:129
 #: ../lib/modules/zarafaUser.inc:1330 ../lib/modules/pykotaUser.inc:153
 #: ../lib/modules/pykotaUser.inc:166 ../lib/modules/shadowAccount.inc:99
-#: ../lib/modules/shadowAccount.inc:190 ../lib/modules/customFields.inc:853
+#: ../lib/modules/shadowAccount.inc:190 ../lib/modules/customFields.inc:849
 #: ../lib/modules/qmailGroup.inc:94 ../lib/modules/qmailGroup.inc:225
 #: ../lib/modules/authorizedServiceObject.inc:82
 #: ../lib/modules/authorizedServiceObject.inc:110
@@ -2058,7 +2058,7 @@ msgstr "Kann weiterleiten"
 #: ../lib/modules/shadowAccount.inc:471 ../lib/modules/nisnetgroup.inc:483
 #: ../lib/modules/inetOrgPerson.inc:1706 ../lib/modules/freeRadius.inc:424
 #: ../lib/modules/kolabSharedFolder.inc:427
-#: ../lib/modules/customFields.inc:1081 ../lib/modules/aliasEntry.inc:140
+#: ../lib/modules/customFields.inc:1077 ../lib/modules/aliasEntry.inc:140
 #: ../lib/modules/aliasEntry.inc:160 ../lib/modules/qmailGroup.inc:816
 #: ../lib/modules/organizationalRole.inc:311 ../lib/modules/fixed_ip.inc:580
 #: ../lib/modules/heimdalKerberos.inc:593 ../lib/modules/windowsGroup.inc:498
@@ -2262,7 +2262,7 @@ msgstr ""
 "Bitte prüfen Sie Ihre Eingaben sorgfältig. LAM wird nur einige grundlegende "
 "Prüfungen der Daten vornehmen."
 
-#: ../lib/modules/customFields.inc:2731
+#: ../lib/modules/customFields.inc:2727
 msgid "Checkbox"
 msgstr "Checkbox"
 
@@ -2328,7 +2328,7 @@ msgid "Color laser printer"
 msgstr "Farblaserdrucker"
 
 #: ../templates/masscreate.php:284 ../lib/modules/customFields.inc:121
-#: ../lib/modules/customFields.inc:2597
+#: ../lib/modules/customFields.inc:2593
 msgid "Columns"
 msgstr "Spalten"
 
@@ -2745,8 +2745,8 @@ msgstr "Neuen Alias anlegen"
 msgid "Create new entry here"
 msgstr "Neuen Eintrag hier anlegen"
 
-#: ../lib/modules/customFields.inc:65 ../lib/modules/customFields.inc:516
-#: ../lib/modules/customFields.inc:529
+#: ../lib/modules/customFields.inc:65 ../lib/modules/customFields.inc:512
+#: ../lib/modules/customFields.inc:525
 msgid "Create new group"
 msgstr "Neue Gruppe anlegen"
 
@@ -2812,7 +2812,7 @@ msgstr "Aktuelle Liste von <b>%s</b> Werten für Attribut <b>%s</b>:"
 msgid "Current usage (kB)"
 msgstr "Aktueller Verbrauch (kB)"
 
-#: ../lib/modules/customFields.inc:1094 ../lib/modules/customFields.inc:1417
+#: ../lib/modules/customFields.inc:1090 ../lib/modules/customFields.inc:1413
 msgid "Custom fields"
 msgstr "Eigene Felder"
 
@@ -3002,7 +3002,7 @@ msgid "Default user"
 msgstr "Standardbenutzer"
 
 #: ../templates/masscreate.php:306 ../templates/masscreate.php:380
-#: ../lib/modules/customFields.inc:117 ../lib/modules/customFields.inc:2757
+#: ../lib/modules/customFields.inc:117 ../lib/modules/customFields.inc:2753
 msgid "Default value"
 msgstr "Standardwert"
 
@@ -3069,8 +3069,8 @@ msgstr ""
 #: ../lib/modules/bindDLZ.inc:1325 ../lib/modules/kolabUser.inc:828
 #: ../lib/modules/sambaGroupMapping.inc:398
 #: ../lib/modules/ldapPublicKey.inc:255 ../lib/modules/nisnetgroup.inc:246
-#: ../lib/modules/inetOrgPerson.inc:2778 ../lib/modules/customFields.inc:2083
-#: ../lib/modules/customFields.inc:3458 ../lib/lists.inc:494
+#: ../lib/modules/inetOrgPerson.inc:2778 ../lib/modules/customFields.inc:2079
+#: ../lib/modules/customFields.inc:3454 ../lib/lists.inc:494
 msgid "Delete"
 msgstr "Löschen"
 
@@ -3097,7 +3097,7 @@ msgstr "Alle %s-Objekte löschen"
 msgid "Delete all CA certificates"
 msgstr "Alle CA-Zertifikate löschen"
 
-#: ../lib/modules/customFields.inc:621
+#: ../lib/modules/customFields.inc:617
 msgid "Delete group"
 msgstr "Gruppe löschen"
 
@@ -3526,6 +3526,10 @@ msgstr ""
 #: ../lib/modules/groupOfNames.inc:111 ../lib/modules/groupOfNames.inc:180
 msgid "Display format"
 msgstr "Anzeigeformat"
+
+#: ../lib/modules/customFields.inc:169 ../lib/modules/customFields.inc:502
+msgid "Display multiple groups as accordion"
+msgstr "Mehrere Gruppen als Akkordeon anzeigen"
 
 #: ../lib/modules/sambaSamAccount.inc:111
 #: ../lib/modules/sambaSamAccount.inc:202
@@ -4312,7 +4316,7 @@ msgstr "Datei"
 msgid "File does not exist."
 msgstr "Datei existiert nicht."
 
-#: ../lib/modules/customFields.inc:153 ../lib/modules/customFields.inc:3290
+#: ../lib/modules/customFields.inc:153 ../lib/modules/customFields.inc:3286
 msgid "File extension"
 msgstr "Dateierweiterung"
 
@@ -4345,7 +4349,7 @@ msgid "File path"
 msgstr "Dateipfad"
 
 #: ../templates/masscreate.php:243 ../lib/tools/fileUpload.inc:44
-#: ../lib/modules/ldapPublicKey.inc:73 ../lib/modules/customFields.inc:3276
+#: ../lib/modules/ldapPublicKey.inc:73 ../lib/modules/customFields.inc:3272
 #: ../lib/lists.inc:777
 msgid "File upload"
 msgstr "Dateiupload"
@@ -4935,7 +4939,7 @@ msgstr "Befehl für Passwortänderung bei Heimdal Kerberos"
 msgid "Help"
 msgstr "Hilfe"
 
-#: ../lib/modules/customFields.inc:89 ../lib/modules/customFields.inc:1713
+#: ../lib/modules/customFields.inc:89 ../lib/modules/customFields.inc:1709
 msgid "Help text"
 msgstr "Hilfetext"
 
@@ -5575,7 +5579,7 @@ msgstr "IP-Adressen (\"A/AAAA\"-Einträge)"
 msgid "IP list"
 msgstr "IP-Liste"
 
-#: ../lib/modules/customFields.inc:511
+#: ../lib/modules/customFields.inc:507
 msgid "Icon"
 msgstr "Symbol"
 
@@ -5608,6 +5612,14 @@ msgid ""
 msgstr ""
 "Dies ist das früheste Datum um alle Nachrichten zu löschen wenn der "
 "Kontostatus auf gelöscht gesetzt wird."
+
+#: ../lib/modules/customFields.inc:170
+msgid ""
+"If activated then LAM will show an accordion view if there is more than one "
+"group per account type."
+msgstr ""
+"Durch Aktivieren dieser Option zeigt LAM mehrere Gruppen pro Accounttyp als "
+"Akkordeon an."
 
 #: ../lib/modules/ppolicyUser.inc:53
 msgid ""
@@ -6150,7 +6162,7 @@ msgid "Invalid password for IMAP admin or other problem occured."
 msgstr "Das IMAP-Passwort ist falsch oder anderer Fehler ist aufgetreten."
 
 #: ../lib/modules/ldapPublicKey.inc:539 ../lib/modules/inetOrgPerson.inc:3235
-#: ../lib/modules/customFields.inc:1400
+#: ../lib/modules/customFields.inc:1396
 msgid "Invalid request"
 msgstr "Ungültige Anfrage"
 
@@ -6522,9 +6534,9 @@ msgstr "LDIF-Import"
 msgid "LDIF import only supports version 1"
 msgstr "Der LDIF-Import unterstützt nur Version 1."
 
-#: ../lib/modules/customFields.inc:81 ../lib/modules/customFields.inc:510
-#: ../lib/modules/customFields.inc:1048 ../lib/modules/customFields.inc:1702
-#: ../lib/modules/customFields.inc:2956
+#: ../lib/modules/customFields.inc:81 ../lib/modules/customFields.inc:506
+#: ../lib/modules/customFields.inc:1044 ../lib/modules/customFields.inc:1698
+#: ../lib/modules/customFields.inc:2952
 msgid "Label"
 msgstr "Beschriftung"
 
@@ -7300,7 +7312,7 @@ msgstr "Maximale Fehlerzahl"
 
 #: ../templates/3rdParty/pla/htdocs/add_attr_form.php:128
 #: ../templates/3rdParty/pla/htdocs/import_form.php:36
-#: ../lib/modules/customFields.inc:149 ../lib/modules/customFields.inc:3295
+#: ../lib/modules/customFields.inc:149 ../lib/modules/customFields.inc:3291
 msgid "Maximum file size"
 msgstr "Maximale Dateigröße"
 
@@ -7308,7 +7320,7 @@ msgstr "Maximale Dateigröße"
 msgid "Maximum file size (kB)"
 msgstr "Maximale Dateigröße (kB)"
 
-#: ../lib/modules/customFields.inc:3327
+#: ../lib/modules/customFields.inc:3323
 msgid "Maximum file size must be a number. Please enter 0 for no limit."
 msgstr ""
 "Die maximale Dateigröße muss eine Zahl sein. Bitte geben Sie 0 für "
@@ -7650,11 +7662,11 @@ msgstr "Mountpunkt enthält ungültige Zeichen."
 msgid "Mountpoint of device with enabled quotas."
 msgstr "Mountpunkt des Dateisystems mit aktivierten Quota."
 
-#: ../lib/modules/customFields.inc:633
+#: ../lib/modules/customFields.inc:629
 msgid "Move down"
 msgstr "Nach unten"
 
-#: ../lib/modules/customFields.inc:627
+#: ../lib/modules/customFields.inc:623
 msgid "Move up"
 msgstr "Nach oben"
 
@@ -7662,11 +7674,11 @@ msgstr "Nach oben"
 msgid "Multi edit"
 msgstr "Multieditor"
 
-#: ../lib/modules/customFields.inc:1907 ../lib/modules/customFields.inc:3300
+#: ../lib/modules/customFields.inc:1903 ../lib/modules/customFields.inc:3296
 msgid "Multi value"
 msgstr "Mehrfachwert"
 
-#: ../lib/modules/customFields.inc:3158
+#: ../lib/modules/customFields.inc:3154
 msgid "Multi-select fields must not contain empty values."
 msgstr "Auswahllisten mit Mehrfachauswahl dürfen keine leeren Werte enthalten."
 
@@ -7850,7 +7862,7 @@ msgstr "NS-Eintrag"
 #: ../lib/modules/oracleService.inc:54 ../lib/modules/oracleService.inc:70
 #: ../lib/modules/oracleService.inc:91 ../lib/modules/oracleService.inc:114
 #: ../lib/modules/oracleService.inc:165 ../lib/modules/customFields.inc:77
-#: ../lib/modules/customFields.inc:1038 ../lib/modules/customFields.inc:1685
+#: ../lib/modules/customFields.inc:1034 ../lib/modules/customFields.inc:1681
 #: ../lib/modules/organizationalRole.inc:179
 #: ../lib/modules/groupOfNames.inc:225
 msgid "Name"
@@ -8232,12 +8244,12 @@ msgid "No entry was selected to delete"
 msgstr "Kein Eintrag zum Löschen ausgewählt."
 
 #: ../lib/modules/ldapPublicKey.inc:476 ../lib/modules/inetOrgPerson.inc:3169
-#: ../lib/modules/customFields.inc:3638
+#: ../lib/modules/customFields.inc:3634
 msgid "No file received."
 msgstr "Keine Datei empfangen."
 
 #: ../templates/config/mainmanage.php:158 ../lib/modules/ldapPublicKey.inc:102
-#: ../lib/modules/inetOrgPerson.inc:99 ../lib/modules/customFields.inc:3573
+#: ../lib/modules/inetOrgPerson.inc:99 ../lib/modules/customFields.inc:3569
 msgid "No file selected."
 msgstr "Keine Datei gewählt."
 
@@ -8516,7 +8528,7 @@ msgstr "OU-Editor"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1324
 #: ../lib/modules/selfRegistration.inc:67
 #: ../lib/modules/selfRegistration.inc:203 ../lib/modules/customFields.inc:73
-#: ../lib/modules/customFields.inc:571
+#: ../lib/modules/customFields.inc:567
 msgid "Object classes"
 msgstr "Objektklassen"
 
@@ -8956,7 +8968,7 @@ msgstr "Durchlauf"
 #: ../lib/modules/inetOrgPerson.inc:2048 ../lib/modules/inetOrgPerson.inc:3524
 #: ../lib/modules/asteriskVoicemail.inc:92
 #: ../lib/modules/asteriskVoicemail.inc:158
-#: ../lib/modules/customFields.inc:2441 ../lib/modules/heimdalKerberos.inc:117
+#: ../lib/modules/customFields.inc:2437 ../lib/modules/heimdalKerberos.inc:117
 #: ../lib/modules/heimdalKerberos.inc:204
 #: ../lib/modules/heimdalKerberos.inc:216
 #: ../lib/modules/heimdalKerberos.inc:688
@@ -9044,7 +9056,7 @@ msgstr "Passwort für den Anrufbeantworter."
 #: ../lib/modules/posixAccount.inc:184 ../lib/modules/posixAccount.inc:240
 #: ../lib/modules/posixAccount.inc:450 ../lib/modules/inetOrgPerson.inc:801
 #: ../lib/modules/inetOrgPerson.inc:3434 ../lib/modules/customFields.inc:129
-#: ../lib/modules/customFields.inc:2455
+#: ../lib/modules/customFields.inc:2451
 msgid "Password hash type"
 msgstr "Passwort-Hash"
 
@@ -9409,11 +9421,11 @@ msgstr ""
 msgid "Please enter a name."
 msgstr "Bitte geben Sie einen Namen ein."
 
-#: ../lib/modules/customFields.inc:2622
+#: ../lib/modules/customFields.inc:2618
 msgid "Please enter a natural number for column count."
 msgstr "Bitte geben Sie eine Zahl für die Anzahl an Spalten ein."
 
-#: ../lib/modules/customFields.inc:2632
+#: ../lib/modules/customFields.inc:2628
 msgid "Please enter a natural number for row count."
 msgstr "Bitte geben Sie eine Zahl für die Anzahl an Zeilen ein."
 
@@ -9526,7 +9538,7 @@ msgstr "Bitte geben Sie einen gültigen DN ein. Feld:"
 msgid "Please enter a valid DNS name."
 msgstr "Bitte geben Sie einen gültigen DNS-Namen ein."
 
-#: ../lib/modules/customFields.inc:1186 ../lib/modules/customFields.inc:1743
+#: ../lib/modules/customFields.inc:1182 ../lib/modules/customFields.inc:1739
 msgid ""
 "Please enter a valid LDAP attribute name. Allowed characters are a-z, 0-9, _ "
 "and -."
@@ -9644,7 +9656,7 @@ msgstr "Bitte geben Sie einen gültigen Angestelltentyp ein!"
 msgid "Please enter a valid fax number!"
 msgstr "Bitte geben Sie eine gültige Faxnummer ein!"
 
-#: ../lib/modules/customFields.inc:176
+#: ../lib/modules/customFields.inc:180
 msgid ""
 "Please enter a valid field name. Only letters, numbers, dash and underline "
 "are allowed."
@@ -9736,7 +9748,7 @@ msgstr "Bitte geben Sie eine gültige Zahl (z.B. \"1.5\") ein."
 msgid "Please enter a valid number."
 msgstr "Bitte geben Sie eine gültige Zahl ein."
 
-#: ../lib/modules/customFields.inc:179
+#: ../lib/modules/customFields.inc:183
 msgid "Please enter a valid object class."
 msgstr "Bitte geben Sie eine gültige Objektklasse ein."
 
@@ -9822,11 +9834,11 @@ msgstr "Bitte geben Sie einen gültigen Benutzernamen oder EMail-Adresse ein."
 msgid "Please enter a value between %s and %s!"
 msgstr "Bitte geben Sie einen Wert zwischen %s und %s ein!"
 
-#: ../lib/modules/customFields.inc:2776
+#: ../lib/modules/customFields.inc:2772
 msgid "Please enter a value for status \"checked\"."
 msgstr "Bitte geben Sie einen Wert für den Status \"ausgewählt\" an."
 
-#: ../lib/modules/customFields.inc:2783
+#: ../lib/modules/customFields.inc:2779
 msgid "Please enter a value for status \"unchecked\"."
 msgstr "Bitte geben Sie einen Wert für den Status \"nicht ausgewählt\" an."
 
@@ -9842,7 +9854,7 @@ msgstr "Bitte geben Sie einen Wert zum Editieren ein."
 msgid "Please enter an alias for this group."
 msgstr "Bitte geben Sie einen Alias für diese Gruppe ein."
 
-#: ../lib/modules/customFields.inc:178
+#: ../lib/modules/customFields.inc:182
 msgid "Please enter an alias name."
 msgstr "Bitte geben Sie einen Alias ein."
 
@@ -10178,7 +10190,7 @@ msgstr ""
 #: ../templates/lists/changePassword.php:516
 #: ../lib/modules/selfRegistration.inc:467
 #: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:109
-#: ../lib/modules/windowsUser.inc:608 ../lib/modules/customFields.inc:2529
+#: ../lib/modules/windowsUser.inc:608 ../lib/modules/customFields.inc:2525
 msgid "Please enter the same password in both password fields."
 msgstr "Bitte geben Sie das selbe Passwort in beide Felder ein."
 
@@ -10837,7 +10849,7 @@ msgstr "RTP-Halte-Timeout"
 msgid "RTP timeout"
 msgstr "RTP-Timeout"
 
-#: ../lib/modules/customFields.inc:2924
+#: ../lib/modules/customFields.inc:2920
 msgid "Radio buttons"
 msgstr "Radiobuttons"
 
@@ -10859,7 +10871,7 @@ msgid "Read"
 msgstr "Lesen"
 
 #: ../templates/config/confmain.php:262 ../templates/config/conftypes.php:290
-#: ../lib/modules/customFields.inc:97 ../lib/modules/customFields.inc:1719
+#: ../lib/modules/customFields.inc:97 ../lib/modules/customFields.inc:1715
 #: ../help/help.inc:176
 msgid "Read-only"
 msgstr "Nur lesen"
@@ -11088,7 +11100,7 @@ msgstr "Unix-Erweiterung entfernen"
 msgid "Remove Zarafa extension"
 msgstr "Zarafa-Erweiterung entfernen"
 
-#: ../lib/modules/customFields.inc:458
+#: ../lib/modules/customFields.inc:450
 msgid "Remove extension"
 msgstr "Erweiterung entfernen"
 
@@ -11376,7 +11388,7 @@ msgstr "Raumnummer"
 msgid "Routing address"
 msgstr "Routing-Adresse"
 
-#: ../lib/modules/customFields.inc:125 ../lib/modules/customFields.inc:2603
+#: ../lib/modules/customFields.inc:125 ../lib/modules/customFields.inc:2599
 msgid "Rows"
 msgstr "Zeilen"
 
@@ -11584,7 +11596,7 @@ msgstr "Samstag"
 #: ../templates/profedit/profilepage.php:238
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1243
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1247
-#: ../lib/modules/inetOrgPerson.inc:2774 ../lib/modules/customFields.inc:3452
+#: ../lib/modules/inetOrgPerson.inc:2774 ../lib/modules/customFields.inc:3448
 #: ../lib/modules.inc:1205
 msgid "Save"
 msgstr "Speichern"
@@ -11748,7 +11760,7 @@ msgstr "LDIF-Datei auswählen"
 msgid "Select host"
 msgstr "Host wählen"
 
-#: ../lib/modules/customFields.inc:3122
+#: ../lib/modules/customFields.inc:3118
 msgid "Select list"
 msgstr "Auswahlliste"
 
@@ -12621,7 +12633,7 @@ msgstr "Samba LM-Passwörter mit Unix synchronisieren"
 msgid "Sync Samba NT password with Unix password"
 msgstr "Samba NT-Passwörter mit Unix synchronisieren"
 
-#: ../lib/modules/customFields.inc:1108
+#: ../lib/modules/customFields.inc:1104
 msgid "Sync fields with page layout"
 msgstr "Felder mit Seitenlayout synchronisieren"
 
@@ -12739,11 +12751,11 @@ msgstr "Text"
 msgid "Text (\"TXT\" records)"
 msgstr "Text (\"TXT\"-Einträge)"
 
-#: ../lib/modules/customFields.inc:2583
+#: ../lib/modules/customFields.inc:2579
 msgid "Text area"
 msgstr "Textbereich"
 
-#: ../templates/pdfedit/pdfpage.php:617 ../lib/modules/customFields.inc:1882
+#: ../templates/pdfedit/pdfpage.php:617 ../lib/modules/customFields.inc:1878
 msgid "Text field"
 msgstr "Textfeld"
 
@@ -13243,7 +13255,7 @@ msgid "The list of hosts from which the user may run the commands."
 msgstr ""
 "Die Liste der Hosts von denen der Benutzer die Kommandos absetzen darf."
 
-#: ../lib/modules/customFields.inc:3009
+#: ../lib/modules/customFields.inc:3005
 msgid "The list of labels contains duplicates."
 msgstr "Die Liste der Beschreibungen enthält Duplikate."
 
@@ -13253,7 +13265,7 @@ msgstr ""
 "Die Liste der Benutzer, denen diese Rolle zugeteilt ist und die diese "
 "Kommandos ausführen dürfen."
 
-#: ../lib/modules/customFields.inc:3006
+#: ../lib/modules/customFields.inc:3002
 msgid "The list of values contains duplicates."
 msgstr "Die Liste der Werte enthält Duplikate."
 
@@ -13771,12 +13783,12 @@ msgstr ""
 "Das Zeitlimit (in Sekunden) legt fest wie lange ein Eintrag bei Cache-DNS-"
 "Servern vorgehalten wird."
 
-#: ../lib/modules/customFields.inc:3558 ../lib/modules/customFields.inc:3645
+#: ../lib/modules/customFields.inc:3554 ../lib/modules/customFields.inc:3641
 #, php-format
 msgid "The uploaded file does not have the correct file extension (%s)."
 msgstr "Die hochgeladene Datei hat nicht die erlaubte Dateiendung (%s)."
 
-#: ../lib/modules/customFields.inc:3554 ../lib/modules/customFields.inc:3641
+#: ../lib/modules/customFields.inc:3550 ../lib/modules/customFields.inc:3637
 #, php-format
 msgid "The uploaded file is too large (> %s bytes)."
 msgstr "Die hochgeladene Datei ist zu groß (> %s Bytes)."
@@ -14174,7 +14186,7 @@ msgstr "Dieser Eintrag enthält einen Unterbaum mit %s Einträgen."
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: ../lib/modules/customFields.inc:177
+#: ../lib/modules/customFields.inc:181
 msgid "This field name already exists. Please choose a different one."
 msgstr ""
 "Es gibt bereits ein Feld mit diesem Namen. Bitte wählen Sie einen anderen."
@@ -15119,7 +15131,7 @@ msgstr "Dienstag"
 #: ../lib/modules/kolabSharedFolder.inc:234
 #: ../lib/modules/kolabSharedFolder.inc:295
 #: ../lib/modules/kolabSharedFolder.inc:578 ../lib/modules/customFields.inc:93
-#: ../lib/modules/customFields.inc:1067 ../lib/modules/customFields.inc:1699
+#: ../lib/modules/customFields.inc:1063 ../lib/modules/customFields.inc:1695
 msgid "Type"
 msgstr "Typ"
 
@@ -15536,7 +15548,7 @@ msgid "Upload accounts to LDAP"
 msgstr "Accounts in LDAP anlegen"
 
 #: ../lib/modules/ldapPublicKey.inc:115 ../lib/modules/customFields.inc:157
-#: ../lib/modules/customFields.inc:3424
+#: ../lib/modules/customFields.inc:3420
 msgid "Upload file"
 msgstr "Datei hochladen"
 
@@ -15979,27 +15991,27 @@ msgstr "Berechtigte Benutzer"
 msgid "Validate server certificate"
 msgstr "Serverzertifikat prüfen"
 
-#: ../lib/modules/customFields.inc:101 ../lib/modules/customFields.inc:1896
+#: ../lib/modules/customFields.inc:101 ../lib/modules/customFields.inc:1892
 msgid "Validation expression"
 msgstr "Validierungsausdruck"
 
-#: ../lib/modules/customFields.inc:105 ../lib/modules/customFields.inc:1901
+#: ../lib/modules/customFields.inc:105 ../lib/modules/customFields.inc:1897
 msgid "Validation message"
 msgstr "Validierungsnachricht"
 
-#: ../templates/multiEdit.php:120 ../lib/modules/customFields.inc:2955
+#: ../templates/multiEdit.php:120 ../lib/modules/customFields.inc:2951
 msgid "Value"
 msgstr "Wert"
 
-#: ../lib/modules/customFields.inc:109 ../lib/modules/customFields.inc:2745
+#: ../lib/modules/customFields.inc:109 ../lib/modules/customFields.inc:2741
 msgid "Value for \"checked\""
 msgstr "Wert für \"gewählt\""
 
-#: ../lib/modules/customFields.inc:113 ../lib/modules/customFields.inc:2751
+#: ../lib/modules/customFields.inc:113 ../lib/modules/customFields.inc:2747
 msgid "Value for \"unchecked\""
 msgstr "Wert für \"nicht gewählt\""
 
-#: ../lib/modules/customFields.inc:133 ../lib/modules/customFields.inc:2951
+#: ../lib/modules/customFields.inc:133 ../lib/modules/customFields.inc:2947
 msgid "Value mapping"
 msgstr "Wertezuordnung"
 
@@ -16855,7 +16867,7 @@ msgstr "neu"
 #: ../lib/modules/ppolicy.inc:474 ../lib/modules/ppolicy.inc:484
 #: ../lib/modules/ppolicy.inc:489 ../lib/modules/ppolicy.inc:496
 #: ../lib/modules/ppolicy.inc:499 ../lib/modules/generalInformation.inc:93
-#: ../lib/modules/zarafaServer.inc:377 ../lib/modules/customFields.inc:2886
+#: ../lib/modules/zarafaServer.inc:377 ../lib/modules/customFields.inc:2882
 #: ../lib/modules/fixed_ip.inc:745
 msgid "no"
 msgstr "nein"
@@ -16949,7 +16961,7 @@ msgid "rename"
 msgstr "Umbenennen"
 
 #: ../templates/3rdParty/pla/lib/PageRender.php:445 ../lib/html.inc:760
-#: ../lib/html.inc:1674 ../lib/html.inc:2251
+#: ../lib/html.inc:1671 ../lib/html.inc:2248
 msgid "required"
 msgstr "erforderlich"
 
@@ -17088,7 +17100,7 @@ msgstr "mit"
 #: ../lib/modules/ppolicy.inc:491 ../lib/modules/ppolicy.inc:494
 #: ../lib/modules/ppolicy.inc:501 ../lib/modules/inetOrgPerson.inc:514
 #: ../lib/modules/generalInformation.inc:95
-#: ../lib/modules/zarafaServer.inc:379 ../lib/modules/customFields.inc:2886
+#: ../lib/modules/zarafaServer.inc:379 ../lib/modules/customFields.inc:2882
 #: ../lib/modules/fixed_ip.inc:743
 msgid "yes"
 msgstr "ja"
