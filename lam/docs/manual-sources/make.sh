@@ -6,6 +6,7 @@
 
 # This script is run to create the LAM manual.
 
+dir=`pwd`
 
 rm -rf ../manual
 mkdir ../manual
@@ -26,3 +27,22 @@ cp images/*.jpg ../manual-onePage/images
 mkdir ../manual-onePage/resources
 cp resources/*.* ../manual-onePage/resources
 cp style.css ../manual-onePage
+
+rm -rf ../manual-pdf
+mkdir ../manual-pdf
+xsltproc -o ../manual-pdf/out.fo --stringparam paper.type "A4" --stringparam generate.toc "book toc,title,table,figure" /usr/share/xml/docbook/stylesheet/nwalsh/fo/docbook.xsl howto.xml
+mkdir ../manual-pdf/images
+for img in `ls images/*.png`; do
+	convert -density 96 $img ../manual-pdf/$img
+done
+for img in `ls images/*.jpg`; do
+	convert -density 96 $img ../manual-pdf/$img
+done
+cp images/schema_*.png ../manual-pdf/images/
+mkdir ../manual-pdf/resources
+cp resources/*.* ../manual-pdf/resources
+cd ../manual-pdf
+fop out.fo manual.pdf
+
+
+cd $dir
