@@ -6469,7 +6469,7 @@ OK (10 msec)</programlisting>
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/conf1.jpg" />
+            <imagedata fileref="images/conf1.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -6480,7 +6480,7 @@ OK (10 msec)</programlisting>
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/conf2.jpg" />
+            <imagedata fileref="images/conf2.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -6491,7 +6491,7 @@ OK (10 msec)</programlisting>
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/conf3.jpg" />
+            <imagedata fileref="images/conf3.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -6514,7 +6514,7 @@ OK (10 msec)</programlisting>
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/conf4.jpg" />
+              <imagedata fileref="images/conf4.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -6664,7 +6664,7 @@ OK (10 msec)</programlisting>
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/conf5.jpg" />
+              <imagedata fileref="images/conf5.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -7124,7 +7124,7 @@ OK (10 msec)</programlisting>
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/conf6.jpg" />
+              <imagedata fileref="images/conf6.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
