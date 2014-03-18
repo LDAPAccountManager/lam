@@ -1,0 +1,7 @@
+<pdf type="bind" filename="printLogo.jpg" headline="DNS information" foldingmarks="no">
+	<section name="_bindDLZ_dlzHostName">
+		<entry name="bindDLZ_aRecord" />
+		<entry name="bindDLZ_ptrRecord" />
+		<entry name="bindDLZ_mxRecord" />
+	</section>
+</pdf>
