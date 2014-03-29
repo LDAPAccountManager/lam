@@ -276,7 +276,17 @@ td.loginLogo {
 	width: 65px;
 }
 
-
+a.lamLogo {
+	background-image: url(../graphics/logo24.png);
+	background-repeat: no-repeat;
+	background-position: left;
+	line-height: 24px;
+	display: block;
+	text-indent:32px;
+	vertical-align: middle;
+	white-space: nowrap;
+	margin-left: 5px;
+}
 
 .sortableList { list-style-type: none; margin: 0; padding: 0; }
 .sortableList li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; }

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -113,13 +113,15 @@ foreach ($toSort as $key => $value) {
 
 <table border=0 width="100%" class="lamHeader ui-corner-all">
 	<tr>
-		<td align="left" height="30">
-			<a class="lamHeader" href="http://www.ldap-account-manager.org/" target="new_window">
-				&nbsp;<img src="<?php echo $headerPrefix; ?>../graphics/logo32.png" width=24 height=24 class="align-middle" alt="LDAP Account Manager">&nbsp;&nbsp;LDAP Account Manager
+		<td align="left" height="30" class="nowrap">
+			<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
+				LDAP Account Manager
 				<?php
 				echo $pro . " - " . LAMVersion();
 				?>
 			</a>
+		</td>
+		<td align="left" height="30" class="nowrap">
 			<?php
 				echo '&nbsp;&nbsp;<small>';
 				$userData = $_SESSION['ldap']->decrypt_login();
@@ -128,7 +130,7 @@ foreach ($toSort as $key => $value) {
 				echo '</small>';
 			?>
 		</td>
-	<td align="right" height=30>
+	<td align="right" height=30 width="100%">
 	<ul id="dropmenu" class="dropmenu">
 		<li><a href="<?php echo $headerPrefix; ?>logout.php" target="_top"><img class="align-middle" height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>../graphics/exit.png">&nbsp;<?php echo _("Logout") ?></a></li>
 		<?php
