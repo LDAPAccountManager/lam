@@ -9305,7 +9305,17 @@ OK (10 msec)</programlisting>
 }
 </programlisting>
 
-    <para><emphasis role="bold">Custom logo and other images</emphasis></para>
+    <para><emphasis role="bold">Custom logo</emphasis><programlisting>/* image in login box */
+td.loginLogo {
+  background-image: url(/logos/mylogo.png);
+}
+
+/* image (24x24) in header line */
+a.lamLogo {
+  background-image: url(/logos/mylogo.png);
+}</programlisting></para>
+
+    <para><emphasis role="bold">Other images</emphasis></para>
 
     <para>All images are located in</para>
 
