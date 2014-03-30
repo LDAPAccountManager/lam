@@ -3229,9 +3229,22 @@ Have fun!
 
         <para>This module is used to manage Unix group entries. This is the
         default module to manage Unix groups and uses the nis.schema. Suse
-        users who use the rfc2307bis.schema need to use LAM Pro.</para>
+        users who use the <link
+        linkend="rfc2307bisPosixGroup">rfc2307bis.schema</link> need to use
+        LAM Pro.</para>
 
         <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>Please add the account type "Groups" and then select account
+        module "Unix (posixGroup)".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixGroupConfig1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
         <para>GID generator: LAM will suggest GID numbers for your accounts.
         Please note that it may happen that there are duplicate IDs assigned
@@ -3254,6 +3267,12 @@ Have fun!
             attributes that store a counter for the last used UID/GID. Please
             note that this requires that you install the Samba schema and
             create an LDAP entry of object class "sambaUnixIdPool".</para>
+          </listitem>
+
+          <listitem>
+            <para>Disable membership management: Disables group membership
+            management. This is useful if memberships are e.g. managed via
+            group of names.</para>
           </listitem>
         </itemizedlist>
 
@@ -3286,7 +3305,7 @@ Have fun!
         </screenshot>
       </section>
 
-      <section>
+      <section id="rfc2307bisPosixGroup">
         <title>Unix groups with rfc2307bis schema (LAM Pro)</title>
 
         <para>Some applications (e.g. Suse Linux) use the rfc2307bis schema

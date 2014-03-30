@@ -102,7 +102,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 			}
 			// group members
-			if ($rawAccounts[$i][$ids['posixGroup_members']] != "") {
+			if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid') && ($rawAccounts[$i][$ids['posixGroup_members']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['posixGroup_members']], 'usernameList')) {
 					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
 				}
@@ -218,26 +218,28 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), true);
 			}
 			// group members
-			$return->addElement(new htmlOutputText(_("Group members")));
-			$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
-			$return->addElement(new htmlHelpLink('members'), true);
-			$return->addElement(new htmlOutputText(''));
-			$users = $this->getUsers();
-			$members = array();
-			if (isset($this->attributes['memberUid'][0])) {
-				foreach ($this->attributes['memberUid'] as $uid) {
-					if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
-						$members[] = $uid . ' (' . $users[$uid]['cn'] . ')';
-					}
-					else {
-						$members[] = $uid;
+			if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
+				$return->addElement(new htmlOutputText(_("Group members")));
+				$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+				$return->addElement(new htmlHelpLink('members'), true);
+				$return->addElement(new htmlOutputText(''));
+				$users = $this->getUsers();
+				$members = array();
+				if (isset($this->attributes['memberUid'][0])) {
+					foreach ($this->attributes['memberUid'] as $uid) {
+						if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
+							$members[] = $uid . ' (' . $users[$uid]['cn'] . ')';
+						}
+						else {
+							$members[] = $uid;
+						}
 					}
 				}
+				$members = array_unique($members);
+				natcasesort($members);
+				$members = array_map('htmlspecialchars', $members);
+				$return->addElement(new htmlOutputText(implode('<br>', $members), false), true);
 			}
-			$members = array_unique($members);
-			natcasesort($members);
-			$members = array_map('htmlspecialchars', $members);
-			$return->addElement(new htmlOutputText(implode('<br>', $members), false), true);
 			// remove button
 			if (!$this->autoAddObjectClasses) {
 				$return->addElement(new htmlSpacer(null, '20px'), true);
@@ -371,7 +373,10 @@ class posixGroup extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// managed attributes
-		$return['attributes'] = array('gidNumber', $this->passwordAttrName, 'memberUid');
+		$return['attributes'] = array('gidNumber', $this->passwordAttrName);
+		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
+			$return['attributes'][] = 'memberUid';
+		}
 		if ($this->manageCnAttribute) {
 			$return['attributes'][] = 'cn';
 		}
@@ -402,12 +407,15 @@ class posixGroup extends baseModule implements passwordService {
 		$gidGeneratorDN->setRequired(true);
 		$configContainer->addElement($gidGeneratorDN, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
+		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
 		$return['config_options']['group'] = $configContainer;
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'gidNumber' => _('GID number'),
-			'memberUid' => _('Group members')
 		);
+		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
+			$return['PDF_fields']['memberUid'] = _('Group members');
+		}
 		if ($this->manageCnAttribute) {
 			$return['PDF_fields']['cn'] = _('Group name');
 		}
@@ -423,18 +431,20 @@ class posixGroup extends baseModule implements passwordService {
 			'example' => '2034'
 		),
 		array(
-			'name' => 'posixGroup_members',
-			'description' => _('Group members'),
-			'help' => 'upload_members',
-			'example' => _('user01,user02,user03')
-		),
-		array(
 			'name' => 'posixGroup_password',
 			'description' => _('Group password'),
 			'help' => 'password',
 			'example' => _('secret')
 		)
 		);
+		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
+			$return['upload_columns'][] = array(
+				'name' => 'posixGroup_members',
+				'description' => _('Group members'),
+				'help' => 'upload_members',
+				'example' => _('user01,user02,user03')
+			);
+		}
 		if ($this->manageCnAttribute) {
 			array_unshift($return['upload_columns'], 
 				array(
@@ -511,6 +521,10 @@ class posixGroup extends baseModule implements passwordService {
 				"Headline" => _("Filter"),
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
 					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
+			),
+			'hidememberUid' => array(
+				"Headline" => _('Disable membership management'), 'attr' => 'memberUid',
+				"Text" => _('Disables the group membership management.')
 			),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
