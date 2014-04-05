@@ -315,10 +315,12 @@ function checkIfDeleteEntriesIsAllowed($scope) {
 /**
  * Checks if the password fulfills the password policies.
  * 
- * @param string $password password
+ * @param String $password password
+ * @param String $userName user name
+ * @param array $otherUserAttrs user's first/last name 
  * @return mixed true if ok, string with error message if not valid
  */
-function checkPasswordStrength($password) {
+function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 	if ($password == null) {
 		$password = "";
 	}
@@ -347,21 +349,47 @@ function checkPasswordStrength($password) {
 			$symbols++;
 		}
 	}
+	$rulesMatched = 0;
+	$rulesFailed = 0;
 	// check lower case
-	if ($lower < $cfg->passwordMinLower) {
+	if (($cfg->checkedRulesCount == -1) && ($lower < $cfg->passwordMinLower)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $cfg->passwordMinLower);
 	}
+	if ($lower < $cfg->passwordMinLower) {
+		$rulesFailed++;
+	}
+	else {
+		$rulesMatched++;
+	}
 	// check upper case
-	if ($upper < $cfg->passwordMinUpper) {
+	if (($cfg->checkedRulesCount == -1) && ($upper < $cfg->passwordMinUpper)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $cfg->passwordMinUpper);
 	}
+	if ($upper < $cfg->passwordMinUpper) {
+		$rulesFailed++;
+	}
+	else {
+		$rulesMatched++;
+	}
 	// check numeric
-	if ($numeric < $cfg->passwordMinNumeric) {
+	if (($cfg->checkedRulesCount == -1) && ($numeric < $cfg->passwordMinNumeric)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $cfg->passwordMinNumeric);
 	}
+	if ($numeric < $cfg->passwordMinNumeric) {
+		$rulesFailed++;
+	}
+	else {
+		$rulesMatched++;
+	}
 	// check symbols
-	if ($symbols < $cfg->passwordMinSymbol) {
+	if (($cfg->checkedRulesCount == -1) && ($symbols < $cfg->passwordMinSymbol)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $cfg->passwordMinSymbol);
+	}
+	if ($symbols < $cfg->passwordMinSymbol) {
+		$rulesFailed++;
+	}
+	else {
+		$rulesMatched++;
 	}
 	// check classes
 	$classes = 0;
@@ -377,8 +405,50 @@ function checkPasswordStrength($password) {
 	if ($symbols > 0) {
 		$classes++;
 	}
-	if ($classes < $cfg->passwordMinClasses) {
+	if (($cfg->checkedRulesCount == -1) && ($classes < $cfg->passwordMinClasses)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $cfg->passwordMinClasses);
+	}
+	if ($classes < $cfg->passwordMinClasses) {
+		$rulesFailed++;
+	}
+	else {
+		$rulesMatched++;
+	}
+	// check rules count
+	if (($cfg->checkedRulesCount != -1) && ($rulesMatched < $cfg->checkedRulesCount)) {
+		return sprintf(_('The password is too weak. It needs to match at least %s password complexity rules.'), $cfg->checkedRulesCount);
+	}
+	// check user name
+	if (($cfg->passwordMustNotContainUser == 'true') && !empty($userName)) {
+		$pwdLow = strtolower($password);
+		$userLow = strtolower($userName);
+		if (strpos($pwdLow, $userLow) !== false) {
+			return _('The password is too weak. You may not use the user name as part of the password.');
+		}
+	}
+	// check part of user name and additional attributes
+	if (($cfg->passwordMustNotContain3Chars == 'true') && (!empty($userName) || !empty($otherUserAttrs))) {
+		$pwdLow = strtolower($password);
+		// check if contains part of user name
+		if (!empty($userName) && (strlen($userName) > 2)) {
+			$userLow = strtolower($userName);
+			for ($i = 0; $i < strlen($userLow) - 3; $i++) {
+				$part = substr($userLow, 0, 3);
+				if (strpos($pwdLow, $part) !== false) {
+					return _('The password is too weak. You may not use parts of the user name for the password.');
+				}
+			}
+		}
+		// check other attributes
+		foreach ($otherUserAttrs as $other) {
+			$low = strtolower($other);
+			for ($i = 0; $i < strlen($low) - 3; $i++) {
+				$part = substr($low, 0, 3);
+				if (strpos($pwdLow, $part) !== false) {
+					return _('The password is too weak. You may not use parts of user attributes for the password.');
+				}
+			}
+		}
 	}
 	return true;
 }

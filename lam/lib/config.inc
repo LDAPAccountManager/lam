@@ -1506,6 +1506,15 @@ class LAMCfgMain {
 	/** minimum character classes (upper, lower, numeric, symbols) */
 	public $passwordMinClasses = 0;
 	
+	/** number of password rules that must match (-1 = all) */
+	public $checkedRulesCount = -1;
+	
+	/** password may contain the user name */
+	public $passwordMustNotContainUser = 'false';
+	
+	/** password may contain more than 2 characters of user/first/last name */
+	public $passwordMustNotContain3Chars = 'false';
+	
 	/** path to config file */
 	private $conffile;
 
@@ -1525,8 +1534,9 @@ class LAMCfgMain {
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
-		"passwordMinClasses", "passwordMinSymbol", "mailEOL", 'errorReporting',
-		'encryptSession', 'allowedHostsSelfService');
+		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
+		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
+		"mailEOL", 'errorReporting', 'encryptSession', 'allowedHostsSelfService');
 
 	/**
 	* Loads preferences from config file
@@ -1615,6 +1625,9 @@ class LAMCfgMain {
 		if (!in_array("passwordMinNumeric", $saved)) array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
 		if (!in_array("passwordMinSymbol", $saved)) array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
 		if (!in_array("passwordMinClasses", $saved)) array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
+		if (!in_array("checkedRulesCount", $saved)) array_push($file_array, "\n\n# Password: checked rules\n" . "checkedRulesCount: " . $this->checkedRulesCount);
+		if (!in_array("passwordMustNotContain3Chars", $saved)) array_push($file_array, "\n\n# Password: must not contain part of user name\n" . "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars);
+		if (!in_array("passwordMustNotContainUser", $saved)) array_push($file_array, "\n\n# Password: must not contain user name\n" . "passwordMustNotContainUser: " . $this->passwordMustNotContainUser);
 		if (!in_array("mailEOL", $saved)) array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
 		if (!in_array("errorReporting", $saved)) array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
 		$file = @fopen($this->conffile, "w");

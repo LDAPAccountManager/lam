@@ -153,6 +153,9 @@ if (isset($_POST['submitFormData'])) {
 	$cfg->passwordMinNumeric = $_POST['passwordMinNumeric'];
 	$cfg->passwordMinSymbol = $_POST['passwordMinSymbol'];
 	$cfg->passwordMinClasses = $_POST['passwordMinClasses'];
+	$cfg->checkedRulesCount = $_POST['passwordRulesCount'];
+	$cfg->passwordMustNotContain3Chars = isset($_POST['passwordMustNotContain3Chars']) && ($_POST['passwordMustNotContain3Chars'] == 'on') ? 'true' : 'false';
+	$cfg->passwordMustNotContainUser = isset($_POST['passwordMustNotContainUser']) && ($_POST['passwordMustNotContainUser'] == 'on') ? 'true' : 'false';
 	if (isset($_POST['sslCaCertUpload'])) {
 		if (!isset($_FILES['sslCaCert']) || ($_FILES['sslCaCert']['size'] == 0)) {
 			$errors[] = _('No file selected.');
@@ -381,11 +384,21 @@ $policyTable = new htmlTable();
 $options20 = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 $options4 = array(0, 1, 2, 3, 4);
 $policyTable->addElement(new htmlTableExtendedSelect('passwordMinLength', $options20, array($cfg->passwordMinLength), _('Minimum password length'), '242'), true);
+$policyTable->addVerticalSpace('5px');
 $policyTable->addElement(new htmlTableExtendedSelect('passwordMinLower', $options20, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), true);
 $policyTable->addElement(new htmlTableExtendedSelect('passwordMinUpper', $options20, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), true);
 $policyTable->addElement(new htmlTableExtendedSelect('passwordMinNumeric', $options20, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), true);
 $policyTable->addElement(new htmlTableExtendedSelect('passwordMinSymbol', $options20, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), true);
 $policyTable->addElement(new htmlTableExtendedSelect('passwordMinClasses', $options4, array($cfg->passwordMinClasses), _('Minimum character classes'), '242'), true);
+$policyTable->addVerticalSpace('5px');
+$rulesCountOptions = array(_('all') => '-1', '3' => '3', '4' => '4');
+$rulesCountSelect = new htmlTableExtendedSelect('passwordRulesCount', $rulesCountOptions, array($cfg->checkedRulesCount), _('Number of rules that must match'), '246');
+$rulesCountSelect->setHasDescriptiveElements(true);
+$policyTable->addElement($rulesCountSelect, true);
+$passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true') ? true : false;
+$policyTable->addElement(new htmlTableExtendedInputCheckbox('passwordMustNotContainUser',$passwordMustNotContainUser , _('Password must not contain user name'), '247'), true);
+$passwordMustNotContain3Chars = ($cfg->passwordMustNotContain3Chars === 'true') ? true : false;
+$policyTable->addElement(new htmlTableExtendedInputCheckbox('passwordMustNotContain3Chars', $passwordMustNotContain3Chars, _('Password must not contain part of user/first/last name'), '248'), true);
 $container->addElement($policyTable, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);
 
