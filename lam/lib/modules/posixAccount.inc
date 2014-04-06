@@ -1499,6 +1499,9 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlTableExtendedInputCheckbox('deletehomedir', true, _('Delete home directory'), 'deletehomedir'), true);
 		}
 		if (($this->get_scope() == 'user') && in_array('sudo', $_SESSION['config']->get_ActiveTypes())) {
+			if ($return == null) {
+				$return = new htmlTable();
+			}
 			$return->addElement(new htmlTableExtendedInputCheckbox('deleteSudoers', true, _('Delete sudo rights'), 'deleteSudoers'), true);
 		}
 		return $return;
