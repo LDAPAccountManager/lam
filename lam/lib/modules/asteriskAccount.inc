@@ -1023,45 +1023,23 @@ class asteriskAccount extends baseModule implements passwordService {
 		// add object class
 			if (!in_array("AsteriskSIPUser", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskSIPUser";
 			// add account caller id
-			if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountCallerID']], 'username')) {
-				$partialAccounts[$i]['AstAccountCallerID'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountCallerID']];
-			}
-			else {
-				$errMsg = $this->messages['AstAccountCallerID'][3];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountCallerID', 'AstAccountCallerID',
+				'username', $this->messages['AstAccountCallerID'][3], $messages);
 			// add host
-			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']] == "") {
+			if (empty($rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']])) {
 				// default value
 				$partialAccounts[$i]['AstAccountHost'] = 'dynamic';
 			}
-			elseif (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']], 'realname')) {
-				$partialAccounts[$i]['AstAccountHost'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountHost']];
-			}
 			else {
-				$errMsg = $this->messages['AstAccountHost'][2];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountHost', 'AstAccountHost',
+					'realname', $this->messages['AstAccountHost'][2], $messages);
 			}
 			//add context
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountContext']] != "") && (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountContext']], 'realname')) ) {
-				$partialAccounts[$i]['AstAccountContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountContext']];
-			}
-			else {
-				$errMsg = $this->messages['AstAccountContext'][2];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountContext', 'AstAccountContext',
+				'realname', $this->messages['AstAccountContext'][2], $messages);
 			//add account type
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountType']] != "") && (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountType']], 'username')) ) {
-				$partialAccounts[$i]['AstAccountType'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountType']];
-			}
-			else {
-				$errMsg = $this->messages['AstAccountType'][2];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountType', 'AstAccountType',
+				'username', $this->messages['AstAccountType'][2], $messages);
 			//add password
 			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']] != "") {
 				$attributes = array('AstAccountCallerID' => array($partialAccounts[$i]['AstAccountCallerID'])); // fake attribute list for password building
@@ -1069,156 +1047,48 @@ class asteriskAccount extends baseModule implements passwordService {
 				$partialAccounts[$i]['AstAccountRealmedPassword'] = $pwdString;
 			}
 			
-			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountUserAgent']] != "") {
-				$partialAccounts[$i]['AstAccountUserAgent'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountUserAgent']];
-			}
-						
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountAMAFlags']] != "")) {
-				$partialAccounts[$i]['AstAccountAMAFlags'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountAMAFlags']];
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountCallGroup']] != "")) {
-				$partialAccounts[$i]['AstAccountCallGroup'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountCallGroup']];
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDTMFMode']] != "")) {
-				$partialAccounts[$i]['AstAccountDTMFMode'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDTMFMode']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountUserAgent', 'AstAccountUserAgent');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountAMAFlags', 'AstAccountAMAFlags');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountCallGroup', 'AstAccountCallGroup');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountDTMFMode', 'AstAccountDTMFMode');
 
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromUser']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromUser']], 'username')) {
-					$partialAccounts[$i]['AstAccountFromUser'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountFromUser']];
-				}
-				else {
-					$errMsg = $this->messages['AstAccountFromUser'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromDomain']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountFromDomain']], 'domainname')) {
-					$partialAccounts[$i]['AstAccountFromDomain'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountFromDomain']];
-				}
-				else {
-					$errMsg = $this->messages['AstAccountFromDomain'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountFullContact']] != "")) {
-				$partialAccounts[$i]['AstAccountFullContact'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountFullContact']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountFromUser', 'AstAccountFromUser',
+				'username', $this->messages['AstAccountFromUser'][1], $messages);
 
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountInsecure']] != "")) {
-				$partialAccounts[$i]['AstAccountInsecure'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountInsecure']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountFromDomain', 'AstAccountFromDomain',
+				'domainname', $this->messages['AstAccountFromDomain'][1], $messages);
 
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountMailbox']] != "")) {
-				$partialAccounts[$i]['AstAccountMailbox'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountMailbox']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountFullContact', 'AstAccountFullContact');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountInsecure', 'AstAccountInsecure');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountMailbox', 'AstAccountMailbox');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountNAT', 'AstAccountNAT');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountDeny', 'AstAccountDeny');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountPermit', 'AstAccountPermit');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountPickupGroup', 'AstAccountPickupGroup');
 			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountNAT']] != "")) {
-				$partialAccounts[$i]['AstAccountNAT'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountNAT']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountPort', 'AstAccountPort',
+				'digit', $this->messages['AstAccountPort'][1], $messages);
 			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDeny']] != "")) {
-				$partialAccounts[$i]['AstAccountDeny'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDeny']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountQualify', 'AstAccountQualify');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRestrictCID', 'AstAccountRestrictCID');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRTPTimeout', 'AstAccountRTPTimeout');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRTPHoldTimeout', 'AstAccountRTPHoldTimeout');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountDisallowedCodec', 'AstAccountDisallowedCodec');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountAllowedCodec', 'AstAccountAllowedCodec');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountMusicOnHold', 'AstAccountMusicOnHold');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountExpirationTimestamp', 'AstAccountExpirationTimestamp');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRegistrationContext', 'AstAccountRegistrationContext');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRegistrationExten', 'AstAccountRegistrationExten');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountCanCallForward', 'AstAccountCanCallForward');
 			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountPermit']] != "")) {
-				$partialAccounts[$i]['AstAccountPermit'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountPermit']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountIPAddress', 'AstAccountIPAddress',
+				'ip', $this->messages['AstAccountIPAddress'][1], $messages);
 			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountPickupGroup']] != "")) {
-				$partialAccounts[$i]['AstAccountPickupGroup'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountPickupGroup']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountPort']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountPort']], 'digit')) {
-					$partialAccounts[$i]['AstAccountPort'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountPort']];
-				}
-				else {
-					$errMsg = $this->messages['AstAccountPort'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountDefaultUser', 'AstAccountDefaultUser',
+				'username', $this->messages['AstAccountDefaultUser'][1], $messages);
 			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountQualify']] != "")) {
-				$partialAccounts[$i]['AstAccountQualify'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountQualify']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRestrictCID']] != "")) {
-				$partialAccounts[$i]['AstAccountRestrictCID'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRestrictCID']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPTimeout']] != "")) {
-				$partialAccounts[$i]['AstAccountRTPTimeout'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPTimeout']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPHoldTimeout']] != "")) {
-				$partialAccounts[$i]['AstAccountRTPHoldTimeout'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRTPHoldTimeout']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDisallowedCodec']] != "")) {
-				$partialAccounts[$i]['AstAccountDisallowedCodec'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDisallowedCodec']];
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountAllowedCodec']] != "")) {
-				$partialAccounts[$i]['AstAccountAllowedCodec'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountAllowedCodec']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountMusicOnHold']] != "")) {
-				$partialAccounts[$i]['AstAccountMusicOnHold'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountMusicOnHold']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountExpirationTimestamp']] != "")) {
-				$partialAccounts[$i]['AstAccountExpirationTimestamp'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountExpirationTimestamp']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationContext']] != "")) {
-				$partialAccounts[$i]['AstAccountRegistrationContext'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationContext']];
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationExten']] != "")) {
-				$partialAccounts[$i]['AstAccountRegistrationExten'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationExten']];
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountCanCallForward']] != "")) {
-				$partialAccounts[$i]['AstAccountCanCallForward'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountCanCallForward']];
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountIPAddress']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountIPAddress']], 'ip')) {
-					$partialAccounts[$i]['AstAccountIPAddress'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountIPAddress']];
-				}
-				else {
-					$errMsg = $this->messages['AstAccountIPAddress'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountDefaultUser']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['asteriskAccount_AstAccountDefaultUser']], 'username')) {
-					$partialAccounts[$i]['AstAccountDefaultUser'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountDefaultUser']];
-				}
-				else {
-					$errMsg = $this->messages['AstAccountDefaultUser'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
-			
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationServer']] != "")) {
-				$partialAccounts[$i]['AstAccountRegistrationServer'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountRegistrationServer']];
-			}
-
-			if (($rawAccounts[$i][$ids['asteriskAccount_AstAccountLastQualifyMilliseconds']] != "")) {
-				$partialAccounts[$i]['AstAccountLastQualifyMilliseconds'] = $rawAccounts[$i][$ids['asteriskAccount_AstAccountLastQualifyMilliseconds']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRegistrationServer', 'AstAccountRegistrationServer');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountLastQualifyMilliseconds', 'AstAccountLastQualifyMilliseconds');
 		}
 		return $messages;
 	}
