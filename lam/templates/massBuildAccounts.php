@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	
 	// check if values in unique columns are correct
 	for ($i = 0; $i < sizeof($columns); $i++) {
-		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] == true)) {
+		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] == true) && isset($ids[$columns[$i]['name']])) {
 			$colNumber = $ids[$columns[$i]['name']];
 			$values_given = array();
 			for ($r = 0; $r < sizeof($data); $r++) {
