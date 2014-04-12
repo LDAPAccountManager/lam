@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2013  Roland Gruber
+  Copyright (C) 2009 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -636,10 +636,17 @@ class nisnetgroup extends baseModule {
 		if ($this->cachedHostList != null) {
 			return $this->cachedHostList;
 		}
-		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'account', array('uid'), array('host'));
-		for ($i = 0; $i < sizeof($this->cachedHostList); $i++) {
-			$this->cachedHostList[$i] = $this->cachedHostList[$i]['uid'][0];
+		$this->cachedHostList = array();
+		$list = searchLDAPByFilter('(|(objectClass=account)(objectClass=device))', array('uid', 'cn'), array('host'));
+		foreach ($list as $attrs) {
+			if (!empty($attrs['uid'][0])) {
+				$this->cachedHostList[] = $attrs['uid'][0];
+			}
+			if (!empty($attrs['cn'][0])) {
+				$this->cachedHostList[] = $attrs['cn'][0];
+			}
 		}
+		$this->cachedHostList = array_values(array_unique($this->cachedHostList));
 		return $this->cachedHostList;
 	}
 
