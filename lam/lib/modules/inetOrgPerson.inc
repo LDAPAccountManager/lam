@@ -2118,9 +2118,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$partialAccounts[$i]['initials'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_initials']]);
 			}
 			// description
-			if (isset($ids['inetOrgPerson_description']) && ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "")) {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['inetOrgPerson_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description', 'description');
 			// title
 			if (isset($ids['inetOrgPerson_title']) && ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "")) {
 				$titleList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_title']]);
@@ -2135,20 +2133,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// employee number
-			if (isset($ids['inetOrgPerson_employeeNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']] != "")) {
-				$partialAccounts[$i]['employeeNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_employeeNumber']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_employeeNumber', 'employeeNumber');
 			// employee type
-			if (isset($ids['inetOrgPerson_type']) && ($rawAccounts[$i][$ids['inetOrgPerson_type']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_type']], 'employeeType')) {
-					$partialAccounts[$i]['employeeType'] = $rawAccounts[$i][$ids['inetOrgPerson_type']];
-				}
-				else {
-					$errMsg = $this->messages['employeeType'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_type', 'employeeType',
+				'employeeType', $this->messages['employeeType'][1], $errors);
 			// business category
 			if (isset($ids['inetOrgPerson_businessCategory']) && ($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']] != "")) {
 				$businessCategoryList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_businessCategory']]);
@@ -2193,9 +2181,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$partialAccounts[$i]['postOfficeBox'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']]);
 			}
 			// room number
-			if (isset($ids['inetOrgPerson_roomNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_roomNumber']] != "")) {
-				$partialAccounts[$i]['roomNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_roomNumber']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_roomNumber', 'roomNumber');
 			// departments
 			if (isset($ids['inetOrgPerson_departmentNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']] != "")) {
 				$partialAccounts[$i]['departmentNumber'] = explode(';', $rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']]);
@@ -2223,9 +2209,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$partialAccounts[$i]['physicalDeliveryOfficeName'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_physicalDeliveryOfficeName']]);
 			}
 			// carLicense
-			if (isset($ids['inetOrgPerson_carLicense']) && ($rawAccounts[$i][$ids['inetOrgPerson_carLicense']] != "")) {
-				$partialAccounts[$i]['carLicense'] = $rawAccounts[$i][$ids['inetOrgPerson_carLicense']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_carLicense', 'carLicense');
 			// postal code
 			if (isset($ids['inetOrgPerson_postalCode']) && ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "")) {
 				$postalCodeList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postalCode']]);
@@ -2240,27 +2224,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			// postal address
-			if (isset($ids['inetOrgPerson_address']) && ($rawAccounts[$i][$ids['inetOrgPerson_address']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_address']], 'postalAddress')) {
-					$partialAccounts[$i]['postalAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_address']];
-				}
-				else {
-					$errMsg = $this->messages['postalAddress'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_address', 'postalAddress',
+				'postalAddress',$this->messages['postalAddress'][1] , $errors);
 			// registered address
-			if (isset($ids['inetOrgPerson_registeredAddress']) && ($rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']], 'postalAddress')) {
-					$partialAccounts[$i]['registeredAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_registeredAddress']];
-				}
-				else {
-					$errMsg = $this->messages['registeredAddress'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_registeredAddress', 'registeredAddress',
+				'postalAddress',$this->messages['registeredAddress'][1] , $errors);
 			// telephone
 			if (isset($ids['inetOrgPerson_telephone']) && ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "")) {
 				$telephoneList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_telephone']]));

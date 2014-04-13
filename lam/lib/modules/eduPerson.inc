@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2013  Roland Gruber
+  Copyright (C) 2009 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -533,27 +533,11 @@ class eduPerson extends baseModule {
 				$partialAccounts[$i]['eduPersonEntitlement'] = $parts;
 			}
 			// organisation
-			if ($rawAccounts[$i][$ids['eduPerson_orgDN']] != "") {
-				if (!get_preg($rawAccounts[$i][$ids['eduPerson_orgDN']], 'dn')) {
-					$error = $this->messages['eduPersonOrgDN'][1];
-					array_push($error, $i);
-					$messages[] = $error;
-				}
-				else {
-					$partialAccounts[$i]['eduPersonOrgDN'] = $rawAccounts[$i][$ids['eduPerson_orgDN']];
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_orgDN', 'eduPersonOrgDN',
+				'dn', $this->messages['eduPersonOrgDN'][1], $messages);
 			// primary OU
-			if ($rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']] != "") {
-				if (!get_preg($rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']], 'dn')) {
-					$error = $this->messages['eduPersonPrimaryOrgUnitDN'][1];
-					array_push($error, $i);
-					$messages[] = $error;
-				}
-				else {
-					$partialAccounts[$i]['eduPersonPrimaryOrgUnitDN'] = $rawAccounts[$i][$ids['eduPerson_primaryOrgUnitDN']];
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_primaryOrgUnitDN', 'eduPersonPrimaryOrgUnitDN',
+				'dn', $this->messages['eduPersonPrimaryOrgUnitDN'][1], $messages);
 			// OUs
 			if ($rawAccounts[$i][$ids['eduPerson_orgUnitDN']] != "") {
 				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_orgUnitDN']]);

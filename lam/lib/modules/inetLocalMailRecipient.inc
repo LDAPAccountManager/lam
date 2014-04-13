@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -266,29 +266,11 @@ class inetLocalMailRecipient extends baseModule {
 				}
 			}
 			// add routing address
-			if ($rawAccounts[$i][$ids['inetLocalMailRecipient_routingAdr']] != "") {
-				// check format
-				if (get_preg($rawAccounts[$i][$ids['inetLocalMailRecipient_routingAdr']], 'email')) {
-					$partialAccounts[$i]['mailRoutingAddress'][] = $rawAccounts[$i][$ids['inetLocalMailRecipient_routingAdr']];
-				}
-				else {
-					$errMsg = $this->messages['mailRoutingAddress'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_routingAdr', 'mailRoutingAddress',
+				'email', $this->messages['mailRoutingAddress'][1], $messages);
 			// add mail server
-			if ($rawAccounts[$i][$ids['inetLocalMailRecipient_server']] != "") {
-				// check format
-				if (get_preg($rawAccounts[$i][$ids['inetLocalMailRecipient_server']], 'DNSname')) {
-					$partialAccounts[$i]['mailHost'][] = $rawAccounts[$i][$ids['inetLocalMailRecipient_server']];
-				}
-				else {
-					$errMsg = $this->messages['mailHost'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_server', 'mailHost',
+				'DNSname', $this->messages['mailHost'][1], $messages);
 		}
 		return $messages;
 	}

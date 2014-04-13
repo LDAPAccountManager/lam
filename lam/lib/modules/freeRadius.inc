@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2013  Roland Gruber
+  Copyright (C) 2011 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -476,38 +476,14 @@ class freeRadius extends baseModule {
 			// add object class
 			if (!in_array("radiusprofile", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "radiusprofile";
 			// IP address
-			if ($rawAccounts[$i][$ids['freeRadius_radiusFramedIPAddress']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['freeRadius_radiusFramedIPAddress']], 'ip')) {
-					$partialAccounts[$i]['radiusFramedIPAddress'] = $rawAccounts[$i][$ids['freeRadius_radiusFramedIPAddress']];
-				}
-				else {
-					$errMsg = $this->messages['radiusFramedIPAddress'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusFramedIPAddress', 'radiusFramedIPAddress',
+				'ip', $this->messages['radiusFramedIPAddress'][1], $errors);
 			// net mask
-			if ($rawAccounts[$i][$ids['freeRadius_radiusFramedIPNetmask']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['freeRadius_radiusFramedIPNetmask']], 'ip')) {
-					$partialAccounts[$i]['radiusFramedIPNetmask'] = $rawAccounts[$i][$ids['freeRadius_radiusFramedIPNetmask']];
-				}
-				else {
-					$errMsg = $this->messages['radiusFramedIPNetmask'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusFramedIPNetmask', 'radiusFramedIPNetmask',
+				'ip', $this->messages['radiusFramedIPNetmask'][1], $errors);
 			// realm
-			if ($rawAccounts[$i][$ids['freeRadius_radiusRealm']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['freeRadius_radiusRealm']], 'DNSname')) {
-					$partialAccounts[$i]['radiusRealm'] = $rawAccounts[$i][$ids['freeRadius_radiusRealm']];
-				}
-				else {
-					$errMsg = $this->messages['radiusRealm'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusRealm', 'radiusRealm',
+				'DNSname', $this->messages['radiusRealm'][1], $errors);
 			// group names
 			if ($rawAccounts[$i][$ids['freeRadius_radiusGroupName']] != "") {
 				$groupList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['freeRadius_radiusGroupName']]);
@@ -538,16 +514,8 @@ class freeRadius extends baseModule {
 				}
 			}
 			// idle timeout
-			if ($rawAccounts[$i][$ids['freeRadius_radiusIdleTimeout']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['freeRadius_radiusIdleTimeout']], 'digit')) {
-					$partialAccounts[$i]['radiusIdleTimeout'] = $rawAccounts[$i][$ids['freeRadius_radiusIdleTimeout']];
-				}
-				else {
-					$errMsg = $this->messages['radiusIdleTimeout'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusIdleTimeout', 'radiusIdleTimeout',
+				'digit', $this->messages['radiusIdleTimeout'][1], $errors);
 		}
 		return $errors;
 	}
