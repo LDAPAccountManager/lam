@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -610,16 +610,8 @@ class kolabUser extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = "mailrecipient";
 			}
 			// mailbox server
-			if ($rawAccounts[$i][$ids['kolabUser_mailHost']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['kolabUser_mailHost']], 'DNSname')) {
-					$partialAccounts[$i]['mailHost'] = $rawAccounts[$i][$ids['kolabUser_mailHost']];
-				}
-				else {
-					$errMsg = $this->messages['mailHost'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabUser_mailHost', 'mailHost',
+				'DNSname', $this->messages['mailHost'][1], $messages);
 			// mailbox quota
 			if (!empty($rawAccounts[$i][$ids['kolabUser_mailQuota']])) {
 				if (get_preg($rawAccounts[$i][$ids['kolabUser_mailQuota']], 'digit')) {

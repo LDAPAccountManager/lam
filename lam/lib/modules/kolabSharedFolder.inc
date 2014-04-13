@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -467,25 +467,11 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 			// cn
 			$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['kolabSharedFolder_cn']];
 			// mail
-			if (!get_preg($rawAccounts[$i][$ids['kolabSharedFolder_mail']], 'email')) {
-				$errMsg = $this->messages['mail'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
-			else {
-				$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['kolabSharedFolder_mail']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabSharedFolder_mail', 'mail',
+				'email', $this->messages['mail'][1], $messages);
 			// mailbox server
-			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_mailHost']])) {
-				if (get_preg($rawAccounts[$i][$ids['kolabSharedFolder_mailHost']], 'DNSname')) {
-					$partialAccounts[$i]['mailHost'] = $rawAccounts[$i][$ids['kolabSharedFolder_mailHost']];
-				}
-				else {
-					$errMsg = $this->messages['mailHost'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabSharedFolder_mailHost', 'mailHost',
+				'DNSname', $this->messages['mailHost'][1], $messages);
 			// target folder
 			$partialAccounts[$i]['kolabTargetFolder'] = $rawAccounts[$i][$ids['kolabSharedFolder_kolabTargetFolder']];
 			// folder type
