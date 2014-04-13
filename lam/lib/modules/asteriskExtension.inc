@@ -5,7 +5,7 @@
   
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2012  Roland Gruber
+                2009 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -845,16 +845,16 @@ class asteriskExtension extends baseModule {
         $messages = array();
         //hash to strore extension_name => priority. For new extensoin priority will be 1
         $extensionNamePriorityMap = array();
-        for ($rawAccIdx = 0; $rawAccIdx < sizeof($rawAccounts); $rawAccIdx++) {            
+        for ($i = 0; $i < sizeof($rawAccounts); $i++) {            
             // add object class
-            if (!in_array("AsteriskExtension", $partialAccounts[$rawAccIdx]['objectClass']))
-                $partialAccounts[$rawAccIdx]['objectClass'][] = "AsteriskExtension";
-            if (!in_array("groupOfNames", $partialAccounts[$rawAccIdx]['objectClass']))
-                $partialAccounts[$rawAccIdx]['objectClass'][] = "groupOfNames";
+            if (!in_array("AsteriskExtension", $partialAccounts[$i]['objectClass']))
+                $partialAccounts[$i]['objectClass'][] = "AsteriskExtension";
+            if (!in_array("groupOfNames", $partialAccounts[$i]['objectClass']))
+                $partialAccounts[$i]['objectClass'][] = "groupOfNames";
             // attributes
-            $partialAccounts[$rawAccIdx]['AstExtension'] = $rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstExtension']];
+            $partialAccounts[$i]['AstExtension'] = $rawAccounts[$i][$ids['asteriskExtension_AstExtension']];
             
-            $extensionName = $partialAccounts[$rawAccIdx]['AstExtension'];
+            $extensionName = $partialAccounts[$i]['AstExtension'];
             $astPriorityTmp = 0;
             if(isset ($extensionNamePriorityMap[$extensionName])){
                 $astPriorityTmp = $extensionNamePriorityMap[$extensionName] + 1;
@@ -863,25 +863,19 @@ class asteriskExtension extends baseModule {
                 $astPriorityTmp = 1;
                 $extensionNamePriorityMap[$extensionName] = $astPriorityTmp;
             }            
-            $partialAccounts[$rawAccIdx]['AstPriority'] = $astPriorityTmp;
+            $partialAccounts[$i]['AstPriority'] = $astPriorityTmp;
             
-            $partialAccounts[$rawAccIdx]['cn'] =   $extensionName  . '-' . $astPriorityTmp;
+            $partialAccounts[$i]['cn'] =   $extensionName  . '-' . $astPriorityTmp;
             
-            if(isset($rawAccounts[$rawAccIdx][$ids['asteriskExtension_owner']]) && $rawAccounts[$rawAccIdx][$ids['asteriskExtension_owner']] != '' ){
-                $partialAccounts[$rawAccIdx]['member'] = explode(';', $rawAccounts[$rawAccIdx][$ids['asteriskExtension_owner']]);
-            }else{
-                $partialAccounts[$rawAccIdx]['member'] = $this->getDefaultExtensionOwner();
+            if (isset($rawAccounts[$i][$ids['asteriskExtension_owner']]) && $rawAccounts[$i][$ids['asteriskExtension_owner']] != '' ) {
+                $partialAccounts[$i]['member'] = explode(';', $rawAccounts[$i][$ids['asteriskExtension_owner']]);
+            } else {
+                $partialAccounts[$i]['member'] = $this->getDefaultExtensionOwner();
             }
-            if ($rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstApplication']] != "") {
-                $partialAccounts[$rawAccIdx]['AstApplication'] = $rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstApplication']];
-            }
-            if (isset($rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstApplicationData']])
-                    && $rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstApplicationData']] != "") {
-                $partialAccounts[$rawAccIdx]['AstApplicationData'] = $rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstApplicationData']];
-            }
-            if ($rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstContext']] != "") {
-                $partialAccounts[$rawAccIdx]['AstContext'] = $rawAccounts[$rawAccIdx][$ids['asteriskExtension_AstContext']];
-            }
+            
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskExtension_AstApplication', 'AstApplication');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskExtension_AstApplicationData', 'AstApplicationData');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskExtension_AstContext', 'AstContext');
         }
         
        return $messages;

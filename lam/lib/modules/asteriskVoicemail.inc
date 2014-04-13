@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2013  Roland Gruber
+                2010 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -202,14 +202,18 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$this->messages['AstVoicemailMailbox'][0] = array('ERROR', _('Please enter a mailbox.'));
 		$this->messages['AstVoicemailMailbox'][1] = array('ERROR', _('The mailbox format is invalid.'));
 		$this->messages['AstVoicemailMailbox'][2] = array('ERROR', _('There is already another user with this mailbox name.'));
-
+		$this->messages['AstVoicemailMailbox'][3] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailMailbox', _('The mailbox format is invalid.'));
+		
 		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
 		$this->messages['AstContext'][1] = array('ERROR', _('The account context is invalid.'));
 		$this->messages['AstContext'][2] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstContext', _('The account context is invalid.'));
 
 		$this->messages['AstVoicemailFullname'][0] = array('ERROR', _('The full name is invalid.'));
-		$this->messages['AstVoicemailEmail'][01] = array('ERROR', _('The email address is invalid.'));
+		$this->messages['AstVoicemailFullname'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailFullname', _('The full name is invalid.'));
+		$this->messages['AstVoicemailEmail'][0] = array('ERROR', _('The email address is invalid.'));
+		$this->messages['AstVoicemailEmail'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailEmail', _('The email address is invalid.'));
 		$this->messages['AstVoicemailPager'][0] = array('ERROR', _('The pager number has bad format.'));
+		$this->messages['AstVoicemailPager'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailPager', _('The pager number has bad format.'));
 		$this->messages['AstVoicemailOptions'][0] = array('ERROR', _('The options have bad format.'));
 		$this->messages['AstVoicemailOptions'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The options have bad format.'));
 		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The voicemail context name is invalid.'));
@@ -381,68 +385,31 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
 			
 			//add context
-			if ($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']] == "") {
+			if (empty($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']])) {
 				// default value
 				$partialAccounts[$i]['AstContext'] = 'default';
 			}
-			elseif (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']], 'realname')) {
-				$partialAccounts[$i]['AstContext'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstContext']];
-			}
 			else {
-				$errMsg = $this->messages['AstContext'][2];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstContext', 'AstContext',
+					'realname', $this->messages['AstContext'][2], $messages);
 			}
 			
-			// add account caller id
-			if (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailMailbox']], 'realname')) {
-				$partialAccounts[$i]['AstVoicemailMailbox'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailMailbox']];
-			}
-			else {
-				$errMsg = $this->messages['AstVoicemailMailbox'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
-
-			if (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailEmail']], 'email')) {
-				$partialAccounts[$i]['AstVoicemailEmail'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailEmail']];
-			}
-			else {
-				$errMsg = $this->messages['AstVoicemailEmail'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
-
-			if (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailPager']], 'telephone')) {
-				$partialAccounts[$i]['AstVoicemailPager'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailPager']];
-			}
-			else {
-				$errMsg = $this->messages['AstVoicemailPager'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
-
-			if ($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailOptions']]!= "") {
-				$partialAccounts[$i]['AstVoicemailOptions'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailOptions']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailMailbox', 'AstVoicemailMailbox',
+				'realname', $this->messages['AstVoicemailMailbox'][3], $messages);
 			
-			if (($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailFullname']] != "") && (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailFullname']], 'realname')) ) {
-				$partialAccounts[$i]['AstVoicemailFullname'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailFullname']];
-			}
-			else {
-				$errMsg = $this->messages['AstVoicemailFullname'][0];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailEmail', 'AstVoicemailEmail',
+				'email', $this->messages['AstVoicemailEmail'][1], $messages);
 
-			if (($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailContext']] != "") && (get_preg($rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailContext']], 'realname')) ) {
-				$partialAccounts[$i]['AstVoicemailContext'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailContext']];
-			}
-			else {
-				$errMsg = $this->messages['AstVoicemailContext'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailPager', 'AstVoicemailPager',
+				'telephone', $this->messages['AstVoicemailPager'][1], $messages);
+
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailOptions', 'AstVoicemailOptions');
+
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailFullname', 'AstVoicemailFullname',
+				'realname', $this->messages['AstVoicemailFullname'][1], $messages);
+
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailContext', 'AstVoicemailContext',
+				'realname', $this->messages['AstVoicemailContext'][1], $messages);
 
 			$partialAccounts[$i]['AstVoicemailPassword'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailPassword']];
 		}
