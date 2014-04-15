@@ -437,14 +437,8 @@ class nisMailAlias extends baseModule {
 			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "nisMailAlias";
 			// add alias name
 			// check format
-			if (get_preg($rawAccounts[$i][$ids['nisMailAlias_alias']], 'nis_alias')) {
-				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['nisMailAlias_alias']];
-			}
-			else {
-				$errMsg = $this->messages['alias'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisMailAlias_alias', 'cn',
+				'nis_alias', $this->messages['alias'][1], $messages);
 			// add recipients
 			if ($rawAccounts[$i][$ids['nisMailAlias_recipients']] != "") {
 				$aliases = explode(',', $rawAccounts[$i][$ids['nisMailAlias_recipients']]);

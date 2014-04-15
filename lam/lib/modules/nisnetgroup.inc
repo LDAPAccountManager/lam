@@ -526,9 +526,7 @@ class nisnetgroup extends baseModule {
 			// add cn
 			$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['nisnetgroup_cn']];
 			// description (UTF-8, no regex check needed)
-			if ($rawAccounts[$i][$ids['nisnetgroup_description']] != "") {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['nisnetgroup_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisnetgroup_description', 'description');
 			// additional groups
 			if ($rawAccounts[$i][$ids['nisnetgroup_subgroups']] != "") {
 				$groups = explode(",", $rawAccounts[$i][$ids['nisnetgroup_subgroups']]);
