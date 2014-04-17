@@ -311,7 +311,7 @@ function generateRandomPassword() {
 			$rand = getRandomNumber() % 65;
 			$password .= $list[$rand];
 		}
-		if (checkPasswordStrength($password) === true) {
+		if (checkPasswordStrength($password, null, null) === true) {
 			break;
 		}
 	}

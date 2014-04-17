@@ -2359,7 +2359,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$return['messages'][] = $this->messages['sambaLMPassword'][1];
 					}
 					else {
-						$pwdPolicyResult = checkPasswordStrength($_POST['sambaSamAccount_password']);
+						$userName = empty($attributes['uid'][0]) ? null : $attributes['uid'][0];
+						$additionalAttrs = array();
+						if (!empty($attributes['sn'][0])) {
+							$additionalAttrs[] = $attributes['sn'][0];
+						}
+						if (!empty($attributes['givenName'][0])) {
+							$additionalAttrs[] = $attributes['givenName'][0];
+						}
+						$pwdPolicyResult = checkPasswordStrength($_POST['sambaSamAccount_password'], $userName, $additionalAttrs);
 						if ($pwdPolicyResult === true) {
 							$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['sambaSamAccount_password']);
 							if (array_key_exists('sambaLMPassword', $attributes)) {

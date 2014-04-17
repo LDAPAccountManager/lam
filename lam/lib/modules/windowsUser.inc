@@ -1800,7 +1800,15 @@ class windowsUser extends baseModule implements passwordService {
 						$return['messages'][] = $this->messages['unicodePwd'][1];
 					}
 					else {
-						$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd']);
+						$userName = empty($attributes['userPrincipalName'][0]) ? null : $attributes['userPrincipalName'][0];
+						$additionalAttrs = array();
+						if (!empty($attributes['sn'][0])) {
+							$additionalAttrs[] = $attributes['sn'][0];
+						}
+						if (!empty($attributes['givenName'][0])) {
+							$additionalAttrs[] = $attributes['givenName'][0];
+						}
+						$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd'], $userName, $additionalAttrs);
 						if ($pwdPolicyResult === true) {
 							$this->setSelfServicePassword($return, $attributes);
 							$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
@@ -1939,6 +1947,20 @@ class windowsUser extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		// check password strength
+		$user = empty($this->attributes['userPrincipalName'][0]) ? null : $this->attributes['userPrincipalName'][0];
+		$additionalAttrs = array();
+		if (!empty($this->attributes['sn'][0])) {
+			$additionalAttrs[] = $this->attributes['sn'][0];
+		}
+		if (!empty($this->attributes['givenName'][0])) {
+			$additionalAttrs[] = $this->attributes['givenName'][0];
+		}
+		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
+		if ($checkResult !== true) {
+			return array(array('ERROR', $checkResult));
+		}
+		// set new password
 		$pwdBin = self::pwdAttributeValue($password);
 		$this->orig['unicodePwd'][0] = 'unknown';
 		$this->attributes['unicodePwd'][0] = $pwdBin;

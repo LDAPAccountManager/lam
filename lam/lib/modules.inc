@@ -1125,7 +1125,7 @@ class accountContainer {
 				$return['errorsOccured'] = 'true';
 			}
 			// check passsword stregth
-			$pwdPolicyResult = checkPasswordStrength($password1);
+			$pwdPolicyResult = checkPasswordStrength($password1, null, null);
 			if ($pwdPolicyResult !== true) {
 				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', array(), true);
 				$return['errorsOccured'] = 'true';

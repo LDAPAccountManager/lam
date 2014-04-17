@@ -2562,7 +2562,15 @@ class posixAccount extends baseModule implements passwordService {
 						$return['messages'][] = $this->messages['userPassword'][1];
 					}
 					else {
-						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password']);
+						$userName = empty($attributes['uid'][0]) ? null : $attributes['uid'][0];
+						$additionalAttrs = array();
+						if (!empty($attributes['sn'][0])) {
+							$additionalAttrs[] = $attributes['sn'][0];
+						}
+						if (!empty($attributes['givenName'][0])) {
+							$additionalAttrs[] = $attributes['givenName'][0];
+						}
+						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
 						if ($pwdPolicyResult === true) {
 							$return['mod'][$this->getPasswordAttrName()][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
@@ -2638,6 +2646,23 @@ class posixAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		// check password strength
+		$user = empty($this->attributes['uid'][0]) ? null : $this->attributes['uid'][0];
+		$additionalAttrs = array();
+		if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			if (!empty($attrs['sn'][0])) {
+				$additionalAttrs[] = $attrs['sn'][0];
+			}
+			if (!empty($attrs['givenName'][0])) {
+				$additionalAttrs[] = $attrs['givenName'][0];
+			}
+		}
+		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
+		if ($checkResult !== true) {
+			return array(array('ERROR', $checkResult));
+		}
+		// set new password
 		$this->clearTextPassword = $password;
 		$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();

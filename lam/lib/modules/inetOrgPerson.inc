@@ -3243,6 +3243,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		// check password strength
+		$user = empty($this->attributes['uid'][0]) ? null : $this->attributes['uid'][0];
+		$additionalAttrs = array();
+		if (!empty($this->attributes['sn'][0])) {
+			$additionalAttrs[] = $this->attributes['sn'][0];
+		}
+		if (!empty($this->attributes['givenName'][0])) {
+			$additionalAttrs[] = $this->attributes['givenName'][0];
+		}
+		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
+		if ($checkResult !== true) {
+			return array(array('ERROR', $checkResult));
+		}
+		// set new password
 		$this->clearTextPassword = $password;
 		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
