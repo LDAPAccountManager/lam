@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2013  Roland Gruber
+  Copyright (C) 2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -560,70 +560,24 @@ class sambaDomain extends baseModule {
 			// add object class
 			if (!in_array("sambaDomain", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaDomain";
 			// domain name
-			if (get_preg($rawAccounts[$i][$ids['sambaDomain_domainName']], 'domainname')) {
-				$partialAccounts[$i]['sambaDomainName'] = $rawAccounts[$i][$ids['sambaDomain_domainName']];
-			}
-			else {
-				$errMsg = $this->messages['domainName'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaDomain_domainName', 'sambaDomainName',
+				'domainname', $this->messages['domainName'][1], $messages);
 			// domain SID
-			if (get_preg($rawAccounts[$i][$ids['sambaDomain_domainSID']], 'domainSID')) {
-				$partialAccounts[$i]['sambaSID'] = $rawAccounts[$i][$ids['sambaDomain_domainSID']];
-			}
-			else {
-				$errMsg = $this->messages['domainSID'][1];
-				array_push($errMsg, array($i));
-				$messages[] = $errMsg;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaDomain_domainSID', 'sambaSID',
+				'domainSID', $this->messages['domainSID'][1], $messages);
 			// RID base
-			if ($rawAccounts[$i][$ids['sambaDomain_RIDbase']]) {
-				if (get_preg($rawAccounts[$i][$ids['sambaDomain_RIDbase']], 'digit')) {
-					$partialAccounts[$i]['sambaAlgorithmicRidBase'] = $rawAccounts[$i][$ids['sambaDomain_RIDbase']];
-				}
-				else {
-					$errMsg = $this->messages['RIDbase'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
-			else {
-				$partialAccounts[$i]['sambaAlgorithmicRidBase'] = '1000';
-			}
+			$partialAccounts[$i]['sambaAlgorithmicRidBase'] = '1000';
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaDomain_RIDbase', 'sambaAlgorithmicRidBase',
+				'digit', $this->messages['RIDbase'][1], $messages);
 			// next RID
-			if ($rawAccounts[$i][$ids['sambaDomain_nextRID']]) {
-				if (get_preg($rawAccounts[$i][$ids['sambaDomain_nextRID']], 'digit')) {
-					$partialAccounts[$i]['sambaNextRid'] = $rawAccounts[$i][$ids['sambaDomain_nextRID']];
-				}
-				else {
-					$errMsg = $this->messages['nextRID'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaDomain_nextRID', 'sambaNextRid',
+				'digit', $this->messages['nextRID'][1], $messages);
 			// next user RID
-			if ($rawAccounts[$i][$ids['sambaDomain_nextUserRID']]) {
-				if (get_preg($rawAccounts[$i][$ids['sambaDomain_nextUserRID']], 'digit')) {
-					$partialAccounts[$i]['sambaNextUserRid'] = $rawAccounts[$i][$ids['sambaDomain_nextUserRID']];
-				}
-				else {
-					$errMsg = $this->messages['nextUserRID'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaDomain_nextUserRID', 'sambaNextUserRid',
+				'digit', $this->messages['nextUserRID'][1], $messages);
 			// next group RID
-			if ($rawAccounts[$i][$ids['sambaDomain_nextGroupRID']]) {
-				if (get_preg($rawAccounts[$i][$ids['sambaDomain_nextGroupRID']], 'digit')) {
-					$partialAccounts[$i]['sambaNextGroupRid'] = $rawAccounts[$i][$ids['sambaDomain_nextGroupRID']];
-				}
-				else {
-					$errMsg = $this->messages['nextGroupRID'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaDomain_nextGroupRID', 'sambaNextGroupRid',
+				'digit', $this->messages['nextGroupRID'][1], $messages);
 		}
 		return $messages;
 	}

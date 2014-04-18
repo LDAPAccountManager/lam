@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2013  Roland Gruber
+                2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1993,16 +1993,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
 				// displayName
-				if ($rawAccounts[$i][$ids['sambaSamAccount_displayName']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_displayName']], 'realname')) {
-						$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaSamAccount_displayName']];
-					}
-					else {
-						$errMsg = $this->messages['displayName'][0];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_displayName', 'displayName',
+					'realname', $this->messages['displayName'][0], $errors);
 				// password
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
 				if (!get_preg($rawAccounts[$i][$ids['sambaSamAccount_password']], 'password')) {
@@ -2114,49 +2106,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 					}
 				}
 				// home path
-				if ($rawAccounts[$i][$ids['sambaSamAccount_homePath']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_homePath']], 'UNC')) {
-						$partialAccounts[$i]['sambaHomePath'] = $rawAccounts[$i][$ids['sambaSamAccount_homePath']];
-					}
-					else {
-						$errMsg = $this->messages['homePath'][2];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_homePath', 'sambaHomePath',
+					'UNC', $this->messages['homePath'][2], $errors);
 				// profile path
-				if ($rawAccounts[$i][$ids['sambaSamAccount_profilePath']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_profilePath']], 'UNC')) {
-						$partialAccounts[$i]['sambaProfilePath'] = $rawAccounts[$i][$ids['sambaSamAccount_profilePath']];
-					}
-					else {
-						$errMsg = $this->messages['profilePath'][2];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_profilePath', 'sambaProfilePath',
+					'UNC', $this->messages['profilePath'][2], $errors);
 				// logon script
-				if ($rawAccounts[$i][$ids['sambaSamAccount_logonScript']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_logonScript']], 'logonscript')) {
-						$partialAccounts[$i]['sambaLogonScript'] = $rawAccounts[$i][$ids['sambaSamAccount_logonScript']];
-					}
-					else {
-						$errMsg = $this->messages['logonScript'][2];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_logonScript', 'sambaLogonScript',
+					'logonscript', $this->messages['logonScript'][2], $errors);
 				// workstations
-				if ($rawAccounts[$i][$ids['sambaSamAccount_workstations']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_workstations']], 'workstations')) {
-						$partialAccounts[$i]['sambaUserWorkstations'] = $rawAccounts[$i][$ids['sambaSamAccount_workstations']];
-					}
-					else {
-						$errMsg = $this->messages['workstations'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_workstations', 'sambaUserWorkstations',
+					'workstations', $this->messages['workstations'][1], $errors);
 				// domain
 				$domIndex = -1;
 				for ($d = 0; $d < sizeof($domains); $d++) {
@@ -2219,19 +2179,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase);
 				}
 				// logon hours
-				if ($rawAccounts[$i][$ids['sambaSamAccount_logonHours']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_logonHours']], 'sambaLogonHours')) {
-						$partialAccounts[$i]['sambaLogonHours'] = $rawAccounts[$i][$ids['sambaSamAccount_logonHours']];
-					}
-					else {
-						$errMsg = $this->messages['logonHours'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
-				else {
-					$partialAccounts[$i]['sambaLogonHours'] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-				}
+				$partialAccounts[$i]['sambaLogonHours'] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_logonHours', 'sambaLogonHours',
+					'sambaLogonHours', $this->messages['logonHours'][1], $errors);
 			}
 		}
 		else {  // hosts

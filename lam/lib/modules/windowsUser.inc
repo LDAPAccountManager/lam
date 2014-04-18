@@ -1268,44 +1268,22 @@ class windowsUser extends baseModule implements passwordService {
 				$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
 			}
 			// initials
-			if ($rawAccounts[$i][$ids['windowsUser_initials']] != "") {
-				$partialAccounts[$i]['initials'] = $rawAccounts[$i][$ids['windowsUser_initials']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_initials', 'initials');
 			// description
-			if ($rawAccounts[$i][$ids['windowsUser_description']] != "") {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsUser_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_description', 'description');
 			// street
-			if ($rawAccounts[$i][$ids['windowsUser_streetAddress']] != "") {
-				$partialAccounts[$i]['streetAddress'] = $rawAccounts[$i][$ids['windowsUser_streetAddress']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_streetAddress', 'streetAddress');
 			// post office box
-			if ($rawAccounts[$i][$ids['windowsUser_postOfficeBox']] != "") {
-				$partialAccounts[$i]['postOfficeBox'] = $rawAccounts[$i][$ids['windowsUser_postOfficeBox']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_postOfficeBox', 'postOfficeBox');
 			// postal code
-			if ($rawAccounts[$i][$ids['windowsUser_postalCode']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['windowsUser_postalCode']], 'postalCode')) {
-					$partialAccounts[$i]['postalCode'] = $rawAccounts[$i][$ids['windowsUser_postalCode']];
-				}
-				else {
-					$errMsg = $this->messages['postalCode'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_postalCode', 'postalCode',
+				'postalCode', $this->messages['postalCode'][1], $errors);
 			// location
-			if ($rawAccounts[$i][$ids['windowsUser_l']] != "") {
-				$partialAccounts[$i]['l'] = $rawAccounts[$i][$ids['windowsUser_l']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_l', 'l');
 			// state
-			if ($rawAccounts[$i][$ids['windowsUser_state']] != "") {
-				$partialAccounts[$i]['st'] = $rawAccounts[$i][$ids['windowsUser_state']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_state', 'st');
 			// office name
-			if ($rawAccounts[$i][$ids['windowsUser_officeName']] != "") {
-				$partialAccounts[$i]['physicalDeliveryOfficeName'] = $rawAccounts[$i][$ids['windowsUser_officeName']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_officeName', 'physicalDeliveryOfficeName');
 			// mail
 			if ($rawAccounts[$i][$ids['windowsUser_mail']] != "") {
 				foreach ($replacements as $wildcard => $value) {
@@ -1337,16 +1315,8 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// telephone
-			if ($rawAccounts[$i][$ids['windowsUser_telephoneNumber']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['windowsUser_telephoneNumber']], 'telephone')) {
-					$partialAccounts[$i]['telephoneNumber'] = $rawAccounts[$i][$ids['windowsUser_telephoneNumber']];
-				}
-				else {
-					$errMsg = $this->messages['telephoneNumber'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_telephoneNumber', 'telephoneNumber',
+				'telephone', $this->messages['telephoneNumber'][1], $errors);
 			// other telephone
 			if (isset($ids['windowsUser_otherTelephone']) && ($rawAccounts[$i][$ids['windowsUser_otherTelephone']] != "")) {
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherTelephone']]);
@@ -1361,9 +1331,7 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// website
-			if ($rawAccounts[$i][$ids['windowsUser_webSite']] != "") {
-				$partialAccounts[$i]['wWWHomePage'] = $rawAccounts[$i][$ids['windowsUser_webSite']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_webSite', 'wWWHomePage');
 			// other websites
 			if (isset($ids['windowsUser_otherWebSites']) && ($rawAccounts[$i][$ids['windowsUser_otherWebSites']] != "")) {
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherWebSites']]);
@@ -1476,22 +1444,12 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// NIS name
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
-				if (!empty($rawAccounts[$i][$ids['windowsUser_msSFU30Name']])) {
-					if (get_preg($rawAccounts[$i][$ids['windowsUser_msSFU30Name']], 'username')) {
-						$partialAccounts[$i]['msSFU30Name'] = $rawAccounts[$i][$ids['windowsUser_msSFU30Name']];
-					}
-					else {
-						$errMsg = $this->messages['msSFU30Name'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_msSFU30Name', 'msSFU30Name',
+					'username', $this->messages['msSFU30Name'][1], $errors);
 			}
 			// NIS domain
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-				if (!empty($rawAccounts[$i][$ids['windowsUser_msSFU30NisDomain']])) {
-					$partialAccounts[$i]['msSFU30NisDomain'] = $rawAccounts[$i][$ids['windowsUser_msSFU30NisDomain']];
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_msSFU30NisDomain', 'msSFU30NisDomain');
 			}
 		}
 		return $errors;

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -262,17 +262,11 @@ class windowsHost extends baseModule {
 				}
 			}
 			// description
-			if ($rawAccounts[$i][$ids['windowsHost_description']] != "") {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsHost_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsHost_description', 'description');
 			// location
-			if ($rawAccounts[$i][$ids['windowsHost_location']] != "") {
-				$partialAccounts[$i]['location'] = $rawAccounts[$i][$ids['windowsHost_location']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsHost_location', 'location');
 			// managed by
-			if ($rawAccounts[$i][$ids['windowsHost_managedBy']] != "") {
-				$partialAccounts[$i]['managedBy'] = $rawAccounts[$i][$ids['windowsHost_managedBy']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsHost_managedBy', 'managedBy');
 			// machine trust account, no password required
 			$partialAccounts[$i]['userAccountControl'][0] = 4128;
 		}

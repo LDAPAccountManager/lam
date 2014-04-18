@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2013  Roland Gruber
+  Copyright (C) 2007 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -515,49 +515,17 @@ class shadowAccount extends baseModule implements passwordService {
 			// shadow last change
 			$partialAccounts[$i]['shadowLastChange'] = array(intval(time()/3600/24));
 			// password warning
-			if ($rawAccounts[$i][$ids['shadowAccount_warning']] != '') {
-				if (get_preg($rawAccounts[$i][$ids['shadowAccount_warning']], 'digit')) {
-					$partialAccounts[$i]['shadowWarning'][] = $rawAccounts[$i][$ids['shadowAccount_warning']];
-				}
-				else {
-					$errMsg = $this->messages['shadowWarning'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'shadowAccount_warning', 'shadowWarning',
+				'digit', $this->messages['shadowWarning'][1], $messages);
 			// password expire ignoration
-			if ($rawAccounts[$i][$ids['shadowAccount_ignoreExpire']] != '') {
-				if (get_preg($rawAccounts[$i][$ids['shadowAccount_ignoreExpire']], 'digit2')) {
-					$partialAccounts[$i]['shadowInactive'][] = $rawAccounts[$i][$ids['shadowAccount_ignoreExpire']];
-				}
-				else {
-					$errMsg = $this->messages['inactive'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'shadowAccount_ignoreExpire', 'shadowInactive',
+				'digit2', $this->messages['inactive'][1], $messages);
 			// password minAge
-			if ($rawAccounts[$i][$ids['shadowAccount_minAge']] != '') {
-				if (get_preg($rawAccounts[$i][$ids['shadowAccount_minAge']], 'digit')) {
-					$partialAccounts[$i]['shadowMin'][] = $rawAccounts[$i][$ids['shadowAccount_minAge']];
-				}
-				else {
-					$errMsg = $this->messages['shadowMin'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'shadowAccount_minAge', 'shadowMin',
+				'digit', $this->messages['shadowMin'][1], $messages);
 			// password maxAge
-			if ($rawAccounts[$i][$ids['shadowAccount_maxAge']] != '') {
-				if (get_preg($rawAccounts[$i][$ids['shadowAccount_maxAge']], 'digit')) {
-					$partialAccounts[$i]['shadowMax'][] = $rawAccounts[$i][$ids['shadowAccount_maxAge']];
-				}
-				else {
-					$errMsg = $this->messages['shadowMax'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'shadowAccount_maxAge', 'shadowMax',
+				'digit', $this->messages['shadowMax'][1], $messages);
 			// minAge <= maxAge
 			if ((($rawAccounts[$i][$ids['shadowAccount_minAge']] != '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] != '')) &&  // if at least one is set
 			(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') || (  // and one is not set

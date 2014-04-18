@@ -661,27 +661,17 @@ class windowsGroup extends baseModule {
 				}
 			}
 			// description
-			if ($rawAccounts[$i][$ids['windowsGroup_description']] != "") {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['windowsGroup_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsGroup_description', 'description');
 			// notes
-			if ($rawAccounts[$i][$ids['windowsGroup_notes']] != "") {
-				$partialAccounts[$i]['info'] = $rawAccounts[$i][$ids['windowsGroup_notes']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsGroup_notes', 'info');
 			// email
-			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail') && ($rawAccounts[$i][$ids['windowsGroup_mail']] != "")) {
-				if (get_preg($rawAccounts[$i][$ids['windowsGroup_mail']], 'email')) {
-					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsGroup_mail']];
-				}
-				else {
-					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsGroup_mail', 'mail',
+					'email', $this->messages['mail'][1], $errors);
 			}
 			// managed by
-			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy') && $rawAccounts[$i][$ids['windowsGroup_managedBy']] != "") {
-				$partialAccounts[$i]['managedBy'] = $rawAccounts[$i][$ids['windowsGroup_managedBy']];
+			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsGroup_managedBy', 'managedBy');
 			}
 			// add members
 			if ($rawAccounts[$i][$ids['windowsGroup_members']] != "") {
@@ -729,22 +719,12 @@ class windowsGroup extends baseModule {
 			}
 			// NIS name
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
-				if (!empty($rawAccounts[$i][$ids['windowsGroup_msSFU30Name']])) {
-					if (get_preg($rawAccounts[$i][$ids['windowsGroup_msSFU30Name']], 'groupname')) {
-						$partialAccounts[$i]['msSFU30Name'] = $rawAccounts[$i][$ids['windowsGroup_msSFU30Name']];
-					}
-					else {
-						$errMsg = $this->messages['msSFU30Name'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-					}
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsGroup_msSFU30Name', 'msSFU30Name',
+					'groupname', $this->messages['msSFU30Name'][1], $errors);
 			}
 			// NIS domain
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
-				if (!empty($rawAccounts[$i][$ids['windowsGroup_msSFU30NisDomain']])) {
-					$partialAccounts[$i]['msSFU30NisDomain'] = $rawAccounts[$i][$ids['windowsGroup_msSFU30NisDomain']];
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsGroup_msSFU30NisDomain', 'msSFU30NisDomain');
 			}
 		}
 		return $errors;
