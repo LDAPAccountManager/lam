@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -236,9 +236,7 @@ class pykotaBillingCode extends baseModule {
 				$partialAccounts[$i]['pykotaBillingCode'] = $rawAccounts[$i][$ids['pykotaBillingCode_pykotaBillingCode']];
 			}
 			// description
-			if (!empty($rawAccounts[$i][$ids['pykotaBillingCode_description']])) {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['pykotaBillingCode_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaBillingCode_description', 'description');
 			// balance
 			$partialAccounts[$i]['pykotaBalance'] = '0.0';
 			// page count

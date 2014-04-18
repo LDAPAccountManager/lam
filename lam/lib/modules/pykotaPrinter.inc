@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -480,24 +480,11 @@ class pykotaPrinter extends baseModule {
 				}
 			}
 			// description
-			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_description']])) {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['pykotaPrinter_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaPrinter_description', 'description');
 			// job size
-			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_pykotaMaxJobSize']])) {
-				$pykotaMaxJobSize = $rawAccounts[$i][$ids['pykotaPrinter_pykotaMaxJobSize']];
-				if (!get_preg($pykotaMaxJobSize, 'digit')) {
-					$errMsg = $this->messages['pykotaMaxJobSize'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-				else {
-					$partialAccounts[$i]['pykotaMaxJobSize'] = $pykotaMaxJobSize;
-				}
-			}
-			else {
-				$partialAccounts[$i]['pykotaMaxJobSize'] = '0.0';
-			}
+			$partialAccounts[$i]['pykotaMaxJobSize'] = '0.0';
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaPrinter_pykotaMaxJobSize', 'pykotaMaxJobSize',
+				'digit', $this->messages['pykotaMaxJobSize'][1], $messages);
 			// price per job
 			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_pykotaPricePerJob']])) {
 				$pykotaPricePerJob = $rawAccounts[$i][$ids['pykotaPrinter_pykotaPricePerJob']];

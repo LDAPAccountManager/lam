@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -795,19 +795,11 @@ class pykotaUser extends baseModule {
 			}
 			// mail
 			if ($this->manageUid() && !empty($rawAccounts[$i][$ids['pykotaUser_mail']])) {
-				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_mail']], 'email')) {
-					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-				else {
-					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['pykotaUser_mail']];
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaUser_mail', 'mail',
+					'email', $this->messages['mail'][1], $messages);
 			}
 			// description
-			if ($this->manageDescription() && !empty($rawAccounts[$i][$ids['pykotaUser_description']])) {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['pykotaUser_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaUser_description', 'description');
 			// PyKota user name
 			if (!empty($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']], 'username')) {

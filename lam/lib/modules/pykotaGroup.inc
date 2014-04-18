@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -416,9 +416,7 @@ class pykotaGroup extends baseModule {
 				}
 			}
 			// description
-			if ($this->manageDescription() && !empty($rawAccounts[$i][$ids['pykotaGroup_description']])) {
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['pykotaGroup_description']];
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaGroup_description', 'description');
 			// PyKota group name
 			if (!empty($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']], 'groupname')) {
