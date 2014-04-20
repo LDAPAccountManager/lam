@@ -4,7 +4,7 @@ $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2013  Roland Gruber
+  				2012 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,16 @@ class authorizedServiceObject extends baseModule {
 	}
 
 
-   /**
+	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('user'));
+	}
+
+	/**
     * Returns meta data that is interpreted by parent class
     *
     * @return array array with meta data
@@ -58,8 +67,6 @@ class authorizedServiceObject extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'services.png';
-		// manages user accounts
-		$return["account_types"] = array("user");
 		// alias name
 		$return["alias"] = _("Authorized Services");
 		// module dependencies

@@ -54,6 +54,15 @@ class asteriskExtension extends baseModule {
     /** flag if new rule should be added */
     private $addRuleFlag = false;
 
+	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('asteriskExt'));
+	}
+
     /**
      * Returns meta data that is interpreted by parent class
      *
@@ -61,8 +70,6 @@ class asteriskExtension extends baseModule {
      */
     function get_metaData() {
         $return = array();
-        // manages users accounts
-        $return["account_types"] = array("asteriskExt");
         $return["is_base"] = true;
         // RDN attribute
         $return["RDN"] = array("cn" => "normal");

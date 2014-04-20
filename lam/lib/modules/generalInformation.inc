@@ -35,6 +35,15 @@ $Id$
 class generalInformation extends baseModule {
 
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), getTypes());
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -45,8 +54,6 @@ class generalInformation extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'info.png';
-		// manages all accounts
-		$return["account_types"] = getTypes();
 		// alias name
 		$return["alias"] = _("General information");
 		// module dependencies

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2013  Roland Gruber
+                2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -39,6 +39,15 @@ $Id$
 class account extends baseModule {
 
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array("host", "user"));
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -52,8 +61,6 @@ class account extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'uid.png';
-		// manages host accounts
-		$return["account_types"] = array("host", "user");
 		// alias name
 		$return["alias"] = _('Account');
 		// this is a base module
