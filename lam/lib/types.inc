@@ -58,11 +58,13 @@ function getTypes() {
 	$dir = dir($dirname);
 	$return = array();
 	// get type names.
-	while ($entry = $dir->read())
+	while ($entry = $dir->read()) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$return[] = $entry;
 		}
+	}
+	$dir->close();
 	return $return;
 }
 
