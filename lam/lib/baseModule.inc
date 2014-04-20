@@ -85,13 +85,15 @@ abstract class baseModule {
 	* @param string $scope the account type (user, group, host)
 	*/
 	public function __construct($scope) {
-		// load configuration
-		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
-		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile'];
-		// initialize module
 		$this->scope = $scope;
-		$this->load_Messages();
-		$this->meta = $this->get_metaData();
+		// load configuration
+		if ($this->can_manage()) {
+			if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
+			if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile'];
+			// initialize module
+			$this->load_Messages();
+			$this->meta = $this->get_metaData();
+		}
 	}
 
 	/**
@@ -177,15 +179,6 @@ abstract class baseModule {
 	* <br>
 	* The returned array contains a list of key-value pairs for the different functions.<br>
 	* <ul>
-	* 
-	* <li><b>{@link can_manage()}</b><br>
-	* <br>
-	* <b>Key:</b> account_types<br>
-	* <b>Value:</b> array of account types<br>
-	* <br>
-	* <b>Example:</b> "account_types" => array("user", "host")
-	* <br><br>
-	* </li>
 	* 
 	* <li><b>{@link is_base_module()}</b><br>
 	* <br>
@@ -394,10 +387,7 @@ abstract class baseModule {
 	* 
 	* @see baseModule::get_metaData()
 	*/
-	public function can_manage() {
-		if (is_array($this->meta["account_types"]) && in_array($this->scope, $this->meta["account_types"])) return true;
-		else return false;
-	}
+	public abstract function can_manage();
 
 	/**
 	* Returns true if your module is a base module and otherwise false.
