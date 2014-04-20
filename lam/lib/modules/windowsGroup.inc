@@ -70,6 +70,15 @@ class windowsGroup extends baseModule {
 	}
 	
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('group'));
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -80,8 +89,6 @@ class windowsGroup extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'samba.png';
-		// manages host accounts
-		$return["account_types"] = array('group');
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute

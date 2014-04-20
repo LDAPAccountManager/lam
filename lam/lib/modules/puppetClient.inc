@@ -3,7 +3,7 @@
 $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2013  Roland Gruber
+  Copyright (C) 2012 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -48,7 +48,16 @@ class puppetClient extends baseModule {
 	}
 
 
-   /**
+	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('host'));
+	}
+
+	/**
     * Returns meta data that is interpreted by parent class
     *
     * @return array array with meta data
@@ -57,8 +66,6 @@ class puppetClient extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'puppet.png';
-		// manages user accounts
-		$return["account_types"] = array("host");
 		// alias name
 		$return["alias"] = _("Puppet");
 		// module dependencies

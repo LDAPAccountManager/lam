@@ -107,6 +107,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('user'));
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -117,8 +126,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$return = array();
 		// icon
 		$return['icon'] = 'uid.png';
-		// manages user accounts
-		$return["account_types"] = array("user");
 		// alias name
 		$return["alias"] = _('Personal');
 		// this is a base module

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2013  Roland Gruber
+                2007 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -78,6 +78,15 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('group'));
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -88,8 +97,6 @@ class sambaGroupMapping extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'samba.png';
-		// manages group accounts
-		$return["account_types"] = array("group");
 		// alias name
 		$return["alias"] = _('Samba 3');
 		// module dependencies

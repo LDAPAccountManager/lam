@@ -47,6 +47,15 @@ class nisMailAliasUser extends baseModule {
 	private $recipientsToAdd = array();
 	
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('user'));
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -57,8 +66,6 @@ class nisMailAliasUser extends baseModule {
 		$return = array();
 		// icon
 		$return['icon'] = 'mailBig.png';
-		// manages host accounts
-		$return["account_types"] = array("user");
 		// alias name
 		$return["alias"] = _("Mail aliases");
 		// module dependencies

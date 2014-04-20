@@ -53,6 +53,15 @@ class range extends baseModule {
 	public $overlaped;
 
 	/**
+	* Returns true if this module can manage accounts of the current type, otherwise false.
+	* 
+	* @return boolean true if module fits
+	*/
+	public function can_manage() {
+		return in_array($this->get_scope(), array('dhcp'));
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -61,8 +70,6 @@ class range extends baseModule {
 	*/
 	public function get_metaData() {
 		$return = array();
-		// manages dhcp accounts
-		$return["account_types"] = array("dhcp");
 		// alias name
 		$return["alias"] = _("Ranges");
 		// this is a base module
