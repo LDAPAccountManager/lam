@@ -426,7 +426,8 @@ $loggingTable->addElement(new htmlInputField('logFile', $destinationPath), true)
 $loggingTable->addElement(new htmlSpacer(null, '10px'), true);
 $errorLogOptions = array(
 	_('PHP system setting') => LAMCfgMain::ERROR_REPORTING_SYSTEM,
-	_('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT
+	_('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT,
+	_('all') => LAMCfgMain::ERROR_REPORTING_ALL
 );
 $errorLogSelect = new htmlTableExtendedSelect('errorReporting', $errorLogOptions, array($cfg->errorReporting), _('PHP error reporting'), '244');
 $errorLogSelect->setHasDescriptiveElements(true);

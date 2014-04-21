@@ -69,6 +69,10 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	if (empty($_SESSION['cfgMain']) || ($_SESSION['cfgMain']->errorReporting == LAMCfgMain::ERROR_REPORTING_DEFAULT)) {
 		ini_set('error_reporting', 'E_ALL & ~E_NOTICE');
 	}
+	elseif ($_SESSION['cfgMain']->errorReporting == LAMCfgMain::ERROR_REPORTING_ALL) {
+		ini_set('error_reporting', E_ALL | E_STRICT);
+		ini_set('display_errors', 'On');
+	}
 	// check session id
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
