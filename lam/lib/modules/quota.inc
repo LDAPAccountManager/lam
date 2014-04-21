@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2012  Roland Gruber
+                2007 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -826,6 +826,31 @@ class quota extends baseModule {
 		return array('status' => 'finished');
 	}
 	
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	* 
+	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	*
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
+	* to some groups via attribute memberUid)<br>
+	* <br><b>"add"</b> are attributes which have to be added to the LDAP entry
+	* <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
+	* <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
+	* <br><b>"notchanged"</b> are attributes which stay unchanged
+	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
+	* <br>
+	* <br>This builds the required comands from $this-attributes and $this->orig.
+	* 
+	* @return array list of modifications
+	*/
+	public function save_attributes() {
+		// no LDAP changes
+		return $this->getAccountContainer()->save_module_attributes(array(), array());
+	}
+
 }
 
 ?>

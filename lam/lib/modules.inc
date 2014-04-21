@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1722,6 +1722,13 @@ class accountContainer {
 				unset($attributes[$this->dn_orig]);
 			}
 		}
+		elseif (isset($attributes[$this->dn_orig]['remove'][$this->rdn][0]) && isset($attributes[$this->dn_orig]['notchanged'][$this->rdn][0])) {
+			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['notchanged'][$this->rdn][0] . ',' . $this->dnSuffix;
+			if ($this->dn_orig != $this->finalDN) {
+				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
+				unset($attributes[$this->dn_orig]);
+			}
+		}
 		elseif (!$this->isNewAccount && (($this->dnSuffix != extractDNSuffix($this->dn_orig)) || ($this->rdn != extractRDNAttribute($this->dn_orig)))) {
 			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['notchanged'][$this->rdn][0] . ',' . $this->dnSuffix;
 			$attributes[$this->finalDN] = $attributes[$this->dn_orig];
@@ -1812,7 +1819,8 @@ class accountContainer {
 					$removeOldRDN = true;
 					unset($attributes[$this->finalDN]['modify'][extractRDNAttribute($this->finalDN)]);
 				}
-				if (isset($attributes[$this->finalDN]['notchanged'][$rdnAttr])) {
+				if (isset($attributes[$this->finalDN]['notchanged'][$rdnAttr])
+					&& !(isset($attributes[$this->finalDN]['add'][$rdnAttr]) || isset($attributes[$this->finalDN]['modify'][$rdnAttr]) || isset($attributes[$this->finalDN]['remove'][$rdnAttr]))) {
 					// fix for AD which requires to remove RDN even if not changed
 					$removeOldRDN = true;
 				}
@@ -1820,6 +1828,13 @@ class accountContainer {
 				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), $removeOldRDN);
 				if ($success) {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Renamed DN ' . $this->dn_orig . " to " . $this->finalDN);
+					// do not add attribute value as new one if added via rename operation
+					if (!empty($attributes[$this->finalDN]['add'][$rdnAttr]) && in_array(extractRDNValue($this->finalDN), $attributes[$this->finalDN]['add'][$rdnAttr])) {
+						$attributes[$this->finalDN]['add'][$rdnAttr] = array_delete(array(extractRDNValue($this->finalDN)), $attributes[$this->finalDN]['add'][$rdnAttr]);
+						if (empty($attributes[$this->finalDN]['add'][$rdnAttr])) {
+							unset($attributes[$this->finalDN]['add'][$rdnAttr]);
+						}
+					}
 				}
 				else {
 					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to rename DN: ' . $this->dn_orig . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '

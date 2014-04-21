@@ -143,10 +143,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'fax' => 'facsimileTelephoneNumber', 'gn' => 'givenName', 'userid' => 'uid', 'rfc822Mailbox' => 'mail',
 			'mobileTelephoneNumber' => 'mobile', 'organizationName' => 'o', 'organizationalUnitName' => 'ou');
 		// managed attributes
-		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
+		$return['attributes'] = array('uid', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'roomNumber', 'businessCategory', 'l', 'st', 'physicalDeliveryOfficeName',
 			'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials', 'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary');
+		if (!$this->isUnixActive()) {
+			$return['attributes'][] = 'cn';
+		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName', 'employeeNumber');
 		// self service field settings
@@ -1093,8 +1096,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['initials'] = preg_split('/;[ ]*/', $_POST['initials']);
 		}
 		
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules)) {
+		if (!$this->isUnixActive()) {
 			// uid
 			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID') && !$this->isAdminReadOnly('uid')) {
 				if (isset($_POST['uid']) && ($_POST['uid'] != '')) {
@@ -1111,19 +1113,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			// cn
 			if (!$this->isAdminReadOnly('cn')) {
-				if ($_POST['cn'] == '') {
+				$this->processMultiValueInputTextField('cn', $errors, 'cn');
+				if (empty($this->attributes['cn'][0])) {
 					if ($_POST['givenName'] != '') {
 						$this->attributes['cn'][0] = $_POST['givenName'] . " " . $_POST['sn'];
 					}
 					else {
 						$this->attributes['cn'][0] = $_POST['sn'];
 					}
-				}
-				else {
-					$this->attributes['cn'][0] = $_POST['cn'];
-				}
-				if (!get_preg($this->attributes['cn'][0], 'cn')) {
-					$errors[] = $this->messages['cn'][0];
 				}
 			}
 			if (!$this->isAdminReadOnly('userPassword')) {
@@ -1157,9 +1154,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container = new htmlTable();
 		$fieldContainer = new htmlTable();
 		$container->addElement($fieldContainer);
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		// uid
-		if (!in_array('posixAccount', $modules) && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
+		if (!$this->isUnixActive() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
 			if ($this->isAdminReadOnly('uid')) {
 				$this->addSimpleReadOnlyField($fieldContainer, 'uid', _('User name'));
 			}
@@ -1195,12 +1191,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		// common name
-		if (!in_array('posixAccount', $modules)) {
+		if (!$this->isUnixActive()) {
 			if ($this->isAdminReadOnly('cn')) {
 				$this->addSimpleReadOnlyField($fieldContainer, 'cn', _('Common name'));
 			}
 			else {
-				$this->addSimpleInputTextField($fieldContainer, 'cn', _('Common name'), true);
+				$this->addMultiValueInputTextField($fieldContainer, 'cn', _('Common name'), true);
 				$equalWidthElements[] = 'cn';
 			}
 		}
@@ -1555,7 +1551,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		// password buttons
-		if (!in_array('posixAccount', $modules) && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
+		if (!$this->isUnixActive() && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Password')), true);
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
@@ -3559,6 +3555,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$result = searchLDAPByAttribute('mail', $mail, 'inetOrgPerson', array('dn'), array('user'));
 		$this->emailCheckCache[$mail] = (sizeof($result) > 0);
 		return $this->emailCheckCache[$mail];
+	}
+	
+	/**
+	 * Returns if the Unix module is also active.
+	 * 
+	 * @return boolean Unix is active
+	 */
+	private function isUnixActive() {
+		if (!isset($_SESSION['config'])) {
+			return false;
+		}
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		return in_array('posixAccount', $modules);
 	}
 	
 }

@@ -1081,10 +1081,7 @@ class posixAccount extends baseModule implements passwordService {
 			unset($this->attributes[$this->getPasswordAttrName()]);
 		}
 		if ($this->manageCn()) {
-			$this->attributes['cn'][0] = $_POST['cn'];
-			if (!get_preg($this->attributes['cn'][0], 'cn')) {
-				$errors[] = $this->messages['cn'][0];
-			}
+			$this->processMultiValueInputTextField('cn', $errors, 'cn');
 		}
 		$this->attributes['uidNumber'][0] = trim($_POST['uidNumber']);
 		$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
@@ -1398,9 +1395,7 @@ class posixAccount extends baseModule implements passwordService {
 			$uidInput->setFieldMaxLength(100);
 			$return->addElement($uidInput, true);
 			if ($this->manageCn()) {
-				$commonName = '';
-				if (isset($this->attributes['cn'][0])) $commonName = $this->attributes['cn'][0];
-				$return->addElement(new htmlTableExtendedInputField(_("Common name"), 'cn', $commonName, 'cn'), true);
+				$this->addMultiValueInputTextField($return, 'cn', _("Common name"));
 			}
 			$uidNumber = '';
 			if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
