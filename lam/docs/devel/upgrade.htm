@@ -22,6 +22,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -39,7 +40,17 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
-<h2>4.2 -&gt; 4.3</h2><span style="font-weight: bold;">Ldap::new_rand()</span> was replaced by <span style="font-weight: bold;">getRandomNumber()</span> in lib/account.inc.<br>
+<h2>4.5 -&gt; 4.6</h2>The valid account types for each module must now
+be set in can_manage(). This function is abstract in base module.
+Setting the account type via meta data is no longer supported.<br>
+<br>
+Example:<br>
+<pre>&nbsp;&nbsp;&nbsp; public function can_manage() {</pre>
+<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return in_array($this-&gt;get_scope(), array('user', 'host'));</pre>
+<pre>&nbsp;&nbsp;&nbsp; }</pre>
+<br>
+<h2>4.2 -&gt; 4.3</h2>
+<span style="font-weight: bold;">Ldap::new_rand()</span> was replaced by <span style="font-weight: bold;">getRandomNumber()</span> in lib/account.inc.<br>
 Module interface:<br>
 <ul>
   <li><span style="font-weight: bold;">preModifySelfService/postModifySelfService:</span> new parameter <span style="font-style: italic;">$newAccount</span>. The user self registration now supports preCreate/postCreate events.<br>

@@ -1078,7 +1078,7 @@ Have fun!
         of the passwords.</para>
       </section>
 
-      <section>
+      <section id="conf_logging">
         <title>Logging</title>
 
         <para>LAM can log events (e.g. user logins). You can use system
@@ -1089,7 +1089,8 @@ Have fun!
 
         <para>The PHP error reporting is only for developers. By default LAM
         does not show PHP notice messages in the web pages. You can select to
-        use the php.ini setting here.</para>
+        use the php.ini setting here or printing all errors and
+        notices.</para>
 
         <screenshot>
           <mediaobject>
@@ -9485,7 +9486,7 @@ a.lamLogo {
       </screenshot>
 
       <para><literallayout>
-</literallayout><emphasis role="bold">Logging:</emphasis></para>
+</literallayout><emphasis role="bold">LDAP Logging:</emphasis></para>
 
       <para>If your schema is correct you can turn on LDAP logging to get more
       detailed error messages from your LDAP server.</para>
@@ -9510,6 +9511,18 @@ a.lamLogo {
 
       <para>After changing the configuration please restart OpenLDAP. It
       usually uses /var/log/syslog for log output.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">PHP logging</emphasis></para>
+
+      <para>Sometimes it can help to enable PHP logging inside LAM. You can do
+      this in the <link linkend="conf_logging">logging area</link> of LAM's
+      main configuration. Set the logging option to "all" and check if there
+      are any messages printed in your browser window. Please note that not
+      every notice message is an error but it may help to find the
+      problem.</para>
     </section>
 
     <section>
