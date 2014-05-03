@@ -160,11 +160,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'homePhone' => _('Home telephone number'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
 			'departmentNumber' => _('Department'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'),
-			'userCertificate' => _('User certificates'));
+			'userCertificate' => _('User certificates'), 'ou' => _('Organisational unit'), 'description' => _('Description'), 'uid' => _('User name'));
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('firstName', 'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'street',
 			'postalAddress', 'registeredAddress', 'postalCode', 'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',
-			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate');
+			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate',
+			'ou', 'description', 'uid');
 		// profile elements
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
@@ -2721,6 +2722,61 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$userCertificatesRow = new htmlTableRow($userCertificatesCells);
 			$return['userCertificate'] = $userCertificatesRow;
 		}
+		// ou
+		if (in_array('ou', $fields)) {
+			$ou = '';
+			if (isset($attributes['ou'][0])) $ou = $attributes['ou'][0];
+			if (in_array('ou', $readOnlyFields)) {
+				$ouField = new htmlOutputText(getAbstractDN($ou));
+			}
+			else {
+				$userObj = new user();
+				$ouList = $userObj->getSuffixList();
+				if (!empty($attributes['ou'][0]) && !in_array($attributes['ou'][0], $ouList)) {
+					$ouList[] = $attributes['ou'][0];
+					usort($ouList, 'compareDN');
+				}
+				$ouSelectionList = array('' => '');
+				foreach ($ouList as $singleOU) {
+					$ouSelectionList[getAbstractDN($singleOU)] = $singleOU;
+				}
+				$ouSelectionListSelected = array();
+				if (!empty($attributes['ou'][0])) {
+					$ouSelectionListSelected[] = $attributes['ou'][0];
+				}
+				$ouField = new htmlSelect('inetOrgPerson_ou', $ouSelectionList, $ouSelectionListSelected);
+				$ouField->setHasDescriptiveElements(true);
+				$ouField->setRightToLeftTextDirection(true);
+				$ouField->setSortElements(false);
+			}
+			$return['ou'] = new htmlTableRow(array(
+				new htmlOutputText($this->getSelfServiceLabel('ou', _('Organisational unit'))), $ouField
+			));
+		}
+		// description
+		if (in_array('description', $fields)) {
+			$description = '';
+			if (isset($attributes['description'][0])) $description = $attributes['description'][0];
+			$descriptionField = new htmlInputField('inetOrgPerson_description', $description);
+			if (in_array('description', $readOnlyFields)) {
+				$descriptionField = new htmlOutputText($description);
+			}
+			$return['description'] = new htmlTableRow(array(
+				new htmlOutputText($this->getSelfServiceLabel('description', _('Description'))), $descriptionField
+			));
+		}
+		// uid
+		if (in_array('uid', $fields)) {
+			$uid = '';
+			if (isset($attributes['uid'][0])) $uid = $attributes['uid'][0];
+			$uidField = new htmlInputField('inetOrgPerson_uid', $uid);
+			if (in_array('uid', $readOnlyFields)) {
+				$uidField = new htmlOutputText($uid);
+			}
+			$return['uid'] = new htmlTableRow(array(
+				new htmlOutputText($this->getSelfServiceLabel('uid', _('User name'))), $uidField
+			));
+		}
 		return $return;
 	}
 	
@@ -3083,6 +3139,31 @@ class inetOrgPerson extends baseModule implements passwordService {
 			elseif (isset($attributesNew[$userCertificatesAttrName])) {
 				unset($attributesNew[$userCertificatesAttrName]);
 			}
+		}
+		// description
+		if (in_array('description', $fields) && !in_array('description', $readOnlyFields)) {
+			$attributeNames[] = 'description';
+			if (!empty($_POST['inetOrgPerson_description'])) {
+				$attributesNew['description'][0] = $_POST['inetOrgPerson_description'];
+			}
+			elseif (isset($attributes['description'])) unset($attributesNew['description']);
+		}
+		// ou
+		if (in_array('ou', $fields) && !in_array('ou', $readOnlyFields)) {
+			$attributeNames[] = 'ou';
+			if (!empty($_POST['inetOrgPerson_ou'])) {
+				$attributesNew['ou'][0] = $_POST['inetOrgPerson_ou'];
+			}
+			elseif (isset($attributes['ou'])) unset($attributesNew['ou']);
+		}
+		// uid
+		if (in_array('uid', $fields) && !in_array('uid', $readOnlyFields)) {
+			$attributeNames[] = 'uid';
+			if (isset($_POST['inetOrgPerson_uid']) && ($_POST['inetOrgPerson_uid'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_uid'], 'username')) $return['messages'][] = $this->messages['uid'][0];
+				else $attributesNew['uid'][0] = $_POST['inetOrgPerson_uid'];
+			}
+			elseif (isset($attributes['uid'])) unset($attributesNew['uid']);
 		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {

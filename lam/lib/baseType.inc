@@ -135,12 +135,19 @@ class baseType {
 	 * @return array sorted list of possible suffixes for this type.
 	 */
 	public function getSuffixList() {
-		$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
+		if (isset($_SESSION["config"])) {
+			$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
+			$connection = $_SESSION["ldap"]->server();
+		}
+		else {
+			$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
+			$connection = $_SESSION['ldapHandle'];
+		}
 		$ret = array();
 		$filter = "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
-		$sr = @ldap_search($_SESSION["ldap"]->server(), escapeDN($suffix),$filter , array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($connection, escapeDN($suffix),$filter , array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
-			$units = ldap_get_entries($_SESSION["ldap"]->server(), $sr);
+			$units = ldap_get_entries($connection, $sr);
 			cleanLDAPResult($units);
 			// extract Dns
 			$count = sizeof($units);

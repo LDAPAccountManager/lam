@@ -6792,7 +6792,7 @@ OK (10 msec)</programlisting>
               </row>
 
               <row>
-                <entry morerows="23"><inlinemediaobject>
+                <entry morerows="26"><inlinemediaobject>
                     <imageobject>
                       <imagedata fileref="images/schema_user.png" />
                     </imageobject>
@@ -6811,6 +6811,12 @@ OK (10 msec)</programlisting>
 
               <row>
                 <entry>Department</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Description</entry>
 
                 <entry></entry>
               </row>
@@ -6876,6 +6882,12 @@ OK (10 msec)</programlisting>
               </row>
 
               <row>
+                <entry>Organisational unit</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
                 <entry>Photo</entry>
 
                 <entry>Shows the user photo if set. The user may also remove
@@ -6935,6 +6947,12 @@ OK (10 msec)</programlisting>
 
                 <entry>Upload of user certificates in PEM or DER
                 format</entry>
+              </row>
+
+              <row>
+                <entry>User name</entry>
+
+                <entry></entry>
               </row>
 
               <row>
