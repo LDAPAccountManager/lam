@@ -3,6 +3,7 @@ June 2014 4.6
   - Extended LAM's internal password policies
   - LAM Pro:
    -> Password self reset and user self registration support to set a header text
+   -> Sudo roles: support latest schema
 
 
 18.03.2014 4.5
