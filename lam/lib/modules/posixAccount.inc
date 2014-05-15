@@ -2723,6 +2723,9 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$filter = '(objectClass=posixGroup)';
+		if ($this->isWindows()) {
+			$filter = '(&(objectClass=group)(gidNumber=*))';
+		}
 		if (!empty($typeSettings['filter_group'])) {
 			$typeFilter = $typeSettings['filter_group'];
 			if (strpos($typeFilter, '(') !== 0) {
@@ -3102,6 +3105,15 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return boolean is optional
 	 */
 	private function isOptional() {
+		return !$this->manageCn();
+	}
+
+	/**
+	 * Returns if the Windows module is active.
+	 * 
+	 * @return boolean is Windows
+	 */
+	private function isWindows() {
 		return !$this->manageCn();
 	}
 

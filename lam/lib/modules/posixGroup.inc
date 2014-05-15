@@ -1075,6 +1075,9 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$filter = '(&(objectClass=posixAccount)(gidNumber=*))';
+		if ($this->isWindows()) {
+			$filter = '(&(objectClass=user)(gidNumber=*))';
+		}
 		if (!empty($typeSettings['filter_user'])) {
 			$typeFilter = $typeSettings['filter_user'];
 			if (strpos($typeFilter, '(') !== 0) {
@@ -1124,6 +1127,24 @@ class posixGroup extends baseModule implements passwordService {
 			$this->cachedGroupNameList[] = $result[$i]['cn'][0];
 		}
 		return $this->cachedGroupNameList;
+	}
+	
+	/**
+	 * Returns if the Windows module is active.
+	 * 
+	 * @return boolean is Windows
+	 */
+	private function isWindows() {
+		if (isset($_SESSION['config'])) {
+			$conf = $_SESSION['config'];
+			if (in_array('windowsGroup', $conf->get_AccountModules($this->get_scope()))) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
 	}
 	
 }
