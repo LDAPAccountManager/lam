@@ -282,6 +282,9 @@ Have fun!
                         <para>Install the LAM package</para>
 
                         <para>dpkg -i ldap-account-manager_*.deb</para>
+
+                        <para>If you get any messages about missing
+                        dependencies run now: apt-get -f install</para>
                       </listitem>
 
                       <listitem>
