@@ -4,7 +4,7 @@
 #
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2013  Roland Gruber
+#  Copyright (C) 2006 - 2014  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Sys::Syslog;
 
 # Defines the protocol version of the lamdaemon script.
 # This will only be changed when additional commands are added etc.
-my $LAMDAEMON_PROTOCOL_VERSION = 3;
+my $LAMDAEMON_PROTOCOL_VERSION = 4;
 
 my $SPLIT_DELIMITER = "###x##y##x###";
 
@@ -196,6 +196,9 @@ sub manageHomedirs {
 	elsif ($vals[2] eq 'rem') {
 		removeHomedir();
 	}
+	elsif ($vals[2] eq 'move') {
+		moveHomedir();
+	}
 	elsif ($vals[2] eq 'check') {
 		checkHomedir();
 	}
@@ -207,7 +210,7 @@ sub manageHomedirs {
 }
 
 #
-# Creates the homedirectory of the user
+# Creates the home directory of the user
 #
 sub createHomedir {
 	my $homedir = $vals[3];
@@ -243,7 +246,7 @@ sub createHomedir {
 }
 
 #
-# Removes the homedirectory of the user
+# Removes the home directory of the user
 #
 sub removeHomedir {
 	if ($vals[3] eq '') {
@@ -254,7 +257,7 @@ sub removeHomedir {
 	($<, $>) = ($>, $<); # Get root previliges
 	if (-d $vals[3] && $vals[3] ne '/') {
 		if ((stat($vals[3]))[4] eq $vals[4]) {
-			system 'rm', '-R', $vals[3]; # Delete Homedirectory
+			system 'rm', '-R', $vals[3]; # delete home directory
 			if (-e '/usr/sbin/userdel.local') {
 				system '/usr/sbin/userdel.local', $vals[0];
 			}
@@ -274,7 +277,43 @@ sub removeHomedir {
 }
 
 #
-# Checks if the homedirectory of the user already exists.
+# Moves the home directory of the user
+#
+sub moveHomedir {
+	my $homedir = $vals[3];
+	my $owner = $vals[4];
+	my $homedirNew = $vals[5];
+	if ($homedir eq '') {
+		$return = "ERROR,Lamdaemon ($hostname),No home directory specified to move.";
+		logMessage(LOG_ERR, "No home directory specified to move.");
+		return;
+	}
+	if (-d $homedirNew) {
+		$return = "ERROR,Lamdaemon ($hostname),Directory $homedirNew already exists.";
+		logMessage(LOG_ERR, "Directory $homedirNew already exists.");
+		return;
+	}
+	($<, $>) = ($>, $<); # Get root previliges
+	if (-d $homedir && $homedir ne '/') {
+		if ((stat($homedir))[4] eq $owner) {
+			system 'mv', $homedir, $homedirNew; # move home directory
+			$return = "Ok";
+			logMessage(LOG_INFO, "Home directory moved ($homedir - $homedirNew)");
+		}
+		else {
+			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $owner.";
+			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $owner . ")");
+		}
+	}
+	else {
+		$return = "Ok";
+		logMessage(LOG_INFO, "The directory " . $homedir . " which should be moved was not found (skipped).");
+	}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Checks if the home directory of the user already exists.
 #
 sub checkHomedir {
 	my $homedir = $vals[3];

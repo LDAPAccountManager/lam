@@ -796,6 +796,37 @@ class posixAccount extends baseModule implements passwordService {
 				}
 			}
 		}
+		// move home directory if needed
+		if (!empty($this->orig[$this->getHomedirAttrName()][0]) && !empty($this->attributes[$this->getHomedirAttrName()][0])
+			&& ($this->orig[$this->getHomedirAttrName()][0] != $this->attributes[$this->getHomedirAttrName()][0])) {
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+				if (empty($lamdaemonServers[$i])) {
+					continue;
+				}
+				$temp = explode(":", $lamdaemonServers[$i]);
+				$server = $temp[0];
+				$result = lamdaemon(
+					implode(
+						self::$SPLIT_DELIMITER,
+						array(
+							$this->attributes['uid'][0],
+							"home",
+							"move",
+							$this->orig[$this->getHomedirAttrName()][0],
+							$this->attributes['uidNumber'][0],
+							$this->attributes[$this->getHomedirAttrName()][0])
+						),
+					$server);
+				// lamdaemon results
+				if (is_array($result)) {
+					$singleresult = explode(",", $result[0]);
+					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+						$messages[] = $singleresult;
+					}
+				}
+			}
+		}
 		// set group of names
 		if (self::areGroupOfNamesActive()) {
 			$gons = $this->findGroupOfNames();
