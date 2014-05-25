@@ -458,6 +458,7 @@ $pwd1->setIsPassword(true);
 $passwordTable->addElement($pwd1, true);
 $pwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'masterpassword2', '');
 $pwd2->setIsPassword(true);
+$pwd2->setSameValueFieldID('masterpassword');
 $passwordTable->addElement($pwd2, true);
 $container->addElement($passwordTable, true);
 $container->addElement(new htmlSpacer(null, '20px'), true);

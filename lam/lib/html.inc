@@ -448,6 +448,8 @@ class htmlInputField extends htmlElement {
 	protected $calendarFormat = '';
 	/** title attribute */
 	protected $title = null;
+	/** field ID that needs to have same value (e.g. password field) */
+	protected $sameValueFieldID = null;
 	
 	/**
 	 * Constructor
@@ -570,11 +572,19 @@ class htmlInputField extends htmlElement {
 				echo '});';
 			echo "</script\n>";
 		}
+		// calendar
 		if ($this->showCalendar) {
 			echo '<script type="text/javascript">
 				jQuery(function() {
 					$("#' . $this->fieldName . '").datepicker({ dateFormat: "' . $this->calendarFormat . '"});
 				});
+				</script>
+			';
+		}
+		// check value against reference field
+		if ($this->sameValueFieldID != null) {
+			echo '<script type="text/javascript">
+					checkFieldsHaveSameValues("' . $this->fieldName . '", "' . $this->sameValueFieldID . '");
 				</script>
 			';
 		}
@@ -709,6 +719,16 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setTitle($title) {
 		$this->title = htmlspecialchars($title);
+	}
+	
+	/**
+	 * Specifies the ID of a second field that must have the same value as this field.
+	 * This field is marked red if different or green if equal.
+	 * 
+	 * @param String $sameValueFieldID ID of reference field
+	 */
+	public function setSameValueFieldID($sameValueFieldID) {
+		$this->sameValueFieldID = $sameValueFieldID;
 	}
 	
 }

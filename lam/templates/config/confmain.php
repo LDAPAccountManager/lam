@@ -452,6 +452,7 @@ $password1 = new htmlTableExtendedInputField(_("New password"), 'passwd1', null,
 $password1->setIsPassword(true);
 $password2 = new htmlTableExtendedInputField(_("Reenter password"), 'passwd2');
 $password2->setIsPassword(true);
+$password2->setSameValueFieldID('passwd1');
 $securitySettingsContent->addElement($password1, true);
 $securitySettingsContent->addElement($password2, true);
 $securitySettings = new htmlFieldset($securitySettingsContent, _("Security settings"), '../../graphics/security.png');

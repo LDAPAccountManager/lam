@@ -2532,6 +2532,7 @@ class posixAccount extends baseModule implements passwordService {
 			$pwdTable->addElement($pwd1, true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'posixAccount_password2');
 			$pwd2->setIsPassword(true);
+			$pwd2->setSameValueFieldID('posixAccount_password');
 			$pwdTable->addElement($pwd2);
 			$return['password'] = new htmlTableRow(array(
 				$pwdTable

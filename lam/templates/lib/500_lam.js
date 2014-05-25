@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -476,7 +476,7 @@ function bindShowNewZoneDialog(title, okText, cancelText) {
 }
 
 
-
+// creates the tooltips for help buttons
 jQuery(document).ready(
 	function() {
 		jQuery(document).tooltip({
@@ -493,3 +493,36 @@ jQuery(document).ready(
 		})
 	}
 );
+
+/**
+ * Checks if the given field has the same value as the reference field.
+ * Field is marked red if different and green if equal.
+ * 
+ * @param fieldID ID of field to check
+ * @param fieldIDReference ID of reference field
+ */
+function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
+	var field = jQuery('#' + fieldID);
+	var fieldRef = jQuery('#' + fieldIDReference);
+	var check = 
+		function() {
+			var value = field.val();
+			var valueRef = fieldRef.val();
+			if ((value == '') && (valueRef == '')) {
+				field.removeClass('markFail');
+				field.removeClass('markOk');
+			}
+			else {
+				if (value == valueRef) {
+					field.removeClass('markFail');
+					field.addClass('markOk');		
+				}
+				else {
+					field.addClass('markFail');
+					field.removeClass('markOk');
+				}
+			}
+		}
+		jQuery(field).keyup(check);
+		jQuery(fieldRef).keyup(check);
+}

@@ -1048,6 +1048,7 @@ class accountContainer {
 		$container->addElement(new htmlOutputText(_('Repeat password')));
 		$pwdInput2 = new htmlInputField('newPassword2');
 		$pwdInput2->setIsPassword(true);
+		$pwdInput2->setSameValueFieldID('newPassword1');
 		$container->addElement($pwdInput2, true);
 		// print force password change option
 		$forceChangeSupported = false;

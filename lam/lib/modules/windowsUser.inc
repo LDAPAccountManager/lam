@@ -1713,6 +1713,7 @@ class windowsUser extends baseModule implements passwordService {
 			$pwdTable->addElement($pwd1, true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'windowsUser_unicodePwd2');
 			$pwd2->setIsPassword(true);
+			$pwd2->setSameValueFieldID('windowsUser_unicodePwd');
 			$pwdTable->addElement($pwd2);
 			$return['unicodePwd'] = new htmlTableRow(array(
 				$pwdTable

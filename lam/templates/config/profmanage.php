@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -247,6 +247,7 @@ $container->addElement($profileNewPwd1, true);
 $profileNewPwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'addpassword2');
 $profileNewPwd2->setIsPassword(true);
 $profileNewPwd2->setFieldSize(15);
+$profileNewPwd2->setSameValueFieldID('addpassword');
 $container->addElement($profileNewPwd2, true);
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
 $newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" . 
@@ -285,6 +286,7 @@ $container->addElement($profileSetPwd1, true);
 $profileSetPwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'setpassword2');
 $profileSetPwd2->setIsPassword(true);
 $profileSetPwd2->setFieldSize(15);
+$profileSetPwd2->setSameValueFieldID('setpassword');
 $container->addElement($profileSetPwd2, true);
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
 $setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" . 
