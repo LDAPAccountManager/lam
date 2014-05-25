@@ -2,6 +2,7 @@ June 2014 4.6
   - Unix groups: allow to disable membership management
   - Extended LAM's internal password policies
   - Lamdaemon: move home directory on server if changed
+  - Password policy check during typing
   - LAM Pro:
    -> Password self reset and user self registration support to set a header text
    -> Sudo roles: support latest schema

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2013  Roland Gruber
+  Copyright (C) 2011 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ if (isset($_GET['selfservice'])) {
 }
 
 // return standard JSON response if session expired
-if (startSecureSession(false) === false) {
+if (startSecureSession(false, true) === false) {
 	echo json_encode(array(
 		'sessionExpired' => "true"
 	));
@@ -81,6 +81,9 @@ class lamAjax {
 		if ($function == 'passwordChange') {
 			lamAjax::managePasswordChange($jsonInput);
 		}
+		elseif ($function == 'passwordStrengthCheck') {
+			lamAjax::checkPasswordStrength($jsonInput);
+		}
 	}
 
 	/**
@@ -91,6 +94,17 @@ class lamAjax {
 	public static function managePasswordChange($input) {
 		$return = $_SESSION['account']->setNewPassword($input);
 		echo json_encode($return);
+	}
+	
+	/**
+	 * Checks if a password is accepted by LAM's password policy.
+	 *
+	 * @param array $input input parameters
+	 */
+	public static function checkPasswordStrength($input) {
+		$password = $input['password'];
+		$result = checkPasswordStrength($password, null, null);
+		echo json_encode(array("result" => $result));
 	}
 	
 }

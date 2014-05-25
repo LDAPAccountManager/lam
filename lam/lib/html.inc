@@ -420,6 +420,8 @@ class htmlInputField extends htmlElement {
 	protected $onKeyPress = null;
 	/** password field */
 	protected $isPassword = false;
+	/** check password strength */
+	protected $checkPasswordStrength = false;
 	/** enabled or disabled */
 	protected $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
@@ -588,6 +590,19 @@ class htmlInputField extends htmlElement {
 				</script>
 			';
 		}
+		if ($this->checkPasswordStrength) {
+			$ajaxPath = "../templates/misc/ajax.php";
+			if (is_file("../../templates/misc/ajax.php")) {
+				$ajaxPath = "../../templates/misc/ajax.php";
+			}
+			elseif (is_file("../../../templates/misc/ajax.php")) {
+				$ajaxPath = "../../../templates/misc/ajax.php";
+			}
+			echo '<script type="text/javascript">
+					checkPasswordStrength("' . $this->fieldName . '", "' . $ajaxPath . '");
+				</script>
+			';
+		}
 		if ($this->transient) {
 			return array();
 		}
@@ -621,9 +636,11 @@ class htmlInputField extends htmlElement {
 	 * Specifies if this is a password field.
 	 * 
 	 * @param boolean $isPassword password field
+	 * @param boolean $checkStrength check if matches password policy (default: false)
 	 */
-	public function setIsPassword($isPassword) {
+	public function setIsPassword($isPassword, $checkStrength = false) {
 		$this->isPassword = $isPassword;
+		$this->checkPasswordStrength = $checkStrength;
 	}
 
 	/**

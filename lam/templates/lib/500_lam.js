@@ -523,6 +523,52 @@ function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
 				}
 			}
 		}
-		jQuery(field).keyup(check);
-		jQuery(fieldRef).keyup(check);
+	jQuery(field).keyup(check);
+	jQuery(fieldRef).keyup(check);
 }
+
+/**
+ * Checks if the value of the given password field matches LAM's password policy.
+ * Field is marked red if fail and green if ok.
+ * 
+ * @param fieldID ID of field to check
+ */
+function checkPasswordStrength(fieldID, ajaxURL) {
+	var field = jQuery('#' + fieldID);
+	var check = 
+		function() {
+			var value = field.val();
+			var pwdJSON = {
+					"password": value
+			};
+			// make AJAX call
+			jQuery.post(ajaxURL + "?function=passwordStrengthCheck", {jsonInput: pwdJSON}, function(data) {checkPasswordStrengthHandleReply(data, fieldID);}, 'json');
+		};
+	jQuery(field).keyup(check);
+}
+
+/**
+ * Manages the server reply to a password strength check request.
+ * 
+ * @param data JSON reply
+ * @param fieldID input field ID
+ */
+function checkPasswordStrengthHandleReply(data, fieldID) {
+	var field = jQuery('#' + fieldID);
+	if (data.result == true) {
+		field.removeClass('markFail');
+		field.addClass('markOk');
+		field.prop('title', '');
+	}
+	else if (field.val() == '') {
+		field.removeClass('markFail');
+		field.removeClass('markOk');		
+	}
+	else {
+		field.addClass('markFail');
+		field.removeClass('markOk');
+		field.prop('title', data.result);
+	}	
+}
+
+

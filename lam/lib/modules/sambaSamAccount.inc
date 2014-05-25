@@ -2263,7 +2263,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$pwdTable = new htmlTable();
 			$pwdTable->colspan = 3;
 			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('password', _('New password')), 'sambaSamAccount_password');
-			$pwd1->setIsPassword(true);
+			$pwd1->setIsPassword(true, true);
 			$pwdTable->addElement($pwd1, true);
 			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'sambaSamAccount_password2');
 			$pwd2->setIsPassword(true);

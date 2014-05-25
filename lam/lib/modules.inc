@@ -1042,7 +1042,7 @@ class accountContainer {
 		// password fields
 		$container->addElement(new htmlOutputText(_('Password')));
 		$pwdInput1 = new htmlInputField('newPassword1');
-		$pwdInput1->setIsPassword(true);
+		$pwdInput1->setIsPassword(true, true);
 		$container->addElement($pwdInput1);
 		$container->addElement(new htmlHelpLink('404'), true);
 		$container->addElement(new htmlOutputText(_('Repeat password')));
