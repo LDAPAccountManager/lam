@@ -223,7 +223,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 		$icon = '<img align="middle" src="' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
 	echo "<legend>$icon" . getModuleAlias($modules[$i], "none") . "</legend>\n";
-	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, false, $tabindex, 'user');
+	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, false, $tabindex, 'none');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
 	echo "<br>";
@@ -242,7 +242,7 @@ $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $cancelButton->setIconClass('cancelButton');
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
+parseHtml(null, $buttonContainer, array(), false, $tabindex, 'none');
 
 if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
