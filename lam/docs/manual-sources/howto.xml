@@ -4430,6 +4430,24 @@ Run slapindex to rebuild the index.
         </mediaobject>
       </screenshot>
 
+      <para><emphasis role="bold">Automatic PTR management</emphasis></para>
+
+      <para>LAM can automatically create/delete PTR entries for the entered
+      IPv4/6 records. You can enable this feature on the module settings
+      tab.</para>
+
+      <para>PTR records will get the same TTL as IP records. Please note that
+      you need to have matching reverse zones (".in-addr.arpa"/".ip6.arpa")
+      under the same suffix as your other DNS entries.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind12.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
       <para><emphasis role="bold">Zone management</emphasis></para>
 
       <para>If you do not yet have a DNS zone then LAM can create one for you.

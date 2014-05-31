@@ -6,6 +6,7 @@ June 2014 4.6
   - LAM Pro:
    -> Password self reset and user self registration support to set a header text
    -> Sudo roles: support latest schema
+   -> Bind DLZ: automatic PTR management (disabled by default) and better formating of e.g. TTL values
 
 
 18.03.2014 4.5
