@@ -10,4 +10,4 @@
 msgen messages.po | msgattrib --set-fuzzy -o messages2.po
 rm messages.po
 mv messages2.po messages.po
-msgmerge -v ../locale/en_US/LC_MESSAGES/messages.po messages.po -o messages.po
+msgmerge -N -v ../locale/en_US/LC_MESSAGES/messages.po messages.po -o messages.po
