@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+dir="templates/lib"
+files=`ls $dir/*.js`
+for file in $files; do
+	# skip dropmenu file, incompatible with YUI compressor
+	if [[ $file =~ .*dropmenu.* ]]; then
+		continue
+	fi
+	yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o ${file}-MIN $file
+	rm $file
+	mv ${file}-MIN $file
+	# add final new line to supress Debian warnings
+	echo "" >> $file
+done
+
+
