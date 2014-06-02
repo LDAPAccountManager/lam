@@ -363,6 +363,7 @@ class lamGroupList extends lamList {
 						if (!isAccountTypeHidden($type)) {
 							$values[$i] = '<a href="../account/edit.php?type=' . $type . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
 							$replaced = true;
+							break;
 						}
 					}
 				}
