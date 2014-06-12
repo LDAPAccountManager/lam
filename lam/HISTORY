@@ -1,4 +1,4 @@
-June 2014 4.6
+12.06.2014 4.6
   - Unix groups: allow to disable membership management
   - Extended LAM's internal password policies
   - Lamdaemon: move home directory on server if changed
