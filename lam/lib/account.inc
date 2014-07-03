@@ -463,7 +463,7 @@ function get_preg($argument, $regexp) {
 		case 'groupname':	// all letters, numbers, space and ._- are allowed characters
 		case 'username':
 		case 'hostname':	
-					$pregexpr = '/^([[:alnum:]#@\\.\\ \\_\\$-])+$/u';
+					$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_\\$-])+$/u';
 					break;
 		case 'krbUserName':	
 					$pregexpr = '/^([[:alnum:]#@\\/\\.\\ \\_\\$-])+$/u';
@@ -473,7 +473,7 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'usernameList':	// comma separated list of user names
 		case 'groupnameList':	// comma separated list of group names
-					$pregexpr = '/^([[:alnum:]#@\\.\\ \\_-])+(,([[:alnum:]#@\\.\\ \\_-])+)*$/u';
+					$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_-])+(,([[:alnum:]%#@\\.\\ \\_-])+)*$/u';
 					break;
 		case 'realname':	// Allow all but \, <, >, =, $, ?
 		case 'cn':
