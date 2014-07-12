@@ -1,3 +1,7 @@
+September 2014 4.7
+  - renamed config/lam.conf_sample to lam.conf.sample and config.cfg_sample to config.cfg.sample
+
+
 12.06.2014 4.6
   - Unix groups: allow to disable membership management
   - Extended LAM's internal password policies
