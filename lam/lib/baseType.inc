@@ -182,7 +182,7 @@ class baseType {
 	 * 
 	 * @param accountContainer $container account container
 	 */
-	public function runEditPagePostAction($container) {
+	public function runEditPagePostAction(&$container) {
 		
 	}
 	

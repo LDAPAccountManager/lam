@@ -437,7 +437,7 @@ class user extends baseType {
 	 * 
 	 * @param accountContainer $container account container
 	 */
-	public function runEditPagePostAction($container) {
+	public function runEditPagePostAction(&$container) {
 		// check if account status should be changed
 		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
 			// lock account
