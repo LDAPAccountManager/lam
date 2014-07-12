@@ -273,40 +273,7 @@ function checkInput() {
 	
 	// check module options
 	// create option array to check and save
-	$options = array();
-	$opt_keys = array_keys($_SESSION['conf_types']);
-	for ($i = 0; $i < sizeof($opt_keys); $i++) {
-		$element = $opt_keys[$i];
-		// text fields
-		if ($_SESSION['conf_types'][$element] == "text") {
-			$options[$element] = array($_POST[$element]);
-		}
-		// text fields
-		elseif ($_SESSION['conf_types'][$element] == "text_obfuscated") {
-			$options[$element] = array(obfuscateText($_POST[$element]));
-		}
-		// hidden fields
-		elseif ($_SESSION['conf_types'][$element] == "hidden") {
-			$options[$element] = array($_POST[$element]);
-		}
-		// checkboxes
-		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
-			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
-			else $options[$element] = array('false');
-		}
-		// dropdownbox
-		elseif ($_SESSION['conf_types'][$element] == "select") {
-			$options[$element] = array($_POST[$element]);
-		}
-		// multiselect
-		elseif ($_SESSION['conf_types'][$element] == "multiselect") {
-			$options[$element] = $_POST[$element];  // value is already an array
-		}
-		// textarea
-		elseif ($_SESSION['conf_types'][$element] == "textarea") {
-			$options[$element] = explode("\r\n", $_POST[$element]);
-		}
-	}
+	$options = extractConfigOptionsFromPOST($_SESSION['conf_types']);
 
 	// get list of scopes of modules
 	$scopes = array();

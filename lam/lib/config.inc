@@ -201,6 +201,48 @@ function LAMVersion() {
 	return '0.0.unknown';
 }
 
+/**
+ * Extracts config options from HTTP POST data.
+ * 
+ * @param array $confTypes array (option name => type (e.g. multiselect))
+ * @return array list of config options (name => array(values))
+ */
+function extractConfigOptionsFromPOST($confTypes) {
+	$options = array();
+	foreach ($confTypes as $element => $type) {
+		// text fields
+		if ($type == "text") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// text fields
+		elseif ($type == "text_obfuscated") {
+			$options[$element] = array(obfuscateText($_POST[$element]));
+		}
+		// hidden fields
+		elseif ($type == "hidden") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// checkboxes
+		elseif ($type == "checkbox") {
+			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
+			else $options[$element] = array('false');
+		}
+		// dropdownbox
+		elseif ($type == "select") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// multiselect
+		elseif ($type == "multiselect") {
+			$options[$element] = $_POST[$element];  // value is already an array
+		}
+		// textarea
+		elseif ($type == "textarea") {
+			$options[$element] = explode("\r\n", $_POST[$element]);
+		}
+	}
+	return $options;
+}
+
 
 /**
 * Prints a meta refresh page

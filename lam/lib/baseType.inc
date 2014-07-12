@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -185,7 +185,34 @@ class baseType {
 	public function runEditPagePostAction($container) {
 		
 	}
+	
+	/**
+	* Returns a list of configuration options.
+	* 
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the type name as prefix for them (e.g. user_someSetting) to avoid naming conflicts.
+	*
+	* @return mixed htmlElement or array of htmlElement
+	* 
+	* @see htmlElement
+	*/
+	public function get_configOptions() {
+		return null;
+	}
 
+	/**
+	* Checks input values of config settings.
+	* <br>
+	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
+	* <br>If no errors occured the function returns an empty array.
+	*
+	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	* @return array list of error messages
+	*/
+	public function check_configOptions(&$options) {
+		return array();
+	}
+	
 }
 
 ?>

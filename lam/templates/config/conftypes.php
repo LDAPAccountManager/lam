@@ -227,6 +227,7 @@ if (sizeof($availableTypes) > 0) {
 	$container->addElement($availableContainer, true);
 }
 
+$_SESSION['conftypes_optionTypes'] = array();
 // show active types
 if (sizeof($activeTypes) > 0) {
 	$container->addElement(new htmlSubTitle(_("Active account types")), true);
@@ -264,6 +265,20 @@ if (sizeof($activeTypes) > 0) {
 		$attrsInput->setFieldSize(40);
 		$activeContainer->addElement($attrsInput);
 		$activeContainer->addNewLine();
+		// type options
+		$typeObj = new $activeTypes[$i];
+		$typeConfigOptions = $typeObj->get_configOptions();
+		if (!empty($typeConfigOptions)) {
+			foreach ($typeConfigOptions as $typeConfigOption) {
+				$activeContainer->addElement($typeConfigOption, true);
+			}
+			// save option types to session
+			ob_start();
+			$dummyIndex = 1;
+			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, array(), true, $dummyIndex, 'user');
+			ob_end_clean();
+			$_SESSION['conftypes_optionTypes'] = array_merge($_SESSION['conftypes_optionTypes'], $typeConfigOptionTypes);
+		}
 		// advanced options
 		$advancedOptionsContent = new htmlTable();
 		// LDAP filter
@@ -327,7 +342,13 @@ if (sizeof($activeTypes) > 0) {
 }
 
 $tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, 'user');
+$dynamicTypeOptions = array();
+foreach ($_SESSION['conftypes_optionTypes'] as $key => $value) {
+	if (isset($typeSettings[$key])) {
+		$dynamicTypeOptions[$key] = explode(LAMConfig::LINE_SEPARATOR, $typeSettings[$key]);
+	}
+}
+parseHtml(null, $container, $dynamicTypeOptions, false, $tabindex, 'user');
 
 echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 
@@ -403,6 +424,7 @@ function checkInput() {
 			$typeSettings[$key] = $_POST[$key];
 		}
 	}
+	$typeConfigOptions = extractConfigOptionsFromPOST($_SESSION['conftypes_optionTypes']);
 	for ($i = 0; $i < sizeof($accountTypes); $i++) {
 		// set hidden
 		$key = "hidden_" . $accountTypes[$i];
@@ -418,6 +440,16 @@ function checkInput() {
 			$key = "readOnly_" . $accountTypes[$i];
 			$typeSettings[$key] = (isset($_POST[$key]) && ($_POST[$key] == 'on'));
 		}
+		// check dynamic type settings
+		$typeObj = new $accountTypes[$i];
+		$typeMessages = $typeObj->check_configOptions($typeConfigOptions);
+		if (!empty($typeMessages)) {
+			$errors = array_merge($errors, $typeMessages);
+		}
+	}
+	// add dynamic type settings
+	foreach ($typeConfigOptions as $key => $value) {
+		$typeSettings[$key] = implode(LAMConfig::LINE_SEPARATOR, $value);
 	}
 	// save input
 	$conf->set_typeSettings($typeSettings);
