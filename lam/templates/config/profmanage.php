@@ -58,13 +58,13 @@ if (isset($_POST['action'])) {
 		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['addprofile']) && !in_array($_POST['addprofile'], getConfigProfiles())) {
 			// check profile password
 			if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
-				// check if lam.conf_sample exists
-				if (!is_file("../../config/lam.conf_sample")) {
-					$error = "The file config/lam.conf_sample was not found. Please restore it.";				
+				// check if lam.conf.sample exists
+				if (!is_file("../../config/lam.conf.sample")) {
+					$error = "The file config/lam.conf.sample was not found. Please restore it.";				
 				}
 				else {
 					// create new profile file
-					@copy("../../config/lam.conf_sample", "../../config/" . $_POST['addprofile'] . ".conf");
+					@copy("../../config/lam.conf.sample", "../../config/" . $_POST['addprofile'] . ".conf");
 					@chmod ("../../config/" . $_POST['addprofile'] . ".conf", 0600);
 					$file = is_file("../../config/" . $_POST['addprofile'] . ".conf");
 					if ($file) {
