@@ -2,9 +2,10 @@
 <html><head><title>Module HowTo - General module options</title>
 
 
+
   
-  <link rel="stylesheet" type="text/css" href="style/layout.css"></head><body>
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="style/layout.css"><link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
+	
 <div style="text-align: center;">
 <h1>Module HowTo - General module options<br>
 </h1>
@@ -13,11 +14,10 @@
 <div style="text-align: left;"><br>
 <h2>1. Account types<br>
 </h2>
-LAM currently provides three account types: <span style="font-weight: bold;">users, groups, hosts<br>
+LAM provides multiple account types (e.g. users, groups, hosts).<span style="font-weight: bold;"><br>
 </span>A module can manage one or more account types.<br>
 <br>
-The types are specified with <span style="font-weight: bold;">can_manage()</span>
-or <span style="font-weight: bold;">meta['account_types']</span>.<br>
+The types are specified with <span style="font-weight: bold;">can_manage()</span>.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
@@ -28,18 +28,12 @@ module will be used only for host accounts.<br>
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
-&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
-class<br>
-&nbsp;&nbsp;&nbsp; *<br>
-&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; * Returns true if this module can manage accounts of the current type, otherwise false.<br>
+&nbsp;&nbsp;&nbsp; * <br>
+&nbsp;&nbsp;&nbsp; * @return boolean true if module fits<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
-get_metaData() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // manages host accounts<br>
-      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; $return["account_types"] = array("host");</span><br style="color: rgb(255, 0, 0);">
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; public function <span style="color: red;">can_manage()</span> {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;get_scope() == 'host';<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>
     </tr>
