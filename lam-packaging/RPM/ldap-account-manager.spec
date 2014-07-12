@@ -85,11 +85,11 @@ cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 
 %post
 if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
-	cp /var/lib/%{lam_dir}/config/config.cfg_sample /var/lib/%{lam_dir}/config/config.cfg
+	cp /var/lib/%{lam_dir}/config/config.cfg.sample /var/lib/%{lam_dir}/config/config.cfg
 	chmod 600 /var/lib/%{lam_dir}/config/config.cfg
 	chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/config.cfg
 	if [ ! -f /var/lib/%{lam_dir}/config/lam.conf ]; then
-		cp /var/lib/%{lam_dir}/config/lam.conf_sample /var/lib/%{lam_dir}/config/lam.conf
+		cp /var/lib/%{lam_dir}/config/lam.conf.sample /var/lib/%{lam_dir}/config/lam.conf
 		chmod 600 /var/lib/%{lam_dir}/config/lam.conf
 		chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/lam.conf
 	fi
@@ -128,7 +128,7 @@ fi
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/profiles
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService
-/var/lib/%{lam_dir}/config/*_sample
+/var/lib/%{lam_dir}/config/*.sample
 /var/lib/%{lam_dir}/config/.htaccess
 /var/lib/%{lam_dir}/config/pdf/.htaccess
 /var/lib/%{lam_dir}/config/profiles/.htaccess

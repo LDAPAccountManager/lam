@@ -27,8 +27,8 @@ install:
 	install -D --mode=644 tmp/internal/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/tmp/internal/.htaccess
 	install -D --mode=644 config/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/.htaccess
 	install -D --mode=644 config/language debian/ldap-account-manager/var/lib/ldap-account-manager/config/language
-	install -D --mode=644 config/lam.conf_sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/lam.conf_sample
-	install -D --mode=644 config/config.cfg_sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/config.cfg_sample
+	install -D --mode=644 config/lam.conf.sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/lam.conf.sample
+	install -D --mode=644 config/config.cfg.sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/config.cfg.sample
 	install -d --mode=755 debian/ldap-account-manager/var/lib/ldap-account-manager/config/pdf
 	install -d --mode=755 debian/ldap-account-manager/var/lib/ldap-account-manager/config/profiles
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/config-samples
@@ -71,7 +71,7 @@ binary-indep: build install
 	dh_fixperms
 	dh_link /usr/share/doc/ldap-account-manager/docs /usr/share/ldap-account-manager/docs
 	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
-	install -D --mode=644 config/config.cfg_sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
+	install -D --mode=644 config/config.cfg.sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
 	dh_link /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/config.cfg
 	dh_installdebconf
 	dh_installdeb
