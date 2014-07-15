@@ -318,6 +318,7 @@ class user extends baseType {
 	 * @param boolean $windowsLocked Windows part is locked
 	 */
 	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked) {
+		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked;
 		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable)
 							&& (!$unixAvailable || $unixLocked)
@@ -387,6 +388,10 @@ class user extends baseType {
 				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveGONGroups', true, _('Remove from all group of (unique) names'), null, false), true);
 			}
+			if (!empty($typeSettings['user_dnDeactivated'])) {
+				$lockContent->addElement(new htmlImage('../../graphics/moveBig.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_moveToDeactivatedDN', true, 'Nach "' . getAbstractDN($typeSettings['user_dnDeactivated']) . '" verschieben', null, false), true);
+			}
 
 			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
 			$container->addElement($lockDiv, true);
@@ -410,6 +415,10 @@ class user extends baseType {
 			if ($windowsAvailable && $windowsLocked) {
 				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
+			}
+			if (!empty($typeSettings['user_dnActivated'])) {
+				$unlockContent->addElement(new htmlImage('../../graphics/moveBig.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_moveToActivatedDN', true, 'Nach "' . getAbstractDN($typeSettings['user_dnActivated']) . '" verschieben', null, false), true);
 			}
 			
 			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
@@ -438,6 +447,7 @@ class user extends baseType {
 	 * @param accountContainer $container account container
 	 */
 	public function runEditPagePostAction(&$container) {
+		$typeSettings = $_SESSION['config']->get_typeSettings();
 		// check if account status should be changed
 		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
 			// lock account
@@ -466,6 +476,9 @@ class user extends baseType {
 				if (isset($_POST['lam_accountStatusRemoveGONGroups']) && ($_POST['lam_accountStatusRemoveGONGroups'] == 'on')) {
 					$container->getAccountModule('posixAccount')->removeFromGONGroups();
 				}
+				if (isset($_POST['lam_moveToDeactivatedDN']) && ($_POST['lam_moveToDeactivatedDN'] == 'on')) {
+					$container->dnSuffix = $typeSettings['user_dnDeactivated'];
+				}
 			}
 			// unlock account
 			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
@@ -485,8 +498,49 @@ class user extends baseType {
 				if (isset($_POST['lam_accountStatusUnlockWindows']) && ($_POST['lam_accountStatusUnlockWindows'] == 'on')) {
 					$container->getAccountModule('windowsUser')->setIsDeactivated(false);
 				}
+				if (isset($_POST['lam_moveToActivatedDN']) && ($_POST['lam_moveToActivatedDN'] == 'on')) {
+					$container->dnSuffix = $typeSettings['user_dnActivated'];
+				}
 			}
 		}
+	}
+	
+	/**
+	* Returns a list of configuration options.
+	* 
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the type name as prefix for them (e.g. user_someSetting) to avoid naming conflicts.
+	*
+	* @return mixed htmlElement or array of htmlElement
+	* 
+	* @see htmlElement
+	*/
+	public function get_configOptions() {
+		$optDeac = new htmlTableExtendedInputField('DN für deaktivierte Konten', 'user_dnDeactivated');
+		$optDeac->setFieldSize(40);
+		$optAc = new htmlTableExtendedInputField('DN für aktivierte Konten', 'user_dnActivated');
+		$optAc->setFieldSize(40);
+		return array($optDeac, $optAc);
+	}
+
+	/**
+	* Checks input values of config settings.
+	* <br>
+	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
+	* <br>If no errors occured the function returns an empty array.
+	*
+	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	* @return array list of error messages
+	*/
+	public function check_configOptions(&$options) {
+		$return = array();
+		if (!empty($options['user_dnDeactivated'][0]) && !get_preg($options['user_dnDeactivated'][0], 'dn')) {
+			$return[] = array('ERROR', 'Bitte geben Sie einen gültigen DN für "DN für deaktivierte Konten" an.');
+		}
+		if (!empty($options['user_dnActivated'][0]) && !get_preg($options['user_dnActivated'][0], 'dn')) {
+			$return[] = array('ERROR', 'Bitte geben Sie einen gültigen DN für "DN für aktivierte Konten" an.');
+		}
+		return $return;
 	}
 	
 }
