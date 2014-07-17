@@ -565,13 +565,8 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		$members = '';
-		if (isset($this->attributes['memberUid'][0])) {
-			$members = implode(', ', $this->attributes['memberUid']);
-		}
-		$return = array(
-			get_class($this) . '_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $members . '</value></block>'),
-		);
+		$return = array();
+		$this->addSimplePDFField($return, 'memberUid', _('Group members'));
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
 		$this->addSimplePDFField($return, 'description', _('Description'));

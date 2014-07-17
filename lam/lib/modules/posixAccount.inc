@@ -1843,9 +1843,14 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->get_scope() == 'host') {
 			$uidLabel = _('Host name');
 		}
+		$additionalGroups = array();
+		if (!empty($this->groups)) {
+			$additionalGroups = $this->groups;
+			natcasesort($additionalGroups);
+		}
 		$return = array(
 			'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $this->getGroupName($this->attributes['gidNumber'][0]) . '</value></block>'),
-			'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . implode(", ", $this->groups) . '</value></block>'),
+			'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . implode(", ", $additionalGroups) . '</value></block>'),
 		);
 		$this->addSimplePDFField($return, 'uid', $uidLabel);
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
@@ -1862,6 +1867,7 @@ class posixAccount extends baseModule implements passwordService {
 					$gons[] = $allGons[$this->gonList[$i]]['cn'][0];
 				}
 			}
+			natcasesort($gons);
 			$return['posixAccount_gon'] = array('<block><key>' . _('Groups of names') . '</key><value>' . implode(", ", $gons) . '</value></block>');
 		}
 		if (isset($this->clearTextPassword)) {
