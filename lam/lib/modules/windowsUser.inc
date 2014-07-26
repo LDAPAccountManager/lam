@@ -765,7 +765,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$containerLeft->addElement(new htmlTableExtendedSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
 		// home directory
-		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'), true);
+		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
 		
 		// NIS attributes
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
@@ -853,6 +853,10 @@ class windowsUser extends baseModule implements passwordService {
 			if (!empty($this->attributes['sAMAccountName'][0]) && !get_preg($this->attributes['sAMAccountName'][0], 'username')) {
 				$return[] = $this->messages['sAMAccountName'][0];
 			}
+		}
+		elseif ($this->getAccountContainer()->isNewAccount && !empty($_POST['userPrincipalName'])) {
+			// set sAMAccountName to user name if attribute input field is not visible (W2012 requires this attribute)
+			$this->attributes['sAMAccountName'][0] = $_POST['userPrincipalName'];
 		}
 		// description
 		$this->attributes['description'][0] = $_POST['description'];
@@ -1252,6 +1256,10 @@ class windowsUser extends baseModule implements passwordService {
 					$samUser = explode('@', $partialAccounts[$i]['userPrincipalName']);
 					$partialAccounts[$i]['sAMAccountName'] = $samUser[0];
 				}
+			}
+			else {
+				// set sAMAccountName to user name if not managed (W2012 requires it)
+				$partialAccounts[$i]['sAMAccountName'] = $replacements['$user'];
 			}
 			// password
 			if (($rawAccounts[$i][$ids['windowsUser_password']] != "") && (get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password'))) {
