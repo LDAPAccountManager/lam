@@ -39,7 +39,7 @@ Requires:      perl
 %description
 LDAP Account Manager (LAM) runs on an existing webserver.
 It manages user, group and host accounts. Currently LAM supports
-these account types: Samba 3, Unix, Kolab 2, address book
+these account types: Samba 3/4, Unix, Kolab 2, address book
 entries, NIS mail aliases and MAC addresses. There is an integrated LDAP browser
 to allow access to the raw LDAP attributes. You
 can use templates for account creation and use multiple configuration
@@ -49,7 +49,7 @@ a script included which manages quota and homedirectories.
 %description -l de
 LDAP Account Manager (LAM) läuft auf einem exisierenden Webserver.
 LAM verwaltet Benutzer, Gruppen und Hosts. Zur Zeit werden folgende Account-Typen
-unterstützt: Samba 3, Unix, Kolab 2, Addressbuch Einträge, NIS
+unterstützt: Samba 3/4, Unix, Kolab 2, Addressbuch Einträge, NIS
 mail Aliase und MAC-Addressen. Es gibt einen integrierten LDAP-Browser mit dem
 man die LDAP-Einträge direkt bearbeiten kann. Zum Anlegen von Accounts können
 Vorlagen definiert werden. Es können mehrere Konfigurations-Profile
@@ -60,6 +60,7 @@ Home-Verzeichnisse verwalten kann.
 %prep
 pwd
 cp $RPM_SOURCE_DIR/lam.apache.conf $RPM_BUILD_DIR/
+cp $RPM_SOURCE_DIR/lam.nginx.conf $RPM_BUILD_DIR/
 %setup -n ldap-account-manager-%{version}
 
 %build
@@ -79,6 +80,8 @@ mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/sess $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess
 mkdir -p $RPM_BUILD_ROOT%{httpd_confdir}
 cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
+mkdir -p $RPM_BUILD_ROOT/etc/%{lam_dir}
+cp $RPM_BUILD_DIR/lam.nginx.conf $RPM_BUILD_ROOT/etc/%{lam_dir}/
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT
