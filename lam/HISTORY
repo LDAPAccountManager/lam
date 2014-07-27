@@ -1,4 +1,5 @@
 September 2014 4.7
+  - Nginx webserver support
   - Personal: support pager attribute (hidden by default)
   - renamed config/lam.conf_sample to lam.conf.sample and config.cfg_sample to config.cfg.sample
   - LAM Pro:

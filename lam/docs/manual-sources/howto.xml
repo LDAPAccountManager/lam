@@ -188,8 +188,8 @@ Have fun!
 
         <itemizedlist>
           <listitem>
-            <para>Apache webserver (SSL recommended) with PHP module (PHP 5
-            (&gt;= 5.2.4) with ldap, gettext, xml, openssl and optional
+            <para>Apache/Nginx webserver (SSL recommended) with PHP module
+            (PHP 5 (&gt;= 5.2.4) with ldap, gettext, xml, openssl and optional
             mcrypt)</para>
           </listitem>
 
@@ -472,6 +472,13 @@ Have fun!
               the settings to fit for your environment.</para>
             </listitem>
           </itemizedlist>
+        </section>
+
+        <section>
+          <title>Webserver configuration</title>
+
+          <para>Please see the <link linkend="apache">Apache</link> or <link
+          linkend="nginx">Nginx</link> chapter.</para>
         </section>
       </section>
 
@@ -8681,7 +8688,7 @@ OK (10 msec)</programlisting>
       stored in the session file is also encrypted.</para>
     </section>
 
-    <section>
+    <section id="apache">
       <title>Apache configuration</title>
 
       <section>
@@ -8858,6 +8865,78 @@ OK (10 msec)</programlisting>
         ProxyPassReverse /style https://lam.company.com/lam/style
         ProxyPassReverse /graphics https://lam.company.com/lam/graphics
 &lt;/VirtualHost&gt;</programlisting>
+      </section>
+    </section>
+
+    <section id="nginx">
+      <title>Nginx configuration</title>
+
+      <para>There is no fully automatic setup of Nginx but LAM provides a
+      ready-to-use configuration file.</para>
+
+      <section>
+        <title>RPM based installations</title>
+
+        <para>The RPM package has dependencies on Apache. Therefore, Nginx is
+        not officially supported with this installation mode. Use tar.bz2 if
+        you are unsure.</para>
+
+        <para>However, the package also includes an Nginx configuration file.
+        Please include it in your server directive like this:</para>
+
+        <programlisting>server {
+        ...
+
+        include /etc/ldap-account-manager/lam.nginx.conf;
+
+        ...
+}</programlisting>
+      </section>
+
+      <section>
+        <title>DEB based installations</title>
+
+        <para>The LAM installation package ships with an Nginx configuration
+        file. Please include it in your server directive like this:</para>
+
+        <programlisting>server {
+        ...
+
+        include /etc/ldap-account-manager/lam.nginx.conf;
+
+        ...
+}</programlisting>
+      </section>
+
+      <section>
+        <title>tar.bz2 based installations</title>
+
+        <para>Please add the following configuration snippet to your server
+        directive.</para>
+
+        <para>You will need to change the alias location
+        ("/usr/share/ldap-account-manager") and fastcgi_pass
+        ("/var/run/php5-fpm.sock") to match your installation.</para>
+
+        <programlisting>location /lam {
+  index index.html;
+  alias /usr/share/ldap-account-manager;
+  autoindex off;
+
+  location ~ \.php$ {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_index index.php;
+    include fastcgi_params;
+  }
+
+  location ~ /lam/(tmp/internal|sess|config|lib|help|locale) {
+    deny all;
+    return 403;
+  }
+
+}
+</programlisting>
       </section>
     </section>
   </appendix>
