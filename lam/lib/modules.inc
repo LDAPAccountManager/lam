@@ -1068,7 +1068,15 @@ class accountContainer {
 			$container->addElement($pwdMailCheckbox);
 			$container->addElement(new htmlHelpLink('407'), true);
 			if (($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false')) {
-				$container->addElement(new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeSendMailAddress', '', '410'));
+				$alternateMail = '';
+				$pwdResetModule = $this->getAccountModule('passwordSelfReset');
+				if (!empty($pwdResetModule)) {
+					$backupMail = $pwdResetModule->getBackupEmail();
+					if (!empty($backupMail)) {
+						$alternateMail = $pwdResetModule->getBackupEmail();
+					}
+				}
+				$container->addElement(new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeSendMailAddress', $alternateMail, '410'));
 			}
 		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);

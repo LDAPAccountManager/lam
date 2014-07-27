@@ -1,5 +1,8 @@
 September 2014 4.7
+  - Personal: support pager attribute (hidden by default)
   - renamed config/lam.conf_sample to lam.conf.sample and config.cfg_sample to config.cfg.sample
+  - LAM Pro:
+   -> Password dialog: preset alternate email address with backup email address (RFE 111)
 
 
 12.06.2014 4.6
