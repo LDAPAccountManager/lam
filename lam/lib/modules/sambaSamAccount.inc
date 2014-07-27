@@ -188,6 +188,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'sambaSamAccount_sambaDomainName' => 'sambaDomainName',
+			'sambaSamAccount_displayName' => 'displayName',
 		);
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 			$return['profile_mappings']['sambaSamAccount_smbhome'] = 'sambaHomePath';
@@ -752,6 +753,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			return array();
 		}
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+		$unixGroupName = $this->getGroupName($attrs['gidNumber'][0]);
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $_POST['sambaDomainName'];
 		// Get Domain SID from name
@@ -797,6 +799,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 
 		// display name
 		$this->attributes['displayName'][0] = $_POST['displayName'];
+		if (!empty($this->attributes['displayName'][0])) {
+			$this->attributes['displayName'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['displayName'][0]);
+			$this->attributes['displayName'][0] = str_replace('$group', $unixGroupName, $this->attributes['displayName'][0]);
+		}
 		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
 			$errors[] = $this->messages['displayName'][1];
 		}
@@ -815,7 +821,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 		}
 		// user attributes
-		$unixGroupName = $this->getGroupName($attrs['gidNumber'][0]);
 		if ($this->get_scope()=='user') {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
@@ -1124,10 +1129,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			// display name
 			$displayName = '';
-			if (isset($this->attributes['displayName'][0])) {
+			if (!empty($this->attributes['displayName'][0])) {
 				$displayName = $this->attributes['displayName'][0];
 			}
-			else if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['displayName'])) {
+			else if ($this->getAccountContainer()->isNewAccount && empty($this->attributes['displayName'][0])) {
 				if (isset($personalAttributes['givenName'][0]) && $personalAttributes['givenName'][0] && isset($personalAttributes['sn'][0]) && $personalAttributes['sn'][0]) {
 					$displayName = $personalAttributes['givenName'][0] . " " . $personalAttributes['sn'][0];
 				}
@@ -1729,6 +1734,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ( $i=1; $i<=31; $i++ ) $day[] = $i;
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+			// display name
+			$return->addElement(new htmlTableExtendedInputField(_('Display name'), 'sambaSamAccount_displayName', '', 'displayName'), true);
 			// use no password at all
 			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsN', false, _('Use no password'), 'noPassword'), true);
 			// account deactivation
