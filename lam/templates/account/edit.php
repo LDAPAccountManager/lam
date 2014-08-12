@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2013  Roland Gruber
+                2005 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,6 +73,11 @@ if (isset($_GET['DN'])) {
 		if (substr($DN, -1, 1) === "'") {
 			$DN = substr($DN, 0, -1);
 		}
+	}
+	$suffix = $_SESSION['config']->get_Suffix($type);
+	if (strpos($DN, $suffix) !== (strlen($DN) - strlen($suffix))) {
+		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type . ' outside suffix ' . $suffix);
+		die();
 	}
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$result = $_SESSION['account']->load_account($DN);
