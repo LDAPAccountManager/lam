@@ -65,7 +65,7 @@ if [ "$1" = "configure" ]; then
        test -x /usr/sbin/$server || continue
        case "$server" in
            apache2)
-               if [ -d /etc/$server/mods-enabled ]; then
+               if [ -d /etc/$server/mods-enabled ] && [ -d /etc/$server/mods-available ]; then
                    if [ ! -f /etc/$server/mods-enabled/actions.load -a ! -h /etc/$server/mods-enabled/actions.load ]; then
                        ln -s /etc/$server/mods-available/actions.load /etc/$server/mods-enabled/actions.load
                    fi
@@ -89,7 +89,7 @@ if [ "$1" = "configure" ]; then
                    ln -s /etc/ldap-account-manager/apache.conf /etc/$server/conf.d/ldap-account-manager
                    restart="$restart $server"
                fi
-               if [ -d /etc/$server/conf-available ]; then
+               if [ -d /etc/$server/conf-available ] && [ -d /etc/$server/conf-enabled ]; then
                    if [ ! -e /etc/$server/conf-available/ldap-account-manager ]; then
                        ln -s /etc/ldap-account-manager/apache.conf /etc/$server/conf-available/ldap-account-manager.conf
                    fi
