@@ -158,8 +158,8 @@ Have fun!
     <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
 
     <para>LAM runs on PHP. Therefore, it is independant of CPU architecture
-    and operating system (OS). You can run LAM on any OS which supports Apache
-    or other PHP compatible web servers.</para>
+    and operating system (OS). You can run LAM on any OS which supports
+    Apache, Nginx or other PHP compatible web servers.</para>
 
     <para><emphasis role="bold">Home directory server:</emphasis></para>
 
@@ -390,16 +390,16 @@ Have fun!
 
             <itemizedlist>
               <listitem>
-                <para>lam/sess: write permission for apache user</para>
+                <para>lam/sess: write permission for apache/nginx user</para>
               </listitem>
 
               <listitem>
-                <para>lam/tmp: write permission for apache user</para>
+                <para>lam/tmp: write permission for apache/nginx user</para>
               </listitem>
 
               <listitem>
                 <para>lam/config (with subdirectories): write permission for
-                apache user</para>
+                apache/nginx user</para>
               </listitem>
 
               <listitem>
@@ -429,13 +429,13 @@ Have fun!
 
             <itemizedlist>
               <listitem>
-                <para>--with-httpd-user=USER USER is the name of your Apache
-                user account (default httpd)</para>
+                <para>--with-httpd-user=USER USER is the name of your
+                Apache/Nginx user account (default httpd)</para>
               </listitem>
 
               <listitem>
                 <para>--with-httpd-group=GROUP GROUP is the name of your
-                Apache group (default httpd)</para>
+                Apache/Nginx group (default httpd)</para>
               </listitem>
 
               <listitem>
