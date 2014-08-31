@@ -444,7 +444,7 @@ abstract class xmlTemplate {
 		# If there isnt a schema item for this attribute
 		$attribute = $attribute_factory->newAttribute($name,$value,$server->getIndex(),$source);
 
-		$attrid = $this->getAttrID($attribute->getName());
+		$attrid = $this->getAttrID($attribute->getName(true, true));
 
 		if (is_null($attrid))
 			array_push($this->attributes,$attribute);
@@ -485,7 +485,7 @@ abstract class xmlTemplate {
 			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
 		foreach ($this->attributes as $attribute)
-			if (($attribute->getName() == strtolower($name)) || in_array(strtolower($name),$attribute->getAliases()))
+			if (($attribute->getName(true, true) == strtolower($name)) || in_array(strtolower($name),$attribute->getAliases()))
 				return $attribute;
 
 		return null;
