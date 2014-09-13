@@ -4243,9 +4243,12 @@ Attention: If the Active Directory schema is used then LAM will always use dn an
       <title>DHCP</title>
 
       <para>You can mange your DHCP server with LAM. It supports to manage
-      subnets, fixed IP entries, IP ranges and DDNS. The DHCP can be activated
-      by adding the account type DHCP to your server profile. Please also add
-      the DHCP modules.</para>
+      subnets, fixed IP entries, IP ranges and DDNS.</para>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>The DHCP management can be activated by adding the account type
+      DHCP to your server profile. Please also add the DHCP modules.</para>
 
       <para>LAM requires that you use an LDAP entry with the object class
       "dhcpService" or "dhcpServer" as suffix for this account type. If the
@@ -4255,6 +4258,36 @@ Attention: If the Active Directory schema is used then LAM will always use dn an
 
       <literallayout>
 </literallayout>
+
+      <para>Add account type:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/dhcpConf1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Set suffix:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/dhcpConf2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Add modules:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/dhcpConf3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
       <para><emphasis role="bold">Example server
       entry:</emphasis><code></code></para>
@@ -4374,6 +4407,10 @@ Run slapindex to rebuild the index.
       </screenshot>
 
       <para>IP ranges may be specified.</para>
+
+      <para>If you use failover pools for your IP ranges please use the pool
+      options on the bottom. Here you can add DHCP pools (object class
+      "dhcpPool") and specify the failover peer.</para>
 
       <screenshot>
         <mediaobject>

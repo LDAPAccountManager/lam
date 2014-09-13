@@ -41,7 +41,7 @@ $Id$
 class fixed_ip extends baseModule {
 
 	/** fixed ips */
-	public $fixed_ip;
+	public $fixed_ip = array();
 	
 	/** already processed? */
 	public $processed = false;

@@ -238,6 +238,18 @@ class lamDHCPList extends lamList {
 						$ranges[] = "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
 					}
 				}
+				$pooledRanges = searchLDAP($entry['dn'], '(objectclass=dhcpPool)', array('dhcprange'));
+				foreach ($pooledRanges as $pool) {
+					if (empty($pool['dhcprange'])) {
+						continue;
+					}
+					foreach($pool['dhcprange'] AS $id => $value) {
+						if (!empty($value) && !is_numeric($value)) {
+							$ex = explode(" ", $value);
+							$ranges[] = "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
+						}
+					}
+				}
 				natcasesort($ranges);
 				echo implode('', $ranges);
 				echo"</table>";

@@ -216,6 +216,11 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
+.trashButton {
+	background-image: url(../graphics/trash.png) !important;
+	background-position: 0px 0px !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }

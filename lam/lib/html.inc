@@ -624,7 +624,7 @@ class htmlInputField extends htmlElement {
 	}
 	
 	/**
-	 * Sets the field size.
+	 * Sets the field size (default is 30).
 	 * 
 	 * @param int $fieldSize size
 	 */
