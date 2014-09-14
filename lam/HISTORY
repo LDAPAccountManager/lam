@@ -1,4 +1,4 @@
-September 2014 4.7
+29.09.2014 4.7
   - Nginx webserver support
   - DHCP: support pooling of IP ranges (RFE 107)
   - Personal: support pager attribute (hidden by default)
