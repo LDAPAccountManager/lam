@@ -147,6 +147,7 @@ fi
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService/default.*
 /usr/share/%{lam_dir}
 %{httpd_confdir}
+/etc/%{lam_dir}/lam.nginx.conf
 
 %changelog
 * Sun Oct 28 2012 - Roland Gruber post@rolandgruber.de
