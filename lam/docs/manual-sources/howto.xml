@@ -729,6 +729,12 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>4.5 -&gt; 4.7</title>
+
+          <para>No special actions needed.</para>
+        </section>
+
+        <section>
           <title>4.4 -&gt; 4.5</title>
 
           <para>LAM will no longer follow referrals by default. This is ok for
