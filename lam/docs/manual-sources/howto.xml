@@ -1308,10 +1308,10 @@ Have fun!
             </mediaobject>
           </screenshot>
 
-          <para>LAM can manage user home directories and quotas with an
-          external script. You can specify the home directory server and where
-          the script is located. The default rights for new home directories
-          can be set, too.</para>
+          <para id="profile_mail">LAM can manage user home directories and
+          quotas with an external script. You can specify the home directory
+          server and where the script is located. The default rights for new
+          home directories can be set, too.</para>
 
           <screenshot>
             <mediaobject>
@@ -1906,6 +1906,28 @@ Have fun!
       <literallayout>
 </literallayout>
 
+      <para><emphasis role="bold">Password:</emphasis></para>
+
+      <para>Click the "Set password" button to change the user's password(s).
+      Depending on the active account modules LAM will offer to change
+      multiple passwords at the same time.</para>
+
+      <para>If a module supports to enforce a password change then you will
+      see the appropriate checkbox. LAM Pro also offers to send the password
+      via email after the account is saved. Email options are specified in
+      your <link linkend="profile_mail">LAM server profile</link>.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/password1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
       <para><emphasis role="bold">Quick account (un)locking:</emphasis></para>
 
       <para>When you edit an user then LAM supports to quickly lock/unlock the
@@ -2122,6 +2144,12 @@ Have fun!
                 <entry>organizationName/o</entry>
 
                 <entry>Organisation</entry>
+              </row>
+
+              <row>
+                <entry>pager</entry>
+
+                <entry>Pager number</entry>
               </row>
 
               <row>
