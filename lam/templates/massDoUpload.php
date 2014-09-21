@@ -231,7 +231,8 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 				}
 				// create and save PDF
 				$pdfContent = createModulePDF(array($_SESSION['pdfAccount']), $pdfStructure, true);
-				$pdfZip->addFromString($dn, $pdfContent);
+				$fileName = $dn . '.pdf';
+				$pdfZip->addFromString($fileName, $pdfContent);
 				$_SESSION['mass_pdf']['counter'] ++;
 				if ($_SESSION['mass_pdf']['counter'] >= sizeof($accounts)) {
 					$_SESSION['mass_pdf']['finished'] = true;
