@@ -204,7 +204,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $account[$data[$i][$ids['dn_rdn']]] . ",";
 					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $suffix;
 					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
-					$account['dn'] = $account_dn;
+					$accounts[$i]['dn'] = $account_dn;
 				}
 			}
 			// print errors if DN could not be built

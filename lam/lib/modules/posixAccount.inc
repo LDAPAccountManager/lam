@@ -2269,30 +2269,30 @@ class posixAccount extends baseModule implements passwordService {
 					$gonMap[$attr['cn'][0]] = $dn;
 				}
 			}
-			for ($i = 0; $i < sizeof($data); $i++) {
+			foreach ($data as $i => $dataRow) {
 				if (in_array($i, $failed)) continue; // ignore failed accounts
-				if ($data[$i][$col] != "") {
-					$groups = explode(",", $data[$i][$col]);
+				if ($dataRow[$col] != "") {
+					$groups = explode(",", $dataRow[$col]);
 					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
-						if (get_preg($data[$i][$ids['posixAccount_group']], 'digit')) {
-							if (!in_array($groupMap[$data[$i][$ids['posixAccount_group']]], $groups)) {
-								$groups[] = $groupMap[$data[$i][$ids['posixAccount_group']]];
+						if (get_preg($dataRow[$ids['posixAccount_group']], 'digit')) {
+							if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
+								$groups[] = $groupMap[$dataRow[$ids['posixAccount_group']]];
 							}
 						}
 						else {
-							if (!in_array($groupMap[$data[$i][$ids['posixAccount_group']]], $groups)) {
-								$groups[] = $data[$i][$ids['posixAccount_group']];
+							if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
+								$groups[] = $dataRow[$ids['posixAccount_group']];
 							}
 						}
 					}
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $temp['groups'])) $temp['groups'][] = $groups[$g];
-						$temp['members'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
+						$temp['members'][$groups[$g]][] = $dataRow[$ids['posixAccount_userName']];
 					}
 				}
-				if (isset($ids['posixAccount_gon']) && ($data[$i][$ids['posixAccount_gon']] != "")) {
-					$gons = explode(",", $data[$i][$ids['posixAccount_gon']]);
+				if (isset($ids['posixAccount_gon']) && ($dataRow[$ids['posixAccount_gon']] != "")) {
+					$gons = explode(",", $dataRow[$ids['posixAccount_gon']]);
 					$memberAttr = 'member';
 					for ($g = 0; $g < sizeof($gons); $g++) {
 						if (in_array('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
@@ -2301,7 +2301,7 @@ class posixAccount extends baseModule implements passwordService {
 						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
 					}
 				}
-				if ($data[$i][$col_home] != "") {
+				if ($dataRow[$col_home] != "") {
 					$temp['createHomes'][] = $i;
 				}
 			}

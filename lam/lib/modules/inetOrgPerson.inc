@@ -1471,7 +1471,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'title', _('Job title'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300), null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
@@ -1497,7 +1497,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'employeeType', _('Employee type'));
 			}
 			else {
-				$this->addSimpleInputTextField($fieldContainer, 'employeeType', _('Employee type'), false, null, false, $this->employeeTypeCache);
+				$this->addSimpleInputTextField($fieldContainer, 'employeeType', _('Employee type'), false, null, false, array_slice($this->employeeTypeCache, 0, 300));
 				$equalWidthElements[] = 'employeeType';
 			}
 		}
@@ -1506,7 +1506,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'businessCategory', _('Business category'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, $this->businessCategoryCache, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300), null, $equalWidthElements);
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
@@ -1514,7 +1514,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'departmentNumber', _('Department'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, $this->departmentCache, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300), null, $equalWidthElements);
 			}
 		}
 		// organisational unit
@@ -1523,7 +1523,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'ou', _('Organisational unit'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, $this->ouCache, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300), null, $equalWidthElements);
 			}
 		}
 		// organisation
@@ -1532,7 +1532,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'o', _('Organisation'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, $this->oCache, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, array_slice($this->oCache, 0, 300), null, $equalWidthElements);
 			}
 		}
 		// user certificates
@@ -2438,10 +2438,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		$temp['counter']++;
-		if ($temp['counter'] < (sizeof($data) - 1)) {
+		$dataSize = sizeof($data);
+		if ($temp['counter'] < ($dataSize - 1)) {
 			return array (
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / sizeof($data),
+				'progress' => ($temp['counter'] * 100) / $dataSize,
 				'errors' => $errors
 			);
 		}
@@ -3471,22 +3472,34 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$result = searchLDAPByFilter('(objectClass=inetOrgPerson)', $attrs, array($this->get_scope()));
 			foreach ($result as $attributes) {
 				if (isset($attributes['departmentnumber'])) {
-					$departments = array_merge($departments, $attributes['departmentnumber']);
+					foreach ($attributes['departmentnumber'] as $val) {
+						$departments[] = $val;
+					}
 				}
 				if (isset($attributes['ou'])) {
-					$ous = array_merge($ous, $attributes['ou']);
+					foreach ($attributes['ou'] as $val) {
+						$ous[] = $val;
+					}
 				}
 				if (isset($attributes['o'])) {
-					$os = array_merge($os, $attributes['o']);
+					foreach ($attributes['o'] as $val) {
+						$os[] = $val;
+					}
 				}
 				if (isset($attributes['title'])) {
-					$titles = array_merge($titles, $attributes['title']);
+					foreach ($attributes['title'] as $val) {
+						$titles[] = $val;
+					}
 				}
 				if (isset($attributes['employeetype'])) {
-					$employeeTypes = array_merge($employeeTypes, $attributes['employeetype']);
+					foreach ($attributes['employeetype'] as $val) {
+						$employeeTypes[] = $val;
+					}
 				}
 				if (isset($attributes['businesscategory'])) {
-					$businessCategories = array_merge($businessCategories, $attributes['businesscategory']);
+					foreach ($attributes['businesscategory'] as $val) {
+						$businessCategories[] = $val;
+					}
 				}
 			}
 		}
