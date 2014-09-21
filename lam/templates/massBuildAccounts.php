@@ -139,16 +139,16 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// check if all required attributes are given
 	$invalidColumns = array();
 	$id_names = array_keys($ids);
-	for ($i = 0; $i < sizeof($checkcolumns); $i++) {
-		for ($r = 0; $r < sizeof($data); $r++) {
-			if ($data[$r][$checkcolumns[$i]] == "") {
-				$invalidColumns[] = $id_names[$checkcolumns[$i]];
+	foreach ($checkcolumns as $checkcolumn) {
+		foreach ($data as $dataRow) {
+			if (empty($dataRow[$checkcolumn])) {
+				$invalidColumns[] = $id_names[$checkcolumn];
 				break;
 			}
 		}
 	}
-	for ($i = 0; $i < sizeof($data); $i++) {
-		if ($data[$i][$ids['dn_rdn']] == "") {
+	foreach ($data as $dataRow) {
+		if (empty($dataRow[$ids['dn_rdn']])) {
 			$invalidColumns[] = 'dn_rdn';
 			break;
 		}
@@ -162,8 +162,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] == true) && isset($ids[$columns[$i]['name']])) {
 			$colNumber = $ids[$columns[$i]['name']];
 			$values_given = array();
-			for ($r = 0; $r < sizeof($data); $r++) {
-				$values_given[] = $data[$r][$colNumber];
+			foreach ($data as $dataRow) {
+				$values_given[] = $dataRow[$colNumber];
 			}
 			$values_unique = array_unique($values_given);
 			if (sizeof($values_given) != sizeof($values_unique)) {
@@ -195,16 +195,16 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			$rdnList = getRDNAttributes($scope, $selectedModules);
 			$suffix = $_SESSION['config']->get_Suffix($scope);
 			// set DN
-			for ($i = 0; $i < sizeof($accounts); $i++) {
+			foreach ($accounts as $i => $account) {
 				// check against list of possible RDN attributes
 				if (!in_array($data[$i][$ids['dn_rdn']], $rdnList)) {
-					$errors[] = array(_('Account %s:') . ' dn_rdn ' . $accounts[$i][$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
+					$errors[] = array(_('Account %s:') . ' dn_rdn ' . $account[$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
 				}
 				else {
-					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $accounts[$i][$data[$i][$ids['dn_rdn']]] . ",";
+					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $account[$data[$i][$ids['dn_rdn']]] . ",";
 					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $suffix;
 					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
-					$accounts[$i]['dn'] = $account_dn;
+					$account['dn'] = $account_dn;
 				}
 			}
 			// print errors if DN could not be built

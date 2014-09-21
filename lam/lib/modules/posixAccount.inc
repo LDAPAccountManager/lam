@@ -1984,18 +1984,18 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		// check input
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		foreach ($rawAccounts as $i => $rawAccount) {
 			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
 			// UID
-			if ($rawAccounts[$i][$ids['posixAccount_uid']] == "") {
+			if ($rawAccount[$ids['posixAccount_uid']] == "") {
 				// autoUID
 				$needAutoUID[] = $i;
 			}
-			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit')) {
+			elseif (get_preg($rawAccount[$ids['posixAccount_uid']], 'digit')) {
 				if ($this->get_scope() == 'user') {
-					if (($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
-						($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
-						$partialAccounts[$i]['uidNumber'] = trim($rawAccounts[$i][$ids['posixAccount_uid']]);
+					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
+						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
+						$partialAccounts[$i]['uidNumber'] = trim($rawAccount[$ids['posixAccount_uid']]);
 					}
 					else {
 						$errMsg = $this->messages['uidNumber'][4];
@@ -2004,9 +2004,9 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				elseif ($this->get_scope() == 'host') {
-					if (($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
-						($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
-						$partialAccounts[$i]['uidNumber'] = trim($rawAccounts[$i][$ids['posixAccount_uid']]);
+					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
+						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
+						$partialAccounts[$i]['uidNumber'] = trim($rawAccount[$ids['posixAccount_uid']]);
 					}
 					else {
 						$errMsg = $this->messages['uidNumber'][4];
@@ -2021,11 +2021,11 @@ class posixAccount extends baseModule implements passwordService {
 				$errors[] = $errMsg;
 			}
 			// GID number
-			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'digit')) {
-				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixAccount_group']];
+			if (get_preg($rawAccount[$ids['posixAccount_group']], 'digit')) {
+				$partialAccounts[$i]['gidNumber'] = $rawAccount[$ids['posixAccount_group']];
 			}
-			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'groupname')) {
-				$gid = $groupMap[$rawAccounts[$i][$ids['posixAccount_group']]];
+			if (get_preg($rawAccount[$ids['posixAccount_group']], 'groupname')) {
+				$gid = $groupMap[$rawAccount[$ids['posixAccount_group']]];
 				if (is_numeric($gid)) {
 					$partialAccounts[$i]['gidNumber'] = $gid;
 				}
@@ -2042,9 +2042,9 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			// GECOS
 			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
-				if ($rawAccounts[$i][$ids['posixAccount_gecos']] != "") {
-					if (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos')) {
-						$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccounts[$i][$ids['posixAccount_gecos']]);
+				if ($rawAccount[$ids['posixAccount_gecos']] != "") {
+					if (get_preg($rawAccount[$ids['posixAccount_gecos']], 'gecos')) {
+						$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccount[$ids['posixAccount_gecos']]);
 					}
 					else {
 						$errMsg = $this->messages['gecos'][0];
@@ -2054,12 +2054,12 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				else {
 					$gecos = "";
-					if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && ($rawAccounts[$i][$ids['inetOrgPerson_lastName']] != "")) {
-						$gecos = $rawAccounts[$i][$ids['inetOrgPerson_firstName']] . " " . $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
-						if ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") {
-							$gecos = $gecos . ",," . $rawAccounts[$i][$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
-							if ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") {
-								$gecos = $gecos . "," . $rawAccounts[$i][$ids['inetOrgPerson_fax']];
+					if (($rawAccount[$ids['inetOrgPerson_firstName']] != "") && ($rawAccount[$ids['inetOrgPerson_lastName']] != "")) {
+						$gecos = $rawAccount[$ids['inetOrgPerson_firstName']] . " " . $rawAccount[$ids['inetOrgPerson_lastName']];
+						if ($rawAccount[$ids['inetOrgPerson_telephone']] != "") {
+							$gecos = $gecos . ",," . $rawAccount[$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
+							if ($rawAccount[$ids['inetOrgPerson_fax']] != "") {
+								$gecos = $gecos . "," . $rawAccount[$ids['inetOrgPerson_fax']];
 							}
 						}
 					}
@@ -2071,8 +2071,8 @@ class posixAccount extends baseModule implements passwordService {
 			// user specific attributes
 			if ($this->get_scope() == 'user') {
 				// additional groups
-				if ($rawAccounts[$i][$ids['posixAccount_additionalGroups']] != "") {
-					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_additionalGroups']]);
+				if ($rawAccount[$ids['posixAccount_additionalGroups']] != "") {
+					$groups = explode(",", $rawAccount[$ids['posixAccount_additionalGroups']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $existingGroups)) {
 							$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
@@ -2080,8 +2080,8 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// group of names
-				if (self::areGroupOfNamesActive() && ($rawAccounts[$i][$ids['posixAccount_gon']] != "")) {
-					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_gon']]);
+				if (self::areGroupOfNamesActive() && ($rawAccount[$ids['posixAccount_gon']] != "")) {
+					$groups = explode(",", $rawAccount[$ids['posixAccount_gon']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $gonList)) {
 							$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
@@ -2089,17 +2089,17 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// user name
-				if (in_array($rawAccounts[$i][$ids['posixAccount_userName']], $existingUsers)) {
-					$userName = $rawAccounts[$i][$ids['posixAccount_userName']];
+				if (in_array($rawAccount[$ids['posixAccount_userName']], $existingUsers)) {
+					$userName = $rawAccount[$ids['posixAccount_userName']];
 					while (in_array($userName, $existingUsers)) {
 						$userName = $this->getNextUserName($userName);
 					}
 					$errMsg = $this->messages['uid'][9];
-					array_push($errMsg, array($i, $userName, $rawAccounts[$i][$ids['posixAccount_userName']]));
+					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_userName']]));
 					$errors[] = $errMsg;
 				}
-				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_userName']], 'username')) {
-					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_userName']];
+				elseif (get_preg($rawAccount[$ids['posixAccount_userName']], 'username')) {
+					$partialAccounts[$i]['uid'] = $rawAccount[$ids['posixAccount_userName']];
 				}
 				else {
 					$errMsg = $this->messages['uid'][7];
@@ -2107,11 +2107,11 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// home directory
-				if ($rawAccounts[$i][$ids['posixAccount_homedir']] == "") {
+				if ($rawAccount[$ids['posixAccount_homedir']] == "") {
 					$partialAccounts[$i][$homedirAttrName] = '/home/' . $partialAccounts[$i]['uid'];
 				}
-				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_homedir']], 'homeDirectory')) {
-					$partialAccounts[$i][$homedirAttrName] = $rawAccounts[$i][$ids['posixAccount_homedir']];
+				elseif (get_preg($rawAccount[$ids['posixAccount_homedir']], 'homeDirectory')) {
+					$partialAccounts[$i][$homedirAttrName] = $rawAccount[$ids['posixAccount_homedir']];
 				}
 				else {
 					$errMsg = $this->messages['homeDirectory'][2];
@@ -2119,11 +2119,11 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// login shell
-				if ($rawAccounts[$i][$ids['posixAccount_shell']] == "") {
+				if ($rawAccount[$ids['posixAccount_shell']] == "") {
 					$partialAccounts[$i]['loginShell'] = '/bin/bash';
 				}
-				elseif (in_array($rawAccounts[$i][$ids['posixAccount_shell']], $this->getShells())) {
-					$partialAccounts[$i]['loginShell'] = $rawAccounts[$i][$ids['posixAccount_shell']];
+				elseif (in_array($rawAccount[$ids['posixAccount_shell']], $this->getShells())) {
+					$partialAccounts[$i]['loginShell'] = $rawAccount[$ids['posixAccount_shell']];
 				}
 				else {
 					$errMsg = $this->messages['shell'][0];
@@ -2132,11 +2132,11 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				$pwd_enabled = true;
 				// password enabled/disabled
-				if ($rawAccounts[$i][$ids['posixAccount_passwordDisabled']] == "") {
+				if ($rawAccount[$ids['posixAccount_passwordDisabled']] == "") {
 					$pwd_enabled = true;
 				}
-				elseif (in_array($rawAccounts[$i][$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
-					if ($rawAccounts[$i][$ids['posixAccount_passwordDisabled']] == 'true') $pwd_enabled = false;
+				elseif (in_array($rawAccount[$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
+					if ($rawAccount[$ids['posixAccount_passwordDisabled']] == 'true') $pwd_enabled = false;
 					else $pwd_enabled = true;
 				}
 				else {
@@ -2145,11 +2145,11 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// password
-				if (($rawAccounts[$i][$ids['posixAccount_password']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_password']], 'password'))) {
-					$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccounts[$i][$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['posixAccount_password']]; // for custom scripts etc.
+				if (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
+					$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']]; // for custom scripts etc.
 				}
-				elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
+				elseif ($rawAccount[$ids['posixAccount_password']] != "") {
 					$errMsg = $this->messages['userPassword'][4];
 					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
 					array_push($errMsg, array($i));
@@ -2157,9 +2157,9 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				// cn
 				if ($this->manageCn()) {
-					if ($rawAccounts[$i][$ids['posixAccount_cn']] != "") {
-						if (get_preg($rawAccounts[$i][$ids['posixAccount_cn']], 'cn')) {
-							$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_cn']];
+					if ($rawAccount[$ids['posixAccount_cn']] != "") {
+						if (get_preg($rawAccount[$ids['posixAccount_cn']], 'cn')) {
+							$partialAccounts[$i]['cn'] = $rawAccount[$ids['posixAccount_cn']];
 						}
 						else {
 							$errMsg = $this->messages['cn'][1];
@@ -2183,18 +2183,18 @@ class posixAccount extends baseModule implements passwordService {
 			// host specific attributes
 			elseif ($this->get_scope() == 'host') {
 				// host name
-				if (in_array($rawAccounts[$i][$ids['posixAccount_hostName']], $existingUsers)) {
-					$userName = $rawAccounts[$i][$ids['posixAccount_hostName']];
+				if (in_array($rawAccount[$ids['posixAccount_hostName']], $existingUsers)) {
+					$userName = $rawAccount[$ids['posixAccount_hostName']];
 					while (in_array($userName, $existingUsers)) {
 						$userName = $this->getNextUserName($userName);
 					}
 					$errMsg = $this->messages['uid'][10];
-					array_push($errMsg, array($i, $userName, $rawAccounts[$i][$ids['posixAccount_hostName']]));
+					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_hostName']]));
 					$errors[] = $errMsg;
 				}
-				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_hostName']], 'hostname')) {
-					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
-					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
+				elseif (get_preg($rawAccount[$ids['posixAccount_hostName']], 'hostname')) {
+					$partialAccounts[$i]['uid'] = $rawAccount[$ids['posixAccount_hostName']];
+					$partialAccounts[$i]['cn'] = $rawAccount[$ids['posixAccount_hostName']];
 				}
 				else {
 					$errMsg = $this->messages['uid'][8];
@@ -2202,11 +2202,11 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// description
-				if (isset($ids['posixAccount_description']) && isset($rawAccounts[$i][$ids['posixAccount_description']]) && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
-					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
+				if (isset($ids['posixAccount_description']) && isset($rawAccount[$ids['posixAccount_description']]) && ($rawAccount[$ids['posixAccount_description']] != '')) {
+					$partialAccounts[$i]['description'] = $rawAccount[$ids['posixAccount_description']];
 				}
 				else {
-					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
+					$partialAccounts[$i]['description'] = $rawAccount[$ids['posixAccount_hostName']];
 				}
 				$partialAccounts[$i][$homedirAttrName] = '/dev/null';
 				$partialAccounts[$i]['loginShell'] = '/bin/false';
@@ -2217,8 +2217,8 @@ class posixAccount extends baseModule implements passwordService {
 			$errorsTemp = array();
 			$uids = $this->getNextUIDs(sizeof($needAutoUID), $errorsTemp);
 			if (is_array($uids)) {
-				for ($i = 0; $i < sizeof($needAutoUID); $i++) {
-					$partialAccounts[$i]['uidNumber'] = $uids[$i];
+				foreach ($needAutoUID as $i => $index) {
+					$partialAccounts[$index]['uidNumber'] = $uids[$i];
 				}
 			}
 			else {
@@ -2443,8 +2443,8 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$uidList = $this->getUIDs();
 		$uids = array();
-		for ($i = 0; $i < sizeof($uidList); $i++) {
-			if (($uidList[$i] <= $maxID) && ($uidList[$i] >= $minID)) $uids[] = $uidList[$i];  // ignore UIDs > maxID and UIDs < minID
+		foreach ($uidList as $uid) {
+			if (($uid <= $maxID) && ($uid >= $minID)) $uids[] = $uid;  // ignore UIDs > maxID and UIDs < minID
 		}
 		for ($i = 0; $i < $count; $i++) {
 			if (count($uids) != 0) {

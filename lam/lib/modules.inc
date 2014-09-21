@@ -495,7 +495,9 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 	// give raw data to modules
 	$errors = array();
 	$partialAccounts = array();
-	for ($i = 0; $i < sizeof($data); $i++) $partialAccounts[$i]['objectClass'] = array();
+	foreach ($data as $i => $dataRow) {
+		$partialAccounts[$i]['objectClass'] = array();
+	}
 	for ($i = 0; $i < sizeof($ordered); $i++) {
 		$module = new $ordered[$i]($scope);
 		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules);
