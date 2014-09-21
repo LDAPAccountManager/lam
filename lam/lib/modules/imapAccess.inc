@@ -290,6 +290,7 @@ class imapAccess extends baseModule {
 		$passwordInput = new htmlTableExtendedInputField(_("Password of IMAP admin user"), 'ImapAdminPassword', '', 'ImapAdminPassword_Sess');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setRequired(true);
+		$passwordInput->setOnKeyPress('SubmitForm(\'enterPasswordButton\', event);');
 		$return->addElement($passwordInput, true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$return->addElement(new htmlButton('enterPasswordButton', _('Ok')));
