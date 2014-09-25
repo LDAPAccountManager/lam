@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: LAM 3.9\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2014-09-23 19:02+0200\n"
+"PO-Revision-Date: 2014-09-24 22:29+0200\n"
 "Last-Translator: Slavko <linux@slavino.sk>\n"
 "Language-Team: slovenčina <linux@slavino.sk>\n"
 "Language: Slovak\n"
@@ -1000,7 +1000,7 @@ msgstr ""
 
 #: ../lib/modules/range.inc:114
 msgid "Adds a new range pool."
-msgstr ""
+msgstr "Pridať nový rozsah skupiny."
 
 #: ../help/help.inc:233
 msgid "Adds a new self service option to the selected group element."
@@ -1385,13 +1385,15 @@ msgstr "Spýtať sa"
 #: ../lib/modules/eduPerson.inc:218 ../lib/modules/eduPerson.inc:234
 #: ../lib/modules/eduPerson.inc:352 ../lib/modules/eduPerson.inc:590
 msgid "Assurance profiles"
-msgstr ""
+msgstr "Bezpečnostné profily"
 
 #: ../lib/modules/eduPerson.inc:143 ../lib/modules/eduPerson.inc:147
 msgid ""
 "Assurance profiles are the set of standards that are met by an identity "
 "assertion."
 msgstr ""
+"Bezpečnostné profily sú sady noriem, ktoré musia byť splnené na potvrdenie "
+"identity."
 
 #: ../lib/modules/asteriskAccount.inc:73
 msgid "Asterisk"
@@ -3184,9 +3186,8 @@ msgid "Delete photo"
 msgstr "Odstrániť fotografiu"
 
 #: ../lib/modules/range.inc:556
-#, fuzzy
 msgid "Delete pool"
-msgstr "Odstrániť fotografiu"
+msgstr "Odstrániť skupinu"
 
 #: ../templates/config/profmanage.php:271
 #: ../templates/config/profmanage.php:274
@@ -8086,9 +8087,8 @@ msgid "New policy"
 msgstr "Nová politika"
 
 #: ../lib/modules/range.inc:113 ../lib/modules/range.inc:627
-#, fuzzy
 msgid "New pool"
-msgstr "Nová politika"
+msgstr "Nová skupina"
 
 #: ../lib/types/pykotaPrinterType.inc:117
 #: ../lib/types/pykotaPrinterType.inc:166
@@ -9592,9 +9592,8 @@ msgid "Please enter a numeric value for the password history length."
 msgstr "Prosím, zadajte číselnú hodnotu dĺžky histórie hesiel."
 
 #: ../lib/modules/range.inc:138
-#, fuzzy
 msgid "Please enter a pool name."
-msgstr "Prosím, zadajte meno role."
+msgstr "Prosím, zadajte meno skupiny."
 
 #: ../lib/modules/sudoRole.inc:267
 msgid "Please enter a role name."
@@ -9972,9 +9971,9 @@ msgid "Please enter an user name on this page: %s"
 msgstr "Prosím, zadajte emailovú adresu na tejto stránke: %s"
 
 #: ../lib/modules/range.inc:139
-#, fuzzy, php-format
+#, php-format
 msgid "Please enter at least one range for pool \"%s\"."
-msgstr "Prosím, zadajte meno tejto politiky."
+msgstr "Prosím, zadajte aspoň jeden rozsah pre skupinu „%s”."
 
 #: ../lib/modules/windowsUser.inc:1360 ../lib/modules/windowsUser.inc:1369
 #: ../lib/modules/windowsUser.inc:1378 ../lib/modules/windowsUser.inc:1389
@@ -10441,9 +10440,8 @@ msgid "Policy list has invalid format!"
 msgstr "Zoznam politík má neplatný formát!"
 
 #: ../lib/modules/range.inc:550
-#, fuzzy
 msgid "Pools"
-msgstr "Nástroje"
+msgstr "Skupiny"
 
 #: ../lib/modules/asteriskAccount.inc:179
 #: ../lib/modules/asteriskAccount.inc:283
@@ -11731,7 +11729,7 @@ msgstr "Test schémy"
 #: ../lib/modules/eduPerson.inc:175 ../lib/modules/eduPerson.inc:233
 #: ../lib/modules/eduPerson.inc:285 ../lib/modules/eduPerson.inc:582
 msgid "Scoped affiliations"
-msgstr ""
+msgstr "Cieľová skupina"
 
 #: ../help/help.inc:101
 msgid "Script path"
@@ -13681,12 +13679,11 @@ msgstr "Heslo bolo nastavené na:"
 
 #: ../lib/modules/range.inc:122
 msgid "The pool's failover peer."
-msgstr ""
+msgstr "Partner nefunkčnej skupiny."
 
 #: ../lib/modules/range.inc:118
-#, fuzzy
 msgid "The pool's name."
-msgstr "Nové meno profilu"
+msgstr "Meno skupiny"
 
 #: ../lib/modules/bindDLZ.inc:512 ../lib/modules/bindDLZ.inc:513
 #, php-format
@@ -15757,7 +15754,7 @@ msgstr ""
 
 #: ../lib/modules/pykotaBillingCode.inc:86
 msgid "Used balance for the billing code."
-msgstr ""
+msgstr "Cena, použitá fakturačným kódom."
 
 #: ../lib/modules/quota.inc:109 ../lib/modules/quota.inc:400
 msgid "Used blocks"
