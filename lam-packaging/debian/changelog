@@ -1,10 +1,10 @@
-ldap-account-manager (4.7.RC1-1) unstable; urgency=low
+ldap-account-manager (4.7-1) unstable; urgency=low
 
   * new upstream release
   * Fix "symlinks to apache.conf cause dpkg to leave package
     uninstalled": changed directory test code (Closes: #758070)
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 14 Sep 2014 21:24:00 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 28 Sep 2014 09:24:00 +0200
 
 ldap-account-manager (4.6-1) unstable; urgency=low
 
