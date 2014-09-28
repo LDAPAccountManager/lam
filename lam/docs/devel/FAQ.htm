@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Developer FAQ</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+<div style="text-align: center;">
+<h1>Developer FAQ<br>
+</h1>
+<br>
+<div style="text-align: left;"><big><span style="font-weight: bold;">Q:
+Where is the ldap/config object?</span></big><br>
+<br>
+<big><span style="font-weight: bold;">A:</span></big> The ldap object
+is in <span style="color: rgb(204, 0, 0); font-weight: bold;">$_SESSION['ldap']</span>
+and the config object in <span
+ style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['config']</span>.<br>
+<br>
+<br>
+</div>
+<div style="text-align: left;"><br>
+</div>
+<div style="text-align: left;"><big><span style="font-weight: bold;">Q:
+How can I make LDAP operations, where is the user name and password?</span></big><br>
+<br>
+<span style="font-weight: bold;"><big>A:</big> </span>LAM
+automatically reconnects to the LDAP server on every page load. You can
+use <span style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server()</span>
+which is the LDAP server handle.<br>
+Be sure to include ldap.inc before (automatically included for account
+modules).<br>
+<br>
+<span style="font-weight: bold;">Example:</span> ldap_search(<span
+ style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server()</span><span
+ style="color: rgb(204, 0, 0);"></span>, $suffix, $filter, $attributes)<br>
+<br>
+<br>
+<br>
+<big><span style="font-weight: bold;">Q: What is the LDAP suffix for
+the different account types?</span></big><br>
+<br>
+<big><span style="font-weight: bold;">A:</span></big> Just call <span
+ style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['config']-&gt;get_Suffix($scope)</span>
+where $scope is the account type (user,group, ...).<br>
+Be sure to include ldap.inc before (automatically included for account
+modules).<br>
+<br>
+<span style="font-weight: bold;">Example:</span> $suffix = <span
+ style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['config']-&gt;get_Suffix('user')</span><br>
+<br>
+<br>
+<br>
+<big><span style="font-weight: bold;">Q: How can I check if the user is
+really logged in and not calling the scripts by hand?</span></big><br>
+<br>
+<big><span style="font-weight: bold;">A:</span></big> After the user
+successfully logged in to LAM the variable <span
+ style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['loggedIn']</span>
+is set to true.<br>
+<br>
+<big><span style="font-weight: bold;"><br>
+<br>
+Q: What is the command for these error/warning/info messages?</span></big><br>
+<br>
+<big><span style="font-weight: bold;">A:</span></big> Your script must
+include status.inc (automatically included for account
+modules) to display these messages.<br>
+The command is <span style="font-weight: bold;">StatusMessage(&lt;type&gt;,
+&lt;headline&gt;, &lt;text&gt;[, &lt;variables&gt;])</span>.<br>
+<br>
+<span style="font-weight: bold;">Parameters:</span><br>
+<ul>
+  <li><span style="font-weight: bold;">&lt;type&gt;:</span> message
+type ("ERROR", "WARN", "INFO")</li>
+  <li><span style="font-weight: bold;">&lt;headline&gt;:</span>
+headline for the message (may include format tags)<br>
+  </li>
+  <li><span style="font-weight: bold;">&lt;type&gt;:</span> text for
+the message (may include format tags)</li>
+  <li><span style="font-weight: bold;">&lt;variables&gt;:</span>
+optional, array of variables to include in headline/text<br>
+The positions in headline/text must be marked with %s before.</li>
+</ul>
+<br>
+<span style="font-weight: bold;">Format of special tags:</span><br>
+<ul>
+  <li><span style="font-weight: bold;">{bold}</span>text<span
+ style="font-weight: bold;">{endbold}:</span> "text" is printed bold</li>
+  <li><span style="font-weight: bold;">{color=#123456}</span>text<span
+ style="font-weight: bold;">{endcolor}:</span> "text" is printed in
+given color</li>
+  <li><span style="font-weight: bold;">{link=http://nodomain.org}</span>text<span
+ style="font-weight: bold;">{endlink}:</span> This will add a link to
+http://nodomain.org which will be labeled "text"<br>
+  </li>
+</ul>
+<br>
+<br>
+<br>
+</div>
+</div>
+</body>
+</html>
