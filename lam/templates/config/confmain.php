@@ -291,7 +291,6 @@ if(!empty($possibleLanguages)) {
 		$languages[$lang->description] = $lang->code;
 		if (strpos($conf->get_defaultLanguage(), $lang->code) === 0) {
 			$defaultLanguage = array($lang->code);
-			break;
 		}
 	}
 	$languageSelect = new htmlTableExtendedSelect('lang', $languages, $defaultLanguage, _("Default language"), '209');
