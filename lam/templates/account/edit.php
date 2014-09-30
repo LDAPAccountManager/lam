@@ -74,8 +74,9 @@ if (isset($_GET['DN'])) {
 			$DN = substr($DN, 0, -1);
 		}
 	}
-	$suffix = $_SESSION['config']->get_Suffix($type);
-	if (strpos($DN, $suffix) !== (strlen($DN) - strlen($suffix))) {
+	$suffix = strtolower($_SESSION['config']->get_Suffix($type));
+	$DNlower = strtolower($DN);
+	if (strpos($DNlower, $suffix) !== (strlen($DNlower) - strlen($suffix))) {
 		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type . ' outside suffix ' . $suffix);
 		die();
 	}
