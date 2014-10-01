@@ -401,7 +401,7 @@ function checkInput() {
 		}
 		// set suffixes
 		elseif (substr($key, 0, 7) == "suffix_") {
-			$typeSettings[$key] = $_POST[$key];
+			$typeSettings[$key] = trim($_POST[$key]);
 			$type = substr($postKeys[$i], 7);
 			if (strlen($_POST[$key]) < 1) {
 				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), getTypeAlias($type));
