@@ -705,10 +705,9 @@ Have fun!
         <para>RPM:</para>
 
         <para>Please check if there are any files ending with ".rpmsave" in
-        /var/lib/ldap-account-manager/config or
-        /var/lib/ldap-account-manager/config/selfService. In this case you
-        need to manually remove the .rpmsave extension by overwriting the
-        package file. E.g. rename default.user.rpmsave to default.user.</para>
+        /var/lib/ldap-account-manager/config. In this case you need to
+        manually remove the .rpmsave extension by overwriting the package
+        file. E.g. rename default.user.rpmsave to default.user.</para>
 
         <para>DEB:</para>
 
