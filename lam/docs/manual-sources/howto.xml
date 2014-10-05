@@ -269,15 +269,8 @@ Have fun!
                   homepage</ulink> or the <ulink
                   url="http://packages.debian.org/search?keywords=ldap-account-manager">Debian
                   package homepage</ulink>.<para><emphasis
-                  role="bold">Installation of the latest packages on Debian
-                  Squeeze</emphasis></para><orderedlist>
-                      <listitem>
-                        <para>Install php-fpdf 1.7.dfsg-1 from here:</para>
-
-                        <para><ulink
-                        url="http://packages.debian.org/wheezy/all/php-fpdf/download">http://packages.debian.org/wheezy/all/php-fpdf/download</ulink></para>
-                      </listitem>
-
+                  role="bold">Installation of the latest packages on
+                  Debian</emphasis></para><orderedlist>
                       <listitem>
                         <para>Install the LAM package</para>
 
@@ -658,7 +651,7 @@ Have fun!
       ones.</para>
 
       <section>
-        <title>Install new version</title>
+        <title>Upgrade LAM</title>
 
         <para><emphasis role="bold">Backup configuration
         files</emphasis></para>
@@ -689,11 +682,14 @@ Have fun!
         <para><emphasis role="bold">Uninstall current LAM (Pro)
         version</emphasis></para>
 
-        <para>If you used the DEB/RPM installation packages then remove the
-        ldap-account-manager and ldap-account-manager-lamdaemon
-        packages.</para>
+        <para>If you used the RPM installation packages then remove the
+        ldap-account-manager and ldap-account-manager-lamdaemon packages by
+        calling "rpm -e ldap-account-manager
+        ldap-account-manager-lamdaemon".</para>
 
-        <para>Otherwise, remove the folder where you installed LAM via
+        <para>Debian needs no removal of old packages.</para>
+
+        <para>For tar.bz2 please remove the folder where you installed LAM via
         configure or by copying the files.</para>
 
         <para><emphasis role="bold">Install new LAM (Pro)
@@ -706,8 +702,19 @@ Have fun!
         <para><emphasis role="bold">Restore configuration
         files</emphasis></para>
 
-        <para>This step can be skipped if you installed the DEB/RPM
-        packages.</para>
+        <para>RPM:</para>
+
+        <para>Please check if there are any files ending with ".rpmsave" in
+        /var/lib/ldap-account-manager/config or
+        /var/lib/ldap-account-manager/config/selfService. In this case you
+        need to manually remove the .rpmsave extension by overwriting the
+        package file. E.g. rename default.user.rpmsave to default.user.</para>
+
+        <para>DEB:</para>
+
+        <para>Nothing needs to be restored.</para>
+
+        <para>tar.bz2:</para>
 
         <para>Please restore your configuration files from the backup. Copy
         all files from the backup folder to the config folder in your LAM Pro
