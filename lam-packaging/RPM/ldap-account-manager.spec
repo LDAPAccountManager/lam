@@ -133,15 +133,10 @@ fi
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService
 /var/lib/%{lam_dir}/config/*.sample
 /var/lib/%{lam_dir}/config/.htaccess
-/var/lib/%{lam_dir}/config/pdf/.htaccess
-/var/lib/%{lam_dir}/config/profiles/.htaccess
 /var/lib/%{lam_dir}/config/language
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/pdf
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/profiles
-/var/lib/%{lam_dir}/config/templates/pdf/.htaccess
 %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf/logos
-/var/lib/%{lam_dir}/config/templates/profiles/.htaccess
-/var/lib/%{lam_dir}/config/selfService/.htaccess
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf/default.*
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/profiles/default.*
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService/default.*
