@@ -33,12 +33,8 @@ install:
 	install -d --mode=755 debian/ldap-account-manager/var/lib/ldap-account-manager/config/profiles
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/config-samples
 	cp -r config/templates/profiles debian/ldap-account-manager/usr/share/ldap-account-manager/config-samples/
-	install -D --mode=644 config/templates/profiles/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/templates/profiles/.htaccess
 	cp -r config/templates/pdf debian/ldap-account-manager/usr/share/ldap-account-manager/config-samples/
-	install -D --mode=644 config/templates/pdf/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/templates/pdf/.htaccess
-	install -D --mode=644 config/templates/pdf/logos/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/templates/pdf/logos/.htaccess
 	cp -r config/selfService debian/ldap-account-manager/usr/share/ldap-account-manager/config-samples/
-	install -D --mode=644 config/selfService/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/selfService/.htaccess
 	cp -r graphics debian/ldap-account-manager/usr/share/ldap-account-manager/
 	install -D --mode=644 help/help.inc debian/ldap-account-manager/usr/share/ldap-account-manager/help/help.inc
 	install -D --mode=644 lib/.htaccess debian/ldap-account-manager/usr/share/ldap-account-manager/lib/.htaccess
