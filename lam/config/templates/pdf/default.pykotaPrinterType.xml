@@ -1,0 +1,11 @@
+<pdf type="pykotaPrinterType" filename="printLogo.jpg" headline="Printer information" foldingmarks="no">
+	<section name="_pykotaPrinter_cn">
+		<entry name="pykotaPrinter_description" />
+		<entry name="pykotaPrinter_pykotaMaxJobSize" />
+		<entry name="pykotaPrinter_pykotaPricePerJob" />
+		<entry name="pykotaPrinter_pykotaPricePerPage" />
+		<entry name="pykotaPrinter_pykotaPassThrough" />
+		<entry name="pykotaPrinter_uniqueMember" />
+		<entry name="pykotaPrinter_parentUniqueMember" />
+	</section>
+</pdf>
