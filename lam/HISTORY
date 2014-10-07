@@ -1,6 +1,7 @@
-05.10.2014 4.7.1
+07.10.2014 4.7.1
   - fixed bugs:
    -> Blank page and "User tried to access entry of type ..." log message when DN suffix does not exactly match case in LDAP
+
 
 28.09.2014 4.7
   - Nginx webserver support
