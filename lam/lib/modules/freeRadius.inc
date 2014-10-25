@@ -38,6 +38,9 @@ class freeRadius extends baseModule {
 	private static $monthList = array('01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr', '05' => 'May',
 			'06' => 'Jun', '07' => 'Jul', '08' => 'Aug', '09' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Dec'
 		);
+		
+	/** cache for profile DNs */
+	private $profileCache = null;
 	
 	
 	/**
@@ -78,7 +81,7 @@ class freeRadius extends baseModule {
 		$return['objectClasses'] = array('radiusprofile');
 		// managed attributes
 		$return['attributes'] = array('radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm', 'radiusGroupName',
-			'radiusExpiration', 'radiusIdleTimeout', 'dialupAccess');
+			'radiusExpiration', 'radiusIdleTimeout', 'dialupAccess', 'radiusProfileDn');
 		// help Entries
 		$return['help'] = array(
 			'radiusFramedIPAddress' => array(
@@ -113,32 +116,18 @@ class freeRadius extends baseModule {
 				"Headline" => _("Enabled"), 'attr' => 'dialupAccess',
 				"Text" => _("Specifies if the user may authenticate with FreeRadius.")
 			),
+			'profileDN' => array(
+				"Headline" => _("Profile DN"), 'attr' => 'radiusProfileDn',
+				"Text" => _('DN where Radius profile templates are stored.')
+			),
+			'radiusProfileDn' => array(
+				"Headline" => _("Profile"), 'attr' => 'radiusProfileDn',
+				"Text" => _('Radius profile for this user.')
+			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
 			));
-		// configuration settings
-		$configContainer = new htmlTable();
-		$configContainerHead = new htmlTable();
-		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
-		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainerOptions = new htmlTable();
-		$configContainer->addElement($configContainerHead, true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPAddress', false, _('IP address'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPNetmask', false, _('Net mask'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusRealm', false, _('Realm'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusGroupName', false, _('Group names'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideDialupAccess', false, _('Enabled'), null, false));
-		$configContainer->addElement($configContainerOptions, true);
-		$return['config_options']['all'] = $configContainer;
 		// profile settings
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
@@ -174,6 +163,16 @@ class freeRadius extends baseModule {
 			$dialupAccessSelect->setHasDescriptiveElements(true);
 			$profileElements[] = $dialupAccessSelect;
 			$return['profile_mappings']['freeRadius_dialupAccess'] = 'dialupAccess';
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
+			$profileOptions = array('-' => '');
+			foreach ($this->getProfiles() as $dn) {
+				$profileOptions[getAbstractDN($dn)] = $dn;
+			}
+			$profileSelect = new htmlTableExtendedSelect('freeRadius_radiusProfileDn', $profileOptions, array(''), _('Profile'), 'radiusProfileDn');
+			$profileSelect->setHasDescriptiveElements(true);
+			$profileElements[] = $profileSelect;
+			$return['profile_mappings']['freeRadius_radiusProfileDn'] = 'radiusProfileDn';
 		}
 		if (sizeof($profileElements) > 0) {
 			$profileContainer = new htmlTable();
@@ -242,6 +241,14 @@ class freeRadius extends baseModule {
 				'values' => 'true, false'
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
+			$return['upload_columns'][] = array(
+				'name' => 'freeRadius_radiusProfileDn',
+				'description' => _('Profile'),
+				'help' => 'radiusProfileDn',
+				'example' => 'cn=profile,ou=radiusProfile,dc=example,dc=com'
+			);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array();
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
@@ -265,7 +272,54 @@ class freeRadius extends baseModule {
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
 			$return['PDF_fields']['dialupAccess'] = _('Enabled');
 		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
+			$return['PDF_fields']['radiusProfileDn'] = _('Profile');
+		}
 		return $return;
+	}
+	
+	/**
+	* Returns a list of configuration options.
+	* 
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	* @return mixed htmlElement or array of htmlElement
+	* 
+	* @see htmlElement
+	*/
+	public function get_configOptions($scopes, $allScopes) {
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlTableExtendedInputField(_('Profile DN'), 'freeRadius_profileDN', '', 'profileDN'), true);
+		$configContainer->addVerticalSpace('10px');
+		$configContainerHead = new htmlTable();
+		$configContainerHead->colspan = 5;
+		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
+		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainerOptions = new htmlTable();
+		$configContainerOptions->colspan = 5;
+		$configContainer->addElement($configContainerHead, true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPAddress', false, _('IP address'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPNetmask', false, _('Net mask'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusRealm', false, _('Realm'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusGroupName', false, _('Group names'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
+		$configContainerOptions->addNewLine();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusProfileDn', false, _('Profile'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideDialupAccess', false, _('Enabled'), null, false));
+		$configContainer->addElement($configContainerOptions, true);
+		return $configContainer;
 	}
 
 	/**
@@ -285,6 +339,7 @@ class freeRadius extends baseModule {
 		$this->messages['radiusIdleTimeout'][0] = array('ERROR', _('Please enter a numeric value for the idle timeout.'));
 		$this->messages['radiusIdleTimeout'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusIdleTimeout', _('Please enter a numeric value for the idle timeout.'));
 		$this->messages['dialupAccess'][0] = array('ERROR', _('Account %s:') . ' freeRadius_dialupAccess', _('This value can only be "true" or "false".'));
+		$this->messages['radiusProfileDn'][0] = array('ERROR', _('Account %s:') . ' freeRadius_radiusProfileDn', _('This is not a valid DN!'));
 	}
 
 	/**
@@ -328,6 +383,23 @@ class freeRadius extends baseModule {
 				$radiusExpirationList->addElement(new htmlAccountPageButton(get_class($this), 'expiration', 'change', _('Change')));
 				$return->addElement($radiusExpirationList);
 				$return->addElement(new htmlHelpLink('radiusExpiration'), true);
+			}
+			// profile DN
+			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
+				$profiles = array('-' => '-');
+				foreach ($this->getProfiles() as $dn) {
+					$profiles[getAbstractDN($dn)] = $dn;
+				}
+				$profile = array();
+				if (!empty($this->attributes['radiusProfileDn'][0])) {
+					$profile = $this->attributes['radiusProfileDn'];
+					if (!in_array($this->attributes['radiusProfileDn'][0], $profiles)) {
+						$profiles[getAbstractDN($this->attributes['radiusProfileDn'][0])] = $this->attributes['radiusProfileDn'][0];
+					}
+				}
+				$profileSelect = new htmlTableExtendedSelect('radiusProfileDn', $profiles, $profile, _('Profile'), 'radiusProfileDn');
+				$profileSelect->setHasDescriptiveElements(true);
+				$return->addElement($profileSelect, true);
 			}
 			// enabled
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
@@ -423,6 +495,15 @@ class freeRadius extends baseModule {
 			}
 			elseif ($_POST['dialupAccess'] === 'true') {
 				$this->attributes['dialupAccess'][0] = 'true';
+			}
+		}
+		// profile DN
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
+			if (($_POST['radiusProfileDn'] == '-') && !empty($this->attributes['radiusProfileDn'])) {
+				unset($this->attributes['radiusProfileDn']);
+			}
+			elseif ($_POST['radiusProfileDn'] != '-') {
+				$this->attributes['radiusProfileDn'][0] = $_POST['radiusProfileDn'];
 			}
 		}
 		return $errors;
@@ -588,6 +669,17 @@ class freeRadius extends baseModule {
 					$errors[] = $errMsg;
 				}
 			}
+			// profile DN
+			if (!empty($rawAccounts[$i][$ids['freeRadius_radiusProfileDn']])) {
+				if (get_preg($rawAccounts[$i][$ids['freeRadius_radiusProfileDn']], 'dn')) {
+					$partialAccounts[$i]['radiusProfileDn'] = $rawAccounts[$i][$ids['freeRadius_radiusProfileDn']];
+				}
+				else {
+					$errMsg = $this->messages['radiusProfileDn'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
 		}
 		return $errors;
 	}
@@ -604,6 +696,7 @@ class freeRadius extends baseModule {
 		$this->addSimplePDFField($return, 'radiusRealm', _('Realm'));
 		$this->addSimplePDFField($return, 'radiusGroupName', _('Group names'));
 		$this->addSimplePDFField($return, 'radiusIdleTimeout', _('Idle timeout'));
+		$this->addSimplePDFField($return, 'radiusProfileDn', _('Profile'));
 		if (isset($this->attributes['radiusExpiration'][0])) {
 			$return[get_class($this) . '_radiusExpiration'][0] = '<block><key>' . _('Expiration date') . '</key><value>' . $this->formatExpirationDate($this->attributes['radiusExpiration'][0]) . '</value></block>';
 		}
@@ -674,6 +767,26 @@ class freeRadius extends baseModule {
 			$date .= ' ' . $dateParts[3];
 		}
 		return $date;
+	}
+	
+	/**
+	 * Returns a list of possible profile DNs.
+	 * 
+	 * @return array list of profile DNs
+	 */
+	private function getProfiles() {
+		if ($this->profileCache != null) {
+			return $this->profileCache;
+		}
+		if (empty($this->moduleSettings['freeRadius_profileDN'][0])) {
+			return array();
+		}
+		$list = searchLDAP($this->moduleSettings['freeRadius_profileDN'][0], '(objectClass=radiusProfile)', array('dn'));
+		foreach ($list as $attr) {
+			$this->profileCache[] = $attr['dn'];
+		}
+		usort($this->profileCache, 'compareDN');
+		return $this->profileCache;
 	}
 	
 }
