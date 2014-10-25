@@ -2360,7 +2360,11 @@ class htmlImage extends htmlElement {
 			$height = ' height="' . $this->height . '"';
 		}
 		$alt = ' alt="' . $this->alt . '"';
-		echo '<img' . $path . $width . $height . $alt . ">\n";
+		$classes = '';
+		if (!empty($this->cssClasses)) {
+			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<img' . $path . $width . $height . $alt . $classes . ">\n";
 		return array();
 	}
 

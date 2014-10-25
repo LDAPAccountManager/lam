@@ -438,6 +438,11 @@ td.help {
 	font-size: 10pt;
 }
 
+img.photo {
+	max-width: 200px;
+	max-height: 400px;
+}
+
 
 /* schema browser */
 

@@ -1612,7 +1612,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$photoFile = '../../tmp/' . $jpeg_filename;
 				$noPhoto = false;
 			}
-			$imageContainer->addElement(new htmlImage($photoFile), true);
+			$img = new htmlImage($photoFile);
+			$img->setCSSClasses(array('photo'));
+			$imageContainer->addElement($img, true);
 			if (!$this->isAdminReadOnly('jpegPhoto')) {
 				if ($noPhoto) {
 					$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
@@ -2699,7 +2701,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 				fclose ($outjpeg);
 				$photoFile = '../../tmp/' . $jpeg_filename;
 				$photoSub = new htmlTable();
-				$photoSub->addElement(new htmlImage($photoFile), true);
+				$img = new htmlImage($photoFile);
+				$img->setCSSClasses(array('photo'));
+				$photoSub->addElement($img, true);
 				if (!in_array('jpegPhoto', $readOnlyFields)) {
 					$photoSubSub = new htmlTable();
 					$photoSubSub->addElement(new htmlTableExtendedInputCheckbox('removeReplacePhoto', false, _('Remove/replace photo'), null, false));
