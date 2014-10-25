@@ -2869,8 +2869,9 @@ Have fun!
           </mediaobject>
         </screenshot>
 
-        <para>You can disable unneeded fields on the tab "Module
-        settings":</para>
+        <para>You can disable unneeded fields on the tab "Module settings".
+        Here you can also set the DN where your Radius profile templates are
+        stored if you use the option "Profile".</para>
 
         <screenshot>
           <mediaobject>
