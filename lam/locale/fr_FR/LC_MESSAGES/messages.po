@@ -13713,7 +13713,7 @@ msgid ""
 "characters."
 msgstr ""
 "Ce mot de passe est trop simple. Vous devez entrer au moins %s caractères "
-"minuscultes."
+"en minuscule."
 
 #: ../lib/security.inc:380
 #, php-format
@@ -13729,7 +13729,7 @@ msgid ""
 "The password is too weak. You have to enter at least %s symbolic characters."
 msgstr ""
 "Ce mot de passe est trop simple. Vous devez entrer au moins %s caractères "
-"symboliques."
+"spéciaux."
 
 #: ../lib/security.inc:370
 #, php-format
@@ -16786,7 +16786,7 @@ msgstr ""
 msgid ""
 "Your password does not meet the password strength qualifications. Please "
 "retry with another one."
-msgstr "Votre mot de passe n'est pas suffisemment sûr. Merci de le modifier."
+msgstr "Votre mot de passe n'est pas suffisamment sûr. Merci de le modifier."
 
 #: ../lib/modules/passwordSelfReset.inc:563
 msgid "Your password was changed to @@newPassword@@."
