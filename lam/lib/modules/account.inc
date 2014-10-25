@@ -55,7 +55,7 @@ class account extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
+		if (isLoggedIn()) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		}
 		$return = array();
@@ -81,7 +81,7 @@ class account extends baseModule {
 		$return['PDF_fields'] = array(
 			'description' => _('Description')
 		);
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true) && !in_array('posixAccount', $modules)) {
+		if (isLoggedIn() && !in_array('posixAccount', $modules)) {
 			$return['PDF_fields']['uid'] = _('User name');
 		}
 		// help Entries

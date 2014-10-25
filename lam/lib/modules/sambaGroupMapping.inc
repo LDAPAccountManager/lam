@@ -116,7 +116,7 @@ class sambaGroupMapping extends baseModule {
 		);
 		// upload fields
 		// search existing Samba 3 domains
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
+		if (isLoggedIn()) {
 			$return['upload_columns'] = array(
 				array(
 					'name' => 'sambaGroupMapping_name',

@@ -58,7 +58,7 @@ class group extends baseType {
 	* @return string alias name
 	*/
 	function getAlias() {
-		if (isset($_SESSION['loggedIn']) && isset($_SESSION['config'])) {
+		if (isLoggedIn() && isset($_SESSION['config'])) {
 		$modules = $_SESSION['config']->get_AccountModules('group');
 			if (in_array('organizationalRole', $modules)) {
 				return _('Roles');

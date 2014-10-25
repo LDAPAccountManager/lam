@@ -114,7 +114,7 @@ class ddns extends baseModule {
 			'reverseZone' => _('Reverse zone name'),
 		);
 		// upload fields
-		if (isset($_SESSION['loggedIn']) && $this->check_if_ddns_is_enable()) {
+		if (isLoggedIn() && $this->check_if_ddns_is_enable()) {
 			$return['upload_columns'] = array(
 				array(
 					'name' => 'ddns_DNSserver',

@@ -472,4 +472,13 @@ function checkIfToolIsActive($tool) {
 	}
 }
 
+/**
+ * Returns if the user is logged in.
+ * 
+ * @return boolean is logged in
+ */
+function isLoggedIn() {
+	return (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true));
+}
+
 ?>

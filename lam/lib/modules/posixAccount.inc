@@ -276,7 +276,7 @@ class posixAccount extends baseModule implements passwordService {
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
 		// user specific upload options
-		if (($this->get_scope() == 'user') && isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
+		if (($this->get_scope() == 'user') && isLoggedIn()) {
 			$return['upload_columns'] = array(
 			array(
 				'name' => 'posixAccount_userName',
@@ -3098,7 +3098,7 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	private function getShells() {
 		// self service
-		if (!isset($_SESSION['loggedIn']) && isset($this->selfServiceSettings) && isset($this->selfServiceSettings->moduleSettings['posixAccount_shells'])
+		if (!isLoggedIn() && isset($this->selfServiceSettings) && isset($this->selfServiceSettings->moduleSettings['posixAccount_shells'])
 			&& (sizeof($this->selfServiceSettings->moduleSettings['posixAccount_shells'])) > 0) {
 			return $this->selfServiceSettings->moduleSettings['posixAccount_shells'];
 		}

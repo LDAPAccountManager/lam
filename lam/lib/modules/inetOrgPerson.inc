@@ -631,7 +631,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['PDF_fields']['initials'] = _('Initials');
 		}
 		
-		if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true)) {
+		if (isLoggedIn()) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
 				if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {

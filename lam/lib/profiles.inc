@@ -115,7 +115,7 @@ function loadAccountProfile($profile, $scope) {
 * @return boolean true, if saving succeeded
 */
 function saveAccountProfile($attributes, $profile, $scope) {
-	if (!$_SESSION['loggedIn'] == true) return false;
+	if (!isLoggedIn()) return false;
 	// check profile name
 	if (!preg_match("/^[0-9a-z _-]+$/i", $profile) || !preg_match("/^[a-z]+$/i", $scope)) return false;
 	if (!is_array($attributes)) {
@@ -152,7 +152,7 @@ function saveAccountProfile($attributes, $profile, $scope) {
 * @return boolean true if profile was deleted
 */
 function delAccountProfile($file, $scope) {
-	if (!$_SESSION['loggedIn'] == true) return false;
+	if (!isLoggedIn()) return false;
 	if (!preg_match("/^[0-9a-z _-]+$/i", $file) || !preg_match("/^[a-z]+$/i", $scope)) return false;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/". $_SESSION['config']->getName() . '/' . $file . "." . $scope;
 	if (is_file($prof)) {

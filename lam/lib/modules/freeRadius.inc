@@ -164,7 +164,7 @@ class freeRadius extends baseModule {
 			$profileElements[] = $dialupAccessSelect;
 			$return['profile_mappings']['freeRadius_dialupAccess'] = 'dialupAccess';
 		}
-		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn') && isLoggedIn()) {
 			$profileOptions = array('-' => '');
 			foreach ($this->getProfiles() as $dn) {
 				$profileOptions[getAbstractDN($dn)] = $dn;
