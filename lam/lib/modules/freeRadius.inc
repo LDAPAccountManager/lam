@@ -77,7 +77,8 @@ class freeRadius extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('radiusprofile');
 		// managed attributes
-		$return['attributes'] = array('radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm', 'radiusGroupName', 'radiusExpiration', 'radiusIdleTimeout');
+		$return['attributes'] = array('radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm', 'radiusGroupName',
+			'radiusExpiration', 'radiusIdleTimeout', 'dialupAccess');
 		// help Entries
 		$return['help'] = array(
 			'radiusFramedIPAddress' => array(
@@ -108,6 +109,10 @@ class freeRadius extends baseModule {
 				"Headline" => _("Idle timeout"), 'attr' => 'radiusIdleTimeout',
 				"Text" => _("Specifies the maximum number of seconds that a connection can be idle before the session is terminated.")
 			),
+			'dialupAccess' => array(
+				"Headline" => _("Enabled"), 'attr' => 'dialupAccess',
+				"Text" => _("Specifies if the user may authenticate with FreeRadius.")
+			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
@@ -130,6 +135,8 @@ class freeRadius extends baseModule {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
 		$configContainerOptions->addNewLine();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, false));
+		$configContainerOptions->addElement(new htmlOutputText(' '));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideDialupAccess', false, _('Enabled'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		// profile settings
@@ -160,6 +167,13 @@ class freeRadius extends baseModule {
 				'regex' => 'digit',
 				'error_message' => $this->messages['radiusIdleTimeout'][0]);
 			$return['profile_mappings']['freeRadius_radiusIdleTimeout'] = 'radiusIdleTimeout';
+		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
+			$enabledOptions = array('-' => '', _('Yes') => 'true', _('No') => 'false');
+			$dialupAccessSelect = new htmlTableExtendedSelect('freeRadius_dialupAccess', $enabledOptions, array('true'), _('Enabled'), 'dialupAccess');
+			$dialupAccessSelect->setHasDescriptiveElements(true);
+			$profileElements[] = $dialupAccessSelect;
+			$return['profile_mappings']['freeRadius_dialupAccess'] = 'dialupAccess';
 		}
 		if (sizeof($profileElements) > 0) {
 			$profileContainer = new htmlTable();
@@ -219,6 +233,15 @@ class freeRadius extends baseModule {
 				'example' => '3600'
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
+			$return['upload_columns'][] = array(
+				'name' => 'freeRadius_dialupAccess',
+				'description' => _('Enabled'),
+				'help' => 'dialupAccess',
+				'example' => 'true',
+				'values' => 'true, false'
+			);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array();
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
@@ -239,6 +262,9 @@ class freeRadius extends baseModule {
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
 			$return['PDF_fields']['radiusIdleTimeout'] = _('Idle timeout');
 		}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
+			$return['PDF_fields']['dialupAccess'] = _('Enabled');
+		}
 		return $return;
 	}
 
@@ -258,6 +284,7 @@ class freeRadius extends baseModule {
 		$this->messages['radiusExpiration'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusExpiration', _('The expiration date must be in format DD.MM.YYYY HH:MM.'));
 		$this->messages['radiusIdleTimeout'][0] = array('ERROR', _('Please enter a numeric value for the idle timeout.'));
 		$this->messages['radiusIdleTimeout'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusIdleTimeout', _('Please enter a numeric value for the idle timeout.'));
+		$this->messages['dialupAccess'][0] = array('ERROR', _('Account %s:') . ' freeRadius_dialupAccess', _('This value can only be "true" or "false".'));
 	}
 
 	/**
@@ -301,6 +328,21 @@ class freeRadius extends baseModule {
 				$radiusExpirationList->addElement(new htmlAccountPageButton(get_class($this), 'expiration', 'change', _('Change')));
 				$return->addElement($radiusExpirationList);
 				$return->addElement(new htmlHelpLink('radiusExpiration'), true);
+			}
+			// enabled
+			if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
+				$enabled = array('');
+				if (!empty($this->attributes['dialupAccess'][0])) {
+					$enabled = array($this->attributes['dialupAccess'][0]);
+					// value in LDAP may be anything other than "false" to count as "true"
+					if (!in_array($this->attributes['dialupAccess'][0], array('true', 'false', 'TRUE', 'FALSE'))) {
+						$enabled = array('true');
+					}
+				}
+				$enabledOptions = array('-' => '', _('Yes') => 'true', _('No') => 'false');
+				$enabledSelect = new htmlTableExtendedSelect('dialupAccess', $enabledOptions, $enabled, _('Enabled'), 'dialupAccess');
+				$enabledSelect->setHasDescriptiveElements(true);
+				$return->addElement($enabledSelect, true);
 			}
 			// button to remove extension
 			$return->addElement(new htmlSpacer(null, '10px'), true);
@@ -369,6 +411,18 @@ class freeRadius extends baseModule {
 			$this->attributes['radiusIdleTimeout'][0] = $_POST['radiusIdleTimeout'];
 			if (($_POST['radiusIdleTimeout'] != '') && !get_preg($_POST['radiusIdleTimeout'], 'digit')) {
 				$errors[] = $this->messages['radiusIdleTimeout'][0];
+			}
+		}
+		// enabled
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
+			if (!empty($this->attributes['dialupAccess']) && ($_POST['dialupAccess'] === '')) {
+				unset($this->attributes['dialupAccess']);
+			}
+			elseif ($_POST['dialupAccess'] === 'false') {
+				$this->attributes['dialupAccess'][0] = 'false';
+			}
+			elseif ($_POST['dialupAccess'] === 'true') {
+				$this->attributes['dialupAccess'][0] = 'true';
 			}
 		}
 		return $errors;
@@ -523,6 +577,17 @@ class freeRadius extends baseModule {
 			// idle timeout
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusIdleTimeout', 'radiusIdleTimeout',
 				'digit', $this->messages['radiusIdleTimeout'][1], $errors);
+			// enabled
+			if (!empty($rawAccounts[$i][$ids['freeRadius_dialupAccess']])) {
+				if (in_array($rawAccounts[$i][$ids['freeRadius_dialupAccess']], array('true', 'false'))) {
+					$partialAccounts[$i]['dialupAccess'] = $rawAccounts[$i][$ids['freeRadius_dialupAccess']];
+				}
+				else {
+					$errMsg = $this->messages['dialupAccess'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
 		}
 		return $errors;
 	}
@@ -541,6 +606,13 @@ class freeRadius extends baseModule {
 		$this->addSimplePDFField($return, 'radiusIdleTimeout', _('Idle timeout'));
 		if (isset($this->attributes['radiusExpiration'][0])) {
 			$return[get_class($this) . '_radiusExpiration'][0] = '<block><key>' . _('Expiration date') . '</key><value>' . $this->formatExpirationDate($this->attributes['radiusExpiration'][0]) . '</value></block>';
+		}
+		if (isset($this->attributes['dialupAccess'][0])) {
+			$enabled = _('Yes');
+			if (in_array($this->attributes['dialupAccess'][0], array('false', 'FALSE'))) {
+				$enabled = _('No');
+			}
+			$return[get_class($this) . '_dialupAccess'][0] = '<block><key>' . _('Enabled') . '</key><value>' . $enabled . '</value></block>';
 		}
 		return $return;
 	}
