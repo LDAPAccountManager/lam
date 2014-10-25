@@ -47,15 +47,15 @@ checkIfToolIsActive('toolMultiEdit');
 
 setlanguage();
 
-const ADD = 'add';
-const MOD = 'mod';
-const DEL = 'del';
+define('ADD', 'add');
+define('MOD', 'mod');
+define('DEL', 'del');
 
-const STAGE_START = 'start';
-const STAGE_READ_FINISHED = 'readFinished';
-const STAGE_ACTIONS_CALCULATED = 'actionsCalculated';
-const STAGE_WRITING = 'writing';
-const STAGE_FINISHED = 'finished';
+define('STAGE_START', 'start');
+define('STAGE_READ_FINISHED', 'readFinished');
+define('STAGE_ACTIONS_CALCULATED', 'actionsCalculated');
+define('STAGE_WRITING', 'writing');
+define('STAGE_FINISHED', 'finished');
 
 if (isset($_GET['ajaxStatus'])) {
 	runAjaxActions();
@@ -434,7 +434,7 @@ function dryRun() {
 	}
 	// build meta HTML
 	$container = new htmlTable();
-	$container->addElement(new htmlOutputText(_('DryRun finished.')), true);
+	$container->addElement(new htmlOutputText(_('Dry run finished.')), true);
 	$container->addVerticalSpace('20px');
 	// store LDIF
 	$filename = 'ldif' . getRandomNumber() . '.ldif';
