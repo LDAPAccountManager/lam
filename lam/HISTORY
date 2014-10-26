@@ -1,5 +1,8 @@
 December 2014 4.8
   - FreeRadius: support dialupAccess and radiusProfileDn
+  - Usability improvements
+  - LAM Pro:
+   -> Self service: added option if referrals should be followed
 
 
 07.10.2014 4.7.1

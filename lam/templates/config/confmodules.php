@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -297,41 +297,54 @@ function config_showAccountModules($scope, $title, &$container) {
 	// add account module selection
 	$container->addElement(new htmlSubTitle($title, '../../graphics/' . $scope . '.png'), true);
 	$container->addElement(new htmlOutputText(_("Selected modules")));
-	// add/remove buttons
-	$buttonContainer = new htmlTable();
-	$buttonContainer->rowspan = 2;
-	if (sizeof($availOptions) > 0) {
-		$addButton = new htmlButton($scope . "_add", 'back.gif', true);
-		$addButton->setTitle(_('Add'));
-		$buttonContainer->addElement($addButton, true);
-	}
-	if (sizeof($selOptions) > 0) {
-		$remButton = new htmlButton($scope . "_remove", 'forward.gif', true);
-		$remButton->setTitle(_('Remove'));
-		$buttonContainer->addElement($remButton, true);
-	}
-	$container->addElement($buttonContainer);
+	$container->addElement(new htmlOutputText(''));
 	$container->addElement(new htmlOutputText(_("Available modules")), true);
+	$container->addVerticalSpace('10px');
+	$container->addNewLine();
 	// selected modules
 	if (sizeof($selOptions) > 0) {
-		$selSelect = new htmlSelect($scope . '_selected', $selOptions, array(), 5);
-		$selSelect->setTransformSingleSelect(false);
-		$selSelect->setMultiSelect(true);
-		$selSelect->setHasDescriptiveElements(true);
-		$selSelect->setSortElements(false);
-		$container->addElement($selSelect);
+		$listElements = array();
+		foreach ($selOptions as $key => $value) {
+			$el = new htmlTable('100%');
+			$mod = new $value($scope);
+			$el->addElement(new htmlImage('../../graphics/' . $mod->getIcon(), '16px', '16px'));
+			$el->addElement(new htmlOutputText($key));
+			$delButton = new htmlButton('del_' . $scope . '_' . $value, 'del.png', true);
+			$delButton->alignment = htmlElement::ALIGN_RIGHT;
+			$el->addElement($delButton);
+			$listElements[] = $el;
+		}
+		$selSortable = new htmlSortableList($listElements, $scope . '_selected', '350px');
+		$selSortable->alignment = htmlElement::ALIGN_TOP;
+		$selSortable->setOnUpdate('updateModulePositions(\'positions_' . $scope . '\', ui.item.data(\'posOrig\'), ui.item.index());');
+		$container->addElement($selSortable);
 	}
 	else {
 		$container->addElement(new htmlOutputText(''));
 	}
+	// space
+	$container->addSpace('20px');
 	// available modules
 	if (sizeof($availOptions) > 0) {
-		$availSelect = new htmlSelect($scope . "_available", $availOptions, array(), 5);
-		$availSelect->setTransformSingleSelect(false);
-		$availSelect->setHasDescriptiveElements(true);
-		$availSelect->setMultiSelect(true);
-		$container->addElement($availSelect, true);
+		$availTable = new htmlTable();
+		foreach ($availOptions as $text => $key) {
+			$mod = new $key($scope);
+			$availTable->addElement(new htmlImage('../../graphics/' . $mod->getIcon(), '16px', '16px'));
+			$availTable->addElement(new htmlOutputText($text));
+			$addButton = new htmlButton('add_' . $scope . '_' . $key, 'add.png', true);
+			$addButton->alignment = htmlElement::ALIGN_RIGHT;
+			$availTable->addElement($addButton, true);
+		}
+		$availDiv = new htmlDiv(null, $availTable);
+		$availDiv->alignment = htmlElement::ALIGN_TOP;
+		$availDiv->setCSSClasses(array('confModList'));
+		$container->addElement($availDiv, true);
 	}
+	$positions = '';
+	for ($i = 0; $i < sizeof($selOptions); $i++) {
+		$positions[] = $i;
+	}
+	$container->addElement(new htmlHiddenInput('positions_' . $scope, implode(',', $positions)), true);
 	// spacer to next account type
 	$container->addElement(new htmlSpacer(null, '30px'), true);
 }
@@ -361,23 +374,32 @@ function checkInput() {
 				$selected[] = $selected_temp[$i];
 			}
 		}
-		// remove modules from selection
-		if (isset($_POST[$scope . '_selected']) && isset($_POST[$scope . '_remove'])) {
-			$new_selected = array();
-			for ($i = 0; $i < sizeof($selected); $i++) {
-				if (! in_array($selected[$i], $_POST[$scope . '_selected'])) $new_selected[] = $selected[$i];
+		// reorder based on sortable list
+		$sorting = $_POST['positions_' . $scope];
+		if (!empty($sorting)) {
+			$sorting = explode(',', $sorting);
+			$sortTmp = array();
+			foreach ($sorting as $pos) {
+				$sortTmp[] = $selected[$pos];
 			}
-			$selected = $new_selected;
-			$typeSettings['modules_' . $scope] = implode(',', $selected);
+			$selected = $sortTmp;
 		}
-		// add modules to selection
-		elseif (isset($_POST[$scope . '_available']) && isset($_POST[$scope . '_add'])) {
-			$new_selected = $selected;
-			for ($i = 0; $i < sizeof($_POST[$scope . '_available']); $i++) {
-				if (! in_array($_POST[$scope . '_available'][$i], $selected)) $new_selected[] = $_POST[$scope . '_available'][$i];
+		// remove modules from selection
+		$new_selected = array();
+		for ($i = 0; $i < sizeof($selected); $i++) {
+			if (!isset($_POST['del_' . $scope . '_' . $selected[$i]])) {
+				$new_selected[] = $selected[$i];
 			}
-			$selected = $new_selected;
-			$typeSettings['modules_' . $scope] = implode(',', $selected);
+		}
+		$selected = $new_selected;
+		$typeSettings['modules_' . $scope] = implode(',', $selected);
+		// add modules to selection
+		foreach ($available as $modName) {
+			if (isset($_POST['add_' . $scope . '_' . $modName])) {
+				$selected[] = $modName;
+				$typeSettings['modules_' . $scope] = implode(',', $selected);
+				break;
+			}
 		}
 		// check dependencies
 		$depends = check_module_depends($selected, getModulesDependencies($scope));

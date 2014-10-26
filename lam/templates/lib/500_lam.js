@@ -571,4 +571,29 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
 	}	
 }
 
-
+/**
+ * Updates the positions of a htmlSortable list in a hidden input field.
+ * The positions must be separated by comma (e.g. "0,1,2,3").
+ * 
+ * @param id HTML ID of hidden input field
+ * @param oldPos old position
+ * @param newPos new position
+ */
+function updateModulePositions(id, oldPos, newPos) {
+	var positions = jQuery('#' + id).val().split(',');
+	if (newPos > oldPos) {
+		var save = positions[oldPos];
+		for (var i = oldPos; i < newPos; i++) {
+			positions[i] = positions[i + 1];
+		}
+		positions[newPos] = save;
+	}
+	if (newPos < oldPos) {
+		var save = positions[oldPos];
+		for (var i = oldPos; i > newPos; i--) {
+			positions[i] = positions[i - 1];
+		}
+		positions[newPos] = save;
+	}
+	jQuery('#' + id).val(positions.join(','));
+}

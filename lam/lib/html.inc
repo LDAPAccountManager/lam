@@ -3072,7 +3072,7 @@ class htmlSortableList extends htmlElement {
 	/**
 	 * Constructor.
 	 * 
-	 * @param array $elements list of element IDs (HTML special chars must be escaped already)
+	 * @param array $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
 	 * @param String HTML ID
 	 * @param String $elementWidth width of elements (default 250px)
 	 */
@@ -3101,7 +3101,12 @@ class htmlSortableList extends htmlElement {
 		echo '<ul style="width:' . $this->elementWidth . ';" class="sortableList" id="' . $this->id . '">';
 		foreach ($this->elements as $element) {
 			echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
-			echo $element;
+			if ($element instanceof htmlElement) {
+				parseHtml($module, $element, $values, $restricted, $tabindex, $scope);
+			}
+			else {
+				echo $element;
+			}
 			echo '</li>';
 		}
 		echo '</ul>';

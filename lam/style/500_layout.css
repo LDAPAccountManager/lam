@@ -443,6 +443,11 @@ img.photo {
 	max-height: 400px;
 }
 
+div.confModList {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
 
 /* schema browser */
 
