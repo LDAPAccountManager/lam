@@ -6702,6 +6702,14 @@ OK (10 msec)</programlisting>
               </row>
 
               <row>
+                <entry>Follow referrals</entry>
+
+                <entry>By default LAM will not follow LDAP referrals. This is
+                ok for most installations. If you use LDAP referrals please
+                activate the referral option in advanced settings.</entry>
+              </row>
+
+              <row>
                 <entry>LDAP user + password</entry>
 
                 <entry>The DN and password which is used to search for users

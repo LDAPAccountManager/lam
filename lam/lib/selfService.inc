@@ -362,6 +362,8 @@ class selfServiceProfile {
 	public $language = 'en_GB.utf8';
 	/** disallow user to change language */
 	public $enforceLanguage = false;
+	
+	public $followReferrals = 0;
 
 	/**
 	 * Constructor
@@ -398,6 +400,7 @@ class selfServiceProfile {
 		$this->moduleSettings = array();
 		$this->language = 'en_GB.utf8';
 		$this->enforceLanguage = true;
+		$this->followReferrals = 0;
 	}
 
 }
