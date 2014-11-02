@@ -257,13 +257,8 @@ function config_showAccountModules($scope, $title, &$container) {
 	$typeSettings = $conf->get_typeSettings();
 	// account modules
 	$available = getAvailableModules($scope, true);
-	$selected = $typeSettings['modules_' . $scope];
-	if (isset($selected) && ($selected != '')) {
-		$selected = explode(',', $selected);
-	}
-	else {
-		$selected = array();
-	}
+	$selected = !empty($typeSettings['modules_' . $scope]) ? $typeSettings['modules_' . $scope] : '';
+	$selected = explode(',', $selected);
 	$sortedAvailable = array();
 	for ($i = 0; $i < sizeof($available); $i++) {
 		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $scope);
@@ -340,7 +335,7 @@ function config_showAccountModules($scope, $title, &$container) {
 		$availDiv->setCSSClasses(array('confModList'));
 		$container->addElement($availDiv, true);
 	}
-	$positions = '';
+	$positions = array();
 	for ($i = 0; $i < sizeof($selOptions); $i++) {
 		$positions[] = $i;
 	}
@@ -365,8 +360,8 @@ function checkInput() {
 	for ($t = 0; $t < sizeof($accountTypes); $t++) {
 		$scope = $accountTypes[$t];
 		$available = getAvailableModules($scope, true);
-		$selected_temp = $typeSettings['modules_' . $scope];
-		if (isset($selected_temp)) $selected_temp = explode(',', $selected_temp);
+		$selected_temp = (isset($typeSettings['modules_' . $scope])) ? $typeSettings['modules_' . $scope] : '';
+		$selected_temp = explode(',', $selected_temp);
 		$selected = array();
 		// only use available modules as selected
 		for ($i = 0; $i < sizeof($selected_temp); $i++) {
