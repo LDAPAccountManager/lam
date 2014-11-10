@@ -47,6 +47,24 @@ function listOUchanged(type, element) {
 }
 
 /**
+ * The user pressed a key in the page number box. On enter this will reload the list view with the new page.
+ * 
+ * @param url target URL
+ * @param e event
+ */
+function listPageNumberKeyPress(url, e) {
+	var pageNumber = jQuery('#listNavPage').val();
+	if (e.keyCode == 13) {
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		location.href = url + '&page=' + pageNumber;
+		return false;
+	}
+	return true;
+}
+
+/**
  * Resizes the content area of the account lists to fit the window size.
  * This prevents that the whole page is scrolled in the browser. Only the account table has scroll bars.
  */

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2014  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -293,33 +293,38 @@ class lamList {
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
 			}
-			if ($this->page > 10) {
+			if ($this->page > 11) {
 				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 			}
+			$pageCount =  ceil($count / $this->maxPageEntries);
 			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
-				if ($i >= ($count / $this->maxPageEntries)) {
+				if ($i >= $pageCount) {
 					break;
 				}
 				elseif ($i < 0) {
 					continue;
 				}
 				if ($i == $this->page - 1) {
-					echo '&nbsp;' . ($i + 1) . '&nbsp;';
+					$url = "list.php?type=" . $this->type . "&amp;norefresh=true" .
+					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter;
+					echo '<input type="number" class="listPageInput" id="listNavPage" name="listNavPage"'
+						. ' value="' . ($i + 1) . '" min="1" max="' . $pageCount . '"'
+						. ' onkeypress="listPageNumberKeyPress(\'' . $url . '\', event);">';
 				}
 				else {
 					echo "&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" . ($i + 1) . "</a>\n";
 				}
 			}
-			if ($this->page < (($count / $this->maxPageEntries) - 10)) {
+			if ($this->page < ($pageCount - 10)) {
 				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 			}
-			if ($this->page < ($count / $this->maxPageEntries)) {
-				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ceil(($count / $this->maxPageEntries)) .
+			if ($this->page < $pageCount) {
+				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . $pageCount .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 			}
@@ -887,7 +892,7 @@ class lamList {
 			exit();
 		}
 		// get current page
-		if (isset($_GET["page"])) $this->page = $_GET["page"];
+		if (!empty($_GET["page"])) $this->page = $_GET["page"];
 		else $this->page = 1;
 		// generate attribute-description table
 		$temp_array = $this->listGetAttributeDescriptionList();

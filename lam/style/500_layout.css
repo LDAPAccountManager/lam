@@ -95,9 +95,9 @@ legend {
 color:black;
 }
 
-/* color for active page digit */
-td.activepage {
- color:red;
+input.listPageInput {
+	width: 3em;
+	text-align: center;
 }
 
 select {
