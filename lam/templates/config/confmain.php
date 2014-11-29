@@ -270,7 +270,10 @@ if (isLAMProVersion()) {
 $advancedOptionsContent = new htmlTable();
 // referrals
 $followReferrals = ($conf->getFollowReferrals() === 'true');
-$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('followReferrals',$followReferrals , _('Follow referrals'), '205'), true);
+$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('followReferrals', $followReferrals , _('Follow referrals'), '205'), true);
+// paged results
+$pagedResults = ($conf->getPagedResults() === 'true');
+$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('pagedResults', $pagedResults , _('Paged results'), '266'), true);
 
 // build advanced options box
 $advancedOptions = new htmlAccordion('advancedOptions_server', array(_('Advanced options') => $advancedOptionsContent), false);
@@ -508,6 +511,12 @@ function checkInput() {
 	}
 	else {
 		$conf->setFollowReferrals('false');
+	}
+	if (isset($_POST['pagedResults']) && ($_POST['pagedResults'] == 'on')) {
+		$conf->setPagedResults('true');
+	}
+	else {
+		$conf->setPagedResults('false');
 	}
 /*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));

@@ -668,19 +668,12 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 			continue;  // skip non-active account types
 		}
 		// search LDAP
-		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
-							$filter, $attributes, 0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
+					$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
 		}
-		if ($sr) {
-			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-			if ($entries) {
-				cleanLDAPResult($entries);
-				$return = array_merge($return, $entries);
-			}
-			@ldap_free_result($sr);
-		}
+		$return = array_merge($return, $entries);
 	}
 	return $return;
 }
@@ -702,19 +695,12 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 	}
 	for ($s = 0; $s < sizeof($scopes); $s++) {
 		// search LDAP
-		$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
-							$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
+					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
 		}
-		if ($sr) {
-			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-			if ($entries) {
-				cleanLDAPResult($entries);
-				$return = array_merge($return, $entries);
-			}
-			@ldap_free_result($sr);
-		}
+		$return = array_merge($return, $entries);
 	}
 	return $return;
 }
@@ -728,20 +714,56 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
  * @return array list of found entries
  */
 function searchLDAP($suffix, $filter, $attributes) {
-	$return = array();
-	$sr = @ldap_search($_SESSION['ldap']->server(), escapeDN($suffix), $filter, $attributes,
-						0, $_SESSION['config']->get_searchLimit(), 0, LDAP_DEREF_NEVER);
+	$return = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($suffix), $filter, $attributes,
+				0, $_SESSION['config']->get_searchLimit());
 	if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 		logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
 	}
-	if ($sr) {
-		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($entries) {
+	return $return;
+}
+
+/**
+ * Runs an LDAP search and uses paging if configured.
+ * 
+ * @param handle $server LDAP connection handle
+ * @param String $dn DN
+ * @param String $filter filter
+ * @param array $attributes attribute list
+ * @param boolean $attrsOnly return only attribute names
+ * @param int $limit size limit
+ */
+function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit) {
+	if (empty($_SESSION['config']) || ($_SESSION['config']->getPagedResults() !== 'true')) {
+		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$entries = ldap_get_entries($server, $sr);
+			if (!$entries) {
+				return array();
+			}
 			cleanLDAPResult($entries);
-			@ldap_free_result($sr);
 			return $entries;
 		}
+		else {
+			return array();
+		}
 	}
+	$pageSize = 999;
+	$cookie = '';
+	$return = array();
+	do {
+		@ldap_control_paged_result($server, $pageSize, true, $cookie);
+		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER);
+		if (!$sr) {
+			break;
+		}
+		$entries = ldap_get_entries($server, $sr);
+		if (!$entries) {
+			break;
+		}
+		$return = array_merge($return, $entries);
+		@ldap_control_paged_result_response($server, $sr, $cookie);
+	} while($cookie !== null && $cookie != '');
+	cleanLDAPResult($return);
 	return $return;
 }
 

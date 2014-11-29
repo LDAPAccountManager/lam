@@ -181,6 +181,8 @@ $helpArray = array (
 					"Text" => _('Here you can overwrite the display name for this account type.')),
 				"265" => array ("Headline" => _('Read-only'),
 					"Text" => _('Sets this account type to read-only.')),
+				"266" => array ("Headline" => _("Paged results"),
+					"Text" => _("This is a workaround for Active Directory. Enable it if you get messages about size limit exceeded.")),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

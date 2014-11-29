@@ -362,6 +362,9 @@ class LAMConfig {
 	/** automatically follow referrals */
 	private $followReferrals = 'false';
 	
+	/** use paged results */
+	private $pagedResults = 'false';
+	
 	/** Array of string: users with admin rights */
 	private $Admins;
 
@@ -456,7 +459,7 @@ class LAMConfig {
 	private $lamProMailText = '';
 
 	/** List of all settings in config file */
-	private $settings = array("ServerURL", "useTLS", "followReferrals", "Passwd", "Admins", "treesuffix",
+	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
@@ -625,6 +628,7 @@ class LAMConfig {
 			if (!in_array("ServerURL", $saved)) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
 			if (!in_array("useTLS", $saved)) array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
 			if (!in_array("followReferrals", $saved)) array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
+			if (!in_array("pagedResults", $saved)) array_push($file_array, "\n\n# paged results\n" . "pagedResults: " . $this->pagedResults . "\n");
 			if (!in_array("Passwd", $saved)) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
 			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 								"# names have to be seperated by semicolons\n" .
@@ -775,6 +779,24 @@ class LAMConfig {
 	 */
 	public function setFollowReferrals($followReferrals) {
 		$this->followReferrals = $followReferrals;
+	}
+
+	/**
+	 * Returns if paged results should be used.
+	 * 
+	 * @return String true or false
+	 */
+	public function getPagedResults() {
+		return $this->pagedResults;
+	}
+	
+	/**
+	 * Sets if paged results should be used.
+	 * 
+	 * @param String $pagedResults true or false
+	 */
+	public function setPagedResults($pagedResults) {
+		$this->pagedResults = $pagedResults;
 	}
 
 	/**

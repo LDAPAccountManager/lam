@@ -1291,9 +1291,15 @@ Have fun!
           linkend="a_accessLevelPasswordReset">this page</link> for details on
           the different access levels.</para>
 
+          <para><emphasis role="bold">Advanced options</emphasis></para>
+
           <para>By default LAM will not follow LDAP referrals. This is ok for
           most installations. If you use LDAP referrals please activate the
           referral option in advanced settings.</para>
+
+          <para>Paged results should be activated only if you encounter any
+          problems regarding size limits on Active Directory. LAM will then
+          query LDAP to return results in chunks of 999 entries.</para>
 
           <screenshot>
             <mediaobject>

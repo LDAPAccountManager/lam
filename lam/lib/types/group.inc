@@ -405,6 +405,9 @@ class lamGroupList extends lamList {
 		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 		$attrs = array( "uid" );
 		for ($i = 0; $i < sizeof($this->entries); $i++) {
+			if (empty($this->entries[$i]['gidnumber'][0])) {
+				continue;
+			}
 			$gid = $this->entries[$i]['gidnumber'][0];
 			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
 			$entries = searchLDAPByFilter($filter, $attrs, array($scope));
