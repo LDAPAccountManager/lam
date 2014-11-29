@@ -199,7 +199,8 @@ Have fun!
           </listitem>
 
           <listitem>
-            <para>Perl (optional, needed only for lamdaemon)</para>
+            <para>Perl (optional, needed only for <link
+            linkend="a_lamdaemon">lamdaemon</link>)</para>
           </listitem>
 
           <listitem>
@@ -9143,6 +9144,43 @@ OK (10 msec)</programlisting>
 
     <para>If you want wo use it you have to set up the following things to get
     it to work:</para>
+
+    <section>
+      <title>Installation</title>
+
+      <para>First of all, you need to install lamdaemon.pl on your remote
+      server where LAM should manage homedirs and/or quota. This is usually a
+      different server than the one where LAM is installed. But there is no
+      problem if it is the same.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lamdaemonServers.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para></para>
+
+      <para><emphasis role="bold">Debian based (e.g. also
+      Ubuntu)</emphasis></para>
+
+      <para>Please install the lamdaemon DEB package on your quota/homedir
+      server.</para>
+
+      <para><emphasis role="bold">RPM based (Fedora, CentOS, Suse,
+      ...)</emphasis></para>
+
+      <para>Please install the lamdaemon RPM package on your quota/homedir
+      server.</para>
+
+      <para><emphasis role="bold">Other</emphasis></para>
+
+      <para>Please copy lib/lamdaemon.pl from the LAM tar.bz2 package to your
+      quota/homedir server. The location may be anywhere (e.g. use
+      /opt/lamdaemon). Please make the lamdaemon.pl script executable.</para>
+    </section>
 
     <section id="a_lamdaemonConf">
       <title>LDAP Account Manager configuration</title>
