@@ -535,7 +535,7 @@ class windowsUser extends baseModule implements passwordService {
 			$return['PDF_fields']['msSFU30NisDomain'] = _('NIS domain');
 		}
 		// self service search attributes
-		$return['selfServiceSearchAttributes'] = array('sAMAccountName');
+		$return['selfServiceSearchAttributes'] = array('sAMAccountName', 'userPrincipalName');
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array(
 			'physicalDeliveryOfficeName' => _('Office name'),
