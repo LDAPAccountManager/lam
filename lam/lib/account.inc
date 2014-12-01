@@ -1115,7 +1115,7 @@ function sendEMail($to, $subject, $text, $headers) {
 		$text = str_replace("\r\n", "\n", $text);
 		$headers = str_replace("\r\n", "\n", $headers);
 	}
-	logNewMessage(LOG_WARNING, $text);
+	logNewMessage(LOG_DEBUG, "Send mail to $to\n" . $text);
 	return mail($to, base64EncodeForEMail($subject), $text, $headers);
 }
 
