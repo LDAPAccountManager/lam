@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LAM 1.3\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2014-09-14 11:59+0800\n"
+"PO-Revision-Date: 2014-12-01 14:34+0800\n"
 "Last-Translator: Alan Needham <needham@sina.com>\n"
 "Language-Team: Chinese(Simplified) <needham@sina.com>\n"
 "Language: zh_CN\n"
@@ -134,8 +134,8 @@ msgstr "SOA条目除了NS/MX/A条目外不允许其他条目"
 msgid "A SOA record requires that the host name is set to \"@\"."
 msgstr "SOA记录需要主机名前设置\"@\"."
 
-#: ../lib/modules/selfRegistration.inc:631
-#: ../lib/modules/passwordSelfReset.inc:1590
+#: ../lib/modules/selfRegistration.inc:641
+#: ../lib/modules/passwordSelfReset.inc:1592
 msgid ""
 "A confirmation mail was sent. Please click on the link in the mail to "
 "proceed."
@@ -373,9 +373,10 @@ msgstr "帐号"
 #: ../lib/modules/systemQuotas.inc:100 ../lib/modules/systemQuotas.inc:102
 #: ../lib/modules/systemQuotas.inc:104 ../lib/modules/systemQuotas.inc:106
 #: ../lib/modules/systemQuotas.inc:108 ../lib/modules/systemQuotas.inc:110
-#: ../lib/modules/freeRadius.inc:250 ../lib/modules/freeRadius.inc:252
-#: ../lib/modules/freeRadius.inc:254 ../lib/modules/freeRadius.inc:256
-#: ../lib/modules/freeRadius.inc:258 ../lib/modules/freeRadius.inc:260
+#: ../lib/modules/freeRadius.inc:330 ../lib/modules/freeRadius.inc:332
+#: ../lib/modules/freeRadius.inc:334 ../lib/modules/freeRadius.inc:336
+#: ../lib/modules/freeRadius.inc:338 ../lib/modules/freeRadius.inc:340
+#: ../lib/modules/freeRadius.inc:341 ../lib/modules/freeRadius.inc:342
 #: ../lib/modules/sudoRole.inc:270 ../lib/modules/sudoRole.inc:272
 #: ../lib/modules/sudoRole.inc:274 ../lib/modules/sudoRole.inc:276
 #: ../lib/modules/sudoRole.inc:278 ../lib/modules/sudoRole.inc:280
@@ -544,13 +545,13 @@ msgstr ""
 "LDAP条目类型中的帐号类型定义必须是可管理的（比如user和group),帐号模块定义中的"
 "属性（例如 UNIX 和SAMBA）必须是可编辑的。"
 
-#: ../lib/modules.inc:1315
+#: ../lib/modules.inc:1317
 msgid "Account was created successfully."
 msgstr "新增帐号成功"
 
 #: ../templates/lists/changePassword.php:753
 #: ../templates/lists/changePassword.php:805
-#: ../templates/lists/changePassword.php:851 ../lib/modules.inc:1318
+#: ../templates/lists/changePassword.php:851 ../lib/modules.inc:1320
 msgid "Account was modified successfully."
 msgstr "帐号修改成功"
 
@@ -563,7 +564,7 @@ msgid "Activate DynDNS"
 msgstr "活动的动态DNS"
 
 #: ../templates/config/confmain.php:243
-#: ../templates/selfService/adminMain.php:419
+#: ../templates/selfService/adminMain.php:421
 msgid "Activate TLS"
 msgstr "激活TLS"
 
@@ -621,7 +622,6 @@ msgstr "激活帐号类型"
 
 #: ../templates/serverInfo.php:307 ../templates/serverInfo.php:384
 #: ../templates/multiEdit.php:126 ../templates/config/profmanage.php:252
-#: ../templates/config/confmodules.php:305
 #: ../templates/config/conftypes.php:223
 #: ../templates/selfService/profManage.php:209
 #: ../templates/pdfedit/pdfpage.php:596 ../templates/pdfedit/pdfpage.php:606
@@ -645,7 +645,7 @@ msgstr "激活帐号类型"
 #: ../lib/modules/sambaGroupMapping.inc:392
 #: ../lib/modules/sambaGroupMapping.inc:489 ../lib/modules/pykotaUser.inc:377
 #: ../lib/modules/ldapPublicKey.inc:267 ../lib/modules/ldapPublicKey.inc:277
-#: ../lib/modules/nisnetgroup.inc:282 ../lib/modules/inetOrgPerson.inc:1742
+#: ../lib/modules/nisnetgroup.inc:282 ../lib/modules/inetOrgPerson.inc:1744
 #: ../lib/modules/sudoRole.inc:321 ../lib/modules/sudoRole.inc:348
 #: ../lib/modules/sudoRole.inc:375 ../lib/modules/sudoRole.inc:402
 #: ../lib/modules/sudoRole.inc:429 ../lib/modules/sudoRole.inc:456
@@ -673,7 +673,7 @@ msgstr "增加授权服务扩展"
 msgid "Add EDU person extension"
 msgstr "增加EDU用户扩展"
 
-#: ../lib/modules/freeRadius.inc:312
+#: ../lib/modules/freeRadius.inc:426
 msgid "Add FreeRadius extension"
 msgstr "增加FreeRadius扩展"
 
@@ -739,7 +739,7 @@ msgstr "给属性新增一个值."
 msgid "Add another rule"
 msgstr "增加另外一个规则"
 
-#: ../lib/modules/inetOrgPerson.inc:1777
+#: ../lib/modules/inetOrgPerson.inc:1779
 #: ../lib/modules/organizationalRole.inc:322
 #: ../lib/modules/groupOfNames.inc:379 ../lib/modules/groupOfNames.inc:534
 msgid "Add entries"
@@ -770,7 +770,7 @@ msgstr "为DNS增加一个固定的IP地址"
 msgid "Add host extension"
 msgstr "增加 host 扩展"
 
-#: ../templates/selfService/adminMain.php:599 ../help/help.inc:232
+#: ../templates/selfService/adminMain.php:604 ../help/help.inc:234
 msgid "Add input field"
 msgstr "增加输入栏目"
 
@@ -808,7 +808,7 @@ msgstr "新增binary属性."
 msgid "Add new field"
 msgstr "增加新域"
 
-#: ../templates/selfService/adminMain.php:591 ../help/help.inc:230
+#: ../templates/selfService/adminMain.php:596 ../help/help.inc:232
 msgid "Add new group"
 msgstr "新增组"
 
@@ -829,8 +829,8 @@ msgstr "增加对象类和属性"
 msgid "Add password self reset extension"
 msgstr "增加密码自助复位扩展"
 
-#: ../lib/modules/inetOrgPerson.inc:770 ../lib/modules/inetOrgPerson.inc:1618
-#: ../lib/modules/inetOrgPerson.inc:1701 ../lib/modules/inetOrgPerson.inc:2714
+#: ../lib/modules/inetOrgPerson.inc:770 ../lib/modules/inetOrgPerson.inc:1620
+#: ../lib/modules/inetOrgPerson.inc:1703 ../lib/modules/inetOrgPerson.inc:2719
 msgid "Add photo"
 msgstr "新增照片"
 
@@ -865,13 +865,13 @@ msgstr "添加中"
 msgid "Adding the range failed because errors occured."
 msgstr "因为发生了错误致使增加范围失败"
 
-#: ../templates/selfService/adminMain.php:495 ../help/help.inc:236
+#: ../templates/selfService/adminMain.php:500 ../help/help.inc:238
 msgid "Additional CSS links"
 msgstr "附加的CSS连接"
 
 #: ../templates/config/conftypes.php:289
-#: ../templates/selfService/adminMain.php:440 ../help/help.inc:170
-#: ../help/help.inc:240
+#: ../templates/selfService/adminMain.php:445 ../help/help.inc:170
+#: ../help/help.inc:242
 msgid "Additional LDAP filter"
 msgstr "附加的LDAP过滤表达式"
 
@@ -913,7 +913,7 @@ msgstr "地址列表总计:%s"
 msgid "Address of IMAP server (e.g. mail.example.org)."
 msgstr "IMAP服务器地址（比如:mail.example.org)"
 
-#: ../help/help.inc:231
+#: ../help/help.inc:233
 msgid ""
 "Adds a new group element to the list of self service options. Use this to "
 "structure the input fields."
@@ -923,7 +923,7 @@ msgstr "为自助服务选项列表新增组元素.利用它建立输入栏目."
 msgid "Adds a new range pool."
 msgstr "增加一个新范围的地址池."
 
-#: ../help/help.inc:233
+#: ../help/help.inc:235
 msgid "Adds a new self service option to the selected group element."
 msgstr "为选定的组元素增加新的自助服务选项."
 
@@ -981,8 +981,8 @@ msgstr "管理者"
 msgid "Administrators group"
 msgstr "管理员组"
 
-#: ../templates/config/confmain.php:276 ../templates/config/conftypes.php:335
-#: ../lib/modules/posixAccount.inc:271 ../lib/modules/inetOrgPerson.inc:3686
+#: ../templates/config/confmain.php:279 ../templates/config/conftypes.php:335
+#: ../lib/modules/posixAccount.inc:271 ../lib/modules/inetOrgPerson.inc:3703
 msgid "Advanced options"
 msgstr "高级选项"
 
@@ -1083,17 +1083,17 @@ msgstr "邮件的别名"
 msgid "Aliases for user name"
 msgstr "用户名的别名"
 
-#: ../lib/lists.inc:702
+#: ../lib/lists.inc:707
 #, php-format
 msgid "All accounts (%s)"
 msgstr "所有帐号 %s:"
 
-#: ../templates/selfService/selfServiceMain.php:368
+#: ../templates/selfService/selfServiceMain.php:370
 #: ../templates/initsuff.php:158
 msgid "All changes were successful."
 msgstr "修改成功."
 
-#: ../lib/lists.inc:701
+#: ../lib/lists.inc:706
 #, php-format
 msgid "All selected accounts (%s)"
 msgstr "所有选中的帐号(%s)"
@@ -1102,7 +1102,7 @@ msgstr "所有选中的帐号(%s)"
 msgid "Allow"
 msgstr "允许"
 
-#: ../templates/config/confmain.php:362 ../help/help.inc:259
+#: ../templates/config/confmain.php:364 ../help/help.inc:261
 msgid "Allow alternate address"
 msgstr "允许另外的地址"
 
@@ -1129,7 +1129,7 @@ msgstr "允许改变密码"
 msgid "Allow terminal server login"
 msgstr "允许终端服务登录"
 
-#: ../templates/selfService/adminMain.php:557
+#: ../templates/selfService/adminMain.php:562
 msgid "Allow user input for this field."
 msgstr "允许用户在此域输入。"
 
@@ -1213,7 +1213,7 @@ msgstr "阿尔迈迪，达卡，科伦坡"
 msgid "Alternate address"
 msgstr "变更地址"
 
-#: ../lib/modules.inc:1079 ../lib/modules.inc:1178 ../help/help.inc:214
+#: ../lib/modules.inc:1081 ../lib/modules.inc:1180 ../help/help.inc:216
 msgid "Alternate recipient"
 msgstr "另外的接收者"
 
@@ -1516,7 +1516,7 @@ msgstr "可选组"
 msgid "Available members"
 msgstr "可用的用户"
 
-#: ../templates/config/confmodules.php:314
+#: ../templates/config/confmodules.php:296
 msgid "Available modules"
 msgstr "可选模块"
 
@@ -1549,8 +1549,8 @@ msgstr "B-节点 (0x01)"
 #: ../lib/modules/windowsUser.inc:1080
 #: ../lib/modules/sambaGroupMapping.inc:511 ../lib/modules/pykotaUser.inc:618
 #: ../lib/modules/pykotaUser.inc:675 ../lib/modules/nisnetgroup.inc:400
-#: ../lib/modules/inetOrgPerson.inc:1702 ../lib/modules/inetOrgPerson.inc:1778
-#: ../lib/modules/inetOrgPerson.inc:1868 ../lib/modules/qmailGroup.inc:865
+#: ../lib/modules/inetOrgPerson.inc:1704 ../lib/modules/inetOrgPerson.inc:1780
+#: ../lib/modules/inetOrgPerson.inc:1870 ../lib/modules/qmailGroup.inc:865
 #: ../lib/modules/organizationalRole.inc:389
 #: ../lib/modules/windowsGroup.inc:606 ../lib/modules/groupOfNames.inc:447
 #: ../lib/modules/groupOfNames.inc:601
@@ -1814,11 +1814,11 @@ msgstr "绑定 DNS"
 msgid "Bind DNS entries"
 msgstr "绑定DNS条目"
 
-#: ../templates/config/confmain.php:444
+#: ../templates/config/confmain.php:446
 msgid "Bind password"
 msgstr "绑定密码"
 
-#: ../templates/config/confmain.php:442
+#: ../templates/config/confmain.php:444
 msgid "Bind user"
 msgstr "绑定用户"
 
@@ -1888,9 +1888,9 @@ msgstr "块更新以下DN"
 #: ../lib/modules/inetOrgPerson.inc:235 ../lib/modules/inetOrgPerson.inc:372
 #: ../lib/modules/inetOrgPerson.inc:613 ../lib/modules/inetOrgPerson.inc:786
 #: ../lib/modules/inetOrgPerson.inc:790 ../lib/modules/inetOrgPerson.inc:1506
-#: ../lib/modules/inetOrgPerson.inc:1509 ../lib/modules/inetOrgPerson.inc:1941
-#: ../lib/modules/inetOrgPerson.inc:2690 ../lib/modules/inetOrgPerson.inc:3614
-#: ../lib/modules/inetOrgPerson.inc:3656
+#: ../lib/modules/inetOrgPerson.inc:1509 ../lib/modules/inetOrgPerson.inc:1943
+#: ../lib/modules/inetOrgPerson.inc:2693 ../lib/modules/inetOrgPerson.inc:3631
+#: ../lib/modules/inetOrgPerson.inc:3673
 msgid "Business category"
 msgstr "商业种类"
 
@@ -1904,7 +1904,7 @@ msgid ""
 "modules."
 msgstr "缺省地,LAM将显示与所选帐号模块匹配的所有账号."
 
-#: ../help/help.inc:243
+#: ../help/help.inc:245
 msgid ""
 "By default all modifications are done as the user that authenticated in self "
 "service. If active then LAM will use the connection user for all LDAP "
@@ -2000,13 +2000,13 @@ msgstr "可能呼叫转移"
 #: ../templates/config/profmanage.php:304
 #: ../templates/config/mainmanage.php:470
 #: ../templates/config/confmodules.php:227
-#: ../templates/config/confmain.php:471
+#: ../templates/config/confmain.php:473
 #: ../templates/config/moduleSettings.php:241
 #: ../templates/config/conftypes.php:362
 #: ../templates/selfService/profManage.php:211
 #: ../templates/selfService/profManage.php:227
 #: ../templates/selfService/profManage.php:240
-#: ../templates/selfService/adminMain.php:716
+#: ../templates/selfService/adminMain.php:721
 #: ../templates/pdfedit/pdfpage.php:638 ../templates/pdfedit/pdfmain.php:210
 #: ../templates/pdfedit/pdfmain.php:217 ../templates/pdfedit/pdfmain.php:223
 #: ../templates/delete.php:121 ../templates/profedit/profilepage.php:241
@@ -2029,7 +2029,7 @@ msgstr "可能呼叫转移"
 #: ../lib/modules/sambaSamAccount.inc:1572 ../lib/modules/zarafaUser.inc:875
 #: ../lib/modules/kolabUser.inc:520 ../lib/modules/sambaGroupMapping.inc:490
 #: ../lib/modules/shadowAccount.inc:478 ../lib/modules/nisnetgroup.inc:490
-#: ../lib/modules/inetOrgPerson.inc:1743 ../lib/modules/freeRadius.inc:431
+#: ../lib/modules/inetOrgPerson.inc:1745 ../lib/modules/freeRadius.inc:566
 #: ../lib/modules/kolabSharedFolder.inc:434
 #: ../lib/modules/customFields.inc:1084 ../lib/modules/aliasEntry.inc:147
 #: ../lib/modules/aliasEntry.inc:167 ../lib/modules/qmailGroup.inc:823
@@ -2037,22 +2037,22 @@ msgstr "可能呼叫转移"
 #: ../lib/modules/heimdalKerberos.inc:600 ../lib/modules/windowsGroup.inc:505
 #: ../lib/modules/windowsGroup.inc:557 ../lib/modules/groupOfNames.inc:375
 #: ../lib/modules/groupOfNames.inc:530 ../lib/modules/nisMailAlias.inc:385
-#: ../lib/lists.inc:711 ../lib/lists.inc:792 ../lib/modules.inc:1230
+#: ../lib/lists.inc:716 ../lib/lists.inc:797 ../lib/modules.inc:1232
 msgid "Cancel"
 msgstr "取消"
 
 #: ../templates/login.php:569 ../templates/login.php:627
 #: ../templates/login.php:632
-#: ../templates/selfService/selfServiceLogin.php:141
-#: ../templates/selfService/selfServiceLogin.php:190
-#: ../templates/selfService/selfServiceLogin.php:195
-#: ../templates/selfService/selfServiceMain.php:168
-#: ../templates/selfService/selfServiceMain.php:189
-#: ../lib/modules/selfRegistration.inc:699
+#: ../templates/selfService/selfServiceLogin.php:143
+#: ../templates/selfService/selfServiceLogin.php:192
+#: ../templates/selfService/selfServiceLogin.php:197
+#: ../templates/selfService/selfServiceMain.php:170
+#: ../templates/selfService/selfServiceMain.php:191
+#: ../lib/modules/selfRegistration.inc:709
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "无法连接指定的LDAP服务器,请再试一次."
 
-#: ../templates/login.php:310 ../lib/config.inc:1683
+#: ../templates/login.php:310 ../lib/config.inc:1705
 msgid "Cannot open config file!"
 msgstr "无法打开配置文件!"
 
@@ -2060,7 +2060,7 @@ msgstr "无法打开配置文件!"
 msgid "Cannot update quota."
 msgstr "不能修改配额"
 
-#: ../lib/config.inc:1695 ../lib/config.inc:1703
+#: ../lib/config.inc:1717 ../lib/config.inc:1725
 msgid ""
 "Cannot write certificate file. Please check the permissions of config/"
 "serverCerts.pem."
@@ -2073,15 +2073,15 @@ msgstr "不能写入证书文件. 请检查config/serverCerts.pem的权限."
 msgid "Capacity"
 msgstr "容量"
 
-#: ../templates/selfService/adminMain.php:496
+#: ../templates/selfService/adminMain.php:501
 msgid "Captions and labels"
 msgstr "标题和标签"
 
 #: ../lib/modules/inetOrgPerson.inc:163 ../lib/modules/inetOrgPerson.inc:534
 #: ../lib/modules/inetOrgPerson.inc:607 ../lib/modules/inetOrgPerson.inc:810
 #: ../lib/modules/inetOrgPerson.inc:1479 ../lib/modules/inetOrgPerson.inc:1482
-#: ../lib/modules/inetOrgPerson.inc:1943 ../lib/modules/inetOrgPerson.inc:2668
-#: ../lib/modules/inetOrgPerson.inc:3610 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:1945 ../lib/modules/inetOrgPerson.inc:2671
+#: ../lib/modules/inetOrgPerson.inc:3627 ../lib/modules/inetOrgPerson.inc:3672
 msgid "Car license"
 msgstr "汽车执照"
 
@@ -2093,7 +2093,7 @@ msgstr "欧洲中央时间,巴黎,柏林"
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "中央时间(美国和加拿大),墨西哥市 "
 
-#: ../templates/selfService/adminMain.php:514
+#: ../templates/selfService/adminMain.php:519
 #: ../lib/modules/mitKerberos.inc:377 ../lib/modules/mitKerberos.inc:388
 #: ../lib/modules/mitKerberos.inc:686 ../lib/modules/qmailUser.inc:661
 #: ../lib/modules/qmailUser.inc:917 ../lib/modules/zarafaContact.inc:229
@@ -2103,7 +2103,7 @@ msgstr "中央时间(美国和加拿大),墨西哥市 "
 #: ../lib/modules/sambaSamAccount.inc:1482 ../lib/modules/zarafaUser.inc:466
 #: ../lib/modules/zarafaUser.inc:557 ../lib/modules/shadowAccount.inc:355
 #: ../lib/modules/shadowAccount.inc:474 ../lib/modules/inetOrgPerson.inc:1566
-#: ../lib/modules/freeRadius.inc:301 ../lib/modules/freeRadius.inc:427
+#: ../lib/modules/freeRadius.inc:383 ../lib/modules/freeRadius.inc:562
 #: ../lib/modules/asteriskExtension.inc:236 ../lib/modules/aliasEntry.inc:100
 #: ../lib/modules/qmailGroup.inc:572 ../lib/modules/organizationalRole.inc:194
 #: ../lib/modules/passwordSelfReset.inc:271
@@ -2157,11 +2157,11 @@ msgstr "改变帐号状态"
 msgid "Change default profile"
 msgstr "更改缺省的配置文件"
 
-#: ../templates/selfService/adminMain.php:575
+#: ../templates/selfService/adminMain.php:580
 msgid "Change field label."
 msgstr "修改域标识"
 
-#: ../lib/lists.inc:792
+#: ../lib/lists.inc:797
 msgid "Change list settings"
 msgstr "改变列表设置"
 
@@ -2188,7 +2188,7 @@ msgstr "现在更改密码?"
 msgid "Change passwords"
 msgstr "更改密码 "
 
-#: ../lib/lists.inc:793
+#: ../lib/lists.inc:798
 msgid "Change settings"
 msgstr "修改设置"
 
@@ -2257,7 +2257,7 @@ msgstr ""
 msgid "Classes"
 msgstr "类"
 
-#: ../lib/lists.inc:384
+#: ../lib/lists.inc:389
 msgid "Clear filter"
 msgstr "清除过滤表达式"
 
@@ -2351,8 +2351,8 @@ msgstr "普通的例子是 \"@givenname@%sn%\" 或 \"%givenname%.%sn%\"."
 #: ../lib/modules/pykotaUser.inc:888 ../lib/modules/inetOrgPerson.inc:95
 #: ../lib/modules/inetOrgPerson.inc:640 ../lib/modules/inetOrgPerson.inc:762
 #: ../lib/modules/inetOrgPerson.inc:1222 ../lib/modules/inetOrgPerson.inc:1225
-#: ../lib/modules/inetOrgPerson.inc:1938 ../lib/modules/inetOrgPerson.inc:2069
-#: ../lib/modules/inetOrgPerson.inc:3665
+#: ../lib/modules/inetOrgPerson.inc:1940 ../lib/modules/inetOrgPerson.inc:2071
+#: ../lib/modules/inetOrgPerson.inc:3682
 #: ../lib/modules/asteriskExtension.inc:118
 msgid "Common name"
 msgstr "全名"
@@ -2433,7 +2433,7 @@ msgid ""
 msgstr ""
 "在确认发送者时使用的确认文本。可以使用 qmail 回复中的通常的%HEADER%等标签"
 
-#: ../templates/config/confmodules.php:394
+#: ../templates/config/confmodules.php:411
 msgid "Conflicting module:"
 msgstr "冲突的模块:"
 
@@ -2579,8 +2579,8 @@ msgstr "无法保存PDF结构,存取拒绝."
 msgid "Create"
 msgstr "建立"
 
-#: ../lib/lists.inc:500 ../lib/lists.inc:686 ../lib/modules.inc:1349
-#: ../help/help.inc:200
+#: ../lib/lists.inc:505 ../lib/lists.inc:691 ../lib/modules.inc:1351
+#: ../help/help.inc:202
 msgid "Create PDF file"
 msgstr "建立PDF文件"
 
@@ -2683,7 +2683,7 @@ msgstr "建立另外一个sudo角色"
 msgid "Create another user"
 msgstr "建立另外一个用户"
 
-#: ../lib/lists.inc:691
+#: ../lib/lists.inc:696
 msgid "Create for"
 msgstr "建立"
 
@@ -2768,7 +2768,7 @@ msgstr "当前连接"
 msgid "Current list of <b>%s</b> values for attribute <b>%s</b>:"
 msgstr "当前 <b>%s</b>个属性 <b>%s</b>值的列表: "
 
-#: ../lib/modules/imapAccess.inc:317
+#: ../lib/modules/imapAccess.inc:318
 msgid "Current usage (kB)"
 msgstr "当前使用量(kB)"
 
@@ -2831,7 +2831,7 @@ msgstr "DHCP 设置"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:35
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:112
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:57 ../lib/modules.inc:410
-#: ../lib/modules.inc:1964
+#: ../lib/modules.inc:1966
 msgid "DN"
 msgstr "DN"
 
@@ -2845,9 +2845,13 @@ msgstr "DN不存在"
 msgid "DN settings"
 msgstr "DN 设置"
 
-#: ../templates/masscreate.php:317 ../help/help.inc:190
+#: ../templates/masscreate.php:317 ../help/help.inc:192
 msgid "DN suffix"
 msgstr "DN 后缀"
+
+#: ../lib/modules/freeRadius.inc:121
+msgid "DN where Radius profile templates are stored."
+msgstr "存储Radius配置模板的DN"
 
 #: ../lib/modules/dhcp_settings.inc:211 ../lib/modules/dhcp_settings.inc:226
 #: ../lib/modules/dhcp_settings.inc:268 ../lib/modules/dhcp_settings.inc:577
@@ -2943,8 +2947,8 @@ msgstr "缺省 (\\r\\n)"
 msgid "Default gateway"
 msgstr "缺省网关"
 
-#: ../templates/config/confmain.php:297
-#: ../templates/selfService/adminMain.php:453 ../help/help.inc:99
+#: ../templates/config/confmain.php:299
+#: ../templates/selfService/adminMain.php:458 ../help/help.inc:99
 msgid "Default language"
 msgstr "缺省语言"
 
@@ -3021,8 +3025,8 @@ msgstr ""
 #: ../lib/modules/bindDLZ.inc:1383 ../lib/modules/kolabUser.inc:827
 #: ../lib/modules/sambaGroupMapping.inc:405
 #: ../lib/modules/ldapPublicKey.inc:262 ../lib/modules/nisnetgroup.inc:253
-#: ../lib/modules/inetOrgPerson.inc:2863 ../lib/modules/customFields.inc:2086
-#: ../lib/modules/customFields.inc:3462 ../lib/lists.inc:494
+#: ../lib/modules/inetOrgPerson.inc:2868 ../lib/modules/customFields.inc:2086
+#: ../lib/modules/customFields.inc:3462 ../lib/lists.inc:499
 msgid "Delete"
 msgstr "删除"
 
@@ -3061,12 +3065,12 @@ msgstr "删除主目录"
 msgid "Delete mailbox"
 msgstr "删除邮箱"
 
-#: ../templates/ou_edit.php:199 ../help/help.inc:265
+#: ../templates/ou_edit.php:199 ../help/help.inc:267
 msgid "Delete organisational unit"
 msgstr "删除组织单元"
 
 #: ../templates/3rdParty/pla/lib/functions.php:2014
-#: ../lib/modules/inetOrgPerson.inc:1621
+#: ../lib/modules/inetOrgPerson.inc:1623
 msgid "Delete photo"
 msgstr "删除照片"
 
@@ -3231,7 +3235,7 @@ msgstr "正在删除对象"
 msgid "Deletion date"
 msgstr "删除日期"
 
-#: ../lib/lists.inc:1068
+#: ../lib/lists.inc:1073
 msgid "Deletion was successful."
 msgstr "删除操作成功."
 
@@ -3266,8 +3270,8 @@ msgstr "阻止打印"
 #: ../lib/modules/inetOrgPerson.inc:494 ../lib/modules/inetOrgPerson.inc:616
 #: ../lib/modules/inetOrgPerson.inc:822 ../lib/modules/inetOrgPerson.inc:826
 #: ../lib/modules/inetOrgPerson.inc:1514 ../lib/modules/inetOrgPerson.inc:1517
-#: ../lib/modules/inetOrgPerson.inc:1953 ../lib/modules/inetOrgPerson.inc:2728
-#: ../lib/modules/inetOrgPerson.inc:3616 ../lib/modules/inetOrgPerson.inc:3657
+#: ../lib/modules/inetOrgPerson.inc:1955 ../lib/modules/inetOrgPerson.inc:2733
+#: ../lib/modules/inetOrgPerson.inc:3633 ../lib/modules/inetOrgPerson.inc:3674
 msgid "Department"
 msgstr "部门"
 
@@ -3339,8 +3343,8 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:178 ../lib/modules/inetOrgPerson.inc:332
 #: ../lib/modules/inetOrgPerson.inc:553 ../lib/modules/inetOrgPerson.inc:646
 #: ../lib/modules/inetOrgPerson.inc:1232 ../lib/modules/inetOrgPerson.inc:1235
-#: ../lib/modules/inetOrgPerson.inc:1923 ../lib/modules/inetOrgPerson.inc:2823
-#: ../lib/modules/inetOrgPerson.inc:3576 ../lib/modules/inetOrgPerson.inc:3645
+#: ../lib/modules/inetOrgPerson.inc:1925 ../lib/modules/inetOrgPerson.inc:2828
+#: ../lib/modules/inetOrgPerson.inc:3593 ../lib/modules/inetOrgPerson.inc:3662
 #: ../lib/modules/sudoRole.inc:70 ../lib/modules/sudoRole.inc:153
 #: ../lib/modules/sudoRole.inc:215 ../lib/modules/sudoRole.inc:305
 #: ../lib/modules/sudoRole.inc:805 ../lib/modules/oracleService.inc:69
@@ -3517,7 +3521,7 @@ msgstr "屏幕显示"
 msgid "Display the created entry"
 msgstr "显示创建的条目"
 
-#: ../lib/modules.inc:503
+#: ../lib/modules.inc:505
 msgid ""
 "Displayed account numbers start at \"0\". Add 2 to get the row in your "
 "spreadsheet."
@@ -3700,8 +3704,8 @@ msgid "Dry run"
 msgstr "排练"
 
 #: ../templates/multiEdit.php:437
-msgid "DryRun finished."
-msgstr "排练结束"
+msgid "Dry run finished."
+msgstr "排练结束."
 
 #: ../templates/serverInfo.php:124
 msgid "Dynamic subtrees"
@@ -3732,11 +3736,11 @@ msgstr "美国东部时间(美国和加拿大),波哥大"
 #: ../templates/pdfedit/pdfmain.php:206
 #: ../templates/profedit/profilemain.php:195
 #: ../lib/modules/sambaSamAccount.inc:1290
-#: ../lib/modules/sambaSamAccount.inc:1295 ../lib/lists.inc:488
+#: ../lib/modules/sambaSamAccount.inc:1295 ../lib/lists.inc:493
 msgid "Edit"
 msgstr "编辑"
 
-#: ../lib/modules.inc:1357
+#: ../lib/modules.inc:1359
 msgid "Edit again"
 msgstr "再次编辑"
 
@@ -3778,7 +3782,7 @@ msgstr "编辑工作站"
 msgid "Email"
 msgstr "电子邮件"
 
-#: ../lib/modules/inetOrgPerson.inc:81
+#: ../lib/modules/selfRegistration.inc:490 ../lib/modules/inetOrgPerson.inc:81
 #, php-format
 msgid "Email \"%s\" already in use."
 msgstr "邮件 \"%s\" 已经被使用"
@@ -3789,6 +3793,7 @@ msgstr "邮件 \"%s\" 已经被使用"
 #: ../lib/modules/kolabGroup.inc:179 ../lib/modules/kolabGroup.inc:202
 #: ../lib/modules/kolabGroup.inc:423 ../lib/modules/selfRegistration.inc:400
 #: ../lib/modules/selfRegistration.inc:482
+#: ../lib/modules/selfRegistration.inc:489
 #: ../lib/modules/zarafaDynamicGroup.inc:67
 #: ../lib/modules/zarafaDynamicGroup.inc:68
 #: ../lib/modules/zarafaDynamicGroup.inc:124
@@ -3812,8 +3817,8 @@ msgstr "邮件 \"%s\" 已经被使用"
 #: ../lib/modules/inetOrgPerson.inc:460 ../lib/modules/inetOrgPerson.inc:598
 #: ../lib/modules/inetOrgPerson.inc:742 ../lib/modules/inetOrgPerson.inc:746
 #: ../lib/modules/inetOrgPerson.inc:1447 ../lib/modules/inetOrgPerson.inc:1450
-#: ../lib/modules/inetOrgPerson.inc:1937 ../lib/modules/inetOrgPerson.inc:2503
-#: ../lib/modules/inetOrgPerson.inc:3606 ../lib/modules/inetOrgPerson.inc:3653
+#: ../lib/modules/inetOrgPerson.inc:1939 ../lib/modules/inetOrgPerson.inc:2506
+#: ../lib/modules/inetOrgPerson.inc:3623 ../lib/modules/inetOrgPerson.inc:3670
 #: ../lib/modules/kolabSharedFolder.inc:116
 #: ../lib/modules/kolabSharedFolder.inc:181
 #: ../lib/modules/kolabSharedFolder.inc:239
@@ -3918,8 +3923,8 @@ msgstr "邮件格式"
 
 #: ../lib/modules/inetOrgPerson.inc:348 ../lib/modules/inetOrgPerson.inc:628
 #: ../lib/modules/inetOrgPerson.inc:854 ../lib/modules/inetOrgPerson.inc:1488
-#: ../lib/modules/inetOrgPerson.inc:1491 ../lib/modules/inetOrgPerson.inc:1948
-#: ../lib/modules/inetOrgPerson.inc:3624 ../lib/modules/inetOrgPerson.inc:3659
+#: ../lib/modules/inetOrgPerson.inc:1491 ../lib/modules/inetOrgPerson.inc:1950
+#: ../lib/modules/inetOrgPerson.inc:3641 ../lib/modules/inetOrgPerson.inc:3676
 #: ../lib/modules/passwordSelfReset.inc:503
 #: ../lib/modules/passwordSelfReset.inc:855
 #: ../lib/modules/passwordSelfReset.inc:1025
@@ -3929,8 +3934,8 @@ msgstr "雇员号"
 #: ../lib/modules/inetOrgPerson.inc:93 ../lib/modules/inetOrgPerson.inc:232
 #: ../lib/modules/inetOrgPerson.inc:356 ../lib/modules/inetOrgPerson.inc:610
 #: ../lib/modules/inetOrgPerson.inc:666 ../lib/modules/inetOrgPerson.inc:1497
-#: ../lib/modules/inetOrgPerson.inc:1500 ../lib/modules/inetOrgPerson.inc:1946
-#: ../lib/modules/inetOrgPerson.inc:3612 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:1500 ../lib/modules/inetOrgPerson.inc:1948
+#: ../lib/modules/inetOrgPerson.inc:3629 ../lib/modules/inetOrgPerson.inc:3672
 msgid "Employee type"
 msgstr "雇员类型"
 
@@ -3952,6 +3957,13 @@ msgstr "打开密码自助复位链接"
 #: ../lib/modules/selfRegistration.inc:190
 msgid "Enable self registration link"
 msgstr "打开自助注册链接"
+
+#: ../lib/modules/freeRadius.inc:116 ../lib/modules/freeRadius.inc:162
+#: ../lib/modules/freeRadius.inc:238 ../lib/modules/freeRadius.inc:273
+#: ../lib/modules/freeRadius.inc:320 ../lib/modules/freeRadius.inc:415
+#: ../lib/modules/freeRadius.inc:708
+msgid "Enabled"
+msgstr "开启"
 
 #: ../lib/modules/customFields.inc:153
 msgid ""
@@ -3993,7 +4005,7 @@ msgid ""
 "PHP MCrypt extension."
 msgstr "类似密码等在会话中对加密敏感的数据.这项功能需要PHP MCrypt扩展."
 
-#: ../templates/selfService/adminMain.php:457 ../help/help.inc:103
+#: ../templates/selfService/adminMain.php:462 ../help/help.inc:103
 msgid "Enforce language"
 msgstr "强制语言"
 
@@ -4104,7 +4116,7 @@ msgstr "示例值"
 msgid "Examples"
 msgstr "示例"
 
-#: ../templates/config/confmain.php:319
+#: ../templates/config/confmain.php:321
 msgid "Execute"
 msgstr "运行"
 
@@ -4112,9 +4124,9 @@ msgstr "运行"
 msgid "Execute lamdaemon"
 msgstr "运行 lamdaemon"
 
-#: ../lib/modules/freeRadius.inc:104 ../lib/modules/freeRadius.inc:130
-#: ../lib/modules/freeRadius.inc:209 ../lib/modules/freeRadius.inc:237
-#: ../lib/modules/freeRadius.inc:385 ../lib/modules/freeRadius.inc:543
+#: ../lib/modules/freeRadius.inc:108 ../lib/modules/freeRadius.inc:222
+#: ../lib/modules/freeRadius.inc:267 ../lib/modules/freeRadius.inc:314
+#: ../lib/modules/freeRadius.inc:520 ../lib/modules/freeRadius.inc:701
 msgid "Expiration date"
 msgstr "过期时间"
 
@@ -4154,7 +4166,7 @@ msgid "Export"
 msgstr "导出"
 
 #: ../templates/pdfedit/pdfmain.php:221 ../templates/pdfedit/pdfmain.php:222
-#: ../help/help.inc:212
+#: ../help/help.inc:214
 msgid "Export PDF structure"
 msgstr "导出PDF结构"
 
@@ -4163,7 +4175,7 @@ msgid "Export format"
 msgstr "导出格式"
 
 #: ../templates/profedit/profilemain.php:209
-#: ../templates/profedit/profilemain.php:210 ../help/help.inc:194
+#: ../templates/profedit/profilemain.php:210 ../help/help.inc:196
 msgid "Export profile"
 msgstr "导出配置文件"
 
@@ -4245,9 +4257,9 @@ msgstr "失败记录间隔"
 #: ../lib/modules/inetOrgPerson.inc:211 ../lib/modules/inetOrgPerson.inc:444
 #: ../lib/modules/inetOrgPerson.inc:592 ../lib/modules/inetOrgPerson.inc:726
 #: ../lib/modules/inetOrgPerson.inc:730 ../lib/modules/inetOrgPerson.inc:1431
-#: ../lib/modules/inetOrgPerson.inc:1434 ../lib/modules/inetOrgPerson.inc:1939
-#: ../lib/modules/inetOrgPerson.inc:2558 ../lib/modules/inetOrgPerson.inc:3602
-#: ../lib/modules/inetOrgPerson.inc:3652
+#: ../lib/modules/inetOrgPerson.inc:1434 ../lib/modules/inetOrgPerson.inc:1941
+#: ../lib/modules/inetOrgPerson.inc:2561 ../lib/modules/inetOrgPerson.inc:3619
+#: ../lib/modules/inetOrgPerson.inc:3669
 msgid "Fax number"
 msgstr "传真号"
 
@@ -4299,7 +4311,7 @@ msgstr "文件路径"
 
 #: ../templates/masscreate.php:243 ../lib/tools/fileUpload.inc:44
 #: ../lib/modules/ldapPublicKey.inc:80 ../lib/modules/customFields.inc:3280
-#: ../lib/lists.inc:777
+#: ../lib/lists.inc:782
 msgid "File upload"
 msgstr "文件上传"
 
@@ -4327,7 +4339,7 @@ msgstr "文件上传"
 #: ../lib/modules/groupOfNames.inc:113 ../lib/modules/groupOfNames.inc:339
 #: ../lib/modules/groupOfNames.inc:429 ../lib/modules/groupOfNames.inc:494
 #: ../lib/modules/groupOfNames.inc:584 ../lib/modules/nisMailAlias.inc:93
-#: ../lib/modules/nisMailAlias.inc:373 ../lib/lists.inc:379
+#: ../lib/modules/nisMailAlias.inc:373 ../lib/lists.inc:384
 #: ../help/help.inc:168
 msgid "Filter"
 msgstr "过滤器"
@@ -4348,8 +4360,8 @@ msgstr "完成所有操作."
 #: ../lib/modules/inetOrgPerson.inc:159 ../lib/modules/inetOrgPerson.inc:309
 #: ../lib/modules/inetOrgPerson.inc:549 ../lib/modules/inetOrgPerson.inc:658
 #: ../lib/modules/inetOrgPerson.inc:1195 ../lib/modules/inetOrgPerson.inc:1198
-#: ../lib/modules/inetOrgPerson.inc:1925 ../lib/modules/inetOrgPerson.inc:2481
-#: ../lib/modules/inetOrgPerson.inc:3646
+#: ../lib/modules/inetOrgPerson.inc:1927 ../lib/modules/inetOrgPerson.inc:2484
+#: ../lib/modules/inetOrgPerson.inc:3663
 msgid "First name"
 msgstr "名字"
 
@@ -4366,7 +4378,7 @@ msgstr "用户名字只允许字母,-和空格"
 msgid "Fix IP addresses"
 msgstr "固定IP地址"
 
-#: ../templates/config/confmain.php:414
+#: ../templates/config/confmain.php:416
 msgid "Fixed list"
 msgstr "固定列表"
 
@@ -4379,7 +4391,8 @@ msgstr "固定的范围"
 msgid "Folding marks"
 msgstr "折叠记号"
 
-#: ../templates/config/confmain.php:273 ../help/help.inc:85
+#: ../templates/config/confmain.php:273
+#: ../templates/selfService/adminMain.php:432 ../help/help.inc:85
 msgid "Follow referrals"
 msgstr "追随引荐的服务器"
 
@@ -4396,8 +4409,8 @@ msgstr "上传请使用\"(主机,用户,域)\"格式来编写条目.多条目请
 #: ../templates/lists/changePassword.php:243
 #: ../lib/modules/mitKerberos.inc:183 ../lib/modules/mitKerberos.inc:417
 #: ../lib/modules/shadowAccount.inc:369 ../lib/modules/heimdalKerberos.inc:127
-#: ../lib/modules/heimdalKerberos.inc:348 ../lib/modules.inc:1062
-#: ../help/help.inc:206
+#: ../lib/modules/heimdalKerberos.inc:348 ../lib/modules.inc:1064
+#: ../help/help.inc:208
 msgid "Force password change"
 msgstr "强制改变密码"
 
@@ -4405,7 +4418,7 @@ msgstr "强制改变密码"
 msgid "Forgot password?"
 msgstr "忘记密码?"
 
-#: ../templates/3rdParty/pla/lib/QueryRender.php:484 ../help/help.inc:252
+#: ../templates/3rdParty/pla/lib/QueryRender.php:484 ../help/help.inc:254
 msgid "Format"
 msgstr "格式"
 
@@ -4423,7 +4436,7 @@ msgstr "把这个用户的所有来信转发到这个地址."
 msgid "Free printing"
 msgstr "自由打印"
 
-#: ../lib/modules/freeRadius.inc:74
+#: ../lib/modules/freeRadius.inc:77
 msgid "FreeRadius"
 msgstr "FreeRadius"
 
@@ -4431,15 +4444,15 @@ msgstr "FreeRadius"
 msgid "Friday"
 msgstr "星期五"
 
-#: ../templates/config/confmain.php:343 ../lib/modules/selfRegistration.inc:90
+#: ../templates/config/confmain.php:345 ../lib/modules/selfRegistration.inc:90
 #: ../lib/modules/selfRegistration.inc:229
 #: ../lib/modules/passwordSelfReset.inc:116
 #: ../lib/modules/passwordSelfReset.inc:537
-#: ../lib/modules/passwordSelfReset.inc:557 ../help/help.inc:246
+#: ../lib/modules/passwordSelfReset.inc:557 ../help/help.inc:248
 msgid "From address"
 msgstr "收件人地址"
 
-#: ../templates/config/confmain.php:520
+#: ../templates/config/confmain.php:528
 msgid "From address for password mails is invalid."
 msgstr "密码邮件的发件人地址非法"
 
@@ -4562,12 +4575,12 @@ msgstr "一般信息"
 #: ../templates/config/confmain.php:205
 #: ../templates/config/moduleSettings.php:163
 #: ../templates/config/conftypes.php:182
-#: ../templates/selfService/adminMain.php:401
+#: ../templates/selfService/adminMain.php:403
 #: ../templates/profedit/profilepage.php:215
 msgid "General settings"
 msgstr "通用设置"
 
-#: ../templates/lists/changePassword.php:317 ../help/help.inc:244
+#: ../templates/lists/changePassword.php:317 ../help/help.inc:246
 msgid "Generate random password"
 msgstr "生成随机密码"
 
@@ -4626,8 +4639,8 @@ msgstr "节点限制的宽限期,大部分文件系统都使用最大值7天."
 msgid "Grace inode period"
 msgstr "节点限制宽限期"
 
-#: ../templates/config/confmain.php:324
-#: ../templates/selfService/adminMain.php:638
+#: ../templates/config/confmain.php:326
+#: ../templates/selfService/adminMain.php:643
 msgid "Group"
 msgstr "组"
 
@@ -4747,10 +4760,10 @@ msgstr ""
 msgid "Group name that is used for PyKota."
 msgstr "在PyKota中使用的组名"
 
-#: ../lib/modules/freeRadius.inc:96 ../lib/modules/freeRadius.inc:100
-#: ../lib/modules/freeRadius.inc:128 ../lib/modules/freeRadius.inc:154
-#: ../lib/modules/freeRadius.inc:185 ../lib/modules/freeRadius.inc:234
-#: ../lib/modules/freeRadius.inc:277 ../lib/modules/freeRadius.inc:540
+#: ../lib/modules/freeRadius.inc:100 ../lib/modules/freeRadius.inc:104
+#: ../lib/modules/freeRadius.inc:150 ../lib/modules/freeRadius.inc:198
+#: ../lib/modules/freeRadius.inc:264 ../lib/modules/freeRadius.inc:312
+#: ../lib/modules/freeRadius.inc:359 ../lib/modules/freeRadius.inc:697
 msgid "Group names"
 msgstr "组名"
 
@@ -4810,15 +4823,15 @@ msgstr "组名"
 msgid "H-Node (0x08)"
 msgstr "H-节点 (0x08)"
 
-#: ../templates/config/confmain.php:356
+#: ../templates/config/confmain.php:358
 #: ../lib/modules/selfRegistration.inc:235
 #: ../lib/modules/passwordSelfReset.inc:541
-#: ../lib/modules/passwordSelfReset.inc:561 ../help/help.inc:255
+#: ../lib/modules/passwordSelfReset.inc:561 ../help/help.inc:257
 msgid "HTML format"
 msgstr "HTML格式"
 
-#: ../templates/config/confmain.php:448
-#: ../templates/selfService/adminMain.php:442 ../help/help.inc:126
+#: ../templates/config/confmain.php:450
+#: ../templates/selfService/adminMain.php:447 ../help/help.inc:126
 msgid "HTTP authentication"
 msgstr "HTTP认证"
 
@@ -4875,7 +4888,7 @@ msgstr "标题"
 msgid "Heimdal Kerberos password change command"
 msgstr "Heimdal Kerberos密码修改命令"
 
-#: ../templates/main_header.php:140 ../lib/modules.inc:667
+#: ../templates/main_header.php:140 ../lib/modules.inc:669
 msgid "Help"
 msgstr "帮助"
 
@@ -4891,7 +4904,7 @@ msgstr "这是你可浏览的LDAP对象类和属性."
 msgid "Here you can change the settings for the terminal server access."
 msgstr "这里可以改变终端服务访问的设置。"
 
-#: ../lib/selfService.inc:387
+#: ../lib/selfService.inc:389
 msgid "Here you can change your personal settings."
 msgstr "这里您可以修改用户设置."
 
@@ -4941,7 +4954,7 @@ msgstr "在这输入这个设备的序列号."
 msgid "Here you can enter additional web sites for the user."
 msgstr "在这可以为用户输入一个附加的web网站."
 
-#: ../help/help.inc:215
+#: ../help/help.inc:217
 msgid ""
 "Here you can enter an alternative mail address for the password. To use the "
 "user's primary email address please leave the field blank."
@@ -4965,7 +4978,7 @@ msgstr "这里可以输入用户的部门."
 msgid "Here you can explicitly enable and disable Zarafa features."
 msgstr "你可以在这里打开或关闭Zarafa功能."
 
-#: ../help/help.inc:213
+#: ../help/help.inc:215
 msgid ""
 "Here you can export PDF structures to other server profiles (overwrite "
 "existing). You may also export a structure to the global templates. In this "
@@ -4975,7 +4988,7 @@ msgstr ""
 "可以导出PDF架构到其他服务器配置文件(覆盖已有).也可以导出一个架构到全局模板,将"
 "这个架构拷贝到所有还不存在这个名字的服务器模板."
 
-#: ../help/help.inc:195
+#: ../help/help.inc:197
 msgid ""
 "Here you can export account profiles to other server profiles (overwrite "
 "existing). You may also export a profile to the global templates. In this "
@@ -4985,13 +4998,13 @@ msgstr ""
 "可以导出账号配置到其他服务器配置文件(覆盖已有).也可以输出一个配置文件到全局模"
 "板,将这个配置文件拷贝到所有还不存在这个名字的服务器模板."
 
-#: ../help/help.inc:211
+#: ../help/help.inc:213
 msgid ""
 "Here you can import PDF structures from other server profiles (overwrite "
 "existing)."
 msgstr "可以导入其他服务器配置文件的PDF架构(覆盖已有)."
 
-#: ../help/help.inc:193
+#: ../help/help.inc:195
 msgid ""
 "Here you can import account profiles from other server profiles (overwrite "
 "existing)."
@@ -5003,7 +5016,7 @@ msgid ""
 "filter is case-sensitive."
 msgstr "在此输入简单的过滤语法(例如'value'或'v*'),系统在过滤时区分大小写."
 
-#: ../help/help.inc:199
+#: ../help/help.inc:201
 msgid ""
 "Here you can load an account profile to set default settings for your "
 "account. The \"default\" profile is automatically loaded for new accounts."
@@ -5019,7 +5032,7 @@ msgstr "您可以管理您的帐号配置文件."
 msgid "Here you can overwrite the display name for this account type."
 msgstr "这里可以设置一个新的这个账号类型显示的名字"
 
-#: ../help/help.inc:201
+#: ../help/help.inc:203
 msgid ""
 "Here you can select a PDF structure and export the account to a PDF file."
 msgstr "您可以选择一个PDF结构,您可以在此選擇一個PDF架構,然後將帳號滙出成PDF檔."
@@ -5059,7 +5072,7 @@ msgstr ""
 msgid "Here you can set the URL to a custom icon (32x32px) for this module."
 msgstr "设置这个模块图标 (32x32像素)的URL"
 
-#: ../help/help.inc:237
+#: ../help/help.inc:239
 msgid ""
 "Here you can specify additional CSS links to change the layout of the self "
 "service pages. This is useful to adapt them to your corporate design. Please "
@@ -5163,8 +5176,8 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:441 ../lib/modules/zarafaUser.inc:132
 #: ../lib/modules/zarafaUser.inc:1781 ../lib/modules/windowsUser.inc:236
 #: ../lib/modules/windowsUser.inc:561 ../lib/modules/inetOrgPerson.inc:830
-#: ../lib/modules/inetOrgPerson.inc:3572 ../lib/modules/freeRadius.inc:112
-#: ../lib/modules/freeRadius.inc:118 ../lib/modules/zarafaServer.inc:88
+#: ../lib/modules/inetOrgPerson.inc:3589 ../lib/modules/freeRadius.inc:128
+#: ../lib/modules/freeRadius.inc:301 ../lib/modules/zarafaServer.inc:88
 #: ../lib/modules/zarafaServer.inc:159 ../lib/modules/qmailGroup.inc:68
 #: ../lib/modules/qmailGroup.inc:119 ../lib/modules/organizationalRole.inc:81
 #: ../lib/modules/organizationalRole.inc:159
@@ -5175,7 +5188,7 @@ msgstr ""
 msgid "Hidden options"
 msgstr "隐藏的选项"
 
-#: ../templates/config/confmain.php:375
+#: ../templates/config/confmain.php:377
 msgid "Hidden tools"
 msgstr "隐藏的工具"
 
@@ -5292,8 +5305,8 @@ msgstr "用户的宿主服务器."
 #: ../lib/modules/inetOrgPerson.inc:428 ../lib/modules/inetOrgPerson.inc:586
 #: ../lib/modules/inetOrgPerson.inc:774 ../lib/modules/inetOrgPerson.inc:778
 #: ../lib/modules/inetOrgPerson.inc:1415 ../lib/modules/inetOrgPerson.inc:1418
-#: ../lib/modules/inetOrgPerson.inc:1934 ../lib/modules/inetOrgPerson.inc:2536
-#: ../lib/modules/inetOrgPerson.inc:3598 ../lib/modules/inetOrgPerson.inc:3651
+#: ../lib/modules/inetOrgPerson.inc:1936 ../lib/modules/inetOrgPerson.inc:2539
+#: ../lib/modules/inetOrgPerson.inc:3615 ../lib/modules/inetOrgPerson.inc:3668
 msgid "Home telephone number"
 msgstr "宅电"
 
@@ -5437,10 +5450,10 @@ msgstr "输入IMAP 密码"
 #: ../lib/modules/asteriskAccount.inc:1291 ../lib/modules/bindDLZ.inc:92
 #: ../lib/modules/bindDLZ.inc:96 ../lib/modules/bindDLZ.inc:255
 #: ../lib/modules/bindDLZ.inc:495 ../lib/modules/bindDLZ.inc:652
-#: ../lib/modules/bindDLZ.inc:1479 ../lib/modules/freeRadius.inc:84
-#: ../lib/modules/freeRadius.inc:122 ../lib/modules/freeRadius.inc:193
-#: ../lib/modules/freeRadius.inc:225 ../lib/modules/freeRadius.inc:281
-#: ../lib/modules/freeRadius.inc:537 ../lib/modules/fixed_ip.inc:106
+#: ../lib/modules/bindDLZ.inc:1479 ../lib/modules/freeRadius.inc:88
+#: ../lib/modules/freeRadius.inc:206 ../lib/modules/freeRadius.inc:255
+#: ../lib/modules/freeRadius.inc:306 ../lib/modules/freeRadius.inc:363
+#: ../lib/modules/freeRadius.inc:694 ../lib/modules/fixed_ip.inc:106
 #: ../lib/modules/fixed_ip.inc:421 ../lib/modules/fixed_ip.inc:741
 msgid "IP address"
 msgstr "IP地址"
@@ -5491,10 +5504,10 @@ msgstr "标识"
 msgid "Idle time limit"
 msgstr "空闲时间限制"
 
-#: ../lib/modules/freeRadius.inc:108 ../lib/modules/freeRadius.inc:132
-#: ../lib/modules/freeRadius.inc:157 ../lib/modules/freeRadius.inc:217
-#: ../lib/modules/freeRadius.inc:240 ../lib/modules/freeRadius.inc:289
-#: ../lib/modules/freeRadius.inc:541
+#: ../lib/modules/freeRadius.inc:112 ../lib/modules/freeRadius.inc:153
+#: ../lib/modules/freeRadius.inc:230 ../lib/modules/freeRadius.inc:270
+#: ../lib/modules/freeRadius.inc:316 ../lib/modules/freeRadius.inc:371
+#: ../lib/modules/freeRadius.inc:698
 msgid "Idle timeout"
 msgstr "空闲超时"
 
@@ -5740,7 +5753,7 @@ msgstr "如果您选中此项，用户不能请求服务票据."
 
 #: ../lib/modules/mitKerberos.inc:184 ../lib/modules/sambaSamAccount.inc:296
 #: ../lib/modules/windowsUser.inc:215 ../lib/modules/heimdalKerberos.inc:128
-#: ../help/help.inc:207
+#: ../help/help.inc:209
 msgid ""
 "If you set this option then the user has to change his password at the next "
 "login."
@@ -5801,7 +5814,7 @@ msgid "Import"
 msgstr "导入"
 
 #: ../templates/pdfedit/pdfmain.php:215 ../templates/pdfedit/pdfmain.php:216
-#: ../help/help.inc:210
+#: ../help/help.inc:212
 msgid "Import PDF structures"
 msgstr "导入PDF架构"
 
@@ -5810,7 +5823,7 @@ msgid "Import from server"
 msgstr "从服务器导入"
 
 #: ../templates/profedit/profilemain.php:203
-#: ../templates/profedit/profilemain.php:204 ../help/help.inc:192
+#: ../templates/profedit/profilemain.php:204 ../help/help.inc:194
 msgid "Import profiles"
 msgstr "导出配置文件"
 
@@ -5877,8 +5890,8 @@ msgstr "初始化程序"
 #: ../lib/modules/inetOrgPerson.inc:175 ../lib/modules/inetOrgPerson.inc:324
 #: ../lib/modules/inetOrgPerson.inc:631 ../lib/modules/inetOrgPerson.inc:858
 #: ../lib/modules/inetOrgPerson.inc:1212 ../lib/modules/inetOrgPerson.inc:1215
-#: ../lib/modules/inetOrgPerson.inc:1951 ../lib/modules/inetOrgPerson.inc:2739
-#: ../lib/modules/inetOrgPerson.inc:3626 ../lib/modules/inetOrgPerson.inc:3659
+#: ../lib/modules/inetOrgPerson.inc:1953 ../lib/modules/inetOrgPerson.inc:2744
+#: ../lib/modules/inetOrgPerson.inc:3643 ../lib/modules/inetOrgPerson.inc:3676
 msgid "Initials"
 msgstr "初始化"
 
@@ -5917,7 +5930,7 @@ msgstr "inode软配额包含非法字符,只能使用自然数."
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "inode软配额必须小于硬配额."
 
-#: ../templates/selfService/adminMain.php:653
+#: ../templates/selfService/adminMain.php:658
 msgid "Input fields"
 msgstr "输入框"
 
@@ -5970,7 +5983,7 @@ msgstr "不符合附加属性规范的格式"
 msgid "Invalid password for IMAP admin or other problem occured."
 msgstr "非法的IMAP管理员密码或者发生了其它问题。"
 
-#: ../lib/modules/ldapPublicKey.inc:546 ../lib/modules/inetOrgPerson.inc:3354
+#: ../lib/modules/ldapPublicKey.inc:546 ../lib/modules/inetOrgPerson.inc:3359
 #: ../lib/modules/customFields.inc:1403
 msgid "Invalid request"
 msgstr "无效请求"
@@ -6027,9 +6040,9 @@ msgstr "任务后缀"
 #: ../lib/modules/inetOrgPerson.inc:229 ../lib/modules/inetOrgPerson.inc:340
 #: ../lib/modules/inetOrgPerson.inc:604 ../lib/modules/inetOrgPerson.inc:650
 #: ../lib/modules/inetOrgPerson.inc:654 ../lib/modules/inetOrgPerson.inc:1471
-#: ../lib/modules/inetOrgPerson.inc:1474 ../lib/modules/inetOrgPerson.inc:1924
-#: ../lib/modules/inetOrgPerson.inc:2750 ../lib/modules/inetOrgPerson.inc:3608
-#: ../lib/modules/inetOrgPerson.inc:3654
+#: ../lib/modules/inetOrgPerson.inc:1474 ../lib/modules/inetOrgPerson.inc:1926
+#: ../lib/modules/inetOrgPerson.inc:2755 ../lib/modules/inetOrgPerson.inc:3625
+#: ../lib/modules/inetOrgPerson.inc:3671
 msgid "Job title"
 msgstr "头衔"
 
@@ -6041,7 +6054,7 @@ msgstr "用户头衔:如总裁,部门经理..."
 msgid "Jump 10 pages backward"
 msgstr "向后跳转10页"
 
-#: ../lib/lists.inc:317
+#: ../lib/lists.inc:322
 msgid "Jump 10 pages forward"
 msgstr "向前跳转10页"
 
@@ -6062,7 +6075,7 @@ msgstr "选择一个对象类"
 msgid "Jump to first page"
 msgstr "跳转到首页"
 
-#: ../lib/lists.inc:322
+#: ../lib/lists.inc:327
 msgid "Jump to last page"
 msgstr "跳转到末页"
 
@@ -6174,7 +6187,7 @@ msgstr ""
 "LAM将自动提供UID/GID数字.  也可以指定一个固定的范围或在LDAP中指定目标类 "
 "\"sambaUnixIdPool\"."
 
-#: ../help/help.inc:219
+#: ../help/help.inc:221
 msgid "LAM will search for accounts in this part of the LDAP tree."
 msgstr "LAM将在这部分LDAP树搜索帐号."
 
@@ -6188,7 +6201,7 @@ msgstr ""
 "LAM将基于姓名建议一个用户名.您可以指定这个建议值, %sn%被姓来替换  @givenname@"
 "被名字的第一个字符来替换.仅一些Person 的tab属性可能被使用。"
 
-#: ../help/help.inc:221
+#: ../help/help.inc:223
 msgid ""
 "LAM will use this LDAP DN and password to search for accounts. It is "
 "sufficient to specify an account with read rights. If nothing is inserted "
@@ -6227,12 +6240,12 @@ msgstr "这个列表中的用户的LDAP条目"
 msgid "LDAP entries that moderate this list (e.g. approve mails)."
 msgstr "主持这个列表(比如批准邮件)的LDAP条目"
 
-#: ../templates/login.php:642 ../lib/account.inc:1204
+#: ../templates/login.php:642 ../lib/account.inc:1226
 msgid "LDAP error, server says:"
 msgstr "LDAP错误,服务器错误消息:"
 
-#: ../templates/multiEdit.php:115 ../templates/config/confmain.php:438
-#: ../help/help.inc:271
+#: ../templates/multiEdit.php:115 ../templates/config/confmain.php:440
+#: ../help/help.inc:273
 msgid "LDAP filter"
 msgstr "LDAP过滤条件"
 
@@ -6252,11 +6265,11 @@ msgstr ""
 "指定列表用户的LDAP过滤表达式(比如\"((objectclass=qmailUser)"
 "(employeeType=accountant))\")."
 
-#: ../lib/modules.inc:1336
+#: ../lib/modules.inc:1338
 msgid "LDAP operation successful."
 msgstr "LDAP操作成功."
 
-#: ../templates/selfService/adminMain.php:432
+#: ../templates/selfService/adminMain.php:437
 msgid "LDAP password"
 msgstr "LDAP 密码"
 
@@ -6264,15 +6277,15 @@ msgstr "LDAP 密码"
 msgid "LDAP said"
 msgstr "LDAP说"
 
-#: ../templates/config/confmain.php:415 ../help/help.inc:122
+#: ../templates/config/confmain.php:417 ../help/help.inc:122
 msgid "LDAP search"
 msgstr "LDAP搜索"
 
-#: ../templates/selfService/adminMain.php:427 ../help/help.inc:222
+#: ../templates/selfService/adminMain.php:429 ../help/help.inc:224
 msgid "LDAP search attribute"
 msgstr "LDAP搜索属性"
 
-#: ../lib/account.inc:796
+#: ../lib/account.inc:818
 msgid "LDAP search failed! Please check your preferences."
 msgstr "LDAP搜索失败，请检查配置。"
 
@@ -6284,15 +6297,15 @@ msgstr "LDAP搜索限制"
 msgid "LDAP server"
 msgstr "LDAP服务器"
 
-#: ../lib/account.inc:787
+#: ../lib/account.inc:809
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "超过LDAP限制的大小,无法显示所有条目."
 
-#: ../templates/multiEdit.php:82 ../templates/config/confmain.php:434
+#: ../templates/multiEdit.php:82 ../templates/config/confmain.php:436
 #: ../templates/config/conftypes.php:253
-#: ../templates/selfService/adminMain.php:421
+#: ../templates/selfService/adminMain.php:423
 #: ../templates/profedit/profilepage.php:202 ../help/help.inc:71
-#: ../help/help.inc:218 ../help/help.inc:269
+#: ../help/help.inc:220 ../help/help.inc:271
 msgid "LDAP suffix"
 msgstr "LDAP后缀"
 
@@ -6300,11 +6313,11 @@ msgstr "LDAP后缀"
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP上传中,请稍等..."
 
-#: ../templates/selfService/adminMain.php:429
+#: ../templates/selfService/adminMain.php:434
 msgid "LDAP user"
 msgstr "LDAP用户"
 
-#: ../help/help.inc:220
+#: ../help/help.inc:222
 msgid "LDAP user and password"
 msgstr "LDAP用户名和密码"
 
@@ -6345,7 +6358,7 @@ msgstr "lamdaemon 路径没有以 \".pl\"结尾,你需要输入这个脚本的�
 msgid "Lamdaemon server and path"
 msgstr "Lamdaemon 服务器和路径"
 
-#: ../templates/config/confmain.php:334
+#: ../templates/config/confmain.php:336
 msgid "Lamdaemon settings"
 msgstr "Lamdaemon设置"
 
@@ -6379,15 +6392,15 @@ msgid "Lamdaemon: read quotas"
 msgstr "Lamdaemon: 读取配额"
 
 #: ../templates/login.php:397
-#: ../templates/selfService/selfServiceLogin.php:344
+#: ../templates/selfService/selfServiceLogin.php:346
 msgid "Language"
 msgstr "语言"
 
-#: ../templates/config/confmain.php:570
+#: ../templates/config/confmain.php:578
 msgid "Language is not defined!"
 msgstr "尚未定义语言"
 
-#: ../templates/config/confmain.php:304
+#: ../templates/config/confmain.php:306
 msgid "Language settings"
 msgstr "语言设定"
 
@@ -6404,8 +6417,8 @@ msgstr "上次登录"
 #: ../lib/modules/inetOrgPerson.inc:159 ../lib/modules/inetOrgPerson.inc:315
 #: ../lib/modules/inetOrgPerson.inc:550 ../lib/modules/inetOrgPerson.inc:662
 #: ../lib/modules/inetOrgPerson.inc:1203 ../lib/modules/inetOrgPerson.inc:1206
-#: ../lib/modules/inetOrgPerson.inc:1926 ../lib/modules/inetOrgPerson.inc:2492
-#: ../lib/modules/inetOrgPerson.inc:3646
+#: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/inetOrgPerson.inc:2495
+#: ../lib/modules/inetOrgPerson.inc:3663
 msgid "Last name"
 msgstr "姓"
 
@@ -6474,7 +6487,7 @@ msgstr "行结尾"
 msgid "Link text"
 msgstr "链接文本"
 
-#: ../templates/selfService/adminMain.php:362
+#: ../templates/selfService/adminMain.php:364
 msgid "Link to self service login page for your users"
 msgstr "对用户自助服务登录界面的链接."
 
@@ -6506,7 +6519,7 @@ msgid ""
 "workstation."
 msgstr "允许用户登录的Samba工作站,留空表示所有工作站."
 
-#: ../templates/config/confmain.php:564
+#: ../templates/config/confmain.php:572
 msgid "List of admin users is empty or invalid!"
 msgstr "管理员清单为空或非法."
 
@@ -6523,7 +6536,7 @@ msgstr "不合法编码列表"
 msgid "List of entries to be deleted:"
 msgstr "将被删除的条目列表:"
 
-#: ../templates/config/confmain.php:430
+#: ../templates/config/confmain.php:432
 msgid "List of valid users"
 msgstr "合法用户列表"
 
@@ -6531,7 +6544,7 @@ msgstr "合法用户列表"
 msgid "Listeners"
 msgstr "监听"
 
-#: ../lib/modules.inc:1241 ../help/help.inc:198
+#: ../lib/modules.inc:1243 ../help/help.inc:200
 msgid "Load profile"
 msgstr "调入配置文件"
 
@@ -6598,9 +6611,9 @@ msgstr "本地成员"
 #: ../lib/modules/inetOrgPerson.inc:190 ../lib/modules/inetOrgPerson.inc:518
 #: ../lib/modules/inetOrgPerson.inc:565 ../lib/modules/inetOrgPerson.inc:794
 #: ../lib/modules/inetOrgPerson.inc:798 ../lib/modules/inetOrgPerson.inc:1277
-#: ../lib/modules/inetOrgPerson.inc:1280 ../lib/modules/inetOrgPerson.inc:1947
-#: ../lib/modules/inetOrgPerson.inc:2646 ../lib/modules/inetOrgPerson.inc:3584
-#: ../lib/modules/inetOrgPerson.inc:3648
+#: ../lib/modules/inetOrgPerson.inc:1280 ../lib/modules/inetOrgPerson.inc:1949
+#: ../lib/modules/inetOrgPerson.inc:2649 ../lib/modules/inetOrgPerson.inc:3601
+#: ../lib/modules/inetOrgPerson.inc:3665
 msgid "Location"
 msgstr "地点"
 
@@ -6684,22 +6697,22 @@ msgstr "日志"
 
 #: ../templates/login.php:433 ../templates/config/conflogin.php:62
 #: ../templates/config/mainlogin.php:72
-#: ../templates/selfService/selfServiceLogin.php:227
-#: ../templates/selfService/selfServiceLogin.php:366
+#: ../templates/selfService/selfServiceLogin.php:229
+#: ../templates/selfService/selfServiceLogin.php:368
 #: ../templates/selfService/adminLogin.php:64
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:530 ../help/help.inc:56
 msgid "Login"
 msgstr "登录"
 
-#: ../templates/selfService/adminMain.php:468 ../help/help.inc:224
+#: ../templates/selfService/adminMain.php:473 ../help/help.inc:226
 msgid "Login attribute label"
 msgstr "登录属性标签"
 
-#: ../templates/selfService/adminMain.php:477 ../help/help.inc:226
+#: ../templates/selfService/adminMain.php:482 ../help/help.inc:228
 msgid "Login caption"
 msgstr "登录标题"
 
-#: ../templates/config/confmain.php:417 ../help/help.inc:120
+#: ../templates/config/confmain.php:419 ../help/help.inc:120
 msgid "Login method"
 msgstr "登录方法"
 
@@ -6766,7 +6779,7 @@ msgid "Logon script is invalid!"
 msgstr "登录脚本非法!"
 
 #: ../templates/selfService/selfServiceMain.php:63
-#: ../templates/selfService/selfServiceMain.php:419
+#: ../templates/selfService/selfServiceMain.php:421
 #: ../templates/main_header.php:135
 msgid "Logout"
 msgstr "退出"
@@ -6822,11 +6835,11 @@ msgstr "邮箱域"
 msgid "Mail routing"
 msgstr "邮件路由"
 
-#: ../lib/modules/selfRegistration.inc:615
-#: ../lib/modules/selfRegistration.inc:635
-#: ../lib/modules/passwordSelfReset.inc:1546
-#: ../lib/modules/passwordSelfReset.inc:1561
-#: ../lib/modules/passwordSelfReset.inc:1594
+#: ../lib/modules/selfRegistration.inc:625
+#: ../lib/modules/selfRegistration.inc:645
+#: ../lib/modules/passwordSelfReset.inc:1548
+#: ../lib/modules/passwordSelfReset.inc:1563
+#: ../lib/modules/passwordSelfReset.inc:1596
 msgid "Mail sending failed."
 msgstr "邮件发送失败."
 
@@ -6847,7 +6860,7 @@ msgstr "邮件服务器"
 msgid "Mail servers (\"MX\" records)"
 msgstr "邮件服务 (\"MX\" 记录)"
 
-#: ../lib/account.inc:1031
+#: ../lib/account.inc:1053
 #, php-format
 msgid "Mail successfully sent to %s."
 msgstr "邮件已经成功发送到%s."
@@ -6916,7 +6929,7 @@ msgstr "邮件转发."
 msgid "Main"
 msgstr "主要设置"
 
-#: ../templates/selfService/adminMain.php:483 ../help/help.inc:228
+#: ../templates/selfService/adminMain.php:488 ../help/help.inc:230
 msgid "Main page caption"
 msgstr "主页标题"
 
@@ -6974,8 +6987,8 @@ msgstr "管理后缀"
 #: ../lib/modules/ipHost.inc:253 ../lib/modules/inetOrgPerson.inc:364
 #: ../lib/modules/inetOrgPerson.inc:619 ../lib/modules/inetOrgPerson.inc:670
 #: ../lib/modules/inetOrgPerson.inc:674 ../lib/modules/inetOrgPerson.inc:1561
-#: ../lib/modules/inetOrgPerson.inc:1927 ../lib/modules/inetOrgPerson.inc:3618
-#: ../lib/modules/inetOrgPerson.inc:3657
+#: ../lib/modules/inetOrgPerson.inc:1929 ../lib/modules/inetOrgPerson.inc:3635
+#: ../lib/modules/inetOrgPerson.inc:3674
 msgid "Manager"
 msgstr "管理员"
 
@@ -7101,7 +7114,7 @@ msgstr "最大失败次数"
 msgid "Maximum file size"
 msgstr "最大文件大小"
 
-#: ../lib/modules/inetOrgPerson.inc:3684
+#: ../lib/modules/inetOrgPerson.inc:3701
 msgid "Maximum file size (kB)"
 msgstr "最大文件大小(kB)"
 
@@ -7109,7 +7122,7 @@ msgstr "最大文件大小(kB)"
 msgid "Maximum file size must be a number. Please enter 0 for no limit."
 msgstr "文件大小的最大值必须是一个数字. 输入0表示无限制."
 
-#: ../lib/modules/inetOrgPerson.inc:3683
+#: ../lib/modules/inetOrgPerson.inc:3700
 msgid "Maximum height (px)"
 msgstr "最大高度(px)"
 
@@ -7130,7 +7143,7 @@ msgstr "最大释放时间"
 msgid "Maximum length"
 msgstr "最大长度"
 
-#: ../lib/lists.inc:1011 ../help/help.inc:97
+#: ../lib/lists.inc:1016 ../help/help.inc:97
 msgid "Maximum list entries"
 msgstr "最大列表条目"
 
@@ -7153,7 +7166,7 @@ msgstr "在中断一个通话之前的非活动秒数最大值"
 msgid "Maximum password age"
 msgstr "密码最长生命"
 
-#: ../lib/modules/inetOrgPerson.inc:3682
+#: ../lib/modules/inetOrgPerson.inc:3699
 msgid "Maximum width (px)"
 msgstr "最大宽度（px）"
 
@@ -7327,12 +7340,12 @@ msgstr "取消了增,删,改等修改命令"
 #: ../lib/modules/inetOrgPerson.inc:160 ../lib/modules/inetOrgPerson.inc:436
 #: ../lib/modules/inetOrgPerson.inc:589 ../lib/modules/inetOrgPerson.inc:718
 #: ../lib/modules/inetOrgPerson.inc:722 ../lib/modules/inetOrgPerson.inc:1423
-#: ../lib/modules/inetOrgPerson.inc:1426 ../lib/modules/inetOrgPerson.inc:1935
-#: ../lib/modules/inetOrgPerson.inc:3600 ../lib/modules/inetOrgPerson.inc:3652
+#: ../lib/modules/inetOrgPerson.inc:1426 ../lib/modules/inetOrgPerson.inc:1937
+#: ../lib/modules/inetOrgPerson.inc:3617 ../lib/modules/inetOrgPerson.inc:3669
 msgid "Mobile number"
 msgstr "手机号码"
 
-#: ../lib/modules/inetOrgPerson.inc:2547
+#: ../lib/modules/inetOrgPerson.inc:2550
 msgid "Mobile telephone number"
 msgstr "手机号码"
 
@@ -7407,7 +7420,7 @@ msgstr "修改中"
 #: ../templates/config/confmain.php:217
 #: ../templates/config/moduleSettings.php:175
 #: ../templates/config/conftypes.php:194
-#: ../templates/selfService/adminMain.php:403
+#: ../templates/selfService/adminMain.php:405
 msgid "Module settings"
 msgstr "模块设置"
 
@@ -7498,7 +7511,7 @@ msgstr "用逗号分隔多值."
 #: ../lib/modules/inetOrgPerson.inc:819 ../lib/modules/inetOrgPerson.inc:827
 #: ../lib/modules/inetOrgPerson.inc:843 ../lib/modules/inetOrgPerson.inc:851
 #: ../lib/modules/inetOrgPerson.inc:859 ../lib/modules/systemQuotas.inc:70
-#: ../lib/modules/freeRadius.inc:101 ../lib/modules/kolabSharedFolder.inc:126
+#: ../lib/modules/freeRadius.inc:105 ../lib/modules/kolabSharedFolder.inc:126
 #: ../lib/modules/kolabSharedFolder.inc:135 ../lib/modules/qmailGroup.inc:128
 #: ../lib/modules/qmailGroup.inc:136 ../lib/modules/qmailGroup.inc:149
 #: ../lib/modules/qmailGroup.inc:161 ../lib/modules/qmailGroup.inc:169
@@ -7669,7 +7682,7 @@ msgstr "域名服务器"
 msgid "Name servers (\"NS\" records)"
 msgstr "DNS服务器 (\"NS\" 记录)"
 
-#: ../help/help.inc:189
+#: ../help/help.inc:191
 msgid ""
 "Name under which the profile will be saved. If a profile with the same name "
 "exists, it will be overwritten."
@@ -7681,10 +7694,10 @@ msgstr "已命名对象"
 
 #: ../lib/modules/dhcp_settings.inc:193 ../lib/modules/dhcp_settings.inc:216
 #: ../lib/modules/dhcp_settings.inc:610 ../lib/modules/dhcp_settings.inc:686
-#: ../lib/modules/freeRadius.inc:88 ../lib/modules/freeRadius.inc:124
-#: ../lib/modules/freeRadius.inc:138 ../lib/modules/freeRadius.inc:201
-#: ../lib/modules/freeRadius.inc:228 ../lib/modules/freeRadius.inc:285
-#: ../lib/modules/freeRadius.inc:538
+#: ../lib/modules/freeRadius.inc:92 ../lib/modules/freeRadius.inc:134
+#: ../lib/modules/freeRadius.inc:214 ../lib/modules/freeRadius.inc:258
+#: ../lib/modules/freeRadius.inc:308 ../lib/modules/freeRadius.inc:367
+#: ../lib/modules/freeRadius.inc:695
 msgid "Net mask"
 msgstr "子网掩码"
 
@@ -7792,11 +7805,11 @@ msgstr "新管理员密码设置成功."
 msgid "New object"
 msgstr "新对象"
 
-#: ../templates/ou_edit.php:185 ../help/help.inc:263
+#: ../templates/ou_edit.php:185 ../help/help.inc:265
 msgid "New organisational unit"
 msgstr "新组织单元"
 
-#: ../templates/config/confmain.php:451
+#: ../templates/config/confmain.php:453
 #: ../lib/modules/sambaSamAccount.inc:2272
 #: ../lib/modules/posixAccount.inc:2536 ../lib/modules/windowsUser.inc:1719
 #: ../lib/modules/passwordSelfReset.inc:1059
@@ -7859,7 +7872,7 @@ msgstr "新sudo角色"
 msgid "New user"
 msgstr "新用户"
 
-#: ../lib/modules/inetOrgPerson.inc:1859
+#: ../lib/modules/inetOrgPerson.inc:1861
 msgid "New user certificate"
 msgstr "新用户认证"
 
@@ -7924,12 +7937,13 @@ msgstr "昵称"
 #: ../templates/schema/schema.php:200 ../templates/schema/schema.php:205
 #: ../templates/pdfedit/pdfpage.php:460 ../lib/modules/pykotaPrinter.inc:52
 #: ../lib/modules/pykotaPrinter.inc:168 ../lib/modules/pykotaPrinter.inc:169
-#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/qmailGroup.inc:321
-#: ../lib/modules/qmailGroup.inc:322 ../lib/modules/qmailGroup.inc:323
-#: ../lib/modules/qmailGroup.inc:363 ../lib/modules/qmailGroup.inc:364
-#: ../lib/modules/qmailGroup.inc:365 ../lib/modules/qmailGroup.inc:1030
-#: ../lib/modules/qmailGroup.inc:1071 ../lib/modules/qmailGroup.inc:1077
-#: ../lib/modules/imapAccess.inc:121
+#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/freeRadius.inc:161
+#: ../lib/modules/freeRadius.inc:414 ../lib/modules/freeRadius.inc:706
+#: ../lib/modules/qmailGroup.inc:321 ../lib/modules/qmailGroup.inc:322
+#: ../lib/modules/qmailGroup.inc:323 ../lib/modules/qmailGroup.inc:363
+#: ../lib/modules/qmailGroup.inc:364 ../lib/modules/qmailGroup.inc:365
+#: ../lib/modules/qmailGroup.inc:1030 ../lib/modules/qmailGroup.inc:1071
+#: ../lib/modules/qmailGroup.inc:1077 ../lib/modules/imapAccess.inc:121
 msgid "No"
 msgstr "否"
 
@@ -8013,7 +8027,7 @@ msgstr "没有描述"
 msgid "No domains found!"
 msgstr "没有发现域!"
 
-#: ../lib/modules/passwordSelfReset.inc:1546
+#: ../lib/modules/passwordSelfReset.inc:1548
 msgid "No email address found."
 msgstr "没有发现邮件地址. "
 
@@ -8022,7 +8036,7 @@ msgstr "没有发现邮件地址. "
 msgid "No entry was selected to delete"
 msgstr "没有选中要删除的条目"
 
-#: ../lib/modules/ldapPublicKey.inc:483 ../lib/modules/inetOrgPerson.inc:3288
+#: ../lib/modules/ldapPublicKey.inc:483 ../lib/modules/inetOrgPerson.inc:3293
 #: ../lib/modules/customFields.inc:3642
 msgid "No file received."
 msgstr "没有收到文件."
@@ -8094,7 +8108,7 @@ msgstr "没有新条目"
 msgid "No objects found!"
 msgstr "未发现对象!"
 
-#: ../templates/config/confmodules.php:406
+#: ../templates/config/confmodules.php:423
 msgid "No or more than one base module selected!"
 msgstr "未选择基本模块或选择多于一个!"
 
@@ -8300,7 +8314,7 @@ msgstr "OU无效!"
 msgid "OU is not empty or invalid!"
 msgstr "OU不为空或非法!"
 
-#: ../help/help.inc:263 ../help/help.inc:265
+#: ../help/help.inc:265 ../help/help.inc:267
 msgid "OU-Editor"
 msgstr "OU编辑器"
 
@@ -8334,9 +8348,9 @@ msgstr "关闭"
 #: ../lib/modules/inetOrgPerson.inc:202 ../lib/modules/inetOrgPerson.inc:542
 #: ../lib/modules/inetOrgPerson.inc:577 ../lib/modules/inetOrgPerson.inc:814
 #: ../lib/modules/inetOrgPerson.inc:818 ../lib/modules/inetOrgPerson.inc:1383
-#: ../lib/modules/inetOrgPerson.inc:1386 ../lib/modules/inetOrgPerson.inc:1945
-#: ../lib/modules/inetOrgPerson.inc:2679 ../lib/modules/inetOrgPerson.inc:3592
-#: ../lib/modules/inetOrgPerson.inc:3650
+#: ../lib/modules/inetOrgPerson.inc:1386 ../lib/modules/inetOrgPerson.inc:1947
+#: ../lib/modules/inetOrgPerson.inc:2682 ../lib/modules/inetOrgPerson.inc:3609
+#: ../lib/modules/inetOrgPerson.inc:3667
 msgid "Office name"
 msgstr "办公室名"
 
@@ -8358,8 +8372,8 @@ msgstr "办公室名"
 #: ../templates/selfService/profManage.php:227
 #: ../templates/selfService/profManage.php:240
 #: ../templates/selfService/adminLogin.php:165
-#: ../templates/selfService/adminMain.php:594
-#: ../templates/selfService/adminMain.php:647
+#: ../templates/selfService/adminMain.php:599
+#: ../templates/selfService/adminMain.php:652
 #: ../templates/pdfedit/pdfmain.php:210 ../templates/pdfedit/pdfmain.php:217
 #: ../templates/pdfedit/pdfmain.php:223
 #: ../templates/profedit/profilemain.php:199
@@ -8374,13 +8388,13 @@ msgstr "办公室名"
 #: ../lib/modules/nisnetgroup.inc:479 ../lib/modules/nisnetgroup.inc:489
 #: ../lib/modules/asteriskExtension.inc:484 ../lib/modules/aliasEntry.inc:146
 #: ../lib/modules/aliasEntry.inc:166 ../lib/modules/qmailGroup.inc:862
-#: ../lib/modules/imapAccess.inc:295 ../lib/modules/organizationalRole.inc:337
+#: ../lib/modules/imapAccess.inc:296 ../lib/modules/organizationalRole.inc:337
 #: ../lib/modules/passwordSelfReset.inc:872
 #: ../lib/modules/passwordSelfReset.inc:1094
 #: ../lib/modules/windowsGroup.inc:603 ../lib/modules/groupOfNames.inc:394
 #: ../lib/modules/groupOfNames.inc:549 ../lib/modules/nisMailAlias.inc:375
-#: ../lib/modules/nisMailAlias.inc:384 ../lib/lists.inc:710
-#: ../lib/lists.inc:792 ../lib/modules.inc:1229
+#: ../lib/modules/nisMailAlias.inc:384 ../lib/lists.inc:715
+#: ../lib/lists.inc:797 ../lib/modules.inc:1231
 msgid "Ok"
 msgstr "确定"
 
@@ -8427,7 +8441,7 @@ msgstr "操作统计"
 msgid "Operation successful. DN <b>%s</b> has been created."
 msgstr "操作成功. DN  <b>%s</b> 已经建立"
 
-#: ../templates/multiEdit.php:117 ../help/help.inc:273
+#: ../templates/multiEdit.php:117 ../help/help.inc:275
 msgid "Operations"
 msgstr "操作者"
 
@@ -8499,8 +8513,8 @@ msgstr "排序"
 #: ../lib/modules/inetOrgPerson.inc:226 ../lib/modules/inetOrgPerson.inc:510
 #: ../lib/modules/inetOrgPerson.inc:622 ../lib/modules/inetOrgPerson.inc:846
 #: ../lib/modules/inetOrgPerson.inc:850 ../lib/modules/inetOrgPerson.inc:1532
-#: ../lib/modules/inetOrgPerson.inc:1535 ../lib/modules/inetOrgPerson.inc:1950
-#: ../lib/modules/inetOrgPerson.inc:3622 ../lib/modules/inetOrgPerson.inc:3658
+#: ../lib/modules/inetOrgPerson.inc:1535 ../lib/modules/inetOrgPerson.inc:1952
+#: ../lib/modules/inetOrgPerson.inc:3639 ../lib/modules/inetOrgPerson.inc:3675
 msgid "Organisation"
 msgstr "组织"
 
@@ -8508,8 +8522,8 @@ msgstr "组织"
 #: ../lib/modules/inetOrgPerson.inc:502 ../lib/modules/inetOrgPerson.inc:625
 #: ../lib/modules/inetOrgPerson.inc:838 ../lib/modules/inetOrgPerson.inc:842
 #: ../lib/modules/inetOrgPerson.inc:1523 ../lib/modules/inetOrgPerson.inc:1526
-#: ../lib/modules/inetOrgPerson.inc:1949 ../lib/modules/inetOrgPerson.inc:2811
-#: ../lib/modules/inetOrgPerson.inc:3620 ../lib/modules/inetOrgPerson.inc:3658
+#: ../lib/modules/inetOrgPerson.inc:1951 ../lib/modules/inetOrgPerson.inc:2816
+#: ../lib/modules/inetOrgPerson.inc:3637 ../lib/modules/inetOrgPerson.inc:3675
 msgid "Organisational unit"
 msgstr "组织单元"
 
@@ -8523,7 +8537,7 @@ msgstr "组织单元"
 msgid "Organisational units contains an invalid entry."
 msgstr "组织单元中有一个非法条目"
 
-#: ../templates/multiEdit.php:98 ../templates/config/confmain.php:328
+#: ../templates/multiEdit.php:98 ../templates/config/confmain.php:330
 msgid "Other"
 msgstr "其它"
 
@@ -8571,7 +8585,7 @@ msgstr "覆盖物"
 msgid "Override default quota settings."
 msgstr "覆盖缺少的限制设置"
 
-#: ../templates/config/confmain.php:320 ../lib/types/asteriskExt.inc:96
+#: ../templates/config/confmain.php:322 ../lib/types/asteriskExt.inc:96
 #: ../lib/types/asteriskExt.inc:158
 msgid "Owner"
 msgstr "拥有者"
@@ -8606,7 +8620,7 @@ msgid "PDF editor"
 msgstr "PDF编辑器"
 
 #: ../templates/masscreate.php:275 ../templates/pdfedit/pdfmain.php:310
-#: ../lib/lists.inc:688 ../help/help.inc:204
+#: ../lib/lists.inc:693 ../help/help.inc:206
 msgid "PDF structure"
 msgstr "PDF架构"
 
@@ -8675,20 +8689,24 @@ msgstr ""
 msgid "Page count"
 msgstr "页数总和"
 
-#: ../templates/selfService/adminMain.php:489 ../help/help.inc:234
+#: ../templates/selfService/adminMain.php:494 ../help/help.inc:236
 msgid "Page header"
 msgstr "页首"
 
-#: ../templates/selfService/adminMain.php:402
+#: ../templates/selfService/adminMain.php:404
 msgid "Page layout"
 msgstr "页布局"
+
+#: ../templates/config/confmain.php:276 ../help/help.inc:184
+msgid "Paged results"
+msgstr "分页结果"
 
 #: ../lib/modules/inetOrgPerson.inc:78 ../lib/modules/inetOrgPerson.inc:163
 #: ../lib/modules/inetOrgPerson.inc:452 ../lib/modules/inetOrgPerson.inc:595
 #: ../lib/modules/inetOrgPerson.inc:734 ../lib/modules/inetOrgPerson.inc:738
 #: ../lib/modules/inetOrgPerson.inc:1439 ../lib/modules/inetOrgPerson.inc:1442
-#: ../lib/modules/inetOrgPerson.inc:1936 ../lib/modules/inetOrgPerson.inc:2569
-#: ../lib/modules/inetOrgPerson.inc:3604 ../lib/modules/inetOrgPerson.inc:3653
+#: ../lib/modules/inetOrgPerson.inc:1938 ../lib/modules/inetOrgPerson.inc:2572
+#: ../lib/modules/inetOrgPerson.inc:3621 ../lib/modules/inetOrgPerson.inc:3670
 #: ../lib/modules/asteriskVoicemail.inc:111
 #: ../lib/modules/asteriskVoicemail.inc:141
 #: ../lib/modules/asteriskVoicemail.inc:184
@@ -8730,14 +8748,14 @@ msgid "Passthrough"
 msgstr "Passthrough"
 
 #: ../templates/lists/changePassword.php:365 ../templates/login.php:379
-#: ../templates/selfService/selfServiceLogin.php:323
-#: ../lib/selfService.inc:393 ../lib/modules/mitKerberos.inc:156
+#: ../templates/selfService/selfServiceLogin.php:325
+#: ../lib/selfService.inc:395 ../lib/modules/mitKerberos.inc:156
 #: ../lib/modules/mitKerberos.inc:242 ../lib/modules/mitKerberos.inc:257
 #: ../lib/modules/mitKerberos.inc:795 ../lib/modules/mitKerberos.inc:798
 #: ../lib/modules/selfRegistration.inc:407
-#: ../lib/modules/selfRegistration.inc:533
-#: ../lib/modules/selfRegistration.inc:536
-#: ../lib/modules/selfRegistration.inc:539
+#: ../lib/modules/selfRegistration.inc:543
+#: ../lib/modules/selfRegistration.inc:546
+#: ../lib/modules/selfRegistration.inc:549
 #: ../lib/modules/asteriskAccount.inc:115
 #: ../lib/modules/asteriskAccount.inc:325 ../lib/modules/posixGroup.inc:205
 #: ../lib/modules/posixGroup.inc:593 ../lib/modules/sambaSamAccount.inc:105
@@ -8753,15 +8771,15 @@ msgstr "Passthrough"
 #: ../lib/modules/windowsUser.inc:615 ../lib/modules/windowsUser.inc:616
 #: ../lib/modules/windowsUser.inc:1646 ../lib/modules/windowsUser.inc:1649
 #: ../lib/modules/inetOrgPerson.inc:862 ../lib/modules/inetOrgPerson.inc:1589
-#: ../lib/modules/inetOrgPerson.inc:2086 ../lib/modules/inetOrgPerson.inc:3660
+#: ../lib/modules/inetOrgPerson.inc:2088 ../lib/modules/inetOrgPerson.inc:3677
 #: ../lib/modules/asteriskVoicemail.inc:99
 #: ../lib/modules/asteriskVoicemail.inc:165
 #: ../lib/modules/customFields.inc:2444 ../lib/modules/heimdalKerberos.inc:124
 #: ../lib/modules/heimdalKerberos.inc:211
 #: ../lib/modules/heimdalKerberos.inc:223
 #: ../lib/modules/heimdalKerberos.inc:695
-#: ../lib/modules/heimdalKerberos.inc:698 ../lib/modules.inc:1043
-#: ../help/help.inc:202
+#: ../lib/modules/heimdalKerberos.inc:698 ../lib/modules.inc:1045
+#: ../help/help.inc:204
 msgid "Password"
 msgstr "密码"
 
@@ -8803,7 +8821,7 @@ msgstr "密码修改服务"
 msgid "Password check"
 msgstr "密码检查"
 
-#: ../lib/modules/mitKerberos.inc:297 ../lib/modules/selfRegistration.inc:536
+#: ../lib/modules/mitKerberos.inc:297 ../lib/modules/selfRegistration.inc:546
 #: ../lib/modules/posixGroup.inc:593 ../lib/modules/sambaSamAccount.inc:106
 #: ../lib/modules/sambaSamAccount.inc:107 ../lib/modules/posixAccount.inc:110
 #: ../lib/modules/posixAccount.inc:111 ../lib/modules/windowsUser.inc:616
@@ -8832,7 +8850,7 @@ msgstr "密码超期"
 msgid "Password expiration must be are natural number or -1."
 msgstr "密码超期必须是自然数或-1."
 
-#: ../templates/selfService/adminMain.php:473 ../help/help.inc:238
+#: ../templates/selfService/adminMain.php:478 ../help/help.inc:240
 msgid "Password field label"
 msgstr "密码文本框标签"
 
@@ -8843,7 +8861,7 @@ msgstr "语音邮箱的密码."
 #: ../lib/modules/posixGroup.inc:504 ../lib/modules/posixGroup.inc:557
 #: ../lib/modules/posixAccount.inc:191 ../lib/modules/posixAccount.inc:247
 #: ../lib/modules/posixAccount.inc:457 ../lib/modules/inetOrgPerson.inc:834
-#: ../lib/modules/inetOrgPerson.inc:3567 ../lib/modules/customFields.inc:136
+#: ../lib/modules/inetOrgPerson.inc:3584 ../lib/modules/customFields.inc:136
 #: ../lib/modules/customFields.inc:2458
 msgid "Password hash type"
 msgstr "密码哈希类型"
@@ -8856,7 +8874,7 @@ msgstr "密码哈希类型"
 msgid "Password history length"
 msgstr "历史密码长度"
 
-#: ../templates/config/confmain.php:367
+#: ../templates/config/confmain.php:369
 msgid "Password mail settings"
 msgstr "密码邮件设置"
 
@@ -8929,7 +8947,7 @@ msgstr "密码重置提示"
 msgid "Password self reset"
 msgstr "密码复位"
 
-#: ../lib/modules/passwordSelfReset.inc:1607
+#: ../lib/modules/passwordSelfReset.inc:1609
 msgid "Password successfully reset."
 msgstr "密码被成功复位."
 
@@ -8944,9 +8962,9 @@ msgstr "密码提醒日期"
 msgid "Password warning must be are natural number."
 msgstr "密码提醒日期必须是自然数."
 
-#: ../templates/config/confmain.php:610
+#: ../templates/config/confmain.php:618
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:61
-#: ../lib/modules/passwordSelfReset.inc:1174 ../lib/modules.inc:1133
+#: ../lib/modules/passwordSelfReset.inc:1174 ../lib/modules.inc:1135
 msgid "Passwords are different!"
 msgstr "密码不同!"
 
@@ -8982,7 +9000,7 @@ msgstr ""
 msgid "Path separator"
 msgstr "路径分隔符"
 
-#: ../templates/config/confmain.php:311
+#: ../templates/config/confmain.php:313
 msgid "Path to external script"
 msgstr "外部脚本路径"
 
@@ -9041,22 +9059,22 @@ msgstr "允许"
 msgid "Personal"
 msgstr "个人信息"
 
-#: ../lib/selfService.inc:389
+#: ../lib/selfService.inc:391
 msgid "Personal data"
 msgstr "个人数据"
 
 #: ../lib/types/user.inc:102 ../lib/types/user.inc:620
-#: ../lib/modules/inetOrgPerson.inc:162 ../lib/modules/inetOrgPerson.inc:2708
-#: ../lib/modules/inetOrgPerson.inc:2715 ../lib/modules/inetOrgPerson.inc:3632
-#: ../lib/modules/inetOrgPerson.inc:3660 ../lib/modules/inetOrgPerson.inc:3679
+#: ../lib/modules/inetOrgPerson.inc:162 ../lib/modules/inetOrgPerson.inc:2713
+#: ../lib/modules/inetOrgPerson.inc:2720 ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:3677 ../lib/modules/inetOrgPerson.inc:3696
 msgid "Photo"
 msgstr "照片"
 
-#: ../lib/modules/inetOrgPerson.inc:1697
+#: ../lib/modules/inetOrgPerson.inc:1699
 msgid "Photo file"
 msgstr "照片文件"
 
-#: ../lib/modules/inetOrgPerson.inc:1695
+#: ../lib/modules/inetOrgPerson.inc:1697
 msgid "Photo file (JPG format)"
 msgstr "照片文件(JPG格式)"
 
@@ -9262,7 +9280,7 @@ msgstr "请失败记录间隔输入一个数值。"
 msgid "Please enter a numeric value for the grace authentication limit."
 msgstr "请为缓期认证限制次数提供一个数值"
 
-#: ../lib/modules/freeRadius.inc:259 ../lib/modules/freeRadius.inc:260
+#: ../lib/modules/freeRadius.inc:339 ../lib/modules/freeRadius.inc:340
 msgid "Please enter a numeric value for the idle timeout."
 msgstr "请为空闲超时长输入一个数值。"
 
@@ -9335,11 +9353,11 @@ msgid ""
 "and -."
 msgstr "请输入合法的LDAP属性名,只能使用 a-z,0-9,_和-."
 
-#: ../templates/selfService/adminMain.php:221
+#: ../templates/selfService/adminMain.php:223
 msgid "Please enter a valid LDAP suffix."
 msgstr "请输入有效的LDAP后缀."
 
-#: ../templates/selfService/adminMain.php:225
+#: ../templates/selfService/adminMain.php:227
 msgid ""
 "Please enter a valid LDAP user if you want to use it for all operations."
 msgstr "请为所有的操作输入一个合法的LDAP帐号."
@@ -9352,7 +9370,7 @@ msgstr "请输入有效的用户状态."
 msgid "Please enter a valid admin email address."
 msgstr "请输入有效的管理员邮件地址!"
 
-#: ../templates/config/confmain.php:554
+#: ../templates/config/confmain.php:562
 msgid "Please enter a valid bind user."
 msgstr "请输入有效的绑定账号."
 
@@ -9420,7 +9438,7 @@ msgstr "请输入有效的盘符."
 #: ../lib/modules/passwordSelfReset.inc:900
 #: ../lib/modules/passwordSelfReset.inc:1122
 #: ../lib/modules/windowsGroup.inc:285 ../lib/modules/windowsGroup.inc:286
-#: ../lib/modules.inc:1178
+#: ../lib/modules.inc:1180
 msgid "Please enter a valid email address!"
 msgstr "请输入有效的邮件地址!"
 
@@ -9503,7 +9521,7 @@ msgstr "请输入有效的限制类型."
 msgid "Please enter a valid list of affiliations."
 msgstr "请输入有效的联系列表."
 
-#: ../lib/modules/freeRadius.inc:255 ../lib/modules/freeRadius.inc:256
+#: ../lib/modules/freeRadius.inc:335 ../lib/modules/freeRadius.inc:336
 msgid "Please enter a valid list of group names."
 msgstr "请输入有效的组列表名."
 
@@ -9563,7 +9581,7 @@ msgstr "请输入有效的邮政编码!"
 msgid "Please enter a valid primary affiliation."
 msgstr "请输入有效的主要联系."
 
-#: ../lib/modules/freeRadius.inc:253 ../lib/modules/freeRadius.inc:254
+#: ../lib/modules/freeRadius.inc:333 ../lib/modules/freeRadius.inc:334
 msgid "Please enter a valid realm."
 msgstr "请输入有效的域."
 
@@ -9746,7 +9764,7 @@ msgstr "请输入PyKota保存任务的LDAP后缀. (配置选项 \"jobbase\")."
 msgid "Please enter the account context."
 msgstr "请输入账号的语境. "
 
-#: ../lib/modules.inc:928
+#: ../lib/modules.inc:930
 msgid "Please enter the account information on the other pages first."
 msgstr "请先在另一个页面输入帐号信息."
 
@@ -9876,7 +9894,7 @@ msgstr "请输入管理DN的密码.请注意密码将在自助服务配置中以
 msgid "Please enter the password which you want to set for this account."
 msgstr "请输入这个帐号的密码."
 
-#: ../help/help.inc:203
+#: ../help/help.inc:205
 msgid ""
 "Please enter the password which you want to set for this account. You may "
 "also generate a random password (12 characters) which will be displayed on "
@@ -9938,7 +9956,7 @@ msgstr ""
 "\"%s\">看这里</a>."
 
 #: ../templates/lists/changePassword.php:526
-#: ../lib/modules/selfRegistration.inc:533
+#: ../lib/modules/selfRegistration.inc:543
 #: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:109
 #: ../lib/modules/windowsUser.inc:615 ../lib/modules/customFields.inc:2533
 msgid "Please enter the same password in both password fields."
@@ -9990,7 +10008,7 @@ msgid ""
 "represent one account for each row."
 msgstr "请提供帐号数据CSV格式文件.第一行必须为栏目标识,以下每行表示一个帐号."
 
-#: ../lib/config.inc:1810
+#: ../lib/config.inc:1832
 msgid "Please provide a file in DER or PEM format."
 msgstr "请提供 DER 或 PEM 格式的文件。"
 
@@ -10007,7 +10025,7 @@ msgstr "请选择图像文件上传,必须是JPG格式(.jpg/.jpeg)."
 msgid "Please select the field type (e.g. text field)."
 msgstr "请输入域的类型(比如:文本框). "
 
-#: ../help/help.inc:270
+#: ../help/help.inc:272
 msgid "Please select the suffix where changes should be done."
 msgstr "请选择修改的后缀"
 
@@ -10021,7 +10039,7 @@ msgstr "请选择日志等级,在此等级以下的日志不会被记录."
 msgid "Please set the voicemail password with \"Set password\" before saving."
 msgstr "在保存前请设置语音邮件的密码."
 
-#: ../lib/modules.inc:877
+#: ../lib/modules.inc:879
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "请在页面%s上输入必须的属性."
@@ -10056,7 +10074,7 @@ msgid ""
 "descriptive label that is displayed to the user."
 msgstr "请指定这个域的可能的值.每个值有一个显示给用户的描述标签."
 
-#: ../help/help.inc:274
+#: ../help/help.inc:276
 msgid ""
 "Please specify which attributes should be changed. The modify operation will "
 "also add an value if the attribute does not yet exist. To delete all values "
@@ -10130,18 +10148,18 @@ msgstr "可能的通配符是: \"*\" = 任意字符, \"^\" = 行的开头, \"$\"
 #: ../lib/modules/inetOrgPerson.inc:184 ../lib/modules/inetOrgPerson.inc:412
 #: ../lib/modules/inetOrgPerson.inc:559 ../lib/modules/inetOrgPerson.inc:686
 #: ../lib/modules/inetOrgPerson.inc:690 ../lib/modules/inetOrgPerson.inc:1259
-#: ../lib/modules/inetOrgPerson.inc:1262 ../lib/modules/inetOrgPerson.inc:1929
-#: ../lib/modules/inetOrgPerson.inc:2624 ../lib/modules/inetOrgPerson.inc:3580
-#: ../lib/modules/inetOrgPerson.inc:3647
+#: ../lib/modules/inetOrgPerson.inc:1262 ../lib/modules/inetOrgPerson.inc:1931
+#: ../lib/modules/inetOrgPerson.inc:2627 ../lib/modules/inetOrgPerson.inc:3597
+#: ../lib/modules/inetOrgPerson.inc:3664
 msgid "Post office box"
 msgstr "邮政信箱"
 
 #: ../lib/modules/inetOrgPerson.inc:85 ../lib/modules/inetOrgPerson.inc:161
 #: ../lib/modules/inetOrgPerson.inc:196 ../lib/modules/inetOrgPerson.inc:396
 #: ../lib/modules/inetOrgPerson.inc:571 ../lib/modules/inetOrgPerson.inc:702
-#: ../lib/modules/inetOrgPerson.inc:1303 ../lib/modules/inetOrgPerson.inc:1931
-#: ../lib/modules/inetOrgPerson.inc:2591 ../lib/modules/inetOrgPerson.inc:3588
-#: ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:1303 ../lib/modules/inetOrgPerson.inc:1933
+#: ../lib/modules/inetOrgPerson.inc:2594 ../lib/modules/inetOrgPerson.inc:3605
+#: ../lib/modules/inetOrgPerson.inc:3666
 msgid "Postal address"
 msgstr "邮政地址"
 
@@ -10157,9 +10175,9 @@ msgstr "邮政地址,城市"
 #: ../lib/modules/inetOrgPerson.inc:187 ../lib/modules/inetOrgPerson.inc:388
 #: ../lib/modules/inetOrgPerson.inc:562 ../lib/modules/inetOrgPerson.inc:694
 #: ../lib/modules/inetOrgPerson.inc:698 ../lib/modules/inetOrgPerson.inc:1268
-#: ../lib/modules/inetOrgPerson.inc:1271 ../lib/modules/inetOrgPerson.inc:1930
-#: ../lib/modules/inetOrgPerson.inc:2613 ../lib/modules/inetOrgPerson.inc:3582
-#: ../lib/modules/inetOrgPerson.inc:3647
+#: ../lib/modules/inetOrgPerson.inc:1271 ../lib/modules/inetOrgPerson.inc:1932
+#: ../lib/modules/inetOrgPerson.inc:2616 ../lib/modules/inetOrgPerson.inc:3599
+#: ../lib/modules/inetOrgPerson.inc:3664
 msgid "Postal code"
 msgstr "邮政编码"
 
@@ -10312,6 +10330,17 @@ msgstr "优先级"
 msgid "Proceed"
 msgstr "处理完毕"
 
+#: ../lib/modules/freeRadius.inc:124 ../lib/modules/freeRadius.inc:172
+#: ../lib/modules/freeRadius.inc:247 ../lib/modules/freeRadius.inc:276
+#: ../lib/modules/freeRadius.inc:318 ../lib/modules/freeRadius.inc:400
+#: ../lib/modules/freeRadius.inc:699
+msgid "Profile"
+msgstr "配置"
+
+#: ../lib/modules/freeRadius.inc:120 ../lib/modules/freeRadius.inc:297
+msgid "Profile DN"
+msgstr "配置DN"
+
 #: ../templates/config/profmanage.php:112
 #: ../templates/selfService/profManage.php:85
 msgid "Profile deleted."
@@ -10341,7 +10370,7 @@ msgstr "配置文件管理"
 #: ../templates/selfService/profManage.php:233
 #: ../templates/profedit/profilepage.php:186
 #: ../templates/profedit/profilemain.php:277
-#: ../templates/profedit/profilemain.php:321 ../help/help.inc:188
+#: ../templates/profedit/profilemain.php:321 ../help/help.inc:190
 msgid "Profile name"
 msgstr "配置文件名"
 
@@ -10506,7 +10535,7 @@ msgstr "硬限额."
 msgid "Quota has wrong format!"
 msgstr "磁盘配额格式错误!"
 
-#: ../lib/modules/imapAccess.inc:319 ../lib/modules/imapAccess.inc:328
+#: ../lib/modules/imapAccess.inc:320 ../lib/modules/imapAccess.inc:329
 msgid "Quota limit (kB)"
 msgstr "限额(kB)."
 
@@ -10540,8 +10569,8 @@ msgstr "限制告警点."
 
 #: ../templates/masscreate.php:334 ../templates/profedit/profilepage.php:213
 #: ../lib/modules/selfRegistration.inc:98
-#: ../lib/modules/selfRegistration.inc:210 ../lib/modules.inc:1004
-#: ../help/help.inc:186
+#: ../lib/modules/selfRegistration.inc:210 ../lib/modules.inc:1006
+#: ../help/help.inc:188
 msgid "RDN identifier"
 msgstr "RDN标志"
 
@@ -10581,6 +10610,10 @@ msgstr "RTP超时"
 msgid "Radio buttons"
 msgstr "单选按钮"
 
+#: ../lib/modules/freeRadius.inc:125
+msgid "Radius profile for this user."
+msgstr "该用户的Radius配置"
+
 #: ../lib/modules/range.inc:97 ../lib/modules/range.inc:514
 #: ../lib/modules/range.inc:574
 msgid "Range from"
@@ -10596,7 +10629,7 @@ msgstr "范围到"
 msgid "Ranges"
 msgstr "范围"
 
-#: ../templates/config/confmain.php:317
+#: ../templates/config/confmain.php:319
 msgid "Read"
 msgstr "读"
 
@@ -10606,7 +10639,7 @@ msgstr "读"
 msgid "Read-only"
 msgstr "只读"
 
-#: ../lib/modules/inetOrgPerson.inc:3643
+#: ../lib/modules/inetOrgPerson.inc:3660
 msgid "Read-only fields"
 msgstr "只读域"
 
@@ -10621,10 +10654,10 @@ msgid "Really delete value from this attribute?"
 msgstr "确定删除这些属性的值?"
 
 #: ../lib/modules/mitKerberos.inc:120 ../lib/modules/mitKerberos.inc:152
-#: ../lib/modules/mitKerberos.inc:194 ../lib/modules/freeRadius.inc:92
-#: ../lib/modules/freeRadius.inc:126 ../lib/modules/freeRadius.inc:146
-#: ../lib/modules/freeRadius.inc:177 ../lib/modules/freeRadius.inc:231
-#: ../lib/modules/freeRadius.inc:273 ../lib/modules/freeRadius.inc:539
+#: ../lib/modules/mitKerberos.inc:194 ../lib/modules/freeRadius.inc:96
+#: ../lib/modules/freeRadius.inc:142 ../lib/modules/freeRadius.inc:190
+#: ../lib/modules/freeRadius.inc:261 ../lib/modules/freeRadius.inc:310
+#: ../lib/modules/freeRadius.inc:355 ../lib/modules/freeRadius.inc:696
 #: ../lib/modules/heimdalKerberos.inc:98
 #: ../lib/modules/heimdalKerberos.inc:157
 #: ../lib/modules/heimdalKerberos.inc:163
@@ -10675,7 +10708,7 @@ msgstr "此对象的所有子集递归拷贝完毕"
 
 #: ../templates/config/profmanage.php:247
 #: ../templates/config/profmanage.php:286
-#: ../templates/config/mainmanage.php:459 ../templates/config/confmain.php:453
+#: ../templates/config/mainmanage.php:459 ../templates/config/confmain.php:455
 #: ../lib/modules/selfRegistration.inc:415
 #: ../lib/modules/sambaSamAccount.inc:2275
 #: ../lib/modules/posixAccount.inc:2539 ../lib/modules/windowsUser.inc:1722
@@ -10691,7 +10724,7 @@ msgstr "转交"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1054
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1055
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:249
-#: ../lib/modules/asteriskExtension.inc:454 ../lib/lists.inc:788
+#: ../lib/modules/asteriskExtension.inc:454 ../lib/lists.inc:793
 msgid "Refresh"
 msgstr "刷新"
 
@@ -10717,9 +10750,9 @@ msgstr "注册新帐号"
 #: ../lib/modules/inetOrgPerson.inc:87 ../lib/modules/inetOrgPerson.inc:161
 #: ../lib/modules/inetOrgPerson.inc:199 ../lib/modules/inetOrgPerson.inc:404
 #: ../lib/modules/inetOrgPerson.inc:574 ../lib/modules/inetOrgPerson.inc:706
-#: ../lib/modules/inetOrgPerson.inc:1347 ../lib/modules/inetOrgPerson.inc:1932
-#: ../lib/modules/inetOrgPerson.inc:2602 ../lib/modules/inetOrgPerson.inc:3590
-#: ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:1347 ../lib/modules/inetOrgPerson.inc:1934
+#: ../lib/modules/inetOrgPerson.inc:2605 ../lib/modules/inetOrgPerson.inc:3607
+#: ../lib/modules/inetOrgPerson.inc:3666
 msgid "Registered address"
 msgstr "注册地址"
 
@@ -10766,11 +10799,10 @@ msgstr "重新载入"
 msgid "Remember user name"
 msgstr "记住用户的名字"
 
-#: ../templates/config/confmodules.php:310
 #: ../templates/pdfedit/pdfpage.php:477 ../lib/modules/mitKerberos.inc:688
 #: ../lib/modules/qmailUser.inc:919 ../lib/modules/windowsHost.inc:158
 #: ../lib/modules/sambaSamAccount.inc:1484 ../lib/modules/kolabUser.inc:871
-#: ../lib/modules/shadowAccount.inc:476 ../lib/modules/freeRadius.inc:429
+#: ../lib/modules/shadowAccount.inc:476 ../lib/modules/freeRadius.inc:564
 #: ../lib/modules/sudoRole.inc:318 ../lib/modules/sudoRole.inc:345
 #: ../lib/modules/sudoRole.inc:372 ../lib/modules/sudoRole.inc:399
 #: ../lib/modules/sudoRole.inc:426 ../lib/modules/sudoRole.inc:453
@@ -10790,7 +10822,7 @@ msgstr "删除授权服务扩展"
 msgid "Remove EDU person extension"
 msgstr "删除EDU用户扩展"
 
-#: ../lib/modules/freeRadius.inc:307
+#: ../lib/modules/freeRadius.inc:421
 msgid "Remove FreeRadius extension"
 msgstr "删除FreeRadius扩展"
 
@@ -10860,7 +10892,7 @@ msgstr "删除Qmail扩展"
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:147
 #: ../lib/modules/zarafaContact.inc:418 ../lib/modules/zarafaGroup.inc:478
 #: ../lib/modules/device.inc:281 ../lib/modules/zarafaUser.inc:902
-#: ../lib/modules/inetOrgPerson.inc:1770 ../lib/modules/qmailGroup.inc:850
+#: ../lib/modules/inetOrgPerson.inc:1772 ../lib/modules/qmailGroup.inc:850
 #: ../lib/modules/organizationalRole.inc:383
 #: ../lib/modules/windowsGroup.inc:584 ../lib/modules/groupOfNames.inc:440
 #: ../lib/modules/groupOfNames.inc:595
@@ -10876,7 +10908,7 @@ msgstr "删除这个帐号类型"
 msgid "Remove user from alias entry."
 msgstr "从别名条目删除用户。"
 
-#: ../lib/modules/inetOrgPerson.inc:2704
+#: ../lib/modules/inetOrgPerson.inc:2709
 msgid "Remove/replace photo"
 msgstr "删除/更改照片"
 
@@ -10942,7 +10974,7 @@ msgid "Renewable lifetime must be a number."
 msgstr "可重建寿命必须是数字!"
 
 #: ../templates/lists/changePassword.php:368
-#: ../lib/modules/passwordSelfReset.inc:1067 ../lib/modules.inc:1048
+#: ../lib/modules/passwordSelfReset.inc:1067 ../lib/modules.inc:1050
 msgid "Repeat password"
 msgstr "确认密码"
 
@@ -10950,11 +10982,11 @@ msgstr "确认密码"
 msgid "Replaced $user or $group in homedir."
 msgstr "在homedir中已更改$user和$group. "
 
-#: ../templates/config/confmain.php:346 ../help/help.inc:257
+#: ../templates/config/confmain.php:348 ../help/help.inc:259
 msgid "Reply-to address"
 msgstr "回复地址"
 
-#: ../templates/config/confmain.php:523
+#: ../templates/config/confmain.php:531
 msgid "Reply-to address for password mails is invalid."
 msgstr "密码邮件的回复地址非法"
 
@@ -10995,7 +11027,7 @@ msgstr "需要预认证"
 msgid "Reset"
 msgstr "复位"
 
-#: ../lib/modules.inc:1220
+#: ../lib/modules.inc:1222
 msgid "Reset changes"
 msgstr "复位设定"
 
@@ -11060,7 +11092,7 @@ msgstr "反DNS条目Reverse DNS entries (\"PTR\" 记录)"
 msgid "Reverse zone name"
 msgstr "反向区域名"
 
-#: ../templates/config/confmain.php:313 ../help/help.inc:118
+#: ../templates/config/confmain.php:315 ../help/help.inc:118
 msgid "Rights for the home directory"
 msgstr "个人目录的权限"
 
@@ -11102,9 +11134,9 @@ msgstr "房间"
 #: ../lib/modules/inetOrgPerson.inc:163 ../lib/modules/inetOrgPerson.inc:205
 #: ../lib/modules/inetOrgPerson.inc:486 ../lib/modules/inetOrgPerson.inc:580
 #: ../lib/modules/inetOrgPerson.inc:782 ../lib/modules/inetOrgPerson.inc:1391
-#: ../lib/modules/inetOrgPerson.inc:1394 ../lib/modules/inetOrgPerson.inc:1940
-#: ../lib/modules/inetOrgPerson.inc:2635 ../lib/modules/inetOrgPerson.inc:3594
-#: ../lib/modules/inetOrgPerson.inc:3650
+#: ../lib/modules/inetOrgPerson.inc:1394 ../lib/modules/inetOrgPerson.inc:1942
+#: ../lib/modules/inetOrgPerson.inc:2638 ../lib/modules/inetOrgPerson.inc:3611
+#: ../lib/modules/inetOrgPerson.inc:3667
 msgid "Room number"
 msgstr "房间号"
 
@@ -11315,17 +11347,17 @@ msgid "Saturday"
 msgstr "星期六"
 
 #: ../templates/config/confmodules.php:224
-#: ../templates/config/confmain.php:468
+#: ../templates/config/confmain.php:470
 #: ../templates/config/moduleSettings.php:238
 #: ../templates/config/conftypes.php:359
-#: ../templates/selfService/selfServiceMain.php:416
-#: ../templates/selfService/adminMain.php:713
+#: ../templates/selfService/selfServiceMain.php:418
+#: ../templates/selfService/adminMain.php:718
 #: ../templates/pdfedit/pdfpage.php:636
 #: ../templates/profedit/profilepage.php:238
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1243
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1247
-#: ../lib/modules/inetOrgPerson.inc:2859 ../lib/modules/customFields.inc:3456
-#: ../lib/modules.inc:1214
+#: ../lib/modules/inetOrgPerson.inc:2864 ../lib/modules/customFields.inc:3456
+#: ../lib/modules.inc:1216
 msgid "Save"
 msgstr "保存"
 
@@ -11370,15 +11402,15 @@ msgstr "作用域关系"
 msgid "Script path"
 msgstr "脚本路径"
 
-#: ../templates/config/confmain.php:573
+#: ../templates/config/confmain.php:581
 msgid "Script path is invalid!"
 msgstr "脚本路径非法!"
 
-#: ../templates/config/confmain.php:592
+#: ../templates/config/confmain.php:600
 msgid "Script rights are invalid!"
 msgstr "脚本权限非法!"
 
-#: ../templates/config/confmain.php:576
+#: ../templates/config/confmain.php:584
 msgid "Script server is invalid!"
 msgstr "脚本服务器非法!"
 
@@ -11454,7 +11486,7 @@ msgstr "安全组用于权限管理,分发组用于email用户列表."
 msgid "Security questions"
 msgstr "安全提问"
 
-#: ../templates/config/mainmanage.php:295 ../templates/config/confmain.php:458
+#: ../templates/config/mainmanage.php:295 ../templates/config/confmain.php:460
 msgid "Security settings"
 msgstr "安全设定"
 
@@ -11462,7 +11494,7 @@ msgstr "安全设定"
 msgid "See also"
 msgstr "同时参考"
 
-#: ../lib/account.inc:790
+#: ../lib/account.inc:812
 msgid "See the manual for instructions to solve this problem."
 msgstr "参考手册来解决本问题."
 
@@ -11474,7 +11506,7 @@ msgstr "为新建处理选择模板"
 msgid "Select a template to edit the entry"
 msgstr "为编辑这个条目选择模板"
 
-#: ../lib/lists.inc:354 ../lib/lists.inc:471
+#: ../lib/lists.inc:359 ../lib/lists.inc:476
 msgid "Select all"
 msgstr "全选"
 
@@ -11509,7 +11541,7 @@ msgstr "选择用户"
 msgid "Selected groups"
 msgstr "已选择的组"
 
-#: ../templates/masscreate.php:159 ../templates/config/confmodules.php:299
+#: ../templates/masscreate.php:159 ../templates/config/confmodules.php:294
 msgid "Selected modules"
 msgstr "已选择的模块"
 
@@ -11521,15 +11553,15 @@ msgstr "已选中的角色"
 msgid "Selected users"
 msgstr "已选择的用户"
 
-#: ../templates/selfService/adminMain.php:304
+#: ../templates/selfService/adminMain.php:306
 msgid "Self service configuration"
 msgstr "自助服务配置"
 
-#: ../templates/selfService/adminMain.php:357
+#: ../templates/selfService/adminMain.php:359
 msgid "Self service configuration editor"
 msgstr "自助服务配置编辑器"
 
-#: ../templates/selfService/adminMain.php:363
+#: ../templates/selfService/adminMain.php:365
 msgid "Self service login"
 msgstr "自助服务登录"
 
@@ -11537,7 +11569,7 @@ msgstr "自助服务登录"
 msgid "Self service login attribute"
 msgstr "自助服务登录属性"
 
-#: ../templates/selfService/adminMain.php:349
+#: ../templates/selfService/adminMain.php:351
 msgid "Self service profile"
 msgstr "自助服务配置"
 
@@ -11556,8 +11588,8 @@ msgid "Send password via mail"
 msgstr "通过邮件发送密码"
 
 #: ../templates/lists/changePassword.php:328
-#: ../templates/lists/changePassword.php:373 ../lib/modules.inc:1066
-#: ../help/help.inc:208
+#: ../templates/lists/changePassword.php:373 ../lib/modules.inc:1068
+#: ../help/help.inc:210
 msgid "Send via mail"
 msgstr "通过邮件发送"
 
@@ -11592,7 +11624,7 @@ msgid ""
 "change."
 msgstr "在密码修改前,给用户发一封邮件来确认邮件地址."
 
-#: ../lib/modules/inetOrgPerson.inc:752 ../help/help.inc:209
+#: ../lib/modules/inetOrgPerson.inc:752 ../help/help.inc:211
 msgid ""
 "Sends the password to the user via mail. Please edit your LAM server profile "
 "to setup the mail settings."
@@ -11621,7 +11653,7 @@ msgid "Server"
 msgstr "服务器"
 
 #: ../templates/config/confmain.php:238
-#: ../templates/selfService/adminMain.php:414 ../lib/modules/qmailUser.inc:118
+#: ../templates/selfService/adminMain.php:416 ../lib/modules/qmailUser.inc:118
 #: ../lib/modules/qmailUser.inc:163 ../lib/modules/qmailUser.inc:243
 #: ../lib/modules/qmailUser.inc:358 ../lib/modules/qmailUser.inc:427
 #: ../lib/modules/qmailUser.inc:592 ../lib/modules/qmailUser.inc:1148
@@ -11630,8 +11662,8 @@ msgstr "服务器"
 msgid "Server address"
 msgstr "服务器地址"
 
-#: ../templates/config/confmain.php:501
-#: ../templates/selfService/adminMain.php:217
+#: ../templates/config/confmain.php:503
+#: ../templates/selfService/adminMain.php:219
 msgid "Server address is invalid!"
 msgstr "服务器地址非法!"
 
@@ -11639,7 +11671,7 @@ msgstr "服务器地址非法!"
 msgid "Server information"
 msgstr "服务器信息"
 
-#: ../templates/config/confmain.php:310
+#: ../templates/config/confmain.php:312
 msgid "Server list"
 msgstr "服务器列表"
 
@@ -11650,8 +11682,8 @@ msgstr "服务器列表"
 msgid "Server profile"
 msgstr "服务器设置文件"
 
-#: ../templates/config/confmain.php:280
-#: ../templates/selfService/adminMain.php:459
+#: ../templates/config/confmain.php:283
+#: ../templates/selfService/adminMain.php:464
 msgid "Server settings"
 msgstr "服务器设置"
 
@@ -11701,7 +11733,7 @@ msgstr "同时也为Samba 3设置"
 msgid "Set also for Shadow"
 msgstr "同时也为Shadow设置"
 
-#: ../lib/modules.inc:1227 ../lib/modules.inc:1229
+#: ../lib/modules.inc:1229 ../lib/modules.inc:1231
 msgid "Set password"
 msgstr "设置密码"
 
@@ -11715,7 +11747,7 @@ msgstr "为主组设置memberUid"
 msgid "Set profile password"
 msgstr "设置文件密码"
 
-#: ../lib/modules.inc:1230
+#: ../lib/modules.inc:1232
 msgid "Set random password"
 msgstr "设置随机密码"
 
@@ -11727,7 +11759,7 @@ msgstr "设置特定的密码"
 msgid "Set the search results to 0 to retrieve all available records."
 msgstr "设置搜索条件为0,来获取所有的记录"
 
-#: ../templates/selfService/adminMain.php:561
+#: ../templates/selfService/adminMain.php:566
 msgid "Set this field read-only."
 msgstr "将此域设为只读。"
 
@@ -11829,7 +11861,7 @@ msgstr "显示内部属性"
 msgid "Show only Asterisk accounts"
 msgstr "只显示 Asterisk 帐号"
 
-#: ../lib/types/group.inc:424
+#: ../lib/types/group.inc:427
 msgid "Show primary group members as normal group members"
 msgstr "主组用户显示为普通组用户"
 
@@ -11889,7 +11921,7 @@ msgstr ""
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "下面被选中的属性(%s)已经被修改."
 
-#: ../lib/modules.inc:876
+#: ../lib/modules.inc:878
 msgid "Some required information is missing"
 msgstr "缺少一些必要的信息"
 
@@ -11932,13 +11964,13 @@ msgid ""
 msgstr ""
 "指定LAM是否自动追随引荐的LDAP服务器.如果在LDAP目录中使用了引荐功能请打开此项."
 
-#: ../help/help.inc:260
+#: ../help/help.inc:262
 msgid ""
 "Specifies if password mails may be sent to mail addresses other than the "
 "user's LDAP mail address."
 msgstr "指定密码邮件是否发送到邮箱地址而不是用户LDAP中的邮箱地址."
 
-#: ../help/help.inc:256
+#: ../help/help.inc:258
 msgid "Specifies if the mail should be sent as text or HTML."
 msgstr "指定发送邮件用文本方式还是HTML方式"
 
@@ -11955,6 +11987,10 @@ msgstr "指定密码不允许包含用户姓名"
 #: ../lib/modules/asteriskAccount.inc:224
 msgid "Specifies if the user can call forward."
 msgstr "指定用户是否可以呼叫转移"
+
+#: ../lib/modules/freeRadius.inc:117
+msgid "Specifies if the user may authenticate with FreeRadius."
+msgstr "指定用户是否可以通过FreeRadius认证."
 
 #: ../lib/modules/zarafaGroup.inc:82
 msgid "Specifies if this group has security possibilities."
@@ -12014,7 +12050,7 @@ msgid ""
 "that expiration warning messages will be returned to a user."
 msgstr "在密码过期前，对用户提示密码过期警告的最长时间（秒数）。"
 
-#: ../lib/modules/freeRadius.inc:109
+#: ../lib/modules/freeRadius.inc:113
 msgid ""
 "Specifies the maximum number of seconds that a connection can be idle before "
 "the session is terminated."
@@ -12135,9 +12171,9 @@ msgstr "开始时间"
 #: ../lib/modules/inetOrgPerson.inc:193 ../lib/modules/inetOrgPerson.inc:526
 #: ../lib/modules/inetOrgPerson.inc:568 ../lib/modules/inetOrgPerson.inc:802
 #: ../lib/modules/inetOrgPerson.inc:806 ../lib/modules/inetOrgPerson.inc:1286
-#: ../lib/modules/inetOrgPerson.inc:1289 ../lib/modules/inetOrgPerson.inc:1944
-#: ../lib/modules/inetOrgPerson.inc:2657 ../lib/modules/inetOrgPerson.inc:3586
-#: ../lib/modules/inetOrgPerson.inc:3648
+#: ../lib/modules/inetOrgPerson.inc:1289 ../lib/modules/inetOrgPerson.inc:1946
+#: ../lib/modules/inetOrgPerson.inc:2660 ../lib/modules/inetOrgPerson.inc:3603
+#: ../lib/modules/inetOrgPerson.inc:3665
 msgid "State"
 msgstr "地点"
 
@@ -12157,7 +12193,7 @@ msgstr "Steve"
 
 #: ../lib/modules/sambaSamAccount.inc:422 ../lib/modules/posixAccount.inc:350
 #: ../lib/modules/windowsUser.inc:292 ../lib/modules/windowsUser.inc:298
-#: ../lib/modules/pykotaUser.inc:201 ../lib/modules/inetOrgPerson.inc:2071
+#: ../lib/modules/pykotaUser.inc:201 ../lib/modules/inetOrgPerson.inc:2073
 #: ../lib/modules/asteriskVoicemail.inc:174
 msgid "Steve Miller"
 msgstr "Steve Miller"
@@ -12184,8 +12220,8 @@ msgstr "可以将密码存放在服务器配置文件中,但不推荐这么做."
 #: ../lib/modules/inetOrgPerson.inc:380 ../lib/modules/inetOrgPerson.inc:556
 #: ../lib/modules/inetOrgPerson.inc:678 ../lib/modules/inetOrgPerson.inc:682
 #: ../lib/modules/inetOrgPerson.inc:1250 ../lib/modules/inetOrgPerson.inc:1253
-#: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/inetOrgPerson.inc:2580
-#: ../lib/modules/inetOrgPerson.inc:3578 ../lib/modules/inetOrgPerson.inc:3645
+#: ../lib/modules/inetOrgPerson.inc:1930 ../lib/modules/inetOrgPerson.inc:2583
+#: ../lib/modules/inetOrgPerson.inc:3595 ../lib/modules/inetOrgPerson.inc:3662
 msgid "Street"
 msgstr "街道"
 
@@ -12205,11 +12241,11 @@ msgstr "Sub (条目的子树)"
 msgid "Subgroups"
 msgstr "分组"
 
-#: ../templates/config/confmain.php:349 ../lib/modules/selfRegistration.inc:94
+#: ../templates/config/confmain.php:351 ../lib/modules/selfRegistration.inc:94
 #: ../lib/modules/selfRegistration.inc:231
 #: ../lib/modules/passwordSelfReset.inc:120
 #: ../lib/modules/passwordSelfReset.inc:539
-#: ../lib/modules/passwordSelfReset.inc:559 ../help/help.inc:248
+#: ../lib/modules/passwordSelfReset.inc:559 ../help/help.inc:250
 msgid "Subject"
 msgstr "标题"
 
@@ -12264,7 +12300,7 @@ msgid "Sudo roles with higher order numbers are used if multiple roles match."
 msgstr "如果多角色匹配，就使用更高排序的Sudo角色"
 
 #: ../lib/modules/nisMailAliasUser.inc:92
-#: ../lib/modules/nisMailAliasUser.inc:362 ../lib/modules.inc:988
+#: ../lib/modules/nisMailAliasUser.inc:362 ../lib/modules.inc:990
 msgid "Suffix"
 msgstr "后缀"
 
@@ -12286,7 +12322,7 @@ msgstr "新用户的后缀"
 msgid "Sunday"
 msgstr "星期日"
 
-#: ../templates/selfService/adminMain.php:570
+#: ../templates/selfService/adminMain.php:575
 msgid "Switch back to default label."
 msgstr "换回到缺省值."
 
@@ -12377,7 +12413,7 @@ msgstr "邀请策略的目标非法 !"
 msgid "Target server profile"
 msgstr "目标服务器设置"
 
-#: ../templates/help.php:89 ../lib/modules.inc:660
+#: ../templates/help.php:89 ../lib/modules.inc:662
 msgid "Technical name"
 msgstr "技术名字"
 
@@ -12390,9 +12426,9 @@ msgstr "技术名字"
 #: ../lib/modules/inetOrgPerson.inc:208 ../lib/modules/inetOrgPerson.inc:420
 #: ../lib/modules/inetOrgPerson.inc:583 ../lib/modules/inetOrgPerson.inc:710
 #: ../lib/modules/inetOrgPerson.inc:714 ../lib/modules/inetOrgPerson.inc:1407
-#: ../lib/modules/inetOrgPerson.inc:1410 ../lib/modules/inetOrgPerson.inc:1933
-#: ../lib/modules/inetOrgPerson.inc:2525 ../lib/modules/inetOrgPerson.inc:3596
-#: ../lib/modules/inetOrgPerson.inc:3651
+#: ../lib/modules/inetOrgPerson.inc:1410 ../lib/modules/inetOrgPerson.inc:1935
+#: ../lib/modules/inetOrgPerson.inc:2528 ../lib/modules/inetOrgPerson.inc:3613
+#: ../lib/modules/inetOrgPerson.inc:3668
 msgid "Telephone number"
 msgstr "电话号码"
 
@@ -12423,14 +12459,14 @@ msgstr "终端服务选项"
 msgid "Tests"
 msgstr "测试"
 
-#: ../templates/config/confmain.php:364 ../lib/modules/selfRegistration.inc:69
+#: ../templates/config/confmain.php:366 ../lib/modules/selfRegistration.inc:69
 #: ../lib/modules/selfRegistration.inc:238 ../lib/modules/bindDLZ.inc:163
 #: ../lib/modules/bindDLZ.inc:167 ../lib/modules/bindDLZ.inc:377
 #: ../lib/modules/bindDLZ.inc:1245 ../lib/modules/bindDLZ.inc:1579
 #: ../lib/modules/passwordSelfReset.inc:124
 #: ../lib/modules/passwordSelfReset.inc:134
 #: ../lib/modules/passwordSelfReset.inc:543
-#: ../lib/modules/passwordSelfReset.inc:563 ../help/help.inc:250
+#: ../lib/modules/passwordSelfReset.inc:563 ../help/help.inc:252
 msgid "Text"
 msgstr "文本"
 
@@ -12506,7 +12542,7 @@ msgstr "IP地址已被使用: "
 #: ../lib/modules/asteriskAccount.inc:575 ../lib/modules/ppolicyUser.inc:96
 #: ../lib/modules/range.inc:505 ../lib/modules/range.inc:522
 #: ../lib/modules/range.inc:582 ../lib/modules/range.inc:599
-#: ../lib/modules/freeRadius.inc:249 ../lib/modules/freeRadius.inc:250
+#: ../lib/modules/freeRadius.inc:329 ../lib/modules/freeRadius.inc:330
 #: ../lib/modules/fixed_ip.inc:493
 msgid "The IP address is invalid."
 msgstr "IP地址非法 !"
@@ -12560,7 +12596,7 @@ msgstr "PC机的机器名只能包含 A-Z, a-z 和 0-9."
 msgid "The PC name needs to be at least 2 characters long."
 msgstr "PC机器名的长度最短需要两个字符."
 
-#: ../help/help.inc:205
+#: ../help/help.inc:207
 msgid ""
 "The PDF structure defines what information is exported as PDF file and how "
 "the pages are structured. You can manage the PDF structures in the PDF "
@@ -12571,11 +12607,11 @@ msgstr ""
 
 #: ../templates/3rdParty/pla/htdocs/create.php:44
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:38
-#: ../lib/modules/selfRegistration.inc:571
+#: ../lib/modules/selfRegistration.inc:581
 msgid "The RDN field is empty."
 msgstr "RDN域是空的."
 
-#: ../lib/modules/freeRadius.inc:93
+#: ../lib/modules/freeRadius.inc:97
 msgid "The Radius realm of this account."
 msgstr "此帐号的Radius域"
 
@@ -12583,8 +12619,8 @@ msgstr "此帐号的Radius域"
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "您的Samba服务器的SID,可以通过使用\"net getlocalsid\"命令获取."
 
-#: ../templates/selfService/selfServiceLogin.php:141
-#: ../templates/selfService/selfServiceMain.php:168
+#: ../templates/selfService/selfServiceLogin.php:143
+#: ../templates/selfService/selfServiceMain.php:170
 msgid "The TLS encryption could not be started."
 msgstr "TLS加密失败."
 
@@ -12617,11 +12653,11 @@ msgstr "帐号的语境存储有关拨号模板的信息"
 msgid "The account type is invalid."
 msgstr "账号类型非法."
 
-#: ../lib/modules/freeRadius.inc:105
+#: ../lib/modules/freeRadius.inc:109
 msgid "The account will be locked after this date."
 msgstr "帐号将在这一天之后锁定."
 
-#: ../help/help.inc:191
+#: ../help/help.inc:193
 msgid "The account will be saved under this LDAP suffix."
 msgstr "帐号将会保存在此后缀下."
 
@@ -12669,7 +12705,7 @@ msgid "The class names may only contain ASCII characters."
 msgstr "类名仅包含ASCII字符."
 
 #: ../templates/config/confmain.php:176
-#: ../templates/selfService/adminMain.php:372
+#: ../templates/selfService/adminMain.php:374
 msgid "The config file is not writable."
 msgstr "配置文件不可写."
 
@@ -12743,7 +12779,7 @@ msgstr "环境名仅包含ASCII字符."
 msgid "The expiration date is invalid."
 msgstr "过期日期非法."
 
-#: ../lib/modules/freeRadius.inc:257 ../lib/modules/freeRadius.inc:258
+#: ../lib/modules/freeRadius.inc:337 ../lib/modules/freeRadius.inc:338
 msgid "The expiration date must be in format DD.MM.YYYY HH:MM."
 msgstr "过期日期的格式为 DD.MM.YYYY HH:MM."
 
@@ -12837,7 +12873,7 @@ msgstr "缓期认证限量指定了密码过期后还能认证的次数。"
 msgid "The group is managed by this contact person."
 msgstr "本组的管理者是这位联系人."
 
-#: ../lib/modules/freeRadius.inc:97 ../lib/modules/freeRadius.inc:101
+#: ../lib/modules/freeRadius.inc:101 ../lib/modules/freeRadius.inc:105
 msgid "The group names for this account."
 msgstr "此帐号的组名"
 
@@ -12952,7 +12988,7 @@ msgid ""
 "The mail text for confirmation mails must include the wildcard @@resetLink@@."
 msgstr "确认信的文本必须包含通配符 @@resetLink@@."
 
-#: ../help/help.inc:251
+#: ../help/help.inc:253
 msgid "The mail text of all password mails."
 msgstr "密码邮寄时的邮件文本"
 
@@ -12999,7 +13035,7 @@ msgstr "此打印机每项任务最大的用纸页数, 0意味着不限制."
 msgid "The minimum time \"%s\" must be a number."
 msgstr "最短时间 \"%s\"  必须是数字!"
 
-#: ../lib/modules.inc:927
+#: ../lib/modules.inc:929
 #, php-format
 msgid "The module %s is not yet ready."
 msgstr "%s模块未启动."
@@ -13049,7 +13085,7 @@ msgstr "DNS服务器 \"%s\"非法."
 msgid "The name server for this zone."
 msgstr "此域的域名服务器"
 
-#: ../lib/modules/freeRadius.inc:89
+#: ../lib/modules/freeRadius.inc:93
 msgid "The net mask for the IP address."
 msgstr "IP地址的网络掩码."
 
@@ -13059,11 +13095,11 @@ msgid ""
 "automatically."
 msgstr "网络掩码与子网掩码密切相关,LAM将会计算得出."
 
-#: ../lib/modules/freeRadius.inc:251 ../lib/modules/freeRadius.inc:252
+#: ../lib/modules/freeRadius.inc:331 ../lib/modules/freeRadius.inc:332
 msgid "The net mask is invalid."
 msgstr "子网掩码非法."
 
-#: ../lib/modules.inc:1185
+#: ../lib/modules.inc:1187
 msgid ""
 "The new password will be stored in the directory after you save this account."
 msgstr "保存帐号后新密码同时保存到目录服务器."
@@ -13095,7 +13131,7 @@ msgstr "在你的LDAP服务器中对象类%s不被支持。"
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "用户的办公室名(比如:某某公司,人力资源部)"
 
-#: ../templates/selfService/selfServiceMain.php:331 ../lib/modules.inc:1811
+#: ../templates/selfService/selfServiceMain.php:333 ../lib/modules.inc:1813
 msgid "The operation was stopped because of the above errors."
 msgstr "由于发生了以上错误，操作中止."
 
@@ -13200,7 +13236,7 @@ msgid ""
 "is stored in the LAM server profile."
 msgstr "IMAP管理员用户的密码.IMAP管理员用户登录名保存在LAM服务器的配置中."
 
-#: ../templates/lists/changePassword.php:609 ../lib/modules.inc:1128
+#: ../templates/lists/changePassword.php:609 ../lib/modules.inc:1130
 msgid "The password was set to:"
 msgstr "密码被设置为:"
 
@@ -13303,7 +13339,7 @@ msgstr "在web服务器中运行的与用户语境相关的脚本(比如:apache/
 #: ../lib/modules/zarafaGroup.inc:109 ../lib/modules/sambaSamAccount.inc:401
 #: ../lib/modules/posixAccount.inc:442 ../lib/modules/zarafaUser.inc:133
 #: ../lib/modules/windowsUser.inc:237 ../lib/modules/inetOrgPerson.inc:831
-#: ../lib/modules/freeRadius.inc:113 ../lib/modules/zarafaServer.inc:89
+#: ../lib/modules/freeRadius.inc:129 ../lib/modules/zarafaServer.inc:89
 #: ../lib/modules/qmailGroup.inc:120 ../lib/modules/organizationalRole.inc:82
 #: ../lib/modules/passwordSelfReset.inc:161
 #: ../lib/modules/windowsGroup.inc:111 ../lib/modules/groupOfNames.inc:82
@@ -13349,7 +13385,7 @@ msgstr "静态文本至少包含一个字符."
 msgid "The street name of the user's address."
 msgstr "用户地址的街道名"
 
-#: ../help/help.inc:249
+#: ../help/help.inc:251
 msgid "The subject of all password mails."
 msgstr "密码邮件的主题."
 
@@ -13536,7 +13572,7 @@ msgstr "没有被标记为RDN的属性"
 msgid "The wildcard for the account creation link is @@creationLink@@."
 msgstr "账号建立连接的通配符 @@resetLink@@."
 
-#: ../lib/modules/passwordSelfReset.inc:127 ../help/help.inc:254
+#: ../lib/modules/passwordSelfReset.inc:127 ../help/help.inc:256
 msgid "The wildcard for the new password is @@newPassword@@."
 msgstr "新密码的通配符为@@newPassword@@."
 
@@ -13565,7 +13601,7 @@ msgstr "已经有其他的帐号使用这个拨号ID."
 msgid "There is already another user with this mailbox name."
 msgstr "已经有其他的帐号使用这个邮箱名."
 
-#: ../templates/massDoUpload.php:258
+#: ../templates/massDoUpload.php:259
 msgid "There were errors while uploading:"
 msgstr "上传时发生错误."
 
@@ -13641,7 +13677,7 @@ msgid ""
 "This GID number is invalid! Please provide either a number or a group name."
 msgstr "GID号非法!请提供新号或组名."
 
-#: ../help/help.inc:235
+#: ../help/help.inc:237
 msgid ""
 "This HTML code will be placed on top of all self service pages. E.g. you can "
 "use this to place your custom logo. Any HTML code is permitted."
@@ -13763,12 +13799,12 @@ msgstr "描述用户所在地点."
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "本文件由本系统自动产生."
 
-#: ../help/help.inc:258
+#: ../help/help.inc:260
 msgid ""
 "This email address will be set as reply-to address of all password mails."
 msgstr "这个邮件地址会被设定为密码邮件的发件人地址."
 
-#: ../help/help.inc:247
+#: ../help/help.inc:249
 msgid ""
 "This email address will be set as sender address of all password mails. If "
 "empty the system default (php.ini) will be used."
@@ -13802,7 +13838,7 @@ msgid "This entry is the root of a sub-tree containing %s entries."
 msgstr "本条目是一个包含%s 子条目的子树的根."
 
 #: ../templates/lib/141_jquery-validationEngine-lang.php:47
-#: ../lib/modules/selfRegistration.inc:512
+#: ../lib/modules/selfRegistration.inc:522
 msgid "This field is required."
 msgstr "必要的属性"
 
@@ -13900,12 +13936,18 @@ msgstr "这是允许登录本系统的DN列表,每行输入一个DN."
 msgid "This is a structural ObjectClass and cannot be removed."
 msgstr "这是一个不能被删除的结构化对象类"
 
+#: ../help/help.inc:185
+msgid ""
+"This is a workaround for Active Directory. Enable it if you get messages "
+"about size limit exceeded."
+msgstr "这是活动目录的替代方案。如果你得到大小超限的消息，请打开它。"
+
 #: ../lib/modules/nisObject.inc:74 ../lib/modules/automount.inc:73
 #: ../lib/modules/oracleService.inc:70
 msgid "This is an optional description for this entry."
 msgstr "可以输入此条目的描述(可选)"
 
-#: ../help/help.inc:223
+#: ../help/help.inc:225
 msgid ""
 "This is needed to find the LDAP DNs of your user accounts. E.g. if you use "
 "\"uid\" and your user inputs \"miller\" then LAM will search for an account "
@@ -13919,8 +13961,9 @@ msgstr ""
 #: ../lib/modules/eduPerson.inc:246 ../lib/modules/eduPerson.inc:248
 #: ../lib/modules/zarafaAddressList.inc:170
 #: ../lib/modules/posixAccount.inc:131 ../lib/modules/inetOrgPerson.inc:100
-#: ../lib/modules/aliasEntry.inc:86 ../lib/modules/qmailGroup.inc:433
-#: ../lib/modules/qmailGroup.inc:434 ../lib/modules/qmailGroup.inc:435
+#: ../lib/modules/freeRadius.inc:342 ../lib/modules/aliasEntry.inc:86
+#: ../lib/modules/qmailGroup.inc:433 ../lib/modules/qmailGroup.inc:434
+#: ../lib/modules/qmailGroup.inc:435
 msgid "This is not a valid DN!"
 msgstr "不是一个有效的DN!"
 
@@ -13961,7 +14004,7 @@ msgid ""
 msgstr ""
 "这是在Asterisk数据库中的用户ID,可以包含数字或字母(比如:user1 或 200134)."
 
-#: ../lib/modules/freeRadius.inc:85
+#: ../lib/modules/freeRadius.inc:89
 msgid "This is the IP address for the user (e.g. 123.123.123.123)."
 msgstr "用户的IP地址(比如:123.123.123.123)."
 
@@ -14061,7 +14104,7 @@ msgstr "显示在Windows系统中的组名."
 msgid "This is the host's location (e.g. Munich, server room 3)."
 msgstr "这是主机的放置地点(比如慕尼黑,服务器室3号)"
 
-#: ../help/help.inc:187
+#: ../help/help.inc:189
 msgid ""
 "This is the identifier for the relative DN value. It must be one of the "
 "given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while "
@@ -14285,7 +14328,7 @@ msgstr "邮件地址已被使用: "
 msgid "This mailbox will be created/deleted."
 msgstr "这个邮箱将会被建立或删除."
 
-#: ../lib/modules.inc:1245
+#: ../lib/modules.inc:1247
 msgid "This may overwrite existing values with profile data. Continue?"
 msgstr "将覆盖已有值,继续?"
 
@@ -14350,25 +14393,25 @@ msgstr ""
 msgid "This specifies what to do when the client connection is broken."
 msgstr "这里指定客户连接中断的动作。"
 
-#: ../help/help.inc:227
+#: ../help/help.inc:229
 msgid ""
 "This text is displayed on top of the self service login page. You can also "
 "input HTML code here."
 msgstr "这些文本显示在自助服务登录面的上端.你可以在此输入HTML代码."
 
-#: ../help/help.inc:229
+#: ../help/help.inc:231
 msgid ""
 "This text is displayed on top of the self service main page. You can also "
 "input HTML code here."
 msgstr "这些文本显示在自助服务主页的上端,可以在此输入HTML代码."
 
-#: ../help/help.inc:239
+#: ../help/help.inc:241
 msgid ""
 "This text is placed as label for the password field on the login page. LAM "
 "will use \"Password\" if you do not enter any text."
 msgstr "在登录界面将做为密码输入框的标记. 如果没有输入,LAM使用\"Password\""
 
-#: ../help/help.inc:225
+#: ../help/help.inc:227
 msgid ""
 "This text should shortly describe your selected LDAP search attribute (e.g. "
 "email or user name)."
@@ -14420,7 +14463,7 @@ msgstr "此值只能设为 \"Room\" 或 \"Equipment\"."
 #: ../lib/modules/zarafaUser.inc:424 ../lib/modules/zarafaUser.inc:425
 #: ../lib/modules/zarafaUser.inc:426 ../lib/modules/zarafaUser.inc:427
 #: ../lib/modules/ppolicyUser.inc:97 ../lib/modules/inetOrgPerson.inc:108
-#: ../lib/modules/zarafaServer.inc:179
+#: ../lib/modules/freeRadius.inc:341 ../lib/modules/zarafaServer.inc:179
 msgid "This value can only be \"true\" or \"false\"."
 msgstr "此值只能设为 \"true\" 或 \"false\"."
 
@@ -14432,7 +14475,7 @@ msgstr "此值只能设为\"true\", \"false\" or \"system\"."
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "此值必须是用分号分开的用户名列表."
 
-#: ../help/help.inc:264
+#: ../help/help.inc:266
 msgid "This will create a new organisational unit under the selected one."
 msgstr "在所选的节点下建立新的组织单元."
 
@@ -14440,7 +14483,7 @@ msgstr "在所选的节点下建立新的组织单元."
 msgid "This will create the user's home directory on the specified server."
 msgstr "将在指定的服务器上建立用户的主目录."
 
-#: ../help/help.inc:266
+#: ../help/help.inc:268
 msgid ""
 "This will delete the selected organisational unit. The OU has to be empty."
 msgstr "将删除所选的组织单元.组织单元必须为空."
@@ -14478,7 +14521,7 @@ msgid ""
 "the user via mail."
 msgstr "将会生成一个随机的密码并在屏幕上显示或通过邮件发送给用户."
 
-#: ../help/help.inc:245
+#: ../help/help.inc:247
 msgid ""
 "This will set a random password and display it on the screen or send it to "
 "the user via mail. Please edit your LAM server profile to setup the mail "
@@ -14580,7 +14623,7 @@ msgstr "使用/bin/false来禁止登录"
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "东京,首尔,大孤,雅库茨克"
 
-#: ../templates/config/confmain.php:406
+#: ../templates/config/confmain.php:408
 msgid "Tool settings"
 msgstr "工具设置"
 
@@ -14626,7 +14669,7 @@ msgstr "树状结构后缀"
 msgid "Tree view"
 msgstr "树状结构"
 
-#: ../templates/config/confmain.php:567
+#: ../templates/config/confmain.php:575
 msgid "TreeSuffix is invalid!"
 msgstr "树状结构后缀非法!"
 
@@ -14737,13 +14780,13 @@ msgstr "无法修改kerberos密码"
 msgid "Unable to change password."
 msgstr "无法修改密码"
 
-#: ../templates/selfService/selfServiceMain.php:338
+#: ../templates/selfService/selfServiceMain.php:340
 msgid ""
 "Unable to change your account. Maybe you do not have enough rights to change "
 "the settings."
 msgstr "无法改变您的帐号,可以没有足够的权限改变设置."
 
-#: ../templates/selfService/selfServiceMain.php:335
+#: ../templates/selfService/selfServiceMain.php:337
 msgid ""
 "Unable to change your account. Your changes might violate the password "
 "policy."
@@ -14758,8 +14801,8 @@ msgstr "无法连接远端服务器 !"
 msgid "Unable to create ZIP file for PDF export."
 msgstr "无法为PDF导出工作建立ZIP文件."
 
-#: ../lib/modules/selfRegistration.inc:699
-#: ../lib/modules/selfRegistration.inc:703
+#: ../lib/modules/selfRegistration.inc:709
+#: ../lib/modules/selfRegistration.inc:713
 msgid "Unable to create account."
 msgstr "无法建立新账号."
 
@@ -14858,7 +14901,7 @@ msgstr "找不到用户账号."
 msgid "Unable to import server certificate. Please use the upload function."
 msgstr "不能导入服务器证书. 请使用上传功能."
 
-#: ../lib/modules.inc:1529 ../lib/modules.inc:1533
+#: ../lib/modules.inc:1531 ../lib/modules.inc:1535
 msgid "Unable to load LDAP entry:"
 msgstr "无法调入LDAP条目:"
 
@@ -14880,14 +14923,14 @@ msgstr "无法处理文件"
 msgid "Unable to read file."
 msgstr "无法读入文件"
 
-#: ../lib/modules/selfRegistration.inc:692
+#: ../lib/modules/selfRegistration.inc:702
 msgid "Unable to register your new account. Please try again."
 msgstr "无法注册新帐号, 请重试."
 
-#: ../lib/modules/passwordSelfReset.inc:1440
-#: ../lib/modules/passwordSelfReset.inc:1449
-#: ../lib/modules/passwordSelfReset.inc:1455
-#: ../lib/modules/passwordSelfReset.inc:1464
+#: ../lib/modules/passwordSelfReset.inc:1442
+#: ../lib/modules/passwordSelfReset.inc:1451
+#: ../lib/modules/passwordSelfReset.inc:1457
+#: ../lib/modules/passwordSelfReset.inc:1466
 msgid "Unable to reset password."
 msgstr "不能复位密码"
 
@@ -14901,12 +14944,12 @@ msgstr "无法获取图像"
 msgid "Unable to retrieve schema!"
 msgstr "无法获取schema!"
 
-#: ../templates/selfService/adminMain.php:251
+#: ../templates/selfService/adminMain.php:253
 #: ../templates/profedit/profilepage.php:124
 msgid "Unable to save profile!"
 msgstr "无法存储配置文件!"
 
-#: ../lib/account.inc:999 ../lib/account.inc:1037
+#: ../lib/account.inc:1021 ../lib/account.inc:1059
 msgid "Unable to send mail!"
 msgstr "无法发送邮件!"
 
@@ -14924,7 +14967,7 @@ msgstr "无法上传徽标文件!"
 msgid "Unable to verify your password reset request. Please try again."
 msgstr "无法确认您的密码复位请求,请重试."
 
-#: ../lib/modules/selfRegistration.inc:726
+#: ../lib/modules/selfRegistration.inc:736
 msgid "Unable to verify your user creation request. Please try again."
 msgstr "无法确认您的用户建立请求,请重试."
 
@@ -14989,7 +15032,7 @@ msgstr "解锁账号?"
 msgid "Unlock password"
 msgstr "解除密码锁定"
 
-#: ../templates/masscreate.php:107 ../templates/config/confmodules.php:386
+#: ../templates/masscreate.php:107 ../templates/config/confmodules.php:403
 msgid "Unsolved dependency:"
 msgstr "未解决的依赖性问题:"
 
@@ -15010,7 +15053,7 @@ msgstr "在密码修改时修改 \"sambaPwdLastSet\"属性"
 msgid "Update object"
 msgstr "修改对象"
 
-#: ../lib/modules/imapAccess.inc:322 ../lib/modules/imapAccess.inc:331
+#: ../lib/modules/imapAccess.inc:323 ../lib/modules/imapAccess.inc:332
 msgid "Update quota"
 msgstr "修改配额"
 
@@ -15025,7 +15068,7 @@ msgid "Updating object"
 msgstr "对象升级中"
 
 #: ../templates/config/mainmanage.php:334 ../templates/pdfedit/pdfmain.php:247
-#: ../lib/modules/ldapPublicKey.inc:126 ../lib/modules/inetOrgPerson.inc:1863
+#: ../lib/modules/ldapPublicKey.inc:126 ../lib/modules/inetOrgPerson.inc:1865
 msgid "Upload"
 msgstr "上传"
 
@@ -15050,11 +15093,11 @@ msgstr "上传文件"
 msgid "Upload file and create accounts"
 msgstr "开始上传,建立帐号"
 
-#: ../templates/massDoUpload.php:254 ../lib/lists.inc:1071
+#: ../templates/massDoUpload.php:255 ../lib/lists.inc:1076
 msgid "Upload has finished"
 msgstr "上传完毕"
 
-#: ../lib/modules.inc:504
+#: ../lib/modules.inc:506
 #, php-format
 msgid "Upload was stopped after errors in %s module!"
 msgstr "因为在%s模块中有错,上传停止."
@@ -15082,7 +15125,7 @@ msgstr "为所有的服务使用*."
 msgid "Use Unix password"
 msgstr "使用unix的密码"
 
-#: ../templates/selfService/adminMain.php:437 ../help/help.inc:242
+#: ../templates/selfService/adminMain.php:442 ../help/help.inc:244
 msgid "Use for all operations"
 msgstr "用于所有操作"
 
@@ -15094,7 +15137,7 @@ msgstr "用于所有操作"
 msgid "Use no password"
 msgstr "无需密码"
 
-#: ../help/help.inc:272
+#: ../help/help.inc:274
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. \"(cn!=admin)\") to reduce "
 "the number of entries to modify."
@@ -15110,7 +15153,7 @@ msgstr ""
 "在这儿输入一个附加的LDAP过滤表达式（ \"(cn!=admin)\") 来减少这个账号类型的可"
 "显示元素数量."
 
-#: ../help/help.inc:241
+#: ../help/help.inc:243
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. "
 "\"(objectClass=passwordSelfReset)\") to reduce the number of accounts who "
@@ -15214,8 +15257,8 @@ msgid "User can change password"
 msgstr "用户可以修改密码"
 
 #: ../lib/modules/inetOrgPerson.inc:166 ../lib/modules/inetOrgPerson.inc:866
-#: ../lib/modules/inetOrgPerson.inc:1540 ../lib/modules/inetOrgPerson.inc:2777
-#: ../lib/modules/inetOrgPerson.inc:3630
+#: ../lib/modules/inetOrgPerson.inc:1540 ../lib/modules/inetOrgPerson.inc:2782
+#: ../lib/modules/inetOrgPerson.inc:3647
 msgid "User certificates"
 msgstr "用户数字证书"
 
@@ -15259,11 +15302,11 @@ msgstr "用户必须修改密码"
 
 #: ../templates/lists/changePassword.php:281 ../templates/login.php:334
 #: ../lib/types/alias.inc:91 ../lib/types/user.inc:91
-#: ../lib/selfService.inc:385 ../lib/modules/mitKerberos.inc:116
+#: ../lib/selfService.inc:387 ../lib/modules/mitKerberos.inc:116
 #: ../lib/modules/mitKerberos.inc:211 ../lib/modules/mitKerberos.inc:249
 #: ../lib/modules/mitKerberos.inc:343 ../lib/modules/mitKerberos.inc:766
 #: ../lib/modules/selfRegistration.inc:393
-#: ../lib/modules/selfRegistration.inc:467
+#: ../lib/modules/selfRegistration.inc:468
 #: ../lib/modules/selfRegistration.inc:475 ../lib/modules/account.inc:85
 #: ../lib/modules/account.inc:101 ../lib/modules/account.inc:124
 #: ../lib/modules/account.inc:126 ../lib/modules/account.inc:127
@@ -15286,9 +15329,9 @@ msgstr "用户必须修改密码"
 #: ../lib/modules/inetOrgPerson.inc:97 ../lib/modules/inetOrgPerson.inc:166
 #: ../lib/modules/inetOrgPerson.inc:638 ../lib/modules/inetOrgPerson.inc:766
 #: ../lib/modules/inetOrgPerson.inc:1186 ../lib/modules/inetOrgPerson.inc:1189
-#: ../lib/modules/inetOrgPerson.inc:1942 ../lib/modules/inetOrgPerson.inc:2077
-#: ../lib/modules/inetOrgPerson.inc:2835 ../lib/modules/inetOrgPerson.inc:3638
-#: ../lib/modules/inetOrgPerson.inc:3664
+#: ../lib/modules/inetOrgPerson.inc:1944 ../lib/modules/inetOrgPerson.inc:2079
+#: ../lib/modules/inetOrgPerson.inc:2840 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:3681
 #: ../lib/modules/passwordSelfReset.inc:499
 #: ../lib/modules/passwordSelfReset.inc:843
 #: ../lib/modules/passwordSelfReset.inc:1015
@@ -15323,7 +15366,7 @@ msgid "User name attribute"
 msgstr "用户名属性"
 
 #: ../lib/modules/mitKerberos.inc:289 ../lib/modules/mitKerberos.inc:290
-#: ../lib/modules/selfRegistration.inc:467 ../lib/modules/account.inc:124
+#: ../lib/modules/selfRegistration.inc:468 ../lib/modules/account.inc:124
 #: ../lib/modules/account.inc:125 ../lib/modules/account.inc:127
 #: ../lib/modules/zarafaContact.inc:187 ../lib/modules/zarafaContact.inc:188
 #: ../lib/modules/uidObject.inc:85 ../lib/modules/zarafaGroup.inc:222
@@ -15550,13 +15593,13 @@ msgstr "警告"
 #: ../lib/modules/organizationalRoleUser.inc:201
 #: ../lib/modules/organizationalRoleUser.inc:218
 #: ../lib/modules/windowsUser.inc:1127 ../lib/modules/groupOfNamesUser.inc:217
-#: ../lib/modules/groupOfNamesUser.inc:264 ../lib/modules.inc:1908
+#: ../lib/modules/groupOfNamesUser.inc:264 ../lib/modules.inc:1910
 #, php-format
 msgid "Was unable to add attributes to DN: %s."
 msgstr "无法为DN: %s增加属性."
 
 #: ../lib/modules/nisMailAliasUser.inc:494 ../lib/modules/range.inc:665
-#: ../lib/modules.inc:1871
+#: ../lib/modules.inc:1873
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "无法创建DN: %s."
@@ -15576,7 +15619,7 @@ msgstr "无法修改DN: %s的属性"
 
 #: ../lib/modules/posixAccount.inc:888 ../lib/modules/windowsUser.inc:1153
 #: ../lib/modules/windowsUser.inc:1566 ../lib/modules/range.inc:709
-#: ../lib/modules/groupOfNamesUser.inc:249 ../lib/modules.inc:1890
+#: ../lib/modules/groupOfNamesUser.inc:249 ../lib/modules.inc:1892
 #, php-format
 msgid "Was unable to modify attributes of DN: %s."
 msgstr "不能修改DN: %s的属性"
@@ -15586,12 +15629,12 @@ msgstr "不能修改DN: %s的属性"
 #: ../lib/modules/organizationalRoleUser.inc:206
 #: ../lib/modules/organizationalRoleUser.inc:229
 #: ../lib/modules/windowsUser.inc:1140 ../lib/modules/groupOfNamesUser.inc:222
-#: ../lib/modules/groupOfNamesUser.inc:278 ../lib/modules.inc:1921
+#: ../lib/modules/groupOfNamesUser.inc:278 ../lib/modules.inc:1923
 #, php-format
 msgid "Was unable to remove attributes from DN: %s."
 msgstr "无法删除DN: %s的属性."
 
-#: ../lib/modules/asteriskExtension.inc:905 ../lib/modules.inc:1851
+#: ../lib/modules/asteriskExtension.inc:905 ../lib/modules.inc:1853
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "无法重命名DN: %s."
@@ -15603,9 +15646,9 @@ msgstr "无法重命名DN: %s."
 #: ../lib/modules/inetOrgPerson.inc:217 ../lib/modules/inetOrgPerson.inc:478
 #: ../lib/modules/inetOrgPerson.inc:601 ../lib/modules/inetOrgPerson.inc:754
 #: ../lib/modules/inetOrgPerson.inc:758 ../lib/modules/inetOrgPerson.inc:1455
-#: ../lib/modules/inetOrgPerson.inc:1458 ../lib/modules/inetOrgPerson.inc:1952
-#: ../lib/modules/inetOrgPerson.inc:2514 ../lib/modules/inetOrgPerson.inc:3628
-#: ../lib/modules/inetOrgPerson.inc:3654
+#: ../lib/modules/inetOrgPerson.inc:1458 ../lib/modules/inetOrgPerson.inc:1954
+#: ../lib/modules/inetOrgPerson.inc:2517 ../lib/modules/inetOrgPerson.inc:3645
+#: ../lib/modules/inetOrgPerson.inc:3671
 msgid "Web site"
 msgstr "网站"
 
@@ -15619,7 +15662,7 @@ msgstr "星期三"
 msgid "Weight"
 msgstr "权重"
 
-#: ../lib/selfService.inc:384
+#: ../lib/selfService.inc:386
 msgid "Welcome to LAM self service. Please enter your user name and password."
 msgstr "欢迎来到LAM自助服务.请输入用户名和密码."
 
@@ -15720,7 +15763,7 @@ msgstr "工作目录"
 msgid "Working directory of initial program."
 msgstr "初始化程序的工作目录。"
 
-#: ../templates/config/confmain.php:318
+#: ../templates/config/confmain.php:320
 msgid "Write"
 msgstr "写入"
 
@@ -15729,8 +15772,8 @@ msgid "Write access"
 msgstr "写权限"
 
 #: ../templates/login.php:579 ../templates/login.php:637
-#: ../templates/selfService/selfServiceLogin.php:160
-#: ../templates/selfService/selfServiceLogin.php:186
+#: ../templates/selfService/selfServiceLogin.php:162
+#: ../templates/selfService/selfServiceLogin.php:188
 msgid "Wrong password/user name combination. Please try again."
 msgstr "错误的密码和用户组合,请重试!"
 
@@ -15741,10 +15784,12 @@ msgstr "错误的配额类型.配额必须为数字."
 #: ../templates/schema/schema.php:153 ../templates/schema/schema.php:195
 #: ../templates/schema/schema.php:200 ../templates/schema/schema.php:205
 #: ../templates/pdfedit/pdfpage.php:460 ../lib/modules/pykotaPrinter.inc:51
-#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/qmailGroup.inc:322
-#: ../lib/modules/qmailGroup.inc:364 ../lib/modules/qmailGroup.inc:1030
-#: ../lib/modules/qmailGroup.inc:1031 ../lib/modules/qmailGroup.inc:1073
-#: ../lib/modules/qmailGroup.inc:1079 ../lib/modules/imapAccess.inc:121
+#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/freeRadius.inc:161
+#: ../lib/modules/freeRadius.inc:414 ../lib/modules/freeRadius.inc:704
+#: ../lib/modules/qmailGroup.inc:322 ../lib/modules/qmailGroup.inc:364
+#: ../lib/modules/qmailGroup.inc:1030 ../lib/modules/qmailGroup.inc:1031
+#: ../lib/modules/qmailGroup.inc:1073 ../lib/modules/qmailGroup.inc:1079
+#: ../lib/modules/imapAccess.inc:121
 msgid "Yes"
 msgstr "是"
 
@@ -15760,7 +15805,7 @@ msgid ""
 "not case-sensitive."
 msgstr "您正在使用大写字符,这会造成一些问题,因为windows大小写不敏感."
 
-#: ../lib/lists.inc:1073
+#: ../lib/lists.inc:1078
 #, php-format
 msgid ""
 "You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}"
@@ -15805,7 +15850,7 @@ msgid "You can use this to temporarily deactivate the Zarafa extension."
 msgstr "可以使用它来临时解除Zarafa扩展项"
 
 #: ../lib/modules/passwordSelfReset.inc:126
-#: ../lib/modules/passwordSelfReset.inc:136 ../help/help.inc:253
+#: ../lib/modules/passwordSelfReset.inc:136 ../help/help.inc:255
 msgid ""
 "You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. "
 "@@uid@@ for the user name)."
@@ -15834,7 +15879,7 @@ msgstr "在服务器只读方式下不能更新"
 msgid "You cannot rename an entry which has child entries."
 msgstr "不能为一个有子条目的条目重新命名"
 
-#: ../templates/config/confmain.php:505
+#: ../templates/config/confmain.php:507
 msgid ""
 "You cannot use SSL and TLS encryption at the same time. Please use either "
 "\"ldaps://\" or TLS."
@@ -15931,25 +15976,25 @@ msgid ""
 msgstr "您的PHP.INI没有file_uploads = on,在PHP中打开文件上传."
 
 #: ../templates/config/confmain.php:176
-#: ../templates/selfService/adminMain.php:372
+#: ../templates/selfService/adminMain.php:374
 msgid ""
 "Your changes cannot be saved until you make the file writable for the "
 "webserver user."
 msgstr "你的修改只能在web服务器有权写文件的条件下保存."
 
-#: ../lib/modules/selfRegistration.inc:721
+#: ../lib/modules/selfRegistration.inc:731
 msgid ""
 "Your new account was created but post processing failed. Please contact your "
 "local administrator."
 msgstr "您的新帐号已经建立, 但后续处理工作失败. 请联系本地管理员."
 
-#: ../lib/modules/selfRegistration.inc:718
+#: ../lib/modules/selfRegistration.inc:728
 msgid ""
 "Your new account was successfully created. Please return to login to change "
 "your user data."
 msgstr "你的新账号已经成功建立.请返回后登录并修改用户数据."
 
-#: ../lib/account.inc:1202 ../lib/modules/windowsUser.inc:1878
+#: ../lib/account.inc:1224 ../lib/modules/windowsUser.inc:1878
 msgid ""
 "Your password does not meet the password strength qualifications. Please "
 "retry with another one."
@@ -16088,7 +16133,7 @@ msgstr "字符"
 msgid "characters"
 msgstr "字符"
 
-#: ../lib/modules/freeRadius.inc:179
+#: ../lib/modules/freeRadius.inc:192
 msgid "company.com"
 msgstr "company.com"
 
@@ -16169,7 +16214,7 @@ msgstr "仅从以前的客户端"
 msgid "group01,group02"
 msgstr "group01,group02"
 
-#: ../lib/modules/freeRadius.inc:187
+#: ../lib/modules/freeRadius.inc:200
 msgid "group01;group02"
 msgstr "group01;group02"
 
@@ -16406,7 +16451,7 @@ msgstr "秒"
 #: ../lib/modules/mitKerberos.inc:244 ../lib/modules/asteriskAccount.inc:327
 #: ../lib/modules/posixGroup.inc:444 ../lib/modules/sambaSamAccount.inc:428
 #: ../lib/modules/posixAccount.inc:334 ../lib/modules/windowsUser.inc:274
-#: ../lib/modules/inetOrgPerson.inc:2088
+#: ../lib/modules/inetOrgPerson.inc:2090
 #: ../lib/modules/asteriskVoicemail.inc:167
 #: ../lib/modules/heimdalKerberos.inc:213
 msgid "secret"
@@ -16420,7 +16465,7 @@ msgstr "选择RDN属性"
 #: ../lib/modules/posixAccount.inc:285 ../lib/modules/windowsUser.inc:266
 #: ../lib/modules/windowsUser.inc:451 ../lib/modules/windowsUser.inc:460
 #: ../lib/modules/pykotaUser.inc:192 ../lib/modules/pykotaUser.inc:210
-#: ../lib/modules/inetOrgPerson.inc:2079
+#: ../lib/modules/inetOrgPerson.inc:2081
 #: ../lib/modules/heimdalKerberos.inc:182 ../lib/modules/nisMailAlias.inc:110
 msgid "smiller"
 msgstr "smiller"
@@ -17179,9 +17224,6 @@ msgstr "是"
 
 #~ msgid "List of special skills that the user has."
 #~ msgstr "用户技能列表"
-
-#~ msgid "Page settings"
-#~ msgstr "页面设置"
 
 #~ msgid "Please enter a valid date (format DD.MM.YYYY)!"
 #~ msgstr "请输入合法的日期,格式为(DD-MM-YYYY)."
