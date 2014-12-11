@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 4.7\n"
+"Project-Id-Version: LAM 4.8\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2014-09-21 11:22+0900\n"
+"PO-Revision-Date: 2014-12-07 23:11+0900\n"
 "Last-Translator: Yasuhiro Magara <gama@users.sourceforge.jp>\n"
 "Language-Team: Japanese <gama@users.sourceforge.jp>\n"
 "Language: ja\n"
@@ -137,8 +137,8 @@ msgstr "SOAレコードはNS/MX/A以外のレコードを許容しません。"
 msgid "A SOA record requires that the host name is set to \"@\"."
 msgstr "SOAレコードのホスト名は \"@\" にセットする必要があります。"
 
-#: ../lib/modules/selfRegistration.inc:631
-#: ../lib/modules/passwordSelfReset.inc:1590
+#: ../lib/modules/selfRegistration.inc:641
+#: ../lib/modules/passwordSelfReset.inc:1592
 msgid ""
 "A confirmation mail was sent. Please click on the link in the mail to "
 "proceed."
@@ -378,9 +378,10 @@ msgstr "アカウント"
 #: ../lib/modules/systemQuotas.inc:100 ../lib/modules/systemQuotas.inc:102
 #: ../lib/modules/systemQuotas.inc:104 ../lib/modules/systemQuotas.inc:106
 #: ../lib/modules/systemQuotas.inc:108 ../lib/modules/systemQuotas.inc:110
-#: ../lib/modules/freeRadius.inc:250 ../lib/modules/freeRadius.inc:252
-#: ../lib/modules/freeRadius.inc:254 ../lib/modules/freeRadius.inc:256
-#: ../lib/modules/freeRadius.inc:258 ../lib/modules/freeRadius.inc:260
+#: ../lib/modules/freeRadius.inc:330 ../lib/modules/freeRadius.inc:332
+#: ../lib/modules/freeRadius.inc:334 ../lib/modules/freeRadius.inc:336
+#: ../lib/modules/freeRadius.inc:338 ../lib/modules/freeRadius.inc:340
+#: ../lib/modules/freeRadius.inc:341 ../lib/modules/freeRadius.inc:342
 #: ../lib/modules/sudoRole.inc:270 ../lib/modules/sudoRole.inc:272
 #: ../lib/modules/sudoRole.inc:274 ../lib/modules/sudoRole.inc:276
 #: ../lib/modules/sudoRole.inc:278 ../lib/modules/sudoRole.inc:280
@@ -550,13 +551,13 @@ msgstr ""
 "義します。アカウントモジュールは、編集対象となるプロパティ(e.g. Unix や "
 "Samba)を定義します。"
 
-#: ../lib/modules.inc:1315
+#: ../lib/modules.inc:1317
 msgid "Account was created successfully."
 msgstr "アカウントが作成されました。"
 
 #: ../templates/lists/changePassword.php:753
 #: ../templates/lists/changePassword.php:805
-#: ../templates/lists/changePassword.php:851 ../lib/modules.inc:1318
+#: ../templates/lists/changePassword.php:851 ../lib/modules.inc:1320
 msgid "Account was modified successfully."
 msgstr "アカウントが変更されました。"
 
@@ -569,7 +570,7 @@ msgid "Activate DynDNS"
 msgstr "DynDNSを有効化"
 
 #: ../templates/config/confmain.php:243
-#: ../templates/selfService/adminMain.php:419
+#: ../templates/selfService/adminMain.php:421
 msgid "Activate TLS"
 msgstr "TLSを有効化"
 
@@ -639,7 +640,6 @@ msgstr "有効なアカウント種別"
 
 #: ../templates/serverInfo.php:307 ../templates/serverInfo.php:384
 #: ../templates/multiEdit.php:126 ../templates/config/profmanage.php:252
-#: ../templates/config/confmodules.php:305
 #: ../templates/config/conftypes.php:223
 #: ../templates/selfService/profManage.php:209
 #: ../templates/pdfedit/pdfpage.php:596 ../templates/pdfedit/pdfpage.php:606
@@ -663,7 +663,7 @@ msgstr "有効なアカウント種別"
 #: ../lib/modules/sambaGroupMapping.inc:392
 #: ../lib/modules/sambaGroupMapping.inc:489 ../lib/modules/pykotaUser.inc:377
 #: ../lib/modules/ldapPublicKey.inc:267 ../lib/modules/ldapPublicKey.inc:277
-#: ../lib/modules/nisnetgroup.inc:282 ../lib/modules/inetOrgPerson.inc:1742
+#: ../lib/modules/nisnetgroup.inc:282 ../lib/modules/inetOrgPerson.inc:1744
 #: ../lib/modules/sudoRole.inc:321 ../lib/modules/sudoRole.inc:348
 #: ../lib/modules/sudoRole.inc:375 ../lib/modules/sudoRole.inc:402
 #: ../lib/modules/sudoRole.inc:429 ../lib/modules/sudoRole.inc:456
@@ -691,7 +691,7 @@ msgstr "Asteriskサービス拡張を追加"
 msgid "Add EDU person extension"
 msgstr "EDU person拡張を追加"
 
-#: ../lib/modules/freeRadius.inc:312
+#: ../lib/modules/freeRadius.inc:426
 msgid "Add FreeRadius extension"
 msgstr "FreeRadius拡張を追加"
 
@@ -757,7 +757,7 @@ msgstr "追加の値を属性に追加"
 msgid "Add another rule"
 msgstr "他のルールを追加"
 
-#: ../lib/modules/inetOrgPerson.inc:1777
+#: ../lib/modules/inetOrgPerson.inc:1779
 #: ../lib/modules/organizationalRole.inc:322
 #: ../lib/modules/groupOfNames.inc:379 ../lib/modules/groupOfNames.inc:534
 msgid "Add entries"
@@ -788,7 +788,7 @@ msgstr "固定IPアドレスをDNSに追加"
 msgid "Add host extension"
 msgstr "ホスト拡張を追加"
 
-#: ../templates/selfService/adminMain.php:599 ../help/help.inc:232
+#: ../templates/selfService/adminMain.php:604 ../help/help.inc:234
 msgid "Add input field"
 msgstr "入力フィールドの追加"
 
@@ -826,7 +826,7 @@ msgstr "新しいバイナリ属性の追加"
 msgid "Add new field"
 msgstr "新しいフィールドの追加"
 
-#: ../templates/selfService/adminMain.php:591 ../help/help.inc:230
+#: ../templates/selfService/adminMain.php:596 ../help/help.inc:232
 msgid "Add new group"
 msgstr "新しいグループの追加"
 
@@ -847,8 +847,8 @@ msgstr "オブジェクトクラスと属性を追加"
 msgid "Add password self reset extension"
 msgstr "パスワード・セルフ・リセット拡張を追加"
 
-#: ../lib/modules/inetOrgPerson.inc:770 ../lib/modules/inetOrgPerson.inc:1618
-#: ../lib/modules/inetOrgPerson.inc:1701 ../lib/modules/inetOrgPerson.inc:2714
+#: ../lib/modules/inetOrgPerson.inc:770 ../lib/modules/inetOrgPerson.inc:1620
+#: ../lib/modules/inetOrgPerson.inc:1703 ../lib/modules/inetOrgPerson.inc:2719
 msgid "Add photo"
 msgstr "写真を追加"
 
@@ -883,13 +883,13 @@ msgstr "追加中"
 msgid "Adding the range failed because errors occured."
 msgstr "エラーが発生したため範囲の追加に失敗しました。"
 
-#: ../templates/selfService/adminMain.php:495 ../help/help.inc:236
+#: ../templates/selfService/adminMain.php:500 ../help/help.inc:238
 msgid "Additional CSS links"
 msgstr "追加のCSSリンク"
 
 #: ../templates/config/conftypes.php:289
-#: ../templates/selfService/adminMain.php:440 ../help/help.inc:170
-#: ../help/help.inc:240
+#: ../templates/selfService/adminMain.php:445 ../help/help.inc:170
+#: ../help/help.inc:242
 msgid "Additional LDAP filter"
 msgstr "追加のLDAPフィルター"
 
@@ -931,7 +931,7 @@ msgstr "アドレス・リスト数: %s"
 msgid "Address of IMAP server (e.g. mail.example.org)."
 msgstr "IMAPサーバーのアドレス(例 mail.example.org)。"
 
-#: ../help/help.inc:231
+#: ../help/help.inc:233
 msgid ""
 "Adds a new group element to the list of self service options. Use this to "
 "structure the input fields."
@@ -943,7 +943,7 @@ msgstr ""
 msgid "Adds a new range pool."
 msgstr "新しい範囲のプールを追加。"
 
-#: ../help/help.inc:233
+#: ../help/help.inc:235
 msgid "Adds a new self service option to the selected group element."
 msgstr "選択したグループ要素に新しいセルフサービス・オプションを追加します。"
 
@@ -1002,8 +1002,8 @@ msgstr "管理"
 msgid "Administrators group"
 msgstr "管理者グループ"
 
-#: ../templates/config/confmain.php:276 ../templates/config/conftypes.php:335
-#: ../lib/modules/posixAccount.inc:271 ../lib/modules/inetOrgPerson.inc:3686
+#: ../templates/config/confmain.php:279 ../templates/config/conftypes.php:335
+#: ../lib/modules/posixAccount.inc:271 ../lib/modules/inetOrgPerson.inc:3703
 msgid "Advanced options"
 msgstr "高度なオプション"
 
@@ -1104,17 +1104,17 @@ msgstr "eメールのエイリアス"
 msgid "Aliases for user name"
 msgstr "ユーザー名のエイリアス"
 
-#: ../lib/lists.inc:702
+#: ../lib/lists.inc:707
 #, php-format
 msgid "All accounts (%s)"
 msgstr "全てのアカウント (%s)"
 
-#: ../templates/selfService/selfServiceMain.php:368
+#: ../templates/selfService/selfServiceMain.php:370
 #: ../templates/initsuff.php:158
 msgid "All changes were successful."
 msgstr "すべての変更が成功しました。"
 
-#: ../lib/lists.inc:701
+#: ../lib/lists.inc:706
 #, php-format
 msgid "All selected accounts (%s)"
 msgstr "全ての選択されたアカウント (%s)"
@@ -1123,7 +1123,7 @@ msgstr "全ての選択されたアカウント (%s)"
 msgid "Allow"
 msgstr "許可"
 
-#: ../templates/config/confmain.php:362 ../help/help.inc:259
+#: ../templates/config/confmain.php:364 ../help/help.inc:261
 msgid "Allow alternate address"
 msgstr "代替アドレスを許可"
 
@@ -1150,7 +1150,7 @@ msgstr "パスワードの変更を許可"
 msgid "Allow terminal server login"
 msgstr "ターミナルサーバログインを許可"
 
-#: ../templates/selfService/adminMain.php:557
+#: ../templates/selfService/adminMain.php:562
 msgid "Allow user input for this field."
 msgstr "このフィールドに対するユーザー入力を許可します。"
 
@@ -1234,7 +1234,7 @@ msgstr "Almaty, Dhaka, Colombo"
 msgid "Alternate address"
 msgstr "代替アドレス"
 
-#: ../lib/modules.inc:1079 ../lib/modules.inc:1178 ../help/help.inc:214
+#: ../lib/modules.inc:1081 ../lib/modules.inc:1180 ../help/help.inc:216
 msgid "Alternate recipient"
 msgstr "代替受信者"
 
@@ -1541,7 +1541,7 @@ msgstr "利用可能なグループ"
 msgid "Available members"
 msgstr "利用可能なメンバー"
 
-#: ../templates/config/confmodules.php:314
+#: ../templates/config/confmodules.php:296
 msgid "Available modules"
 msgstr "利用可能なモジュール"
 
@@ -1574,8 +1574,8 @@ msgstr "B-Node (0x01)"
 #: ../lib/modules/windowsUser.inc:1080
 #: ../lib/modules/sambaGroupMapping.inc:511 ../lib/modules/pykotaUser.inc:618
 #: ../lib/modules/pykotaUser.inc:675 ../lib/modules/nisnetgroup.inc:400
-#: ../lib/modules/inetOrgPerson.inc:1702 ../lib/modules/inetOrgPerson.inc:1778
-#: ../lib/modules/inetOrgPerson.inc:1868 ../lib/modules/qmailGroup.inc:865
+#: ../lib/modules/inetOrgPerson.inc:1704 ../lib/modules/inetOrgPerson.inc:1780
+#: ../lib/modules/inetOrgPerson.inc:1870 ../lib/modules/qmailGroup.inc:865
 #: ../lib/modules/organizationalRole.inc:389
 #: ../lib/modules/windowsGroup.inc:606 ../lib/modules/groupOfNames.inc:447
 #: ../lib/modules/groupOfNames.inc:601
@@ -1843,11 +1843,11 @@ msgstr "Bind DNS"
 msgid "Bind DNS entries"
 msgstr "Bind DNSエントリ"
 
-#: ../templates/config/confmain.php:444
+#: ../templates/config/confmain.php:446
 msgid "Bind password"
 msgstr "Bindパスワード"
 
-#: ../templates/config/confmain.php:442
+#: ../templates/config/confmain.php:444
 msgid "Bind user"
 msgstr "Bindユーザ"
 
@@ -1921,9 +1921,9 @@ msgstr "下記のDNの一括更新"
 #: ../lib/modules/inetOrgPerson.inc:235 ../lib/modules/inetOrgPerson.inc:372
 #: ../lib/modules/inetOrgPerson.inc:613 ../lib/modules/inetOrgPerson.inc:786
 #: ../lib/modules/inetOrgPerson.inc:790 ../lib/modules/inetOrgPerson.inc:1506
-#: ../lib/modules/inetOrgPerson.inc:1509 ../lib/modules/inetOrgPerson.inc:1941
-#: ../lib/modules/inetOrgPerson.inc:2690 ../lib/modules/inetOrgPerson.inc:3614
-#: ../lib/modules/inetOrgPerson.inc:3656
+#: ../lib/modules/inetOrgPerson.inc:1509 ../lib/modules/inetOrgPerson.inc:1943
+#: ../lib/modules/inetOrgPerson.inc:2693 ../lib/modules/inetOrgPerson.inc:3631
+#: ../lib/modules/inetOrgPerson.inc:3673
 msgid "Business category"
 msgstr "業種"
 
@@ -1939,7 +1939,7 @@ msgstr ""
 "デフォルトでは、LAMは選択したアカウントモジュールに適合するアカウントを表示し"
 "ます。"
 
-#: ../help/help.inc:243
+#: ../help/help.inc:245
 msgid ""
 "By default all modifications are done as the user that authenticated in self "
 "service. If active then LAM will use the connection user for all LDAP "
@@ -2038,13 +2038,13 @@ msgstr "着信転送を許可"
 #: ../templates/config/profmanage.php:304
 #: ../templates/config/mainmanage.php:470
 #: ../templates/config/confmodules.php:227
-#: ../templates/config/confmain.php:471
+#: ../templates/config/confmain.php:473
 #: ../templates/config/moduleSettings.php:241
 #: ../templates/config/conftypes.php:362
 #: ../templates/selfService/profManage.php:211
 #: ../templates/selfService/profManage.php:227
 #: ../templates/selfService/profManage.php:240
-#: ../templates/selfService/adminMain.php:716
+#: ../templates/selfService/adminMain.php:721
 #: ../templates/pdfedit/pdfpage.php:638 ../templates/pdfedit/pdfmain.php:210
 #: ../templates/pdfedit/pdfmain.php:217 ../templates/pdfedit/pdfmain.php:223
 #: ../templates/delete.php:121 ../templates/profedit/profilepage.php:241
@@ -2067,7 +2067,7 @@ msgstr "着信転送を許可"
 #: ../lib/modules/sambaSamAccount.inc:1572 ../lib/modules/zarafaUser.inc:875
 #: ../lib/modules/kolabUser.inc:520 ../lib/modules/sambaGroupMapping.inc:490
 #: ../lib/modules/shadowAccount.inc:478 ../lib/modules/nisnetgroup.inc:490
-#: ../lib/modules/inetOrgPerson.inc:1743 ../lib/modules/freeRadius.inc:431
+#: ../lib/modules/inetOrgPerson.inc:1745 ../lib/modules/freeRadius.inc:566
 #: ../lib/modules/kolabSharedFolder.inc:434
 #: ../lib/modules/customFields.inc:1084 ../lib/modules/aliasEntry.inc:147
 #: ../lib/modules/aliasEntry.inc:167 ../lib/modules/qmailGroup.inc:823
@@ -2075,22 +2075,22 @@ msgstr "着信転送を許可"
 #: ../lib/modules/heimdalKerberos.inc:600 ../lib/modules/windowsGroup.inc:505
 #: ../lib/modules/windowsGroup.inc:557 ../lib/modules/groupOfNames.inc:375
 #: ../lib/modules/groupOfNames.inc:530 ../lib/modules/nisMailAlias.inc:385
-#: ../lib/lists.inc:711 ../lib/lists.inc:792 ../lib/modules.inc:1230
+#: ../lib/lists.inc:716 ../lib/lists.inc:797 ../lib/modules.inc:1232
 msgid "Cancel"
 msgstr "中止"
 
 #: ../templates/login.php:569 ../templates/login.php:627
 #: ../templates/login.php:632
-#: ../templates/selfService/selfServiceLogin.php:141
-#: ../templates/selfService/selfServiceLogin.php:190
-#: ../templates/selfService/selfServiceLogin.php:195
-#: ../templates/selfService/selfServiceMain.php:168
-#: ../templates/selfService/selfServiceMain.php:189
-#: ../lib/modules/selfRegistration.inc:699
+#: ../templates/selfService/selfServiceLogin.php:143
+#: ../templates/selfService/selfServiceLogin.php:192
+#: ../templates/selfService/selfServiceLogin.php:197
+#: ../templates/selfService/selfServiceMain.php:170
+#: ../templates/selfService/selfServiceMain.php:191
+#: ../lib/modules/selfRegistration.inc:709
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "指定されたLDAPサーバに接続できません。再試行してください。"
 
-#: ../templates/login.php:310 ../lib/config.inc:1683
+#: ../templates/login.php:310 ../lib/config.inc:1705
 msgid "Cannot open config file!"
 msgstr "configファイルをオープンできません!"
 
@@ -2098,7 +2098,7 @@ msgstr "configファイルをオープンできません!"
 msgid "Cannot update quota."
 msgstr "クオータを更新できません。"
 
-#: ../lib/config.inc:1695 ../lib/config.inc:1703
+#: ../lib/config.inc:1717 ../lib/config.inc:1725
 msgid ""
 "Cannot write certificate file. Please check the permissions of config/"
 "serverCerts.pem."
@@ -2113,15 +2113,15 @@ msgstr ""
 msgid "Capacity"
 msgstr "容量"
 
-#: ../templates/selfService/adminMain.php:496
+#: ../templates/selfService/adminMain.php:501
 msgid "Captions and labels"
 msgstr "説明とラベル"
 
 #: ../lib/modules/inetOrgPerson.inc:163 ../lib/modules/inetOrgPerson.inc:534
 #: ../lib/modules/inetOrgPerson.inc:607 ../lib/modules/inetOrgPerson.inc:810
 #: ../lib/modules/inetOrgPerson.inc:1479 ../lib/modules/inetOrgPerson.inc:1482
-#: ../lib/modules/inetOrgPerson.inc:1943 ../lib/modules/inetOrgPerson.inc:2668
-#: ../lib/modules/inetOrgPerson.inc:3610 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:1945 ../lib/modules/inetOrgPerson.inc:2671
+#: ../lib/modules/inetOrgPerson.inc:3627 ../lib/modules/inetOrgPerson.inc:3672
 msgid "Car license"
 msgstr "免許証番号"
 
@@ -2133,7 +2133,7 @@ msgstr "Central Europe Time, Paris, Berlin"
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Central Time (US & Canada), Mexico City"
 
-#: ../templates/selfService/adminMain.php:514
+#: ../templates/selfService/adminMain.php:519
 #: ../lib/modules/mitKerberos.inc:377 ../lib/modules/mitKerberos.inc:388
 #: ../lib/modules/mitKerberos.inc:686 ../lib/modules/qmailUser.inc:661
 #: ../lib/modules/qmailUser.inc:917 ../lib/modules/zarafaContact.inc:229
@@ -2143,7 +2143,7 @@ msgstr "Central Time (US & Canada), Mexico City"
 #: ../lib/modules/sambaSamAccount.inc:1482 ../lib/modules/zarafaUser.inc:466
 #: ../lib/modules/zarafaUser.inc:557 ../lib/modules/shadowAccount.inc:355
 #: ../lib/modules/shadowAccount.inc:474 ../lib/modules/inetOrgPerson.inc:1566
-#: ../lib/modules/freeRadius.inc:301 ../lib/modules/freeRadius.inc:427
+#: ../lib/modules/freeRadius.inc:383 ../lib/modules/freeRadius.inc:562
 #: ../lib/modules/asteriskExtension.inc:236 ../lib/modules/aliasEntry.inc:100
 #: ../lib/modules/qmailGroup.inc:572 ../lib/modules/organizationalRole.inc:194
 #: ../lib/modules/passwordSelfReset.inc:271
@@ -2197,11 +2197,11 @@ msgstr "アカウントの状態を変更"
 msgid "Change default profile"
 msgstr "デフォルト・プロファイルを変更"
 
-#: ../templates/selfService/adminMain.php:575
+#: ../templates/selfService/adminMain.php:580
 msgid "Change field label."
 msgstr "フィールド・ラベルを変更します。"
 
-#: ../lib/lists.inc:792
+#: ../lib/lists.inc:797
 msgid "Change list settings"
 msgstr "リスト設定を変更"
 
@@ -2228,7 +2228,7 @@ msgstr "すぐにパスワードを変更しますか？"
 msgid "Change passwords"
 msgstr "パスワードを変更"
 
-#: ../lib/lists.inc:793
+#: ../lib/lists.inc:798
 msgid "Change settings"
 msgstr "設定の変更"
 
@@ -2301,7 +2301,7 @@ msgstr ""
 msgid "Classes"
 msgstr "クラス"
 
-#: ../lib/lists.inc:384
+#: ../lib/lists.inc:389
 msgid "Clear filter"
 msgstr "フィルタをクリア"
 
@@ -2399,8 +2399,8 @@ msgstr "一般的な例は \"@givenname@%sn%\" または \"%givenname%.%sn%\"。
 #: ../lib/modules/pykotaUser.inc:888 ../lib/modules/inetOrgPerson.inc:95
 #: ../lib/modules/inetOrgPerson.inc:640 ../lib/modules/inetOrgPerson.inc:762
 #: ../lib/modules/inetOrgPerson.inc:1222 ../lib/modules/inetOrgPerson.inc:1225
-#: ../lib/modules/inetOrgPerson.inc:1938 ../lib/modules/inetOrgPerson.inc:2069
-#: ../lib/modules/inetOrgPerson.inc:3665
+#: ../lib/modules/inetOrgPerson.inc:1940 ../lib/modules/inetOrgPerson.inc:2071
+#: ../lib/modules/inetOrgPerson.inc:3682
 #: ../lib/modules/asteriskExtension.inc:118
 msgid "Common name"
 msgstr "名称(common name)"
@@ -2482,7 +2482,7 @@ msgstr ""
 "送信者確認が有効な場合に使用される確認文章。ここでは、qmail-reply等の通常の "
 "%HEADER% マジックを使う事が出来ます。"
 
-#: ../templates/config/confmodules.php:394
+#: ../templates/config/confmodules.php:411
 msgid "Conflicting module:"
 msgstr "競合するモジュール"
 
@@ -2628,8 +2628,8 @@ msgstr "PDF構成を保存できません。アクセスが拒否されました
 msgid "Create"
 msgstr "作成"
 
-#: ../lib/lists.inc:500 ../lib/lists.inc:686 ../lib/modules.inc:1349
-#: ../help/help.inc:200
+#: ../lib/lists.inc:505 ../lib/lists.inc:691 ../lib/modules.inc:1351
+#: ../help/help.inc:202
 msgid "Create PDF file"
 msgstr "PDFファイル作成"
 
@@ -2732,7 +2732,7 @@ msgstr "他のsudoロールを作成"
 msgid "Create another user"
 msgstr "他のユーザーを作成"
 
-#: ../lib/lists.inc:691
+#: ../lib/lists.inc:696
 msgid "Create for"
 msgstr "作成"
 
@@ -2819,7 +2819,7 @@ msgstr "現在の接続"
 msgid "Current list of <b>%s</b> values for attribute <b>%s</b>:"
 msgstr "Current list of <b>%s</b> values for attribute <b>%s</b>:"
 
-#: ../lib/modules/imapAccess.inc:317
+#: ../lib/modules/imapAccess.inc:318
 msgid "Current usage (kB)"
 msgstr "現在の使用量 (kB)"
 
@@ -2882,7 +2882,7 @@ msgstr "DHCP設定"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:35
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:112
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:57 ../lib/modules.inc:410
-#: ../lib/modules.inc:1964
+#: ../lib/modules.inc:1966
 msgid "DN"
 msgstr "DN"
 
@@ -2896,9 +2896,13 @@ msgstr "DNが存在しません"
 msgid "DN settings"
 msgstr "DN設定"
 
-#: ../templates/masscreate.php:317 ../help/help.inc:190
+#: ../templates/masscreate.php:317 ../help/help.inc:192
 msgid "DN suffix"
 msgstr "DNサフィックス"
+
+#: ../lib/modules/freeRadius.inc:121
+msgid "DN where Radius profile templates are stored."
+msgstr "Radiusプロファイルのテンプレートが格納されているDN。"
 
 #: ../lib/modules/dhcp_settings.inc:211 ../lib/modules/dhcp_settings.inc:226
 #: ../lib/modules/dhcp_settings.inc:268 ../lib/modules/dhcp_settings.inc:577
@@ -2996,8 +3000,8 @@ msgstr "規定値 (\\r\\n)"
 msgid "Default gateway"
 msgstr "デフォルト・ゲートウェイ"
 
-#: ../templates/config/confmain.php:297
-#: ../templates/selfService/adminMain.php:453 ../help/help.inc:99
+#: ../templates/config/confmain.php:299
+#: ../templates/selfService/adminMain.php:458 ../help/help.inc:99
 msgid "Default language"
 msgstr "規定の言語"
 
@@ -3078,8 +3082,8 @@ msgstr ""
 #: ../lib/modules/bindDLZ.inc:1383 ../lib/modules/kolabUser.inc:827
 #: ../lib/modules/sambaGroupMapping.inc:405
 #: ../lib/modules/ldapPublicKey.inc:262 ../lib/modules/nisnetgroup.inc:253
-#: ../lib/modules/inetOrgPerson.inc:2863 ../lib/modules/customFields.inc:2086
-#: ../lib/modules/customFields.inc:3462 ../lib/lists.inc:494
+#: ../lib/modules/inetOrgPerson.inc:2868 ../lib/modules/customFields.inc:2086
+#: ../lib/modules/customFields.inc:3462 ../lib/lists.inc:499
 msgid "Delete"
 msgstr "削除"
 
@@ -3118,12 +3122,12 @@ msgstr "ホームディレクトリを削除"
 msgid "Delete mailbox"
 msgstr "メールボックスの削除"
 
-#: ../templates/ou_edit.php:199 ../help/help.inc:265
+#: ../templates/ou_edit.php:199 ../help/help.inc:267
 msgid "Delete organisational unit"
 msgstr "organizational unitを削除"
 
 #: ../templates/3rdParty/pla/lib/functions.php:2014
-#: ../lib/modules/inetOrgPerson.inc:1621
+#: ../lib/modules/inetOrgPerson.inc:1623
 msgid "Delete photo"
 msgstr "写真を削除"
 
@@ -3288,7 +3292,7 @@ msgstr "オブジェクトを削除中"
 msgid "Deletion date"
 msgstr "削除した日"
 
-#: ../lib/lists.inc:1068
+#: ../lib/lists.inc:1073
 msgid "Deletion was successful."
 msgstr "削除が完了しました。"
 
@@ -3323,8 +3327,8 @@ msgstr "印刷を禁止"
 #: ../lib/modules/inetOrgPerson.inc:494 ../lib/modules/inetOrgPerson.inc:616
 #: ../lib/modules/inetOrgPerson.inc:822 ../lib/modules/inetOrgPerson.inc:826
 #: ../lib/modules/inetOrgPerson.inc:1514 ../lib/modules/inetOrgPerson.inc:1517
-#: ../lib/modules/inetOrgPerson.inc:1953 ../lib/modules/inetOrgPerson.inc:2728
-#: ../lib/modules/inetOrgPerson.inc:3616 ../lib/modules/inetOrgPerson.inc:3657
+#: ../lib/modules/inetOrgPerson.inc:1955 ../lib/modules/inetOrgPerson.inc:2733
+#: ../lib/modules/inetOrgPerson.inc:3633 ../lib/modules/inetOrgPerson.inc:3674
 msgid "Department"
 msgstr "部門"
 
@@ -3396,8 +3400,8 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:178 ../lib/modules/inetOrgPerson.inc:332
 #: ../lib/modules/inetOrgPerson.inc:553 ../lib/modules/inetOrgPerson.inc:646
 #: ../lib/modules/inetOrgPerson.inc:1232 ../lib/modules/inetOrgPerson.inc:1235
-#: ../lib/modules/inetOrgPerson.inc:1923 ../lib/modules/inetOrgPerson.inc:2823
-#: ../lib/modules/inetOrgPerson.inc:3576 ../lib/modules/inetOrgPerson.inc:3645
+#: ../lib/modules/inetOrgPerson.inc:1925 ../lib/modules/inetOrgPerson.inc:2828
+#: ../lib/modules/inetOrgPerson.inc:3593 ../lib/modules/inetOrgPerson.inc:3662
 #: ../lib/modules/sudoRole.inc:70 ../lib/modules/sudoRole.inc:153
 #: ../lib/modules/sudoRole.inc:215 ../lib/modules/sudoRole.inc:305
 #: ../lib/modules/sudoRole.inc:805 ../lib/modules/oracleService.inc:69
@@ -3575,7 +3579,7 @@ msgstr "スクリーンに表示"
 msgid "Display the created entry"
 msgstr "作成したエントリを表示"
 
-#: ../lib/modules.inc:503
+#: ../lib/modules.inc:505
 msgid ""
 "Displayed account numbers start at \"0\". Add 2 to get the row in your "
 "spreadsheet."
@@ -3760,7 +3764,7 @@ msgid "Dry run"
 msgstr "予行演習"
 
 #: ../templates/multiEdit.php:437
-msgid "DryRun finished."
+msgid "Dry run finished."
 msgstr "予行演習が完了しました。"
 
 #: ../templates/serverInfo.php:124
@@ -3794,11 +3798,11 @@ msgstr "Eastern Time (US & Canada), Bogota"
 #: ../templates/pdfedit/pdfmain.php:206
 #: ../templates/profedit/profilemain.php:195
 #: ../lib/modules/sambaSamAccount.inc:1290
-#: ../lib/modules/sambaSamAccount.inc:1295 ../lib/lists.inc:488
+#: ../lib/modules/sambaSamAccount.inc:1295 ../lib/lists.inc:493
 msgid "Edit"
 msgstr "編集"
 
-#: ../lib/modules.inc:1357
+#: ../lib/modules.inc:1359
 msgid "Edit again"
 msgstr "再編集"
 
@@ -3840,7 +3844,7 @@ msgstr "ワークステーションの編集??"
 msgid "Email"
 msgstr "電子メール"
 
-#: ../lib/modules/inetOrgPerson.inc:81
+#: ../lib/modules/selfRegistration.inc:490 ../lib/modules/inetOrgPerson.inc:81
 #, php-format
 msgid "Email \"%s\" already in use."
 msgstr "eメール \"%s\" はすでに使用されています"
@@ -3851,6 +3855,7 @@ msgstr "eメール \"%s\" はすでに使用されています"
 #: ../lib/modules/kolabGroup.inc:179 ../lib/modules/kolabGroup.inc:202
 #: ../lib/modules/kolabGroup.inc:423 ../lib/modules/selfRegistration.inc:400
 #: ../lib/modules/selfRegistration.inc:482
+#: ../lib/modules/selfRegistration.inc:489
 #: ../lib/modules/zarafaDynamicGroup.inc:67
 #: ../lib/modules/zarafaDynamicGroup.inc:68
 #: ../lib/modules/zarafaDynamicGroup.inc:124
@@ -3874,8 +3879,8 @@ msgstr "eメール \"%s\" はすでに使用されています"
 #: ../lib/modules/inetOrgPerson.inc:460 ../lib/modules/inetOrgPerson.inc:598
 #: ../lib/modules/inetOrgPerson.inc:742 ../lib/modules/inetOrgPerson.inc:746
 #: ../lib/modules/inetOrgPerson.inc:1447 ../lib/modules/inetOrgPerson.inc:1450
-#: ../lib/modules/inetOrgPerson.inc:1937 ../lib/modules/inetOrgPerson.inc:2503
-#: ../lib/modules/inetOrgPerson.inc:3606 ../lib/modules/inetOrgPerson.inc:3653
+#: ../lib/modules/inetOrgPerson.inc:1939 ../lib/modules/inetOrgPerson.inc:2506
+#: ../lib/modules/inetOrgPerson.inc:3623 ../lib/modules/inetOrgPerson.inc:3670
 #: ../lib/modules/kolabSharedFolder.inc:116
 #: ../lib/modules/kolabSharedFolder.inc:181
 #: ../lib/modules/kolabSharedFolder.inc:239
@@ -3980,8 +3985,8 @@ msgstr "eメールフォーマット"
 
 #: ../lib/modules/inetOrgPerson.inc:348 ../lib/modules/inetOrgPerson.inc:628
 #: ../lib/modules/inetOrgPerson.inc:854 ../lib/modules/inetOrgPerson.inc:1488
-#: ../lib/modules/inetOrgPerson.inc:1491 ../lib/modules/inetOrgPerson.inc:1948
-#: ../lib/modules/inetOrgPerson.inc:3624 ../lib/modules/inetOrgPerson.inc:3659
+#: ../lib/modules/inetOrgPerson.inc:1491 ../lib/modules/inetOrgPerson.inc:1950
+#: ../lib/modules/inetOrgPerson.inc:3641 ../lib/modules/inetOrgPerson.inc:3676
 #: ../lib/modules/passwordSelfReset.inc:503
 #: ../lib/modules/passwordSelfReset.inc:855
 #: ../lib/modules/passwordSelfReset.inc:1025
@@ -3991,8 +3996,8 @@ msgstr "従業員番号"
 #: ../lib/modules/inetOrgPerson.inc:93 ../lib/modules/inetOrgPerson.inc:232
 #: ../lib/modules/inetOrgPerson.inc:356 ../lib/modules/inetOrgPerson.inc:610
 #: ../lib/modules/inetOrgPerson.inc:666 ../lib/modules/inetOrgPerson.inc:1497
-#: ../lib/modules/inetOrgPerson.inc:1500 ../lib/modules/inetOrgPerson.inc:1946
-#: ../lib/modules/inetOrgPerson.inc:3612 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:1500 ../lib/modules/inetOrgPerson.inc:1948
+#: ../lib/modules/inetOrgPerson.inc:3629 ../lib/modules/inetOrgPerson.inc:3672
 msgid "Employee type"
 msgstr "雇用形態"
 
@@ -4014,6 +4019,13 @@ msgstr "パスワード・セルフ・リセットのリンクを有効化する
 #: ../lib/modules/selfRegistration.inc:190
 msgid "Enable self registration link"
 msgstr "自己登録のリンクを有効化する"
+
+#: ../lib/modules/freeRadius.inc:116 ../lib/modules/freeRadius.inc:162
+#: ../lib/modules/freeRadius.inc:238 ../lib/modules/freeRadius.inc:273
+#: ../lib/modules/freeRadius.inc:320 ../lib/modules/freeRadius.inc:415
+#: ../lib/modules/freeRadius.inc:708
+msgid "Enabled"
+msgstr "有効"
 
 #: ../lib/modules/customFields.inc:153
 msgid ""
@@ -4062,7 +4074,7 @@ msgstr ""
 "セッション中にあるパスワードのようなセンシティブなデータを暗号化します。PHP "
 "MCrypt拡張が必要です。"
 
-#: ../templates/selfService/adminMain.php:457 ../help/help.inc:103
+#: ../templates/selfService/adminMain.php:462 ../help/help.inc:103
 msgid "Enforce language"
 msgstr "言語を固定"
 
@@ -4175,7 +4187,7 @@ msgstr "例"
 msgid "Examples"
 msgstr "例"
 
-#: ../templates/config/confmain.php:319
+#: ../templates/config/confmain.php:321
 msgid "Execute"
 msgstr "実行"
 
@@ -4183,9 +4195,9 @@ msgstr "実行"
 msgid "Execute lamdaemon"
 msgstr "lamdaemonを実行"
 
-#: ../lib/modules/freeRadius.inc:104 ../lib/modules/freeRadius.inc:130
-#: ../lib/modules/freeRadius.inc:209 ../lib/modules/freeRadius.inc:237
-#: ../lib/modules/freeRadius.inc:385 ../lib/modules/freeRadius.inc:543
+#: ../lib/modules/freeRadius.inc:108 ../lib/modules/freeRadius.inc:222
+#: ../lib/modules/freeRadius.inc:267 ../lib/modules/freeRadius.inc:314
+#: ../lib/modules/freeRadius.inc:520 ../lib/modules/freeRadius.inc:701
 msgid "Expiration date"
 msgstr "期限切れ日付"
 
@@ -4225,7 +4237,7 @@ msgid "Export"
 msgstr "エクスポート"
 
 #: ../templates/pdfedit/pdfmain.php:221 ../templates/pdfedit/pdfmain.php:222
-#: ../help/help.inc:212
+#: ../help/help.inc:214
 msgid "Export PDF structure"
 msgstr "PDF構成のエクスポート"
 
@@ -4234,7 +4246,7 @@ msgid "Export format"
 msgstr "エクスポート形式"
 
 #: ../templates/profedit/profilemain.php:209
-#: ../templates/profedit/profilemain.php:210 ../help/help.inc:194
+#: ../templates/profedit/profilemain.php:210 ../help/help.inc:196
 msgid "Export profile"
 msgstr "プロファイルのエクスポート"
 
@@ -4316,9 +4328,9 @@ msgstr "試行回数インターバル"
 #: ../lib/modules/inetOrgPerson.inc:211 ../lib/modules/inetOrgPerson.inc:444
 #: ../lib/modules/inetOrgPerson.inc:592 ../lib/modules/inetOrgPerson.inc:726
 #: ../lib/modules/inetOrgPerson.inc:730 ../lib/modules/inetOrgPerson.inc:1431
-#: ../lib/modules/inetOrgPerson.inc:1434 ../lib/modules/inetOrgPerson.inc:1939
-#: ../lib/modules/inetOrgPerson.inc:2558 ../lib/modules/inetOrgPerson.inc:3602
-#: ../lib/modules/inetOrgPerson.inc:3652
+#: ../lib/modules/inetOrgPerson.inc:1434 ../lib/modules/inetOrgPerson.inc:1941
+#: ../lib/modules/inetOrgPerson.inc:2561 ../lib/modules/inetOrgPerson.inc:3619
+#: ../lib/modules/inetOrgPerson.inc:3669
 msgid "Fax number"
 msgstr "ファクス番号"
 
@@ -4372,7 +4384,7 @@ msgstr "ファイル・パス"
 
 #: ../templates/masscreate.php:243 ../lib/tools/fileUpload.inc:44
 #: ../lib/modules/ldapPublicKey.inc:80 ../lib/modules/customFields.inc:3280
-#: ../lib/lists.inc:777
+#: ../lib/lists.inc:782
 msgid "File upload"
 msgstr "ファイルのアップロード"
 
@@ -4400,7 +4412,7 @@ msgstr "ファイルのアップロード"
 #: ../lib/modules/groupOfNames.inc:113 ../lib/modules/groupOfNames.inc:339
 #: ../lib/modules/groupOfNames.inc:429 ../lib/modules/groupOfNames.inc:494
 #: ../lib/modules/groupOfNames.inc:584 ../lib/modules/nisMailAlias.inc:93
-#: ../lib/modules/nisMailAlias.inc:373 ../lib/lists.inc:379
+#: ../lib/modules/nisMailAlias.inc:373 ../lib/lists.inc:384
 #: ../help/help.inc:168
 msgid "Filter"
 msgstr "フィルタ"
@@ -4421,8 +4433,8 @@ msgstr "全ての操作が完了しました。"
 #: ../lib/modules/inetOrgPerson.inc:159 ../lib/modules/inetOrgPerson.inc:309
 #: ../lib/modules/inetOrgPerson.inc:549 ../lib/modules/inetOrgPerson.inc:658
 #: ../lib/modules/inetOrgPerson.inc:1195 ../lib/modules/inetOrgPerson.inc:1198
-#: ../lib/modules/inetOrgPerson.inc:1925 ../lib/modules/inetOrgPerson.inc:2481
-#: ../lib/modules/inetOrgPerson.inc:3646
+#: ../lib/modules/inetOrgPerson.inc:1927 ../lib/modules/inetOrgPerson.inc:2484
+#: ../lib/modules/inetOrgPerson.inc:3663
 msgid "First name"
 msgstr "名"
 
@@ -4439,7 +4451,7 @@ msgstr "ユーザの(姓でない)名前。アルファベット, _- と空白�
 msgid "Fix IP addresses"
 msgstr "IPアドレスを修正"
 
-#: ../templates/config/confmain.php:414
+#: ../templates/config/confmain.php:416
 msgid "Fixed list"
 msgstr "固定リスト"
 
@@ -4452,7 +4464,8 @@ msgstr "固定の範囲"
 msgid "Folding marks"
 msgstr "折り返し記号"
 
-#: ../templates/config/confmain.php:273 ../help/help.inc:85
+#: ../templates/config/confmain.php:273
+#: ../templates/selfService/adminMain.php:432 ../help/help.inc:85
 msgid "Follow referrals"
 msgstr "参照を追跡"
 
@@ -4471,8 +4484,8 @@ msgstr ""
 #: ../templates/lists/changePassword.php:243
 #: ../lib/modules/mitKerberos.inc:183 ../lib/modules/mitKerberos.inc:417
 #: ../lib/modules/shadowAccount.inc:369 ../lib/modules/heimdalKerberos.inc:127
-#: ../lib/modules/heimdalKerberos.inc:348 ../lib/modules.inc:1062
-#: ../help/help.inc:206
+#: ../lib/modules/heimdalKerberos.inc:348 ../lib/modules.inc:1064
+#: ../help/help.inc:208
 msgid "Force password change"
 msgstr "強制的なパスワード変更"
 
@@ -4480,7 +4493,7 @@ msgstr "強制的なパスワード変更"
 msgid "Forgot password?"
 msgstr "パスワードをお忘れですか?"
 
-#: ../templates/3rdParty/pla/lib/QueryRender.php:484 ../help/help.inc:252
+#: ../templates/3rdParty/pla/lib/QueryRender.php:484 ../help/help.inc:254
 msgid "Format"
 msgstr "書式"
 
@@ -4499,7 +4512,7 @@ msgstr ""
 msgid "Free printing"
 msgstr "無料の印刷"
 
-#: ../lib/modules/freeRadius.inc:74
+#: ../lib/modules/freeRadius.inc:77
 msgid "FreeRadius"
 msgstr "FreeRadius"
 
@@ -4507,15 +4520,15 @@ msgstr "FreeRadius"
 msgid "Friday"
 msgstr "金曜日"
 
-#: ../templates/config/confmain.php:343 ../lib/modules/selfRegistration.inc:90
+#: ../templates/config/confmain.php:345 ../lib/modules/selfRegistration.inc:90
 #: ../lib/modules/selfRegistration.inc:229
 #: ../lib/modules/passwordSelfReset.inc:116
 #: ../lib/modules/passwordSelfReset.inc:537
-#: ../lib/modules/passwordSelfReset.inc:557 ../help/help.inc:246
+#: ../lib/modules/passwordSelfReset.inc:557 ../help/help.inc:248
 msgid "From address"
 msgstr "発信者アドレス"
 
-#: ../templates/config/confmain.php:520
+#: ../templates/config/confmain.php:528
 msgid "From address for password mails is invalid."
 msgstr "パスワード・メールの発信者アドレスが無効です。"
 
@@ -4641,12 +4654,12 @@ msgstr "一般情報"
 #: ../templates/config/confmain.php:205
 #: ../templates/config/moduleSettings.php:163
 #: ../templates/config/conftypes.php:182
-#: ../templates/selfService/adminMain.php:401
+#: ../templates/selfService/adminMain.php:403
 #: ../templates/profedit/profilepage.php:215
 msgid "General settings"
 msgstr "一般設定"
 
-#: ../templates/lists/changePassword.php:317 ../help/help.inc:244
+#: ../templates/lists/changePassword.php:317 ../help/help.inc:246
 msgid "Generate random password"
 msgstr "ランダムなパスワードを生成"
 
@@ -4709,8 +4722,8 @@ msgstr ""
 msgid "Grace inode period"
 msgstr "iノードクオータの猶予期間"
 
-#: ../templates/config/confmain.php:324
-#: ../templates/selfService/adminMain.php:638
+#: ../templates/config/confmain.php:326
+#: ../templates/selfService/adminMain.php:643
 msgid "Group"
 msgstr "グループ"
 
@@ -4833,10 +4846,10 @@ msgstr ""
 msgid "Group name that is used for PyKota."
 msgstr "PyKotaに使用されているグループ名。"
 
-#: ../lib/modules/freeRadius.inc:96 ../lib/modules/freeRadius.inc:100
-#: ../lib/modules/freeRadius.inc:128 ../lib/modules/freeRadius.inc:154
-#: ../lib/modules/freeRadius.inc:185 ../lib/modules/freeRadius.inc:234
-#: ../lib/modules/freeRadius.inc:277 ../lib/modules/freeRadius.inc:540
+#: ../lib/modules/freeRadius.inc:100 ../lib/modules/freeRadius.inc:104
+#: ../lib/modules/freeRadius.inc:150 ../lib/modules/freeRadius.inc:198
+#: ../lib/modules/freeRadius.inc:264 ../lib/modules/freeRadius.inc:312
+#: ../lib/modules/freeRadius.inc:359 ../lib/modules/freeRadius.inc:697
 msgid "Group names"
 msgstr "グループ名"
 
@@ -4896,15 +4909,15 @@ msgstr "名前のグループ"
 msgid "H-Node (0x08)"
 msgstr "H-Node (0x08)"
 
-#: ../templates/config/confmain.php:356
+#: ../templates/config/confmain.php:358
 #: ../lib/modules/selfRegistration.inc:235
 #: ../lib/modules/passwordSelfReset.inc:541
-#: ../lib/modules/passwordSelfReset.inc:561 ../help/help.inc:255
+#: ../lib/modules/passwordSelfReset.inc:561 ../help/help.inc:257
 msgid "HTML format"
 msgstr "HTMLフォーマット"
 
-#: ../templates/config/confmain.php:448
-#: ../templates/selfService/adminMain.php:442 ../help/help.inc:126
+#: ../templates/config/confmain.php:450
+#: ../templates/selfService/adminMain.php:447 ../help/help.inc:126
 msgid "HTTP authentication"
 msgstr "HTTP認証"
 
@@ -4961,7 +4974,7 @@ msgstr "見出し"
 msgid "Heimdal Kerberos password change command"
 msgstr "Heimdal Kerberosパスワード変更コマンド"
 
-#: ../templates/main_header.php:140 ../lib/modules.inc:667
+#: ../templates/main_header.php:140 ../lib/modules.inc:669
 msgid "Help"
 msgstr "ヘルプ"
 
@@ -4977,7 +4990,7 @@ msgstr "ここでは、LDAPオブジェクトのクラスと属性をブラウ�
 msgid "Here you can change the settings for the terminal server access."
 msgstr "ターミナルサーバーへのアクセス設定を変更できます。"
 
-#: ../lib/selfService.inc:387
+#: ../lib/selfService.inc:389
 msgid "Here you can change your personal settings."
 msgstr "ここで、あなたの個人設定を変更できます。"
 
@@ -5033,7 +5046,7 @@ msgstr "ここには、このデバイスに対するシリアル番号を入力
 msgid "Here you can enter additional web sites for the user."
 msgstr "このユーザーに対する追加のwebサイトを入力できます。"
 
-#: ../help/help.inc:215
+#: ../help/help.inc:217
 msgid ""
 "Here you can enter an alternative mail address for the password. To use the "
 "user's primary email address please leave the field blank."
@@ -5058,7 +5071,7 @@ msgstr "ここにはユーザーの部門を入力できます。"
 msgid "Here you can explicitly enable and disable Zarafa features."
 msgstr "Zarafa機能を明示的に有効化したり無効化したりできます。"
 
-#: ../help/help.inc:213
+#: ../help/help.inc:215
 msgid ""
 "Here you can export PDF structures to other server profiles (overwrite "
 "existing). You may also export a structure to the global templates. In this "
@@ -5070,7 +5083,7 @@ msgstr ""
 "ます。この場合、この名前の構成を持たない全てのサーバープロファイルへコピーさ"
 "れます。"
 
-#: ../help/help.inc:195
+#: ../help/help.inc:197
 msgid ""
 "Here you can export account profiles to other server profiles (overwrite "
 "existing). You may also export a profile to the global templates. In this "
@@ -5082,7 +5095,7 @@ msgstr ""
 "エクスポートすることもできます。個の場合、この名前のプロファイルを持たない全"
 "てのサーバープロファイルへコピーされます。"
 
-#: ../help/help.inc:211
+#: ../help/help.inc:213
 msgid ""
 "Here you can import PDF structures from other server profiles (overwrite "
 "existing)."
@@ -5090,7 +5103,7 @@ msgstr ""
 "ここでは、他のサーバープロファイルからPDF構成をインポート出来ます(既存のもの"
 "は上書きされます)。"
 
-#: ../help/help.inc:193
+#: ../help/help.inc:195
 msgid ""
 "Here you can import account profiles from other server profiles (overwrite "
 "existing)."
@@ -5106,7 +5119,7 @@ msgstr ""
 "ここには、単純なフィルタ(例 'value'または'v*')を入力できます。大文字と小文字"
 "は区別されます。"
 
-#: ../help/help.inc:199
+#: ../help/help.inc:201
 msgid ""
 "Here you can load an account profile to set default settings for your "
 "account. The \"default\" profile is automatically loaded for new accounts."
@@ -5123,7 +5136,7 @@ msgstr "ここで、あなたのアカウントのプロファイルを管理で
 msgid "Here you can overwrite the display name for this account type."
 msgstr "このアカウント・タイプに対する表示名を上書きできます。"
 
-#: ../help/help.inc:201
+#: ../help/help.inc:203
 msgid ""
 "Here you can select a PDF structure and export the account to a PDF file."
 msgstr ""
@@ -5166,7 +5179,7 @@ msgstr ""
 msgid "Here you can set the URL to a custom icon (32x32px) for this module."
 msgstr "このモジュールに対するカスタムアイコン(32x32px)のURLを設定できます。"
 
-#: ../help/help.inc:237
+#: ../help/help.inc:239
 msgid ""
 "Here you can specify additional CSS links to change the layout of the self "
 "service pages. This is useful to adapt them to your corporate design. Please "
@@ -5275,8 +5288,8 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:441 ../lib/modules/zarafaUser.inc:132
 #: ../lib/modules/zarafaUser.inc:1781 ../lib/modules/windowsUser.inc:236
 #: ../lib/modules/windowsUser.inc:561 ../lib/modules/inetOrgPerson.inc:830
-#: ../lib/modules/inetOrgPerson.inc:3572 ../lib/modules/freeRadius.inc:112
-#: ../lib/modules/freeRadius.inc:118 ../lib/modules/zarafaServer.inc:88
+#: ../lib/modules/inetOrgPerson.inc:3589 ../lib/modules/freeRadius.inc:128
+#: ../lib/modules/freeRadius.inc:301 ../lib/modules/zarafaServer.inc:88
 #: ../lib/modules/zarafaServer.inc:159 ../lib/modules/qmailGroup.inc:68
 #: ../lib/modules/qmailGroup.inc:119 ../lib/modules/organizationalRole.inc:81
 #: ../lib/modules/organizationalRole.inc:159
@@ -5287,7 +5300,7 @@ msgstr ""
 msgid "Hidden options"
 msgstr "非表示のオプション"
 
-#: ../templates/config/confmain.php:375
+#: ../templates/config/confmain.php:377
 msgid "Hidden tools"
 msgstr "非表示のツール"
 
@@ -5411,8 +5424,8 @@ msgstr "ユーザに対するホームサーバー。"
 #: ../lib/modules/inetOrgPerson.inc:428 ../lib/modules/inetOrgPerson.inc:586
 #: ../lib/modules/inetOrgPerson.inc:774 ../lib/modules/inetOrgPerson.inc:778
 #: ../lib/modules/inetOrgPerson.inc:1415 ../lib/modules/inetOrgPerson.inc:1418
-#: ../lib/modules/inetOrgPerson.inc:1934 ../lib/modules/inetOrgPerson.inc:2536
-#: ../lib/modules/inetOrgPerson.inc:3598 ../lib/modules/inetOrgPerson.inc:3651
+#: ../lib/modules/inetOrgPerson.inc:1936 ../lib/modules/inetOrgPerson.inc:2539
+#: ../lib/modules/inetOrgPerson.inc:3615 ../lib/modules/inetOrgPerson.inc:3668
 msgid "Home telephone number"
 msgstr "自宅電話番号"
 
@@ -5559,10 +5572,10 @@ msgstr "IMAPパスワード入力"
 #: ../lib/modules/asteriskAccount.inc:1291 ../lib/modules/bindDLZ.inc:92
 #: ../lib/modules/bindDLZ.inc:96 ../lib/modules/bindDLZ.inc:255
 #: ../lib/modules/bindDLZ.inc:495 ../lib/modules/bindDLZ.inc:652
-#: ../lib/modules/bindDLZ.inc:1479 ../lib/modules/freeRadius.inc:84
-#: ../lib/modules/freeRadius.inc:122 ../lib/modules/freeRadius.inc:193
-#: ../lib/modules/freeRadius.inc:225 ../lib/modules/freeRadius.inc:281
-#: ../lib/modules/freeRadius.inc:537 ../lib/modules/fixed_ip.inc:106
+#: ../lib/modules/bindDLZ.inc:1479 ../lib/modules/freeRadius.inc:88
+#: ../lib/modules/freeRadius.inc:206 ../lib/modules/freeRadius.inc:255
+#: ../lib/modules/freeRadius.inc:306 ../lib/modules/freeRadius.inc:363
+#: ../lib/modules/freeRadius.inc:694 ../lib/modules/fixed_ip.inc:106
 #: ../lib/modules/fixed_ip.inc:421 ../lib/modules/fixed_ip.inc:741
 msgid "IP address"
 msgstr "IPアドレス"
@@ -5613,10 +5626,10 @@ msgstr "識別子"
 msgid "Idle time limit"
 msgstr "無動作時間の制限"
 
-#: ../lib/modules/freeRadius.inc:108 ../lib/modules/freeRadius.inc:132
-#: ../lib/modules/freeRadius.inc:157 ../lib/modules/freeRadius.inc:217
-#: ../lib/modules/freeRadius.inc:240 ../lib/modules/freeRadius.inc:289
-#: ../lib/modules/freeRadius.inc:541
+#: ../lib/modules/freeRadius.inc:112 ../lib/modules/freeRadius.inc:153
+#: ../lib/modules/freeRadius.inc:230 ../lib/modules/freeRadius.inc:270
+#: ../lib/modules/freeRadius.inc:316 ../lib/modules/freeRadius.inc:371
+#: ../lib/modules/freeRadius.inc:698
 msgid "Idle timeout"
 msgstr "無動作タイムアウト"
 
@@ -5915,7 +5928,7 @@ msgstr ""
 
 #: ../lib/modules/mitKerberos.inc:184 ../lib/modules/sambaSamAccount.inc:296
 #: ../lib/modules/windowsUser.inc:215 ../lib/modules/heimdalKerberos.inc:128
-#: ../help/help.inc:207
+#: ../help/help.inc:209
 msgid ""
 "If you set this option then the user has to change his password at the next "
 "login."
@@ -5987,7 +6000,7 @@ msgid "Import"
 msgstr "インポート"
 
 #: ../templates/pdfedit/pdfmain.php:215 ../templates/pdfedit/pdfmain.php:216
-#: ../help/help.inc:210
+#: ../help/help.inc:212
 msgid "Import PDF structures"
 msgstr "PDF構成をインポート"
 
@@ -5996,7 +6009,7 @@ msgid "Import from server"
 msgstr "サーバーからインポート"
 
 #: ../templates/profedit/profilemain.php:203
-#: ../templates/profedit/profilemain.php:204 ../help/help.inc:192
+#: ../templates/profedit/profilemain.php:204 ../help/help.inc:194
 msgid "Import profiles"
 msgstr "プロファイルのインポート"
 
@@ -6066,8 +6079,8 @@ msgstr "初期プログラム"
 #: ../lib/modules/inetOrgPerson.inc:175 ../lib/modules/inetOrgPerson.inc:324
 #: ../lib/modules/inetOrgPerson.inc:631 ../lib/modules/inetOrgPerson.inc:858
 #: ../lib/modules/inetOrgPerson.inc:1212 ../lib/modules/inetOrgPerson.inc:1215
-#: ../lib/modules/inetOrgPerson.inc:1951 ../lib/modules/inetOrgPerson.inc:2739
-#: ../lib/modules/inetOrgPerson.inc:3626 ../lib/modules/inetOrgPerson.inc:3659
+#: ../lib/modules/inetOrgPerson.inc:1953 ../lib/modules/inetOrgPerson.inc:2744
+#: ../lib/modules/inetOrgPerson.inc:3643 ../lib/modules/inetOrgPerson.inc:3676
 msgid "Initials"
 msgstr "イニシャル"
 
@@ -6109,7 +6122,7 @@ msgstr ""
 "iノード・ソフトクオータはiノード・ハードクオータ<より小さくなくてはなりませ"
 "ん。"
 
-#: ../templates/selfService/adminMain.php:653
+#: ../templates/selfService/adminMain.php:658
 msgid "Input fields"
 msgstr "入力フィールド"
 
@@ -6163,7 +6176,7 @@ msgid "Invalid password for IMAP admin or other problem occured."
 msgstr ""
 "IMAP管理者に対する不正なパスワード、または、その他の問題が発生しました。"
 
-#: ../lib/modules/ldapPublicKey.inc:546 ../lib/modules/inetOrgPerson.inc:3354
+#: ../lib/modules/ldapPublicKey.inc:546 ../lib/modules/inetOrgPerson.inc:3359
 #: ../lib/modules/customFields.inc:1403
 msgid "Invalid request"
 msgstr "無効なリクエスト"
@@ -6222,9 +6235,9 @@ msgstr "JOBサフィックス"
 #: ../lib/modules/inetOrgPerson.inc:229 ../lib/modules/inetOrgPerson.inc:340
 #: ../lib/modules/inetOrgPerson.inc:604 ../lib/modules/inetOrgPerson.inc:650
 #: ../lib/modules/inetOrgPerson.inc:654 ../lib/modules/inetOrgPerson.inc:1471
-#: ../lib/modules/inetOrgPerson.inc:1474 ../lib/modules/inetOrgPerson.inc:1924
-#: ../lib/modules/inetOrgPerson.inc:2750 ../lib/modules/inetOrgPerson.inc:3608
-#: ../lib/modules/inetOrgPerson.inc:3654
+#: ../lib/modules/inetOrgPerson.inc:1474 ../lib/modules/inetOrgPerson.inc:1926
+#: ../lib/modules/inetOrgPerson.inc:2755 ../lib/modules/inetOrgPerson.inc:3625
+#: ../lib/modules/inetOrgPerson.inc:3671
 msgid "Job title"
 msgstr "役職"
 
@@ -6236,7 +6249,7 @@ msgstr "ユーザの役職: 社長、部長、..."
 msgid "Jump 10 pages backward"
 msgstr "10ページ前へ戻る"
 
-#: ../lib/lists.inc:317
+#: ../lib/lists.inc:322
 msgid "Jump 10 pages forward"
 msgstr "10ページ先へ進む"
 
@@ -6257,7 +6270,7 @@ msgstr "オブジェクトクラスへジャンプ"
 msgid "Jump to first page"
 msgstr "最初のページへジャンプ"
 
-#: ../lib/lists.inc:322
+#: ../lib/lists.inc:327
 msgid "Jump to last page"
 msgstr "最後のページへジャンプ"
 
@@ -6373,7 +6386,7 @@ msgstr ""
 "LAMは自動的にUID/GID番号を提案します。固定された番号の範囲、または、オブジェ"
 "クトクラス \"sambaUnixIdPool\" のLDAPエントリを使用する事もできます。"
 
-#: ../help/help.inc:219
+#: ../help/help.inc:221
 msgid "LAM will search for accounts in this part of the LDAP tree."
 msgstr "LAMは、このLDAPツリー部分からアカウントを検索します。"
 
@@ -6388,7 +6401,7 @@ msgstr ""
 "定します。 %sn% は姓に置き換えられます。@givenname@ は名前の最初の文字に置き"
 "換えられます。Personalタブの属性だけが使用されます。"
 
-#: ../help/help.inc:221
+#: ../help/help.inc:223
 msgid ""
 "LAM will use this LDAP DN and password to search for accounts. It is "
 "sufficient to specify an account with read rights. If nothing is inserted "
@@ -6427,12 +6440,12 @@ msgstr "このリストに属するLDAPエントリ。"
 msgid "LDAP entries that moderate this list (e.g. approve mails)."
 msgstr "このリストをモデレートするLDAPエントリ(e.g. approve mails)。"
 
-#: ../templates/login.php:642 ../lib/account.inc:1204
+#: ../templates/login.php:642 ../lib/account.inc:1226
 msgid "LDAP error, server says:"
 msgstr "LDAP エラー、サーバからのメッセージ:"
 
-#: ../templates/multiEdit.php:115 ../templates/config/confmain.php:438
-#: ../help/help.inc:271
+#: ../templates/multiEdit.php:115 ../templates/config/confmain.php:440
+#: ../help/help.inc:273
 msgid "LDAP filter"
 msgstr "LDAPフィルター"
 
@@ -6452,11 +6465,11 @@ msgstr ""
 "このリストのメンバーを記述するLDAPフィルター (e.g. \"((objectclass=qmailUser)"
 "(employeeType=accountant))\")。"
 
-#: ../lib/modules.inc:1336
+#: ../lib/modules.inc:1338
 msgid "LDAP operation successful."
 msgstr "LDAP操作が完了しました。"
 
-#: ../templates/selfService/adminMain.php:432
+#: ../templates/selfService/adminMain.php:437
 msgid "LDAP password"
 msgstr "LDAPパスワード"
 
@@ -6464,15 +6477,15 @@ msgstr "LDAPパスワード"
 msgid "LDAP said"
 msgstr "LDAPのメッセージ"
 
-#: ../templates/config/confmain.php:415 ../help/help.inc:122
+#: ../templates/config/confmain.php:417 ../help/help.inc:122
 msgid "LDAP search"
 msgstr "LDAP検索"
 
-#: ../templates/selfService/adminMain.php:427 ../help/help.inc:222
+#: ../templates/selfService/adminMain.php:429 ../help/help.inc:224
 msgid "LDAP search attribute"
 msgstr "LDAP検索属性"
 
-#: ../lib/account.inc:796
+#: ../lib/account.inc:818
 msgid "LDAP search failed! Please check your preferences."
 msgstr "LDAP検索に失敗しました! プリファレンスを確認してください。"
 
@@ -6484,15 +6497,15 @@ msgstr "LDAP検索リミット"
 msgid "LDAP server"
 msgstr "LDAPサーバ"
 
-#: ../lib/account.inc:787
+#: ../lib/account.inc:809
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "LDAPのサイズ制限を越えました。一部のエントリのみを表示します。"
 
-#: ../templates/multiEdit.php:82 ../templates/config/confmain.php:434
+#: ../templates/multiEdit.php:82 ../templates/config/confmain.php:436
 #: ../templates/config/conftypes.php:253
-#: ../templates/selfService/adminMain.php:421
+#: ../templates/selfService/adminMain.php:423
 #: ../templates/profedit/profilepage.php:202 ../help/help.inc:71
-#: ../help/help.inc:218 ../help/help.inc:269
+#: ../help/help.inc:220 ../help/help.inc:271
 msgid "LDAP suffix"
 msgstr "LDAPサフィックス"
 
@@ -6500,11 +6513,11 @@ msgstr "LDAPサフィックス"
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAPアップロード中です。お待ちください。"
 
-#: ../templates/selfService/adminMain.php:429
+#: ../templates/selfService/adminMain.php:434
 msgid "LDAP user"
 msgstr "LDAPユーザー"
 
-#: ../help/help.inc:220
+#: ../help/help.inc:222
 msgid "LDAP user and password"
 msgstr "LDAPユーザーとパスワード"
 
@@ -6547,7 +6560,7 @@ msgstr ""
 msgid "Lamdaemon server and path"
 msgstr "Lamdaemonサーバおよびパス"
 
-#: ../templates/config/confmain.php:334
+#: ../templates/config/confmain.php:336
 msgid "Lamdaemon settings"
 msgstr "Lamdaemon設定"
 
@@ -6581,15 +6594,15 @@ msgid "Lamdaemon: read quotas"
 msgstr "Lamdaemon: クオータの読み込み"
 
 #: ../templates/login.php:397
-#: ../templates/selfService/selfServiceLogin.php:344
+#: ../templates/selfService/selfServiceLogin.php:346
 msgid "Language"
 msgstr "言語"
 
-#: ../templates/config/confmain.php:570
+#: ../templates/config/confmain.php:578
 msgid "Language is not defined!"
 msgstr "言語が未定されていません!"
 
-#: ../templates/config/confmain.php:304
+#: ../templates/config/confmain.php:306
 msgid "Language settings"
 msgstr "言語の設定"
 
@@ -6606,8 +6619,8 @@ msgstr "最終ログイン時刻"
 #: ../lib/modules/inetOrgPerson.inc:159 ../lib/modules/inetOrgPerson.inc:315
 #: ../lib/modules/inetOrgPerson.inc:550 ../lib/modules/inetOrgPerson.inc:662
 #: ../lib/modules/inetOrgPerson.inc:1203 ../lib/modules/inetOrgPerson.inc:1206
-#: ../lib/modules/inetOrgPerson.inc:1926 ../lib/modules/inetOrgPerson.inc:2492
-#: ../lib/modules/inetOrgPerson.inc:3646
+#: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/inetOrgPerson.inc:2495
+#: ../lib/modules/inetOrgPerson.inc:3663
 msgid "Last name"
 msgstr "姓"
 
@@ -6676,7 +6689,7 @@ msgstr "行の終わり"
 msgid "Link text"
 msgstr "リンク・テキスト"
 
-#: ../templates/selfService/adminMain.php:362
+#: ../templates/selfService/adminMain.php:364
 msgid "Link to self service login page for your users"
 msgstr "ユーザーのセルフサービス・ログインページへのリンク"
 
@@ -6710,7 +6723,7 @@ msgstr ""
 "ユーザがログインできるSambaワークステーションのリスト。未記入はすべてのワーク"
 "ステーションを意味します。"
 
-#: ../templates/config/confmain.php:564
+#: ../templates/config/confmain.php:572
 msgid "List of admin users is empty or invalid!"
 msgstr "管理者(admin users)のリストが空または無効です!"
 
@@ -6727,7 +6740,7 @@ msgstr "禁止されたコーデックのリスト"
 msgid "List of entries to be deleted:"
 msgstr "削除されるエントリ一覧:"
 
-#: ../templates/config/confmain.php:430
+#: ../templates/config/confmain.php:432
 msgid "List of valid users"
 msgstr "有効なユーザのリスト"
 
@@ -6735,7 +6748,7 @@ msgstr "有効なユーザのリスト"
 msgid "Listeners"
 msgstr "リスナー"
 
-#: ../lib/modules.inc:1241 ../help/help.inc:198
+#: ../lib/modules.inc:1243 ../help/help.inc:200
 msgid "Load profile"
 msgstr "プロファイルのロード"
 
@@ -6802,9 +6815,9 @@ msgstr "ローカルメンバ"
 #: ../lib/modules/inetOrgPerson.inc:190 ../lib/modules/inetOrgPerson.inc:518
 #: ../lib/modules/inetOrgPerson.inc:565 ../lib/modules/inetOrgPerson.inc:794
 #: ../lib/modules/inetOrgPerson.inc:798 ../lib/modules/inetOrgPerson.inc:1277
-#: ../lib/modules/inetOrgPerson.inc:1280 ../lib/modules/inetOrgPerson.inc:1947
-#: ../lib/modules/inetOrgPerson.inc:2646 ../lib/modules/inetOrgPerson.inc:3584
-#: ../lib/modules/inetOrgPerson.inc:3648
+#: ../lib/modules/inetOrgPerson.inc:1280 ../lib/modules/inetOrgPerson.inc:1949
+#: ../lib/modules/inetOrgPerson.inc:2649 ../lib/modules/inetOrgPerson.inc:3601
+#: ../lib/modules/inetOrgPerson.inc:3665
 msgid "Location"
 msgstr "住所"
 
@@ -6890,22 +6903,22 @@ msgstr "ロギング"
 
 #: ../templates/login.php:433 ../templates/config/conflogin.php:62
 #: ../templates/config/mainlogin.php:72
-#: ../templates/selfService/selfServiceLogin.php:227
-#: ../templates/selfService/selfServiceLogin.php:366
+#: ../templates/selfService/selfServiceLogin.php:229
+#: ../templates/selfService/selfServiceLogin.php:368
 #: ../templates/selfService/adminLogin.php:64
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:530 ../help/help.inc:56
 msgid "Login"
 msgstr "ログイン"
 
-#: ../templates/selfService/adminMain.php:468 ../help/help.inc:224
+#: ../templates/selfService/adminMain.php:473 ../help/help.inc:226
 msgid "Login attribute label"
 msgstr "ログイン属性ラベル"
 
-#: ../templates/selfService/adminMain.php:477 ../help/help.inc:226
+#: ../templates/selfService/adminMain.php:482 ../help/help.inc:228
 msgid "Login caption"
 msgstr "ログインの説明文"
 
-#: ../templates/config/confmain.php:417 ../help/help.inc:120
+#: ../templates/config/confmain.php:419 ../help/help.inc:120
 msgid "Login method"
 msgstr "ログイン方法"
 
@@ -6972,7 +6985,7 @@ msgid "Logon script is invalid!"
 msgstr "ログオンスクリプトが無効です!"
 
 #: ../templates/selfService/selfServiceMain.php:63
-#: ../templates/selfService/selfServiceMain.php:419
+#: ../templates/selfService/selfServiceMain.php:421
 #: ../templates/main_header.php:135
 msgid "Logout"
 msgstr "ログアウト"
@@ -7028,11 +7041,11 @@ msgstr "メール・ドメイン"
 msgid "Mail routing"
 msgstr "メール転送"
 
-#: ../lib/modules/selfRegistration.inc:615
-#: ../lib/modules/selfRegistration.inc:635
-#: ../lib/modules/passwordSelfReset.inc:1546
-#: ../lib/modules/passwordSelfReset.inc:1561
-#: ../lib/modules/passwordSelfReset.inc:1594
+#: ../lib/modules/selfRegistration.inc:625
+#: ../lib/modules/selfRegistration.inc:645
+#: ../lib/modules/passwordSelfReset.inc:1548
+#: ../lib/modules/passwordSelfReset.inc:1563
+#: ../lib/modules/passwordSelfReset.inc:1596
 msgid "Mail sending failed."
 msgstr "メール送信に失敗しました。"
 
@@ -7053,7 +7066,7 @@ msgstr "メールサーバ"
 msgid "Mail servers (\"MX\" records)"
 msgstr "メール・サーバー (\"MX\" レコード)"
 
-#: ../lib/account.inc:1031
+#: ../lib/account.inc:1053
 #, php-format
 msgid "Mail successfully sent to %s."
 msgstr "%s へ正常にメールを送信しました。"
@@ -7122,7 +7135,7 @@ msgstr "この名前へのメールは受信者に転送されます。"
 msgid "Main"
 msgstr "メイン"
 
-#: ../templates/selfService/adminMain.php:483 ../help/help.inc:228
+#: ../templates/selfService/adminMain.php:488 ../help/help.inc:230
 msgid "Main page caption"
 msgstr "メインページの説明文"
 
@@ -7180,8 +7193,8 @@ msgstr "管理対象サフィックス"
 #: ../lib/modules/ipHost.inc:253 ../lib/modules/inetOrgPerson.inc:364
 #: ../lib/modules/inetOrgPerson.inc:619 ../lib/modules/inetOrgPerson.inc:670
 #: ../lib/modules/inetOrgPerson.inc:674 ../lib/modules/inetOrgPerson.inc:1561
-#: ../lib/modules/inetOrgPerson.inc:1927 ../lib/modules/inetOrgPerson.inc:3618
-#: ../lib/modules/inetOrgPerson.inc:3657
+#: ../lib/modules/inetOrgPerson.inc:1929 ../lib/modules/inetOrgPerson.inc:3635
+#: ../lib/modules/inetOrgPerson.inc:3674
 msgid "Manager"
 msgstr "管理者"
 
@@ -7308,7 +7321,7 @@ msgstr "最大試行回数"
 msgid "Maximum file size"
 msgstr "最大ファイルサイズ"
 
-#: ../lib/modules/inetOrgPerson.inc:3684
+#: ../lib/modules/inetOrgPerson.inc:3701
 msgid "Maximum file size (kB)"
 msgstr "最大ファイルサイズ (kB)"
 
@@ -7318,7 +7331,7 @@ msgstr ""
 "最大ファイルサイズは数字でなくてはなりません。無制限の場合は 0 を入力してくだ"
 "さい。"
 
-#: ../lib/modules/inetOrgPerson.inc:3683
+#: ../lib/modules/inetOrgPerson.inc:3700
 msgid "Maximum height (px)"
 msgstr "最大高 (px)"
 
@@ -7339,7 +7352,7 @@ msgstr "最長リース期間"
 msgid "Maximum length"
 msgstr "最大長"
 
-#: ../lib/lists.inc:1011 ../help/help.inc:97
+#: ../lib/lists.inc:1016 ../help/help.inc:97
 msgid "Maximum list entries"
 msgstr "リストエントリの最大数"
 
@@ -7362,7 +7375,7 @@ msgstr "保留した通話が非アクティブになってから切断される
 msgid "Maximum password age"
 msgstr "パスワード期限(age)の最大値"
 
-#: ../lib/modules/inetOrgPerson.inc:3682
+#: ../lib/modules/inetOrgPerson.inc:3699
 msgid "Maximum width (px)"
 msgstr "最大幅 (px)"
 
@@ -7536,12 +7549,12 @@ msgstr "編集コマンド(追加、削除または置換)がありません。"
 #: ../lib/modules/inetOrgPerson.inc:160 ../lib/modules/inetOrgPerson.inc:436
 #: ../lib/modules/inetOrgPerson.inc:589 ../lib/modules/inetOrgPerson.inc:718
 #: ../lib/modules/inetOrgPerson.inc:722 ../lib/modules/inetOrgPerson.inc:1423
-#: ../lib/modules/inetOrgPerson.inc:1426 ../lib/modules/inetOrgPerson.inc:1935
-#: ../lib/modules/inetOrgPerson.inc:3600 ../lib/modules/inetOrgPerson.inc:3652
+#: ../lib/modules/inetOrgPerson.inc:1426 ../lib/modules/inetOrgPerson.inc:1937
+#: ../lib/modules/inetOrgPerson.inc:3617 ../lib/modules/inetOrgPerson.inc:3669
 msgid "Mobile number"
 msgstr "携帯電話番号"
 
-#: ../lib/modules/inetOrgPerson.inc:2547
+#: ../lib/modules/inetOrgPerson.inc:2550
 msgid "Mobile telephone number"
 msgstr "携帯電話番号"
 
@@ -7617,7 +7630,7 @@ msgstr "変更中"
 #: ../templates/config/confmain.php:217
 #: ../templates/config/moduleSettings.php:175
 #: ../templates/config/conftypes.php:194
-#: ../templates/selfService/adminMain.php:403
+#: ../templates/selfService/adminMain.php:405
 msgid "Module settings"
 msgstr "モジュール設定"
 
@@ -7708,7 +7721,7 @@ msgstr "複数の値はカンマによって区切られます。"
 #: ../lib/modules/inetOrgPerson.inc:819 ../lib/modules/inetOrgPerson.inc:827
 #: ../lib/modules/inetOrgPerson.inc:843 ../lib/modules/inetOrgPerson.inc:851
 #: ../lib/modules/inetOrgPerson.inc:859 ../lib/modules/systemQuotas.inc:70
-#: ../lib/modules/freeRadius.inc:101 ../lib/modules/kolabSharedFolder.inc:126
+#: ../lib/modules/freeRadius.inc:105 ../lib/modules/kolabSharedFolder.inc:126
 #: ../lib/modules/kolabSharedFolder.inc:135 ../lib/modules/qmailGroup.inc:128
 #: ../lib/modules/qmailGroup.inc:136 ../lib/modules/qmailGroup.inc:149
 #: ../lib/modules/qmailGroup.inc:161 ../lib/modules/qmailGroup.inc:169
@@ -7880,7 +7893,7 @@ msgstr "ネーム・サーバー"
 msgid "Name servers (\"NS\" records)"
 msgstr "ネーム・サーバー (\"NS\" レコード)"
 
-#: ../help/help.inc:189
+#: ../help/help.inc:191
 msgid ""
 "Name under which the profile will be saved. If a profile with the same name "
 "exists, it will be overwritten."
@@ -7894,10 +7907,10 @@ msgstr "名前付きオブジェクト"
 
 #: ../lib/modules/dhcp_settings.inc:193 ../lib/modules/dhcp_settings.inc:216
 #: ../lib/modules/dhcp_settings.inc:610 ../lib/modules/dhcp_settings.inc:686
-#: ../lib/modules/freeRadius.inc:88 ../lib/modules/freeRadius.inc:124
-#: ../lib/modules/freeRadius.inc:138 ../lib/modules/freeRadius.inc:201
-#: ../lib/modules/freeRadius.inc:228 ../lib/modules/freeRadius.inc:285
-#: ../lib/modules/freeRadius.inc:538
+#: ../lib/modules/freeRadius.inc:92 ../lib/modules/freeRadius.inc:134
+#: ../lib/modules/freeRadius.inc:214 ../lib/modules/freeRadius.inc:258
+#: ../lib/modules/freeRadius.inc:308 ../lib/modules/freeRadius.inc:367
+#: ../lib/modules/freeRadius.inc:695
 msgid "Net mask"
 msgstr "ネットマスク"
 
@@ -8005,11 +8018,11 @@ msgstr "新しいマスタパスワードが正しく設定されました。"
 msgid "New object"
 msgstr "新しいオブジェクト"
 
-#: ../templates/ou_edit.php:185 ../help/help.inc:263
+#: ../templates/ou_edit.php:185 ../help/help.inc:265
 msgid "New organisational unit"
 msgstr "新しい organizational unit"
 
-#: ../templates/config/confmain.php:451
+#: ../templates/config/confmain.php:453
 #: ../lib/modules/sambaSamAccount.inc:2272
 #: ../lib/modules/posixAccount.inc:2536 ../lib/modules/windowsUser.inc:1719
 #: ../lib/modules/passwordSelfReset.inc:1059
@@ -8072,7 +8085,7 @@ msgstr "新しいsudoロール"
 msgid "New user"
 msgstr "新しいユーザ"
 
-#: ../lib/modules/inetOrgPerson.inc:1859
+#: ../lib/modules/inetOrgPerson.inc:1861
 msgid "New user certificate"
 msgstr "新しいユーザー証明書"
 
@@ -8137,12 +8150,13 @@ msgstr "ニックネーム"
 #: ../templates/schema/schema.php:200 ../templates/schema/schema.php:205
 #: ../templates/pdfedit/pdfpage.php:460 ../lib/modules/pykotaPrinter.inc:52
 #: ../lib/modules/pykotaPrinter.inc:168 ../lib/modules/pykotaPrinter.inc:169
-#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/qmailGroup.inc:321
-#: ../lib/modules/qmailGroup.inc:322 ../lib/modules/qmailGroup.inc:323
-#: ../lib/modules/qmailGroup.inc:363 ../lib/modules/qmailGroup.inc:364
-#: ../lib/modules/qmailGroup.inc:365 ../lib/modules/qmailGroup.inc:1030
-#: ../lib/modules/qmailGroup.inc:1071 ../lib/modules/qmailGroup.inc:1077
-#: ../lib/modules/imapAccess.inc:121
+#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/freeRadius.inc:161
+#: ../lib/modules/freeRadius.inc:414 ../lib/modules/freeRadius.inc:706
+#: ../lib/modules/qmailGroup.inc:321 ../lib/modules/qmailGroup.inc:322
+#: ../lib/modules/qmailGroup.inc:323 ../lib/modules/qmailGroup.inc:363
+#: ../lib/modules/qmailGroup.inc:364 ../lib/modules/qmailGroup.inc:365
+#: ../lib/modules/qmailGroup.inc:1030 ../lib/modules/qmailGroup.inc:1071
+#: ../lib/modules/qmailGroup.inc:1077 ../lib/modules/imapAccess.inc:121
 msgid "No"
 msgstr "いいえ"
 
@@ -8228,7 +8242,7 @@ msgstr "説明なし"
 msgid "No domains found!"
 msgstr "ドメインが見つかりません!"
 
-#: ../lib/modules/passwordSelfReset.inc:1546
+#: ../lib/modules/passwordSelfReset.inc:1548
 msgid "No email address found."
 msgstr "eメール・アドレスが見つかりません!"
 
@@ -8237,7 +8251,7 @@ msgstr "eメール・アドレスが見つかりません!"
 msgid "No entry was selected to delete"
 msgstr "削除するエントリが選択されていません。"
 
-#: ../lib/modules/ldapPublicKey.inc:483 ../lib/modules/inetOrgPerson.inc:3288
+#: ../lib/modules/ldapPublicKey.inc:483 ../lib/modules/inetOrgPerson.inc:3293
 #: ../lib/modules/customFields.inc:3642
 msgid "No file received."
 msgstr "ファイルが受信されていません。"
@@ -8309,7 +8323,7 @@ msgstr "新しいエントリがありません"
 msgid "No objects found!"
 msgstr "オブジェクトが見つかりません!"
 
-#: ../templates/config/confmodules.php:406
+#: ../templates/config/confmodules.php:423
 msgid "No or more than one base module selected!"
 msgstr "ベースモジュールが選択されていないか、または複数が選択されています!"
 
@@ -8521,7 +8535,7 @@ msgstr "OU が無効です!"
 msgid "OU is not empty or invalid!"
 msgstr "OU が空白でないか無効!"
 
-#: ../help/help.inc:263 ../help/help.inc:265
+#: ../help/help.inc:265 ../help/help.inc:267
 msgid "OU-Editor"
 msgstr "OUエディタ"
 
@@ -8555,9 +8569,9 @@ msgstr "Off"
 #: ../lib/modules/inetOrgPerson.inc:202 ../lib/modules/inetOrgPerson.inc:542
 #: ../lib/modules/inetOrgPerson.inc:577 ../lib/modules/inetOrgPerson.inc:814
 #: ../lib/modules/inetOrgPerson.inc:818 ../lib/modules/inetOrgPerson.inc:1383
-#: ../lib/modules/inetOrgPerson.inc:1386 ../lib/modules/inetOrgPerson.inc:1945
-#: ../lib/modules/inetOrgPerson.inc:2679 ../lib/modules/inetOrgPerson.inc:3592
-#: ../lib/modules/inetOrgPerson.inc:3650
+#: ../lib/modules/inetOrgPerson.inc:1386 ../lib/modules/inetOrgPerson.inc:1947
+#: ../lib/modules/inetOrgPerson.inc:2682 ../lib/modules/inetOrgPerson.inc:3609
+#: ../lib/modules/inetOrgPerson.inc:3667
 msgid "Office name"
 msgstr "事業所名"
 
@@ -8579,8 +8593,8 @@ msgstr "事業所名"
 #: ../templates/selfService/profManage.php:227
 #: ../templates/selfService/profManage.php:240
 #: ../templates/selfService/adminLogin.php:165
-#: ../templates/selfService/adminMain.php:594
-#: ../templates/selfService/adminMain.php:647
+#: ../templates/selfService/adminMain.php:599
+#: ../templates/selfService/adminMain.php:652
 #: ../templates/pdfedit/pdfmain.php:210 ../templates/pdfedit/pdfmain.php:217
 #: ../templates/pdfedit/pdfmain.php:223
 #: ../templates/profedit/profilemain.php:199
@@ -8595,13 +8609,13 @@ msgstr "事業所名"
 #: ../lib/modules/nisnetgroup.inc:479 ../lib/modules/nisnetgroup.inc:489
 #: ../lib/modules/asteriskExtension.inc:484 ../lib/modules/aliasEntry.inc:146
 #: ../lib/modules/aliasEntry.inc:166 ../lib/modules/qmailGroup.inc:862
-#: ../lib/modules/imapAccess.inc:295 ../lib/modules/organizationalRole.inc:337
+#: ../lib/modules/imapAccess.inc:296 ../lib/modules/organizationalRole.inc:337
 #: ../lib/modules/passwordSelfReset.inc:872
 #: ../lib/modules/passwordSelfReset.inc:1094
 #: ../lib/modules/windowsGroup.inc:603 ../lib/modules/groupOfNames.inc:394
 #: ../lib/modules/groupOfNames.inc:549 ../lib/modules/nisMailAlias.inc:375
-#: ../lib/modules/nisMailAlias.inc:384 ../lib/lists.inc:710
-#: ../lib/lists.inc:792 ../lib/modules.inc:1229
+#: ../lib/modules/nisMailAlias.inc:384 ../lib/lists.inc:715
+#: ../lib/lists.inc:797 ../lib/modules.inc:1231
 msgid "Ok"
 msgstr "Ok"
 
@@ -8649,7 +8663,7 @@ msgstr "操作の統計"
 msgid "Operation successful. DN <b>%s</b> has been created."
 msgstr "操作が成功しました。DN <b>%s</b>が作成されました。"
 
-#: ../templates/multiEdit.php:117 ../help/help.inc:273
+#: ../templates/multiEdit.php:117 ../help/help.inc:275
 msgid "Operations"
 msgstr "操作"
 
@@ -8721,8 +8735,8 @@ msgstr "並べ替え"
 #: ../lib/modules/inetOrgPerson.inc:226 ../lib/modules/inetOrgPerson.inc:510
 #: ../lib/modules/inetOrgPerson.inc:622 ../lib/modules/inetOrgPerson.inc:846
 #: ../lib/modules/inetOrgPerson.inc:850 ../lib/modules/inetOrgPerson.inc:1532
-#: ../lib/modules/inetOrgPerson.inc:1535 ../lib/modules/inetOrgPerson.inc:1950
-#: ../lib/modules/inetOrgPerson.inc:3622 ../lib/modules/inetOrgPerson.inc:3658
+#: ../lib/modules/inetOrgPerson.inc:1535 ../lib/modules/inetOrgPerson.inc:1952
+#: ../lib/modules/inetOrgPerson.inc:3639 ../lib/modules/inetOrgPerson.inc:3675
 msgid "Organisation"
 msgstr "組織"
 
@@ -8730,8 +8744,8 @@ msgstr "組織"
 #: ../lib/modules/inetOrgPerson.inc:502 ../lib/modules/inetOrgPerson.inc:625
 #: ../lib/modules/inetOrgPerson.inc:838 ../lib/modules/inetOrgPerson.inc:842
 #: ../lib/modules/inetOrgPerson.inc:1523 ../lib/modules/inetOrgPerson.inc:1526
-#: ../lib/modules/inetOrgPerson.inc:1949 ../lib/modules/inetOrgPerson.inc:2811
-#: ../lib/modules/inetOrgPerson.inc:3620 ../lib/modules/inetOrgPerson.inc:3658
+#: ../lib/modules/inetOrgPerson.inc:1951 ../lib/modules/inetOrgPerson.inc:2816
+#: ../lib/modules/inetOrgPerson.inc:3637 ../lib/modules/inetOrgPerson.inc:3675
 msgid "Organisational unit"
 msgstr "Organisational unit"
 
@@ -8745,7 +8759,7 @@ msgstr "Organizational units"
 msgid "Organisational units contains an invalid entry."
 msgstr "Organizational unitsに無効なエントリが含まれています。"
 
-#: ../templates/multiEdit.php:98 ../templates/config/confmain.php:328
+#: ../templates/multiEdit.php:98 ../templates/config/confmain.php:330
 msgid "Other"
 msgstr "その他"
 
@@ -8794,7 +8808,7 @@ msgstr "オーバーレイ"
 msgid "Override default quota settings."
 msgstr "デフォルトのquota設定を上書き。"
 
-#: ../templates/config/confmain.php:320 ../lib/types/asteriskExt.inc:96
+#: ../templates/config/confmain.php:322 ../lib/types/asteriskExt.inc:96
 #: ../lib/types/asteriskExt.inc:158
 msgid "Owner"
 msgstr "所有者"
@@ -8829,7 +8843,7 @@ msgid "PDF editor"
 msgstr "PDFエディタ"
 
 #: ../templates/masscreate.php:275 ../templates/pdfedit/pdfmain.php:310
-#: ../lib/lists.inc:688 ../help/help.inc:204
+#: ../lib/lists.inc:693 ../help/help.inc:206
 msgid "PDF structure"
 msgstr "PDF構成"
 
@@ -8899,20 +8913,24 @@ msgstr ""
 msgid "Page count"
 msgstr "ページ数"
 
-#: ../templates/selfService/adminMain.php:489 ../help/help.inc:234
+#: ../templates/selfService/adminMain.php:494 ../help/help.inc:236
 msgid "Page header"
 msgstr "ページヘッダ"
 
-#: ../templates/selfService/adminMain.php:402
+#: ../templates/selfService/adminMain.php:404
 msgid "Page layout"
 msgstr "ページレイアウト"
+
+#: ../templates/config/confmain.php:276 ../help/help.inc:184
+msgid "Paged results"
+msgstr "ページに分割した結果"
 
 #: ../lib/modules/inetOrgPerson.inc:78 ../lib/modules/inetOrgPerson.inc:163
 #: ../lib/modules/inetOrgPerson.inc:452 ../lib/modules/inetOrgPerson.inc:595
 #: ../lib/modules/inetOrgPerson.inc:734 ../lib/modules/inetOrgPerson.inc:738
 #: ../lib/modules/inetOrgPerson.inc:1439 ../lib/modules/inetOrgPerson.inc:1442
-#: ../lib/modules/inetOrgPerson.inc:1936 ../lib/modules/inetOrgPerson.inc:2569
-#: ../lib/modules/inetOrgPerson.inc:3604 ../lib/modules/inetOrgPerson.inc:3653
+#: ../lib/modules/inetOrgPerson.inc:1938 ../lib/modules/inetOrgPerson.inc:2572
+#: ../lib/modules/inetOrgPerson.inc:3621 ../lib/modules/inetOrgPerson.inc:3670
 #: ../lib/modules/asteriskVoicemail.inc:111
 #: ../lib/modules/asteriskVoicemail.inc:141
 #: ../lib/modules/asteriskVoicemail.inc:184
@@ -8954,14 +8972,14 @@ msgid "Passthrough"
 msgstr "パススルー"
 
 #: ../templates/lists/changePassword.php:365 ../templates/login.php:379
-#: ../templates/selfService/selfServiceLogin.php:323
-#: ../lib/selfService.inc:393 ../lib/modules/mitKerberos.inc:156
+#: ../templates/selfService/selfServiceLogin.php:325
+#: ../lib/selfService.inc:395 ../lib/modules/mitKerberos.inc:156
 #: ../lib/modules/mitKerberos.inc:242 ../lib/modules/mitKerberos.inc:257
 #: ../lib/modules/mitKerberos.inc:795 ../lib/modules/mitKerberos.inc:798
 #: ../lib/modules/selfRegistration.inc:407
-#: ../lib/modules/selfRegistration.inc:533
-#: ../lib/modules/selfRegistration.inc:536
-#: ../lib/modules/selfRegistration.inc:539
+#: ../lib/modules/selfRegistration.inc:543
+#: ../lib/modules/selfRegistration.inc:546
+#: ../lib/modules/selfRegistration.inc:549
 #: ../lib/modules/asteriskAccount.inc:115
 #: ../lib/modules/asteriskAccount.inc:325 ../lib/modules/posixGroup.inc:205
 #: ../lib/modules/posixGroup.inc:593 ../lib/modules/sambaSamAccount.inc:105
@@ -8977,15 +8995,15 @@ msgstr "パススルー"
 #: ../lib/modules/windowsUser.inc:615 ../lib/modules/windowsUser.inc:616
 #: ../lib/modules/windowsUser.inc:1646 ../lib/modules/windowsUser.inc:1649
 #: ../lib/modules/inetOrgPerson.inc:862 ../lib/modules/inetOrgPerson.inc:1589
-#: ../lib/modules/inetOrgPerson.inc:2086 ../lib/modules/inetOrgPerson.inc:3660
+#: ../lib/modules/inetOrgPerson.inc:2088 ../lib/modules/inetOrgPerson.inc:3677
 #: ../lib/modules/asteriskVoicemail.inc:99
 #: ../lib/modules/asteriskVoicemail.inc:165
 #: ../lib/modules/customFields.inc:2444 ../lib/modules/heimdalKerberos.inc:124
 #: ../lib/modules/heimdalKerberos.inc:211
 #: ../lib/modules/heimdalKerberos.inc:223
 #: ../lib/modules/heimdalKerberos.inc:695
-#: ../lib/modules/heimdalKerberos.inc:698 ../lib/modules.inc:1043
-#: ../help/help.inc:202
+#: ../lib/modules/heimdalKerberos.inc:698 ../lib/modules.inc:1045
+#: ../help/help.inc:204
 msgid "Password"
 msgstr "パスワード"
 
@@ -9027,7 +9045,7 @@ msgstr "パスワード変更サービス"
 msgid "Password check"
 msgstr "パスワード・チェック"
 
-#: ../lib/modules/mitKerberos.inc:297 ../lib/modules/selfRegistration.inc:536
+#: ../lib/modules/mitKerberos.inc:297 ../lib/modules/selfRegistration.inc:546
 #: ../lib/modules/posixGroup.inc:593 ../lib/modules/sambaSamAccount.inc:106
 #: ../lib/modules/sambaSamAccount.inc:107 ../lib/modules/posixAccount.inc:110
 #: ../lib/modules/posixAccount.inc:111 ../lib/modules/windowsUser.inc:616
@@ -9056,7 +9074,7 @@ msgstr "パスワード有効期限"
 msgid "Password expiration must be are natural number or -1."
 msgstr "パスワード有効期限は自然数または-1でなければなりません。"
 
-#: ../templates/selfService/adminMain.php:473 ../help/help.inc:238
+#: ../templates/selfService/adminMain.php:478 ../help/help.inc:240
 msgid "Password field label"
 msgstr "パスワード欄のラベル"
 
@@ -9067,7 +9085,7 @@ msgstr "ボイスメール・メールボックスのパスワード"
 #: ../lib/modules/posixGroup.inc:504 ../lib/modules/posixGroup.inc:557
 #: ../lib/modules/posixAccount.inc:191 ../lib/modules/posixAccount.inc:247
 #: ../lib/modules/posixAccount.inc:457 ../lib/modules/inetOrgPerson.inc:834
-#: ../lib/modules/inetOrgPerson.inc:3567 ../lib/modules/customFields.inc:136
+#: ../lib/modules/inetOrgPerson.inc:3584 ../lib/modules/customFields.inc:136
 #: ../lib/modules/customFields.inc:2458
 msgid "Password hash type"
 msgstr "パスワードハッシュ形式"
@@ -9080,7 +9098,7 @@ msgstr "パスワードハッシュ形式"
 msgid "Password history length"
 msgstr "パスワード履歴の長さ"
 
-#: ../templates/config/confmain.php:367
+#: ../templates/config/confmain.php:369
 msgid "Password mail settings"
 msgstr "パスワード・メール設定"
 
@@ -9153,7 +9171,7 @@ msgstr "パスワード・リセットの通知"
 msgid "Password self reset"
 msgstr "パスワードの自己リセット"
 
-#: ../lib/modules/passwordSelfReset.inc:1607
+#: ../lib/modules/passwordSelfReset.inc:1609
 msgid "Password successfully reset."
 msgstr "パスワードがリセットされました。"
 
@@ -9168,9 +9186,9 @@ msgstr "パスワード警告"
 msgid "Password warning must be are natural number."
 msgstr "パスワード警告期限は自然数でなければなりません。"
 
-#: ../templates/config/confmain.php:610
+#: ../templates/config/confmain.php:618
 #: ../templates/3rdParty/pla/htdocs/password_checker.php:61
-#: ../lib/modules/passwordSelfReset.inc:1174 ../lib/modules.inc:1133
+#: ../lib/modules/passwordSelfReset.inc:1174 ../lib/modules.inc:1135
 msgid "Passwords are different!"
 msgstr "パスワードが異なっています!"
 
@@ -9206,7 +9224,7 @@ msgstr ""
 msgid "Path separator"
 msgstr "パスの区切り"
 
-#: ../templates/config/confmain.php:311
+#: ../templates/config/confmain.php:313
 msgid "Path to external script"
 msgstr "外部スクリプトのパス"
 
@@ -9265,22 +9283,22 @@ msgstr "許可"
 msgid "Personal"
 msgstr "Personal"
 
-#: ../lib/selfService.inc:389
+#: ../lib/selfService.inc:391
 msgid "Personal data"
 msgstr "個人データ"
 
 #: ../lib/types/user.inc:102 ../lib/types/user.inc:620
-#: ../lib/modules/inetOrgPerson.inc:162 ../lib/modules/inetOrgPerson.inc:2708
-#: ../lib/modules/inetOrgPerson.inc:2715 ../lib/modules/inetOrgPerson.inc:3632
-#: ../lib/modules/inetOrgPerson.inc:3660 ../lib/modules/inetOrgPerson.inc:3679
+#: ../lib/modules/inetOrgPerson.inc:162 ../lib/modules/inetOrgPerson.inc:2713
+#: ../lib/modules/inetOrgPerson.inc:2720 ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:3677 ../lib/modules/inetOrgPerson.inc:3696
 msgid "Photo"
 msgstr "写真"
 
-#: ../lib/modules/inetOrgPerson.inc:1697
+#: ../lib/modules/inetOrgPerson.inc:1699
 msgid "Photo file"
 msgstr "写真ファイル"
 
-#: ../lib/modules/inetOrgPerson.inc:1695
+#: ../lib/modules/inetOrgPerson.inc:1697
 msgid "Photo file (JPG format)"
 msgstr "写真ファイル(JPGフォーマット)"
 
@@ -9495,7 +9513,7 @@ msgstr "試行回数インターバルの数値を入力してください。"
 msgid "Please enter a numeric value for the grace authentication limit."
 msgstr "猶予認証リミットの数値を入力してください。"
 
-#: ../lib/modules/freeRadius.inc:259 ../lib/modules/freeRadius.inc:260
+#: ../lib/modules/freeRadius.inc:339 ../lib/modules/freeRadius.inc:340
 msgid "Please enter a numeric value for the idle timeout."
 msgstr "無操作タイムアウトに数値を入力してください。"
 
@@ -9569,11 +9587,11 @@ msgid ""
 msgstr ""
 "有効なLDAP属性名を入力してください。有効な文字は: a-z, A-Z, 0-9, _ と -です。"
 
-#: ../templates/selfService/adminMain.php:221
+#: ../templates/selfService/adminMain.php:223
 msgid "Please enter a valid LDAP suffix."
 msgstr "有効なLDAP差フィックスを入力してください。"
 
-#: ../templates/selfService/adminMain.php:225
+#: ../templates/selfService/adminMain.php:227
 msgid ""
 "Please enter a valid LDAP user if you want to use it for all operations."
 msgstr "全ての操作を行えるようにする、有効なLDAPユーザーを入力してください。"
@@ -9586,7 +9604,7 @@ msgstr "有効なアカウント状態を入力してください。"
 msgid "Please enter a valid admin email address."
 msgstr "正しい管理者eメールアドレスを入力してください。"
 
-#: ../templates/config/confmain.php:554
+#: ../templates/config/confmain.php:562
 msgid "Please enter a valid bind user."
 msgstr "有効なbindユーザーを入力してください。"
 
@@ -9654,7 +9672,7 @@ msgstr "正しいドライブ文字を入力してください!"
 #: ../lib/modules/passwordSelfReset.inc:900
 #: ../lib/modules/passwordSelfReset.inc:1122
 #: ../lib/modules/windowsGroup.inc:285 ../lib/modules/windowsGroup.inc:286
-#: ../lib/modules.inc:1178
+#: ../lib/modules.inc:1180
 msgid "Please enter a valid email address!"
 msgstr "正しい電子メールアドレスを入力してください!"
 
@@ -9741,7 +9759,7 @@ msgstr "有効な制限タイプを入力してください。"
 msgid "Please enter a valid list of affiliations."
 msgstr "正しい所属リストを入力してください。"
 
-#: ../lib/modules/freeRadius.inc:255 ../lib/modules/freeRadius.inc:256
+#: ../lib/modules/freeRadius.inc:335 ../lib/modules/freeRadius.inc:336
 msgid "Please enter a valid list of group names."
 msgstr "正しいグループ名リストを入力してください。"
 
@@ -9801,7 +9819,7 @@ msgstr "正しい郵便番号を入力してください!"
 msgid "Please enter a valid primary affiliation."
 msgstr "正しい主務所属を入力してください。"
 
-#: ../lib/modules/freeRadius.inc:253 ../lib/modules/freeRadius.inc:254
+#: ../lib/modules/freeRadius.inc:333 ../lib/modules/freeRadius.inc:334
 msgid "Please enter a valid realm."
 msgstr "正しいレルム(realm)を入力してください。"
 
@@ -9990,7 +10008,7 @@ msgstr ""
 msgid "Please enter the account context."
 msgstr "アカウント・コンテキストを入力してください。"
 
-#: ../lib/modules.inc:928
+#: ../lib/modules.inc:930
 msgid "Please enter the account information on the other pages first."
 msgstr "最初に、他のページでアカウント情報を入力してください。"
 
@@ -10136,7 +10154,7 @@ msgstr ""
 msgid "Please enter the password which you want to set for this account."
 msgstr "このアカウントに対するパスワードを入力してください。"
 
-#: ../help/help.inc:203
+#: ../help/help.inc:205
 msgid ""
 "Please enter the password which you want to set for this account. You may "
 "also generate a random password (12 characters) which will be displayed on "
@@ -10202,7 +10220,7 @@ msgstr ""
 "href=\"%s\">こちら</a>をご覧ください。"
 
 #: ../templates/lists/changePassword.php:526
-#: ../lib/modules/selfRegistration.inc:533
+#: ../lib/modules/selfRegistration.inc:543
 #: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:109
 #: ../lib/modules/windowsUser.inc:615 ../lib/modules/customFields.inc:2533
 msgid "Please enter the same password in both password fields."
@@ -10259,7 +10277,7 @@ msgstr ""
 "子が記入されていなくてはなりません。後に続く行は、各々の行が一つのアカウント"
 "になります。"
 
-#: ../lib/config.inc:1810
+#: ../lib/config.inc:1832
 msgid "Please provide a file in DER or PEM format."
 msgstr "DERまたはPEMフォーマットのファイルを用意してください。"
 
@@ -10278,7 +10296,7 @@ msgstr ""
 msgid "Please select the field type (e.g. text field)."
 msgstr "フィールドのタイプを入力してください(例 text field)。"
 
-#: ../help/help.inc:270
+#: ../help/help.inc:272
 msgid "Please select the suffix where changes should be done."
 msgstr "変更が行われるサフィックスを選択してください。"
 
@@ -10296,7 +10314,7 @@ msgstr ""
 "\"パスワードを設定\"を選択したら、保存前にボイスメール・パスワードを入力して"
 "ください。"
 
-#: ../lib/modules.inc:877
+#: ../lib/modules.inc:879
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "ページ %s の必須属性を全て設定してください。"
@@ -10334,7 +10352,7 @@ msgstr ""
 "このフィールドに対して可能な値を記述してください。各々の値は、ユーザーに表示"
 "するための説明ラベルを持つことができます。"
 
-#: ../help/help.inc:274
+#: ../help/help.inc:276
 msgid ""
 "Please specify which attributes should be changed. The modify operation will "
 "also add an value if the attribute does not yet exist. To delete all values "
@@ -10409,18 +10427,18 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:184 ../lib/modules/inetOrgPerson.inc:412
 #: ../lib/modules/inetOrgPerson.inc:559 ../lib/modules/inetOrgPerson.inc:686
 #: ../lib/modules/inetOrgPerson.inc:690 ../lib/modules/inetOrgPerson.inc:1259
-#: ../lib/modules/inetOrgPerson.inc:1262 ../lib/modules/inetOrgPerson.inc:1929
-#: ../lib/modules/inetOrgPerson.inc:2624 ../lib/modules/inetOrgPerson.inc:3580
-#: ../lib/modules/inetOrgPerson.inc:3647
+#: ../lib/modules/inetOrgPerson.inc:1262 ../lib/modules/inetOrgPerson.inc:1931
+#: ../lib/modules/inetOrgPerson.inc:2627 ../lib/modules/inetOrgPerson.inc:3597
+#: ../lib/modules/inetOrgPerson.inc:3664
 msgid "Post office box"
 msgstr "私書箱"
 
 #: ../lib/modules/inetOrgPerson.inc:85 ../lib/modules/inetOrgPerson.inc:161
 #: ../lib/modules/inetOrgPerson.inc:196 ../lib/modules/inetOrgPerson.inc:396
 #: ../lib/modules/inetOrgPerson.inc:571 ../lib/modules/inetOrgPerson.inc:702
-#: ../lib/modules/inetOrgPerson.inc:1303 ../lib/modules/inetOrgPerson.inc:1931
-#: ../lib/modules/inetOrgPerson.inc:2591 ../lib/modules/inetOrgPerson.inc:3588
-#: ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:1303 ../lib/modules/inetOrgPerson.inc:1933
+#: ../lib/modules/inetOrgPerson.inc:2594 ../lib/modules/inetOrgPerson.inc:3605
+#: ../lib/modules/inetOrgPerson.inc:3666
 msgid "Postal address"
 msgstr "住所"
 
@@ -10436,9 +10454,9 @@ msgstr "住所、区市町村"
 #: ../lib/modules/inetOrgPerson.inc:187 ../lib/modules/inetOrgPerson.inc:388
 #: ../lib/modules/inetOrgPerson.inc:562 ../lib/modules/inetOrgPerson.inc:694
 #: ../lib/modules/inetOrgPerson.inc:698 ../lib/modules/inetOrgPerson.inc:1268
-#: ../lib/modules/inetOrgPerson.inc:1271 ../lib/modules/inetOrgPerson.inc:1930
-#: ../lib/modules/inetOrgPerson.inc:2613 ../lib/modules/inetOrgPerson.inc:3582
-#: ../lib/modules/inetOrgPerson.inc:3647
+#: ../lib/modules/inetOrgPerson.inc:1271 ../lib/modules/inetOrgPerson.inc:1932
+#: ../lib/modules/inetOrgPerson.inc:2616 ../lib/modules/inetOrgPerson.inc:3599
+#: ../lib/modules/inetOrgPerson.inc:3664
 msgid "Postal code"
 msgstr "郵便番号"
 
@@ -10595,6 +10613,17 @@ msgstr "優先度"
 msgid "Proceed"
 msgstr "次へ"
 
+#: ../lib/modules/freeRadius.inc:124 ../lib/modules/freeRadius.inc:172
+#: ../lib/modules/freeRadius.inc:247 ../lib/modules/freeRadius.inc:276
+#: ../lib/modules/freeRadius.inc:318 ../lib/modules/freeRadius.inc:400
+#: ../lib/modules/freeRadius.inc:699
+msgid "Profile"
+msgstr "プロファイル"
+
+#: ../lib/modules/freeRadius.inc:120 ../lib/modules/freeRadius.inc:297
+msgid "Profile DN"
+msgstr "プロファイルDN"
+
 #: ../templates/config/profmanage.php:112
 #: ../templates/selfService/profManage.php:85
 msgid "Profile deleted."
@@ -10624,7 +10653,7 @@ msgstr "プロファイル管理"
 #: ../templates/selfService/profManage.php:233
 #: ../templates/profedit/profilepage.php:186
 #: ../templates/profedit/profilemain.php:277
-#: ../templates/profedit/profilemain.php:321 ../help/help.inc:188
+#: ../templates/profedit/profilemain.php:321 ../help/help.inc:190
 msgid "Profile name"
 msgstr "プロファイル名"
 
@@ -10789,7 +10818,7 @@ msgstr "quotaハード・リミット"
 msgid "Quota has wrong format!"
 msgstr "quotaの形式が正しくありません!"
 
-#: ../lib/modules/imapAccess.inc:319 ../lib/modules/imapAccess.inc:328
+#: ../lib/modules/imapAccess.inc:320 ../lib/modules/imapAccess.inc:329
 msgid "Quota limit (kB)"
 msgstr "quotaリミット (kB)"
 
@@ -10823,8 +10852,8 @@ msgstr "quota警告リミット"
 
 #: ../templates/masscreate.php:334 ../templates/profedit/profilepage.php:213
 #: ../lib/modules/selfRegistration.inc:98
-#: ../lib/modules/selfRegistration.inc:210 ../lib/modules.inc:1004
-#: ../help/help.inc:186
+#: ../lib/modules/selfRegistration.inc:210 ../lib/modules.inc:1006
+#: ../help/help.inc:188
 msgid "RDN identifier"
 msgstr "RDN識別子"
 
@@ -10864,6 +10893,10 @@ msgstr "RTPタイムアウト"
 msgid "Radio buttons"
 msgstr "ラジオボタン"
 
+#: ../lib/modules/freeRadius.inc:125
+msgid "Radius profile for this user."
+msgstr "このユーザーのRadiusプロファイル。"
+
 #: ../lib/modules/range.inc:97 ../lib/modules/range.inc:514
 #: ../lib/modules/range.inc:574
 msgid "Range from"
@@ -10879,7 +10912,7 @@ msgstr "範囲の終点"
 msgid "Ranges"
 msgstr "範囲"
 
-#: ../templates/config/confmain.php:317
+#: ../templates/config/confmain.php:319
 msgid "Read"
 msgstr "読み込み"
 
@@ -10889,7 +10922,7 @@ msgstr "読み込み"
 msgid "Read-only"
 msgstr "読み込み専用"
 
-#: ../lib/modules/inetOrgPerson.inc:3643
+#: ../lib/modules/inetOrgPerson.inc:3660
 msgid "Read-only fields"
 msgstr "読み込み専用フィールド"
 
@@ -10906,10 +10939,10 @@ msgid "Really delete value from this attribute?"
 msgstr "この属性値を削除しますか?"
 
 #: ../lib/modules/mitKerberos.inc:120 ../lib/modules/mitKerberos.inc:152
-#: ../lib/modules/mitKerberos.inc:194 ../lib/modules/freeRadius.inc:92
-#: ../lib/modules/freeRadius.inc:126 ../lib/modules/freeRadius.inc:146
-#: ../lib/modules/freeRadius.inc:177 ../lib/modules/freeRadius.inc:231
-#: ../lib/modules/freeRadius.inc:273 ../lib/modules/freeRadius.inc:539
+#: ../lib/modules/mitKerberos.inc:194 ../lib/modules/freeRadius.inc:96
+#: ../lib/modules/freeRadius.inc:142 ../lib/modules/freeRadius.inc:190
+#: ../lib/modules/freeRadius.inc:261 ../lib/modules/freeRadius.inc:310
+#: ../lib/modules/freeRadius.inc:355 ../lib/modules/freeRadius.inc:696
 #: ../lib/modules/heimdalKerberos.inc:98
 #: ../lib/modules/heimdalKerberos.inc:157
 #: ../lib/modules/heimdalKerberos.inc:163
@@ -10960,7 +10993,7 @@ msgstr "このオブジェクトの全ての子も再帰的にコピーします
 
 #: ../templates/config/profmanage.php:247
 #: ../templates/config/profmanage.php:286
-#: ../templates/config/mainmanage.php:459 ../templates/config/confmain.php:453
+#: ../templates/config/mainmanage.php:459 ../templates/config/confmain.php:455
 #: ../lib/modules/selfRegistration.inc:415
 #: ../lib/modules/sambaSamAccount.inc:2275
 #: ../lib/modules/posixAccount.inc:2539 ../lib/modules/windowsUser.inc:1722
@@ -10976,7 +11009,7 @@ msgstr "参照"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1054
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1055
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:249
-#: ../lib/modules/asteriskExtension.inc:454 ../lib/lists.inc:788
+#: ../lib/modules/asteriskExtension.inc:454 ../lib/lists.inc:793
 msgid "Refresh"
 msgstr "リフレッシュ"
 
@@ -11002,9 +11035,9 @@ msgstr "新しいアカウントを登録"
 #: ../lib/modules/inetOrgPerson.inc:87 ../lib/modules/inetOrgPerson.inc:161
 #: ../lib/modules/inetOrgPerson.inc:199 ../lib/modules/inetOrgPerson.inc:404
 #: ../lib/modules/inetOrgPerson.inc:574 ../lib/modules/inetOrgPerson.inc:706
-#: ../lib/modules/inetOrgPerson.inc:1347 ../lib/modules/inetOrgPerson.inc:1932
-#: ../lib/modules/inetOrgPerson.inc:2602 ../lib/modules/inetOrgPerson.inc:3590
-#: ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:1347 ../lib/modules/inetOrgPerson.inc:1934
+#: ../lib/modules/inetOrgPerson.inc:2605 ../lib/modules/inetOrgPerson.inc:3607
+#: ../lib/modules/inetOrgPerson.inc:3666
 msgid "Registered address"
 msgstr "登録済みの住所"
 
@@ -11051,11 +11084,10 @@ msgstr "リロード"
 msgid "Remember user name"
 msgstr "ユーザー名を記憶する"
 
-#: ../templates/config/confmodules.php:310
 #: ../templates/pdfedit/pdfpage.php:477 ../lib/modules/mitKerberos.inc:688
 #: ../lib/modules/qmailUser.inc:919 ../lib/modules/windowsHost.inc:158
 #: ../lib/modules/sambaSamAccount.inc:1484 ../lib/modules/kolabUser.inc:871
-#: ../lib/modules/shadowAccount.inc:476 ../lib/modules/freeRadius.inc:429
+#: ../lib/modules/shadowAccount.inc:476 ../lib/modules/freeRadius.inc:564
 #: ../lib/modules/sudoRole.inc:318 ../lib/modules/sudoRole.inc:345
 #: ../lib/modules/sudoRole.inc:372 ../lib/modules/sudoRole.inc:399
 #: ../lib/modules/sudoRole.inc:426 ../lib/modules/sudoRole.inc:453
@@ -11075,7 +11107,7 @@ msgstr "認証済みサービス拡張を削除"
 msgid "Remove EDU person extension"
 msgstr "EDU person拡張を削除"
 
-#: ../lib/modules/freeRadius.inc:307
+#: ../lib/modules/freeRadius.inc:421
 msgid "Remove FreeRadius extension"
 msgstr "FreeRadius拡張を削除"
 
@@ -11145,7 +11177,7 @@ msgstr "qmail拡張を削除"
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:147
 #: ../lib/modules/zarafaContact.inc:418 ../lib/modules/zarafaGroup.inc:478
 #: ../lib/modules/device.inc:281 ../lib/modules/zarafaUser.inc:902
-#: ../lib/modules/inetOrgPerson.inc:1770 ../lib/modules/qmailGroup.inc:850
+#: ../lib/modules/inetOrgPerson.inc:1772 ../lib/modules/qmailGroup.inc:850
 #: ../lib/modules/organizationalRole.inc:383
 #: ../lib/modules/windowsGroup.inc:584 ../lib/modules/groupOfNames.inc:440
 #: ../lib/modules/groupOfNames.inc:595
@@ -11161,7 +11193,7 @@ msgstr "このアカウントタイプを削除:"
 msgid "Remove user from alias entry."
 msgstr "エイリアス・エントリーから受信者を削除。"
 
-#: ../lib/modules/inetOrgPerson.inc:2704
+#: ../lib/modules/inetOrgPerson.inc:2709
 msgid "Remove/replace photo"
 msgstr "写真の削除/差し替え"
 
@@ -11227,7 +11259,7 @@ msgid "Renewable lifetime must be a number."
 msgstr "有効期間は数字でなくてはなりません。"
 
 #: ../templates/lists/changePassword.php:368
-#: ../lib/modules/passwordSelfReset.inc:1067 ../lib/modules.inc:1048
+#: ../lib/modules/passwordSelfReset.inc:1067 ../lib/modules.inc:1050
 msgid "Repeat password"
 msgstr "パスワード再入力"
 
@@ -11235,11 +11267,11 @@ msgstr "パスワード再入力"
 msgid "Replaced $user or $group in homedir."
 msgstr "$user または $group をホームディレクトリに置き換えました。"
 
-#: ../templates/config/confmain.php:346 ../help/help.inc:257
+#: ../templates/config/confmain.php:348 ../help/help.inc:259
 msgid "Reply-to address"
 msgstr "Reply-Toアドレス"
 
-#: ../templates/config/confmain.php:523
+#: ../templates/config/confmain.php:531
 msgid "Reply-to address for password mails is invalid."
 msgstr "パスワード・メールのReply-Toアドレスが無効です。"
 
@@ -11280,7 +11312,7 @@ msgstr "事前認証が必要"
 msgid "Reset"
 msgstr "リセット"
 
-#: ../lib/modules.inc:1220
+#: ../lib/modules.inc:1222
 msgid "Reset changes"
 msgstr "変更をリセット"
 
@@ -11345,7 +11377,7 @@ msgstr "逆引きDNSエントリー (\"PTR\"レコード)"
 msgid "Reverse zone name"
 msgstr "逆引きゾーン名"
 
-#: ../templates/config/confmain.php:313 ../help/help.inc:118
+#: ../templates/config/confmain.php:315 ../help/help.inc:118
 msgid "Rights for the home directory"
 msgstr "ホームディレクトリに対する権限"
 
@@ -11387,9 +11419,9 @@ msgstr "部屋"
 #: ../lib/modules/inetOrgPerson.inc:163 ../lib/modules/inetOrgPerson.inc:205
 #: ../lib/modules/inetOrgPerson.inc:486 ../lib/modules/inetOrgPerson.inc:580
 #: ../lib/modules/inetOrgPerson.inc:782 ../lib/modules/inetOrgPerson.inc:1391
-#: ../lib/modules/inetOrgPerson.inc:1394 ../lib/modules/inetOrgPerson.inc:1940
-#: ../lib/modules/inetOrgPerson.inc:2635 ../lib/modules/inetOrgPerson.inc:3594
-#: ../lib/modules/inetOrgPerson.inc:3650
+#: ../lib/modules/inetOrgPerson.inc:1394 ../lib/modules/inetOrgPerson.inc:1942
+#: ../lib/modules/inetOrgPerson.inc:2638 ../lib/modules/inetOrgPerson.inc:3611
+#: ../lib/modules/inetOrgPerson.inc:3667
 msgid "Room number"
 msgstr "部屋番号"
 
@@ -11600,17 +11632,17 @@ msgid "Saturday"
 msgstr "土曜日"
 
 #: ../templates/config/confmodules.php:224
-#: ../templates/config/confmain.php:468
+#: ../templates/config/confmain.php:470
 #: ../templates/config/moduleSettings.php:238
 #: ../templates/config/conftypes.php:359
-#: ../templates/selfService/selfServiceMain.php:416
-#: ../templates/selfService/adminMain.php:713
+#: ../templates/selfService/selfServiceMain.php:418
+#: ../templates/selfService/adminMain.php:718
 #: ../templates/pdfedit/pdfpage.php:636
 #: ../templates/profedit/profilepage.php:238
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1243
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1247
-#: ../lib/modules/inetOrgPerson.inc:2859 ../lib/modules/customFields.inc:3456
-#: ../lib/modules.inc:1214
+#: ../lib/modules/inetOrgPerson.inc:2864 ../lib/modules/customFields.inc:3456
+#: ../lib/modules.inc:1216
 msgid "Save"
 msgstr "保存"
 
@@ -11655,15 +11687,15 @@ msgstr "範囲を限定した所属関係"
 msgid "Script path"
 msgstr "スクリプトパス"
 
-#: ../templates/config/confmain.php:573
+#: ../templates/config/confmain.php:581
 msgid "Script path is invalid!"
 msgstr "スクリプトパスが無効です!"
 
-#: ../templates/config/confmain.php:592
+#: ../templates/config/confmain.php:600
 msgid "Script rights are invalid!"
 msgstr "スクリプトの権限が無効です!"
 
-#: ../templates/config/confmain.php:576
+#: ../templates/config/confmain.php:584
 msgid "Script server is invalid!"
 msgstr "スクリプトサーバが無効です!"
 
@@ -11741,7 +11773,7 @@ msgstr ""
 msgid "Security questions"
 msgstr "秘密の質問"
 
-#: ../templates/config/mainmanage.php:295 ../templates/config/confmain.php:458
+#: ../templates/config/mainmanage.php:295 ../templates/config/confmain.php:460
 msgid "Security settings"
 msgstr "セキュリティ設定"
 
@@ -11749,7 +11781,7 @@ msgstr "セキュリティ設定"
 msgid "See also"
 msgstr "参照"
 
-#: ../lib/account.inc:790
+#: ../lib/account.inc:812
 msgid "See the manual for instructions to solve this problem."
 msgstr "この問題を解決する手順は、マニュアルを参照してください。"
 
@@ -11761,7 +11793,7 @@ msgstr "生成処理に対するテンプレートを選んでください"
 msgid "Select a template to edit the entry"
 msgstr "エントリ編集に用いるテンプレートを選んでください"
 
-#: ../lib/lists.inc:354 ../lib/lists.inc:471
+#: ../lib/lists.inc:359 ../lib/lists.inc:476
 msgid "Select all"
 msgstr "すべてを選択"
 
@@ -11797,7 +11829,7 @@ msgstr "ユーザを選択"
 msgid "Selected groups"
 msgstr "選択されたグループ"
 
-#: ../templates/masscreate.php:159 ../templates/config/confmodules.php:299
+#: ../templates/masscreate.php:159 ../templates/config/confmodules.php:294
 msgid "Selected modules"
 msgstr "選択されたモジュール"
 
@@ -11809,15 +11841,15 @@ msgstr "選択されたロール"
 msgid "Selected users"
 msgstr "選択されたユーザ"
 
-#: ../templates/selfService/adminMain.php:304
+#: ../templates/selfService/adminMain.php:306
 msgid "Self service configuration"
 msgstr "セルフサービスの構成"
 
-#: ../templates/selfService/adminMain.php:357
+#: ../templates/selfService/adminMain.php:359
 msgid "Self service configuration editor"
 msgstr "セルフサービス構成エディタ"
 
-#: ../templates/selfService/adminMain.php:363
+#: ../templates/selfService/adminMain.php:365
 msgid "Self service login"
 msgstr "セルフサービス・ログイン"
 
@@ -11825,7 +11857,7 @@ msgstr "セルフサービス・ログイン"
 msgid "Self service login attribute"
 msgstr "セルフサービス・ログイン属性"
 
-#: ../templates/selfService/adminMain.php:349
+#: ../templates/selfService/adminMain.php:351
 msgid "Self service profile"
 msgstr "セルフサービス・プロファイル"
 
@@ -11844,8 +11876,8 @@ msgid "Send password via mail"
 msgstr "パスワードをメールで送信"
 
 #: ../templates/lists/changePassword.php:328
-#: ../templates/lists/changePassword.php:373 ../lib/modules.inc:1066
-#: ../help/help.inc:208
+#: ../templates/lists/changePassword.php:373 ../lib/modules.inc:1068
+#: ../help/help.inc:210
 msgid "Send via mail"
 msgstr "メールで送信"
 
@@ -11882,7 +11914,7 @@ msgstr ""
 "パスワード変更の前に、eメールアドレスを検証するメールをユーザー宛に送信しま"
 "す。"
 
-#: ../lib/modules/inetOrgPerson.inc:752 ../help/help.inc:209
+#: ../lib/modules/inetOrgPerson.inc:752 ../help/help.inc:211
 msgid ""
 "Sends the password to the user via mail. Please edit your LAM server profile "
 "to setup the mail settings."
@@ -11913,7 +11945,7 @@ msgid "Server"
 msgstr "サーバー"
 
 #: ../templates/config/confmain.php:238
-#: ../templates/selfService/adminMain.php:414 ../lib/modules/qmailUser.inc:118
+#: ../templates/selfService/adminMain.php:416 ../lib/modules/qmailUser.inc:118
 #: ../lib/modules/qmailUser.inc:163 ../lib/modules/qmailUser.inc:243
 #: ../lib/modules/qmailUser.inc:358 ../lib/modules/qmailUser.inc:427
 #: ../lib/modules/qmailUser.inc:592 ../lib/modules/qmailUser.inc:1148
@@ -11922,8 +11954,8 @@ msgstr "サーバー"
 msgid "Server address"
 msgstr "サーバーアドレス"
 
-#: ../templates/config/confmain.php:501
-#: ../templates/selfService/adminMain.php:217
+#: ../templates/config/confmain.php:503
+#: ../templates/selfService/adminMain.php:219
 msgid "Server address is invalid!"
 msgstr "サーバーアドレスが無効です!"
 
@@ -11931,7 +11963,7 @@ msgstr "サーバーアドレスが無効です!"
 msgid "Server information"
 msgstr "サーバー情報"
 
-#: ../templates/config/confmain.php:310
+#: ../templates/config/confmain.php:312
 msgid "Server list"
 msgstr "サーバー覧"
 
@@ -11942,8 +11974,8 @@ msgstr "サーバー覧"
 msgid "Server profile"
 msgstr "サーバー プロファイル"
 
-#: ../templates/config/confmain.php:280
-#: ../templates/selfService/adminMain.php:459
+#: ../templates/config/confmain.php:283
+#: ../templates/selfService/adminMain.php:464
 msgid "Server settings"
 msgstr "サーバー設定"
 
@@ -11995,7 +12027,7 @@ msgstr "Samba 3に対しても設定"
 msgid "Set also for Shadow"
 msgstr "shadowに対しても設定"
 
-#: ../lib/modules.inc:1227 ../lib/modules.inc:1229
+#: ../lib/modules.inc:1229 ../lib/modules.inc:1231
 msgid "Set password"
 msgstr "パスワードを設定"
 
@@ -12009,7 +12041,7 @@ msgstr "プライマリーグループをmemberUidとしてセット"
 msgid "Set profile password"
 msgstr "プロファイルパスワード設定"
 
-#: ../lib/modules.inc:1230
+#: ../lib/modules.inc:1232
 msgid "Set random password"
 msgstr "ランダムなパスワードを設定"
 
@@ -12022,7 +12054,7 @@ msgid "Set the search results to 0 to retrieve all available records."
 msgstr ""
 "全ての利用可能なレコードを取得するために、検索結果に0をセットしてください。"
 
-#: ../templates/selfService/adminMain.php:561
+#: ../templates/selfService/adminMain.php:566
 msgid "Set this field read-only."
 msgstr "このフィールドを読み取り専用に設定する。"
 
@@ -12129,7 +12161,7 @@ msgstr "内部属性を表示する"
 msgid "Show only Asterisk accounts"
 msgstr "Asteriskアカウントだけを表示"
 
-#: ../lib/types/group.inc:424
+#: ../lib/types/group.inc:427
 msgid "Show primary group members as normal group members"
 msgstr "通常のグループメンバーとしてプライマリグループのメンバーを表示"
 
@@ -12191,7 +12223,7 @@ msgstr ""
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "いくつかの属性(%s)は変更され、ハイライト表示されています。"
 
-#: ../lib/modules.inc:876
+#: ../lib/modules.inc:878
 msgid "Some required information is missing"
 msgstr "必須項目が満たされていません。"
 
@@ -12237,7 +12269,7 @@ msgstr ""
 "LAMが自動的に参照を追跡するかを指定します。LDAPディレクトリの参照を使用する場"
 "合に有効化してください。"
 
-#: ../help/help.inc:260
+#: ../help/help.inc:262
 msgid ""
 "Specifies if password mails may be sent to mail addresses other than the "
 "user's LDAP mail address."
@@ -12245,7 +12277,7 @@ msgstr ""
 "ユーザーのLDAPメールアドレス以外のメールアドレスへパスワード・メールを送信す"
 "る場合に指定します。"
 
-#: ../help/help.inc:256
+#: ../help/help.inc:258
 msgid "Specifies if the mail should be sent as text or HTML."
 msgstr "メールをテキストで送信するか、またはHTMLにするかを指定します。"
 
@@ -12264,6 +12296,10 @@ msgstr "パスワードにユーザー名を含める事を禁止するか否か
 #: ../lib/modules/asteriskAccount.inc:224
 msgid "Specifies if the user can call forward."
 msgstr "そのユーザーに転送が許可されているか否かを指定します。"
+
+#: ../lib/modules/freeRadius.inc:117
+msgid "Specifies if the user may authenticate with FreeRadius."
+msgstr "そのユーザーがFreeRadiusで認証されるか否かを指定します。"
 
 #: ../lib/modules/zarafaGroup.inc:82
 msgid "Specifies if this group has security possibilities."
@@ -12332,7 +12368,7 @@ msgstr ""
 "ユーザーにパスワード期限切れ警告を発してから期限切れになるまでの最大秒数を指"
 "定します。"
 
-#: ../lib/modules/freeRadius.inc:109
+#: ../lib/modules/freeRadius.inc:113
 msgid ""
 "Specifies the maximum number of seconds that a connection can be idle before "
 "the session is terminated."
@@ -12472,9 +12508,9 @@ msgstr "開始時刻"
 #: ../lib/modules/inetOrgPerson.inc:193 ../lib/modules/inetOrgPerson.inc:526
 #: ../lib/modules/inetOrgPerson.inc:568 ../lib/modules/inetOrgPerson.inc:802
 #: ../lib/modules/inetOrgPerson.inc:806 ../lib/modules/inetOrgPerson.inc:1286
-#: ../lib/modules/inetOrgPerson.inc:1289 ../lib/modules/inetOrgPerson.inc:1944
-#: ../lib/modules/inetOrgPerson.inc:2657 ../lib/modules/inetOrgPerson.inc:3586
-#: ../lib/modules/inetOrgPerson.inc:3648
+#: ../lib/modules/inetOrgPerson.inc:1289 ../lib/modules/inetOrgPerson.inc:1946
+#: ../lib/modules/inetOrgPerson.inc:2660 ../lib/modules/inetOrgPerson.inc:3603
+#: ../lib/modules/inetOrgPerson.inc:3665
 msgid "State"
 msgstr "都道府県"
 
@@ -12494,7 +12530,7 @@ msgstr "スティーブ"
 
 #: ../lib/modules/sambaSamAccount.inc:422 ../lib/modules/posixAccount.inc:350
 #: ../lib/modules/windowsUser.inc:292 ../lib/modules/windowsUser.inc:298
-#: ../lib/modules/pykotaUser.inc:201 ../lib/modules/inetOrgPerson.inc:2071
+#: ../lib/modules/pykotaUser.inc:201 ../lib/modules/inetOrgPerson.inc:2073
 #: ../lib/modules/asteriskVoicemail.inc:174
 msgid "Steve Miller"
 msgstr "スティーブ ミラー"
@@ -12523,8 +12559,8 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:380 ../lib/modules/inetOrgPerson.inc:556
 #: ../lib/modules/inetOrgPerson.inc:678 ../lib/modules/inetOrgPerson.inc:682
 #: ../lib/modules/inetOrgPerson.inc:1250 ../lib/modules/inetOrgPerson.inc:1253
-#: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/inetOrgPerson.inc:2580
-#: ../lib/modules/inetOrgPerson.inc:3578 ../lib/modules/inetOrgPerson.inc:3645
+#: ../lib/modules/inetOrgPerson.inc:1930 ../lib/modules/inetOrgPerson.inc:2583
+#: ../lib/modules/inetOrgPerson.inc:3595 ../lib/modules/inetOrgPerson.inc:3662
 msgid "Street"
 msgstr "町名"
 
@@ -12544,11 +12580,11 @@ msgstr "Sub (サブツリー全体)"
 msgid "Subgroups"
 msgstr "サブグループ"
 
-#: ../templates/config/confmain.php:349 ../lib/modules/selfRegistration.inc:94
+#: ../templates/config/confmain.php:351 ../lib/modules/selfRegistration.inc:94
 #: ../lib/modules/selfRegistration.inc:231
 #: ../lib/modules/passwordSelfReset.inc:120
 #: ../lib/modules/passwordSelfReset.inc:539
-#: ../lib/modules/passwordSelfReset.inc:559 ../help/help.inc:248
+#: ../lib/modules/passwordSelfReset.inc:559 ../help/help.inc:250
 msgid "Subject"
 msgstr "件名"
 
@@ -12603,7 +12639,7 @@ msgid "Sudo roles with higher order numbers are used if multiple roles match."
 msgstr "複数のロールにマッチした場合、上位のsudoロールが使用されます。"
 
 #: ../lib/modules/nisMailAliasUser.inc:92
-#: ../lib/modules/nisMailAliasUser.inc:362 ../lib/modules.inc:988
+#: ../lib/modules/nisMailAliasUser.inc:362 ../lib/modules.inc:990
 msgid "Suffix"
 msgstr "サフィックス"
 
@@ -12625,7 +12661,7 @@ msgstr "新規ユーザーのサフィックス"
 msgid "Sunday"
 msgstr "日曜日"
 
-#: ../templates/selfService/adminMain.php:570
+#: ../templates/selfService/adminMain.php:575
 msgid "Switch back to default label."
 msgstr "デフォルト・ラベルに戻す。"
 
@@ -12716,7 +12752,7 @@ msgstr "招待ポリシーのターゲット無効です。"
 msgid "Target server profile"
 msgstr "ターゲット・サーバー・プロファイル"
 
-#: ../templates/help.php:89 ../lib/modules.inc:660
+#: ../templates/help.php:89 ../lib/modules.inc:662
 msgid "Technical name"
 msgstr "テクニカル名"
 
@@ -12729,9 +12765,9 @@ msgstr "テクニカル名"
 #: ../lib/modules/inetOrgPerson.inc:208 ../lib/modules/inetOrgPerson.inc:420
 #: ../lib/modules/inetOrgPerson.inc:583 ../lib/modules/inetOrgPerson.inc:710
 #: ../lib/modules/inetOrgPerson.inc:714 ../lib/modules/inetOrgPerson.inc:1407
-#: ../lib/modules/inetOrgPerson.inc:1410 ../lib/modules/inetOrgPerson.inc:1933
-#: ../lib/modules/inetOrgPerson.inc:2525 ../lib/modules/inetOrgPerson.inc:3596
-#: ../lib/modules/inetOrgPerson.inc:3651
+#: ../lib/modules/inetOrgPerson.inc:1410 ../lib/modules/inetOrgPerson.inc:1935
+#: ../lib/modules/inetOrgPerson.inc:2528 ../lib/modules/inetOrgPerson.inc:3613
+#: ../lib/modules/inetOrgPerson.inc:3668
 msgid "Telephone number"
 msgstr "電話番号"
 
@@ -12762,14 +12798,14 @@ msgstr "ターミナルサーバオプション"
 msgid "Tests"
 msgstr "テスト"
 
-#: ../templates/config/confmain.php:364 ../lib/modules/selfRegistration.inc:69
+#: ../templates/config/confmain.php:366 ../lib/modules/selfRegistration.inc:69
 #: ../lib/modules/selfRegistration.inc:238 ../lib/modules/bindDLZ.inc:163
 #: ../lib/modules/bindDLZ.inc:167 ../lib/modules/bindDLZ.inc:377
 #: ../lib/modules/bindDLZ.inc:1245 ../lib/modules/bindDLZ.inc:1579
 #: ../lib/modules/passwordSelfReset.inc:124
 #: ../lib/modules/passwordSelfReset.inc:134
 #: ../lib/modules/passwordSelfReset.inc:543
-#: ../lib/modules/passwordSelfReset.inc:563 ../help/help.inc:250
+#: ../lib/modules/passwordSelfReset.inc:563 ../help/help.inc:252
 msgid "Text"
 msgstr "本文"
 
@@ -12850,7 +12886,7 @@ msgstr "このIPアドレスは既に使用されています:"
 #: ../lib/modules/asteriskAccount.inc:575 ../lib/modules/ppolicyUser.inc:96
 #: ../lib/modules/range.inc:505 ../lib/modules/range.inc:522
 #: ../lib/modules/range.inc:582 ../lib/modules/range.inc:599
-#: ../lib/modules/freeRadius.inc:249 ../lib/modules/freeRadius.inc:250
+#: ../lib/modules/freeRadius.inc:329 ../lib/modules/freeRadius.inc:330
 #: ../lib/modules/fixed_ip.inc:493
 msgid "The IP address is invalid."
 msgstr "IPアドレスが無効です。"
@@ -12907,7 +12943,7 @@ msgstr "PC名にはA-Z, a-z, 0-9だけが使用できます。"
 msgid "The PC name needs to be at least 2 characters long."
 msgstr "PC名は少なくとも2文字以上でなければなりません。"
 
-#: ../help/help.inc:205
+#: ../help/help.inc:207
 msgid ""
 "The PDF structure defines what information is exported as PDF file and how "
 "the pages are structured. You can manage the PDF structures in the PDF "
@@ -12918,11 +12954,11 @@ msgstr ""
 
 #: ../templates/3rdParty/pla/htdocs/create.php:44
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:38
-#: ../lib/modules/selfRegistration.inc:571
+#: ../lib/modules/selfRegistration.inc:581
 msgid "The RDN field is empty."
 msgstr "RDNフィールドが空です。"
 
-#: ../lib/modules/freeRadius.inc:93
+#: ../lib/modules/freeRadius.inc:97
 msgid "The Radius realm of this account."
 msgstr "このアカウントのRadiusレルム。"
 
@@ -12930,8 +12966,8 @@ msgstr "このアカウントのRadiusレルム。"
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "SambaサーバのSID。 \"net getlocalsid\" で取得してください。"
 
-#: ../templates/selfService/selfServiceLogin.php:141
-#: ../templates/selfService/selfServiceMain.php:168
+#: ../templates/selfService/selfServiceLogin.php:143
+#: ../templates/selfService/selfServiceMain.php:170
 msgid "The TLS encryption could not be started."
 msgstr "TLS暗号化を開始できませんでした。"
 
@@ -12965,11 +13001,11 @@ msgstr "アカウント・コンテキストはダイアル・プランに関す
 msgid "The account type is invalid."
 msgstr "アカウント・タイプが無効です。"
 
-#: ../lib/modules/freeRadius.inc:105
+#: ../lib/modules/freeRadius.inc:109
 msgid "The account will be locked after this date."
 msgstr "この日付を過ぎるとアカウントはロックされます。"
 
-#: ../help/help.inc:191
+#: ../help/help.inc:193
 msgid "The account will be saved under this LDAP suffix."
 msgstr "新しいアカウントはこのLDAPサフィックスの下に保存されます。"
 
@@ -13019,7 +13055,7 @@ msgid "The class names may only contain ASCII characters."
 msgstr "クラス名にはASCI文字だけが使用できます。"
 
 #: ../templates/config/confmain.php:176
-#: ../templates/selfService/adminMain.php:372
+#: ../templates/selfService/adminMain.php:374
 msgid "The config file is not writable."
 msgstr "設定ファイルに書き込み出来ません。"
 
@@ -13095,7 +13131,7 @@ msgstr "環境名にASCII文字だけが使用できます。"
 msgid "The expiration date is invalid."
 msgstr "有効期限が無効です。"
 
-#: ../lib/modules/freeRadius.inc:257 ../lib/modules/freeRadius.inc:258
+#: ../lib/modules/freeRadius.inc:337 ../lib/modules/freeRadius.inc:338
 msgid "The expiration date must be in format DD.MM.YYYY HH:MM."
 msgstr "有効期限の書式は DD.MM.YYYY HH:MM でなくてはなりません"
 
@@ -13196,7 +13232,7 @@ msgstr ""
 msgid "The group is managed by this contact person."
 msgstr "グループはこの担当者によって管理されます。"
 
-#: ../lib/modules/freeRadius.inc:97 ../lib/modules/freeRadius.inc:101
+#: ../lib/modules/freeRadius.inc:101 ../lib/modules/freeRadius.inc:105
 msgid "The group names for this account."
 msgstr "このアカウントに対するグループ名。"
 
@@ -13318,7 +13354,7 @@ msgstr ""
 "確認メールの本文には、ワイルドカード @@resetLink@@ が含まれている必要がありま"
 "す。"
 
-#: ../help/help.inc:251
+#: ../help/help.inc:253
 msgid "The mail text of all password mails."
 msgstr "全てのパスワードメールのメール本文。"
 
@@ -13368,7 +13404,7 @@ msgstr ""
 msgid "The minimum time \"%s\" must be a number."
 msgstr "最小時間 \"%s\" は数字でなくてはなりません。"
 
-#: ../lib/modules.inc:927
+#: ../lib/modules.inc:929
 #, php-format
 msgid "The module %s is not yet ready."
 msgstr "モジュール %s は利用できません。"
@@ -13418,7 +13454,7 @@ msgstr "ネーム・サーバー \"%s\" は無効です。"
 msgid "The name server for this zone."
 msgstr "このゾーンに対するネーム・サーバー。"
 
-#: ../lib/modules/freeRadius.inc:89
+#: ../lib/modules/freeRadius.inc:93
 msgid "The net mask for the IP address."
 msgstr "IPアドレスのネットマスク。"
 
@@ -13430,11 +13466,11 @@ msgstr ""
 "ネットマスクはサブネットマスクによって割り出されます。LAMが自動的に算出しま"
 "す。"
 
-#: ../lib/modules/freeRadius.inc:251 ../lib/modules/freeRadius.inc:252
+#: ../lib/modules/freeRadius.inc:331 ../lib/modules/freeRadius.inc:332
 msgid "The net mask is invalid."
 msgstr "ネットマスクが無効です。"
 
-#: ../lib/modules.inc:1185
+#: ../lib/modules.inc:1187
 msgid ""
 "The new password will be stored in the directory after you save this account."
 msgstr ""
@@ -13470,7 +13506,7 @@ msgstr "オブジェクトクラス %s はこのLDAPサーバでサポートさ�
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "ユーザの事業所名"
 
-#: ../templates/selfService/selfServiceMain.php:331 ../lib/modules.inc:1811
+#: ../templates/selfService/selfServiceMain.php:333 ../lib/modules.inc:1813
 msgid "The operation was stopped because of the above errors."
 msgstr "上記のエラーによって操作が停止されました。"
 
@@ -13593,7 +13629,7 @@ msgstr ""
 "IMAP管理ユーザーのパスワード。IMAP管理ユーザーのログイン名はLAMのサーバープロ"
 "ファイルに保存されます。"
 
-#: ../templates/lists/changePassword.php:609 ../lib/modules.inc:1128
+#: ../templates/lists/changePassword.php:609 ../lib/modules.inc:1130
 msgid "The password was set to:"
 msgstr "設定されたパスワード:"
 
@@ -13701,7 +13737,7 @@ msgstr ""
 #: ../lib/modules/zarafaGroup.inc:109 ../lib/modules/sambaSamAccount.inc:401
 #: ../lib/modules/posixAccount.inc:442 ../lib/modules/zarafaUser.inc:133
 #: ../lib/modules/windowsUser.inc:237 ../lib/modules/inetOrgPerson.inc:831
-#: ../lib/modules/freeRadius.inc:113 ../lib/modules/zarafaServer.inc:89
+#: ../lib/modules/freeRadius.inc:129 ../lib/modules/zarafaServer.inc:89
 #: ../lib/modules/qmailGroup.inc:120 ../lib/modules/organizationalRole.inc:82
 #: ../lib/modules/passwordSelfReset.inc:161
 #: ../lib/modules/windowsGroup.inc:111 ../lib/modules/groupOfNames.inc:82
@@ -13749,7 +13785,7 @@ msgstr "静的テキストは少なくとも一文字以上でなければなり
 msgid "The street name of the user's address."
 msgstr "ユーザの住所の町名。"
 
-#: ../help/help.inc:249
+#: ../help/help.inc:251
 msgid "The subject of all password mails."
 msgstr "全てのパスワード・メールの件名。"
 
@@ -13942,7 +13978,7 @@ msgstr "RDN属性としてマークされた属性が存在しません。"
 msgid "The wildcard for the account creation link is @@creationLink@@."
 msgstr "生成リンクに対応するワイルドカードは @@creationLink@@ です。"
 
-#: ../lib/modules/passwordSelfReset.inc:127 ../help/help.inc:254
+#: ../lib/modules/passwordSelfReset.inc:127 ../help/help.inc:256
 msgid "The wildcard for the new password is @@newPassword@@."
 msgstr "新しいパスワードに対応するワイルドカードは @@newPassword@@ です。"
 
@@ -13971,7 +14007,7 @@ msgstr "この発信者番号を使用しているユーザーが既に存在し
 msgid "There is already another user with this mailbox name."
 msgstr "このメールボックス名を使用しているユーザーが既に存在します。"
 
-#: ../templates/massDoUpload.php:258
+#: ../templates/massDoUpload.php:259
 msgid "There were errors while uploading:"
 msgstr "アップロードの際にエラーが発生しました。"
 
@@ -14056,7 +14092,7 @@ msgid ""
 msgstr ""
 "このGID番号は無効です。別な番号を指定するか、グループ名を記入してください。"
 
-#: ../help/help.inc:235
+#: ../help/help.inc:237
 msgid ""
 "This HTML code will be placed on top of all self service pages. E.g. you can "
 "use this to place your custom logo. Any HTML code is permitted."
@@ -14188,14 +14224,14 @@ msgstr "ユーザの住所を記入します。"
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "この文書はLDAP Account Managerによって自動的に生成されました。"
 
-#: ../help/help.inc:258
+#: ../help/help.inc:260
 msgid ""
 "This email address will be set as reply-to address of all password mails."
 msgstr ""
 "このメールアドレスは全てのパスワード・メールのReply-Toアドレスにセットされま"
 "す。"
 
-#: ../help/help.inc:247
+#: ../help/help.inc:249
 msgid ""
 "This email address will be set as sender address of all password mails. If "
 "empty the system default (php.ini) will be used."
@@ -14230,7 +14266,7 @@ msgid "This entry is the root of a sub-tree containing %s entries."
 msgstr "このエントリは %s エントリを含むサブツリーのルートです。"
 
 #: ../templates/lib/141_jquery-validationEngine-lang.php:47
-#: ../lib/modules/selfRegistration.inc:512
+#: ../lib/modules/selfRegistration.inc:522
 msgid "This field is required."
 msgstr "このフィールドは必須です。"
 
@@ -14336,12 +14372,18 @@ msgstr ""
 msgid "This is a structural ObjectClass and cannot be removed."
 msgstr "これは structural オブジェクトクラスであり、削除することは出来ません。"
 
+#: ../help/help.inc:185
+msgid ""
+"This is a workaround for Active Directory. Enable it if you get messages "
+"about size limit exceeded."
+msgstr "これは、Active Directoryに対する応急対応です。サイズ上限を越えるメッセージを受信する場合に有効化してください。"
+
 #: ../lib/modules/nisObject.inc:74 ../lib/modules/automount.inc:73
 #: ../lib/modules/oracleService.inc:70
 msgid "This is an optional description for this entry."
 msgstr "このエントリに対する付加的な説明。"
 
-#: ../help/help.inc:223
+#: ../help/help.inc:225
 msgid ""
 "This is needed to find the LDAP DNs of your user accounts. E.g. if you use "
 "\"uid\" and your user inputs \"miller\" then LAM will search for an account "
@@ -14356,8 +14398,9 @@ msgstr ""
 #: ../lib/modules/eduPerson.inc:246 ../lib/modules/eduPerson.inc:248
 #: ../lib/modules/zarafaAddressList.inc:170
 #: ../lib/modules/posixAccount.inc:131 ../lib/modules/inetOrgPerson.inc:100
-#: ../lib/modules/aliasEntry.inc:86 ../lib/modules/qmailGroup.inc:433
-#: ../lib/modules/qmailGroup.inc:434 ../lib/modules/qmailGroup.inc:435
+#: ../lib/modules/freeRadius.inc:342 ../lib/modules/aliasEntry.inc:86
+#: ../lib/modules/qmailGroup.inc:433 ../lib/modules/qmailGroup.inc:434
+#: ../lib/modules/qmailGroup.inc:435
 msgid "This is not a valid DN!"
 msgstr "無効なDNです!"
 
@@ -14401,7 +14444,7 @@ msgstr ""
 "AsteriskデータベースにおけるユーザーのIDです。数字と文字を含むこと臥できます"
 "(例 user1 200134)。"
 
-#: ../lib/modules/freeRadius.inc:85
+#: ../lib/modules/freeRadius.inc:89
 msgid "This is the IP address for the user (e.g. 123.123.123.123)."
 msgstr "ユーザーのIPアドレスです(例 123.123.123.123)。"
 
@@ -14513,7 +14556,7 @@ msgstr "Windows上で表示されるグループ名です。"
 msgid "This is the host's location (e.g. Munich, server room 3)."
 msgstr "ホストの設置場所です (例 Munich, server room 3)。"
 
-#: ../help/help.inc:187
+#: ../help/help.inc:189
 msgid ""
 "This is the identifier for the relative DN value. It must be one of the "
 "given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while "
@@ -14764,7 +14807,7 @@ msgstr "このメールアドレスは既に使用されています:"
 msgid "This mailbox will be created/deleted."
 msgstr "このメールボックスが作成/削除されます。"
 
-#: ../lib/modules.inc:1245
+#: ../lib/modules.inc:1247
 msgid "This may overwrite existing values with profile data. Continue?"
 msgstr ""
 "これにより、既存の値がプロファイル・データで上書きされます。このまま続けます"
@@ -14837,7 +14880,7 @@ msgstr ""
 msgid "This specifies what to do when the client connection is broken."
 msgstr "クライアント接続が壊れた場合の処理を指定します。"
 
-#: ../help/help.inc:227
+#: ../help/help.inc:229
 msgid ""
 "This text is displayed on top of the self service login page. You can also "
 "input HTML code here."
@@ -14845,7 +14888,7 @@ msgstr ""
 "この文字列はセルフサービス・ログインページのトップに表示されます。ここには"
 "HTMLコードを書く事もできます。"
 
-#: ../help/help.inc:229
+#: ../help/help.inc:231
 msgid ""
 "This text is displayed on top of the self service main page. You can also "
 "input HTML code here."
@@ -14853,7 +14896,7 @@ msgstr ""
 "この文字列はセルフサービス・メインページのトップに表示されます。ここにはHTML"
 "コードを書く事もできます。"
 
-#: ../help/help.inc:239
+#: ../help/help.inc:241
 msgid ""
 "This text is placed as label for the password field on the login page. LAM "
 "will use \"Password\" if you do not enter any text."
@@ -14861,7 +14904,7 @@ msgstr ""
 "このテキストは、ログインページのパスワード欄のラベルとして使用されます。 テキ"
 "ストが入力されない場合は、LAMは \"パスワード\" を使用します。"
 
-#: ../help/help.inc:225
+#: ../help/help.inc:227
 msgid ""
 "This text should shortly describe your selected LDAP search attribute (e.g. "
 "email or user name)."
@@ -14916,7 +14959,7 @@ msgstr "この値は、\"部屋\"または\"設備\"のいずれかでなくて�
 #: ../lib/modules/zarafaUser.inc:424 ../lib/modules/zarafaUser.inc:425
 #: ../lib/modules/zarafaUser.inc:426 ../lib/modules/zarafaUser.inc:427
 #: ../lib/modules/ppolicyUser.inc:97 ../lib/modules/inetOrgPerson.inc:108
-#: ../lib/modules/zarafaServer.inc:179
+#: ../lib/modules/freeRadius.inc:341 ../lib/modules/zarafaServer.inc:179
 msgid "This value can only be \"true\" or \"false\"."
 msgstr "この値は、\"true\"または\"false\"のいずれかでなくてはなりません。"
 
@@ -14929,7 +14972,7 @@ msgstr ""
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "この値はセミコロンで区切られたユーザ名でなくてはなりません。"
 
-#: ../help/help.inc:264
+#: ../help/help.inc:266
 msgid "This will create a new organisational unit under the selected one."
 msgstr "選択位置の下に新しい organizational unit を作成します。"
 
@@ -14937,7 +14980,7 @@ msgstr "選択位置の下に新しい organizational unit を作成します。
 msgid "This will create the user's home directory on the specified server."
 msgstr "ユーザのホームディレクトリを指定されたサーバ上に作成します。"
 
-#: ../help/help.inc:266
+#: ../help/help.inc:268
 msgid ""
 "This will delete the selected organisational unit. The OU has to be empty."
 msgstr ""
@@ -14979,7 +15022,7 @@ msgstr ""
 "ランダムなパスワードを設定し、これを画面上に表示するか、または、ユーザにメー"
 "ルで送信します。"
 
-#: ../help/help.inc:245
+#: ../help/help.inc:247
 msgid ""
 "This will set a random password and display it on the screen or send it to "
 "the user via mail. Please edit your LAM server profile to setup the mail "
@@ -15084,7 +15127,7 @@ msgstr "ログインを禁止する場合は /bin/false を使用してくださ
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "東京、ソウル、大阪、ヤクーツク"
 
-#: ../templates/config/confmain.php:406
+#: ../templates/config/confmain.php:408
 msgid "Tool settings"
 msgstr "ツール設定"
 
@@ -15130,7 +15173,7 @@ msgstr "ツリーサフィックス"
 msgid "Tree view"
 msgstr "ツリービュー"
 
-#: ../templates/config/confmain.php:567
+#: ../templates/config/confmain.php:575
 msgid "TreeSuffix is invalid!"
 msgstr "ツリーサフィックスが無効です!"
 
@@ -15246,7 +15289,7 @@ msgstr "Kerberosパスワードをリセットできません。"
 msgid "Unable to change password."
 msgstr "パスワードを変更できません。"
 
-#: ../templates/selfService/selfServiceMain.php:338
+#: ../templates/selfService/selfServiceMain.php:340
 msgid ""
 "Unable to change your account. Maybe you do not have enough rights to change "
 "the settings."
@@ -15254,7 +15297,7 @@ msgstr ""
 "アカウントを変更できません。あなたはおそらく、設定を変更する権限を持っていま"
 "せん。"
 
-#: ../templates/selfService/selfServiceMain.php:335
+#: ../templates/selfService/selfServiceMain.php:337
 msgid ""
 "Unable to change your account. Your changes might violate the password "
 "policy."
@@ -15271,8 +15314,8 @@ msgstr "リモートサーバーに接続できません!"
 msgid "Unable to create ZIP file for PDF export."
 msgstr "PDFエクスポートのためのZIPファイルを作成できません。"
 
-#: ../lib/modules/selfRegistration.inc:699
-#: ../lib/modules/selfRegistration.inc:703
+#: ../lib/modules/selfRegistration.inc:709
+#: ../lib/modules/selfRegistration.inc:713
 msgid "Unable to create account."
 msgstr "新しいアカウントを生成できません。"
 
@@ -15372,7 +15415,7 @@ msgid "Unable to import server certificate. Please use the upload function."
 msgstr ""
 "サーバー証明書をインポートできません。アップロード機能を使用してください。"
 
-#: ../lib/modules.inc:1529 ../lib/modules.inc:1533
+#: ../lib/modules.inc:1531 ../lib/modules.inc:1535
 msgid "Unable to load LDAP entry:"
 msgstr "LDAPエントリをロードできません:"
 
@@ -15394,14 +15437,14 @@ msgstr "このファイルを処理できません。"
 msgid "Unable to read file."
 msgstr "プロファイルを読み込みできません。"
 
-#: ../lib/modules/selfRegistration.inc:692
+#: ../lib/modules/selfRegistration.inc:702
 msgid "Unable to register your new account. Please try again."
 msgstr "新規ユーザーを登録できません。やり直してください。"
 
-#: ../lib/modules/passwordSelfReset.inc:1440
-#: ../lib/modules/passwordSelfReset.inc:1449
-#: ../lib/modules/passwordSelfReset.inc:1455
-#: ../lib/modules/passwordSelfReset.inc:1464
+#: ../lib/modules/passwordSelfReset.inc:1442
+#: ../lib/modules/passwordSelfReset.inc:1451
+#: ../lib/modules/passwordSelfReset.inc:1457
+#: ../lib/modules/passwordSelfReset.inc:1466
 msgid "Unable to reset password."
 msgstr "パスワードをリセットできません。"
 
@@ -15415,12 +15458,12 @@ msgstr "画像を取得できません!"
 msgid "Unable to retrieve schema!"
 msgstr "スキーマを取得できません!"
 
-#: ../templates/selfService/adminMain.php:251
+#: ../templates/selfService/adminMain.php:253
 #: ../templates/profedit/profilepage.php:124
 msgid "Unable to save profile!"
 msgstr "プロファイルを保存できません!"
 
-#: ../lib/account.inc:999 ../lib/account.inc:1037
+#: ../lib/account.inc:1021 ../lib/account.inc:1059
 msgid "Unable to send mail!"
 msgstr "メールを送信できません!"
 
@@ -15438,7 +15481,7 @@ msgstr "ロゴ・ファイルをアップロードできません。"
 msgid "Unable to verify your password reset request. Please try again."
 msgstr "パスワード・リセット要求を確認できません。やり直してください。"
 
-#: ../lib/modules/selfRegistration.inc:726
+#: ../lib/modules/selfRegistration.inc:736
 msgid "Unable to verify your user creation request. Please try again."
 msgstr "ユーザー生成要求を確認できません。やり直してください。"
 
@@ -15503,7 +15546,7 @@ msgstr "アカウントをアンロックしますか?"
 msgid "Unlock password"
 msgstr "パスワード・ロックの解除"
 
-#: ../templates/masscreate.php:107 ../templates/config/confmodules.php:386
+#: ../templates/masscreate.php:107 ../templates/config/confmodules.php:403
 msgid "Unsolved dependency:"
 msgstr "依存関係が解決できませんでした:"
 
@@ -15524,7 +15567,7 @@ msgstr "パスワード変更時に属性 \"sambaPwdLastSet\" を更新する。
 msgid "Update object"
 msgstr "オブジェクトを更新"
 
-#: ../lib/modules/imapAccess.inc:322 ../lib/modules/imapAccess.inc:331
+#: ../lib/modules/imapAccess.inc:323 ../lib/modules/imapAccess.inc:332
 msgid "Update quota"
 msgstr "クオータを更新"
 
@@ -15539,7 +15582,7 @@ msgid "Updating object"
 msgstr "更新中のオブジェクト"
 
 #: ../templates/config/mainmanage.php:334 ../templates/pdfedit/pdfmain.php:247
-#: ../lib/modules/ldapPublicKey.inc:126 ../lib/modules/inetOrgPerson.inc:1863
+#: ../lib/modules/ldapPublicKey.inc:126 ../lib/modules/inetOrgPerson.inc:1865
 msgid "Upload"
 msgstr "アップロード"
 
@@ -15566,11 +15609,11 @@ msgstr "ファイルをアップロード"
 msgid "Upload file and create accounts"
 msgstr "ファイルをアップロードして、アカウントを作成します。"
 
-#: ../templates/massDoUpload.php:254 ../lib/lists.inc:1071
+#: ../templates/massDoUpload.php:255 ../lib/lists.inc:1076
 msgid "Upload has finished"
 msgstr "アップロードが完了しました"
 
-#: ../lib/modules.inc:504
+#: ../lib/modules.inc:506
 #, php-format
 msgid "Upload was stopped after errors in %s module!"
 msgstr "%s モジュールでエラーが発生したため、アプロードを中止しました。"
@@ -15598,7 +15641,7 @@ msgstr "全てのサービスに対しては * を使用します。"
 msgid "Use Unix password"
 msgstr "unixパスワードを使用"
 
-#: ../templates/selfService/adminMain.php:437 ../help/help.inc:242
+#: ../templates/selfService/adminMain.php:442 ../help/help.inc:244
 msgid "Use for all operations"
 msgstr "全ての操作で使用する"
 
@@ -15610,7 +15653,7 @@ msgstr "全ての操作で使用する"
 msgid "Use no password"
 msgstr "パスワードなし"
 
-#: ../help/help.inc:272
+#: ../help/help.inc:274
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. \"(cn!=admin)\") to reduce "
 "the number of entries to modify."
@@ -15626,7 +15669,7 @@ msgstr ""
 "このアカウントタイプの可視要素数を減らすために、追加のLDAPフィルターをここに"
 "入力してください。"
 
-#: ../help/help.inc:241
+#: ../help/help.inc:243
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. "
 "\"(objectClass=passwordSelfReset)\") to reduce the number of accounts who "
@@ -15737,8 +15780,8 @@ msgid "User can change password"
 msgstr "ユーザはパスワードを変更可能"
 
 #: ../lib/modules/inetOrgPerson.inc:166 ../lib/modules/inetOrgPerson.inc:866
-#: ../lib/modules/inetOrgPerson.inc:1540 ../lib/modules/inetOrgPerson.inc:2777
-#: ../lib/modules/inetOrgPerson.inc:3630
+#: ../lib/modules/inetOrgPerson.inc:1540 ../lib/modules/inetOrgPerson.inc:2782
+#: ../lib/modules/inetOrgPerson.inc:3647
 msgid "User certificates"
 msgstr "ユーザー証明書"
 
@@ -15783,11 +15826,11 @@ msgstr "ユーザはパスワード変更が必要"
 
 #: ../templates/lists/changePassword.php:281 ../templates/login.php:334
 #: ../lib/types/alias.inc:91 ../lib/types/user.inc:91
-#: ../lib/selfService.inc:385 ../lib/modules/mitKerberos.inc:116
+#: ../lib/selfService.inc:387 ../lib/modules/mitKerberos.inc:116
 #: ../lib/modules/mitKerberos.inc:211 ../lib/modules/mitKerberos.inc:249
 #: ../lib/modules/mitKerberos.inc:343 ../lib/modules/mitKerberos.inc:766
 #: ../lib/modules/selfRegistration.inc:393
-#: ../lib/modules/selfRegistration.inc:467
+#: ../lib/modules/selfRegistration.inc:468
 #: ../lib/modules/selfRegistration.inc:475 ../lib/modules/account.inc:85
 #: ../lib/modules/account.inc:101 ../lib/modules/account.inc:124
 #: ../lib/modules/account.inc:126 ../lib/modules/account.inc:127
@@ -15810,9 +15853,9 @@ msgstr "ユーザはパスワード変更が必要"
 #: ../lib/modules/inetOrgPerson.inc:97 ../lib/modules/inetOrgPerson.inc:166
 #: ../lib/modules/inetOrgPerson.inc:638 ../lib/modules/inetOrgPerson.inc:766
 #: ../lib/modules/inetOrgPerson.inc:1186 ../lib/modules/inetOrgPerson.inc:1189
-#: ../lib/modules/inetOrgPerson.inc:1942 ../lib/modules/inetOrgPerson.inc:2077
-#: ../lib/modules/inetOrgPerson.inc:2835 ../lib/modules/inetOrgPerson.inc:3638
-#: ../lib/modules/inetOrgPerson.inc:3664
+#: ../lib/modules/inetOrgPerson.inc:1944 ../lib/modules/inetOrgPerson.inc:2079
+#: ../lib/modules/inetOrgPerson.inc:2840 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:3681
 #: ../lib/modules/passwordSelfReset.inc:499
 #: ../lib/modules/passwordSelfReset.inc:843
 #: ../lib/modules/passwordSelfReset.inc:1015
@@ -15847,7 +15890,7 @@ msgid "User name attribute"
 msgstr "ユーザー名属性"
 
 #: ../lib/modules/mitKerberos.inc:289 ../lib/modules/mitKerberos.inc:290
-#: ../lib/modules/selfRegistration.inc:467 ../lib/modules/account.inc:124
+#: ../lib/modules/selfRegistration.inc:468 ../lib/modules/account.inc:124
 #: ../lib/modules/account.inc:125 ../lib/modules/account.inc:127
 #: ../lib/modules/zarafaContact.inc:187 ../lib/modules/zarafaContact.inc:188
 #: ../lib/modules/uidObject.inc:85 ../lib/modules/zarafaGroup.inc:222
@@ -16081,13 +16124,13 @@ msgstr "Warning"
 #: ../lib/modules/organizationalRoleUser.inc:201
 #: ../lib/modules/organizationalRoleUser.inc:218
 #: ../lib/modules/windowsUser.inc:1127 ../lib/modules/groupOfNamesUser.inc:217
-#: ../lib/modules/groupOfNamesUser.inc:264 ../lib/modules.inc:1908
+#: ../lib/modules/groupOfNamesUser.inc:264 ../lib/modules.inc:1910
 #, php-format
 msgid "Was unable to add attributes to DN: %s."
 msgstr "DN %s に属性を追加できませんでした。"
 
 #: ../lib/modules/nisMailAliasUser.inc:494 ../lib/modules/range.inc:665
-#: ../lib/modules.inc:1871
+#: ../lib/modules.inc:1873
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "DN %s を作成できませんでした。"
@@ -16107,7 +16150,7 @@ msgstr "DN %s の属性を変更できませんでした。"
 
 #: ../lib/modules/posixAccount.inc:888 ../lib/modules/windowsUser.inc:1153
 #: ../lib/modules/windowsUser.inc:1566 ../lib/modules/range.inc:709
-#: ../lib/modules/groupOfNamesUser.inc:249 ../lib/modules.inc:1890
+#: ../lib/modules/groupOfNamesUser.inc:249 ../lib/modules.inc:1892
 #, php-format
 msgid "Was unable to modify attributes of DN: %s."
 msgstr "DN: %s の属性を変更できませんでした。"
@@ -16117,12 +16160,12 @@ msgstr "DN: %s の属性を変更できませんでした。"
 #: ../lib/modules/organizationalRoleUser.inc:206
 #: ../lib/modules/organizationalRoleUser.inc:229
 #: ../lib/modules/windowsUser.inc:1140 ../lib/modules/groupOfNamesUser.inc:222
-#: ../lib/modules/groupOfNamesUser.inc:278 ../lib/modules.inc:1921
+#: ../lib/modules/groupOfNamesUser.inc:278 ../lib/modules.inc:1923
 #, php-format
 msgid "Was unable to remove attributes from DN: %s."
 msgstr "DN %s の属性を削除できませんでした。"
 
-#: ../lib/modules/asteriskExtension.inc:905 ../lib/modules.inc:1851
+#: ../lib/modules/asteriskExtension.inc:905 ../lib/modules.inc:1853
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "DNを変更できませんでした: %s。"
@@ -16134,9 +16177,9 @@ msgstr "DNを変更できませんでした: %s。"
 #: ../lib/modules/inetOrgPerson.inc:217 ../lib/modules/inetOrgPerson.inc:478
 #: ../lib/modules/inetOrgPerson.inc:601 ../lib/modules/inetOrgPerson.inc:754
 #: ../lib/modules/inetOrgPerson.inc:758 ../lib/modules/inetOrgPerson.inc:1455
-#: ../lib/modules/inetOrgPerson.inc:1458 ../lib/modules/inetOrgPerson.inc:1952
-#: ../lib/modules/inetOrgPerson.inc:2514 ../lib/modules/inetOrgPerson.inc:3628
-#: ../lib/modules/inetOrgPerson.inc:3654
+#: ../lib/modules/inetOrgPerson.inc:1458 ../lib/modules/inetOrgPerson.inc:1954
+#: ../lib/modules/inetOrgPerson.inc:2517 ../lib/modules/inetOrgPerson.inc:3645
+#: ../lib/modules/inetOrgPerson.inc:3671
 msgid "Web site"
 msgstr "ウェブ・サイト"
 
@@ -16150,7 +16193,7 @@ msgstr "水曜日"
 msgid "Weight"
 msgstr "重み"
 
-#: ../lib/selfService.inc:384
+#: ../lib/selfService.inc:386
 msgid "Welcome to LAM self service. Please enter your user name and password."
 msgstr ""
 "LAMセルフ・サービスへようこそ。ユーザー名とパスワードを入力してください。"
@@ -16259,7 +16302,7 @@ msgstr "作業ディレクトリ"
 msgid "Working directory of initial program."
 msgstr "初期プログラムの作業ディレクトリ。"
 
-#: ../templates/config/confmain.php:318
+#: ../templates/config/confmain.php:320
 msgid "Write"
 msgstr "書く"
 
@@ -16268,8 +16311,8 @@ msgid "Write access"
 msgstr "書き込みアクセス"
 
 #: ../templates/login.php:579 ../templates/login.php:637
-#: ../templates/selfService/selfServiceLogin.php:160
-#: ../templates/selfService/selfServiceLogin.php:186
+#: ../templates/selfService/selfServiceLogin.php:162
+#: ../templates/selfService/selfServiceLogin.php:188
 msgid "Wrong password/user name combination. Please try again."
 msgstr "誤ったパスワード/ユーザ名の組み合わせです。やり直してください。"
 
@@ -16280,10 +16323,12 @@ msgstr "無効なクオータ書式です。クオータは数値でなくては
 #: ../templates/schema/schema.php:153 ../templates/schema/schema.php:195
 #: ../templates/schema/schema.php:200 ../templates/schema/schema.php:205
 #: ../templates/pdfedit/pdfpage.php:460 ../lib/modules/pykotaPrinter.inc:51
-#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/qmailGroup.inc:322
-#: ../lib/modules/qmailGroup.inc:364 ../lib/modules/qmailGroup.inc:1030
-#: ../lib/modules/qmailGroup.inc:1031 ../lib/modules/qmailGroup.inc:1073
-#: ../lib/modules/qmailGroup.inc:1079 ../lib/modules/imapAccess.inc:121
+#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/freeRadius.inc:161
+#: ../lib/modules/freeRadius.inc:414 ../lib/modules/freeRadius.inc:704
+#: ../lib/modules/qmailGroup.inc:322 ../lib/modules/qmailGroup.inc:364
+#: ../lib/modules/qmailGroup.inc:1030 ../lib/modules/qmailGroup.inc:1031
+#: ../lib/modules/qmailGroup.inc:1073 ../lib/modules/qmailGroup.inc:1079
+#: ../lib/modules/imapAccess.inc:121
 msgid "Yes"
 msgstr "はい"
 
@@ -16301,7 +16346,7 @@ msgstr ""
 "大文字が使われています。Windowsは大文字と小文字を区別しないため、問題が発生す"
 "る場合があります。"
 
-#: ../lib/lists.inc:1073
+#: ../lib/lists.inc:1078
 #, php-format
 msgid ""
 "You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}"
@@ -16353,7 +16398,7 @@ msgid "You can use this to temporarily deactivate the Zarafa extension."
 msgstr "Zarafa拡張を一時的に無効化させるために使用する事が出来ます。"
 
 #: ../lib/modules/passwordSelfReset.inc:126
-#: ../lib/modules/passwordSelfReset.inc:136 ../help/help.inc:253
+#: ../lib/modules/passwordSelfReset.inc:136 ../help/help.inc:255
 msgid ""
 "You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. "
 "@@uid@@ for the user name)."
@@ -16383,7 +16428,7 @@ msgstr "サーバが読み取り専用モードの場合に更新を行うこと
 msgid "You cannot rename an entry which has child entries."
 msgstr "子エントリを持つエントリをリネームすることは出来ません。"
 
-#: ../templates/config/confmain.php:505
+#: ../templates/config/confmain.php:507
 msgid ""
 "You cannot use SSL and TLS encryption at the same time. Please use either "
 "\"ldaps://\" or TLS."
@@ -16496,7 +16541,7 @@ msgstr ""
 "有効にしてください。"
 
 #: ../templates/config/confmain.php:176
-#: ../templates/selfService/adminMain.php:372
+#: ../templates/selfService/adminMain.php:374
 msgid ""
 "Your changes cannot be saved until you make the file writable for the "
 "webserver user."
@@ -16504,7 +16549,7 @@ msgstr ""
 "webサーバーのユーザーによる書き込みが出来るようになるまでは、変更は保存されま"
 "せん。."
 
-#: ../lib/modules/selfRegistration.inc:721
+#: ../lib/modules/selfRegistration.inc:731
 msgid ""
 "Your new account was created but post processing failed. Please contact your "
 "local administrator."
@@ -16512,7 +16557,7 @@ msgstr ""
 "新しいアカウントは生成されましたが、後処理に失敗しました。最寄りの管理者に連"
 "絡してください。"
 
-#: ../lib/modules/selfRegistration.inc:718
+#: ../lib/modules/selfRegistration.inc:728
 msgid ""
 "Your new account was successfully created. Please return to login to change "
 "your user data."
@@ -16520,7 +16565,7 @@ msgstr ""
 "あなたの新しいアカウント<が生成されました。ユーザーデータを変更するために、ロ"
 "グインへ戻ってください。"
 
-#: ../lib/account.inc:1202 ../lib/modules/windowsUser.inc:1878
+#: ../lib/account.inc:1224 ../lib/modules/windowsUser.inc:1878
 msgid ""
 "Your password does not meet the password strength qualifications. Please "
 "retry with another one."
@@ -16663,7 +16708,7 @@ msgstr "文字"
 msgid "characters"
 msgstr "文字"
 
-#: ../lib/modules/freeRadius.inc:179
+#: ../lib/modules/freeRadius.inc:192
 msgid "company.com"
 msgstr "company.com"
 
@@ -16744,7 +16789,7 @@ msgstr "前回のクライアントからのみ"
 msgid "group01,group02"
 msgstr "group01,group02"
 
-#: ../lib/modules/freeRadius.inc:187
+#: ../lib/modules/freeRadius.inc:200
 msgid "group01;group02"
 msgstr "group01;group02"
 
@@ -16987,7 +17032,7 @@ msgstr "秒"
 #: ../lib/modules/mitKerberos.inc:244 ../lib/modules/asteriskAccount.inc:327
 #: ../lib/modules/posixGroup.inc:444 ../lib/modules/sambaSamAccount.inc:428
 #: ../lib/modules/posixAccount.inc:334 ../lib/modules/windowsUser.inc:274
-#: ../lib/modules/inetOrgPerson.inc:2088
+#: ../lib/modules/inetOrgPerson.inc:2090
 #: ../lib/modules/asteriskVoicemail.inc:167
 #: ../lib/modules/heimdalKerberos.inc:213
 msgid "secret"
@@ -17001,7 +17046,7 @@ msgstr "RDN属性の選択"
 #: ../lib/modules/posixAccount.inc:285 ../lib/modules/windowsUser.inc:266
 #: ../lib/modules/windowsUser.inc:451 ../lib/modules/windowsUser.inc:460
 #: ../lib/modules/pykotaUser.inc:192 ../lib/modules/pykotaUser.inc:210
-#: ../lib/modules/inetOrgPerson.inc:2079
+#: ../lib/modules/inetOrgPerson.inc:2081
 #: ../lib/modules/heimdalKerberos.inc:182 ../lib/modules/nisMailAlias.inc:110
 msgid "smiller"
 msgstr "smiller"
@@ -17768,9 +17813,6 @@ msgstr "はい"
 
 #~ msgid "List of special skills that the user has."
 #~ msgstr "ユーザーが持っている特殊技能の一覧。"
-
-#~ msgid "Page settings"
-#~ msgstr "ページ設定"
 
 #~ msgid "Please enter a valid date (format DD.MM.YYYY)!"
 #~ msgstr "正しい日付をDD.MM.YYYYの形式で入力してください!"
