@@ -1221,7 +1221,8 @@ function getDefaultLDAPErrorString($server) {
 	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
 	// Active Directory message translations
 	if ((strpos($extError, 'DSID-031A120C') !== false) && (strpos($extError, '5003') !== false)) {
-		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $extError;
+		logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
+		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
 	}
 	$message = _('LDAP error, server says:') . ' ' . ldap_error($server);
 	if (!empty($extError)) {
