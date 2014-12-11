@@ -510,7 +510,7 @@ class imapAccess extends baseModule {
 			// read LAM login user data
 			$data = $_SESSION['ldap']->decrypt_login();
 			$dn = $data[0];
-			$sr = @ldap_read($_SESSION['ldap']->server(), $dn, '(objectclass=*)', $attrNames);
+			$sr = @ldap_read($_SESSION['ldap']->server(), $dn, '(objectclass=*)', $attrNames, 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 				if ($info) {

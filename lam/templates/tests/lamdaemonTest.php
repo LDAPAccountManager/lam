@@ -215,7 +215,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 		$container->addElement($spacer);
 		$credentials = $_SESSION['ldap']->decrypt_login();
 		$unixOk = false;
-		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
+		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			$userName = $entry[0]['uid'][0];
