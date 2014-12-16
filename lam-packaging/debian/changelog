@@ -1,8 +1,8 @@
-ldap-account-manager (4.8.RC1-1) unstable; urgency=low
+ldap-account-manager (4.8-1) unstable; urgency=low
 
   * new upstream release
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 30 Nov 2014 17:38:05 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 15 Dec 2014 19:38:05 +0100
 
 ldap-account-manager (4.7.1-1) unstable; urgency=low
 
