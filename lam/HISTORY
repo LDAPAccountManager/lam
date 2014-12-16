@@ -1,4 +1,4 @@
-December 2014 4.8
+16.12.2014 4.8
   - Active Directory: support paged result as workaround for size limit exceeded
   - FreeRadius: support dialupAccess and radiusProfileDn
   - Usability improvements
