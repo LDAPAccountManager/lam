@@ -49,24 +49,16 @@ modules: posixGroup_pwdHash: SSHA
 modules: posixAccount_pwdHash: SSHA
 
 # List of active account types.
-activeTypes: user,group,host,smbDomain
+activeTypes: user,group
 
 
 types: suffix_user: ou=People,dc=my-domain,dc=com
 types: attr_user: #uid;#givenName;#sn;#uidNumber;#gidNumber
-types: modules_user: inetOrgPerson,posixAccount,shadowAccount,sambaSamAccount
+types: modules_user: inetOrgPerson,posixAccount,shadowAccount
 
 types: suffix_group: ou=group,dc=my-domain,dc=com
 types: attr_group: #cn;#gidNumber;#memberUID;#description
-types: modules_group: posixGroup,sambaGroupMapping
-
-types: suffix_host: ou=machines,dc=my-domain,dc=com
-types: attr_host: #cn;#description;#uidNumber;#gidNumber
-types: modules_host: account,posixAccount,sambaSamAccount
-
-types: suffix_smbDomain: dc=my-domain,dc=com
-types: attr_smbDomain: sambaDomainName:Domain name;sambaSID:Domain SID
-types: modules_smbDomain: sambaDomain
+types: modules_group: posixGroup
 
 # Password mail subject
 lamProMailSubject: Your password was reset
