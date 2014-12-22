@@ -144,6 +144,39 @@ function getConfigProfiles() {
 }
 
 /**
+ * Creates a new server profile.
+ * 
+ * @param String $name profile name
+ * @param String $password profile password
+ * @param String $template name of template file
+ * @return mixed Boolean TRUE if creation was ok, error message if not
+ */
+function createConfigProfile($name, $password, $template) {
+	if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $template) || in_array($name, getConfigProfiles())) {
+		return _("Profile name is invalid!");
+	}
+	// check if template exists
+	if (!is_file("../../config/" . $template)) {
+		return "The file config/$template was not found. Please restore it.";				
+	}
+	// create new profile file
+	$path = "../../config/" . $name . ".conf";
+	@copy("../../config/$template", $path);
+	@chmod ($path, 0600);
+	$file = is_file($path);
+	if ($file) {
+		// load as config and write new password
+		$conf = new LAMConfig($name);
+		$conf->set_Passwd($password);
+		$conf->save();
+	}
+	else {
+		return _("Unable to create new profile!");
+	}
+	return true;
+}
+
+/**
  * Deletes the given server profile.
  * 
  * @param String $name profile name

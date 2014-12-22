@@ -55,37 +55,23 @@ if (isset($_POST['action'])) {
 	}
 	// add new profile
 	elseif ($_POST['action'] == "add") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['addprofile']) && !in_array($_POST['addprofile'], getConfigProfiles())) {
-			// check profile password
-			if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
-				// check if lam.conf.sample exists
-				if (!is_file("../../config/lam.conf.sample")) {
-					$error = "The file config/lam.conf.sample was not found. Please restore it.";				
-				}
-				else {
-					// create new profile file
-					@copy("../../config/lam.conf.sample", "../../config/" . $_POST['addprofile'] . ".conf");
-					@chmod ("../../config/" . $_POST['addprofile'] . ".conf", 0600);
-					$file = is_file("../../config/" . $_POST['addprofile'] . ".conf");
-					if ($file) {
-						// load as config and write new password
-						$conf = new LAMConfig($_POST['addprofile']);
-						$conf->set_Passwd($_POST['addpassword']);
-						$conf->save();
-						$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
-						$_SESSION['conf_config'] = $conf;
-						$_SESSION['conf_messages'][] = array('INFO', _("Created new profile."), $_POST['addprofile']);
-						metaRefresh('confmain.php');
-						exit;
-					}
-					else {
-						$error = _("Unable to create new profile!");
-					}
-				}
+		// check profile password
+		if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
+			$result = createConfigProfile($_POST['addprofile'], $_POST['addpassword'], 'lam.conf.sample');
+			if ($result === true) {
+				$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
+				$_SESSION['conf_config'] = new LAMConfig($_POST['addprofile']);
+				$_SESSION['conf_messages'][] = array('INFO', _("Created new profile."), $_POST['addprofile']);
+				metaRefresh('confmain.php');
+				exit;
 			}
-			else $error = _("Profile passwords are different or empty!");
+			else {
+				$error = $result;
+			}
 		}
-		else $error = _("Profile name is invalid!");
+		else {
+			$error = _("Profile passwords are different or empty!");
+		}
 	}
 	// rename profile
 	elseif ($_POST['action'] == "rename") {
