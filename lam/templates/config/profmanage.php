@@ -57,7 +57,7 @@ if (isset($_POST['action'])) {
 	elseif ($_POST['action'] == "add") {
 		// check profile password
 		if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
-			$result = createConfigProfile($_POST['addprofile'], $_POST['addpassword'], 'lam.conf.sample');
+			$result = createConfigProfile($_POST['addprofile'], $_POST['addpassword'], $_POST['addTemplate']);
 			if ($result === true) {
 				$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
 				$_SESSION['conf_config'] = new LAMConfig($_POST['addprofile']);
@@ -235,6 +235,22 @@ $profileNewPwd2->setIsPassword(true);
 $profileNewPwd2->setFieldSize(15);
 $profileNewPwd2->setSameValueFieldID('addpassword');
 $container->addElement($profileNewPwd2, true);
+$existing = array();
+foreach ($files as $file) {
+	$existing[$file] = $file . '.conf';
+}
+$builtIn = array();
+foreach (getConfigTemplates() as $file) {
+	$builtIn[$file] = $file . '.conf.sample';
+}
+$templates = array(
+	_('Existing server profiles') => $existing,
+	_('Built-in templates') => $builtIn
+);
+$addTemplateSelect = new htmlTableExtendedSelect('addTemplate', $templates, array('lam.conf.sample'), _('Template'), '267');
+$addTemplateSelect->setContainsOptgroups(true);
+$addTemplateSelect->setHasDescriptiveElements(true);
+$container->addElement($addTemplateSelect, true);
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
 $newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" . 
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");

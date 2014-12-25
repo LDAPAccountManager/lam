@@ -144,6 +144,28 @@ function getConfigProfiles() {
 }
 
 /**
+* Returns an array of string with all available configuration templates (without .conf.sample)
+*
+* @return array template names
+*/
+function getConfigTemplates() {
+	$dir = dir(dirname(__FILE__) . "/../config");
+	$ret = array();
+	$pos = 0;
+	while ($entry = $dir->read()){
+		$ext = substr($entry, strlen($entry)-12, 12);
+		$name = substr($entry, 0, strlen($entry) - 12);
+		// check if extension is right, add to profile list
+		if ($ext == ".conf.sample") {
+			$ret[$pos] = $name;
+			$pos ++;
+		}
+	}
+	sort($ret);
+	return $ret;
+}
+
+/**
  * Creates a new server profile.
  * 
  * @param String $name profile name

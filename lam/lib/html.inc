@@ -1260,7 +1260,8 @@ class htmlSelect extends htmlElement {
 	}
 	
 	/**
-	 * Specifies if the elements are divided into optgroups. 
+	 * Specifies if the elements are divided into optgroups.
+	 * In this case the provided options are an array where the key is the optgroup label and the value is an array containing the options for the optgroup.
 	 * 
 	 * @param boolean $containsOptgroups activates optgroups
 	 */

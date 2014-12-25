@@ -183,6 +183,8 @@ $helpArray = array (
 					"Text" => _('Sets this account type to read-only.')),
 				"266" => array ("Headline" => _("Paged results"),
 					"Text" => _("This is a workaround for Active Directory. Enable it if you get messages about size limit exceeded.")),
+				"267" => array ("Headline" => _('Template'),
+					"Text" => _('Please select the template for the new server profile. You can either select an existing server profile or use one of the built-in templates.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
