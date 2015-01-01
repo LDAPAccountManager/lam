@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -244,10 +244,10 @@ foreach (getConfigTemplates() as $file) {
 	$builtIn[$file] = $file . '.conf.sample';
 }
 $templates = array(
+	_('Built-in templates') => $builtIn,
 	_('Existing server profiles') => $existing,
-	_('Built-in templates') => $builtIn
 );
-$addTemplateSelect = new htmlTableExtendedSelect('addTemplate', $templates, array('lam.conf.sample'), _('Template'), '267');
+$addTemplateSelect = new htmlTableExtendedSelect('addTemplate', $templates, array('unix.conf.sample'), _('Template'), '267');
 $addTemplateSelect->setContainsOptgroups(true);
 $addTemplateSelect->setHasDescriptiveElements(true);
 $container->addElement($addTemplateSelect, true);
