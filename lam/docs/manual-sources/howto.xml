@@ -1198,6 +1198,35 @@ Have fun!
         server profile which is preselected at the login page. It also
         specifies the language of the login and configuration pages.</para>
 
+        <para><emphasis role="bold">Templates for new server
+        profiles</emphasis></para>
+
+        <para>You can create a new server profile based on one of the built-in
+        templates or any existing profile. Of course, the account types and
+        selected modules can be changed after you created your profile.</para>
+
+        <para>Built-in templates:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>addressbook: simple profile for user management with
+            inetOrgPerson object class</para>
+          </listitem>
+
+          <listitem>
+            <para>samba3: Samba 3 users, groups, hosts and domains</para>
+          </listitem>
+
+          <listitem>
+            <para>unix: Unix users and groups (posixAccount/Group)</para>
+          </listitem>
+
+          <listitem>
+            <para>windows_samba4: Active Directory user, group and host
+            management</para>
+          </listitem>
+        </itemizedlist>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -1205,10 +1234,6 @@ Have fun!
             </imageobject>
           </mediaobject>
         </screenshot>
-
-        <para>You can create a new server profile by simply entering its name
-        and password. After you created a new profile you can go back to the
-        profile login and edit your new server profile.</para>
 
         <para>All operations on the profile management page require that you
         authenticate yourself with the <link
