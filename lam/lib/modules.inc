@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1951,12 +1951,13 @@ class accountContainer {
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
-	 * @return list of PDF entries (array(<name> => <PDF lines>))
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
 	 */
-	function get_pdfEntries() {
+	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		while(($current = current($this->module)) != null) {
-			$return = array_merge($return,$current->get_pdfEntries());
+			$return = array_merge($return,$current->get_pdfEntries($pdfKeys));
 			next($this->module);
 		}
 		$dn = $this->dn_orig;

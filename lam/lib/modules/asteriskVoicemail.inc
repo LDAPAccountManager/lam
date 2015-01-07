@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2014  Roland Gruber
+                2010 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -362,9 +362,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns a list of PDF entries
+	 * Returns a list of possible PDF entries for this account.
+	 *
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
 	 */
-	function get_pdfEntries() {
+	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		$this->addSimplePDFField($return, 'AstVoicemailMailbox', _('Mailbox'));
 		$this->addSimplePDFField($return, 'AstContext', _('Account context'));

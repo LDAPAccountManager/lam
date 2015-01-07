@@ -4,7 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2014  Roland Gruber
+              2007 - 2015  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -422,6 +422,7 @@ class posixGroup extends baseModule implements passwordService {
 		);
 		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
 			$return['PDF_fields']['memberUid'] = _('Group members');
+			$return['PDF_fields']['memberUidPrimary'] = _('Group members (incl. primary members)');
 		}
 		if ($this->manageCnAttribute) {
 			$return['PDF_fields']['cn'] = _('Group name');
@@ -560,11 +561,12 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns the PDF entries for this module.
-	*
-	* @return array list of possible PDF entries
-	*/
-	function get_pdfEntries() {
+	 * Returns a list of possible PDF entries for this account.
+	 *
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 */
+	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		$this->addSimplePDFField($return, 'memberUid', _('Group members'));
 		$this->addSimplePDFField($return, 'cn', _('Group name'));

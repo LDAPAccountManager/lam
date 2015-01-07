@@ -794,10 +794,13 @@ class asteriskExtension extends baseModule {
         return $suggeted_extension;
     }
 
-    /**
-     * Returns a list of PDF entries
-     */
-    function get_pdfEntries() {
+	/**
+	 * Returns a list of possible PDF entries for this account.
+	 *
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 */
+    function get_pdfEntries($pdfKeys) {
     	$a = $this->attributes;
     	$o = $this->orig;
         $return = array();

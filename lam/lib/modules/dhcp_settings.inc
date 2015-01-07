@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2014  Roland Gruber
+                2008 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -655,11 +655,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 	
 	/**
-	* Returns the PDF entries for this module.
-	*
-	* @return array list of possible PDF entries
-	*/
-	function get_pdfEntries() {
+	 * Returns a list of possible PDF entries for this account.
+	 *
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 */
+	function get_pdfEntries($pdfKeys) {
 		$nodeType = $this->getDHCPOption('netbios-node-type');
 		$nodeTypeValue = '';
 		if (isset($this->all_netbios_node_types[$nodeType])) {

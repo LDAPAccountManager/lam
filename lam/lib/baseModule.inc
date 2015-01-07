@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -807,9 +807,10 @@ abstract class baseModule {
 	/**
 	* Returns the PDF entries for this module.
 	*
+	* @param array $pdfKeys list of PDF keys that are included in document
 	* @return array list of possible PDF entries
 	*/
-	public function get_pdfEntries() {
+	public function get_pdfEntries($pdfKeys) {
 		return array();
 	}
 	

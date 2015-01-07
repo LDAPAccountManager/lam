@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2014  Roland Gruber
+                2005 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -222,9 +222,10 @@ class account extends baseModule {
 	/**
 	* Returns the PDF entries for this module.
 	*
+	* @param array $pdfKeys list of PDF keys that are included in document
 	* @return array list of possible PDF entries
 	*/
-	function get_pdfEntries() {
+	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'uid', _('User name'));

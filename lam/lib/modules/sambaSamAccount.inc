@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2014  Roland Gruber
+                2005 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1897,11 +1897,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns the PDF entries for this module.
-	*
-	* @return array list of possible PDF entries
-	*/
-	function get_pdfEntries() {
+	 * Returns a list of possible PDF entries for this account.
+	 *
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 */
+	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
 		$this->addSimplePDFField($return, 'sambaHomePath', _('Home path'));

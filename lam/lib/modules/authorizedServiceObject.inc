@@ -4,7 +4,7 @@ $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2014  Roland Gruber
+  				2012 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -233,11 +233,12 @@ class authorizedServiceObject extends baseModule {
 	}
 
 	/**
-	* Returns the PDF entries for this module.
-	*
-	* @return array list of possible PDF entries
-	*/
-	function get_pdfEntries() {
+	 * Returns a list of possible PDF entries for this account.
+	 *
+	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 */
+	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
 			$this->addSimplePDFField($return, 'authorizedService', _('Authorized Services'));

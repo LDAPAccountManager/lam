@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2013  Roland Gruber
+                2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -69,6 +69,21 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	// Get PDF structure from xml file
 	$load = loadPDFStructureDefinitions($account_type,$pdf_structure);
 	$structure = $load['structure'];
+	// get list of PDF keys
+	$pdfKeys = array();
+	foreach($structure as $entry) {
+		if ($entry['tag'] == "SECTION" && $entry['type'] == "open") {
+			$key = $entry['attributes']['NAME'];
+			// only values with a starting "_" are keys 
+			if (strpos($key, '_') === 0) {
+				$pdfKeys[] = substr($key, 1);
+			}
+		}
+		if  ($entry['tag'] == "ENTRY") {
+			$pdfKeys[] = $entry['attributes']['NAME'];
+		}
+	}
+	$pdfKeys = array_unique($pdfKeys);
 	
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
@@ -85,7 +100,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		$pdf->AddPage();
 		
 		// Get PDF entries for the current account
-		$entries = $account->get_pdfEntries();
+		$entries = $account->get_pdfEntries($pdfKeys);
 		
 		// Now create the PDF file acording to the structure with the submitted values 
 		foreach($structure as $entry) {
