@@ -572,6 +572,18 @@ class posixGroup extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
+		if (in_array(get_class($this) . '_memberUidPrimary', $pdfKeys)) {
+			$members = !empty($this->attributes['memberUid']) ? $this->attributes['memberUid'] : array();
+			if (!empty($this->attributes['gidNumber'])) {
+				$filter = "(&(&" . get_ldap_filter('user')  . ")(gidNumber=" . $this->attributes['gidNumber'][0] . "))";
+				$entries = searchLDAPByFilter($filter, array('uid'), array('user'));
+				foreach ($entries as $entry) {
+					$members[] = $entry['uid'][0];
+				}
+			}
+			sort($members);
+			$return[get_class($this) . '_memberUidPrimary'] = array('<block><key>' . _('Group members') . '</key><value>' . implode(', ', $members) . '</value></block>');
+		}
 		return $return;
 	}
 
