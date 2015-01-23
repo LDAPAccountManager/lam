@@ -866,6 +866,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _('User certificates'),
 				"Text" => _('These are the user\'s certificates.')
 			),
+			'crop' => array(
+				"Headline" => _('Image cropping'),
+				"Text" => _('Uploaded images will be cropped to these maximum values.')
+			),
 		);
 		return $return;
 	}
@@ -2458,6 +2462,55 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 	}
 	
+	
+	
+	/**
+	 * Returns a list of self service configuration settings.
+	 *
+	 * @param selfServiceProfile $profile currently edited profile
+	 * @return htmlElement meta HTML object
+	 */
+	public function getSelfServiceSettings($profile) {
+		$container = new htmlTable();
+		$container->addElement(new htmlSubTitle(_('Photo')), true);
+		$photoTable = new htmlTable();
+		$photoTable->colspan = 2;
+		if (extension_loaded('imagick')) {
+			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'));
+			$photoTable->addElement(new htmlHelpLink('crop', get_class($this)), true);
+			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'));
+			$photoTable->addElement(new htmlHelpLink('crop', get_class($this)), true);
+		}
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
+		$container->addElement($photoTable, true);
+		return $container;
+	}
+	
+	/**
+	 * Checks if the self service settings are valid.
+	 * 
+	 * If the input data is invalid the return value is an array that contains arrays
+	 * to build StatusMessages (message type, message head, message text). If no errors
+	 * occured the function returns an empty array.
+	 *
+	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @param selfServiceProfile $profile self service profile
+	 * @return array error messages
+	 */
+	public function checkSelfServiceSettings(&$options, &$profile) {
+		$errors = array();
+		if (!empty($options['inetOrgPerson_jpegPhoto_maxWidth'][0]) && !is_numeric($options['inetOrgPerson_jpegPhoto_maxWidth'][0])) {
+			$errors[] = array('ERROR', _('Please enter a number.'), _('Maximum width (px)'));
+		}
+		if (!empty($options['inetOrgPerson_jpegPhoto_maxHeight'][0]) && !is_numeric($options['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+			$errors[] = array('ERROR', _('Please enter a number.'), _('Maximum height (px)'));
+		}
+		if (!empty($options['inetOrgPerson_jpegPhoto_maxSize'][0]) && !is_numeric($options['inetOrgPerson_jpegPhoto_maxSize'][0])) {
+			$errors[] = array('ERROR', _('Please enter a number.'), _('Maximum file size (kB)'));
+		}
+		return $errors;
+	}
+
 	/**
 	 * Returns the meta HTML code for each input field.
 	 * format: array(<field1> => array(<META HTML>), ...)
@@ -2708,7 +2761,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				if (!in_array('jpegPhoto', $readOnlyFields)) {
 					$photoSubSub = new htmlTable();
 					$photoSubSub->addElement(new htmlTableExtendedInputCheckbox('removeReplacePhoto', false, _('Remove/replace photo'), null, false));
-					$photoSubSub->addElement(new htmlInputFileUpload('replacePhotoFile'));
+					$photoSubSub->addElement(new htmlInputFileUpload('photoFile'));
 					$photoSub->addElement($photoSubSub);
 				}
 				$photoRowCells = array(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
@@ -2718,6 +2771,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			elseif (!in_array('jpegPhoto', $readOnlyFields)) {
 				$photoSub = new htmlTable();
 				$photoSub->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Add photo')));
+				$photoSub->addElement(new htmlHiddenInput('addPhoto', 'true'));
 				$photoRowCells = array(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
 				$photoRow = new htmlTableRow($photoRowCells);
 				$return['jpegPhoto'] = $photoRow;
@@ -3155,21 +3209,40 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// photo
 		if (in_array('jpegPhoto', $fields) && !in_array('jpegPhoto', $readOnlyFields)) {
-			if (isset($_FILES['photoFile']) && ($_FILES['photoFile']['size'] > 0)) {
-				$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
-				$data = fread($handle, 1000000);
-				fclose($handle);
-				$return['add']['jpegPhoto'][0] = $data;
+			// remove photo
+			if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')
+					&& (empty($_FILES['replacePhotoFile']) || ($_FILES['replacePhotoFile']['size'] == 0))) {
+				$return['mod']['jpegPhoto'] = array();
 			}
-			if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')) {
-				if ($_FILES['replacePhotoFile'] && ($_FILES['replacePhotoFile']['size'] > 0)) {
-					$handle = fopen($_FILES['replacePhotoFile']['tmp_name'], "r");
-					$data = fread($handle, 1000000);
-					fclose($handle);
-					$return['mod']['jpegPhoto'][0] = $data;
+			// set/replace photo
+			if (isset($_FILES['photoFile']) && ($_FILES['photoFile']['size'] > 0)) {
+				$moduleSettings = $this->selfServiceSettings->moduleSettings;
+				if (!empty($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && ($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0] < ($_FILES['photoFile']['size'] / 1024))) {
+					$msg =  $this->messages['file'][3];
+					$msg[] = null;
+					$msg[] = htmlspecialchars($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
+					$return['messages'][] = $msg;
 				}
 				else {
-					$return['mod']['jpegPhoto'] = array();
+					$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
+					$data = fread($handle, 100000000);
+					fclose($handle);
+					if (extension_loaded('imagick')) {
+						try {
+							$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
+						}
+						catch (Exception $e) {
+							$msg =  $this->messages['file'][2];
+							$msg[] = htmlspecialchars($e->getMessage());
+							$return['messages'][] = $msg;
+						}
+					}
+					if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')) {
+						$return['mod']['jpegPhoto'][0] = $data;
+					}
+					elseif (isset($_POST['addPhoto'])) {
+						$return['add']['jpegPhoto'][0] = $data;
+					}
 				}
 			}
 		}
@@ -3263,6 +3336,31 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	 * Resizes the given image data to the settings provided.
+	 * 
+	 * @param array $data binary image data
+	 * @param array $settings settings
+	 * @return array binary image data
+	 */
+	private static function resizeAndConvertImage($data, $settings) {
+		if (extension_loaded('imagick')) {
+			// convert to JPG if imagick extension is available
+			$image = new Imagick();
+			$image->readImageBlob($data);
+			// resize if maximum values specified
+			if (!empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+				$maxWidth = empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $settings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+				$maxHeight = empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $settings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+				$image->thumbnailimage($maxWidth, $maxHeight, true);
+			}
+			$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+			$image->setImageFormat('jpeg');
+			$data = $image->getimageblob();
+		}
+		return $data;
 	}
 	
 	/**
@@ -3697,8 +3795,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
 		$photoTable = new htmlTable();
 		$photoTable->colspan = 2;
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'), true);
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'), true);
+		if (extension_loaded('imagick')) {
+			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, 'crop'), true);
+			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, 'crop'), true);
+		}
 		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
 		$advancedOptions->addElement($photoTable, true);
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);

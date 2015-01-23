@@ -1,6 +1,8 @@
 March 2015
   - templates for server profiles
   - PDF export: added option to print primary group members
+  - LAM Pro:
+   -> Personal: support image file size limit and cropping (requires php-imagick) in self service
 
 
 16.12.2014 4.8
