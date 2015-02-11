@@ -2317,7 +2317,8 @@ Have fun!
 
           <listitem>
             <para>Password hash type: If possible use CRYPT-SHA512 or SSHA to
-            protect your user's passwords.</para>
+            protect your user's passwords. The option SASL will set the
+            password to "{SASL}&lt;user name&gt;".</para>
           </listitem>
 
           <listitem>
