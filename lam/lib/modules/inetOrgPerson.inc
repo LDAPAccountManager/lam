@@ -1163,6 +1163,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 				if (isset($_POST['removePassword'])) {
 					unset($this->attributes['userPassword']);
 				}
+				// set SASL password for new and renamed users
+				if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
+						&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')
+						&& ($this->getAccountContainer()->isNewAccount || ($this->attributes['uid'][0] != $this->orig['uid'][0]))) {
+					$this->attributes['userPassword'][0] = '{SASL}' . $this->attributes['uid'][0];
+				}
 			}
 		}
 		
@@ -2387,15 +2393,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 				}
 				// password
-				if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
-					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']]; // for custom scripts etc.
+				// set SASL password
+				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+					$partialAccounts[$i]['userPassword'] = '{SASL}' . $partialAccounts[$i]['uid'];
 				}
-				elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
-					$errMsg = $this->messages['userPassword'][0];
-					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+				// set normal password
+				else {
+					if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
+						$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']]; // for custom scripts etc.
+					}
+					elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
+						$errMsg = $this->messages['userPassword'][0];
+						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 			}
 		}
@@ -3513,7 +3526,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// set new password
 		$this->clearTextPassword = $password;
-		$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		// set SASL password
+		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
+				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+			$this->attributes['userPassword'][0] = '{SASL}' . $this->attributes['uid'][0];
+		}
+		// set normal password
+		else {
+			$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		}
 		return array();
 	}
 	

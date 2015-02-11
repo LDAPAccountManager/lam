@@ -188,9 +188,9 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 function getSupportedHashTypes() {
 	if (version_compare(phpversion(), '5.3.2') < 0) {
 		// CRYPT-SHA512 requires PHP 5.3.2 or higher
-		return array('CRYPT', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN');
+		return array('CRYPT', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL');
 	}
-	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN');
+	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL');
 }
 
 /**
@@ -269,6 +269,10 @@ function pwd_disable($hash) {
  */
 function pwd_is_lockable($password) {
 	if (($password == null) || (strlen($password) < 5)) {
+		return false;
+	}
+	// SASL is not lockable
+	if (strpos($password, '{SASL}') === 0) {
 		return false;
 	}
 	return ((substr($password, 0, 1) == "{") || (substr($password, 1, 1) == "{")) && (strpos($password, "}") > 3);

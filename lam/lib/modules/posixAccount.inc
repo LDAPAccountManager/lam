@@ -666,11 +666,12 @@ class posixAccount extends baseModule implements passwordService {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		if (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
 			return array();
 		}
+		// get default changes
+		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// add information about clear text password and password status change
 		$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		$pwdAttrName = $this->getPasswordAttrName();
@@ -1224,6 +1225,14 @@ class posixAccount extends baseModule implements passwordService {
 					$this->attributes[$attributeList[$i]][0] = $replacedValue;
 					$errors[] = array('WARN', $attributeList[$i], _('Changed value because only ASCII characters are allowed.'));
 				}
+			}
+		}
+		if ($this->get_scope() == 'user') {
+			// set SASL password for new and renamed users
+			if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
+					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')
+					&& ($this->getAccountContainer()->isNewAccount || ($this->attributes['uid'][0] != $this->orig['uid'][0]))) {
+				$this->attributes[$this->getPasswordAttrName()][0] = '{SASL}' . $this->attributes['uid'][0];
 			}
 		}
 		// Return error-messages
@@ -2146,15 +2155,22 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// password
-				if (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
-					$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']]; // for custom scripts etc.
+				// set SASL passwords
+				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+					$partialAccounts[$i][$pwdAttrName] = '{SASL}' . $partialAccounts[$i]['uid'];
 				}
-				elseif ($rawAccount[$ids['posixAccount_password']] != "") {
-					$errMsg = $this->messages['userPassword'][4];
-					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+				// set normal password
+				else {
+					if (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
+						$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']]; // for custom scripts etc.
+					}
+					elseif ($rawAccount[$ids['posixAccount_password']] != "") {
+						$errMsg = $this->messages['userPassword'][4];
+						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 				// cn
 				if ($this->manageCn()) {
@@ -2705,7 +2721,15 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// set new password
 		$this->clearTextPassword = $password;
-		$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		// set SASL password
+		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
+				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+			$this->attributes[$this->getPasswordAttrName()][0] = '{SASL}' . $this->attributes['uid'][0];
+		}
+		// set normal password
+		else {
+			$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		}
 		return array();
 	}
 	
