@@ -683,8 +683,9 @@ class accountContainer {
 	*
 	* @param string $type account type
 	* @param string $base key in $_SESSION where this object is saved
+	* @param integer $randomID random ID to avoid parallel editing (default: null)
 	*/
-	function __construct($type, $base) {
+	function __construct($type, $base, $randomID = null) {
 		/* Set the type of account. Valid
 		* types are: user, group, host
 		*/
@@ -698,8 +699,9 @@ class accountContainer {
 		$this->current_page=0;
 		$this->subpage='attributes';
 		$this->isNewAccount = false;
+		$this->randomID = $randomID;
 		return 0;
-		}
+	}
 
 	/**
 	* Array of all used attributes
@@ -760,6 +762,9 @@ class accountContainer {
 	private $sendPasswordViaMail = null;
 	/** send password via mail to this alternate address */
 	private $sendPasswordViaMailAlternateAddress = null;
+	
+	/** random ID number to avoid parallel editing of accounts in multiple browser tabs */
+	private $randomID = null;
 
 	/**
 	 * Returns the account module with the given class name
@@ -799,6 +804,10 @@ class accountContainer {
 	* It prints the HTML code of each account page.
 	*/
 	function continue_main() {
+		if (!empty($_POST['account_randomID']) && ($this->randomID != $_POST['account_randomID'])) {
+			metaRefresh("../lists/list.php?type=" . $this->type . '&amp;accountEditInvalidID=true');
+			exit();
+		}
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
 		$post = $_POST;
@@ -1294,7 +1303,8 @@ class accountContainer {
 					jQuery("#inputForm").validationEngine();
 				});
 			</script>';
-		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";		
+		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";
+		echo '<input type="hidden" name="account_randomID" value="' . $this->randomID . '">';		
 	}
 	
 	/**

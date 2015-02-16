@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1077,6 +1077,9 @@ class lamList {
 			if (isset($_SESSION['mass_pdf']['file'])) {
 				StatusMessage('INFO', sprintf(_('You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}{endlink}.'), '../' . $_SESSION['mass_pdf']['file']));
 			}
+		}
+		elseif (isset($_GET['accountEditInvalidID'])) {
+			StatusMessage('WARN', _('Please do not edit multiple accounts in parallel in multiple browser tabs.'));
 		}
 		if (isset($_SESSION['listRedirectMessages'])) {
 			for ($i = 0; $i < sizeof($_SESSION['listRedirectMessages']); $i++) {

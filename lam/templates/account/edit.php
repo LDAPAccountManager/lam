@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2014  Roland Gruber
+                2005 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
+
 //load account
 if (isset($_GET['DN'])) {
 	$DN = str_replace("\\'", '', $_GET['DN']);
@@ -80,7 +81,7 @@ if (isset($_GET['DN'])) {
 		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type . ' outside suffix ' . $suffix);
 		die();
 	}
-	$_SESSION['account'] = new accountContainer($type, 'account');
+	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {
 		include '../main_header.php';
@@ -103,7 +104,7 @@ else if (count($_POST)==0) {
 		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type);
 		die();
 	}
-	$_SESSION['account'] = new accountContainer($type, 'account');
+	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
 	$_SESSION['account']->new_account();
 }
 
