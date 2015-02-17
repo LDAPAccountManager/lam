@@ -76,13 +76,13 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	// check session id
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
-		logNewMessage(LOG_WARNING, "Invalid session ID, access denied (" . $_SERVER['REMOTE_ADDR'] . ")");
+		logNewMessage(LOG_WARNING, "Invalid session ID, access denied (" . getClientIPForLogging() . ")");
 		die();
 	}
 	// check if client IP has not changed
 	if (!isset($_SESSION["sec_client_ip"]) || ($_SESSION["sec_client_ip"] != $_SERVER['REMOTE_ADDR'])) {
 		// IP is invalid
-		logNewMessage(LOG_WARNING, "Client IP changed, access denied (" . $_SERVER['REMOTE_ADDR'] . ")");
+		logNewMessage(LOG_WARNING, "Client IP changed, access denied (" . getClientIPForLogging() . ")");
 		die();
 	}
 	// check if session time has not expired
@@ -133,7 +133,7 @@ function checkClientIP() {
 	}
 	// stop script is client may not access LAM
 	if (!$grantAccess) {
-		logNewMessage(LOG_WARNING, "Invalid client IP, access denied (" . $_SERVER['REMOTE_ADDR'] . ")");
+		logNewMessage(LOG_WARNING, "Invalid client IP, access denied (" . getClientIPForLogging() . ")");
 		die();
 	}
 }
@@ -215,7 +215,7 @@ function logNewMessage($level, $message) {
 	// check if log level is high enough
 	elseif ($cfg->logLevel < $level) return;
 	// ok to log, build log message
-	$prefix = "LDAP Account Manager (" . session_id() . ' - ' . $_SERVER['REMOTE_ADDR'] . ") - " . $possibleLevels[$level] . ": ";
+	$prefix = "LDAP Account Manager (" . session_id() . ' - ' . getClientIPForLogging() . ") - " . $possibleLevels[$level] . ": ";
 	$message = $prefix . $message;
 	// Syslog logging
 	if ($cfg->logDestination == 'SYSLOG') {
@@ -479,6 +479,22 @@ function checkIfToolIsActive($tool) {
  */
 function isLoggedIn() {
 	return (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] === true));
+}
+
+/**
+ * Returns the client IP and comma separated proxy IPs if any (HTTP_X_FORWARDED_FOR, HTTP_X_REAL_IP).
+ * 
+ * @return String client IP (e.g. 10.10.10.10,11.11.11.11)
+ */
+function getClientIPForLogging() {
+	$ip = $_SERVER['REMOTE_ADDR'];
+	if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && (strlen($_SERVER['HTTP_X_FORWARDED_FOR']) < 100)) {
+		$ip .= ',' . $_SERVER['HTTP_X_FORWARDED_FOR'];
+	}
+	if (!empty($_SERVER['HTTP_X_REAL_IP']) && (strlen($_SERVER['HTTP_X_REAL_IP']) < 100)) {
+		$ip .= ',' . $_SERVER['HTTP_X_REAL_IP'];
+	}
+	return $ip;
 }
 
 ?>

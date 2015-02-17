@@ -2,6 +2,7 @@ March 2015
   - templates for server profiles
   - Unix/Personal: support SASL as password hash type
   - PDF export: added option to print primary group members
+  - Use HTTP_X_REAL_IP/HTTP_X_FORWARDED_FOR to log IP addresses (RFE 120)
   - LAM Pro:
    -> Personal: support image file size limit and cropping (requires php-imagick) in self service
 
