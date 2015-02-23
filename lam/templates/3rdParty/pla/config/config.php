@@ -2,6 +2,7 @@
 
 app_session_start();
 $lamConfig = $_SESSION['config'];
+$lamCfgMain = $_SESSION['cfgMain'];
 $lamLdap = $_SESSION['ldap'];
 $lamLogin = $lamLdap->decrypt_login();
 
@@ -71,4 +72,15 @@ $servers->setValue('unique','attrs',array());
 $servers->setValue('server','custom_sys_attrs', array('creatorsName', 'createTimestamp', 'modifiersName',
 			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime'));
 $config->custom->confirm['copy'] = false;
+
+// debugging
+if (($lamCfgMain->logDestination != 'NONE') && ($lamCfgMain->logLevel == LOG_DEBUG)) {
+	if ($lamCfgMain->logDestination == 'SYSLOG') {
+		$config->custom->debug['syslog'] = true;
+	}
+	else {
+		$config->custom->debug['file'] = $lamCfgMain->logDestination;
+	}
+	$config->custom->debug['level'] = 1023;
+}
 ?>
