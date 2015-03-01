@@ -337,9 +337,22 @@ class posixGroup extends baseModule implements passwordService {
 		$filterContainer->addElement(new htmlHiddenInput('filterValue', htmlspecialchars($filter)));
 		$return->addElement($filterContainer, true);
 		
+		// sync from group of names
+		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
+		if ($gon == null) {
+			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
+		}
+		if ($gon != null) {
+			$return->addElement(new htmlSpacer(null, '20px'), true);
+			$syncButton = new htmlButton('syncGON', sprintf(_('Sync from %s'), $gon->get_alias()));
+			$syncButton->colspan = 5;
+			$syncButton->setIconClass('refreshButton');
+			$return->addElement($syncButton, true);
+		}
+		
 		// back button
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$return->addElement(new htmlSpacer(null, '20px'), true);
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), true);
 		$return->addElement(new htmlEqualHeight(array('removeusers', 'addusers')));
 		
 		return $return;
@@ -817,15 +830,46 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_user() {
-		if (!isset($this->attributes['memberUid'])) $this->attributes['memberUid'] = array();
+		$return = array();
+		if (!isset($this->attributes['memberUid'])) {
+			$this->attributes['memberUid'] = array();
+		}
+		// add users
 		if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
-			// Add new user
 			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $_POST['addusers']);
 		}
+		// remove users
 		elseif (isset($_POST['removeusers']) && isset($_POST['removeusers_button'])) { // remove users from list
 			$this->attributes['memberUid'] = array_delete($_POST['removeusers'], $this->attributes['memberUid']);
 		}
-		return array();
+		// sync users
+		elseif (isset($_POST['syncGON'])) {
+			$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
+			if ($gon == null) {
+				$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
+			}
+			$memberDNs = $gon->getMembers();
+			$users = $this->getUsers();
+			$oldValues = $this->attributes['memberUid'];
+			$this->attributes['memberUid'] = array();
+			foreach ($memberDNs as $dn) {
+				foreach ($users as $userName => $userAttrs) {
+					if ($userAttrs['dn'] != $dn) {
+						continue;
+					}
+					$this->attributes['memberUid'][] = $userName;
+				}
+			}
+			$added = array_delete($oldValues, $this->attributes['memberUid']);
+			if (!empty($added)) {
+				$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
+			}
+			$deleted = array_delete($this->attributes['memberUid'], $oldValues);
+			if (!empty($deleted)) {
+				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+			}
+		}
+		return $return;
 	}
 
 
@@ -1098,7 +1142,10 @@ class posixGroup extends baseModule implements passwordService {
 		$this->cachedUserToGIDList = array();
 		$resultCount = sizeof($result);
 		for ($i = 0; $i < $resultCount; $i++) {
-			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array('gid' => $result[$i]['gidnumber'][0], 'cn' => $result[$i]['cn'][0]);
+			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array(
+				'gid' => $result[$i]['gidnumber'][0],
+				'cn' => $result[$i]['cn'][0],
+				'dn' => $result[$i]['dn']);
 		}
 		logNewMessage(LOG_DEBUG, 'Found ' . $resultCount . ' Unix users.');
 		logNewMessage(LOG_DEBUG, print_r($result, true));

@@ -221,6 +221,11 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
+.refreshButton {
+	background-image: url(../graphics/refresh.png) !important;
+	background-position: 0px 0px !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
