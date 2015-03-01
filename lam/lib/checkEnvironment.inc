@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2013  Roland Gruber
+  Copyright (C) 2010 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ include_once("../lib/status.inc");
 include_once("../lib/config.inc");
 
 // check if PHP >= 5.2.4
-if (version_compare(phpversion(), '5.2.4') < 0) {
+if (version_compare(phpversion(), '5.3.2') < 0) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";

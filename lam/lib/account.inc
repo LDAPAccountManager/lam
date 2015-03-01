@@ -186,10 +186,6 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
  * @return array hash types
  */
 function getSupportedHashTypes() {
-	if (version_compare(phpversion(), '5.3.2') < 0) {
-		// CRYPT-SHA512 requires PHP 5.3.2 or higher
-		return array('CRYPT', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL');
-	}
 	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL');
 }
 
