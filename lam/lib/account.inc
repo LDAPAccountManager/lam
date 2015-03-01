@@ -782,7 +782,7 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
 	$return = null;
 	$sr = @ldap_read($handle, escapeDN($dn), 'objectClass=*', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
-		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
 			cleanLDAPResult($entries);
 			$return = $entries[0];
