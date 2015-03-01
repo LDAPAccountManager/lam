@@ -842,6 +842,23 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Adds a simple PDF entry with the given key and value.
+	 * 
+	 * @param array $result result array (entry will be added here)
+	 * @param String $name ID
+	 * @param String $label label name
+	 * @param mixed $value value as String or array
+	 * @param String $delimiter delimiter if value is array (default: ", ")
+	 */
+	public function addPDFKeyValue(&$result, $name, $label, $value, $delimiter = ', ') {
+		if (is_array($value)) {
+			natcasesort($value);
+			$value = implode($delimiter, $value);
+		}
+		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
+	}
+
+	/**
 	* Returns an array containing all input columns for the file upload.
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
