@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2014  Roland Gruber
+                2009 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -944,6 +944,9 @@ function obfuscateText($text) {
  */
 function deobfuscateText($text) {
 	if (($text == null) || ($text == '')) {
+		return $text;
+	}
+	if (!isObfuscatedText($text)) {
 		return $text;
 	}
 	return str_replace('LAM_OBFUSCATE:', '', base64_decode(str_rot13($text)));
