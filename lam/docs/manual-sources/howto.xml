@@ -2497,7 +2497,11 @@ Have fun!
 
         <para>Now select the tab "Module settings" and specify the list of
         possible security questions. Only these questions will be selectable
-        when you later edit accounts.</para>
+        when you later edit accounts unless you explicitly allow to enter
+        custom questions.</para>
+
+        <para>If you do not want to set backup email addresses then you can
+        hide this option.</para>
 
         <screenshot>
           <mediaobject>
@@ -3410,19 +3414,37 @@ Have fun!
         of using groupOfNames as basis for your groups you may also use
         namedObject.</para>
 
+        <para>Module activation:</para>
+
         <para><screenshot>
             <mediaobject>
               <imageobject>
                 <imagedata fileref="images/rfc2307bis.png" />
               </imageobject>
             </mediaobject>
-          </screenshot><screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/mod_unixGroupLAMPro.png" />
-              </imageobject>
-            </mediaobject>
           </screenshot></para>
+
+        <para>The GID number will be filled automatically based on the server
+        profile configuration.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixGroupLAMPro.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Group members can be edited and also synced with Group of
+        (unique) names.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixGroupLAMPro2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>
@@ -3431,6 +3453,18 @@ Have fun!
         <para>LAM supports managing Samba 3 groups. You can set special group
         types and also create Windows predefined groups like "Domain
         admins".</para>
+
+        <para>Module activation:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_sambaGroup2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Group editing:</para>
 
         <screenshot>
           <mediaobject>
