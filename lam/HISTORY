@@ -6,7 +6,8 @@ March 2015
   - Use HTTP_X_REAL_IP/HTTP_X_FORWARDED_FOR to log IP addresses (RFE 120)
   - LAM Pro:
    -> Personal: support image file size limit and cropping (requires php-imagick) in self service
-  - fixed bugs:
+   -> Password self reset: allow to enter custom security questions (RFE 115)
+  - Fixed bugs:
    -> Self Service shows password reuse error after password change was required
 
 
