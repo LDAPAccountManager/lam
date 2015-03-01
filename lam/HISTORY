@@ -8,6 +8,7 @@ March 2015
    -> Personal: support image file size limit and cropping (requires php-imagick) in self service
    -> Password self reset: allow to enter custom security questions (RFE 115)
    -> Unix groups (rfc2307bis): allow to sync members from group of (unique) names (RFE 116)
+   -> Self Service: support password change with old password (requires PHP >= 5.4.26)
   - Fixed bugs:
    -> Self Service shows password reuse error after password change was required
 

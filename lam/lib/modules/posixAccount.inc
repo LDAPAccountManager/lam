@@ -194,6 +194,10 @@ class posixAccount extends baseModule implements passwordService {
 			$loginShellsHelp = new htmlHelpLink('loginShells', get_class($this));
 			$loginShellsHelp->alignment = htmlElement::ALIGN_TOP;
 			$selfServiceContainer->addElement($loginShellsHelp, true);
+			if (version_compare(phpversion(), '5.4.26') >= 0) {
+				$selfServiceContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password')));
+				$selfServiceContainer->addElement(new htmlHelpLink('useOldPwd', get_class($this)), true);
+			}
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
@@ -537,6 +541,10 @@ class posixAccount extends baseModule implements passwordService {
 				'cn' => array (
 					"Headline" => _("Common name"), 'attr' => 'cn',
 					"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
+				),
+				'useOldPwd' => array (
+					"Headline" => _('Password change with old password'),
+					"Text" => _('Sends the old password together with the new password when the user sets a new password.')
 				)
 			),
 			'host' => array(
@@ -2550,6 +2558,11 @@ class posixAccount extends baseModule implements passwordService {
 		if (in_array('password', $fields)) {
 			$pwdTable = new htmlTable();
 			$pwdTable->colspan = 3;
+			if (!empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) && ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] == 'true')) {
+				$pwd0 = new htmlTableExtendedInputField(_('Old password'), 'posixAccount_passwordOld');
+				$pwd0->setIsPassword(true, true);
+				$pwdTable->addElement($pwd0, true);
+			}
 			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('password', _('New password')), 'posixAccount_password');
 			$pwd1->setIsPassword(true, true);
 			$pwdTable->addElement($pwd1, true);
@@ -2629,7 +2642,13 @@ class posixAccount extends baseModule implements passwordService {
 						}
 						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
 						if ($pwdPolicyResult === true) {
-							$return['mod'][$this->getPasswordAttrName()][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+							if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
+								$return['mod'][$this->getPasswordAttrName()][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+							}
+							else {
+								$return['add'][$this->getPasswordAttrName()][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+								$return['del'][$this->getPasswordAttrName()][0] = $_POST['posixAccount_passwordOld'];
+							}
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
 							if (isset($attributes['shadowLastChange'][0])) {
 								$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
@@ -2643,9 +2662,11 @@ class posixAccount extends baseModule implements passwordService {
 				}
 			}
 		}
+		// stop processing if only a password change is done
 		if ($passwordChangeOnly) {
-			return $return; // skip processing if only a password change is done
+			return $return;
 		}
+		// cn
 		if (in_array('cn', $fields) && !in_array('cn', $readOnlyFields)) {
 			if (isset($_POST['posixAccount_cn']) && ($_POST['posixAccount_cn'] != '')) {
 				if (!get_preg($_POST['posixAccount_cn'], 'cn')) {
@@ -2659,6 +2680,7 @@ class posixAccount extends baseModule implements passwordService {
 				$return['messages'][] = $this->messages['cn'][0];
 			}
 		}
+		// shell
 		if (in_array('loginShell', $fields) && !in_array('loginShell', $readOnlyFields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
 			if (in_array($_POST['posixAccount_loginShell'], $shelllist)
