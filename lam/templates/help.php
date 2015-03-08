@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2013  Roland Gruber
+                2008 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -79,17 +79,15 @@ function echoHTMLFoot() {
  * Print help site for a specific help number.
  * 
  * @param array The help entry that is to be displayed. 
- * @param array The help variables that are used to replace the spacer in the help text.
  */
-function displayHelp($helpEntry,$helpVariables) {
+function displayHelp($helpEntry) {
 	echoHTMLHead();
 	echo "		<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
 	$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
 	if (isset($helpEntry['attr'])) {
 		$format .= '<br><hr>' . _('Technical name') . ': <i>' . $helpEntry['attr'] . '</i>';
 	}
-	array_unshift($helpVariables,$format);
-	call_user_func_array("printf",$helpVariables);
+	echo $format;
 	if(isset($helpEntry['SeeAlso']) && is_array($helpEntry['SeeAlso'])) {
 		echo '		<p class="help">' . _('See also') . ': <a class="helpSeeAlso" href="' . $helpEntry['SeeAlso']['link'] . '">' . $helpEntry['SeeAlso']['text'] . '</a></p>';
 	}
@@ -144,19 +142,6 @@ else {
 	}
 }
 
-$i = 1;
-$moreVariables = true;
-$helpVariables = array();
-while($moreVariables) {
-	if (isset($_GET['var' . $i])) {
-		array_push($helpVariables, htmlspecialchars($_GET['var' . $i]));
-		$i++;
-	}
-	else {
-		$moreVariables = false;
-	}
-}
-
-displayHelp($helpEntry,$helpVariables);
+displayHelp($helpEntry);
 
 ?>
