@@ -421,11 +421,11 @@ class ddns extends baseModule {
 		if (isset($zones[1])) {
 			$revzone = $zones[1];
 		}
-		return array(
-			get_class($this) . '_DNSserver' => array('<block><key>' . _('IP address of the DNS server') . '</key><value>' . $this->getDNSServer() . '</value></block>'),
-			get_class($this) . '_zone' => array('<block><key>' . _('Zone name') . '</key><value>' . $zone . '</value></block>'),
-			get_class($this) . '_reverseZone' => array('<block><key>' . _('Reverse zone name') . '</key><value>' . $revzone . '</value></block>'),
-		);
+		$result = array();
+		$this->addPDFKeyValue($result, 'DNSserver', _('IP address of the DNS server'), $this->getDNSServer());
+		$this->addPDFKeyValue($result, 'zone', _('Zone name'), $zone);
+		$this->addPDFKeyValue($result, 'reverseZone', _('Reverse zone name'), $revzone);
+		return $result;
 	}
 	
 	/**

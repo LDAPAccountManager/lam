@@ -671,17 +671,16 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!empty($unknownClientsVal)) {
 			$unknownClients = $this->allowDenyOptions[$unknownClientsVal];
 		}
-		$return = array(
-			get_class($this) . '_domainName' => array('<block><key>' . _('Domain name') . '</key><value>' . $this->getDHCPOption('domain-name') . '</value></block>'),
-			get_class($this) . '_leaseTime' => array('<block><key>' . _('Lease time') . '</key><value>' . $this->getDefaultLeaseTime() . '</value></block>'),
-			get_class($this) . '_maxLeaseTime' => array('<block><key>' . _('Maximum lease time') . '</key><value>' . $this->getMaxLeaseTime() . '</value></block>'),
-			get_class($this) . '_DNSserver' => array('<block><key>' . _('DNS') . '</key><value>' . $this->getDHCPOption('domain-name-servers') . '</value></block>'),
-			get_class($this) . '_gateway' => array('<block><key>' . _('Default gateway') . '</key><value>' . $this->getDHCPOption('routers') . '</value></block>'),
-			get_class($this) . '_netbiosServer' => array('<block><key>' . _('Netbios name servers') . '</key><value>' . $this->getDHCPOption('netbios-name-servers') . '</value></block>'),
-			get_class($this) . '_netbiosType' => array('<block><key>' . _('Netbios node type') . '</key><value>' . $nodeTypeValue . '</value></block>'),
-			get_class($this) . '_subnetMask' => array('<block><key>' . _('Subnet mask') . '</key><value>' . $this->getDHCPOption('subnet-mask') . '</value></block>'),
-			get_class($this) . '_unknownClients' => array('<block><key>' . _('Unknown clients') . '</key><value>' . $unknownClients . '</value></block>'),
-			);
+		$return = array();
+		$this->addPDFKeyValue($return, 'domainName', _('Domain name'), $this->getDHCPOption('domain-name'));
+		$this->addPDFKeyValue($return, 'leaseTime', _('Lease time'), $this->getDefaultLeaseTime());
+		$this->addPDFKeyValue($return, 'maxLeaseTime', _('Maximum lease time'), $this->getMaxLeaseTime());
+		$this->addPDFKeyValue($return, 'DNSserver', _('DNS'), $this->getDHCPOption('domain-name-servers'));
+		$this->addPDFKeyValue($return, 'gateway', _('Default gateway'), $this->getDHCPOption('routers'));
+		$this->addPDFKeyValue($return, 'netbiosServer', _('Netbios name servers'), $this->getDHCPOption('netbios-name-servers'));
+		$this->addPDFKeyValue($return, 'netbiosType', _('Netbios node type'), $nodeTypeValue);
+		$this->addPDFKeyValue($return, 'subnetMask', _('Subnet mask'), $this->getDHCPOption('subnet-mask'));
+		$this->addPDFKeyValue($return, 'unknownClients', _('Unknown clients'), $unknownClients);
 		$this->addSimplePDFField($return, 'description', _('Description'), 'dhcpComments');
 		$this->addSimplePDFField($return, 'subnet', _('Subnet'), 'cn');
 		$this->addSimplePDFField($return, 'netMask', _('Net mask'), 'dhcpNetMask');

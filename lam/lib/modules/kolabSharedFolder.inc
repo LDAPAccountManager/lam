@@ -571,7 +571,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 			if (isset($typeList[$type])) {
 				$type = $typeList[$type];
 			}
-			$return[get_class($this) . '_kolabFolderType'] = array('<block><key>' . _('Type') . '</key><value>' . $type . '</value></block>');
+			$this->addPDFKeyValue($return, 'kolabFolderType', _('Type'), $type);
 		}
 		return $return;
 	}

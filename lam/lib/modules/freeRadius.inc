@@ -699,14 +699,14 @@ class freeRadius extends baseModule {
 		$this->addSimplePDFField($return, 'radiusIdleTimeout', _('Idle timeout'));
 		$this->addSimplePDFField($return, 'radiusProfileDn', _('Profile'));
 		if (isset($this->attributes['radiusExpiration'][0])) {
-			$return[get_class($this) . '_radiusExpiration'][0] = '<block><key>' . _('Expiration date') . '</key><value>' . $this->formatExpirationDate($this->attributes['radiusExpiration'][0]) . '</value></block>';
+			$this->addPDFKeyValue($return, 'radiusExpiration', _('Expiration date'), $this->formatExpirationDate($this->attributes['radiusExpiration'][0]));
 		}
 		if (isset($this->attributes['dialupAccess'][0])) {
 			$enabled = _('Yes');
 			if (in_array($this->attributes['dialupAccess'][0], array('false', 'FALSE'))) {
 				$enabled = _('No');
 			}
-			$return[get_class($this) . '_dialupAccess'][0] = '<block><key>' . _('Enabled') . '</key><value>' . $enabled . '</value></block>';
+			$this->addPDFKeyValue($return, 'dialupAccess', _('Enabled'), $enabled);
 		}
 		return $return;
 	}
