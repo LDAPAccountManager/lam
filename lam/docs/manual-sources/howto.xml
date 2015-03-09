@@ -1303,6 +1303,11 @@ Have fun!
           specified with ldaps://. The port value is optional. TLS cannot be
           combined with ldaps://.</para>
 
+          <para>Hint: If you use a master/slave setup with referrals then
+          point LAM to your master server. Due to bugs in the underlying LDAP
+          libraries pointing to a slave might cause issues on write
+          operations.</para>
+
           <para>LAM includes an LDAP browser which allows direct modification
           of LDAP entries. If you would like to use it then enter the LDAP
           suffix at "Tree suffix".</para>
