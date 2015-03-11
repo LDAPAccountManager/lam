@@ -135,8 +135,11 @@ function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
 			$copy_result = r_copy_dn($serverSRC,$serverDST,$snapshottree,$child_dn,$dnDST_new,$remove);
 			$copy_message = array_merge($copy_message,array_values($copy_result));
 
-			if (! $copy_result)
+			if (! $copy_result) {
 				$hadError = true;
+				$msg = print_r($copy_result, true);
+				debug_log("Error copying DN " . $child_dn . ': ' . $msg, 1, 0);
+			}
 		}
 
 		if (! $hadError && $remove) {
