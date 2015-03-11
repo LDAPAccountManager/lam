@@ -770,7 +770,7 @@ class kolabUser extends baseModule {
 		if (!empty($this->attributes['mailQuota'][0])) {
 			$mailQuota = ($this->attributes['mailQuota'][0] / 1024) . 'MB';
 		}
-		$return[get_class($this) . '_mailQuota'] = array('<block><key>' . _('Mailbox quota') . '</key><value>' . $mailQuota . '</value></block>');
+		$this->addPDFKeyValue($return, 'mailQuota', _('Mailbox quota'), $mailQuota);
 		return $return;
 	}
 

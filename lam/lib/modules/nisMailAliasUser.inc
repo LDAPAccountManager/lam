@@ -539,7 +539,7 @@ class nisMailAliasUser extends baseModule {
 			}
 		}
 		$foundAliases = array_unique($foundAliases);
-		$return[get_class($this) . '_alias'] = array('<block><key>' . _('Alias names') . '</key><value>' . implode(', ', $foundAliases) . '</value></block>');
+		$this->addPDFKeyValue($return, 'alias', _('Alias names'), implode(', ', $foundAliases));
 		return $return;
 	}
 

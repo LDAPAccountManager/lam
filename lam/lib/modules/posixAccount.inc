@@ -1866,10 +1866,9 @@ class posixAccount extends baseModule implements passwordService {
 			$additionalGroups = $this->groups;
 			natcasesort($additionalGroups);
 		}
-		$return = array(
-			'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $this->getGroupName($this->attributes['gidNumber'][0]) . '</value></block>'),
-			'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . implode(", ", $additionalGroups) . '</value></block>'),
-		);
+		$return = array();
+		$this->addPDFKeyValue($return, 'primaryGroup', _('Primary group'), $this->getGroupName($this->attributes['gidNumber'][0]));
+		$this->addPDFKeyValue($return, 'additionalGroups', _('Additional groups'), implode(", ", $additionalGroups));
 		$this->addSimplePDFField($return, 'uid', $uidLabel);
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
 		$this->addSimplePDFField($return, 'uidNumber', _('UID number'));
@@ -1886,13 +1885,13 @@ class posixAccount extends baseModule implements passwordService {
 				}
 			}
 			natcasesort($gons);
-			$return['posixAccount_gon'] = array('<block><key>' . _('Groups of names') . '</key><value>' . implode(", ", $gons) . '</value></block>');
+			$this->addPDFKeyValue($return, 'gon', _('Groups of names'), implode(", ", $gons));
 		}
 		if (isset($this->clearTextPassword)) {
-			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
+			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
 		}
 		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
-			$return['posixAccount_userPassword'] = array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['INFO.userPasswordClearText'] . '</value></block>');
+			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
 		return $return;
 	}
