@@ -898,7 +898,7 @@ class pykotaUser extends baseModule {
 		if (!empty($this->attributes['pykotaLimitBy'][0]) && isset($limitByOptions[$this->attributes['pykotaLimitBy'][0]])) {
 			$limitByValue = $limitByOptions[$this->attributes['pykotaLimitBy'][0]];
 		}
-		$return[get_class($this) . '_pykotaLimitBy'] = array('<block><key>' . _('Limit type') . '</key><value>' . $limitByValue . '</value></block>');
+		$this->addPDFKeyValue($return, 'pykotaLimitBy', _('Limit type'), $limitByValue);
 		$this->addSimplePDFField($return, 'pykotaOverCharge', _('Overcharge factor'));
 		$this->addSimplePDFField($return, 'pykotaBalance', _('Balance'));
 		$this->addSimplePDFField($return, 'pykotaLifeTimePaid', _('Total paid'));

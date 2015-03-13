@@ -614,17 +614,17 @@ class sambaDomain extends baseModule {
 		if (isset($this->attributes['sambaLogonToChgPwd'])) {
 			$logonToChgPwd = _('Off');
 			if ($this->attributes['sambaPwdHistoryLength'][0] == 2) $logonToChgPwd = _('On');
-			$return['sambaDomain_logonToChgPwd'][0] = '<block><key>' . _('Logon for password change') . '</key><value>' . $logonToChgPwd . '</value></block>';
+			$this->addPDFKeyValue($return, 'logonToChgPwd', _('Logon for password change'), $logonToChgPwd);
 		}
 		if (isset($this->attributes['sambaForceLogoff'])) {
 			$forceLogoff = _('Off');
 			if ($this->attributes['sambaForceLogoff'][0] == 0) $forceLogoff = _('On');
-			$return['sambaDomain_forceLogoff'][0] = '<block><key>' . _('Disconnect users outside logon hours') . '</key><value>' . $forceLogoff . '</value></block>';
+			$this->addPDFKeyValue($return, 'forceLogoff', _('Disconnect users outside logon hours'), $forceLogoff);
 		}
 		if (isset($this->attributes['sambaRefuseMachinePwdChange'])) {
 			$refuseMachinePwdChange = _('Off');
 			if ($this->attributes['sambaRefuseMachinePwdChange'][0] == 0) $refuseMachinePwdChange = _('On');
-			$return['sambaDomain_refuseMachinePwdChange'][0] = '<block><key>' . _('Allow machine password changes') . '</key><value>' . $refuseMachinePwdChange . '</value></block>';
+			$this->addPDFKeyValue($return, 'refuseMachinePwdChange', _('Allow machine password changes'), $refuseMachinePwdChange);
 		}
 		return $return;
 	}

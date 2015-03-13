@@ -595,7 +595,7 @@ class pykotaPrinter extends baseModule {
 		if (!empty($this->attributes['pykotaPassThrough'][0]) && isset($passthroughOptions[$this->attributes['pykotaPassThrough'][0]])) {
 			$passthroughValue = $passthroughOptions[$this->attributes['pykotaPassThrough'][0]];
 		}
-		$return[get_class($this) . '_pykotaPassThrough'] = array('<block><key>' . _('Passthrough') . '</key><value>' . $passthroughValue . '</value></block>');
+		$this->addPDFKeyValue($return, 'pykotaPassThrough', _('Passthrough'), $passthroughValue);
 		// members
 		if (!empty($this->attributes['uniqueMember'][0])) {
 			$members = array();
@@ -607,7 +607,7 @@ class pykotaPrinter extends baseModule {
 					$members[] = getAbstractDN($member);
 				}
 			}
-			$return[get_class($this) . '_uniqueMember'] = array('<block><key>' . _('Group members') . '</key><value>' . implode(', ', $members) . '</value></block>');
+			$this->addPDFKeyValue($return, 'uniqueMember', _('Group members'), implode(', ', $members));
 		}
 		// printer groups
 		$parentGroups = array();
@@ -621,7 +621,7 @@ class pykotaPrinter extends baseModule {
 			}
 		}
 		if (sizeof($parentGroups) > 0) {
-			$return[get_class($this) . '_parentUniqueMember'] = array('<block><key>' . _('Printer groups') . '</key><value>' . implode(', ', $parentGroups) . '</value></block>');
+			$this->addPDFKeyValue($return, 'parentUniqueMember', _('Printer groups'), implode(', ', $parentGroups));
 		}
 		return $return;
 	}

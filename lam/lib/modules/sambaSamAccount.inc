@@ -1920,35 +1920,35 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$mDial->getTsLogin()) {
 				$tsAllowLogin = _('no');
 			}
-			$return['sambaSamAccount_tsAllowLogin'] = array('<block><key>' . _('Allow terminal server login') . '</key><value>' . $tsAllowLogin . '</value></block>');
-			$return['sambaSamAccount_tsHomeDir'] = array('<block><key>' . _('Home directory') . ' (TS)</key><value>' . $mDial->ctx['CtxWFHomeDir'] . '</value></block>');
-			$return['sambaSamAccount_tsHomeDrive'] = array('<block><key>' . _('Home drive') . ' (TS)</key><value>' . $mDial->ctx['CtxWFHomeDirDrive'] . '</value></block>');
-			$return['sambaSamAccount_tsProfilePath'] = array('<block><key>' . _('Profile path') . ' (TS)</key><value>' . $mDial->ctx['CtxWFProfilePath'] . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsAllowLogin', _('Allow terminal server login'), $tsAllowLogin);
+			$this->addPDFKeyValue($return, 'tsHomeDir', _('Home directory'). ' (TS)', $mDial->ctx['CtxWFHomeDir']);
+			$this->addPDFKeyValue($return, 'tsHomeDrive', _('Home drive') . ' (TS)', $mDial->ctx['CtxWFHomeDirDrive']);
+			$this->addPDFKeyValue($return, 'tsProfilePath', _('Profile path') . ' (TS)', $mDial->ctx['CtxWFProfilePath']);
 			$tsInherit = _('yes');
 			if (!$mDial->getInheritMode()) {
 				$tsInherit = _('no');
 			}
-			$return['sambaSamAccount_tsInherit'] = array('<block><key>' . _('Inherit client startup configuration') . ' (TS)</key><value>' . $tsInherit . '</value></block>');
-			$return['sambaSamAccount_tsInitialProgram'] = array('<block><key>' . _('Initial program') . ' (TS)</key><value>' . $mDial->ctx['CtxInitialProgram'] . '</value></block>');
-			$return['sambaSamAccount_tsWorkDirectory'] = array('<block><key>' . _('Working directory') . ' (TS)</key><value>' . $mDial->ctx['CtxWorkDirectory'] . '</value></block>');
-			$return['sambaSamAccount_tsConnectionLimit'] = array('<block><key>' . _('Connection time limit') . ' (TS)</key><value>' . $mDial->ctx['CtxMaxConnectionTime'] . '</value></block>');
-			$return['sambaSamAccount_tsDisconnectionLimit'] = array('<block><key>' . _('Disconnection time limit') . ' (TS)</key><value>' . $mDial->ctx['CtxMaxDisconnectionTime'] . '</value></block>');
-			$return['sambaSamAccount_tsIdleLimit'] = array('<block><key>' . _('Idle time limit') . ' (TS)</key><value>' . $mDial->ctx['CtxMaxIdleTime'] . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsInherit', _('Inherit client startup configuration') . ' (TS)', $tsInherit);
+			$this->addPDFKeyValue($return, 'tsInitialProgram', _('Initial program') . ' (TS)', $mDial->ctx['CtxInitialProgram']);
+			$this->addPDFKeyValue($return, 'tsWorkDirectory', _('Working directory') . ' (TS)', $mDial->ctx['CtxWorkDirectory']);
+			$this->addPDFKeyValue($return, 'tsConnectionLimit', _('Connection time limit') . ' (TS)', $mDial->ctx['CtxMaxConnectionTime']);
+			$this->addPDFKeyValue($return, 'tsDisconnectionLimit', _('Disconnection time limit') . ' (TS)', $mDial->ctx['CtxMaxDisconnectionTime']);
+			$this->addPDFKeyValue($return, 'tsIdleLimit', _('Idle time limit') . ' (TS)', $mDial->ctx['CtxMaxIdleTime']);
 			$tsConnectDrives = _('yes');
 			if (!$mDial->getConnectClientDrives()) {
 				$tsConnectDrives = _('no');
 			}
-			$return['sambaSamAccount_tsConnectDrives'] = array('<block><key>' . _('Connect client drives') . ' (TS)</key><value>' . $tsConnectDrives . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsConnectDrives', _('Connect client drives') . ' (TS)', $tsConnectDrives);
 			$tsConnectPrinters = _('yes');
 			if (!$mDial->getConnectClientPrinters()) {
 				$tsConnectPrinters = _('no');
 			}
-			$return['sambaSamAccount_tsConnectPrinters'] = array('<block><key>' . _('Connect client printers') . ' (TS)</key><value>' . $tsConnectPrinters . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsConnectPrinters', _('Connect client printers') . ' (TS)', $tsConnectPrinters);
 			$tsClientPrinterDefault = _('yes');
 			if (!$mDial->getDefaultPrinter()) {
 				$tsClientPrinterDefault = _('no');
 			}
-			$return['sambaSamAccount_tsClientPrinterDefault'] = array('<block><key>' . _('Client printer is default') . ' (TS)</key><value>' . $tsClientPrinterDefault . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsClientPrinterDefault', _('Client printer is default') . ' (TS)', $tsClientPrinterDefault);
 			$shadowOptions = array(
 				'0' => _("disabled"),
 				'1' => _("input on, notify on"),
@@ -1959,7 +1959,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (($mDial->getShadow() != null) && is_numeric($mDial->getShadow())) {
 				$tsShadowing = $shadowOptions[$mDial->getShadow()];
 			}
-			$return['sambaSamAccount_tsShadowing'] = array('<block><key>' . _('Shadowing') . ' (TS)</key><value>' . $tsShadowing . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsShadowing', _('Shadowing') . ' (TS)', $tsShadowing);
 			$brokenConnOptions = array(
 				'0' => _("disconnect"),
 				'1' => _("reset"));
@@ -1967,7 +1967,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (($mDial->getBrokenConn() != null) && is_numeric($mDial->getBrokenConn())) {
 				$tsBrokenConn = $brokenConnOptions[$mDial->getBrokenConn()];
 			}
-			$return['sambaSamAccount_tsBrokenConn'] = array('<block><key>' . _('On broken or timed out connection') . ' (TS)</key><value>' . $tsBrokenConn . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsBrokenConn', _('On broken or timed out connection') . ' (TS)', $tsBrokenConn);
 			$reconnectOptions = array(
 				'0' => _("from any client"),
 				'1' => _("from previous client only"));
@@ -1975,7 +1975,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (($mDial->getReConn() != null) && is_numeric($mDial->getReConn())) {
 				$tsReconnect = $reconnectOptions[$mDial->getReConn()];
 			}
-			$return['sambaSamAccount_tsReconnect'] = array('<block><key>' . _('Reconnect if disconnected') . ' (TS)</key><value>' . $tsReconnect . '</value></block>');
+			$this->addPDFKeyValue($return, 'tsReconnect', _('Reconnect if disconnected') . ' (TS)', $tsReconnect);
 		}
 		return $return;
 	}

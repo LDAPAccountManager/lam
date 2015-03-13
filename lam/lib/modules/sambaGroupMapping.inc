@@ -553,7 +553,7 @@ class sambaGroupMapping extends baseModule {
 					$members[] = $member;
 				}
 			}
-			$return[get_class($this) . '_sambaSIDList'] = array('<block><key>' . _('Local members') . '</key><value>' . implode(', ', $members) . '</value></block>');
+			$this->addPDFKeyValue($return, 'sambaSIDList', _('Local members'), implode(', ', $members));
 		}
 		return $return;
 	}

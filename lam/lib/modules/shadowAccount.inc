@@ -496,9 +496,9 @@ class shadowAccount extends baseModule implements passwordService {
 		if (isset($this->attributes['shadowExpire'][0])) {
 			$shadowExpire = date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600);
 		}
-		$return = array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $shadowLastChange . '</value></block>'),
-			'shadowAccount_shadowExpire' => array('<block><key>' . _('Account expiration date') . '</key><value>' . $shadowExpire . '</value></block>'),
-		);
+		$return = array();
+		$this->addPDFKeyValue($return, 'shadowLastChange', _('Last password change'), $shadowLastChange);
+		$this->addPDFKeyValue($return, 'shadowExpire', _('Account expiration date'), $shadowExpire);
 		$this->addSimplePDFField($return, 'shadowWarning', _('Password warning'));
 		$this->addSimplePDFField($return, 'shadowInactive', _('Password expiration'));
 		$this->addSimplePDFField($return, 'shadowMinAge', _('Minimum password age'), 'shadowMin');
