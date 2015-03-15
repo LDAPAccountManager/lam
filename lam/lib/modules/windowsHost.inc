@@ -295,7 +295,7 @@ class windowsHost extends baseModule {
 		$managedBy = '';
 		if (isset($this->attributes['managedBy'][0])) {
 			$managedBy = getAbstractDN($this->attributes['managedBy'][0]);
-			$return[get_class($this) . '_managedBy'] = array('<block><key>' . _('Managed by') . '</key><value>' . $managedBy . '</value></block>');
+			$this->addPDFKeyValue($return, 'managedBy', _('Managed by'), $managedBy);
 		}
 		return $return;
 	}

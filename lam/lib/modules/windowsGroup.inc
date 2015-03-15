@@ -775,13 +775,13 @@ class windowsGroup extends baseModule {
 		$groupType = $groupTypeLabels[$groupType];
 		$groupScopeLabels = array_flip($this->groupScopes);
 		$groupScope = $groupScopeLabels[$groupScope];
-		$return[get_class($this) . '_groupScope'] = array('<block><key>' . _('Group scope') . '</key><value>' . $groupScope . '</value></block>');
-		$return[get_class($this) . '_groupType'] = array('<block><key>' . _('Group type') . '</key><value>' . $groupType . '</value></block>');
+		$this->addPDFKeyValue($return, 'groupScope', _('Group scope'), $groupScope);
+		$this->addPDFKeyValue($return, 'groupType', _('Group type'), $groupType);
 		// managed by
 		$managedBy = '';
 		if (isset($this->attributes['managedBy'][0])) {
 			$managedBy = getAbstractDN($this->attributes['managedBy'][0]);
-			$return[get_class($this) . '_managedBy'] = array('<block><key>' . _('Managed by') . '</key><value>' . $managedBy . '</value></block>');
+			$this->addPDFKeyValue($return, 'managedBy', _('Managed by'), $managedBy);
 		}
 		// members
 		if (sizeof($this->attributes['member']) > 0) {

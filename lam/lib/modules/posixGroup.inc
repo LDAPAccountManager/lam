@@ -594,8 +594,7 @@ class posixGroup extends baseModule implements passwordService {
 					$members[] = $entry['uid'][0];
 				}
 			}
-			sort($members);
-			$return[get_class($this) . '_memberUidPrimary'] = array('<block><key>' . _('Group members') . '</key><value>' . implode(', ', $members) . '</value></block>');
+			$this->addPDFKeyValue($return, 'memberUidPrimary', _('Group members'), $members);
 		}
 		return $return;
 	}

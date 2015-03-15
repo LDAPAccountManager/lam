@@ -1619,22 +1619,22 @@ class windowsUser extends baseModule implements passwordService {
 		if ($this->isDeactivated($this->attributes)) {
 			$deactivated = _('yes');
 		}
-		$return[get_class($this) . '_deactivated'] = array('<block><key>' . _('Account is deactivated') . '</key><value>' . $deactivated . '</value></block>');
+		$this->addPDFKeyValue($return, 'deactivated', _('Account is deactivated'), $deactivated);
 		$noExpire = _('no');
 		if ($this->isNeverExpiring($this->attributes)) {
 			$noExpire = _('yes');
 		}
-		$return[get_class($this) . '_noExpire'] = array('<block><key>' . _('Password does not expire') . '</key><value>' . $noExpire . '</value></block>');
+		$this->addPDFKeyValue($return, 'noExpire', _('Password does not expire'), $noExpire);
 		$requireCard = _('no');
 		if ($this->isSmartCardRequired($this->attributes)) {
 			$requireCard = _('yes');
 		}
-		$return[get_class($this) . '_requireCard'] = array('<block><key>' . _('Require smartcard') . '</key><value>' . $requireCard . '</value></block>');
+		$this->addPDFKeyValue($return, 'requireCard', _('Require smartcard'), $requireCard);
 		$pwdMustChange = _('no');
 		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
 			$pwdMustChange = _('yes');
 		}
-		$return[get_class($this) . '_pwdMustChange'] = array('<block><key>' . _('Password change at next login') . '</key><value>' . $pwdMustChange . '</value></block>');
+		$this->addPDFKeyValue($return, 'pwdMustChange', _('Password change at next login'), $pwdMustChange);
 		$this->addSimplePDFField($return, 'profilePath', _('Profile path'));
 		$this->addSimplePDFField($return, 'scriptPath', _('Logon script'));
 		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
@@ -1643,13 +1643,13 @@ class windowsUser extends baseModule implements passwordService {
 		foreach ($this->groupList as $group) {
 			$groups[] = extractRDNValue($group);
 		}
-		$return[get_class($this) . '_groups'] = array('<block><key>' . _('Groups') . '</key><value>' . implode(', ', $groups) . '</value></block>');
+		$this->addPDFKeyValue($return, 'groups', _('Groups'), $groups);
 		// password
 		if (isset($this->clearTextPassword)) {
-			$return['windowsUser_password'] = array('<block><key>' . _('Password') . '</key><value>' . $this->clearTextPassword . '</value></block>');
+			$this->addPDFKeyValue($return, 'password', _('Password'), $this->clearTextPassword);
 		}
 		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
-			$return['windowsUser_password'] = array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['INFO.userPasswordClearText'] . '</value></block>');
+			$this->addPDFKeyValue($return, 'password', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
 		return $return;
 	}
