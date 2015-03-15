@@ -1,0 +1,7 @@
+<pdf type="pykotaBillingCodeType" filename="printLogo.jpg" headline="LDAP Account Manager" foldingmarks="no">
+	<section name="_pykotaBillingCode_pykotaBillingCode">
+		<entry name="pykotaBillingCode_pykotaBalance" />
+		<entry name="pykotaBillingCode_pykotaPageCounter" />
+		<entry name="pykotaBillingCode_description" />
+	</section>
+</pdf>

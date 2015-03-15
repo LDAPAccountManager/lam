@@ -1,0 +1,10 @@
+#!/bin/bash
+# $Id$
+#
+# Copyright (C) 2003 - 2006  Roland Gruber
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+
+# This script is run after make_po to merge the existing German translations to messages.po
+
+./make_po
+msgmerge -v ../locale/de_DE/LC_MESSAGES/messages.po messages.po -o messages.po

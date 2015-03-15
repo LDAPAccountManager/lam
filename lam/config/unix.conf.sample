@@ -1,0 +1,68 @@
+# LDAP Account Manager configuration
+#
+# Please do not modify this file manually. The configuration can be done completely by the LAM GUI.
+#
+###################################################################################################
+
+# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)
+serverURL: ldap://localhost:389
+
+# list of users who are allowed to use LDAP Account Manager
+# names have to be seperated by semicolons
+# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
+admins: cn=Manager,dc=my-domain,dc=com
+
+# password to change these preferences via webfrontend (default: lam)
+passwd: {SSHA}RjBruJcTxZEdcBjPQdRBkDaSQeY= iueleA==
+
+# suffix of tree view
+# e.g. dc=yourdomain,dc=org
+treesuffix: dc=yourdomain,dc=org
+
+# default language (a line from config/language)
+defaultLanguage: en_GB.utf8:UTF-8:English (Great Britain)
+
+# Path to external Script
+scriptPath: 
+
+# Server of external Script
+scriptServer: 
+
+# Access rights for home directories
+scriptRights: 750
+
+# Number of minutes LAM caches LDAP searches.
+cachetimeout: 5
+
+# LDAP search limit.
+searchLimit: 0
+
+# Module settings
+
+modules: posixAccount_minUID: 10000
+modules: posixAccount_maxUID: 30000
+modules: posixAccount_minMachine: 50000
+modules: posixAccount_maxMachine: 60000
+modules: posixGroup_minGID: 10000
+modules: posixGroup_maxGID: 20000
+modules: posixGroup_pwdHash: SSHA
+modules: posixAccount_pwdHash: SSHA
+
+# List of active account types.
+activeTypes: user,group
+
+
+types: suffix_user: ou=People,dc=my-domain,dc=com
+types: attr_user: #uid;#givenName;#sn;#uidNumber;#gidNumber
+types: modules_user: inetOrgPerson,posixAccount,shadowAccount
+
+types: suffix_group: ou=group,dc=my-domain,dc=com
+types: attr_group: #cn;#gidNumber;#memberUID;#description
+types: modules_group: posixGroup
+
+# Password mail subject
+lamProMailSubject: Your password was reset
+
+# Password mail text
+lamProMailText: Dear @@givenName@@ @@sn@@,+::++::+your password was reset to: @@newPassword@@+::++::++::+Best regards+::++::+deskside support+::+
+
