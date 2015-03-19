@@ -59,11 +59,16 @@ if (!function_exists('check_ip')) {
 				if (!is_numeric($part[$i])) {
 					return false;
 				}
-				else {
-					// if not check Subnet, than segment must be smaller than 256, else smaller than 255
-					if($part[$i] > 255 || ($i==3 && (!$subnet && $part[$i]<1)) || ($i==3 && (!$subnet && $part[$i]<0))) {
-						return false;
-					}
+				elseif ($part[$i] > 255) {
+					return false;
+				}
+				// non-subnet must be > 0 on last digit
+				elseif (!$subnet && ($i == 3) && ($part[$i] < 1)) {
+					return false;
+				}
+				// subnet must be >= 0 on last digit
+				elseif ($subnet && ($i == 3) && ($part[$i] < 0)) {
+					return false;
 				}
 			}
 		}
@@ -389,9 +394,6 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		       	$errors[] = $this->messages['cn'][1];
 		    }
 			elseif (!check_ip($_POST['cn'],true)) {
-				$errors[] = $this->messages['cn'][2];
-			}
-			elseif (strrpos($_POST['cn'], '.0') != (strlen($_POST['cn']) - 2)) {
 				$errors[] = $this->messages['cn'][2];
 			}
 			else {
