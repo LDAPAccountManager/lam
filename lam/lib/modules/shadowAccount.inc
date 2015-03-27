@@ -97,7 +97,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$return['attributes'] = array('shadowLastChange', 'shadowMin', 'shadowMax', 'shadowWarning',
 			'shadowInactive', 'shadowExpire', 'shadowFlag');
 		// lists for expiration date
-		$day = array(); $mon = array(); $year = array();
+		$day = array('-'); $mon = array('-'); $year = array('-');
 		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
@@ -127,9 +127,9 @@ class shadowAccount extends baseModule implements passwordService {
 		// expiration date
 		$profileOptionsTable->addElement(new htmlOutputText(_('Account expiration date')));
 		$profileOptionsExpire = new htmlTable();
-		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_day', $day, array('1')));
-		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, array('1')));
-		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_yea', $year, array('2030')));
+		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_day', $day, array('-')));
+		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, array('-')));
+		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_yea', $year, array('-')));
 		$profileOptionsTable->addElement($profileOptionsExpire);
 		$profileOptionsTable->addElement(new htmlHelpLink('shadowExpire'));
 		$return['profile_options'] = $profileOptionsTable;
@@ -573,10 +573,16 @@ class shadowAccount extends baseModule implements passwordService {
 			}
 		}
 		// expiration date
-		if (isset($profile['shadowAccount_shadowExpire_day'][0]) && ($profile['shadowAccount_shadowExpire_day'][0] != "")) {
-			$date = intval(mktime(0, 0, 0, intval($profile['shadowAccount_shadowExpire_mon'][0]),
-				intval($profile['shadowAccount_shadowExpire_day'][0]), intval($profile['shadowAccount_shadowExpire_yea'][0]))/3600/24);
-			$this->attributes['shadowExpire'][0] = $date;
+		if (!empty($profile['shadowAccount_shadowExpire_day'][0])) {
+			$day = $profile['shadowAccount_shadowExpire_day'][0];
+			$mon = $profile['shadowAccount_shadowExpire_mon'][0];
+			$year = $profile['shadowAccount_shadowExpire_yea'][0];
+			if (!(($day == '-') && ($mon == '-') && ($year == '-'))) {
+				$day = ($day == '-') ? 1 : $day;
+				$mon = ($mon == '-') ? 1 : $mon;
+				$year = ($year == '-') ? 2030 : $year;
+				$this->setExpirationDate($year, $mon, $day);
+			}
 		}
 	}
 
