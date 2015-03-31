@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>Type specification</title>
+  <style>
+<!--
+	h2 {
+		color:#000080;
+	}
+	h3 {
+		color:#000080;
+	}
+	h4 {
+		color:#000080;
+	}
+	table {
+		background-color:#bdcaff;
+	}
+-->
+  </style>
+	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+<h1 style="text-align: center;">This document describes the type
+interface for LDAP Account Manager</h1>
+<br>
+Account types are used to manage a group of accounts by grouping one or
+more account modules. Examples for account types are user, group, host
+and smbDomain.<br>
+<br>
+<h2>1. Location and naming of types<br>
+</h2>
+All LAM types are placed in lib/types/ and are named "&lt;class
+name&gt;.inc".<br>
+E.g. if you create a new type and its class name is "myUser" then the
+filename would be "myUser.inc".<br>
+<br>
+The class name of a type must contain only a-z, A-Z, 0-9, -, and _.<br>
+All type classes should extend the baseType class.<br>
+<br>
+<h2>2. Functions</h2>
+<h3>2.1. getAlias<br>
+</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getAlias()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns <span style="font-style: italic;"></span>the alias name for
+this type. E.g. the alias for smbDomain is "Samba domains".<br>
+<br>
+<h3>2.2. getDescription<br>
+</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getDescription()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns <span style="font-style: italic;"></span>a description for the
+account type. This should be a short sentence describing the account
+type.<br>
+<br>
+<h3>2.3. getListClassName<br>
+</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getListClassName()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Here you can specify your own class to handle the list view. The class
+must be a subclass of <span style="font-weight: bold;">lamList</span>.<br>
+<br>
+<h3>2.4. getDefaultListAttributes<br>
+</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getDefaultListAttributes()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns <span style="font-style: italic;"></span>the default setting
+for the displayed list attributes. It is used as default for config and
+the syntax is equal to the config setting.<br>
+<br>
+<h3>2.5. getListAttributeDescriptions<br>
+</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getListAttributeDescriptions()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a hash array which contains predefined, translated descriptions
+of LDAP attributes.<br>
+<br>
+<span style="text-decoration: underline; font-weight: bold;"><br>
+Example:</span><br
+ style="text-decoration: underline; font-weight: bold;">
+<br>
+return array(<br>
+&nbsp;&nbsp;&nbsp; "sambaSID" =&gt; _("Domain SID"),<br>
+&nbsp;&nbsp;&nbsp; "sambaDomainName" =&gt; _("Domain name")<br>
+&nbsp;&nbsp;&nbsp; );<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;"><span
+ style="font-style: italic;"></span></span><span
+ style="font-style: italic; font-weight: bold;"></span><span
+ style="font-style: italic; font-weight: bold;"></span><span
+ style="font-style: italic; font-weight: bold;"></span>
+</body>
+</html>

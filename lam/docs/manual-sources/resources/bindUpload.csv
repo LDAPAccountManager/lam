@@ -1,0 +1,5 @@
+"dn_suffix","dn_rdn","bindDLZ_dlzHostName","bindDLZ_a_ip","bindDLZ_a_ttl","bindDLZ_cname_name","bindDLZ_cname_ttl","bindDLZ_mx_server","bindDLZ_mx_preference","bindDLZ_mx_ttl","bindDLZ_ptr_host","bindDLZ_ptr_ttl","bindDLZ_soa_expire","bindDLZ_soa_refresh","bindDLZ_soa_minimum","bindDLZ_soa_retry","bindDLZ_soa_ttl","bindDLZ_soa_primaryNS","bindDLZ_soa_adminEmail","bindDLZ_soa_serial","bindDLZ_ns_server","bindDLZ_ns_ttl"
+"dlzZoneName=example.com,ou=bind,dc=example,dc=com","dlzHostName","@",,,,,"mail1.example.com; mail2.example.com","10; 20",,,,"3600000","360000","370000","3600",,"ns1.example.com.","admin.ns1.example.com.","1","ns1.example.com.; ns2.example.com.",
+"dlzZoneName=example.com,ou=bind,dc=example,dc=com","dlzHostName","foo","123.123.123.101",,,,,,,,,,,,,,,,,,
+"dlzZoneName=example.com,ou=bind,dc=example,dc=com","dlzHostName","foo2",,,"foo.example.com",,,,,,,,,,,,,,,,
+"dlzZoneName=example.com,ou=bind,dc=example,dc=com","dlzHostName","bar","123.123.123.101; 1:2:3:4:5",,,,,,,,,,,,,,,,,,
