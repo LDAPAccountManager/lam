@@ -850,7 +850,7 @@ abstract class baseModule {
 	 * @param mixed $value value as String or array
 	 * @param String $delimiter delimiter if value is array (default: ", ")
 	 */
-	protected function addPDFKeyValue(&$result, $name, $label, $value, $delimiter = ', ') {
+	public function addPDFKeyValue(&$result, $name, $label, $value, $delimiter = ', ') {
 		if (is_array($value)) {
 			natcasesort($value);
 			$value = implode($delimiter, $value);
