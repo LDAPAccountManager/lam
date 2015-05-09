@@ -891,10 +891,10 @@ function compareDN(&$a, &$b) {
 		// get parts to compare
 		$part_a = $array_a[$len_a - $i - 1];
 		$part_a = explode('=', $part_a);
-		$part_a = $part_a[1];
+		$part_a = isset($part_a[1]) ? $part_a[1] : $part_a[0];
 		$part_b = $array_b[$len_b - $i - 1];
 		$part_b = explode('=', $part_b);
-		$part_b = $part_b[1];
+		$part_b = isset($part_b[1]) ? $part_b[1] : $part_b[0];
 		// compare parts
 		if ($part_a == $part_b) { // part is identical
 			if ($i == ($len - 1)) {
