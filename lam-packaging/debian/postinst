@@ -103,7 +103,7 @@ if [ "$1" = "configure" ]; then
            elif [ -x /usr/sbin/service ]; then
                /usr/sbin/service $server reload
            elif [ -x /bin/systemctl ]; then
-               /bin/systemctl ${server}.service reload
+               /bin/systemctl reload ${server}.service
            fi
        done
    fi
