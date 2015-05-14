@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2014  Roland Gruber
+  Copyright (C) 2006 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -283,6 +283,15 @@ function checkSelfServiceSettings($scope, &$options, &$profile) {
 		$return = array_merge($return, $errors);
 	}
 	return $return;
+}
+
+/**
+ * Returns if script runs inside self service.
+ * 
+ * @return boolean is self service
+ */
+function isSelfService() {
+	return session_name() == 'SELFSERVICE';
 }
 
 

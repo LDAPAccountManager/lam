@@ -615,6 +615,7 @@ if(!empty($_POST['checklogin'])) {
 		$_SESSION['sec_session_id'] = session_id();
 		$_SESSION['sec_client_ip'] = $_SERVER['REMOTE_ADDR'];
 		$_SESSION['sec_sessionTime'] = time();
+		addSecurityTokenToSession();
 		// logging
 		logNewMessage(LOG_NOTICE, 'User ' . $username . ' (' . $clientSource . ') successfully logged in.');
 		// Load main frame

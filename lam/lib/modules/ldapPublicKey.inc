@@ -305,7 +305,9 @@ class ldapPublicKey extends baseModule {
 				for (c = 0; c < count; c++) {
 					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
 				}
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
+					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
+					. '\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
 			}
 			
 			function ldapPublicKeyDeleteKeyHandleReply(data) {
@@ -324,7 +326,9 @@ class ldapPublicKey extends baseModule {
 				for (c = 0; c < count; c++) {
 					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
 				}
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
+					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
+					. '\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
 			}
 			
 			function ldapPublicKeyAddKeyHandleReply(data) {
@@ -348,7 +352,8 @@ class ldapPublicKey extends baseModule {
 					element: document.getElementById(elementID),
 					listElement: uploadStatus,
 					request: {
-						endpoint: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
+						endpoint: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
+						. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
 						forceMultipart: true,
 						paramsInBody: true,
 						params: parameters

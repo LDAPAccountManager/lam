@@ -591,12 +591,16 @@ class htmlInputField extends htmlElement {
 			';
 		}
 		if ($this->checkPasswordStrength) {
-			$ajaxPath = "../templates/misc/ajax.php";
+			$tokenSuffix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
+			if (isSelfService()) {
+				$tokenSuffix .= '&selfservice=1';
+			}
+			$ajaxPath = "../templates/misc/ajax.php" . $tokenSuffix;
 			if (is_file("../../templates/misc/ajax.php")) {
-				$ajaxPath = "../../templates/misc/ajax.php";
+				$ajaxPath = "../../templates/misc/ajax.php" . $tokenSuffix;
 			}
 			elseif (is_file("../../../templates/misc/ajax.php")) {
-				$ajaxPath = "../../../templates/misc/ajax.php";
+				$ajaxPath = "../../../templates/misc/ajax.php" . $tokenSuffix;
 			}
 			echo '<script type="text/javascript">
 					checkPasswordStrength("' . $this->fieldName . '", "' . $ajaxPath . '");

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2014  Roland Gruber
+  Copyright (C) 2006 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -495,6 +495,57 @@ function getClientIPForLogging() {
 		$ip .= ',' . $_SERVER['HTTP_X_REAL_IP'];
 	}
 	return $ip;
+}
+
+/**
+ * Adds a security token to the session to prevent CSRF attacks.
+ */
+function addSecurityTokenToSession() {
+	$_SESSION[getSecurityTokenName()] = getRandomNumber();
+}
+
+/**
+ * Checks if the security token from SESSION matches POST data.
+ * 
+ * @param $post use POST, set to false for GET (default: true)
+ */
+function validateSecurityToken($post = true) {
+	$vars = $post ? $_POST : $_GET;
+	if (empty($vars)) {
+		return;
+	}
+	if (empty($vars[getSecurityTokenName()]) || ($vars[getSecurityTokenName()] != $_SESSION[getSecurityTokenName()])) {
+		logNewMessage(LOG_ERR, 'Security token does not match POST data.');
+		die();
+	}
+}
+
+/**
+ * Adds a hidden input field to the given meta HTML table.
+ * Should be used to add token at the end of table.
+ * 
+ * @param htmlTable $container table
+ */
+function addSecurityTokenToMetaHTML(&$container) {
+	$container->addElement(new htmlHiddenInput(getSecurityTokenName(), $_SESSION[getSecurityTokenName()]), true);
+}
+
+/**
+ * Returns the name of the security token parameter.
+ * 
+ * @return String name
+ */
+function getSecurityTokenName() {
+	return 'sec_token';
+}
+
+/**
+ * Returns the value of the security token parameter.
+ * 
+ * @return String value
+ */
+function getSecurityTokenValue() {
+	return $_SESSION[getSecurityTokenName()];
 }
 
 ?>

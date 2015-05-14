@@ -560,7 +560,7 @@ function checkPasswordStrength(fieldID, ajaxURL) {
 					"password": value
 			};
 			// make AJAX call
-			jQuery.post(ajaxURL + "?function=passwordStrengthCheck", {jsonInput: pwdJSON}, function(data) {checkPasswordStrengthHandleReply(data, fieldID);}, 'json');
+			jQuery.post(ajaxURL + "&function=passwordStrengthCheck", {jsonInput: pwdJSON}, function(data) {checkPasswordStrengthHandleReply(data, fieldID);}, 'json');
 		};
 	jQuery(field).keyup(check);
 }

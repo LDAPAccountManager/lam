@@ -1238,7 +1238,8 @@ class accountContainer {
 			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 			$passwordButton->setIconClass('passwordButton');
 			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\');');
+				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&'
+				 . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
 		$table->addElement($leftButtonGroup);

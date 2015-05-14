@@ -1,4 +1,5 @@
 June 215
+  - Security: added CSRF protection
   - Zarafa users: allow to change display format of "Send As"
 
 

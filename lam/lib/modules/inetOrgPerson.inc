@@ -2972,7 +2972,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 					"action": "delete",
 					"id": id
 				};
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\', {jsonInput: actionJSON}, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
+				 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
+				 . '\', {jsonInput: actionJSON}, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
 			}
 			
 			function inetOrgPersonDeleteCertificateHandleReply(data) {
@@ -2990,7 +2992,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 					element: document.getElementById(elementID),
 					listElement: uploadStatus,
 					request: {
-						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
+						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
+						 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
 						forceMultipart: true,
 						params: {
 							action: \'ajaxCertUpload\'
