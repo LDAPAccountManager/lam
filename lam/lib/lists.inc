@@ -545,6 +545,9 @@ class lamList {
 	* @return String HTML fragment to insert into beginning of account list
 	*/
 	protected function listDoPost() {
+		if (!empty($_POST)) {
+			validateSecurityToken();
+		}
 		// check if button was pressed and if we have to add/delete an account or call file upload
 		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['fileUpload'])){
 			if (!checkIfWriteAccessIsAllowed($this->type)) {
@@ -720,6 +723,7 @@ class lamList {
 			$container->addElement(new htmlHiddenInput($selAccounts[$i], 'on'));
 		}
 		$container->addElement(new htmlHiddenInput('clickedAccount', $id));
+		addSecurityTokenToMetaHTML($container);
 		
 		parseHtml(null, $container, array(), false, $this->tabindex, $this->type);
 		
@@ -826,6 +830,7 @@ class lamList {
 	 */
 	protected function listPrintFooter() {
 		?>
+		<input type="hidden" name="<?php echo getSecurityTokenName(); ?>" value="<?php echo getSecurityTokenValue(); ?>">
 			</form></div></div>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
@@ -1031,7 +1036,8 @@ class lamList {
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
 			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
 		}
-		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));		
+		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));
+		addSecurityTokenToMetaHTML($configContainer);
 		
 		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type);
 
