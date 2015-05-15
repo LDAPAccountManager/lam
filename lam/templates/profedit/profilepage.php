@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,6 +50,10 @@ if (!checkIfWriteAccessIsAllowed()) die();
 checkIfToolIsActive('toolProfileEditor');
 
 setlanguage();
+
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
@@ -169,7 +173,8 @@ elseif (isset($_GET['edit'])) {
 }
 
 // display formular
-echo ("<form action=\"profilepage.php?type=$type\" method=\"post\">\n");
+echo "<form action=\"profilepage.php?type=$type\" method=\"post\">\n";
+echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 
 $profName = '';
 if (isset($_GET['edit'])) {

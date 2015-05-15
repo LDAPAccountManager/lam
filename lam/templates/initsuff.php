@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,6 +45,10 @@ if (!checkIfWriteAccessIsAllowed()) {
 }
 
 setlanguage();
+
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
 
 // check if user already pressed button
 if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
@@ -191,6 +195,7 @@ include 'main_header.php';
 	$buttonContainer->addElement(new htmlButton('cancel', _("Cancel")));
 	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $new_suff)));
 	$container->addElement($buttonContainer);
+	addSecurityTokenToMetaHTML($container);
 	
 	$tabindex = 1;
 	parseHtml(null, $container, array(), false, $tabindex, 'user');

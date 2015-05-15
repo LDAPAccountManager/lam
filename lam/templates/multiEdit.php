@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,6 +47,10 @@ checkIfToolIsActive('toolMultiEdit');
 
 setlanguage();
 
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
+
 define('ADD', 'add');
 define('MOD', 'mod');
 define('DEL', 'del');
@@ -71,7 +75,7 @@ function displayStartPage() {
 	// display main page
 	include 'main_header.php';
 	echo '<div class="user-bright smallPaddingContent">';
-	echo ("<form action=\"multiEdit.php\" method=\"post\">\n");
+	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
 	$tabindex = 1;
 	$container = new htmlTable();
@@ -174,6 +178,7 @@ function displayStartPage() {
 		runActions($container);
 	}
 	
+	addSecurityTokenToMetaHTML($container);
 	
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");

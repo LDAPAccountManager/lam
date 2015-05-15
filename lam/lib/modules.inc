@@ -1298,6 +1298,9 @@ class accountContainer {
 	 * Prints the header of the account pages.
 	 */
 	private function printPageHeader() {
+		if (!empty($_POST)) {
+			validateSecurityToken();
+		}
 		include '../main_header.php';
 		echo '<script type="text/javascript">
 				jQuery(document).ready(function() {
@@ -1306,6 +1309,7 @@ class accountContainer {
 			</script>';
 		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";
 		echo '<input type="hidden" name="account_randomID" value="' . $this->randomID . '">';		
+		echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';		
 	}
 	
 	/**

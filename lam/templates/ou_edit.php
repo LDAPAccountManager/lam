@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2012  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -46,6 +46,10 @@ if (!checkIfWriteAccessIsAllowed()) die();
 checkIfToolIsActive('toolOUEditor');
 
 setlanguage();
+
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
 
 $types = $_SESSION['config']->get_ActiveTypes();
 
@@ -120,7 +124,8 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			$container->addElement(new htmlButton('sure', _("Delete")));			
 			$container->addElement(new htmlButton('abort', _("Cancel")));
 			$container->addElement(new htmlHiddenInput('deleteOU', 'submit'));		
-			$container->addElement(new htmlHiddenInput('deletename', $_POST['deleteableOU']));		
+			$container->addElement(new htmlHiddenInput('deletename', $_POST['deleteableOU']));
+			addSecurityTokenToMetaHTML($container);		
 			parseHtml(null, $container, array(), false, $tabindex, 'user');
 			echo "</form>";
 			echo '</div>';
@@ -145,7 +150,7 @@ function display_main($message, $error) {
 	// display main page
 	include 'main_header.php';
 	echo '<div class="user-bright smallPaddingContent">';
-	echo ("<form action=\"ou_edit.php\" method=\"post\">\n");
+	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
 	$tabindex = 1;
 	$container = new htmlTable();
@@ -208,6 +213,7 @@ function display_main($message, $error) {
 		$container->addElement(new htmlHelpLink('602'), true);
 	}
 	
+	addSecurityTokenToMetaHTML($container);
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
 	echo '</div>';

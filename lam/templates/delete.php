@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2014  Roland Gruber
+	Copyright (C) 2007 - 2015  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -62,6 +62,10 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
+
 if (isset($_POST['type']) && !preg_match('/^[a-z0-9_]+$/i', $_POST['type'])) {
 	logNewMessage(LOG_ERR, 'Invalid type: ' . $_POST['type']);
 	die();
@@ -90,6 +94,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<div class=\"".$_GET['type']."-bright smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
+	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
@@ -149,6 +154,7 @@ if (isset($_POST['delete'])) {
 	// Show HTML Page
 	include 'main_header.php';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
+	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
 	echo "<div class=\"".$_POST['type']."-bright smallPaddingContent\"><br>\n";
 	echo "<br>\n";

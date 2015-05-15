@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,6 +59,10 @@ if (!isLoggedIn()) {
 
 // Set correct language, codepages, ....
 setlanguage();
+
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
 
 // show CSV if requested
 if (isset($_GET['getCSV'])) {
@@ -211,6 +215,7 @@ if (!empty($types)) {
 	$table->addElement(new htmlButton('submit', _('Ok')), true);
 }
 
+addSecurityTokenToMetaHTML($table);
 parseHtml(null, $table, array(), false, $tabindex, 'user');
 ?>
 <script type="text/javascript">
@@ -434,6 +439,7 @@ function showMainPage($scope, $selectedModules) {
 	}
 	$container->addElement($columnContainer, true);
 	
+	addSecurityTokenToMetaHTML($container);
 	$tabindex = 1;
 	parseHtml(null, $container, array(), false, $tabindex, $scope);
 	

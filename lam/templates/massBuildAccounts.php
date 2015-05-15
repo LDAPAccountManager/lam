@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2014  Roland Gruber
+  Copyright (C) 2004 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -55,6 +55,10 @@ if (!isLoggedIn()) {
 
 // Set correct language, codepages, ....
 setlanguage();
+
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
 
 // show LDIF if requested
 if (isset($_GET['showldif'])) {
@@ -258,6 +262,7 @@ else {
 	massPrintBackButton($scope, $selectedModules, $container);
 }
 
+addSecurityTokenToMetaHTML($container);
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, $scope);
 

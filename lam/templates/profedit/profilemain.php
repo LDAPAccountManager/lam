@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,6 +47,10 @@ checkIfToolIsActive('toolProfileEditor');
 
 setlanguage();
 
+if (!empty($_POST)) {
+	validateSecurityToken();
+}
+
 $types = $_SESSION['config']->get_ActiveTypes();
 $profileClasses = array();
 $profileClassesTemp = array();
@@ -89,6 +93,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 include '../main_header.php';
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
+echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 
 $container = new htmlTable();
 $container->addElement(new htmlTitle(_("Profile editor")), true);
@@ -261,6 +266,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$container->addElement(new htmlHelpLink('236'));
 	$container->addElement(new htmlHiddenInput('importexport', '1'));
 	$container->addElement(new htmlHiddenInput('scope', $scope), true);
+	addSecurityTokenToMetaHTML($container);
 	
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 
@@ -308,6 +314,7 @@ $exportPasswd->setIsPassword(true);
 $container->addElement($exportPasswd);
 $container->addElement(new htmlHelpLink('236'));
 $container->addElement(new htmlHiddenInput('importexport', '1'), true);
+addSecurityTokenToMetaHTML($container);
 
 parseHtml(null, $container, array(), false, $tabindex, 'user');
 
@@ -322,6 +329,7 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 	echo '<input id="profileDeleteType" type="hidden" name="profileDeleteType" value="">';
 	echo '<input id="profileDeleteName" type="hidden" name="profileDeleteName" value="">';
 	echo '<input type="hidden" name="deleteProfile" value="true">';
+	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 echo '</form></div>';
 
 include '../main_footer.php';
