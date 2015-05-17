@@ -9787,9 +9787,24 @@ a.lamLogo {
       <para><emphasis role="bold">Size limit</emphasis></para>
 
       <para>You will get a message like "LDAP sizelimit exceeded, not all
-      entries are shown." when you hit the LDAP search limit. See the <link
-      linkend="size_limit_exceeded">OpenLDAP settings</link> to fix
-      this.</para>
+      entries are shown." when you hit the LDAP search limit.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>OpenLDAP: See the <link linkend="size_limit_exceeded">OpenLDAP
+          settings</link> to fix this.</para>
+        </listitem>
+
+        <listitem>
+          <para>389 server: set nsslapd-sizelimit in cn=config (may also be
+          set per user)</para>
+        </listitem>
+
+        <listitem>
+          <para>other LDAP servers: please see your server
+          documentation</para>
+        </listitem>
+      </itemizedlist>
 
       <literallayout>
 </literallayout>
