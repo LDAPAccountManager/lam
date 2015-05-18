@@ -194,10 +194,8 @@ class posixAccount extends baseModule implements passwordService {
 			$loginShellsHelp = new htmlHelpLink('loginShells', get_class($this));
 			$loginShellsHelp->alignment = htmlElement::ALIGN_TOP;
 			$selfServiceContainer->addElement($loginShellsHelp, true);
-			if (version_compare(phpversion(), '5.4.26') >= 0) {
-				$selfServiceContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password')));
-				$selfServiceContainer->addElement(new htmlHelpLink('useOldPwd', get_class($this)), true);
-			}
+			$selfServiceContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password')));
+			$selfServiceContainer->addElement(new htmlHelpLink('useOldPwd', get_class($this)), true);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
