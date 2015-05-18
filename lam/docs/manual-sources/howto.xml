@@ -66,7 +66,7 @@
 
     <itemizedlist>
       <listitem>
-        <para>PHP5 (&gt;= 5.2.4)</para>
+        <para>PHP5 (&gt;= 5.4.26)</para>
       </listitem>
 
       <listitem>
@@ -80,16 +80,20 @@
 
         <itemizedlist>
           <listitem>
-            <para>Firefox 3</para>
+            <para>Firefox (max. 2 years old)</para>
           </listitem>
 
           <listitem>
-            <para>Internet Explorer 8<emphasis role="bold"> (compatibility
+            <para>Chrome (max 2 years old)</para>
+          </listitem>
+
+          <listitem>
+            <para>Internet Explorer 9<emphasis role="bold"> (compatibility
             mode turned off)</emphasis></para>
           </listitem>
 
           <listitem>
-            <para>Opera 10</para>
+            <para>Opera (max. 2 years old)</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -112,68 +116,240 @@ Have fun!
      The LAM development team</literallayout>
   </preface>
 
-  <preface>
-    <title>Architecture</title>
+  <chapter>
+    <title>Big picture</title>
 
-    <para>There are basically two groups of users for LAM:</para>
+    <section>
+      <title>Overview</title>
 
-    <itemizedlist>
-      <listitem>
-        <para><emphasis role="bold">LDAP administrators and support
-        staff:</emphasis></para>
+      <para>LAM has two major areas:</para>
 
-        <para>These people administer LDAP entries like user accounts, groups,
-        ...</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para>admin interface to manage all sorts of different LDAP entries
+          (e.g. users/groups/hosts)</para>
+        </listitem>
 
-      <listitem>
-        <para><emphasis role="bold">Users:</emphasis></para>
+        <listitem>
+          <para>self service (LAM Pro) where end users can edit their own
+          data</para>
+        </listitem>
+      </itemizedlist>
 
-        <para>This includes all people who need to manage their own data
-        inside the LDAP directory. E.g. these people edit their contact
-        information with LAM self service (LAM Pro).</para>
-      </listitem>
-    </itemizedlist>
+      <para></para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/lam_architecture.png" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/bigPicture1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <para>Therefore, LAM is split into two separate parts, LAM for admins and
-    for users. LAM for admins allows to manage various types of LDAP entries
-    (e.g. users, groups, hosts, ...). It also contains tools like batch
-    upload, account profiles, LDAP schema viewer and an LDAP browser. LAM for
-    users focuses on end users. It provides a self service for the users to
-    edit their personal data (e.g. contact information). The LAM administrator
-    is able to specify what data may be changed by the users. The design is
-    also adaptable to your corporate design.</para>
+      <para><emphasis role="bold">Configuration</emphasis></para>
 
-    <para>LAM for admins/users is accessible via HTTP(S) by all major web
-    browsers (Firefox, IE, Opera, ...).</para>
+      <para>Configuration is done on multiple levels:</para>
 
-    <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
+      <para><emphasis role="bold">Global</emphasis></para>
 
-    <para>LAM runs on PHP. Therefore, it is independant of CPU architecture
-    and operating system (OS). You can run LAM on any OS which supports
-    Apache, Nginx or other PHP compatible web servers.</para>
+      <para>Effective for all parts of LAM (e.g. logging and password
+      policy).</para>
 
-    <para><emphasis role="bold">Home directory server:</emphasis></para>
+      <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+      linkend="generalSettings">Edit general settings</link>.</para>
 
-    <para>You can manage user home directories and their quotas inside LAM.
-    The home directories may reside on the server where LAM is installed or
-    any remote server. The commands for home directory management are secured
-    by SSH. LAM will use the user name and password of the logged in LAM
-    administrator for authentication.</para>
+      <para><emphasis role="bold">Server profile</emphasis></para>
 
-    <para><emphasis role="bold">LDAP directory:</emphasis></para>
+      <para>All settings for an LDAP connection (e.g. server name, LDAP
+      suffixes, account types/modules to activate). There may be multiple for
+      one LDAP server (e.g. for multiple departments, different user groups,
+      ...).</para>
 
-    <para>LAM connects to your LDAP server via standard LDAP protocol. It also
-    supports encrypted connections with SSL and TLS.</para>
-  </preface>
+      <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+      linkend="serverProfiles">Edit server profile</link>.</para>
+
+      <para><emphasis role="bold">Self service</emphasis></para>
+
+      <para>All settings for a self service interface (e.g. fields that can be
+      edited, password reset functionality, ...).</para>
+
+      <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+      linkend="a_selfService">Edit self service</link>.</para>
+
+      <para><emphasis role="bold">Profiles</emphasis></para>
+
+      <para>Stores default values for new LDAP entries.</para>
+
+      <para><emphasis role="bold">PDF structures</emphasis></para>
+
+      <para>Defines the layout and list of data fields to include in PDF
+      export.</para>
+    </section>
+
+    <section>
+      <title>Glossary</title>
+
+      <para>Here you can find a list of common terms used in LAM.</para>
+
+      <table>
+        <title>Glossary</title>
+
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry align="center">Term</entry>
+
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>Account module</entry>
+
+              <entry>Plugin for a specific account type (e.g. Unix plugin for
+              user type)</entry>
+            </row>
+
+            <row>
+              <entry>Account type</entry>
+
+              <entry>Type of an LDAP entry (e.g. user/group/host)</entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry></entry>
+            </row>
+
+            <row>
+              <entry>Admin interface</entry>
+
+              <entry>LAM webpages for admin user (e.g. to create new
+              users)</entry>
+            </row>
+
+            <row>
+              <entry>PDF editor</entry>
+
+              <entry>Manages PDF structures</entry>
+            </row>
+
+            <row>
+              <entry>PDF export</entry>
+
+              <entry>Exports an entry to PDF by using a PDF structure</entry>
+            </row>
+
+            <row>
+              <entry>PDF structure</entry>
+
+              <entry>Defines the layout and list of data fields to include in
+              PDF export</entry>
+            </row>
+
+            <row>
+              <entry>Profile</entry>
+
+              <entry>Template for creation of LDAP entries, contains default
+              values</entry>
+            </row>
+
+            <row>
+              <entry>Profile editor</entry>
+
+              <entry>Manages profiles for all account types</entry>
+            </row>
+
+            <row>
+              <entry>Self Service</entry>
+
+              <entry>LAM webpages for normal users where they can edit their
+              own data</entry>
+            </row>
+
+            <row>
+              <entry>Self service profile</entry>
+
+              <entry>Configuration for self service pages (multiple
+              configurations can exist)</entry>
+            </row>
+
+            <row>
+              <entry>Tree view</entry>
+
+              <entry>LDAP browser that allows to modify LDAP entries on
+              attribute/object class level</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>Architecture</title>
+
+      <para>There are basically two groups of users for LAM:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">LDAP administrators and support
+          staff:</emphasis></para>
+
+          <para>These people administer LDAP entries like user accounts,
+          groups, ...</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Users:</emphasis></para>
+
+          <para>This includes all people who need to manage their own data
+          inside the LDAP directory. E.g. these people edit their contact
+          information with LAM self service (LAM Pro).</para>
+        </listitem>
+      </itemizedlist>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lam_architecture.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Therefore, LAM is split into two separate parts, LAM for admins
+      and for users. LAM for admins allows to manage various types of LDAP
+      entries (e.g. users, groups, hosts, ...). It also contains tools like
+      batch upload, account profiles, LDAP schema viewer and an LDAP browser.
+      LAM for users focuses on end users. It provides a self service for the
+      users to edit their personal data (e.g. contact information). The LAM
+      administrator is able to specify what data may be changed by the users.
+      The design is also adaptable to your corporate design.</para>
+
+      <para>LAM for admins/users is accessible via HTTP(S) by all major web
+      browsers (Firefox, IE, Opera, ...).</para>
+
+      <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
+
+      <para>LAM runs on PHP. Therefore, it is independant of CPU architecture
+      and operating system (OS). You can run LAM on any OS which supports
+      Apache, Nginx or other PHP compatible web servers.</para>
+
+      <para><emphasis role="bold">Home directory server:</emphasis></para>
+
+      <para>You can manage user home directories and their quotas inside LAM.
+      The home directories may reside on the server where LAM is installed or
+      any remote server. The commands for home directory management are
+      secured by SSH. LAM will use the user name and password of the logged in
+      LAM administrator for authentication.</para>
+
+      <para><emphasis role="bold">LDAP directory:</emphasis></para>
+
+      <para>LAM connects to your LDAP server via standard LDAP protocol. It
+      also supports encrypted connections with SSL and TLS.</para>
+    </section>
+  </chapter>
 
   <chapter id="a_installation">
     <title>Installation</title>
@@ -736,7 +912,7 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
-          <title>4.5 -&gt; 4.8</title>
+          <title>4.5 -&gt; 5.0</title>
 
           <para>No special actions needed.</para>
         </section>
@@ -1013,7 +1189,7 @@ Have fun!
     linkend="a_selfService">self service</link> (LAM Pro). You should start
     with the general settings and then setup a server profile.</para>
 
-    <section>
+    <section id="generalSettings">
       <title>General settings</title>
 
       <para>After selecting "Edit general settings" you will need to enter the
@@ -1167,7 +1343,7 @@ Have fun!
       </section>
     </section>
 
-    <section>
+    <section id="serverProfiles">
       <title>Server profiles</title>
 
       <para>The server profiles store information about your LDAP server (e.g.
@@ -9467,6 +9643,13 @@ OK (10 msec)</programlisting>
       cn=admin or cn=manager).</para>
 
       <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">389 server</emphasis></para>
+
+      <literallayout>  cp passwordSelfReset-389server.ldif /etc/dirsrv/slapd-pdxnpldap03/schema
+  service dirsrv restart
+
 </literallayout>
 
       <para><emphasis role="bold">Samba 4</emphasis></para>
