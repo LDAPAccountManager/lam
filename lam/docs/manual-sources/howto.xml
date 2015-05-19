@@ -66,7 +66,7 @@
 
     <itemizedlist>
       <listitem>
-        <para>PHP5 (&gt;= 5.4.26)</para>
+        <para>PHP5 (&gt;= 5.3.2)</para>
       </listitem>
 
       <listitem>
@@ -126,12 +126,12 @@ Have fun!
 
       <itemizedlist>
         <listitem>
-          <para>admin interface to manage all sorts of different LDAP entries
+          <para>Admin interface to manage all sorts of different LDAP entries
           (e.g. users/groups/hosts)</para>
         </listitem>
 
         <listitem>
-          <para>self service (LAM Pro) where end users can edit their own
+          <para>Self service (LAM Pro) where end users can edit their own
           data</para>
         </listitem>
       </itemizedlist>
@@ -142,6 +142,79 @@ Have fun!
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/bigPicture1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Admin interface</emphasis></para>
+
+      <para>This is the main part of the application. It allows to manage a
+      large list of LDAP entries (e.g. users, groups, DNS entries, ...). This
+      part is accessed by LDAP admins and support staff.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/bigPicture2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Functional areas:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Account tabs: These tabs allow to switsch between different
+          account types</para>
+        </listitem>
+
+        <listitem>
+          <para>Tree view: Provides an LDAP browser to edit LDAP entries on
+          attribute level</para>
+        </listitem>
+
+        <listitem>
+          <para>Tools menu: Contains useful tools such as profile and PDF
+          editor</para>
+        </listitem>
+
+        <listitem>
+          <para>Help: Link to manual</para>
+        </listitem>
+
+        <listitem>
+          <para>Logout: Logout of the application</para>
+        </listitem>
+
+        <listitem>
+          <para>List view: Lists all entries of the selected account type
+          (e.g. users)</para>
+        </listitem>
+
+        <listitem>
+          <para>List configuration: Configuration settings for list view (e.g.
+          number of entries per page)</para>
+        </listitem>
+
+        <listitem>
+          <para>Filter: Filter boxes allow to enter simple filters like
+          "a*"</para>
+        </listitem>
+      </orderedlist>
+
+      <para><emphasis role="bold">Self Service</emphasis></para>
+
+      <para>The self service provides a simple interface for your users to
+      edit their own data (e.g. telephone number). It also supports user self
+      registration and password reset functionality.</para>
+
+      <para>You can fully customize the layout of the self service
+      page.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/bigPicture3.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -161,9 +234,9 @@ Have fun!
       <para><emphasis role="bold">Server profile</emphasis></para>
 
       <para>All settings for an LDAP connection (e.g. server name, LDAP
-      suffixes, account types/modules to activate). There may be multiple for
-      one LDAP server (e.g. for multiple departments, different user groups,
-      ...).</para>
+      suffixes, account types/modules to activate) in admin interface. There
+      may be multiple for one LDAP server (e.g. for multiple departments,
+      different user groups, ...).</para>
 
       <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
       linkend="serverProfiles">Edit server profile</link>.</para>
@@ -178,12 +251,13 @@ Have fun!
 
       <para><emphasis role="bold">Profiles</emphasis></para>
 
-      <para>Stores default values for new LDAP entries.</para>
+      <para><link linkend="a_accountProfile">Account profiles</link> store
+      default values for new LDAP entries.</para>
 
       <para><emphasis role="bold">PDF structures</emphasis></para>
 
-      <para>Defines the layout and list of data fields to include in PDF
-      export.</para>
+      <para><link linkend="pdfEditor">PDF structures</link> define the layout
+      and list of data fields to include in PDF export.</para>
     </section>
 
     <section>
@@ -218,16 +292,17 @@ Have fun!
             </row>
 
             <row>
-              <entry></entry>
-
-              <entry></entry>
-            </row>
-
-            <row>
               <entry>Admin interface</entry>
 
               <entry>LAM webpages for admin user (e.g. to create new
               users)</entry>
+            </row>
+
+            <row>
+              <entry>Lamdaemon</entry>
+
+              <entry>Support script to manage user file system quotas and
+              create home directories</entry>
             </row>
 
             <row>
@@ -6418,7 +6493,7 @@ OK (10 msec)</programlisting>
       </screenshot>
     </section>
 
-    <section>
+    <section id="pdfEditor">
       <title>PDF editor</title>
 
       <para>All accounts in LAM may be exported as PDF files. You can specify
@@ -9647,8 +9722,11 @@ OK (10 msec)</programlisting>
 
       <para><emphasis role="bold">389 server</emphasis></para>
 
-      <literallayout>  cp passwordSelfReset-389server.ldif /etc/dirsrv/slapd-pdxnpldap03/schema
-  service dirsrv restart
+      <para>Please replace INSTANCE with installation ID, e.g.
+      slapd-389ds.</para>
+
+      <literallayout>  cp passwordSelfReset-389server.ldif /etc/dirsrv/INSTANCE/schema/70pwdreset.ldif
+  systemctl restart dirsrv.target
 
 </literallayout>
 
