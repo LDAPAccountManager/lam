@@ -7833,7 +7833,8 @@ OK (10 msec)</programlisting>
 
         <para><emphasis>Object classes:</emphasis> This is a list of object
         classes that are used to build the new user accounts. Please enter one
-        object class in each line.</para>
+        object class in each line. If you use LAM Pro password self reset
+        feature then do not forget to add "passwordSelfReset" here.</para>
 
         <para><emphasis>Attributes:</emphasis> This is a list of additional
         attributes that the user can enter. Please note that user name,
