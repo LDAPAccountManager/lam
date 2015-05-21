@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2014  Roland Gruber
+  Copyright (C) 2005 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -509,6 +509,9 @@ class lamUserList extends lamList {
 	/** translates GID to group name */
 	private $trans_primary_hash = array();
 	
+	/** filter value for account status */
+	private $accountStatusFilter = null;
+	
 	/** ID for config option to translate primary group GIDs to group names */
 	const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
 	/** ID for config option to show account status */
@@ -516,6 +519,13 @@ class lamUserList extends lamList {
 	
 	/** virtual attribute name for account status column */
 	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
+	
+	/** filter value for locked accounts */
+	const FILTER_LOCKED = 2;
+	/** filter value for partially locked accounts */
+	const FILTER_SEMILOCKED = 3;
+	/** filter value for unlocked accounts */
+	const FILTER_UNLOCKED = 4;
 	
 	/**
 	 * Constructor
@@ -548,11 +558,13 @@ class lamUserList extends lamList {
 	 */
 	protected function listRefreshData() {
 		parent::listRefreshData();
+		// show group names
 		if ($this->trans_primary == "on") {
 			$this->refreshPrimaryGroupTranslation();
 		}
+		// show account status
 		if ($this->showAccountStatus) {
-			$this->injectAccountStatusAttribute();
+			$this->injectAccountStatusAttributeAndFilterByStatus();
 		}
 	}
 	
@@ -726,13 +738,58 @@ class lamUserList extends lamList {
 	 * @return boolean filtering possible
 	 */
 	protected function canBeFiltered($attr) {
-		if ($attr == self::ATTR_ACCOUNT_STATUS) {
-			return false;
-		}
-		elseif (strtolower($attr) == 'jpegphoto') {
+		if (strtolower($attr) == 'jpegphoto') {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Prints the content of a single attribute filter area.
+	 * 
+	 * @param String $attrName attribute name
+	 * @param boolean $clearFilter true if filter value should be cleared
+	 */
+	protected function printFilterArea($attrName, $clearFilter) {
+		if ($attrName != self::ATTR_ACCOUNT_STATUS) {
+			parent::printFilterArea($attrName, $clearFilter);
+			return;
+		}
+		$value = "-";
+		if (!$clearFilter) {
+			if (isset($this->filters[strtolower($attrName)])) {
+				$value = $this->filters[strtolower($attrName)];
+			}
+		}
+		$filterOptions = array(
+			'' => '',
+			_('Unlocked') => self::FILTER_UNLOCKED,
+			_('Partially locked') => self::FILTER_SEMILOCKED,
+			_('Locked') => self::FILTER_LOCKED
+		);
+		$filterInput = new htmlSelect('filter' . strtolower($attrName), $filterOptions, array($value));
+		$filterInput->setCSSClasses(array($this->type . '-dark'));
+		$filterInput->setHasDescriptiveElements(true);
+		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
+		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
+	}
+	
+	/**
+	 * Builds the LDAP filter based on the filter entries in the GUI.
+	 * 
+	 * @return String LDAP filter
+	 */
+	protected function buildLDAPAttributeFilter() {
+		$this->accountStatusFilter = null;
+		$text = '';
+		foreach ($this->filters as $attr => $filter) {
+			if ($attr == self::ATTR_ACCOUNT_STATUS) {
+				$this->accountStatusFilter = $filter;
+				continue;
+			}
+			$text .= '(' . $attr . '=' . $filter . ')';
+		}
+		return $text;
 	}
 	
 	/**
@@ -758,24 +815,43 @@ class lamUserList extends lamList {
 	/**
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
-	private function injectAccountStatusAttribute() {
+	private function injectAccountStatusAttributeAndFilterByStatus() {
 		$entryCount = sizeof($this->entries);
 		for ($i = 0; $i < $entryCount; $i++) {
-			$status = 0;
-			if (!self::isUnixLocked($this->entries[$i])) {
-				$status++;
+			$unixAvailable = self::isUnixAvailable($this->entries[$i]);
+			$sambaAvailable = self::isSambaAvailable($this->entries[$i]);
+			$ppolicyAvailable = self::isPPolicyAvailable($this->entries[$i]);
+			$windowsAvailable = self::isWindowsAvailable($this->entries[$i]);
+			$unixLocked = self::isUnixLocked($this->entries[$i]);
+			$sambaLocked = self::isSambaLocked($this->entries[$i]);
+			$ppolicyLocked = self::isPPolicyLocked($this->entries[$i]);
+			$windowsLocked = self::isWindowsLocked($this->entries[$i]);
+			$hasLocked = ($unixAvailable && $unixLocked)
+							|| ($sambaAvailable && $sambaLocked)
+							|| ($ppolicyAvailable && $ppolicyLocked)
+							|| ($windowsAvailable && $windowsLocked); 
+			$hasUnlocked = ($unixAvailable && !$unixLocked)
+							|| ($sambaAvailable && !$sambaLocked)
+							|| ($ppolicyAvailable && !$ppolicyLocked)
+							|| ($windowsAvailable && !$windowsLocked); 
+			$status = self::FILTER_UNLOCKED;
+			if ($hasLocked && $hasUnlocked) {
+				$status = self::FILTER_SEMILOCKED;
 			}
-			if (!self::isSambaLocked($this->entries[$i])) {
-				$status++;
+			elseif (!$hasUnlocked && $hasLocked) {
+				$status = self::FILTER_LOCKED;
 			}
-			if (!self::isPPolicyLocked($this->entries[$i])) {
-				$status++;
+			// filter accounts
+			if (!empty($this->accountStatusFilter)) {
+				if ($status != $this->accountStatusFilter) {
+					unset($this->entries[$i]);
+					continue;
+				}
 			}
-			if (!self::isWindowsLocked($this->entries[$i])) {
-				$status++;
-			}
+			// add virtual attribute
 			$this->entries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
 		}
+		$this->entries = array_values($this->entries);
 	}
 	
 	/**

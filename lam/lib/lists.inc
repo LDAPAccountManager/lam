@@ -392,24 +392,34 @@ class lamList {
 		parseHtml(null, $filterGroup, array(), false, $this->tabindex, $this->type);
 		echo "</td>\n";
 		// print input boxes for filters
-		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
+		for ($k = 0; $k < sizeof($this->descArray); $k++) {
 			echo "<td align=\"left\">";
 			if ($this->canBeFiltered($this->attrArray[$k])) {
-				$value = "";
-				if (!isset($_POST['clear_filter'])) {
-					if (isset($this->filters[strtolower($this->attrArray[$k])])) {
-						$value = $this->filters[strtolower($this->attrArray[$k])];
-					}
-				}
-				$filterInput = new htmlInputField('filter' . strtolower($this->attrArray[$k]), $value);
-				$filterInput->setCSSClasses(array($this->type . '-dark'));
-				$filterInput->setFieldSize('15');
-				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
-				parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
+				$this->printFilterArea($this->attrArray[$k], isset($_POST['clear_filter']));
 			}
 			echo "</td>\n";
 		}
 		echo "</tr></thead>\n";
+	}
+	
+	/**
+	 * Prints the content of a single attribute filter area.
+	 * 
+	 * @param String $attrName attribute name
+	 * @param boolean $clearFilter true if filter value should be cleared
+	 */
+	protected function printFilterArea($attrName, $clearFilter) {
+		$value = "";
+		if (!$clearFilter) {
+			if (isset($this->filters[strtolower($attrName)])) {
+				$value = $this->filters[strtolower($attrName)];
+			}
+		}
+		$filterInput = new htmlInputField('filter' . strtolower($attrName), $value);
+		$filterInput->setCSSClasses(array($this->type . '-dark'));
+		$filterInput->setFieldSize('15');
+		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
+		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
 	}
 	
 	/**
