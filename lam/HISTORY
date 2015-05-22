@@ -2,6 +2,8 @@ June 2015
   - Microsoft IE 8 no longer supported
   - Security: added CSRF protection
   - Zarafa users: allow to change display format of "Send As"
+  - User list: support to filter by account status
+  - Lamdaemon: update group of home directory if user's primary group changes
   - LAM Pro:
    -> Password Self Reset: added 389 Directory Server schema file
 

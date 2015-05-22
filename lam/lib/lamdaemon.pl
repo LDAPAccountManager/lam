@@ -4,7 +4,7 @@
 #
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2014  Roland Gruber
+#  Copyright (C) 2006 - 2015  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Sys::Syslog;
 
 # Defines the protocol version of the lamdaemon script.
 # This will only be changed when additional commands are added etc.
-my $LAMDAEMON_PROTOCOL_VERSION = 4;
+my $LAMDAEMON_PROTOCOL_VERSION = 5;
 
 my $SPLIT_DELIMITER = "###x##y##x###";
 
@@ -196,6 +196,9 @@ sub manageHomedirs {
 	elsif ($vals[2] eq 'rem') {
 		removeHomedir();
 	}
+	elsif ($vals[2] eq 'chgrp') {
+		chgrpHomedir();
+	}
 	elsif ($vals[2] eq 'move') {
 		moveHomedir();
 	}
@@ -308,6 +311,37 @@ sub moveHomedir {
 	else {
 		$return = "Ok";
 		logMessage(LOG_INFO, "The directory " . $homedir . " which should be moved was not found (skipped).");
+	}
+	($<, $>) = ($>, $<); # Give up root previleges
+}
+
+#
+# Changes the group of the home directory of the user.
+#
+sub chgrpHomedir {
+	my $homedir = $vals[3];
+	my $owner = $vals[4];
+	my $group = $vals[5];
+	if ($homedir eq '') {
+		$return = "ERROR,Lamdaemon ($hostname),No home directory specified to move.";
+		logMessage(LOG_ERR, "No home directory specified to move.");
+		return;
+	}
+	($<, $>) = ($>, $<); # Get root previliges
+	if (-d $homedir && $homedir ne '/') {
+		if ((stat($homedir))[4] eq $owner) {
+			system 'chgrp', $group, $homedir; # change group
+			$return = "Ok";
+			logMessage(LOG_INFO, "Home directory changed to new group ($homedir - $group)");
+		}
+		else {
+			$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $owner.";
+			logMessage(LOG_ERR, "Home directory owned by wrong user (" . $owner . ")");
+		}
+	}
+	else {
+		$return = "Ok";
+		logMessage(LOG_INFO, "The directory " . $homedir . " which should be changed was not found (skipped).");
 	}
 	($<, $>) = ($>, $<); # Give up root previleges
 }
