@@ -870,6 +870,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _('Image cropping'),
 				"Text" => _('Uploaded images will be cropped to these maximum values.')
 			),
+			'addAddressbook' => array(
+				"Headline" => _('Add addressbook (ou=addressbook)'),
+				"Text" => _('Adds an "ou=addressbook" subentry to each user.')
+			),
 		);
 		return $return;
 	}
@@ -974,6 +978,41 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		}
 		return $return;
+	}
+	
+	/**
+	 * Runs the postmodify actions.
+	 * 
+	 * @see baseModule::postModifyActions()
+	 *
+	 * @param boolean $newAccount
+	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 */
+	public function postModifyActions($newAccount, $attributes) {
+		$messages = array();
+		// add address book
+		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')) {
+			$dn = 'ou=addressbook,' . $this->getAccountContainer()->finalDN;
+			$result = ldapGetDN($dn);
+			if (empty($result)) {
+				$ldapUser = $_SESSION['ldap']->decrypt_login();
+				$ldapUser = $ldapUser[0];
+				$attrs = array(
+					'objectClass' => array('organizationalUnit'),
+					'ou' => 'addressbook'
+				);
+				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+				if (!$success) {
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add addressbook for user ' . $this->getAccountContainer()->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$messages[] = array('ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				}
+				else {
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added addressbook for user ' . $this->getAccountContainer()->finalDN);
+				}
+			}
+		}
+		return $messages;
 	}
 
 	/**
@@ -2434,32 +2473,45 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
-		// mail sending is LAM Pro only
-		if (!isLAMProVersion()) {
-			return array (
-				'status' => 'finished',
-				'progress' => 100,
-				'errors' => array()
-			);
-		}
 		if (!isset($temp['counter'])) {
 			$temp['counter'] = 0;
 		}
 		$errors = array();
-		if (!in_array($temp['counter'], $failed) && isset($ids['inetOrgPerson_email']) && ($data[$temp['counter']][$ids['inetOrgPerson_email']] != "")) {
-			if (isset($ids['inetOrgPerson_sendPasswordMail']) && ($data[$temp['counter']][$ids['inetOrgPerson_sendPasswordMail']] == "true")
-					&& isset($accounts[$temp['counter']]['INFO.userPasswordClearText'])) {
-				$mailMessages = sendPasswordMail($accounts[$temp['counter']]['INFO.userPasswordClearText'], $accounts[$temp['counter']]);
-				for ($i = 0; $i < sizeof($mailMessages); $i++) {
-					if ($mailMessages[$i][0] == 'ERROR') {
-						$errors[] = $mailMessages[$i];
+		$dataSize = sizeof($data);
+		if (($temp['counter'] < $dataSize) && !in_array($temp['counter'], $failed)) {
+			// mail sending is LAM Pro only
+			if (isLAMProVersion()
+				&& isset($ids['inetOrgPerson_email'])
+				&& ($data[$temp['counter']][$ids['inetOrgPerson_email']] != "")) {
+				if (isset($ids['inetOrgPerson_sendPasswordMail']) && ($data[$temp['counter']][$ids['inetOrgPerson_sendPasswordMail']] == "true")
+						&& isset($accounts[$temp['counter']]['INFO.userPasswordClearText'])) {
+					$mailMessages = sendPasswordMail($accounts[$temp['counter']]['INFO.userPasswordClearText'], $accounts[$temp['counter']]);
+					for ($i = 0; $i < sizeof($mailMessages); $i++) {
+						if ($mailMessages[$i][0] == 'ERROR') {
+							$errors[] = $mailMessages[$i];
+						}
 					}
+				}
+			}
+			// add addressbook entry
+			if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')) {
+				$attrs = array(
+					'objectClass' => array('organizationalUnit'),
+					'ou' => 'addressbook'
+				);
+				$dn = 'ou=addressbook,' . $accounts[$temp['counter']]['dn'];
+				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+				if (!$success) {
+					logNewMessage(LOG_ERR, 'Unable to add addressbook for user ' . $accounts[$temp['counter']]['dn'] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$messages[] = array('ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				}
+				else {
+					logNewMessage(LOG_NOTICE, 'Added addressbook for user ' . $accounts[$temp['counter']]['dn']);
 				}
 			}
 		}
 		$temp['counter']++;
-		$dataSize = sizeof($data);
-		if ($temp['counter'] < ($dataSize - 1)) {
+		if ($temp['counter'] < $dataSize) {
 			return array (
 				'status' => 'inProgress',
 				'progress' => ($temp['counter'] * 100) / $dataSize,
@@ -3780,6 +3832,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$configContainer->addElement($configContainerOptions, true);
 		$advancedOptions = new htmlTable();
+		$addressbookTable = new htmlTable();
+		$addressbookTable->addElement(new htmlTableExtendedInputCheckbox('inetOrgPerson_addAddressbook', false, _('Add addressbook (ou=addressbook)'), 'addAddressbook'));
+		$advancedOptions->addElement($addressbookTable, true);
 		$advancedOptions->addElement(new htmlSubTitle(_('Read-only fields')), true);
 		$readOnlyOptions = array(
 			_('Description') => 'inetOrgPerson_readOnly_description', _('Street') => 'inetOrgPerson_readOnly_street',

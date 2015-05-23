@@ -2,7 +2,7 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <book>
-  <title>LDAP Account Manager - Manual</title>
+  <title>lamlamghfhlllLDAP Account Manager - Manual</title>
 
   <preface>
     <title>Overview</title>
@@ -17,7 +17,7 @@
     for account creation and use multiple configuration profiles.</para>
 
     <para><ulink
-    url="https://www.ldap-account-manager.org/">https://www.ldap-account-manager.org/</ulink></para>
+    url="https://www.ldap-account-manager.org/">sdfdsfdshttps://www.ldap-account-manager.org/</ulink></para>
 
     <para>Copyright (C) 2003 - 2014 Roland Gruber
     &lt;post@rolandgruber.de&gt;</para>
@@ -2291,7 +2291,9 @@ Have fun!
         all of them. You can hide fields in module settings.</para>
 
         <para>In advanced options you may also set fields to read-only (for
-        existing accounts) and define limits for photo files.</para>
+        existing accounts) and define limits for photo files. Additionally,
+        you can add an "ou=addressbook" subentry to each user in case you
+        manage user addressbooks.</para>
 
         <screenshot>
           <mediaobject>
