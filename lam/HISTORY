@@ -4,9 +4,10 @@ June 2015
   - Zarafa users: allow to change display format of "Send As"
   - User list: support to filter by account status
   - Lamdaemon: update group of home directory if user's primary group changes
-  - Personal: allow to add ou=addressbook subentry for users
+  - Personal: allow to add ou=addressbook subentry for users (RFE 117)
   - LAM Pro:
    -> Password Self Reset: added 389 Directory Server schema file
+   -> Support for groupOfMembers (RFE 121)
 
 
 31.03.2015 4.9

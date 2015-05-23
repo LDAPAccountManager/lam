@@ -260,7 +260,7 @@ class posixAccount extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hidegecos', false, _('Gecos'), null, false));
 		if (isset($_SESSION['conf_config'])) {
 			$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
-			if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
+			if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
 				$configContainerOptions->addElement(new htmlOutputText(' '));
 				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hidegon', false, _('Groups of names'), null, false));
 				$configContainerOptions->addElement(new htmlOutputText(' '));
@@ -641,7 +641,7 @@ class posixAccount extends baseModule implements passwordService {
 			$types = array('gon', 'group');
 			$gonList = array();
 			foreach ($types as $type) {
-				$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . $this->getAccountContainer()->dn_orig . ')))';
+				$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfMembers)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . $this->getAccountContainer()->dn_orig . ')))';
 				if (!empty($typeSettings['filter_' . $type])) {
 					$typeFilter = $typeSettings['filter_' . $type];
 					if (strpos($typeFilter, '(') !== 0) {
@@ -2879,7 +2879,7 @@ class posixAccount extends baseModule implements passwordService {
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		if (sizeof($types) > 0) {
 			foreach ($types as $type) {
-				$filter = '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames))';
+				$filter = '(|(objectClass=groupOfNames)(objectClass=groupOfMembers)(objectClass=groupOfUniqueNames))';
 				if (!empty($typeSettings['filter_' . $type])) {
 					$typeFilter = $typeSettings['filter_' . $type];
 					if (strpos($typeFilter, '(') !== 0) {
@@ -3001,13 +3001,13 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		if (in_array('group', $_SESSION['config']->get_ActiveTypes())) {
 			$groupModules = $_SESSION['config']->get_AccountModules('group');
-			if (in_array('groupOfNames', $groupModules) || in_array('groupOfUniqueNames', $groupModules)) {
+			if (in_array('groupOfNames', $groupModules) || in_array('groupOfMembers', $groupModules) || in_array('groupOfUniqueNames', $groupModules)) {
 				return true;
 			}
 		}
 		if (in_array('gon', $_SESSION['config']->get_ActiveTypes())) {
 			$gonModules = $_SESSION['config']->get_AccountModules('gon');
-			if (in_array('groupOfNames', $gonModules) || in_array('groupOfUniqueNames', $gonModules)) {
+			if (in_array('groupOfNames', $gonModules) || in_array('groupOfMembers', $gonModules) || in_array('groupOfUniqueNames', $gonModules)) {
 				return true;
 			}
 		}
