@@ -2,7 +2,7 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <book>
-  <title>lamlamghfhlllLDAP Account Manager - Manual</title>
+  <title>LDAP Account Manager - Manual</title>
 
   <preface>
     <title>Overview</title>
@@ -17,7 +17,7 @@
     for account creation and use multiple configuration profiles.</para>
 
     <para><ulink
-    url="https://www.ldap-account-manager.org/">sdfdsfdshttps://www.ldap-account-manager.org/</ulink></para>
+    url="https://www.ldap-account-manager.org/">https://www.ldap-account-manager.org/</ulink></para>
 
     <para>Copyright (C) 2003 - 2014 Roland Gruber
     &lt;post@rolandgruber.de&gt;</para>
@@ -3618,13 +3618,11 @@ Have fun!
             note that this requires that you install the Samba schema and
             create an LDAP entry of object class "sambaUnixIdPool".</para>
           </listitem>
-
-          <listitem>
-            <para>Disable membership management: Disables group membership
-            management. This is useful if memberships are e.g. managed via
-            group of names.</para>
-          </listitem>
         </itemizedlist>
+
+        <para>Disable membership management: Disables group membership
+        management. This is useful if memberships are e.g. managed via group
+        of names.</para>
 
         <screenshot>
           <mediaobject>
@@ -3681,6 +3679,46 @@ Have fun!
               </imageobject>
             </mediaobject>
           </screenshot></para>
+
+        <para>GID generator: LAM will suggest GID numbers for your accounts.
+        Please note that it may happen that there are duplicate IDs assigned
+        if users create groups at the same time. Use an <ulink
+        url="http://www.openldap.org/doc/admin24/overlays.html">overlay</ulink>
+        like "Attribute Uniqueness" (<link
+        linkend="a_openldap_unique">example</link>) if you have lots of LAM
+        admins creating groups.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Fixed range: LAM searches for free numbers within the given
+            limits. LAM always tries to use a free GID that is greater than
+            the existing GIDs to prevent collisions with deleted
+            groups.</para>
+          </listitem>
+
+          <listitem>
+            <para>Samba ID pool: This uses a special LDAP entry that includes
+            attributes that store a counter for the last used UID/GID. Please
+            note that this requires that you install the Samba schema and
+            create an LDAP entry of object class "sambaUnixIdPool".</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Disable membership management: Disables group membership
+        management. This is useful if memberships are e.g. managed via group
+        of names.</para>
+
+        <para>Force sync with group of names: This will automatically set the
+        group memberships of the Unix part to the same members as set on group
+        of names tab.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/rfc2307bis2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
         <para>The GID number will be filled automatically based on the server
         profile configuration.</para>
