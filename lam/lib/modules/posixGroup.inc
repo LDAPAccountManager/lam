@@ -172,6 +172,10 @@ class posixGroup extends baseModule implements passwordService {
 	function display_html_attributes() {
 		$return = new htmlTable();
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
+			// auto sync group members
+			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+				$this->syncGon();
+			}
 			// group name
 			if ($this->manageCnAttribute) {
 				$cn = '';
@@ -220,7 +224,12 @@ class posixGroup extends baseModule implements passwordService {
 			// group members
 			if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
 				$return->addElement(new htmlOutputText(_("Group members")));
-				$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+				if (!$this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+					$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+				}
+				else {
+					$return->addElement(new htmlOutputText(''));
+				}
 				$return->addElement(new htmlHelpLink('members'), true);
 				$return->addElement(new htmlOutputText(''));
 				$users = $this->getUsers();
@@ -409,26 +418,6 @@ class posixGroup extends baseModule implements passwordService {
 			$profileContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
 			$return['profile_options'] = $profileContainer;
 		}
-		// configuration options
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
-		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('GID generator'), 'gidGenerator');
-		$gidGeneratorSelect->setHasDescriptiveElements(true);
-		$gidGeneratorSelect->setTableRowsToHide(array('range' => array('posixGroup_sambaIDPoolDN'), 'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID')));
-		$gidGeneratorSelect->setTableRowsToShow(array('range' => array('posixGroup_minGID', 'posixGroup_maxGID'), 'sambaPool' => array('posixGroup_sambaIDPoolDN')));
-		$configContainer->addElement($gidGeneratorSelect, true);
-		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
-		$minGidInput->setRequired(true);
-		$configContainer->addElement($minGidInput, true);
-		$maxGidInput = new htmlTableExtendedInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
-		$maxGidInput->setRequired(true);
-		$configContainer->addElement($maxGidInput, true);
-		$gidGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
-		$gidGeneratorDN->setRequired(true);
-		$configContainer->addElement($gidGeneratorDN, true);
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
-		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
-		$return['config_options']['group'] = $configContainer;
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'gidNumber' => _('GID number'),
@@ -551,6 +540,10 @@ class posixGroup extends baseModule implements passwordService {
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			),
+			'autoSyncGon' => array(
+				"Headline" => _("Force sync with group of names"),
+				"Text" => _("This will force syncing with group of names members of the same group.")
+			),
 		);
 
 		return $return;
@@ -565,12 +558,35 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array configuration elements
 	*/
 	function get_configOptions($scopes, $allScopes) {
-		$return = parent::get_configOptions($scopes, $allScopes);
+		// configuration options
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
+		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('GID generator'), 'gidGenerator');
+		$gidGeneratorSelect->setHasDescriptiveElements(true);
+		$gidGeneratorSelect->setTableRowsToHide(array('range' => array('posixGroup_sambaIDPoolDN'), 'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID')));
+		$gidGeneratorSelect->setTableRowsToShow(array('range' => array('posixGroup_minGID', 'posixGroup_maxGID'), 'sambaPool' => array('posixGroup_sambaIDPoolDN')));
+		$configContainer->addElement($gidGeneratorSelect, true);
+		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
+		$minGidInput->setRequired(true);
+		$configContainer->addElement($minGidInput, true);
+		$maxGidInput = new htmlTableExtendedInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
+		$maxGidInput->setRequired(true);
+		$configContainer->addElement($maxGidInput, true);
+		$gidGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
+		$gidGeneratorDN->setRequired(true);
+		$configContainer->addElement($gidGeneratorDN, true);
+		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
+		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
+		$x = $this->get_scope();
+		if ((!empty($allScopes['groupOfNames']) && in_array('group', $allScopes['groupOfNames']))
+			|| (!empty($allScopes['groupOfUniqueNames']) && in_array('group', $allScopes['groupOfUniqueNames']))) {
+			$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), true);
+		}
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
-			$return[0]->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'));
+			$configContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'));
 		}
-		return $return;
+		return $configContainer;
 	}
 
 	/**
@@ -843,34 +859,50 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// sync users
 		elseif (isset($_POST['syncGON'])) {
-			$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
-			if ($gon == null) {
-				$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
-			}
-			$memberDNs = $gon->getMembers();
-			$users = $this->getUsers();
-			$oldValues = $this->attributes['memberUid'];
-			$this->attributes['memberUid'] = array();
-			foreach ($memberDNs as $dn) {
-				foreach ($users as $userName => $userAttrs) {
-					if ($userAttrs['dn'] != $dn) {
-						continue;
-					}
-					$this->attributes['memberUid'][] = $userName;
-				}
-			}
-			$added = array_delete($oldValues, $this->attributes['memberUid']);
-			if (!empty($added)) {
-				$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
-			}
-			$deleted = array_delete($this->attributes['memberUid'], $oldValues);
-			if (!empty($deleted)) {
-				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
-			}
+			$return = array_merge($return, $this->syncGon());
 		}
 		return $return;
 	}
-
+	
+	/**
+	 * Syncs with group of names members.
+	 * 
+	 * @return array list of status messages
+	 */
+	protected function syncGon() {
+		$return = array();
+		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
+		if ($gon == null) {
+			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
+		}
+		if ($gon == null) {
+			return;
+		}
+		if (!isset($this->attributes['memberUid'])) {
+			$this->attributes['memberUid'] = array();
+		}
+		$memberDNs = $gon->getMembers();
+		$users = $this->getUsers();
+		$oldValues = $this->attributes['memberUid'];
+		$this->attributes['memberUid'] = array();
+		foreach ($memberDNs as $dn) {
+			foreach ($users as $userName => $userAttrs) {
+				if ($userAttrs['dn'] != $dn) {
+					continue;
+				}
+				$this->attributes['memberUid'][] = $userName;
+			}
+		}
+		$added = array_delete($oldValues, $this->attributes['memberUid']);
+		if (!empty($added)) {
+			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
+		}
+		$deleted = array_delete($this->attributes['memberUid'], $oldValues);
+		if (!empty($deleted)) {
+			$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+		}
+		return $return;
+	}
 
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
@@ -892,6 +924,10 @@ class posixGroup extends baseModule implements passwordService {
 		if (!in_array('posixGroup', $this->attributes['objectClass']) && !in_array('posixGroup', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
 			return array();
+		}
+		// auto sync group members
+		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+			$this->syncGon();
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Change gids of users and hosts?

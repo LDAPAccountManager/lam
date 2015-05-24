@@ -8,6 +8,7 @@ June 2015
   - LAM Pro:
    -> Password Self Reset: added 389 Directory Server schema file
    -> Support for groupOfMembers (RFE 121)
+   -> Rfc2307bis Unix groups: added option to force syncing with group of names
 
 
 31.03.2015 4.9
