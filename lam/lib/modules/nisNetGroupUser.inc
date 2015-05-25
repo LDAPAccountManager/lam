@@ -41,6 +41,8 @@ class nisNetGroupUser extends baseModule {
 	private $groupsOrig = array();
 	/** group cache (array(array(cn => '', dn => '', nisnetgrouptriple => array()))) */
 	private $groupCache = null;
+	/** original uid */
+	private $uidOrig = null;
 	
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -116,6 +118,7 @@ class nisNetGroupUser extends baseModule {
 			return;
 		}
 		$uid = $attr['uid'][0];
+		$this->uidOrig = $uid;
 		$types = array('netgroup');
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$groupList = array();
@@ -294,8 +297,14 @@ class nisNetGroupUser extends baseModule {
 				if (($group_orig['dn'] == $group['dn'])
 					&& ($group_orig['domain'] == $group['domain'])
 					&& ($group_orig['host'] == $group['host'])) {
-					unset($toRem[$i]);
-					unset($toAdd[$k]);
+					if (!empty($this->uidOrig) && ($this->uidOrig != $uid)) {
+						// uid changed, simply update uid in all net groups
+					}
+					else {
+						// do not touch existing memberships
+						unset($toRem[$i]);
+						unset($toAdd[$k]);
+					}
 					break;
 				}
 			}
@@ -306,7 +315,8 @@ class nisNetGroupUser extends baseModule {
 			$changes[$add['dn']]['add'][] = '(' . $add['host'] . ',' . $uid . ',' . $add['domain'] . ')';
 		}
 		foreach ($toRem as $del) {
-			$changes[$del['dn']]['del'][] = '(' . $del['host'] . ',' . $uid . ',' . $del['domain'] . ')';
+			$delUid = empty($this->uidOrig) ? $uid : $this->uidOrig;
+			$changes[$del['dn']]['del'][] = '(' . $del['host'] . ',' . $delUid . ',' . $del['domain'] . ')';
 		}
 		// update groups
 		foreach ($changes as $dn => $changeSet) {
