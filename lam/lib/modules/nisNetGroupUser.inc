@@ -70,13 +70,9 @@ class nisNetGroupUser extends baseModule {
 		$return['PDF_fields']['memberships'] = _('NIS net groups');
 		// help Entries
 		$return['help'] = array(
-			'addgroup' => array(
-				'Headline' => _('Groups of names'),
-				'Text' => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")
-			),
-			'addgroup_upload' => array(
-				"Headline" => _("Groups of names"),
-				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
+			'memberships_upload' => array(
+				"Headline" => _('NIS net groups'),
+				"Text" => _("Here you can enter a list of net groups. Group blocks are separated by comma in format GROUP#HOST#DOMAIN. Host and domain are optional.")
 			),
 		);
 		// upload columns
@@ -84,7 +80,7 @@ class nisNetGroupUser extends baseModule {
 			'name' => 'nisNetGroupUser_memberships',
 			'description' => _('Memberships'),
 			'help' => 'memberships_upload',
-			'example' => 'group1##host##domain,group2##host##domain'
+			'example' => 'group1#host#domain,group2#host#domain'
 		);
 		return $return;
 	}
@@ -455,19 +451,20 @@ class nisNetGroupUser extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
 		// get list of existing group of names
-		$gons = $this->findGroupOfNames();
-		$gonList = array();
-		foreach ($gons as $dn => $attr) {
-			$gonList[] = $attr['cn'][0];
+		$groups = $this->findGroups();
+		$groupNames = array();
+		foreach ($groups as $group) {
+			$groupNames[] = $group['cn'][0];
 		}
 		// check input
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-			// group of names
-			if ($rawAccounts[$i][$ids['groupOfNamesUser_gon']] != "") {
-				$groups = explode(",", $rawAccounts[$i][$ids['groupOfNamesUser_gon']]);
-				for ($g = 0; $g < sizeof($groups); $g++) {
-					if (!in_array($groups[$g], $gonList)) {
-						$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
+			// group names
+			if (!empty($rawAccounts[$i][$ids['nisNetGroupUser_memberships']])) {
+				$triples = preg_split('/,[ ]*/', $rawAccounts[$i][$ids['nisNetGroupUser_memberships']]);
+				foreach ($triples as $triple) {
+					$parts = explode('#', $triple);
+					if (!in_array($parts[0], $groupNames)) {
+						$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $parts[0]);
 					}
 				}
 			}
@@ -496,52 +493,66 @@ class nisNetGroupUser extends baseModule {
 		}
 		// on first call generate list of LDAP operations
 		if (!isset($temp['counter'])) {
-			$temp['dn_gon'] = array();
+			$temp['groups'] = array();
 			$temp['counter'] = 0;
-			// get list of existing group of names
-			$gonList = $this->findGroupOfNames();
-			$gonMap = array();
-			foreach ($gonList as $dn => $attr) {
-				$gonMap[$attr['cn'][0]] = $dn;
+			// get list of existing groups
+			$groupList = $this->findGroups();
+			$groupMap = array();
+			foreach ($groupList as $group) {
+				$groupMap[$group['cn'][0]] = $group['dn'];
 			}
 			for ($i = 0; $i < sizeof($data); $i++) {
 				if (in_array($i, $failed)) continue; // ignore failed accounts
-				if (isset($ids['groupOfNamesUser_gon']) && ($data[$i][$ids['groupOfNamesUser_gon']] != "")) {
-					$gons = explode(",", $data[$i][$ids['groupOfNamesUser_gon']]);
-					$memberAttr = 'member';
-					for ($g = 0; $g < sizeof($gons); $g++) {
-						if (in_array('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
-							$memberAttr = 'uniqueMember';
-						}
-						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
+				if (empty($accounts[$i]['uid'])) {
+					continue;
+				}
+				$uid = $accounts[$i]['uid'];
+				if (!empty($data[$i][$ids['nisNetGroupUser_memberships']])) {
+					$triples = preg_split('/,[ ]*/', $data[$i][$ids['nisNetGroupUser_memberships']]);
+					foreach ($triples as $triple) {
+						$parts = explode('#', $triple);
+						$group = $parts[0];
+						$host = empty($parts[1]) ? '' : $parts[1];
+						$domain = empty($parts[2]) ? '' : $parts[2];
+						$temp['groups'][$groupMap[$group]][] = '(' . $host . ',' . $uid . ',' . $domain . ')';
 					}
 				}
 			}
-			$temp['dn_gon_keys'] = array_keys($temp['dn_gon']);
+			$temp['groupDNs'] = array_keys($temp['groups']);
 			return array(
 				'status' => 'inProgress',
 				'progress' => 0,
 				'errors' => array()
 			);
 		}
-		// add users to group of names
-		elseif ($temp['counter'] < sizeof($temp['dn_gon'])) {
-			$gonDn = $temp['dn_gon_keys'][$temp['counter']];
-			$gonAttr = $temp['dn_gon'][$gonDn];
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttr);
+		// add users to groups
+		elseif ($temp['counter'] < sizeof($temp['groupDNs'])) {
 			$errors = array();
+			$dn = $temp['groupDNs'][$temp['counter']];
+			$current = ldapGetDN($dn, array('nisnetgrouptriple'));
+			if (empty($current)) {
+				$errors[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn));
+				continue;
+			}
+			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
+			$triples = array_merge($temp['groups'][$dn], $triples);
+			$triples = array_values(array_unique($triples));
+			$attributes = array(
+				'nisnetgrouptriple' => $triples
+			);
+			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
 			if (!$success) {
 				$errors[] = array(
 					"ERROR",
 					_("LAM was unable to modify group memberships for group: %s"),
 					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-					array($temp['groups'][$temp['counter']])
+					array($dn)
 				);
 			}
 			$temp['counter']++;
 			return array (
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / sizeof($temp['dn_gon']),
+				'progress' => ($temp['counter'] * 100) / sizeof($temp['groupDNs']),
 				'errors' => $errors
 			);
 		}
