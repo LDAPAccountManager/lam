@@ -1898,7 +1898,7 @@ class accountContainer {
 		for ($i=0; $i<count($DNs); $i++) {
 			if (!$stopprocessing) {
 				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
-				// modify attributesabnahme
+				// modify attributes
 				if (!empty($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
