@@ -251,6 +251,25 @@ class nisNetGroupUser extends baseModule {
 		usort($this->groups, array($this, 'sortTriple'));
 		return $errors;
 	}
+	
+	/**
+	 * Returns the user ID for this user.
+	 * 
+	 * @return String user ID
+	 */
+	private function getUid() {
+		$moduleAttributes = array();
+		if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+			$moduleAttributes = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+		}
+		else {
+			$moduleAttributes = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+		}
+		if (empty($moduleAttributes['uid'][0])) {
+			return null;
+		}
+		return $moduleAttributes['uid'][0];
+	}
 
 	/**
 	 * Runs the postmodify actions.
@@ -262,19 +281,12 @@ class nisNetGroupUser extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$moduleAttributes = array();
-		if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-			$moduleAttributes = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-		}
-		else {
-			$moduleAttributes = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-		}
-		if (empty($moduleAttributes['uid'][0])) {
+		$uid = $this->getUid();
+		if (empty($uid)) {
 			return array();
 		}
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
-		$uid = $moduleAttributes['uid'][0];
 		$messages = array();
 		// calculate differences
 		$toRem = $this->groupsOrig;
@@ -300,7 +312,7 @@ class nisNetGroupUser extends baseModule {
 		foreach ($toRem as $del) {
 			$changes[$del['dn']]['del'][] = '(' . $del['host'] . ',' . $uid . ',' . $del['domain'] . ')';
 		}
-		// add groups
+		// update groups
 		foreach ($changes as $dn => $changeSet) {
 			$current = ldapGetDN($dn, array('nisnetgrouptriple'));
 			if (empty($current)) {
@@ -333,8 +345,36 @@ class nisNetGroupUser extends baseModule {
 	* @return List of LDAP operations, same as for save_attributes()
 	*/
 	function delete_attributes() {
+		$uid = $this->getUid();
+		if (empty($uid)) {
+			return array();
+		}
+		$ldapUser = $_SESSION['ldap']->decrypt_login();
+		$ldapUser = $ldapUser[0];
 		$return = array();
-		// remove from group of names
+		// remove from NIS netgroups
+		$changes = array();
+		foreach ($this->groups as $group) {
+			$changes[$group['dn']][] = '(' . $group['host'] . ',' . $uid . ',' . $group['domain'] . ')';
+		}
+		foreach ($changes as $dn => $changeSet) {
+			$current = ldapGetDN($dn, array('nisnetgrouptriple'));
+			if (empty($current)) {
+				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn));
+				continue;
+			}
+			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
+			$triples = array_delete($changeSet, $triples);
+			$triples = array_values(array_unique($triples));
+			$attributes = array(
+				'nisnetgrouptriple' => $triples
+			);
+			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
+			if (!$success) {
+				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+			}
+		}
 		return $return;
 	}
 
@@ -344,18 +384,22 @@ class nisNetGroupUser extends baseModule {
 	* @return profile elements
 	*/
 	function get_profileOptions() {
-		$return = new htmlTable();
-		// group of names
-		$gons = $this->findGroupOfNames();
-		$gonList = array();
-		foreach ($gons as $dn => $attr) {
-			$gonList[$attr['cn'][0]] = $dn;
+		$groups = $this->findGroups();
+		$groupOptions = array('' => '');
+		foreach ($groups as $group) {
+			$groupOptions[$group['cn'][0]] = $group['cn'][0] . '#+#' . $group['dn'];
 		}
-		$gonSelect = new htmlTableExtendedSelect('groupOfNamesUser_gon', $gonList, array(), _('Groups of names'), 'addgroup', 10);
-		$gonSelect->setHasDescriptiveElements(true);
-		$gonSelect->setMultiSelect(true);
-		$gonSelect->setTransformSingleSelect(false);
-		$return->addElement($gonSelect, true);
+		$return = new htmlTable();
+		$return->addElement(new htmlOutputText(_('Group')));
+		$return->addElement(new htmlOutputText(_('Host name')));
+		$return->addElement(new htmlOutputText(_('Domain name')), true);
+		for ($i = 0; $i < 5; $i++) {
+			$select = new htmlSelect('nisNetGroupUser_group' . $i, $groupOptions, array(''));
+			$select->setHasDescriptiveElements(true);
+			$return->addElement($select);
+			$return->addElement(new htmlInputField('nisNetGroupUser_host' . $i));
+			$return->addElement(new htmlInputField('nisNetGroupUser_domain' . $i), true);
+		}
 		return $return;
 	}
 
@@ -365,13 +409,18 @@ class nisNetGroupUser extends baseModule {
 	* @param array $profile hash array with profile values (identifier => value)
 	*/
 	function load_profile($profile) {
-		// profile mappings in meta data
-		parent::load_profile($profile);
-		// special profile options
-		// group of names
-		if (isset($profile['groupOfNamesUser_gon'][0])) {
-			$this->gonList = $profile['groupOfNamesUser_gon'];
+		for ($i = 0; $i < 5; $i++) {
+			if (!empty($profile['nisNetGroupUser_group' . $i][0])) {
+				$parts = explode('#+#', $profile['nisNetGroupUser_group' . $i][0]);
+				$this->groups[] = array(
+					'name' => $parts[0],
+					'dn' => $parts[1],
+					'host' => $profile['nisNetGroupUser_host' . $i][0],
+					'domain' => $profile['nisNetGroupUser_domain' . $i][0],
+				);
+			}
 		}
+		usort($this->groups, array($this, 'sortTriple'));
 	}
 
 	/**
@@ -381,16 +430,16 @@ class nisNetGroupUser extends baseModule {
 	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
 	 */
 	function get_pdfEntries($pdfKeys) {
-		$allGons = $this->findGroupOfNames();
-		$gons = array();
-		for ($i = 0; $i < sizeof($this->gonList); $i++) {
-			if (isset($allGons[$this->gonList[$i]])) {
-				$gons[] = $allGons[$this->gonList[$i]]['cn'][0];
-			}
-		}
-		natcasesort($gons);
 		$return = array();
-		$this->addPDFKeyValue($return, 'gon', _('Groups of names'), $gons);
+		$return[get_class($this) . '_memberships'][0] = '<block>'
+			. '<tr><td width="25%" align=\"L\"><b>' . _('Group') . '</b></td>'
+			. '<td width="25%" align=\"L\"><b>' . _('Host name') . '</b></td>'
+			. '<td width="25%" align=\"L\"><b>' . _('Domain name') . '</b></td></tr></block>';
+		foreach ($this->groups as $group) {
+			$return[get_class($this) . '_memberships'][] = '<block><tr><td width="25%" align=\"L\">' . $group['name'] . '</td>'
+				. '<td width="25%" align=\"L\">' . $group['host'] . ' </td>'
+				. '<td width="25%" align=\"L\">' . $group['domain'] . ' </td></tr></block>';
+		}
 		return $return;
 	}
 
