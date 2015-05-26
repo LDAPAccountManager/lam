@@ -2647,13 +2647,17 @@ Have fun!
       <section>
         <title>Group of names (LAM Pro)</title>
 
-        <para>This module manages memberships in group of (unique) names. To
-        activate this feature please add the user module "Group of names
-        (groupOfNamesUser)" to your LAM server profile.</para>
+        <para>This module manages memberships in group of (unique) names and
+        also group of members.</para>
 
         <para>Please note that this module cannot be used if the Unix module
         is active. In this case group memberships may be managed with the Unix
         module.</para>
+
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>To activate this feature please add the user module "Group of
+        names (groupOfNamesUser)" to your LAM server profile.</para>
 
         <screenshot>
           <mediaobject>
@@ -2692,6 +2696,8 @@ Have fun!
           </mediaobject>
         </screenshot>
 
+        <para><emphasis role="bold">User editing</emphasis></para>
+
         <para>Now, there will be a new tab "Roles" when you edit your user
         accounts. Here you can select the role memberships.</para>
 
@@ -2715,6 +2721,36 @@ Have fun!
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_shadow.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>NIS net groups</title>
+
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>Please add the module "NIS net groups (nisNetGroupUser)" to the
+        list of active user modules.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_nisNetGroupUser1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">User editing</emphasis></para>
+
+        <para>You will now see a new tab when editing users. Here you can
+        assign memberships in NIS net groups and also set host/domain.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_nisNetGroupUser2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
