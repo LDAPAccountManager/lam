@@ -2019,7 +2019,20 @@ class accountContainer {
 				$everything_found = true;
 				$dependencies = $dependencies['depends'];
 				for ($d = 0; $d < sizeof($dependencies); $d++) {
-					if (!in_array($dependencies[$d], $order)) {
+					if (is_array($dependencies[$d])) { // or-combined dependencies
+						$noneFound = true;
+						foreach ($dependencies[$d] as $or) {
+							if (in_array($or, $order)) {
+								$noneFound = false;
+								break;
+							}
+						}
+						if ($noneFound) {
+							$everything_found = false;
+							break;
+						}
+					}
+					elseif (!in_array($dependencies[$d], $order)) { // single dependency
 						$everything_found = false;
 						break;
 					}
