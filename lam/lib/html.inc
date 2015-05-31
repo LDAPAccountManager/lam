@@ -418,6 +418,8 @@ class htmlInputField extends htmlElement {
 	protected $fieldMaxLength = 255;
 	/** on keypress event */
 	protected $onKeyPress = null;
+	/** on keyupp event */
+	protected $onKeyUp = null;
 	/** password field */
 	protected $isPassword = false;
 	/** check password strength */
@@ -535,11 +537,15 @@ class htmlInputField extends htmlElement {
 		if ($this->onKeyPress != null) {
 			$onKeyPress = ' onkeypress="' . $this->onKeyPress . '"';
 		}
+		$onKeyUp = '';
+		if ($this->onKeyUp != null) {
+			$onKeyUp = ' onkeyup="' . $this->onKeyUp . '"';
+		}
 		$title = '';
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
 		}
-		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $onKeyPress . $title . $disabled . '>';
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled . '>';
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
@@ -721,6 +727,15 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setOnKeyPress($onKeyPress) {
 		$this->onKeyPress = $onKeyPress;
+	}
+	
+	/**
+	 * Sets the JavaScript for the onKeyUp event.
+	 * 
+	 * @param String $onKeyUp JavaScript code
+	 */
+	public function setOnKeyUp($onKeyUp) {
+		$this->onKeyUp = $onKeyUp;
 	}
 	
 	/**

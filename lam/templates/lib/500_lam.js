@@ -615,3 +615,33 @@ function updateModulePositions(id, oldPos, newPos) {
 	}
 	jQuery('#' + id).val(positions.join(','));
 }
+
+/**
+ * Filters a select box by the value of the filter input field.
+ * 
+ * @param filterInput ID of input field for filter
+ * @param select ID of select box to filter
+ * @param event key event
+ */
+function filterSelect(filterInput, select, event) {
+	// if values were not yet saved, save them
+	if (!jQuery('#' + select).data('options')) {
+		var options = [];
+		jQuery('#' + select).find('option').each(function() {
+			options.push({value: $(this).val(), text: $(this).text()});
+		});
+		jQuery('#' + select).data('options', options);
+	}
+	// get matching values
+	var list = jQuery('#' + select).empty().scrollTop(0).data('options');
+	var search = jQuery.trim(jQuery('#' + filterInput).val());
+	var regex = new RegExp(search,'gi');
+	jQuery.each(list, function(i) {
+		var option = list[i];
+		if(option.text.match(regex) !== null) {
+			jQuery('#' + select).append(
+					jQuery('<option>').text(option.text).val(option.value)
+			);
+		}
+	});
+}

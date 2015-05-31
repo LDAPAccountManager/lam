@@ -192,6 +192,15 @@ class nisNetGroupUser extends baseModule {
 			$addButton = new htmlButton('addGroup', 'add.png', true);
 			$addButton->setTitle(_('Add'));
 			$return->addElement($addButton, true);
+
+			$filterGroup = new htmlGroup();
+			$filterGroup->alignment = htmlElement::ALIGN_RIGHT;
+			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
+			$filter = new htmlInputField('group_filter');
+			$filter->setFieldSize('5em');
+			$filter->setOnKeyUp('filterSelect(\'group_filter\', \'group_add\', event);');
+			$filterGroup->addElement($filter);
+			$return->addElement($filterGroup, true);
 		}
 		return $return;
 	}
