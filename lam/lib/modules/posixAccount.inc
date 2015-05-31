@@ -1308,7 +1308,10 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function process_group() {
 		// Unix groups
-		if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+			$this->syncGonToGroups();
+		}
+		elseif (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
 			if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
 				// add new group
 				$this->groups = @array_merge($this->groups, $_POST['addgroups']);
@@ -1612,25 +1615,32 @@ class posixAccount extends baseModule implements passwordService {
 			$unixContainer = new htmlTable();
 			$unixContainer->alignment = htmlElement::ALIGN_TOP;
 			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
-			$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
-			$unixContainer->addElement(new htmlOutputText(''));
-			$unixContainer->addElement(new htmlOutputText(_("Available groups")));
-			$unixContainer->addNewLine();
-			
-			$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
-			$remSelect->setMultiSelect(true);
-			$remSelect->setTransformSingleSelect(false);
-			$unixContainer->addElement($remSelect);
-			$buttonContainer = new htmlTable();
-			$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
-			$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
-			$buttonContainer->addElement(new htmlHelpLink('addgroup'));
-			$unixContainer->addElement($buttonContainer);
-			$addSelect = new htmlSelect('addgroups', $groups, null, 15);
-			$addSelect->setMultiSelect(true);
-			$addSelect->setTransformSingleSelect(false);
-			$unixContainer->addElement($addSelect);
-			$unixContainer->addNewLine();
+			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+				$this->syncGonToGroups();
+				foreach ($this->groups as $group) {
+					$unixContainer->addElement(new htmlOutputText($group), true);
+				}
+			}
+			else {		
+				$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
+				$unixContainer->addElement(new htmlOutputText(''));
+				$unixContainer->addElement(new htmlOutputText(_("Available groups")));
+				$unixContainer->addNewLine();
+				
+				$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
+				$remSelect->setMultiSelect(true);
+				$remSelect->setTransformSingleSelect(false);
+				$unixContainer->addElement($remSelect);
+				$buttonContainer = new htmlTable();
+				$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
+				$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+				$buttonContainer->addElement(new htmlHelpLink('addgroup'));
+				$unixContainer->addElement($buttonContainer);
+				$addSelect = new htmlSelect('addgroups', $groups, null, 15);
+				$addSelect->setMultiSelect(true);
+				$addSelect->setTransformSingleSelect(false);
+				$unixContainer->addElement($addSelect, true);
+			}
 		
 			$return->addElement($unixContainer);
 		}
@@ -2862,7 +2872,7 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Finds all existing LDAP group of names.
 	 *
-	 * @return array groups array(dn => array('cn' => array('groupName'), 'objectClass' => array('top', 'groupOfNames')))
+	 * @return array groups array(dn => array('cn' => array('groupName'), 'objectclass' => array('top', 'groupOfNames')))
 	 */
 	private function findGroupOfNames() {
 		if ($this->gonCache != null) {
@@ -3264,6 +3274,23 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return $name;
+	}
+	
+	/**
+	 * Syncs the group of names with groups.
+	 */
+	private function syncGonToGroups() {
+		$this->groups = array();
+		$allGons = $this->findGroupOfNames();
+		foreach ($this->gonList as $dn) {
+			if (!isset($allGons[$dn])) {
+				continue;
+			}
+			$gon = $this->gonCache[$dn];
+			if (in_array_ignore_case('posixGroup', $gon['objectclass']) && !empty($gon['cn'])) {
+				$this->groups[] = $gon['cn'][0];
+			}
+		}
 	}
 	
 }
