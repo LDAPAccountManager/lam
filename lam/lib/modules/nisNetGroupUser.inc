@@ -175,12 +175,20 @@ class nisNetGroupUser extends baseModule {
 			$delButton->setTitle(_('Delete'));
 			$return->addElement($delButton, true);
 		}
-		$return->addVerticalSpace('20px');
+		$return->addVerticalSpace('40px');
 		
 		// new entry
 		$groupList = array();
 		$groupData = $this->findGroups();
 		if (sizeof($groupData) > 0) {
+			$filterGroup = new htmlGroup();
+			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
+			$filter = new htmlInputField('group_filter');
+			$filter->setFieldSize('5em');
+			$filter->setOnKeyUp('filterSelect(\'group_filter\', \'group_add\', event);');
+			$filterGroup->addElement($filter);
+			$return->addElement($filterGroup, true);
+			
 			foreach ($groupData as $group) {
 				$groupList[$group['cn'][0]] = $group['cn'][0] . '#+#' . $group['dn'];
 			}
@@ -192,15 +200,6 @@ class nisNetGroupUser extends baseModule {
 			$addButton = new htmlButton('addGroup', 'add.png', true);
 			$addButton->setTitle(_('Add'));
 			$return->addElement($addButton, true);
-
-			$filterGroup = new htmlGroup();
-			$filterGroup->alignment = htmlElement::ALIGN_RIGHT;
-			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
-			$filter = new htmlInputField('group_filter');
-			$filter->setFieldSize('5em');
-			$filter->setOnKeyUp('filterSelect(\'group_filter\', \'group_add\', event);');
-			$filterGroup->addElement($filter);
-			$return->addElement($filterGroup, true);
 		}
 		return $return;
 	}
