@@ -352,7 +352,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlOutputText(_('Account expiration date')));
 			$expireTable = new htmlTable();
 			$expireTable->addElement(new htmlOutputText($expirationDate, false));
-			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', _('Change')));
+			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', 'edit.png', true, _('Change')));
 			$return->addElement($expireTable);
 			$return->addElement(new htmlHelpLink('shadowExpire'), true);
 			
@@ -365,6 +365,7 @@ class shadowAccount extends baseModule implements passwordService {
 				$return->addElement(new htmlOutputText(_('Last password change')));
 				$pwdChangeTable = new htmlTable();
 				$pwdChangeTable->addElement(new htmlOutputText($pwdChangeDate, false));
+				$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'pwdChange', 'open', 'edit.png', true, _('Change')));
 				if (isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != '')) {
 					$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'expirePassword', _('Force password change')));
 				}
@@ -477,6 +478,59 @@ class shadowAccount extends baseModule implements passwordService {
 		}
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'back', _('Cancel')));
 		$buttonTable->colspan=3;
+		$return->addElement($buttonTable);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the last password change page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_pwdChange() {
+		$errors = array();
+		// set last change date
+		if (isset($_POST['form_subpage_shadowAccount_attributes_changePwdChange'])) {
+			$this->setLastChangeDate($_POST['shadowLastChange_yea'], $_POST['shadowLastChange_mon'], $_POST['shadowLastChange_day']);
+		}
+		// remove last change date
+		elseif (isset($_POST['form_subpage_shadowAccount_attributes_delPwdChange'])) {
+			unset($this->attributes['shadowLastChange']);
+		}
+		return $errors;		
+	}
+	
+	/**
+	* This function will create the meta HTML code to show a page with the password change date.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_pwdChange() {
+		$return = new htmlTable();
+		$shLastChange = 0;
+		if (isset($this->attributes['shadowLastChange'][0])) {
+			$shLastChange = $this->attributes['shadowLastChange'][0];
+		}
+		$date = getdate($shLastChange*3600*24);
+		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
+		$return->addElement(new htmlOutputText(_('Last password change')));
+		$table = new htmlTable();
+		$table->addElement(new htmlSelect('shadowLastChange_day', $mday, array($date['mday'])));
+		$table->addElement(new htmlSelect('shadowLastChange_mon', $mon, array($date['mon'])));
+		$table->addElement(new htmlSelect('shadowLastChange_yea', $year, array($date['year'])));
+		$return->addElement($table);
+		$return->addElement(new htmlHelpLink('shadowLastChange'), true);
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$buttonTable = new htmlTable();
+		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'changePwdChange', _('Change')));
+		if (isset($this->attributes['shadowLastChange'][0])) {
+			$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'delPwdChange', _('Remove')));
+		}
+		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'back', _('Cancel')));
+		$buttonTable->colspan = 3;
 		$return->addElement($buttonTable);
 		return $return;
 	}
@@ -646,6 +700,23 @@ class shadowAccount extends baseModule implements passwordService {
 			return;
 		}
 		$this->attributes['shadowExpire'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
+			intval($year))/3600/24);
+	}
+		
+	/**
+	 * Sets the last password change date of this account.
+	 * If all parameters are null the password change date will be removed.
+	 *
+	 * @param String $year year (e.g. 2040)
+	 * @param String $month month (e.g. 8)
+	 * @param String $day day (e.g. 27)
+	 */
+	public function setLastChangeDate($year, $month, $day) {
+		if (($year == null) && ($month == null) && ($day == null)) {
+			unset($this->attributes['shadowLastChange']);
+			return;
+		}
+		$this->attributes['shadowLastChange'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
 			intval($year))/3600/24);
 	}
 		

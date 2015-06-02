@@ -1058,6 +1058,7 @@ class htmlAccountPageButton extends htmlButton {
 	 * @param String $identifier identifier for button
 	 * @param String $value button text or image (16x16px, relative to graphics folder)
 	 * @param String $isImageButton image or text button (default text)
+	 * @param String $title title to show
 	 */
 	function __construct($targetModule, $targetPage, $identifier, $value, $isImageButton = false, $title = null) {
 		$this->name = htmlspecialchars('form_subpage_' . $targetModule . '_' . $targetPage . '_' . $identifier);
