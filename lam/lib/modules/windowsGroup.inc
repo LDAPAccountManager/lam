@@ -530,6 +530,14 @@ class windowsGroup extends baseModule {
 		$return = new htmlTable();
 		// show list of possible new members
 		if (isset($_POST['form_subpage_' . get_class($this) . '_user_select']) && isset($_POST['type'])) {
+			$filterGroup = new htmlGroup();
+			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
+			$filter = new htmlInputField('windows_filter');
+			$filter->setFieldSize('5em');
+			$filter->setOnKeyUp('filterSelect(\'windows_filter\', \'members\', event);');
+			$filterGroup->addElement($filter);
+			$return->addElement($filterGroup, true);
+			
 			$options = array();
 			$filter = get_ldap_filter($_POST['type']);
 			$entries = searchLDAPByFilter($filter, array('dn'), array($_POST['type']));
@@ -552,6 +560,7 @@ class windowsGroup extends baseModule {
 			$membersSelect->setSortElements(false);
 			$membersSelect->setTransformSingleSelect(false);
 			$return->addElement($membersSelect, true);
+			$return->addVerticalSpace('10px');
 			$buttonTable = new htmlTable();
 			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'addMembers', _('Add')));
 			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'cancel', _('Cancel')));
