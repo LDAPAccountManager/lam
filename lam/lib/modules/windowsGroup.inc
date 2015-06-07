@@ -38,6 +38,8 @@ class windowsGroup extends baseModule {
 	private $groupTypes;
 	/** possible group scopes (e.g. universal) */
 	private $groupScopes;
+	/** group cache */
+	private $groupCache;
 	
 	/** security group */
 	const TYPE_SECURITY = 'security';
@@ -102,8 +104,8 @@ class windowsGroup extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'sAMAccountName', 'groupType',
-			'managedBy', 'msSFU30Name', 'msSFU30NisDomain');
+		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'memberOf', 'sAMAccountName',
+			'groupType', 'managedBy', 'msSFU30Name', 'msSFU30NisDomain');
 		// help Entries
 		$return['help'] = array(
 			'hiddenOptions' => array(
@@ -129,6 +131,10 @@ class windowsGroup extends baseModule {
 			'member' => array(
 				"Headline" => _('Members'), 'attr' => 'member',
 				"Text" => _('This is a list of members of this group.')
+			),
+			'memberOf' => array(
+				"Headline" => _('Member of'), 'attr' => 'memberOf',
+				"Text" => _('This is a list of groups this group is member of.')
 			),
 			'memberList' => array(
 				"Headline" => _('Members'), 'attr' => 'member',
@@ -398,6 +404,29 @@ class windowsGroup extends baseModule {
 		}
 		$container->addElement(new htmlOutputText(''));
 		$container->addElement($members, true);
+		// member of
+		$container->addVerticalSpace('10px');
+		$container->addElement(new htmlOutputText(_("Member of")));
+		$container->addElement(new htmlAccountPageButton(get_class($this), 'memberof', 'open', _('Edit member of')));
+		$container->addElement(new htmlHelpLink('memberOf'), true);
+		$memberList = array();
+		if (isset($this->attributes['memberOf'])) {
+			for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
+				$memberList[] = $this->attributes['memberOf'][$i];
+			}
+			usort($memberList, 'compareDN');
+		}
+		$memberOf = new htmlTable();
+		$memberOf->alignment = htmlElement::ALIGN_RIGHT;
+		$memberOf->colspan = 3;
+		for ($i = 0; $i < sizeof($memberList); $i++) {
+			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
+			$member->alignment = htmlElement::ALIGN_RIGHT;
+			$memberOf->addElement($member, true);
+		}
+		$container->addElement(new htmlOutputText(''));
+		$container->addElement($memberOf, true);
+		
 		$container->addElement(new htmlEqualWidth(array('groupType', 'groupScope')));
 		return $container;
 	}
@@ -468,6 +497,91 @@ class windowsGroup extends baseModule {
 		return $return;
 	}
 	
+	/**
+	* Displays the memberof selection.
+	*
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_memberof() {
+		$return = new htmlTable();
+		$groups = $this->findGroups();
+		// sort by DN
+		usort($groups, 'compareDN');
+
+		$groupContainer = new htmlTable();
+		$groupContainer->alignment = htmlElement::ALIGN_TOP;
+		$groupContainer->addElement(new htmlSubTitle(_("Groups")), true);
+		$groupContainer->addElement(new htmlOutputText(_("Selected groups")));
+		$groupContainer->addElement(new htmlOutputText(''));
+		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
+		$groupContainer->addNewLine();
+		
+		$selectedGroups = array();
+		if (empty($this->attributes['memberOf'])) {
+			$this->attributes['memberOf'] = array();
+		}
+		// sort by DN
+		usort($this->attributes['memberOf'], 'compareDN');
+		for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
+			if (in_array($this->attributes['memberOf'][$i], $groups)) {
+				$selectedGroups[getAbstractDN($this->attributes['memberOf'][$i])] = $this->attributes['memberOf'][$i];
+			}
+		}
+		$availableGroups = array();
+		foreach ($groups as $dn) {
+			if (!in_array($dn, $this->attributes['memberOf'])) {
+				$availableGroups[getAbstractDN($dn)] = $dn;
+			}
+		}
+		
+		$remGroupSelect = new htmlSelect('removegroups', $selectedGroups, null, 15);
+		$remGroupSelect->setMultiSelect(true);
+		$remGroupSelect->setTransformSingleSelect(false);
+		$remGroupSelect->setHasDescriptiveElements(true);
+		$remGroupSelect->setRightToLeftTextDirection(true);
+		$remGroupSelect->setSortElements(false);
+		$groupContainer->addElement($remGroupSelect);
+		$buttonGroupContainer = new htmlTable();
+		$buttonGroupContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
+		$buttonGroupContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+		$groupContainer->addElement($buttonGroupContainer);
+		$addGroupSelect = new htmlSelect('addgroups', $availableGroups, null, 15);
+		$addGroupSelect->setMultiSelect(true);
+		$addGroupSelect->setHasDescriptiveElements(true);
+		$addGroupSelect->setTransformSingleSelect(false);
+		$addGroupSelect->setRightToLeftTextDirection(true);
+		$addGroupSelect->setSortElements(false);
+		$groupContainer->addElement($addGroupSelect);
+		$groupContainer->addNewLine();
+		$return->addElement($groupContainer);
+		$return->addNewLine();
+
+		$backGroup = new htmlGroup();
+		$backGroup->colspan = 10;
+		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
+		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backGroup->addElement($backButton);
+		$return->addElement($backGroup);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the memberof selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_memberof() {
+		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
+			// add new group
+			$this->attributes['memberOf'] = @array_merge($this->attributes['memberOf'], $_POST['addgroups']);
+		}
+		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
+			$this->attributes['memberOf'] = array_delete($_POST['removegroups'], $this->attributes['memberOf']);
+		}
+		return array();
+	}
+
 	/**
 	* This function will create the meta HTML code to show a page to change the member attribute.
 	* 
@@ -807,6 +921,109 @@ class windowsGroup extends baseModule {
 		return $return;
 	}
 
+	/**
+	 * Finds all existing groups.
+	 *
+	 * @return array group DNs
+	 */
+	private function findGroups() {
+		if ($this->groupCache != null) {
+			return $this->groupCache;
+		}
+		$return = array();
+		$types = array('group');
+		$results = searchLDAPByFilter('(objectClass=group)', array('dn'), $types);
+		$count = sizeof($results);
+		for ($i = 0; $i < $count; $i++) {
+			if (isset($results[$i]['dn'])) {
+				$return[] = $results[$i]['dn'];
+			}
+		}
+		$this->groupCache = $return;
+		return $return;
+	}
+	
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	* 
+	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	*
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
+	* to some groups via attribute memberUid)<br>
+	* <br><b>"add"</b> are attributes which have to be added to the LDAP entry
+	* <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
+	* <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
+	* <br><b>"notchanged"</b> are attributes which stay unchanged
+	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
+	* <br>
+	* <br>This builds the required comands from $this-attributes and $this->orig.
+	* 
+	* @return array list of modifications
+	*/
+	public function save_attributes() {
+		$attrs = $this->attributes;
+		$orig = $this->orig;
+		$attrs['memberOf'] = array();
+		$orig['memberOf'] = array();
+		return $this->getAccountContainer()->save_module_attributes($attrs, $orig);
+	}
+	
+	/**
+	 * Runs the postmodify actions.
+	 * 
+	 * @see baseModule::postModifyActions()
+	 *
+	 * @param boolean $newAccount
+	 * @param array $attributes LDAP attributes of this entry
+	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 */
+	public function postModifyActions($newAccount, $attributes) {
+		$messages = array();
+		// set groups
+		$groups = $this->findGroups();
+		if (!isset($this->orig['memberOf'])) {
+			$this->orig['memberOf'] = array();
+		}
+		if (!isset($this->attributes['memberOf'])) {
+			$this->attributes['memberOf'] = array();
+		}
+		$toAdd = array_values(array_diff($this->attributes['memberOf'], $this->orig['memberOf']));
+		$toRem = array_values(array_diff($this->orig['memberOf'], $this->attributes['memberOf']));
+		$toUpdate = array_values(array_intersect($this->attributes['memberOf'], $this->orig['memberOf']));
+		$ldapUser = $_SESSION['ldap']->decrypt_login();
+		$ldapUser = $ldapUser[0];
+		// add groups
+		for ($i = 0; $i < sizeof($toAdd); $i++) {
+			if (in_array($toAdd[$i], $groups)) {
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array('member' => array($this->getAccountContainer()->finalDN)));
+				if (!$success) {
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				}
+				else {
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
+				}
+			}
+		}
+		// remove groups
+		for ($i = 0; $i < sizeof($toRem); $i++) {
+			if (in_array($toRem[$i], $groups)) {
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->dn_orig)));
+				if (!$success) {
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				}
+				else {
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
+				}
+			}
+		}
+		return $messages;
+	}
+	
 }
 
 

@@ -1030,7 +1030,7 @@ class windowsUser extends baseModule implements passwordService {
 			
 		$groupContainer = new htmlTable();
 		$groupContainer->alignment = htmlElement::ALIGN_TOP;
-		$groupContainer->addElement(new htmlSubTitle(_("Groups of names")), true);
+		$groupContainer->addElement(new htmlSubTitle(_("Groups")), true);
 		$groupContainer->addElement(new htmlOutputText(_("Selected groups")));
 		$groupContainer->addElement(new htmlOutputText(''));
 		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
@@ -1061,7 +1061,6 @@ class windowsUser extends baseModule implements passwordService {
 		$buttonGroupContainer = new htmlTable();
 		$buttonGroupContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
 		$buttonGroupContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
-		$buttonGroupContainer->addElement(new htmlHelpLink('addgroup'));
 		$groupContainer->addElement($buttonGroupContainer);
 		$addGroupSelect = new htmlSelect('addgroups', $availableGroups, null, 15);
 		$addGroupSelect->setMultiSelect(true);
