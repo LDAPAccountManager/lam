@@ -264,6 +264,7 @@ class windowsGroup extends baseModule {
 			'description' => _('Description'),
 			'info' => _('Notes'),
 			'member' => _('Members'),
+			'memberOf' => _('Member of'),
 			'groupType' => _('Group type'),
 			'groupScope' => _('Group scope'),
 		);
@@ -907,7 +908,7 @@ class windowsGroup extends baseModule {
 			$this->addPDFKeyValue($return, 'managedBy', _('Managed by'), $managedBy);
 		}
 		// members
-		if (sizeof($this->attributes['member']) > 0) {
+		if (!empty($this->attributes['member'])) {
 			$memberList = array();
 			if (isset($this->attributes['member']) && is_array($this->attributes['member'])) {
 				$memberList = $this->attributes['member'];
@@ -916,6 +917,18 @@ class windowsGroup extends baseModule {
 			$return[get_class($this) . '_member'][0] = '<block><key>' . _('Members') . '</key><tr><td align=\"L\">' . $memberList[0] . '</td></tr></block>';
 			for ($i = 1; $i < sizeof($memberList); $i++) {
 				$return[get_class($this) . '_member'][] = '<block><tr><td align=\"L\">' . $memberList[$i] . '</td></tr></block>';
+			}
+		}
+		// member of
+		if (!empty($this->attributes['memberOf'])) {
+			$memberOfList = array();
+			if (isset($this->attributes['memberOf']) && is_array($this->attributes['memberOf'])) {
+				$memberOfList = $this->attributes['memberOf'];
+			}
+			usort($memberOfList, 'compareDN');
+			$return[get_class($this) . '_memberOf'][0] = '<block><key>' . _('Member of') . '</key><tr><td align=\"L\">' . $memberOfList[0] . '</td></tr></block>';
+			for ($i = 1; $i < sizeof($memberOfList); $i++) {
+				$return[get_class($this) . '_memberOf'][] = '<block><tr><td align=\"L\">' . $memberOfList[$i] . '</td></tr></block>';
 			}
 		}
 		return $return;
