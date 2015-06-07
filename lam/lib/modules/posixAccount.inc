@@ -129,6 +129,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' posixAccount_cn', _('Please enter a valid common name!'));
 		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
+		$this->messages['windowsIDPoolDN'][0] = array('ERROR', _('Windows domain info DN'), _('This is not a valid DN!'));
 	}
 
 	/**
@@ -211,14 +212,30 @@ class posixAccount extends baseModule implements passwordService {
 		// configuration options
 		$configUserContainer = new htmlTable();
 		$configUserContainer->addElement(new htmlSubTitle(_("Users")), true);
-		$uidGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorUsers', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('UID generator'), 'uidGenerator');
+		$generatorOptions = array(
+			_('Fixed range') => 'range',
+			_('Samba ID pool') => 'sambaPool',
+			_('Windows domain info') => 'windowsDomain'
+		);
+		$uidGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
 		$uidGeneratorSelect->setHasDescriptiveElements(true);
-		$uidGeneratorSelect->setTableRowsToHide(array('range' => array('posixAccount_sambaIDPoolDNUsers'), 'sambaPool' => array('posixAccount_minUID', 'posixAccount_maxUID')));
-		$uidGeneratorSelect->setTableRowsToShow(array('range' => array('posixAccount_minUID', 'posixAccount_maxUID'), 'sambaPool' => array('posixAccount_sambaIDPoolDNUsers')));
+		$uidGeneratorSelect->setTableRowsToHide(array(
+			'range' => array('posixAccount_sambaIDPoolDNUsers', 'posixAccount_windowsIDPoolDNUsers'),
+			'sambaPool' => array('posixAccount_minUID', 'posixAccount_maxUID', 'posixAccount_windowsIDPoolDNUsers'),
+			'windowsDomain' => array('posixAccount_minUID', 'posixAccount_maxUID', 'posixAccount_sambaIDPoolDNUsers')
+		));
+		$uidGeneratorSelect->setTableRowsToShow(array(
+			'range' => array('posixAccount_minUID', 'posixAccount_maxUID'),
+			'sambaPool' => array('posixAccount_sambaIDPoolDNUsers'),
+			'windowsDomain' => array('posixAccount_windowsIDPoolDNUsers')
+		));
 		$configUserContainer->addElement($uidGeneratorSelect, true);
 		$uidUsersGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
 		$uidUsersGeneratorDN->setRequired(true);
 		$configUserContainer->addElement($uidUsersGeneratorDN, true);
+		$uidUsersGeneratorWinDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNUsers', null, 'windowsIDPoolDN');
+		$uidUsersGeneratorWinDN->setRequired(true);
+		$configUserContainer->addElement($uidUsersGeneratorWinDN, true);
 		$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minUID', null, 'minMaxUser');
 		$minUid->setRequired(true);
 		$configUserContainer->addElement($minUid, true);
@@ -229,14 +246,25 @@ class posixAccount extends baseModule implements passwordService {
 		$return['config_options']['user'] = $configUserContainer;
 		$configHostContainer = new htmlTable();
 		$configHostContainer->addElement(new htmlSubTitle(_("Hosts")), true);
-		$uidHostGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorHosts', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('UID generator'), 'uidGenerator');
+		$uidHostGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorHosts', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
 		$uidHostGeneratorSelect->setHasDescriptiveElements(true);
-		$uidHostGeneratorSelect->setTableRowsToHide(array('range' => array('posixAccount_sambaIDPoolDNHosts'), 'sambaPool' => array('posixAccount_minMachine', 'posixAccount_maxMachine')));
-		$uidHostGeneratorSelect->setTableRowsToShow(array('range' => array('posixAccount_minMachine', 'posixAccount_maxMachine'), 'sambaPool' => array('posixAccount_sambaIDPoolDNHosts')));
+		$uidHostGeneratorSelect->setTableRowsToHide(array(
+			'range' => array('posixAccount_sambaIDPoolDNHosts', 'posixAccount_windowsIDPoolDNHosts'),
+			'sambaPool' => array('posixAccount_minMachine', 'posixAccount_maxMachine', 'posixAccount_windowsIDPoolDNHosts'),
+			'windowsDomain' => array('posixAccount_minMachine', 'posixAccount_maxMachine', 'posixAccount_sambaIDPoolDNHosts')
+		));
+		$uidHostGeneratorSelect->setTableRowsToShow(array(
+			'range' => array('posixAccount_minMachine', 'posixAccount_maxMachine'),
+			'sambaPool' => array('posixAccount_sambaIDPoolDNHosts'),
+			'windowsDomain' => array('posixAccount_windowsIDPoolDNHosts')
+		));
 		$configHostContainer->addElement($uidHostGeneratorSelect, true);
 		$uidHostsGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
 		$uidHostsGeneratorDN->setRequired(true);
 		$configHostContainer->addElement($uidHostsGeneratorDN, true);
+		$uidHostsGeneratorWinDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNHosts', null, 'windowsIDPoolDN');
+		$uidHostsGeneratorWinDN->setRequired(true);
+		$configHostContainer->addElement($uidHostsGeneratorWinDN, true);
 		$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minMachine', null, 'minMaxHost');
 		$minUid->setRequired(true);
 		$configHostContainer->addElement($minUid, true);
@@ -499,11 +527,15 @@ class posixAccount extends baseModule implements passwordService {
 			),
 			'uidGenerator' => array (
 				"Headline" => _("UID generator"),
-				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\".")
+				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\" or \"msSFU30DomainInfo\".")
 			),
 			'sambaIDPoolDN' => array (
 				"Headline" => _("Samba ID pool DN"),
 				"Text" => _("Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\".")
+			),
+			'windowsIDPoolDN' => array (
+				"Headline" => _("Windows domain info DN"),
+				"Text" => _("Please enter the DN of the LDAP entry with object class \"msSFU30DomainInfo\".")
 			),
 			'user' => array(
 				'uid' => array(
@@ -1195,12 +1227,12 @@ class posixAccount extends baseModule implements passwordService {
 			// check manual ID
 			if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
 				// check range
-				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] != 'sambaPool'))) {
+				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'range'))) {
 					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
 						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 					}
 				}
-				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] != 'sambaPool'))) {
+				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'range'))) {
 					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
 						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 					}
@@ -1963,9 +1995,14 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 			}
-			else {
+			elseif ($options['posixAccount_uidGeneratorUsers'][0] == 'sambaPool') {
 				if (!isset($options['posixAccount_sambaIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_sambaIDPoolDNUsers'][0], 'dn')) {
 					$return[] = $this->messages['sambaIDPoolDN'][0];
+				}
+			}
+			elseif ($options['posixAccount_uidGeneratorUsers'][0] == 'windowsDomain') {
+				if (!isset($options['posixAccount_windowsIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_windowsIDPoolDNUsers'][0], 'dn')) {
+					$return[] = $this->messages['windowsIDPoolDN'][0];
 				}
 			}
 		}
@@ -1986,9 +2023,14 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 			}
-			else {
+			elseif ($options['posixAccount_uidGeneratorHosts'][0] == 'sambaPool') {
 				if (!isset($options['posixAccount_sambaIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_sambaIDPoolDNHosts'][0], 'dn')) {
 					$return[] = $this->messages['sambaIDPoolDN'][0];
+				}
+			}
+			elseif ($options['posixAccount_uidGeneratorHosts'][0] == 'windowsDomain') {
+				if (!isset($options['posixAccount_windowsIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_windowsIDPoolDNHosts'][0], 'dn')) {
+					$return[] = $this->messages['windowsIDPoolDN'][0];
 				}
 			}
 		}
@@ -2497,6 +2539,13 @@ class posixAccount extends baseModule implements passwordService {
 		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'sambaPool')) {
 			return $this->getNextSambaPoolUIDs($count, $errors);
 		}
+		// check if UIDs should be taken from domain info pool entry
+		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'windowsDomain')) {
+			return $this->getNextDomainInfoUIDs($count, $errors);
+		}
+		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'windowsDomain')) {
+			return $this->getNextDomainInfoUIDs($count, $errors);
+		}
 		$ret = array();
 		if ($this->get_scope() == "user") {
 			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
@@ -2576,6 +2625,39 @@ class posixAccount extends baseModule implements passwordService {
 			$result = array();
 			for ($i = 0; $i < $count; $i++) {
 				$result[] = $attrs['uidnumber'][0] + $i;
+			}
+			return $result;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the free UID numbers from a domain info entry in LDAP.
+	 * 
+	 * @param integer $count number of needed free UIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @return mixed null if no UIDs are free else an array of free UIDs
+	 */
+	private function getNextDomainInfoUIDs($count, &$errors) {
+		if ($this->get_scope() == 'user') {
+			$dn = $this->moduleSettings['posixAccount_windowsIDPoolDNUsers'][0];
+		}
+		else {
+			$dn = $this->moduleSettings['posixAccount_windowsIDPoolDNHosts'][0];
+		}
+		$attrs = ldapGetDN($dn, array('msSFU30MaxUidNumber'));
+		if (!empty($attrs['mssfu30maxuidnumber'][0])) {
+			$newValue = $attrs['mssfu30maxuidnumber'][0] + $count;
+			$ldapHandle = $_SESSION['ldap']->server();
+			ldap_modify($ldapHandle, $dn, array('mssfu30maxuidnumber' => array($newValue)));
+			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
+			if (ldap_errno($ldapHandle) != 0) {
+				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
+				return null;
+			}
+			$result = array();
+			for ($i = 0; $i < $count; $i++) {
+				$result[] = $attrs['mssfu30maxuidnumber'][0] + $i;
 			}
 			return $result;
 		}
