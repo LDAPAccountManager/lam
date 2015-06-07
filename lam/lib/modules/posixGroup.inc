@@ -521,11 +521,15 @@ class posixGroup extends baseModule implements passwordService {
 			),
 			'gidGenerator' => array (
 				"Headline" => _("GID generator"),
-				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\".")
+				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\" or \"msSFU30DomainInfo\".")
 			),
 			'sambaIDPoolDN' => array (
 				"Headline" => _("Samba ID pool DN"),
 				"Text" => _("Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\".")
+			),
+			'windowsIDPoolDN' => array (
+				"Headline" => _("Windows domain info DN"),
+				"Text" => _("Please enter the DN of the LDAP entry with object class \"msSFU30DomainInfo\".")
 			),
 			'filter' => array(
 				"Headline" => _("Filter"),
@@ -561,10 +565,23 @@ class posixGroup extends baseModule implements passwordService {
 		// configuration options
 		$configContainer = new htmlTable();
 		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
-		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', array(_('Fixed range') => 'range', _('Samba ID pool') => 'sambaPool'), array('range'), _('GID generator'), 'gidGenerator');
+		$genOptions = array(
+			_('Fixed range') => 'range',
+			_('Samba ID pool') => 'sambaPool',
+			_('Windows domain info') => 'windowsDomain'
+		);
+		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
 		$gidGeneratorSelect->setHasDescriptiveElements(true);
-		$gidGeneratorSelect->setTableRowsToHide(array('range' => array('posixGroup_sambaIDPoolDN'), 'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID')));
-		$gidGeneratorSelect->setTableRowsToShow(array('range' => array('posixGroup_minGID', 'posixGroup_maxGID'), 'sambaPool' => array('posixGroup_sambaIDPoolDN')));
+		$gidGeneratorSelect->setTableRowsToHide(array(
+			'range' => array('posixGroup_sambaIDPoolDN', 'posixGroup_windowsIDPoolDN'),
+			'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_windowsIDPoolDN'),
+			'windowsDomain' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_sambaIDPoolDN'),
+		));
+		$gidGeneratorSelect->setTableRowsToShow(array(
+			'range' => array('posixGroup_minGID', 'posixGroup_maxGID'),
+			'sambaPool' => array('posixGroup_sambaIDPoolDN'),
+			'windowsDomain' => array('posixGroup_windowsIDPoolDN'),
+		));
 		$configContainer->addElement($gidGeneratorSelect, true);
 		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
 		$minGidInput->setRequired(true);
@@ -575,6 +592,9 @@ class posixGroup extends baseModule implements passwordService {
 		$gidGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
 		$gidGeneratorDN->setRequired(true);
 		$configContainer->addElement($gidGeneratorDN, true);
+		$winGeneratorDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixGroup_windowsIDPoolDN', null, 'windowsIDPoolDN');
+		$winGeneratorDN->setRequired(true);
+		$configContainer->addElement($winGeneratorDN, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
 		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
 		$x = $this->get_scope();
@@ -648,6 +668,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->messages['memberUID'][0] = array('ERROR', _('Account %s:') . ' posixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		$this->messages['primaryGroup'][0] = array('ERROR', _('There are still users who have this group as their primary group.'));
 		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
+		$this->messages['windowsIDPoolDN'][0] = array('ERROR', _('Windows domain info DN'), _('This is not a valid DN!'));
 	}
 
 
@@ -757,10 +778,12 @@ class posixGroup extends baseModule implements passwordService {
 				// Check manual ID
 				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 					// check range
-					if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
-						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-						if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-						else unset($this->attributes['gidNumber'][0]);
+					if ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'range') {
+						if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
+							$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+							if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+							else unset($this->attributes['gidNumber'][0]);
+						}
 					}
 					// $uids is allways an array but not if no entries were found
 					if (is_array($gids)) {
@@ -993,13 +1016,21 @@ class posixGroup extends baseModule implements passwordService {
 				'cmp_name2' => 'posixGroup_minGID',
 				'error_message' => $this->messages['gidNumber'][7]);
 		}
-		else {
+		elseif ($options['posixGroup_gidGenerator'][0] == 'sambaPool') {
 			$this->meta['config_checks']['group']['posixGroup_sambaIDPoolDN'] = array (
 				'type' => 'ext_preg',
 				'regex' => 'dn',
 				'required' => true,
 				'required_message' => $this->messages['sambaIDPoolDN'][0],
 				'error_message' => $this->messages['sambaIDPoolDN'][0]);
+		}
+		elseif ($options['posixGroup_gidGenerator'][0] == 'windowsDomain') {
+			$this->meta['config_checks']['group']['posixGroup_windowsIDPoolDN'] = array (
+				'type' => 'ext_preg',
+				'regex' => 'dn',
+				'required' => true,
+				'required_message' => $this->messages['windowsIDPoolDN'][0],
+				'error_message' => $this->messages['windowsIDPoolDN'][0]);
 		}
 		return parent::check_configOptions($scopes, $options);
 	}
@@ -1015,6 +1046,10 @@ class posixGroup extends baseModule implements passwordService {
 		// check if UIDs should be taken from Samba pool entry
 		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'sambaPool')) {
 			return $this->getNextSambaPoolGIDs($count, $errors);
+		}
+		// check if UIDs should be taken from domain info entry
+		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'windowsDomain')) {
+			return $this->getNextDomainInfoGIDs($count, $errors);
 		}
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
@@ -1084,6 +1119,34 @@ class posixGroup extends baseModule implements passwordService {
 			$result = array();
 			for ($i = 0; $i < $count; $i++) {
 				$result[] = $attrs['gidnumber'][0] + $i;
+			}
+			return $result;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the free GID numbers from an Windows domain info entry in LDAP.
+	 * 
+	 * @param integer $count number of needed free GIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @return mixed null if no GIDs are free else an array of free GIDs
+	 */
+	private function getNextDomainInfoGIDs($count, &$errors) {
+		$dn = $this->moduleSettings['posixGroup_windowsIDPoolDN'][0];
+		$attrs = ldapGetDN($dn, array('msSFU30MaxGidNumber'));
+		if (isset($attrs['mssfu30maxgidnumber'][0]) && ($attrs['mssfu30maxgidnumber'][0] != '')) {
+			$newValue = $attrs['mssfu30maxgidnumber'][0] + $count;
+			$ldapHandle = $_SESSION['ldap']->server();
+			ldap_modify($ldapHandle, $dn, array('mssfu30maxgidnumber' => array($newValue)));
+			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
+			if (ldap_errno($ldapHandle) != 0) {
+				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
+				return null;
+			}
+			$result = array();
+			for ($i = 0; $i < $count; $i++) {
+				$result[] = $attrs['mssfu30maxgidnumber'][0] + $i;
 			}
 			return $result;
 		}

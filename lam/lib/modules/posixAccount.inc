@@ -2092,7 +2092,7 @@ class posixAccount extends baseModule implements passwordService {
 				$needAutoUID[] = $i;
 			}
 			elseif (get_preg($rawAccount[$ids['posixAccount_uid']], 'digit')) {
-				if ($this->get_scope() == 'user') {
+				if (($this->get_scope() == 'user') && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'range')) {
 					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
 						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
 						$partialAccounts[$i]['uidNumber'] = trim($rawAccount[$ids['posixAccount_uid']]);
@@ -2103,7 +2103,7 @@ class posixAccount extends baseModule implements passwordService {
 						$errors[] = $errMsg;
 					}
 				}
-				elseif ($this->get_scope() == 'host') {
+				elseif (($this->get_scope() == 'host') && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'range')) {
 					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
 						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
 						$partialAccounts[$i]['uidNumber'] = trim($rawAccount[$ids['posixAccount_uid']]);
