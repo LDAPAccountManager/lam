@@ -1256,4 +1256,15 @@ function getCallingURL() {
 	return $url;
 }
 
+/**
+ * Returns the offset in hours from configured time zone to GMT.
+ * 
+ * @return int offset
+ */
+function getTimeZoneOffsetHours() {
+	$timeZone = $_SESSION['config']->getTimeZone();
+	$dtz = new DateTimeZone($timeZone);
+	return round($dtz->getOffset(new DateTime('UTC')) / 3600);
+}
+
 ?>

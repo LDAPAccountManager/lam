@@ -431,6 +431,8 @@ class LAMConfig {
 
 	/** Default language */
 	private $defaultLanguage;
+	/** time zone */
+	private $timeZone = 'Europe/London';
 
 	/** module settings */
 	private $moduleSettings = array();
@@ -519,7 +521,7 @@ class LAMConfig {
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
-		'loginSearchPassword');
+		'loginSearchPassword', 'timeZone');
 
 
 	/**
@@ -691,6 +693,7 @@ class LAMConfig {
 			if (!in_array("treesuffix", $saved)) array_push($file_array, "\n\n# suffix of tree view\n" .
 								"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
 			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
+			if (!in_array("timeZone", $saved)) array_push($file_array, "\n\n# time zone\n" . "timeZone: " . $this->timeZone . "\n");
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
@@ -1020,6 +1023,29 @@ class LAMConfig {
 		if (is_string($value)) $this->defaultLanguage = $value;
 		else return false;
 		return true;
+	}
+
+	/**
+	* Returns the time zone name.
+	*
+	* @return string time zone
+	*/
+	public function getTimeZone() {
+		return ($this->timeZone == null) ? 'Europe/London' : $this->timeZone;
+	}
+
+	/**
+	* Sets the time zone name.
+	*
+	* @param string $value new time zone
+	* @return boolean true if $value has correct format
+	*/
+	public function setTimeZone($value) {
+		if (is_string($value)) {
+			$this->timeZone = $value;
+			return true;
+		}
+		return false;
 	}
 
 	/**

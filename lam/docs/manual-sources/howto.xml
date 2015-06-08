@@ -987,7 +987,15 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
-          <title>4.5 -&gt; 5.0</title>
+          <title>4.9 -&gt; 5.0</title>
+
+          <para>Samba 3: If you used logon hours then you need to set the
+          correct time zone on tab "Generel settings" in server
+          profile.</para>
+        </section>
+
+        <section>
+          <title>4.5 -&gt; 4.9</title>
 
           <para>No special actions needed.</para>
         </section>
@@ -1593,6 +1601,8 @@ Have fun!
           <para>LAM is translated to many different languages. Here you can
           select the default language for this server profile. The language
           setting may be overriden at the LAM login page.</para>
+
+          <para>Please also set your time zone here.</para>
 
           <screenshot>
             <mediaobject>

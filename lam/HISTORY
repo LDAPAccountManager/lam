@@ -8,6 +8,7 @@ June 2015
   - Personal: allow to add ou=addressbook subentry for users (RFE 117)
   - Unix: support auto-UID/GID with msSFU30DomainInfo
   - Windows groups: support editing of member of
+  - Central time zone setting in server profile
   - LAM Pro:
    -> Password Self Reset: added 389 Directory Server schema file
    -> Support for groupOfMembers (RFE 121)

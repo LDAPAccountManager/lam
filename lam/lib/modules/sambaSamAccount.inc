@@ -549,42 +549,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 			);
 		}
 		// configuration options
-		$timezones = array(
-					"GMT-12: " . _("Eniwetok, Kwajalein") => '-12',
-					"GMT-11: " . _("Midway Island, Samoa") => '-11',
-					"GMT-10: " . _("Hawaii") => '-10',
-					"GMT-09: " . _("Alaska") => '-9',
-					"GMT-08: " . _("Pacific Time (US & Canada)") => '-8',
-					"GMT-07: " . _("Mountain Time (US & Canada)") => '-7',
-					"GMT-06: " . _("Central Time (US & Canada), Mexico City") => '-6',
-					"GMT-05: " . _("Eastern Time (US & Canada), Bogota") => '-5',
-					"GMT-04: " . _("Atlantic time (Canada), Caracas") => '-4',
-					"GMT-03: " . _("Brazil, Buenos Aires") => '-3',
-					"GMT-02: " . _("Mid-Atlantic") => '-2',
-					"GMT-01: " . _("Azores, Cape Verde Islands") => '-1',
-					'GMT: ' . _("Western Europe Time, London, Lisbon") => '0',
-					"GMT+01: " . _("Central Europe Time, Paris, Berlin") => '1',
-					"GMT+02: " . _("Eastern Europe Time, South Africa") => '2',
-					"GMT+03: " . _("Baghdad, Riyadh, Moscow") => '3',
-					"GMT+04: " . _("Abu Dhabi, Muscat, Baku") => '4',
-					"GMT+05: " . _("Islamabad, Karachi") => '5',
-					"GMT+06: " . _("Almaty, Dhaka, Colombo") => '6',
-					"GMT+07: " . _("Bangkok, Hanoi, Jakarta") => '7',
-					"GMT+08: " . _("Beijing, Perth, Singapore") => '8',
-					"GMT+09: " . _("Tokyo, Seoul, Osaka, Yakutsk") => '9',
-					"GMT+10: " . _("East Australian Standard, Guam") => '10',
-					"GMT+11: " . _("Magadan, Solomon Islands") => '11',
-					"GMT+12: " . _("Auckland, Fiji, Kamchatka") => '12',
-		);
 		$configContainer = new htmlTable();
-		$timezoneSelect = new htmlTableExtendedSelect('sambaSamAccount_timeZone', $timezones, array('0'), _("Time zone"), 'timeZone');
-		$timezoneSelect->setHasDescriptiveElements(true);
-		$timezoneSelect->setSortElements(false);
-		$configContainer->addElement($timezoneSelect, true);
+		$disableLM = new htmlTable();
 		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
 		$yesNoSelect = new htmlTableExtendedSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
 		$yesNoSelect->setHasDescriptiveElements(true);
-		$configContainer->addElement($yesNoSelect, true);
+		$disableLM->addElement($yesNoSelect, true);
+		$configContainer->addElement($disableLM, true);
 		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
 		$configHiddenLabelGroup = new htmlGroup();
 		$configHiddenLabelGroup->addElement(new htmlOutputText(_('Hidden options') . ' '));
@@ -975,9 +946,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$logonHoursNew = '';
 		for ($i = 0; $i < 21; $i++) {
 			$part = strrev(substr($logonHours, $i * 8, 8));
-			$byte[hi] = substr($part,0,4);
-			$byte[low] = substr($part,4,4);
-			$hex = $bitstring2hex[$byte[hi]].$bitstring2hex[$byte[low]];
+			$byte['hi'] = substr($part,0,4);
+			$byte['low'] = substr($part,4,4);
+			$hex = $bitstring2hex[$byte['hi']].$bitstring2hex[$byte['low']];
 			$logonHoursNew = $logonHoursNew . $hex;
 		}
 		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
@@ -1373,10 +1344,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	*/
 	function display_html_logonHours() {
 		$return = new htmlTable();
-		$timeZone = 0;
-		if (isset($this->moduleSettings['sambaSamAccount_timeZone']) && is_array($this->moduleSettings['sambaSamAccount_timeZone'])) {
-			$timeZone = $this->moduleSettings['sambaSamAccount_timeZone'][0];
-		}
+		$timeZone = getTimeZoneOffsetHours();
 		$days = array(1 => _('Monday'), 2 => _('Tuesday'), 3 => _('Wednesday'), 4 => _('Thursday'),
 			5 => _('Friday'), 6 => _('Saturday'), 0 => _('Sunday'));
 		if (!isset($this->attributes['sambaLogonHours'][0]) || ($this->attributes['sambaLogonHours'][0] == '')) {

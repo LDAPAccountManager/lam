@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2014 Roland Gruber
+                2003 - 2015 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,6 +104,8 @@ $helpArray = array (
 					"Text" => _("If enabled then the default language will be enforced and cannot be chosen by the user.")),
 				"212" => array ("Headline" => _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
+				"213" => array ("Headline" => _('Time zone'),
+					"Text" => _('Please select your local time zone.')),
 				"214" => array ("Headline" => _("Cache timeout"),
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
 				"215" => array ("Headline" => _("Access level"),

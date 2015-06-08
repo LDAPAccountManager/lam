@@ -303,8 +303,22 @@ if(!empty($possibleLanguages)) {
 else {
 	$languageSettingsContent->addElement(new htmlStatusMessage('ERROR', "Unable to load available languages. Setting English as default language."));
 }
+$timezones = array();
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::AFRICA));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::AMERICA));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::ANTARCTICA));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::ARCTIC));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::ASIA));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::ATLANTIC));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::AUSTRALIA));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::EUROPE));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::INDIAN));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::PACIFIC));
+$languageSettingsContent->addElement(new htmlTableExtendedSelect('timeZone', $timezones, array($conf->getTimeZone()), _('Time zone'), '213'), true);
 $languageSettings = new htmlFieldset($languageSettingsContent, _("Language settings"), '../../graphics/language.png');
 $container->addElement($languageSettings, true);
+
+
 $container->addElement(new htmlSpacer(null, '10px'), true);
 
 // lamdaemon settings
@@ -577,6 +591,7 @@ function checkInput() {
 	if (!$conf->set_defaultLanguage($_POST['lang'])) {
 		$errors[] = array("ERROR", _("Language is not defined!"));
 	}
+	$conf->setTimeZone($_POST['timeZone']);
 	if (!$conf->set_scriptpath($_POST['scriptpath'])) {
 		$errors[] = array("ERROR", _("Script path is invalid!"));
 	}
