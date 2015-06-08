@@ -917,8 +917,10 @@ function compareDN(&$a, &$b) {
  * @return String formated time
  */
 function formatLDAPTimestamp($time) {
-	return substr($time, 6, 2) . '.' . substr($time, 4, 2) . '.' . substr($time, 0, 4) .
-		' ' . substr($time, 8, 2) . ':' . substr($time, 10, 2) . ':' . substr($time, 12, 2) . ' GMT';
+	$timeNumbers = substr($time, 0, -1);
+	$dateTime = DateTime::createFromFormat('YmdHis', $timeNumbers, new DateTimeZone('UTC'));
+	$dateTime->setTimezone(getTimeZone());
+	return $dateTime->format('d.m.Y H:i:s');
 }
 
 /**
@@ -1265,6 +1267,16 @@ function getTimeZoneOffsetHours() {
 	$timeZone = $_SESSION['config']->getTimeZone();
 	$dtz = new DateTimeZone($timeZone);
 	return round($dtz->getOffset(new DateTime('UTC')) / 3600);
+}
+
+/**
+ * Returns the configured time zone.
+ * 
+ * @return DateTimeZone time zone
+ */
+function getTimeZone() {
+	$timeZone = $_SESSION['config']->getTimeZone();
+	return new DateTimeZone($timeZone);
 }
 
 ?>
