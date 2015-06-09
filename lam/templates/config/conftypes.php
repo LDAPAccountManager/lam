@@ -64,7 +64,7 @@ $errorsToDisplay = checkInput();
 // check if button was pressed and if we have to save the settings or go to another tab
 if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
-	|| isset($_POST['moduleSettings'])) {
+	|| isset($_POST['moduleSettings']) || isset($_POST['jobs'])) {
 	if (sizeof($errorsToDisplay) == 0) {
 		// check if all types have modules
 		$activeTypes = $conf->get_ActiveTypes();
@@ -94,6 +94,11 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		// go to module settings page
 		elseif (isset($_POST['moduleSettings'])) {
 			metaRefresh("moduleSettings.php");
+			exit;
+		}
+		// go to jobs page
+		elseif (isset($_POST['jobs'])) {
+			metaRefresh("jobs.php");
 			exit;
 		}
 	}
@@ -171,6 +176,7 @@ echo "<div style=\"display: none;\">\n";
 	echo "<input name=\"edittypes\" type=\"submit\" value=\" \">";
 	echo "<input name=\"editmodules\" type=\"submit\" value=\" \">";
 	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
+	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
 echo "</div>\n";
 	
 // tabs
@@ -193,6 +199,12 @@ echo '<li id="moduleSettings" class="ui-state-default ui-corner-top" onmouseover
 	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
 	echo _('Module settings') . '</a>';
 echo '</li>';
+if (isLAMProVersion()) {
+	echo '<li id="jobs" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
+		echo '<a href="#" onclick="document.getElementsByName(\'jobs\')[0].click();"><img src="../../graphics/clock.png" alt=""> ';
+		echo _('Jobs') . '</a>';
+	echo '</li>';
+}
 echo '</ul>';
 
 ?>
