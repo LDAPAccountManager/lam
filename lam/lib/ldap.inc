@@ -85,7 +85,7 @@ class Ldap{
 	* @param string $user user name
 	* @param string $passwd password
 	* @param boolean $allowAnonymous specifies if anonymous binds are allowed
-	* @return mixed if connect succeeds the server handle is returned, else false
+	* @return mixed if connect succeeds the 0 is returned, else false or error number
 	*/
 	function connect($user, $passwd, $allowAnonymous=false) {
 		// close any prior connection

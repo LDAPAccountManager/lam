@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -514,6 +514,13 @@ class LAMConfig {
 	
 	/** mail body for password reset mails */
 	private $lamProMailText = '';
+	
+	/** LDAP user for jobs */
+	private $jobsBindUser = null;
+	/** LDAP password for jobs */
+	private $jobsBindPassword = null;
+	/** database for jobs */
+	private $jobsDatabase = null;
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
@@ -521,7 +528,7 @@ class LAMConfig {
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
-		'loginSearchPassword', 'timeZone');
+		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase');
 
 
 	/**
@@ -713,6 +720,9 @@ class LAMConfig {
 			if (!in_array("lamProMailIsHTML", $saved)) array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
 			if (!in_array("lamProMailAllowAlternateAddress", $saved)) array_push($file_array, "\n\n# Allow alternate address\n" . "lamProMailAllowAlternateAddress: " . $this->lamProMailAllowAlternateAddress . "\n");
 			if (!in_array("lamProMailText", $saved)) array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
+			if (!in_array("jobsBindPassword", $saved)) array_push($file_array, "\n" . "jobsBindPassword: " . $this->jobsBindPassword . "\n");
+			if (!in_array("jobsBindUser", $saved)) array_push($file_array, "\n" . "jobsBindUser: " . $this->jobsBindUser . "\n");
+			if (!in_array("jobsDatabase", $saved)) array_push($file_array, "\n" . "jobsDatabase: " . $this->jobsDatabase . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -1592,6 +1602,60 @@ class LAMConfig {
 	 */
 	public function setLamProMailText($lamProMailText) {
 		$this->lamProMailText = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $lamProMailText));
+	}
+	
+	/**
+	 * Returns the bind user for jobs.
+	 * 
+	 * @return String $jobsBindUser bind user
+	 */
+	public function getJobsBindUser() {
+		return $this->jobsBindUser;
+	}
+
+	/**
+	 * Sets the bind user for jobs.
+	 * 
+	 * @param String $jobsBindUser bind user
+	 */
+	public function setJobsBindUser($jobsBindUser) {
+		$this->jobsBindUser = $jobsBindUser;
+	}
+
+	/**
+	 * Returns the bind password for jobs.
+	 * 
+	 * @return String $jobsBindPassword password
+	 */
+	public function getJobsBindPassword() {
+		return $this->jobsBindPassword;
+	}
+
+	/**
+	 * Sets the bind password for jobs.
+	 * 
+	 * @param String $jobsBindPassword password
+	 */
+	public function setJobsBindPassword($jobsBindPassword) {
+		$this->jobsBindPassword = $jobsBindPassword;
+	}
+
+	/**
+	 * Returns the database type for jobs.
+	 * 
+	 * @return String $jobsDatabase database type
+	 */
+	public function getJobsDatabase() {
+		return $this->jobsDatabase;
+	}
+
+	/**
+	 * Sets the database type for jobs.
+	 * 
+	 * @param String $jobsDatabase database type
+	 */
+	public function setJobsDatabase($jobsDatabase) {
+		$this->jobsDatabase = $jobsDatabase;
 	}
 	
 }

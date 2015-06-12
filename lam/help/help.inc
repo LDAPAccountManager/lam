@@ -187,6 +187,10 @@ $helpArray = array (
 					"Text" => _("This is a workaround for Active Directory. Enable it if you get messages about size limit exceeded.")),
 				"267" => array ("Headline" => _('Template'),
 					"Text" => _('Please select the template for the new server profile. You can either select an existing server profile or use one of the built-in templates.')),
+				"270" => array ("Headline" => _('Bind user and password'),
+					"Text" => _('Please enter the DN and password to use for all jobs.')),
+				"271" => array ("Headline" => _('Database type'),
+					"Text" => _('Please select the type of database to use for job data.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
