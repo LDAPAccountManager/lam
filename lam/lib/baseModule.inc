@@ -1758,6 +1758,15 @@ abstract class baseModule {
 		return true;
 	}
 	
+	/**
+	 * Returns a list of jobs that can be run.
+	 * 
+	 * @param LAMConfig $config configuration
+	 */
+	public function getSupportedJobs(&$config) {
+		return array();
+	}
+	
 	
 	
 	// helper functions

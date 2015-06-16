@@ -208,14 +208,16 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
  * Shows a simple dialog.
  * 
  * @param title dialog title
- * @param okText text for Ok button
+ * @param okText text for Ok button (optional, submits form)
  * @param cancelText text for Cancel button
  * @param formID form ID
  * @param dialogDivID ID of div that contains dialog content
  */
 function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
 	var buttonList = {};
-	buttonList[okText] = function() { document.forms[formID].submit(); };
+	if (okText) {
+		buttonList[okText] = function() { document.forms[formID].submit(); };
+	}
 	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	jQuery('#' + dialogDivID).dialog({
 		modal: true,
@@ -324,11 +326,7 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, 
 		if (resultField) {
 			jQuery('#' + resultField).val('ok');
 		};
-		var inputs = jQuery('#' + dialogDiv + ' :input');
-		inputs.each(function() {
-			jQuery(this).appendTo(document.forms[formName]);
-	    });
-		document.forms[formName].submit();
+		appendDialogInputsToFormAndSubmit(dialogDiv, formName);
 	};
 	buttonList[cancelText] = function() {
 		if (resultField) {
@@ -343,6 +341,21 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, 
 		buttons: buttonList,
 		width: 'auto'
 	});
+}
+
+/**
+ * Appends the input fields of a dialog back to the form and submits it.
+ * 
+ * @param dialogDiv ID of dialog div
+ * @param formName name of form
+ */
+function appendDialogInputsToFormAndSubmit(dialogDiv, formName) {
+	var inputs = jQuery('#' + dialogDiv + ' :input');
+	inputs.each(function() {
+		jQuery(this).addClass('hidden');
+		jQuery(this).appendTo(document.forms[formName]);
+    });
+	document.forms[formName].submit();
 }
 
 /**

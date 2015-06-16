@@ -980,7 +980,7 @@ class htmlButton extends htmlElement {
 		}
 		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
 		if ($this->isImageButton) {
-			echo '<input type="submit" ' . $id . ' value=" "' . $name . $fieldTabIndex . $style . $class . $title . $disabled . '>';
+			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class . $title . $disabled . '>';
 		}
 		else {
 			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . '>' . $this->value . '</button>';

@@ -521,6 +521,10 @@ class LAMConfig {
 	private $jobsBindPassword = null;
 	/** database for jobs */
 	private $jobsDatabase = null;
+	/** random job token */
+	private $jobToken = null;
+	/** job configuration */
+	private $jobSettings = array();
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
@@ -528,7 +532,7 @@ class LAMConfig {
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
-		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase');
+		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs');
 
 
 	/**
@@ -561,7 +565,7 @@ class LAMConfig {
 			$file = @fopen($conffile, "r");
 			if (!$file) return false; // abort if file is not readable
 			while (!feof($file)) {
-				$line = fgets($file, 100000);
+				$line = fgets($file, 1000000);
 				$line = trim($line);  // remove spaces at the beginning and end
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
 				// search keywords
@@ -586,6 +590,12 @@ class LAMConfig {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$this->toolSettings[substr($option, 0, $pos)] = substr($option, $pos + 2);
+						}
+						// job settings
+						elseif (strtolower(substr($line, 0, $keylen + 2)) == "jobs: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$this->jobSettings[substr($option, 0, $pos)] = explode(LAMConfig::LINE_SEPARATOR, substr($option, $pos + 2));
 						}
 						// general settings
 						else {
@@ -638,7 +648,7 @@ class LAMConfig {
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {
-				array_push($file_array, fgets($file, 1024));
+				array_push($file_array, fgets($file, 1000000));
 			}
 			fclose($file);
 			// generate new configuration file
@@ -677,6 +687,15 @@ class LAMConfig {
 							$name = substr($option, 0, $pos);
 							if (!isset($this->toolSettings[$name])) continue;
 							$file_array[$i] = "tools: " . $name . ": " . $this->toolSettings[$name] . "\n";
+							$mod_saved[] = $name;	// mark keyword as saved
+						}
+						// job settings
+						elseif (strtolower(substr($line, 0, $keylen + 2)) == "jobs: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$name = substr($option, 0, $pos);
+							if (!isset($this->jobSettings[$name])) continue;
+							$file_array[$i] = "jobs: " . $name . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->jobSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
 						// general settings
@@ -723,6 +742,7 @@ class LAMConfig {
 			if (!in_array("jobsBindPassword", $saved)) array_push($file_array, "\n" . "jobsBindPassword: " . $this->jobsBindPassword . "\n");
 			if (!in_array("jobsBindUser", $saved)) array_push($file_array, "\n" . "jobsBindUser: " . $this->jobsBindUser . "\n");
 			if (!in_array("jobsDatabase", $saved)) array_push($file_array, "\n" . "jobsDatabase: " . $this->jobsDatabase . "\n");
+			if (!in_array("jobToken", $saved)) array_push($file_array, "\n" . "jobToken: " . $this->getJobToken() . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -742,6 +762,13 @@ class LAMConfig {
 			for ($i = 0; $i < sizeof($tool_settings); $i++) {
 				if (!in_array($tool_settings[$i], $mod_saved)) {
 					array_push($file_array, "tools: " . $tool_settings[$i] . ": " . $this->toolSettings[$tool_settings[$i]] . "\n");
+				}
+			}
+			// check if all job settings were added
+			$jobSettings = array_keys($this->jobSettings);
+			for ($i = 0; $i < sizeof($jobSettings); $i++) {
+				if (!in_array($jobSettings[$i], $mod_saved)) {
+					array_push($file_array, "jobs: " . $jobSettings[$i] . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->jobSettings[$jobSettings[$i]]) . "\n");
 				}
 			}
 			$file = @fopen($conffile, "w");
@@ -1658,6 +1685,41 @@ class LAMConfig {
 		$this->jobsDatabase = $jobsDatabase;
 	}
 	
+	/**
+	* Sets the settings for the jobs.
+	*
+	* @param array $settings list of job settings array(name => value)
+	* @return boolean true if $settings has correct format
+	*/
+	public function setJobSettings($settings) {
+		if (!is_array($settings)) {
+			return false;
+		}
+		$this->jobSettings = $settings;
+		return true;
+	}
+
+	/**
+	* Returns a list of saved job settings.
+	*
+	* @return array list of settings: array(name => value)
+	*/
+	public function getJobSettings() {
+		return $this->jobSettings;
+	}
+	
+	/**
+	 * Returns the job token.
+	 * 
+	 * @return String job token
+	 */
+	public function getJobToken() {
+		if (empty($this->jobToken)) {
+			$this->jobToken = getRandomNumber();
+		}
+		return $this->jobToken;
+	}
+
 }
 
 
