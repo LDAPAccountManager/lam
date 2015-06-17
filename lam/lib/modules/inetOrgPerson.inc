@@ -992,8 +992,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
 		// add address book
-		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')) {
-			$dn = 'ou=addressbook,' . $this->getAccountContainer()->finalDN;
+		$accountContainer = $this->getAccountContainer();
+		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook') && !empty($accountContainer)) {
+			$dn = 'ou=addressbook,' . $accountContainer->finalDN;
 			$result = ldapGetDN($dn);
 			if (empty($result)) {
 				$ldapUser = $_SESSION['ldap']->decrypt_login();
@@ -1004,11 +1005,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 				);
 				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add addressbook for user ' . $this->getAccountContainer()->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add addressbook for user ' . $accountContainer->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = array('ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 				else {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added addressbook for user ' . $this->getAccountContainer()->finalDN);
+					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added addressbook for user ' . $accountContainer->finalDN);
 				}
 			}
 		}
