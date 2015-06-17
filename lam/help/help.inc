@@ -191,6 +191,8 @@ $helpArray = array (
 					"Text" => _('Please enter the DN and password to use for all jobs.')),
 				"271" => array ("Headline" => _('Database type'),
 					"Text" => _('Please select the type of database to use for job data.')),
+				"272" => array ("Headline" => _('Cron'),
+					"Text" => _('Please add this line to your webserver\'s crontab.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
