@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2015-06-16 21:44+0200\n"
+"PO-Revision-Date: 2015-06-17 19:30+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -793,11 +793,11 @@ msgstr "Feste IP-Adressen zum DNS hinzufügen"
 msgid "Add host extension"
 msgstr "Host-Erweiterung hinzufügen"
 
-#: ../templates/selfService/adminMain.php:604 ../help/help.inc:242
+#: ../templates/selfService/adminMain.php:604 ../help/help.inc:244
 msgid "Add input field"
 msgstr "Feld hinzufügen"
 
-#: ../templates/config/jobs.php:291 ../templates/config/jobs.php:293
+#: ../templates/config/jobs.php:301 ../templates/config/jobs.php:303
 msgid "Add job"
 msgstr "Job hinzufügen"
 
@@ -835,7 +835,7 @@ msgstr "Neues Binärattribut hinzufügen"
 msgid "Add new field"
 msgstr "Feld hinzufügen"
 
-#: ../templates/selfService/adminMain.php:596 ../help/help.inc:240
+#: ../templates/selfService/adminMain.php:596 ../help/help.inc:242
 msgid "Add new group"
 msgstr "Gruppe hinzufügen"
 
@@ -896,13 +896,13 @@ msgstr "Füge hinzu"
 msgid "Adding the range failed because errors occured."
 msgstr "Hinzufügen des Adressbereiches schlug fehl."
 
-#: ../templates/selfService/adminMain.php:500 ../help/help.inc:246
+#: ../templates/selfService/adminMain.php:500 ../help/help.inc:248
 msgid "Additional CSS links"
 msgstr "Zusätzliche CSS-Links"
 
 #: ../templates/config/conftypes.php:301
 #: ../templates/selfService/adminMain.php:445 ../help/help.inc:172
-#: ../help/help.inc:250
+#: ../help/help.inc:252
 msgid "Additional LDAP filter"
 msgstr "Zusätzlicher LDAP-Filter"
 
@@ -944,7 +944,7 @@ msgstr "Anzahl Adresslisten: %s"
 msgid "Address of IMAP server (e.g. mail.example.org)."
 msgstr "Adresse des IMAP-Servers (z.B. mail.beispiel.de)."
 
-#: ../help/help.inc:241
+#: ../help/help.inc:243
 msgid ""
 "Adds a new group element to the list of self service options. Use this to "
 "structure the input fields."
@@ -956,7 +956,7 @@ msgstr ""
 msgid "Adds a new range pool."
 msgstr "Fügt einen neuen Pool hinzu."
 
-#: ../help/help.inc:243
+#: ../help/help.inc:245
 msgid "Adds a new self service option to the selected group element."
 msgstr "Damit fügen Sie einer Gruppe ein neues Eingabefeld hinzu."
 
@@ -1137,7 +1137,7 @@ msgstr "Alle selektierten Accounts (%s)"
 msgid "Allow"
 msgstr "Erlauben"
 
-#: ../templates/config/confmain.php:390 ../help/help.inc:269
+#: ../templates/config/confmain.php:390 ../help/help.inc:271
 msgid "Allow alternate address"
 msgstr "Alternative Adresse erlauben"
 
@@ -1254,7 +1254,7 @@ msgstr "Erlaubt die Selektion mehrerer Werte in der Liste."
 msgid "Alternate address"
 msgstr "Alternative Adresse"
 
-#: ../lib/modules.inc:1090 ../lib/modules.inc:1189 ../help/help.inc:224
+#: ../lib/modules.inc:1090 ../lib/modules.inc:1189 ../help/help.inc:226
 msgid "Alternate recipient"
 msgstr "Alternativer Empfänger"
 
@@ -1942,7 +1942,7 @@ msgstr ""
 "Standardmäßig zeigt LAM alle Accounts an, die zu den gewählten "
 "Accountmodulen passen."
 
-#: ../help/help.inc:253
+#: ../help/help.inc:255
 msgid ""
 "By default all modifications are done as the user that authenticated in self "
 "service. If active then LAM will use the connection user for all LDAP "
@@ -2039,8 +2039,8 @@ msgstr "Kann weiterleiten"
 #: ../templates/config/profmanage.php:295
 #: ../templates/config/profmanage.php:306
 #: ../templates/config/mainmanage.php:470
-#: ../templates/config/confmodules.php:239 ../templates/config/jobs.php:293
-#: ../templates/config/jobs.php:333 ../templates/config/confmain.php:499
+#: ../templates/config/confmodules.php:239 ../templates/config/jobs.php:303
+#: ../templates/config/jobs.php:343 ../templates/config/confmain.php:499
 #: ../templates/config/moduleSettings.php:253
 #: ../templates/config/conftypes.php:374
 #: ../templates/selfService/profManage.php:211
@@ -2082,7 +2082,7 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: ../templates/login.php:569 ../templates/login.php:628
-#: ../templates/login.php:633 ../templates/config/jobs.php:409
+#: ../templates/login.php:633 ../templates/config/jobs.php:431
 #: ../templates/selfService/selfServiceLogin.php:143
 #: ../templates/selfService/selfServiceLogin.php:195
 #: ../templates/selfService/selfServiceLogin.php:201
@@ -2624,7 +2624,7 @@ msgid "Create"
 msgstr "Erstellen"
 
 #: ../lib/lists.inc:515 ../lib/lists.inc:704 ../lib/modules.inc:1366
-#: ../help/help.inc:210
+#: ../help/help.inc:212
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
 
@@ -2801,6 +2801,10 @@ msgstr "Erstellung erfolgreich. DN <b>%s</b> wurde erzeugt."
 msgid "Creation time"
 msgstr "Erstellzeit"
 
+#: ../templates/config/jobs.php:251 ../help/help.inc:194
+msgid "Cron configuration"
+msgstr "Cron-Einstellungen"
+
 #: ../lib/modules/pykotaUser.inc:133
 msgid "Current account balance for the user."
 msgstr "Aktueller Kontostand für den Benutzer."
@@ -2893,7 +2897,7 @@ msgstr "DN existiert nicht"
 msgid "DN settings"
 msgstr "DN-Einstellungen"
 
-#: ../templates/masscreate.php:322 ../help/help.inc:200
+#: ../templates/masscreate.php:322 ../help/help.inc:202
 msgid "DN suffix"
 msgstr "DN-Suffix"
 
@@ -2948,7 +2952,7 @@ msgstr "DTFM-Modus für SIP-Einstellung."
 msgid "Data"
 msgstr "Daten"
 
-#: ../templates/config/jobs.php:396
+#: ../templates/config/jobs.php:418
 msgid "Database connection ok."
 msgstr "Datenbankverbindung ok."
 
@@ -3010,7 +3014,8 @@ msgstr "Standard-Gateway"
 msgid "Default language"
 msgstr "Standardsprache"
 
-#: ../lib/modules/ppolicyUser.inc:84 ../lib/modules/ppolicyUser.inc:598
+#: ../lib/modules/ppolicyUser.inc:84 ../lib/modules/ppolicyUser.inc:599
+#: ../lib/modules/ppolicyUser.inc:627
 msgid "Default password policy"
 msgstr "Standardpasswortrichtlinie"
 
@@ -3132,7 +3137,7 @@ msgstr "Heimatverzeichnis löschen"
 msgid "Delete mailbox"
 msgstr "Postfach löschen"
 
-#: ../templates/ou_edit.php:204 ../help/help.inc:275
+#: ../templates/ou_edit.php:204 ../help/help.inc:277
 msgid "Delete organisational unit"
 msgstr "Organisational Unit löschen"
 
@@ -3253,7 +3258,7 @@ msgstr "Sudo-Rechte löschen"
 msgid "Delete this entry"
 msgstr "Diesen Eintrag löschen"
 
-#: ../templates/config/jobs.php:312
+#: ../templates/config/jobs.php:322
 msgid "Delete this job"
 msgstr "Diesen Job löschen"
 
@@ -4252,7 +4257,7 @@ msgid "Export"
 msgstr "Export"
 
 #: ../templates/pdfedit/pdfmain.php:226 ../templates/pdfedit/pdfmain.php:227
-#: ../help/help.inc:222
+#: ../help/help.inc:224
 msgid "Export PDF structure"
 msgstr "PDF-Struktur exportieren"
 
@@ -4261,7 +4266,7 @@ msgid "Export format"
 msgstr "Exportformat"
 
 #: ../templates/profedit/profilemain.php:214
-#: ../templates/profedit/profilemain.php:215 ../help/help.inc:204
+#: ../templates/profedit/profilemain.php:215 ../help/help.inc:206
 msgid "Export profile"
 msgstr "Profil exportieren"
 
@@ -4502,7 +4507,7 @@ msgstr ""
 #: ../lib/modules/mitKerberos.inc:183 ../lib/modules/mitKerberos.inc:417
 #: ../lib/modules/shadowAccount.inc:370 ../lib/modules/heimdalKerberos.inc:127
 #: ../lib/modules/heimdalKerberos.inc:348 ../lib/modules.inc:1073
-#: ../help/help.inc:216
+#: ../help/help.inc:218
 msgid "Force password change"
 msgstr "Passwortänderung erzwingen"
 
@@ -4514,7 +4519,7 @@ msgstr "Sync mit Namensgruppe erzwingen"
 msgid "Forgot password?"
 msgstr "Passwort vergessen?"
 
-#: ../templates/3rdParty/pla/lib/QueryRender.php:484 ../help/help.inc:262
+#: ../templates/3rdParty/pla/lib/QueryRender.php:484 ../help/help.inc:264
 msgid "Format"
 msgstr "Format"
 
@@ -4544,9 +4549,10 @@ msgstr "Freitag"
 
 #: ../templates/config/confmain.php:371 ../lib/modules/selfRegistration.inc:90
 #: ../lib/modules/selfRegistration.inc:229 ../lib/modules/ppolicyUser.inc:63
-#: ../lib/modules/ppolicyUser.inc:585 ../lib/modules/passwordSelfReset.inc:116
+#: ../lib/modules/ppolicyUser.inc:585 ../lib/modules/ppolicyUser.inc:615
+#: ../lib/modules/passwordSelfReset.inc:116
 #: ../lib/modules/passwordSelfReset.inc:564
-#: ../lib/modules/passwordSelfReset.inc:584 ../help/help.inc:256
+#: ../lib/modules/passwordSelfReset.inc:584 ../help/help.inc:258
 msgid "From address"
 msgstr "Absenderadresse"
 
@@ -4681,7 +4687,7 @@ msgstr "Allgemeine Informationen"
 msgid "General settings"
 msgstr "Allgemeine Einstellungen"
 
-#: ../templates/lists/changePassword.php:321 ../help/help.inc:254
+#: ../templates/lists/changePassword.php:321 ../help/help.inc:256
 msgid "Generate random password"
 msgstr "Zufälliges Passwort generieren"
 
@@ -4948,7 +4954,7 @@ msgstr "H-Knoten (0x08)"
 #: ../templates/config/confmain.php:384
 #: ../lib/modules/selfRegistration.inc:235 ../lib/modules/ppolicyUser.inc:591
 #: ../lib/modules/passwordSelfReset.inc:568
-#: ../lib/modules/passwordSelfReset.inc:588 ../help/help.inc:265
+#: ../lib/modules/passwordSelfReset.inc:588 ../help/help.inc:267
 msgid "HTML format"
 msgstr "HTML Format"
 
@@ -5071,9 +5077,8 @@ msgid ""
 "in format GROUP#HOST#DOMAIN. Host and domain are optional."
 msgstr ""
 "Hier können Sie eine Liste von Netzgruppen angeben. Die Gruppenblöcke werden "
-"durch "
-"Komma getrennt und haben das Format GRUPPE#HOST#DOMAIN. Host und Domain sind "
-"optional."
+"durch Komma getrennt und haben das Format GRUPPE#HOST#DOMAIN. Host und "
+"Domain sind optional."
 
 #: ../lib/modules/organizationalRoleUser.inc:65
 msgid ""
@@ -5090,7 +5095,7 @@ msgstr "Hier können Sie eine Seriennummer für das Gerät eintragen."
 msgid "Here you can enter additional web sites for the user."
 msgstr "Hier können Sie zusätzliche Webseiten für den Benutzer eintragen."
 
-#: ../help/help.inc:225
+#: ../help/help.inc:227
 msgid ""
 "Here you can enter an alternative mail address for the password. To use the "
 "user's primary email address please leave the field blank."
@@ -5117,7 +5122,7 @@ msgstr "Hier können Sie den Unternehmensbereich des Benutzers eingeben."
 msgid "Here you can explicitly enable and disable Zarafa features."
 msgstr "Hier können Sie einzelne Zarafa-Funktionen (de)aktivieren."
 
-#: ../help/help.inc:223
+#: ../help/help.inc:225
 msgid ""
 "Here you can export PDF structures to other server profiles (overwrite "
 "existing). You may also export a structure to the global templates. In this "
@@ -5129,7 +5134,7 @@ msgstr ""
 "die globalen Vorlagen exportieren. In diesem Fall wird die Struktur in alle "
 "Serverprofile kopiert, die noch keine Struktur gleichen Namens haben."
 
-#: ../help/help.inc:205
+#: ../help/help.inc:207
 msgid ""
 "Here you can export account profiles to other server profiles (overwrite "
 "existing). You may also export a profile to the global templates. In this "
@@ -5142,7 +5147,7 @@ msgstr ""
 "alle Serverprofile kopiert, die noch kein Accountprofil gleichen Namens "
 "haben."
 
-#: ../help/help.inc:221
+#: ../help/help.inc:223
 msgid ""
 "Here you can import PDF structures from other server profiles (overwrite "
 "existing)."
@@ -5150,7 +5155,7 @@ msgstr ""
 "Damit können Sie PDF-Strukturen aus anderen Serverprofilen importieren "
 "(überschreibt bestehende PDF-Strukturen)."
 
-#: ../help/help.inc:203
+#: ../help/help.inc:205
 msgid ""
 "Here you can import account profiles from other server profiles (overwrite "
 "existing)."
@@ -5166,7 +5171,7 @@ msgstr ""
 "Hier können Sie einfache Filter angeben (z.B. 'wert' oder 'w*'). LAM filtert "
 "mit Berücksichtigung von Groß-/Kleinschreibung."
 
-#: ../help/help.inc:209
+#: ../help/help.inc:211
 msgid ""
 "Here you can load an account profile to set default settings for your "
 "account. The \"default\" profile is automatically loaded for new accounts."
@@ -5182,7 +5187,7 @@ msgstr "Hier können Sie Ihre Accountprofile verwalten."
 msgid "Here you can overwrite the display name for this account type."
 msgstr "Hier können Sie den Anzeigename für diesen Kontotyp überschreiben."
 
-#: ../help/help.inc:211
+#: ../help/help.inc:213
 msgid ""
 "Here you can select a PDF structure and export the account to a PDF file."
 msgstr ""
@@ -5228,7 +5233,7 @@ msgstr ""
 msgid "Here you can set the URL to a custom icon (32x32px) for this module."
 msgstr "Hier können Sie die URL für ein eigenes Symbol (32x32px) eintragen."
 
-#: ../help/help.inc:247
+#: ../help/help.inc:249
 msgid ""
 "Here you can specify additional CSS links to change the layout of the self "
 "service pages. This is useful to adapt them to your corporate design. Please "
@@ -5994,7 +5999,7 @@ msgstr ""
 
 #: ../lib/modules/mitKerberos.inc:184 ../lib/modules/sambaSamAccount.inc:296
 #: ../lib/modules/windowsUser.inc:215 ../lib/modules/heimdalKerberos.inc:128
-#: ../help/help.inc:217
+#: ../help/help.inc:219
 msgid ""
 "If you set this option then the user has to change his password at the next "
 "login."
@@ -6074,7 +6079,7 @@ msgid "Import"
 msgstr "Import"
 
 #: ../templates/pdfedit/pdfmain.php:220 ../templates/pdfedit/pdfmain.php:221
-#: ../help/help.inc:220
+#: ../help/help.inc:222
 msgid "Import PDF structures"
 msgstr "PDF-Strukturen importieren"
 
@@ -6083,7 +6088,7 @@ msgid "Import from server"
 msgstr "Vom Server importieren"
 
 #: ../templates/profedit/profilemain.php:208
-#: ../templates/profedit/profilemain.php:209 ../help/help.inc:202
+#: ../templates/profedit/profilemain.php:209 ../help/help.inc:204
 msgid "Import profiles"
 msgstr "Profile importieren"
 
@@ -6316,7 +6321,7 @@ msgid "Job title of user: President, department manager, ..."
 msgstr "Berufsbezeichnung des Benutzers: Präsident, Abteilungsleiter, ..."
 
 #: ../templates/config/confmodules.php:187 ../templates/config/jobs.php:174
-#: ../templates/config/jobs.php:290 ../templates/config/confmain.php:228
+#: ../templates/config/jobs.php:300 ../templates/config/confmain.php:228
 #: ../templates/config/moduleSettings.php:186
 #: ../templates/config/conftypes.php:205
 msgid "Jobs"
@@ -6467,7 +6472,7 @@ msgstr ""
 "festen Nummernkreis festlegen oder einen LDAP-Eintrag mit der Objektklasse "
 "\"sambaUnixIdPool\" oder \"msSFU30DomainInfo\" verwenden."
 
-#: ../help/help.inc:229
+#: ../help/help.inc:231
 msgid "LAM will search for accounts in this part of the LDAP tree."
 msgstr "LAM wird innerhalb dieses LDAP-Astes nach Objekten suchen."
 
@@ -6483,7 +6488,7 @@ msgstr ""
 "@givenname@ wird durch den ersten Buchstaben des Vornamens ersetzt. Es "
 "können nur Attribute des Tabs Persönlich verwendet werden."
 
-#: ../help/help.inc:231
+#: ../help/help.inc:233
 msgid ""
 "LAM will use this LDAP DN and password to search for accounts. It is "
 "sufficient to specify an account with read rights. If nothing is inserted "
@@ -6512,7 +6517,7 @@ msgstr "Die LDAP-DN der standardmäßigen PPolicy Passwortrichtlinie."
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP-Suffix ist ungültig!"
 
-#: ../templates/config/jobs.php:414
+#: ../templates/config/jobs.php:436
 msgid "LDAP connection ok."
 msgstr "LDAP-Verbindung ist ok."
 
@@ -6537,7 +6542,7 @@ msgid "LDAP error, server says:"
 msgstr "LDAP-Fehler, der Server meldet:"
 
 #: ../templates/multiEdit.php:119 ../templates/config/confmain.php:466
-#: ../help/help.inc:281
+#: ../help/help.inc:283
 msgid "LDAP filter"
 msgstr "LDAP-Filter"
 
@@ -6573,7 +6578,7 @@ msgstr "LDAP meldet"
 msgid "LDAP search"
 msgstr "LDAP-Suche"
 
-#: ../templates/selfService/adminMain.php:429 ../help/help.inc:232
+#: ../templates/selfService/adminMain.php:429 ../help/help.inc:234
 msgid "LDAP search attribute"
 msgstr "LDAP-Suchattribut"
 
@@ -6599,7 +6604,7 @@ msgstr ""
 #: ../templates/config/conftypes.php:265
 #: ../templates/selfService/adminMain.php:423
 #: ../templates/profedit/profilepage.php:207 ../help/help.inc:71
-#: ../help/help.inc:228 ../help/help.inc:279
+#: ../help/help.inc:230 ../help/help.inc:281
 msgid "LDAP suffix"
 msgstr "LDAP-Suffix"
 
@@ -6611,7 +6616,7 @@ msgstr "LDAP-Upload läuft. Bitte warten."
 msgid "LDAP user"
 msgstr "LDAP-Benutzer"
 
-#: ../help/help.inc:230
+#: ../help/help.inc:232
 msgid "LDAP user and password"
 msgstr "LDAP-Benutzer und Passwort"
 
@@ -6843,7 +6848,7 @@ msgstr "Liste der berechtigten Benutzer"
 msgid "Listeners"
 msgstr "Listener"
 
-#: ../lib/modules.inc:1253 ../help/help.inc:208
+#: ../lib/modules.inc:1253 ../help/help.inc:210
 msgid "Load profile"
 msgstr "Profil laden"
 
@@ -7009,11 +7014,11 @@ msgstr "Logging"
 msgid "Login"
 msgstr "Login"
 
-#: ../templates/selfService/adminMain.php:473 ../help/help.inc:234
+#: ../templates/selfService/adminMain.php:473 ../help/help.inc:236
 msgid "Login attribute label"
 msgstr "Beschriftung des Login-Attributs"
 
-#: ../templates/selfService/adminMain.php:482 ../help/help.inc:236
+#: ../templates/selfService/adminMain.php:482 ../help/help.inc:238
 msgid "Login caption"
 msgstr "Login-Überschrift"
 
@@ -7230,7 +7235,7 @@ msgstr "Mails an diesen Namen werden an die Empfänger weitergeleitet."
 msgid "Main"
 msgstr "Allgemein"
 
-#: ../templates/selfService/adminMain.php:488 ../help/help.inc:238
+#: ../templates/selfService/adminMain.php:488 ../help/help.inc:240
 msgid "Main page caption"
 msgstr "Überschrift der Hauptseite"
 
@@ -7999,7 +8004,7 @@ msgstr "Name-Server"
 msgid "Name servers (\"NS\" records)"
 msgstr "Name-Server (\"NS\"-Einträge)"
 
-#: ../help/help.inc:199
+#: ../help/help.inc:201
 msgid ""
 "Name under which the profile will be saved. If a profile with the same name "
 "exists, it will be overwritten."
@@ -8124,7 +8129,7 @@ msgstr "Neues Hauptpasswort wurde erfolgreich gesetzt."
 msgid "New object"
 msgstr "Neues Objekt"
 
-#: ../templates/ou_edit.php:190 ../help/help.inc:273
+#: ../templates/ou_edit.php:190 ../help/help.inc:275
 msgid "New organisational unit"
 msgstr "Neue Organisational Unit"
 
@@ -8564,6 +8569,7 @@ msgid "Notice"
 msgstr "Hinweis"
 
 #: ../lib/modules/ppolicyUser.inc:80 ../lib/modules/ppolicyUser.inc:594
+#: ../lib/modules/ppolicyUser.inc:623
 msgid "Notification period"
 msgstr "Benachrichtigungszeitraum"
 
@@ -8654,7 +8660,7 @@ msgstr "OU ist ungültig!"
 msgid "OU is not empty or invalid!"
 msgstr "OU ist nicht leer oder ungültig!"
 
-#: ../help/help.inc:273 ../help/help.inc:275
+#: ../help/help.inc:275 ../help/help.inc:277
 msgid "OU-Editor"
 msgstr "OU-Editor"
 
@@ -8786,7 +8792,7 @@ msgstr "Befehlsstatistiken"
 msgid "Operation successful. DN <b>%s</b> has been created."
 msgstr "Operation erfolgreich. DN <b>%s</b> wurde erzeugt."
 
-#: ../templates/multiEdit.php:121 ../help/help.inc:283
+#: ../templates/multiEdit.php:121 ../help/help.inc:285
 msgid "Operations"
 msgstr "Operationen"
 
@@ -8968,7 +8974,7 @@ msgid "PDF editor"
 msgstr "PDF-Editor"
 
 #: ../templates/masscreate.php:280 ../templates/pdfedit/pdfmain.php:316
-#: ../lib/lists.inc:706 ../help/help.inc:214
+#: ../lib/lists.inc:706 ../help/help.inc:216
 msgid "PDF structure"
 msgstr "PDF-Struktur"
 
@@ -9038,7 +9044,7 @@ msgstr ""
 msgid "Page count"
 msgstr "Seitenzahl"
 
-#: ../templates/selfService/adminMain.php:494 ../help/help.inc:244
+#: ../templates/selfService/adminMain.php:494 ../help/help.inc:246
 msgid "Page header"
 msgstr "Seitenkopf"
 
@@ -9132,7 +9138,7 @@ msgstr "Durchlauf"
 #: ../lib/modules/heimdalKerberos.inc:223
 #: ../lib/modules/heimdalKerberos.inc:698
 #: ../lib/modules/heimdalKerberos.inc:701 ../lib/modules.inc:1054
-#: ../help/help.inc:212
+#: ../help/help.inc:214
 msgid "Password"
 msgstr "Passwort"
 
@@ -9207,7 +9213,7 @@ msgstr "Passwortablauf"
 msgid "Password expiration must be are natural number or -1."
 msgstr "Passwortablauf muss eine natürliche Zahl oder -1 sein."
 
-#: ../templates/selfService/adminMain.php:478 ../help/help.inc:248
+#: ../templates/selfService/adminMain.php:478 ../help/help.inc:250
 msgid "Password field label"
 msgstr "Passwortfeldbezeichner"
 
@@ -9467,6 +9473,10 @@ msgstr ""
 msgid "Please add at least one extension owner."
 msgstr "Sie müssen mindestens einen Besitzer hinzufügen."
 
+#: ../help/help.inc:195
+msgid "Please add this line to your webserver's crontab."
+msgstr "Bitte fügen Sie folgende Zeile zur crontab Ihres Webservers hinzu."
+
 #: ../help/help.inc:159
 msgid ""
 "Please change this setting only if you experience problems in receiving "
@@ -9641,11 +9651,11 @@ msgstr "Bitte geben Sie eine Zahl für die Größenbeschränkung ein."
 #: ../lib/modules/zarafaUser.inc:427 ../lib/modules/zarafaUser.inc:428
 #: ../lib/modules/zarafaUser.inc:429 ../lib/modules/zarafaUser.inc:430
 #: ../lib/modules/zarafaUser.inc:431 ../lib/modules/zarafaUser.inc:433
-#: ../lib/modules/zarafaUser.inc:434 ../lib/modules/bindDLZ.inc:476
-#: ../lib/modules/kolabUser.inc:257 ../lib/modules/kolabUser.inc:258
-#: ../lib/modules/inetOrgPerson.inc:2568 ../lib/modules/inetOrgPerson.inc:2571
-#: ../lib/modules/inetOrgPerson.inc:2574 ../lib/modules/sudoRole.inc:285
-#: ../lib/modules/sudoRole.inc:286
+#: ../lib/modules/zarafaUser.inc:434 ../lib/modules/ppolicyUser.inc:623
+#: ../lib/modules/bindDLZ.inc:476 ../lib/modules/kolabUser.inc:257
+#: ../lib/modules/kolabUser.inc:258 ../lib/modules/inetOrgPerson.inc:2568
+#: ../lib/modules/inetOrgPerson.inc:2571 ../lib/modules/inetOrgPerson.inc:2574
+#: ../lib/modules/sudoRole.inc:285 ../lib/modules/sudoRole.inc:286
 msgid "Please enter a number."
 msgstr "Bitte geben Sie einen Zahl ein."
 
@@ -9810,7 +9820,8 @@ msgstr "Bitte geben Sie einen gültigen Laufwerksbuchstaben ein."
 #: ../lib/modules/qmailUser.inc:449 ../lib/modules/qmailUser.inc:450
 #: ../lib/modules/qmailUser.inc:451 ../lib/modules/qmailUser.inc:452
 #: ../lib/modules/qmailUser.inc:453 ../lib/modules/zarafaGroup.inc:198
-#: ../lib/modules/zarafaGroup.inc:199 ../lib/modules/windowsUser.inc:607
+#: ../lib/modules/zarafaGroup.inc:199 ../lib/modules/ppolicyUser.inc:615
+#: ../lib/modules/ppolicyUser.inc:619 ../lib/modules/windowsUser.inc:607
 #: ../lib/modules/windowsUser.inc:608 ../lib/modules/pykotaUser.inc:319
 #: ../lib/modules/pykotaUser.inc:320 ../lib/modules/inetOrgPerson.inc:80
 #: ../lib/modules/inetOrgPerson.inc:82
@@ -10336,7 +10347,7 @@ msgstr ""
 msgid "Please enter the password which you want to set for this account."
 msgstr "Bitte geben Sie das Passwort für diesen Account ein."
 
-#: ../help/help.inc:213
+#: ../help/help.inc:215
 msgid ""
 "Please enter the password which you want to set for this account. You may "
 "also generate a random password (12 characters) which will be displayed on "
@@ -10494,7 +10505,7 @@ msgstr ""
 msgid "Please select the field type (e.g. text field)."
 msgstr "Bitte wählen Sie den Feldtyp (z.B. Textfeld)."
 
-#: ../help/help.inc:280
+#: ../help/help.inc:282
 msgid "Please select the suffix where changes should be done."
 msgstr "Bitte wählen Sie den Suffix wo Änderungen stattfinden sollen."
 
@@ -10568,7 +10579,7 @@ msgstr ""
 "Bitte geben Sie die möglichen Werte des Feldes ein. Sie können jedem Wert "
 "eine Beschreibung zuordnen, die dem Benutzer statt des Wertes angezeigt wird."
 
-#: ../help/help.inc:284
+#: ../help/help.inc:286
 msgid ""
 "Please specify which attributes should be changed. The modify operation will "
 "also add an value if the attribute does not yet exist. To delete all values "
@@ -10872,7 +10883,7 @@ msgstr "Profilverwaltung"
 #: ../templates/selfService/profManage.php:233
 #: ../templates/profedit/profilepage.php:191
 #: ../templates/profedit/profilemain.php:283
-#: ../templates/profedit/profilemain.php:328 ../help/help.inc:198
+#: ../templates/profedit/profilemain.php:328 ../help/help.inc:200
 msgid "Profile name"
 msgstr "Profilname"
 
@@ -11073,7 +11084,7 @@ msgstr "Quotawarnlimit"
 #: ../templates/masscreate.php:339 ../templates/profedit/profilepage.php:218
 #: ../lib/modules/selfRegistration.inc:98
 #: ../lib/modules/selfRegistration.inc:210 ../lib/modules.inc:1015
-#: ../help/help.inc:196
+#: ../help/help.inc:198
 msgid "RDN identifier"
 msgstr "RDN-Bezeichner"
 
@@ -11493,7 +11504,8 @@ msgid "Replaced $user or $group in homedir."
 msgstr "$user und $group wurden im Heimatverzeichnis ersetzt."
 
 #: ../templates/config/confmain.php:374 ../lib/modules/ppolicyUser.inc:67
-#: ../lib/modules/ppolicyUser.inc:587 ../help/help.inc:267
+#: ../lib/modules/ppolicyUser.inc:587 ../lib/modules/ppolicyUser.inc:619
+#: ../help/help.inc:269
 msgid "Reply-to address"
 msgstr "Antwort-An Adresse"
 
@@ -11860,7 +11872,7 @@ msgstr "Samba PCs"
 msgid "Saturday"
 msgstr "Samstag"
 
-#: ../templates/config/confmodules.php:236 ../templates/config/jobs.php:330
+#: ../templates/config/confmodules.php:236 ../templates/config/jobs.php:340
 #: ../templates/config/confmain.php:496
 #: ../templates/config/moduleSettings.php:250
 #: ../templates/config/conftypes.php:371
@@ -12107,7 +12119,7 @@ msgstr "Passwort per mail senden"
 
 #: ../templates/lists/changePassword.php:332
 #: ../templates/lists/changePassword.php:377 ../lib/modules.inc:1077
-#: ../help/help.inc:218
+#: ../help/help.inc:220
 msgid "Send via mail"
 msgstr "Per mail senden"
 
@@ -12154,7 +12166,7 @@ msgstr ""
 "Sendet das alte Passwort zusammen mit dem neuen Passwort wenn der Benutzer "
 "das Passwort ändert."
 
-#: ../lib/modules/inetOrgPerson.inc:752 ../help/help.inc:219
+#: ../lib/modules/inetOrgPerson.inc:752 ../help/help.inc:221
 msgid ""
 "Sends the password to the user via mail. Please edit your LAM server profile "
 "to setup the mail settings."
@@ -12513,7 +12525,7 @@ msgstr ""
 "Legt fest ob LAM Referrals automatisch folgen soll. Aktivieren Sie diese "
 "Funktion nur wenn Sie Referrals in Ihrem LDAP-Verzeichnis verwenden."
 
-#: ../help/help.inc:270
+#: ../help/help.inc:272
 msgid ""
 "Specifies if password mails may be sent to mail addresses other than the "
 "user's LDAP mail address."
@@ -12521,7 +12533,7 @@ msgstr ""
 "Legt fest ob Passwortmails auch an EMail-Adressen gesendet werden dürfen die "
 "für diesen Benutzer nicht im LDAP-Verzeichnis stehen."
 
-#: ../help/help.inc:266
+#: ../help/help.inc:268
 msgid "Specifies if the mail should be sent as text or HTML."
 msgstr "Definiert, ob die email als Text oder HTML versendet wird."
 
@@ -12834,7 +12846,7 @@ msgstr "Untergruppen"
 #: ../lib/modules/selfRegistration.inc:231 ../lib/modules/ppolicyUser.inc:71
 #: ../lib/modules/ppolicyUser.inc:589 ../lib/modules/passwordSelfReset.inc:120
 #: ../lib/modules/passwordSelfReset.inc:566
-#: ../lib/modules/passwordSelfReset.inc:586 ../help/help.inc:258
+#: ../lib/modules/passwordSelfReset.inc:586 ../help/help.inc:260
 msgid "Subject"
 msgstr "Betreff"
 
@@ -13067,7 +13079,7 @@ msgstr "Tests"
 #: ../lib/modules/passwordSelfReset.inc:124
 #: ../lib/modules/passwordSelfReset.inc:134
 #: ../lib/modules/passwordSelfReset.inc:570
-#: ../lib/modules/passwordSelfReset.inc:590 ../help/help.inc:260
+#: ../lib/modules/passwordSelfReset.inc:590 ../help/help.inc:262
 msgid "Text"
 msgstr "Text"
 
@@ -13211,7 +13223,7 @@ msgstr "Der PC-Name darf nur A-Z, a-z und 0-9 enthalten."
 msgid "The PC name needs to be at least 2 characters long."
 msgstr "Der PC-Name muss mindestens zwei Zeichen lang sein."
 
-#: ../help/help.inc:215
+#: ../help/help.inc:217
 msgid ""
 "The PDF structure defines what information is exported as PDF file and how "
 "the pages are structured. You can manage the PDF structures in the PDF "
@@ -13275,7 +13287,7 @@ msgstr "Der Accounttyp ist ungültig."
 msgid "The account will be locked after this date."
 msgstr "Der Account wird nach diesem Datum gesperrt."
 
-#: ../help/help.inc:201
+#: ../help/help.inc:203
 msgid "The account will be saved under this LDAP suffix."
 msgstr "Der Account wird unter diesem LDAP-Suffix gespeichert."
 
@@ -13641,7 +13653,7 @@ msgstr ""
 msgid "The mail text of all mails."
 msgstr "Der Text aller emails."
 
-#: ../help/help.inc:261
+#: ../help/help.inc:263
 msgid "The mail text of all password mails."
 msgstr "Der Text für alle Passwortmails."
 
@@ -14079,7 +14091,7 @@ msgstr "Der Straßenname der Benutzeradresse."
 msgid "The subject of all mails."
 msgstr "Der Betreff der emails."
 
-#: ../help/help.inc:259
+#: ../help/help.inc:261
 msgid "The subject of all password mails."
 msgstr "Der Betreff aller Passwortmails."
 
@@ -14279,7 +14291,7 @@ msgstr "Es wurden keine Attribute als RDN-Attribut markiert."
 msgid "The wildcard for the account creation link is @@creationLink@@."
 msgstr "Der Platzhalter für den Erstellungslink ist @@creationLink@@."
 
-#: ../lib/modules/passwordSelfReset.inc:127 ../help/help.inc:264
+#: ../lib/modules/passwordSelfReset.inc:127 ../help/help.inc:266
 msgid "The wildcard for the new password is @@newPassword@@."
 msgstr "Der Platzhalter für das neue Passwort ist @@newPassword@@."
 
@@ -14401,7 +14413,7 @@ msgstr ""
 "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen "
 "Gruppennamen."
 
-#: ../help/help.inc:245
+#: ../help/help.inc:247
 msgid ""
 "This HTML code will be placed on top of all self service pages. E.g. you can "
 "use this to place your custom logo. Any HTML code is permitted."
@@ -14534,10 +14546,9 @@ msgstr "Dieses Dokument wurde von LDAP Account Manager erstellt."
 #: ../lib/modules/ppolicyUser.inc:68
 msgid "This email address will be set as reply-to address of all mails."
 msgstr ""
-"Diese EMailadresse wird als Antwort-An Adresse für alle emails "
-"verwendet."
+"Diese EMailadresse wird als Antwort-An Adresse für alle emails verwendet."
 
-#: ../help/help.inc:268
+#: ../help/help.inc:270
 msgid ""
 "This email address will be set as reply-to address of all password mails."
 msgstr ""
@@ -14552,7 +14563,7 @@ msgstr ""
 "Diese Adresse wird als Absenderadresse für die emails verwendet. Falls leer "
 "dann wird die Systemeinstellung (php.ini) verwendet."
 
-#: ../help/help.inc:257
+#: ../help/help.inc:259
 msgid ""
 "This email address will be set as sender address of all password mails. If "
 "empty the system default (php.ini) will be used."
@@ -14717,7 +14728,7 @@ msgstr ""
 msgid "This is an optional description for this entry."
 msgstr "Hier können Sie eine optionale Beschreibung für den Eintrag angeben."
 
-#: ../help/help.inc:233
+#: ../help/help.inc:235
 msgid ""
 "This is needed to find the LDAP DNs of your user accounts. E.g. if you use "
 "\"uid\" and your user inputs \"miller\" then LAM will search for an account "
@@ -14732,9 +14743,10 @@ msgstr ""
 #: ../lib/modules/device.inc:142 ../lib/modules/eduPerson.inc:246
 #: ../lib/modules/eduPerson.inc:248 ../lib/modules/zarafaAddressList.inc:170
 #: ../lib/modules/posixAccount.inc:131 ../lib/modules/posixAccount.inc:132
-#: ../lib/modules/inetOrgPerson.inc:100 ../lib/modules/freeRadius.inc:342
-#: ../lib/modules/aliasEntry.inc:86 ../lib/modules/qmailGroup.inc:433
-#: ../lib/modules/qmailGroup.inc:434 ../lib/modules/qmailGroup.inc:435
+#: ../lib/modules/ppolicyUser.inc:627 ../lib/modules/inetOrgPerson.inc:100
+#: ../lib/modules/freeRadius.inc:342 ../lib/modules/aliasEntry.inc:86
+#: ../lib/modules/qmailGroup.inc:433 ../lib/modules/qmailGroup.inc:434
+#: ../lib/modules/qmailGroup.inc:435
 msgid "This is not a valid DN!"
 msgstr "Das ist keine korrekte DN!"
 
@@ -14895,7 +14907,7 @@ msgstr "Das ist der Gruppenname, der in Windows angezeigt wird."
 msgid "This is the host's location (e.g. Munich, server room 3)."
 msgstr "Das ist der Standort des Servers (z.B. München, Serverraum 3)."
 
-#: ../help/help.inc:197
+#: ../help/help.inc:199
 msgid ""
 "This is the identifier for the relative DN value. It must be one of the "
 "given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while "
@@ -15246,7 +15258,7 @@ msgstr ""
 "Hier spezifizieren Sie, was passiert wenn die Client-Verbindung getrennt "
 "wird."
 
-#: ../help/help.inc:237
+#: ../help/help.inc:239
 msgid ""
 "This text is displayed on top of the self service login page. You can also "
 "input HTML code here."
@@ -15254,7 +15266,7 @@ msgstr ""
 "Dieser Text wird oben auf der SelfService-Loginseite angezeigt. Sie können "
 "auch HTML-Code eingeben."
 
-#: ../help/help.inc:239
+#: ../help/help.inc:241
 msgid ""
 "This text is displayed on top of the self service main page. You can also "
 "input HTML code here."
@@ -15262,7 +15274,7 @@ msgstr ""
 "Dieser Text wird oben auf der SelfService-Hauptseite angezeigt. Sie können "
 "auch HTML-Code eingeben."
 
-#: ../help/help.inc:249
+#: ../help/help.inc:251
 msgid ""
 "This text is placed as label for the password field on the login page. LAM "
 "will use \"Password\" if you do not enter any text."
@@ -15270,7 +15282,7 @@ msgstr ""
 "Dieser Text wird als Beschreibung für das Passwortfeld auf der Loginseite "
 "angezeigt. LAM verwendet \"Passwort\" wenn Sie nichts eingeben."
 
-#: ../help/help.inc:235
+#: ../help/help.inc:237
 msgid ""
 "This text should shortly describe your selected LDAP search attribute (e.g. "
 "email or user name)."
@@ -15341,7 +15353,7 @@ msgid "This value must be a list of user names separated by semicolons."
 msgstr ""
 "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
 
-#: ../help/help.inc:274
+#: ../help/help.inc:276
 msgid "This will create a new organisational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organisational Unit unterhalb der markierten."
 
@@ -15351,7 +15363,7 @@ msgstr ""
 "Wenn Sie dieses Kästchen aktivieren, dann wird das Heimatverzeichnis des "
 "Benutzers auf dem angegebenen Server erstellt."
 
-#: ../help/help.inc:276
+#: ../help/help.inc:278
 msgid ""
 "This will delete the selected organisational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organisational Unit. Die OU muss leer sein."
@@ -15400,7 +15412,7 @@ msgstr ""
 "Hiermit setzen Sie ein Zufallspasswort, das auf dem Bildschirm angezeigt "
 "wird oder senden es dem Benutzer per mail."
 
-#: ../help/help.inc:255
+#: ../help/help.inc:257
 msgid ""
 "This will set a random password and display it on the screen or send it to "
 "the user via mail. Please edit your LAM server profile to setup the mail "
@@ -15684,7 +15696,7 @@ msgstr ""
 "Ihr Konto konnte nicht verändert werden. Ihre Änderungen verletzen u.U. die "
 "Passwortrichtlinie."
 
-#: ../templates/config/jobs.php:401
+#: ../templates/config/jobs.php:423
 msgid "Unable to connect to database."
 msgstr "Kann keine Verbindung zur Datenbank herstellen."
 
@@ -16038,7 +16050,7 @@ msgstr "Verwenden Sie * für alle Dienste."
 msgid "Use Unix password"
 msgstr "Unix-Passwort verwenden"
 
-#: ../templates/selfService/adminMain.php:442 ../help/help.inc:252
+#: ../templates/selfService/adminMain.php:442 ../help/help.inc:254
 msgid "Use for all operations"
 msgstr "Für alle Operationen verwenden"
 
@@ -16050,7 +16062,7 @@ msgstr "Für alle Operationen verwenden"
 msgid "Use no password"
 msgstr "Kein Passwort setzen"
 
-#: ../help/help.inc:282
+#: ../help/help.inc:284
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. \"(cn!=admin)\") to reduce "
 "the number of entries to modify."
@@ -16066,7 +16078,7 @@ msgstr ""
 "Mit dem zusätzlichen LDAP-Filter (z.B. \"(cn!=admin)\") können Sie die "
 "Anzahl sichtbarer Einträge für diesen Accounttyp reduzieren."
 
-#: ../help/help.inc:251
+#: ../help/help.inc:253
 msgid ""
 "Use this to enter an additional LDAP filter (e.g. "
 "\"(objectClass=passwordSelfReset)\") to reduce the number of accounts who "
@@ -16824,7 +16836,7 @@ msgid "You can use this to temporarily deactivate the Zarafa extension."
 msgstr "Sie können hiermit die Zarafa-Erweiterung temporär deaktivieren."
 
 #: ../lib/modules/ppolicyUser.inc:77 ../lib/modules/passwordSelfReset.inc:126
-#: ../lib/modules/passwordSelfReset.inc:136 ../help/help.inc:263
+#: ../lib/modules/passwordSelfReset.inc:136 ../help/help.inc:265
 msgid ""
 "You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. "
 "@@uid@@ for the user name)."
@@ -17578,6 +17590,9 @@ msgstr "mit"
 #: ../lib/modules/fixed_ip.inc:751
 msgid "yes"
 msgstr "ja"
+
+#~ msgid "Cron"
+#~ msgstr "Cron"
 
 #~ msgid "Abu Dhabi, Muscat, Baku"
 #~ msgstr "Abu Dhabi, Muscat, Baku"
