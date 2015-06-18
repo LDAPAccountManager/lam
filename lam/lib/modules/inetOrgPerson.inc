@@ -1875,7 +1875,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$filename = 'userCertificate' . getRandomNumber() . '.der';
 				$pathOut = dirname(__FILE__) . '/../../tmp/' . $filename;
 				$out = @fopen($pathOut, "wb");
-				@chmod($pathOut, 0600);
+				@chmod($pathOut, 0640);
 				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
 				fclose ($out);
 				$path = '../../tmp/' . $filename;

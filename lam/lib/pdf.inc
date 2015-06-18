@@ -165,7 +165,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		$filename = '../../tmp/' . getRandomNumber() . time() .'.pdf';
 		// Save PDF
 		$pdf->Output($filename);
-		chmod($filename, 0600);
+		chmod($filename, 0640);
 		// return PDF file name
 		return $filename;
 	}
