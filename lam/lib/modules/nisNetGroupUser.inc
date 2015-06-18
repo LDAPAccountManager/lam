@@ -288,6 +288,10 @@ class nisNetGroupUser extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
+		$accountContainer = $this->getAccountContainer();
+		if (empty($accountContainer)) {
+			return array();
+		}
 		$uid = $this->getUid();
 		if (empty($uid)) {
 			return array();
