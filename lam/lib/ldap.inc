@@ -54,7 +54,7 @@ class Ldap{
 
 	/** Server handle */
 	private $server;
-	
+
 	/** LDAP connection established */
 	private $is_connected = false;
 
@@ -65,7 +65,7 @@ class Ldap{
 
 	/**
 	* Creates a new LDAP object.
-	* 
+	*
 	* @param object $config an object of class Config
 	*/
 	function __construct($config) {

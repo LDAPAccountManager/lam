@@ -516,7 +516,7 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 
 /**
  * Runs any actions that need to be done before an LDAP entry is created.
- * 
+ *
  * @param String $scope account type
  * @param array $selectedModules list of selected account modules
  * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
@@ -603,7 +603,7 @@ function getRequiredExtensions() {
 
 /**
 * Takes a list of meta-HTML elements and prints the equivalent HTML output.
-* 
+*
 * The modules are not allowed to display HTML code directly but return
 * meta HTML code. This allows to have a common design for all module pages.
 *
@@ -677,7 +677,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 * @package modules
 */
 class accountContainer {
-	
+
 	/**
 	* Constructor
 	*
@@ -726,7 +726,7 @@ class accountContainer {
 
 	/** RDN attribute of this account */
 	public $rdn;
-	
+
 	/** DN of saved account */
 	public $finalDN;
 
@@ -747,13 +747,13 @@ class accountContainer {
 
 	/** True if this is a newly created account */
 	public $isNewAccount;
-	
+
 	/** name of last loaded account profile */
 	private $lastLoadedProfile = '';
-	
+
 	/** cache for existing OUs */
 	private $cachedOUs = null;
-	
+
 	/** main title in title bar */
 	private $titleBarTitle = null;
 	/** subtitle in title bar */
@@ -762,7 +762,7 @@ class accountContainer {
 	private $sendPasswordViaMail = null;
 	/** send password via mail to this alternate address */
 	private $sendPasswordViaMailAlternateAddress = null;
-	
+
 	/** random ID number to avoid parallel editing of accounts in multiple browser tabs */
 	private $randomID = null;
 
@@ -780,7 +780,7 @@ class accountContainer {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Returns the included account modules.
 	 *
@@ -789,7 +789,7 @@ class accountContainer {
 	function getAccountModules() {
 		return $this->module;
 	}
-	
+
 	/**
 	* Returns the accout type of this object (e.g. user, group, host).
 	*
@@ -959,10 +959,10 @@ class accountContainer {
 		}
 		$this->printPageFooter();
 	}
-	
+
 	/**
 	 * Prints the content part provided by the current module.
-	 * 
+	 *
 	 * @param array $result list of messages
 	 * @param boolean $stopProcessing true if page should end after displaying the messages
 	 */
@@ -1116,10 +1116,10 @@ class accountContainer {
 		}
 		echo "</div>\n";
 	}
-	
+
 	/**
 	 * Sets the new password in all selected account modules.
-	 * 
+	 *
 	 * @param array $input input parameters
 	 */
 	public function setNewPassword($input) {
@@ -1195,12 +1195,12 @@ class accountContainer {
 		if ($return['errorsOccured'] == 'false') {
 			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
 		}
-		return $return;		
+		return $return;
 	}
-	
+
 	/**
 	 * Returns if any module manages the mail attribute.
-	 * 
+	 *
 	 * @return boolean mail is managed
 	 */
 	private function anyModuleManagesMail() {
@@ -1211,10 +1211,10 @@ class accountContainer {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Prints common controls like the save button and the ou selection.
-	 * 
+	 *
 	 * @param int $tabindex tabindex for GUI elements
 	 */
 	private function printCommonControls(&$tabindex) {
@@ -1243,7 +1243,7 @@ class accountContainer {
 			$leftButtonGroup->addElement($passwordButton);
 		}
 		$table->addElement($leftButtonGroup);
-		
+
 		$rightGroup = new htmlGroup();
 		$rightGroup->alignment = htmlElement::ALIGN_RIGHT;
 		// profile selection
@@ -1261,7 +1261,7 @@ class accountContainer {
 			$rightGroup->addElement(new htmlHelpLink('401'));
 		}
 		$table->addElement($rightGroup);
-		
+
 		parseHtml(null, $table, array(), false, $tabindex, $this->type);
 		?>
 		<script type="text/javascript">
@@ -1279,7 +1279,7 @@ class accountContainer {
 		</script>
 		<?php
 	}
-	
+
 	/**
 	 * Returns if the page should show a button to set the password.
 	 *
@@ -1293,7 +1293,7 @@ class accountContainer {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Prints the header of the account pages.
 	 */
@@ -1308,10 +1308,10 @@ class accountContainer {
 				});
 			</script>';
 		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";
-		echo '<input type="hidden" name="account_randomID" value="' . $this->randomID . '">';		
-		echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';		
+		echo '<input type="hidden" name="account_randomID" value="' . $this->randomID . '">';
+		echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 	}
-	
+
 	/**
 	 * Prints the footer of the account pages.
 	 */
@@ -1319,7 +1319,7 @@ class accountContainer {
 		echo "</form>\n";
 		include '../main_footer.php';
 	}
-	
+
 	/**
 	 * Prints the HTML code to notify the user about the successful saving.
 	 *
@@ -1335,7 +1335,7 @@ class accountContainer {
 			$text = _("Account was modified successfully.");
 		}
 		echo "<div class=\"".$this->type."-bright smallPaddingContent\">";
-		
+
 		$container = new htmlTable();
 		// show messages
 		for ($i = 0; $i < sizeof($messages); $i++) {
@@ -1354,7 +1354,7 @@ class accountContainer {
 		$message->colspan = 10;
 		$container->addElement($message, true);
 		$container->addElement(new htmlSpacer(null, '20px'), true);
-		
+
 		$type = new $this->type();
 		$buttonGroup = new htmlGroup();
 		if (checkIfNewEntriesAreAllowed($this->type)) {
@@ -1375,17 +1375,17 @@ class accountContainer {
 		$backToEditButton->setIconClass('editButton');
 		$buttonGroup->addElement($backToEditButton);
 		$container->addElement($buttonGroup, true);
-		
+
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, $this->type);
 
 		echo "</div>\n";
 		$this->printPageFooter();
 	}
-	
+
 	/**
 	 * Checks if the user requested to load a profile.
-	 * 
+	 *
 	 * @return boolean true, if profile was loaded
 	 */
 	private function loadProfileIfRequested() {
@@ -1407,13 +1407,13 @@ class accountContainer {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Prints the HTML code of the module tabs.
 	 */
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
-		$x=1;		
+		$x=1;
 		echo '<ul class="lamEqualHeightTabContent ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
 		// Loop for each module
 		for ($i=0; $i<count($this->order); $i++ ) {
@@ -1445,7 +1445,7 @@ class accountContainer {
 		}
 		echo '</ul>';
 	}
-	
+
 	/**
 	* This function checks which LDAP attributes have changed while the account was edited.
 	*
@@ -1531,7 +1531,7 @@ class accountContainer {
 	*
 	* @param string $dn the DN of the account
 	* @param array $infoAttributes list of additional informational attributes that are added to the LDAP attributes
-	* E.g. this is used to inject the clear text password in the file upload. Informational attribute names must start with "INFO.". 
+	* E.g. this is used to inject the clear text password in the file upload. Informational attribute names must start with "INFO.".
 	* @return array error messages
 	*/
 	function load_account($dn, $infoAttributes = array()) {
@@ -2073,7 +2073,7 @@ class accountContainer {
 			$this->current_page = array_search($currentPage, $this->order);
 		}
 	}
-	
+
 	/**
 	 * Returns the RDN part of a given DN.
 	 *
@@ -2085,7 +2085,7 @@ class accountContainer {
 		$rdn = substr($dn, 0, strpos($dn, ","));
 		return $rdn;
 	}
-	
+
 	/**
 	 * Returns the parent DN of a given DN.
 	 *
@@ -2095,9 +2095,9 @@ class accountContainer {
 	function getParentDN($dn) {
 		if (($dn == "") || ($dn == null)) return "";
 		$parent = substr($dn, strpos($dn, ",") + 1);
-		return $parent;		
+		return $parent;
 	}
-	
+
 	/**
 	 * Returns a list of OUs that exist for this account type.
 	 *
@@ -2145,23 +2145,23 @@ class accountContainer {
  * @package modules
  */
 interface passwordService {
-	
+
 	/**
 	 * This method specifies if a module manages password attributes. The module alias will
-	 * then appear as option in the GUI. 
+	 * then appear as option in the GUI.
 	 * <br>If the module only wants to get notified about password changes then return false.
 	 *
 	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes();
-	
+
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange();
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
