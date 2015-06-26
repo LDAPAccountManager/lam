@@ -41,7 +41,7 @@ checkClientIP();
 /**
  * Starts a session and checks the environment.
  * The script is stopped if one of the checks fail (timeout redirection may be overriden).
- * 
+ *
  * @param boolean $redirectToLogin redirect user to login page (default: true)
  * @param boolean $initSecureData init verification data like session ID and client IP (default: false)
  * @return boolean true if all ok, false if session expired
@@ -278,7 +278,7 @@ function checkIfPasswordChangeIsAllowed() {
 /**
  * Checks if it is allowed to create new LDAP entries of the given type.
  * This also checks if general write access is enabled.
- * 
+ *
  * @param String $scope account type (e.g. 'user')
  * @return boolean true, if new entries are allowed
  */
@@ -298,7 +298,7 @@ function checkIfNewEntriesAreAllowed($scope) {
 
 /**
  * Checks if it is allowed to delete LDAP entries of the given type.
- * 
+ *
  * @param String $scope account type (e.g. 'user')
  * @return boolean true, if entries may be deleted
  */
@@ -318,10 +318,10 @@ function checkIfDeleteEntriesIsAllowed($scope) {
 
 /**
  * Checks if the password fulfills the password policies.
- * 
+ *
  * @param String $password password
  * @param String $userName user name
- * @param array $otherUserAttrs user's first/last name 
+ * @param array $otherUserAttrs user's first/last name
  * @return mixed true if ok, string with error message if not valid
  */
 function checkPasswordStrength($password, $userName, $otherUserAttrs) {
@@ -460,7 +460,7 @@ function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 /**
  * Checks if the given tool is active.
  * Otherwise, an error message is logged and the execution is stopped (die()).
- * 
+ *
  * @param String $tool tool class name (e.g. toolFileUpload)
  */
 function checkIfToolIsActive($tool) {
@@ -474,7 +474,7 @@ function checkIfToolIsActive($tool) {
 
 /**
  * Returns if the user is logged in.
- * 
+ *
  * @return boolean is logged in
  */
 function isLoggedIn() {
@@ -483,11 +483,11 @@ function isLoggedIn() {
 
 /**
  * Returns the client IP and comma separated proxy IPs if any (HTTP_X_FORWARDED_FOR, HTTP_X_REAL_IP).
- * 
+ *
  * @return String client IP (e.g. 10.10.10.10,11.11.11.11)
  */
 function getClientIPForLogging() {
-	$ip = $_SERVER['REMOTE_ADDR'];
+	$ip = empty($_SERVER['REMOTE_ADDR']) ? '' : $_SERVER['REMOTE_ADDR'];
 	if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && (strlen($_SERVER['HTTP_X_FORWARDED_FOR']) < 100)) {
 		$ip .= ',' . $_SERVER['HTTP_X_FORWARDED_FOR'];
 	}
@@ -506,7 +506,7 @@ function addSecurityTokenToSession() {
 
 /**
  * Checks if the security token from SESSION matches POST data.
- * 
+ *
  * @param $post use POST, set to false for GET (default: true)
  */
 function validateSecurityToken($post = true) {
@@ -523,7 +523,7 @@ function validateSecurityToken($post = true) {
 /**
  * Adds a hidden input field to the given meta HTML table.
  * Should be used to add token at the end of table.
- * 
+ *
  * @param htmlTable $container table
  */
 function addSecurityTokenToMetaHTML(&$container) {
@@ -532,7 +532,7 @@ function addSecurityTokenToMetaHTML(&$container) {
 
 /**
  * Returns the name of the security token parameter.
- * 
+ *
  * @return String name
  */
 function getSecurityTokenName() {
@@ -541,7 +541,7 @@ function getSecurityTokenName() {
 
 /**
  * Returns the value of the security token parameter.
- * 
+ *
  * @return String value
  */
 function getSecurityTokenValue() {
