@@ -54,7 +54,7 @@ function array_delete($values, $array) {
 
 /**
  * Checks if a string exists in an array, ignoring case.
- * 
+ *
  * @param String $needle search string
  * @param array $haystack array
  */
@@ -182,7 +182,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 
 /**
  * Returns the list of supported hash types (e.g. SSHA).
- * 
+ *
  * @return array hash types
  */
 function getSupportedHashTypes() {
@@ -259,7 +259,7 @@ function pwd_disable($hash) {
 /**
  * Checks if a Unix password can be locked.
  * This checks if the password is not plain text but e.g. contains {SSHA}.
- * 
+ *
  * @param String $password password value
  * @return boolean can be locked
  */
@@ -320,7 +320,7 @@ function generateRandomPassword() {
 
 /**
  * Checks if the given password mathes the crypto hash.
- * 
+ *
  * @param String type hash type (must be one of getSupportedHashTypes())
  * @param unknown_type $hash password hash value
  * @param unknown_type $password plain text password to check
@@ -430,10 +430,10 @@ class samba3domain {
 
 	/** RID base to calculate RIDs, default 1000 */
 	public $RIDbase = 1000;
-	
+
 	/** seconds after the password can be changed */
 	public $minPwdAge;
-	
+
 	/** seconds after the password must be changed */
 	public $maxPwdAge;
 }
@@ -462,10 +462,10 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'groupname':	// all letters, numbers, space and ._- are allowed characters
 		case 'username':
-		case 'hostname':	
+		case 'hostname':
 					$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_\\$-])+$/u';
 					break;
-		case 'krbUserName':	
+		case 'krbUserName':
 					$pregexpr = '/^([[:alnum:]#@\\/\\.\\ \\_\\$-])+$/u';
 					break;
 		case 'hostObject':
@@ -724,7 +724,7 @@ function searchLDAP($suffix, $filter, $attributes) {
 
 /**
  * Runs an LDAP search and uses paging if configured.
- * 
+ *
  * @param handle $server LDAP connection handle
  * @param String $dn DN
  * @param String $filter filter
@@ -769,7 +769,7 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 
 /**
  * Returns the given DN.
- * 
+ *
  * @param String $dn DN
  * @param array $attributes list of attributes to fetch
  * @param handle $handle LDAP handle (optional for admin interface pages)
@@ -859,7 +859,7 @@ function cleanLDAPResult(&$entries) {
  */
 function getAbstractDN($dn) {
 	if ($dn == '') {
-		return '';	
+		return '';
 	}
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < sizeof($parts); $i++) {
@@ -912,7 +912,7 @@ function compareDN(&$a, &$b) {
 
 /**
  * Formats an LDAP time string (e.g. from createTimestamp).
- * 
+ *
  * @param String $time LDAP time value
  * @return String formated time
  */
@@ -925,7 +925,7 @@ function formatLDAPTimestamp($time) {
 
 /**
  * Simple function to obfuscate strings.
- * 
+ *
  * @param String $text text to obfuscate
  */
 function obfuscateText($text) {
@@ -937,7 +937,7 @@ function obfuscateText($text) {
 
 /**
  * Simple function to deobfuscate strings.
- * 
+ *
  * @param String $text text to deobfuscate
  */
 function deobfuscateText($text) {
@@ -952,7 +952,7 @@ function deobfuscateText($text) {
 
 /**
  * Checks if the given text is obfuscated.
- * 
+ *
  * @param String $text text to check
  * @return boolean obfuscated or not
  */
@@ -971,7 +971,7 @@ function isObfuscatedText($text) {
 
 /**
  * Extracts the RDN attribute name from a given DN.
- * 
+ *
  * @param String $dn DN
  * @return String RDN attribute name
  */
@@ -983,7 +983,7 @@ function extractRDNAttribute($dn) {
 
 /**
  * Extracts the RDN attribute value from a given DN.
- * 
+ *
  * @param String $dn DN
  * @return String RDN attribute value
  */
@@ -996,7 +996,7 @@ function extractRDNValue($dn) {
 /**
  * Extracts the DN suffix from a given DN.
  * E.g. ou=people,dc=test,dc=com will result in dc=test,dc=com.
- * 
+ *
  * @param String $dn DN
  * @return String DN suffix
  */
@@ -1068,10 +1068,11 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 
 /**
  * Generates the email header text for the given parameters.
- * 
+ *
  * @param String $from FROM address
  * @param boolean $isHTML mail is formatted as HTML or plain text
  * @param String $replyTo reply-to address (optional)
+ * @return String header lines
  */
 function createEMailHeaders($from, $isHTML, $replyTo = null) {
 	$headerLines = "X-Mailer: LDAP Account Manager\r\n";
@@ -1099,7 +1100,7 @@ function createEMailHeaders($from, $isHTML, $replyTo = null) {
 
 /**
  * Returns a base64 encoded string of the given values in a fomat that is used in emails.
- * 
+ *
  * @param String $value value to encode
  * @return String base64 encoded value
  */
@@ -1109,7 +1110,7 @@ function base64EncodeForEMail($value) {
 
 /**
  * Sends out an email.
- * 
+ *
  * @param String $to TO address
  * @param String $subject email subject
  * @param String $text mail body (with \r\n EOL)
@@ -1127,17 +1128,17 @@ function sendEMail($to, $subject, $text, $headers) {
 /**
  * Caches module objects.
  * This improves performance if the same module does not need to be created multiple times (calling get_metaData() each time).
- * 
+ *
  * @author Roland Gruber
  */
 class moduleCache {
-	
+
 	/** module cache ("name:scope" => module) */
 	private static $cache = array();
-	
+
 	/**
 	 * Returns a new/cached module with the given name and scope.
-	 * 
+	 *
 	 * @param String $name module name
 	 * @param String $scope module scope (e.g. user)
 	 */
@@ -1150,12 +1151,12 @@ class moduleCache {
 			return moduleCache::$cache[$name . ':' . $scope];
 		}
 	}
-	
+
 }
 
 /**
  * Returns a random number.
- * 
+ *
  * @return int random number
  */
 function getRandomNumber() {
@@ -1167,10 +1168,10 @@ function getRandomNumber() {
 
 /**
  * Connects to the LDAP server and extracts the certificates.
- * 
+ *
  * @param String $server server name
  * @param String $port server port
- * @return mixed false on error and certificate if extracted successfully 
+ * @return mixed false on error and certificate if extracted successfully
  */
 function getLDAPSSLCertificate($server, $port) {
 	$stream = @stream_context_create(array("ssl" => array("capture_peer_cert_chain" => true)));
@@ -1202,7 +1203,7 @@ function getLDAPSSLCertificate($server, $port) {
 
 /**
  * Returns the extended LDAP error message if any.
- * 
+ *
  * @param handle $server LDAP server handle
  * @return String error message
  */
@@ -1218,7 +1219,7 @@ function getExtendedLDAPErrorMessage($server) {
 /**
  * Returns the default error message to display on the web page.
  * HTML special characters are already escaped.
- * 
+ *
  * @param handle $server LDAP server handle
  * @return String error message
  */
@@ -1239,7 +1240,7 @@ function getDefaultLDAPErrorString($server) {
 /**
  * Returns the URL under which the page was loaded.
  * This includes any GET parameters set.
- * 
+ *
  * @return String URL
  */
 function getCallingURL() {
@@ -1260,7 +1261,7 @@ function getCallingURL() {
 
 /**
  * Returns the offset in hours from configured time zone to GMT.
- * 
+ *
  * @return int offset
  */
 function getTimeZoneOffsetHours() {
@@ -1271,7 +1272,7 @@ function getTimeZoneOffsetHours() {
 
 /**
  * Returns the configured time zone.
- * 
+ *
  * @return DateTimeZone time zone
  */
 function getTimeZone() {
