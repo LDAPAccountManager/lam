@@ -1,9 +1,9 @@
 <Files *>
-  <IfVersion < 2.3>
+  <IfModule !mod_authz_core.c>
     Order allow,deny
     Deny from all
-  </IfVersion>
-  <IfVersion >= 2.3>
+  </IfModule>
+  <IfModule mod_authz_core.c>
     Require all denied
-  </IfVersion>
+  </IfModule>
 </Files>

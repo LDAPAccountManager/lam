@@ -1,11 +1,11 @@
 <Files *>
   Options +FollowSymLinks
-  <IfVersion < 2.3>
+  <IfModule !mod_authz_core.c>
     Order allow,deny
     Allow from all
-  </IfVersion>
-  <IfVersion >= 2.3>
+  </IfModule>
+  <IfModule mod_authz_core.c>
     Require all granted
-  </IfVersion>
+  </IfModule>
   DirectoryIndex index.html
 </Files>
