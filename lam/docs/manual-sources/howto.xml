@@ -1895,7 +1895,10 @@ Have fun!
           <title>PPolicy: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their
-          password expires. Job can be added multiple times (e.g. to send a
+          password expires.</para>
+
+          <para>You need to activate the PPolicy module for users to be able
+          to add this job. The job can be added multiple times (e.g. to send a
           second warning at a later time).</para>
 
           <para>LAM calculates the expiration date based on the last password
