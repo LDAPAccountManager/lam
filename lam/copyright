@@ -1,4 +1,4 @@
-This software is copyright (c) 2003 - 2014 by Roland Gruber
+This software is copyright (c) 2003 - 2015 by Roland Gruber
 
 If you purchased a copy of LDAP Account Manager Pro then the following
 files are licensed under the conditions which you accepted at purchase
@@ -6,6 +6,10 @@ time.
 
 * templates/lists/changePassword.php
 * templates/selfService/*
+* templates/config/jobs.php
+* lib/cron.*
+* lib/database.inc*
+* lib/jobs.inc*
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
