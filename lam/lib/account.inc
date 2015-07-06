@@ -1276,6 +1276,9 @@ function getTimeZoneOffsetHours() {
  * @return DateTimeZone time zone
  */
 function getTimeZone() {
+	if (empty($_SESSION['config'])) {
+		return new DateTimeZone('UTC');
+	}
 	$timeZone = $_SESSION['config']->getTimeZone();
 	return new DateTimeZone($timeZone);
 }
