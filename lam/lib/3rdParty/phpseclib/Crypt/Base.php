@@ -47,9 +47,8 @@
  * @package   Crypt_Base
  * @author    Jim Wigginton <terrafrost@php.net>
  * @author    Hans-Juergen Petrich <petrich@tronic-media.com>
- * @copyright MMVII Jim Wigginton
+ * @copyright 2007 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @version   1.0.1
  * @link      http://phpseclib.sourceforge.net
  */
 
@@ -117,7 +116,6 @@ define('CRYPT_MODE_MCRYPT', 2);
  * @package Crypt_Base
  * @author  Jim Wigginton <terrafrost@php.net>
  * @author  Hans-Juergen Petrich <petrich@tronic-media.com>
- * @version 1.0.0
  * @access  public
  */
 class Crypt_Base
@@ -279,7 +277,7 @@ class Crypt_Base
      * $buffer bytes > $cfb_init_len than
      * using the $ecb resource furthermore.
      *
-     * This value depends of the choosen cipher
+     * This value depends of the chosen cipher
      * and the time it would be needed for it's
      * initialization [by mcrypt_generic_init()]
      * which, typically, depends on the complexity
@@ -438,9 +436,9 @@ class Crypt_Base
      *
      * - CRYPT_MODE_OFB
      *
-     * (or the alias constants of the choosen cipher, for example for AES: CRYPT_AES_MODE_ECB or CRYPT_AES_MODE_CBC ...)
+     * (or the alias constants of the chosen cipher, for example for AES: CRYPT_AES_MODE_ECB or CRYPT_AES_MODE_CBC ...)
      *
-     * If not explictly set, CRYPT_MODE_CBC will be used.
+     * If not explicitly set, CRYPT_MODE_CBC will be used.
      *
      * @param optional Integer $mode
      * @access public
@@ -500,7 +498,7 @@ class Crypt_Base
     /**
      * Sets the initialization vector. (optional)
      *
-     * SetIV is not required when CRYPT_MODE_ECB (or ie for AES: CRYPT_AES_MODE_ECB) is being used.  If not explictly set, it'll be assumed
+     * SetIV is not required when CRYPT_MODE_ECB (or ie for AES: CRYPT_AES_MODE_ECB) is being used.  If not explicitly set, it'll be assumed
      * to be all zero's.
      *
      * Note: Could, but not must, extend by the child Crypt_* class
@@ -543,7 +541,7 @@ class Crypt_Base
      * Sets the password.
      *
      * Depending on what $method is set to, setPassword()'s (optional) parameters are as follows:
-     *     {@link http://en.wikipedia.org/wiki/PBKDF2 pbkdf2}:
+     *     {@link http://en.wikipedia.org/wiki/PBKDF2 pbkdf2} or pbkdf1:
      *         $hash, $salt, $count, $dkLen
      *
      *         Where $hash (default = sha1) currently supports the following hashes: see: Crypt/Hash.php
@@ -553,6 +551,7 @@ class Crypt_Base
      * @see Crypt/Hash.php
      * @param String $password
      * @param optional String $method
+     * @return Boolean
      * @access public
      */
     function setPassword($password, $method = 'pbkdf2')
@@ -560,7 +559,7 @@ class Crypt_Base
         $key = '';
 
         switch ($method) {
-            default: // 'pbkdf2'
+            default: // 'pbkdf2' or 'pbkdf1'
                 $func_args = func_get_args();
 
                 // Hash function
@@ -574,10 +573,34 @@ class Crypt_Base
                 $count = isset($func_args[4]) ? $func_args[4] : 1000;
 
                 // Keylength
-                $dkLen = isset($func_args[5]) ? $func_args[5] : $this->password_key_size;
+                if (isset($func_args[5])) {
+                    $dkLen = $func_args[5];
+                } else {
+                    $dkLen = $method == 'pbkdf1' ? 2 * $this->password_key_size : $this->password_key_size;
+                }
 
-                // Determining if php[>=5.5.0]'s hash_pbkdf2() function avail- and useable
                 switch (true) {
+                    case $method == 'pbkdf1':
+                        if (!class_exists('Crypt_Hash')) {
+                            include_once 'Crypt/Hash.php';
+                        }
+                        $hashObj = new Crypt_Hash();
+                        $hashObj->setHash($hash);
+                        if ($dkLen > $hashObj->getLength()) {
+                            user_error('Derived key too long');
+                            return false;
+                        }
+                        $t = $password . $salt;
+                        for ($i = 0; $i < $count; ++$i) {
+                            $t = $hashObj->hash($t);
+                        }
+                        $key = substr($t, 0, $dkLen);
+
+                        $this->setKey(substr($key, 0, $dkLen >> 1));
+                        $this->setIV(substr($key, $dkLen >> 1));
+
+                        return true;
+                    // Determining if php[>=5.5.0]'s hash_pbkdf2() function avail- and useable
                     case !function_exists('hash_pbkdf2'):
                     case !function_exists('hash_algos'):
                     case !in_array($hash, hash_algos()):
@@ -604,6 +627,8 @@ class Crypt_Base
         }
 
         $this->setKey($key);
+
+        return true;
     }
 
     /**
@@ -1446,7 +1471,7 @@ class Crypt_Base
      *     - each time on _setup(), after(!) _setupKey()
      *
      *
-     *     This ensures that _setupInlineCrypt() has allways a
+     *     This ensures that _setupInlineCrypt() has always a
      *     full ready2go initializated internal cipher $engine state
      *     where, for example, the keys allready expanded,
      *     keys/block_size calculated and such.

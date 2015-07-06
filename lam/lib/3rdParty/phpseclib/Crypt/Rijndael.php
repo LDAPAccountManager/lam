@@ -28,7 +28,7 @@
  * Here's a short example of how to use this library:
  * <code>
  * <?php
- *    include('Crypt/Rijndael.php');
+ *    include 'Crypt/Rijndael.php';
  *
  *    $rijndael = new Crypt_Rijndael();
  *
@@ -65,7 +65,7 @@
  * @category  Crypt
  * @package   Crypt_Rijndael
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright MMVIII Jim Wigginton
+ * @copyright 2008 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://phpseclib.sourceforge.net
  */
@@ -120,7 +120,7 @@ define('CRYPT_RIJNDAEL_MODE_OFB', CRYPT_MODE_OFB);
 
 /**#@+
  * @access private
- * @see Crypt_Rijndael::Crypt_Rijndael()
+ * @see Crypt_Base::Crypt_Base()
  */
 /**
  * Toggles the internal implementation
@@ -137,7 +137,6 @@ define('CRYPT_RIJNDAEL_MODE_MCRYPT', CRYPT_MODE_MCRYPT);
  *
  * @package Crypt_Rijndael
  * @author  Jim Wigginton <terrafrost@php.net>
- * @version 0.1.0
  * @access  public
  */
 class Crypt_Rijndael extends Crypt_Base
@@ -167,7 +166,7 @@ class Crypt_Rijndael extends Crypt_Base
      * Mcrypt is useable for 128/192/256-bit $block_size/$key_size. For 160/224 not.
      * Crypt_Rijndael determines automatically whether mcrypt is useable
      * or not for the current $block_size/$key_size.
-     * In case of, $cipher_name_mcrypt will be set dynamicaly at run time accordingly.
+     * In case of, $cipher_name_mcrypt will be set dynamically at run time accordingly.
      *
      * @see Crypt_Base::cipher_name_mcrypt
      * @see Crypt_Base::engine
@@ -677,34 +676,6 @@ class Crypt_Rijndael extends Crypt_Base
     );
 
     /**
-     * Default Constructor.
-     *
-     * Determines whether or not the mcrypt extension should be used.
-     *
-     * $mode could be:
-     *
-     * - CRYPT_RIJNDAEL_MODE_ECB
-     *
-     * - CRYPT_RIJNDAEL_MODE_CBC
-     *
-     * - CRYPT_RIJNDAEL_MODE_CTR
-     *
-     * - CRYPT_RIJNDAEL_MODE_CFB
-     *
-     * - CRYPT_RIJNDAEL_MODE_OFB
-     *
-     * If not explictly set, CRYPT_RIJNDAEL_MODE_CBC will be used.
-     *
-     * @see Crypt_Base::Crypt_Base()
-     * @param optional Integer $mode
-     * @access public
-     */
-    function Crypt_Rijndael($mode = CRYPT_RIJNDAEL_MODE_CBC)
-    {
-        parent::Crypt_Base($mode);
-    }
-
-    /**
      * Sets the key.
      *
      * Keys can be of any length.  Rijndael, itself, requires the use of a key that's between 128-bits and 256-bits long and
@@ -731,8 +702,14 @@ class Crypt_Rijndael extends Crypt_Base
                 case $length <= 16:
                     $this->key_size = 16;
                     break;
+                case $length <= 20:
+                    $this->key_size = 20;
+                    break;
                 case $length <= 24:
                     $this->key_size = 24;
+                    break;
+                case $length <= 28:
+                    $this->key_size = 28;
                     break;
                 default:
                     $this->key_size = 32;
@@ -755,7 +732,7 @@ class Crypt_Rijndael extends Crypt_Base
      *       you should not setKeyLength(160) or setKeyLength(224).
      *
      * Additional: In case of 160- and 224-bit keys, phpseclib will/can, for that reason, not use
-     *             the mcrypt php extention, even if available.
+     *             the mcrypt php extension, even if available.
      *             This results then in slower encryption.
      *
      * @access public

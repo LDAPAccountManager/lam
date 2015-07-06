@@ -16,7 +16,7 @@
  * Here's a short example of how to use this library:
  * <code>
  * <?php
- *    include('Crypt/DES.php');
+ *    include 'Crypt/DES.php';
  *
  *    $des = new Crypt_DES();
  *
@@ -53,7 +53,7 @@
  * @category  Crypt
  * @package   Crypt_DES
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright MMVII Jim Wigginton
+ * @copyright 2007 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://phpseclib.sourceforge.net
  */
@@ -123,7 +123,7 @@ define('CRYPT_DES_MODE_OFB', CRYPT_MODE_OFB);
 
 /**#@+
  * @access private
- * @see Crypt_DES::Crypt_DES()
+ * @see Crypt_Base::Crypt_Base()
  */
 /**
  * Toggles the internal implementation
@@ -140,7 +140,6 @@ define('CRYPT_DES_MODE_MCRYPT', CRYPT_MODE_MCRYPT);
  *
  * @package Crypt_DES
  * @author  Jim Wigginton <terrafrost@php.net>
- * @version 0.1.0
  * @access  public
  */
 class Crypt_DES extends Crypt_Base
@@ -661,34 +660,6 @@ class Crypt_DES extends Crypt_Base
         0x08020820, 0x00020800, 0x00020800, 0x00000820,
         0x00000820, 0x00020020, 0x08000000, 0x08020800
     );
-
-    /**
-     * Default Constructor.
-     *
-     * Determines whether or not the mcrypt extension should be used.
-     *
-     * $mode could be:
-     *
-     * - CRYPT_DES_MODE_ECB
-     *
-     * - CRYPT_DES_MODE_CBC
-     *
-     * - CRYPT_DES_MODE_CTR
-     *
-     * - CRYPT_DES_MODE_CFB
-     *
-     * - CRYPT_DES_MODE_OFB
-     *
-     * If not explictly set, CRYPT_DES_MODE_CBC will be used.
-     *
-     * @see Crypt_Base::Crypt_Base()
-     * @param optional Integer $mode
-     * @access public
-     */
-    function Crypt_DES($mode = CRYPT_DES_MODE_CBC)
-    {
-        parent::Crypt_Base($mode);
-    }
 
     /**
      * Sets the key.
