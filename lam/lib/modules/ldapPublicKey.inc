@@ -37,10 +37,10 @@ class ldapPublicKey extends baseModule {
 
 	/** session variable for existing keys in self service */
 	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -51,7 +51,7 @@ class ldapPublicKey extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -111,7 +111,7 @@ class ldapPublicKey extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -197,10 +197,13 @@ class ldapPublicKey extends baseModule {
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		if (sizeof($this->attributes['sshPublicKey']) > 0) {
-			$return['ldapPublicKey_sshPublicKey'][0] = '<block><key>' . _('SSH public keys') . '</key><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
-				$return['ldapPublicKey_sshPublicKey'][] = '<block><tr><td align=\"L\">' . $this->attributes['sshPublicKey'][$i] . '</td></tr></block>';
+			$pdfTable = new PDFTable(_('SSH public keys'));
+			for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($this->attributes['sshPublicKey'][$i]);
+				$pdfTable->rows[] = $pdfRow;
 			}
+			$this->addPDFTable($return, 'sshPublicKey', $pdfTable);
 		}
 		return $return;
 	}
@@ -249,7 +252,7 @@ class ldapPublicKey extends baseModule {
 	/**
 	 * Returns the meta HTML code to display the key area.
 	 * This also includes the file upload.
-	 * 
+	 *
 	 * @return htmlTable key content
 	 */
 	private function getSelfServiceKeys() {
@@ -289,10 +292,10 @@ class ldapPublicKey extends baseModule {
 		$content->addElement($uploadButtons, true);
 		return $content;
 	}
-	
+
 	/**
 	 * Returns the Java Script functions to manage the keys.
-	 * 
+	 *
 	 * @return htmlJavaScript JS block
 	 */
 	private static function getSelfServiceKeysJSBlock() {
@@ -309,7 +312,7 @@ class ldapPublicKey extends baseModule {
 					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
 					. '\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
 			}
-			
+
 			function ldapPublicKeyDeleteKeyHandleReply(data) {
 				if (data.errorsOccured == "false") {
 					jQuery(\'#sshPublicKeyDiv\').html(data.html);
@@ -318,7 +321,7 @@ class ldapPublicKey extends baseModule {
 					alert(data.errormessage);
 				}
 			}
-			
+
 			function ldapPublicKeyAddKey(count) {
 				var actionJSON = {
 					"action": "addKey"
@@ -330,7 +333,7 @@ class ldapPublicKey extends baseModule {
 					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
 					. '\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
 			}
-			
+
 			function ldapPublicKeyAddKeyHandleReply(data) {
 				if (data.errorsOccured == "false") {
 					jQuery(\'#sshPublicKeyDiv\').html(data.html);
@@ -339,7 +342,7 @@ class ldapPublicKey extends baseModule {
 					alert(data.errormessage);
 				}
 			}
-			
+
 			function ldapPublicKeyUploadKey(elementID, count) {
 				var uploadStatus = document.getElementById(\'ldapPublicKey_upload_status_key\');
 				var parameters = {
@@ -371,9 +374,9 @@ class ldapPublicKey extends baseModule {
 							}
 						}
 					}
-				});		
+				});
 			}
-			
+
 			';
 		return new htmlJavaScript($content);
 	}
@@ -386,7 +389,7 @@ class ldapPublicKey extends baseModule {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -479,7 +482,7 @@ class ldapPublicKey extends baseModule {
 		}
 		echo json_encode($jsonReturn);
 	}
-	
+
 	/**
 	 * Handles an AJAX file upload and prints the JSON result.
 	 */
@@ -518,7 +521,7 @@ class ldapPublicKey extends baseModule {
 
 	/**
 	 * Manages the deletion of a key.
-	 * 
+	 *
 	 * @param array $data JSON data
 	 */
 	private function ajaxDeleteSelfServiceKey($data) {
@@ -543,10 +546,10 @@ class ldapPublicKey extends baseModule {
 			'html' => $content,
 		);
 	}
-	
+
 	/**
 	 * Invalid AJAX request received.
-	 * 
+	 *
 	 * @param String $message error message
 	 */
 	public static function invalidAjaxRequest($message = null) {
