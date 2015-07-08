@@ -75,7 +75,7 @@ abstract class baseModule {
 
 	/** contains all error messages of a module */
 	protected $messages;
-	
+
 	/** if true, managed object classes are added when an account is created or loaded (default: true) */
 	protected $autoAddObjectClasses = true;
 
@@ -98,7 +98,7 @@ abstract class baseModule {
 
 	/**
 	* This function fills the $messages variable with output messages from this module.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.
 	*/
 	protected function load_Messages() {
@@ -106,7 +106,7 @@ abstract class baseModule {
 
 	/**
 	* Initializes the module after it became part of an {@link accountContainer}
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.
 	*
 	* @param string $base the name of the {@link accountContainer} object ($_SESSION[$base])
@@ -131,7 +131,7 @@ abstract class baseModule {
 
 	/**
 	* This function loads the LDAP attributes when an account should be loaded.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
@@ -179,7 +179,7 @@ abstract class baseModule {
 	* <br>
 	* The returned array contains a list of key-value pairs for the different functions.<br>
 	* <ul>
-	* 
+	*
 	* <li><b>{@link is_base_module()}</b><br>
 	* <br>
 	* <b>Key:</b> is_base<br>
@@ -188,7 +188,7 @@ abstract class baseModule {
 	* <b>Example:</b> "is_base" => true
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_ldap_filter()}</b><br>
 	* <br>
 	* <b>Key:</b> ldap_filter<br>
@@ -197,7 +197,7 @@ abstract class baseModule {
 	* <b>Example:</b> "ldap_filter" => array('or' => 'objectClass=posixAccount', 'and' => '(!(uid=*$))')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link getManagedObjectClasses()}</b><br>
 	* <br>
 	* <b>Key:</b> objectClasses<br>
@@ -206,7 +206,7 @@ abstract class baseModule {
 	* <b>Example:</b> "objectClasses" => array('posixAccount')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link getLDAPAliases()}</b><br>
 	* <br>
 	* <b>Key:</b> LDAPaliases<br>
@@ -215,7 +215,7 @@ abstract class baseModule {
 	* <b>Example:</b> "LDAPaliases" => array('commonName' => 'cn')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_RDNAttributes()}</b><br>
 	* <br>
 	* <b>Key:</b> RDN<br>
@@ -224,7 +224,7 @@ abstract class baseModule {
 	* <b>Example:</b> "RDN" => array('uid' => 'normal', 'cn' => 'low')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_dependencies()}</b><br>
 	* <br>
 	* <b>Key:</b> dependencies<br>
@@ -233,7 +233,7 @@ abstract class baseModule {
 	* <b>Example:</b> "dependencies" => array("depends" => array("posixAccount", array("qmail", "sendmail")), "conflicts" => array("exim"))
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_profileOptions()}</b><br>
 	* <br>
 	* <b>Key:</b> profile_options<br>
@@ -242,7 +242,7 @@ abstract class baseModule {
 	* The syntax for the value array is the same as for the return value of get_profileOptions().
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link check_profileOptions()}</b><br>
 	* <br>
 	* <b>Key:</b> profile_checks<br>
@@ -272,7 +272,7 @@ abstract class baseModule {
 	* </ul>
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link load_profile()}</b><br>
 	* <br>
 	* <b>Key:</b> profile_mappings<br>
@@ -283,7 +283,7 @@ abstract class baseModule {
 	* <b>Example:</b> "profile_mappings" => array('inetOrgPerson_title' => 'title')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_configOptions()}</b><br>
 	* <br>
 	* <b>Key:</b> config_options<br>
@@ -293,7 +293,7 @@ abstract class baseModule {
 	* The syntax for sub arrays is the same as for the return value of {@link get_configOptions()}.
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link check_configOptions()}</b><br>
 	* <br>
 	* <b>Key:</b> config_checks<br>
@@ -303,7 +303,7 @@ abstract class baseModule {
 	* The syntax for sub arrays is the same as for {@link check_configOptions()}.
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_uploadColumns()}</b><br>
 	* <br>
 	* <b>Key:</b> upload_columns<br>
@@ -312,7 +312,7 @@ abstract class baseModule {
 	* The syntax for array is the same as for the return value of {@link get_uploadColumns()}.
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_uploadPreDepends()}</b><br>
 	* <br>
 	* <b>Key:</b> upload_preDepends<br>
@@ -321,7 +321,7 @@ abstract class baseModule {
 	* The syntax for array is the same as for the return value of {@link get_uploadPreDepends()}.
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link getRequiredExtensions()}</b><br>
 	* <br>
 	* <b>Key:</b> extensions<br>
@@ -330,7 +330,7 @@ abstract class baseModule {
 	* <b>Example:</b> "extensions" => array('hash')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link get_help()}</b><br>
 	* <br>
 	* <b>Key:</b> help<br>
@@ -341,7 +341,7 @@ abstract class baseModule {
 	* <b>Example:</b> 'help' => array('myEntry' => array('Headline' => 'This is the head line', 'Text' => 'Help content'))
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link getSelfServiceSearchAttributes()}</b><br>
 	* <br>
 	* <b>Key:</b> selfServiceSearchAttributes<br>
@@ -350,7 +350,7 @@ abstract class baseModule {
 	* <b>Example:</b> "selfServiceSearchAttributes" => array('uid')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* <li><b>{@link getSelfServiceFields()}</b><br>
 	* <br>
 	* <b>Key:</b> selfServiceFieldSettings<br>
@@ -359,7 +359,7 @@ abstract class baseModule {
 	* <b>Example:</b> "selfServiceFieldSettings" => array('pwd' => 'Password')
 	* <br><br>
 	* </li>
-	* 
+	*
 	* </ul>
 	* <b>Example:</b> return array("is_base" => true);
 	*
@@ -380,25 +380,25 @@ abstract class baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	* 
+	*
 	* @return boolean true if module fits
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public abstract function can_manage();
 
 	/**
 	* Returns true if your module is a base module and otherwise false.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* Every account type needs exactly one base module. A base module manages a structural object class.
 	* E.g. the inetOrgPerson module is a base module since its object class is structural.
 	*
 	* @return boolean true if base module (defaults to false if no meta data is provided)
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function is_base_module() {
@@ -408,7 +408,7 @@ abstract class baseModule {
 
 	/**
 	* Returns an LDAP filter for the account lists
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* Returns an array('or' => '...', 'and' => '...') that is used to build the LDAP filter. Usually, this is used to filter object classes.
@@ -418,7 +418,7 @@ abstract class baseModule {
 	* <b>Example:</b> return array('or' => '(objectClass=posixAccount)', 'and' => '(!(uid=*$))')
 	*
 	* @return string LDAP filter
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_ldap_filter() {
@@ -428,15 +428,15 @@ abstract class baseModule {
 
 	/**
 	* Returns an alias name for the module.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* This function returns a more descriptive string than the class name. Alias names are used for the buttons on the account pages and the module selection in the configuration wizard.<br>
 	* Please take care that your alias name is not too long. It may contain any character but should not include parts that may be interpreted by the browser (e.g. '<' or '>').
 	* If you use different aliases dependent on the account type please make sure that there is a general alias for unknown types.
-	* 
+	*
 	* @return string alias name
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_alias() {
@@ -446,7 +446,7 @@ abstract class baseModule {
 
 	/**
 	* Returns a hash array containing a list of possible LDAP attributes that can be used to form the RDN (Relative Distinguished Name).
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The returned elements have this form: <attribute> => <priority>
@@ -456,7 +456,7 @@ abstract class baseModule {
 	* <b>Example:</b> return array('uid' => 'normal', 'cn' => 'low')
 	*
 	* @return array list of attributes
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_RDNAttributes() {
@@ -466,7 +466,7 @@ abstract class baseModule {
 
 	/**
 	* This function returns a list with all depending and conflicting modules.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The return value is an array with two sub arrays, "depends" and "conflicts".
@@ -479,7 +479,7 @@ abstract class baseModule {
 	* <b>Example:</b> return array("depends" => array("posixAccount", array("qmail", "sendmail")), "conflicts" => array("exim"))
 	*
 	* @return array list of dependencies and conflicts
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_dependencies() {
@@ -496,9 +496,9 @@ abstract class baseModule {
 	* The field name are used as keywords to load
 	* and save profiles. We recommend to use the module name as prefix for them
 	* (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	* 
+	*
 	* @return htmlElement meta HTML object
-	* 
+	*
 	* @see baseModule::get_metaData()
 	* @see htmlElement
 	*/
@@ -520,7 +520,7 @@ abstract class baseModule {
 	*
 	* @param array $options a hash array (name => value) containing the user input
 	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function check_profileOptions($options) {
@@ -601,11 +601,11 @@ abstract class baseModule {
 
 	/**
 	* This function loads the values from an account profile to the module's internal data structures.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	*
 	* @param array $profile hash array with profile values (identifier => value)
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function load_profile($profile) {
@@ -621,7 +621,7 @@ abstract class baseModule {
 
 	/**
 	* Returns a list of configuration options.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The field names are used as keywords to load and save settings.
@@ -630,7 +630,7 @@ abstract class baseModule {
 	* @param array $scopes account types (user, group, host)
 	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
 	* @return mixed htmlElement or array of htmlElement
-	* 
+	*
 	* @see baseModule::get_metaData()
 	* @see htmlElement
 	*/
@@ -665,7 +665,7 @@ abstract class baseModule {
 
 	/**
 	* Checks input values of module settings.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
@@ -674,7 +674,7 @@ abstract class baseModule {
 	* @param array $scopes list of account types which are used
 	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	* @return array list of error messages
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function check_configOptions($scopes, &$options) {
@@ -795,9 +795,9 @@ abstract class baseModule {
 	 * This example only uses one column but you can just use more <td> tags per <block> tag to display more columns.<br>
 	 * <br>
 	 * 'myAttribute' => '<block><key>AttrName</key><tr><td align=\"L\">123</td></tr></block><block><tr><td align=\"L\">456</td></tr></block><block><tr><td align=\"L\">789</td></tr></block>'
-	 * 
+	 *
 	 * @return array PDF entries
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_pdfFields() {
@@ -813,10 +813,10 @@ abstract class baseModule {
 	public function get_pdfEntries($pdfKeys) {
 		return array();
 	}
-	
+
 	/**
 	 * Adds a simple PDF entry to the given array.
-	 * 
+	 *
 	 * @param array $result result array (entry will be added here)
 	 * @param String $name ID
 	 * @param String $label label name
@@ -843,7 +843,7 @@ abstract class baseModule {
 
 	/**
 	 * Adds a simple PDF entry with the given key and value.
-	 * 
+	 *
 	 * @param array $result result array (entry will be added here)
 	 * @param String $name ID
 	 * @param String $label label name
@@ -856,6 +856,32 @@ abstract class baseModule {
 			$value = implode($delimiter, $value);
 		}
 		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
+	}
+
+	/**
+	 * Adds a table entry to the PDF.
+	 *
+	 * @param array $result result array (entry will be added here)
+	 * @param String $name ID
+	 * @param PDFTable $table table
+	 */
+	public function addPDFTable(&$result, $name, $table) {
+		$first = true;
+		foreach ($table->rows as $row) {
+			$xml = '<block>';
+			if ($first && !empty($table->label)) {
+				$xml .= '<key>' . $table->label . '</key>';
+			}
+			$xml .= '<tr>';
+			foreach ($row->cells as $cell) {
+				$width = empty($cell->width) ? '' : ' width="' . $cell->width . '"';
+				$content = ($cell->bold) ? '<b>' . $cell->content . '</b>' : $cell->content;
+				$xml .= '<td align="' . $cell->align . '"' . $width . '>' . $content . '</td>';
+			}
+			$xml .= '</tr></block>';
+			$result[get_class($this) . '_' . $name][] = $xml;
+			$first = false;
+		}
 	}
 
 	/**
@@ -879,7 +905,7 @@ abstract class baseModule {
 	*
 	* @param array $selectedModules list of selected account modules
 	* @return array column list
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_uploadColumns($selectedModules) {
@@ -895,7 +921,7 @@ abstract class baseModule {
 	* The named modules may not be active, LAM will check this automatically.
 	*
 	* @return array list of module names
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_uploadPreDepends() {
@@ -920,7 +946,7 @@ abstract class baseModule {
 		// must be implemented in sub modules
 		return array();
 	}
-	
+
 	/**
 	* Maps simple upload fields directly to LDAP attribute values.
 	*
@@ -970,7 +996,7 @@ abstract class baseModule {
 	 *
 	 * @param string $id The id string for the help entry needed.
 	 * @return array The desired help entry.
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_help($id) {
@@ -987,7 +1013,7 @@ abstract class baseModule {
 
 	/**
 	* This function is used to check if this module page can be displayed.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* Your module might depend on input of other modules. This function determines if the user
@@ -1003,7 +1029,7 @@ abstract class baseModule {
 
 	/**
 	* This function is used to check if all settings for this module have been made.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* This function tells LAM if it can create/modify the LDAP account. If your module needs any
@@ -1019,7 +1045,7 @@ abstract class baseModule {
 
 	/**
 	* Controls if the module button the account page is visible and activated.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* <b>Possible return values:</b>
@@ -1034,10 +1060,10 @@ abstract class baseModule {
 	public function getButtonStatus() {
 		return "enabled";
 	}
-	
+
 	/**
 	 * Runs any actions that need to be done before an LDAP entry is created.
-	 * 
+	 *
 	 * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
@@ -1047,7 +1073,7 @@ abstract class baseModule {
 
 	/**
 	* This function is responsible to do additional tasks after the account has been created in LDAP (e.g. modifying group memberships, adding Quota etc..).
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* This function is called as long as the returned status is 'finished'. Please make sure
@@ -1077,7 +1103,7 @@ abstract class baseModule {
 
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	*
@@ -1092,7 +1118,7 @@ abstract class baseModule {
 	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
 	* <br>
 	* <br>This builds the required comands from $this-attributes and $this->orig.
-	* 
+	*
 	* @return array list of modifications
 	*/
 	public function save_attributes() {
@@ -1101,11 +1127,11 @@ abstract class baseModule {
 
 	/**
 	 * Allows the module to run commands before the LDAP entry is changed or created.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * The modification is aborted if an error message is returned.
-	 * 
+	 *
 	 * @param boolean $newAccount new account
 	 * @param array $attributes LDAP attributes of this entry (added/modified attributes are provided as reference, handle modifications of $attributes with care)
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
@@ -1113,10 +1139,10 @@ abstract class baseModule {
 	public function preModifyActions($newAccount, $attributes) {
 		return array();
 	}
-	
+
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param boolean $newAccount new account
@@ -1126,32 +1152,32 @@ abstract class baseModule {
 	public function postModifyActions($newAccount, $attributes) {
 		return array();
 	}
-	
+
 	/**
 	 * Allows the module to run commands before the LDAP entry is deleted.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	 * 
+	 *
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function preDeleteActions() {
 		return array();
 	}
-	
+
 	/**
 	 * Allows the module to run commands after the LDAP entry is deleted.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
-	 * 
+	 *
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postDeleteActions() {
 		return array();
 	}
-	
+
 	/**
 	* This function returns an array with the same syntax as save_attributes().
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* It allows additional LDAP changes when an account is deleted.
@@ -1164,7 +1190,7 @@ abstract class baseModule {
 
 	/**
 	* This function creates meta HTML code which will be displayed when an account should be deleted.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* This can be used to interact with the user, e.g. should the home directory be deleted? The output
@@ -1176,25 +1202,25 @@ abstract class baseModule {
 	public function display_html_delete() {
 		return 0;
 	}
-	
+
 	/**
 	 * This function processes user input.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * It checks the user input and saves changes in the module's data structures.<br>
 	 * <br>
 	 * <b>Example:</b> return array(array('ERROR', 'Invalid input!', 'This is not allowed here.'));
-	 * 
+	 *
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public abstract function process_attributes();
-	
+
 	/**
 	 * This function creates meta HTML code to display the module page.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
-	 * 
+	 *
 	 * @return htmlElement meta HTML object
 	 *
 	 * @see htmlElement
@@ -1205,7 +1231,7 @@ abstract class baseModule {
 	 * Adds a simple text input field to the given htmlTable.
 	 * The field name will be the same as the attribute name. There must also be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
-	 * 
+	 *
 	 * @param htmlTable $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
@@ -1241,14 +1267,14 @@ abstract class baseModule {
 		$container->addElement($input, true);
 		return $input;
 	}
-	
+
 	/**
 	 * Adds a text input field that may contain multiple values to the given htmlTable.
 	 * The field name will be the same as the attribute name plus a counting number (e.g. street_0).
 	 * The last field will be followed by a button to add a new value. This is named add_{attribute name} (e.g. add_street).
 	 * There must be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
-	 * 
+	 *
 	 * @param htmlTable $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
@@ -1314,12 +1340,12 @@ abstract class baseModule {
 			$help->alignment = htmlElement::ALIGN_TOP;
 			$container->addElement($help, true);
 	}
-	
+
 	/**
 	 * Validates a multi-value text field.
 	 * The input fields must be created with function addMultiValueInputTextField().
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
-	 * 
+	 *
 	 * @param String $attrName attribute name
 	 * @param array $errors errors array where to put validation errors
 	 * @param String $validationID validation ID for function get_preg() (default: null, null means no validation)
@@ -1345,11 +1371,11 @@ abstract class baseModule {
 		}
 		$this->attributes[$attrName] = array_values(array_unique($this->attributes[$attrName]));
 	}
-	
+
 	/**
 	 * Adds a simple text input field for the self service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
-	 * 
+	 *
 	 * @param array $container array that is used as return value for getSelfServiceOptions()
 	 * @param String $name attribute name (== field name)
 	 * @param String $label label to display in front of input field
@@ -1385,12 +1411,12 @@ abstract class baseModule {
 			new htmlOutputText($this->getSelfServiceLabel($name, $label)), $field
 		));
 	}
-	
+
 	/**
 	 * Checks the input value of a self service text field.
 	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
-	 * 
+	 *
 	 * @param array $container return value of checkSelfServiceOptions()
 	 * @param String $name attribute name
 	 * @param array $attributes LDAP attributes
@@ -1419,10 +1445,10 @@ abstract class baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns a list of managed object classes for this module.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * This is used to fix spelling errors in LDAP-Entries (e.g. if "posixACCOUNT" is read instead of "posixAccount" from LDAP).<br>
@@ -1430,7 +1456,7 @@ abstract class baseModule {
 	 * <b>Example:</b> return array('posixAccount')
 	 *
 	 * @return array list of object classes
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getManagedObjectClasses() {
@@ -1440,13 +1466,13 @@ abstract class baseModule {
 
 	/**
 	 * Returns a list of aliases for LDAP attributes.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * All alias attributes will be renamed to the given attribute names.
 	 *
 	 * @return array list of aliases like array("alias name" => "attribute name")
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getLDAPAliases() {
@@ -1459,7 +1485,7 @@ abstract class baseModule {
 	 * All attribute names will be renamed to match the given spelling.
 	 *
 	 * @return array list of attributes
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getManagedAttributes() {
@@ -1469,11 +1495,11 @@ abstract class baseModule {
 
 	/**
 	 * This function returns a list of PHP extensions (e.g. hash) which are needed by this module.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @return array extensions
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getRequiredExtensions() {
@@ -1483,11 +1509,11 @@ abstract class baseModule {
 
 	/**
 	 * This function returns a list of possible LDAP attributes (e.g. uid, cn, ...) which can be used to search for LDAP objects.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @return array attributes
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getSelfServiceSearchAttributes() {
@@ -1497,23 +1523,23 @@ abstract class baseModule {
 
 	/**
 	 * Returns a list of possible input fields and their descriptions.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * <b>Format:</b> array(<field identifier> => <field description>)
 	 *
 	 * @return array fields
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getSelfServiceFields() {
 		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) return $this->meta['selfServiceFieldSettings'];
 		else return array();
 	}
-	
+
 	/**
 	 * Returns if a given self service field can be set in read-only mode.
-	 * 
+	 *
 	 * @param String $fieldID field identifier
 	 * @param selfServiceProfile $profile currently edited profile
 	 * @return boolean may be set read-only
@@ -1524,10 +1550,10 @@ abstract class baseModule {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns if a self service field can be relabeled.
-	 * 
+	 *
 	 * @param String $fieldID field ID
 	 * @param selfServiceProfile $profile currently edited profile
 	 * @return boolean may be relabeled
@@ -1538,10 +1564,10 @@ abstract class baseModule {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Returns the field label. This can be either the given default label or an override value from profile.
-	 * 
+	 *
 	 * @param String $fieldID field ID
 	 * @param String $defaultLabel default label text
 	 * @return String label
@@ -1556,7 +1582,7 @@ abstract class baseModule {
 
 	/**
 	 * Returns the meta HTML code for each input field.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * It is not possible to display help links.
@@ -1566,7 +1592,7 @@ abstract class baseModule {
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
 	 * @return array list of meta HTML elements (field name => htmlTableRow)
-	 * 
+	 *
 	 * @see htmlElement
 	 */
 	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
@@ -1582,7 +1608,7 @@ abstract class baseModule {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -1598,7 +1624,7 @@ abstract class baseModule {
 
 	/**
 	 * Returns a list of self service configuration settings.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * The name attributes are used as keywords to load
@@ -1607,7 +1633,7 @@ abstract class baseModule {
 	 *
 	 * @param selfServiceProfile $profile currently edited profile
 	 * @return htmlElement meta HTML object
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 * @see htmlElement
 	 */
@@ -1622,7 +1648,7 @@ abstract class baseModule {
 
 	/**
 	 * Checks if the self service settings are valid.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * If the input data is invalid the return value is an array that contains arrays
@@ -1637,12 +1663,12 @@ abstract class baseModule {
 		// needs to be implemented by the subclasses, if needed
 		return array();
 	}
-	
+
 	/**
 	 * Allows the module to run commands before the LDAP entry is changed or created.
-	 * 
+	 *
 	 * An error message should be printed if the function returns false.
-	 * 
+	 *
 	 * @param boolean $newAccount is new account or existing one
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return boolean true, if no problems occured
@@ -1650,7 +1676,7 @@ abstract class baseModule {
 	public function preModifySelfService($newAccount, $attributes) {
 		return true;
 	}
-	
+
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
 	 *
@@ -1661,24 +1687,24 @@ abstract class baseModule {
 	public function postModifySelfService($newAccount, $attributes) {
 		return true;
 	}
-	
+
 	/**
 	 * This allows modules to create a link to a module specific page
 	 * for the self service.
 	 * The link is shown on the login page of the self service. You
 	 * can use this to provide e.g. a page to reset passwords.
-	 * 
+	 *
 	 * @param array $settings self service settings
 	 * @return String link text (null if no special page used)
 	 */
 	public function getLinkToSpecialSelfServicePage($settings) {
 		return null;
 	}
-	
+
 	/**
 	 * This function creates meta HTML code to display the module specific page
 	 * for the self service.
-	 * 
+	 *
 	 * @param selfServiceProfile $profile self service settings
 	 * @return htmlElement meta HTML object
 	 *
@@ -1690,7 +1716,7 @@ abstract class baseModule {
 
 	/**
 	 * Returns the {@link accountContainer} object.
-	 * 
+	 *
 	 * @return accountContainer accountContainer object
 	 *
 	 * @see accountContainer
@@ -1703,7 +1729,7 @@ abstract class baseModule {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Returns the LDAP attributes which are managed in this module.
 	 *
@@ -1712,7 +1738,7 @@ abstract class baseModule {
 	public function getAttributes() {
 		return $this->attributes;
 	}
-	
+
 	/**
 	 * Returns the LDAP attributes which are managed in this module (with unchanged values).
 	 *
@@ -1721,14 +1747,14 @@ abstract class baseModule {
 	public function getOriginalAttributes() {
 		return $this->orig;
 	}
-	
+
 	/**
 	 * Returns the path to the module icon.
 	 * The path must be releative to graphics (e.g. key.png) or an URL (/icons/icon.png or http://server/icon.png).
 	 * You can also set $this->meta['icon']. The preferred size is 32x32px.
 	 *
 	 * @return unknown
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function getIcon() {
@@ -1737,7 +1763,7 @@ abstract class baseModule {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Manages AJAX requests.
 	 * This function may be called with or without an account container.
@@ -1745,30 +1771,30 @@ abstract class baseModule {
 	public function handleAjaxRequest() {
 		// modules that use AJAX need to implement this function
 	}
-	
+
 	/**
 	 * Specifies if this module supports the LAM admin interface.
 	 * The LAM admin interface are the pages that allow to manage e.g. users and groups.
 	 * In contrast there is also the LAM self service interface. Most modules support
 	 * the admin interface.
-	 * 
+	 *
 	 * @return boolean support admin interface
 	 */
 	public function supportsAdminInterface() {
 		return true;
 	}
-	
+
 	/**
 	 * Returns a list of jobs that can be run.
-	 * 
+	 *
 	 * @param LAMConfig $config configuration
 	 */
 	public function getSupportedJobs(&$config) {
 		return array();
 	}
-	
-	
-	
+
+
+
 	// helper functions
 
 	/**
@@ -1785,6 +1811,72 @@ abstract class baseModule {
 			return $default;
 		}
 		return ($this->moduleSettings[$optionName][0] == 'true');
+	}
+
+}
+
+/**
+ * Represents a table for PDF export.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFTable {
+
+	/** optional label of table */
+	public $label = null;
+	/** list of PDFTableRow elements */
+	public $rows = array();
+
+}
+
+/**
+ * Represents a table row for PDF export.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFTableRow {
+
+	/** list of PDFTableCell */
+	public $cells = array();
+
+}
+
+/**
+ * Represents a table cell for PDF export.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFTableCell {
+
+	const ALIGN_LEFT = 'L';
+	const ALIGN_RIGHT = 'R';
+	const ALIGN_CENTER = 'C';
+
+	/** content text of cell */
+	public $content = '';
+	/** text alignment */
+	public $align = self::ALIGN_LEFT;
+	/** cell width (e.g. "20%") */
+	public $width = null;
+	/** bold text */
+	public $bold = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $content cell content
+	 * @param String $align cell alignment (default: left)
+	 * @param String $width width (e.g. "20%")
+	 * @param boolean $bold print in bold
+	 */
+	public function __construct($content, $align = null, $width = null, $bold = false) {
+		$this->content = empty($content) ? ' ' : $content;
+		$this->align = ($align == null) ? self::ALIGN_LEFT : $align;
+		$this->width = $width;
+		$this->bold = $bold;
 	}
 
 }
