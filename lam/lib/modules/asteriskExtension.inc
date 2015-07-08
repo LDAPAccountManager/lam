@@ -819,10 +819,10 @@ class asteriskExtension extends baseModule {
         $entries = $this->load_extension_parts($extName);
         $pdfTable = new PDFTable();
         $pdfRow = new PDFTableRow();
-        $pdfRow->cells[] = new PDFTableCell(_('Name'), null, '20%', true);
-        $pdfRow->cells[] = new PDFTableCell(_('Application'), null, '30%', true);
-        $pdfRow->cells[] = new PDFTableCell(_('Application data'), null, '30%', true);
-        $pdfRow->cells[] = new PDFTableCell(_('Priority'), null, '20%', true);
+        $pdfRow->cells[] = new PDFTableCell(_('Name'), '20%', null, true);
+        $pdfRow->cells[] = new PDFTableCell(_('Application'), '30%', null, true);
+        $pdfRow->cells[] = new PDFTableCell(_('Application data'), '30%', null, true);
+        $pdfRow->cells[] = new PDFTableCell(_('Priority'), '20%', null, true);
         $pdfTable->rows[] = $pdfRow;
         for ($i = 0; $i < sizeof($entries); $i++) {
         	$appdata = ' ';
@@ -830,10 +830,10 @@ class asteriskExtension extends baseModule {
         		$appdata = $entries[$i]['astapplicationdata'][0];
         	}
         	$pdfRow = new PDFTableRow();
-        	$pdfRow->cells[] = new PDFTableCell($entries[$i]['cn'][0], null, '20%');
-        	$pdfRow->cells[] = new PDFTableCell($entries[$i]['astapplication'][0], null, '30%');
-        	$pdfRow->cells[] = new PDFTableCell($appdata, null, '30%');
-        	$pdfRow->cells[] = new PDFTableCell($entries[$i]['astpriority'][0], null, '20%');
+        	$pdfRow->cells[] = new PDFTableCell($entries[$i]['cn'][0], '20%');
+        	$pdfRow->cells[] = new PDFTableCell($entries[$i]['astapplication'][0], '30%');
+        	$pdfRow->cells[] = new PDFTableCell($appdata, '30%');
+        	$pdfRow->cells[] = new PDFTableCell($entries[$i]['astpriority'][0], '20%');
         	$pdfTable->rows[] = $pdfRow;
         }
         $this->addPDFTable($return, 'rules', $pdfTable);

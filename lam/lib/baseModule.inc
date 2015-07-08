@@ -866,13 +866,14 @@ abstract class baseModule {
 	 * @param PDFTable $table table
 	 */
 	public function addPDFTable(&$result, $name, $table) {
-		$first = true;
+		if (empty($table->rows)) {
+			return;
+		}
+		if (!empty($table->label)) {
+			$result[get_class($this) . '_' . $name][] = '<block><tr><td><b>' . $table->label . ':</b></td></tr></block>';
+		}
 		foreach ($table->rows as $row) {
-			$xml = '<block>';
-			if ($first && !empty($table->label)) {
-				$xml .= '<key>' . $table->label . '</key>';
-			}
-			$xml .= '<tr>';
+			$xml = '<block><tr>';
 			foreach ($row->cells as $cell) {
 				$width = empty($cell->width) ? '' : ' width="' . $cell->width . '"';
 				$content = ($cell->bold) ? '<b>' . $cell->content . '</b>' : $cell->content;
@@ -880,7 +881,6 @@ abstract class baseModule {
 			}
 			$xml .= '</tr></block>';
 			$result[get_class($this) . '_' . $name][] = $xml;
-			$first = false;
 		}
 	}
 
@@ -1828,6 +1828,15 @@ class PDFTable {
 	/** list of PDFTableRow elements */
 	public $rows = array();
 
+	/**
+	 * Constructor
+	 *
+	 * @param String $label label
+	 */
+	public function __construct($label = null) {
+		$this->label = $label;
+	}
+
 }
 
 /**
@@ -1868,11 +1877,11 @@ class PDFTableCell {
 	 * Constructor.
 	 *
 	 * @param String $content cell content
-	 * @param String $align cell alignment (default: left)
 	 * @param String $width width (e.g. "20%")
+	 * @param String $align cell alignment (default: left)
 	 * @param boolean $bold print in bold
 	 */
-	public function __construct($content, $align = null, $width = null, $bold = false) {
+	public function __construct($content, $width = null, $align = null, $bold = false) {
 		$this->content = empty($content) ? ' ' : $content;
 		$this->align = ($align == null) ? self::ALIGN_LEFT : $align;
 		$this->width = $width;
