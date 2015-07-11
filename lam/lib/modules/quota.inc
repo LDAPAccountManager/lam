@@ -38,7 +38,7 @@ $Id$
 * @package modules
 */
 class quota extends baseModule {
-	
+
 	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
 	/** prefix for lamdaemon results */
@@ -65,7 +65,7 @@ class quota extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -76,7 +76,7 @@ class quota extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -159,7 +159,7 @@ class quota extends baseModule {
 
 	/** Saves the quota settings */
 	private $quota;
-	
+
 	/**
 	 * Initializes the quota values.
 	 *
@@ -219,7 +219,7 @@ class quota extends baseModule {
 		}
 		return null;
 	}
-	
+
 	/**
 	* This function is used to check if this module page can be displayed.
 	* It returns false if a module depends on data from other modules which was not yet entered.
@@ -241,7 +241,7 @@ class quota extends baseModule {
 
 	/**
 	 * Quotas are set in postmodify.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount is new account
@@ -284,7 +284,7 @@ class quota extends baseModule {
 
 	/**
 	 * Allows the module to run commands before the LDAP entry is deleted.
-	 * 
+	 *
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	function preDeleteActions() {
@@ -371,7 +371,7 @@ class quota extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -416,7 +416,7 @@ class quota extends baseModule {
 			$return->addElement(new htmlHelpLink('HardInodeLimit'));
 			$return->addElement(new htmlHelpLink('GraceInodePeriod'));
 			$return->addNewLine();
-	
+
 			$i=0;
 			// loop for every mointpoint with enabled quotas
 			while (isset($this->quota[$server][$i][0])) {
@@ -451,7 +451,7 @@ class quota extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Replaces special characters in HTML name values.
 	 *
@@ -515,7 +515,7 @@ class quota extends baseModule {
 			$return->addElement(new htmlHelpLink('SoftInodeLimit'));
 			$return->addElement(new htmlHelpLink('HardInodeLimit'));
 			$return->addNewLine();
-			
+
 			for ($i = 0; $i < sizeof($dirs); $i++) {
 				$return->addElement(new htmlOutputText($dirs[$i]));
 				$sbLimit = new htmlInputField("quota_softblock_" . $id . "_" . $dirs[$i]);
@@ -617,7 +617,7 @@ class quota extends baseModule {
 		$this->initQuotas();
 		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		if (sizeof($this->quota) > 0) {
-			$quotas = array();
+			$pdfTable = new PDFTable();
 			// get list of lamdaemon servers
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
@@ -626,27 +626,32 @@ class quota extends baseModule {
 				$description = $server;
 				if (isset($temp[1])) $description = $temp[1] . " (" . $server . ")";
 				if (!isset($this->quota[$server]) || (sizeof($this->quota[$server]) < 1)) continue;
-				
-				$quotas[] = '<block><tr>' .
-						'<td width="80%"><b>' . $description . '</b></td>' .
-						'</tr></block>';
-				$quotas[] = '<block><tr>' .
-						'<td width="20%"><b>' . _('Mountpoint') . '</b></td>' .
-						'<td width="20%"><b>' . _('Soft block') . '</b></td>' .
-						'<td width="20%"><b>' . _('Hard block') . '</b></td>' .
-						'<td width="20%"><b>' . _('Soft inode') . '</b></td>' .
-						'<td width="20%"><b>' . _('Hard inode') . '</b></td></tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($description, null, null, true);
+				$pdfTable->rows[] = $pdfRow;
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell(_('Mountpoint'), '28%', null, true);
+				$pdfRow->cells[] = new PDFTableCell(_('Soft block'), '18%', null, true);
+				$pdfRow->cells[] = new PDFTableCell(_('Hard block'), '18%', null, true);
+				$pdfRow->cells[] = new PDFTableCell(_('Soft inode'), '18%', null, true);
+				$pdfRow->cells[] = new PDFTableCell(_('Hard inode'), '18%', null, true);
+				$pdfTable->rows[] = $pdfRow;
 				for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
-					$quotas[] = '<block><tr>' .
-						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][0] . '</td>' .
-						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][2] . '</td>' .
-						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][3] . '</td>' .
-						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][6] . '</td>' .
-						'<td width="20%" align=\"L\">' . $this->quota[$server][$i][7] . '</td></tr></block>';
+					$pdfRow = new PDFTableRow();
+					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][0], '28%');
+					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][2], '18%');
+					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][3], '18%');
+					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][6], '18%');
+					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][7], '18%');
+					$pdfTable->rows[] = $pdfRow;
 				}
-				$quotas[] = '<block><tr><td width="80%"> </td></tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell(' ');
+				$pdfTable->rows[] = $pdfRow;
 			}
-			return array('quota_quotas' => $quotas);
+			$return = array();
+			$this->addPDFTable($return, 'quotas', $pdfTable);
+			return $return;
 		}
 		else {
 			return array();
@@ -826,10 +831,10 @@ class quota extends baseModule {
 		}
 		return array('status' => 'finished');
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	*
@@ -844,7 +849,7 @@ class quota extends baseModule {
 	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
 	* <br>
 	* <br>This builds the required comands from $this-attributes and $this->orig.
-	* 
+	*
 	* @return array list of modifications
 	*/
 	public function save_attributes() {

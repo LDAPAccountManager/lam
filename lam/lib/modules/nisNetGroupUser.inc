@@ -43,10 +43,10 @@ class nisNetGroupUser extends baseModule {
 	private $groupCache = null;
 	/** original uid */
 	private $uidOrig = null;
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -57,7 +57,7 @@ class nisNetGroupUser extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -86,7 +86,7 @@ class nisNetGroupUser extends baseModule {
 		);
 		return $return;
 	}
-	
+
 	/**
 	* This function fills the $messages variable with output messages from this module.
 	*/
@@ -176,7 +176,7 @@ class nisNetGroupUser extends baseModule {
 			$return->addElement($delButton, true);
 		}
 		$return->addVerticalSpace('40px');
-		
+
 		// new entry
 		$groupList = array();
 		$groupData = $this->findGroups();
@@ -188,7 +188,7 @@ class nisNetGroupUser extends baseModule {
 			$filter->setOnKeyUp('filterSelect(\'group_filter\', \'group_add\', event);');
 			$filterGroup->addElement($filter);
 			$return->addElement($filterGroup, true);
-			
+
 			foreach ($groupData as $group) {
 				$groupList[$group['cn'][0]] = $group['cn'][0] . '#+#' . $group['dn'];
 			}
@@ -258,10 +258,10 @@ class nisNetGroupUser extends baseModule {
 		usort($this->groups, array($this, 'sortTriple'));
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns the user ID for this user.
-	 * 
+	 *
 	 * @return String user ID
 	 */
 	private function getUid() {
@@ -280,7 +280,7 @@ class nisNetGroupUser extends baseModule {
 
 	/**
 	 * Runs the postmodify actions.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -356,7 +356,7 @@ class nisNetGroupUser extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	* Additional LDAP operations on delete.
 	*
@@ -449,15 +449,20 @@ class nisNetGroupUser extends baseModule {
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
-		$return[get_class($this) . '_memberships'][0] = '<block>'
-			. '<tr><td width="25%" align=\"L\"><b>' . _('Group') . '</b></td>'
-			. '<td width="25%" align=\"L\"><b>' . _('Host name') . '</b></td>'
-			. '<td width="25%" align=\"L\"><b>' . _('Domain name') . '</b></td></tr></block>';
+		$pdfTable = new PDFTable();
+		$pdfRow = new PDFTableRow();
+		$pdfRow->cells[] = new PDFTableCell(_('Group'), '25%', null, true);
+		$pdfRow->cells[] = new PDFTableCell(_('Host name'), '25%', null, true);
+		$pdfRow->cells[] = new PDFTableCell(_('Domain name'), '25%', null, true);
+		$pdfTable->rows[] = $pdfRow;
 		foreach ($this->groups as $group) {
-			$return[get_class($this) . '_memberships'][] = '<block><tr><td width="25%" align=\"L\">' . $group['name'] . '</td>'
-				. '<td width="25%" align=\"L\">' . $group['host'] . ' </td>'
-				. '<td width="25%" align=\"L\">' . $group['domain'] . ' </td></tr></block>';
+			$pdfRow = new PDFTableRow();
+			$pdfRow->cells[] = new PDFTableCell($group['name'], '25%');
+			$pdfRow->cells[] = new PDFTableCell($group['host'], '25%');
+			$pdfRow->cells[] = new PDFTableCell($group['domain'], '25%');
+			$pdfTable->rows[] = $pdfRow;
 		}
+		$this->addPDFTable($return, 'memberships', $pdfTable);
 		return $return;
 	}
 
@@ -609,7 +614,7 @@ class nisNetGroupUser extends baseModule {
 						$typeFilter = '(' . $typeFilter . ')';
 					}
 					$filter = '(&' . $filter . $typeFilter . ')';
-				}			
+				}
 				$results = searchLDAPByFilter($filter, array('cn', 'dn', 'nisnetgrouptriple'), array($type));
 				for ($i = 0; $i < sizeof($results); $i++) {
 					if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
@@ -621,10 +626,10 @@ class nisNetGroupUser extends baseModule {
 		$this->groupCache = $return;
 		return $return;
 	}
-	
+
 	/**
 	 * Sorts NIS netgroup triples by group, host and domain.
-	 * 
+	 *
 	 * @param array $first first array
 	 * @param array $second second array
 	 */
@@ -637,7 +642,7 @@ class nisNetGroupUser extends baseModule {
 		}
 		return strnatcasecmp($first['domain'], $second['domain']);
 	}
-	
+
 }
 
 ?>

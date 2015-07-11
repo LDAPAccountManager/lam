@@ -42,25 +42,25 @@ class fixed_ip extends baseModule {
 
 	/** fixed ips */
 	public $fixed_ip = array();
-	
+
 	/** already processed? */
 	public $processed = false;
 
 	/** for check if IPs overlap */
 	public $overlapd;
-	
+
 	/** original IPs */
 	public $orig_ips = array();
-	
+
 	/** LDAP attributes */
 	public $attributes;
-	
+
 	/** cached host entries (list of array('cn' => ..., 'iphostnumber' => ..., 'macaddress' => ...)) */
 	private $hostCache = null;
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -71,7 +71,7 @@ class fixed_ip extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -119,14 +119,14 @@ class fixed_ip extends baseModule {
 		$return['PDF_fields'] = array('IPlist' => _('IP list'));
 		return $return;
 	}
-	
+
 	/**
 	 *  This function fills the error message array with messages.
 	 */
 	public function load_Messages() {
 		$this->messages['errors'][0] = array('ERROR', _('One or more errors occured. The invalid fields are marked.'), '');
 	}
-	
+
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*
@@ -167,7 +167,7 @@ class fixed_ip extends baseModule {
 	 public function reset_overlapd_ip() {
 	    $this->overlapd = array();
 	 }
-	
+
 	/**
 	 *
 	 * Check, if a mac address is invalid
@@ -189,7 +189,7 @@ class fixed_ip extends baseModule {
 		}
 		return $invalid;
 	}
-	
+
 	/**
 	 *
 	 * Adapt the fixed ip with the subnet.
@@ -217,7 +217,7 @@ class fixed_ip extends baseModule {
 		}
 		return $ip_edit;
 	}
-	
+
 	/**
 	 * This function loads all needed LDAP attributes.
 	 *
@@ -244,7 +244,7 @@ class fixed_ip extends baseModule {
 					$description = $entries[$i]['dhcpcomments'][0];
 				}
 				$this->fixed_ip[$i]['description'] = $description;
-				
+
 				$this->orig_ips[$i]['cn'] = $entries[$i]['cn'][0];
 				$this->orig_ips[$i]['mac'] = $dhcphwaddress;
 				$this->orig_ips[$i]['ip'] = self::extractIP($dhcpstatements);
@@ -275,7 +275,7 @@ class fixed_ip extends baseModule {
 		}
 		$this->fixed_ip = $newVal;
 	}
-	
+
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -316,7 +316,7 @@ class fixed_ip extends baseModule {
 					    $error = true;
 					}
 					$this->fixed_ip[$id]['description'] = $_POST['description_'.$id];
-					
+
 					// active
 					$this->fixed_ip[$id]['active'] = (isset($_POST['active_' . $id]) && ($_POST['active_' . $id] == 'on'));
 
@@ -389,13 +389,13 @@ class fixed_ip extends baseModule {
 				$this->orderByIP();
 			}
 		}
-		
+
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -474,7 +474,7 @@ class fixed_ip extends baseModule {
 				elseif ($this->check_mac($this->fixed_ip[$id]['mac'])) {
 				    $macError = _("Invalid MAC address.");
 				}
-                    
+
 				// descripton
 				$descriptionError = "";
 				if (!$this->processed) {
@@ -483,7 +483,7 @@ class fixed_ip extends baseModule {
 				elseif (!get_preg($this->fixed_ip[$id]['description'], 'ascii')) {
 				    $descriptionError = _("Invalid description.");
 				}
-                    
+
 				// fixed ip
 				$ipError = "";
 				if (!$this->processed || ($this->fixed_ip[$id]['ip'] == '')) {
@@ -492,7 +492,7 @@ class fixed_ip extends baseModule {
 				elseif (!check_ip($this->fixed_ip[$id]['ip'])) {
 					$ipError = _("The IP address is invalid.");
 				}
-				elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'], 
+				elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'],
 													$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
 													$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 				    $ipError = _("The IP address does not match the subnet.");
@@ -537,7 +537,7 @@ class fixed_ip extends baseModule {
 			$return->addElement(new htmlInputField('description_add', '', 20));
 			$return->addElement(new htmlInputCheckbox('active_add', true));
 			$return->addElement(new htmlButton('add_ip', 'add.png', true), true);
-			
+
 			// add existing host entry
 			if (!empty($this->hostCache)) {
 				$return->addVerticalSpace('20px');
@@ -548,10 +548,10 @@ class fixed_ip extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the add host page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_addHost() {
@@ -614,7 +614,7 @@ class fixed_ip extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
@@ -630,10 +630,10 @@ class fixed_ip extends baseModule {
 	public function save_attributes() {
 
 	}
-	
+
 	/**
 	 * This function is overwritten because the fixed IPs are set after the ldap_add command.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -736,14 +736,14 @@ class fixed_ip extends baseModule {
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		if (is_array($this->fixed_ip) && (sizeof($this->fixed_ip) > 0)) {
-			$return[get_class($this) . '_IPlist'] = array(
-				'<block><tr>' .
-				'<td width="20%" align=\"L\"><b>' . _('PC name') . "</b></td>" .
-				"<td width=\"20%\" align=\"L\"><b>" . _('IP address') . "</b></td>" .
-				"<td width=\"20%\" align=\"L\"><b>" . _('MAC address') . '</b></td>' .
-				"<td width=\"10%\" align=\"L\"><b>" . _('Active') . '</b></td>' .
-				"<td width=\"30%\" align=\"L\"><b>" . _('Description') . '</b></td>' .
-			'</tr></block>');
+			$pdfTable = new PDFTable();
+			$pdfRow = new PDFTableRow();
+			$pdfRow->cells[] = new PDFTableCell(_('PC name'), '20%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('IP address'), '20%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('MAC address'), '20%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Active'), '10%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Description'), '30%', null, true);
+			$pdfTable->rows[] = $pdfRow;
 			for ($i = 0; $i < sizeof($this->fixed_ip); $i++) {
 				$name = $this->fixed_ip[$i]['cn'];
 				$mac = $this->fixed_ip[$i]['mac'];
@@ -753,21 +753,22 @@ class fixed_ip extends baseModule {
 					$active = _('no');
 				}
 				$description = $this->fixed_ip[$i]['description'];
-				$return[get_class($this) . '_IPlist'][] = '<block><tr>' .
-					'<td width="20%" align=\"L\">' . $name . "</td>" .
-					"<td width=\"20%\" align=\"L\">" . $ip . " </td>" .
-					"<td width=\"20%\" align=\"L\">" . $mac . '</td>'. 
-					"<td width=\"10%\" align=\"L\">" . $active . '</td>'. 
-					"<td width=\"30%\" align=\"L\">" . $description . ' </td>'. 
-				'</tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($name, '20%');
+				$pdfRow->cells[] = new PDFTableCell($ip, '20%');
+				$pdfRow->cells[] = new PDFTableCell($mac, '20%');
+				$pdfRow->cells[] = new PDFTableCell($active, '10%');
+				$pdfRow->cells[] = new PDFTableCell($description, '30%');
+				$pdfTable->rows[] = $pdfRow;
 			}
+			$this->addPDFTable($return, 'IPlist', $pdfTable);
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Extracts the IP from a list of DHCP statements.
-	 * 
+	 *
 	 * @param array $dhcpStatements values of dhcpStatements attribute
 	 */
 	public static function extractIP($dhcpStatements) {
@@ -782,10 +783,10 @@ class fixed_ip extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the IP in a list of DHCP statements.
-	 * 
+	 *
 	 * @param array $dhcpStatements values of dhcpStatements attribute
 	 * @param String $ip new IP
 	 */
@@ -800,10 +801,10 @@ class fixed_ip extends baseModule {
 			$dhcpStatements[] = 'fixed-address ' . $ip;
 		}
 	}
-	
+
 	/**
 	 * Returns if this host is active.
-	 * 
+	 *
 	 * @param array $dhcpStatements values of dhcpStatements attribute
 	 */
 	public static function isActive($dhcpStatements) {
@@ -820,10 +821,10 @@ class fixed_ip extends baseModule {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Sets if this host is active.
-	 * 
+	 *
 	 * @param array $dhcpStatements values of dhcpStatements attribute
 	 * @param boolean $active is active
 	 */
@@ -841,7 +842,7 @@ class fixed_ip extends baseModule {
 			$dhcpStatements[] = 'deny booting';
 		}
 	}
-	
+
 	/**
 	 * Loads cached host data from LDAP.
 	 */
@@ -856,7 +857,7 @@ class fixed_ip extends baseModule {
 			$this->hostCache[] = $attributes;
 		}
 	}
-	
+
 }
 
 ?>

@@ -33,18 +33,18 @@ $Id$
 * @package modules
 */
 class pykotaUser extends baseModule {
-	
+
 	/** cache for uid attribute */
 	private $uidCache = null;
 	/** cache for pykotaUserName attribute */
 	private $pykotaUserNameCache = null;
 	/** list of limit options label => value */
 	private $limitOptions;
-	
+
 	/**
 	 * Returns if this module also manages the structural object class pykotaObject.
 	 * This is overridden by a submodule that must provide the structural object class.
-	 * 
+	 *
 	 * @return boolean structural usage
 	 */
 	public function isStructural() {
@@ -71,7 +71,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -82,7 +82,7 @@ class pykotaUser extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -329,7 +329,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -353,7 +353,7 @@ class pykotaUser extends baseModule {
 					$msg = new htmlStatusMessage('INFO', sprintf(_("Please enter an user name on this page: %s"), $page));
 					$msg->colspan = 5;
 					$container->addElement($msg, true);
-				}			
+				}
 			}
 			// pykotaUserName
 			$this->addSimpleInputTextField($container, 'pykotaUserName', _('Pykota user name'));
@@ -573,7 +573,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the payments page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_payments() {
@@ -621,7 +621,7 @@ class pykotaUser extends baseModule {
 		$container->addElement($backButton, true);
 		return $container;
 	}
-	
+
 	/**
 	* Processes user input of the payments module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -634,7 +634,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the jobs page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_jobs() {
@@ -711,7 +711,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	* This function is used to check if all settings for this module have been made.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* This function tells LAM if it can create/modify the LDAP account. If your module needs any
@@ -757,7 +757,7 @@ class pykotaUser extends baseModule {
 			$this->attributes['pykotaPayments'][] = date('Y-m-d H:i:s,00', time()) . ' # ' . $amount . ' # ';
 		}
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -879,7 +879,7 @@ class pykotaUser extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -904,22 +904,25 @@ class pykotaUser extends baseModule {
 		$this->addSimplePDFField($return, 'pykotaLifeTimePaid', _('Total paid'));
 		// payment history
 		if (!empty($this->attributes['pykotaPayments'][0])) {
-			$history[] = '<block><tr>' .
-					'<td width="20%"><b>' . _('Date') . '</b></td>' .
-					'<td width="10%"><b>' . _('Amount') . '</b></td>' .
-					'<td width="70%"><b>' . _('Comment') . '</b></td></tr></block>';
+			$pdfTable = new PDFTable();
+			$pdfRow = new PDFTableRow();
+			$pdfRow->cells[] = new PDFTableCell(_('Date'), '20%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Amount'), '10%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Comment'), '70%', null, true);
+			$pdfTable->rows[] = $pdfRow;
 			for ($i = 0; $i < sizeof($this->attributes['pykotaPayments']); $i++) {
 				$parts = explode(' # ', $this->attributes['pykotaPayments'][$i]);
 				$comment = ' ';
 				if (!empty($parts[2])) {
 					$comment = base64_decode($parts[2]);
 				}
-				$history[] = '<block><tr>' .
-					'<td width="20%" align=\"L\">' . $parts[0] . '</td>' .
-					'<td width="10%" align=\"R\">' . $parts[1] . '</td>' .
-					'<td width="70%" align=\"L\">' . $comment . '</td></tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($parts[0], '20%');
+				$pdfRow->cells[] = new PDFTableCell($parts[1], '10%', PDFTableCell::ALIGN_RIGHT);
+				$pdfRow->cells[] = new PDFTableCell($comment, '70%');
+				$pdfTable->rows[] = $pdfRow;
 			}
-			$return[get_class($this) . '_pykotaPayments'] = $history;
+			$this->addPDFTable($return, 'pykotaPayments', $pdfTable);
 		}
 		return $return;
 	}
@@ -1032,7 +1035,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Checks if the self service settings are valid.
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * If the input data is invalid the return value is an array that contains arrays
@@ -1052,10 +1055,10 @@ class pykotaUser extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns if the uid attribute should be managed.
-	 * 
+	 *
 	 * @return boolean manage uid attribute
 	 */
 	private function manageUid() {
@@ -1074,7 +1077,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Returns if the mail attribute should be managed.
-	 * 
+	 *
 	 * @return boolean manage mail attribute
 	 */
 	private function manageMail() {
@@ -1092,7 +1095,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Returns if the description attribute should be managed.
-	 * 
+	 *
 	 * @return boolean manage description attribute
 	 */
 	private function manageDescription() {
@@ -1107,10 +1110,10 @@ class pykotaUser extends baseModule {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns if the given uid already exists.
-	 * 
+	 *
 	 * @param String $uid uid attribute value
 	 * @return boolean uid exists
 	 */
@@ -1123,7 +1126,7 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * Returns if the given pykotaUserName already exists.
-	 * 
+	 *
 	 * @param String $pykotaUserName pykotaUserName attribute value
 	 * @return boolean pykotaUserName exists
 	 */
@@ -1133,7 +1136,7 @@ class pykotaUser extends baseModule {
 		}
 		return in_array($pykotaUserName, $this->pykotaUserNameCache);
 	}
-	
+
 	/**
 	 * Loads the list of user names into the cache.
 	 */
@@ -1150,10 +1153,10 @@ class pykotaUser extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the current user name (uid) of this account.
-	 * 
+	 *
 	 * @return String user name
 	 */
 	private function getCurrentUserName() {
@@ -1176,11 +1179,11 @@ class pykotaUser extends baseModule {
 		}
 		return '';
 	}
-	
+
 	/**
 	 * Returns a list of jobs for the given user reverse-sorted by date.
 	 * The number of jobs is limited to 100.
-	 * 
+	 *
 	 * @param String $user user name
 	 * @param String $suffix LDAP suffix for job objects
 	 */

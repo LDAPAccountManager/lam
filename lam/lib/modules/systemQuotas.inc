@@ -33,10 +33,10 @@ $Id$
 * @package modules
 */
 class systemQuotas extends baseModule {
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -47,7 +47,7 @@ class systemQuotas extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -112,7 +112,7 @@ class systemQuotas extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -226,7 +226,7 @@ class systemQuotas extends baseModule {
 		$this->attributes['quota'] = array_unique($this->attributes['quota']);
 		return $return;
 	}
-	
+
 	/**
 	 * Checks if the quota parameters are valid.
 	 *
@@ -331,7 +331,7 @@ class systemQuotas extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	* Loads the values of an account profile into internal variables.
 	*
@@ -344,7 +344,7 @@ class systemQuotas extends baseModule {
 			$this->attributes['quota'] = explode(';', $profile['systemQuotas_quota'][0]);
 		}
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -371,7 +371,7 @@ class systemQuotas extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -381,22 +381,25 @@ class systemQuotas extends baseModule {
 	public function get_pdfEntries($pdfKeys) {
 		$return = array();
 		if (isset($this->attributes['quota'][0])) {
-			$quotas[] = '<block><tr>' .
-					'<td width="20%"><b>' . _('Mountpoint') . '</b></td>' .
-					'<td width="20%"><b>' . _('Soft block') . '</b></td>' .
-					'<td width="20%"><b>' . _('Hard block') . '</b></td>' .
-					'<td width="20%"><b>' . _('Soft inode') . '</b></td>' .
-					'<td width="20%"><b>' . _('Hard inode') . '</b></td></tr></block>';
+			$pdfTable = new PDFTable();
+			$pdfRow = new PDFTableRow();
+			$pdfRow->cells[] = new PDFTableCell(_('Mountpoint'), '28%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Soft block'), '18%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Hard block'), '18%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Soft inode'), '18%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Hard inode'), '18%', null, true);
+			$pdfTable->rows[] = $pdfRow;
 			for ($i = 0; $i < sizeof($this->attributes['quota']); $i++) {
 				$parts = explode(',', $this->attributes['quota'][$i]);
-				$quotas[] = '<block><tr>' .
-					'<td width="20%" align=\"L\">' . $parts[0] . '</td>' .
-					'<td width="20%" align=\"L\">' . $parts[1] . '</td>' .
-					'<td width="20%" align=\"L\">' . $parts[2] . '</td>' .
-					'<td width="20%" align=\"L\">' . $parts[3] . '</td>' .
-					'<td width="20%" align=\"L\">' . $parts[4] . '</td></tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($parts[0], '28%');
+				$pdfRow->cells[] = new PDFTableCell($parts[1], '18%');
+				$pdfRow->cells[] = new PDFTableCell($parts[2], '18%');
+				$pdfRow->cells[] = new PDFTableCell($parts[3], '18%');
+				$pdfRow->cells[] = new PDFTableCell($parts[4], '18%');
+				$pdfTable->rows[] = $pdfRow;
 			}
-			$return['systemQuotas_quota'] = $quotas;
+			$this->addPDFTable($return, 'quota', $pdfTable);
 		}
 		return $return;
 	}

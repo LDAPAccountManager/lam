@@ -988,7 +988,7 @@ function extractRDNAttribute($dn) {
  * @return String RDN attribute value
  */
 function extractRDNValue($dn) {
-	if ($dn == null) return null;
+	if (empty($dn)) return null;
 	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
 	return $parts[1];
 }

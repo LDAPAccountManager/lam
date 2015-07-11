@@ -50,7 +50,7 @@ class puppetClient extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -121,7 +121,7 @@ class puppetClient extends baseModule {
 		$configContainer = new htmlTable();
 		$configContainer->addElement(new htmlTableExtendedInputTextarea('puppetClient_environments', "production\r\ntesting", 30, 5, _('Predefined environments'), 'predefinedEnvironments'), true);
 		$return['config_options']['all'] = $configContainer;
-		// upload fields 
+		// upload fields
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'puppetClient_environment',
@@ -212,7 +212,7 @@ class puppetClient extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -275,7 +275,7 @@ class puppetClient extends baseModule {
 			$puppetvar = implode("\r\n", $this->attributes['puppetvar']);
 		}
 		$return->addElement(new htmlTableExtendedInputTextarea('puppetvar', $puppetvar, 60, 5, _('Variables'), 'puppetvar'), true);
-		
+
 		$return->addElement(new htmlSpacer(null, '10px'),true);
 		$remButton = new htmlAccountPageButton('puppetClient', 'attributes', 'remObjectClass', _('Remove Puppet extension'));
 		$remButton->colspan = 4;
@@ -353,7 +353,7 @@ class puppetClient extends baseModule {
 			}
 		}
 		$this->attributes['puppetvar'] = array_values(array_unique($puppetvar));
-		
+
 		return $errors;
 	}
 
@@ -431,20 +431,26 @@ class puppetClient extends baseModule {
 		$this->addSimplePDFField($return, 'environment', _('Environment'));
 		$this->addSimplePDFField($return, 'parentnode', _('Parent node'));
 		if (isset($this->attributes['puppetclass'][0])) {
-			$return['puppetClient_puppetclass'][0] = '<block><key>' . _('Classes') . '</key><tr><td align=\"L\">' . $this->attributes['puppetclass'][0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($this->attributes['puppetclass']); $i++) {
-				$return['puppetClient_puppetclass'][] = '<block><tr><td align=\"L\">' . $this->attributes['puppetclass'][$i] . '</td></tr></block>';
+			$pdfTable = new PDFTable(_('Classes'));
+			for ($i = 0; $i < sizeof($this->attributes['puppetclass']); $i++) {
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($this->attributes['puppetclass'][$i]);
+				$pdfTable->rows[] = $pdfRow;
 			}
+			$this->addPDFTable($return, 'puppetclass', $pdfTable);
 		}
 		if (isset($this->attributes['puppetvar'][0])) {
-			$return['puppetClient_puppetvar'][0] = '<block><key>' . _('Variables') . '</key><tr><td align=\"L\">' . $this->attributes['puppetvar'][0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($this->attributes['puppetvar']); $i++) {
-				$return['puppetClient_puppetvar'][] = '<block><tr><td align=\"L\">' . $this->attributes['puppetvar'][$i] . '</td></tr></block>';
+			$pdfTable = new PDFTable(_('Variables'));
+			for ($i = 0; $i < sizeof($this->attributes['puppetvar']); $i++) {
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($this->attributes['puppetvar'][$i]);
+				$pdfTable->rows[] = $pdfRow;
 			}
+			$this->addPDFTable($return, 'puppetvar', $pdfTable);
 		}
 		return $return;
 	}
-	
+
 	/**
 	* This function defines what attributes will be used in the account profiles and their appearance in the profile editor.
 	*
@@ -454,9 +460,9 @@ class puppetClient extends baseModule {
 	* The field name are used as keywords to load
 	* and save profiles. We recommend to use the module name as prefix for them
 	* (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	* 
+	*
 	* @return htmlElement meta HTML object
-	* 
+	*
 	* @see baseModule::get_metaData()
 	* @see htmlElement
 	*/
@@ -496,10 +502,10 @@ class puppetClient extends baseModule {
 			$this->attributes['puppetvar'] = $profile['puppetClient_puppetvar'];
 		}
 	}
-	
+
 	/**
 	 * Reurns a list of valid parent nodes for this node.
-	 * 
+	 *
 	 * @return array parent nodes (e.g. array('node1', 'node2'))
 	 */
 	private function getPossibleParentNodes() {

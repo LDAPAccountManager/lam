@@ -42,16 +42,16 @@ class range extends baseModule {
 
 	/** subnet */
 	public $subnet;
-	
+
 	/** ranges */
 	public $ranges;
-	
+
 	/** Range -> Function attibute_processed already running? */
 	public $processed;
-	
+
 	/** For check, if IPs overlaped. */
 	public $overlaped;
-	
+
 	/** list of pools that currently exist in LDAP */
 	private $poolsOrig = array();
 	/** list of pools that need to be updated in LDAP */
@@ -59,7 +59,7 @@ class range extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -70,7 +70,7 @@ class range extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -122,12 +122,12 @@ class range extends baseModule {
 				"Text" => _("The pool's failover peer.")
 			),
 			);
-			
+
 		// available PDF fields
 		$return['PDF_fields'] = array('ranges' => _('Ranges'));
 		return $return;
 	}
-	
+
 	/**
 	 *  This function fills the error message array with messages.
 	 */
@@ -138,7 +138,7 @@ class range extends baseModule {
 		$this->messages['pool_cn'][0] = array('ERROR', _('Name'), _('Please enter a pool name.'));
 		$this->messages['pool_range'][0] = array('ERROR', _('Please enter at least one range for pool "%s".'), null);
 	}
-	
+
 	/**
 	 * Calculates the subnet for a given IP and netmask.
 	 *
@@ -148,7 +148,7 @@ class range extends baseModule {
 	private static function calculateSubnet($ip, $mask) {
 		return long2ip(ip2long($ip) & ip2long($mask));
 	}
-	
+
 	/**
 	 * Checks if the first IP is smaller than the second IP.
 	 *
@@ -157,7 +157,7 @@ class range extends baseModule {
 	 *
 	 * @return true, if it's a valid Range, else false;
 	 **/
-	
+
 	public function check_range($first_ip, $second_ip) {
 		$ex_first = explode(".", $first_ip);
 		$ex_second = explode(".", $second_ip);
@@ -172,7 +172,7 @@ class range extends baseModule {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check if an IP address is in the correct subnet.
 	 *
@@ -185,7 +185,7 @@ class range extends baseModule {
 		$ipSubnet = range::calculateSubnet($ip, $mask);
 		return ($subnet == $ipSubnet);
 	}
-	
+
 	/**
 	 *
 	 * Checked, if Ranges are overlaped.
@@ -199,7 +199,7 @@ class range extends baseModule {
 	function overlaped_range($ip,$ipB) {
 		$ex = explode(".", $ip);
 		$exB = explode(".", $ipB);
-		
+
 		if(!is_array($this->overlaped)) {
 		    $this->overlaped = array();
 		}
@@ -213,7 +213,7 @@ class range extends baseModule {
 		}
 		return true;
 	}
-	
+
 	/**
 	 *
 	 * Reset the overlaped_range() function
@@ -222,7 +222,7 @@ class range extends baseModule {
 	 function reset_overlaped_range() {
 	    $this->overlaped = array();
 	 }
-	
+
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*
@@ -262,7 +262,7 @@ class range extends baseModule {
 			$this->loadPools();
 		}
 	}
-	
+
 	/**
 	 *
 	 * Adapt the Ranges with the subnet.
@@ -304,7 +304,7 @@ class range extends baseModule {
 		}
 		return $range_edit;
 	}
-	
+
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -393,7 +393,7 @@ class range extends baseModule {
 			    $this->ranges[] = array('range_start'=>'','range_end'=>'');
 			}
 		}
-		
+
 		// update pool data
 		foreach ($this->poolsNew as $index => $pool) {
 			// delete pool
@@ -468,7 +468,7 @@ class range extends baseModule {
 				'dhcprange' => array('')
 			);
 		}
-		
+
 		// Check if there was a error:
 		if ($errorOccured) {
 		    $errors[] = $this->messages['range_errors'][0];
@@ -477,10 +477,10 @@ class range extends baseModule {
 		$this->processed = true;
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -489,7 +489,7 @@ class range extends baseModule {
 			$return->addElement(new htmlStatusMessage('INFO', _("Please fill out the DHCP settings first.")));
 			return $return;
         }
-        
+
         // If $ranges is not a array, then create it
         if (!is_array($this->ranges)) {
 	       	$this->ranges = array();
@@ -537,14 +537,14 @@ class range extends baseModule {
 
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 		}
-		
+
 		// add new range
 		$addButton = new htmlButton('add_range', _('New range'));
 		$addButton->setIconClass('createButton');
 		$addButton->colspan = 2;
 		$return->addElement($addButton);
 		$return->addElement(new htmlHelpLink('add_range'), true);
-		
+
 		// pools
 		if (!empty($this->poolsNew)) {
 			$return->addElement(new htmlSubTitle(_('Pools')), true);
@@ -622,20 +622,20 @@ class range extends baseModule {
 			}
 			$return->addVerticalSpace('20px');
 		}
-		
+
 		// add new range pool
 		$addButton = new htmlButton('add_pool', _('New pool'));
 		$addButton->setIconClass('createButton');
 		$addButton->colspan = 2;
 		$return->addElement($addButton);
 		$return->addElement(new htmlHelpLink('add_pool'), true);
-		
+
 		return $return;
 	}
 
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param boolean $newAccount new account
@@ -759,7 +759,7 @@ class range extends baseModule {
 		// Return attributes
 		return $return;
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -769,18 +769,46 @@ class range extends baseModule {
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		if (is_array($this->ranges) && (sizeof($this->ranges) > 0)) {
-			$start = $this->ranges[0]['range_start'];
-			$end = $this->ranges[0]['range_end'];
-			$return[get_class($this) . '_ranges'] = array('<block><key>' . _('Ranges') . '</key><tr><td align=\"L\">' . $start . " - " . $end . '</td></tr></block>');
-			for ($i = 1; $i < sizeof($this->ranges); $i++) {
+			$pdfTable = new PDFTable(_('Ranges'));
+			for ($i = 0; $i < sizeof($this->ranges); $i++) {
 				$start = $this->ranges[$i]['range_start'];
 				$end = $this->ranges[$i]['range_end'];
-				$return[get_class($this) . '_ranges'][] = '<block><tr><td align=\"L\">' . $start . " - " . $end . '</td></tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($start . " - " . $end);
+				$pdfTable->rows[] = $pdfRow;
 			}
+
+
+			if (!empty($this->poolsNew)) {
+				foreach ($this->poolsNew as $index => $poolAttrs) {
+					$cn = !empty($poolAttrs['cn'][0]) ? $poolAttrs['cn'][0] : '';
+					$peer = '';
+					if (!empty($poolAttrs['dhcpstatements'])) {
+						foreach ($poolAttrs['dhcpstatements'] as $statement) {
+							if (strpos($statement, 'failover peer "') === 0) {
+								$peer = ' (' . substr($statement, strlen('failover peer "'), -1) . ')';
+							}
+						}
+					}
+					if (!empty($poolAttrs['dhcprange'])) {
+						foreach ($poolAttrs['dhcprange'] as $rIndex => $range) {
+							$range = explode(' ', $range);
+							$from = !empty($range[0]) ? $range[0] : '';
+							$to = !empty($range[1]) ? $range[1] : '';
+							$pdfRow = new PDFTableRow();
+							$pdfRow->cells[] = new PDFTableCell($cn . $peer . ': ' . $from . " - " . $to);
+							$pdfTable->rows[] = $pdfRow;
+						}
+					}
+				}
+			}
+
+
+			$this->addPDFTable($return, 'ranges', $pdfTable);
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Loads the list of pools from LDAP.
 	 */
@@ -794,7 +822,7 @@ class range extends baseModule {
 		}
 		$this->poolsNew = $this->poolsOrig;
 	}
-	
+
 }
 
 ?>

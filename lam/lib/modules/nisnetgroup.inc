@@ -34,7 +34,7 @@ $Id$
 * @package modules
 */
 class nisnetgroup extends baseModule {
-	
+
 	/* caches to reduce LDAP queries */
 	/** user cache */
 	private $cachedUserList = null;
@@ -42,10 +42,10 @@ class nisnetgroup extends baseModule {
 	private $cachedHostList = null;
 	/** group cache */
 	private $cachedGroupList = null;
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -56,7 +56,7 @@ class nisnetgroup extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -182,7 +182,7 @@ class nisnetgroup extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -282,7 +282,7 @@ class nisnetgroup extends baseModule {
 		$addButton->setTitle(_('Add'));
 		$memberTable->addElement($addButton);
 		$memberTable->colspan = 2;
-		
+
 		$membersLabel = new htmlOutputText(_('Members'));
 		$membersLabel->alignment = htmlElement::ALIGN_TOP;
 		$return->addElement($membersLabel);
@@ -361,7 +361,7 @@ class nisnetgroup extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* Displays the group selection.
 	*
@@ -497,7 +497,7 @@ class nisnetgroup extends baseModule {
 		$return->addElement(new htmlHiddenInput('position', $position));
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the host/user selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -513,7 +513,7 @@ class nisnetgroup extends baseModule {
 		}
 		return array();
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -556,7 +556,7 @@ class nisnetgroup extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	* This functions is used to check if all settings for this module have been made.
 	*
@@ -583,26 +583,26 @@ class nisnetgroup extends baseModule {
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'subgroups', _('Subgroups'), 'memberNisNetgroup');
 		if (sizeof($this->attributes['nisNetgroupTriple']) > 0) {
-			$return[get_class($this) . '_members'] = array('<block><tr><td width="80%"><b>' . _('Members') . '</b></td></tr></block>');
-			$return[get_class($this) . '_members'][] = '<block><tr>' .
-					'<td width="20%"><b>' . _('Host') . '</b></td>' .
-					'<td width="20%"><b>' . _('User') . '</b></td>' .
-					'<td width="30%"><b>' . _('Domain') . '</b></td>' .
-					'</tr></block>';
+			$pdfTable = new PDFTable(_('Members'));
+			$pdfRow = new PDFTableRow();
+			$pdfRow->cells[] = new PDFTableCell(_('Host'), '20%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('User'), '20%', null, true);
+			$pdfRow->cells[] = new PDFTableCell(_('Domain'), '20%', null, true);
+			$pdfTable->rows[] = $pdfRow;
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
 				$triple = explode(',', $triple);
-				$return[get_class($this) . '_members'][] = '<block><tr>' .
-					'<td width="20%" align=\"L\">' . $triple[0] . ' </td>' .
-					'<td width="20%" align=\"L\">' . $triple[1] . ' </td>' .
-					'<td width="30%" align=\"L\">' . $triple[2] . ' </td>' .
-					'</tr></block>';
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($triple[0], '20%');
+				$pdfRow->cells[] = new PDFTableCell($triple[1], '20%');
+				$pdfRow->cells[] = new PDFTableCell($triple[2], '30%');
+				$pdfTable->rows[] = $pdfRow;
 			}
-			$return[get_class($this) . '_members'][] = '<block><tr><td width="80%"> </td></tr></block>';
+			$this->addPDFTable($return, 'members', $pdfTable);
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns a list of existing NIS net groups.
 	 *

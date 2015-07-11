@@ -33,14 +33,14 @@ $Id$
 * @package modules
 */
 class windowsGroup extends baseModule {
-	
+
 	/** possible group types (e.g. distribution) */
 	private $groupTypes;
 	/** possible group scopes (e.g. universal) */
 	private $groupScopes;
 	/** group cache */
 	private $groupCache;
-	
+
 	/** security group */
 	const TYPE_SECURITY = 'security';
 	/** email list */
@@ -51,7 +51,7 @@ class windowsGroup extends baseModule {
 	const SCOPE_GLOBAL = 'global';
 	/** universal group */
 	const SCOPE_UNIVERSAL = 'universal';
-	
+
 	/**
 	* Creates a new module for Samba 3 groups.
 	*
@@ -70,10 +70,10 @@ class windowsGroup extends baseModule {
 		// call parent constructor
 		parent::__construct($scope);
 	}
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -84,7 +84,7 @@ class windowsGroup extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -299,7 +299,7 @@ class windowsGroup extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -427,7 +427,7 @@ class windowsGroup extends baseModule {
 		}
 		$container->addElement(new htmlOutputText(''));
 		$container->addElement($memberOf, true);
-		
+
 		$container->addElement(new htmlEqualWidth(array('groupType', 'groupScope')));
 		return $container;
 	}
@@ -497,7 +497,7 @@ class windowsGroup extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Displays the memberof selection.
 	*
@@ -516,7 +516,7 @@ class windowsGroup extends baseModule {
 		$groupContainer->addElement(new htmlOutputText(''));
 		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
 		$groupContainer->addNewLine();
-		
+
 		$selectedGroups = array();
 		if (empty($this->attributes['memberOf'])) {
 			$this->attributes['memberOf'] = array();
@@ -534,7 +534,7 @@ class windowsGroup extends baseModule {
 				$availableGroups[getAbstractDN($dn)] = $dn;
 			}
 		}
-		
+
 		$remGroupSelect = new htmlSelect('removegroups', $selectedGroups, null, 15);
 		$remGroupSelect->setMultiSelect(true);
 		$remGroupSelect->setTransformSingleSelect(false);
@@ -585,7 +585,7 @@ class windowsGroup extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page to change the member attribute.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_managedBy() {
@@ -621,7 +621,7 @@ class windowsGroup extends baseModule {
 		$return->addElement($buttonTable);
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the members page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -638,7 +638,7 @@ class windowsGroup extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page to change the member attribute.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_user() {
@@ -652,7 +652,7 @@ class windowsGroup extends baseModule {
 			$filter->setOnKeyUp('filterSelect(\'windows_filter\', \'members\', event);');
 			$filterGroup->addElement($filter);
 			$return->addElement($filterGroup, true);
-			
+
 			$options = array();
 			$filter = get_ldap_filter($_POST['type']);
 			$entries = searchLDAPByFilter($filter, array('dn'), array($_POST['type']));
@@ -730,7 +730,7 @@ class windowsGroup extends baseModule {
 		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')));
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the members page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -860,7 +860,7 @@ class windowsGroup extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -914,10 +914,13 @@ class windowsGroup extends baseModule {
 				$memberList = $this->attributes['member'];
 			}
 			usort($memberList, 'compareDN');
-			$return[get_class($this) . '_member'][0] = '<block><key>' . _('Members') . '</key><tr><td align=\"L\">' . $memberList[0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($memberList); $i++) {
-				$return[get_class($this) . '_member'][] = '<block><tr><td align=\"L\">' . $memberList[$i] . '</td></tr></block>';
+			$pdfTable = new PDFTable(_('Members'));
+			for ($i = 0; $i < sizeof($memberList); $i++) {
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($memberList[$i]);
+				$pdfTable->rows[] = $pdfRow;
 			}
+			$this->addPDFTable($return, 'member', $pdfTable);
 		}
 		// member of
 		if (!empty($this->attributes['memberOf'])) {
@@ -926,10 +929,13 @@ class windowsGroup extends baseModule {
 				$memberOfList = $this->attributes['memberOf'];
 			}
 			usort($memberOfList, 'compareDN');
-			$return[get_class($this) . '_memberOf'][0] = '<block><key>' . _('Member of') . '</key><tr><td align=\"L\">' . $memberOfList[0] . '</td></tr></block>';
-			for ($i = 1; $i < sizeof($memberOfList); $i++) {
-				$return[get_class($this) . '_memberOf'][] = '<block><tr><td align=\"L\">' . $memberOfList[$i] . '</td></tr></block>';
+			$pdfTable = new PDFTable(_('Member of'));
+			for ($i = 0; $i < sizeof($memberOfList); $i++) {
+				$pdfRow = new PDFTableRow();
+				$pdfRow->cells[] = new PDFTableCell($memberOfList[$i]);
+				$pdfTable->rows[] = $pdfRow;
 			}
+			$this->addPDFTable($return, 'memberOf', $pdfTable);
 		}
 		return $return;
 	}
@@ -955,10 +961,10 @@ class windowsGroup extends baseModule {
 		$this->groupCache = $return;
 		return $return;
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	*
@@ -973,7 +979,7 @@ class windowsGroup extends baseModule {
 	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
 	* <br>
 	* <br>This builds the required comands from $this-attributes and $this->orig.
-	* 
+	*
 	* @return array list of modifications
 	*/
 	public function save_attributes() {
@@ -983,10 +989,10 @@ class windowsGroup extends baseModule {
 		$orig['memberOf'] = array();
 		return $this->getAccountContainer()->save_module_attributes($attrs, $orig);
 	}
-	
+
 	/**
 	 * Runs the postmodify actions.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -1036,7 +1042,7 @@ class windowsGroup extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 }
 
 

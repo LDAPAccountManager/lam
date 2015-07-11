@@ -58,7 +58,7 @@ class kolabUser extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -69,7 +69,7 @@ class kolabUser extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -260,7 +260,7 @@ class kolabUser extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -507,7 +507,7 @@ class kolabUser extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page to mark an account for deletion.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_deleteUser() {
@@ -754,13 +754,19 @@ class kolabUser extends baseModule {
 					break;
 				}
 			}
-			$return['kolabUser_invPol'][0] = '<block><key>' . _('Invitation policy') . '</key><tr><td align=\"L\">' . _('Anyone') . ": " . $this->invitationPolicies[$default] . '</td></tr></block>';
+			$pdfTable = new PDFTable(_('Invitation policy'));
+			$pdfRow = new PDFTableRow();
+			$pdfRow->cells[] = new PDFTableCell(_('Anyone') . ": " . $this->invitationPolicies[$default]);
+			$pdfTable->rows[] = $pdfRow;
 			for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
 				$parts = explode(':', $this->attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
-					$return['kolabUser_invPol'][] = '<block><tr><td align=\"L\">' . $parts[0] . ": " . $this->invitationPolicies[$parts[1]] . '</td></tr></block>';
+					$pdfRow = new PDFTableRow();
+					$pdfRow->cells[] = new PDFTableCell($parts[0] . ": " . $this->invitationPolicies[$parts[1]]);
+					$pdfTable->rows[] = $pdfRow;
 				}
 			}
+			$this->addPDFTable($return, 'invPol', $pdfTable);
 		}
 		$this->addSimplePDFField($return, 'aliases', _('Email aliases'), 'alias');
 		$this->addSimplePDFField($return, 'delegate', _('Delegates'), 'kolabDelegate');
@@ -900,7 +906,7 @@ class kolabUser extends baseModule {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -1013,10 +1019,10 @@ class kolabUser extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns if the object class "mailrecipient" is managed by this module.
-	 * 
+	 *
 	 * @return boolean manage mailrecipient object class
 	 */
 	private function manageMailrecipient() {
@@ -1028,7 +1034,7 @@ class kolabUser extends baseModule {
 			return false;
 		}
 		return true;
-		
+
 	}
 
 }
