@@ -25,6 +25,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -42,7 +43,13 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
-<h2>4.8 -&gt; 4.9</h2>API changes<br>
+<h2>5.0 -&gt; 5.1</h2>Module interface - getPDFEntries(): It is no
+longer supported that modules generate PDF XML on their own. You must
+use addSimplePDFField/addPDFKeyValue/addPDFTable() from baseModule for
+this.<br>
+<br>
+<h2>4.8 -&gt; 4.9</h2>
+API changes<br>
 <ul>
   <li>Module interface: Function get_pdfEntries() has new parameter $pdfKeys.</li>
 </ul>

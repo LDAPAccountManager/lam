@@ -3,6 +3,7 @@
 
 
 
+
   
   <link rel="stylesheet" type="text/css" href="style/layout.css">
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
@@ -61,7 +62,7 @@ get_metaData() {<br>
 When the user wants to create a PDF file the LDAP account is loaded and
 you module is asked for data to put into the PDF file.<br>
 <br>
-This is done with <span style="font-weight: bold;">get_pdfEntries()</span>. Please also see <span style="font-style: italic;">baseModule::addSimplePDFField() </span>for simple cases like below.<br>
+This is done with <span style="font-weight: bold;">get_pdfEntries()</span>. Please use one of <span style="font-style: italic;">baseModule::addSimplePDFField/addPDFKeyValue/addPDFTable() </span>for this task.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
@@ -76,13 +77,7 @@ module will return the MAC address list of the account.<br>
 &nbsp;&nbsp;&nbsp; */<br>
 &nbsp;&nbsp;&nbsp; function get_pdfEntries() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
-(sizeof($this-&gt;attributes['macAddress']) &gt; 0) {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$return['ieee802Device_macAddress'] = '&lt;block&gt;&lt;key&gt;' .
-_('MAC address list') . '&lt;/key&gt;&lt;value&gt;' . implode(', ',
-$this-&gt;attributes['macAddress']) . '&lt;/value&gt;&lt;/block&gt;';<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;addSimplePDFField($return, 'macAddress', _('MAC addresses'));<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>
