@@ -959,18 +959,37 @@ abstract class baseModule {
 	* @param String $regexID for get_preg() (e.g. 'ascii')
 	* @param array $message error message to add if regex does not match
 	* @param array $errors list of error messages if any
+	* @param String $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
 	*/
-	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, &$message = array(), &$errors = array()) {
+	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, &$message = array(), &$errors = array(), $regexSplit = null) {
 		if (!isset($ids[$colName])) {
 			return;
 		}
 		if (!empty($rawAccounts[$position][$ids[$colName]])) {
-			if (!empty($regex) && !get_preg($rawAccounts[$position][$ids[$colName]], $regex)) {
-				$errMsg = $message;
-				array_push($errMsg, array($position));
-				$errors[] = $errMsg;
+			// single value
+			if ($regexSplit == null) {
+				if (!empty($regex) && !get_preg($rawAccounts[$position][$ids[$colName]], $regex)) {
+					$errMsg = $message;
+					array_push($errMsg, array($position));
+					$errors[] = $errMsg;
+				}
+				$partialAccounts[$position][$attrName] = $rawAccounts[$position][$ids[$colName]];
 			}
-			$partialAccounts[$position][$attrName] = $rawAccounts[$position][$ids[$colName]];
+			// multi-value
+			else {
+				$list = preg_split($regexSplit, trim($rawAccounts[$position][$ids[$colName]]));
+				$partialAccounts[$position][$attrName] = $list;
+				if (!empty($regex)) {
+					for ($x = 0; $x < sizeof($list); $x++) {
+						if (!get_preg($list[$x], $regex)) {
+							$errMsg = $message;
+							array_push($errMsg, array($position));
+							$errors[] = $errMsg;
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 

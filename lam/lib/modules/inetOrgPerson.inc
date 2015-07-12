@@ -36,7 +36,7 @@ $Id$
 * @package modules
 */
 class inetOrgPerson extends baseModule implements passwordService {
-	
+
 	/** caches the list of possible managers */
 	private $cachedManagers = null;
 	/** clear text password */
@@ -55,10 +55,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 	private $businessCategoryCache = null;
 	/** cache for email duplication checks */
 	private $emailCheckCache = array();
-	
+
 	/** session variable for existing user certificates in self service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
-	
+
 	/**
 	* This function fills the message array.
 	**/
@@ -110,7 +110,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -121,7 +121,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -630,7 +630,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['PDF_fields']['initials'] = _('Initials');
 		}
-		
+
 		if (isLoggedIn()) {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
@@ -979,10 +979,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Runs the postmodify actions.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -1068,7 +1068,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 							$errors[] = $msg;
 						}
 					}
-				}			
+				}
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') && !$this->isAdminReadOnly('telephoneNumber')) {
@@ -1165,7 +1165,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials') && !$this->isAdminReadOnly('initials')) {
 			$this->attributes['initials'] = preg_split('/;[ ]*/', $_POST['initials']);
 		}
-		
+
 		if (!$this->isUnixActive()) {
 			// uid
 			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID') && !$this->isAdminReadOnly('uid')) {
@@ -1211,7 +1211,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') && isset($_POST['delPhoto']) && !$this->isAdminReadOnly('jpegPhoto')) {
 			$this->attributes['jpegPhoto'] = array();
 		}
@@ -1221,7 +1221,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
@@ -1451,7 +1451,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Contact data')), true);
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			if ($this->isAdminReadOnly('telephoneNumber')) {
 				$this->addSimpleReadOnlyField($fieldContainer, 'telephoneNumber', _('Telephone number'));
@@ -1508,14 +1508,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addMultiValueInputTextField($fieldContainer, 'labeledURI', _('Web site'), false, null, false, null, null, $equalWidthElements);
 			}
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
 			$fieldContainer->addElement(new htmlSubTitle(_('Work details')), true);
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
 			if ($this->isAdminReadOnly('title')) {
 				$this->addSimpleReadOnlyField($fieldContainer, 'title', _('Job title'));
@@ -1677,7 +1677,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$container->addElement($imageContainer, false);
 		}
 		$container->addElement(new htmlEqualWidth($equalWidthElements));
-		return $container; 
+		return $container;
 	}
 
 	/**
@@ -1755,10 +1755,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->addElement($buttonContainer);
 		return $container;
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page to change the manager attribute.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_manager() {
@@ -1920,7 +1920,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
 		return $container;
 	}
-	
+
 	/**
 	* Sets a new certificate or deletes old ones.
 	*
@@ -2006,7 +2006,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
 		return $return;
 	}
-	
+
 	/**
 	* Loads the values of an account profile into internal variables.
 	*
@@ -2068,7 +2068,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['st'] = $list;
 		}
 	}
-	
+
 	/**
 	* Checks input values of account profiles.
 	*
@@ -2143,7 +2143,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -2211,62 +2211,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// description
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description', 'description');
 			// title
-			if (isset($ids['inetOrgPerson_title']) && ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "")) {
-				$titleList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_title']]);
-				$partialAccounts[$i]['title'] = $titleList;
-				for ($x = 0; $x < sizeof($titleList); $x++) {
-					if (!get_preg($titleList[$x], 'title')) {
-						$errMsg = $this->messages['title'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_title', 'title', 'title', $this->messages['title'][1], $errors, '/;[ ]*/');
 			// employee number
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_employeeNumber', 'employeeNumber');
 			// employee type
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_type', 'employeeType',
 				'employeeType', $this->messages['employeeType'][1], $errors);
 			// business category
-			if (isset($ids['inetOrgPerson_businessCategory']) && ($rawAccounts[$i][$ids['inetOrgPerson_businessCategory']] != "")) {
-				$businessCategoryList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_businessCategory']]);
-				$partialAccounts[$i]['businessCategory'] = $businessCategoryList;
-				for ($x = 0; $x < sizeof($businessCategoryList); $x++) {
-					if (!get_preg($businessCategoryList[$x], 'businessCategory')) {
-						$errMsg = $this->messages['businessCategory'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_businessCategory', 'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
 			// manager
-			if (isset($ids['inetOrgPerson_manager']) && ($rawAccounts[$i][$ids['inetOrgPerson_manager']] != "")) {
-				$managerList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_manager']]);
-				$partialAccounts[$i]['manager'] = $managerList;
-				for ($x = 0; $x < sizeof($managerList); $x++) {
-					if (!get_preg($managerList[$x], 'dn')) {
-						$errMsg = $this->messages['manager'][0];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_manager', 'manager', 'dn', $this->messages['manager'][0], $errors, '/;[ ]*/');
 			// street
-			if (isset($ids['inetOrgPerson_street']) && ($rawAccounts[$i][$ids['inetOrgPerson_street']] != "")) {
-				$streetList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_street']]);
-				$partialAccounts[$i]['street'] = $streetList;
-				for ($x = 0; $x < sizeof($streetList); $x++) {
-					if (!get_preg($streetList[$x], 'street')) {
-						$errMsg = $this->messages['street'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_street', 'street', 'street', $this->messages['street'][1], $errors, '/;[ ]*/');
 			// post office box
 			if (isset($ids['inetOrgPerson_postOfficeBox']) && ($rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']] != "")) {
 				$partialAccounts[$i]['postOfficeBox'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']]);
@@ -2302,18 +2258,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// carLicense
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_carLicense', 'carLicense');
 			// postal code
-			if (isset($ids['inetOrgPerson_postalCode']) && ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "")) {
-				$postalCodeList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postalCode']]);
-				$partialAccounts[$i]['postalCode'] = $postalCodeList;
-				for ($x = 0; $x < sizeof($postalCodeList); $x++) {
-					if (!get_preg($postalCodeList[$x], 'postalCode')) {
-						$errMsg = $this->messages['postalCode'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_postalCode', 'postalCode', 'postalCode', $this->messages['postalCode'][1], $errors, '/;[ ]*/');
 			// postal address
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_address', 'postalAddress',
 				'postalAddress',$this->messages['postalAddress'][1] , $errors);
@@ -2321,70 +2266,15 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_registeredAddress', 'registeredAddress',
 				'postalAddress',$this->messages['registeredAddress'][1] , $errors);
 			// telephone
-			if (isset($ids['inetOrgPerson_telephone']) && ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "")) {
-				$telephoneList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_telephone']]));
-				$partialAccounts[$i]['telephoneNumber'] = $telephoneList;
-				for ($x = 0; $x < sizeof($telephoneList); $x++) {
-					if (!get_preg($telephoneList[$x], 'telephone')) {
-						$errMsg = $this->messages['telephoneNumber'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_telephone', 'telephoneNumber', 'telephone', $this->messages['telephoneNumber'][1], $errors, '/;[ ]*/');
 			// home telephone
-			if (isset($ids['inetOrgPerson_homePhone']) && ($rawAccounts[$i][$ids['inetOrgPerson_homePhone']] != "")) {
-				$homePhoneList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_homePhone']]));
-				$partialAccounts[$i]['homePhone'] = $homePhoneList;
-				for ($x = 0; $x < sizeof($homePhoneList); $x++) {
-					if (!get_preg($homePhoneList[$x], 'telephone')) {
-						$errMsg = $this->messages['homePhone'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_homePhone', 'homePhone', 'telephone', $this->messages['homePhone'][1], $errors, '/;[ ]*/');
 			// mobile
-			if (isset($ids['inetOrgPerson_mobile']) && ($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "")) {
-				$mobileList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_mobile']]));
-				$partialAccounts[$i]['mobile'] = $mobileList;
-				for ($x = 0; $x < sizeof($mobileList); $x++) {
-					if (!get_preg($mobileList[$x], 'telephone')) {
-						$errMsg = $this->messages['mobileTelephone'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_mobile', 'mobile', 'telephone', $this->messages['mobileTelephone'][1], $errors, '/;[ ]*/');
 			// facsimile
-			if (isset($ids['inetOrgPerson_fax']) && ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "")) {
-				$facsimileTelephoneNumberList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_fax']]));
-				$partialAccounts[$i]['facsimileTelephoneNumber'] = $facsimileTelephoneNumberList;
-				for ($x = 0; $x < sizeof($facsimileTelephoneNumberList); $x++) {
-					if (!get_preg($facsimileTelephoneNumberList[$x], 'telephone')) {
-						$errMsg = $this->messages['facsimileNumber'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_fax', 'facsimileTelephoneNumber', 'telephone', $this->messages['facsimileNumber'][1], $errors, '/;[ ]*/');
 			// pager
-			if (isset($ids['inetOrgPerson_pager']) && ($rawAccounts[$i][$ids['inetOrgPerson_pager']] != "")) {
-				$pagerList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_pager']]));
-				$partialAccounts[$i]['pager'] = $pagerList;
-				for ($x = 0; $x < sizeof($pagerList); $x++) {
-					if (!get_preg($pagerList[$x], 'telephone')) {
-						$errMsg = $this->messages['pager'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_pager', 'pager', 'telephone', $this->messages['pager'][1], $errors, '/;[ ]*/');
 			// eMail
 			if (isset($ids['inetOrgPerson_email']) && ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "")) {
 				foreach ($replacements as $wildcard => $value) {
@@ -2527,9 +2417,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Returns a list of self service configuration settings.
 	 *
@@ -2551,10 +2441,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->addElement($photoTable, true);
 		return $container;
 	}
-	
+
 	/**
 	 * Checks if the self service settings are valid.
-	 * 
+	 *
 	 * If the input data is invalid the return value is an array that contains arrays
 	 * to build StatusMessages (message type, message head, message text). If no errors
 	 * occured the function returns an empty array.
@@ -2963,11 +2853,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns the meta HTML code to display the certificate area.
 	 * This also includes the file upload.
-	 * 
+	 *
 	 * @return htmlTable certificate content
 	 */
 	private function getSelfServiceUserCertificates() {
@@ -3012,10 +2902,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $content;
 	}
-	
+
 	/**
 	 * Returns the Java Script functions to manage the certificates.
-	 * 
+	 *
 	 * @return htmlJavaScript JS block
 	 */
 	private static function getSelfServiceUserCertificatesJSBlock() {
@@ -3029,7 +2919,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
 				 . '\', {jsonInput: actionJSON}, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
 			}
-			
+
 			function inetOrgPersonDeleteCertificateHandleReply(data) {
 				if (data.errorsOccured == "false") {
 					jQuery(\'#userCertificateDiv\').html(data.html);
@@ -3038,7 +2928,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 					alert(data.errormessage);
 				}
 			}
-			
+
 			function inetOrgPersonUploadCert(elementID) {
 				var uploadStatus = document.getElementById(\'inetOrgPerson_upload_status_cert\');
 				var uploader = new qq.FineUploader({
@@ -3065,9 +2955,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 							}
 						}
 					}
-				});		
+				});
 			}
-			
+
 			';
 		return new htmlJavaScript($content);
 	}
@@ -3080,7 +2970,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -3406,10 +3296,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Resizes the given image data to the settings provided.
-	 * 
+	 *
 	 * @param array $data binary image data
 	 * @param array $settings settings
 	 * @return array binary image data
@@ -3431,7 +3321,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $data;
 	}
-	
+
 	/**
 	 * Manages AJAX requests.
 	 * This function may be called with or without an account container.
@@ -3451,7 +3341,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		echo json_encode($jsonReturn);
 	}
-	
+
 	/**
 	 * Handles an AJAX file upload and prints the JSON result.
 	 */
@@ -3491,7 +3381,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	 * Manages the deletion of a certificate.
-	 * 
+	 *
 	 * @param array $data JSON data
 	 */
 	private function ajaxDeleteSelfServiceUserCertificate($data) {
@@ -3516,10 +3406,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'html' => $content,
 		);
 	}
-	
+
 	/**
 	 * Invalid AJAX request received.
-	 * 
+	 *
 	 * @param String $message error message
 	 */
 	public static function invalidAjaxRequest($message = null) {
@@ -3545,13 +3435,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return false;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -3593,7 +3483,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return array();
 	}
-	
+
 	/**
 	 * Returns a list of possible managers.
 	 *
@@ -3613,9 +3503,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($dnUsers); $i++) {
 			$this->cachedManagers[getAbstractDN($dnUsers[$i])] = $dnUsers[$i];
 		}
-		return $this->cachedManagers;		
+		return $this->cachedManagers;
 	}
-	
+
 	/**
 	 * Loads cached data from LDAP such as departmets etc.
 	 */
@@ -3690,10 +3580,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->employeeTypeCache = array_values(array_unique($employeeTypes));
 		$this->businessCategoryCache = array_values(array_unique($businessCategories));
 	}
-	
+
 	/**
 	 * Returns if the attribute is read-only in admin interface.
-	 * 
+	 *
 	 * @param String $attrName attribute name
 	 * @return boolean attribute is read-only
 	 */
@@ -3704,10 +3594,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		return $this->isBooleanConfigOptionSet('inetOrgPerson_readOnly_' . $attrName);
 	}
-	
+
 	/**
 	 * Adds a simple read-only field to the given container.
-	 * 
+	 *
 	 * @param htmlTable $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label field label
@@ -3726,10 +3616,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->addElement($labelBox);
 		$container->addElement(new htmlOutputText($val, false), true);
 	}
-	
+
 	/**
 	* Returns a list of configuration options.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The field names are used as keywords to load and save settings.
@@ -3738,7 +3628,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @param array $scopes account types (user, group, host)
 	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
 	* @return mixed htmlElement or array of htmlElement
-	* 
+	*
 	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
@@ -3890,7 +3780,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	 * Checks if the given email address already exists in LDAP.
-	 * 
+	 *
 	 * @param String $mail email address
 	 * @return boolean true if already exists
 	 */
@@ -3905,10 +3795,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->emailCheckCache[$mail] = (sizeof($result) > 0);
 		return $this->emailCheckCache[$mail];
 	}
-	
+
 	/**
 	 * Returns if the Unix module is also active.
-	 * 
+	 *
 	 * @return boolean Unix is active
 	 */
 	private function isUnixActive() {
@@ -3918,7 +3808,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		return in_array('posixAccount', $modules);
 	}
-	
+
 }
 
 ?>
