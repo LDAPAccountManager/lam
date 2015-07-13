@@ -38,11 +38,11 @@ class freeRadius extends baseModule {
 	private static $monthList = array('01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr', '05' => 'May',
 			'06' => 'Jun', '07' => 'Jul', '08' => 'Aug', '09' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Dec'
 		);
-		
+
 	/** cache for profile DNs */
 	private $profileCache = null;
-	
-	
+
+
 	/**
 	* Creates a new freeRadius object.
 	*
@@ -55,7 +55,7 @@ class freeRadius extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -66,7 +66,7 @@ class freeRadius extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -277,10 +277,10 @@ class freeRadius extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Returns a list of configuration options.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The field names are used as keywords to load and save settings.
@@ -289,7 +289,7 @@ class freeRadius extends baseModule {
 	* @param array $scopes account types (user, group, host)
 	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
 	* @return mixed htmlElement or array of htmlElement
-	* 
+	*
 	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
@@ -344,7 +344,7 @@ class freeRadius extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -508,7 +508,7 @@ class freeRadius extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page to change the expiration date.
 	*
@@ -566,7 +566,7 @@ class freeRadius extends baseModule {
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
 		$buttons->colspan = 6;
 		$return->addElement($buttons);
-		return $return;	
+		return $return;
 	}
 
 	/**
@@ -627,18 +627,7 @@ class freeRadius extends baseModule {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusRealm', 'radiusRealm',
 				'DNSname', $this->messages['radiusRealm'][1], $errors);
 			// group names
-			if ($rawAccounts[$i][$ids['freeRadius_radiusGroupName']] != "") {
-				$groupList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['freeRadius_radiusGroupName']]);
-				$partialAccounts[$i]['radiusGroupName'] = $groupList;
-				for ($x = 0; $x < sizeof($groupList); $x++) {
-					if (!get_preg($groupList[$x], 'groupname')) {
-						$errMsg = $this->messages['radiusGroupName'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusGroupName', 'radiusGroupName', 'groupname', $this->messages['radiusGroupName'][1], $errors, '/;[ ]*/');
 			// expiration date
 			if ($rawAccounts[$i][$ids['freeRadius_radiusExpiration']] != "") {
 				if (preg_match('/^[0-9]{1,2}.[0-9]{1,2}.[0-9]{4} [0-9]{1,2}:[0-9]{1,2}$/', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']])) {
@@ -670,16 +659,7 @@ class freeRadius extends baseModule {
 				}
 			}
 			// profile DN
-			if (!empty($rawAccounts[$i][$ids['freeRadius_radiusProfileDn']])) {
-				if (get_preg($rawAccounts[$i][$ids['freeRadius_radiusProfileDn']], 'dn')) {
-					$partialAccounts[$i]['radiusProfileDn'] = $rawAccounts[$i][$ids['freeRadius_radiusProfileDn']];
-				}
-				else {
-					$errMsg = $this->messages['radiusProfileDn'][0];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusProfileDn', 'radiusProfileDn', 'dn', $this->messages['radiusProfileDn'][0], $errors);
 		}
 		return $errors;
 	}
@@ -749,10 +729,10 @@ class freeRadius extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	 * Formats the expiration date attribute.
-	 * 
+	 *
 	 * @param String $date date value
 	 */
 	private function formatExpirationDate($date) {
@@ -769,10 +749,10 @@ class freeRadius extends baseModule {
 		}
 		return $date;
 	}
-	
+
 	/**
 	 * Returns a list of possible profile DNs.
-	 * 
+	 *
 	 * @return array list of profile DNs
 	 */
 	private function getProfiles() {
@@ -789,7 +769,7 @@ class freeRadius extends baseModule {
 		usort($this->profileCache, 'compareDN');
 		return $this->profileCache;
 	}
-	
+
 }
 
 

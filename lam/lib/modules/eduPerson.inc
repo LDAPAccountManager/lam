@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class eduPerson extends baseModule {
-	
+
 	/** possible affiliation types */
 	private $affiliationTypes = array('faculty', 'student', 'staff', 'alum',
 									'member', 'affiliate', 'employee', 'library-walk-in');
@@ -50,7 +50,7 @@ class eduPerson extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -61,7 +61,7 @@ class eduPerson extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -267,7 +267,7 @@ class eduPerson extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -530,15 +530,9 @@ class eduPerson extends baseModule {
 				}
 			}
 			// nick names
-			if ($rawAccounts[$i][$ids['eduPerson_nickname']] != "") {
-				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_nickname']]);
-				$partialAccounts[$i]['eduPersonNickname'] = $parts;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_nickname', 'eduPersonNickname', null, array(), $messages, '/,[ ]*/');
 			// entitlements
-			if ($rawAccounts[$i][$ids['eduPerson_entitlement']] != "") {
-				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_entitlement']]);
-				$partialAccounts[$i]['eduPersonEntitlement'] = $parts;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_entitlement', 'eduPersonEntitlement', null, array(), $messages, '/,[ ]*/');
 			// organisation
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_orgDN', 'eduPersonOrgDN',
 				'dn', $this->messages['eduPersonOrgDN'][1], $messages);
@@ -546,27 +540,9 @@ class eduPerson extends baseModule {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_primaryOrgUnitDN', 'eduPersonPrimaryOrgUnitDN',
 				'dn', $this->messages['eduPersonPrimaryOrgUnitDN'][1], $messages);
 			// OUs
-			if ($rawAccounts[$i][$ids['eduPerson_orgUnitDN']] != "") {
-				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_orgUnitDN']]);
-				$valid = true;
-				for ($a = 0; $a < sizeof($parts); $a++) {
-					if (!get_preg($parts[$a], 'dn')) {
-						$valid = false;
-						$error = $this->messages['eduPersonOrgUnitDN'][1];
-						array_push($error, $i);
-						$messages[] = $error;
-						break;
-					}
-				}
-				if ($valid) {
-					$partialAccounts[$i]['eduPersonOrgUnitDN'] = $parts;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_orgUnitDN', 'eduPersonOrgUnitDN', 'dn', $this->messages['eduPersonOrgUnitDN'][1], $messages, '/;[ ]*/');
 			// assurance profiles
-			if ($rawAccounts[$i][$ids['eduPerson_assurance']] != "") {
-				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_assurance']]);
-				$partialAccounts[$i]['eduPersonAssurance'] = $parts;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_assurance', 'eduPersonAssurance', null, array(), $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}

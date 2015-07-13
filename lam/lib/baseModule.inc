@@ -961,7 +961,7 @@ abstract class baseModule {
 	* @param array $errors list of error messages if any
 	* @param String $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
 	*/
-	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, &$message = array(), &$errors = array(), $regexSplit = null) {
+	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, $message = array(), &$errors = array(), $regexSplit = null) {
 		if (!isset($ids[$colName])) {
 			return;
 		}
