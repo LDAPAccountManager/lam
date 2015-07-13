@@ -52,7 +52,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -210,7 +210,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$this->messages['AstVoicemailMailbox'][1] = array('ERROR', _('The mailbox format is invalid.'));
 		$this->messages['AstVoicemailMailbox'][2] = array('ERROR', _('There is already another user with this mailbox name.'));
 		$this->messages['AstVoicemailMailbox'][3] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailMailbox', _('The mailbox format is invalid.'));
-		
+
 		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
 		$this->messages['AstContext'][1] = array('ERROR', _('The account context is invalid.'));
 		$this->messages['AstContext'][2] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstContext', _('The account context is invalid.'));
@@ -230,7 +230,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -245,7 +245,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			$this->addSimpleInputTextField($return, 'AstVoicemailMailbox', _("Mailbox"), true);
 			// account context
 			$this->addSimpleInputTextField($return, 'AstContext', _("Account context"), true);
-			
+
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 
 			// full name
@@ -393,7 +393,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
-			
+
 			//add context
 			if (empty($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']])) {
 				// default value
@@ -403,10 +403,10 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstContext', 'AstContext',
 					'realname', $this->messages['AstContext'][2], $messages);
 			}
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailMailbox', 'AstVoicemailMailbox',
 				'realname', $this->messages['AstVoicemailMailbox'][3], $messages);
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailEmail', 'AstVoicemailEmail',
 				'email', $this->messages['AstVoicemailEmail'][1], $messages);
 
@@ -421,7 +421,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailContext', 'AstVoicemailContext',
 				'realname', $this->messages['AstVoicemailContext'][1], $messages);
 
-			$partialAccounts[$i]['AstVoicemailPassword'] = $rawAccounts[$i][$ids['asteriskVoicemail_AstVoicemailPassword']];
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskVoicemail_AstVoicemailPassword', 'AstVoicemailPassword');
 		}
 		return $messages;
 	}
@@ -436,7 +436,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			if(!isset($this->attributes['AstVoicemailPassword'][0]) || $this->attributes['AstVoicemailPassword'][0] == "" ) {
 				return false;
 			}
-		}		
+		}
 		return true;
 	}
 
@@ -475,13 +475,13 @@ class asteriskVoicemail extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return false;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -500,7 +500,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$this->attributes['AstVoicemailPassword'][0] = $password;
 		return array();
 	}
-	
+
 	/**
 	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
 	 * <br>Return values:
@@ -509,7 +509,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields

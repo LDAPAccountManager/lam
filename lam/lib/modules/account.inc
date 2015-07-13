@@ -40,7 +40,7 @@ class account extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -51,7 +51,7 @@ class account extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -199,7 +199,7 @@ class account extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -259,7 +259,7 @@ class account extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -286,14 +286,7 @@ class account extends baseModule {
 			}
 			if (!in_array('posixAccount', $selectedModules)) {
 				// user name
-				if (get_preg($rawAccounts[$i][$ids['account_uid']], 'username')) {
-					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['account_uid']];
-				}
-				else {
-					$errMsg = $this->messages['uid'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'account_uid', 'uid', 'username', $this->messages['uid'][1], $messages);
 			}
 		}
 		return $messages;

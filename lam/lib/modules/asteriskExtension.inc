@@ -860,7 +860,7 @@ class asteriskExtension extends baseModule {
             if (!in_array("groupOfNames", $partialAccounts[$i]['objectClass']))
                 $partialAccounts[$i]['objectClass'][] = "groupOfNames";
             // attributes
-            $partialAccounts[$i]['AstExtension'] = $rawAccounts[$i][$ids['asteriskExtension_AstExtension']];
+            $this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskExtension_AstExtension', 'AstExtension');
 
             $extensionName = $partialAccounts[$i]['AstExtension'];
             $astPriorityTmp = 0;

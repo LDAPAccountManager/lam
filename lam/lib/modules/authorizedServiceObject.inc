@@ -51,7 +51,7 @@ class authorizedServiceObject extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -98,7 +98,7 @@ class authorizedServiceObject extends baseModule {
 		$configContainer = new htmlTable();
 		$configContainer->addElement(new htmlTableExtendedInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'));
 		$return['config_options']['all'] = $configContainer;
-		// upload fields 
+		// upload fields
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'authorizedService',
@@ -152,7 +152,7 @@ class authorizedServiceObject extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -175,7 +175,7 @@ class authorizedServiceObject extends baseModule {
 			$return->addElement(new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'addObjectClass', _('Add Authorized Service extension')));
 		}
 
-		
+
 		return $return;
 	}
 
@@ -215,19 +215,7 @@ class authorizedServiceObject extends baseModule {
 			// add object class
 			if (!in_array("authorizedServiceObject", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "authorizedServiceObject";
 			// add ASs
-			if ($rawAccounts[$i][$ids['authorizedService']] != "") {
-				$services = explode(', ', $rawAccounts[$i][$ids['authorizedService']]);
-				for ($m = 0; $m < sizeof($services); $m++) {
-					if (get_preg($services[$m], 'ascii')) {
-						$partialAccounts[$i]['authorizedService'][] = $services[$m];
-					}
-					else {
-						$errMsg = $this->messages['authorizedService'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'authorizedService', 'authorizedService', 'ascii', $this->messages['authorizedService'][1], $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}
