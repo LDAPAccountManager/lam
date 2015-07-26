@@ -193,6 +193,14 @@ $helpArray = array (
 					"Text" => _('Please select the type of database to use for job data.')),
 				"272" => array ("Headline" => _('Cron configuration'),
 					"Text" => _('Please add this line to your webserver\'s crontab.')),
+				"273" => array ("Headline" => _('Database host'),
+					"Text" => _('Enter the host name of your database server.')),
+				"274" => array ("Headline" => _('Database port'),
+					"Text" => _('Enter the port number of your database server. The default port will be used if empty.')),
+				"275" => array ("Headline" => _('Database user and password'),
+					"Text" => _('Please enter the user name and password to connect to the database.')),
+				"276" => array ("Headline" => _('Database name'),
+					"Text" => _('This is the database name on the server.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
@@ -228,13 +236,13 @@ $helpArray = array (
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),
-					"Text" => _("LAM will search for accounts in this part of the LDAP tree.")),				
+					"Text" => _("LAM will search for accounts in this part of the LDAP tree.")),
 				"502" => array ("Headline" => _("LDAP user and password"),
-					"Text" => _("LAM will use this LDAP DN and password to search for accounts. It is sufficient to specify an account with read rights. If nothing is inserted then LAM will try to connect anonymously.")),				
+					"Text" => _("LAM will use this LDAP DN and password to search for accounts. It is sufficient to specify an account with read rights. If nothing is inserted then LAM will try to connect anonymously.")),
 				"503" => array ("Headline" => _("LDAP search attribute"),
 					"Text" => _("This is needed to find the LDAP DNs of your user accounts. E.g. if you use \"uid\" and your user inputs \"miller\" then LAM will search for an account with uid=miller.")),
 				"504" => array ("Headline" => _("Login attribute label"),
-					"Text" => _("This text should shortly describe your selected LDAP search attribute (e.g. email or user name).")),				
+					"Text" => _("This text should shortly describe your selected LDAP search attribute (e.g. email or user name).")),
 				"505" => array ("Headline" => _("Login caption"),
 					"Text" => _("This text is displayed on top of the self service login page. You can also input HTML code here.")),
 				"506" => array ("Headline" => _("Main page caption"),
