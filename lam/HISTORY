@@ -1,3 +1,9 @@
+September 2015 5.1
+  - SSH public key: check uploaded files if in right format
+  - LAM Pro:
+   -> MySQL support for cron jobs
+
+
 30.06.2015 5.0
   - Microsoft IE 8 no longer supported
   - Security: added CSRF protection
@@ -278,7 +284,7 @@
   - Fixed bugs:
    -> ignore comment lines in shells file (3107124)
    -> home directory creation on file upload
-  
+
 
 28.10.2010 3.2.0
   - large usability enhancements
