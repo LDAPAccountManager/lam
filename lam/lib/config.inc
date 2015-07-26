@@ -98,16 +98,16 @@ function checkChmod($right, $target, $chmod) {
 	if (!in_array($right, $right_arr) ||!in_array($target, $target_arr)) {
 		return false;
 	}
-	
+
 	$chmod_num = -1;
 	// owner:
 	if ($target == "owner") $chmod_num = 0;
 	if ($target == "group") $chmod_num = 1;
 	if ($target == "other") $chmod_num = 2;
-	
+
 	// Cut the number from the chmod:
 	$chmod_num = $chmod{$chmod_num};
-	
+
 	// Now check, if the chmod_num can be right with the $right
 	// What numbers allow "read"
 	$read = array(4,5,6,7);
@@ -167,7 +167,7 @@ function getConfigTemplates() {
 
 /**
  * Creates a new server profile.
- * 
+ *
  * @param String $name profile name
  * @param String $password profile password
  * @param String $template name of template file
@@ -179,7 +179,7 @@ function createConfigProfile($name, $password, $template) {
 	}
 	// check if template exists
 	if (!is_file("../../config/" . $template)) {
-		return "The file config/$template was not found. Please restore it.";				
+		return "The file config/$template was not found. Please restore it.";
 	}
 	// create new profile file
 	$path = "../../config/" . $name . ".conf";
@@ -200,7 +200,7 @@ function createConfigProfile($name, $password, $template) {
 
 /**
  * Deletes the given server profile.
- * 
+ *
  * @param String $name profile name
  * @return String null if success or error message if failed
  */
@@ -258,7 +258,7 @@ function LAMVersion() {
 
 /**
  * Extracts config options from HTTP POST data.
- * 
+ *
  * @param array $confTypes array (option name => type (e.g. multiselect))
  * @return array list of config options (name => array(values))
  */
@@ -326,7 +326,7 @@ function metaRefresh($page) {
 
 /**
  * Checks if the given account type is hidden.
- * 
+ *
  * @param String $type account type (e.g. user)
  * @return boolean is hidden
  */
@@ -337,7 +337,7 @@ function isAccountTypeHidden($type) {
 
 /**
  * Returns a list of all supported languages.
- * 
+ *
  * @return array languages
  */
 function getLanguages() {
@@ -359,7 +359,7 @@ function getLanguages() {
 
 /**
  * Represents a supported language.
- * 
+ *
  * @package configuration
  */
 class LAMLanguage {
@@ -369,10 +369,10 @@ class LAMLanguage {
 	public $encoding;
 	/** description for GUI */
 	public $description;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param String $code language code (e.g. en_GB.utf8)
 	 * @param String $encoding character encoding (e.g. UTF-8)
 	 * @param String $description description for GUI
@@ -391,35 +391,35 @@ class LAMLanguage {
 * @package configuration
 */
 class LAMConfig {
-	
+
 	/* access levels */
 	const ACCESS_ALL = 100;
 	const ACCESS_PASSWORD_CHANGE = 20;
 	const ACCESS_READ_ONLY = 0;
-	
+
 	/* return codes for saving configuration file */
 	const SAVE_OK = 0;
 	const SAVE_FAIL = 1;
-	
+
 	/* login method: predefined list or LDAP search */
 	const LOGIN_LIST = 'list';
 	const LOGIN_SEARCH = 'search';
-	
+
 	/** line separator */
 	const LINE_SEPARATOR = '+::+';
-	
+
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
-	
+
 	/** enables/disables TLS encryption */
 	private $useTLS;
-	
+
 	/** automatically follow referrals */
 	private $followReferrals = 'false';
-	
+
 	/** use paged results */
 	private $pagedResults = 'false';
-	
+
 	/** Array of string: users with admin rights */
 	private $Admins;
 
@@ -439,7 +439,7 @@ class LAMConfig {
 
 	/** type settings */
 	private $typeSettings = array();
-	
+
 	/** tool settings */
 	private $toolSettings = array();
 
@@ -466,7 +466,7 @@ class LAMConfig {
 
 	/** LDAP cache timeout */
 	private $cachetimeout;
-	
+
 	/** LDAP search limit */
 	private $searchLimit = 0;
 
@@ -475,52 +475,62 @@ class LAMConfig {
 
 	/** Name of configuration file */
 	private $file;
-	
+
 	/** access level */
 	private $accessLevel = LAMconfig::ACCESS_ALL;
-	
+
 	/** login method */
 	private $loginMethod = LAMconfig::LOGIN_LIST;
-	
+
 	/** search suffix for login */
 	private $loginSearchSuffix = 'dc=yourdomain,dc=org';
-	
+
 	/** search filter for login */
 	private $loginSearchFilter = 'uid=%USER%';
-	
+
 	/** bind user for login search */
 	private $loginSearchDN = '';
-	
+
 	/** bind password for login search */
 	private $loginSearchPassword = '';
-	
+
 	/** specifies if HTTP authentication should be used */
 	private $httpAuthentication = 'false';
-	
+
 	/** email address for sender of password reset mails */
 	private $lamProMailFrom = '';
-	
+
 	/** reply-to email address for password reset mails */
 	private $lamProMailReplyTo = '';
-	
+
 	/** subject for password reset mails */
 	private $lamProMailSubject = '';
-	
+
 	/** treat password reset mail body as HTML */
 	private $lamProMailIsHTML = 'false';
-	
+
 	/** allow sending mails to an alternative address */
 	private $lamProMailAllowAlternateAddress = 'true';
-	
+
 	/** mail body for password reset mails */
 	private $lamProMailText = '';
-	
+
 	/** LDAP user for jobs */
 	private $jobsBindUser = null;
 	/** LDAP password for jobs */
 	private $jobsBindPassword = null;
-	/** database for jobs */
+	/** database type for jobs */
 	private $jobsDatabase = null;
+	/** host of job database */
+	private $jobsDBHost = null;
+	/** port of job database */
+	private $jobsDBPort = null;
+	/** user of job database */
+	private $jobsDBUser = null;
+	/** password of job database */
+	private $jobsDBPassword = null;
+	/** name of job database */
+	private $jobsDBName = null;
 	/** random job token */
 	private $jobToken = null;
 	/** job configuration */
@@ -532,7 +542,9 @@ class LAMConfig {
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
-		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs');
+		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs',
+		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName'
+	);
 
 
 	/**
@@ -742,6 +754,11 @@ class LAMConfig {
 			if (!in_array("jobsBindPassword", $saved)) array_push($file_array, "\n" . "jobsBindPassword: " . $this->jobsBindPassword . "\n");
 			if (!in_array("jobsBindUser", $saved)) array_push($file_array, "\n" . "jobsBindUser: " . $this->jobsBindUser . "\n");
 			if (!in_array("jobsDatabase", $saved)) array_push($file_array, "\n" . "jobsDatabase: " . $this->jobsDatabase . "\n");
+			if (!in_array("jobsDBHost", $saved)) array_push($file_array, "\n" . "jobsDBHost: " . $this->jobsDBHost . "\n");
+			if (!in_array("jobsDBPort", $saved)) array_push($file_array, "\n" . "jobsDBPort: " . $this->jobsDBPort . "\n");
+			if (!in_array("jobsDBUser", $saved)) array_push($file_array, "\n" . "jobsDBUser: " . $this->jobsDBUser . "\n");
+			if (!in_array("jobsDBPassword", $saved)) array_push($file_array, "\n" . "jobsDBPassword: " . $this->jobsDBPassword . "\n");
+			if (!in_array("jobsDBName", $saved)) array_push($file_array, "\n" . "jobsDBName: " . $this->jobsDBName . "\n");
 			if (!in_array("jobToken", $saved)) array_push($file_array, "\n" . "jobToken: " . $this->getJobToken() . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
@@ -784,7 +801,7 @@ class LAMConfig {
 			return $saveResult;
 		}
 	}
-	
+
 	/**
 	 * Returns the name of the config file
 	 *
@@ -793,7 +810,7 @@ class LAMConfig {
 	public function getName() {
 		return $this->file;
 	}
-	
+
 	/**
 	 * Returns if the file can be written on the filesystem.
 	 *
@@ -802,7 +819,7 @@ class LAMConfig {
 	public function isWritable() {
 		return is_writeable($this->getPath());
 	}
-	
+
 	/**
 	 * Returns the path to the config file.
 	 *
@@ -834,19 +851,19 @@ class LAMConfig {
 		else return false;
 		return true;
 	}
-	
+
 	/**
 	 * Returns if TLS is activated.
-	 * 
+	 *
 	 * @return String yes or no
 	 */
 	public function getUseTLS() {
 		return $this->useTLS;
 	}
-	
+
 	/**
 	 * Sets if TLS is activated.
-	 * 
+	 *
 	 * @param String $useTLS yes or no
 	 * @return boolean true if $useTLS has correct format
 	 */
@@ -860,16 +877,16 @@ class LAMConfig {
 
 	/**
 	 * Returns if referrals should be followed.
-	 * 
+	 *
 	 * @return String true or false
 	 */
 	public function getFollowReferrals() {
 		return $this->followReferrals;
 	}
-	
+
 	/**
 	 * Sets if referrals should be followed.
-	 * 
+	 *
 	 * @param String $followReferrals true or false
 	 */
 	public function setFollowReferrals($followReferrals) {
@@ -878,16 +895,16 @@ class LAMConfig {
 
 	/**
 	 * Returns if paged results should be used.
-	 * 
+	 *
 	 * @return String true or false
 	 */
 	public function getPagedResults() {
 		return $this->pagedResults;
 	}
-	
+
 	/**
 	 * Sets if paged results should be used.
-	 * 
+	 *
 	 * @param String $pagedResults true or false
 	 */
 	public function setPagedResults($pagedResults) {
@@ -963,7 +980,7 @@ class LAMConfig {
 			return true;
 		}
 		else {
-			return false;		
+			return false;
 		}
 	}
 
@@ -1106,7 +1123,7 @@ class LAMConfig {
 		else return false;
 		return true;
 	}
-	
+
 	/**
 	* Returns the servers of the external script as a Array
 	*
@@ -1115,7 +1132,7 @@ class LAMConfig {
 	public function get_scriptServers() {
 	    return $this->scriptServer;
 	}
-	
+
 	/**
 	* Sets the servers of the external script
 	*
@@ -1171,10 +1188,10 @@ class LAMConfig {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Returns the chmod value for new home directories.
-	 * 
+	 *
 	 * @return string rights
 	 */
 	public function get_scriptRights() {
@@ -1269,7 +1286,7 @@ class LAMConfig {
 				if (trim($mod) != '') {
 					$modules[] = $mod;
 				}
-			} 
+			}
 			return $modules;
 		}
 		else {
@@ -1361,7 +1378,7 @@ class LAMConfig {
 
 	/**
 	 * Returns the tool settings.
-	 * 
+	 *
 	 * @return array $toolSettings tool settings
 	 */
 	public function getToolSettings() {
@@ -1370,7 +1387,7 @@ class LAMConfig {
 
 	/**
 	 * Sets the tool settings.
-	 * 
+	 *
 	 * @param array $toolSettings tool settings
 	 * @return boolean true if ok
 	 */
@@ -1388,7 +1405,7 @@ class LAMConfig {
 	public function getAccessLevel() {
 		return $this->accessLevel;
 	}
-	
+
 	/**
 	 * Sets the access level for this profile.
 	 *
@@ -1397,10 +1414,10 @@ class LAMConfig {
 	public function setAccessLevel($level) {
 		$this->accessLevel = $level;
 	}
-	
+
 	/**
 	 * Returns the login method.
-	 * 
+	 *
 	 * @return String login method
 	 * @see LAMconfig::LOGIN_LIST
 	 * @see LAMconfig::LOGIN_SEARCH
@@ -1408,55 +1425,55 @@ class LAMConfig {
 	public function getLoginMethod() {
 		return $this->loginMethod;
 	}
-	
+
 	/**
 	 * Sets the login method.
-	 * 
+	 *
 	 * @param String $loginMethod
 	 */
 	public function setLoginMethod($loginMethod) {
 		$this->loginMethod = $loginMethod;
 	}
-	
+
 	/**
 	 * Returns the login search filter.
-	 * 
+	 *
 	 * @return String search filter
 	 */
 	public function getLoginSearchFilter() {
 		return $this->loginSearchFilter;
 	}
-	
+
 	/**
 	 * Sets the login search filter.
-	 * 
+	 *
 	 * @param String $loginSearchFilter search filter
 	 */
 	public function setLoginSearchFilter($loginSearchFilter) {
 		$this->loginSearchFilter = $loginSearchFilter;
 	}
-	
+
 	/**
 	 * Returns the login search suffix.
-	 * 
+	 *
 	 * @return String suffix
 	 */
 	public function getLoginSearchSuffix() {
 		return $this->loginSearchSuffix;
 	}
-	
+
 	/**
 	 * Sets the login search suffix.
-	 * 
+	 *
 	 * @param String $loginSearchSuffix suffix
 	 */
 	public function setLoginSearchSuffix($loginSearchSuffix) {
 		$this->loginSearchSuffix = $loginSearchSuffix;
 	}
-	
+
 	/**
 	 * Sets the DN for the login search bind user.
-	 * 
+	 *
 	 * @param String $loginSearchDN DN
 	 * @return boolean true if DN is valid
 	 */
@@ -1470,7 +1487,7 @@ class LAMConfig {
 
 	/**
 	 * Returns the DN for the login search bind user.
-	 * 
+	 *
 	 * @return String DN
 	 */
 	public function getLoginSearchDN() {
@@ -1479,7 +1496,7 @@ class LAMConfig {
 
 	/**
 	 * Sets the password for the login search bind user.
-	 * 
+	 *
 	 * @param String $loginSearchPassword password
 	 */
 	public function setLoginSearchPassword($loginSearchPassword) {
@@ -1488,7 +1505,7 @@ class LAMConfig {
 
 	/**
 	 * Returns the password for the login search bind user.
-	 * 
+	 *
 	 * @return String password
 	 */
 	public function getLoginSearchPassword() {
@@ -1497,7 +1514,7 @@ class LAMConfig {
 
 	/**
 	 * Returns if HTTP authentication should be used.
-	 * 
+	 *
 	 * @return String $httpAuthentication use HTTP authentication ('true' or 'false')
 	 */
 	public function getHttpAuthentication() {
@@ -1506,7 +1523,7 @@ class LAMConfig {
 
 	/**
 	 * Specifies if HTTP authentication should be used.
-	 * 
+	 *
 	 * @param String $httpAuthentication use HTTP authentication ('true' or 'false')
 	 */
 	public function setHttpAuthentication($httpAuthentication) {
@@ -1515,16 +1532,16 @@ class LAMConfig {
 
 	/**
 	 * Returns the sender address for password reset mails.
-	 * 
+	 *
 	 * @return String mail address
 	 */
 	public function getLamProMailFrom() {
 		return $this->lamProMailFrom;
 	}
-	
+
 	/**
 	 * Sets the sender address for password reset mails.
-	 * 
+	 *
 	 * @param String $lamProMailFrom mail address
 	 * @return boolean true if address is valid
 	 */
@@ -1535,10 +1552,10 @@ class LAMConfig {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Returns the reply-to address for password reset mails.
-	 * 
+	 *
 	 * @return String mail address
 	 */
 	public function getLamProMailReplyTo() {
@@ -1547,7 +1564,7 @@ class LAMConfig {
 
 	/**
 	 * Sets the reply-to address for password reset mails.
-	 * 
+	 *
 	 * @param String $lamProMailReplyTo mail address
 	 * @return boolean true if address is valid
 	 */
@@ -1561,16 +1578,16 @@ class LAMConfig {
 
 	/**
 	 * Returns the subject for password reset mails.
-	 * 
+	 *
 	 * @return String subject
 	 */
 	public function getLamProMailSubject() {
 		return $this->lamProMailSubject;
 	}
-	
+
 	/**
 	 * Sets the subject for password reset mails.
-	 * 
+	 *
 	 * @param String $lamProMailSubject subject
 	 */
 	public function setLamProMailSubject($lamProMailSubject) {
@@ -1579,7 +1596,7 @@ class LAMConfig {
 
 	/**
 	 * Returns if the password reset mail content should be treated as HTML.
-	 * 
+	 *
 	 * @return boolean HTML or text
 	 */
 	public function getLamProMailIsHTML() {
@@ -1588,16 +1605,16 @@ class LAMConfig {
 
 	/**
 	 * Sets if the password reset mail content should be treated as HTML.
-	 * 
+	 *
 	 * @param boolean $lamProMailIsHTML true if HTML
 	 */
 	public function setLamProMailIsHTML($lamProMailIsHTML) {
 		$this->lamProMailIsHTML = $lamProMailIsHTML;
 	}
-	
+
 	/**
 	 * Returns if sending to an alternate address is allowed.
-	 * 
+	 *
 	 * @return boolean alternate address allowed
 	 */
 	public function getLamProMailAllowAlternateAddress() {
@@ -1606,34 +1623,34 @@ class LAMConfig {
 
 	/**
 	 * Sets if sending to an alternate address is allowed.
-	 * 
+	 *
 	 * @param boolean $lamProMailAllowAlternateAddress alternate address allowed
 	 */
 	public function setLamProMailAllowAlternateAddress($lamProMailAllowAlternateAddress) {
 		$this->lamProMailAllowAlternateAddress = $lamProMailAllowAlternateAddress;
 	}
-	
+
 	/**
 	 * Returns the mail body for password reset mails.
-	 * 
+	 *
 	 * @return String body
 	 */
 	public function getLamProMailText() {
 		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->lamProMailText));
 	}
-	
+
 	/**
 	 * Sets the mail body for password reset mails.
-	 * 
+	 *
 	 * @param String $lamProMailText body
 	 */
 	public function setLamProMailText($lamProMailText) {
 		$this->lamProMailText = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $lamProMailText));
 	}
-	
+
 	/**
 	 * Returns the bind user for jobs.
-	 * 
+	 *
 	 * @return String $jobsBindUser bind user
 	 */
 	public function getJobsBindUser() {
@@ -1642,7 +1659,7 @@ class LAMConfig {
 
 	/**
 	 * Sets the bind user for jobs.
-	 * 
+	 *
 	 * @param String $jobsBindUser bind user
 	 */
 	public function setJobsBindUser($jobsBindUser) {
@@ -1651,7 +1668,7 @@ class LAMConfig {
 
 	/**
 	 * Returns the bind password for jobs.
-	 * 
+	 *
 	 * @return String $jobsBindPassword password
 	 */
 	public function getJobsBindPassword() {
@@ -1660,7 +1677,7 @@ class LAMConfig {
 
 	/**
 	 * Sets the bind password for jobs.
-	 * 
+	 *
 	 * @param String $jobsBindPassword password
 	 */
 	public function setJobsBindPassword($jobsBindPassword) {
@@ -1669,7 +1686,7 @@ class LAMConfig {
 
 	/**
 	 * Returns the database type for jobs.
-	 * 
+	 *
 	 * @return String $jobsDatabase database type
 	 */
 	public function getJobsDatabase() {
@@ -1678,13 +1695,103 @@ class LAMConfig {
 
 	/**
 	 * Sets the database type for jobs.
-	 * 
+	 *
 	 * @param String $jobsDatabase database type
 	 */
 	public function setJobsDatabase($jobsDatabase) {
 		$this->jobsDatabase = $jobsDatabase;
 	}
-	
+
+	/**
+	 * Returns the host.
+	 *
+	 * @return String host
+	 */
+	public function getJobsDBHost() {
+		return $this->jobsDBHost;
+	}
+
+	/**
+	 * Sets the host.
+	 *
+	 * @param String $jobsDBHost host
+	 */
+	public function setJobsDBHost($jobsDBHost) {
+		$this->jobsDBHost = $jobsDBHost;
+	}
+
+	/**
+	 * Returns the port.
+	 *
+	 * @return String port
+	 */
+	public function getJobsDBPort() {
+		return $this->jobsDBPort;
+	}
+
+	/**
+	 * Sets the port.
+	 *
+	 * @param int $jobsDBPort port
+	 */
+	public function setJobsDBPort($jobsDBPort) {
+		$this->jobsDBPort = $jobsDBPort;
+	}
+
+	/**
+	 * Returns the DB user.
+	 *
+	 * @return String user name
+	 */
+	public function getJobsDBUser() {
+		return $this->jobsDBUser;
+	}
+
+	/**
+	 * Sets the DB user.
+	 *
+	 * @param String $jobsDBUser user name
+	 */
+	public function setJobsDBUser($jobsDBUser) {
+		$this->jobsDBUser = $jobsDBUser;
+	}
+
+	/**
+	 * Returns the DB password.
+	 *
+	 * @return String password
+	 */
+	public function getJobsDBPassword() {
+		return $this->jobsDBPassword;
+	}
+
+	/**
+	 * Sets the DB password.
+	 *
+	 * @param String $jobsDBPassword password
+	 */
+	public function setJobsDBPassword($jobsDBPassword) {
+		$this->jobsDBPassword = $jobsDBPassword;
+	}
+
+	/**
+	 * Returns the database name.
+	 *
+	 * @return String DB name
+	 */
+	public function getJobsDBName() {
+		return $this->jobsDBName;
+	}
+
+	/**
+	 * Sets the database name
+	 *
+	 * @param String $jobsDBName DB name
+	 */
+	public function setJobsDBName($jobsDBName) {
+		$this->jobsDBName = $jobsDBName;
+	}
+
 	/**
 	* Sets the settings for the jobs.
 	*
@@ -1707,10 +1814,10 @@ class LAMConfig {
 	public function getJobSettings() {
 		return $this->jobSettings;
 	}
-	
+
 	/**
 	 * Returns the job token.
-	 * 
+	 *
 	 * @return String job token
 	 */
 	public function getJobToken() {
@@ -1736,7 +1843,7 @@ class LAMCfgMain {
 	const ERROR_REPORTING_SYSTEM = 'system';
 	/** PHP error reporting setting as E_ALL | E_STRICT */
 	const ERROR_REPORTING_ALL = 'all';
-	
+
 	/** Default profile */
 	public $default;
 
@@ -1754,16 +1861,16 @@ class LAMCfgMain {
 
 	/** list of hosts which may access LAM */
 	public $allowedHosts;
-	
+
 	/** list of hosts which may access LAM Pro self service */
 	public $allowedHostsSelfService;
-	
+
 	/** session encryption */
 	public $encryptSession;
-	
+
 	/** minimum length for passwords */
 	public $passwordMinLength = 0;
-	
+
 	/** minimum uppercase characters */
 	public $passwordMinUpper = 0;
 
@@ -1778,28 +1885,28 @@ class LAMCfgMain {
 
 	/** minimum character classes (upper, lower, numeric, symbols) */
 	public $passwordMinClasses = 0;
-	
+
 	/** number of password rules that must match (-1 = all) */
 	public $checkedRulesCount = -1;
-	
+
 	/** password may contain the user name */
 	public $passwordMustNotContainUser = 'false';
-	
+
 	/** password may contain more than 2 characters of user/first/last name */
 	public $passwordMustNotContain3Chars = 'false';
-	
+
 	/** path to config file */
 	private $conffile;
 
 	/** uploaded SSL certificate that is stored to disk on save() */
 	private $uploadedSSLCaCert = null;
-	
+
 	/** SSL certificate should be deleted on save() */
 	private $delSSLCaCert = false;
-	
+
 	/** EOL for emails (default/unix) */
 	public $mailEOL = 'default';
-	
+
 	/** error reporting */
 	public $errorReporting = self::ERROR_REPORTING_DEFAULT;
 
@@ -1933,7 +2040,7 @@ class LAMCfgMain {
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets a new config password.
 	 *
@@ -1944,9 +2051,9 @@ class LAMCfgMain {
 		$rand = getRandomNumber();
 		$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 		$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-		$this->password = $this->hashPassword($password, $salt);	
+		$this->password = $this->hashPassword($password, $salt);
 	}
-	
+
 	/**
 	 * Checks if the given password matches.
 	 *
@@ -1966,7 +2073,7 @@ class LAMCfgMain {
 			return ($password === $this->password);
 		}
 	}
-	
+
 	/**
 	 * Returns the hashed password.
 	 *
@@ -1977,7 +2084,7 @@ class LAMCfgMain {
 	private function hashPassword($password, $salt) {
 		return "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
-	
+
 	/**
 	 * Returns if the configuration file is writable.
 	 *
@@ -1986,7 +2093,7 @@ class LAMCfgMain {
 	public function isWritable() {
 		return is_writeable($this->conffile);
 	}
-	
+
 	/**
 	 * Returns if the configuration file is existing.
 	 *
@@ -1995,10 +2102,10 @@ class LAMCfgMain {
 	public function isConfigFileExisting() {
 		return file_exists($this->conffile);
 	}
-	
+
 	/**
 	 * Returns the path to the SSL CA certificate file that overrides the system certificates.
-	 * 
+	 *
 	 * @return String path to certificate file or null if certificate is not overridden
 	 */
 	public function getSSLCaCertPath() {
@@ -2008,19 +2115,19 @@ class LAMCfgMain {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the file name that will be used internally to store the CA file.
-	 * 
+	 *
 	 * @return String file name
 	 */
 	private function getInternalSSLCaCertFileName() {
 		return dirname(__FILE__) . '/../config/serverCerts.pem';
 	}
-	
+
 	/**
 	 * Uploads a new SSL CA cert.
-	 * 
+	 *
 	 * @param String $cert file content in DER/PEM format
 	 * @return mixed TRUE if format is correct, error message if file is not accepted
 	 */
@@ -2051,11 +2158,11 @@ class LAMCfgMain {
 		$this->delSSLCaCert = false;
 		return true;
 	}
-	
+
 	/**
 	 * Returns the name of a temporary file in tmp that contains the SSL certificate.
 	 * The file contains either the stored data in serverCerts or the uploaded data.
-	 * 
+	 *
 	 * @return String file name or null if no certificate was set
 	 */
 	public function getSSLCaCertTempFileName() {
@@ -2081,11 +2188,11 @@ class LAMCfgMain {
 		}
 		return $fileName;
 	}
-	
+
 	/**
 	 * Marks a single or all SSL CA certificate files for deletion.
 	 * The changes take effect on save().
-	 * 
+	 *
 	 * @param int $index certificate index, null deletes all certificates (default: null)
 	 */
 	public function deleteSSLCaCert($index = null) {
@@ -2105,10 +2212,10 @@ class LAMCfgMain {
 			$this->uploadedSSLCaCert = implode("\n", $list);
 		}
 	}
-	
+
 	/**
 	 * Returns a list of all CA certificates.
-	 * 
+	 *
 	 * @return array list of certificates as output of openssl_x509_parse()
 	 */
 	public function getSSLCaCertificates() {
@@ -2128,7 +2235,7 @@ class LAMCfgMain {
 
 	/**
 	 * Returns the content of the certificate file or uploaded data.
-	 * 
+	 *
 	 * @return String null or certificate content
 	 */
 	private function getSSLCaCertificateContent() {
@@ -2149,10 +2256,10 @@ class LAMCfgMain {
 		}
 		return $content;
 	}
-	
+
 	/**
 	 * Splits the certificate content into single PEM data chunks.
-	 * 
+	 *
 	 * @param String $content PEM file content
 	 * @return array one element for each certificate chunk
 	 */
@@ -2181,7 +2288,7 @@ class LAMCfgMain {
 		}
 		return $list;
 	}
-	
+
 }
 
 ?>
