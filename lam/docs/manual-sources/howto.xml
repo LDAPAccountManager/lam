@@ -987,6 +987,12 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>5.0 -&gt; 5.1</title>
+
+          <para>No special actions needed.</para>
+        </section>
+
+        <section>
           <title>4.9 -&gt; 5.0</title>
 
           <para>Samba 3: If you used logon hours then you need to set the
@@ -1835,9 +1841,7 @@ Have fun!
           operations.</para>
 
           <para>Next, select the database type where LAM should store job
-          related data.</para>
-
-          <para>Supported databases:</para>
+          related data. Supported databases are SQLite and MySQL.</para>
 
           <para><emphasis role="bold">SQLite</emphasis></para>
 
@@ -1849,18 +1853,6 @@ Have fun!
           (pdo_sqlite.so). For Debian this is located in package
           php5-sqlite.</para>
 
-          <literallayout>
-
-</literallayout>
-
-          <para>After the LDAP and database settings are done you can test
-          your settings.</para>
-
-          <para>LAM also prints the crontab line that you need to run the
-          configured jobs on a daily basis. The command must be run as the
-          same user as your webserver is running. You are free to change the
-          starting time of the script or run it more often.</para>
-
           <screenshot>
             <mediaobject>
               <imageobject>
@@ -1869,7 +1861,49 @@ Have fun!
             </mediaobject>
           </screenshot>
 
-          <para></para>
+          <para><emphasis role="bold">MySQL</emphasis></para>
+
+          <para>This will store all job data in an external MySQL
+          database.</para>
+
+          <para>You will need to install the MySQL PDO module for PHP
+          (pdo_mysql.so). For Debian this is located in package
+          php5-mysql.</para>
+
+          <para>Steps to create a MySQL database and user:</para>
+
+          <literallayout># login
+mysql -u root -p
+# create a database
+mysql&gt; create database lam_cron;
+# 
+mysql&gt; CREATE USER 'lam_cron'@'%' IDENTIFIED BY 'password';
+mysql&gt; CREATE USER 'lam_cron'@'localhost' IDENTIFIED BY 'password';
+# grant access for new user
+mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'%';
+mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
+</literallayout>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs3.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><literallayout>
+</literallayout><emphasis role="bold">Test your settings</emphasis></para>
+
+          <para>After the LDAP and database settings are done you can test
+          your settings.</para>
+
+          <para><emphasis role="bold">Cron entry</emphasis></para>
+
+          <para>LAM also prints the crontab line that you need to run the
+          configured jobs on a daily basis. The command must be run as the
+          same user as your webserver is running. You are free to change the
+          starting time of the script or run it more often.</para>
         </section>
 
         <section>
