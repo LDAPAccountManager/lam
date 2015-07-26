@@ -104,15 +104,15 @@ select {
 	background:#F5F5F5 none repeat-x scroll 50% 50%;
 	border:1px solid #AAAAAA;
 	color:#222222;
-	margin: 1px;
+	margin: 3px;
 }
 
 input {
-	margin: 1px;	
+	margin: 3px;
 }
 
 .margin2 {
-	margin: 2px;	
+	margin: 2px;
 }
 
 .align-middle {
@@ -360,7 +360,7 @@ tr.account {
 	float: left;
 }
 
-#lamVerticalTabs .ui-widget-header { 
+#lamVerticalTabs .ui-widget-header {
 	background: #CCCCCC url(images/ui-bg_highlight-soft_75_cccccc_1x150-vertical.png) repeat-y;
 }
 
