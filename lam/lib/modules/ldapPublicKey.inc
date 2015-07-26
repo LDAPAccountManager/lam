@@ -107,6 +107,7 @@ class ldapPublicKey extends baseModule {
 	**/
 	function load_Messages() {
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
+		$this->messages['file'][1] = array('ERROR', _('The uploaded file seems to be no valid public key.'));
 	}
 
 	/**
@@ -145,12 +146,24 @@ class ldapPublicKey extends baseModule {
 				$handle = fopen($_FILES['sshPublicKeyFile']['tmp_name'], "r");
 				$data = fread($handle, 10000000);
 				fclose($handle);
-				$data = str_replace("\r\n", "\n", $data);
-				$data = str_replace("\r", "\n", $data);
-				$lines = explode("\n", $data);
-				foreach ($lines as $line) {
-					if (!empty($line) && !(strpos($line, '#') === 0)) {
-						$this->attributes['sshPublicKey'][] = $line;
+				$isOk = true;
+				if (is_executable('/usr/bin/ssh-keygen')) {
+					$out = array();
+					$retVal = 0;
+					exec('/usr/bin/ssh-keygen -l -f ' . escapeshellarg($_FILES['sshPublicKeyFile']['tmp_name']), $out, $retVal);
+					if ($retVal !== 0) {
+						$messages[] = $this->messages['file'][1];
+						$isOk = false;
+					}
+				}
+				if ($isOk) {
+					$data = str_replace("\r\n", "\n", $data);
+					$data = str_replace("\r", "\n", $data);
+					$lines = explode("\n", $data);
+					foreach ($lines as $line) {
+						if (!empty($line) && !(strpos($line, '#') === 0)) {
+							$this->attributes['sshPublicKey'][] = $line;
+						}
 					}
 				}
 			}
@@ -497,6 +510,16 @@ class ldapPublicKey extends baseModule {
 			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
 			fclose($handle);
+			if (is_executable('/usr/bin/ssh-keygen')) {
+				$out = array();
+				$retVal = 0;
+				exec('/usr/bin/ssh-keygen -l -f ' . escapeshellarg($_FILES['qqfile']['tmp_name']), $out, $retVal);
+				if ($retVal !== 0) {
+					$result = array('error' => $this->messages['file'][1][1]);
+					echo json_encode($result);
+					return;
+				}
+			}
 			$data = str_replace("\r\n", "\n", $data);
 			$data = str_replace("\r", "\n", $data);
 			$lines = explode("\n", $data);
