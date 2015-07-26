@@ -575,7 +575,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[' . chr(1) . '-' . chr(128) . ']*$/';
 					break;
 		case 'objectClass':
-					$pregexpr = '/^[[:alnum:]_]+$/';
+					$pregexpr = '/^[[:alnum:]_-]+$/';
 					break;
 	}
 	if ($pregexpr!='')
@@ -1281,6 +1281,58 @@ function getTimeZone() {
 	}
 	$timeZone = $_SESSION['config']->getTimeZone();
 	return new DateTimeZone($timeZone);
+}
+
+/**
+ * Formats a number of seconds to a more human readable format with minutes, hours, etc.
+ * E.g. 70 seconds will return 1m10s.
+ *
+ * @param int $numSeconds number of seconds
+ * @return String formated number
+ */
+function formatSecondsToShortFormat($numSeconds) {
+	if (empty($numSeconds)) {
+		return '';
+	}
+	$seconds = $numSeconds % 60;
+	$seconds = ($seconds == 0) ? '' : $seconds . 's';
+	$minutes = floor(($numSeconds % 3600) / 60);
+	$minutes = ($minutes == 0) ? '' : $minutes . 'm';
+	$hours = floor(($numSeconds % 86400) / 3600);
+	$hours = ($hours == 0) ? '' : $hours . 'h';
+	$days = floor($numSeconds / 86400);
+	$days = ($days == 0) ? '' : $days . 'd';
+	return $days . $hours . $minutes . $seconds;
+}
+
+/**
+ * Unformats text like 1m10s back to number of seconds.
+ *
+ * @param String $text formatted text
+ * @return int number of seconds
+ */
+function unformatShortFormatToSeconds($text) {
+	if (empty($text)) {
+		return $text;
+	}
+	$matches = array();
+	if (preg_match('/^([0-9]+d)?([0-9]+h)?([0-9]+m)?([0-9]+s)?$/', $text, $matches)) {
+		$newValue = 0;
+		if (!empty($matches[1])) {
+			$newValue += $matches[1] * 86400;
+		}
+		if (!empty($matches[2])) {
+			$newValue += $matches[2] * 3600;
+		}
+		if (!empty($matches[3])) {
+			$newValue += $matches[3] * 60;
+		}
+		if (!empty($matches[4])) {
+			$newValue += $matches[4];
+		}
+		return $newValue;
+	}
+	return $text;
 }
 
 ?>
