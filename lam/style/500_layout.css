@@ -418,14 +418,12 @@ div.statusError {
 
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
 div.statusTitle {
-	font-size: 12pt;
 	font-weight: bold;
 	margin: 3px 3px 3px 15px;
 }
 
 /* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
 p.statusText {
-  font-size: 10pt;
   margin: 3px 3px 3px 25px;
 }
 
@@ -442,10 +440,10 @@ input.smallImageButton {
 th.help {
 	text-align: left;
 	padding-bottom: 10px;
-	font-size: 9pt;
+	font-size: 85%;
 }
 td.help {
-	font-size: 10pt;
+	font-size: 85%;
 }
 
 img.photo {
