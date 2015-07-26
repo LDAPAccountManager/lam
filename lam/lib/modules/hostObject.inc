@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class hostObject extends baseModule {
-	
+
 	/**
 	* Creates a new hostObject object.
 	*
@@ -47,7 +47,7 @@ class hostObject extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -58,7 +58,7 @@ class hostObject extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -108,7 +108,7 @@ class hostObject extends baseModule {
 	*/
 	function load_Messages() {
 		$this->messages['host'][0] = array('ERROR', 'Please enter a valid host name.');  // third array value is set dynamically
-		$this->messages['host'][1] = array('ERROR', _('Account %s:') . ' hostObject_host', _('Please enter a valid list of host names.'));
+		$this->messages['host'][1] = array('ERROR', _('Account %s:') . ' hostObject_hosts', _('Please enter a valid list of host names.'));
 	}
 
 	/**
@@ -130,10 +130,10 @@ class hostObject extends baseModule {
 		}
 		return parent::save_attributes();
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -189,20 +189,7 @@ class hostObject extends baseModule {
 			// add object class
 			if (!in_array("hostObject", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "hostObject";
 			// add hosts
-			if ($rawAccounts[$i][$ids['hostObject_hosts']] != "") {
-				$hosts = explode(',', $rawAccounts[$i][$ids['hostObject_hosts']]);
-				// check format
-				for ($a = 0; $a < sizeof($hosts); $a++) {
-					if (get_preg($hosts[$a], 'hostObject')) {
-						$partialAccounts[$i]['host'][] = $hosts[$a];
-					}
-					else {
-						$errMsg = $this->messages['host'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'hostObject_hosts', 'host', 'hostObject', $this->messages['host'][1], $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}
