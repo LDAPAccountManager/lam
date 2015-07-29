@@ -31,11 +31,11 @@ $Id$
 /**
  * Represents a HTML element.
  * This is used to build HTML code by using objects.
- * 
+ *
  * @package metaHTML
  */
 abstract class htmlElement {
-	
+
 	/** align to top */
 	const ALIGN_TOP = 0;
 	/** align to left */
@@ -46,12 +46,12 @@ abstract class htmlElement {
 	const ALIGN_BOTTOM = 3;
 	/** align to center */
 	const ALIGN_CENTER = 4;
-	
+
 	/** validation rule to allow only numbers ([0-9]+) */
 	const VALIDATE_NUMERIC = 'numeric';
 	/** validation rule to allow positive/negative numbers ([-]?[0-9]+) */
 	const VALIDATE_NUMERIC_WITH_NEGATIVE = 'numericWithNegative';
-	
+
 	/** alignment when inside a table */
 	public $alignment = null;
 	/** colspan if inside a table */
@@ -62,10 +62,10 @@ abstract class htmlElement {
 	protected $cssClasses = array();
 	/** table cell CSS classes */
 	protected $tableCellCssClasses = array();
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -75,10 +75,10 @@ abstract class htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	abstract function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope);
-	
+
 	/**
 	 * Returns the HTML attributes for the alignment.
-	 * 
+	 *
 	 * @return String alignment HTML attributes (e.g. align="right" valign="top")
 	 */
 	public function getAlignmentString() {
@@ -107,7 +107,7 @@ abstract class htmlElement {
 
 	/**
 	 * Returns the HTML attribute for the colspan.
-	 * 
+	 *
 	 * @return String colspan HTML attribute (e.g. colspan=3)
 	 */
 	public function getColspanString() {
@@ -116,10 +116,10 @@ abstract class htmlElement {
 		}
 		else return 'colspan="' . $this->colspan . '"';
 	}
-	
+
 	/**
 	 * Returns the HTML attribute for the rowspan.
-	 * 
+	 *
 	 * @return String rowspan HTML attribute (e.g. rowspan=3)
 	 */
 	public function getRowspanString() {
@@ -131,7 +131,7 @@ abstract class htmlElement {
 
 	/**
 	 * Adds CSS classes to this element.
-	 * 
+	 *
 	 * @param array $classes CSS class names
 	 */
 	public function setCSSClasses($classes) {
@@ -140,16 +140,16 @@ abstract class htmlElement {
 
 	/**
 	 * Adds CSS classes to the surrounding table cell for this element.
-	 * 
+	 *
 	 * @param array $classes CSS class names
 	 */
 	public function setTableCellCSSClasses($classes) {
 		$this->tableCellCssClasses = $classes;
 	}
-	
+
 	/**
 	 * Returns the CSS classes of the surrounding table cell for this element.
-	 * 
+	 *
 	 * @return array CSS classes
 	 */
 	public function getTableCellCSSClasses() {
@@ -169,7 +169,7 @@ class htmlTable extends htmlElement {
 	const footer = "</table>\n";
 	/** new line */
 	const newLine = "</tr><tr>\n";
-	
+
 	/** list of subelements */
 	private $elements = array();
 	/** specifies if currently a row is open */
@@ -178,10 +178,10 @@ class htmlTable extends htmlElement {
 	private $width = null;
 	/** HTML ID */
 	private $id = null;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param String $width table width (e.g. 100%)
 	 * @see htmlElement
 	 */
@@ -237,7 +237,7 @@ class htmlTable extends htmlElement {
 			StatusMessage('ERROR', 'Invalid element', print_r($element, true));
 		}
 	}
-	
+
 	/**
 	 * Adds another line to the table.
 	 */
@@ -249,28 +249,28 @@ class htmlTable extends htmlElement {
 			$this->elements[] = htmlTable::newLine;
 		}
 	}
-	
+
 	/**
 	 * Adds an htmlSpacer with the given width.
-	 * 
+	 *
 	 * @param String $width width (e.g. 10px)
 	 */
 	public function addSpace($width) {
 		$this->addElement(new htmlSpacer($width, null));
 	}
-	
+
 	/**
 	 * Adds an htmlSpacer with the given height and ends the row.
-	 * 
+	 *
 	 * @param String $height height (e.g. 10px)
 	 */
 	public function addVerticalSpace($height) {
 		$this->addElement(new htmlSpacer(null, $height), true);
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -314,10 +314,10 @@ class htmlTable extends htmlElement {
 		echo htmlTable::footer;
 		return $return;
 	}
-	
+
 	/**
 	 * Merges the content of another htmlTable object into this table.
-	 * 
+	 *
 	 * @param $table table to get elements
 	 */
 	public function mergeTableElements($table) {
@@ -349,7 +349,7 @@ class htmlTable extends htmlElement {
 
 /**
  * A row inside a htmlTable.
- * 
+ *
  * @see htmlTable
  * @package metaHTML
  */
@@ -357,10 +357,10 @@ class htmlTableRow extends htmlElement {
 
 	/** table cells */
 	private $cells;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param array $cells list of htmlElements
 	 * @see htmlElement
 	 */
@@ -370,7 +370,7 @@ class htmlTableRow extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -403,7 +403,7 @@ class htmlTableRow extends htmlElement {
 
 /**
  * A standard input field.
- * 
+ *
  * @package metaHTML
  */
 class htmlInputField extends htmlElement {
@@ -454,7 +454,7 @@ class htmlInputField extends htmlElement {
 	protected $title = null;
 	/** field ID that needs to have same value (e.g. password field) */
 	protected $sameValueFieldID = null;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -472,10 +472,10 @@ class htmlInputField extends htmlElement {
 			$this->fieldSize = $fieldSize;
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -626,16 +626,16 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Sets the maximum field length.
-	 * 
+	 *
 	 * @param int $fieldMaxLength length
 	 */
 	public function setFieldMaxLength($fieldMaxLength) {
 		$this->fieldMaxLength = $fieldMaxLength;
 	}
-	
+
 	/**
 	 * Sets the field size (default is 30).
-	 * 
+	 *
 	 * @param int $fieldSize size
 	 */
 	public function setFieldSize($fieldSize) {
@@ -644,7 +644,7 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Specifies if this is a password field.
-	 * 
+	 *
 	 * @param boolean $isPassword password field
 	 * @param boolean $checkStrength check if matches password policy (default: false)
 	 */
@@ -655,7 +655,7 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
@@ -664,7 +664,7 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Specifies if the value should be saved in obfuscated form (e.g. self service profile).
-	 * 
+	 *
 	 * @param boolean $obfuscate obfuscate value
 	 */
 	public function setObfuscate($obfuscate) {
@@ -673,7 +673,7 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
-	 * 
+	 *
 	 * @param boolean $transient transient field
 	 */
 	public function setTransient($transient) {
@@ -682,7 +682,7 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Specifies if the input field is required.
-	 * 
+	 *
 	 * @param boolean $required required
 	 */
 	public function setRequired($required) {
@@ -692,16 +692,16 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Specifies the validation rule (e.g. htmlElement::VALIDATE_NUMERIC) for this field.
 	 * This rule is checked on client side when the input field looses focus.
-	 * 
+	 *
 	 * @param boolean $rule rule name
 	 */
 	public function setValidationRule($rule) {
 		$this->validationRule = $rule;
 	}
-	
+
 	/**
 	 * Enables autocompletion for this input field.
-	 * 
+	 *
 	 * @param array $values list of values to suggest
 	 * @param int $minLength autocompletion starts after this number of caracters entered (default 1; 0 means immediate start)
 	 * @param boolean $multiValue allow multiple autocompletion values in the same fields (default: false)
@@ -719,28 +719,28 @@ class htmlInputField extends htmlElement {
 		$this->autocompleteMultiValueSeparatorExp = $multiSeparatorExp;
 		$this->autocompleteMultiValueSeparator = $multiSeparator;
 	}
-	
+
 	/**
 	 * Sets the JavaScript for the onKeyPress event.
-	 * 
+	 *
 	 * @param String $onKeyPress JavaScript code
 	 */
 	public function setOnKeyPress($onKeyPress) {
 		$this->onKeyPress = $onKeyPress;
 	}
-	
+
 	/**
 	 * Sets the JavaScript for the onKeyUp event.
-	 * 
+	 *
 	 * @param String $onKeyUp JavaScript code
 	 */
 	public function setOnKeyUp($onKeyUp) {
 		$this->onKeyUp = $onKeyUp;
 	}
-	
+
 	/**
 	 * Shows a calendar when the field is selected.
-	 * 
+	 *
 	 * @param String $format calendar format (e.g. yyyy-mm-dd)
 	 */
 	public function showCalendar($format) {
@@ -750,28 +750,28 @@ class htmlInputField extends htmlElement {
 
 	/**
 	 * Sets the title for the input field.
-	 * 
+	 *
 	 * @param String $title title value
 	 */
 	public function setTitle($title) {
 		$this->title = htmlspecialchars($title);
 	}
-	
+
 	/**
 	 * Specifies the ID of a second field that must have the same value as this field.
 	 * This field is marked red if different or green if equal.
-	 * 
+	 *
 	 * @param String $sameValueFieldID ID of reference field
 	 */
 	public function setSameValueFieldID($sameValueFieldID) {
 		$this->sameValueFieldID = $sameValueFieldID;
 	}
-	
+
 }
 
 /**
  * An extended input field that combines label, input field and help.
- * 
+ *
  * @package metaHTML
  */
 class htmlTableExtendedInputField extends htmlInputField {
@@ -780,7 +780,7 @@ class htmlTableExtendedInputField extends htmlInputField {
 	private $label;
 	/** help ID */
 	private $helpID;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -794,10 +794,10 @@ class htmlTableExtendedInputField extends htmlInputField {
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -832,18 +832,18 @@ class htmlTableExtendedInputField extends htmlInputField {
 
 /**
  * Renders a help link.
- * 
+ *
  * @package metaHTML
  */
 class htmlHelpLink extends htmlElement {
-	
+
 	/** help ID */
 	private $helpID;
 	/** module name if it should be forced */
 	private $module;
 	/** account type if it should be forced */
 	private $scope;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -856,10 +856,10 @@ class htmlHelpLink extends htmlElement {
 		$this->module = $module;
 		$this->scope = $scope;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -890,7 +890,7 @@ class htmlHelpLink extends htmlElement {
  * @package metaHTML
  */
 class htmlButton extends htmlElement {
-	
+
 	/** button name */
 	protected $name;
 	/** button text or image */
@@ -907,7 +907,7 @@ class htmlButton extends htmlElement {
 	private $onClick = null;
 	/** button type (default: "submit" if no onClick and "button" with onClick) */
 	private $type = null;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -920,10 +920,10 @@ class htmlButton extends htmlElement {
 		$this->value = htmlspecialchars($value);
 		$this->isImageButton = $isImageButton;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -995,10 +995,10 @@ class htmlButton extends htmlElement {
 		}
 		return array($this->name => 'submit');
 	}
-	
+
 	/**
 	 * Sets the button title (tooltip).
-	 * 
+	 *
 	 * @param String $title title
 	 */
 	public function setTitle($title) {
@@ -1007,7 +1007,7 @@ class htmlButton extends htmlElement {
 
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
@@ -1017,17 +1017,17 @@ class htmlButton extends htmlElement {
 	/**
 	 * Sets an additional icon for a text button.
 	 * The icon class is a CSS class that specifies the icon image (e.g. "deleteButton" in layout.css).
-	 * 
+	 *
 	 * @param String $iconClass icon class
 	 */
 	public function setIconClass($iconClass) {
 		$this->iconClass = htmlspecialchars($iconClass);
 	}
-	
+
 	/**
 	 * Sets the onclick event code.
 	 * This makes this button a simple button that does not submit a form.
-	 * 
+	 *
 	 * @param String $onClick JS code
 	 */
 	public function setOnClick($onClick) {
@@ -1040,7 +1040,7 @@ class htmlButton extends htmlElement {
 	public function setType($type) {
 		$this->type = $type;
 	}
-	
+
 }
 
 /**
@@ -1049,7 +1049,7 @@ class htmlButton extends htmlElement {
  * @package metaHTML
  */
 class htmlAccountPageButton extends htmlButton {
-	
+
 	/**
 	 * Constructor
 	 *
@@ -1068,7 +1068,7 @@ class htmlAccountPageButton extends htmlButton {
 			$this->setTitle($title);
 		}
 	}
-	
+
 }
 
 /**
@@ -1077,7 +1077,7 @@ class htmlAccountPageButton extends htmlButton {
  * @package metaHTML
  */
 class htmlSelect extends htmlElement {
-	
+
 	/** name of select field */
 	private $name;
 	/** size */
@@ -1110,10 +1110,10 @@ class htmlSelect extends htmlElement {
 	protected $tableRowsToHide = array();
 	/** list of enclosing table rows to show when checked */
 	protected $tableRowsToShow = array();
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * <br>Examples:
 	 * <br>
 	 * <br>$select = new htmlSelect('myName', array('value1', 'value2'), array('value1'));
@@ -1124,7 +1124,7 @@ class htmlSelect extends htmlElement {
 	 * <br>$select = new htmlSelect('myName', array('optgroupLabel' => array('value1', 'value2')), array('value1'));
 	 * <br>$select->setHasDescriptiveElements(true);
 	 * <br>$select->setContainsOptgroups(true);
-	 * 
+	 *
 	 * @param String $name element name
 	 * @param array $elements list of elements array(label => value) or array(value1, value2) or array('optgroup' => array(...))
 	 * @param array $selectedElements list of selected elements (optional, default none)
@@ -1138,10 +1138,10 @@ class htmlSelect extends htmlElement {
 		}
 		$this->size = htmlspecialchars($size);
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -1231,7 +1231,7 @@ class htmlSelect extends htmlElement {
 			return array($this->name => 'select');
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML code of the option tags.
 	 *
@@ -1269,38 +1269,38 @@ class htmlSelect extends htmlElement {
 			}
 		}
 	}
-	
+
 	/**
-	 * Specifies if the elements are just a simple list or an assoziative array (default: simple list). 
-	 * 
+	 * Specifies if the elements are just a simple list or an assoziative array (default: simple list).
+	 *
 	 * @param boolean $hasDescriptiveElements activates descriptive elements
 	 */
 	public function setHasDescriptiveElements($hasDescriptiveElements) {
 		$this->hasDescriptiveElements = $hasDescriptiveElements;
 	}
-	
+
 	/**
 	 * Specifies if the elements are divided into optgroups.
 	 * In this case the provided options are an array where the key is the optgroup label and the value is an array containing the options for the optgroup.
-	 * 
+	 *
 	 * @param boolean $containsOptgroups activates optgroups
 	 */
 	public function setContainsOptgroups($containsOptgroups) {
 		$this->containsOptgroups = $containsOptgroups;
 	}
-	
+
 	/**
 	 * Specifies if multi-selection is enabled (default: disabled).
-	 * 
+	 *
 	 * @param boolean $multiSelect allows multi-selection
 	 */
 	public function setMultiSelect($multiSelect) {
 		$this->multiSelect = $multiSelect;
 	}
-	
+
 	/**
 	 * Specifies if the elemets should be sorted (default: sort).
-	 * 
+	 *
 	 * @param boolean $sortElements sort elements
 	 */
 	public function setSortElements($sortElements) {
@@ -1309,16 +1309,16 @@ class htmlSelect extends htmlElement {
 
 	/**
 	 * Specifies if the text direction should be set to right to left.
-	 * 
+	 *
 	 * @param boolean $rightToLeftTextDirection if true use right to left direction
 	 */
 	public function setRightToLeftTextDirection($rightToLeftTextDirection) {
 		$this->rightToLeftTextDirection = $rightToLeftTextDirection;
 	}
-	
+
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
@@ -1327,7 +1327,7 @@ class htmlSelect extends htmlElement {
 
 	/**
 	 * Specifies the width of this selection box.
-	 * 
+	 *
 	 * @param String $width width (e.g. 20em)
 	 */
 	public function setWidth($width) {
@@ -1336,7 +1336,7 @@ class htmlSelect extends htmlElement {
 
 	/**
 	 * Specifies if select boxes that contain only a single element should be transformed to a simple text field.
-	 * 
+	 *
 	 * @param boolean $transformSingleSelect transform single options to text
 	 */
 	public function setTransformSingleSelect($transformSingleSelect) {
@@ -1345,7 +1345,7 @@ class htmlSelect extends htmlElement {
 
 	/**
 	 * Sets the JavaScript code for the onchange event.
-	 * 
+	 *
 	 * @param String $onchangeEvent onchange event code (e.g. myfunction();)
 	 */
 	public function setOnchangeEvent($onchangeEvent) {
@@ -1354,7 +1354,7 @@ class htmlSelect extends htmlElement {
 
 	/**
 	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
-	 * 
+	 *
 	 * @param boolean $transient transient field
 	 */
 	public function setTransient($transient) {
@@ -1372,7 +1372,7 @@ class htmlSelect extends htmlElement {
 	 * <br>
 	 * <br> Example for $tableRowsToHide:
 	 * <br> array('yes' => array('option1', 'option2'), 'no' => array('option3'))
-	 * 
+	 *
 	 * @param array $tableRowsToHide array of select value => array of IDs of child elements to hide
 	 */
 	public function setTableRowsToHide($tableRowsToHide) {
@@ -1390,16 +1390,16 @@ class htmlSelect extends htmlElement {
 	 * <br>
 	 * <br> Example for $tableRowsToShow:
 	 * <br> array('yes' => array('option1', 'option2'), 'no' => array('option3'))
-	 * 
+	 *
 	 * @param array $tableRowsToShow array of select value => array of IDs of child elements to show
 	 */
 	public function setTableRowsToShow($tableRowsToShow) {
 		$this->tableRowsToShow = $tableRowsToShow;
 	}
-	
+
 	/**
 	 * Creates the JavaScript code to hide/show table rows based on the select value.
-	 * 
+	 *
 	 * @param String $onChange onChange code
 	 */
 	private function printCodeForShowHideTableRows(&$onChange) {
@@ -1451,7 +1451,7 @@ class htmlSelect extends htmlElement {
 
 /**
  * Select with label and help link.
- * 
+ *
  * @package metaHTML
  */
 class htmlTableExtendedSelect extends htmlSelect {
@@ -1460,10 +1460,10 @@ class htmlTableExtendedSelect extends htmlSelect {
 	private $label;
 	/** help ID */
 	private $helpID;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name element name
 	 * @param array $elements list of elememts
 	 * @param array $selectedElements list of selected elements
@@ -1479,7 +1479,7 @@ class htmlTableExtendedSelect extends htmlSelect {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -1502,7 +1502,7 @@ class htmlTableExtendedSelect extends htmlSelect {
 		}
 		return $return;
 	}
-	
+
 }
 
 /**
@@ -1511,7 +1511,7 @@ class htmlTableExtendedSelect extends htmlSelect {
  * @package metaHTML
  */
 class htmlRadio extends htmlElement {
-	
+
 	/** name of select field */
 	private $name;
 	/** elements */
@@ -1522,14 +1522,14 @@ class htmlRadio extends htmlElement {
 	private $isEnabled = true;
 	/** on change code */
 	private $onchangeEvent = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * <br>Examples:
 	 * <br>
 	 * <br>$radio = new htmlRadio('myName', array('label1' => 'value1', 'label2' => 'value2'), array('value1'));
-	 * 
+	 *
 	 * @param String $name element name
 	 * @param array $elements list of elements array(label => value)
 	 * @param String $selectedElement value of selected element (optional, default none)
@@ -1541,10 +1541,10 @@ class htmlRadio extends htmlElement {
 			$this->selectedElement = $selectedElement;
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -1589,10 +1589,10 @@ class htmlRadio extends htmlElement {
 		}
 		return array($this->name => 'select');
 	}
-	
+
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
@@ -1601,7 +1601,7 @@ class htmlRadio extends htmlElement {
 
 	/**
 	 * Sets the JavaScript code for the onchange event.
-	 * 
+	 *
 	 * @param String $onchangeEvent onchange event code (e.g. myfunction();)
 	 */
 	public function setOnchangeEvent($onchangeEvent) {
@@ -1612,7 +1612,7 @@ class htmlRadio extends htmlElement {
 
 /**
  * Radio list with descriptive label and help link.
- * 
+ *
  * @package metaHTML
  */
 class htmlTableExtendedRadio extends htmlRadio {
@@ -1621,10 +1621,10 @@ class htmlTableExtendedRadio extends htmlRadio {
 	private $label;
 	/** help ID */
 	private $helpID;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $label descriptive label
 	 * @param String $name element name
 	 * @param array $elements list of elements array(label => value)
@@ -1640,7 +1640,7 @@ class htmlTableExtendedRadio extends htmlRadio {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -1665,12 +1665,12 @@ class htmlTableExtendedRadio extends htmlRadio {
 		}
 		return $return;
 	}
-	
+
 }
 
 /**
  * Prints the text and escapes contained HTML code by default.
- * 
+ *
  * @package metaHTML
  */
 class htmlOutputText extends htmlElement {
@@ -1688,7 +1688,7 @@ class htmlOutputText extends htmlElement {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $string output text
 	 * @param boolean $escapeHTML escape HTML code (default yes)
 	 * @param boolean $markAsRequired mark text like a required field
@@ -1701,7 +1701,7 @@ class htmlOutputText extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -1739,7 +1739,7 @@ class htmlOutputText extends htmlElement {
 
 	/**
 	 * Specifies if the whole text should be printed in bold.
-	 * 
+	 *
 	 * @param boolean $isBold bold text
 	 */
 	public function setIsBold($isBold) {
@@ -1748,7 +1748,7 @@ class htmlOutputText extends htmlElement {
 
 	/**
 	 * Adds a marker that indicates a required field.
-	 * 
+	 *
 	 * @param boolean $markAsRequired add marker
 	 */
 	public function setMarkAsRequired($markAsRequired) {
@@ -1757,7 +1757,7 @@ class htmlOutputText extends htmlElement {
 
 	/**
 	 * Specifies if word wrap is allowed for this text.
-	 * 
+	 *
 	 * @param boolean $noWrap no wrapping if set to true (default false)
 	 */
 	public function setNoWrap($noWrap) {
@@ -1768,11 +1768,11 @@ class htmlOutputText extends htmlElement {
 
 /**
  * Prints the HTML code for a checkbox.
- * 
+ *
  * @package metaHTML
  */
 class htmlInputCheckbox extends htmlElement {
-	
+
 	/** unique name of input element */
 	protected $name;
 	/** value */
@@ -1789,13 +1789,13 @@ class htmlInputCheckbox extends htmlElement {
 	protected $elementsToEnable = array();
 	/** list of input elements to disable when checked */
 	protected $elementsToDisable = array();
-	
-	
+
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name unique name
-	 * @param boolean $checked checked 
+	 * @param boolean $checked checked
 	 */
 	function __construct($name, $checked) {
 		$this->name = htmlspecialchars($name);
@@ -1804,7 +1804,7 @@ class htmlInputCheckbox extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -1921,13 +1921,13 @@ class htmlInputCheckbox extends htmlElement {
 
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
 	}
-	
+
 	/**
 	 * This will hide the given table rows when the checkbox is checked.
 	 * The given IDs can be of any e.g. input element. Starting from this element
@@ -1936,7 +1936,7 @@ class htmlInputCheckbox extends htmlElement {
 	 * <br>
 	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
 	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
-	 * 
+	 *
 	 * @param array $tableRowsToHide IDs of child elements to hide
 	 */
 	public function setTableRowsToHide($tableRowsToHide) {
@@ -1951,7 +1951,7 @@ class htmlInputCheckbox extends htmlElement {
 	 * <br>
 	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
 	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
-	 * 
+	 *
 	 * @param array $tableRowsToShow IDs of child elements to show
 	 */
 	public function setTableRowsToShow($tableRowsToShow) {
@@ -1960,7 +1960,7 @@ class htmlInputCheckbox extends htmlElement {
 
 	/**
 	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
-	 * 
+	 *
 	 * @param boolean $transient transient field
 	 */
 	public function setTransient($transient) {
@@ -1970,17 +1970,17 @@ class htmlInputCheckbox extends htmlElement {
 	/**
 	 * This will disable the given input elements when the checkbox is checked.
 	 * The given IDs can be of any input element (e.g. select, checkbox, ...).
-	 * 
+	 *
 	 * @param array $elements IDs of elements to disable
 	 */
 	public function setElementsToDisable($elements) {
 		$this->elementsToDisable = $elements;
 	}
-	
+
 	/**
 	 * This will enable the given input elements when the checkbox is checked.
 	 * The given IDs can be of any input element (e.g. select, checkbox, ...).
-	 * 
+	 *
 	 * @param array $elements IDs of elements to enable
 	 */
 	public function setElementsToEnable($elements) {
@@ -1991,7 +1991,7 @@ class htmlInputCheckbox extends htmlElement {
 
 /**
  * Checkbox with descriptive label and help link.
- * 
+ *
  * @package metaHTML
  */
 class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
@@ -2002,12 +2002,12 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 	private $helpID;
 	/** specifies if label is printed before the checkbox */
 	private $labelFirst;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name unique name
-	 * @param boolean $checked checked 
+	 * @param boolean $checked checked
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
 	 * @param boolean $labelFirst specifies if the label is at the beginning or at the end (optional, default beginning)
@@ -2021,7 +2021,7 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2054,24 +2054,24 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 		}
 		return $return;
 	}
-	
+
 }
 
 /**
  * Prints the HTML code for a file upload field.
- * 
+ *
  * @package metaHTML
  */
 class htmlInputFileUpload extends htmlElement {
-	
+
 	/** unique name of input element */
 	private $name;
 	/** enabled or disabled */
 	private $isEnabled = true;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name unique name
 	 */
 	function __construct($name) {
@@ -2080,7 +2080,7 @@ class htmlInputFileUpload extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2102,7 +2102,7 @@ class htmlInputFileUpload extends htmlElement {
 
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
@@ -2113,7 +2113,7 @@ class htmlInputFileUpload extends htmlElement {
 
 /**
  * File upload with descriptive label and help link.
- * 
+ *
  * @package metaHTML
  */
 class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
@@ -2122,10 +2122,10 @@ class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
 	private $label;
 	/** help ID */
 	private $helpID;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name unique name
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
@@ -2138,7 +2138,7 @@ class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2161,16 +2161,16 @@ class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
 		}
 		return $return;
 	}
-	
+
 }
 
 /**
  * Prints the HTML code for a textarea.
- * 
+ *
  * @package metaHTML
  */
 class htmlInputTextarea extends htmlElement {
-	
+
 	/** unique name of input element */
 	private $name;
 	/** value */
@@ -2183,12 +2183,12 @@ class htmlInputTextarea extends htmlElement {
 	private $isEnabled = true;
 	/** specifies if LAM should display this field whith a WYSIWYG editor */
 	private $richEdit = false;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name unique name
-	 * @param String $value value 
+	 * @param String $value value
 	 * @param int $colCount number of characters per line
 	 * @param int $rowCount number of rows
 	 */
@@ -2201,7 +2201,7 @@ class htmlInputTextarea extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2235,18 +2235,18 @@ class htmlInputTextarea extends htmlElement {
 
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
-	 * 
+	 *
 	 * @param boolean $isEnabled enabled if true
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
 	}
-	
+
 	/**
 	 * Specifies if the textarea should be displayed whith a WYSIWYG editor.
 	 * <br>This requires that the page which displays the textarea also includes the ckeditor JS.
 	 * <br>Rich editing is disabled by default.
-	 * 
+	 *
 	 * @param boolean $richEdit rich edit or standard
 	 */
 	public function setIsRichEdit($richEdit) {
@@ -2257,7 +2257,7 @@ class htmlInputTextarea extends htmlElement {
 
 /**
  * Text area with label and help link.
- * 
+ *
  * @package metaHTML
  */
 class htmlTableExtendedInputTextarea extends htmlInputTextarea {
@@ -2268,12 +2268,12 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	private $helpID;
 	/** required field */
 	private $required = false;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name unique name
-	 * @param String $value value 
+	 * @param String $value value
 	 * @param int $colCount number of characters per line
 	 * @param int $rowCount number of rows
 	 * @param String $label descriptive label
@@ -2288,7 +2288,7 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2316,10 +2316,10 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Specifies if this input field must be filled.
-	 * 
+	 *
 	 * @param boolean $required required or not
 	 */
 	public function setRequired($required) {
@@ -2330,11 +2330,11 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 
 /**
  * Prints the HTML code for an image.
- * 
+ *
  * @package metaHTML
  */
 class htmlImage extends htmlElement {
-	
+
 	/** path to image */
 	private $path;
 	/** width */
@@ -2343,12 +2343,12 @@ class htmlImage extends htmlElement {
 	private $height;
 	/** alt text */
 	private $alt;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $path image location
-	 * @param int $width image width (optional, default original size) 
+	 * @param int $width image width (optional, default original size)
 	 * @param int $height image height (optional, default original size)
 	 * @param String $alt alt text (optional)
 	 */
@@ -2361,7 +2361,7 @@ class htmlImage extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2397,12 +2397,12 @@ class htmlImage extends htmlElement {
  * @package metaHTML
  */
 class htmlSpacer extends htmlElement {
-	
+
 	/** width of spacer in px */
 	private $width;
 	/** height of spacer in px */
 	private $height;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -2413,10 +2413,10 @@ class htmlSpacer extends htmlElement {
 		$this->width = htmlspecialchars($width);
 		$this->height = htmlspecialchars($height);
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2437,7 +2437,7 @@ class htmlSpacer extends htmlElement {
 		echo "<div style=\"$width $height display: inline-block;\"></div>\n";
 		return array();
 	}
-	
+
 }
 
 /**
@@ -2446,7 +2446,7 @@ class htmlSpacer extends htmlElement {
  * @package metaHTML
  */
 class htmlStatusMessage extends htmlElement {
-	
+
 	/** message type (e.g. ERROR) */
 	private $type;
 	/** message title */
@@ -2455,7 +2455,7 @@ class htmlStatusMessage extends htmlElement {
 	private $text;
 	/** message parameters */
 	private $params;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -2470,10 +2470,10 @@ class htmlStatusMessage extends htmlElement {
 		$this->text = $text;
 		$this->params = $params;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2488,10 +2488,10 @@ class htmlStatusMessage extends htmlElement {
 	}
 
 }
-	
+
 /**
  * Generates a fieldset.
- * 
+ *
  * @package metaHTML
  */
 class htmlFieldset extends htmlElement {
@@ -2502,13 +2502,13 @@ class htmlFieldset extends htmlElement {
 	private $label = null;
 	/** label image */
 	private $labelImage = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param htmlElement $content content to display inside fieldset
 	 * @param String $label label
-	 * @param String $labelImage image to put before label 
+	 * @param String $labelImage image to put before label
 	 */
 	function __construct($content, $label = null, $labelImage = null) {
 		$this->content = $content;
@@ -2518,7 +2518,7 @@ class htmlFieldset extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2548,22 +2548,22 @@ class htmlFieldset extends htmlElement {
 		echo "</fieldset>\n";
 		return $return;
 	}
-	
+
 }
 
 /**
  * Generates a title line. This is used for page titles.
- * 
+ *
  * @package metaHTML
  */
 class htmlTitle extends htmlElement {
 
 	/** descriptive label */
 	private $label = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $label label
 	 */
 	function __construct($label) {
@@ -2574,7 +2574,7 @@ class htmlTitle extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2591,12 +2591,12 @@ class htmlTitle extends htmlElement {
 		echo "</div>\n";
 		return array();
 	}
-	
+
 }
 
 /**
  * Generates a subtitle line. This is used to group multiple fields.
- * 
+ *
  * @package metaHTML
  */
 class htmlSubTitle extends htmlElement {
@@ -2607,10 +2607,10 @@ class htmlSubTitle extends htmlElement {
 	private $image = null;
 	/** optional ID for this element (e.g. to use for JavaScript) */
 	private $id = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $label label
 	 * @param String $image optional image
 	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
@@ -2625,7 +2625,7 @@ class htmlSubTitle extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2649,12 +2649,12 @@ class htmlSubTitle extends htmlElement {
 		echo "</div>\n";
 		return array();
 	}
-	
+
 }
 
 /**
  * Generates a hidden input field.
- * 
+ *
  * @package metaHTML
  */
 class htmlHiddenInput extends htmlElement {
@@ -2663,10 +2663,10 @@ class htmlHiddenInput extends htmlElement {
 	private $name = null;
 	/** field value */
 	private $value = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $name input name
 	 * @param String $value input value
 	 */
@@ -2677,7 +2677,7 @@ class htmlHiddenInput extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2690,13 +2690,13 @@ class htmlHiddenInput extends htmlElement {
 		echo '<input type="hidden" name="' . $this->name . '" id="' . $this->name . '" value="' . $this->value . '">';
 		return array($this->name => 'hidden');
 	}
-	
+
 }
 
 /**
  * Generates a link.
  * The link can include an optional image in front of the link text.
- * 
+ *
  * @package metaHTML
  */
 class htmlLink extends htmlElement {
@@ -2715,10 +2715,10 @@ class htmlLink extends htmlElement {
 	private $onClick = null;
 	/** show as button */
 	private $showAsButton = false;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $text label
 	 * @param String $target target URL
 	 * @param String $image URL of optional image
@@ -2733,7 +2733,7 @@ class htmlLink extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2781,7 +2781,7 @@ class htmlLink extends htmlElement {
 
 	/**
 	 * Sets the link title.
-	 * 
+	 *
 	 * @param String $title title
 	 */
 	public function setTitle($title) {
@@ -2790,7 +2790,7 @@ class htmlLink extends htmlElement {
 
 	/**
 	 * Sets the target window (e.g. _blank).
-	 * 
+	 *
 	 * @param String $window target window (e.g. _blank)
 	 */
 	public function setTargetWindow($window) {
@@ -2799,30 +2799,30 @@ class htmlLink extends htmlElement {
 
 	/**
 	 * Sets the onClick event.
-	 * 
+	 *
 	 * @param String $event JavaScript code
 	 */
 	public function setOnClick($event) {
 		$this->onClick = htmlspecialchars($event);
 	}
-	
+
 }
 
 /**
  * Groups multiple htmlElements.
  * This is useful if multiple elements should be included in a single table cell.
  * The HTML code of the subelements is printed in the order they were added. No additional code is added.
- * 
+ *
  * @package metaHTML
  */
 class htmlGroup extends htmlElement {
 
 	/** link text */
 	private $subelements = array();
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2834,14 +2834,14 @@ class htmlGroup extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
 		for ($i = 0; $i < sizeof($this->subelements); $i++) {
-			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));	
+			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
 		return $return;
 	}
 
 	/**
 	 * Adds a subelement.
-	 * 
+	 *
 	 * @param htmlElement $sub subelement
 	 */
 	public function addElement($sub) {
@@ -2852,14 +2852,14 @@ class htmlGroup extends htmlElement {
 
 /**
  * Prints a horizontal line.
- * 
+ *
  * @package metaHTML
  */
 class htmlHorizontalLine extends htmlElement {
 
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2878,19 +2878,19 @@ class htmlHorizontalLine extends htmlElement {
 
 /**
  * Creates a simple DIV element.
- * 
+ *
  * @package metaHTML
  */
 class htmlDiv extends htmlElement {
-	
+
 	/** unique ID */
 	private $id = null;
 	/** htmlElement that generates inner content */
 	private $content = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $id unique ID
 	 * @param htmlElement $content inner content
 	 * @param array $classes CSS classes
@@ -2899,10 +2899,10 @@ class htmlDiv extends htmlElement {
 		$this->id = htmlspecialchars($id);
 		$this->content = $content;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2932,26 +2932,26 @@ class htmlDiv extends htmlElement {
 
 /**
  * Creates a JavaScript element.
- * 
+ *
  * @package metaHTML
  */
 class htmlJavaScript extends htmlElement {
-	
+
 	/** htmlElement that generates inner content */
 	private $content = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $content script
 	 */
 	function __construct($content) {
 		$this->content = $content;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -2967,22 +2967,22 @@ class htmlJavaScript extends htmlElement {
 		echo '</script>';
 		return $return;
 	}
-	
+
 }
 
 /**
  * Sets all given elements to the same width.
- * 
+ *
  * @package metaHTML
  */
 class htmlEqualWidth extends htmlElement {
-	
+
 	/** list of element IDs */
 	private $elements = array();
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param array $elements list of element IDs
 	 */
 	function __construct($elements) {
@@ -2990,10 +2990,10 @@ class htmlEqualWidth extends htmlElement {
 			$this->elements[] = htmlspecialchars($element);
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -3019,22 +3019,22 @@ class htmlEqualWidth extends htmlElement {
 		echo '</script>';
 		return $return;
 	}
-	
+
 }
 
 /**
  * Sets all given elements to the same height.
- * 
+ *
  * @package metaHTML
  */
 class htmlEqualHeight extends htmlElement {
-	
+
 	/** list of element IDs */
 	private $elements = array();
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param array $elements list of element IDs
 	 */
 	function __construct($elements) {
@@ -3042,10 +3042,10 @@ class htmlEqualHeight extends htmlElement {
 			$this->elements[] = htmlspecialchars($element);
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -3071,16 +3071,16 @@ class htmlEqualHeight extends htmlElement {
 		echo '</script>';
 		return $return;
 	}
-	
+
 }
 
 /**
  * Creates a list of elements that can be sorted by the user via drag'n'drop.
- * 
+ *
  * @package metaHTML
  */
 class htmlSortableList extends htmlElement {
-	
+
 	/** list of elements */
 	private $elements = array();
 	/** HTML ID */
@@ -3089,10 +3089,10 @@ class htmlSortableList extends htmlElement {
 	private $elementWidth = '';
 	/** on update event */
 	private $onUpdate = null;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param array $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
 	 * @param String HTML ID
 	 * @param String $elementWidth width of elements (default 250px)
@@ -3102,10 +3102,10 @@ class htmlSortableList extends htmlElement {
 		$this->id = htmlspecialchars($id);
 		$this->elementWidth = $elementWidth;
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -3150,12 +3150,12 @@ class htmlSortableList extends htmlElement {
 		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the JS code that is executed when the element order was changed.
 	 * The code can access the variables event and ui. See JQueryUI docs for details.
 	 * ui.item.data('posOrig') will contain the original position of the moved element.
-	 * 
+	 *
 	 * @param String $onUpdate JS code
 	 */
 	public function setOnUpdate($onUpdate) {
@@ -3174,10 +3174,10 @@ class htmlAccordion extends htmlElement {
 	private $elements = null;
 	private $openInitial = '1';
 	private $collapsible = false;
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param String $id HTML ID
 	 * @param array $elements list of content elements array('title' => htmlElement)
 	 * @param String $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
@@ -3194,10 +3194,10 @@ class htmlAccordion extends htmlElement {
 			$this->collapsible = $collapsible;
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML code for this element.
-	 * 
+	 *
 	 * @param string $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
@@ -3235,7 +3235,108 @@ class htmlAccordion extends htmlElement {
 		return $result;
 	}
 
-	
 }
+
+/**
+ * Responsive row with 12 column layout.
+ */
+class htmlResponsiveRow extends htmlElement {
+
+	private $cells = array();
+
+	/**
+	 * Adds a responsive cell to the row.
+	 *
+	 * @param htmlResponsiveCell $cell cell
+	 */
+	public function addCell($cell) {
+		$this->cells[] = $cell;
+	}
+
+	/**
+	 * Adds a cell with the given content and column counts.
+	 *
+	 * @param htmlElement $content content inside cell
+	 * @param int $numMobile number of columns for mobile view
+	 * @param int $numTablet number of columns for tablet view
+	 * @param int $numDesktop number of columns for desktop view
+	 * @param String $classes CSS classes separated by space
+	 */
+	public function add($content, $numMobile, $numTablet, $numDesktop, $classes = '') {
+		$this->addCell(new htmlResponsiveCell($content, $numMobile, $numTablet, $numDesktop, $classes));
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		echo '<div class="row">';
+		foreach ($this->cells as $cell) {
+			$cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		echo '</div>';
+	}
+
+}
+
+/**
+ * Responsive cell inside htmlResponsiveRow with 12 column layout.
+ */
+class htmlResponsiveCell extends htmlElement {
+
+	private $content = null;
+	private $mobile = null;
+	private $tablet = null;
+	private $desktop = null;
+	private $classes = '';
+
+	/**
+	 * Constructs a cell inside a responsive row with 12 columns.
+	 *
+	 * @param htmlElement $content content inside cell
+	 * @param int $numMobile number of columns for mobile view
+	 * @param int $numTablet number of columns for tablet view
+	 * @param int $numDesktop number of columns for desktop view
+	 * @param String $classes CSS classes separated by space
+	 */
+	public function __construct($content, $numMobile, $numTablet, $numDesktop, $classes = '') {
+		$this->content = $content;
+		$this->mobile = $numMobile;
+		$this->tablet = $numTablet;
+		$this->desktop = $numDesktop;
+		$this->classes = $classes;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$clMobile = ($this->mobile > 0) ? 'small-' . $this->mobile : 'hide-for-small-only';
+		$clTablet = ($this->tablet > 0) ? 'medium-' . $this->tablet : 'hide-for-medium-only';
+		$clDesktop = ($this->desktop > 0) ? 'large-' . $this->desktop : 'hide-for-large-only';
+
+		echo '<div class="' . $clMobile . ' ' . $clTablet . ' ' . $clDesktop . ' columns ' . $this->classes . '">';
+		$this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		echo '</div>';
+	}
+
+}
+
 
 ?>

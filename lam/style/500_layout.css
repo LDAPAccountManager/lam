@@ -291,6 +291,23 @@ td.loginLogo {
 	width: 65px;
 }
 
+div.roundedShadowBox {
+	border:2px solid #a0a0a4;
+	border-radius:5px;
+	box-shadow: 2px 2px 5px #a0a0a4;
+	margin: 10px;
+	display: inline-block;
+	background-color: white;
+	padding: 20px;
+	max-width: 575px;
+}
+
+div.centeredTable {
+	display: table;
+	width: 100%;
+	text-align: center;
+}
+
 a.lamLogo {
 	background-image: url(../graphics/logo24.png);
 	background-repeat: no-repeat;
@@ -633,3 +650,42 @@ h4.schema_oclass_sub {
 .oracleContextType-bright { background:#b6eeff !important; }
 .oracleContextType-dark { background-color:#80e0e1 !important; }
 
+/** responsive styles */
+/* mobile */
+@media only screen and (max-width: 40.0625em) {
+
+.mobile-align-left {
+	text-align: left;
+}
+
+.mobile-align-right {
+	text-align: right;
+}
+
+}
+
+/* tablet */
+@media only screen and (min-width: 40.0625em) and (max-width: 64.0625em) {
+
+.tablet-align-left,.tabletPlus-align-left {
+	text-align: left;
+}
+
+.tablet-align-right,.tabletPlus-align-right {
+	text-align: right;
+}
+
+}
+
+/* desktop */
+@media only screen and (min-width: 64.0625em) {
+
+.desktop-align-left,.tabletPlus-align-left {
+	text-align: left;
+}
+
+.desktop-align-right,.tabletPlus-align-right {
+	text-align: right;
+}
+
+}
