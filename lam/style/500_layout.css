@@ -37,6 +37,7 @@ h1,h2,h3 { color:black; }
 
 body {
   background-color:#F5F5F5;
+  padding: 10px;
 }
 
 .defaultBackground {
@@ -113,6 +114,10 @@ input {
 
 .margin2 {
 	margin: 2px;
+}
+
+.margin5 {
+	margin: 5px;
 }
 
 .align-middle {
@@ -295,7 +300,6 @@ div.roundedShadowBox {
 	border:2px solid #a0a0a4;
 	border-radius:5px;
 	box-shadow: 2px 2px 5px #a0a0a4;
-	margin: 10px;
 	display: inline-block;
 	background-color: white;
 	padding: 20px;
@@ -651,6 +655,11 @@ h4.schema_oclass_sub {
 .oracleContextType-dark { background-color:#80e0e1 !important; }
 
 /** responsive styles */
+
+div.dialog-page {
+	max-width: 45em;
+}
+
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
 
