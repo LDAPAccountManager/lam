@@ -23,7 +23,7 @@ $Id$
 
 /**
  * LDAP Account Manager status messages.
- * 
+ *
  * @author Michael Duergner
  * @package lib
  */
@@ -37,12 +37,12 @@ $Id$
  * <br><b>{bold}, {endbold}:</b> All text between these tags is printed bold.
  * <br><b>{color=#123456}, {endcolor}:</b> All text between these tags is printed in the given color.
  * <br><b>{link=http://nodomain.org}, {endlink}:</b> A link with the given target is created. The link text is the text between the tags.
- * 
+ *
  * @param string $MessageTyp The type of the message to be printed. It must be one of
  * the following types: 'INFO', 'WARN' or 'ERROR'.
  * <br> Every other type will lead to an error message indicating an invalid message type.
  * @param string $MessageHeadline The headline of the status message.
- * <br> It may be formatted with special color/link/bold tags. 
+ * <br> It may be formatted with special color/link/bold tags.
  * @param string $MessageText The text of the status message.
  * <br> It may be formatted with special color/link/bold tags. This parameter is optional.
  * @param array $MessageVariables The variables that are used to replace the spacers (%s) in the
@@ -73,10 +73,10 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 	$MessageText = parseMessageString($MessageText);
 
 	if (is_file("../graphics/error.png")) {
-		$MessageTyp = "&nbsp;&nbsp;<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"24\" height=\"24\">";
+		$MessageTyp = "<img class=\"margin5\" src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"24\" height=\"24\">";
 	}
 	else {
-		$MessageTyp = "&nbsp;&nbsp;<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"24\" height=\"24\">";
+		$MessageTyp = "<img class=\"margin5\" src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"24\" height=\"24\">";
 	}
 
 	$MessageHeadline = "<div class=\"statusTitle\">" . $MessageHeadline . "</div>"; // Format $MessageHeadline
@@ -108,11 +108,11 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 
 /**
  * Use the three replace functions on the submitted Text.
- * 
+ *
  * @access private
- * 
+ *
  * @param string $MessageString The text that is used to search for replaceable strings.
- * 
+ *
  * @return string The processed text.
  */
 function parseMessageString($MessageString) {
@@ -121,13 +121,13 @@ function parseMessageString($MessageString) {
 
 /**
  * Replace {bold} and {endbold} with <b> and </b> HTML-Tags.
-  * 
+  *
  * @access private
- * 
+ *
  * @param string $text The text that is used to search for {bold} and {endbold} tags.
- * 
+ *
  * @return string The submitted text with {bold} and {endbold} replaced with
- * the appropriate HTML tages <b> and </b> 
+ * the appropriate HTML tages <b> and </b>
  */
 function boldText($text) {
 	$pattern = "/\\{bold\\}([^{]*)\\{endbold\\}/"; // Regular expression matching {bold}[Text]{endbold}
@@ -137,11 +137,11 @@ function boldText($text) {
 
 /**
  * Replace {color=#[HEX-Value]} or {color=[HEX-Value]} and {endcolor} with <font color="#[HEX-Value]"> and </font> HTML-Tags.
- * 
+ *
  * @access private
- * 
+ *
  * @param string $text The text that is used to search for {color} and {endcolor} tags.
- * 
+ *
  * @return string Input string with HTML-formatted color tags
  */
 function colorText($text) {
@@ -152,11 +152,11 @@ function colorText($text) {
 
 /**
  * Replace {link=[Link-Target]} and {endlink} with <a href="[Link-Target]" target="_blank"> and </a> HTML-Tags.
- * 
+ *
  * @access private
- * 
+ *
  * @param string $text The text that is used to search for {link} and {endlink} tags.
- * 
+ *
  * @return string Input string with HTML-formatted link tags
  */
 function linkText($text) {
