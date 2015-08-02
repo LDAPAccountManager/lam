@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ echo $_SESSION['header'];
 				echo _("Login");
 			?>
 		</title>
-	<?php 
+	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
 		$cssDir = dir($cssDirName);
@@ -122,7 +122,7 @@ echo $_SESSION['header'];
 		<!-- form to change existing profiles -->
 		<form action="confmain.php" method="post" autocomplete="off">
 		<table align="center"><tr><td>
-		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all">
+		<table align="center" border="0" rules="none" bgcolor="white" class="ui-corner-all roundedShadowBox">
 			<tr>
 				<td style="border-style:none" rowspan="3" width="20"></td>
 				<td style="border-style:none" height="20"></td>

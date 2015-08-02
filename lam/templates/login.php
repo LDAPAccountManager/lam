@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2014  Roland Gruber
+                2005 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -169,7 +169,7 @@ function display_LoginPage($config_object, $cfgMain) {
 		setcookie("Key", base64_encode($key), 0, "/");
 		setcookie("IV", base64_encode($iv), 0, "/");
 	}
-	
+
 	$profiles = getConfigProfiles();
 
 	setlanguage(); // setting correct language
@@ -177,7 +177,7 @@ function display_LoginPage($config_object, $cfgMain) {
 	echo $_SESSION["header"];
 	?>
 		<title>LDAP Account Manager</title>
-	<?php 
+	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../style';
 		$cssDir = dir($cssDirName);
@@ -210,7 +210,7 @@ function display_LoginPage($config_object, $cfgMain) {
 	foreach ($jsFiles as $jsEntry) {
 		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
 	}
-	
+
 	// upgrade if pdf/profiles contain single files
 	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
 		$result = testPermissions();
@@ -224,7 +224,7 @@ function display_LoginPage($config_object, $cfgMain) {
 	}
 	// copy any missing default profiles
 	copyConfigTemplates($profiles);
-	
+
 	// set focus on password field
 	if (!empty($config_object)) {
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
@@ -266,7 +266,7 @@ function display_LoginPage($config_object, $cfgMain) {
 			</td>
 			</tr>
 		</table>
-		
+
 		<br><br>
 
 		<?php
@@ -318,15 +318,16 @@ function display_LoginPage($config_object, $cfgMain) {
 		if (!empty($config_object)) {
 		?>
 		<br><br>
-		<div style="position:relative; z-index:5;">
-		<table align="center" border="2" rules="none" bgcolor="white" class="ui-corner-all">
+		<div class="centeredTable">
+		<div class="roundedShadowBox" style="position:relative; z-index:5;">
+		<table align="center" border="0" rules="none" bgcolor="white" class="ui-corner-all">
 			<tr>
 				<td class="loginLogo" style="border-style:none" rowspan="2">
 				</td>
-				<td style="border-style:none" width="580px">
+				<td style="border-style:none">
 					<form action="login.php" method="post">
 						<?php
-							$table = new htmlTable('580px');
+							$table = new htmlTable('500px');
 							$spacer = new htmlSpacer(null, '30px');
 							$spacer->colspan = 3;
 							$table->addElement($spacer, true);
@@ -439,7 +440,7 @@ function display_LoginPage($config_object, $cfgMain) {
 								$message->colspan = 3;
 								$table->addElement($message, true);
 							}
-							
+
 							$tabindex = 1;
 							parseHtml(null, $table, array(), false, $tabindex, 'user');
 						?>
@@ -450,7 +451,7 @@ function display_LoginPage($config_object, $cfgMain) {
 				<td align="left" style="border-style:none">
 					<form action="login.php" method="post">
 					<?php
-						$table = new htmlTable('580px');
+						$table = new htmlTable();
 						$line = new htmlHorizontalLine();
 						$line->colspan = 2;
 						$table->addElement($line, true);
@@ -482,6 +483,7 @@ function display_LoginPage($config_object, $cfgMain) {
 				</td>
 			</tr>
 		</table>
+		</div>
 		</div>
 		<?php
 		}
@@ -522,7 +524,7 @@ if(!empty($_POST['checklogin'])) {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
-	
+
 	$clientSource = $_SERVER['REMOTE_ADDR'];
 	if (isset($_SERVER['REMOTE_HOST'])) {
 		$clientSource .= '/' . $_SERVER['REMOTE_HOST'];

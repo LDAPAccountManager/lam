@@ -37,6 +37,9 @@ h1,h2,h3 { color:black; }
 
 body {
   background-color:#F5F5F5;
+}
+
+body.selfservice {
   padding: 10px;
 }
 
@@ -81,9 +84,9 @@ a.classicBold {
 }
 
 fieldset {
-background-color:#fff3c8;
-border:1px solid #af8800;
-padding:10px;
+  background-color:#fff3c8;
+  border:1px solid #af8800;
+  padding:10px;
 }
 
 div.filled {
@@ -127,8 +130,8 @@ input {
 table.lamHeader {
   background-image: url(lam-images/headerLine.png);
   padding: 0px;
-  margin: 0px;
   height: 35px;
+  margin: 0px;
 }
 
 /* table preferences */
@@ -296,14 +299,14 @@ td.loginLogo {
 	width: 65px;
 }
 
-div.roundedShadowBox {
-	border:2px solid #a0a0a4;
-	border-radius:5px;
+.roundedShadowBox {
+	border: 2px solid #a0a0a4;
+	border-radius: 5px;
 	box-shadow: 2px 2px 5px #a0a0a4;
 	display: inline-block;
 	background-color: white;
 	padding: 20px;
-	max-width: 575px;
+	max-width: 580px;
 }
 
 div.centeredTable {
