@@ -2343,6 +2343,8 @@ class htmlImage extends htmlElement {
 	private $height;
 	/** alt text */
 	private $alt;
+	/** title */
+	private $title;
 
 	/**
 	 * Constructor.
@@ -2352,11 +2354,12 @@ class htmlImage extends htmlElement {
 	 * @param int $height image height (optional, default original size)
 	 * @param String $alt alt text (optional)
 	 */
-	function __construct($path, $width = null, $height = null, $alt = ' ') {
+	function __construct($path, $width = null, $height = null, $alt = ' ', $title = null) {
 		$this->path = htmlspecialchars($path);
 		$this->width = $width;
 		$this->height = $height;
 		$this->alt = htmlspecialchars($alt);
+		$this->title = $title;
 	}
 
 	/**
@@ -2381,11 +2384,15 @@ class htmlImage extends htmlElement {
 			$height = ' height="' . $this->height . '"';
 		}
 		$alt = ' alt="' . $this->alt . '"';
+		$title = '';
+		if (!empty($this->title)) {
+			$title = ' title="' . $this->title . '"';
+		}
 		$classes = '';
 		if (!empty($this->cssClasses)) {
 			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<img' . $path . $width . $height . $alt . $classes . ">\n";
+		echo '<img' . $path . $width . $height . $alt . $title . $classes . ">\n";
 		return array();
 	}
 
@@ -3258,12 +3265,14 @@ class htmlResponsiveRow extends htmlElement {
 	 *
 	 * @param htmlElement $content content inside cell
 	 * @param int $numMobile number of columns for mobile view
-	 * @param int $numTablet number of columns for tablet view
-	 * @param int $numDesktop number of columns for desktop view
+	 * @param int $numTablet number of columns for tablet view (set to mobile if null)
+	 * @param int $numDesktop number of columns for desktop view (set to tablet if null)
 	 * @param String $classes CSS classes separated by space
 	 */
-	public function add($content, $numMobile, $numTablet, $numDesktop, $classes = '') {
-		$this->addCell(new htmlResponsiveCell($content, $numMobile, $numTablet, $numDesktop, $classes));
+	public function add($content, $numMobile, $numTablet = null, $numDesktop = null, $classes = '') {
+		$tabletCols = ($numTablet == null) ? $numMobile : $numTablet;
+		$desktopCols = ($numDesktop == null) ? $tabletCols : $numDesktop;
+		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $tabletCols, $classes));
 	}
 
 	/**
@@ -3278,11 +3287,13 @@ class htmlResponsiveRow extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
 		echo '<div class="row">';
 		foreach ($this->cells as $cell) {
-			$cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
 		echo '</div>';
+		return $return;
 	}
 
 }
@@ -3332,8 +3343,76 @@ class htmlResponsiveCell extends htmlElement {
 		$clDesktop = ($this->desktop > 0) ? 'large-' . $this->desktop : 'hide-for-large-only';
 
 		echo '<div class="' . $clMobile . ' ' . $clTablet . ' ' . $clDesktop . ' columns ' . $this->classes . '">';
-		$this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		echo '</div>';
+		return $return;
+	}
+
+}
+
+/**
+ * A responsive input field that combines label, input field and help.
+ *
+ * @package metaHTML
+ */
+class htmlResponsiveInputField extends htmlInputField {
+
+	/** Descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** generate HTML of parent class */
+	private $generateParent = false;
+
+	/**
+	 * Constructor
+	 *
+	 * @param String $label descriptive label
+	 * @param String $fieldName unique field name
+	 * @param String $fieldValue value of input field (optional)
+	 * @param String $helpID help ID (optional)
+	 */
+	function __construct($label, $fieldName, $fieldValue = null, $helpID = null) {
+		parent::__construct($fieldName, $fieldValue);
+		$this->label = $label;
+		$this->helpID = $helpID;
+		$this->fieldSize = null;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->generateParent) {
+			return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		$this->generateParent = true;
+		$row = new htmlResponsiveRow();
+		// label text
+		$labelGroup = new htmlGroup();
+		$labelGroup->addElement(new htmlOutputText($this->label));
+		if ($this->required) {
+			$graphicsPath = "../../graphics";
+			if (is_dir("../graphics")) $graphicsPath = "../graphics";
+			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
+		}
+		$row->add($labelGroup, 12, 6, 6, 'tabletPlus-align-right mobile-align-left');
+		// input field
+		$fieldGroup = new htmlGroup();
+		$fieldGroup->addElement($this);
+		if (!empty($this->helpID)) {
+			$fieldGroup->addElement(new htmlHelpLink($this->helpID));
+		}
+		$row->add($fieldGroup, 12, 6, 6, 'tabletPlus-align-left');
+		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
 }
