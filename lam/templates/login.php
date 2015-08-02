@@ -451,7 +451,7 @@ function display_LoginPage($config_object, $cfgMain) {
 				<td align="left" style="border-style:none">
 					<form action="login.php" method="post">
 					<?php
-						$table = new htmlTable();
+						$table = new htmlTable('500px');
 						$line = new htmlHorizontalLine();
 						$line->colspan = 2;
 						$table->addElement($line, true);
