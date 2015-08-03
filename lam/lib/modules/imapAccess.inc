@@ -202,12 +202,11 @@ class imapAccess extends baseModule {
 		$this->email = '';
 		if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			$this->email = $attrs['mail'][0];
 		}
 		else {
 			$attrs = $this->getAccountContainer()->getAccountModule('windowsUser')->getAttributes();
-			$this->email = $attrs['mail'][0];
 		}
+		$this->email = !empty($attrs['mail'][0]) ? $attrs['mail'][0] : '';
 		$this->user = '';
 		// extract user name from email address
 		if (empty($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
@@ -215,8 +214,10 @@ class imapAccess extends baseModule {
 			$this->user = array_shift($email_parts);
 		}
 		elseif ($this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'userPrincipalName') {
-			$parts = explode('@', $attrs['userPrincipalName'][0], 2);
-			$this->user = array_shift($parts);
+			if (!empty($attrs['userPrincipalName'][0])) {
+				$parts = explode('@', $attrs['userPrincipalName'][0], 2);
+				$this->user = array_shift($parts);
+			}
 		}
 		// extract user name from Unix user name (might be in inetOrgPerson/windowUser or posixAccount module)
 		else {
@@ -230,7 +231,7 @@ class imapAccess extends baseModule {
 		}
 
 		if (empty($this->email)) {
-			$modName = ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) ? 'inetOrgPerson' : 'windowUser';
+			$modName = ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) ? 'inetOrgPerson' : 'windowsUser';
 			return new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule($modName)->get_alias()));
 		}
 	}
