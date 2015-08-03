@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2014  Roland Gruber
+                2010 - 2015  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,13 +37,18 @@ $Id$
  * @author Roland Gruber
  */
 class imapAccess extends baseModule {
-	
+
 	/** quota limit from profile */
 	private $profileQuotaLimit = null;
-	
+
+	/** user name */
+	private $user;
+	/** email address */
+	private $email;
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -54,7 +59,7 @@ class imapAccess extends baseModule {
 	 * Returns meta data that is interpreted by parent class
 	 *
 	 * @return array array with meta data
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	function get_metaData() {
@@ -62,7 +67,7 @@ class imapAccess extends baseModule {
 		// alias name
 		$return["alias"] = _("Mailbox");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'windowsUser')), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array();
 		// managed attributes
@@ -141,7 +146,7 @@ class imapAccess extends baseModule {
 		$mailDomainsInput->setRequired(true);
 		$configContainer->addElement($mailDomainsInput, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
-		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
+		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid', 'userPrincipalName'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
 		$configContainer->addElement($configUserName, true);
 		$configPathSeparator = new htmlTableExtendedSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
 		$configContainer->addElement($configPathSeparator, true);
@@ -161,7 +166,7 @@ class imapAccess extends baseModule {
 			'error_message' => $this->messages['config'][1]);
 		// profile options
 		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), true);		
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), true);
 		$return['profile_options'] = $profileContainer;
 		$return['profile_checks']['ImapAccess_QuotaLimit'] = array(
 			'type' => 'ext_preg',
@@ -189,6 +194,48 @@ class imapAccess extends baseModule {
 	}
 
 	/**
+	 * Extracts user name and email address from inetOrgPerson/posixAccount/windowsUser modules.
+	 *
+	 * @return htmlStatusMessage message if any
+	 */
+	private function extractUserAndEmail() {
+		$this->email = '';
+		if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			$this->email = $attrs['mail'][0];
+		}
+		else {
+			$attrs = $this->getAccountContainer()->getAccountModule('windowsUser')->getAttributes();
+			$this->email = $attrs['mail'][0];
+		}
+		$this->user = '';
+		// extract user name from email address
+		if (empty($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
+			$email_parts = explode('@', $this->email, 2);
+			$this->user = array_shift($email_parts);
+		}
+		elseif ($this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'userPrincipalName') {
+			$parts = explode('@', $attrs['userPrincipalName'][0], 2);
+			$this->user = array_shift($parts);
+		}
+		// extract user name from Unix user name (might be in inetOrgPerson/windowUser or posixAccount module)
+		else {
+			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+				$attrsUnix = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
+				$this->user = !empty($attrsUnix['uid'][0]) ? $attrsUnix['uid'][0] : '';
+			}
+			else {
+				$this->user = !empty($attrs['uid'][0]) ? $attrs['uid'][0] : '';
+			}
+		}
+
+		if (empty($this->email)) {
+			$modName = ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) ? 'inetOrgPerson' : 'windowUser';
+			return new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule($modName)->get_alias()));
+		}
+	}
+
+	/**
 	 * Returns the HTML meta data for the main account page.
 	 *
 	 * @return array HTML meta data
@@ -198,39 +245,21 @@ class imapAccess extends baseModule {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $return;
 		}
-		$prefix = $this->getMailboxPrefix();
-		
-		$email = '';
-		$attrsPersonal = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-		$email = $attrsPersonal['mail'][0];
-		
-		if ($email == '') {
-			$return->addElement(new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias())));
+		$msg = $this->extractUserAndEmail();
+		if ($msg != null) {
+			$return->addElement($msg);
 			return $return;
 		}
-		$email_domain = substr(strstr($email, '@'), 1);
-		// extract user name from email address
-		if (!isset($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
-			$email_parts = explode('@', $email, 2);
-			$email_username = array_shift($email_parts);
-		}
-		// extract user name from Unix user name (might be in inetOrgPerson or posixAccount module)
-		else {
-			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-				$attrsUnix = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-				$email_username = $attrsUnix['uid'][0];
-			}
-			else {
-				$email_username = $attrsPersonal['uid'][0];
-			}
-		}
+		$prefix = $this->getMailboxPrefix();
+
+		$email_domain = substr(strstr($this->email, '@'), 1);
 		$imap_admin_password = $this->getAdminPassword(); // check for password for fall back mechanism
 		if (!isset($_SESSION['imapAdmPass']) && !isset($imap_admin_password)) {
 			return $this->display_html_password();
 		}
-		
+
 		$return->addElement(new htmlOutputText(_('Email address')));
-		$return->addElement(new htmlOutputText($email), true);
+		$return->addElement(new htmlOutputText($this->email), true);
 
 		$imap_server_address = $this->getServerAddress();
 		$imap_admin_user = $this->getAdminUser();
@@ -239,16 +268,16 @@ class imapAccess extends baseModule {
 		if (!$mbox) {
 			return $this->display_html_password();
 		}
-		
+
 		$return->addElement(new htmlOutputText(_('Mailbox')));
-		$return->addElement(new htmlOutputText($prefix . $this->getSep() . $email_username));
+		$return->addElement(new htmlOutputText($prefix . $this->getSep() . $this->user));
 		$return->addElement(new htmlHelpLink('MailAddress'), true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
-		
+
 		$is_mailbox_exist = false; //default is false
-		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $email_username);
+		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
 		if (is_array($list) && sizeof($list) == 1) {
-			$this->renderQuotasForMailbox($return, $mbox, $prefix . $this->getSep() . $email_username);
+			$this->renderQuotasForMailbox($return, $mbox, $prefix . $this->getSep() . $this->user);
 			$mailboxMessage = new htmlOutputText(_("Mailbox already exists on IMAP server."));
 			$mailboxMessage->colspan = 3;
 			$return->addElement($mailboxMessage, true);
@@ -299,7 +328,7 @@ class imapAccess extends baseModule {
 
 	/**
 	 * Display the mailbox quota.
-	 * 
+	 *
 	 * @param htmlTable $htmlTable structure that contained information to be displayed
 	 * @param stream $mbox stream to open IMAP session
 	 * @param String $username user name to connect to IMAP server
@@ -347,65 +376,49 @@ class imapAccess extends baseModule {
 			return $errors;
 		}
 		$prefix = $this->getMailboxPrefix();
-		
+
 		$imap_server_address = $this->getServerAddress();
 		$imap_admin_user = $this->getAdminUser();
-		
+
 		if (isset($_POST['ImapAdminPassword']) && isset($_POST['enterPasswordButton'])) {
 			$errors = $this->doLogin();
 		}
-		
+
 		$imap_admin_password = $this->getAdminPassword();
 		$mbox = 0;//default state is false
-                if ($imap_admin_password) {
+		if ($imap_admin_password) {
 			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 		}
 		if ($mbox) {
-			$attrsPersonal = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			$email = $attrsPersonal['mail'][0];
-			$email_domain = substr(strstr($email, '@'), 1);
-			// extract user name from email address
-			if (!isset($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
-				$email_parts = explode('@', $email, 2);
-				$email_username = array_shift($email_parts);
-			}
-			// extract user name from Unix user name (might be in inetOrgPerson or posixAccount module)
-			else {
-				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-					$attrsUnix = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-					$email_username = $attrsUnix['uid'][0];
-				}
-				else {
-					$email_username = $attrsPersonal['uid'][0];
-				}
-			}
-			
+			$this->extractUserAndEmail();
+			$email_domain = substr(strstr($this->email, '@'), 1);
+
 			if (isset($_POST['deleteMailbox'])) {
 				if ($this->isWrongDomain($email_domain)) {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					if (!imap_setacl($mbox, $prefix . $this->getSep() . $email_username, $imap_admin_user, "c")) {
+					if (!imap_setacl($mbox, $prefix . $this->getSep() . $this->user, $imap_admin_user, "c")) {
 						$errors[] = $this->messages['managemailbox'][0];
 					}
-					
-					$delete_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $email_username;
+
+					$delete_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $this->user;
 					if (!@imap_deletemailbox($mbox, $delete_mailbox_arg)) {
 						$errors[] = $this->messages['managemailbox'][1];
 					}
 				}
 			}
-			
+
 			if (isset($_POST['createMailbox'])) {
 				if ($this->isWrongDomain($email_domain)) {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $email_username;
+					$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $this->user;
 					if (imap_createmailbox($mbox, imap_utf7_encode($create_mailbox_arg))) {
-						$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $email_username);
+						$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
 						if (is_array($list) && sizeof($list) == 1) {
-						
+
 						}
 						else {
 							$errors[] = $this->messages['managemailbox'][3];
@@ -430,7 +443,7 @@ class imapAccess extends baseModule {
 						}*/
 					}
 					elseif (isset($_POST['ImapUserQuotaLimit']) && ($_POST['ImapUserQuotaLimit'] != '') && get_preg($_POST['ImapUserQuotaLimit'], 'digit')){
-						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, $_POST['ImapUserQuotaLimit'])) {
+						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $this->user, $_POST['ImapUserQuotaLimit'])) {
 							$message = $this->messages['managemailbox'][7];
 							$message[] = imap_last_error();
 							$errors[] = $message;
@@ -456,13 +469,13 @@ class imapAccess extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		if (isset($profile['ImapAccess_QuotaLimit'][0]) && $profile['ImapAccess_QuotaLimit'][0] != '') {
-			$this->profileQuotaLimit =  $profile['ImapAccess_QuotaLimit'][0];                
-		}            
+			$this->profileQuotaLimit =  $profile['ImapAccess_QuotaLimit'][0];
+		}
 	}
-	
+
 	/**
 	* Checks input values of module settings.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
@@ -471,7 +484,7 @@ class imapAccess extends baseModule {
 	* @param array $scopes list of account types which are used
 	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	* @return array list of error messages
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function check_configOptions($scopes, &$options) {
@@ -483,10 +496,10 @@ class imapAccess extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns the user name of the IMAP admin.
-	 * 
+	 *
 	 * @return String admin user name
 	 */
 	private function getAdminUser() {
@@ -530,7 +543,7 @@ class imapAccess extends baseModule {
 		$_SESSION['imapAdmUser'] = $user;
 		return $user;
 	}
-	
+
 	/**
 	 * Returns the admin password.
 	 *
@@ -555,7 +568,7 @@ class imapAccess extends baseModule {
 
 	/**
      * Checks the password given by user and save it as session parameter.
-     * 
+     *
      * @return array list of error messages
      */
 	function doLogin() {
@@ -580,7 +593,7 @@ class imapAccess extends baseModule {
 
 	/**
 	 * This function returns the IMAP server address including encryption options.
-	 * 
+	 *
 	 * @return String server address
 	 */
 	function getServerAddress() {
@@ -611,7 +624,7 @@ class imapAccess extends baseModule {
 	/**
 	 * This function returns the prefix for mailboxes.
 	 * If no prefix was given during configuration then "user" will be used (default for Cyrus).
-	 * 
+	 *
 	 * @return String prefix
 	 */
 	function getMailboxPrefix() {
@@ -626,7 +639,7 @@ class imapAccess extends baseModule {
 	/**
 	 * This function checks if the domain of the mailbox is not in the list of domains listed in the configuration.
 	 * If it is in the list then it returns false, otherwise returns true. If the list of domains is not set then it returns true.
-	 * 
+	 *
 	 * @param String $email_domain email domain
 	 * @return boolean true if domains match
 	 */
@@ -646,10 +659,10 @@ class imapAccess extends baseModule {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Returns the path separator.
-	 * 
+	 *
 	 * @return String separator char
 	 */
 	private function getSep() {
