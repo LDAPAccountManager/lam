@@ -1,4 +1,5 @@
 September 2015 5.1
+  - IMAP: support Windows users
   - SSH public key: check uploaded files if in right format
   - LAM Pro:
    -> MySQL support for cron jobs
