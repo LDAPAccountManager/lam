@@ -1412,9 +1412,10 @@ abstract class baseModule {
 		if (!$isTextArea && !in_array($name, $readOnlyFields)) {
 			$field = new htmlInputField(get_class($this) . '_' . $name, $value);
 			$field->setRequired($required);
+			$field->setFieldSize(null);
 		}
 		elseif ($isTextArea && !in_array($name, $readOnlyFields)) {
-			$field = new htmlInputTextarea(get_class($this) . '_' . $name, $value, 30, 3);
+			$field = new htmlInputTextarea(get_class($this) . '_' . $name, $value, null, null);
 		}
 		else {
 			if (!$isTextArea) {
@@ -1426,9 +1427,10 @@ abstract class baseModule {
 				$field = new htmlOutputText($value, false);
 			}
 		}
-		$container[$name] = new htmlTableRow(array(
-			new htmlOutputText($this->getSelfServiceLabel($name, $label)), $field
-		));
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlOutputText($this->getSelfServiceLabel($name, $label)), 12, 6, 6, 'tabletPlus-align-right mobile-align-left');
+		$row->add($field, 12, 6, 6, 'tabletPlus-align-left');
+		$container[$name] = $row;
 	}
 
 	/**
@@ -1610,7 +1612,7 @@ abstract class baseModule {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 *
 	 * @see htmlElement
 	 */

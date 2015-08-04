@@ -955,6 +955,10 @@ class htmlButton extends htmlElement {
 		elseif ($this->iconClass == null) {
 			$classList[] = 'smallPadding';
 		}
+		// button with text and icon
+		else {
+			$classList[] = 'margin5';
+		}
 		if (sizeof($classList) > 0) {
 			$class = ' class="' . implode(' ', $classList) . '"';
 		}
@@ -2215,8 +2219,8 @@ class htmlInputTextarea extends htmlElement {
 		if (isset($values[$this->name])) {
 			$this->value = implode("\r\n", $values[$this->name]);
 		}
-		$colCount = ' cols="' . $this->colCount . '"';
-		$rowCount = ' rows="' . $this->rowCount . '"';
+		$colCount = ($this->colCount != null) ? ' cols="' . $this->colCount . '"' : '';
+		$rowCount = ($this->rowCount != null) ? ' rows="' . $this->rowCount . '"' : '';
 		$tabindexValue = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
 		$disabled = '';

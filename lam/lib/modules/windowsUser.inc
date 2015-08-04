@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class windowsUser extends baseModule implements passwordService {
-	
+
 	/** initial account flags */
 	const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
 	/** password never expires */
@@ -44,7 +44,7 @@ class windowsUser extends baseModule implements passwordService {
 	const AC_ACCOUNT_DISABLED = 0x00000002;
 	/** currently locked out, read only flag */
 	const AC_LOCKED_OUT = 0x00000010;
-	
+
 	/** current group of names list */
 	private $groupList = array();
 	/** original group of names list */
@@ -55,11 +55,11 @@ class windowsUser extends baseModule implements passwordService {
 	private $pwdLastSet = null;
 	/** clear text password */
 	private $clearTextPassword;
-	
-	
+
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -70,7 +70,7 @@ class windowsUser extends baseModule implements passwordService {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -569,7 +569,7 @@ class windowsUser extends baseModule implements passwordService {
 		$return['config_options']['all'] = $configContainer;
 		return $return;
 	}
-	
+
 	/**
 	* Initializes the module after it became part of an accountContainer
 	*
@@ -620,7 +620,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	}
-	
+
 	/**
 	 * This function loads all needed LDAP attributes.
 	 *
@@ -638,8 +638,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->groupList = $this->groupList_orig;
 	}
 
-	
-	
+
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
@@ -661,7 +661,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -719,7 +719,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
 		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
 		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
-		
+
 		$containerLeft->addElement(new htmlSubTitle(_('Options')), true);
 		// locked out
 		$containerLeft->addElement(new htmlOutputText(_("Account is locked")));
@@ -748,7 +748,7 @@ class windowsUser extends baseModule implements passwordService {
 		// require smartcard
 		$requireCard = windowsUser::isSmartCardRequired($this->attributes);
 		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), true);
-		
+
 		$containerLeft->addElement(new htmlSubTitle(_('User profile')), true);
 		// profile path
 		$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
@@ -766,7 +766,7 @@ class windowsUser extends baseModule implements passwordService {
 		$containerLeft->addElement(new htmlTableExtendedSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
 		// home directory
 		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
-		
+
 		// NIS attributes
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$containerLeft->addElement(new htmlSubTitle(_('NIS')), true);
@@ -777,9 +777,9 @@ class windowsUser extends baseModule implements passwordService {
 				$this->addSimpleInputTextField($containerLeft, 'msSFU30NisDomain', _('NIS domain'));
 			}
 		}
-		
+
 		$containerLeft->addElement(new htmlEqualWidth(array('streetAddress', 'cn')), true);
-		
+
 		$containerRight = new htmlTable();
 		$containerRight->alignment = htmlElement::ALIGN_TOP;
 		$containerRight->addElement(new htmlSubTitle(_('Groups')), true);
@@ -796,7 +796,7 @@ class windowsUser extends baseModule implements passwordService {
 			$groupsList->addElement(new htmlOutputText('<br>', false));
 		}
 		$containerRight->addElement($groupsList);
-		
+
 		$container = new htmlTable();
 		$container->addElement($containerLeft);
 		$container->addElement(new htmlSpacer('40px', null));
@@ -901,7 +901,7 @@ class windowsUser extends baseModule implements passwordService {
 						$otherMailbox = str_replace($wildcard, $_POST[$postKey], $otherMailbox);
 					}
 				}
-			}			
+			}
 		}
 		// other telephones
 		$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
@@ -1013,10 +1013,10 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
 			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
-		
+
 		return $return;
 	}
-	
+
 	/**
 	* Displays the group selection.
 	*
@@ -1027,7 +1027,7 @@ class windowsUser extends baseModule implements passwordService {
 		$groups = $this->findGroups();
 		// sort by DN
 		usort($groups, 'compareDN');
-			
+
 		$groupContainer = new htmlTable();
 		$groupContainer->alignment = htmlElement::ALIGN_TOP;
 		$groupContainer->addElement(new htmlSubTitle(_("Groups")), true);
@@ -1035,7 +1035,7 @@ class windowsUser extends baseModule implements passwordService {
 		$groupContainer->addElement(new htmlOutputText(''));
 		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
 		$groupContainer->addNewLine();
-		
+
 		$selectedGroups = array();
 		// sort by DN
 		usort($this->groupList, 'compareDN');
@@ -1050,7 +1050,7 @@ class windowsUser extends baseModule implements passwordService {
 				$availableGroups[getAbstractDN($dn)] = $dn;
 			}
 		}
-		
+
 		$remGroupSelect = new htmlSelect('removegroups', $selectedGroups, null, 15);
 		$remGroupSelect->setMultiSelect(true);
 		$remGroupSelect->setTransformSingleSelect(false);
@@ -1101,7 +1101,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Runs the postmodify actions.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -1154,7 +1154,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -1468,7 +1468,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* This function executes one post upload action.
 	*
@@ -1583,7 +1583,7 @@ class windowsUser extends baseModule implements passwordService {
 			);
 		}
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -1652,7 +1652,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Returns a list of elements for the account profiles.
 	*
@@ -1676,7 +1676,7 @@ class windowsUser extends baseModule implements passwordService {
 		$return->addElement($groupSelect, true);
 		return $return;
 	}
-	
+
 	/**
 	* Loads the values of an account profile into internal variables.
 	*
@@ -1711,23 +1711,22 @@ class windowsUser extends baseModule implements passwordService {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
 		if (in_array('unicodePwd', $fields)) {
-			$pwdTable = new htmlTable();
-			$pwdTable->colspan = 3;
-			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('unicodePwd', _('New password')), 'windowsUser_unicodePwd');
+			$row = new htmlResponsiveRow();
+			$pwd1 = new htmlResponsiveInputField($this->getSelfServiceLabel('unicodePwd', _('New password')), 'windowsUser_unicodePwd');
 			$pwd1->setIsPassword(true, true);
-			$pwdTable->addElement($pwd1, true);
-			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'windowsUser_unicodePwd2');
+			$pwd1->setFieldSize(null);
+			$row->add($pwd1, 12);
+			$pwd2 = new htmlResponsiveInputField(_('Reenter password'), 'windowsUser_unicodePwd2');
 			$pwd2->setIsPassword(true);
+			$pwd2->setFieldSize(null);
 			$pwd2->setSameValueFieldID('windowsUser_unicodePwd');
-			$pwdTable->addElement($pwd2);
-			$return['unicodePwd'] = new htmlTableRow(array(
-				$pwdTable
-			));
+			$row->add($pwd2, 12);
+			$return['unicodePwd'] = $row;
 		}
 		if ($passwordChangeOnly) {
 			return $return; // only password fields as long no LDAP content can be read
@@ -1755,7 +1754,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -1813,11 +1812,11 @@ class windowsUser extends baseModule implements passwordService {
 		$this->checkSimpleSelfServiceTextField($return, 'postalCode', $attributes, $fields, $readOnlyFields, 'postalCode');
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the user password in self service.
 	 * Since the change requires the old password we need to run ldapmodify for this task.
-	 * 
+	 *
 	 * Enter description here ...
 	 * @param array $return return value for checkSelfServiceOptions() (used to add message if any)
 	 * @param array $attributes LDAP attributes
@@ -1835,20 +1834,20 @@ class windowsUser extends baseModule implements passwordService {
 		$ldif .= "add: unicodePwd\n";
 		$ldif .= "unicodePwd:: " . base64_encode($newPasswordVal) . "\n";
 		$ldif .= "-\n";
-		
+
 		$serverURL = $_SESSION['selfServiceProfile']->serverURL;
 		$tls = '';
 		if ($_SESSION['selfServiceProfile']->useTLS) {
 			$tls = ' -ZZ ';
 		}
 		$cmd = "/usr/bin/ldapmodify -H " . $serverURL . $tls . " -D " . escapeshellarg($dn) . " -x -w " . escapeshellarg($oldPassword);
-		
+
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
 			2 => array("pipe", "w") // sterr
 		);
-		$process = proc_open($cmd, $descriptorspec, $pipes); 
+		$process = proc_open($cmd, $descriptorspec, $pipes);
 		if (is_resource($process)) {
 			fwrite($pipes[0], $ldif);
 		}
@@ -1884,14 +1883,14 @@ class windowsUser extends baseModule implements passwordService {
 			return;
 		}
 		else {
-			// update session password for next page load	
+			// update session password for next page load
 			$_SESSION['selfService_clientPasswordNew'] = $_POST['windowsUser_unicodePwd'];
 		}
 	}
 
 	/**
 	 * This method specifies if a module manages password attributes. The module alias will
-	 * then appear as option in the GUI. 
+	 * then appear as option in the GUI.
 	 * <br>If the module only wants to get notified about password changes then return false.
 	 *
 	 * @return boolean true if this module manages password attributes
@@ -1902,7 +1901,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
@@ -1947,10 +1946,10 @@ class windowsUser extends baseModule implements passwordService {
 		$this->clearTextPassword = $password;
 		return array();
 	}
-	
+
 	/**
 	 * Creates the LDAP password value.
-	 * 
+	 *
 	 * @param String $password password
 	 */
 	public static function pwdAttributeValue($password) {
@@ -1959,8 +1958,8 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Returns if the account is currently deactivated.
-	 * 
-	 * @param array $attrs LDAP attributes 
+	 *
+	 * @param array $attrs LDAP attributes
 	 * @return boolean is deactivated
 	 */
 	public static function isDeactivated($attrs) {
@@ -1973,7 +1972,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Sets if the account is currently deactivated.
-	 * 
+	 *
 	 * @param boolean $deactivated is deactivated
 	 * @param array $attrs LDAP attributes to modify (default $this->attributes)
 	 */
@@ -1997,8 +1996,8 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Returns if the account is currently locked out.
-	 * 
-	 * @param array $attrs LDAP attributes 
+	 *
+	 * @param array $attrs LDAP attributes
 	 * @return boolean is locked out
 	 */
 	private static function isLockedOut($attrs) {
@@ -2011,7 +2010,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Unlocks the account.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes to modify
 	 */
 	public static function unlock(&$attrs) {
@@ -2026,8 +2025,8 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Returns if the account requires a smartcard to login.
-	 * 
-	 * @param array $attrs LDAP attributes 
+	 *
+	 * @param array $attrs LDAP attributes
 	 * @return boolean requires a smartcard
 	 */
 	public static function isSmartCardRequired($attrs) {
@@ -2040,7 +2039,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Sets if the account requires a smartcard to login.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes to modify
 	 * @param boolean $requireCard requires a smartcard
 	 */
@@ -2061,8 +2060,8 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Returns if the account never expires.
-	 * 
-	 * @param array $attrs LDAP attributes 
+	 *
+	 * @param array $attrs LDAP attributes
 	 * @return boolean never expires
 	 */
 	public static function isNeverExpiring($attrs) {
@@ -2075,7 +2074,7 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Sets if the account never expires.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes to modify
 	 * @param boolean $neverExpires never expires
 	 */
@@ -2115,10 +2114,10 @@ class windowsUser extends baseModule implements passwordService {
 		$this->groupCache = $return;
 		return $return;
 	}
-	
+
 	/**
 	 * Gets the list of possible domains from the config setting.
-	 * 
+	 *
 	 * @return array domain list
 	 */
 	private function getDomains() {
@@ -2133,7 +2132,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		return array_values(array_unique($domains));
 	}
-	
+
 }
-	
+
 ?>

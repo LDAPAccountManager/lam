@@ -92,7 +92,7 @@ function getSelfServiceFieldSettings($scope) {
  * @param array $attributes LDAP attributes (attribute names in lower case)
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
  * @param array $readOnlyFields list of read-only fields
- * @return array meta HTML code (array(<moduleName> => htmlTableRow))
+ * @return array meta HTML code (array(<moduleName> => htmlResponsiveRow))
  */
 function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = array();
@@ -287,7 +287,7 @@ function checkSelfServiceSettings($scope, &$options, &$profile) {
 
 /**
  * Returns if script runs inside self service.
- * 
+ *
  * @return boolean is self service
  */
 function isSelfService() {
@@ -304,7 +304,7 @@ class selfServiceProfile {
 
 	/** server address */
 	public $serverURL;
-	
+
 	/** use TLS */
 	public $useTLS;
 
@@ -316,25 +316,25 @@ class selfServiceProfile {
 
 	/** LDAP password */
 	public $LDAPPassword;
-	
+
 	/** use bind user also for read/modify operations */
 	public $useForAllOperations;
 
 	/** LDAP search attribute */
 	public $searchAttribute;
-	
+
 	/** HTTP authentication */
 	public $httpAuthentication;
-	
+
 	/** header for self service pages */
 	public $pageHeader;
-	
+
 	/** list of additional CSS links (separated by \n) */
 	public $additionalCSS;
 
 	/** describing text for user login */
 	public $loginCaption;
-	
+
 	/** label for password input */
 	public $passwordLabel;
 
@@ -343,7 +343,7 @@ class selfServiceProfile {
 
 	/** additional LDAP filter for accounts */
 	public $additionalLDAPFilter;
-	
+
 	/** describing text for self service main page */
 	public $mainPageText;
 
@@ -355,23 +355,23 @@ class selfServiceProfile {
 	 *
 	 */
 	public $inputFields;
-	
+
 	/**
 	 * List of fields that are set in read-only mode.
 	 */
 	public $readOnlyFields;
-	
+
 	/** List of override values for field labels: array(<field ID> => label) */
 	public $relabelFields;
-	
+
 	/** configuration settings of modules */
 	public $moduleSettings;
-	
+
 	/** language for self service */
 	public $language = 'en_GB.utf8';
 	/** disallow user to change language */
 	public $enforceLanguage = false;
-	
+
 	public $followReferrals = 0;
 
 	/**
