@@ -3,6 +3,7 @@ September 2015 5.1
   - SSH public key: check uploaded files if in right format
   - LAM Pro:
    -> MySQL support for cron jobs
+   -> Self registration: support auto-numbering for attributes (e.g. to create Unix accounts)
 
 
 30.06.2015 5.0

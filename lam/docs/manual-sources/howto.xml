@@ -8190,6 +8190,23 @@ OK (10 msec)</programlisting>
 
                 <entry></entry>
               </row>
+
+              <row>
+                <entry>Auto-numbering for attributes such as uidNumber. Will
+                do a search for attribute values in the given range and use
+                highest value + 1.</entry>
+
+                <entry>autorange</entry>
+
+                <entry>e.g. uidNumber</entry>
+
+                <entry>LDAP search base, e.g.
+                ou=people,dc=company,dc=com</entry>
+
+                <entry>Minimum value, e.g. 1000</entry>
+
+                <entry>Maximum value, e.g. 2000</entry>
+              </row>
             </tbody>
           </tgroup>
         </table>
@@ -8207,6 +8224,8 @@ OK (10 msec)</programlisting>
         valid last name.</para>
 
         <para>constant::homeDirectory::/home/@@uid@@</para>
+
+        <para>autorange::uidNumber::ou=people,dc=company,dc=com::10000::20000</para>
 
         <para>If you use the object class "inetOrgPerson" and do not provide
         the "cn" attribute then LAM will set it to the user name value.</para>
