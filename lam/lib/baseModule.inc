@@ -1428,8 +1428,8 @@ abstract class baseModule {
 			}
 		}
 		$row = new htmlResponsiveRow();
-		$row->add(new htmlOutputText($this->getSelfServiceLabel($name, $label)), 12, 6, 6, 'tabletPlus-align-right mobile-align-left');
-		$row->add($field, 12, 6, 6, 'tabletPlus-align-left');
+		$row->add(new htmlOutputText($this->getSelfServiceLabel($name, $label)), 12, 6, 6, 'responsiveLabel');
+		$row->add($field, 12, 6, 6, 'responsiveField');
 		$container[$name] = $row;
 	}
 

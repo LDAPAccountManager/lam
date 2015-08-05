@@ -3408,14 +3408,14 @@ class htmlResponsiveInputField extends htmlInputField {
 			if (is_dir("../graphics")) $graphicsPath = "../graphics";
 			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
 		}
-		$row->add($labelGroup, 12, 6, 6, 'tabletPlus-align-right mobile-align-left');
+		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$fieldGroup->addElement(new htmlHelpLink($this->helpID));
 		}
-		$row->add($fieldGroup, 12, 6, 6, 'tabletPlus-align-left');
+		$row->add($fieldGroup, 12, 6, 6, 'responsiveField');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 

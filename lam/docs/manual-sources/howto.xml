@@ -989,7 +989,9 @@ Have fun!
         <section>
           <title>5.0 -&gt; 5.1</title>
 
-          <para>No special actions needed.</para>
+          <para>Self Service: There were large changes to provide a responsive
+          design that works for desktop and mobile. If you use custom CSS to
+          style Self Service then this must be updated.</para>
         </section>
 
         <section>

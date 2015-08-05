@@ -667,12 +667,8 @@ div.dialog-page {
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
 
-.mobile-align-left {
+.responsiveLabel {
 	text-align: left;
-}
-
-.mobile-align-right {
-	text-align: right;
 }
 
 }
@@ -680,12 +676,12 @@ div.dialog-page {
 /* tablet */
 @media only screen and (min-width: 40.0625em) and (max-width: 64.0625em) {
 
-.tablet-align-left,.tabletPlus-align-left {
-	text-align: left;
+.responsiveLabel {
+	text-align: right;
 }
 
-.tablet-align-right,.tabletPlus-align-right {
-	text-align: right;
+.responsiveField {
+	text-align: left;
 }
 
 }
@@ -693,12 +689,12 @@ div.dialog-page {
 /* desktop */
 @media only screen and (min-width: 64.0625em) {
 
-.desktop-align-left,.tabletPlus-align-left {
-	text-align: left;
+.responsiveLabel {
+	text-align: right;
 }
 
-.desktop-align-right,.tabletPlus-align-right {
-	text-align: right;
+.responsiveField {
+	text-align: left;
 }
 
 }
