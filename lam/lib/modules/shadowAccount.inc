@@ -37,7 +37,7 @@ $Id$
 * @package modules
 */
 class shadowAccount extends baseModule implements passwordService {
-	
+
 	/**
 	* Creates a new shadowAccount object.
 	*
@@ -69,7 +69,7 @@ class shadowAccount extends baseModule implements passwordService {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -80,7 +80,7 @@ class shadowAccount extends baseModule implements passwordService {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -318,7 +318,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$pwdWarnInput->setFieldSize(5);
 			$pwdWarnInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($pwdWarnInput, true);
-			
+
 			$shPwdExpiration = '';
 			if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
 			$pwdExpInput = new htmlTableExtendedInputField(_('Password expiration'), 'shadowInactive', $shPwdExpiration, 'shadowInactive');
@@ -326,7 +326,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$pwdExpInput->setFieldSize(5);
 			$pwdExpInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($pwdExpInput, true);
-			
+
 			$shMinAge = '';
 			if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
 			$minAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowMin', $shMinAge, 'shadowMin');
@@ -334,7 +334,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$minAgeInput->setFieldSize(5);
 			$minAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($minAgeInput, true);
-			
+
 			$shMaxAge = '';
 			if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
 			$maxAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowMax', $shMaxAge, 'shadowMax');
@@ -342,7 +342,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$maxAgeInput->setFieldSize(5);
 			$maxAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($maxAgeInput, true);
-			
+
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowExpire'][0])) {
 				$shAccExpirationDate = $this->attributes['shadowExpire'][0];
@@ -355,7 +355,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', 'edit.png', true, _('Change')));
 			$return->addElement($expireTable);
 			$return->addElement(new htmlHelpLink('shadowExpire'), true);
-			
+
 				$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if (isset($this->attributes['shadowLastChange'][0])) {
 					$shPwdChangeDate = $this->attributes['shadowLastChange'][0];
@@ -371,7 +371,7 @@ class shadowAccount extends baseModule implements passwordService {
 				}
 				$return->addElement($pwdChangeTable);
 				$return->addElement(new htmlHelpLink('shadowLastChange'), true);
-			
+
 			$return->addElement(new htmlOutputText(''), true);
 			$remButton = new htmlAccountPageButton('shadowAccount', 'attributes', 'remObjectClass', _('Remove Shadow account extension'));
 			$remButton->colspan = 4;
@@ -433,9 +433,9 @@ class shadowAccount extends baseModule implements passwordService {
 					null, null, null);
 			}
 		}
-		return $errors;		
+		return $errors;
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page with the expiration date.
 	*
@@ -498,9 +498,9 @@ class shadowAccount extends baseModule implements passwordService {
 		elseif (isset($_POST['form_subpage_shadowAccount_attributes_delPwdChange'])) {
 			unset($this->attributes['shadowLastChange']);
 		}
-		return $errors;		
+		return $errors;
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page with the password change date.
 	*
@@ -654,13 +654,13 @@ class shadowAccount extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return true;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -702,7 +702,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$this->attributes['shadowExpire'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
 			intval($year))/3600/24);
 	}
-		
+
 	/**
 	 * Sets the last password change date of this account.
 	 * If all parameters are null the password change date will be removed.
@@ -719,7 +719,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$this->attributes['shadowLastChange'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
 			intval($year))/3600/24);
 	}
-		
+
 	/**
 	 * Returns the meta HTML code for each input field.
 	 * format: array(<field1> => array(<META HTML>), ...)
@@ -729,7 +729,7 @@ class shadowAccount extends baseModule implements passwordService {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
@@ -742,9 +742,10 @@ class shadowAccount extends baseModule implements passwordService {
 				$date = getdate($attributes['shadowLastChange'][0] * 3600 * 24);
 				$shadowLastChange = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
 			}
-			$return['shadowLastChange'] = new htmlTableRow(array(
-				new htmlOutputText($this->getSelfServiceLabel('shadowLastChange', _('Last password change'))), new htmlOutputText($shadowLastChange)
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('shadowLastChange', _('Last password change'))), 12, 6, 6, 'responsiveLabel');
+			$row->add(new htmlOutputText($shadowLastChange), 12, 6, 6, 'responsiveField');
+			$return['shadowLastChange'] = $row;
 		}
 		return $return;
 	}

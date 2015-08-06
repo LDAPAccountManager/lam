@@ -936,7 +936,7 @@ class pykotaUser extends baseModule {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		if ($passwordChangeOnly) {
@@ -949,86 +949,70 @@ class pykotaUser extends baseModule {
 		if (in_array('pykotaBalance', $fields)) {
 			$pykotaBalance = '';
 			if (isset($attributes['pykotaBalance'][0])) $pykotaBalance = $attributes['pykotaBalance'][0];
-			$return['pykotaBalance'] = new htmlTableRow(array(
-				new htmlOutputText($this->getSelfServiceLabel('pykotaBalance', _('Balance'))), new htmlOutputText($pykotaBalance)
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaBalance', _('Balance'))), 12, 6, 6, 'responsiveLabel');
+			$row->add(new htmlOutputText($pykotaBalance), 12, 6, 6, 'responsiveField');
+			$return['pykotaBalance'] = $row;
 		}
 		if (in_array('pykotaLifeTimePaid', $fields)) {
 			$pykotaLifeTimePaid = '';
 			if (isset($attributes['pykotaLifeTimePaid'][0])) $pykotaLifeTimePaid = $attributes['pykotaLifeTimePaid'][0];
-			$return['pykotaLifeTimePaid'] = new htmlTableRow(array(
-				new htmlOutputText($this->getSelfServiceLabel('pykotaLifeTimePaid', _('Total paid'))), new htmlOutputText($pykotaLifeTimePaid)
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaLifeTimePaid', _('Total paid'))), 12, 6, 6, 'responsiveLabel');
+			$row->add(new htmlOutputText($pykotaLifeTimePaid), 12, 6, 6, 'responsiveField');
+			$return['pykotaLifeTimePaid'] = $row;
 		}
 		// payment history
 		if (in_array('pykotaPayments', $fields)) {
-			$pykotaPayments = new htmlTable();
-			$pykotaPayments->colspan = 5;
+			$pykotaPayments = new htmlResponsiveRow();
 			if (!empty($attributes['pykotaPayments'][0])) {
-				$spacer = new htmlSpacer('10px', null);
-				$pykotaPayments->addElement(new htmlOutputText(_('Date')), false, true);
-				$pykotaPayments->addElement($spacer);
-				$pykotaPayments->addElement(new htmlOutputText(_('Amount')), false, true);
-				$pykotaPayments->addElement($spacer);
-				$pykotaPayments->addElement(new htmlOutputText(_('Comment')), true, true);
+				$pykotaPayments->add(new htmlOutputText(_('Date')), 3, 3, 3, 'bold');
+				$pykotaPayments->add(new htmlOutputText(_('Amount')), 3, 3, 3, 'bold');
+				$pykotaPayments->add(new htmlOutputText(_('Comment')), 6, 6, 6, 'bold');
 				rsort($attributes['pykotaPayments']);
 				foreach ($attributes['pykotaPayments'] as $payment) {
 					$parts = explode(' # ', $payment);
-					$pykotaPayments->addElement(new htmlOutputText($parts[0]));
-					$pykotaPayments->addElement($spacer);
+					$pykotaPayments->add(new htmlOutputText($parts[0]), 3);
 					$amount = new htmlOutputText($parts[1]);
 					$amount->alignment = htmlElement::ALIGN_RIGHT;
-					$pykotaPayments->addElement($amount);
-					$pykotaPayments->addElement($spacer);
-					if (!empty($parts[2])) {
-						$pykotaPayments->addElement(new htmlOutputText(base64_decode($parts[2])));
-					}
-					$pykotaPayments->addNewLine();
+					$pykotaPayments->add($amount, 3);
+					$comment = empty($parts[2]) ? '' : $parts[2];
+					$pykotaPayments->add(new htmlOutputText(base64_decode($parts[2])), 6);
 				}
 			}
-			$pykotaPaymentsLabel = new htmlOutputText($this->getSelfServiceLabel('pykotaPayments', _('Payment history')));
-			$pykotaPaymentsLabel->alignment = htmlElement::ALIGN_TOP;
-			$return['pykotaPayments'] = new htmlTableRow(array(
-				$pykotaPaymentsLabel, $pykotaPayments
-			));
+			$row->add(new htmlSpacer(null, '10px'), 12);
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaPayments', _('Payment history'))), 12, 12, 12, 'bold text-left');
+			$row->add($pykotaPayments, 12);
+			$return['pykotaPayments'] = $row;
 		}
 		// job history
 		if (in_array('pykotaJobHistory', $fields) && !empty($this->selfServiceSettings->moduleSettings['pykotaUser_jobSuffix'][0]) && !empty($attributes['pykotaUserName'][0])) {
 			$jobs = $this->getJobs($attributes['pykotaUserName'][0], $this->selfServiceSettings->moduleSettings['pykotaUser_jobSuffix'][0]);
-			$pykotaJobs = new htmlTable();
-			$pykotaJobs->colspan = 5;
-			$spacer = new htmlSpacer('10px', null);
-			$pykotaJobs->addElement(new htmlOutputText(_('Date')), false, true);
-			$pykotaJobs->addElement($spacer);
-			$pykotaJobs->addElement(new htmlOutputText(_('Printer')), false, true);
-			$pykotaJobs->addElement($spacer);
-			$pykotaJobs->addElement(new htmlOutputText(_('Price')), false, true);
-			$pykotaJobs->addElement($spacer);
-			$pykotaJobs->addElement(new htmlOutputText(_('Size')), false, true);
-			$pykotaJobs->addElement($spacer);
+			$pykotaJobs = new htmlResponsiveRow();
+			$pykotaJobs->add(new htmlOutputText(_('Date')), 3, 3, 3, 'bold');
+			$pykotaJobs->add(new htmlOutputText(_('Printer')), 3, 3, 3, 'bold');
+			$pykotaJobs->add(new htmlOutputText(_('Price')), 2, 2, 2, 'bold');
+			$pykotaJobs->add(new htmlOutputText(_('Size')), 1, 1, 1, 'bold');
 			$title = new htmlOutputText(_('Title'));
 			$title->alignment = htmlElement::ALIGN_LEFT;
-			$pykotaJobs->addElement($title, true, true);
+			$pykotaJobs->add($title, 3, 3, 3, 'bold');
 			foreach ($jobs as $job) {
-				$pykotaJobs->addElement(new htmlOutputText(formatLDAPTimestamp($job['createtimestamp'][0])));
-				$pykotaJobs->addElement($spacer);
-				$pykotaJobs->addElement(new htmlOutputText($job['pykotaprintername'][0]));
-				$pykotaJobs->addElement($spacer);
+				$pykotaJobs->add(new htmlOutputText(formatLDAPTimestamp($job['createtimestamp'][0])), 3);
+				$pykotaJobs->add(new htmlOutputText($job['pykotaprintername'][0]), 3);
 				$price = new htmlOutputText($job['pykotajobprice'][0]);
 				$price->alignment = htmlElement::ALIGN_RIGHT;
-				$pykotaJobs->addElement($price);
-				$pykotaJobs->addElement($spacer);
+				$pykotaJobs->add($price, 2);
 				$size = new htmlOutputText($job['pykotajobsize'][0]);
 				$size->alignment = htmlElement::ALIGN_RIGHT;
-				$pykotaJobs->addElement($size);
-				$pykotaJobs->addElement($spacer);
-				$pykotaJobs->addElement(new htmlOutputText($job['pykotatitle'][0]), true);
+				$pykotaJobs->add($size, 1);
+				$pykotaJobs->add(new htmlOutputText($job['pykotatitle'][0]), 3);
 			}
-			$pykotaJobsLabel = new htmlOutputText($this->getSelfServiceLabel('pykotaJobHistory', _('Job history')));
-			$pykotaJobsLabel->alignment = htmlElement::ALIGN_TOP;
-			$return['pykotaJobHistory'] = new htmlTableRow(array(
-				$pykotaJobsLabel, $pykotaJobs
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlSpacer(null, '10px'), 12);
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaJobHistory', _('Job history'))), 12, 12, 12, 'bold text-left');
+			$row->add($pykotaJobs, 12);
+			$return['pykotaJobHistory'] = $row;
 		}
 		return $return;
 	}

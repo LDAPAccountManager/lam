@@ -149,6 +149,18 @@ table.collapse {
 	text-align: right;
 }
 
+.text-left {
+	text-align: left;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.bold {
+	font-weight: bold;
+}
+
 /** buttons */
 .saveButton {
 	background-image: url(../graphics/save.png) !important;
@@ -661,7 +673,7 @@ h4.schema_oclass_sub {
 /** responsive styles */
 
 div.dialog-page {
-	max-width: 45em;
+	float: left;
 }
 
 /* mobile */

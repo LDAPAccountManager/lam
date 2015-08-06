@@ -66,7 +66,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	private $cachedDomainList = null;
 	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
-	
+
 
 	/**
 	* Creates a new sambaSamAccount object.
@@ -124,7 +124,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -135,7 +135,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -609,10 +609,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if ($attrs['uid'][0]=='') return false;
 		return true;
 	}
-	
+
 	/**
 	* This function is used to check if all settings for this module have been made.
-	* 
+	*
 	* @see baseModule::module_complete
 	*
 	* @return boolean true, if settings are complete
@@ -624,7 +624,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if ($this->get_scope() == "host") {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			if (substr($attrs['uid'][0], -1, 1) != '$') {
-				return false;			
+				return false;
 			}
 		}
 		if (!isset($this->attributes['sambaSID']) || ($this->attributes['sambaSID'] == '')) {
@@ -1035,7 +1035,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (isset($this->attributes['sambaMungedDial'][0])) {
 			$mDial->load($this->attributes['sambaMungedDial'][0]);
 		}
-		$mDial->setTsLogin(!isset($_POST['tsAllowLogin']));	
+		$mDial->setTsLogin(!isset($_POST['tsAllowLogin']));
 		$mDial->ctx['CtxWFHomeDir'] = $_POST['tsHomeDir'];
 		$mDial->ctx['CtxWFHomeDirDrive'] = $_POST['tsHomeDrive'];
 		$mDial->ctx['CtxWFProfilePath'] = $_POST['tsProfilePath'];
@@ -1057,7 +1057,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -1168,7 +1168,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$tempTable->addElement(new htmlAccountPageButton(get_class($this), 'time', 'sambaKickoffTime', _('Change')));
 				$return->addElement($tempTable);
 				$return->addElement(new htmlHelpLink('expireDate'), true);
-				// home drive	
+				// home drive
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 					$drives = array('-');
 					for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
@@ -1278,7 +1278,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 
 			$return->addElement(new htmlSpacer(null, '10px'), true);
-			
+
 			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
 			$remButton->colspan = 3;
 			$return->addElement($remButton);
@@ -1300,7 +1300,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			// Get list of all hosts.
 			$userWorkstations = array();
 			$availableUserWorkstations = array();
-			
+
 			$result = $this->getHostList();
 			foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host);
 			sort($availableUserWorkstations, SORT_STRING);
@@ -1327,9 +1327,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$wsAvailSelect->setMultiSelect(true);
 			$return->addElement($wsAvailSelect);
 			$return->addNewLine();
-			
+
 			$return->addElement(new htmlSpacer(null, '10px'), true);
-			
+
 			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
 			$backButton->colspan = 3;
 			$return->addElement($backButton);
@@ -1393,11 +1393,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			$return->addElement(new htmlOutputText("$hour:00 - $hour:59"));
 			for ($d = 0; $d < 7; $d++) {
-				$return->addElement($boxes[$h][$d]);				
+				$return->addElement($boxes[$h][$d]);
 			}
 			$return->addNewLine();
 		}
-		
+
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$buttonContainer = new htmlTable();
 		$buttonContainer->colspan = 5;
@@ -1454,7 +1454,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
 		$buttons->colspan = 6;
 		$return->addElement($buttons);
-		return $return;	
+		return $return;
 	}
 
 	/**
@@ -1540,9 +1540,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
 		$buttonContainer->colspan = 3;
 		$return->addElement($buttonContainer);
-		return $return;	
+		return $return;
 	}
-	
+
 	/**
 	* Displays manage profile path page.
 	*
@@ -2225,7 +2225,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
@@ -2236,27 +2236,27 @@ class sambaSamAccount extends baseModule implements passwordService {
 			return $return;
 		}
 		if (in_array('password', $fields)) {
-			$pwdTable = new htmlTable();
-			$pwdTable->colspan = 3;
-			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('password', _('New password')), 'sambaSamAccount_password');
+			$group = new htmlGroup();
+			$pwd1 = new htmlResponsiveInputField($this->getSelfServiceLabel('password', _('New password')), 'sambaSamAccount_password');
 			$pwd1->setIsPassword(true, true);
-			$pwdTable->addElement($pwd1, true);
-			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'sambaSamAccount_password2');
+			$group->addElement($pwd1);
+			$pwd2 = new htmlResponsiveInputField(_('Reenter password'), 'sambaSamAccount_password2');
 			$pwd2->setIsPassword(true);
 			$pwd2->setSameValueFieldID('sambaSamAccount_password');
-			$pwdTable->addElement($pwd2);
-			$return['password'] = new htmlTableRow(array(
-				$pwdTable
-			));
+			$group->addElement($pwd2);
+			$row = new htmlResponsiveRow();
+			$row->add($group, 12);
+			$return['password'] = $row;
 		}
 		if (in_array('sambaPwdLastSet', $fields)) {
 			$sambaPwdLastSet = '';
 			if (isset($attributes['sambaPwdLastSet'][0])) {
 				$sambaPwdLastSet = date('d.m.Y H:i', $attributes['sambaPwdLastSet'][0]);
 			}
-			$return['sambaPwdLastSet'] = new htmlTableRow(array(
-				new htmlOutputText($this->getSelfServiceLabel('sambaPwdLastSet', _('Last password change'))), new htmlOutputText($sambaPwdLastSet)
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('sambaPwdLastSet', _('Last password change'))), 12, 6, 6, 'responsiveLabel');
+			$row->add(new htmlOutputText($sambaPwdLastSet), 12, 6, 6, 'responsiveField');
+			$return['sambaPwdLastSet'] = $row;
 		}
 		return $return;
 	}
@@ -2269,7 +2269,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -2362,13 +2362,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return true;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -2394,7 +2394,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		return array();
 	}
-		
+
 	/**
 	 * Returns the group name of the group with the given group ID.
 	 *
@@ -2408,7 +2408,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the time when the user needs to change his password.
 	 *
@@ -2422,7 +2422,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		// check if password expires at all
 		if ($this->noexpire) {
-			return $return;	
+			return $return;
 		}
 		// check if there is a time set for the last password change
 		if (!isset($this->attributes['sambaPwdLastSet'][0])) {
@@ -2440,7 +2440,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns the time when the user can change his password.
 	 *
@@ -2468,7 +2468,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns a list of existing hosts.
 	 *
@@ -2533,25 +2533,25 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->attributes['sambaKickoffTime'][0] = gmmktime(0, 0, 0, intval($month), intval($day),
 			intval($year));
 	}
-	
+
 	/**
 	 * Returns if the Samba extension is enabled.
-	 * 
+	 *
 	 * @return boolean Samba extension is active
 	 */
 	public function isExtensionEnabled() {
 		return in_array('sambaSamAccount', $this->attributes['objectClass']);
 	}
-		
+
 	/**
 	 * Returns if the Samba part of the current account is deactivated.
-	 * 
+	 *
 	 * @return boolean account is locked
 	 */
 	public function isDeactivated() {
 		return $this->deactivated;
 	}
-	
+
 	/**
 	 * Deactivates this account.
 	 */
@@ -2563,7 +2563,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		$this->attributes['sambaAcctFlags'][0] = $flags;
 	}
-	
+
 	/**
 	 * Activates this account.
 	 */
@@ -2572,7 +2572,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->attributes['sambaAcctFlags'][0] = str_replace('D', '', $this->attributes['sambaAcctFlags'][0]);
 		$this->attributes['sambaAcctFlags'][0] = str_replace(']', ' ]', $this->attributes['sambaAcctFlags'][0]);
 	}
-	
+
 }
 
 ?>
