@@ -652,8 +652,9 @@ function lamCompareDescriptiveOptions(&$a, &$b) {
  * @param String $number help number
  * @param String $module module name
  * @param String $scope account scope
+ * @param array $classes CSS classes
  */
-function printHelpLink($entry, $number, $module='', $scope='') {
+function printHelpLink($entry, $number, $module = '', $scope = '', $classes = array()) {
 	$helpPath = "../";
 	if (is_file("./help.php")) $helpPath = "";
 	$title = $entry['Headline'];
@@ -664,7 +665,7 @@ function printHelpLink($entry, $number, $module='', $scope='') {
 	// replace special characters
 	$message = htmlspecialchars($message);
 	$title = htmlspecialchars($title);
-	echo "<a class=\"margin2\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
+	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
 		echo "target=\"help\">";
 		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle\" width=16 height=16 src=\"../${helpPath}graphics/help.png\" alt=\"" . _('Help') . "\">";
 	echo "</a>";

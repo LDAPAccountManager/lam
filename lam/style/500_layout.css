@@ -128,6 +128,10 @@ input {
 	vertical-align: middle;
 }
 
+.align-top {
+	vertical-align: top;
+}
+
 table.lamHeader {
   background-image: url(lam-images/headerLine.png);
   padding: 0px;
@@ -672,8 +676,20 @@ h4.schema_oclass_sub {
 
 /** responsive styles */
 
+.row {
+	margin-top: 5px;
+}
+
 .row input {
 	width: 100%;
+}
+
+.row input[type="checkbox"] {
+	width: auto;
+}
+
+.row input[type="radio"] {
+	width: auto;
 }
 
 div.dialog-page {

@@ -2773,23 +2773,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$userCertificates = $attributes['userCertificate;binary'];
 			}
 			$_SESSION[self::SESS_CERTIFICATES_LIST] = $userCertificates;
-			$certTable = new htmlTable();
-			$certTable->addElement(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()), true);
+			$certTable = new htmlResponsiveRow();
+			$certTable->add(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()), 12);
 			// JavaScript functions
-			$certTable->addElement($this->getSelfServiceUserCertificatesJSBlock(), true);
+			$certTable->add($this->getSelfServiceUserCertificatesJSBlock(), 12);
 			// upload button
 			$uploadButtons = new htmlGroup();
 			$uploadButtons->addElement(new htmlDiv('inetOrgPersonCertUploadId', new htmlOutputText('')), true);
 			$certUpload = new htmlJavaScript('inetOrgPersonUploadCert(\'inetOrgPersonCertUploadId\');');
 			$uploadButtons->addElement($certUpload);
-			$certTable->addElement($uploadButtons, true);
+			$certTable->add($uploadButtons, 12);
 			// upload status
 			$uploadStatus = new htmlDiv('inetOrgPerson_upload_status_cert', new htmlOutputText(''));
 			$uploadStatus->setCSSClasses(array('qq-upload-list'));
 			$uploadStatus->colspan = 7;
-			$certTable->addElement($uploadStatus, true);
+			$certTable->add($uploadStatus, 12);
 			$certLabel = new htmlOutputText($this->getSelfServiceLabel('userCertificate', _('User certificates')));
-			$certLabel->alignment = htmlElement::ALIGN_TOP;
 			$return['userCertificate'] = new htmlResponsiveRow($certLabel, $certTable);
 		}
 		// ou
@@ -2858,10 +2857,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	private function getSelfServiceUserCertificates() {
 		$userCertificates = $_SESSION[self::SESS_CERTIFICATES_LIST];
-		$content = new htmlTable();
+		$content = new htmlGroup();
 		if (sizeof($userCertificates) > 0) {
-			$certTable = new htmlTable();
+			$certTable = new htmlResponsiveRow();
 			for ($i = 0; $i < sizeof($userCertificates); $i++) {
+				$group = new htmlGroup();
 				$filename = 'userCertificate' . getRandomNumber() . '.der';
 				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
 				fwrite($out, $userCertificates[$i]);
@@ -2880,21 +2880,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 							$data[] = $pemData['name'];
 						}
 						if (sizeof($data) > 0) {
-							$certTable->addElement(new htmlOutputText(implode(': ', $data)));
+							$group->addElement(new htmlOutputText(implode(': ', $data)));
+							$group->addElement(new htmlSpacer('5px', null));
 						}
 					}
 				}
 				$saveLink = new htmlLink('', $path, '../../graphics/save.png');
 				$saveLink->setTitle(_('Save'));
 				$saveLink->setTargetWindow('_blank');
-				$certTable->addElement($saveLink);
+				$group->addElement($saveLink);
 				$delLink = new htmlLink('', '#', '../../graphics/del.png');
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . '); return false;');
-				$certTable->addElement($delLink);
-				$certTable->addNewLine();
+				$group->addElement($delLink);
+				$certTable->add($group, 12);
 			}
-			$content->addElement($certTable, true);
+			$content->addElement($certTable);
 		}
 		return $content;
 	}
